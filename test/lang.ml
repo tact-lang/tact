@@ -3,8 +3,8 @@ open Tact.Lang_types
 
 let incr_f =
   Function
-    { function_params = [("value", Value (Type IntegerType))];
-      function_returns = Value (Type IntegerType);
+    { function_params = [("value", IntegerType)];
+      function_returns = IntegerType;
       function_impl =
         BuiltinFn
           (builtin_fun (fun _p -> function
@@ -21,27 +21,16 @@ let%expect_test "scope resolution" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((T
-           (Value
-            (Struct
-             ((struct_fields
-               ((integer ((field_type (Value (Type IntegerType)))))))
-              (struct_methods
-               ((new
-                 ((function_params ((integer (Value (Type IntegerType)))))
-                  (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
-              (struct_id <opaque>)))))))))
-      (bindings
+     ((bindings
        ((T
          (Value
           (Struct
-           ((struct_fields ((integer ((field_type (Value (Type IntegerType)))))))
+           ((struct_fields ((integer ((field_type IntegerType)))))
             (struct_methods
              ((new
-               ((function_params ((integer (Value (Type IntegerType)))))
-                (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
+               ((function_params ((integer IntegerType)))
+                (function_returns (RefType <opaque>))
+                (function_impl (BuiltinFn (<fun> 1)))))))
             (struct_id <opaque>))))))))) |}]
 
 let%expect_test "binding resolution" =
@@ -57,49 +46,27 @@ let%expect_test "binding resolution" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((T
-           (Value
-            (Struct
-             ((struct_fields
-               ((integer ((field_type (Value (Type IntegerType)))))))
-              (struct_methods
-               ((new
-                 ((function_params ((integer (Value (Type IntegerType)))))
-                  (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
-              (struct_id <opaque>)))))))
-        (Let
-         ((T_
-           (Value
-            (Struct
-             ((struct_fields
-               ((integer ((field_type (Value (Type IntegerType)))))))
-              (struct_methods
-               ((new
-                 ((function_params ((integer (Value (Type IntegerType)))))
-                  (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
-              (struct_id <opaque>)))))))
-        (Let ((a (Value (Integer 1))))) (Let ((a_ (Value (Integer 1)))))))
-      (bindings
+     ((bindings
        ((a_ (Value (Integer 1))) (a (Value (Integer 1)))
         (T_
          (Value
           (Struct
-           ((struct_fields ((integer ((field_type (Value (Type IntegerType)))))))
+           ((struct_fields ((integer ((field_type IntegerType)))))
             (struct_methods
              ((new
-               ((function_params ((integer (Value (Type IntegerType)))))
-                (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
+               ((function_params ((integer IntegerType)))
+                (function_returns (RefType <opaque>))
+                (function_impl (BuiltinFn (<fun> 1)))))))
             (struct_id <opaque>)))))
         (T
          (Value
           (Struct
-           ((struct_fields ((integer ((field_type (Value (Type IntegerType)))))))
+           ((struct_fields ((integer ((field_type IntegerType)))))
             (struct_methods
              ((new
-               ((function_params ((integer (Value (Type IntegerType)))))
-                (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
+               ((function_params ((integer IntegerType)))
+                (function_returns (RefType <opaque>))
+                (function_impl (BuiltinFn (<fun> 1)))))))
             (struct_id <opaque>))))))))) |}]
 
 let%expect_test "failed scope resolution" =
@@ -118,47 +85,26 @@ let%expect_test "scope resolution after let binding" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((A
-           (Value
-            (Struct
-             ((struct_fields
-               ((integer ((field_type (Value (Type IntegerType)))))))
-              (struct_methods
-               ((new
-                 ((function_params ((integer (Value (Type IntegerType)))))
-                  (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
-              (struct_id <opaque>)))))))
-        (Let
-         ((B
-           (Value
-            (Struct
-             ((struct_fields
-               ((integer ((field_type (Value (Type IntegerType)))))))
-              (struct_methods
-               ((new
-                 ((function_params ((integer (Value (Type IntegerType)))))
-                  (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
-              (struct_id <opaque>)))))))))
-      (bindings
+     ((bindings
        ((B
          (Value
           (Struct
-           ((struct_fields ((integer ((field_type (Value (Type IntegerType)))))))
+           ((struct_fields ((integer ((field_type IntegerType)))))
             (struct_methods
              ((new
-               ((function_params ((integer (Value (Type IntegerType)))))
-                (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
+               ((function_params ((integer IntegerType)))
+                (function_returns (RefType <opaque>))
+                (function_impl (BuiltinFn (<fun> 1)))))))
             (struct_id <opaque>)))))
         (A
          (Value
           (Struct
-           ((struct_fields ((integer ((field_type (Value (Type IntegerType)))))))
+           ((struct_fields ((integer ((field_type IntegerType)))))
             (struct_methods
              ((new
-               ((function_params ((integer (Value (Type IntegerType)))))
-                (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
+               ((function_params ((integer IntegerType)))
+                (function_returns (RefType <opaque>))
+                (function_impl (BuiltinFn (<fun> 1)))))))
             (struct_id <opaque>))))))))) |}]
 
 let%expect_test "basic struct definition" =
@@ -169,43 +115,21 @@ let%expect_test "basic struct definition" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((T
-           (Value
-            (Struct
-             ((struct_fields
-               ((t
-                 ((field_type
-                   (Value
-                    (Struct
-                     ((struct_fields
-                       ((integer ((field_type (Value (Type IntegerType)))))))
-                      (struct_methods
-                       ((new
-                         ((function_params
-                           ((integer (Value (Type IntegerType)))))
-                          (function_returns Hole)
-                          (function_impl (BuiltinFn (<fun> 1)))))))
-                      (struct_id <opaque>)))))))))
-              (struct_methods ()) (struct_id <opaque>)))))))))
-      (bindings
+     ((bindings
        ((T
          (Value
           (Struct
            ((struct_fields
              ((t
                ((field_type
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))))))
+                 (StructType
+                  ((struct_fields ((integer ((field_type IntegerType)))))
+                   (struct_methods
+                    ((new
+                      ((function_params ((integer IntegerType)))
+                       (function_returns (RefType <opaque>))
+                       (function_impl (BuiltinFn (<fun> 1)))))))
+                   (struct_id <opaque>))))))))
             (struct_methods ()) (struct_id <opaque>))))))))) |}]
 
 let%expect_test "native function evaluation" =
@@ -213,11 +137,8 @@ let%expect_test "native function evaluation" =
     let v = incr(incr(incr(1)));
   |} in
   pp source ~bindings:(("incr", Value incr_f) :: Lang.default_bindings) ;
-  [%expect
-    {|
-    (Ok
-     ((stmts ((Let ((v (Value (Integer 4)))))))
-      (bindings ((v (Value (Integer 4))))))) |}]
+  [%expect {|
+    (Ok ((bindings ((v (Value (Integer 4))))))) |}]
 
 let%expect_test "Tact function evaluation" =
   let source =
@@ -232,65 +153,44 @@ let%expect_test "Tact function evaluation" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((test
-           (Value
-            (Function
-             ((function_params
-               ((i
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))))
-              (function_returns
-               (Value
-                (Struct
-                 ((struct_fields
-                   ((integer ((field_type (Value (Type IntegerType)))))))
-                  (struct_methods
-                   ((new
-                     ((function_params ((integer (Value (Type IntegerType)))))
-                      (function_returns Hole)
-                      (function_impl (BuiltinFn (<fun> 1)))))))
-                  (struct_id <opaque>)))))
-              (function_impl (Fn (((Break (Expr (Reference (i TypeType))))))))))))))
-        (Let ((a (Value (Integer 1)))))))
-      (bindings
+     ((bindings
        ((a (Value (Integer 1)))
         (test
          (Value
           (Function
            ((function_params
              ((i
-               (Value
-                (Struct
-                 ((struct_fields
-                   ((integer ((field_type (Value (Type IntegerType)))))))
-                  (struct_methods
-                   ((new
-                     ((function_params ((integer (Value (Type IntegerType)))))
-                      (function_returns Hole)
-                      (function_impl (BuiltinFn (<fun> 1)))))))
-                  (struct_id <opaque>)))))))
+               (StructType
+                ((struct_fields ((integer ((field_type IntegerType)))))
+                 (struct_methods
+                  ((new
+                    ((function_params ((integer IntegerType)))
+                     (function_returns (RefType <opaque>))
+                     (function_impl (BuiltinFn (<fun> 1)))))))
+                 (struct_id <opaque>))))))
             (function_returns
-             (Value
-              (Struct
-               ((struct_fields
-                 ((integer ((field_type (Value (Type IntegerType)))))))
-                (struct_methods
-                 ((new
-                   ((function_params ((integer (Value (Type IntegerType)))))
-                    (function_returns Hole)
-                    (function_impl (BuiltinFn (<fun> 1)))))))
-                (struct_id <opaque>)))))
-            (function_impl (Fn (((Break (Expr (Reference (i TypeType)))))))))))))))) |}]
+             (StructType
+              ((struct_fields ((integer ((field_type IntegerType)))))
+               (struct_methods
+                ((new
+                  ((function_params ((integer IntegerType)))
+                   (function_returns (RefType <opaque>))
+                   (function_impl (BuiltinFn (<fun> 1)))))))
+               (struct_id <opaque>))))
+            (function_impl
+             (Fn
+              (((Break
+                 (Expr
+                  (Reference
+                   (i
+                    (StructType
+                     ((struct_fields ((integer ((field_type IntegerType)))))
+                      (struct_methods
+                       ((new
+                         ((function_params ((integer IntegerType)))
+                          (function_returns (RefType <opaque>))
+                          (function_impl (BuiltinFn (<fun> 1)))))))
+                      (struct_id <opaque>))))))))))))))))))) |}]
 
 let%expect_test "compile-time function evaluation within a function" =
   let source =
@@ -305,21 +205,11 @@ let%expect_test "compile-time function evaluation within a function" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((test
-           (Value
-            (Function
-             ((function_params ()) (function_returns Hole)
-              (function_impl
-               (Fn
-                (((Let ((v (Value (Integer 4)))))
-                  (Break (Expr (Value (Integer 4))))))))))))))))
-      (bindings
+     ((bindings
        ((test
          (Value
           (Function
-           ((function_params ()) (function_returns Hole)
+           ((function_params ()) (function_returns IntegerType)
             (function_impl
              (Fn
               (((Let ((v (Value (Integer 4)))))
@@ -338,45 +228,22 @@ let%expect_test "struct definition" =
   [%expect
     {|
       (Ok
-       ((stmts
-         ((Let
-           ((MyType
-             (Value
-              (Struct
-               ((struct_fields
-                 ((a
-                   ((field_type
-                     (Value
-                      (Struct
-                       ((struct_fields
-                         ((integer ((field_type (Value (Type IntegerType)))))))
-                        (struct_methods
-                         ((new
-                           ((function_params
-                             ((integer (Value (Type IntegerType)))))
-                            (function_returns Hole)
-                            (function_impl (BuiltinFn (<fun> 1)))))))
-                        (struct_id <opaque>)))))))
-                  (b ((field_type (Value (Builtin Bool)))))))
-                (struct_methods ()) (struct_id <opaque>)))))))))
-        (bindings
+       ((bindings
          ((MyType
            (Value
             (Struct
              ((struct_fields
                ((a
                  ((field_type
-                   (Value
-                    (Struct
-                     ((struct_fields
-                       ((integer ((field_type (Value (Type IntegerType)))))))
-                      (struct_methods
-                       ((new
-                         ((function_params ((integer (Value (Type IntegerType)))))
-                          (function_returns Hole)
-                          (function_impl (BuiltinFn (<fun> 1)))))))
-                      (struct_id <opaque>)))))))
-                (b ((field_type (Value (Builtin Bool)))))))
+                   (StructType
+                    ((struct_fields ((integer ((field_type IntegerType)))))
+                     (struct_methods
+                      ((new
+                        ((function_params ((integer IntegerType)))
+                         (function_returns (RefType <opaque>))
+                         (function_impl (BuiltinFn (<fun> 1)))))))
+                     (struct_id <opaque>))))))
+                (b ((field_type (BuiltinType Bool))))))
               (struct_methods ()) (struct_id <opaque>))))))))) |}]
 
 let%expect_test "duplicate type field" =
@@ -397,17 +264,15 @@ let%expect_test "duplicate type field" =
         ((struct_fields
           ((a
             ((field_type
-              (Value
-               (Struct
-                ((struct_fields
-                  ((integer ((field_type (Value (Type IntegerType)))))))
-                 (struct_methods
-                  ((new
-                    ((function_params ((integer (Value (Type IntegerType)))))
-                     (function_returns Hole)
-                     (function_impl (BuiltinFn (<fun> 1)))))))
-                 (struct_id <opaque>)))))))
-           (a ((field_type (Value (Builtin Bool)))))))
+              (StructType
+               ((struct_fields ((integer ((field_type IntegerType)))))
+                (struct_methods
+                 ((new
+                   ((function_params ((integer IntegerType)))
+                    (function_returns (RefType <opaque>))
+                    (function_impl (BuiltinFn (<fun> 1)))))))
+                (struct_id <opaque>))))))
+           (a ((field_type (BuiltinType Bool))))))
          (struct_methods ()) (struct_id <opaque>)))))) |}]
 
 let%expect_test "parametric struct instantiation" =
@@ -421,70 +286,23 @@ let%expect_test "parametric struct instantiation" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((T
-           (Value
-            (Function
-             ((function_params ((A (Value (Builtin Type)))))
-              (function_returns (Value (Builtin Type)))
-              (function_impl
-               (Fn
-                (((Expr
-                   (Value
-                    (Struct
-                     ((struct_fields
-                       ((a ((field_type (Reference (A (BuiltinType Type))))))))
-                      (struct_methods ()) (struct_id <opaque>)))))))))))))))
-        (Let
-         ((TA
-           (Value
-            (Struct
-             ((struct_fields
-               ((a
-                 ((field_type
-                   (Value
-                    (Struct
-                     ((struct_fields
-                       ((integer ((field_type (Value (Type IntegerType)))))))
-                      (struct_methods
-                       ((new
-                         ((function_params
-                           ((integer (Value (Type IntegerType)))))
-                          (function_returns Hole)
-                          (function_impl (BuiltinFn (<fun> 1)))))))
-                      (struct_id <opaque>)))))))))
-              (struct_methods ()) (struct_id <opaque>)))))))))
-      (bindings
+     ((bindings
        ((TA
          (Value
           (Struct
-           ((struct_fields
-             ((a
-               ((field_type
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))))))
+           ((struct_fields ((a ((field_type (BuiltinType Type))))))
             (struct_methods ()) (struct_id <opaque>)))))
         (T
          (Value
           (Function
-           ((function_params ((A (Value (Builtin Type)))))
-            (function_returns (Value (Builtin Type)))
+           ((function_params ((A (BuiltinType Type))))
+            (function_returns (BuiltinType Type))
             (function_impl
              (Fn
               (((Expr
                  (Value
                   (Struct
-                   ((struct_fields
-                     ((a ((field_type (Reference (A (BuiltinType Type))))))))
+                   ((struct_fields ((a ((field_type (BuiltinType Type))))))
                     (struct_methods ()) (struct_id <opaque>))))))))))))))))) |}]
 
 let%expect_test "function without a return type" =
@@ -496,20 +314,12 @@ let%expect_test "function without a return type" =
   [%expect
     {|
       (Ok
-       ((stmts
-         ((Let
-           ((f
-             (Value
-              (Function
-               ((function_params ()) (function_returns Hole)
-                (function_impl (Fn (((Break (Expr (Value (Integer 1))))))))))))))
-          (Let ((a (Value (Integer 1)))))))
-        (bindings
+       ((bindings
          ((a (Value (Integer 1)))
           (f
            (Value
             (Function
-             ((function_params ()) (function_returns Hole)
+             ((function_params ()) (function_returns IntegerType)
               (function_impl (Fn (((Break (Expr (Value (Integer 1)))))))))))))))) |}]
 
 let%expect_test "scoping that `let` introduces in code" =
@@ -526,51 +336,56 @@ let%expect_test "scoping that `let` introduces in code" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((f
-           (Value
-            (Function
-             ((function_params
-               ((i
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))))
-              (function_returns Hole)
-              (function_impl
-               (Fn
-                (((Let ((a (Reference (i TypeType)))))
-                  (Break (Expr (Reference (a TypeType))))))))))))))
-        (Let ((b (Value (Integer 1)))))))
-      (bindings
+     ((bindings
        ((b (Value (Integer 1)))
         (f
          (Value
           (Function
            ((function_params
              ((i
-               (Value
-                (Struct
-                 ((struct_fields
-                   ((integer ((field_type (Value (Type IntegerType)))))))
-                  (struct_methods
-                   ((new
-                     ((function_params ((integer (Value (Type IntegerType)))))
-                      (function_returns Hole)
-                      (function_impl (BuiltinFn (<fun> 1)))))))
-                  (struct_id <opaque>)))))))
-            (function_returns Hole)
+               (StructType
+                ((struct_fields ((integer ((field_type IntegerType)))))
+                 (struct_methods
+                  ((new
+                    ((function_params ((integer IntegerType)))
+                     (function_returns (RefType <opaque>))
+                     (function_impl (BuiltinFn (<fun> 1)))))))
+                 (struct_id <opaque>))))))
+            (function_returns
+             (StructType
+              ((struct_fields ((integer ((field_type IntegerType)))))
+               (struct_methods
+                ((new
+                  ((function_params ((integer IntegerType)))
+                   (function_returns (RefType <opaque>))
+                   (function_impl (BuiltinFn (<fun> 1)))))))
+               (struct_id <opaque>))))
             (function_impl
              (Fn
-              (((Let ((a (Reference (i TypeType)))))
-                (Break (Expr (Reference (a TypeType))))))))))))))))
+              (((Let
+                 ((a
+                   (Reference
+                    (i
+                     (StructType
+                      ((struct_fields ((integer ((field_type IntegerType)))))
+                       (struct_methods
+                        ((new
+                          ((function_params ((integer IntegerType)))
+                           (function_returns (RefType <opaque>))
+                           (function_impl (BuiltinFn (<fun> 1)))))))
+                       (struct_id <opaque>))))))))
+                (Break
+                 (Expr
+                  (Reference
+                   (a
+                    (StructType
+                     ((struct_fields ((integer ((field_type IntegerType)))))
+                      (struct_methods
+                       ((new
+                         ((function_params ((integer IntegerType)))
+                          (function_returns (RefType <opaque>))
+                          (function_impl (BuiltinFn (<fun> 1)))))))
+                      (struct_id <opaque>)))))))))))))))))))
      |}]
 
 let%expect_test "reference in function bodies" =
@@ -590,144 +405,21 @@ let%expect_test "reference in function bodies" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((op
-           (Value
-            (Function
-             ((function_params
-               ((i
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))
-                (i_
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))))
-              (function_returns Hole)
-              (function_impl (Fn (((Break (Expr (Reference (i TypeType))))))))))))))
-        (Let
-         ((f
-           (Value
-            (Function
-             ((function_params
-               ((x
-                 (Value
-                  (Struct
-                   ((struct_fields
-                     ((integer ((field_type (Value (Type IntegerType)))))))
-                    (struct_methods
-                     ((new
-                       ((function_params ((integer (Value (Type IntegerType)))))
-                        (function_returns Hole)
-                        (function_impl (BuiltinFn (<fun> 1)))))))
-                    (struct_id <opaque>)))))))
-              (function_returns Hole)
-              (function_impl
-               (Fn
-                (((Let
-                   ((a
-                     (FunctionCall
-                      ((Value
-                        (Function
-                         ((function_params
-                           ((i
-                             (Value
-                              (Struct
-                               ((struct_fields
-                                 ((integer
-                                   ((field_type (Value (Type IntegerType)))))))
-                                (struct_methods
-                                 ((new
-                                   ((function_params
-                                     ((integer (Value (Type IntegerType)))))
-                                    (function_returns Hole)
-                                    (function_impl (BuiltinFn (<fun> 1)))))))
-                                (struct_id <opaque>)))))
-                            (i_
-                             (Value
-                              (Struct
-                               ((struct_fields
-                                 ((integer
-                                   ((field_type (Value (Type IntegerType)))))))
-                                (struct_methods
-                                 ((new
-                                   ((function_params
-                                     ((integer (Value (Type IntegerType)))))
-                                    (function_returns Hole)
-                                    (function_impl (BuiltinFn (<fun> 1)))))))
-                                (struct_id <opaque>)))))))
-                          (function_returns Hole)
-                          (function_impl
-                           (Fn (((Break (Expr (Reference (i TypeType)))))))))))
-                       ((Reference (x TypeType)) (Reference (x TypeType))))))))
-                  (Let
-                   ((b
-                     (FunctionCall
-                      ((Value
-                        (Function
-                         ((function_params
-                           ((i
-                             (Value
-                              (Struct
-                               ((struct_fields
-                                 ((integer
-                                   ((field_type (Value (Type IntegerType)))))))
-                                (struct_methods
-                                 ((new
-                                   ((function_params
-                                     ((integer (Value (Type IntegerType)))))
-                                    (function_returns Hole)
-                                    (function_impl (BuiltinFn (<fun> 1)))))))
-                                (struct_id <opaque>)))))
-                            (i_
-                             (Value
-                              (Struct
-                               ((struct_fields
-                                 ((integer
-                                   ((field_type (Value (Type IntegerType)))))))
-                                (struct_methods
-                                 ((new
-                                   ((function_params
-                                     ((integer (Value (Type IntegerType)))))
-                                    (function_returns Hole)
-                                    (function_impl (BuiltinFn (<fun> 1)))))))
-                                (struct_id <opaque>)))))))
-                          (function_returns Hole)
-                          (function_impl
-                           (Fn (((Break (Expr (Reference (i TypeType)))))))))))
-                       ((Reference (a HoleType)) (Reference (a HoleType))))))))))))))))))))
-      (bindings
+     ((bindings
        ((f
          (Value
           (Function
            ((function_params
              ((x
-               (Value
-                (Struct
-                 ((struct_fields
-                   ((integer ((field_type (Value (Type IntegerType)))))))
-                  (struct_methods
-                   ((new
-                     ((function_params ((integer (Value (Type IntegerType)))))
-                      (function_returns Hole)
-                      (function_impl (BuiltinFn (<fun> 1)))))))
-                  (struct_id <opaque>)))))))
-            (function_returns Hole)
+               (StructType
+                ((struct_fields ((integer ((field_type IntegerType)))))
+                 (struct_methods
+                  ((new
+                    ((function_params ((integer IntegerType)))
+                     (function_returns (RefType <opaque>))
+                     (function_impl (BuiltinFn (<fun> 1)))))))
+                 (struct_id <opaque>))))))
+            (function_returns VoidType)
             (function_impl
              (Fn
               (((Let
@@ -737,35 +429,69 @@ let%expect_test "reference in function bodies" =
                       (Function
                        ((function_params
                          ((i
-                           (Value
-                            (Struct
-                             ((struct_fields
-                               ((integer
-                                 ((field_type (Value (Type IntegerType)))))))
-                              (struct_methods
-                               ((new
-                                 ((function_params
-                                   ((integer (Value (Type IntegerType)))))
-                                  (function_returns Hole)
-                                  (function_impl (BuiltinFn (<fun> 1)))))))
-                              (struct_id <opaque>)))))
+                           (StructType
+                            ((struct_fields
+                              ((integer ((field_type IntegerType)))))
+                             (struct_methods
+                              ((new
+                                ((function_params ((integer IntegerType)))
+                                 (function_returns (RefType <opaque>))
+                                 (function_impl (BuiltinFn (<fun> 1)))))))
+                             (struct_id <opaque>))))
                           (i_
-                           (Value
-                            (Struct
-                             ((struct_fields
-                               ((integer
-                                 ((field_type (Value (Type IntegerType)))))))
-                              (struct_methods
-                               ((new
-                                 ((function_params
-                                   ((integer (Value (Type IntegerType)))))
-                                  (function_returns Hole)
-                                  (function_impl (BuiltinFn (<fun> 1)))))))
-                              (struct_id <opaque>)))))))
-                        (function_returns Hole)
+                           (StructType
+                            ((struct_fields
+                              ((integer ((field_type IntegerType)))))
+                             (struct_methods
+                              ((new
+                                ((function_params ((integer IntegerType)))
+                                 (function_returns (RefType <opaque>))
+                                 (function_impl (BuiltinFn (<fun> 1)))))))
+                             (struct_id <opaque>))))))
+                        (function_returns
+                         (StructType
+                          ((struct_fields ((integer ((field_type IntegerType)))))
+                           (struct_methods
+                            ((new
+                              ((function_params ((integer IntegerType)))
+                               (function_returns (RefType <opaque>))
+                               (function_impl (BuiltinFn (<fun> 1)))))))
+                           (struct_id <opaque>))))
                         (function_impl
-                         (Fn (((Break (Expr (Reference (i TypeType)))))))))))
-                     ((Reference (x TypeType)) (Reference (x TypeType))))))))
+                         (Fn
+                          (((Break
+                             (Expr
+                              (Reference
+                               (i
+                                (StructType
+                                 ((struct_fields
+                                   ((integer ((field_type IntegerType)))))
+                                  (struct_methods
+                                   ((new
+                                     ((function_params ((integer IntegerType)))
+                                      (function_returns (RefType <opaque>))
+                                      (function_impl (BuiltinFn (<fun> 1)))))))
+                                  (struct_id <opaque>))))))))))))))
+                     ((Reference
+                       (x
+                        (StructType
+                         ((struct_fields ((integer ((field_type IntegerType)))))
+                          (struct_methods
+                           ((new
+                             ((function_params ((integer IntegerType)))
+                              (function_returns (RefType <opaque>))
+                              (function_impl (BuiltinFn (<fun> 1)))))))
+                          (struct_id <opaque>)))))
+                      (Reference
+                       (x
+                        (StructType
+                         ((struct_fields ((integer ((field_type IntegerType)))))
+                          (struct_methods
+                           ((new
+                             ((function_params ((integer IntegerType)))
+                              (function_returns (RefType <opaque>))
+                              (function_impl (BuiltinFn (<fun> 1)))))))
+                          (struct_id <opaque>)))))))))))
                 (Let
                  ((b
                    (FunctionCall
@@ -773,63 +499,114 @@ let%expect_test "reference in function bodies" =
                       (Function
                        ((function_params
                          ((i
-                           (Value
-                            (Struct
-                             ((struct_fields
-                               ((integer
-                                 ((field_type (Value (Type IntegerType)))))))
-                              (struct_methods
-                               ((new
-                                 ((function_params
-                                   ((integer (Value (Type IntegerType)))))
-                                  (function_returns Hole)
-                                  (function_impl (BuiltinFn (<fun> 1)))))))
-                              (struct_id <opaque>)))))
+                           (StructType
+                            ((struct_fields
+                              ((integer ((field_type IntegerType)))))
+                             (struct_methods
+                              ((new
+                                ((function_params ((integer IntegerType)))
+                                 (function_returns (RefType <opaque>))
+                                 (function_impl (BuiltinFn (<fun> 1)))))))
+                             (struct_id <opaque>))))
                           (i_
-                           (Value
-                            (Struct
-                             ((struct_fields
-                               ((integer
-                                 ((field_type (Value (Type IntegerType)))))))
-                              (struct_methods
-                               ((new
-                                 ((function_params
-                                   ((integer (Value (Type IntegerType)))))
-                                  (function_returns Hole)
-                                  (function_impl (BuiltinFn (<fun> 1)))))))
-                              (struct_id <opaque>)))))))
-                        (function_returns Hole)
+                           (StructType
+                            ((struct_fields
+                              ((integer ((field_type IntegerType)))))
+                             (struct_methods
+                              ((new
+                                ((function_params ((integer IntegerType)))
+                                 (function_returns (RefType <opaque>))
+                                 (function_impl (BuiltinFn (<fun> 1)))))))
+                             (struct_id <opaque>))))))
+                        (function_returns
+                         (StructType
+                          ((struct_fields ((integer ((field_type IntegerType)))))
+                           (struct_methods
+                            ((new
+                              ((function_params ((integer IntegerType)))
+                               (function_returns (RefType <opaque>))
+                               (function_impl (BuiltinFn (<fun> 1)))))))
+                           (struct_id <opaque>))))
                         (function_impl
-                         (Fn (((Break (Expr (Reference (i TypeType)))))))))))
-                     ((Reference (a HoleType)) (Reference (a HoleType))))))))))))))))
+                         (Fn
+                          (((Break
+                             (Expr
+                              (Reference
+                               (i
+                                (StructType
+                                 ((struct_fields
+                                   ((integer ((field_type IntegerType)))))
+                                  (struct_methods
+                                   ((new
+                                     ((function_params ((integer IntegerType)))
+                                      (function_returns (RefType <opaque>))
+                                      (function_impl (BuiltinFn (<fun> 1)))))))
+                                  (struct_id <opaque>))))))))))))))
+                     ((Reference
+                       (a
+                        (StructType
+                         ((struct_fields ((integer ((field_type IntegerType)))))
+                          (struct_methods
+                           ((new
+                             ((function_params ((integer IntegerType)))
+                              (function_returns (RefType <opaque>))
+                              (function_impl (BuiltinFn (<fun> 1)))))))
+                          (struct_id <opaque>)))))
+                      (Reference
+                       (a
+                        (StructType
+                         ((struct_fields ((integer ((field_type IntegerType)))))
+                          (struct_methods
+                           ((new
+                             ((function_params ((integer IntegerType)))
+                              (function_returns (RefType <opaque>))
+                              (function_impl (BuiltinFn (<fun> 1)))))))
+                          (struct_id <opaque>)))))))))))))))))))
         (op
          (Value
           (Function
            ((function_params
              ((i
-               (Value
-                (Struct
-                 ((struct_fields
-                   ((integer ((field_type (Value (Type IntegerType)))))))
-                  (struct_methods
-                   ((new
-                     ((function_params ((integer (Value (Type IntegerType)))))
-                      (function_returns Hole)
-                      (function_impl (BuiltinFn (<fun> 1)))))))
-                  (struct_id <opaque>)))))
+               (StructType
+                ((struct_fields ((integer ((field_type IntegerType)))))
+                 (struct_methods
+                  ((new
+                    ((function_params ((integer IntegerType)))
+                     (function_returns (RefType <opaque>))
+                     (function_impl (BuiltinFn (<fun> 1)))))))
+                 (struct_id <opaque>))))
               (i_
-               (Value
-                (Struct
-                 ((struct_fields
-                   ((integer ((field_type (Value (Type IntegerType)))))))
-                  (struct_methods
-                   ((new
-                     ((function_params ((integer (Value (Type IntegerType)))))
-                      (function_returns Hole)
-                      (function_impl (BuiltinFn (<fun> 1)))))))
-                  (struct_id <opaque>)))))))
-            (function_returns Hole)
-            (function_impl (Fn (((Break (Expr (Reference (i TypeType)))))))))))))))) |}]
+               (StructType
+                ((struct_fields ((integer ((field_type IntegerType)))))
+                 (struct_methods
+                  ((new
+                    ((function_params ((integer IntegerType)))
+                     (function_returns (RefType <opaque>))
+                     (function_impl (BuiltinFn (<fun> 1)))))))
+                 (struct_id <opaque>))))))
+            (function_returns
+             (StructType
+              ((struct_fields ((integer ((field_type IntegerType)))))
+               (struct_methods
+                ((new
+                  ((function_params ((integer IntegerType)))
+                   (function_returns (RefType <opaque>))
+                   (function_impl (BuiltinFn (<fun> 1)))))))
+               (struct_id <opaque>))))
+            (function_impl
+             (Fn
+              (((Break
+                 (Expr
+                  (Reference
+                   (i
+                    (StructType
+                     ((struct_fields ((integer ((field_type IntegerType)))))
+                      (struct_methods
+                       ((new
+                         ((function_params ((integer IntegerType)))
+                          (function_returns (RefType <opaque>))
+                          (function_impl (BuiltinFn (<fun> 1)))))))
+                      (struct_id <opaque>))))))))))))))))))) |}]
 
 let%expect_test "resolving a reference from inside a function" =
   let source =
@@ -845,21 +622,12 @@ let%expect_test "resolving a reference from inside a function" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let ((i (Value (Integer 1)))))
-        (Let
-         ((f
-           (Value
-            (Function
-             ((function_params ()) (function_returns Hole)
-              (function_impl (Fn (((Break (Expr (Value (Integer 1))))))))))))))
-        (Let ((x (Value (Integer 1)))))))
-      (bindings
+     ((bindings
        ((x (Value (Integer 1)))
         (f
          (Value
           (Function
-           ((function_params ()) (function_returns Hole)
+           ((function_params ()) (function_returns IntegerType)
             (function_impl (Fn (((Break (Expr (Value (Integer 1))))))))))))
         (i (Value (Integer 1))))))) |}]
 
@@ -879,37 +647,7 @@ let%expect_test "method access" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((Foo
-           (Value
-            (Struct
-             ((struct_fields ())
-              (struct_methods
-               ((bar
-                 ((function_params
-                   ((self (Value (Builtin Type))) (i (Value (Type IntegerType)))))
-                  (function_returns Hole)
-                  (function_impl
-                   (Fn (((Break (Expr (Reference (i IntegerType))))))))))))
-              (struct_id <opaque>)))))))
-        (Let
-         ((foo
-           (Value
-            (StructInstance
-             (((struct_fields ())
-               (struct_methods
-                ((bar
-                  ((function_params
-                    ((self (Value (Builtin Type)))
-                     (i (Value (Type IntegerType)))))
-                   (function_returns Hole)
-                   (function_impl
-                    (Fn (((Break (Expr (Reference (i IntegerType))))))))))))
-               (struct_id <opaque>))
-              ()))))))
-        (Let ((res (Value (Integer 1)))))))
-      (bindings
+     ((bindings
        ((res (Value (Integer 1)))
         (foo
          (Value
@@ -917,9 +655,8 @@ let%expect_test "method access" =
            (((struct_fields ())
              (struct_methods
               ((bar
-                ((function_params
-                  ((self (Value (Builtin Type))) (i (Value (Type IntegerType)))))
-                 (function_returns Hole)
+                ((function_params ((self (BuiltinType Type)) (i IntegerType)))
+                 (function_returns IntegerType)
                  (function_impl
                   (Fn (((Break (Expr (Reference (i IntegerType))))))))))))
              (struct_id <opaque>))
@@ -930,9 +667,8 @@ let%expect_test "method access" =
            ((struct_fields ())
             (struct_methods
              ((bar
-               ((function_params
-                 ((self (Value (Builtin Type))) (i (Value (Type IntegerType)))))
-                (function_returns Hole)
+               ((function_params ((self (BuiltinType Type)) (i IntegerType)))
+                (function_returns IntegerType)
                 (function_impl
                  (Fn (((Break (Expr (Reference (i IntegerType))))))))))))
             (struct_id <opaque>))))))))) |}]
@@ -962,18 +698,10 @@ let%expect_test "use of asm in a function" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((f
-           (Value
-            (Function
-             ((function_params ()) (function_returns Hole)
-              (function_impl
-               (Fn (((Expr (Asm (SWAP (XCHG0 2)))) (Expr (Asm (ADD)))))))))))))))
-      (bindings
+     ((bindings
        ((f
          (Value
           (Function
-           ((function_params ()) (function_returns Hole)
+           ((function_params ()) (function_returns VoidType)
             (function_impl
              (Fn (((Expr (Asm (SWAP (XCHG0 2)))) (Expr (Asm (ADD))))))))))))))) |}]

@@ -71,7 +71,7 @@ class interpreter
               Void )
         | Value value ->
             self#interpret_value value
-        | Asm _ | InvalidExpr | Hole ->
+        | Asm _ | InvalidExpr ->
             errors#report `Error (`UninterpretableStatement (Expr expr)) () ;
             Void
 
@@ -81,7 +81,7 @@ class interpreter
         | Struct {struct_fields; struct_methods; struct_id} ->
             let struct_fields =
               List.map struct_fields ~f:(fun (name, {field_type}) ->
-                  (name, {field_type = Value (self#interpret_expr field_type)}) )
+                  (name, {field_type}) )
             in
             Struct {struct_fields; struct_methods; struct_id}
         | value ->
@@ -123,9 +123,7 @@ class interpreter
           | {function_impl = BuiltinFn (function_impl, _); _} ->
               let expr =
                 function_impl
-                  { stmts = [];
-                    bindings =
-                      Option.value (List.hd global_bindings) ~default:[] }
+                  {bindings = Option.value (List.hd global_bindings) ~default:[]}
                   args'
               in
               if functions > 0 then expr else Value (self#interpret_expr expr)

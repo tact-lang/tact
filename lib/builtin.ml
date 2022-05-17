@@ -1,6 +1,8 @@
 open Base
 open Lang_types
 
+exception InternalError
+
 let int_type =
   (* memoize constructor funs for equality *)
   let int_constructor_funs = Hashtbl.create (module Int)
@@ -8,17 +10,25 @@ let int_type =
   struct_counter := struct_counter' + 1 ;
   (* int's newtype *)
   let rec int_type_s bits =
-    { struct_fields = [("integer", {field_type = Value (Type IntegerType)})];
-      struct_methods = [("new", int_type_s_new bits)];
-      struct_id = (bits, struct_counter') }
+    let new_ = int_type_s_new bits in
+    let t =
+      { struct_fields = [("integer", {field_type = IntegerType})];
+        struct_methods = [("new", new_)];
+        struct_id = (bits, struct_counter') }
+    in
+    ( match new_ with
+    | {function_returns = RefType ref; _} ->
+        ref := StructType t
+    | _ ->
+        raise InternalError ) ;
+    t
   and int_type_s_new bits =
     let function_impl =
       Hashtbl.find_or_add int_constructor_funs bits ~default:(fun () ->
           builtin_fun @@ constructor_impl bits )
     in
-    { function_params = [("integer", Value (Type IntegerType))];
-      (* TODO: figure out how to represent Self *)
-      function_returns = Hole;
+    { function_params = [("integer", IntegerType)];
+      function_returns = RefType (ref VoidType);
       function_impl = BuiltinFn function_impl }
   and constructor_impl bits p = function
     | [Integer i] ->
@@ -46,8 +56,8 @@ let int_type =
   in
   Value
     (Function
-       { function_params = [("bits", Value (Type IntegerType))];
-         function_returns = Value (Struct (int_type_s 257));
+       { function_params = [("bits", IntegerType)];
+         function_returns = StructType (int_type_s 257);
          function_impl = BuiltinFn (builtin_fun function_impl) } )
 
 let asm =
@@ -61,14 +71,14 @@ let asm =
   in
   Value
     (Function
-       { function_params = [("instructions", Value (Type StringType))];
-         function_returns = Value (Type VoidType);
+       { function_params = [("instructions", StringType)];
+         function_returns = VoidType;
          function_impl = BuiltinFn (builtin_fun function_impl) } )
 
 let default_bindings =
   [ ("asm", asm);
     ("Integer", Value (Type IntegerType));
     ("Int", int_type);
-    ("Bool", Value (Builtin "Bool"));
-    ("Type", Value (Builtin "Type"));
-    ("Void", Value Void) ]
+    ("Bool", Value (Type (BuiltinType "Bool")));
+    ("Type", Value (Type (BuiltinType "Type")));
+    ("Void", Value (Type VoidType)) ]

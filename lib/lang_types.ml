@@ -20,14 +20,13 @@ type comptime_counter = (int[@sexp.opaque])
 
 and binding = string * expr
 
-and program = {stmts : stmt list; [@sexp.list] bindings : (string * expr) list}
+and program = {bindings : (string * expr) list}
 
 and expr =
   | FunctionCall of function_call
   | Reference of (string * type_)
   | Value of value
   | Asm of Asm.instr list
-  | Hole
   | InvalidExpr
 
 and value =
@@ -58,7 +57,7 @@ and type_ =
   | BuiltinType of builtin
   | StructType of struct_
   | FunctionType of function_
-  | HoleType
+  | RefType of (type_ ref[@sexp.opaque] [@equal.ignore])
   | InvalidType
 
 and struct_ =
@@ -66,7 +65,7 @@ and struct_ =
     struct_methods : (string * function_) list;
     struct_id : (int * int[@sexp.opaque]) }
 
-and struct_field = {field_type : expr}
+and struct_field = {field_type : type_}
 
 and function_body = (stmt list option[@sexp.option])
 
@@ -76,8 +75,8 @@ and native_function =
 and builtin_fn = native_function * int
 
 and function_ =
-  { function_params : (string * expr) list;
-    function_returns : expr;
+  { function_params : (string * type_) list;
+    function_returns : type_;
     function_impl : function_impl }
 
 and function_impl = Fn of function_body | BuiltinFn of builtin_fn | InvalidFn
@@ -90,9 +89,9 @@ and function_call = expr * expr list
     visitors {variety = "map"; polymorphic = true; ancestors = ["base_map"]},
     visitors {variety = "fold"; name = "visitor"; ancestors = ["base_visitor"]}]
 
-let rec expr_to_type = function
-  | Value (Struct _) ->
-      TypeType
+let expr_to_type = function
+  | Value (Struct s) ->
+      StructType s
   | Value (StructInstance (struct_, _)) ->
       StructType struct_
   | Value (Function function_) ->
@@ -105,10 +104,8 @@ let rec expr_to_type = function
       VoidType
   | Value (Type type_) ->
       type_
-  | Hole ->
-      HoleType
   | FunctionCall (Value (Function {function_returns; _}), _) ->
-      expr_to_type function_returns
+      function_returns
   | Reference (_, t) ->
       t
   | _ ->
@@ -119,8 +116,6 @@ let rec is_immediate_expr = function
       true
   | FunctionCall (_, args) ->
       are_immediate_arguments args
-  | Hole ->
-      false
   | Reference _ ->
       false
   | Asm _ ->

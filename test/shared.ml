@@ -20,11 +20,13 @@ let build_program ?(errors = make_errors ()) ?(bindings = Lang.default_bindings)
   (* remove default bindings *)
   |> Result.map ~f:(fun (program : Lang.program) ->
          if strip_default_bindings then
-           { program with
-             bindings =
-               List.filter program.bindings ~f:(fun binding ->
-                   not @@ List.exists bindings ~f:(Lang.equal_binding binding) )
-           }
+           let program : Lang.program =
+             { bindings =
+                 List.filter program.bindings ~f:(fun binding ->
+                     not @@ List.exists bindings ~f:(Lang.equal_binding binding) )
+             }
+           in
+           program
          else program )
   |> Result.map_error ~f:(fun errors ->
          List.map errors ~f:(fun (_, err, _) -> err) )

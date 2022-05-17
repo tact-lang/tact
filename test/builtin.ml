@@ -11,51 +11,26 @@ let%expect_test "Int(bits) constructor" =
   [%expect
     {|
     (Ok
-     ((stmts
-       ((Let
-         ((i
-           (Value
-            (StructInstance
-             (((struct_fields
-                ((integer ((field_type (Value (Type IntegerType)))))))
-               (struct_methods
-                ((new
-                  ((function_params ((integer (Value (Type IntegerType)))))
-                   (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
-               (struct_id <opaque>))
-              ((integer (Integer 100)))))))))
-        (Let
-         ((overflow
-           (Value
-            (StructInstance
-             (((struct_fields
-                ((integer ((field_type (Value (Type IntegerType)))))))
-               (struct_methods
-                ((new
-                  ((function_params ((integer (Value (Type IntegerType)))))
-                   (function_returns Hole) (function_impl (BuiltinFn (<fun> 6)))))))
-               (struct_id <opaque>))
-              ((integer (Integer 1)))))))))))
-      (bindings
+     ((bindings
        ((overflow
          (Value
           (StructInstance
-           (((struct_fields
-              ((integer ((field_type (Value (Type IntegerType)))))))
+           (((struct_fields ((integer ((field_type IntegerType)))))
              (struct_methods
               ((new
-                ((function_params ((integer (Value (Type IntegerType)))))
-                 (function_returns Hole) (function_impl (BuiltinFn (<fun> 6)))))))
+                ((function_params ((integer IntegerType)))
+                 (function_returns (RefType <opaque>))
+                 (function_impl (BuiltinFn (<fun> 6)))))))
              (struct_id <opaque>))
             ((integer (Integer 1)))))))
         (i
          (Value
           (StructInstance
-           (((struct_fields
-              ((integer ((field_type (Value (Type IntegerType)))))))
+           (((struct_fields ((integer ((field_type IntegerType)))))
              (struct_methods
               ((new
-                ((function_params ((integer (Value (Type IntegerType)))))
-                 (function_returns Hole) (function_impl (BuiltinFn (<fun> 1)))))))
+                ((function_params ((integer IntegerType)))
+                 (function_returns (RefType <opaque>))
+                 (function_impl (BuiltinFn (<fun> 1)))))))
              (struct_id <opaque>))
             ((integer (Integer 100))))))))))) |}]

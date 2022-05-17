@@ -20,7 +20,7 @@ functor
 
     class ['s] constructor ((bindings, errors) : (string * expr) list * _ errors)
       =
-      object (s : 's)
+      object (self : 's)
         inherit ['s] Syntax.visitor as super
 
         (* Bindings in scope *)
@@ -33,7 +33,7 @@ functor
         val mutable functions = 0
 
         (* Program handle we pass to builtin functions *)
-        val program = {bindings; stmts = []}
+        val program = {bindings}
 
         method build_CodeBlock _env _code_block = Invalid
 
@@ -50,7 +50,7 @@ functor
             inter#interpret_fc fc
           else FunctionCall fc
 
-        method build_MethodCall env mc = s#build_FunctionCall env mc
+        method build_MethodCall env mc = self#build_FunctionCall env mc
 
         method build_Ident _env string_ = string_
 
@@ -84,18 +84,18 @@ functor
         method build_Reference env ref =
           match find_in_scope ref current_bindings with
           | Some (Reference (ref', _)) ->
-              s#build_Reference env ref'
+              self#build_Reference env ref'
           | Some (Value value) ->
               Value value
-          | Some _ ->
-              (* TODO: type_of *) Reference (ref, HoleType)
+          | Some expr ->
+              Reference (ref, expr_to_type expr)
           | None -> (
             match find_in_scope ref runtime_bindings with
             | Some ty ->
                 Reference (ref, ty)
             | None ->
                 errors#report `Error (`UnresolvedIdentifier ref) () ;
-                Reference (ref, HoleType) )
+                Reference (ref, VoidType) )
 
         method build_Return _env return = Return return
 
@@ -131,7 +131,7 @@ functor
         method build_field_access _env _expr _field = ()
 
         method build_function_call _env fn args =
-          (Syntax.value fn, s#of_located_list args)
+          (Syntax.value fn, self#of_located_list args)
 
         method build_method_call _env receiver fn args =
           let receiver = Syntax.value receiver in
@@ -140,7 +140,7 @@ functor
             ( Value
                 (Function
                    { function_params = [];
-                     function_returns = Value (Type VoidType);
+                     function_returns = VoidType;
                      function_impl =
                        BuiltinFn (builtin_fun (fun _ _ -> Value Void)) } ),
               [] )
@@ -152,7 +152,7 @@ functor
               List.Assoc.find struct'.struct_methods ~equal:String.equal fn
             with
             | Some fn' ->
-                (Value (Function fn'), s#of_located_list args)
+                (Value (Function fn'), self#of_located_list args)
             | None ->
                 errors#report `Error (`MethodNotFound (receiver, fn)) () ;
                 dummy )
@@ -161,7 +161,7 @@ functor
               List.Assoc.find struct'.struct_methods ~equal:String.equal fn
             with
             | Some fn' ->
-                (Value (Function fn'), receiver :: s#of_located_list args)
+                (Value (Function fn'), receiver :: self#of_located_list args)
             | None ->
                 errors#report `Error (`MethodNotFound (receiver, fn)) () ;
                 dummy )
@@ -172,10 +172,10 @@ functor
         method! visit_function_definition env f =
           (* prepare parameter bindings *)
           let param_bindings =
-            s#of_located_list f.params
+            self#of_located_list f.params
             |> List.map ~f:(fun (ident, expr) ->
-                   ( s#visit_ident env @@ Syntax.value ident,
-                     s#visit_expr env @@ Syntax.value expr ) )
+                   ( self#visit_ident env @@ Syntax.value ident,
+                     self#visit_expr env @@ Syntax.value expr ) )
             |> List.map ~f:(fun (id, expr) -> (id, expr_to_type expr))
           in
           let bindings' = runtime_bindings in
@@ -206,17 +206,19 @@ functor
           functions <- functions' ;
           result
 
-        method build_function_body _env stmts = s#of_located_list stmts
+        method build_function_body _env stmts = self#of_located_list stmts
 
         method build_function_definition _env _name params returns body =
-          let function_params =
-            s#of_located_list params
+          let function_params : (string * type_) list =
+            self#of_located_list params
             |> List.map ~f:(fun (name, type_) ->
-                   (Syntax.value name, Syntax.value type_) )
+                   ( Syntax.value name,
+                     Syntax.value type_ |> self#interpret_expr_to_type ) )
           and function_returns =
             returns
             |> Option.map ~f:(fun x -> Syntax.value x)
-            |> Option.value ~default:Hole
+            |> Option.map ~f:self#interpret_expr_to_type
+            |> Option.value ~default:(self#infer_return_type body)
           and function_impl = body in
           {function_params; function_returns; function_impl = Fn function_impl}
 
@@ -224,9 +226,8 @@ functor
 
         method build_interface_definition _env _members = ()
 
-        method build_program _env stmts =
-          { stmts = s#of_located_list stmts;
-            bindings = List.concat current_bindings }
+        method build_program _env _stmts =
+          {bindings = List.concat current_bindings}
 
         method build_struct_constructor _env id _fields =
           match Syntax.value id with
@@ -237,7 +238,7 @@ functor
               ({struct_fields = []; struct_methods = []; struct_id = (0, 0)}, [])
 
         method build_struct_definition _env struct_fields bindings =
-          let struct_fields = s#of_located_list struct_fields
+          let struct_fields = self#of_located_list struct_fields
           and struct_methods =
             List.filter_map bindings ~f:(fun binding ->
                 let name, expr = Syntax.value binding in
@@ -265,7 +266,8 @@ functor
           s'
 
         method build_struct_field _env field_name field_type =
-          (Syntax.value field_name, {field_type = Syntax.value field_type})
+          ( Syntax.value field_name,
+            {field_type = Syntax.value field_type |> self#expr_to_type} )
 
         method build_union_definition _env _members _bindings = ()
 
@@ -275,5 +277,44 @@ functor
         method private resolve ref =
           List.find_map current_bindings ~f:(fun bindings ->
               List.Assoc.find bindings ~equal:String.equal ref )
+
+        method private interpret_expr_to_type expr =
+          let inter = new interpreter (current_bindings, errors, functions) in
+          self#expr_to_type @@ Value (inter#interpret_expr expr)
+
+        method private expr_to_type expr =
+          match expr with
+          | Value (Type t) ->
+              t
+          | Value (Struct s) ->
+              StructType s
+          | Reference (ref, _) -> (
+            match self#resolve ref with
+            | Some e ->
+                self#expr_to_type e
+            | None -> (
+              match find_in_scope ref runtime_bindings with
+              | Some ty ->
+                  ty
+              | None ->
+                  errors#report `Error (`UnresolvedIdentifier ref) () ;
+                  VoidType ) )
+          | _ ->
+              errors#report `Error (`UnexpectedType expr) () ;
+              VoidType
+
+        method private infer_return_type body =
+          let rec stmt_type = function
+            | Break (Expr expr) ->
+                expr_to_type expr
+            | Break stmt ->
+                stmt_type stmt
+            | Return expr ->
+                expr_to_type expr
+            | _ ->
+                VoidType
+          in
+          List.fold (Option.value body ~default:[]) ~init:VoidType
+            ~f:(fun _type -> stmt_type)
       end
   end
