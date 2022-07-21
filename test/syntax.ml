@@ -1106,3 +1106,15 @@ let%expect_test "program returns" =
   let sources = [{| 1 |}; {| return 1|}] in
   List.iter ~f:pp sources ;
   [%expect {| ((stmts ((Expr (Int 1)))))((stmts ((Return (Int 1))))) |}]
+
+let%expect_test "assignment" =
+  let source = {|
+      let a = 1;
+      a = 2;
+  |} in
+  pp source ;
+  [%expect
+    {|
+    ((stmts
+      ((Let ((binding_name (Ident a)) (binding_expr (Int 1))))
+       (Assignment ((assignment_ident (Ident a)) (assignment_expr (Int 2))))))) |}]

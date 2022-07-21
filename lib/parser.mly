@@ -144,6 +144,11 @@ let destructuring_field ==
   | id = located(ident); { (id, id) }
   | id = located(ident); AS; new_id = located(ident); { (id, new_id) }
 
+let assignment ==
+  | assignment_ident = located(ident); EQUALS; assignment_expr = located(expr); {
+    make_assignment ~assignment_ident ~assignment_expr ()
+  }
+
 let rest ==
   r = option(DOUBLEDOT); { Option.is_some r }
 
@@ -312,6 +317,7 @@ let semicolon_stmt :=
   | ~= located(stmt_expr); <Expr>
   | ~= let_binding; <Let>
   | ~= destructuring_let_binding; <DestructuringLet>
+  | ~= assignment; <Assignment>
   | RETURN; ~= located(expr); <Return>
 
 let non_semicolon_stmt :=

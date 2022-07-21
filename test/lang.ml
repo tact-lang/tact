@@ -4742,3 +4742,59 @@ let%expect_test "Deserilize intf with constraints" =
                   ((ResolvedReference (Self <opaque>)))))))))))))))
       (type_counter <opaque>) (memoized_fcalls <opaque>) (struct_signs (0 ()))
       (union_signs (0 ())))) |}]
+
+let%expect_test "assignment" =
+  let source = {|
+      fn test() { 2 }
+      let a = 1;
+      a = test();
+  |} in
+  pp_compile source ;
+  [%expect
+    {|
+    (Ok
+     ((bindings
+       ((a (Value (Integer 2)))
+        (test
+         (Value
+          (Function
+           ((function_signature
+             ((function_params ()) (function_returns IntegerType)))
+            (function_impl (Fn (Return (Value (Integer 2)))))))))))
+      (structs ()) (type_counter <opaque>) (memoized_fcalls <opaque>)
+      (struct_signs (0 ()))
+      (union_signs
+       (5
+        (((un_sig_cases ((StructType 58) (StructType 75))) (un_sig_methods ())
+          (un_sig_base_id 76))
+         ((un_sig_cases ((StructType 54))) (un_sig_methods ())
+          (un_sig_base_id 59))
+         ((un_sig_cases ((UnionType 20) (UnionType 38))) (un_sig_methods ())
+          (un_sig_base_id 43))
+         ((un_sig_cases ((StructType 30) (StructType 34))) (un_sig_methods ())
+          (un_sig_base_id 37))
+         ((un_sig_cases ((StructType 13) (StructType 17))) (un_sig_methods ())
+          (un_sig_base_id 19))))))) |}]
+
+let%expect_test "assignment without initial declaration" =
+  let source = {|
+      a = 2;
+  |} in
+  pp_compile source ;
+  [%expect
+    {|
+    (((UnresolvedIdentifier a))
+     ((bindings ()) (structs ()) (type_counter <opaque>)
+      (memoized_fcalls <opaque>) (struct_signs (0 ()))
+      (union_signs
+       (5
+        (((un_sig_cases ((StructType 58) (StructType 75))) (un_sig_methods ())
+          (un_sig_base_id 76))
+         ((un_sig_cases ((StructType 54))) (un_sig_methods ())
+          (un_sig_base_id 59))
+         ((un_sig_cases ((UnionType 20) (UnionType 38))) (un_sig_methods ())
+          (un_sig_base_id 43))
+         ((un_sig_cases ((StructType 30) (StructType 34))) (un_sig_methods ())
+          (un_sig_base_id 37))
+         ((un_sig_cases ((StructType 13) (StructType 17))) (un_sig_methods ())
+          (un_sig_base_id 19))))))) |}]

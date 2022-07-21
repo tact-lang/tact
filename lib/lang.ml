@@ -203,6 +203,45 @@ functor
                 else errors#report `Error (`MissingField (st_ty, name)) () ) ;
           DestructuringLet let_
 
+        method build_Assignment _env assignment =
+          let {assignment_ident; assignment_expr; _} = assignment in
+          let ty = type_of program assignment_expr in
+          (* Update individual bindings *)
+          let rec update' = function
+            | [] ->
+                None
+            | (name, Comptime _) :: rest
+              when equal_located String.equal name assignment_ident ->
+                Some (make_comptime (name, assignment_expr) :: rest)
+            | (name, Runtime _ty) :: rest
+              when equal_located String.equal name assignment_ident ->
+                Some (make_runtime (name, ty) :: rest)
+            | binding :: rest -> (
+              match update' rest with
+              | Some updated ->
+                  Some (binding :: updated)
+              | None ->
+                  None )
+          in
+          (* Update binding sets *)
+          let rec update = function
+            | [] ->
+                errors#report `Error (`UnresolvedIdentifier assignment_ident) () ;
+                []
+            | binding_set :: bindings -> (
+              match update' binding_set with
+              | Some binding_set' ->
+                  binding_set' :: bindings
+              | None ->
+                  binding_set :: update bindings )
+          in
+          match is_immediate_expr !current_bindings program assignment_expr with
+          | true ->
+              current_bindings := update !current_bindings ;
+              Assignment assignment
+          | false ->
+              Assignment assignment
+
         method build_MutRef _env _mutref = InvalidExpr
 
         method build_Reference : _ -> string located -> _ =
@@ -317,6 +356,9 @@ functor
           { destructuring_let = Syntax.value destructuring_binding;
             destructuring_let_expr;
             destructuring_let_rest }
+
+        method build_assignment _env assignment_ident assignment_expr =
+          {assignment_ident; assignment_expr}
 
         method build_enum_definition _env _members _bindings = ()
 

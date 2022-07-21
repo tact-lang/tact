@@ -77,6 +77,7 @@ functor
       | CodeBlock of (stmt located list[@sexp.list])
       | Let of binding located
       | DestructuringLet of destructuring_binding located
+      | Assignment of assignment
       | If of if_
       | Return of expr located
       | Break of stmt located
@@ -115,6 +116,9 @@ functor
       { destructuring_binding : (ident located * ident located) list located;
         destructuring_binding_expr : expr located;
         destructuring_binding_rest : bool }
+
+    and assignment =
+      {assignment_ident : ident located; assignment_expr : expr located}
 
     and if_ =
       { condition : expr located;

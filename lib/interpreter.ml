@@ -101,6 +101,44 @@ functor
                           span = new_name.span } ) )
               in
               self#with_vars args_scope (fun _ -> self#interpret_stmt_list rest)
+          | Assignment {assignment_ident; assignment_expr; _} ->
+              let span = span assignment_expr |> span_to_concrete in
+              (* Update individual bindings *)
+              let rec update' = function
+                | [] ->
+                    None
+                | (name, _) :: rest
+                  when equal_located String.equal name assignment_ident ->
+                    Some
+                      ( make_comptime
+                          ( name,
+                            make_located ~span
+                              ~value:
+                                (Value (self#interpret_expr assignment_expr))
+                              () )
+                      :: rest )
+                | binding :: rest -> (
+                  match update' rest with
+                  | Some updated ->
+                      Some (binding :: updated)
+                  | None ->
+                      None )
+              in
+              (* Update binding sets *)
+              let rec update = function
+                | [] ->
+                    errors#report `Error
+                      (`UnresolvedIdentifier assignment_ident) () ;
+                    []
+                | binding_set :: bindings -> (
+                  match update' binding_set with
+                  | Some binding_set' ->
+                      binding_set' :: bindings
+                  | None ->
+                      binding_set :: update bindings )
+              in
+              ctx.scope := update !(ctx.scope) ;
+              self#interpret_stmt_list rest
           | Break stmt ->
               self#interpret_stmt stmt []
           | Return expr ->

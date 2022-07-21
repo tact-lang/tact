@@ -18,6 +18,7 @@ and function_body =
 and stmt =
   | Vars of (type_ * ident * expr) list
   | DestructuringBinding of (type_ option * ident) list * expr
+  | Assignment of (ident * expr)
   | Return of expr
   | Expr of expr
   | Block of stmt list
@@ -165,6 +166,14 @@ and pp_stmt f = function
               () ) ;
           pp_ident f n ) ;
       pp_print_string f (if tensor then ")" else "]") ;
+      pp_print_space f () ;
+      pp_print_string f "=" ;
+      pp_print_space f () ;
+      pp_expr f expr ;
+      pp_print_string f ";" ;
+      pp_print_newline f ()
+  | Assignment (ident, expr) ->
+      pp_ident f ident ;
       pp_print_space f () ;
       pp_print_string f "=" ;
       pp_print_space f () ;

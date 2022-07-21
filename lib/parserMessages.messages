@@ -221,7 +221,7 @@ just_stmt: STRUCT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
@@ -240,7 +240,7 @@ just_stmt: STRUCT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -568,7 +568,7 @@ just_stmt: INTERFACE LBRACE FN IDENT LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
@@ -709,8 +709,8 @@ just_stmt: INTERFACE LBRACE FN IDENT LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
-## In state 384, spurious reduction of production function_definition(located(ident),nothing) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr)))
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 386, spurious reduction of production function_definition(located(ident),nothing) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr)))
 ##
 
 Invalid syntax
@@ -781,7 +781,7 @@ just_stmt: RETURN FN LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
@@ -907,9 +907,9 @@ just_stmt: RETURN ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -943,9 +943,9 @@ just_stmt: RETURN ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -1550,7 +1550,7 @@ just_stmt: STRUCT IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
@@ -1593,7 +1593,7 @@ just_stmt: STRUCT IDENT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -1984,7 +1984,7 @@ just_stmt: LET IDENT LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
@@ -2048,7 +2048,7 @@ just_stmt: LET IDENT LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -2248,7 +2248,7 @@ just_stmt: INTERFACE IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
@@ -2291,7 +2291,7 @@ just_stmt: INTERFACE IDENT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -2435,6 +2435,7 @@ just_stmt: IDENT VAL
 ##
 ## expr -> IDENT . [ DOT ]
 ## fexpr -> IDENT . [ LPAREN LBRACKET ]
+## semicolon_stmt -> IDENT . EQUALS expr [ SEMICOLON RBRACE EOF ]
 ## stmt_expr -> IDENT . [ SEMICOLON RBRACE EOF ]
 ## type_expr -> IDENT . [ LBRACE ]
 ##
@@ -2444,9 +2445,42 @@ just_stmt: IDENT VAL
 
 Invalid syntax
 
-just_stmt: FN VAL
+just_stmt: IDENT EQUALS VAL
 ##
 ## Ends in an error in state: 256.
+##
+## semicolon_stmt -> IDENT EQUALS . expr [ SEMICOLON RBRACE EOF ]
+##
+## The known suffix of the stack is as follows:
+## IDENT EQUALS
+##
+
+Invalid syntax
+
+just_stmt: IDENT EQUALS BOOL VAL
+##
+## Ends in an error in state: 257.
+##
+## expr -> expr . DOT IDENT [ SEMICOLON RBRACE EOF DOT ]
+## expr -> expr . DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ SEMICOLON RBRACE EOF DOT ]
+## expr -> expr . DOT IDENT LPAREN loption(separated_nonempty_list(COMMA,located(expr))) RPAREN [ SEMICOLON RBRACE EOF DOT ]
+## semicolon_stmt -> IDENT EQUALS expr . [ SEMICOLON RBRACE EOF ]
+##
+## The known suffix of the stack is as follows:
+## IDENT EQUALS expr
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 95, spurious reduction of production expr -> BOOL
+##
+
+Invalid syntax
+
+just_stmt: FN VAL
+##
+## Ends in an error in state: 258.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN . IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located(ident),some(located(code_block))) -> FN . IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2467,7 +2501,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN VAL
 ##
-## Ends in an error in state: 257.
+## Ends in an error in state: 259.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ DOT ]
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ DOT ]
@@ -2482,7 +2516,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 258.
+## Ends in an error in state: 260.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ DOT ]
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ SEMICOLON RBRACE EOF ]
@@ -2494,14 +2528,14 @@ just_stmt: FN LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 259.
+## Ends in an error in state: 261.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ DOT ]
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ SEMICOLON RBRACE EOF ]
@@ -2514,7 +2548,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 260.
+## Ends in an error in state: 262.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ DOT ]
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ SEMICOLON RBRACE EOF ]
@@ -2526,14 +2560,14 @@ just_stmt: FN LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL COMMA RPAREN LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 262.
+## Ends in an error in state: 264.
 ##
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block . [ SEMICOLON RBRACE EOF ]
 ## option(located(code_block)) -> code_block . [ DOT ]
@@ -2546,7 +2580,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 263.
+## Ends in an error in state: 265.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ DOT ]
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ SEMICOLON RBRACE EOF ]
@@ -2559,7 +2593,7 @@ just_stmt: FN LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -2567,7 +2601,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 264.
+## Ends in an error in state: 266.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ DOT ]
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ SEMICOLON RBRACE EOF ]
@@ -2580,7 +2614,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 265.
+## Ends in an error in state: 267.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ DOT ]
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ SEMICOLON RBRACE EOF ]
@@ -2592,14 +2626,14 @@ just_stmt: FN LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN LPAREN RPAREN LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 267.
+## Ends in an error in state: 269.
 ##
 ## function_definition(nothing,some(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block . [ SEMICOLON RBRACE EOF ]
 ## option(located(code_block)) -> code_block . [ DOT ]
@@ -2612,7 +2646,7 @@ Invalid syntax
 
 just_stmt: FN IDENT VAL
 ##
-## Ends in an error in state: 268.
+## Ends in an error in state: 270.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT . LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT . LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2629,7 +2663,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LPAREN VAL
 ##
-## Ends in an error in state: 269.
+## Ends in an error in state: 271.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2642,7 +2676,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 270.
+## Ends in an error in state: 272.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2653,14 +2687,14 @@ just_stmt: FN IDENT LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 271.
+## Ends in an error in state: 273.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2672,7 +2706,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 272.
+## Ends in an error in state: 274.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2683,14 +2717,14 @@ just_stmt: FN IDENT LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 274.
+## Ends in an error in state: 276.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2702,7 +2736,7 @@ just_stmt: FN IDENT LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -2710,7 +2744,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 275.
+## Ends in an error in state: 277.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2722,7 +2756,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 276.
+## Ends in an error in state: 278.
 ##
 ## function_definition(located(ident),some(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2733,14 +2767,14 @@ just_stmt: FN IDENT LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET VAL
 ##
-## Ends in an error in state: 278.
+## Ends in an error in state: 280.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2755,7 +2789,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ##
-## Ends in an error in state: 279.
+## Ends in an error in state: 281.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2767,14 +2801,14 @@ just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET VAL
 ##
-## Ends in an error in state: 280.
+## Ends in an error in state: 282.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2787,7 +2821,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN VAL
 ##
-## Ends in an error in state: 281.
+## Ends in an error in state: 283.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2800,7 +2834,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 282.
+## Ends in an error in state: 284.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2811,14 +2845,14 @@ just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 283.
+## Ends in an error in state: 285.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2830,7 +2864,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 284.
+## Ends in an error in state: 286.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2841,14 +2875,14 @@ just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 286.
+## Ends in an error in state: 288.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2860,7 +2894,7 @@ just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON 
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -2868,7 +2902,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 287.
+## Ends in an error in state: 289.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2880,7 +2914,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 288.
+## Ends in an error in state: 290.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2891,14 +2925,14 @@ just_stmt: FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN RPAREN RARRO
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET IDENT COLON BOOL RPAREN
 ##
-## Ends in an error in state: 290.
+## Ends in an error in state: 292.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2911,7 +2945,7 @@ just_stmt: FN IDENT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -2919,7 +2953,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 291.
+## Ends in an error in state: 293.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2932,7 +2966,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN VAL
 ##
-## Ends in an error in state: 292.
+## Ends in an error in state: 294.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -2945,7 +2979,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 293.
+## Ends in an error in state: 295.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2956,14 +2990,14 @@ just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 294.
+## Ends in an error in state: 296.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2975,7 +3009,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 295.
+## Ends in an error in state: 297.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -2986,14 +3020,14 @@ just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN RARRO
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 297.
+## Ends in an error in state: 299.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3005,7 +3039,7 @@ just_stmt: FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -3013,7 +3047,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 298.
+## Ends in an error in state: 300.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3025,7 +3059,7 @@ Invalid syntax
 
 just_stmt: FN IDENT LBRACKET RBRACKET LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 299.
+## Ends in an error in state: 301.
 ##
 ## function_definition(located_ident_with_params,some(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . code_block [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3036,14 +3070,14 @@ just_stmt: FN IDENT LBRACKET RBRACKET LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: ENUM VAL
 ##
-## Ends in an error in state: 301.
+## Ends in an error in state: 303.
 ##
 ## expr -> ENUM . LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ DOT ]
 ## expr -> ENUM . LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ DOT ]
@@ -3066,7 +3100,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE VAL
 ##
-## Ends in an error in state: 302.
+## Ends in an error in state: 304.
 ##
 ## expr -> ENUM LBRACE . nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ DOT ]
 ## expr -> ENUM LBRACE . loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ DOT ]
@@ -3083,7 +3117,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 304.
+## Ends in an error in state: 306.
 ##
 ## expr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ DOT ]
 ## fexpr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ LPAREN LBRACKET ]
@@ -3096,9 +3130,9 @@ just_stmt: ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3107,7 +3141,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE IDENT COMMA RBRACE VAL
 ##
-## Ends in an error in state: 305.
+## Ends in an error in state: 307.
 ##
 ## expr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE . [ DOT ]
 ## fexpr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE . [ LPAREN LBRACKET ]
@@ -3121,7 +3155,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 307.
+## Ends in an error in state: 309.
 ##
 ## expr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ DOT ]
 ## fexpr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ LPAREN LBRACKET ]
@@ -3134,9 +3168,9 @@ just_stmt: ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3145,7 +3179,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 308.
+## Ends in an error in state: 310.
 ##
 ## expr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE . [ DOT ]
 ## fexpr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE . [ LPAREN LBRACKET ]
@@ -3159,7 +3193,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT VAL
 ##
-## Ends in an error in state: 309.
+## Ends in an error in state: 311.
 ##
 ## non_semicolon_stmt -> ENUM IDENT . LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT . LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3176,7 +3210,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET VAL
 ##
-## Ends in an error in state: 310.
+## Ends in an error in state: 312.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3191,7 +3225,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ##
-## Ends in an error in state: 311.
+## Ends in an error in state: 313.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3203,14 +3237,14 @@ just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET VAL
 ##
-## Ends in an error in state: 312.
+## Ends in an error in state: 314.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3223,7 +3257,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LBRACE VAL
 ##
-## Ends in an error in state: 313.
+## Ends in an error in state: 315.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE . nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE . loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3236,7 +3270,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 315.
+## Ends in an error in state: 317.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3247,9 +3281,9 @@ just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LBRACE IDENT COMM
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3258,7 +3292,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 318.
+## Ends in an error in state: 320.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3269,9 +3303,9 @@ just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LBRACE FN IDENT L
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3280,7 +3314,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL RPAREN
 ##
-## Ends in an error in state: 320.
+## Ends in an error in state: 322.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3293,7 +3327,7 @@ just_stmt: ENUM IDENT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -3301,7 +3335,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 321.
+## Ends in an error in state: 323.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3314,7 +3348,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET RBRACKET LBRACE VAL
 ##
-## Ends in an error in state: 322.
+## Ends in an error in state: 324.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LBRACE . nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LBRACE . loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3327,7 +3361,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET RBRACKET LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 324.
+## Ends in an error in state: 326.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3338,9 +3372,9 @@ just_stmt: ENUM IDENT LBRACKET RBRACKET LBRACE IDENT COMMA FN IDENT LPAREN RPARE
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3349,7 +3383,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACKET RBRACKET LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 327.
+## Ends in an error in state: 329.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3360,9 +3394,9 @@ just_stmt: ENUM IDENT LBRACKET RBRACKET LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3371,7 +3405,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACE VAL
 ##
-## Ends in an error in state: 329.
+## Ends in an error in state: 331.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACE . nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> ENUM IDENT LBRACE . loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -3384,7 +3418,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 331.
+## Ends in an error in state: 333.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3395,9 +3429,9 @@ just_stmt: ENUM IDENT LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3406,7 +3440,7 @@ Invalid syntax
 
 just_stmt: ENUM IDENT LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 334.
+## Ends in an error in state: 336.
 ##
 ## non_semicolon_stmt -> ENUM IDENT LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -3417,9 +3451,9 @@ just_stmt: ENUM IDENT LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3428,7 +3462,7 @@ Invalid syntax
 
 just_stmt: BOOL VAL
 ##
-## Ends in an error in state: 336.
+## Ends in an error in state: 338.
 ##
 ## expr -> BOOL . [ DOT ]
 ## fexpr -> BOOL . [ LPAREN LBRACKET ]
@@ -3442,7 +3476,7 @@ Invalid syntax
 
 just_stmt: IDENT LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 338.
+## Ends in an error in state: 340.
 ##
 ## expr -> struct_constructor . [ DOT ]
 ## stmt_expr -> struct_constructor . [ SEMICOLON RBRACE EOF ]
@@ -3455,7 +3489,7 @@ Invalid syntax
 
 program: BOOL SEMICOLON VAL
 ##
-## Ends in an error in state: 342.
+## Ends in an error in state: 344.
 ##
 ## block_stmt -> semicolon_stmt SEMICOLON . block_stmt [ RBRACE EOF ]
 ## block_stmt -> semicolon_stmt SEMICOLON . [ RBRACE EOF ]
@@ -3468,7 +3502,7 @@ Invalid syntax
 
 program: LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 343.
+## Ends in an error in state: 345.
 ##
 ## block_stmt -> non_semicolon_stmt . block_stmt [ RBRACE EOF ]
 ## stmt -> non_semicolon_stmt . [ RBRACE EOF ]
@@ -3481,7 +3515,7 @@ Invalid syntax
 
 just_stmt: BOOL LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 348.
+## Ends in an error in state: 350.
 ##
 ## expr -> function_call . [ DOT ]
 ## fexpr -> function_call . [ LPAREN LBRACKET ]
@@ -3496,7 +3530,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT VAL
 ##
-## Ends in an error in state: 350.
+## Ends in an error in state: 352.
 ##
 ## expr -> expr DOT . IDENT [ DOT ]
 ## expr -> expr DOT . IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ DOT ]
@@ -3513,7 +3547,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT IDENT VAL
 ##
-## Ends in an error in state: 351.
+## Ends in an error in state: 353.
 ##
 ## expr -> expr DOT IDENT . [ DOT ]
 ## expr -> expr DOT IDENT . LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ DOT ]
@@ -3530,7 +3564,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT IDENT LPAREN VAL
 ##
-## Ends in an error in state: 352.
+## Ends in an error in state: 354.
 ##
 ## expr -> expr DOT IDENT LPAREN . nonempty_list(terminated(located(expr),COMMA)) RPAREN [ DOT ]
 ## expr -> expr DOT IDENT LPAREN . loption(separated_nonempty_list(COMMA,located(expr))) RPAREN [ DOT ]
@@ -3545,7 +3579,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT IDENT LPAREN BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 353.
+## Ends in an error in state: 355.
 ##
 ## expr -> expr DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) . RPAREN [ DOT ]
 ## stmt_expr -> expr DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) . RPAREN [ SEMICOLON RBRACE EOF ]
@@ -3564,7 +3598,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT IDENT LPAREN BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 354.
+## Ends in an error in state: 356.
 ##
 ## expr -> expr DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN . [ DOT ]
 ## stmt_expr -> expr DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN . [ SEMICOLON RBRACE EOF ]
@@ -3577,7 +3611,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT IDENT LPAREN BOOL RBRACKET
 ##
-## Ends in an error in state: 355.
+## Ends in an error in state: 357.
 ##
 ## expr -> expr DOT IDENT LPAREN loption(separated_nonempty_list(COMMA,located(expr))) . RPAREN [ DOT ]
 ## stmt_expr -> expr DOT IDENT LPAREN loption(separated_nonempty_list(COMMA,located(expr))) . RPAREN [ SEMICOLON RBRACE EOF ]
@@ -3598,7 +3632,7 @@ Invalid syntax
 
 just_stmt: BOOL DOT IDENT LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 356.
+## Ends in an error in state: 358.
 ##
 ## expr -> expr DOT IDENT LPAREN loption(separated_nonempty_list(COMMA,located(expr))) RPAREN . [ DOT ]
 ## stmt_expr -> expr DOT IDENT LPAREN loption(separated_nonempty_list(COMMA,located(expr))) RPAREN . [ SEMICOLON RBRACE EOF ]
@@ -3611,7 +3645,7 @@ Invalid syntax
 
 just_stmt: LBRACE BOOL EOF
 ##
-## Ends in an error in state: 360.
+## Ends in an error in state: 362.
 ##
 ## code_block -> LBRACE block_stmt . RBRACE [ VAL UNION TILDE SWITCH STRUCT STRING SEMICOLON RPAREN RETURN RBRACKET RBRACE LPAREN LET LBRACE INTERFACE INT IMPL IF IDENT FN EOF ENUM ELSE DOT COMMA CASE BOOL ]
 ##
@@ -3622,17 +3656,17 @@ just_stmt: LBRACE BOOL EOF
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 336, spurious reduction of production stmt_expr -> BOOL
-## In state 339, spurious reduction of production semicolon_stmt -> stmt_expr
-## In state 341, spurious reduction of production stmt -> semicolon_stmt
-## In state 340, spurious reduction of production block_stmt -> stmt
+## In state 338, spurious reduction of production stmt_expr -> BOOL
+## In state 341, spurious reduction of production semicolon_stmt -> stmt_expr
+## In state 343, spurious reduction of production stmt -> semicolon_stmt
+## In state 342, spurious reduction of production block_stmt -> stmt
 ##
 
 Invalid syntax
 
 just_stmt: RETURN FN LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 363.
+## Ends in an error in state: 365.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ VAL SEMICOLON RPAREN RBRACKET RBRACE IMPL FN EOF DOT COMMA CASE ]
 ##
@@ -3644,7 +3678,7 @@ just_stmt: RETURN FN LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -3652,7 +3686,7 @@ Invalid syntax
 
 just_stmt: RETURN FN LPAREN RPAREN UNION
 ##
-## Ends in an error in state: 364.
+## Ends in an error in state: 366.
 ##
 ## function_definition(nothing,option(located(code_block))) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ VAL SEMICOLON RPAREN RBRACKET RBRACE IMPL FN EOF DOT COMMA CASE ]
 ##
@@ -3664,7 +3698,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE IDENT EQUALS BOOL VAL
 ##
-## Ends in an error in state: 366.
+## Ends in an error in state: 368.
 ##
 ## expr -> expr . DOT IDENT [ RBRACE FN DOT COMMA ]
 ## expr -> expr . DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ RBRACE FN DOT COMMA ]
@@ -3688,7 +3722,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE IDENT EQUALS BOOL COMMA VAL
 ##
-## Ends in an error in state: 367.
+## Ends in an error in state: 369.
 ##
 ## nonempty_list(terminated(enum_member,COMMA)) -> IDENT EQUALS expr COMMA . [ RBRACE FN ]
 ## nonempty_list(terminated(enum_member,COMMA)) -> IDENT EQUALS expr COMMA . nonempty_list(terminated(enum_member,COMMA)) [ RBRACE FN ]
@@ -3702,7 +3736,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE IDENT COMMA VAL
 ##
-## Ends in an error in state: 370.
+## Ends in an error in state: 372.
 ##
 ## nonempty_list(terminated(enum_member,COMMA)) -> IDENT COMMA . [ RBRACE FN ]
 ## nonempty_list(terminated(enum_member,COMMA)) -> IDENT COMMA . nonempty_list(terminated(enum_member,COMMA)) [ RBRACE FN ]
@@ -3716,7 +3750,7 @@ Invalid syntax
 
 just_stmt: LET IDENT COLON ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 374.
+## Ends in an error in state: 376.
 ##
 ## fexpr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ VAL SEMICOLON RPAREN RBRACKET RBRACE LPAREN LBRACKET LBRACE IMPL FN EOF DOT COMMA CASE ]
 ##
@@ -3727,9 +3761,9 @@ just_stmt: LET IDENT COLON ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3738,7 +3772,7 @@ Invalid syntax
 
 just_stmt: LET IDENT COLON ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 377.
+## Ends in an error in state: 379.
 ##
 ## fexpr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ VAL SEMICOLON RPAREN RBRACKET RBRACE LPAREN LBRACKET LBRACE IMPL FN EOF DOT COMMA CASE ]
 ##
@@ -3749,9 +3783,9 @@ just_stmt: LET IDENT COLON ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3760,7 +3794,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN RPAREN RARROW BOOL UNION
 ##
-## Ends in an error in state: 380.
+## Ends in an error in state: 382.
 ##
 ## function_call -> fexpr . LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ VAL SEMICOLON RPAREN RBRACKET RBRACE LPAREN LBRACKET LBRACE IMPL FN EOF DOT COMMA CASE ]
 ## function_call -> fexpr . LPAREN loption(separated_nonempty_list(COMMA,located(expr))) RPAREN [ VAL SEMICOLON RPAREN RBRACKET RBRACE LPAREN LBRACKET LBRACE IMPL FN EOF DOT COMMA CASE ]
@@ -3776,7 +3810,7 @@ Invalid syntax
 
 just_stmt: INTERFACE LBRACE FN IDENT LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 382.
+## Ends in an error in state: 384.
 ##
 ## function_definition(located(ident),nothing) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) [ RBRACE FN ]
 ##
@@ -3788,7 +3822,7 @@ just_stmt: INTERFACE LBRACE FN IDENT LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -3796,7 +3830,7 @@ Invalid syntax
 
 just_stmt: INTERFACE LBRACE FN IDENT LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 383.
+## Ends in an error in state: 385.
 ##
 ## function_definition(located(ident),nothing) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) [ RBRACE FN ]
 ##
@@ -3808,7 +3842,7 @@ Invalid syntax
 
 just_stmt: LPAREN FN VAL
 ##
-## Ends in an error in state: 387.
+## Ends in an error in state: 389.
 ##
 ## function_definition(nothing,nothing) -> FN . LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) [ RPAREN ]
 ## function_definition(nothing,nothing) -> FN . LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) [ RPAREN ]
@@ -3821,7 +3855,7 @@ Invalid syntax
 
 just_stmt: LPAREN FN LPAREN VAL
 ##
-## Ends in an error in state: 388.
+## Ends in an error in state: 390.
 ##
 ## function_definition(nothing,nothing) -> FN LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) [ RPAREN ]
 ## function_definition(nothing,nothing) -> FN LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) [ RPAREN ]
@@ -3834,7 +3868,7 @@ Invalid syntax
 
 just_stmt: LPAREN FN LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 389.
+## Ends in an error in state: 391.
 ##
 ## function_definition(nothing,nothing) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) [ RPAREN ]
 ##
@@ -3845,14 +3879,14 @@ just_stmt: LPAREN FN LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: LPAREN FN LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 390.
+## Ends in an error in state: 392.
 ##
 ## function_definition(nothing,nothing) -> FN LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) [ RPAREN ]
 ##
@@ -3864,7 +3898,7 @@ Invalid syntax
 
 just_stmt: LPAREN FN LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 392.
+## Ends in an error in state: 394.
 ##
 ## function_definition(nothing,nothing) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) [ RPAREN ]
 ##
@@ -3876,7 +3910,7 @@ just_stmt: LPAREN FN LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -3884,7 +3918,7 @@ Invalid syntax
 
 just_stmt: LPAREN FN LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 393.
+## Ends in an error in state: 395.
 ##
 ## function_definition(nothing,nothing) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) [ RPAREN ]
 ##
@@ -3896,7 +3930,7 @@ Invalid syntax
 
 just_stmt: LPAREN IDENT LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 395.
+## Ends in an error in state: 397.
 ##
 ## fexpr -> LPAREN struct_constructor . RPAREN [ VAL SEMICOLON RPAREN RBRACKET RBRACE LPAREN LBRACKET LBRACE IMPL FN EOF DOT COMMA CASE ]
 ##
@@ -3908,7 +3942,7 @@ Invalid syntax
 
 just_stmt: LPAREN FN LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 397.
+## Ends in an error in state: 399.
 ##
 ## fexpr -> LPAREN function_definition(nothing,nothing) . RPAREN [ VAL SEMICOLON RPAREN RBRACKET RBRACE LPAREN LBRACKET LBRACE IMPL FN EOF DOT COMMA CASE ]
 ##
@@ -3919,15 +3953,15 @@ just_stmt: LPAREN FN LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
-## In state 394, spurious reduction of production function_definition(nothing,nothing) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr)))
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 396, spurious reduction of production function_definition(nothing,nothing) -> FN LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr)))
 ##
 
 Invalid syntax
 
 just_stmt: UNION LBRACE IMPL BOOL VAL
 ##
-## Ends in an error in state: 399.
+## Ends in an error in state: 401.
 ##
 ## function_call -> fexpr . LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ LPAREN LBRACKET LBRACE ]
 ## function_call -> fexpr . LPAREN loption(separated_nonempty_list(COMMA,located(expr))) RPAREN [ LPAREN LBRACKET LBRACE ]
@@ -3943,7 +3977,7 @@ Invalid syntax
 
 just_stmt: UNION LBRACE IMPL BOOL LBRACE VAL
 ##
-## Ends in an error in state: 400.
+## Ends in an error in state: 402.
 ##
 ## list(impl) -> IMPL fexpr LBRACE . list(sugared_function_definition(option(located(code_block)))) RBRACE list(impl) [ RBRACE ]
 ##
@@ -3955,7 +3989,7 @@ Invalid syntax
 
 just_stmt: UNION LBRACE IMPL BOOL LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 401.
+## Ends in an error in state: 403.
 ##
 ## list(impl) -> IMPL fexpr LBRACE list(sugared_function_definition(option(located(code_block)))) . RBRACE list(impl) [ RBRACE ]
 ##
@@ -3966,9 +4000,9 @@ just_stmt: UNION LBRACE IMPL BOOL LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -3977,7 +4011,7 @@ Invalid syntax
 
 just_stmt: UNION LBRACE IMPL BOOL LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 402.
+## Ends in an error in state: 404.
 ##
 ## list(impl) -> IMPL fexpr LBRACE list(sugared_function_definition(option(located(code_block)))) RBRACE . list(impl) [ RBRACE ]
 ##
@@ -3989,7 +4023,7 @@ Invalid syntax
 
 just_stmt: LPAREN UNION LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 405.
+## Ends in an error in state: 407.
 ##
 ## fexpr -> UNION LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN UNION LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4002,7 +4036,7 @@ Invalid syntax
 
 just_stmt: LPAREN TILDE VAL
 ##
-## Ends in an error in state: 407.
+## Ends in an error in state: 409.
 ##
 ## fexpr -> TILDE . IDENT [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN TILDE . IDENT RPAREN [ LBRACE IDENT EQUALS ]
@@ -4015,7 +4049,7 @@ Invalid syntax
 
 just_stmt: LPAREN TILDE IDENT VAL
 ##
-## Ends in an error in state: 408.
+## Ends in an error in state: 410.
 ##
 ## fexpr -> TILDE IDENT . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN TILDE IDENT . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4028,7 +4062,7 @@ Invalid syntax
 
 just_stmt: LPAREN STRUCT VAL
 ##
-## Ends in an error in state: 410.
+## Ends in an error in state: 412.
 ##
 ## fexpr -> STRUCT . option(params) LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN STRUCT . option(params) LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4041,7 +4075,7 @@ Invalid syntax
 
 just_stmt: LPAREN STRUCT LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 411.
+## Ends in an error in state: 413.
 ##
 ## fexpr -> STRUCT option(params) . LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN STRUCT option(params) . LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4054,7 +4088,7 @@ Invalid syntax
 
 just_stmt: LPAREN STRUCT LBRACE UNION
 ##
-## Ends in an error in state: 412.
+## Ends in an error in state: 414.
 ##
 ## fexpr -> STRUCT option(params) LBRACE . list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN STRUCT option(params) LBRACE . list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4067,7 +4101,7 @@ Invalid syntax
 
 just_stmt: LPAREN STRUCT LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 416.
+## Ends in an error in state: 418.
 ##
 ## fexpr -> STRUCT option(params) LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN STRUCT option(params) LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4080,7 +4114,7 @@ Invalid syntax
 
 just_stmt: LPAREN STRING VAL
 ##
-## Ends in an error in state: 418.
+## Ends in an error in state: 420.
 ##
 ## fexpr -> STRING . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN STRING . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4093,7 +4127,7 @@ Invalid syntax
 
 just_stmt: LPAREN INTERFACE VAL
 ##
-## Ends in an error in state: 420.
+## Ends in an error in state: 422.
 ##
 ## fexpr -> INTERFACE . LBRACE list(located(function_signature_binding)) RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN INTERFACE . LBRACE list(located(function_signature_binding)) RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4106,7 +4140,7 @@ Invalid syntax
 
 just_stmt: LPAREN INTERFACE LBRACE VAL
 ##
-## Ends in an error in state: 421.
+## Ends in an error in state: 423.
 ##
 ## fexpr -> INTERFACE LBRACE . list(located(function_signature_binding)) RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN INTERFACE LBRACE . list(located(function_signature_binding)) RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4119,7 +4153,7 @@ Invalid syntax
 
 just_stmt: LPAREN INTERFACE LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 423.
+## Ends in an error in state: 425.
 ##
 ## fexpr -> INTERFACE LBRACE list(located(function_signature_binding)) RBRACE . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN INTERFACE LBRACE list(located(function_signature_binding)) RBRACE . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4132,7 +4166,7 @@ Invalid syntax
 
 just_stmt: LPAREN INT VAL
 ##
-## Ends in an error in state: 425.
+## Ends in an error in state: 427.
 ##
 ## fexpr -> INT . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN INT . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4145,7 +4179,7 @@ Invalid syntax
 
 just_stmt: LPAREN IDENT VAL
 ##
-## Ends in an error in state: 427.
+## Ends in an error in state: 429.
 ##
 ## fexpr -> IDENT . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN IDENT . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4159,7 +4193,7 @@ Invalid syntax
 
 just_stmt: LPAREN ENUM VAL
 ##
-## Ends in an error in state: 429.
+## Ends in an error in state: 431.
 ##
 ## fexpr -> ENUM . LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ LPAREN LBRACKET ]
 ## fexpr -> ENUM . LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ LPAREN LBRACKET ]
@@ -4174,7 +4208,7 @@ Invalid syntax
 
 just_stmt: LPAREN ENUM LBRACE VAL
 ##
-## Ends in an error in state: 430.
+## Ends in an error in state: 432.
 ##
 ## fexpr -> ENUM LBRACE . nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ LPAREN LBRACKET ]
 ## fexpr -> ENUM LBRACE . loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE [ LPAREN LBRACKET ]
@@ -4189,7 +4223,7 @@ Invalid syntax
 
 just_stmt: LPAREN ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 432.
+## Ends in an error in state: 434.
 ##
 ## fexpr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) . RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4201,9 +4235,9 @@ just_stmt: LPAREN ENUM LBRACE IDENT COMMA FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -4212,7 +4246,7 @@ Invalid syntax
 
 just_stmt: LPAREN ENUM LBRACE IDENT COMMA RBRACE VAL
 ##
-## Ends in an error in state: 433.
+## Ends in an error in state: 435.
 ##
 ## fexpr -> ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN ENUM LBRACE nonempty_list(terminated(enum_member,COMMA)) list(sugared_function_definition(option(located(code_block)))) RBRACE . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4225,7 +4259,7 @@ Invalid syntax
 
 just_stmt: LPAREN ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ##
-## Ends in an error in state: 436.
+## Ends in an error in state: 438.
 ##
 ## fexpr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) . RBRACE RPAREN [ LBRACE IDENT EQUALS ]
@@ -4237,9 +4271,9 @@ just_stmt: LPAREN ENUM LBRACE FN IDENT LPAREN RPAREN IMPL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 460, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
-## In state 461, spurious reduction of production option(located(code_block)) ->
-## In state 462, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
+## In state 462, spurious reduction of production option(preceded(RARROW,located(fexpr))) ->
+## In state 463, spurious reduction of production option(located(code_block)) ->
+## In state 464, spurious reduction of production function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block))
 ## In state 41, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) ->
 ## In state 42, spurious reduction of production list(sugared_function_definition(option(located(code_block)))) -> function_definition(located(ident),option(located(code_block))) list(sugared_function_definition(option(located(code_block))))
 ##
@@ -4248,7 +4282,7 @@ Invalid syntax
 
 just_stmt: LPAREN ENUM LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 437.
+## Ends in an error in state: 439.
 ##
 ## fexpr -> ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN ENUM LBRACE loption(separated_nonempty_list(COMMA,enum_member)) list(sugared_function_definition(option(located(code_block)))) RBRACE . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4261,7 +4295,7 @@ Invalid syntax
 
 just_stmt: LPAREN BOOL VAL
 ##
-## Ends in an error in state: 439.
+## Ends in an error in state: 441.
 ##
 ## fexpr -> BOOL . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN BOOL . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4274,7 +4308,7 @@ Invalid syntax
 
 just_stmt: LPAREN BOOL LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 441.
+## Ends in an error in state: 443.
 ##
 ## fexpr -> function_call . [ LPAREN LBRACKET ]
 ## type_expr -> LPAREN function_call . RPAREN [ LBRACE IDENT EQUALS ]
@@ -4288,7 +4322,7 @@ Invalid syntax
 
 just_stmt: STRUCT LBRACE VAL IDENT COLON BOOL RPAREN
 ##
-## Ends in an error in state: 443.
+## Ends in an error in state: 445.
 ##
 ## expr -> expr . DOT IDENT [ VAL SEMICOLON RBRACE IMPL FN DOT ]
 ## expr -> expr . DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ VAL SEMICOLON RBRACE IMPL FN DOT ]
@@ -4309,7 +4343,7 @@ Invalid syntax
 
 just_stmt: STRUCT LBRACE VAL IDENT COLON BOOL SEMICOLON UNION
 ##
-## Ends in an error in state: 445.
+## Ends in an error in state: 447.
 ##
 ## list(struct_field) -> VAL IDENT COLON expr option(SEMICOLON) . list(struct_field) [ RBRACE IMPL FN ]
 ##
@@ -4321,7 +4355,7 @@ Invalid syntax
 
 just_stmt: RETURN STRUCT LBRACE RBRACE UNION
 ##
-## Ends in an error in state: 450.
+## Ends in an error in state: 452.
 ##
 ## expr -> STRUCT option(params) LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ VAL SEMICOLON RPAREN RBRACKET RBRACE IMPL FN EOF DOT COMMA CASE ]
 ## fexpr -> STRUCT option(params) LBRACE list(struct_field) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ LPAREN LBRACKET ]
@@ -4334,7 +4368,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL VAL
 ##
-## Ends in an error in state: 451.
+## Ends in an error in state: 453.
 ##
 ## expr -> expr . DOT IDENT [ RPAREN RBRACKET DOT COMMA ]
 ## expr -> expr . DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ RPAREN RBRACKET DOT COMMA ]
@@ -4358,7 +4392,7 @@ Invalid syntax
 
 just_stmt: FN LPAREN IDENT COLON BOOL COMMA VAL
 ##
-## Ends in an error in state: 452.
+## Ends in an error in state: 454.
 ##
 ## nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA . [ RPAREN RBRACKET ]
 ## nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA . nonempty_list(terminated(function_param,COMMA)) [ RPAREN RBRACKET ]
@@ -4372,7 +4406,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 455.
+## Ends in an error in state: 457.
 ##
 ## function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4383,14 +4417,14 @@ just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL COMMA RBRACKET
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 456.
+## Ends in an error in state: 458.
 ##
 ## function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4402,7 +4436,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 457.
+## Ends in an error in state: 459.
 ##
 ## function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4413,14 +4447,14 @@ just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 459.
+## Ends in an error in state: 461.
 ##
 ## function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4432,7 +4466,7 @@ just_stmt: ENUM LBRACE FN IDENT LPAREN IDENT COLON BOOL RBRACKET
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -4440,7 +4474,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 460.
+## Ends in an error in state: 462.
 ##
 ## function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4452,7 +4486,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 461.
+## Ends in an error in state: 463.
 ##
 ## function_definition(located(ident),option(located(code_block))) -> FN IDENT LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4463,14 +4497,14 @@ just_stmt: ENUM LBRACE FN IDENT LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET VAL
 ##
-## Ends in an error in state: 463.
+## Ends in an error in state: 465.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4485,7 +4519,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ##
-## Ends in an error in state: 464.
+## Ends in an error in state: 466.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4497,14 +4531,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET VAL
 ##
-## Ends in an error in state: 465.
+## Ends in an error in state: 467.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4517,7 +4551,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN VAL
 ##
-## Ends in an error in state: 466.
+## Ends in an error in state: 468.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4530,7 +4564,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 467.
+## Ends in an error in state: 469.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4541,14 +4575,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 468.
+## Ends in an error in state: 470.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4560,7 +4594,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 469.
+## Ends in an error in state: 471.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4571,14 +4605,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 471.
+## Ends in an error in state: 473.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4590,7 +4624,7 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN 
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -4598,7 +4632,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 472.
+## Ends in an error in state: 474.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4610,7 +4644,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 473.
+## Ends in an error in state: 475.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4621,14 +4655,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LPAREN 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL RPAREN
 ##
-## Ends in an error in state: 475.
+## Ends in an error in state: 477.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4641,7 +4675,7 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -4649,7 +4683,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 476.
+## Ends in an error in state: 478.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4662,7 +4696,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN VAL
 ##
-## Ends in an error in state: 477.
+## Ends in an error in state: 479.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN . nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN . loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
@@ -4675,7 +4709,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RBRACKET
 ##
-## Ends in an error in state: 478.
+## Ends in an error in state: 480.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4686,14 +4720,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN VAL
 ##
-## Ends in an error in state: 479.
+## Ends in an error in state: 481.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4705,7 +4739,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 480.
+## Ends in an error in state: 482.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN nonempty_list(terminated(function_param,COMMA)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4716,14 +4750,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL COMMA 
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL RBRACKET
 ##
-## Ends in an error in state: 482.
+## Ends in an error in state: 484.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) . RPAREN option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4735,7 +4769,7 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN IDENT COLON BOOL RBRACK
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -4743,7 +4777,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN RPAREN VAL
 ##
-## Ends in an error in state: 483.
+## Ends in an error in state: 485.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN . option(preceded(RARROW,located(fexpr))) option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4755,7 +4789,7 @@ Invalid syntax
 
 just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN RPAREN RARROW BOOL VAL
 ##
-## Ends in an error in state: 484.
+## Ends in an error in state: 486.
 ##
 ## function_definition(located_ident_with_params,option(located(code_block))) -> FN IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LPAREN loption(separated_nonempty_list(COMMA,function_param)) RPAREN option(preceded(RARROW,located(fexpr))) . option(located(code_block)) [ RBRACE IMPL FN ]
 ##
@@ -4766,14 +4800,14 @@ just_stmt: ENUM LBRACE FN IDENT LBRACKET RBRACKET LPAREN RPAREN RARROW BOOL VAL
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 380, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
+## In state 382, spurious reduction of production option(preceded(RARROW,located(fexpr))) -> RARROW fexpr
 ##
 
 Invalid syntax
 
 just_stmt: RETURN UNION LBRACE RBRACE UNION
 ##
-## Ends in an error in state: 488.
+## Ends in an error in state: 490.
 ##
 ## expr -> UNION LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ VAL SEMICOLON RPAREN RBRACKET RBRACE IMPL FN EOF DOT COMMA CASE ]
 ## fexpr -> UNION LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ LPAREN LBRACKET ]
@@ -4786,7 +4820,7 @@ Invalid syntax
 
 just_stmt: UNION LBRACE CASE BOOL VAL
 ##
-## Ends in an error in state: 489.
+## Ends in an error in state: 491.
 ##
 ## expr -> expr . DOT IDENT [ RBRACE IMPL FN DOT CASE ]
 ## expr -> expr . DOT IDENT LPAREN nonempty_list(terminated(located(expr),COMMA)) RPAREN [ RBRACE IMPL FN DOT CASE ]
@@ -4807,7 +4841,7 @@ Invalid syntax
 
 just_stmt: UNION LBRACE RBRACE VAL
 ##
-## Ends in an error in state: 494.
+## Ends in an error in state: 496.
 ##
 ## expr -> UNION LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ DOT ]
 ## fexpr -> UNION LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE . [ LPAREN LBRACKET ]
@@ -4821,7 +4855,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT VAL
 ##
-## Ends in an error in state: 495.
+## Ends in an error in state: 497.
 ##
 ## non_semicolon_stmt -> UNION IDENT . LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> UNION IDENT . LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -4835,7 +4869,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET VAL
 ##
-## Ends in an error in state: 496.
+## Ends in an error in state: 498.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET . nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ## non_semicolon_stmt -> UNION IDENT LBRACKET . loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
@@ -4848,7 +4882,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ##
-## Ends in an error in state: 497.
+## Ends in an error in state: 499.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) . RBRACKET LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4859,14 +4893,14 @@ just_stmt: UNION IDENT LBRACKET IDENT COLON BOOL COMMA RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 452, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
+## In state 454, spurious reduction of production nonempty_list(terminated(function_param,COMMA)) -> IDENT COLON expr COMMA
 ##
 
 Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET VAL
 ##
-## Ends in an error in state: 498.
+## Ends in an error in state: 500.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET . LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4878,7 +4912,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET IDENT COLON BOOL COMMA RBRACKET LBRACE VAL
 ##
-## Ends in an error in state: 499.
+## Ends in an error in state: 501.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET nonempty_list(terminated(function_param,COMMA)) RBRACKET LBRACE . list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4890,7 +4924,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET IDENT COLON BOOL RPAREN
 ##
-## Ends in an error in state: 504.
+## Ends in an error in state: 506.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) . RBRACKET LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4902,7 +4936,7 @@ just_stmt: UNION IDENT LBRACKET IDENT COLON BOOL RPAREN
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
 ## In state 95, spurious reduction of production expr -> BOOL
-## In state 451, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
+## In state 453, spurious reduction of production separated_nonempty_list(COMMA,function_param) -> IDENT COLON expr
 ## In state 16, spurious reduction of production loption(separated_nonempty_list(COMMA,function_param)) -> separated_nonempty_list(COMMA,function_param)
 ##
 
@@ -4910,7 +4944,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET RBRACKET VAL
 ##
-## Ends in an error in state: 505.
+## Ends in an error in state: 507.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET . LBRACE list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4922,7 +4956,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACKET RBRACKET LBRACE VAL
 ##
-## Ends in an error in state: 506.
+## Ends in an error in state: 508.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACKET loption(separated_nonempty_list(COMMA,function_param)) RBRACKET LBRACE . list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4934,7 +4968,7 @@ Invalid syntax
 
 just_stmt: UNION IDENT LBRACE VAL
 ##
-## Ends in an error in state: 511.
+## Ends in an error in state: 513.
 ##
 ## non_semicolon_stmt -> UNION IDENT LBRACE . list(preceded(CASE,located(expr))) list(sugared_function_definition(option(located(code_block)))) list(impl) RBRACE [ UNION TILDE SWITCH STRUCT STRING RETURN RBRACE LPAREN LET LBRACE INTERFACE INT IF IDENT FN EOF ENUM BOOL ]
 ##
@@ -4946,7 +4980,7 @@ Invalid syntax
 
 just_stmt: BOOL SEMICOLON
 ##
-## Ends in an error in state: 516.
+## Ends in an error in state: 518.
 ##
 ## just_stmt -> stmt . EOF [ # ]
 ##
@@ -4957,16 +4991,16 @@ just_stmt: BOOL SEMICOLON
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 336, spurious reduction of production stmt_expr -> BOOL
-## In state 339, spurious reduction of production semicolon_stmt -> stmt_expr
-## In state 518, spurious reduction of production stmt -> semicolon_stmt
+## In state 338, spurious reduction of production stmt_expr -> BOOL
+## In state 341, spurious reduction of production semicolon_stmt -> stmt_expr
+## In state 520, spurious reduction of production stmt -> semicolon_stmt
 ##
 
 Invalid syntax
 
 program: VAL
 ##
-## Ends in an error in state: 521.
+## Ends in an error in state: 523.
 ##
 ## program' -> . program [ # ]
 ##
@@ -4978,7 +5012,7 @@ Invalid syntax
 
 program: BOOL RBRACE
 ##
-## Ends in an error in state: 524.
+## Ends in an error in state: 526.
 ##
 ## program -> block_stmt . EOF [ # ]
 ##
@@ -4989,10 +5023,10 @@ program: BOOL RBRACE
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 336, spurious reduction of production stmt_expr -> BOOL
-## In state 339, spurious reduction of production semicolon_stmt -> stmt_expr
-## In state 341, spurious reduction of production stmt -> semicolon_stmt
-## In state 340, spurious reduction of production block_stmt -> stmt
+## In state 338, spurious reduction of production stmt_expr -> BOOL
+## In state 341, spurious reduction of production semicolon_stmt -> stmt_expr
+## In state 343, spurious reduction of production stmt -> semicolon_stmt
+## In state 342, spurious reduction of production block_stmt -> stmt
 ##
 
 Invalid syntax

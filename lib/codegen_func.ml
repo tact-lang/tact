@@ -33,6 +33,10 @@ functor
                    let expr = self#cg_expr expr in
                    (F.type_of expr, name, expr) ) )
 
+        method cg_Assignment
+            ({assignment_ident; assignment_expr; _} : T.assignment) =
+          F.Assignment (value assignment_ident, self#cg_expr assignment_expr)
+
         method cg_DestructuringLet : T.destructuring_let -> F.stmt =
           fun let_ ->
             let expr = let_.destructuring_let_expr in
@@ -129,6 +133,8 @@ functor
                 @@ List.map bindings ~f:(fun (n, ex) -> (n.value, ex))
             | DestructuringLet let_ ->
                 self#cg_DestructuringLet let_
+            | Assignment assignment ->
+                self#cg_Assignment assignment
             | Return expr ->
                 F.Return (self#cg_expr expr)
             | Expr e ->
