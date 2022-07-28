@@ -24,8 +24,8 @@ let%expect_test "passing struct to a function" =
   let source =
     {|
          struct T {
-          val b: Integer
-          val c: struct { val d : Integer }
+          b: Integer
+          c: struct { d : Integer }
          }
          fn test(t: T) -> Integer { return 1; }
        |}
@@ -156,8 +156,8 @@ let%expect_test "demo struct serializer" =
   let source =
     {|
       struct T {
-        val a: Int[32]
-        val b: Int[16]
+        a: Int[32]
+        b: Int[16]
       }
       let T_serializer = serializer(T);
 
@@ -255,8 +255,8 @@ let%expect_test "demo struct serializer 2" =
   let source =
     {|
       struct Foo {
-        val a: Int[32]
-        val b: Int[16]
+        a: Int[32]
+        b: Int[16]
       }
       let serialize_foo = serializer(Foo);
 
@@ -415,8 +415,8 @@ let%expect_test "if/then/else" =
 let%expect_test "serializer inner struct" =
   let source =
     {|
-      struct Pubkey { val x: Int[160] }
-      struct Wallet { val seqno: Int[32] val pubkey: Pubkey }
+      struct Pubkey { x: Int[160] }
+      struct Wallet { seqno: Int[32] pubkey: Pubkey }
       let serialize_wallet = serializer[Wallet];
     |}
   in
@@ -1326,9 +1326,9 @@ let%expect_test "destructuring let" =
   let source =
     {|
       struct T {
-        val x: Integer
-        val y: Integer
-        val z: Integer
+        x: Integer
+        y: Integer
+        z: Integer
       }
       fn test(t: T) -> Integer {
         let {x, y as y2, z} = t;
@@ -1357,9 +1357,9 @@ let%expect_test "destructuring let with rest ignored" =
   let source =
     {|
       struct T {
-        val x: Integer
-        val y: Integer
-        val z: Integer
+        x: Integer
+        y: Integer
+        z: Integer
       }
       fn test(t: T) -> Integer {
         let {y as y2, ..} = t;
@@ -1388,8 +1388,8 @@ let%expect_test "deserializer" =
   let source =
     {|
       struct Something {
-        val value1: Int[9]
-        val value2: Int[256]
+        value1: Int[9]
+        value2: Int[256]
       }
       let test = deserializer[Something];
     |}

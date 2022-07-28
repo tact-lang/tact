@@ -84,7 +84,7 @@ They are equivalent to these:
 
 ```
 let S = struct { ... }
-let S(T: Type) = struct {val v: T}
+let S(T: Type) = struct {v: T}
 ```
 
 Same applies to enums, interfaces, unions and fns
@@ -123,19 +123,19 @@ let let_binding ==
 Let also allows to do destructuring assignment for structs:
 
 ```
-let {x,y,z} = (struct { val x: Integer; val y: Integer; val z: Integer }){x: 1, y: 2, z: 3};
+let {x,y,z} = (struct { x: Integer; y: Integer; z: Integer }){x: 1, y: 2, z: 3};
 ```
 
 It is also possible to rename assignments:
 
 ```
-let {x as x_,y as y_,z} = (struct { val x: Integer; val y: Integer; val z: Integer }){x: 1, y: 2, z: 3};
+let {x as x_,y as y_,z} = (struct { x: Integer; y: Integer; z: Integer }){x: 1, y: 2, z: 3};
 ```
 
 For brevity, unused fields can be omitted using `..` syntax:
 
 ```
-let {x,..} = (struct { val x: Integer; val y: Integer; val z: Integer }){x: 1, y: 2, z: 3};
+let {x,..} = (struct { x: Integer; y: Integer; z: Integer }){x: 1, y: 2, z: 3};
 ```
 
 *)
@@ -420,7 +420,7 @@ let params ==
 (* Struct
 
    struct {
-    val field_name: <type expression>
+    field_name: <type expression>
     ...
     
     fn name(...) -> ... { ... }
@@ -458,12 +458,12 @@ let impl ==
 
 (* Struct field
 
-   val field_name: <type expression>
+   field_name: <type expression>
 *)
 let struct_field ==
 | located ( 
   field_attributes = attributes;
-  VAL ; name = located(ident); COLON; typ = located(expr); option(SEMICOLON); { make_struct_field ~field_attributes ~field_name: name ~field_type: typ () } )
+  name = located(ident); COLON; typ = located(expr); option(SEMICOLON); { make_struct_field ~field_attributes ~field_name: name ~field_type: typ () } )
 
 (* Struct constructor 
  *

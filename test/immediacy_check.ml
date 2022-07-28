@@ -349,10 +349,10 @@ let%expect_test "Immediacy Checks MyInt Type" =
   let source =
     {|
       struct Cell {
-        val c: builtin_Cell
+        c: builtin_Cell
       }
       struct Builder {
-        val b: builtin_Builder
+        b: builtin_Builder
         fn serialize_int(self: Self, int: Integer, bits: Integer) -> Self {
           let b = builtin_store_int(self.b, int, bits);
           Self { b: b }
@@ -360,7 +360,7 @@ let%expect_test "Immediacy Checks MyInt Type" =
       }
 
       struct Slice {
-        val s: builtin_Slice
+        s: builtin_Slice
         fn load_int(self: Self, bits: Integer) -> LoadResult(Integer) {
           let output = builtin_load_int(self.s, bits);
           let slice = Self { s: output.value1 };
@@ -369,7 +369,7 @@ let%expect_test "Immediacy Checks MyInt Type" =
         }
       }
       struct MyInt[bits: Integer] {
-        val value: Integer
+        value: Integer
         impl Deserialize {
           fn deserialize(s: Slice) -> LoadResult(Self) {
             let res = s.load_int(bits);

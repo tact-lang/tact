@@ -91,8 +91,8 @@ let%expect_test "struct construction" =
   let source =
     {|
     struct MyType { 
-     val a: Int[257]
-     val b: Int[257]
+     a: Int[257]
+     b: Int[257]
     }
     let my = MyType {
       a: 0,
@@ -146,8 +146,8 @@ let%expect_test "struct fields" =
   let source =
     {|
   struct MyType {
-    val a: Int[257]
-    val f: get_type()
+    a: Int[257]
+    f: get_type()
   }
   |}
   in
@@ -170,7 +170,7 @@ let%expect_test "struct fields" =
 
 let%expect_test "struct fields with semicolons" =
   let source = {|
-  struct MyType { val a: Int[257]; val f: get_type() }
+  struct MyType { a: Int[257]; f: get_type() }
   |} in
   pp source ;
   [%expect
@@ -226,7 +226,7 @@ let%expect_test "struct with fields and methods" =
   let source =
     {|
     struct MyType {
-      val a: Int[257]
+      a: Int[257]
       fn test() -> Bool {}
     }
   |}
@@ -569,7 +569,7 @@ let%expect_test "struct construction over a parameterized type" =
 let%expect_test "struct construction over an anonymous type" =
   let source =
     {|
-  let a = (struct { val field: Int[257] }) { field: value };
+  let a = (struct { field: Int[257] }) { field: value };
   |}
   in
   pp source ;
@@ -593,7 +593,7 @@ let%expect_test "struct construction over an anonymous type" =
 let%expect_test "struct construction over an anonymous type's function call" =
   let source =
     {|
-  let a = struct[T: Type] { val field: T }(X) { field: value };
+  let a = struct[T: Type] { field: T }(X) { field: value };
   |}
   in
   pp source ;
@@ -1018,7 +1018,7 @@ let%expect_test "switch statement with a default case" =
 let%expect_test "destructuring let" =
   let source =
     {|
-  let {x, y, z} = (struct {val x: Integer; val y: Integer; val z: Integer}){x: 1, y: 2, z: 3};
+  let {x, y, z} = (struct {x: Integer; y: Integer; z: Integer}){x: 1, y: 2, z: 3};
   |}
   in
   pp source ;
@@ -1048,7 +1048,7 @@ let%expect_test "destructuring let" =
 let%expect_test "destructuring let with renaming" =
   let source =
     {|
-  let {x as x1, y, z as z1} = (struct {val x: Integer; val y: Integer; val z: Integer}){x: 1, y: 2, z: 3};
+  let {x as x1, y, z as z1} = (struct {x: Integer; y: Integer; z: Integer}){x: 1, y: 2, z: 3};
   |}
   in
   pp source ;
@@ -1077,7 +1077,7 @@ let%expect_test "destructuring let with renaming" =
 let%expect_test "destructuring let with rest ignored" =
   let source =
     {|
-  let {x, ..}  = (struct {val x: Integer; val y: Integer; val z: Integer}){x: 1, y: 2, z: 3};
+  let {x, ..}  = (struct {x: Integer; y: Integer; z: Integer}){x: 1, y: 2, z: 3};
   |}
   in
   pp source ;
@@ -1114,7 +1114,7 @@ let%expect_test "attributes" =
     @attr(1)
     @attr(1,2)
     struct T {
-      @attr val a: Integer
+      @attr a: Integer
       @attr fn x() { true }
     }
 

@@ -77,7 +77,6 @@ rule token = parse
  | "if" { IF }
  | "else" { ELSE }
  | "return" { RETURN }
- | "val" { VAL }
  | "case" { CASE }
  | "impl" { IMPL }
  | "switch" { SWITCH }

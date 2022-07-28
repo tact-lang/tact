@@ -1,11 +1,11 @@
 struct Cell {
-  val c: builtin_Cell
+  c: builtin_Cell
 }
 
 // Do not change place of builder struct - for internal reasons
 // it should be second struct in the file.
 struct Builder {
-  val inner: builtin_Builder
+  inner: builtin_Builder
 
   fn new() -> Self {
     Self { inner: builtin_begin_cell() }
@@ -25,7 +25,7 @@ struct Builder {
 }
 
 struct Slice {
-  val s: builtin_Slice
+  s: builtin_Slice
 
   fn parse(cell: Cell) -> Self {
     Self { s: builtin_begin_parse(cell.c) }
@@ -65,7 +65,7 @@ fn throw(n: Integer) {
 }
 
 struct Coins {
-  val value: Integer
+  value: Integer
 
   fn new(c: Integer) -> Self {
     Self { value: c }
@@ -86,7 +86,7 @@ struct Coins {
 }
 
 struct Int[bits: Integer] {
-  val value: Integer
+  value: Integer
 
   fn new(i: Integer) -> Self {
     Self { value: i }
@@ -118,7 +118,7 @@ struct Int[bits: Integer] {
 }
 
 struct Uint[bits: Integer] {
-  val value: Integer
+  value: Integer
 
   fn new(i: Integer) -> Self {
     Self { value: i }
@@ -160,8 +160,8 @@ struct AddrNone {
 // deriving from the `len` field which requires more powerful dependent types than we have for now.
 // Do we want to make such declarations possible?
 struct AddrExtern { 
-  val len: Int[9]
-  val bits: Integer
+  len: Int[9]
+  bits: Integer
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -213,8 +213,8 @@ union MsgAddressExt {
 }
 
 struct AddressStd {
-  val workchain_id: Int[8]
-  val address: Int[256]
+  workchain_id: Int[8]
+  address: Int[256]
 
   fn new(workchain_id: Int[8], address: Int[256]) -> Self {
     Self {
@@ -243,9 +243,9 @@ struct AddressStd {
 }
 
 struct AddressVar {
-  val len: Int[9]
-  val workchain_id: Int[8]
-  val address: Integer
+  len: Int[9]
+  workchain_id: Int[8]
+  address: Integer
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -323,10 +323,10 @@ union MsgAddress {
 }
 
 struct ExtOutMsgInfoRelaxed {
-  val src: MsgAddress
-  val dest: MsgAddressExt
-  val created_lt: Uint[64]
-  val created_at: Uint[32]
+  src: MsgAddress
+  dest: MsgAddressExt
+  created_lt: Uint[64]
+  created_at: Uint[32]
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -336,8 +336,8 @@ struct ExtOutMsgInfoRelaxed {
 }
 
 struct Timestamps {
-  val created_lt: Uint[64]
-  val created_at: Uint[32]
+  created_lt: Uint[64]
+  created_at: Uint[32]
 
   fn zeros() -> Self {
     Self {
@@ -360,9 +360,9 @@ struct Timestamps {
 }
 
 struct IntMsgInfoFlags {
-  val ihr_disabled: Int[1]
-  val bounce: Int[1]
-  val bounced: Int[1]
+  ihr_disabled: Int[1]
+  bounce: Int[1]
+  bounced: Int[1]
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -378,8 +378,8 @@ struct IntMsgInfoFlags {
 }
 
 struct IntMsgInfoAddresses {
-  val src: MsgAddressInt
-  val dst: MsgAddressInt
+  src: MsgAddressInt
+  dst: MsgAddressInt
 
   impl Deserialize {
     fn deserialize(s: Slice) -> LoadResult[Self] {
@@ -389,8 +389,8 @@ struct IntMsgInfoAddresses {
 }
 
 struct IntMsgInfoCoins {
-  val ihr_fee: Coins
-  val fwd_fee: Coins
+  ihr_fee: Coins
+  fwd_fee: Coins
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -406,10 +406,10 @@ struct IntMsgInfoCoins {
 }
 
 struct IntMsgInfo {
-  val flags: IntMsgInfoFlags
-  val addresses: IntMsgInfoAddresses
-  val coins: IntMsgInfoCoins
-  val timestamps: Timestamps
+  flags: IntMsgInfoFlags
+  addresses: IntMsgInfoAddresses
+  coins: IntMsgInfoCoins
+  timestamps: Timestamps
 
   fn new(
     flags: IntMsgInfoFlags, 
@@ -435,9 +435,9 @@ struct IntMsgInfo {
 }
 
 struct ExtInMsgInfo {
-  val src: MsgAddressExt
-  val dest: MsgAddressInt
-  val import_fee: Coins
+  src: MsgAddressExt
+  dest: MsgAddressInt
+  import_fee: Coins
 
   impl Deserialize {
     fn deserialize(s: Slice) -> LoadResult[Self] {
@@ -470,8 +470,8 @@ union CommonMsgInfo {
 }
 
 struct IntMsgInfoRelaxedAddresses {
-  val src: MsgAddress
-  val dst: MsgAddressInt
+  src: MsgAddress
+  dst: MsgAddressInt
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -481,10 +481,10 @@ struct IntMsgInfoRelaxedAddresses {
 }
 
 struct IntMsgInfoRelaxed {
-  val flags: IntMsgInfoFlags
-  val addresses: IntMsgInfoRelaxedAddresses
-  val coins: IntMsgInfoCoins
-  val timestamps: Timestamps
+  flags: IntMsgInfoFlags
+  addresses: IntMsgInfoRelaxedAddresses
+  coins: IntMsgInfoCoins
+  timestamps: Timestamps
 
   fn new(
     flags: IntMsgInfoFlags, 
@@ -530,8 +530,8 @@ union CommonMsgInfoRelaxed {
 }
 
 struct MessageRelaxed[X: Serialize] {
-  val info: CommonMsgInfoRelaxed
-  val body: X
+  info: CommonMsgInfoRelaxed
+  body: X
 
   impl Serialize {
     fn serialize(self: Self, b: Builder) -> Builder {
@@ -545,8 +545,8 @@ struct MessageRelaxed[X: Serialize] {
 }
 
 struct Message[X: Deserialize] {
-  val info: CommonMsgInfo
-  val body: X
+  info: CommonMsgInfo
+  body: X
 
   impl Deserialize {
     fn deserialize(s: Slice) -> LoadResult[Self] {
@@ -570,7 +570,7 @@ struct Message[X: Deserialize] {
 }
 
 struct SendRawMsgFlags {
-  val value: Integer
+  value: Integer
 
   fn default() -> Self {
     Self { value: 0 }

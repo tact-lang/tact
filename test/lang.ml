@@ -558,7 +558,7 @@ let%expect_test "scope resolution after let binding" =
 
 let%expect_test "basic struct definition" =
   let source = {|
-    struct T { val t: Int[257] }
+    struct T { t: Int[257] }
   |} in
   pp_compile source ;
   [%expect
@@ -902,8 +902,8 @@ let%expect_test "struct definition" =
   let source =
     {|
   let MyType = struct {
-       val a: Int[257]
-       val b: Bool
+       a: Int[257]
+       b: Bool
   };
   |}
   in
@@ -1077,8 +1077,8 @@ let%expect_test "duplicate type field" =
   let source =
     {|
   let MyType = struct {
-      val a: Int[257]
-      val a: Bool
+      a: Int[257]
+      a: Bool
   };
   |}
   in
@@ -1258,7 +1258,7 @@ let%expect_test "duplicate type field" =
 let%expect_test "parametric struct instantiation" =
   let source =
     {|
-      struct T[A: Type] { val a: A }
+      struct T[A: Type] { a: A }
       let TA = T[Int[257]];
    |}
   in
@@ -2107,8 +2107,8 @@ let%expect_test "struct instantiation" =
   let source =
     {|
     struct T {
-      val a: Integer
-      val b: Integer
+      a: Integer
+      b: Integer
     }
 
     let t = T{a: 1, b: 2}
@@ -2992,8 +2992,8 @@ let%expect_test "implement interface op" =
 let%expect_test "serializer inner struct" =
   let source =
     {|
-      struct Inner { val x: Int(32) }
-      struct Outer { val y: Int(32) val z: Inner }
+      struct Inner { x: Int(32) }
+      struct Outer { y: Int(32) z: Inner }
       let serialize_outer = serializer[Outer];
     |}
   in
@@ -5020,9 +5020,9 @@ let%expect_test "destructuring let" =
   let source =
     {|
       struct T {
-         val x: Integer
-         val y: Integer
-         val z: Integer
+         x: Integer
+         y: Integer
+         z: Integer
       }
       fn test(t: T) -> Integer {
         let {x, y as y2, z} = t;
@@ -5074,9 +5074,9 @@ let%expect_test "destructuring let with missing fields" =
   let source =
     {|
       struct T {
-         val x: Integer
-         val y: Integer
-         val z: Integer
+         x: Integer
+         y: Integer
+         z: Integer
       }
       fn test(t: T) -> Integer {
         let {y as y2} = t;
@@ -5125,9 +5125,9 @@ let%expect_test "destructuring let with missing fields ignored" =
   let source =
     {|
       struct T {
-         val x: Integer
-         val y: Integer
-         val z: Integer
+         x: Integer
+         y: Integer
+         z: Integer
       }
       fn test(t: T) -> Integer {
         let {y as y2, ..} = t;
@@ -5213,7 +5213,7 @@ let%expect_test "struct signatures" =
   let source =
     {|
        struct Int2[bits: Integer] {
-         val value: Integer
+         value: Integer
          fn new(i: Integer) -> Self {
            Self { value: i }
          }
@@ -5343,7 +5343,7 @@ let%expect_test "struct signatures" =
 let%expect_test "Deserilize intf with constraints" =
   let source =
     {|
-      struct Container[X: Type] { val x: X }
+      struct Container[X: Type] { x: X }
       interface Deserialize2 {
         fn deserialize() -> Container(Self)
       }
@@ -5522,7 +5522,7 @@ let%expect_test "Interface inner constraints" =
     {|
       interface Intf { fn do_stuff(self: Self) -> Integer }
       struct Test[X: Intf] { 
-        val x: X
+        x: X
         impl Intf { 
           fn do_stuff(self: Self) { self.x.do_stuff(); } 
         } 
@@ -5761,7 +5761,7 @@ let%expect_test "attributes" =
     @attr(1)
     @attr(1,2)
     struct T {
-      @attr val a: Integer
+      @attr a: Integer
       @attr fn x() { true }
     }
 

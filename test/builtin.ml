@@ -357,8 +357,8 @@ let%expect_test "demo struct serializer" =
   let source =
     {|
       struct T {
-        val a: Int[32]
-        val b: Int[16]
+        a: Int[32]
+        b: Int[16]
       }
       let T_serializer = serializer(T);
 
@@ -765,7 +765,7 @@ let%expect_test "from interface" =
   let source =
     {|
       struct Value {
-        val a: Integer
+        a: Integer
         impl From(Integer) {
           fn from(x: Integer) -> Self {
             Self{a: x}
@@ -935,8 +935,8 @@ let%expect_test "deserializer" =
   let source =
     {|
       struct Something {
-        val value1: Int[9]
-        val value2: Int[256]
+        value1: Int[9]
+        value2: Int[256]
       }
       let test = deserializer[Something];
     |}

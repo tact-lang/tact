@@ -100,8 +100,8 @@ let%expect_test "duplicate field" =
   let source =
     {|
       struct Foo {
-        val field: Integer
-        val field: Integer
+        field: Integer
+        field: Integer
       }
     |}
   in
@@ -109,10 +109,10 @@ let%expect_test "duplicate field" =
   [%expect
     {|
     Error[1]: Duplicate struct field field
-    File: "":3:12
+    File: "":3:8
       |
-    3 |         val field: Integer
-      |             ^^^^^ Duplicated |}]
+    3 |         field: Integer
+      |         ^^^^^ Duplicated |}]
 
 let%expect_test "duplicate variant" =
   let source =
