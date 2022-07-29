@@ -413,11 +413,151 @@ functor
                 function_returns = load_result_ty };
           function_impl = Fn (bl body) }
       in
+      let deserializer_union_ty uid p =
+        let u = Program.get_union p uid in
+        let rec int_required_bits = function
+          | 0 ->
+              0
+          | x ->
+              1 + (int_required_bits @@ Int.shift_right x 1)
+        in
+        let discriminator_len =
+          Value
+            (Integer (Z.of_int (int_required_bits (List.length u.cases - 1))))
+        in
+        let load_result_ty =
+          let id = p.type_counter in
+          p.type_counter <- p.type_counter + 1 ;
+          let struct_ = make_load_result_with_id (-500) id (UnionType uid) in
+          let struct_ =
+            Result.ok_exn @@ Program.with_struct p struct_ (fun _ -> Ok struct_)
+          in
+          StructType struct_.struct_details.uty_id
+        in
+        let throw_fn =
+          Primitive
+            (Prim {name = "throw"; exprs = [bl @@ Value (Integer (Z.of_int 0))]})
+        in
+        let get_method ty m =
+          match Program.find_method p ty m with
+          | Some m ->
+              bl @@ Value (Function m)
+          | None ->
+              raise Errors.InternalCompilerError
+        in
+        let initial_slice = bl @@ Reference (bl "slice", slice_ty) in
+        let res_discr_slice =
+          let m = get_method slice_ty "load_uint" in
+          (* This is a hack to get LoadResult[Integer] type *)
+          let res_discr_ty =
+            type_of p
+              (bl @@ FunctionCall (m, [bl @@ Value Void; bl @@ Value Void]))
+          in
+          bl
+          @@ StructField
+               ( bl @@ Reference (bl "res_discr", res_discr_ty),
+                 bl "slice",
+                 slice_ty )
+        in
+        let first_case, _ = List.last u.cases |> Option.value_exn in
+        let deserialize_cases =
+          (* Note that we do not use List.rev because we should handle from last to first case. *)
+          List.fold u.cases
+            ~init:(bl @@ Expr (bl throw_fn))
+            ~f:(fun else_stmt (case_ty, Discriminator disc) ->
+              let slice_expr =
+                match equal_type_ case_ty first_case with
+                | true ->
+                    initial_slice
+                | false ->
+                    res_discr_slice
+              in
+              let case_deserialize_fn = get_method case_ty "deserialize" in
+              (* Stmt 1: let res_discr = <slice_expr>.load_uint(bytes); *)
+              let load_discr =
+                let load_uint_fn = get_method slice_ty "load_uint" in
+                let fcall =
+                  bl
+                  @@ FunctionCall
+                       (load_uint_fn, [slice_expr; bl @@ discriminator_len])
+                in
+                bl @@ Let [(bl "res_discr", fcall)]
+              in
+              (* Stmt 2: if (builtin_equal(res_discr.value, <discr>)) *)
+              let if_condition =
+                let eq_fn =
+                  Program.find_binding p "builtin_equal" |> Option.value_exn
+                in
+                (* This is a hack to get LoadResult[Integer] type *)
+                let res_discr_ty =
+                  type_of p
+                    ( bl
+                    @@ FunctionCall
+                         ( get_method slice_ty "load_uint",
+                           [bl @@ Value Void; bl @@ Value Void] ) )
+                in
+                let get_discr =
+                  bl
+                  @@ StructField
+                       ( bl @@ Reference (bl "res_discr", res_discr_ty),
+                         bl "value",
+                         IntegerType )
+                in
+                bl
+                @@ FunctionCall
+                     (eq_fn, [get_discr; bl @@ Value (Integer (Z.of_int disc))])
+              in
+              (* Stmt 3: let res = <CaseTy>.deserialize(res_discr.slice); *)
+              let deserialize_stmt =
+                bl
+                @@ Let
+                     [ ( bl "res",
+                         bl
+                         @@ FunctionCall (case_deserialize_fn, [res_discr_slice])
+                       ) ]
+              in
+              (* Stmt 4: return <load_result_ty>.new(res.slice, res.value); *)
+              let deserialize_out =
+                let load_result_new = get_method load_result_ty "new" in
+                let fcall =
+                  FunctionCall
+                    ( load_result_new,
+                      [ bl
+                        @@ StructField
+                             ( bl @@ Reference (bl "res", load_result_ty),
+                               bl "slice",
+                               slice_ty );
+                        bl
+                        @@ StructField
+                             ( bl @@ Reference (bl "res", load_result_ty),
+                               bl "value",
+                               case_ty ) ] )
+                in
+                bl @@ Return (bl fcall)
+              in
+              (* Combine stmts *)
+              let cond =
+                bl
+                @@ If
+                     { if_condition;
+                       if_then = bl @@ Block [deserialize_stmt; deserialize_out];
+                       if_else = Some else_stmt }
+              in
+              bl @@ Block [load_discr; cond] )
+        in
+        let body = deserialize_cases in
+        { function_signature =
+            bl
+              { function_attributes = [];
+                function_params = [(bl "slice", slice_ty)];
+                function_returns = load_result_ty };
+          function_impl = Fn body }
+      in
       let function_impl p = function
         | [Type (StructType s)] ->
             Function (bl @@ deserializer_struct_ty s p)
-            (* | [Type (UnionType u)] ->
-                 Function (bl @@ deserializer_union_ty u p) *)
+        | [Type (UnionType u)] ->
+            Function (bl @@ deserializer_union_ty u p)
         | _ ->
             Void
       in

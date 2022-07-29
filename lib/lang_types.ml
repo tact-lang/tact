@@ -897,5 +897,14 @@ functor
         |> Option.bind ~f:(fun dets ->
                List.find dets.uty_impls ~f:(fun {impl_interface; _} ->
                    equal_int impl_interface impl ) )
+
+      let find_method p ty m =
+        List.Assoc.find (methods_of p ty)
+          ~equal:(fun v1 v2 -> equal_string v1.value v2.value)
+          (builtin_located m)
+
+      let find_binding p name =
+        List.Assoc.find p.bindings (builtin_located name)
+          ~equal:(equal_located equal_string)
     end
   end

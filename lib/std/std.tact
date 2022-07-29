@@ -154,6 +154,12 @@ struct AddrNone {
       return b;
     }
   }
+
+  impl Deserialize {
+    fn deserialize(s: Slice) -> LoadResult[Self] {
+      return LoadResult[Self].new(s, Self{});
+    }
+  }
 }
 
 // Interesting situation with this declaration: `bits` field should have count of bits
@@ -194,19 +200,8 @@ union MsgAddressExt {
   @derive
   impl Serialize {}
 
-  impl Deserialize {
-    fn deserialize(s: Slice) -> LoadResult[Self] {
-      let res_discr = s.load_int(1);
-      if (builtin_equal(res_discr.value, 0)) {
-        return LoadResult[Self].new(res_discr.slice, AddrNone{});
-      } else if (builtin_equal(res_discr.value, 1)) {
-        let res_addr = AddrExtern.deserialize(res_discr.slice);
-        return LoadResult[Self].new(res_addr.slice, res_addr.value);
-      } else {
-        throw(0);
-      }
-    }
-  }
+  @derive
+  impl Deserialize {}
 }
 
 struct AddressStd {
@@ -279,18 +274,8 @@ union MsgAddressInt {
   @derive
   impl Serialize {}
 
-  impl Deserialize {
-    fn deserialize(s: Slice) -> LoadResult[Self] {
-      let res_discr = s.load_int(1);
-      if (builtin_equal(res_discr.value, 0)) {
-        let res_addr = AddressStd.deserialize(res_discr.slice);
-        return LoadResult[Self].new(res_addr.slice, res_addr.value);
-      } else {
-        let res_addr = AddressVar.deserialize(res_discr.slice);
-        return LoadResult[Self].new(res_addr.slice, res_addr.value);
-      }
-    }
-  }
+  @derive
+  impl Deserialize {}
 }
 union MsgAddress {
   case MsgAddressExt
@@ -299,18 +284,8 @@ union MsgAddress {
   @derive
   impl Serialize {}
 
-  impl Deserialize {
-    fn deserialize(s: Slice) -> LoadResult[Self] {
-      let res_discr = s.load_int(1);
-      if (builtin_equal(res_discr.value, 0)) {
-        let res_addr = MsgAddressExt.deserialize(res_discr.slice);
-        return LoadResult[Self].new(res_addr.slice, res_addr.value);
-      } else {
-        let res_addr = MsgAddressInt.deserialize(res_discr.slice);
-        return LoadResult[Self].new(res_addr.slice, res_addr.value);
-      }
-    }
-  }
+  @derive
+  impl Deserialize {}
 }
 
 struct ExtOutMsgInfoRelaxed {
@@ -411,23 +386,8 @@ union CommonMsgInfo {
   case IntMsgInfo
   case ExtInMsgInfo
 
-  impl Deserialize {
-    fn deserialize(s: Slice) -> LoadResult[Self] {
-      let res_discr1 = s.load_int(1);
-      if (builtin_equal(res_discr1.value, 0)) {
-        let res_info = IntMsgInfo.deserialize(res_discr1.slice);
-        return LoadResult[Self].new(res_info.slice, res_info.value);
-      } else {
-        let res_discr2 = res_discr1.slice.load_int(1);
-        if (builtin_equal(res_discr2.value, 0)) {
-          let res_info = ExtInMsgInfo.deserialize(res_discr2.slice);
-          return LoadResult[Self].new(res_info.slice, res_info.value);
-        } else {
-          throw(0); // unreachable
-        }
-      }
-    }
-  }
+  @derive
+  impl Deserialize {}
 }
 
 struct IntMsgInfoRelaxedAddresses {

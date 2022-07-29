@@ -218,7 +218,9 @@ functor
             match expr.value with
             | Value (Function f) -> (
               try Some (F.Function (self#add_function f ~name:(Some name)))
-              with ex -> if equal_string name "test" then raise ex else None )
+              with ex ->
+                if equal_string name "deserialize_union" then raise ex else None
+              )
             | _ ->
                 None
 

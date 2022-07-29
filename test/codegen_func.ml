@@ -1095,222 +1095,245 @@ let%expect_test "deserialization api" =
        slice f0(cell cell_) {
          return builtin_begin_parse(cell_);
        }
-       [slice, int] f3(slice self, int bits) {
-         (slice, int) output = builtin_load_int(self, bits);
-         slice slice_ = tensor2_value1(output);
-         int int_ = tensor2_value2(output);
-         return [slice_, int_];
-       }
-       [slice, int] f8(slice s) {
-         [slice, int] res = f3(s, 9);
-         [slice slice_, int value] = res;
-         return [slice_, value];
-       }
-       [slice, [int, int]] f7(slice slice_) {
-         [slice slice_, int len] = f8(slice_);
-         [slice slice_, int bits] = f3(slice_, len);
-         return [slice_, [len, bits]];
-       }
-       [slice, tuple] f9(slice s, tuple v) {
-         return [s, v];
-       }
-       [slice, tuple] f6(slice s) {
-         [slice, int] res_discr = f3(s, 1);
-         if (builtin_equal(second(res_discr), 0)) {
-         return f9(first(res_discr), []);
-       } else if (builtin_equal(second(res_discr), 1))
-       {
-         [slice, [int, int]] res_addr = f7(first(res_discr));
-       return
-       f9(first(res_addr), second(res_addr));
-       } else
-       {
-         throw(0);
-       }}
-       [slice, int] f12(slice s) {
-         [slice, int] res = f3(s, 8);
-         [slice slice_, int value] = res;
-         return [slice_, value];
-       }
-       [slice, [int, int, int]] f13(slice s, [int, int, int] v) {
-         return [s, v];
-       }
-       [slice, [int, int, int]] f11(slice s) {
-         [slice, int] res_anycast = f3(s, 1);
-         if (builtin_equal(second(res_anycast), 0)) {
-         [slice, int] res_len = f8(first(res_anycast));
-       [slice, int] res_workchain =
-       f12(first(res_len));
-       [slice, int] res_address =
-       f3(first(res_workchain), res_len);
-       return
-       f13(first(res_address), [second(res_len), second(res_workchain), second(res_address)]);
-       } else
-       {
-         throw(0);
-       }}
-       [slice, tuple] f14(slice s, tuple v) {
-         return [s, v];
-       }
-       [slice, int] f17(slice s) {
-         [slice, int] res = f3(s, 256);
-         [slice slice_, int value] = res;
-         return [slice_, value];
-       }
-       [slice, [int, int]] f16(slice slice_) {
-         [slice slice_, int workchain_id] = f12(slice_);
-         [slice slice_, int address] = f17(slice_);
-         return [[workchain_id, address], slice_];
-       }
-       [slice, [int, int]] f15(slice s) {
-         [slice, int] res_anycast = f3(s, 1);
-         if (builtin_equal(second(res_anycast), 0)) {
-         return f16(s);
-       } else
-       {
-         throw(0);
-       }}
-       [slice, tuple] f10(slice s) {
-         [slice, int] res_discr = f3(s, 1);
-         if (builtin_equal(second(res_discr), 0)) {
-         [slice, [int, int]] res_addr = f15(first(res_discr));
-       return
-       f14(first(res_addr), second(res_addr));
-       } else
-       {
-         [slice, [int, int, int]] res_addr = f11(first(res_discr));
-       return
-       f14(first(res_addr), second(res_addr));
-       }}
-       [slice, int] f19(slice self) {
-         (slice, int) output = builtin_load_coins(self);
-         slice slice_ = tensor2_value1(output);
-         int coins = tensor2_value2(output);
-         return [slice_, coins];
-       }
-       [slice, int] f20(slice s, int v) {
-         return [s, v];
-       }
-       [slice, int] f18(slice s) {
-         [slice slice_, int value] = f19(s);
-         return f20(value, slice_);
-       }
-       [slice, [tuple, tuple, int]] f5(slice slice_) {
-         [slice slice_, tuple src] = f6(slice_);
-         [slice slice_, tuple dest] = f10(slice_);
-         [slice slice_, int import_fee] = f18(slice_);
-         return [[src, dest, import_fee], slice_];
-       }
-       [slice, [tuple, tuple, int]] f4(slice s) {
-         return f5(s);
-       }
-       [slice, tuple] f21(slice s, tuple v) {
-         return [s, v];
-       }
-       [slice, int] f26(slice s) {
-         [slice, int] res = f3(s, 1);
-         [slice slice_, int value] = res;
-         return [slice_, value];
-       }
-       [slice, [int, int, int]] f25(slice slice_) {
-         [slice slice_, int ihr_disabled] = f26(slice_);
-         [slice slice_, int bounce] = f26(slice_);
-         [slice slice_, int bounced] = f26(slice_);
-         return [[ihr_disabled, bounce, bounced], slice_];
-       }
-       [slice, [int, int, int]] f24(slice s) {
-         return f25(s);
-       }
-       [slice, [tuple, tuple]] f28(slice slice_) {
-         [slice slice_, tuple src] = f10(slice_);
-         [slice slice_, tuple dst] = f10(slice_);
-         return [[src, dst], slice_];
-       }
-       [slice, [tuple, tuple]] f27(slice s) {
-         return f28(s);
-       }
-       [slice, [int, int]] f30(slice slice_) {
-         [slice slice_, int ihr_fee] = f18(slice_);
-         [slice slice_, int fwd_fee] = f18(slice_);
-         return [[ihr_fee, fwd_fee], slice_];
-       }
-       [slice, [int, int]] f29(slice s) {
-         return f30(s);
-       }
-       [slice, int] f34(slice self, int bits) {
+       [slice, int] f4(slice self, int bits) {
          (slice, int) output = builtin_load_uint(self, bits);
          slice slice_ = tensor2_value1(output);
          int int_ = tensor2_value2(output);
          return [slice_, int_];
        }
-       [slice, int] f33(slice s) {
-         [slice, int] res = f34(s, 64);
-         return [first(res), second(res)];
+       [slice, int] f11(slice self, int bits) {
+         (slice, int) output = builtin_load_int(self, bits);
+         slice slice_ = tensor2_value1(output);
+         int int_ = tensor2_value2(output);
+         return [slice_, int_];
        }
-       [slice, int] f35(slice s) {
-         [slice, int] res = f34(s, 32);
-         return [first(res), second(res)];
+       [slice, int] f10(slice s) {
+         [slice, int] res = f11(s, 9);
+         [slice slice_, int value] = res;
+         return [slice_, value];
        }
-       [slice, [int, int]] f32(slice slice_) {
-         [slice slice_, int created_lt] = f33(slice_);
-         [slice slice_, int created_at] = f35(slice_);
-         return [[created_lt, created_at], slice_];
+       [slice, [int, int]] f9(slice slice_) {
+         [slice slice_, int len] = f10(slice_);
+         [slice slice_, int bits] = f11(slice_, len);
+         return [slice_, [len, bits]];
        }
-       [slice, [int, int]] f31(slice s) {
-         return f32(s);
+       [slice, tuple] f12(slice s, tuple v) {
+         return [s, v];
        }
-       [slice, [[int, int, int], [tuple, tuple], [int, int], [int, int]]] f23(slice
-           slice_) {
-         [slice slice_, [int, int, int] flags] = f24(slice_);
-         [slice slice_, [tuple, tuple] addresses] = f27(slice_);
-         [slice slice_, [int, int] coins] = f29(slice_);
-         [slice slice_, [int, int] timestamps] = f31(slice_);
-         return [[flags, addresses, coins, timestamps], slice_];
+       [slice, []] f14(slice s, [] v) {
+         return [s, v];
        }
-       [slice, [[int, int, int], [tuple, tuple], [int, int], [int, int]]] f22(slice s)
-           {
-         return f23(s);
+       [slice, []] f13(slice s) {
+         return f14(s, []);
        }
-       [slice, tuple] f2(slice s) {
-         [slice, int] res_discr1 = f3(s, 1);
-         if (builtin_equal(second(res_discr1), 0)) {
-         [slice, [[int, int, int], [tuple, tuple], [int, int], [int, int]]] res_info =
-           f22(first(res_discr1));
+       [slice, tuple] f8(slice slice_) {
+         [slice, int] res_discr = f4(slice_, 1);
+         if (builtin_equal(second(res_discr), 0)) {
+         [slice, []] res = f13(first(res_discr));
        return
-       f21(first(res_info), second(res_info));
+       f12(first(res), second(res));
        } else
        {
-         [slice, int] res_discr2 = f3(first(res_discr1), 1);
-       if (builtin_equal(second(res_discr2), 0))
+         [slice, int] res_discr = f4(first(res_discr), 1);
+       if (builtin_equal(second(res_discr), 1))
        {
-         [slice, [tuple, tuple, int]] res_info = f4(first(res_discr2));
+         [slice, [int, int]] res = f9(first(res_discr));
        return
-       f21(first(res_info), second(res_info));
+       f12(first(res), second(res));
+       } else
+       throw(0);
+       }}
+       [slice, tuple] f7(slice s) {
+         return f8(s);
+       }
+       [slice, int] f18(slice s) {
+         [slice, int] res = f11(s, 8);
+         [slice slice_, int value] = res;
+         return [slice_, value];
+       }
+       [slice, [int, int, int]] f19(slice s, [int, int, int] v) {
+         return [s, v];
+       }
+       [slice, [int, int, int]] f17(slice s) {
+         [slice, int] res_anycast = f11(s, 1);
+         if (builtin_equal(second(res_anycast), 0)) {
+         [slice, int] res_len = f10(first(res_anycast));
+       [slice, int] res_workchain =
+       f18(first(res_len));
+       [slice, int] res_address =
+       f11(first(res_workchain), res_len);
+       return
+       f19(first(res_address), [second(res_len), second(res_workchain), second(res_address)]);
        } else
        {
          throw(0);
-       }}}
-       [slice, []] f37(slice s, [] v) {
+       }}
+       [slice, tuple] f20(slice s, tuple v) {
          return [s, v];
        }
-       [slice, []] f36(slice s) {
-         return f37(s, []);
+       [slice, int] f23(slice s) {
+         [slice, int] res = f11(s, 256);
+         [slice slice_, int value] = res;
+         return [slice_, value];
        }
-       [slice, [tuple, []]] f38(slice s, [tuple, []] v) {
+       [slice, [int, int]] f22(slice slice_) {
+         [slice slice_, int workchain_id] = f18(slice_);
+         [slice slice_, int address] = f23(slice_);
+         return [[workchain_id, address], slice_];
+       }
+       [slice, [int, int]] f21(slice s) {
+         [slice, int] res_anycast = f11(s, 1);
+         if (builtin_equal(second(res_anycast), 0)) {
+         return f22(s);
+       } else
+       {
+         throw(0);
+       }}
+       [slice, tuple] f16(slice slice_) {
+         [slice, int] res_discr = f4(slice_, 1);
+         if (builtin_equal(second(res_discr), 0)) {
+         [slice, [int, int]] res = f21(first(res_discr));
+       return
+       f20(first(res), second(res));
+       } else
+       {
+         [slice, int] res_discr = f4(first(res_discr), 1);
+       if (builtin_equal(second(res_discr), 1))
+       {
+         [slice, [int, int, int]] res = f17(first(res_discr));
+       return
+       f20(first(res), second(res));
+       } else
+       throw(0);
+       }}
+       [slice, tuple] f15(slice s) {
+         return f16(s);
+       }
+       [slice, int] f25(slice self) {
+         (slice, int) output = builtin_load_coins(self);
+         slice slice_ = tensor2_value1(output);
+         int coins = tensor2_value2(output);
+         return [slice_, coins];
+       }
+       [slice, int] f26(slice s, int v) {
+         return [s, v];
+       }
+       [slice, int] f24(slice s) {
+         [slice slice_, int value] = f25(s);
+         return f26(value, slice_);
+       }
+       [slice, [tuple, tuple, int]] f6(slice slice_) {
+         [slice slice_, tuple src] = f7(slice_);
+         [slice slice_, tuple dest] = f15(slice_);
+         [slice slice_, int import_fee] = f24(slice_);
+         return [[src, dest, import_fee], slice_];
+       }
+       [slice, [tuple, tuple, int]] f5(slice s) {
+         return f6(s);
+       }
+       [slice, tuple] f27(slice s, tuple v) {
+         return [s, v];
+       }
+       [slice, int] f32(slice s) {
+         [slice, int] res = f11(s, 1);
+         [slice slice_, int value] = res;
+         return [slice_, value];
+       }
+       [slice, [int, int, int]] f31(slice slice_) {
+         [slice slice_, int ihr_disabled] = f32(slice_);
+         [slice slice_, int bounce] = f32(slice_);
+         [slice slice_, int bounced] = f32(slice_);
+         return [[ihr_disabled, bounce, bounced], slice_];
+       }
+       [slice, [int, int, int]] f30(slice s) {
+         return f31(s);
+       }
+       [slice, [tuple, tuple]] f34(slice slice_) {
+         [slice slice_, tuple src] = f15(slice_);
+         [slice slice_, tuple dst] = f15(slice_);
+         return [[src, dst], slice_];
+       }
+       [slice, [tuple, tuple]] f33(slice s) {
+         return f34(s);
+       }
+       [slice, [int, int]] f36(slice slice_) {
+         [slice slice_, int ihr_fee] = f24(slice_);
+         [slice slice_, int fwd_fee] = f24(slice_);
+         return [[ihr_fee, fwd_fee], slice_];
+       }
+       [slice, [int, int]] f35(slice s) {
+         return f36(s);
+       }
+       [slice, int] f39(slice s) {
+         [slice, int] res = f4(s, 64);
+         return [first(res), second(res)];
+       }
+       [slice, int] f40(slice s) {
+         [slice, int] res = f4(s, 32);
+         return [first(res), second(res)];
+       }
+       [slice, [int, int]] f38(slice slice_) {
+         [slice slice_, int created_lt] = f39(slice_);
+         [slice slice_, int created_at] = f40(slice_);
+         return [[created_lt, created_at], slice_];
+       }
+       [slice, [int, int]] f37(slice s) {
+         return f38(s);
+       }
+       [slice, [[int, int, int], [tuple, tuple], [int, int], [int, int]]] f29(slice
+           slice_) {
+         [slice slice_, [int, int, int] flags] = f30(slice_);
+         [slice slice_, [tuple, tuple] addresses] = f33(slice_);
+         [slice slice_, [int, int] coins] = f35(slice_);
+         [slice slice_, [int, int] timestamps] = f37(slice_);
+         return [[flags, addresses, coins, timestamps], slice_];
+       }
+       [slice, [[int, int, int], [tuple, tuple], [int, int], [int, int]]] f28(slice s)
+           {
+         return f29(s);
+       }
+       [slice, tuple] f3(slice slice_) {
+         [slice, int] res_discr = f4(slice_, 1);
+         if (builtin_equal(second(res_discr), 0)) {
+         [slice, [[int, int, int], [tuple, tuple], [int, int], [int, int]]] res =
+           f28(first(res_discr));
+       return
+       f27(first(res), second(res));
+       } else
+       {
+         [slice, int] res_discr = f4(first(res_discr), 1);
+       if (builtin_equal(second(res_discr), 1))
+       {
+         [slice, [tuple, tuple, int]] res = f5(first(res_discr));
+       return
+       f27(first(res), second(res));
+       } else
+       throw(0);
+       }}
+       [slice, tuple] f2(slice s) {
+         return f3(s);
+       }
+       [slice, []] f42(slice s, [] v) {
+         return [s, v];
+       }
+       [slice, []] f41(slice s) {
+         return f42(s, []);
+       }
+       [slice, [tuple, []]] f43(slice s, [tuple, []] v) {
          return [s, v];
        }
        [slice, [tuple, []]] f1(slice s) {
          [slice, tuple] res_info = f2(s);
-         [slice, int] res_init = f3(first(res_info), 1);
+         [slice, int] res_init = f11(first(res_info), 1);
          if (builtin_equal(second(res_init), 0)) {
-         [slice, int] res_body_discr = f3(first(res_init), 1);
+         [slice, int] res_body_discr = f11(first(res_init), 1);
        if (builtin_equal(second(res_body_discr), 0))
        {
-         [slice, []] body = f36(first(res_body_discr));
+         [slice, []] body = f41(first(res_body_discr));
        [tuple, [tuple, []]] mes =
        [second(res_info), second(body)];
        return
-       f38(first(body), mes);
+       f43(first(body), mes);
        } else
        {
          }} else
@@ -1477,3 +1500,118 @@ let%expect_test "deserializer" =
       [slice slice_, int value2] = f2(slice_);
       return [[value1, value2], slice_];
     } |}]
+
+let%expect_test "deserializer unions" =
+  let source =
+    {|
+      union TestUnion {
+        case Int[8]
+        case Int[9]
+      }
+      let deserialize_union = deserializer[TestUnion];
+    |}
+  in
+  pp_codegen source ;
+  [%expect
+    {|
+    forall Value1, Value2 -> Value1 tensor2_value1((Value1, Value2) tensor) {
+      (Value1 value, _) = tensor;
+      return value;
+    }
+    forall Value1, Value2 -> Value2 tensor2_value2((Value1, Value2) tensor) {
+      (_, Value2 value) = tensor;
+      return value;
+    }
+    int builtin_equal(int i1, int i2) {
+      return __==__(i1, i2);
+    }
+    _ builtin_throw(int e) {
+      return throw(e);
+    }
+    _ builtin_send_raw_msg(cell c, int f) {
+      return send_raw_msg(c, f);
+    }
+    (int, int) builtin_divmod(int i1, int i2) {
+      return divmod(i1, i2);
+    }
+    _ builtin_end_parse(slice s) {
+      return end_parse(s);
+    }
+    (slice, int) builtin_load_coins(slice s) {
+      return load_coins(s);
+    }
+    (slice, slice) builtin_load_bits(slice s, int bs) {
+      return load_bits(s, bs);
+    }
+    (slice, int) builtin_load_uint(slice s, int bs) {
+      return load_uint(s, bs);
+    }
+    (slice, int) builtin_load_int(slice s, int bs) {
+      return load_int(s, bs);
+    }
+    slice builtin_begin_parse(cell c) {
+      return begin_parse(c);
+    }
+    builder builtin_store_coins(builder b, int c) {
+      return store_coins(b, c);
+    }
+    builder builtin_store_uint(builder b, int i, int bs) {
+      return store_uint(b, i, bs);
+    }
+    builder builtin_store_int(builder b, int i, int bs) {
+      return store_int(b, i, bs);
+    }
+    cell builtin_end_cell(builder b) {
+      return end_cell(b);
+    }
+    builder builtin_begin_cell() {
+      return begin_cell();
+    }
+    _ throw(int n) {
+      return builtin_throw(n);
+    }
+    _ send_raw_msg(cell msg, int flags) {
+      return builtin_send_raw_msg(msg, flags);
+    }
+    [slice, int] f0(slice self, int bits) {
+      (slice, int) output = builtin_load_uint(self, bits);
+      slice slice_ = tensor2_value1(output);
+      int int_ = tensor2_value2(output);
+      return [slice_, int_];
+    }
+    [slice, int] f2(slice self, int bits) {
+      (slice, int) output = builtin_load_int(self, bits);
+      slice slice_ = tensor2_value1(output);
+      int int_ = tensor2_value2(output);
+      return [slice_, int_];
+    }
+    [slice, int] f1(slice s) {
+      [slice, int] res = f2(s, 9);
+      [slice slice_, int value] = res;
+      return [slice_, value];
+    }
+    [slice, tuple] f3(slice s, tuple v) {
+      return [s, v];
+    }
+    [slice, int] f4(slice s) {
+      [slice, int] res = f2(s, 8);
+      [slice slice_, int value] = res;
+      return [slice_, value];
+    }
+    [slice, tuple] deserialize_union(slice slice_) {
+      [slice, int] res_discr = f0(slice_, 1);
+      if (builtin_equal(second(res_discr), 0)) {
+      [slice, int] res = f4(first(res_discr));
+    return
+    f3(first(res), second(res));
+    } else
+    {
+      [slice, int] res_discr = f0(first(res_discr), 1);
+    if (builtin_equal(second(res_discr), 1))
+    {
+      [slice, int] res = f1(first(res_discr));
+    return
+    f3(first(res), second(res));
+    } else
+    throw(0);
+    }} |}]
