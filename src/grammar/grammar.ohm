@@ -1,0 +1,38 @@
+Tact {
+
+    // Starting point of the program
+    Program = Expression
+
+    // 
+
+    // Expressions
+    Expression = ExpressionAdd
+    ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
+                  | ExpressionMul "/" ExpressionUnary --div
+                  | ExpressionUnary
+    ExpressionAdd = ExpressionAdd "+" ExpressionMul --add
+                  | ExpressionAdd "-" ExpressionMul --sub
+                  | ExpressionMul
+    ExpressionUnary = integerLiteral
+                    | id
+                   
+
+    // Integer Literal
+    // hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")
+    // digit defined in Ohm's built-in rules (otherwise: digit = "0".."9")
+    integerLiteral = integerLiteralHex | integerLiteralDec // Order is important
+    integerLiteralDec = digit+
+    integerLiteralHex = "0x" hexDigit+
+                      | "0X" hexDigit+
+
+    // ID Literal
+    idLetter = "a".."z" | "A".."Z"
+    idStart = idLetter
+    idPart = idLetter | digit
+    id = idStart idPart*
+
+    // Keywords
+    keyword = struct
+    struct = "struct" ~idPart
+    class = "class" ~idPart
+}
