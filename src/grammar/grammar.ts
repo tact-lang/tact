@@ -76,11 +76,24 @@ export type GrammarStatementReturn = {
     expression: GrammarExpression
 }
 
+export type GrammarFieldRead = {
+    kind: 'read_field'
+    name: string
+    expression: GrammarExpression
+}
+
+
+export type GrammarCall = {
+    kind: 'call'
+    expression: GrammarExpression
+    args: GrammarExpression[]
+}
+
 export type GrammarProgramItem = GrammarStruct;
 
 export type GrammarProgram = { kind: 'program', entries: GrammarProgramItem[] };
 
-type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | GrammarField | GrammarContract | GrammarFunction | GrammarArgument | GrammarStatementLet | GrammarStatementReturn;
+type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | GrammarField | GrammarContract | GrammarFunction | GrammarArgument | GrammarStatementLet | GrammarStatementReturn | GrammarFieldRead | GrammarCall;
 
 //
 // Implementation
@@ -169,6 +182,12 @@ semantics.addOperation<GrammarItem>('eval', {
     },
     ExpressionMul_mul(arg0, arg1, arg2) {
         return ({ kind: 'mul', left: arg0.eval(), right: arg2.eval() });
+    },
+    ExpressionField(arg0, arg1, arg2) {
+        return ({ kind: 'read_field', expression: arg0.eval(), name: arg2.sourceString });
+    },
+    ExpressionCall(arg0, arg1, arg2, arg3, arg4, arg5) {
+        return ({ kind: 'call', expression: arg2.eval(), args: arg4.asIteration().children.map((v: any) => v.eval()) });
     },
 });
 

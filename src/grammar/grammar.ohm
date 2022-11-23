@@ -43,10 +43,16 @@ Tact {
                     | "!" ExpressionUnary --log_not
                     | "~" ExpressionUnary --bit_not
                     | ExpressionValue
-    ExpressionValue = id
+    // Order is important
+    ExpressionValue = ExpressionCall
+                    | ExpressionField
                     | integerLiteral
                     | nullLiteral
                     | boolLiteral
+                    | id
+                    
+    ExpressionField = ExpressionValue "." id
+    ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
 
     // Type Literal
     typeLiteral = letterAsciiUC typeLiteralPart*

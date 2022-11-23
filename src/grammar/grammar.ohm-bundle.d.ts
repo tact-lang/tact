@@ -39,6 +39,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ExpressionUnary_bit_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionField?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode) => T;
   typeLiteral?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   typeLiteralPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   integerLiteral?: (this: NonterminalNode, arg0: NonterminalNode) => T;
