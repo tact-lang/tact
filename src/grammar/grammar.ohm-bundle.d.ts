@@ -20,6 +20,12 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StructBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Contract?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
   ContractBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Function?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode, arg5: TerminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: IterationNode, arg9: TerminalNode) => T;
+  FunctionArg?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  Statement?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  StatementBlock?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode, arg2: TerminalNode) => T;
+  StatementLet?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
+  StatementReturn?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   Expression?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionMul_mul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionMul_div?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
@@ -50,6 +56,9 @@ export interface TactActionDict<T> extends ActionDict<T> {
   struct?: (this: NonterminalNode, arg0: TerminalNode) => T;
   contract?: (this: NonterminalNode, arg0: TerminalNode) => T;
   var?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  let?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  fun?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  return?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
 }
 

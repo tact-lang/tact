@@ -52,11 +52,35 @@ export type GrammarField = {
     type: string
 }
 
+export type GrammarFunction = {
+    kind: 'function',
+    name: string,
+    return: string,
+    args: GrammarArgument[]
+}
+
+export type GrammarArgument = {
+    kind: 'argument',
+    name: string,
+    type: string
+}
+
+export type GrammarStatementLet = {
+    kind: 'let',
+    name: string,
+    expression: GrammarExpression
+}
+
+export type GrammarStatementReturn = {
+    kind: 'return',
+    expression: GrammarExpression
+}
+
 export type GrammarProgramItem = GrammarStruct;
 
 export type GrammarProgram = { kind: 'program', entries: GrammarProgramItem[] };
 
-type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | GrammarField | GrammarContract;
+type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | GrammarField | GrammarContract | GrammarFunction | GrammarArgument | GrammarStatementLet | GrammarStatementReturn;
 
 //
 // Implementation
@@ -90,6 +114,35 @@ semantics.addOperation<GrammarItem>('eval', {
             kind: 'field',
             name: arg1.sourceString,
             type: arg3.sourceString
+        }
+    },
+    Function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+        return {
+            kind: 'function',
+            name: arg1.sourceString,
+            return: arg6.sourceString,
+            args: arg3.asIteration().children.map((v: any) => v.eval()),
+            statements: arg8.children.map((v: any) => v.eval()),
+        }
+    },
+    FunctionArg(arg0, arg1, arg2) {
+        return {
+            kind: 'argument',
+            name: arg0.sourceString,
+            type: arg2.sourceString
+        }
+    },
+    StatementLet(arg0, arg1, arg2, arg3, arg4) {
+        return {
+            kind: 'let',
+            name: arg1.sourceString,
+            expression: arg3.eval()
+        }
+    },
+    StatementReturn(arg0, arg1, arg2) {
+        return {
+            kind: 'return',
+            expression: arg1.eval()
         }
     },
     integerLiteral(n) {

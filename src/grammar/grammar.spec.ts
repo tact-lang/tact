@@ -14,6 +14,10 @@ describe('grammar', () => {
         }
         contract World {
             var a: Hello;
+            fun hello(a: Int32, b: String): Int256 {
+                let a = 123 * 4555;
+                return a;
+            }
         }
         `;
 

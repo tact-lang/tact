@@ -16,6 +16,19 @@ Tact {
     // Contract
     Contract = contract id "{" ContractBody* "}"
     ContractBody = Field
+                 | Function 
+
+    // Function
+    Function = fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}"
+    FunctionArg = id ":" Type
+
+    // Statements
+    Statement = StatementLet
+              | StatementBlock
+              | StatementReturn
+    StatementBlock = "{" Statement* "}"
+    StatementLet = let id "=" Expression ";"
+    StatementReturn = return Expression ";"
 
     // Expressions
     Expression = ExpressionAdd
@@ -62,10 +75,13 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var // Order is important
+    keyword = struct | contract | var | fun | let | return // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
+    let = "let" ~idPart
+    fun = "fun" ~idPart
+    return = "return" ~idPart
 
     // Reserved
     reservedWord = keyword
