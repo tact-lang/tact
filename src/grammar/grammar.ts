@@ -1,32 +1,62 @@
 import rawGrammar from './grammar.ohm-bundle';
 
 export type GrammarNumber = {
-    type: 'number', value: bigint
+    kind: 'number', value: bigint
 };
 
 export type GrammarID = {
-    type: 'id', value: string
+    kind: 'id', value: string
 }
 
 export type GrammarAdd = {
-    type: 'add', left: GrammarExpression, right: GrammarExpression
+    kind: 'add', left: GrammarExpression, right: GrammarExpression
 };
 
 export type GrammarSub = {
-    type: 'sub', left: GrammarExpression, right: GrammarExpression
+    kind: 'sub', left: GrammarExpression, right: GrammarExpression
 };
 
 export type GrammarMul = {
-    type: 'mul', left: GrammarExpression, right: GrammarExpression
+    kind: 'mul', left: GrammarExpression, right: GrammarExpression
 };
 
 export type GrammarDiv = {
-    type: 'div', left: GrammarExpression, right: GrammarExpression
+    kind: 'div', left: GrammarExpression, right: GrammarExpression
 };
 
-export type GrammarExpression = GrammarNumber | GrammarAdd | GrammarSub | GrammarMul | GrammarDiv | GrammarID;
+export type GrammarNull = {
+    kind: 'null'
+}
 
-export type GrammarProgram = GrammarExpression;
+export type GrammarBoolean = {
+    kind: 'boolean', value: boolean
+}
+
+export type GrammarExpression = GrammarNumber | GrammarAdd | GrammarSub | GrammarMul | GrammarDiv | GrammarID | GrammarNull | GrammarBoolean;
+
+export type GrammarStruct = {
+    kind: 'struct',
+    name: string,
+    expressions: GrammarExpression[]
+}
+
+export type GrammarContract = {
+    kind: 'contract',
+    name: string,
+    expressions: GrammarExpression[]
+}
+
+export type GrammarField = {
+    kind: 'field',
+    name: string,
+    type: string
+}
+
+export type GrammarProgramItem = GrammarStruct;
+
+export type GrammarProgram = { kind: 'program', entries: GrammarProgramItem[] };
+
+type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | GrammarField | GrammarContract;
 
 //
 // Implementation
@@ -34,25 +64,58 @@ export type GrammarProgram = GrammarExpression;
 
 const semantics = rawGrammar.createSemantics();
 
-semantics.addOperation<GrammarProgram>('eval', {
+semantics.addOperation<GrammarItem>('eval', {
+    Program(arg0) {
+        return {
+            kind: 'program',
+            entries: arg0.children.map((v) => v.eval())
+        };
+    },
+    Struct(arg0, arg1, arg2, arg3, arg4) {
+        return {
+            kind: 'struct',
+            name: arg1.sourceString,
+            expressions: arg3.children.map((v) => v.eval())
+        }
+    },
+    Contract(arg0, arg1, arg2, arg3, arg4) {
+        return {
+            kind: 'contract',
+            name: arg1.sourceString,
+            expressions: arg3.children.map((v) => v.eval())
+        }
+    },
+    Field(arg0, arg1, arg2, arg3, arg4) {
+        return {
+            kind: 'field',
+            name: arg1.sourceString,
+            type: arg3.sourceString
+        }
+    },
     integerLiteral(n) {
         // Parses dec-based integer and hex-based integers
-        return ({ type: 'number', value: BigInt(n.sourceString) });
+        return ({ kind: 'number', value: BigInt(n.sourceString) });
     },
     id(arg0, arg1) {
-        return ({ type: 'id', value: arg0.sourceString + arg1.sourceString });
+        return ({ kind: 'id', value: arg0.sourceString + arg1.sourceString });
+    },
+    nullLiteral(arg0) {
+        return ({ kind: 'null' });
+    },
+    boolLiteral(arg0) {
+        return ({ kind: 'boolean', value: arg0.sourceString === 'true' });
     },
     ExpressionAdd_add(arg0, arg1, arg2) {
-        return ({ type: 'add', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'add', left: arg0.eval(), right: arg2.eval() });
     },
     ExpressionAdd_sub(arg0, arg1, arg2) {
-        return ({ type: 'sub', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'sub', left: arg0.eval(), right: arg2.eval() });
     },
     ExpressionMul_div(arg0, arg1, arg2) {
-        return ({ type: 'div', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'div', left: arg0.eval(), right: arg2.eval() });
     },
     ExpressionMul_mul(arg0, arg1, arg2) {
-        return ({ type: 'mul', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'mul', left: arg0.eval(), right: arg2.eval() });
     },
 });
 

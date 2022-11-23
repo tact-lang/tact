@@ -1,9 +1,21 @@
 Tact {
 
     // Starting point of the program
-    Program = Expression
+    Program = ProgramItem*
+    ProgramItem = Struct
+                | Contract
 
-    // 
+    // Field declarations
+    Type = typeLiteral
+    Field = var id ":" Type ";"
+
+    // Struct
+    Struct = struct id "{" StructBody* "}"
+    StructBody = Field
+
+    // Contract
+    Contract = contract id "{" ContractBody* "}"
+    ContractBody = Field
 
     // Expressions
     Expression = ExpressionAdd
@@ -13,9 +25,19 @@ Tact {
     ExpressionAdd = ExpressionAdd "+" ExpressionMul --add
                   | ExpressionAdd "-" ExpressionMul --sub
                   | ExpressionMul
-    ExpressionUnary = integerLiteral
-                    | id
-                   
+    ExpressionUnary = "-" ExpressionUnary --neg
+                    | "+" ExpressionUnary --add
+                    | "!" ExpressionUnary --log_not
+                    | "~" ExpressionUnary --bit_not
+                    | ExpressionValue
+    ExpressionValue = id
+                    | integerLiteral
+                    | nullLiteral
+                    | boolLiteral
+
+    // Type Literal
+    typeLiteral = letterAsciiUC typeLiteralPart*
+    typeLiteralPart = letterAscii | digit | "_"
 
     // Integer Literal
     // hexDigit defined in Ohm's built-in rules (otherwise: hexDigit = "0".."9" | "a".."f" | "A".."F")
@@ -25,14 +47,26 @@ Tact {
     integerLiteralHex = "0x" hexDigit+
                       | "0X" hexDigit+
 
+    // Letters
+    letterAsciiLC = "a".."z"
+    letterAsciiUC = "A".."Z"
+    letterAscii = letterAsciiLC | letterAsciiUC
+
     // ID Literal
-    idLetter = "a".."z" | "A".."Z"
-    idStart = idLetter
-    idPart = idLetter | digit
-    id = idStart idPart*
+    idStart = letterAscii
+    idPart = letterAscii | digit | "_"
+    id = ~reservedWord idStart idPart*
+
+    // Bool Literal
+    nullLiteral = "null" ~idPart
+    boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct
+    keyword = struct | contract | var // Order is important
     struct = "struct" ~idPart
-    class = "class" ~idPart
+    contract = "contract" ~idPart
+    var = "var" ~idPart
+
+    // Reserved
+    reservedWord = keyword
 }

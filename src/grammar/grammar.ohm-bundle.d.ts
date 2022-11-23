@@ -12,7 +12,14 @@ import {
 } from 'ohm-js';
 
 export interface TactActionDict<T> extends ActionDict<T> {
-  Program?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Program?: (this: NonterminalNode, arg0: IterationNode) => T;
+  ProgramItem?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Field?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
+  Struct?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  StructBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Contract?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  ContractBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Expression?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionMul_mul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionMul_div?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
@@ -20,17 +27,30 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ExpressionAdd_add?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionAdd_sub?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionAdd?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionUnary_neg?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
+  ExpressionUnary_add?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
+  ExpressionUnary_log_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
+  ExpressionUnary_bit_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  typeLiteral?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
+  typeLiteralPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   integerLiteral?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   integerLiteralDec?: (this: NonterminalNode, arg0: IterationNode) => T;
   integerLiteralHex?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode) => T;
-  idLetter?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  letterAsciiLC?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  letterAsciiUC?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  letterAscii?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   idStart?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  idPart?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  idPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   id?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
+  nullLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  boolLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
   keyword?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   struct?: (this: NonterminalNode, arg0: TerminalNode) => T;
-  class?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  contract?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  var?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
 }
 
 export interface TactSemantics extends Semantics {
