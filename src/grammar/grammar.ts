@@ -1,20 +1,12 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { GrammarNodes } from './types';
+import { ASTNode, ASTProgram, createNode } from '../ast/ast';
 
-// Tools
-type DistributiveOmit<T, K extends keyof any> = T extends any
-    ? Omit<T, K>
-    : never;
-let nextId = 1;
-function createNode(src: DistributiveOmit<GrammarNodes, 'id'>): GrammarNodes {
-    return Object.freeze(Object.assign({ id: nextId++ }, src));
-}
 
 // Semantics
 const semantics = rawGrammar.createSemantics();
 
 // Resolve program
-semantics.addOperation<GrammarNodes>('resolve_program', {
+semantics.addOperation<ASTNode>('resolve_program', {
     Program(arg0) {
         return createNode({
             kind: 'program',
@@ -24,7 +16,7 @@ semantics.addOperation<GrammarNodes>('resolve_program', {
 });
 
 // Resolve program items
-semantics.addOperation<GrammarNodes>('resolve_program_item', {
+semantics.addOperation<ASTNode>('resolve_program_item', {
     Struct(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'def_struct',
@@ -42,7 +34,7 @@ semantics.addOperation<GrammarNodes>('resolve_program_item', {
 });
 
 // Struct and class declarations
-semantics.addOperation<GrammarNodes>('resolve_declaration', {
+semantics.addOperation<ASTNode>('resolve_declaration', {
     Field(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'def_field',
@@ -69,12 +61,13 @@ semantics.addOperation<GrammarNodes>('resolve_declaration', {
 });
 
 // Statements
-semantics.addOperation<GrammarNodes>('resolve_statement', {
-    StatementLet(arg0, arg1, arg2, arg3, arg4) {
+semantics.addOperation<ASTNode>('resolve_statement', {
+    StatementLet(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
             kind: 'let',
             name: arg1.sourceString,
-            expression: arg3.resolve_expression()
+            type: arg3.sourceString,
+            expression: arg5.resolve_expression()
         })
     },
     StatementReturn(arg0, arg1, arg2) {
@@ -86,7 +79,7 @@ semantics.addOperation<GrammarNodes>('resolve_statement', {
 });
 
 // Expressions
-semantics.addOperation<GrammarNodes>('resolve_expression', {
+semantics.addOperation<ASTNode>('resolve_expression', {
     integerLiteral(n) {
         // Parses dec-based integer and hex-based integers
         return createNode({ kind: 'number', value: BigInt(n.sourceString) });
@@ -120,7 +113,7 @@ semantics.addOperation<GrammarNodes>('resolve_expression', {
     },
 });
 
-export function parse(src: string) {
+export function parse(src: string): ASTProgram {
     let matchResult = rawGrammar.match(src);
     if (matchResult.failed()) {
         throw new Error(matchResult.message);

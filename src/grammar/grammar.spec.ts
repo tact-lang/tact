@@ -9,13 +9,13 @@ describe('grammar', () => {
 
         const source = `
         struct Hello {
-            var a: Int32;
+            var a: Int;
             var B: String;
         }
         contract World {
             var a: Hello;
-            fun hello(a: Int32, b: String): Int256 {
-                let a = 123 * self.a + self.a.abs();
+            fun hello(a: Int, b: String): Int {
+                let a: Int = 123 * self.a + self.a.abs();
                 return a;
             }
         }

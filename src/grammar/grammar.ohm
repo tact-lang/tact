@@ -27,7 +27,7 @@ Tact {
               | StatementBlock
               | StatementReturn
     StatementBlock = "{" Statement* "}"
-    StatementLet = let id "=" Expression ";"
+    StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";"
 
     // Expressions
