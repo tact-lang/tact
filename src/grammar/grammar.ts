@@ -1,99 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-
-export type GrammarNumber = {
-    kind: 'number', value: bigint
-};
-
-export type GrammarID = {
-    kind: 'id', value: string
-}
-
-export type GrammarAdd = {
-    kind: 'add', left: GrammarExpression, right: GrammarExpression
-};
-
-export type GrammarSub = {
-    kind: 'sub', left: GrammarExpression, right: GrammarExpression
-};
-
-export type GrammarMul = {
-    kind: 'mul', left: GrammarExpression, right: GrammarExpression
-};
-
-export type GrammarDiv = {
-    kind: 'div', left: GrammarExpression, right: GrammarExpression
-};
-
-export type GrammarNull = {
-    kind: 'null'
-}
-
-export type GrammarBoolean = {
-    kind: 'boolean', value: boolean
-}
-
-export type GrammarExpression = GrammarNumber | GrammarAdd | GrammarSub | GrammarMul | GrammarDiv | GrammarID | GrammarNull | GrammarBoolean;
-
-export type GrammarStruct = {
-    kind: 'struct',
-    name: string,
-    expressions: GrammarExpression[]
-}
-
-export type GrammarContract = {
-    kind: 'contract',
-    name: string,
-    expressions: GrammarExpression[]
-}
-
-export type GrammarField = {
-    kind: 'field',
-    name: string,
-    type: string
-}
-
-export type GrammarFunction = {
-    kind: 'function',
-    name: string,
-    return: string,
-    args: GrammarArgument[]
-}
-
-export type GrammarArgument = {
-    kind: 'argument',
-    name: string,
-    type: string
-}
-
-export type GrammarStatementLet = {
-    kind: 'let',
-    name: string,
-    expression: GrammarExpression
-}
-
-export type GrammarStatementReturn = {
-    kind: 'return',
-    expression: GrammarExpression
-}
-
-export type GrammarFieldRead = {
-    kind: 'read_field'
-    name: string
-    expression: GrammarExpression
-}
-
-
-export type GrammarCall = {
-    kind: 'call'
-    expression: GrammarExpression
-    args: GrammarExpression[]
-}
-
-export type GrammarProgramItem = GrammarStruct;
-
-export type GrammarProgram = { kind: 'program', entries: GrammarProgramItem[] };
-
-type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | GrammarField | GrammarContract | GrammarFunction | GrammarArgument | GrammarStatementLet | GrammarStatementReturn | GrammarFieldRead | GrammarCall;
+import { GrammarNodes } from './types';
 
 //
 // Implementation
@@ -101,63 +7,80 @@ type GrammarItem = GrammarExpression | GrammarProgramItem | GrammarProgram | Gra
 
 const semantics = rawGrammar.createSemantics();
 
-semantics.addOperation<GrammarItem>('eval', {
+// Resolve program
+semantics.addOperation<GrammarNodes>('resolve_program', {
     Program(arg0) {
         return {
             kind: 'program',
-            entries: arg0.children.map((v) => v.eval())
+            entries: arg0.children.map((v) => v.resolve_program_item())
         };
     },
+});
+
+// Resolve program items
+semantics.addOperation<GrammarNodes>('resolve_program_item', {
     Struct(arg0, arg1, arg2, arg3, arg4) {
         return {
-            kind: 'struct',
+            kind: 'def_struct',
             name: arg1.sourceString,
-            expressions: arg3.children.map((v) => v.eval())
+            fields: arg3.children.map((v) => v.resolve_declaration())
         }
     },
     Contract(arg0, arg1, arg2, arg3, arg4) {
         return {
-            kind: 'contract',
+            kind: 'def_contract',
             name: arg1.sourceString,
-            expressions: arg3.children.map((v) => v.eval())
+            declarations: arg3.children.map((v) => v.resolve_declaration())
         }
     },
+});
+
+// Struct and class declarations
+semantics.addOperation<GrammarNodes>('resolve_declaration', {
     Field(arg0, arg1, arg2, arg3, arg4) {
         return {
-            kind: 'field',
+            kind: 'def_field',
             name: arg1.sourceString,
             type: arg3.sourceString
         }
     },
-    Function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
-        return {
-            kind: 'function',
-            name: arg1.sourceString,
-            return: arg6.sourceString,
-            args: arg3.asIteration().children.map((v: any) => v.eval()),
-            statements: arg8.children.map((v: any) => v.eval()),
-        }
-    },
     FunctionArg(arg0, arg1, arg2) {
         return {
-            kind: 'argument',
+            kind: 'def_argument',
             name: arg0.sourceString,
             type: arg2.sourceString
         }
     },
+    Function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+        return {
+            kind: 'def_function',
+            name: arg1.sourceString,
+            return: arg6.sourceString,
+            args: arg3.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: arg8.children.map((v: any) => v.resolve_statement()),
+        }
+    },
+});
+
+// Statements
+semantics.addOperation<GrammarNodes>('resolve_statement', {
     StatementLet(arg0, arg1, arg2, arg3, arg4) {
         return {
             kind: 'let',
             name: arg1.sourceString,
-            expression: arg3.eval()
+            expression: arg3.resolve_expression()
         }
     },
     StatementReturn(arg0, arg1, arg2) {
         return {
             kind: 'return',
-            expression: arg1.eval()
+            expression: arg1.resolve_expression()
         }
     },
+});
+
+// Expressions
+semantics.addOperation<GrammarNodes>('resolve_expression', {
     integerLiteral(n) {
         // Parses dec-based integer and hex-based integers
         return ({ kind: 'number', value: BigInt(n.sourceString) });
@@ -172,22 +95,22 @@ semantics.addOperation<GrammarItem>('eval', {
         return ({ kind: 'boolean', value: arg0.sourceString === 'true' });
     },
     ExpressionAdd_add(arg0, arg1, arg2) {
-        return ({ kind: 'add', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'op_binary', op: '+', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
     },
     ExpressionAdd_sub(arg0, arg1, arg2) {
-        return ({ kind: 'sub', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'op_binary', op: '-', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
     },
     ExpressionMul_div(arg0, arg1, arg2) {
-        return ({ kind: 'div', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'op_binary', op: '/', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
     },
     ExpressionMul_mul(arg0, arg1, arg2) {
-        return ({ kind: 'mul', left: arg0.eval(), right: arg2.eval() });
+        return ({ kind: 'op_binary', op: '*', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
     },
     ExpressionField(arg0, arg1, arg2) {
-        return ({ kind: 'read_field', expression: arg0.eval(), name: arg2.sourceString });
+        return ({ kind: 'op_field', src: arg0.resolve_expression(), key: arg2.sourceString });
     },
     ExpressionCall(arg0, arg1, arg2, arg3, arg4, arg5) {
-        return ({ kind: 'call', expression: arg2.eval(), args: arg4.asIteration().children.map((v: any) => v.eval()) });
+        return ({ kind: 'op_call', src: arg0.resolve_expression(), key: arg2.sourceString, args: arg4.asIteration().children.map((v: any) => v.resolve_expression()) });
     },
 });
 
@@ -196,6 +119,6 @@ export function parse(src: string) {
     if (matchResult.failed()) {
         throw new Error(matchResult.message);
     }
-    let res = semantics(matchResult).eval();
+    let res = semantics(matchResult).resolve_program();
     return res;
 }
