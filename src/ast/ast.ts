@@ -1,5 +1,5 @@
-export type ASTBuiltIn = {
-    kind: 'built-in',
+export type ASTPrimitive = {
+    kind: 'primitive',
     id: number,
     name: string
 }
@@ -20,10 +20,10 @@ export type ASTID = {
     value: string
 }
 
-export type ASTNull = {
-    kind: 'null'
-    id: number,
-}
+// export type ASTNull = {
+//     kind: 'null'
+//     id: number,
+// }
 
 export type ASTBoolean = {
     kind: 'boolean',
@@ -72,7 +72,7 @@ export type ASTOpCall = {
 export type ASTProgram = {
     kind: 'program',
     id: number,
-    entries: (ASTStruct | ASTContract)[]
+    entries: (ASTStruct | ASTContract | ASTPrimitive)[]
 }
 
 export type ASTStruct = {
@@ -135,16 +135,16 @@ export type ASTStatementReturn = {
 //
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn;
-export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTNull | ASTID | ASTBoolean;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTBuiltIn;
-export type ASTType = ASTBuiltIn | ASTStruct | ASTContract;
+export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive;
+export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
     return src.kind === 'let' || src.kind === 'return';
 }
 
 export function isExpression(src: ASTNode): src is ASTExpression {
-    return src.kind === 'op_binary' || src.kind === 'op_unary' || src.kind === 'op_field' || src.kind === 'number' || src.kind === 'null' || src.kind === 'id' || src.kind === 'boolean';
+    return src.kind === 'op_binary' || src.kind === 'op_unary' || src.kind === 'op_field' || src.kind === 'number' || src.kind === 'id' || src.kind === 'boolean';
 }
 
 

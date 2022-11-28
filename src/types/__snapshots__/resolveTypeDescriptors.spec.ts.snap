@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolveTypeDescriptors should resolve types 1`] = `
+{
+  "fields": {},
+  "kind": "primitive",
+  "name": "Int",
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve types 2`] = `
+{
+  "fields": {
+    "a": {
+      "name": "a",
+      "type": {
+        "fields": {},
+        "kind": "primitive",
+        "name": "Int",
+      },
+    },
+  },
+  "kind": "contract",
+  "name": "Test",
+}
+`;

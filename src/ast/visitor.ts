@@ -15,7 +15,7 @@ function visitDefField(ctx: CompilerContext, visitor: ContextVisitor, s: ASTFiel
 function visitArg(ctx: CompilerContext, visitor: ContextVisitor, s: ASTArgument): CompilerContext {
     visitor.visit(ctx, s);
     visitor.visitEnd(ctx, s);
-    return ctx;
+    return ctx.addVariable({ name: s.name, node: s });
 }
 
 function visitExpression(ctx: CompilerContext, visitor: ContextVisitor, s: ASTExpression): CompilerContext {
@@ -103,8 +103,8 @@ function visitBuiltIn(ctx: CompilerContext, visitor: ContextVisitor, s: ASTBuilt
 }
 
 export function visit(ctx: CompilerContext, visitor: ContextVisitor) {
-    for (let n of Object.keys(ctx.types)) {
-        let t = ctx.types[n];
+    for (let n of Object.keys(ctx.astTypes)) {
+        let t = ctx.astTypes[n];
         if (t.kind === 'def_struct') {
             ctx = visitStruct(ctx, visitor, t);
         } else if (t.kind === 'def_contract') {

@@ -4,6 +4,10 @@ Tact {
     Program = ProgramItem*
     ProgramItem = Struct
                 | Contract
+                | Primitive
+
+    // Built-in declarations
+    Primitive = primitive Type ";"
 
     // Field declarations
     Type = typeLiteral
@@ -47,7 +51,7 @@ Tact {
     ExpressionValue = ExpressionCall
                     | ExpressionField
                     | integerLiteral
-                    | nullLiteral
+                    // | nullLiteral
                     | boolLiteral
                     | id
                     
@@ -77,7 +81,7 @@ Tact {
     id = ~reservedWord idStart idPart*
 
     // Bool Literal
-    nullLiteral = "null" ~idPart
+    // nullLiteral = "null" ~idPart
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
@@ -88,6 +92,7 @@ Tact {
     let = "let" ~idPart
     fun = "fun" ~idPart
     return = "return" ~idPart
+    primitive = "primitive" ~idPart
 
     // Reserved
     reservedWord = keyword

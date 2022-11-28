@@ -14,35 +14,71 @@ export class CompilerContext {
         for (let a of asts) {
             for (let e of a.entries) {
                 if (e.kind === 'def_struct') {
-                    ctx = ctx.addType(e);
+                    ctx = ctx.addASTType(e);
                 } else if (e.kind === 'def_contract') {
-                    ctx = ctx.addType(e);
+                    ctx = ctx.addASTType(e);
+                } else if (e.kind === 'primitive') {
+                    ctx = ctx.addASTType(e);
                 }
             }
         }
         return ctx;
     }
 
-    readonly types: { [key: string]: ASTType };
+    readonly astTypes: { [key: string]: ASTType };
     readonly variables: { [key: string]: VariableRef };
+    readonly shared: { [key: symbol]: any } = {};
 
-    constructor(types: { [key: string]: ASTType } = {}, variables: { [key: string]: VariableRef } = {}) {
-        this.types = types;
+    constructor(astTypes: { [key: string]: ASTType } = {}, variables: { [key: string]: VariableRef } = {}, shared: { [key: symbol]: any } = {}) {
+        this.astTypes = astTypes;
         this.variables = variables;
+        this.shared = shared;
+        Object.freeze(this.astTypes);
+        Object.freeze(this.shared);
+        Object.freeze(this.variables);
         Object.freeze(this);
     }
 
-    addType = (ref: ASTType) => {
-        if (this.types[ref.name]) {
+    addASTType = (ref: ASTType) => {
+        if (this.astTypes[ref.name]) {
             throw Error('Type already exists');
         }
-        return new CompilerContext({ ...this.types, [ref.name]: ref }, this.variables);
+        return new CompilerContext({ ...this.astTypes, [ref.name]: ref }, this.variables, this.shared);
     }
 
     addVariable = (ref: VariableRef) => {
         if (this.variables[ref.name]) {
             throw Error('Variable already exists');
         }
-        return new CompilerContext(this.types, { ...this.variables, [ref.name]: ref });
+        return new CompilerContext(this.astTypes, { ...this.variables, [ref.name]: ref }, this.shared);
+    }
+
+    addShared = <T>(store: symbol, key: string, value: T) => {
+        let sh: { [key: string]: T } = {};
+        if (this.shared[store]) {
+            sh = { ...this.shared[store] };
+        }
+        sh[key] = value;
+        return new CompilerContext(this.astTypes, this.variables, { ...this.shared, [store]: sh });
+    }
+}
+
+export function createContextStore<T>() {
+    let symbol = Symbol();
+    return {
+        get(ctx: CompilerContext, key: string) {
+            if (!ctx.shared[symbol]) {
+                return null;
+            }
+            let m = ctx.shared[symbol] as { [key: string]: T };
+            if (m[key]) {
+                return m[key];
+            } else {
+                return null;
+            }
+        },
+        set(ctx: CompilerContext, key: string, v: T) {
+            return ctx.addShared(symbol, key, v);
+        }
     }
 }

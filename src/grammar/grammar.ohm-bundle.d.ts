@@ -14,6 +14,7 @@ import {
 export interface TactActionDict<T> extends ActionDict<T> {
   Program?: (this: NonterminalNode, arg0: IterationNode) => T;
   ProgramItem?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Primitive?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Field?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
   Struct?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
@@ -52,7 +53,6 @@ export interface TactActionDict<T> extends ActionDict<T> {
   idStart?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   idPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   id?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
-  nullLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
   boolLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
   keyword?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   struct?: (this: NonterminalNode, arg0: TerminalNode) => T;
@@ -61,6 +61,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   let?: (this: NonterminalNode, arg0: TerminalNode) => T;
   fun?: (this: NonterminalNode, arg0: TerminalNode) => T;
   return?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  primitive?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
 }
 

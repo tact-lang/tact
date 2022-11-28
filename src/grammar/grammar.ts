@@ -17,6 +17,12 @@ semantics.addOperation<ASTNode>('resolve_program', {
 
 // Resolve program items
 semantics.addOperation<ASTNode>('resolve_program_item', {
+    Primitive(arg0, arg1, arg2) {
+        return createNode({
+            kind: 'primitive',
+            name: arg1.sourceString
+        });
+    },
     Struct(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'def_struct',
@@ -87,9 +93,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     id(arg0, arg1) {
         return createNode({ kind: 'id', value: arg0.sourceString + arg1.sourceString });
     },
-    nullLiteral(arg0) {
-        return createNode({ kind: 'null' });
-    },
+    // nullLiteral(arg0) {
+    //     return createNode({ kind: 'null' });
+    // },
     boolLiteral(arg0) {
         return createNode({ kind: 'boolean', value: arg0.sourceString === 'true' });
     },
