@@ -158,7 +158,7 @@ semantics.addOperation<string[]>('resolve_lvalue', {
     LValue_subId(arg0, arg1, arg2) {
         return [arg0.sourceString, ...arg2.resolve_lvalue()];
     }
-})
+});
 
 // Expressions
 semantics.addOperation<ASTNode>('resolve_expression', {
@@ -235,6 +235,12 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     },
     ExpressionStaticCall(arg0, arg1, arg2, arg3) {
         return createNode({ kind: 'op_static_call', name: arg0.sourceString, args: arg2.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+    },
+    ExpressionNew(arg0, arg1, arg2, arg3) {
+        return createNode({ kind: 'op_new', type: arg0.sourceString, args: arg2.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+    },
+    NewParameter(arg0, arg1, arg2) {
+        return createNode({ kind: 'new_parameter', name: arg0.sourceString, exp: arg2.resolve_expression(), ref: createRef(this) });
     },
 });
 

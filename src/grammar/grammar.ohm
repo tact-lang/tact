@@ -83,12 +83,15 @@ Tact {
                     | ExpressionField
                     | ExpressionStaticCall
                     | ExpressionBracket
+                    | ExpressionNew
                     | integerLiteral
                     | boolLiteral
                     | id
                     
     ExpressionField = ExpressionValue "." id
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
+    ExpressionNew = id "{" ListOf<NewParameter, ","> "}"
+    NewParameter = id ":" Expression
     ExpressionStaticCall = ExpressionValue "(" ListOf<Expression, ","> ")"
 
     // Type Literal

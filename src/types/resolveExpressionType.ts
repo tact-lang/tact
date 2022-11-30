@@ -154,6 +154,11 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                 throw Error('Function ' + exp.name + ' does not return a value');
             }
             return registerExpType(ctx, exp, f.returns.name);
+        } else if (exp.kind === 'op_new') {
+            for (let e of exp.args) {
+                ctx = resolveExpression(ctx, vctx, e.exp);
+            }
+            return registerExpType(ctx, exp, exp.type);
         }
         throw Error('Unknown expression');
     }

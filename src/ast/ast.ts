@@ -1,5 +1,4 @@
 import { Interval as RawInterval, Node as RawNode } from 'ohm-js';
-const errors = require('ohm-js/src/errors');
 
 export class ASTRef {
     readonly #interval: RawInterval;
@@ -92,6 +91,22 @@ export type ASTOpCallStatic = {
     id: number,
     name: string,
     args: ASTExpression[],
+    ref: ASTRef
+}
+
+export type ASTOpNew = {
+    kind: 'op_new'
+    id: number,
+    type: string,
+    args: ASTNewParameter[],
+    ref: ASTRef
+}
+
+export type ASTNewParameter = {
+    kind: 'new_parameter'
+    id: number,
+    name: string,
+    exp: ASTExpression,
     ref: ASTRef
 }
 
@@ -197,8 +212,8 @@ export type ASTSTatementAssign = {
 //
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign;
-export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign;
+export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
@@ -206,7 +221,7 @@ export function isStatement(src: ASTNode): src is ASTStatement {
 }
 
 export function isExpression(src: ASTNode): src is ASTExpression {
-    return src.kind === 'op_binary' || src.kind === 'op_unary' || src.kind === 'op_field' || src.kind === 'number' || src.kind === 'id' || src.kind === 'boolean';
+    return src.kind === 'op_binary' || src.kind === 'op_unary' || src.kind === 'op_field' || src.kind === 'number' || src.kind === 'id' || src.kind === 'boolean' || src.kind === 'op_new' || src.kind === 'op_call' || src.kind === 'op_static_call';
 }
 
 
