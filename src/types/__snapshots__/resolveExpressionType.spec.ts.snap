@@ -98,3 +98,52 @@ exports[`resolveExpressionType should resolve expressions for case-2.tact 1`] = 
   ],
 ]
 `;
+
+exports[`resolveExpressionType should resolve expressions for case-3.tact 1`] = `
+[
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "x + y",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "b + 1",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "b > 0",
+    "Bool",
+  ],
+  [
+    "z",
+    "Bool",
+  ],
+  [
+    "b > 0 || z",
+    "Bool",
+  ],
+]
+`;

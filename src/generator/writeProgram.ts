@@ -1,5 +1,6 @@
 import { ASTExpression, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
+import { getExpType } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getType } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
 import { Writer } from "./Writer";
@@ -18,7 +19,7 @@ function resolveFunCType(descriptor: TypeDescription): string {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        return '(' + Object.keys(descriptor.fields).map((k) => resolveFunCType(descriptor.fields[k].type)).join(', ') + ')';
+        return '[' + descriptor.fields.map((k) => resolveFunCType(k.type)).join(', ') + ']';
     }
 
     throw Error('Unknown type: ' + descriptor.kind);
@@ -53,6 +54,10 @@ function writeExpression(ctx: CompilerContext, f: ASTExpression): string {
             op = '__tact_gt';
         } else if (f.op === '>=') {
             op = '__tact_gte';
+        } else if (f.op === '||') {
+            op = '__tact_or';
+        } else if (f.op === '&&') {
+            op = '__tact_and';
         } else {
             throw Error('Unknown binary operator: ' + f.op);
         }
@@ -65,6 +70,16 @@ function writeExpression(ctx: CompilerContext, f: ASTExpression): string {
         // } else {
         //     throw Error('Unknown unary operator: ' + f.op);
         // }
+    } else if (f.kind === 'op_field') {
+        let src = getExpType(ctx, f.src);
+        let index = src.fields.findIndex((v) => v.name === f.name);
+        return '__tact_get(' + writeExpression(ctx, f.src) + ', ' + index + ')';
+    } else if (f.kind === 'op_static_call') {
+        return f.name + '(' + f.args.map((a) => writeExpression(ctx, a)).join(', ') + ')';
+    } else if (f.kind === 'op_call') {
+        let src = getExpType(ctx, f.src);
+        let index = src.functions.findIndex((v) => v.name === f.name);
+        return '__tact_call(' + writeExpression(ctx, f.src) + ', ' + index + ', [' + f.args.map((a) => writeExpression(ctx, a)).join(', ') + '])';
     }
     throw Error('Unknown expression kind: ' + f.kind);
 }
@@ -75,6 +90,9 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer) {
         return;
     } else if (f.kind === 'statement_let') {
         w.append(resolveFunCType(getType(ctx, f.type)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression) + ';');
+        return;
+    } else if (f.kind === 'statement_assign') {
+        w.append(f.name + ' = ' + writeExpression(ctx, f.expression) + ';');
         return;
     }
     throw Error('Unknown statement kind: ' + f.kind);

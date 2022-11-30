@@ -140,6 +140,14 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
+    StatementAssign(arg0, arg1, arg2, arg3) {
+        return createNode({
+            kind: 'statement_assign',
+            name: arg0.sourceString,
+            expression: arg2.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
 });
 
 // Expressions

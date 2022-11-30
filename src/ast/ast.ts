@@ -179,17 +179,25 @@ export type ASTStatementCall = {
     ref: ASTRef
 }
 
+export type ASTSTatementAssign = {
+    kind: 'statement_assign',
+    id: number,
+    name: string,
+    expression: ASTExpression,
+    ref: ASTRef
+}
+
 //
 // Unions
 //
 
-export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall;
+export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
-    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call';
+    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call' || src.kind === 'statement_assign';
 }
 
 export function isExpression(src: ASTNode): src is ASTExpression {
@@ -211,4 +219,8 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
         i = i.coverageWith(...extra.map((e) => e.source));
     }
     return new ASTRef(i);
+}
+
+export function thowError(message: string, ref: ASTRef): never {
+    throw new Error(message);
 }

@@ -3,14 +3,14 @@
 exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 1`] = `
 {
   "Bool": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Bool",
   },
   "Int": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Int",
   },
@@ -22,74 +22,74 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 2`] =
 exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] = `
 {
   "Bool": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Bool",
   },
   "Int": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Int",
   },
   "Struct1": {
-    "fields": {
-      "a": {
+    "fields": [
+      {
         "name": "a",
         "type": {
-          "fields": {},
-          "functions": {},
+          "fields": [],
+          "functions": [],
           "kind": "primitive",
           "name": "Int",
         },
       },
-      "b": {
+      {
         "name": "b",
         "type": {
-          "fields": {},
-          "functions": {},
+          "fields": [],
+          "functions": [],
           "kind": "primitive",
           "name": "Bool",
         },
       },
-    },
-    "functions": {},
+    ],
+    "functions": [],
     "kind": "struct",
     "name": "Struct1",
   },
   "Struct2": {
-    "fields": {
-      "a": {
+    "fields": [
+      {
         "name": "a",
         "type": {
-          "fields": {
-            "a": {
+          "fields": [
+            {
               "name": "a",
               "type": {
-                "fields": {},
-                "functions": {},
+                "fields": [],
+                "functions": [],
                 "kind": "primitive",
                 "name": "Int",
               },
             },
-            "b": {
+            {
               "name": "b",
               "type": {
-                "fields": {},
-                "functions": {},
+                "fields": [],
+                "functions": [],
                 "kind": "primitive",
                 "name": "Bool",
               },
             },
-          },
-          "functions": {},
+          ],
+          "functions": [],
           "kind": "struct",
           "name": "Struct1",
         },
       },
-    },
-    "functions": {},
+    ],
+    "functions": [],
     "kind": "struct",
     "name": "Struct2",
   },
@@ -101,14 +101,14 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 2`] =
 exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 1`] = `
 {
   "Bool": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Bool",
   },
   "Int": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Int",
   },
@@ -144,8 +144,8 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     },
     "name": "testFunc",
     "returns": {
-      "fields": {},
-      "functions": {},
+      "fields": [],
+      "functions": [],
       "kind": "primitive",
       "name": "Int",
     },
@@ -185,8 +185,8 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       {
         "name": "a",
         "type": {
-          "fields": {},
-          "functions": {},
+          "fields": [],
+          "functions": [],
           "kind": "primitive",
           "name": "Int",
         },
@@ -194,8 +194,8 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       {
         "name": "b",
         "type": {
-          "fields": {},
-          "functions": {},
+          "fields": [],
+          "functions": [],
           "kind": "primitive",
           "name": "Bool",
         },
@@ -249,34 +249,34 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
 exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] = `
 {
   "Bool": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Bool",
   },
   "HelloWorld": {
-    "fields": {
-      "a": {
+    "fields": [
+      {
         "name": "a",
         "type": {
-          "fields": {},
-          "functions": {},
+          "fields": [],
+          "functions": [],
           "kind": "primitive",
           "name": "Int",
         },
       },
-      "b": {
+      {
         "name": "b",
         "type": {
-          "fields": {},
-          "functions": {},
+          "fields": [],
+          "functions": [],
           "kind": "primitive",
           "name": "Bool",
         },
       },
-    },
-    "functions": {
-      "hello": {
+    ],
+    "functions": [
+      {
         "args": [],
         "ast": {
           "args": [],
@@ -293,7 +293,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "returns": null,
         "self": [Circular],
       },
-      "hello2": {
+      {
         "args": [],
         "ast": {
           "args": [],
@@ -310,13 +310,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "returns": null,
         "self": [Circular],
       },
-    },
+    ],
     "kind": "contract",
     "name": "HelloWorld",
   },
   "Int": {
-    "fields": {},
-    "functions": {},
+    "fields": [],
+    "functions": [],
     "kind": "primitive",
     "name": "Int",
   },

@@ -3,8 +3,8 @@ import { ASTFunction, ASTNativeFunction } from "../ast/ast";
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
     name: string;
-    fields: { [key: string]: FieldDescription };
-    functions: { [key: string]: FunctionDescription };
+    fields: FieldDescription[];
+    functions: FunctionDescription[];
 }
 
 export type FieldDescription = {

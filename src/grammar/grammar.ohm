@@ -41,11 +41,13 @@ Tact {
               | StatementReturn
               | StatementCall
               | StatementStaticCall
+              | StatementAssign
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";"
     StatementCall = ExpressionCall ";"
     StatementStaticCall = ExpressionStaticCall ";"
+    StatementAssign = id "=" Expression ";"
 
     // Expressions
     Expression = ExpressionOr

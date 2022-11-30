@@ -9,7 +9,8 @@
     "gen": "ohm generateBundles --withTypes src/grammar/*.ohm"
   },
   "dependencies": {
-    "ohm-js": "^16.4.0"
+    "ohm-js": "^16.4.0",
+    "ton-compiler": "^2.0.0"
   },
   "devDependencies": {
     "@ohm-js/cli": "^1.1.0",

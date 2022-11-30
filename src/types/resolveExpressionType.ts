@@ -27,7 +27,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
     function resolveCall(ctx: CompilerContext, vctx: VariableCTX, exp: ASTOpCall): CompilerContext {
         ctx = resolveExpression(ctx, vctx, exp.src);
         let src = getExpType(ctx, exp.src);
-        let f = src.functions[exp.name];
+        let f = src.functions.find((v) => v.name === exp.name);
         if (!f) {
             throw Error('Function ' + exp.name + ' not found at type ' + src.name);
         }
@@ -117,7 +117,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         } else if (exp.kind === 'op_field') {
             ctx = resolveExpression(ctx, vctx, exp.src);
             let src = getExpType(ctx, exp.src);
-            let field = src.fields[exp.name];
+            let field = src.fields.find((v) => v.name === exp.name);
             if (!field) {
                 throw Error('Field ' + exp.name + ' not found');
             }
@@ -129,7 +129,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
             // Resolve return value
             let src = getExpType(ctx, exp.src);
-            let f = src.functions[exp.name]!;
+            let f = src.functions.find((v) => v.name === exp.name)!;
             if (!f.returns) {
                 throw Error('Function ' + exp.name + ' does not return a value');
             }
@@ -164,6 +164,8 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     } else {
                         throw Error('Unknown expression');
                     }
+                } else if (s.kind === 'statement_assign') {
+                    ctx = resolveExpression(ctx, vctx, s.expression);
                 } else {
                     throw Error('Unknown statement');
                 }

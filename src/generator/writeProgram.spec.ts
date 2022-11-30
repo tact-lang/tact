@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import { CompilerContext } from '../ast/context';
 import { resolveExpressionTypes } from '../types/resolveExpressionType';
@@ -11,8 +10,15 @@ struct Point {
     var x: Int;
     var y: Int;
 }
+
+fun improve(p: Point): Int {
+    return p.x + p.y;
+}
+
 fun hello_world(a: Int, b: Int, p: Point): Int {
-    return a + b;
+    let c: Int = a + 1;
+    c = c + 1;
+    return a + b + improve(p);
 }
 `;
 

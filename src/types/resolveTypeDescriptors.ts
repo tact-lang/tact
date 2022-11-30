@@ -1,4 +1,4 @@
-import { ASTField, ASTFunction, ASTNativeFunction } from "../ast/ast";
+import { ASTField, ASTFunction, ASTNativeFunction, thowError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription } from "./TypeDescription";
 
@@ -13,28 +13,28 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];
         if (types[a.name]) {
-            throw Error('Type ' + a.name + ' already exists');
+            thowError(`Type ${a.name} already exists`, a.ref);
         }
         if (a.kind === 'primitive') {
             types[a.name] = {
                 kind: 'primitive',
                 name: a.name,
-                fields: {},
-                functions: {}
+                fields: [],
+                functions: []
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
                 kind: 'contract',
                 name: a.name,
-                fields: {},
-                functions: {}
+                fields: [],
+                functions: []
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
                 kind: 'struct',
                 name: a.name,
-                fields: {},
-                functions: {}
+                fields: [],
+                functions: []
             };
         }
     }
@@ -98,14 +98,20 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 if (f.kind !== 'def_field') {
                     continue;
                 }
-                types[a.name].fields[f.name] = resolveField(f);
+                if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    throw Error('Field ' + f.name + ' already exists');
+                }
+                types[a.name].fields.push(resolveField(f));
             }
         }
 
         // Struct
         if (a.kind === 'def_struct') {
             for (let f of a.fields) {
-                types[a.name].fields[f.name] = resolveField(f);
+                if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    throw Error('Field ' + f.name + ' already exists');
+                }
+                types[a.name].fields.push(resolveField(f));
             }
         }
     }
@@ -117,7 +123,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             let s = types[a.name];
             for (let d of a.declarations) {
                 if (d.kind === 'def_function') {
-                    s.functions[d.name] = resolveFunctionDescriptor(s, d);
+                    s.functions.push(resolveFunctionDescriptor(s, d));
                 }
             }
         }
