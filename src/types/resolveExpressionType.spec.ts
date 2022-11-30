@@ -1,25 +1,17 @@
 import { CompilerContext } from "../ast/context";
-import { resolveExpressionTypes } from "./resolveExpressionType";
+import { getAllExpressionTypes, resolveExpressionTypes } from "./resolveExpressionType";
 import { resolveTypeDescriptors } from "./resolveTypeDescriptors";
-
-const source = `
-    primitive Void;
-    primitive Int;
-    primitive Bool;
-    
-    contract Test {
-        var a: Int;
-        fun hello(a: Int, b: Int): Int {
-            let c: Int = 123 * a + self.a;
-            return c;
-        }
-    }
-`;
+import fs from 'fs';
 
 describe('resolveExpressionType', () => {
-    it('should resolve types', () => {
-        let ctx = CompilerContext.fromSources([source]);
-        ctx = resolveTypeDescriptors(ctx);
-        ctx = resolveExpressionTypes(ctx);
-    });
+    let recs = fs.readdirSync(__dirname + "/test-expr/");
+    for (let r of recs) {
+        it('should resolve expressions for ' + r, () => {
+            let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
+            let ctx = CompilerContext.fromSources([code]);
+            ctx = resolveTypeDescriptors(ctx);
+            ctx = resolveExpressionTypes(ctx);
+            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+        });
+    }
 });

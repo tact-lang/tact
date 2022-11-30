@@ -3,7 +3,7 @@ import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType } from "./resolveTypeDescriptors";
 import { TypeDescription } from "./TypeDescription";
 
-let store = createContextStore<TypeDescription>();
+let store = createContextStore<{ ast: ASTExpression, description: TypeDescription }>();
 
 type VariableCTX = { [key: string]: TypeDescription };
 
@@ -12,7 +12,7 @@ export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
     if (!t) {
         throw Error('Expression ' + exp.id + ' not found');
     }
-    return t;
+    return t.description;
 }
 
 export function resolveExpressionTypes(ctx: CompilerContext) {
@@ -22,7 +22,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         if (store.get(ctx, exp.id)) {
             throw Error('Expression ' + exp.id + ' already has a type');
         }
-        return store.set(ctx, exp.id, getType(ctx, name));
+        return store.set(ctx, exp.id, { ast: exp, description: getType(ctx, name) });
     }
     function resolveCall(ctx: CompilerContext, vctx: VariableCTX, exp: ASTOpCall): CompilerContext {
         ctx = resolveExpression(ctx, vctx, exp.src);
@@ -207,4 +207,13 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
     }
 
     return ctx;
+}
+
+export function getAllExpressionTypes(ctx: CompilerContext) {
+    let res: [string, string][] = [];
+    let a = store.all(ctx);
+    for (let e in a) {
+        res.push([e, a[e].description.name]);
+    }
+    return res;
 }

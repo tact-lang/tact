@@ -40,8 +40,8 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             ref: createRef(this)
         })
     },
-    StaticFunction(arg0, arg1) {
-        return arg1.resolve_declaration();
+    StaticFunction(arg0) {
+        return arg0.resolve_declaration();
     },
 });
 

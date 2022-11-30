@@ -1,11 +1,11 @@
-static fun testFunc() {
+fun testFunc() {
     return 0;
 }
 
-static fun testFunc(): Int {
+fun testFunc(): Int {
     return 0;
 }
 
-static fun testFunc(): Bool {
+fun testFunc(): Bool {
     return 0;
 }

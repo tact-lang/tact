@@ -11,7 +11,7 @@ Tact {
     Primitive = primitive Type ";"
 
     // Static function
-    StaticFunction = static Function
+    StaticFunction = Function
 
     // Field declarations
     Type = typeLiteral
@@ -108,7 +108,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | static | primitive | extend // Order is important
+    keyword = struct | contract | var | fun | let | return | primitive | extend // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -116,7 +116,6 @@ Tact {
     fun = "fun" ~idPart
     return = "return" ~idPart
     primitive = "primitive" ~idPart
-    static = "static" ~idPart
     extend = "extend" ~idPart
 
     // Reserved
