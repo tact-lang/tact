@@ -1,9 +1,11 @@
 import { CompilerContext } from "../ast/context";
-import { getType, resolveTypeDescriptors } from "./resolveTypeDescriptors";
+import { resolveExpressionTypes } from "./resolveExpressionType";
+import { resolveTypeDescriptors } from "./resolveTypeDescriptors";
 
 const source = `
     primitive Int;
-
+    primitive Bool;
+    
     contract Test {
         var a: Int;
         fun hello(a: Int, b: Int): Int {
@@ -13,11 +15,10 @@ const source = `
     }
 `;
 
-describe('resolveTypeDescriptors', () => {
+describe('resolveExpressionType', () => {
     it('should resolve types', () => {
         let ctx = CompilerContext.fromSources([source]);
         ctx = resolveTypeDescriptors(ctx);
-        expect(getType(ctx, 'Int')).toMatchSnapshot();
-        expect(getType(ctx, 'Test')).toMatchSnapshot();
+        ctx = resolveExpressionTypes(ctx);
     });
 });

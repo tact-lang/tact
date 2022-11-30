@@ -53,7 +53,7 @@ export class CompilerContext {
         return new CompilerContext(this.astTypes, { ...this.variables, [ref.name]: ref }, this.shared);
     }
 
-    addShared = <T>(store: symbol, key: string, value: T) => {
+    addShared = <T>(store: symbol, key: string | number, value: T) => {
         let sh: { [key: string]: T } = {};
         if (this.shared[store]) {
             sh = { ...this.shared[store] };
@@ -66,18 +66,18 @@ export class CompilerContext {
 export function createContextStore<T>() {
     let symbol = Symbol();
     return {
-        get(ctx: CompilerContext, key: string) {
+        get(ctx: CompilerContext, key: string | number) {
             if (!ctx.shared[symbol]) {
                 return null;
             }
-            let m = ctx.shared[symbol] as { [key: string]: T };
+            let m = ctx.shared[symbol] as { [key: string | number]: T };
             if (m[key]) {
                 return m[key];
             } else {
                 return null;
             }
         },
-        set(ctx: CompilerContext, key: string, v: T) {
+        set(ctx: CompilerContext, key: string | number, v: T) {
             return ctx.addShared(symbol, key, v);
         }
     }
