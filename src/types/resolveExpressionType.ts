@@ -1,4 +1,4 @@
-import { ASTExpression, ASTFunction, ASTOpCall, ASTOpCallStatic } from "../ast/ast";
+import { ASTExpression, ASTFunction, ASTNativeFunction, ASTOpCall, ASTOpCallStatic } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType } from "./resolveTypeDescriptors";
 import { TypeDescription } from "./TypeDescription";
@@ -148,23 +148,25 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         }
         throw Error('Unknown expression');
     }
-    function resolveFunction(ctx: CompilerContext, vctx: VariableCTX, f: ASTFunction) {
-        for (let s of f.statements) {
-            if (s.kind === 'statement_let') {
-                ctx = resolveExpression(ctx, vctx, s.expression);
-                vctx[s.name] = getType(ctx, s.type);
-            } else if (s.kind === 'statement_return') {
-                ctx = resolveExpression(ctx, vctx, s.expression);
-            } else if (s.kind === 'statement_call') {
-                if (s.expression.kind === 'op_call') {
-                    ctx = resolveCall(ctx, vctx, s.expression);
-                } else if (s.expression.kind === 'op_static_call') {
-                    ctx = resolveStaticCall(ctx, vctx, s.expression);
+    function resolveFunction(ctx: CompilerContext, vctx: VariableCTX, f: ASTFunction | ASTNativeFunction) {
+        if (f.kind === 'def_function') {
+            for (let s of f.statements) {
+                if (s.kind === 'statement_let') {
+                    ctx = resolveExpression(ctx, vctx, s.expression);
+                    vctx[s.name] = getType(ctx, s.type);
+                } else if (s.kind === 'statement_return') {
+                    ctx = resolveExpression(ctx, vctx, s.expression);
+                } else if (s.kind === 'statement_call') {
+                    if (s.expression.kind === 'op_call') {
+                        ctx = resolveCall(ctx, vctx, s.expression);
+                    } else if (s.expression.kind === 'op_static_call') {
+                        ctx = resolveStaticCall(ctx, vctx, s.expression);
+                    } else {
+                        throw Error('Unknown expression');
+                    }
                 } else {
-                    throw Error('Unknown expression');
+                    throw Error('Unknown statement');
                 }
-            } else {
-                throw Error('Unknown statement');
             }
         }
         return ctx;

@@ -43,6 +43,9 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
     StaticFunction(arg0) {
         return arg0.resolve_declaration();
     },
+    NativeFunction(arg0) {
+        return arg0.resolve_declaration();
+    },
 });
 
 // Struct and class declarations
@@ -80,6 +83,26 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             return: null,
             args: arg3.asIteration().children.map((v: any) => v.resolve_declaration()),
             statements: arg6.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    NativeFunction_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) {
+        return createNode({
+            kind: 'def_native_function',
+            name: arg5.sourceString,
+            nativeName: arg2.sourceString,
+            return: arg10.sourceString,
+            args: arg7.asIteration().children.map((v: any) => v.resolve_declaration()),
+            ref: createRef(this)
+        })
+    },
+    NativeFunction_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+        return createNode({
+            kind: 'def_native_function',
+            name: arg5.sourceString,
+            nativeName: arg2.sourceString,
+            return: null,
+            args: arg7.asIteration().children.map((v: any) => v.resolve_declaration()),
             ref: createRef(this)
         })
     },

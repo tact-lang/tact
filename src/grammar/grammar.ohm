@@ -6,13 +6,16 @@ Tact {
                 | Contract
                 | Primitive
                 | StaticFunction
+                | NativeFunction
 
     // Built-in declarations
     Primitive = primitive Type ";"
 
     // Static function
     StaticFunction = Function
-
+    NativeFunction = nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
+                   | nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
+    
     // Field declarations
     Type = typeLiteral
     Field = var id ":" Type ";"
@@ -100,7 +103,7 @@ Tact {
     letterAscii = letterAsciiLC | letterAsciiUC
 
     // ID Literal
-    idStart = letterAscii
+    idStart = letterAscii | "_"
     idPart = letterAscii | digit | "_"
     id = ~reservedWord idStart idPart*
 
@@ -108,7 +111,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | primitive | extend // Order is important
+    keyword = struct | contract | var | fun | let | return | primitive | extend | native // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -117,6 +120,10 @@ Tact {
     return = "return" ~idPart
     primitive = "primitive" ~idPart
     extend = "extend" ~idPart
+    native = "native" ~idPart
+
+    // Attributes
+    nameAttribute = "@name"
 
     // Reserved
     reservedWord = keyword

@@ -1,4 +1,4 @@
-import { ASTFunction } from "../ast/ast";
+import { ASTFunction, ASTNativeFunction } from "../ast/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
@@ -22,5 +22,5 @@ export type FunctionDescription = {
     self: TypeDescription | null,
     returns: TypeDescription | null,
     args: FunctionArgument[],
-    ast: ASTFunction
+    ast: ASTFunction | ASTNativeFunction
 }

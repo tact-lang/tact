@@ -1,4 +1,4 @@
-import { ASTField, ASTFunction } from "../ast/ast";
+import { ASTField, ASTFunction, ASTNativeFunction } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription } from "./TypeDescription";
 
@@ -47,7 +47,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         return t;
     }
 
-    function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction) {
+    function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction) {
         // Resolve return
         let returns = a.return ? getType(a.return) : null;
 

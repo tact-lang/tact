@@ -16,6 +16,9 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ProgramItem?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Primitive?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   StaticFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  NativeFunction_withVoid?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: NonterminalNode, arg8: TerminalNode, arg9: TerminalNode) => T;
+  NativeFunction_withType?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: NonterminalNode, arg8: TerminalNode, arg9: TerminalNode, arg10: NonterminalNode, arg11: TerminalNode) => T;
+  NativeFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Field?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
   Struct?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
@@ -67,7 +70,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   letterAsciiLC?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAsciiUC?: (this: NonterminalNode, arg0: TerminalNode) => T;
   letterAscii?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  idStart?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  idStart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   idPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   id?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   boolLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
@@ -80,6 +83,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   return?: (this: NonterminalNode, arg0: TerminalNode) => T;
   primitive?: (this: NonterminalNode, arg0: TerminalNode) => T;
   extend?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  native?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
 }
 

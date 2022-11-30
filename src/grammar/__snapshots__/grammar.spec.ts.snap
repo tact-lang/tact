@@ -805,3 +805,42 @@ exports[`grammar should parse case-7.tact 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-8.tact 1`] = `
+{
+  "entries": [
+    {
+      "args": [],
+      "id": 122,
+      "kind": "def_native_function",
+      "name": "testFunc",
+      "nativeName": "native_name_1",
+      "ref": @name(native_name_1)
+native testFunc();,
+      "return": null,
+    },
+    {
+      "args": [],
+      "id": 123,
+      "kind": "def_native_function",
+      "name": "testFunc",
+      "nativeName": "native_name_2",
+      "ref": @name(native_name_2)
+native testFunc(): Int;,
+      "return": "Int",
+    },
+    {
+      "args": [],
+      "id": 124,
+      "kind": "def_native_function",
+      "name": "testFunc",
+      "nativeName": "native_name_3",
+      "ref": @name(native_name_3)
+native testFunc(): Bool;,
+      "return": "Bool",
+    },
+  ],
+  "id": 125,
+  "kind": "program",
+}
+`;

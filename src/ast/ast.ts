@@ -97,7 +97,7 @@ export type ASTOpCallStatic = {
 export type ASTProgram = {
     kind: 'program',
     id: number,
-    entries: (ASTStruct | ASTContract | ASTPrimitive | ASTFunction)[]
+    entries: (ASTStruct | ASTContract | ASTPrimitive | ASTFunction | ASTNativeFunction)[]
 }
 
 export type ASTStruct = {
@@ -142,6 +142,16 @@ export type ASTFunction = {
     ref: ASTRef
 }
 
+export type ASTNativeFunction = {
+    kind: 'def_native_function',
+    id: number,
+    name: string,
+    nativeName: string,
+    return: string | null,
+    args: ASTArgument[],
+    ref: ASTRef
+}
+
 //
 // Statements
 //
@@ -175,7 +185,7 @@ export type ASTStatementCall = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {

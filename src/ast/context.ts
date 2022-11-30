@@ -1,5 +1,5 @@
 import { parse } from "../grammar/grammar";
-import { ASTFunction, ASTNode, ASTType } from "./ast";
+import { ASTFunction, ASTNativeFunction, ASTNode, ASTType } from "./ast";
 
 export type VariableRef = {
     name: string,
@@ -21,6 +21,8 @@ export class CompilerContext {
                     ctx = ctx.addASTType(e);
                 } else if (e.kind === 'def_function') {
                     ctx = ctx.addASTStaticFunction(e);
+                } else if (e.kind === 'def_native_function') {
+                    ctx = ctx.addASTStaticFunction(e);
                 }
             }
         }
@@ -28,10 +30,10 @@ export class CompilerContext {
     }
 
     readonly astTypes: { [key: string]: ASTType };
-    readonly astFunctionStatic: { [key: string]: ASTFunction };
+    readonly astFunctionStatic: { [key: string]: ASTFunction | ASTNativeFunction };
     readonly shared: { [key: symbol]: any } = {};
 
-    constructor(args: { astTypes: { [key: string]: ASTType }, astFunctionStatic: { [key: string]: ASTFunction }, shared: { [key: symbol]: any } }) {
+    constructor(args: { astTypes: { [key: string]: ASTType }, astFunctionStatic: { [key: string]: ASTFunction | ASTNativeFunction }, shared: { [key: symbol]: any } }) {
         this.astTypes = args.astTypes;
         this.shared = args.shared;
         this.astFunctionStatic = args.astFunctionStatic;
@@ -48,7 +50,7 @@ export class CompilerContext {
         return new CompilerContext({ astTypes: { ...this.astTypes, [ref.name]: ref }, astFunctionStatic: this.astFunctionStatic, shared: this.shared });
     }
 
-    addASTStaticFunction = (ref: ASTFunction) => {
+    addASTStaticFunction = (ref: ASTFunction | ASTNativeFunction) => {
         if (this.astFunctionStatic[ref.name]) {
             throw Error('Type already exists');
         }
