@@ -1,0 +1,2 @@
+primitive Int;
+primitive Bool;

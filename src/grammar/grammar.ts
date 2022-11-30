@@ -63,7 +63,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+    Function_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
         return createNode({
             kind: 'def_function',
             name: arg1.sourceString,
@@ -73,13 +73,23 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
+    Function_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        return createNode({
+            kind: 'def_function',
+            name: arg1.sourceString,
+            return: null,
+            args: arg3.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: arg6.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
 });
 
 // Statements
 semantics.addOperation<ASTNode>('resolve_statement', {
     StatementLet(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
-            kind: 'let',
+            kind: 'statement_let',
             name: arg1.sourceString,
             type: arg3.sourceString,
             expression: arg5.resolve_expression(),
@@ -88,8 +98,22 @@ semantics.addOperation<ASTNode>('resolve_statement', {
     },
     StatementReturn(arg0, arg1, arg2) {
         return createNode({
-            kind: 'return',
+            kind: 'statement_return',
             expression: arg1.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementCall(arg0, arg1) {
+        return createNode({
+            kind: 'statement_call',
+            expression: arg0.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementStaticCall(arg0, arg1) {
+        return createNode({
+            kind: 'statement_call',
+            expression: arg0.resolve_expression(),
             ref: createRef(this)
         })
     },
@@ -163,10 +187,13 @@ semantics.addOperation<ASTNode>('resolve_expression', {
 
     // Access
     ExpressionField(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_field', src: arg0.resolve_expression(), key: arg2.sourceString, ref: createRef(this) });
+        return createNode({ kind: 'op_field', src: arg0.resolve_expression(), name: arg2.sourceString, ref: createRef(this) });
     },
     ExpressionCall(arg0, arg1, arg2, arg3, arg4, arg5) {
-        return createNode({ kind: 'op_call', src: arg0.resolve_expression(), key: arg2.sourceString, args: arg4.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+        return createNode({ kind: 'op_call', src: arg0.resolve_expression(), name: arg2.sourceString, args: arg4.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+    },
+    ExpressionStaticCall(arg0, arg1, arg2, arg3) {
+        return createNode({ kind: 'op_static_call', name: arg0.sourceString, args: arg2.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
 });
 

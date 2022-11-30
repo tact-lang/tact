@@ -1,6 +1,6 @@
-import { ASTExpression } from "../ast/ast";
+import { ASTExpression, ASTFunction, ASTOpCall, ASTOpCallStatic } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { getType } from "./resolveTypeDescriptors";
+import { getStaticFunction, getType } from "./resolveTypeDescriptors";
 import { TypeDescription } from "./TypeDescription";
 
 let store = createContextStore<TypeDescription>();
@@ -23,6 +23,24 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             throw Error('Expression ' + exp.id + ' already has a type');
         }
         return store.set(ctx, exp.id, getType(ctx, name));
+    }
+    function resolveCall(ctx: CompilerContext, vctx: VariableCTX, exp: ASTOpCall): CompilerContext {
+        ctx = resolveExpression(ctx, vctx, exp.src);
+        let src = getExpType(ctx, exp.src);
+        let f = src.functions[exp.name];
+        if (!f) {
+            throw Error('Function ' + exp.name + ' not found at type ' + src.name);
+        }
+        for (let e of exp.args) {
+            ctx = resolveExpression(ctx, vctx, e);
+        }
+        return ctx;
+    }
+    function resolveStaticCall(ctx: CompilerContext, vctx: VariableCTX, exp: ASTOpCallStatic): CompilerContext {
+        for (let e of exp.args) {
+            ctx = resolveExpression(ctx, vctx, e);
+        }
+        return ctx;
     }
     function resolveExpression(ctx: CompilerContext, vctx: VariableCTX, exp: ASTExpression): CompilerContext {
         if (exp.kind === 'boolean') {
@@ -99,16 +117,61 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         } else if (exp.kind === 'op_field') {
             ctx = resolveExpression(ctx, vctx, exp.src);
             let src = getExpType(ctx, exp.src);
-            let field = src.fields[exp.key];
+            let field = src.fields[exp.name];
             if (!field) {
-                throw Error('Field ' + exp.key + ' not found');
+                throw Error('Field ' + exp.name + ' not found');
             }
             return registerExpType(ctx, exp, field.type.name);
+        } else if (exp.kind === 'op_call') {
+
+            // Resolve call with arguments
+            ctx = resolveCall(ctx, vctx, exp);
+
+            // Resolve return value
+            let src = getExpType(ctx, exp.src);
+            let f = src.functions[exp.name]!;
+            if (!f.returns) {
+                throw Error('Function ' + exp.name + ' does not return a value');
+            }
+            return registerExpType(ctx, exp, f.returns.name);
+        } else if (exp.kind === 'op_static_call') {
+
+            // Resolve call with arguments
+            ctx = resolveStaticCall(ctx, vctx, exp);
+
+            // Resolve static
+            let f = getStaticFunction(ctx, exp.name);
+            if (!f.returns) {
+                throw Error('Function ' + exp.name + ' does not return a value');
+            }
+            return registerExpType(ctx, exp, f.returns.name);
+        }
+        throw Error('Unknown expression');
+    }
+    function resolveFunction(ctx: CompilerContext, vctx: VariableCTX, f: ASTFunction) {
+        for (let s of f.statements) {
+            if (s.kind === 'statement_let') {
+                ctx = resolveExpression(ctx, vctx, s.expression);
+                vctx[s.name] = getType(ctx, s.type);
+            } else if (s.kind === 'statement_return') {
+                ctx = resolveExpression(ctx, vctx, s.expression);
+            } else if (s.kind === 'statement_call') {
+                if (s.expression.kind === 'op_call') {
+                    ctx = resolveCall(ctx, vctx, s.expression);
+                } else if (s.expression.kind === 'op_static_call') {
+                    ctx = resolveStaticCall(ctx, vctx, s.expression);
+                } else {
+                    throw Error('Unknown expression');
+                }
+            } else {
+                throw Error('Unknown statement');
+            }
         }
         return ctx;
     }
 
-    // Process all functions
+
+    // Process all contracts
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];
         if (a.kind === 'def_contract') {
@@ -122,20 +185,25 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                         vctx[arg.name] = getType(ctx, arg.type);
                     }
 
-                    // Resolve statements
-                    for (let s of f.statements) {
-                        if (s.kind === 'let') {
-                            ctx = resolveExpression(ctx, vctx, s.expression);
-                            vctx[s.name] = getType(ctx, s.type);
-                        } else if (s.kind === 'return') {
-                            ctx = resolveExpression(ctx, vctx, s.expression);
-                        } else {
-                            throw Error('Unknown statement');
-                        }
-                    }
+                    // Process function
+                    ctx = resolveFunction(ctx, vctx, f);
                 }
             }
         }
+    }
+
+    // Process all functions
+    for (let t in ctx.astFunctionStatic) {
+        let f = ctx.astFunctionStatic[t];
+
+        // Function variables
+        let vctx: VariableCTX = {};
+        for (let arg of f.args) {
+            vctx[arg.name] = getType(ctx, arg.type);
+        }
+
+        // Process function
+        ctx = resolveFunction(ctx, vctx, f);
     }
 
     return ctx;

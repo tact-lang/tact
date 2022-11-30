@@ -1,23 +1,22 @@
 import { CompilerContext } from "../ast/context";
-import { getType, resolveTypeDescriptors } from "./resolveTypeDescriptors";
+import { getAllStaticFunctions, getAllTypes, resolveTypeDescriptors } from "./resolveTypeDescriptors";
+import fs from 'fs';
+import { ASTRef } from "../ast/ast";
 
-const source = `
-    primitive Int;
-
-    contract Test {
-        var a: Int;
-        fun hello(a: Int, b: Int): Int {
-            let c: Int = (123 * a) + self.a;
-            return c;
-        }
-    }
-`;
+expect.addSnapshotSerializer({
+    test: (src) => src instanceof ASTRef,
+    print: (src) => `${(src as ASTRef).contents}`
+});
 
 describe('resolveTypeDescriptors', () => {
-    it('should resolve types', () => {
-        let ctx = CompilerContext.fromSources([source]);
-        ctx = resolveTypeDescriptors(ctx);
-        expect(getType(ctx, 'Int')).toMatchSnapshot();
-        expect(getType(ctx, 'Test')).toMatchSnapshot();
-    });
+    let recs = fs.readdirSync(__dirname + "/test/");
+    for (let r of recs) {
+        it('should resolve descriptors for ' + r, () => {
+            let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
+            let ctx = CompilerContext.fromSources([code]);
+            ctx = resolveTypeDescriptors(ctx);
+            expect(getAllTypes(ctx)).toMatchSnapshot();
+            expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
+        });
+    }
 });

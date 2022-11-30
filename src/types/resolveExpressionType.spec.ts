@@ -3,6 +3,7 @@ import { resolveExpressionTypes } from "./resolveExpressionType";
 import { resolveTypeDescriptors } from "./resolveTypeDescriptors";
 
 const source = `
+    primitive Void;
     primitive Int;
     primitive Bool;
     

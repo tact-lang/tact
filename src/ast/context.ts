@@ -1,5 +1,5 @@
 import { parse } from "../grammar/grammar";
-import { ASTNode, ASTType } from "./ast";
+import { ASTFunction, ASTNode, ASTType } from "./ast";
 
 export type VariableRef = {
     name: string,
@@ -10,7 +10,7 @@ export class CompilerContext {
 
     static fromSources(sources: string[]) {
         let asts = sources.map(source => parse(source));
-        let ctx = new CompilerContext();
+        let ctx = new CompilerContext({ astTypes: {}, astFunctionStatic: {}, shared: {} });
         for (let a of asts) {
             for (let e of a.entries) {
                 if (e.kind === 'def_struct') {
@@ -19,6 +19,8 @@ export class CompilerContext {
                     ctx = ctx.addASTType(e);
                 } else if (e.kind === 'primitive') {
                     ctx = ctx.addASTType(e);
+                } else if (e.kind === 'def_function') {
+                    ctx = ctx.addASTStaticFunction(e);
                 }
             }
         }
@@ -26,16 +28,16 @@ export class CompilerContext {
     }
 
     readonly astTypes: { [key: string]: ASTType };
-    readonly variables: { [key: string]: VariableRef };
+    readonly astFunctionStatic: { [key: string]: ASTFunction };
     readonly shared: { [key: symbol]: any } = {};
 
-    constructor(astTypes: { [key: string]: ASTType } = {}, variables: { [key: string]: VariableRef } = {}, shared: { [key: symbol]: any } = {}) {
-        this.astTypes = astTypes;
-        this.variables = variables;
-        this.shared = shared;
+    constructor(args: { astTypes: { [key: string]: ASTType }, astFunctionStatic: { [key: string]: ASTFunction }, shared: { [key: symbol]: any } }) {
+        this.astTypes = args.astTypes;
+        this.shared = args.shared;
+        this.astFunctionStatic = args.astFunctionStatic;
         Object.freeze(this.astTypes);
+        Object.freeze(this.astFunctionStatic);
         Object.freeze(this.shared);
-        Object.freeze(this.variables);
         Object.freeze(this);
     }
 
@@ -43,14 +45,14 @@ export class CompilerContext {
         if (this.astTypes[ref.name]) {
             throw Error('Type already exists');
         }
-        return new CompilerContext({ ...this.astTypes, [ref.name]: ref }, this.variables, this.shared);
+        return new CompilerContext({ astTypes: { ...this.astTypes, [ref.name]: ref }, astFunctionStatic: this.astFunctionStatic, shared: this.shared });
     }
 
-    addVariable = (ref: VariableRef) => {
-        if (this.variables[ref.name]) {
-            throw Error('Variable already exists');
+    addASTStaticFunction = (ref: ASTFunction) => {
+        if (this.astFunctionStatic[ref.name]) {
+            throw Error('Type already exists');
         }
-        return new CompilerContext(this.astTypes, { ...this.variables, [ref.name]: ref }, this.shared);
+        return new CompilerContext({ astTypes: this.astTypes, astFunctionStatic: { ...this.astFunctionStatic, [ref.name]: ref }, shared: this.shared });
     }
 
     addShared = <T>(store: symbol, key: string | number, value: T) => {
@@ -59,7 +61,7 @@ export class CompilerContext {
             sh = { ...this.shared[store] };
         }
         sh[key] = value;
-        return new CompilerContext(this.astTypes, this.variables, { ...this.shared, [store]: sh });
+        return new CompilerContext({ astTypes: this.astTypes, astFunctionStatic: this.astFunctionStatic, shared: { ...this.shared, [store]: sh } });
     }
 }
 
@@ -76,6 +78,13 @@ export function createContextStore<T>() {
             } else {
                 return null;
             }
+        },
+        all(ctx: CompilerContext): { [key: string | number]: T } {
+            if (!ctx.shared[symbol]) {
+                return {} as { [key: string | number]: T };
+            }
+            let m = ctx.shared[symbol] as { [key: string | number]: T };
+            return m;
         },
         set(ctx: CompilerContext, key: string | number, v: T) {
             return ctx.addShared(symbol, key, v);

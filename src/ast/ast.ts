@@ -69,7 +69,7 @@ export type ASTOpField = {
     kind: 'op_field'
     id: number,
     src: ASTExpression,
-    key: string,
+    name: string,
     ref: ASTRef
 }
 
@@ -77,7 +77,15 @@ export type ASTOpCall = {
     kind: 'op_call'
     id: number,
     src: ASTExpression,
-    key: string,
+    name: string,
+    args: ASTExpression[],
+    ref: ASTRef
+}
+
+export type ASTOpCallStatic = {
+    kind: 'op_static_call'
+    id: number,
+    name: string,
     args: ASTExpression[],
     ref: ASTRef
 }
@@ -128,7 +136,7 @@ export type ASTFunction = {
     kind: 'def_function',
     id: number,
     name: string,
-    return: string,
+    return: string | null,
     args: ASTArgument[],
     statements: ASTStatement[],
     ref: ASTRef
@@ -139,7 +147,7 @@ export type ASTFunction = {
 //
 
 export type ASTStatementLet = {
-    kind: 'let',
+    kind: 'statement_let',
     id: number,
     name: string,
     type: string,
@@ -148,9 +156,16 @@ export type ASTStatementLet = {
 }
 
 export type ASTStatementReturn = {
-    kind: 'return',
+    kind: 'statement_return',
     id: number,
     expression: ASTExpression,
+    ref: ASTRef
+}
+
+export type ASTStatementCall = {
+    kind: 'statement_call',
+    id: number,
+    expression: ASTOpCall | ASTOpCallStatic,
     ref: ASTRef
 }
 
@@ -158,13 +173,13 @@ export type ASTStatementReturn = {
 // Unions
 //
 
-export type ASTStatement = ASTStatementLet | ASTStatementReturn;
-export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive;
+export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall;
+export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
-    return src.kind === 'let' || src.kind === 'return';
+    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call';
 }
 
 export function isExpression(src: ASTNode): src is ASTExpression {

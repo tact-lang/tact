@@ -1,26 +1,326 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveTypeDescriptors should resolve types 1`] = `
+exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 1`] = `
 {
-  "fields": {},
-  "kind": "primitive",
-  "name": "Int",
+  "Bool": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Bool",
+  },
+  "Int": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Int",
+  },
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve types 2`] = `
+exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 2`] = `{}`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] = `
 {
-  "fields": {
-    "a": {
-      "name": "a",
-      "type": {
-        "fields": {},
-        "kind": "primitive",
-        "name": "Int",
+  "Bool": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Bool",
+  },
+  "Int": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Int",
+  },
+  "Struct1": {
+    "fields": {
+      "a": {
+        "name": "a",
+        "type": {
+          "fields": {},
+          "functions": {},
+          "kind": "primitive",
+          "name": "Int",
+        },
+      },
+      "b": {
+        "name": "b",
+        "type": {
+          "fields": {},
+          "functions": {},
+          "kind": "primitive",
+          "name": "Bool",
+        },
       },
     },
+    "functions": {},
+    "kind": "struct",
+    "name": "Struct1",
   },
-  "kind": "contract",
-  "name": "Test",
+  "Struct2": {
+    "fields": {
+      "a": {
+        "name": "a",
+        "type": {
+          "fields": {
+            "a": {
+              "name": "a",
+              "type": {
+                "fields": {},
+                "functions": {},
+                "kind": "primitive",
+                "name": "Int",
+              },
+            },
+            "b": {
+              "name": "b",
+              "type": {
+                "fields": {},
+                "functions": {},
+                "kind": "primitive",
+                "name": "Bool",
+              },
+            },
+          },
+          "functions": {},
+          "kind": "struct",
+          "name": "Struct1",
+        },
+      },
+    },
+    "functions": {},
+    "kind": "struct",
+    "name": "Struct2",
+  },
 }
 `;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 2`] = `{}`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 1`] = `
+{
+  "Bool": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Bool",
+  },
+  "Int": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Int",
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] = `
+{
+  "testFunc": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "id": 16,
+      "kind": "def_function",
+      "name": "testFunc",
+      "ref": fun testFunc(): Int {
+    return 0;
+},
+      "return": "Int",
+      "statements": [
+        {
+          "expression": {
+            "id": 14,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 15,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "name": "testFunc",
+    "returns": {
+      "fields": {},
+      "functions": {},
+      "kind": "primitive",
+      "name": "Int",
+    },
+    "self": null,
+  },
+  "testFunc2": {
+    "args": [],
+    "ast": {
+      "args": [],
+      "id": 19,
+      "kind": "def_function",
+      "name": "testFunc2",
+      "ref": fun testFunc2() {
+    return 0;
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "id": 17,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 18,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "name": "testFunc2",
+    "returns": null,
+    "self": null,
+  },
+  "testFunc3": {
+    "args": [
+      {
+        "name": "a",
+        "type": {
+          "fields": {},
+          "functions": {},
+          "kind": "primitive",
+          "name": "Int",
+        },
+      },
+      {
+        "name": "b",
+        "type": {
+          "fields": {},
+          "functions": {},
+          "kind": "primitive",
+          "name": "Bool",
+        },
+      },
+    ],
+    "ast": {
+      "args": [
+        {
+          "id": 20,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": "Int",
+        },
+        {
+          "id": 21,
+          "kind": "def_argument",
+          "name": "b",
+          "ref": b: Bool,
+          "type": "Bool",
+        },
+      ],
+      "id": 24,
+      "kind": "def_function",
+      "name": "testFunc3",
+      "ref": fun testFunc3(a: Int, b: Bool) {
+    return 0;
+},
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "id": 22,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 23,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    "name": "testFunc3",
+    "returns": null,
+    "self": null,
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] = `
+{
+  "Bool": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Bool",
+  },
+  "HelloWorld": {
+    "fields": {
+      "a": {
+        "name": "a",
+        "type": {
+          "fields": {},
+          "functions": {},
+          "kind": "primitive",
+          "name": "Int",
+        },
+      },
+      "b": {
+        "name": "b",
+        "type": {
+          "fields": {},
+          "functions": {},
+          "kind": "primitive",
+          "name": "Bool",
+        },
+      },
+    },
+    "functions": {
+      "hello": {
+        "args": [],
+        "ast": {
+          "args": [],
+          "id": 30,
+          "kind": "def_function",
+          "name": "hello",
+          "ref": fun hello() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+        "name": "hello",
+        "returns": null,
+        "self": [Circular],
+      },
+      "hello2": {
+        "args": [],
+        "ast": {
+          "args": [],
+          "id": 31,
+          "kind": "def_function",
+          "name": "hello2",
+          "ref": fun hello2() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+        "name": "hello2",
+        "returns": null,
+        "self": [Circular],
+      },
+    },
+    "kind": "contract",
+    "name": "HelloWorld",
+  },
+  "Int": {
+    "fields": {},
+    "functions": {},
+    "kind": "primitive",
+    "name": "Int",
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 2`] = `{}`;
