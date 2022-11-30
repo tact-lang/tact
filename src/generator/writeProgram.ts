@@ -87,7 +87,12 @@ function writeExpression(ctx: CompilerContext, f: ASTExpression, stdlib: Set<str
         return '__tact_call(' + writeExpression(ctx, f.src, stdlib) + ', ' + index + ', [' + f.args.map((a) => writeExpression(ctx, a, stdlib)).join(', ') + '])';
     } else if (f.kind === 'op_new') {
         let src = getType(ctx, f.type);
-        return '(' + src.fields.map((v) => writeExpression(ctx, f.args.find((v) => v.name === v.name)!.exp, stdlib)).join(',') + ')';
+        let expressions = src.fields.map((v) => writeExpression(ctx, f.args.find((v2) => v2.name === v.name)!.exp, stdlib));
+        let res = 'tpush(empty_tuple(), ' + expressions[0] + ')';
+        for (let i = 1; i < expressions.length; i++) {
+            res = 'tpush(' + res + ', ' + expressions[i] + ')';
+        }
+        return res;
     }
     throw Error('Unknown expression');
 }
