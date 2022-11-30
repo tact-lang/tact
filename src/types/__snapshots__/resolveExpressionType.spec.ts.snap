@@ -1,3 +1,100 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveExpressionType should resolve expressions for case-0.tact 1`] = `[]`;
+exports[`resolveExpressionType should resolve expressions for case-0.tact 1`] = `
+[
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x == 0",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveExpressionType should resolve expressions for case-1.tact 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "123 + 10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "123 + 10 == x",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveExpressionType should resolve expressions for case-2.tact 1`] = `
+[
+  [
+    "123",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "123 + 10",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "(123 + 10) / 10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "(123 + 10) / 10 == x",
+    "Bool",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "y > 0",
+    "Bool",
+  ],
+  [
+    "(123 + 10) / 10 == x && y > 0",
+    "Bool",
+  ],
+  [
+    "z",
+    "Bool",
+  ],
+  [
+    "(123 + 10) / 10 == x && y > 0 || z",
+    "Bool",
+  ],
+]
+`;

@@ -213,7 +213,7 @@ export function getAllExpressionTypes(ctx: CompilerContext) {
     let res: [string, string][] = [];
     let a = store.all(ctx);
     for (let e in a) {
-        res.push([e, a[e].description.name]);
+        res.push([a[e].ast.ref.contents, a[e].description.name]);
     }
     return res;
 }

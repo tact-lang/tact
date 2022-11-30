@@ -7,7 +7,7 @@ describe('resolveExpressionType', () => {
     let recs = fs.readdirSync(__dirname + "/test-expr/");
     for (let r of recs) {
         it('should resolve expressions for ' + r, () => {
-            let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
+            let code = fs.readFileSync(__dirname + "/test-expr/" + r, 'utf8');
             let ctx = CompilerContext.fromSources([code]);
             ctx = resolveTypeDescriptors(ctx);
             ctx = resolveExpressionTypes(ctx);
