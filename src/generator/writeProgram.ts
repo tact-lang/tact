@@ -145,6 +145,7 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
         }
     });
     w.append("}");
+    w.append();
 }
 
 export function writeProgram(ctx: CompilerContext) {
@@ -168,6 +169,6 @@ export function writeProgram(ctx: CompilerContext) {
     });
     writer.append('}');
 
-    let res = writeStdlib(Array.from(stdlibs)) + writer.end();
+    let res = writeStdlib(Array.from(stdlibs)) + '\n' + writer.end();
     return res;
 }
