@@ -1,26 +1,18 @@
-import { inspect } from "util";
 import { parse } from "./grammar";
+import fs from 'fs';
+import { ASTRef } from "../ast/ast";
+
+expect.addSnapshotSerializer({
+    test: (src) => src instanceof ASTRef,
+    print: (src) => `${(src as ASTRef).contents}`
+});
 
 describe('grammar', () => {
-    // it('should parse basic arithmetic', () => {
-    //     expect(parse('c123 + 123 * a + 0x121341 - 9 / 19')).toMatchSnapshot();
-    // });
-    it('should parse basic arithmetic', () => {
-
-        const source = `
-        struct Hello {
-            var a: Int;
-            var B: String;
-        }
-        contract World {
-            var a: Hello;
-            fun hello(a: Int, b: String): Int {
-                let a: Int = 123 * self.a + self.a.abs();
-                return a;
-            }
-        }
-        `;
-
-        console.warn(inspect(parse(source), false, 1000, true));
-    });
+    let recs = fs.readdirSync(__dirname + "/test/");
+    for (let r of recs) {
+        it('should parse ' + r, () => {
+            let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
+            expect(parse(code)).toMatchSnapshot();
+        });
+    }
 });

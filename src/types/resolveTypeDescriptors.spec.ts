@@ -7,7 +7,7 @@ const source = `
     contract Test {
         var a: Int;
         fun hello(a: Int, b: Int): Int {
-            let c: Int = 123 * a + self.a;
+            let c: Int = (123 * a) + self.a;
             return c;
         }
     }

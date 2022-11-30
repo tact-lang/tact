@@ -15,6 +15,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Program?: (this: NonterminalNode, arg0: IterationNode) => T;
   ProgramItem?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Primitive?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
+  StaticFunction?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode) => T;
   Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Field?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
   Struct?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
@@ -28,17 +29,28 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StatementLet?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: TerminalNode) => T;
   StatementReturn?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   Expression?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  ExpressionMul_mul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
-  ExpressionMul_div?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
-  ExpressionMul?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionOr_or?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionOr?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionAnd_and?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionAnd?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionCompare_not?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCompare_eq?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCompare_gt?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCompare_gte?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCompare_lt?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCompare_lte?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionCompare?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionAdd_add?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionAdd_sub?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionAdd?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionMul_mul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionMul_div?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ExpressionMul?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionUnary_neg?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary_add?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
-  ExpressionUnary_log_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
-  ExpressionUnary_bit_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
+  ExpressionUnary_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionBracket?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   ExpressionValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionField?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode) => T;
@@ -62,6 +74,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   fun?: (this: NonterminalNode, arg0: TerminalNode) => T;
   return?: (this: NonterminalNode, arg0: TerminalNode) => T;
   primitive?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  static?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
 }
 

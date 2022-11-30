@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTNode, ASTProgram, createNode } from '../ast/ast';
+import { ASTNode, ASTProgram, createNode, createRef } from '../ast/ast';
 
 
 // Semantics
@@ -20,22 +20,28 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
     Primitive(arg0, arg1, arg2) {
         return createNode({
             kind: 'primitive',
-            name: arg1.sourceString
+            name: arg1.sourceString,
+            ref: createRef(this)
         });
     },
     Struct(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'def_struct',
             name: arg1.sourceString,
-            fields: arg3.children.map((v) => v.resolve_declaration())
+            fields: arg3.children.map((v) => v.resolve_declaration()),
+            ref: createRef(this)
         })
     },
     Contract(arg0, arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'def_contract',
             name: arg1.sourceString,
-            declarations: arg3.children.map((v) => v.resolve_declaration())
+            declarations: arg3.children.map((v) => v.resolve_declaration()),
+            ref: createRef(this)
         })
+    },
+    StaticFunction(arg0, arg1) {
+        return arg1.resolve_declaration();
     },
 });
 
@@ -45,14 +51,16 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         return createNode({
             kind: 'def_field',
             name: arg1.sourceString,
-            type: arg3.sourceString
+            type: arg3.sourceString,
+            ref: createRef(this)
         })
     },
     FunctionArg(arg0, arg1, arg2) {
         return createNode({
             kind: 'def_argument',
             name: arg0.sourceString,
-            type: arg2.sourceString
+            type: arg2.sourceString,
+            ref: createRef(this)
         })
     },
     Function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
@@ -62,6 +70,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             return: arg6.sourceString,
             args: arg3.asIteration().children.map((v: any) => v.resolve_declaration()),
             statements: arg8.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
         })
     },
 });
@@ -73,49 +82,91 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             kind: 'let',
             name: arg1.sourceString,
             type: arg3.sourceString,
-            expression: arg5.resolve_expression()
+            expression: arg5.resolve_expression(),
+            ref: createRef(this)
         })
     },
     StatementReturn(arg0, arg1, arg2) {
         return createNode({
             kind: 'return',
-            expression: arg1.resolve_expression()
+            expression: arg1.resolve_expression(),
+            ref: createRef(this)
         })
     },
 });
 
 // Expressions
 semantics.addOperation<ASTNode>('resolve_expression', {
+
+    // Literals
     integerLiteral(n) {
-        // Parses dec-based integer and hex-based integers
-        return createNode({ kind: 'number', value: BigInt(n.sourceString) });
+        return createNode({ kind: 'number', value: BigInt(n.sourceString), ref: createRef(this) }); // Parses dec-based integer and hex-based integers
+    },
+    boolLiteral(arg0) {
+        return createNode({ kind: 'boolean', value: arg0.sourceString === 'true', ref: createRef(this) });
     },
     id(arg0, arg1) {
-        return createNode({ kind: 'id', value: arg0.sourceString + arg1.sourceString });
+        return createNode({ kind: 'id', value: arg0.sourceString + arg1.sourceString, ref: createRef(this) });
     },
-    // nullLiteral(arg0) {
-    //     return createNode({ kind: 'null' });
-    // },
-    boolLiteral(arg0) {
-        return createNode({ kind: 'boolean', value: arg0.sourceString === 'true' });
-    },
+
+    // Binary
     ExpressionAdd_add(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_binary', op: '+', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
+        return createNode({ kind: 'op_binary', op: '+', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
     ExpressionAdd_sub(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_binary', op: '-', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
+        return createNode({ kind: 'op_binary', op: '-', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
     ExpressionMul_div(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_binary', op: '/', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
+        return createNode({ kind: 'op_binary', op: '/', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
     ExpressionMul_mul(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_binary', op: '*', left: arg0.resolve_expression(), right: arg2.resolve_expression() });
+        return createNode({ kind: 'op_binary', op: '*', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
+    ExpressionCompare_eq(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '==', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionCompare_not(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '!=', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionCompare_gt(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '>', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionCompare_gte(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '>=', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionCompare_lt(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '>', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionCompare_lte(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '>=', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionOr_or(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '||', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionAnd_and(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '&&', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
+
+    // Unary
+    ExpressionUnary_add(arg0, arg1) {
+        return createNode({ kind: 'op_unary', op: '+', right: arg1.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionUnary_neg(arg0, arg1) {
+        return createNode({ kind: 'op_unary', op: '-', right: arg1.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionUnary_not(arg0, arg1) {
+        return createNode({ kind: 'op_unary', op: '!', right: arg1.resolve_expression(), ref: createRef(this) });
+    },
+    ExpressionBracket(arg0, arg1, arg2) {
+        return arg1.resolve_expression();
+    },
+
+    // Access
     ExpressionField(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_field', src: arg0.resolve_expression(), key: arg2.sourceString });
+        return createNode({ kind: 'op_field', src: arg0.resolve_expression(), key: arg2.sourceString, ref: createRef(this) });
     },
     ExpressionCall(arg0, arg1, arg2, arg3, arg4, arg5) {
-        return createNode({ kind: 'op_call', src: arg0.resolve_expression(), key: arg2.sourceString, args: arg4.asIteration().children.map((v: any) => v.resolve_expression()) });
+        return createNode({ kind: 'op_call', src: arg0.resolve_expression(), key: arg2.sourceString, args: arg4.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
 });
 

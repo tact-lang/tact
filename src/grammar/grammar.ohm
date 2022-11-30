@@ -5,9 +5,13 @@ Tact {
     ProgramItem = Struct
                 | Contract
                 | Primitive
+                | StaticFunction
 
     // Built-in declarations
     Primitive = primitive Type ";"
+
+    // Static function
+    StaticFunction = static Function
 
     // Field declarations
     Type = typeLiteral
@@ -35,23 +39,35 @@ Tact {
     StatementReturn = return Expression ";"
 
     // Expressions
-    Expression = ExpressionAdd
-    ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
-                  | ExpressionMul "/" ExpressionUnary --div
-                  | ExpressionUnary
+    Expression = ExpressionOr
+    ExpressionOr = ExpressionOr "||" ExpressionAnd --or
+                 | ExpressionAnd
+    ExpressionAnd = ExpressionAnd "&&" ExpressionCompare --and
+                  | ExpressionCompare
+    ExpressionCompare = ExpressionCompare "!=" ExpressionAdd --not
+                      | ExpressionCompare "==" ExpressionAdd --eq
+                      | ExpressionCompare ">" ExpressionAdd --gt
+                      | ExpressionCompare ">=" ExpressionAdd --gte
+                      | ExpressionCompare "<" ExpressionAdd --lt
+                      | ExpressionCompare "<=" ExpressionAdd --lte
+                      | ExpressionAdd
     ExpressionAdd = ExpressionAdd "+" ExpressionMul --add
                   | ExpressionAdd "-" ExpressionMul --sub
                   | ExpressionMul
+    ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
+                  | ExpressionMul "/" ExpressionUnary --div
+                  | ExpressionUnary
     ExpressionUnary = "-" ExpressionUnary --neg
                     | "+" ExpressionUnary --add
-                    | "!" ExpressionUnary --log_not
-                    | "~" ExpressionUnary --bit_not
+                    | "!" ExpressionUnary --not
                     | ExpressionValue
+    ExpressionBracket = "(" Expression ")"
+
     // Order is important
     ExpressionValue = ExpressionCall
                     | ExpressionField
+                    | ExpressionBracket
                     | integerLiteral
-                    // | nullLiteral
                     | boolLiteral
                     | id
                     
@@ -81,11 +97,10 @@ Tact {
     id = ~reservedWord idStart idPart*
 
     // Bool Literal
-    // nullLiteral = "null" ~idPart
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return // Order is important
+    keyword = struct | contract | var | fun | let | return | static | primitive // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -93,6 +108,7 @@ Tact {
     fun = "fun" ~idPart
     return = "return" ~idPart
     primitive = "primitive" ~idPart
+    static = "static" ~idPart
 
     // Reserved
     reservedWord = keyword

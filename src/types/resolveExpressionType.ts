@@ -30,17 +30,66 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         } else if (exp.kind === 'number') {
             return registerExpType(ctx, exp, 'Int');
         } else if (exp.kind === 'op_binary') {
+
+            // Resolve left and right expressions
             ctx = resolveExpression(ctx, vctx, exp.left);
             ctx = resolveExpression(ctx, vctx, exp.right);
-            let le = getExpType(ctx, exp.left);
-            let re = getExpType(ctx, exp.right);
-            if (le !== re) {
-                throw Error('Type mistmatch');
+            let le = getExpType(ctx, exp.left).name;
+            let re = getExpType(ctx, exp.right).name;
+
+            // Check operands
+            let tp: string;
+            if (exp.op === '-' || exp.op === '+' || exp.op === '*' || exp.op === '/') {
+                if (le !== 'Int') {
+                    throw Error('Unsupported type: ' + le);
+                }
+                if (re !== 'Int') {
+                    throw Error('Unsupported type: ' + le);
+                }
+                tp = 'Int';
+            } else if (exp.op === '==' || exp.op === '!=' || exp.op === '<' || exp.op === '<=' || exp.op === '>' || exp.op === '>=') {
+                if (le !== 'Int') {
+                    throw Error('Unsupported type: ' + le);
+                }
+                if (re !== 'Int') {
+                    throw Error('Unsupported type: ' + le);
+                }
+                tp = 'Bool';
+            } else if (exp.op === '&&' || exp.op === '||') {
+                if (le !== 'Bool') {
+                    throw Error('Unsupported type: ' + le);
+                }
+                if (re !== 'Bool') {
+                    throw Error('Unsupported type: ' + le);
+                }
+                tp = 'Bool';
+            } else {
+                throw Error('Unsupported operator: ' + exp.op);
             }
-            return registerExpType(ctx, exp, le.name);
+
+            // Register result
+            return registerExpType(ctx, exp, tp);
         } else if (exp.kind === 'op_unary') {
+
+            // Resolve right side
             ctx = resolveExpression(ctx, vctx, exp.right);
-            return registerExpType(ctx, exp, getExpType(ctx, exp.right).name);
+
+            // Check right type dependent on operator
+            let rightType = getExpType(ctx, exp.right).name;
+            if (exp.op === '-' || exp.op === '+') {
+                if (rightType !== 'Int') {
+                    throw Error('Type mistmatch');
+                }
+            } else if (exp.op === '!') {
+                if (rightType !== 'Bool') {
+                    throw Error('Type mistmatch');
+                }
+            } else {
+                throw Error('Unknown operator');
+            }
+
+            // Register result
+            return registerExpType(ctx, exp, rightType);
         } else if (exp.kind === 'id') {
             let v = vctx[exp.value];
             if (!v) {
