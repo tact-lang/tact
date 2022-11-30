@@ -1,0 +1,20 @@
+PROGRAM{
+  DECLPROC isZero
+  DECLPROC recv_internal
+  isZero PROC:<{
+    1 2 BLKDROP2
+    1 PUSHINT
+    10 PUSHINT
+    SETINDEXVARQ
+    1 PUSHINT
+    INDEXVAR
+    s1 s2 XCHG
+    ADD
+    0 GTINT
+    SWAP
+    AND
+  }>
+  recv_internal PROC:<{
+    2DROP
+  }>
+}END>c

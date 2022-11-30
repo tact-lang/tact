@@ -1,6 +1,6 @@
 import { ASTExpression, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
-import { getExpType } from "../types/resolveExpressionType";
+import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getType } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
 import { writeStdlib } from "./stdlib/writeStdlib";
@@ -97,8 +97,26 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, stdlib
         w.append(resolveFunCType(getType(ctx, f.type)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
         return;
     } else if (f.kind === 'statement_assign') {
-        w.append(f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
-        return;
+
+        // Local variable case
+        if (f.path.length === 1) {
+            w.append(f.path[0] + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
+            return;
+        }
+
+        // Depth = 2
+        if (f.path.length === 2) {
+            let valueExpr = writeExpression(ctx, f.expression, stdlib);
+            let lvalueTypes = getLValuePaths(ctx, f);
+            let srcExpr = f.path[1];
+            let targetIndex = lvalueTypes[0].fields.findIndex((v) => v.name === srcExpr);
+            stdlib.add('__tact_set');
+            valueExpr = '__tact_set(' + f.path[0] + ', ' + targetIndex + ', ' + valueExpr + ')';
+            w.append(f.path[0] + ' = ' + valueExpr + ';');
+            return;
+        }
+
+        throw Error('Too deep assignment');
     }
     throw Error('Unknown statement kind: ' + f.kind);
 }

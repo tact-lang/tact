@@ -1,4 +1,5 @@
 import { Interval as RawInterval, Node as RawNode } from 'ohm-js';
+const errors = require('ohm-js/src/errors');
 
 export class ASTRef {
     readonly #interval: RawInterval;
@@ -9,6 +10,10 @@ export class ASTRef {
 
     get contents() {
         return this.#interval.contents;
+    }
+
+    get interval() {
+        return this.#interval;
     }
 }
 
@@ -182,7 +187,7 @@ export type ASTStatementCall = {
 export type ASTSTatementAssign = {
     kind: 'statement_assign',
     id: number,
-    name: string,
+    path: string[],
     expression: ASTExpression,
     ref: ASTRef
 }
@@ -222,5 +227,5 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
 }
 
 export function thowError(message: string, ref: ASTRef): never {
-    throw new Error(message);
+    throw new Error(ref.interval.getLineAndColumnMessage() + message);
 }

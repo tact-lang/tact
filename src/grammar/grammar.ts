@@ -140,15 +140,25 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
-    StatementAssign(arg0, arg1, arg2, arg3) {
+    StatementAssign(arg0, arg1, arg2) {
         return createNode({
             kind: 'statement_assign',
-            name: arg0.sourceString,
-            expression: arg2.resolve_expression(),
+            path: arg0.resolve_lvalue(),
+            expression: arg1.resolve_expression(),
             ref: createRef(this)
         })
-    },
+    }
 });
+
+// LValue
+semantics.addOperation<string[]>('resolve_lvalue', {
+    LValue_id(arg0, arg1) {
+        return [arg0.sourceString];
+    },
+    LValue_subId(arg0, arg1, arg2) {
+        return [arg0.sourceString, ...arg2.resolve_lvalue()];
+    }
+})
 
 // Expressions
 semantics.addOperation<ASTNode>('resolve_expression', {

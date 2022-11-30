@@ -1,6 +1,6 @@
 const stdlib: { [key: string]: string } = {
     '__tact_get': 'forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";',
-    '__tact_set': 'forall X -> X __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";'
+    '__tact_set': 'forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";'
 }
 
 export function writeStdlib(libs: string[]) {
