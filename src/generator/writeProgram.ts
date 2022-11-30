@@ -3,6 +3,7 @@ import { CompilerContext } from "../ast/context";
 import { getExpType } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getType } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
 
 function resolveFunCType(descriptor: TypeDescription): string {
@@ -19,13 +20,13 @@ function resolveFunCType(descriptor: TypeDescription): string {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        return '[' + descriptor.fields.map((k) => resolveFunCType(k.type)).join(', ') + ']';
+        return 'tuple';
     }
 
     throw Error('Unknown type: ' + descriptor.kind);
 }
 
-function writeExpression(ctx: CompilerContext, f: ASTExpression): string {
+function writeExpression(ctx: CompilerContext, f: ASTExpression, stdlib: Set<string>): string {
     if (f.kind === 'boolean') {
         return f.value ? 'true' : 'false';
     } else if (f.kind === 'number') {
@@ -35,70 +36,74 @@ function writeExpression(ctx: CompilerContext, f: ASTExpression): string {
     } else if (f.kind === 'op_binary') {
         let op: string;
         if (f.op === '*') {
-            op = '__tact_mul';
+            op = '*';
         } else if (f.op === '/') {
-            op = '__tact_div';
+            op = '/';
         } else if (f.op === '+') {
-            op = '__tact_add';
+            op = '+';
         } else if (f.op === '-') {
-            op = '__tact_sub';
+            op = '-';
         } else if (f.op === '==') {
-            op = '__tact_eq';
+            op = '==';
         } else if (f.op === '!=') {
-            op = '__tact_neq';
+            op = '!=';
         } else if (f.op === '<') {
-            op = '__tact_lt';
+            op = '<';
         } else if (f.op === '<=') {
-            op = '__tact_lte';
+            op = '<=';
         } else if (f.op === '>') {
-            op = '__tact_gt';
+            op = '>';
         } else if (f.op === '>=') {
-            op = '__tact_gte';
+            op = '>=';
         } else if (f.op === '||') {
-            op = '__tact_or';
+            op = '|';
         } else if (f.op === '&&') {
-            op = '__tact_and';
+            op = '&';
         } else {
             throw Error('Unknown binary operator: ' + f.op);
         }
-        return op + '(' + writeExpression(ctx, f.left) + ', ' + writeExpression(ctx, f.right) + ')';
+        return '(' + writeExpression(ctx, f.left, stdlib) + ' ' + op + ' ' + writeExpression(ctx, f.right, stdlib) + ')';
     } else if (f.kind === 'op_unary') {
-        // if (f.op === '!') {
-        //     return '!' + writeExpression(ctx, f.expression);
-        // } else if (f.op === '-') {
-        //     return '-' + writeExpression(ctx, f.expression);
-        // } else {
-        //     throw Error('Unknown unary operator: ' + f.op);
-        // }
+        if (f.op === '!') {
+            return '~' + writeExpression(ctx, f.right, stdlib);
+        } else if (f.op === '-') {
+            return '-' + writeExpression(ctx, f.right, stdlib);
+        } else if (f.op === '+') {
+            return '+' + writeExpression(ctx, f.right, stdlib);
+        } else {
+            throw Error('Unknown unary operator: ' + f.op);
+        }
     } else if (f.kind === 'op_field') {
         let src = getExpType(ctx, f.src);
         let index = src.fields.findIndex((v) => v.name === f.name);
-        return '__tact_get(' + writeExpression(ctx, f.src) + ', ' + index + ')';
+        stdlib.add('__tact_get');
+        return '__tact_get(' + writeExpression(ctx, f.src, stdlib) + ', ' + index + ')';
     } else if (f.kind === 'op_static_call') {
-        return f.name + '(' + f.args.map((a) => writeExpression(ctx, a)).join(', ') + ')';
+        return f.name + '(' + f.args.map((a) => writeExpression(ctx, a, stdlib)).join(', ') + ')';
     } else if (f.kind === 'op_call') {
         let src = getExpType(ctx, f.src);
         let index = src.functions.findIndex((v) => v.name === f.name);
-        return '__tact_call(' + writeExpression(ctx, f.src) + ', ' + index + ', [' + f.args.map((a) => writeExpression(ctx, a)).join(', ') + '])';
+        stdlib.add('__tact_call');
+        return '__tact_call(' + writeExpression(ctx, f.src, stdlib) + ', ' + index + ', [' + f.args.map((a) => writeExpression(ctx, a, stdlib)).join(', ') + '])';
     }
-    throw Error('Unknown expression kind: ' + f.kind);
+    throw Error('Unknown expression');
 }
 
-function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer) {
+function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, stdlib: Set<string>) {
     if (f.kind === 'statement_return') {
-        w.append('return ' + writeExpression(ctx, f.expression) + ';');
+        w.append('return ' + writeExpression(ctx, f.expression, stdlib) + ';');
         return;
     } else if (f.kind === 'statement_let') {
-        w.append(resolveFunCType(getType(ctx, f.type)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression) + ';');
+        w.append(resolveFunCType(getType(ctx, f.type)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
         return;
     } else if (f.kind === 'statement_assign') {
-        w.append(f.name + ' = ' + writeExpression(ctx, f.expression) + ';');
+        w.append(f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
         return;
     }
     throw Error('Unknown statement kind: ' + f.kind);
 }
 
-function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer) {
+function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, stdlib: Set<string>) {
 
     // Do not write native functions
     if (f.ast.kind === 'def_native_function') {
@@ -110,7 +115,7 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer) 
     w.append((f.returns ? resolveFunCType(f.returns) : '()') + ' ' + f.name + '(' + f.args.map((a) => resolveFunCType(a.type) + ' ' + a.name).join(', ') + ') {');
     w.inIndent(() => {
         for (let s of fd.statements) {
-            writeStatement(ctx, s, w);
+            writeStatement(ctx, s, w, stdlib);
         }
     });
     w.append("}");
@@ -118,16 +123,25 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer) 
 
 export function writeProgram(ctx: CompilerContext) {
     const writer = new Writer();
+    const stdlibs = new Set<string>();
 
     // Static functions
     let sf = getAllStaticFunctions(ctx);
     for (let k in sf) {
         let f = sf[k];
-        writeFunction(ctx, f, writer);
+        writeFunction(ctx, f, writer, stdlibs);
     }
 
     // Types
     // TODO: Implement
 
-    return writer.end();
+    // Entry Points
+    writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
+    writer.inIndent(() => {
+
+    });
+    writer.append('}');
+
+    let res = writeStdlib(Array.from(stdlibs)) + writer.end();
+    return res;
 }
