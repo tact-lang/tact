@@ -1,7 +1,9 @@
+import { isObject } from "util";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getAllTypes } from "../types/resolveTypeDescriptors";
 import { FieldDescription, TypeDescription } from "../types/TypeDescription";
 import { topologicalSort } from "../utils";
+import { crc32 } from "../utils/crc32";
 import { StorageAllocation, StorageCell, StorageField } from "./StorageAllocation";
 
 let store = createContextStore<StorageAllocation>();
@@ -102,6 +104,21 @@ export function resolveAllocations(ctx: CompilerContext) {
         let root = allocateFields(ctx, [...s.fields], 1023, 3);
         let allocation: StorageAllocation = { prefix: null, root };
         ctx = store.set(ctx, s.name, allocation);
+    }
+
+    // Generate function allocations
+    for (let t of types) {
+        if (t.kind === 'contract') {
+            for (let f of t.functions) {
+                if (f.isPublic) {
+                    let fields = f.args.map((v, i) => ({ index: i, name: v.name, type: v.type }));
+                    let prefix = crc32(Buffer.from(f.name));
+                    let root = allocateFields(ctx, fields, 1023 - 8 * 4, 3);
+                    let allocation: StorageAllocation = { prefix, root };
+                    ctx = store.set(ctx, t.name + '$$' + f.name, allocation);
+                }
+            }
+        }
     }
 
     return ctx;

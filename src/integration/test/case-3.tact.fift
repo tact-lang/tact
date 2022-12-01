@@ -3,6 +3,8 @@ PROGRAM{
   DECLPROC __gen_read_Source
   DECLPROC __gen_write_SampleContract
   DECLPROC __gen_read_SampleContract
+  DECLPROC __gen_write_SampleContract_addStake
+  DECLPROC __gen_read_SampleContract_addStake
   DECLPROC __gen_load_SampleContract
   DECLPROC __gen_store_SampleContract
   DECLPROC isZero
@@ -70,6 +72,12 @@ PROGRAM{
     ROT
     TPUSH
   }>
+  __gen_write_SampleContract_addStake PROC:<{
+    DROP
+  }>
+  __gen_read_SampleContract_addStake PROC:<{
+    NIL
+  }>
   __gen_load_SampleContract PROC:<{
     c4 PUSH
     CTOS
@@ -119,10 +127,19 @@ PROGRAM{
   __gen_get_stake PROC:<{
     __gen_load_SampleContract CALLDICT
     __gen_SampleContract_stake CALLDICT
+    NIP
   }>
   recv_internal PROC:<{
-    2DROP
+    NIP
+    32 LDI
+    DROP
     __gen_load_SampleContract CALLDICT
+    SWAP
+    4241841802 PUSHINT
+    EQUAL
+    IF:<{
+      __gen_SampleContract_addStake CALLDICT
+    }>
     __gen_store_SampleContract CALLDICT
   }>
 }END>c

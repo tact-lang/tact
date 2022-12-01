@@ -39,6 +39,16 @@ builder __gen_write_SampleContract(builder build, tuple v) {
     return (sc, res);
 }
 
+builder __gen_write_SampleContract_addStake(builder build, tuple v) {
+    return build
+    ;
+}
+
+(slice, tuple) __gen_read_SampleContract_addStake(slice sc) {
+    tuple res = empty_tuple();
+    return (sc, res);
+}
+
 tuple __gen_load_SampleContract() {
     slice sc = get_data().begin_parse();
     tuple res = sc~__gen_read_SampleContract();
@@ -56,11 +66,11 @@ int isZero(int x, int y, int z, tuple m) {
     return (((x + __tact_get(m, 1)) > 0) & z);
 }
 
-tuple __gen_SampleContract_addStake(tuple self) {
+(tuple, ()) __gen_SampleContract_addStake(tuple self) {
     self = __tact_set(self, 0, 10);
     self = __tact_set(self, 1, 20);
     self = __tact_set(self, 2, tpush(tpush(empty_tuple(), 10), 20));
-    return self;
+    return (self, ());
 }
 
 (tuple, int) __gen_SampleContract_stake(tuple self) {
@@ -69,11 +79,16 @@ tuple __gen_SampleContract_addStake(tuple self) {
 
 _ __gen_get_stake() method_id(80984) {
     tuple self = __gen_load_SampleContract();
-    return __gen_SampleContract_stake(self);
+    var res = self~__gen_SampleContract_stake();
+    return res;
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_int(32);
     tuple self = __gen_load_SampleContract();
+    if (op == 4241841802) {
+        tuple msg = in_msg~__gen_read_SampleContract_addStake();
+        self~__gen_SampleContract_addStake();
+    }
     __gen_store_SampleContract(self);
 }

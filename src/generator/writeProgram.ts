@@ -1,10 +1,10 @@
 import { ASTExpression, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
-import { getAllocations } from "../storage/resolveAllocation";
+import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell } from "../storage/StorageAllocation";
 import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { FieldDescription, FunctionDescription, TypeDescription } from "../types/TypeDescription";
 import { getMethodId } from "../utils";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
@@ -159,7 +159,7 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
     if (f.self && f.returns) {
         returns = '(tuple, ' + returns + ')';
     } else if (f.self) {
-        returns = 'tuple';
+        returns = '(tuple, ())';
     }
     w.append(returns + ' ' + (f.self ? '__gen_' + f.self.name + '_' : '') + f.name + '(' + args.join(', ') + ') {');
     w.inIndent(() => {
@@ -168,7 +168,7 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
         }
         if (f.self && !f.returns) {
             if (fd.statements.length === 0 || fd.statements[fd.statements.length - 1].kind !== 'statement_return') {
-                w.append('return self;');
+                w.append('return (self, ());');
             }
         }
     });
@@ -195,8 +195,8 @@ function writeSerializerCell(ctx: CompilerContext, cell: StorageCell, w: Writer,
     }
 }
 
-function writeSerializer(ctx: CompilerContext, type: TypeDescription, allocation: StorageAllocation, w: Writer, stdlib: Set<string>) {
-    w.append('builder __gen_write_' + type.name + '(builder build, ' + resolveFunCType(type) + ' v) {');
+function writeSerializer(ctx: CompilerContext, name: string, allocation: StorageAllocation, w: Writer, stdlib: Set<string>) {
+    w.append('builder __gen_write_' + name + '(builder build, tuple v) {');
     w.inIndent(() => {
         w.append('return build');
         w.inIndent(() => {
@@ -222,8 +222,8 @@ function writeCellParser(ctx: CompilerContext, cell: StorageCell, w: Writer, std
     }
 }
 
-function writeParser(ctx: CompilerContext, type: TypeDescription, allocation: StorageAllocation, w: Writer, stdlib: Set<string>) {
-    w.append('(slice, tuple) __gen_read_' + type.name + '(slice sc) {');
+function writeParser(ctx: CompilerContext, name: string, allocation: StorageAllocation, w: Writer, stdlib: Set<string>) {
+    w.append('(slice, tuple) __gen_read_' + name + '(slice sc) {');
     w.inIndent(() => {
 
         // Write cell parser
@@ -231,9 +231,15 @@ function writeParser(ctx: CompilerContext, type: TypeDescription, allocation: St
 
         // Compile tuple
         w.append("tuple res = empty_tuple();");
-        for (let f of type.fields) {
-            w.append('res = tpush(res, __' + f.name + ');');
+        function writeCell(src: StorageCell) {
+            for (let s of src.fields) {
+                w.append('res = tpush(res, __' + s.name + ');');
+            }
+            if (src.next) {
+                writeCell(src.next);
+            }
         }
+        writeCell(allocation.root);
         w.append('return (sc, res);');
     });
     w.append("}");
@@ -264,7 +270,8 @@ function writeGetter(ctx: CompilerContext, f: FunctionDescription, w: Writer, st
     w.append('_ __gen_get_' + f.name + '(' + args.join(', ') + ') method_id(' + getMethodId(f.name) + ') {');
     w.inIndent(() => {
         w.append('tuple self = __gen_load_' + f.self!.name + '();');
-        w.append('return __gen_' + f.self!.name + '_' + f.name + '(' + ['self', ...f.args.map((a) => a.name)].join(', ') + ');');
+        w.append('var res = self~__gen_' + f.self!.name + '_' + f.name + '(' + [...f.args.map((a) => a.name)].join(', ') + ');');
+        w.append('return res;');
     });
     w.append('}');
     w.append();
@@ -273,12 +280,21 @@ function writeGetter(ctx: CompilerContext, f: FunctionDescription, w: Writer, st
 export function writeProgram(ctx: CompilerContext) {
     const writer = new Writer();
     const stdlibs = new Set<string>();
+    let contracts = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract');
 
     // Serializators
     let allocations = getAllocations(ctx);
     for (let k of allocations) {
-        writeSerializer(ctx, k.type, k.allocation, writer, stdlibs);
-        writeParser(ctx, k.type, k.allocation, writer, stdlibs);
+        writeSerializer(ctx, k.type.name, k.allocation, writer, stdlibs);
+        writeParser(ctx, k.type.name, k.allocation, writer, stdlibs);
+    }
+    for (let c of contracts) {
+        for (let f of c.functions) {
+            if (f.isPublic) {
+                writeSerializer(ctx, c.name + '_' + f.name, getAllocation(ctx, c.name + '$$' + f.name), writer, stdlibs);
+                writeParser(ctx, c.name + '_' + f.name, getAllocation(ctx, c.name + '$$' + f.name), writer, stdlibs);
+            }
+        }
     }
 
     // Storage Functions
@@ -296,7 +312,6 @@ export function writeProgram(ctx: CompilerContext) {
     }
 
     // Contract functions
-    let contracts = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract');
     for (let c of contracts) {
         for (let f of c.functions) {
             writeFunction(ctx, f, writer, stdlibs);
@@ -334,9 +349,14 @@ export function writeProgram(ctx: CompilerContext) {
             writer.append('int op = in_msg~load_int(32);');
             writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
             for (let f of c.functions) {
-                if (f.isGetter) {
-                    // let id = getMethodId(f.name);
-                    // writer.append('if (op == ' + id + ') {');
+                if (f.isPublic) {
+                    let allocation = getAllocation(ctx, c.name + '$$' + f.name);
+                    writer.append('if (op == ' + allocation.prefix + ') {');
+                    writer.inIndent(() => {
+                        writer.append('tuple msg = in_msg~__gen_read_' + c.name + '_' + f.name + '();');
+                        writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => '__tact_get(msg, ' + i + ')')].join(',') + ');');
+                    })
+                    writer.append('}');
                 }
             }
             // TODO Implement
