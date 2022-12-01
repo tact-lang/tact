@@ -66,7 +66,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             self,
             args,
             returns,
-            ast: a
+            ast: a,
+            isPublic: a.kind === 'def_function' ? a.attribute.some(a => a.type === 'public') : false,
+            isGetter: a.kind === 'def_function' ? a.attribute.some(a => a.type === 'get') : false,
         };
     }
 

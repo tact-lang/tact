@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTNode, ASTProgram, createNode, createRef } from '../ast/ast';
+import { ASTFunctionAttribute, ASTNode, ASTProgram, createNode, createRef } from '../ast/ast';
 
 
 // Semantics
@@ -48,6 +48,16 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
     },
 });
 
+// Resolve attributes
+semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
+    FunctionAttribute_public(arg0) {
+        return { type: 'public' };
+    },
+    FunctionAttribute_getter(arg0) {
+        return { type: 'get' };
+    }
+});
+
 // Struct and class declarations
 semantics.addOperation<ASTNode>('resolve_declaration', {
     Field(arg0, arg1, arg2, arg3, arg4) {
@@ -66,23 +76,25 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Function_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+    Function_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) {
         return createNode({
             kind: 'def_function',
-            name: arg1.sourceString,
-            return: arg6.sourceString,
-            args: arg3.asIteration().children.map((v: any) => v.resolve_declaration()),
-            statements: arg8.children.map((v: any) => v.resolve_statement()),
+            attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            name: arg2.sourceString,
+            return: arg7.sourceString,
+            args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: arg9.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
     },
-    Function_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+    Function_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
         return createNode({
             kind: 'def_function',
-            name: arg1.sourceString,
+            attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            name: arg2.sourceString,
             return: null,
-            args: arg3.asIteration().children.map((v: any) => v.resolve_declaration()),
-            statements: arg6.children.map((v: any) => v.resolve_statement()),
+            args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: arg7.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
     },

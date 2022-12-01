@@ -67,7 +67,13 @@ tuple __gen_SampleContract_addStake(tuple self) {
     return (self, __tact_get(self, 0));
 }
 
+_ __gen_get_stake() method_id(80984) {
+    tuple self = __gen_load_SampleContract();
+    return __gen_SampleContract_stake(self);
+}
+
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
+    int op = in_msg~load_int(32);
     tuple self = __gen_load_SampleContract();
     __gen_store_SampleContract(self);
 }

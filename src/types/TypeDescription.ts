@@ -20,6 +20,8 @@ export type FunctionArgument = {
 
 export type FunctionDescription = {
     name: string,
+    isPublic: boolean,
+    isGetter: boolean,
     self: TypeDescription | null,
     returns: TypeDescription | null,
     args: FunctionArgument[],

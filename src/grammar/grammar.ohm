@@ -30,8 +30,10 @@ Tact {
                  | Function 
 
     // Function
-    Function = fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
-             | fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
+    FunctionAttribute = public --public
+                      | get    --getter
+    Function = ListOf<FunctionAttribute," "> fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
+             | ListOf<FunctionAttribute," "> fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
              
     FunctionArg = id ":" Type
 
@@ -120,7 +122,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | primitive | extend | native // Order is important
+    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -130,6 +132,8 @@ Tact {
     primitive = "primitive" ~idPart
     extend = "extend" ~idPart
     native = "native" ~idPart
+    public = "public" ~idPart
+    get = "get" ~idPart
 
     // Attributes
     nameAttribute = "@name"

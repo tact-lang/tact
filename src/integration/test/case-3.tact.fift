@@ -8,6 +8,7 @@ PROGRAM{
   DECLPROC isZero
   DECLPROC __gen_SampleContract_addStake
   DECLPROC __gen_SampleContract_stake
+  80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
     257 PUSHINT
@@ -114,6 +115,10 @@ PROGRAM{
     DUP
     0 PUSHINT
     INDEXVAR
+  }>
+  __gen_get_stake PROC:<{
+    __gen_load_SampleContract CALLDICT
+    __gen_SampleContract_stake CALLDICT
   }>
   recv_internal PROC:<{
     2DROP

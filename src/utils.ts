@@ -1,6 +1,8 @@
 // // export type Interval = 
 // export function thr
 
+import { crc16 } from "./utils/crc16";
+
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     let result: T[] = [];
     let visited = new Set<T>();
@@ -34,4 +36,8 @@ export function deepFreeze<T>(obj: T) {
         }
     }
     return Object.freeze(obj);
+}
+
+export function getMethodId(name: string) {
+    return (crc16(name) & 0xffff) | 0x10000;
 }

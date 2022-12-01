@@ -152,9 +152,12 @@ export type ASTArgument = {
     ref: ASTRef
 }
 
+export type ASTFunctionAttribute = { type: 'public' } | { type: 'get' };
+
 export type ASTFunction = {
     kind: 'def_function',
     id: number,
+    attribute: ASTFunctionAttribute[],
     name: string,
     return: string | null,
     args: ASTArgument[],

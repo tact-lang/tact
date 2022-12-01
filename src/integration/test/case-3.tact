@@ -13,13 +13,13 @@ contract SampleContract {
     var b: Int;
     var c: Source;
 
-    fun addStake() {
+    public fun addStake() { 
         self.a = 10;
         self.b = 20;
         self.c = Source{a: 10, b: 20};
     }
 
-    fun stake(): Int {
+    get fun stake(): Int {
         return self.a;
     }
 }

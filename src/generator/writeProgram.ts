@@ -5,6 +5,7 @@ import { StorageAllocation, StorageCell } from "../storage/StorageAllocation";
 import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { getMethodId } from "../utils";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
 
@@ -258,6 +259,17 @@ function writeStorageOps(ctx: CompilerContext, type: TypeDescription, w: Writer,
     w.append();
 }
 
+function writeGetter(ctx: CompilerContext, f: FunctionDescription, w: Writer, stdlib: Set<string>) {
+    let args = f.args.map((a) => resolveFunCType(a.type) + ' ' + a.name);
+    w.append('_ __gen_get_' + f.name + '(' + args.join(', ') + ') method_id(' + getMethodId(f.name) + ') {');
+    w.inIndent(() => {
+        w.append('tuple self = __gen_load_' + f.self!.name + '();');
+        w.append('return __gen_' + f.self!.name + '_' + f.name + '(' + ['self', ...f.args.map((a) => a.name)].join(', ') + ');');
+    });
+    w.append('}');
+    w.append();
+}
+
 export function writeProgram(ctx: CompilerContext) {
     const writer = new Writer();
     const stdlibs = new Set<string>();
@@ -291,6 +303,15 @@ export function writeProgram(ctx: CompilerContext) {
         }
     }
 
+    // Contract getters
+    for (let c of contracts) {
+        for (let f of c.functions) {
+            if (f.isGetter) {
+                writeGetter(ctx, f, writer, stdlibs);
+            }
+        }
+    }
+
     // Contract
     if (contracts.length > 1) {
         throw Error('Too many contracts');
@@ -310,7 +331,14 @@ export function writeProgram(ctx: CompilerContext) {
         let c = contracts[0];
         writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
         writer.inIndent(() => {
+            writer.append('int op = in_msg~load_int(32);');
             writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
+            for (let f of c.functions) {
+                if (f.isGetter) {
+                    // let id = getMethodId(f.name);
+                    // writer.append('if (op == ' + id + ') {');
+                }
+            }
             // TODO Implement
             writer.append('__gen_store_SampleContract(self);');
         });
