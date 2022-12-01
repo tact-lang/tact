@@ -36,6 +36,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
   "Struct1": {
     "fields": [
       {
+        "index": 0,
         "name": "a",
         "type": {
           "fields": [],
@@ -45,6 +46,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         },
       },
       {
+        "index": 1,
         "name": "b",
         "type": {
           "fields": [],
@@ -61,10 +63,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
   "Struct2": {
     "fields": [
       {
+        "index": 0,
         "name": "a",
         "type": {
           "fields": [
             {
+              "index": 0,
               "name": "a",
               "type": {
                 "fields": [],
@@ -74,6 +78,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
               },
             },
             {
+              "index": 1,
               "name": "b",
               "type": {
                 "fields": [],
@@ -257,6 +262,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
   "HelloWorld": {
     "fields": [
       {
+        "index": 0,
         "name": "a",
         "type": {
           "fields": [],
@@ -266,6 +272,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         },
       },
       {
+        "index": 1,
         "name": "b",
         "type": {
           "fields": [],

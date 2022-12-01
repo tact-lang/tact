@@ -1,8 +1,8 @@
 import { ASTExpression, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
-import { getAllStaticFunctions, getType } from "../types/resolveTypeDescriptors";
-import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
+import { FieldDescription, FunctionDescription, TypeDescription } from "../types/TypeDescription";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
 
@@ -20,6 +20,8 @@ function resolveFunCType(descriptor: TypeDescription): string {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
+        return 'tuple';
+    } else if (descriptor.kind === 'contract') {
         return 'tuple';
     }
 
@@ -75,9 +77,12 @@ function writeExpression(ctx: CompilerContext, f: ASTExpression, stdlib: Set<str
         }
     } else if (f.kind === 'op_field') {
         let src = getExpType(ctx, f.src);
-        let index = src.fields.findIndex((v) => v.name === f.name);
+        let field = src.fields.find((v) => v.name === f.name)!;
+        if (!field) {
+            throw Error('Field not found: ' + f.name + ' in ' + src.name);
+        }
         stdlib.add('__tact_get');
-        return '__tact_get(' + writeExpression(ctx, f.src, stdlib) + ', ' + index + ')';
+        return '__tact_get(' + writeExpression(ctx, f.src, stdlib) + ', ' + field.index + ')';
     } else if (f.kind === 'op_static_call') {
         return f.name + '(' + f.args.map((a) => writeExpression(ctx, a, stdlib)).join(', ') + ')';
     } else if (f.kind === 'op_call') {
@@ -148,9 +153,70 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
     w.append();
 }
 
+function resolveFieldSize(src: FieldDescription): { bits: number, refs: number } {
+    if (src.type.kind === 'primitive') {
+        if (src.type.name === 'Int') {
+            return { bits: 257, refs: 0 };
+        } else if (src.type.name === 'Bool') {
+            return { bits: 1, refs: 0 };
+        }
+    } else if (src.type.kind === 'contract' || src.type.kind === 'struct') {
+        return { bits: 0, refs: 1 };
+    }
+    throw Error('Unknown field type: ' + src.type.kind);
+}
+
+function writeFields(ctx: CompilerContext, fields: FieldDescription[], bits: number, refs: number, w: Writer, stdlib: Set<string>) {
+    while (fields.length > 0) {
+        let f = fields.shift()!;
+        let d = resolveFieldSize(f);
+        if (d.bits > bits || d.refs > refs) {
+            w.append('.store_ref(begin_cell()');
+            w.inIndent(() => {
+                writeFields(ctx, [f, ...fields], 1023, 3, w, stdlib);
+            });
+            w.append('.end_cell())');
+        } else {
+            bits -= d.bits;
+            refs -= d.refs;
+            if (f.type.kind === 'primitive') {
+                if (f.type.name === 'Int') {
+                    w.append('.store_int(257, __tact_get(v, ' + f.index + '))');
+                } else {
+                    throw Error('Unknown primitive type: ' + f.type.name);
+                }
+            } else {
+                // throw Error('Unknown field type: ' + f.type.kind);
+            }
+        }
+    }
+}
+
+function writeSerializer(ctx: CompilerContext, type: TypeDescription, w: Writer, stdlib: Set<string>) {
+    w.append('builder write_' + type.name + '(builder build, ' + resolveFunCType(type) + ' v) {');
+    w.inIndent(() => {
+        w.append('return build');
+        w.inIndent(() => {
+            writeFields(ctx, [...type.fields], 1023, 3, w, stdlib);
+        });
+        w.append(';');
+    });
+    w.append("}");
+}
+
 export function writeProgram(ctx: CompilerContext) {
     const writer = new Writer();
     const stdlibs = new Set<string>();
+
+    // Serializators
+    let types = getAllTypes(ctx);
+    for (let k in types) {
+        let t = types[k];
+        if (t.kind === 'primitive') {
+            continue;
+        }
+        writeSerializer(ctx, t, writer, stdlibs);
+    }
 
     // Static functions
     let sf = getAllStaticFunctions(ctx);

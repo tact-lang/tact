@@ -1,6 +1,32 @@
 PROGRAM{
+  DECLPROC write_Source
+  DECLPROC write_SampleContract
   DECLPROC isZero
   DECLPROC recv_internal
+  write_Source PROC:<{
+    257 PUSHINT
+    s0 s1 PUSH2
+    0 PUSHINT
+    INDEXVAR
+    s1 s4 s0 XCHG3
+    STIX
+    SWAP
+    1 PUSHINT
+    INDEXVAR
+    STIX
+  }>
+  write_SampleContract PROC:<{
+    257 PUSHINT
+    s0 s1 PUSH2
+    0 PUSHINT
+    INDEXVAR
+    s1 s4 s0 XCHG3
+    STIX
+    SWAP
+    1 PUSHINT
+    INDEXVAR
+    STIX
+  }>
   isZero PROC:<{
     1 2 BLKDROP2
     1 PUSHINT

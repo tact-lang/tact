@@ -1,6 +1,33 @@
 PROGRAM{
+  DECLPROC write_Source
   DECLPROC isZero
   DECLPROC recv_internal
+  write_Source PROC:<{
+    257 PUSHINT
+    NEWC
+    s2 PUSH
+    3 PUSHINT
+    INDEXVAR
+    STIX
+    ENDC
+    257 PUSHINT
+    s0 s0 s2 PUSH3
+    0 PUSHINT
+    INDEXVAR
+    s1 s6 s0 XCHG3
+    STIX
+    s3 PUSH
+    1 PUSHINT
+    INDEXVAR
+    s2 s5 XCHG
+    STIX
+    s0 s2 XCHG
+    2 PUSHINT
+    INDEXVAR
+    s3 s3 s0 XCHG3
+    STIX
+    STREF
+  }>
   isZero PROC:<{
     2SWAP
     ADD

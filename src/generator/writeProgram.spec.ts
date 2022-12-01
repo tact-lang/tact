@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { CompilerContext } from '../ast/context';
 import { resolveExpressionTypes } from '../types/resolveExpressionType';
-import { resolveTypeDescriptors } from '../types/resolveTypeDescriptors';
+import { getAllTypes, resolveTypeDescriptors } from '../types/resolveTypeDescriptors';
 import { writeProgram } from './writeProgram';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
@@ -27,6 +27,7 @@ describe('writeProgram', () => {
         let ctx = CompilerContext.fromSources([stdlib, src]);
         ctx = resolveTypeDescriptors(ctx);
         ctx = resolveExpressionTypes(ctx);
+        console.warn(getAllTypes(ctx));
         let output = writeProgram(ctx);
         console.warn(output);
     });

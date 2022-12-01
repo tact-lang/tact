@@ -1,6 +1,12 @@
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 
+builder write_Source(builder build, tuple v) {
+    return build
+        .store_int(257, __tact_get(v, 0))
+        .store_int(257, __tact_get(v, 1))
+    ;
+}
 int isZero(int x, int y, int z, tuple m) {
     m = __tact_set(m, 1, 10);
     return (((x + __tact_get(m, 1)) > 0) & z);

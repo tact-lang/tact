@@ -9,6 +9,7 @@ export type TypeDescription = {
 
 export type FieldDescription = {
     name: string,
+    index: number,
     type: TypeDescription
 }
 

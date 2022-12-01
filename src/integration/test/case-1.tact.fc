@@ -1,5 +1,15 @@
 forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 
+builder write_Source(builder build, tuple v) {
+    return build
+        .store_int(257, __tact_get(v, 0))
+        .store_int(257, __tact_get(v, 1))
+        .store_int(257, __tact_get(v, 2))
+        .store_ref(begin_cell()
+            .store_int(257, __tact_get(v, 3))
+        .end_cell())
+    ;
+}
 int isZero(int x, int y, int z, tuple m) {
     int b = (x + y);
     b = (((b + 1) + __tact_get(m, 0)) + __tact_get(m, 1));

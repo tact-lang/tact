@@ -82,12 +82,12 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     }
 
     // Resolve fields
-    function resolveField(src: ASTField): FieldDescription {
+    function resolveField(src: ASTField, index: number): FieldDescription {
         let t = types[src.type];
         if (!t) {
             throw Error('Type ' + src.type + ' not found');
         }
-        return { name: src.name, type: t };
+        return { name: src.name, type: t, index };
     }
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];
@@ -101,7 +101,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throw Error('Field ' + f.name + ' already exists');
                 }
-                types[a.name].fields.push(resolveField(f));
+                types[a.name].fields.push(resolveField(f, types[a.name].fields.length));
             }
         }
 
@@ -111,7 +111,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throw Error('Field ' + f.name + ' already exists');
                 }
-                types[a.name].fields.push(resolveField(f));
+                types[a.name].fields.push(resolveField(f, types[a.name].fields.length));
             }
         }
     }
