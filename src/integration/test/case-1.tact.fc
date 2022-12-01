@@ -1,6 +1,6 @@
 forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 
-builder write_Source(builder build, tuple v) {
+builder __gen_write_Source(builder build, tuple v) {
     return build
         .store_int(257, __tact_get(v, 0))
         .store_int(257, __tact_get(v, 1))
@@ -10,6 +10,21 @@ builder write_Source(builder build, tuple v) {
         .end_cell())
     ;
 }
+
+(slice, tuple) __gen_read_Source(slice sc) {
+    int __a = sc~load_int(257);
+    int __b = sc~load_int(257);
+    int __c = sc~load_int(257);
+    sc = (sc~load_ref()).begin_parse();
+    int __d = sc~load_int(257);
+    tuple res = empty_tuple();
+    res = tpush(res, __a);
+    res = tpush(res, __b);
+    res = tpush(res, __c);
+    res = tpush(res, __d);
+    return (sc, res);
+}
+
 int isZero(int x, int y, int z, tuple m) {
     int b = (x + y);
     b = (((b + 1) + __tact_get(m, 0)) + __tact_get(m, 1));
@@ -17,4 +32,5 @@ int isZero(int x, int y, int z, tuple m) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
+    throw(100);
 }

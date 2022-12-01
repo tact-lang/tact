@@ -1,8 +1,10 @@
 import { ASTExpression, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
+import { getAllocations } from "../storage/resolveAllocation";
+import { StorageAllocation, StorageCell } from "../storage/StorageAllocation";
 import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FieldDescription, FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
 
@@ -102,9 +104,14 @@ function writeExpression(ctx: CompilerContext, f: ASTExpression, stdlib: Set<str
     throw Error('Unknown expression');
 }
 
-function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, stdlib: Set<string>) {
+function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, stdlib: Set<string>, self: boolean) {
     if (f.kind === 'statement_return') {
-        w.append('return ' + writeExpression(ctx, f.expression, stdlib) + ';');
+        let exp = writeExpression(ctx, f.expression, stdlib);
+        if (self) {
+            w.append('return (self, ' + exp + ');');
+        } else {
+            w.append('return ' + exp + ';');
+        }
         return;
     } else if (f.kind === 'statement_let') {
         w.append(resolveFunCType(getType(ctx, f.type)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
@@ -143,65 +150,112 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
     const fd = f.ast;
 
     // Write function header
-    w.append((f.returns ? resolveFunCType(f.returns) : '()') + ' ' + f.name + '(' + f.args.map((a) => resolveFunCType(a.type) + ' ' + a.name).join(', ') + ') {');
+    let args = f.args.map((a) => resolveFunCType(a.type) + ' ' + a.name);
+    if (f.self) {
+        args.unshift(resolveFunCType(f.self) + ' self');
+    }
+    let returns: string = f.returns ? resolveFunCType(f.returns) : '()';
+    if (f.self && f.returns) {
+        returns = '(tuple, ' + returns + ')';
+    } else if (f.self) {
+        returns = 'tuple';
+    }
+    w.append(returns + ' ' + (f.self ? '__gen_' + f.self.name + '_' : '') + f.name + '(' + args.join(', ') + ') {');
     w.inIndent(() => {
         for (let s of fd.statements) {
-            writeStatement(ctx, s, w, stdlib);
+            writeStatement(ctx, s, w, stdlib, !!f.self);
+        }
+        if (f.self && !f.returns) {
+            if (fd.statements.length === 0 || fd.statements[fd.statements.length - 1].kind !== 'statement_return') {
+                w.append('return self;');
+            }
         }
     });
     w.append("}");
     w.append();
 }
 
-function resolveFieldSize(src: FieldDescription): { bits: number, refs: number } {
-    if (src.type.kind === 'primitive') {
-        if (src.type.name === 'Int') {
-            return { bits: 257, refs: 0 };
-        } else if (src.type.name === 'Bool') {
-            return { bits: 1, refs: 0 };
+function writeSerializerCell(ctx: CompilerContext, cell: StorageCell, w: Writer, stdlib: Set<string>) {
+    for (let f of cell.fields) {
+        if (f.kind === 'int') {
+            stdlib.add('__tact_get');
+            w.append('.store_int(' + f.size.bits + ', __tact_get(v, ' + f.index + '))');
+        } else if (f.kind === 'struct') {
+            stdlib.add('__tact_get');
+            w.append('.__gen_write_' + f.type.name + '(__tact_get(v, ' + f.index + '))');
         }
-    } else if (src.type.kind === 'contract' || src.type.kind === 'struct') {
-        return { bits: 0, refs: 1 };
     }
-    throw Error('Unknown field type: ' + src.type.kind);
-}
-
-function writeFields(ctx: CompilerContext, fields: FieldDescription[], bits: number, refs: number, w: Writer, stdlib: Set<string>) {
-    while (fields.length > 0) {
-        let f = fields.shift()!;
-        let d = resolveFieldSize(f);
-        if (d.bits > bits || d.refs > refs) {
-            w.append('.store_ref(begin_cell()');
-            w.inIndent(() => {
-                writeFields(ctx, [f, ...fields], 1023, 3, w, stdlib);
-            });
-            w.append('.end_cell())');
-        } else {
-            bits -= d.bits;
-            refs -= d.refs;
-            if (f.type.kind === 'primitive') {
-                if (f.type.name === 'Int') {
-                    w.append('.store_int(257, __tact_get(v, ' + f.index + '))');
-                } else {
-                    throw Error('Unknown primitive type: ' + f.type.name);
-                }
-            } else {
-                // throw Error('Unknown field type: ' + f.type.kind);
-            }
-        }
+    if (cell.next) {
+        w.append('.store_ref(begin_cell()');
+        w.inIndent(() => {
+            writeSerializerCell(ctx, cell.next!, w, stdlib);
+        });
+        w.append('.end_cell())');
     }
 }
 
-function writeSerializer(ctx: CompilerContext, type: TypeDescription, w: Writer, stdlib: Set<string>) {
-    w.append('builder write_' + type.name + '(builder build, ' + resolveFunCType(type) + ' v) {');
+function writeSerializer(ctx: CompilerContext, type: TypeDescription, allocation: StorageAllocation, w: Writer, stdlib: Set<string>) {
+    w.append('builder __gen_write_' + type.name + '(builder build, ' + resolveFunCType(type) + ' v) {');
     w.inIndent(() => {
         w.append('return build');
         w.inIndent(() => {
-            writeFields(ctx, [...type.fields], 1023, 3, w, stdlib);
+            writeSerializerCell(ctx, allocation.root, w, stdlib);
         });
         w.append(';');
     });
     w.append("}");
+    w.append();
+}
+
+function writeCellParser(ctx: CompilerContext, cell: StorageCell, w: Writer, stdlib: Set<string>) {
+    for (let f of cell.fields) {
+        if (f.kind === 'int') {
+            w.append(resolveFunCType(f.type) + ' __' + f.name + ' = sc~load_int(' + f.size.bits + ');');
+        } else if (f.kind === 'struct') {
+            w.append(resolveFunCType(f.type) + ' __' + f.name + ' = sc~__gen_read_' + f.type.name + '();');
+        }
+    }
+    if (cell.next) {
+        w.append('sc = (sc~load_ref()).begin_parse();');
+        writeCellParser(ctx, cell.next, w, stdlib);
+    }
+}
+
+function writeParser(ctx: CompilerContext, type: TypeDescription, allocation: StorageAllocation, w: Writer, stdlib: Set<string>) {
+    w.append('(slice, tuple) __gen_read_' + type.name + '(slice sc) {');
+    w.inIndent(() => {
+
+        // Write cell parser
+        writeCellParser(ctx, allocation.root, w, stdlib);
+
+        // Compile tuple
+        w.append("tuple res = empty_tuple();");
+        for (let f of type.fields) {
+            w.append('res = tpush(res, __' + f.name + ');');
+        }
+        w.append('return (sc, res);');
+    });
+    w.append("}");
+    w.append();
+}
+
+function writeStorageOps(ctx: CompilerContext, type: TypeDescription, w: Writer, stdlib: Set<string>) {
+    w.append('tuple __gen_load_' + type.name + '() {');
+    w.inIndent(() => {
+        w.append('slice sc = get_data().begin_parse();');
+        w.append('tuple res = sc~__gen_read_' + type.name + '();');
+        w.append('return res;');
+    });
+    w.append('}');
+    w.append();
+    w.append('() __gen_store_' + type.name + '(tuple v) impure {');
+    w.inIndent(() => {
+        w.append('builder b = begin_cell();');
+        w.append('b = __gen_write_' + type.name + '(b, v);');
+        w.append('set_data(b.end_cell());');
+    });
+    w.append('}');
+    w.append();
 }
 
 export function writeProgram(ctx: CompilerContext) {
@@ -209,13 +263,17 @@ export function writeProgram(ctx: CompilerContext) {
     const stdlibs = new Set<string>();
 
     // Serializators
-    let types = getAllTypes(ctx);
-    for (let k in types) {
-        let t = types[k];
-        if (t.kind === 'primitive') {
-            continue;
+    let allocations = getAllocations(ctx);
+    for (let k of allocations) {
+        writeSerializer(ctx, k.type, k.allocation, writer, stdlibs);
+        writeParser(ctx, k.type, k.allocation, writer, stdlibs);
+    }
+
+    // Storage Functions
+    for (let k of allocations) {
+        if (k.type.kind === 'contract') {
+            writeStorageOps(ctx, k.type, writer, stdlibs);
         }
-        writeSerializer(ctx, t, writer, stdlibs);
     }
 
     // Static functions
@@ -225,15 +283,39 @@ export function writeProgram(ctx: CompilerContext) {
         writeFunction(ctx, f, writer, stdlibs);
     }
 
-    // Types
-    // TODO: Implement
+    // Contract functions
+    let contracts = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract');
+    for (let c of contracts) {
+        for (let f of c.functions) {
+            writeFunction(ctx, f, writer, stdlibs);
+        }
+    }
 
-    // Entry Points
-    writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
-    writer.inIndent(() => {
+    // Contract
+    if (contracts.length > 1) {
+        throw Error('Too many contracts');
+    }
 
-    });
-    writer.append('}');
+    // Empty contract
+    if (contracts.length === 0) {
+        writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
+        writer.inIndent(() => {
+            writer.append('throw(100);');
+        });
+        writer.append('}');
+    }
+
+    // Entry Point
+    if (contracts.length === 1) {
+        let c = contracts[0];
+        writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
+        writer.inIndent(() => {
+            writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
+            // TODO Implement
+            writer.append('__gen_store_SampleContract(self);');
+        });
+        writer.append('}');
+    }
 
     let res = writeStdlib(Array.from(stdlibs)) + '\n' + writer.end();
     return res;

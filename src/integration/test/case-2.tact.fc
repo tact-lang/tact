@@ -1,16 +1,27 @@
-forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
+forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
-builder write_Source(builder build, tuple v) {
+builder __gen_write_Source(builder build, tuple v) {
     return build
         .store_int(257, __tact_get(v, 0))
         .store_int(257, __tact_get(v, 1))
     ;
 }
+
+(slice, tuple) __gen_read_Source(slice sc) {
+    int __a = sc~load_int(257);
+    int __b = sc~load_int(257);
+    tuple res = empty_tuple();
+    res = tpush(res, __a);
+    res = tpush(res, __b);
+    return (sc, res);
+}
+
 int isZero(int x, int y, int z, tuple m) {
     m = __tact_set(m, 1, 10);
     return (((x + __tact_get(m, 1)) > 0) & z);
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
+    throw(100);
 }

@@ -1,0 +1,350 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolveAllocation should write program 1`] = `
+[
+  {
+    "allocation": {
+      "prefix": null,
+      "root": {
+        "fields": [
+          {
+            "index": 0,
+            "kind": "int",
+            "name": "x",
+            "size": {
+              "bits": 257,
+              "refs": 0,
+            },
+            "type": {
+              "fields": [],
+              "functions": [],
+              "kind": "primitive",
+              "name": "Int",
+            },
+          },
+          {
+            "index": 1,
+            "kind": "int",
+            "name": "y",
+            "size": {
+              "bits": 257,
+              "refs": 0,
+            },
+            "type": {
+              "fields": [],
+              "functions": [],
+              "kind": "primitive",
+              "name": "Int",
+            },
+          },
+        ],
+        "next": null,
+        "size": {
+          "bits": 514,
+          "refs": 0,
+        },
+      },
+    },
+    "type": {
+      "fields": [
+        {
+          "index": 0,
+          "name": "x",
+          "type": {
+            "fields": [],
+            "functions": [],
+            "kind": "primitive",
+            "name": "Int",
+          },
+        },
+        {
+          "index": 1,
+          "name": "y",
+          "type": {
+            "fields": [],
+            "functions": [],
+            "kind": "primitive",
+            "name": "Int",
+          },
+        },
+      ],
+      "functions": [],
+      "kind": "struct",
+      "name": "Point",
+    },
+  },
+  {
+    "allocation": {
+      "prefix": null,
+      "root": {
+        "fields": [
+          {
+            "index": 0,
+            "kind": "struct",
+            "name": "z",
+            "size": {
+              "bits": 514,
+              "refs": 0,
+            },
+            "type": {
+              "fields": [
+                {
+                  "index": 0,
+                  "name": "x",
+                  "type": {
+                    "fields": [],
+                    "functions": [],
+                    "kind": "primitive",
+                    "name": "Int",
+                  },
+                },
+                {
+                  "index": 1,
+                  "name": "y",
+                  "type": {
+                    "fields": [],
+                    "functions": [],
+                    "kind": "primitive",
+                    "name": "Int",
+                  },
+                },
+              ],
+              "functions": [],
+              "kind": "struct",
+              "name": "Point",
+            },
+          },
+        ],
+        "next": null,
+        "size": {
+          "bits": 514,
+          "refs": 0,
+        },
+      },
+    },
+    "type": {
+      "fields": [
+        {
+          "index": 0,
+          "name": "z",
+          "type": {
+            "fields": [
+              {
+                "index": 0,
+                "name": "x",
+                "type": {
+                  "fields": [],
+                  "functions": [],
+                  "kind": "primitive",
+                  "name": "Int",
+                },
+              },
+              {
+                "index": 1,
+                "name": "y",
+                "type": {
+                  "fields": [],
+                  "functions": [],
+                  "kind": "primitive",
+                  "name": "Int",
+                },
+              },
+            ],
+            "functions": [],
+            "kind": "struct",
+            "name": "Point",
+          },
+        },
+      ],
+      "functions": [],
+      "kind": "struct",
+      "name": "Point2",
+    },
+  },
+  {
+    "allocation": {
+      "prefix": null,
+      "root": {
+        "fields": [
+          {
+            "index": 0,
+            "kind": "struct",
+            "name": "a",
+            "size": {
+              "bits": 514,
+              "refs": 0,
+            },
+            "type": {
+              "fields": [
+                {
+                  "index": 0,
+                  "name": "x",
+                  "type": {
+                    "fields": [],
+                    "functions": [],
+                    "kind": "primitive",
+                    "name": "Int",
+                  },
+                },
+                {
+                  "index": 1,
+                  "name": "y",
+                  "type": {
+                    "fields": [],
+                    "functions": [],
+                    "kind": "primitive",
+                    "name": "Int",
+                  },
+                },
+              ],
+              "functions": [],
+              "kind": "struct",
+              "name": "Point",
+            },
+          },
+        ],
+        "next": {
+          "fields": [
+            {
+              "index": 1,
+              "kind": "struct",
+              "name": "b",
+              "size": {
+                "bits": 514,
+                "refs": 0,
+              },
+              "type": {
+                "fields": [
+                  {
+                    "index": 0,
+                    "name": "z",
+                    "type": {
+                      "fields": [
+                        {
+                          "index": 0,
+                          "name": "x",
+                          "type": {
+                            "fields": [],
+                            "functions": [],
+                            "kind": "primitive",
+                            "name": "Int",
+                          },
+                        },
+                        {
+                          "index": 1,
+                          "name": "y",
+                          "type": {
+                            "fields": [],
+                            "functions": [],
+                            "kind": "primitive",
+                            "name": "Int",
+                          },
+                        },
+                      ],
+                      "functions": [],
+                      "kind": "struct",
+                      "name": "Point",
+                    },
+                  },
+                ],
+                "functions": [],
+                "kind": "struct",
+                "name": "Point2",
+              },
+            },
+          ],
+          "next": null,
+          "size": {
+            "bits": 514,
+            "refs": 0,
+          },
+        },
+        "size": {
+          "bits": 514,
+          "refs": 1,
+        },
+      },
+    },
+    "type": {
+      "fields": [
+        {
+          "index": 0,
+          "name": "a",
+          "type": {
+            "fields": [
+              {
+                "index": 0,
+                "name": "x",
+                "type": {
+                  "fields": [],
+                  "functions": [],
+                  "kind": "primitive",
+                  "name": "Int",
+                },
+              },
+              {
+                "index": 1,
+                "name": "y",
+                "type": {
+                  "fields": [],
+                  "functions": [],
+                  "kind": "primitive",
+                  "name": "Int",
+                },
+              },
+            ],
+            "functions": [],
+            "kind": "struct",
+            "name": "Point",
+          },
+        },
+        {
+          "index": 1,
+          "name": "b",
+          "type": {
+            "fields": [
+              {
+                "index": 0,
+                "name": "z",
+                "type": {
+                  "fields": [
+                    {
+                      "index": 0,
+                      "name": "x",
+                      "type": {
+                        "fields": [],
+                        "functions": [],
+                        "kind": "primitive",
+                        "name": "Int",
+                      },
+                    },
+                    {
+                      "index": 1,
+                      "name": "y",
+                      "type": {
+                        "fields": [],
+                        "functions": [],
+                        "kind": "primitive",
+                        "name": "Int",
+                      },
+                    },
+                  ],
+                  "functions": [],
+                  "kind": "struct",
+                  "name": "Point",
+                },
+              },
+            ],
+            "functions": [],
+            "kind": "struct",
+            "name": "Point2",
+          },
+        },
+      ],
+      "functions": [],
+      "kind": "struct",
+      "name": "Point3",
+    },
+  },
+]
+`;

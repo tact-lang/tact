@@ -1,8 +1,9 @@
 PROGRAM{
-  DECLPROC write_Source
+  DECLPROC __gen_write_Source
+  DECLPROC __gen_read_Source
   DECLPROC isZero
   DECLPROC recv_internal
-  write_Source PROC:<{
+  __gen_write_Source PROC:<{
     257 PUSHINT
     NEWC
     s2 PUSH
@@ -28,6 +29,28 @@ PROGRAM{
     STIX
     STREF
   }>
+  __gen_read_Source PROC:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    DROP
+    CTOS
+    257 PUSHINT
+    LDIX
+    NIL
+    s0 s5 XCHG2
+    TPUSH
+    s0 s3 XCHG2
+    TPUSH
+    SWAP
+    TPUSH
+    SWAP
+    TPUSH
+  }>
   isZero PROC:<{
     2SWAP
     ADD
@@ -46,5 +69,6 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     2DROP
+    100 THROW
   }>
 }END>c

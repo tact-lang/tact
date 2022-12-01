@@ -1,35 +1,33 @@
 import fs from 'fs';
 import { CompilerContext } from '../ast/context';
-import { resolveAllocations } from '../storage/resolveAllocation';
 import { resolveExpressionTypes } from '../types/resolveExpressionType';
 import { getAllTypes, resolveTypeDescriptors } from '../types/resolveTypeDescriptors';
-import { writeProgram } from './writeProgram';
+import { getAllocations, resolveAllocations } from './resolveAllocation';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
 const src = `
+
+struct Point3 {
+    var a: Point;
+    var b: Point2;
+}
+
 struct Point {
     var x: Int;
     var y: Int;
 }
 
-fun improve(p: Point): Int {
-    return p.x + p.y;
-}
-
-fun hello_world(a: Int, b: Int, p: Point): Int {
-    let c: Int = a + 1;
-    c = c + 1;
-    return a + b + improve(p);
+struct Point2 {
+    var z: Point;
 }
 `;
 
-describe('writeProgram', () => {
+describe('resolveAllocation', () => {
     it('should write program', () => {
         let ctx = CompilerContext.fromSources([stdlib, src]);
         ctx = resolveTypeDescriptors(ctx);
         ctx = resolveExpressionTypes(ctx);
         ctx = resolveAllocations(ctx);
-        let output = writeProgram(ctx);
-        console.warn(output);
+        expect(getAllocations(ctx)).toMatchSnapshot();
     });
 });

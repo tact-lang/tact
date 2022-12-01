@@ -1,9 +1,15 @@
 PROGRAM{
-  DECLPROC write_Source
-  DECLPROC write_SampleContract
+  DECLPROC __gen_write_Source
+  DECLPROC __gen_read_Source
+  DECLPROC __gen_write_SampleContract
+  DECLPROC __gen_read_SampleContract
+  DECLPROC __gen_load_SampleContract
+  DECLPROC __gen_store_SampleContract
   DECLPROC isZero
+  DECLPROC __gen_SampleContract_addStake
+  DECLPROC __gen_SampleContract_stake
   DECLPROC recv_internal
-  write_Source PROC:<{
+  __gen_write_Source PROC:<{
     257 PUSHINT
     s0 s1 PUSH2
     0 PUSHINT
@@ -15,17 +21,66 @@ PROGRAM{
     INDEXVAR
     STIX
   }>
-  write_SampleContract PROC:<{
+  __gen_read_Source PROC:<{
     257 PUSHINT
-    s0 s1 PUSH2
+    LDIX
+    257 PUSHINT
+    LDIX
+    NIL
+    s0 s3 XCHG2
+    TPUSH
+    SWAP
+    TPUSH
+  }>
+  __gen_write_SampleContract PROC:<{
+    NEWC
+    OVER
+    2 PUSHINT
+    INDEXVAR
+    __gen_write_Source CALLDICT
+    ENDC
+    257 PUSHINT
+    s0 s2 PUSH2
     0 PUSHINT
     INDEXVAR
-    s1 s4 s0 XCHG3
+    s1 s5 s0 XCHG3
     STIX
-    SWAP
+    s0 s2 XCHG
     1 PUSHINT
     INDEXVAR
+    s3 s3 s0 XCHG3
     STIX
+    STREF
+  }>
+  __gen_read_SampleContract PROC:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    DROP
+    CTOS
+    __gen_read_Source CALLDICT
+    NIL
+    s0 s4 XCHG2
+    TPUSH
+    ROT
+    TPUSH
+    ROT
+    TPUSH
+  }>
+  __gen_load_SampleContract PROC:<{
+    c4 PUSH
+    CTOS
+    __gen_read_SampleContract CALLDICT
+    NIP
+  }>
+  __gen_store_SampleContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_SampleContract CALLDICT
+    ENDC
+    c4 POP
   }>
   isZero PROC:<{
     1 2 BLKDROP2
@@ -40,7 +95,29 @@ PROGRAM{
     SWAP
     AND
   }>
+  __gen_SampleContract_addStake PROC:<{
+    0 PUSHINT
+    10 PUSHINT
+    SETINDEXVARQ
+    1 PUSHINT
+    20 PUSHINT
+    SETINDEXVARQ
+    2 PUSHINT
+    NIL
+    10 PUSHINT
+    TPUSH
+    20 PUSHINT
+    TPUSH
+    SETINDEXVARQ
+  }>
+  __gen_SampleContract_stake PROC:<{
+    DUP
+    0 PUSHINT
+    INDEXVAR
+  }>
   recv_internal PROC:<{
     2DROP
+    __gen_load_SampleContract CALLDICT
+    __gen_store_SampleContract CALLDICT
   }>
 }END>c
