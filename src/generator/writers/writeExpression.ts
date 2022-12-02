@@ -24,6 +24,14 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     }
 
     //
+    // Null
+    //
+    
+    if (f.kind === 'null') {
+        return 'null()';
+    }
+
+    //
     // ID Reference
     //
 
@@ -106,7 +114,7 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
 
         // Resolve the type of the expression
         let src = getExpType(ctx, f.src);
-        if (src.kind !== 'direct') {
+        if (src === null || src.kind !== 'direct') {
             throwError(`Cannot access field of non-struct type: ${printTypeRef(src)}`, f.ref);
         }
         let srcT = getType(ctx, src.name);

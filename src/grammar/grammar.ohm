@@ -92,6 +92,7 @@ Tact {
                     | integerLiteral
                     | boolLiteral
                     | id
+                    | null
                     
     ExpressionField = ExpressionValue "." id
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"

@@ -1,11 +1,12 @@
 forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
-builder __gen_write_Source(builder build, tuple v) {
-    return build
-        .store_int(257, __tact_get(v, 0))
-        .store_int(257, __tact_get(v, 1))
-    ;
+builder __gen_write_Source(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    build_0 = store_int(build_0, 257, v_0);
+    var v_1 = __tact_get(v, 1);
+    build_0 = store_int(build_0, 257, v_1);
+    return build_0;
 }
 
 (slice, tuple) __gen_read_Source(slice sc) {
@@ -17,14 +18,16 @@ builder __gen_write_Source(builder build, tuple v) {
     return (sc, res);
 }
 
-builder __gen_write_SampleContract(builder build, tuple v) {
-    return build
-        .store_int(257, __tact_get(v, 0))
-        .store_int(257, __tact_get(v, 1))
-        .store_ref(begin_cell()
-            .__gen_write_Source(__tact_get(v, 2))
-        .end_cell())
-    ;
+builder __gen_write_SampleContract(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    build_0 = store_int(build_0, 257, v_0);
+    var v_1 = __tact_get(v, 1);
+    build_0 = store_int(build_0, 257, v_1);
+    var build_1 = begin_cell();
+    var v_2 = __tact_get(v, 2);
+    build_1 = __gen_write_Source(build_1, v_2);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
 }
 
 (slice, tuple) __gen_read_SampleContract(slice sc) {
@@ -39,9 +42,8 @@ builder __gen_write_SampleContract(builder build, tuple v) {
     return (sc, res);
 }
 
-builder __gen_write_SampleContract_addStake(builder build, tuple v) {
-    return build
-    ;
+builder __gen_write_SampleContract_addStake(builder build_0, tuple v) {
+    return build_0;
 }
 
 (slice, tuple) __gen_read_SampleContract_addStake(slice sc) {

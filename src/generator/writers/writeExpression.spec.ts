@@ -36,6 +36,8 @@ fun main() {
     let k: Int = A{a: 1, b: 2}.b;
     let l: Int = -i.b + a;
     let l: Int = -i.b + a + (+b);
+    let m: Int? = null;
+    let n: Int? = m!! + 1;
 }
 `;
 
@@ -53,7 +55,9 @@ const golden: string[] = [
     '__tact_get(i, 0)',
     '__tact_get(tpush(tpush(empty_tuple(), 1), 2), 1)',
     '((- __tact_get(i, 1)) + a)',
-    '(((- __tact_get(i, 1)) + a) + (+ b))'
+    '(((- __tact_get(i, 1)) + a) + (+ b))',
+    'null()',
+    '(__tact_not_null(m) + 1)'
 ]
 
 describe('writeExpression', () => {

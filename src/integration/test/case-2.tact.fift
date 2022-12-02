@@ -4,15 +4,17 @@ PROGRAM{
   DECLPROC isZero
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
-    257 PUSHINT
-    s0 s1 PUSH2
+    DUP
     0 PUSHINT
     INDEXVAR
-    s1 s4 s0 XCHG3
+    257 PUSHINT
+    s0 s3 s3 XCHG3
     STIX
     SWAP
     1 PUSHINT
     INDEXVAR
+    257 PUSHINT
+    -ROT
     STIX
   }>
   __gen_read_Source PROC:<{

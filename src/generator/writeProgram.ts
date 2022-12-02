@@ -2,7 +2,6 @@ import assert from "assert";
 import { ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
-import { StorageAllocation, StorageCell } from "../storage/StorageAllocation";
 import { getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, TypeDescription } from "../types/types";
@@ -11,6 +10,7 @@ import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer, WriterContext } from "./Writer";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeExpression } from "./writers/writeExpression";
+import { writeParser, writeSerializer } from "./writers/writeSerialization";
 
 function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, self: boolean, wctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -80,90 +80,6 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
                 w.append('return (self, ());');
             }
         }
-    });
-    w.append("}");
-    w.append();
-}
-
-function writeSerializerCell(ctx: CompilerContext, cell: StorageCell, w: Writer, wctx: WriterContext) {
-    for (let f of cell.fields) {
-        if (f.kind === 'int') {
-            wctx.useLib('__tact_get');
-            w.append('.store_int(' + f.size.bits + ', __tact_get(v, ' + f.index + '))');
-        } else if (f.kind === 'struct') {
-            wctx.useLib('__tact_get');
-            w.append('.__gen_write_' + f.type.name + '(__tact_get(v, ' + f.index + '))');
-        }
-    }
-    if (cell.next) {
-        w.append('.store_ref(begin_cell()');
-        w.inIndent(() => {
-            writeSerializerCell(ctx, cell.next!, w, wctx);
-        });
-        w.append('.end_cell())');
-    }
-}
-
-function writeSerializer(ctx: CompilerContext, name: string, allocation: StorageAllocation, w: Writer, wctx: WriterContext) {
-    w.append('builder __gen_write_' + name + '(builder build, tuple v) {');
-    w.inIndent(() => {
-        w.append('return build');
-        w.inIndent(() => {
-            writeSerializerCell(ctx, allocation.root, w, wctx);
-        });
-        w.append(';');
-    });
-    w.append("}");
-    w.append();
-}
-
-function writeCellParser(ctx: CompilerContext, cell: StorageCell, w: Writer, wctx: WriterContext) {
-    for (let f of cell.fields) {
-        if (f.kind === 'int') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = sc~load_int(' + f.size.bits + ');');
-        } else if (f.kind === 'int-optional') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = null();');
-            w.append('if (sc~load_int(1)) {');
-            w.inIndent(() => {
-                w.append(' __' + f.name + ' = sc~__tact_load_int_opt(' + f.size.bits + ');');
-            });
-            w.append('}');
-        } else if (f.kind === 'struct') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = sc~__gen_read_' + f.type.name + '();');
-        } else if (f.kind === 'struct-optional') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = null();');
-            w.append('if (sc~load_int(1)) {')
-            w.inIndent(() => {
-                w.append(' __' + f.name + ' = sc~__gen_read_' + f.type.name + '();');
-            });
-            w.append('}');
-        }
-    }
-    if (cell.next) {
-        w.append('sc = (sc~load_ref()).begin_parse();');
-        writeCellParser(ctx, cell.next, w, wctx);
-    }
-}
-
-function writeParser(ctx: CompilerContext, name: string, allocation: StorageAllocation, w: Writer, wctx: WriterContext) {
-    w.append('(slice, tuple) __gen_read_' + name + '(slice sc) {');
-    w.inIndent(() => {
-
-        // Write cell parser
-        writeCellParser(ctx, allocation.root, w, wctx);
-
-        // Compile tuple
-        w.append("tuple res = empty_tuple();");
-        function writeCell(src: StorageCell) {
-            for (let s of src.fields) {
-                w.append('res = tpush(res, __' + s.name + ');');
-            }
-            if (src.next) {
-                writeCell(src.next);
-            }
-        }
-        writeCell(allocation.root);
-        w.append('return (sc, res);');
     });
     w.append("}");
     w.append();

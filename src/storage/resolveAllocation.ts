@@ -49,13 +49,13 @@ function getSortedTypes(ctx: CompilerContext) {
 function resolveFieldSize(ctx: CompilerContext, src: FieldDescription, type: TypeRef = src.type): { bits: number, refs: number } {
 
     // Optional type
-    if (src.type.kind === 'optional') {
-        let r = resolveFieldSize(ctx, src, src.type);
+    if (type.kind === 'optional') {
+        let r = resolveFieldSize(ctx, src, type.inner);
         return { bits: r.bits + 1, refs: r.refs };
     }
 
     // Direct type
-    let td = getType(ctx, src.type.name);
+    let td = getType(ctx, type.name);
     if (td.kind === 'primitive') {
         if (td.name === 'Int') {
             return { bits: 257, refs: 0 };
@@ -67,7 +67,7 @@ function resolveFieldSize(ctx: CompilerContext, src: FieldDescription, type: Typ
             throw Error('Unknown primitive type: ' + td.name);
         }
     } else if (td.kind === 'struct') {
-        let allocation = getAllocation(ctx, src.type.name);
+        let allocation = getAllocation(ctx, type.name);
         return allocation.root.size;
     } else if (td.kind === 'contract') {
         throw Error('Contract type not supported for storage');
@@ -78,21 +78,21 @@ function resolveFieldSize(ctx: CompilerContext, src: FieldDescription, type: Typ
 }
 
 function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRef, optional: boolean = false): StorageField {
-    if (src.type.kind === 'optional') {
-        return allocateField(ctx, src, src.type.inner, true);
+    if (type.kind === 'optional') {
+        return allocateField(ctx, src, type.inner, true);
     }
 
-    let td = getType(ctx, src.type.name);
+    let td = getType(ctx, type.name);
     if (td.kind === 'primitive') {
         if (td.name === 'Int') {
             return { index: src.index, size: { bits: 257, refs: 0 }, name: src.name, kind: optional ? 'int-optional' : 'int', type: td };
-        } else if (src.type.name === 'Bool') {
+        } else if (type.name === 'Bool') {
             return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: optional ? 'int-optional' : 'int', type: td };
         } else {
-            throw Error('Unknown primitive type: ' + src.type.name);
+            throw Error('Unknown primitive type: ' + type.name);
         }
     } else if (td.kind === 'struct') {
-        let allocation = getAllocation(ctx, src.type.name);
+        let allocation = getAllocation(ctx, type.name);
         return { index: src.index, size: allocation.root.size, name: src.name, kind: optional ? 'struct-optional' : 'struct', type: td };
     } else if (td.kind === 'contract') {
         throw Error('Contract type not supported for storage');

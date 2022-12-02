@@ -13,15 +13,17 @@ PROGRAM{
   80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
-    257 PUSHINT
-    s0 s1 PUSH2
+    DUP
     0 PUSHINT
     INDEXVAR
-    s1 s4 s0 XCHG3
+    257 PUSHINT
+    s0 s3 s3 XCHG3
     STIX
     SWAP
     1 PUSHINT
     INDEXVAR
+    257 PUSHINT
+    -ROT
     STIX
   }>
   __gen_read_Source PROC:<{
@@ -36,23 +38,26 @@ PROGRAM{
     TPUSH
   }>
   __gen_write_SampleContract PROC:<{
-    NEWC
-    OVER
-    2 PUSHINT
-    INDEXVAR
-    __gen_write_Source CALLDICT
-    ENDC
-    257 PUSHINT
-    s0 s2 PUSH2
+    DUP
     0 PUSHINT
     INDEXVAR
-    s1 s5 s0 XCHG3
+    257 PUSHINT
+    s0 s3 s3 XCHG3
     STIX
-    s0 s2 XCHG
+    OVER
     1 PUSHINT
     INDEXVAR
-    s3 s3 s0 XCHG3
+    257 PUSHINT
+    -ROT
     STIX
+    NEWC
+    s0 s2 XCHG
+    2 PUSHINT
+    INDEXVAR
+    s1 s2 XCHG
+    __gen_write_Source CALLDICT
+    ENDC
+    SWAP
     STREF
   }>
   __gen_read_SampleContract PROC:<{

@@ -36,8 +36,10 @@ export type FunctionDescription = {
     ast: ASTFunction | ASTNativeFunction
 }
 
-export function printTypeRef(src: TypeRef): string {
-    if (src.kind === 'direct') {
+export function printTypeRef(src: TypeRef | null): string {
+    if (!src) {
+        return '<null>';
+    } else if (src.kind === 'direct') {
         return src.name;
     } else if (src.kind === 'optional') {
         return printTypeRef(src.inner) + '?';
