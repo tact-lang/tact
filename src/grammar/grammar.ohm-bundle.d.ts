@@ -62,12 +62,12 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ExpressionMul_mul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionMul_div?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionMul?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  ExpressionUnarySuffix_notNull?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
-  ExpressionUnarySuffix?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionUnary_neg?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary_add?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionUnarySuffix_notNull?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
+  ExpressionUnarySuffix?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionBracket?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   ExpressionValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionField?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
@@ -98,6 +98,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   extend?: (this: NonterminalNode, arg0: TerminalNode) => T;
   native?: (this: NonterminalNode, arg0: TerminalNode) => T;
   public?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  null?: (this: NonterminalNode, arg0: TerminalNode) => T;
   get?: (this: NonterminalNode, arg0: TerminalNode) => T;
   nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;

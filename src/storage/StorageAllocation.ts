@@ -1,4 +1,4 @@
-import { TypeDescription } from "../types/TypeDescription";
+import { TypeDescription } from "../types/types";
 
 export type StorageAllocation = {
     prefix: number | null;

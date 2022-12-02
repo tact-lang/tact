@@ -1,6 +1,6 @@
 import { ASTField, ASTFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription, TypeRef } from "./TypeDescription";
+import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription, TypeRef } from "./types";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -176,14 +176,4 @@ export function getStaticFunction(ctx: CompilerContext, name: string): FunctionD
 
 export function getAllStaticFunctions(ctx: CompilerContext) {
     return staticFunctionsStore.all(ctx);
-}
-
-export function printTypeRef(src: TypeRef): string {
-    if (src.kind === 'direct') {
-        return src.name;
-    } else if (src.kind === 'optional') {
-        return printTypeRef(src.inner) + '?';
-    } else {
-        throw Error('Invalid type ref');
-    }
 }

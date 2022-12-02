@@ -68,7 +68,7 @@ int isZero(int x, int y, int z, tuple m) {
 
 (tuple, ()) __gen_SampleContract_addStake(tuple self) {
     self = __tact_set(self, 0, 10);
-    self = __tact_set(self, 1, -20);
+    self = __tact_set(self, 1, (- 20));
     self = __tact_set(self, 2, tpush(tpush(empty_tuple(), 10), 20));
     return (self, ());
 }

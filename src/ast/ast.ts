@@ -48,6 +48,12 @@ export type ASTBoolean = {
     ref: ASTRef
 }
 
+export type ASTNull = {
+    kind: 'null',
+    id: number,
+    ref: ASTRef
+}
+
 //
 // Types
 //

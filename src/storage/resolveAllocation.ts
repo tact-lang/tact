@@ -1,7 +1,6 @@
-import { isObject } from "util";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FieldDescription, TypeDescription, TypeRef } from "../types/TypeDescription";
+import { FieldDescription, TypeDescription, TypeRef } from "../types/types";
 import { topologicalSort } from "../utils";
 import { crc32 } from "../utils/crc32";
 import { StorageAllocation, StorageCell, StorageField } from "./StorageAllocation";

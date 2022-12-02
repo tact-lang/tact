@@ -16,3 +16,11 @@ export class Writer {
         return this.lines.join('\n');
     }
 }
+
+export class WriterContext {
+    stdlib: Set<string> = new Set();
+
+    useLib(name: string) {
+        this.stdlib.add(name);
+    }
+}

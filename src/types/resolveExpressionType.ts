@@ -1,7 +1,7 @@
 import { ASTExpression, ASTFunction, ASTNativeFunction, ASTOpCall, ASTOpCallStatic, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { getStaticFunction, getType, printTypeRef } from "./resolveTypeDescriptors";
-import { TypeDescription, TypeRef } from "./TypeDescription";
+import { getStaticFunction, getType } from "./resolveTypeDescriptors";
+import { printTypeRef, TypeDescription, TypeRef } from "./types";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 let lValueStore = createContextStore<{ ast: ASTSTatementAssign, description: TypeRef[] }>();

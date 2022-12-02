@@ -69,18 +69,18 @@ Tact {
                       | ExpressionCompare "<" ExpressionAdd --lt
                       | ExpressionCompare "<=" ExpressionAdd --lte
                       | ExpressionAdd
-    ExpressionAdd = ExpressionAdd "+" ExpressionMul --add
-                  | ExpressionAdd "-" ExpressionMul --sub
+    ExpressionAdd = ExpressionAdd "+" ~"+" ExpressionMul --add
+                  | ExpressionAdd "-" ~"-" ExpressionMul --sub
                   | ExpressionMul
-    ExpressionMul = ExpressionMul "*" ExpressionUnarySuffix --mul
-                  | ExpressionMul "/" ExpressionUnarySuffix --div
-                  | ExpressionUnarySuffix
-    ExpressionUnarySuffix = ExpressionUnary "!!" --notNull
-                          | ExpressionUnary
+    ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
+                  | ExpressionMul "/" ExpressionUnary --div
+                  | ExpressionUnary
     ExpressionUnary = "-" ExpressionUnarySuffix --neg
                     | "+" ExpressionUnarySuffix --add
                     | "!" ExpressionUnarySuffix --not
-                    | ExpressionValue
+                    | ExpressionUnarySuffix
+    ExpressionUnarySuffix = ExpressionValue "!!" --notNull
+                          | ExpressionValue
     ExpressionBracket = "(" Expression ")"
 
     // Order is important
@@ -125,7 +125,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get // Order is important
+    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get | null // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -136,6 +136,7 @@ Tact {
     extend = "extend" ~idPart
     native = "native" ~idPart
     public = "public" ~idPart
+    null = "null" ~idPart
     get = "get" ~idPart
 
     // Attributes

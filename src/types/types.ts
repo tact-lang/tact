@@ -1,4 +1,4 @@
-import { ASTFunction, ASTNativeFunction, ASTTypeRef } from "../ast/ast";
+import { ASTFunction, ASTNativeFunction } from "../ast/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
@@ -13,7 +13,7 @@ export type TypeRef = {
 } | {
     kind: 'optional',
     inner: TypeRef
-}
+};
 
 export type FieldDescription = {
     name: string,
@@ -34,4 +34,14 @@ export type FunctionDescription = {
     returns: TypeRef | null,
     args: FunctionArgument[],
     ast: ASTFunction | ASTNativeFunction
+}
+
+export function printTypeRef(src: TypeRef): string {
+    if (src.kind === 'direct') {
+        return src.name;
+    } else if (src.kind === 'optional') {
+        return printTypeRef(src.inner) + '?';
+    } else {
+        throw Error('Invalid type ref');
+    }
 }
