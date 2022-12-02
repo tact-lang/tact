@@ -45,12 +45,16 @@ Tact {
               | StatementCall
               | StatementStaticCall
               | StatementAssign
+              | StatementCondition
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";"
     StatementCall = ExpressionCall ";"
     StatementStaticCall = ExpressionStaticCall ";"
     StatementAssign = LValue Expression ";"
+    StatementCondition = if Expression "{" Statement* "}" ~else --simple
+                       | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
+                       | if Expression "{" Statement* "}" else StatementCondition --withElseIf
 
     // L-value
     LValue = id "=" --id
@@ -126,7 +130,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get | null // Order is important
+    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get | null | if | else // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -139,6 +143,8 @@ Tact {
     public = "public" ~idPart
     null = "null" ~idPart
     get = "get" ~idPart
+    if = "if" ~idPart
+    else = "else" ~idPart
 
     // Attributes
     nameAttribute = "@name"

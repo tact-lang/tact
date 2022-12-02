@@ -41,6 +41,10 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StatementCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementStaticCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementAssign?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
+  StatementCondition_simple?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  StatementCondition_withElse?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;
+  StatementCondition_withElseIf?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: NonterminalNode) => T;
+  StatementCondition?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   LValue_id?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   LValue_subId?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   LValue?: (this: NonterminalNode, arg0: NonterminalNode) => T;
@@ -100,6 +104,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   public?: (this: NonterminalNode, arg0: TerminalNode) => T;
   null?: (this: NonterminalNode, arg0: TerminalNode) => T;
   get?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  if?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  else?: (this: NonterminalNode, arg0: TerminalNode) => T;
   nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
 }

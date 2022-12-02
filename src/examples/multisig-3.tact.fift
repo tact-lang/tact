@@ -242,7 +242,36 @@ PROGRAM{
     c4 POP
   }>
   __gen_MultisigContract_execute PROC:<{
-    4 BLKDROP
+    s0 s3 XCHG
+    __gen_writecell_Operation CALLDICT
+    HASHCU
+    s4 PUSH
+    1 PUSHINT
+    INDEXVAR
+    s1 s3 s3 PUXC2
+    CHKSIGNU
+    s4 PUSH
+    3 PUSHINT
+    INDEXVAR
+    s3 s2 s2 PUXC2
+    CHKSIGNU
+    s4 PUSH
+    5 PUSHINT
+    INDEXVAR
+    4 1 REVERSE
+    CHKSIGNU
+    s1 s2 XCPU
+    AND
+    SWAP
+    AND
+    IF:<{
+      DROP
+    }>ELSE<{
+      -1 EQINT
+      IF:<{
+      }>ELSE<{
+      }>
+    }>
   }>
   recv_internal PROC:<{
     NIP

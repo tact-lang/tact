@@ -1,5 +1,5 @@
 import { ABIFunctions } from "../abi/AbiFunction";
-import { ASTExpression, ASTFunction, ASTNativeFunction, ASTOpCall, ASTOpCallStatic, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
+import { ASTCondition, ASTExpression, ASTFunction, ASTNativeFunction, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType } from "./resolveTypeDescriptors";
 import { printTypeRef, TypeDescription, TypeRef } from "./types";
@@ -253,50 +253,64 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         }
         throw Error('Unknown expression');
     }
-    function resolveFunction(ctx: CompilerContext, vctx: VariableCTX, f: ASTFunction | ASTNativeFunction) {
-        if (f.kind === 'def_function') {
-            for (let s of f.statements) {
-                if (s.kind === 'statement_let') {
-                    ctx = resolveExpression(ctx, vctx, s.expression);
-                    vctx[s.name] = resolveTypeRef(ctx, s.type);
-                } else if (s.kind === 'statement_return') {
-                    ctx = resolveExpression(ctx, vctx, s.expression);
-                } else if (s.kind === 'statement_call') {
-                    if (s.expression.kind === 'op_call') {
-                        ctx = resolveCall(ctx, vctx, s.expression);
-                    } else if (s.expression.kind === 'op_static_call') {
-                        ctx = resolveStaticCall(ctx, vctx, s.expression);
-                    } else {
-                        throw Error('Unknown expression');
-                    }
-                } else if (s.kind === 'statement_assign') {
-                    ctx = resolveExpression(ctx, vctx, s.expression);
+    function resolveCondition(ctx: CompilerContext, vctx: VariableCTX, s: ASTCondition): CompilerContext {
+        ctx = resolveExpression(ctx, vctx, s.expression);
+        if (s.trueStatements.length > 0) {
+            ctx = resolveStatements(ctx, vctx, s.trueStatements);
+        }
+        if (s.falseStatements.length > 0) {
+            ctx = resolveStatements(ctx, vctx, s.falseStatements);
+        }
+        if (s.elseif) {
+            ctx = resolveCondition(ctx, vctx, s.elseif);
+        }
+        return ctx;
+    }
+    function resolveStatements(ctx: CompilerContext, vctx: VariableCTX, statements: ASTStatement[]) {
 
-                    // Resolve LValue
-                    let paths: string[] = s.path;
-                    let pathTypes: TypeRef[] = [];
-                    let t = vctx[paths[0]];
-                    pathTypes.push(t);
-
-                    // Paths
-                    for (let i = 1; i < paths.length; i++) {
-                        if (t.kind !== 'direct') {
-                            throwError(`Invalid type "${printTypeRef(t)}" for field access`, s.ref);
-                        }
-                        let srcT = getType(ctx, t.name);
-                        let ex = srcT.fields.find((v) => v.name === paths[i]);
-                        if (!ex) {
-                            throw Error('Field ' + paths[i] + ' not found');
-                        }
-                        pathTypes.push(ex.type);
-                        t = ex.type;
-                    }
-
-                    // Persist LValue
-                    ctx = lValueStore.set(ctx, s.id, { ast: s, description: pathTypes });
+        for (let s of statements) {
+            if (s.kind === 'statement_let') {
+                ctx = resolveExpression(ctx, vctx, s.expression);
+                vctx[s.name] = resolveTypeRef(ctx, s.type);
+            } else if (s.kind === 'statement_return') {
+                ctx = resolveExpression(ctx, vctx, s.expression);
+            } else if (s.kind === 'statement_call') {
+                if (s.expression.kind === 'op_call') {
+                    ctx = resolveCall(ctx, vctx, s.expression);
+                } else if (s.expression.kind === 'op_static_call') {
+                    ctx = resolveStaticCall(ctx, vctx, s.expression);
                 } else {
-                    throw Error('Unknown statement');
+                    throw Error('Unknown expression');
                 }
+            } else if (s.kind === 'statement_assign') {
+                ctx = resolveExpression(ctx, vctx, s.expression);
+
+                // Resolve LValue
+                let paths: string[] = s.path;
+                let pathTypes: TypeRef[] = [];
+                let t = vctx[paths[0]];
+                pathTypes.push(t);
+
+                // Paths
+                for (let i = 1; i < paths.length; i++) {
+                    if (t.kind !== 'direct') {
+                        throwError(`Invalid type "${printTypeRef(t)}" for field access`, s.ref);
+                    }
+                    let srcT = getType(ctx, t.name);
+                    let ex = srcT.fields.find((v) => v.name === paths[i]);
+                    if (!ex) {
+                        throw Error('Field ' + paths[i] + ' not found');
+                    }
+                    pathTypes.push(ex.type);
+                    t = ex.type;
+                }
+
+                // Persist LValue
+                ctx = lValueStore.set(ctx, s.id, { ast: s, description: pathTypes });
+            } else if (s.kind === 'statement_condition') {
+                ctx = resolveCondition(ctx, vctx, s);
+            } else {
+                throw Error('Unknown statement');
             }
         }
         return ctx;
@@ -318,7 +332,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     }
 
                     // Process function
-                    ctx = resolveFunction(ctx, vctx, f);
+                    ctx = resolveStatements(ctx, vctx, f.statements);
                 }
             }
         }
@@ -335,7 +349,9 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         }
 
         // Process function
-        ctx = resolveFunction(ctx, vctx, f);
+        if (f.kind === 'def_function') {
+            ctx = resolveStatements(ctx, vctx, f.statements);
+        }
     }
 
     return ctx;

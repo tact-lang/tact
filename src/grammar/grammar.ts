@@ -159,7 +159,37 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             expression: arg1.resolve_expression(),
             ref: createRef(this)
         })
-    }
+    },
+    StatementCondition_simple(arg0, arg1, arg2, arg3, arg4) {
+        return createNode({
+            kind: 'statement_condition',
+            expression: arg1.resolve_expression(),
+            trueStatements: arg3.children.map((v: any) => v.resolve_statement()),
+            falseStatements: [],
+            elseif: null,
+            ref: createRef(this)
+        })
+    },
+    StatementCondition_withElse(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+        return createNode({
+            kind: 'statement_condition',
+            expression: arg1.resolve_expression(),
+            trueStatements: arg3.children.map((v: any) => v.resolve_statement()),
+            falseStatements: arg7.children.map((v: any) => v.resolve_statement()),
+            elseif: null,
+            ref: createRef(this)
+        })
+    },
+    StatementCondition_withElseIf(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'statement_condition',
+            expression: arg1.resolve_expression(),
+            trueStatements: arg3.children.map((v: any) => v.resolve_statement()),
+            falseStatements: [],
+            elseif: arg6.resolve_statement(),
+            ref: createRef(this)
+        })
+    },
 });
 
 // LValue

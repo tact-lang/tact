@@ -17,5 +17,13 @@ contract MultisigContract {
         let ok1: Bool = checkSignature(op_hash, signature1, self.user1_key);
         let ok2: Bool = checkSignature(op_hash, signature2, self.user2_key);
         let ok3: Bool = checkSignature(op_hash, signature3, self.user3_key);
+        
+        if (ok1 && ok2 && ok3) {
+            ok2 = false;
+        } else if (ok2 == true) {
+            ok1 = false;
+        } else {
+            ok3 = false;
+        }
     }
 }

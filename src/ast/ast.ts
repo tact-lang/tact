@@ -228,17 +228,27 @@ export type ASTSTatementAssign = {
     ref: ASTRef
 }
 
+export type ASTCondition = {
+    kind: 'statement_condition',
+    id: number,
+    expression: ASTExpression,
+    trueStatements: ASTStatement[],
+    falseStatements: ASTStatement[];
+    elseif: ASTCondition | null,
+    ref: ASTRef,
+}
+
 //
 // Unions
 //
 
-export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign;
+export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign | ASTCondition;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
-    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call' || src.kind === 'statement_assign';
+    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call' || src.kind === 'statement_assign' || src.kind === 'statement_condition';
 }
 
 export function isExpression(src: ASTNode): src is ASTExpression {

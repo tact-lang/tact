@@ -131,6 +131,13 @@ tuple __gen_load_MultisigContract() {
     int ok1 = check_signature(op_hash, signature1, __tact_get(self, 1));
     int ok2 = check_signature(op_hash, signature2, __tact_get(self, 3));
     int ok3 = check_signature(op_hash, signature3, __tact_get(self, 5));
+    if (((ok1 & ok2) & ok3)) {
+        ok2 = false;
+    } elseif ((ok2 == true)) {
+        ok1 = false;
+    } else {
+        ok3 = false;
+    }
     return (self, ());
 }
 

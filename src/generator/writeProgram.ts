@@ -1,5 +1,5 @@
 import assert from "assert";
-import { ASTStatement } from "../ast/ast";
+import { ASTCondition, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getLValuePaths } from "../types/resolveExpressionType";
@@ -47,8 +47,33 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, self: 
         }
 
         throw Error('Too deep assignment');
+    } else if (f.kind === 'statement_condition') {
+        writeCondition(ctx, f, w, self, wctx);
+        return;
     }
     throw Error('Unknown statement kind: ' + f.kind);
+}
+
+function writeCondition(ctx: CompilerContext, f: ASTCondition, w: Writer, self: boolean, wctx: WriterContext, elseif: boolean = false) {
+    w.append((elseif ? '} else' : '') + 'if (' + writeExpression(ctx, f.expression, wctx) + ') {');
+    w.inIndent(() => {
+        for (let s of f.trueStatements) {
+            writeStatement(ctx, s, w, self, wctx);
+        }
+    });
+    if (f.falseStatements.length > 0) {
+        w.append('} else {');
+        w.inIndent(() => {
+            for (let s of f.falseStatements) {
+                writeStatement(ctx, s, w, self, wctx);
+            }
+        });
+        w.append('}');
+    } else if (f.elseif) {
+        writeCondition(ctx, f.elseif, w, self, wctx, true);
+    } else {
+        w.append('}');
+    }
 }
 
 function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, wctx: WriterContext) {
