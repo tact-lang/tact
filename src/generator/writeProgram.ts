@@ -4,7 +4,7 @@ import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell } from "../storage/StorageAllocation";
 import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FieldDescription, FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
 import { getMethodId } from "../utils";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
@@ -115,7 +115,7 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, stdlib
         }
         return;
     } else if (f.kind === 'statement_let') {
-        w.append(resolveFunCType(getType(ctx, f.type)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
+        w.append(resolveFunCType(getType(ctx, f.type.name)) + ' ' + f.name + ' = ' + writeExpression(ctx, f.expression, stdlib) + ';');
         return;
     } else if (f.kind === 'statement_assign') {
 

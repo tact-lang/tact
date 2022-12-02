@@ -64,7 +64,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         return createNode({
             kind: 'def_field',
             name: arg1.sourceString,
-            type: arg3.sourceString,
+            type: arg3.resolve_expression(),
             ref: createRef(this)
         })
     },
@@ -72,7 +72,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         return createNode({
             kind: 'def_argument',
             name: arg0.sourceString,
-            type: arg2.sourceString,
+            type: arg2.resolve_expression(),
             ref: createRef(this)
         })
     },
@@ -81,7 +81,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             kind: 'def_function',
             attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
-            return: arg7.sourceString,
+            return: arg7.resolve_expression(),
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
             statements: arg9.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
@@ -103,7 +103,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             kind: 'def_native_function',
             name: arg5.sourceString,
             nativeName: arg2.sourceString,
-            return: arg10.sourceString,
+            return: arg10.resolve_expression(),
             args: arg7.asIteration().children.map((v: any) => v.resolve_declaration()),
             ref: createRef(this)
         })
@@ -126,7 +126,7 @@ semantics.addOperation<ASTNode>('resolve_statement', {
         return createNode({
             kind: 'statement_let',
             name: arg1.sourceString,
-            type: arg3.sourceString,
+            type: arg3.resolve_expression(),
             expression: arg5.resolve_expression(),
             ref: createRef(this)
         })
@@ -184,6 +184,14 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     },
     id(arg0, arg1) {
         return createNode({ kind: 'id', value: arg0.sourceString + arg1.sourceString, ref: createRef(this) });
+    },
+
+    // TypeRefs
+    Type_optional(arg0, arg1) {
+        return createNode({ kind: 'type_ref', name: arg1.sourceString, optional: true, ref: createRef(this) });
+    },
+    Type_required(arg0) {
+        return createNode({ kind: 'type_ref', name: arg0.sourceString, optional: false, ref: createRef(this) });
     },
 
     // Binary

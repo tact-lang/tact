@@ -19,6 +19,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   NativeFunction_withVoid?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: NonterminalNode, arg8: TerminalNode, arg9: TerminalNode) => T;
   NativeFunction_withType?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: NonterminalNode, arg8: TerminalNode, arg9: TerminalNode, arg10: NonterminalNode, arg11: TerminalNode) => T;
   NativeFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Type_optional?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
+  Type_required?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Field?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode) => T;
   Struct?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;

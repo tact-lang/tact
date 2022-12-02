@@ -127,22 +127,28 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "ast": {
       "args": [],
       "attribute": [],
-      "id": 16,
+      "id": 20,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 0;
 },
-      "return": "Int",
+      "return": {
+        "id": 17,
+        "kind": "type_ref",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
       "statements": [
         {
           "expression": {
-            "id": 14,
+            "id": 18,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 15,
+          "id": 19,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -164,7 +170,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "ast": {
       "args": [],
       "attribute": [],
-      "id": 19,
+      "id": 23,
       "kind": "def_function",
       "name": "testFunc2",
       "ref": fun testFunc2() {
@@ -174,12 +180,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       "statements": [
         {
           "expression": {
-            "id": 17,
+            "id": 21,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 18,
+          "id": 22,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -215,22 +221,34 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "ast": {
       "args": [
         {
-          "id": 20,
+          "id": 25,
           "kind": "def_argument",
           "name": "a",
           "ref": a: Int,
-          "type": "Int",
+          "type": {
+            "id": 24,
+            "kind": "type_ref",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
         },
         {
-          "id": 21,
+          "id": 27,
           "kind": "def_argument",
           "name": "b",
           "ref": b: Bool,
-          "type": "Bool",
+          "type": {
+            "id": 26,
+            "kind": "type_ref",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
         },
       ],
       "attribute": [],
-      "id": 24,
+      "id": 30,
       "kind": "def_function",
       "name": "testFunc3",
       "ref": fun testFunc3(a: Int, b: Bool) {
@@ -240,12 +258,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       "statements": [
         {
           "expression": {
-            "id": 22,
+            "id": 28,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 23,
+          "id": 29,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -297,7 +315,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "ast": {
           "args": [],
           "attribute": [],
-          "id": 30,
+          "id": 38,
           "kind": "def_function",
           "name": "hello",
           "ref": fun hello() {
@@ -317,7 +335,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "ast": {
           "args": [],
           "attribute": [],
-          "id": 31,
+          "id": 39,
           "kind": "def_function",
           "name": "hello2",
           "ref": fun hello2() {

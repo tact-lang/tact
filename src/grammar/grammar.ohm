@@ -17,7 +17,8 @@ Tact {
                    | nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
     
     // Field declarations
-    Type = typeLiteral
+    Type = typeLiteral "?" --optional
+         | typeLiteral --required
     Field = var id ":" Type ";"
 
     // Struct

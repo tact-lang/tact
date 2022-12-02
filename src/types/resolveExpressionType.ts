@@ -167,7 +167,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             for (let s of f.statements) {
                 if (s.kind === 'statement_let') {
                     ctx = resolveExpression(ctx, vctx, s.expression);
-                    vctx[s.name] = getType(ctx, s.type);
+                    vctx[s.name] = getType(ctx, s.type.name);
                 } else if (s.kind === 'statement_return') {
                     ctx = resolveExpression(ctx, vctx, s.expression);
                 } else if (s.kind === 'statement_call') {
@@ -219,7 +219,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     let vctx: VariableCTX = {};
                     vctx['self'] = getType(ctx, a.name);
                     for (let arg of f.args) {
-                        vctx[arg.name] = getType(ctx, arg.type);
+                        vctx[arg.name] = getType(ctx, arg.type.name);
                     }
 
                     // Process function
@@ -236,7 +236,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         // Function variables
         let vctx: VariableCTX = {};
         for (let arg of f.args) {
-            vctx[arg.name] = getType(ctx, arg.type);
+            vctx[arg.name] = getType(ctx, arg.type.name);
         }
 
         // Process function

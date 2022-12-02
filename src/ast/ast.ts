@@ -49,6 +49,18 @@ export type ASTBoolean = {
 }
 
 //
+// Types
+//
+
+export type ASTTypeRef = {
+    kind: 'type_ref',
+    id: number,
+    name: string,
+    optional: boolean,
+    ref: ASTRef
+}
+
+//
 // Expressions
 //
 
@@ -132,7 +144,7 @@ export type ASTField = {
     kind: 'def_field',
     id: number,
     name: string,
-    type: string,
+    type: ASTTypeRef,
     ref: ASTRef
 }
 
@@ -148,7 +160,7 @@ export type ASTArgument = {
     kind: 'def_argument',
     id: number,
     name: string,
-    type: string,
+    type: ASTTypeRef,
     ref: ASTRef
 }
 
@@ -159,7 +171,7 @@ export type ASTFunction = {
     id: number,
     attribute: ASTFunctionAttribute[],
     name: string,
-    return: string | null,
+    return: ASTTypeRef | null,
     args: ASTArgument[],
     statements: ASTStatement[],
     ref: ASTRef
@@ -170,7 +182,7 @@ export type ASTNativeFunction = {
     id: number,
     name: string,
     nativeName: string,
-    return: string | null,
+    return: ASTTypeRef | null,
     args: ASTArgument[],
     ref: ASTRef
 }
@@ -183,7 +195,7 @@ export type ASTStatementLet = {
     kind: 'statement_let',
     id: number,
     name: string,
-    type: string,
+    type: ASTTypeRef,
     expression: ASTExpression,
     ref: ASTRef
 }
@@ -216,7 +228,7 @@ export type ASTSTatementAssign = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {

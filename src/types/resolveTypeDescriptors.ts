@@ -49,14 +49,14 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
 
     function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction) {
         // Resolve return
-        let returns = a.return ? getType(a.return) : null;
+        let returns = a.return ? getType(a.return.name) : null;
 
         // Resolve args
         let args: FunctionArgument[] = [];
         for (let r of a.args) {
             args.push({
                 name: r.name,
-                type: getType(r.type)
+                type: getType(r.type.name)
             });
         }
 
@@ -85,7 +85,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
 
     // Resolve fields
     function resolveField(src: ASTField, index: number): FieldDescription {
-        let t = types[src.type];
+        let t = types[src.type.name];
         if (!t) {
             throw Error('Type ' + src.type + ' not found');
         }
