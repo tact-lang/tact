@@ -237,6 +237,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     ExpressionBracket(arg0, arg1, arg2) {
         return arg1.resolve_expression();
     },
+    ExpressionUnarySuffix_notNull(arg0, arg1) {
+        return createNode({ kind: 'op_unary', op: '!!', right: arg0.resolve_expression(), ref: createRef(this) });
+    },
 
     // Access
     ExpressionField(arg0, arg1, arg2) {

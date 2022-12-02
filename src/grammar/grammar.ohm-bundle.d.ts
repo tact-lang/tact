@@ -60,6 +60,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ExpressionMul_mul?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionMul_div?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ExpressionMul?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ExpressionUnarySuffix_notNull?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
+  ExpressionUnarySuffix?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ExpressionUnary_neg?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary_add?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;
   ExpressionUnary_not?: (this: NonterminalNode, arg0: TerminalNode, arg1: NonterminalNode) => T;

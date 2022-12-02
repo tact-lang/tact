@@ -64,7 +64,7 @@ export type ASTOpBinary = {
 export type ASTOpUnary = {
     kind: 'op_unary',
     id: number,
-    op: '+' | '-' | '!',
+    op: '+' | '-' | '!' | '!!',
     right: ASTExpression,
     ref: ASTRef
 }

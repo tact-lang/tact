@@ -71,12 +71,14 @@ Tact {
     ExpressionAdd = ExpressionAdd "+" ExpressionMul --add
                   | ExpressionAdd "-" ExpressionMul --sub
                   | ExpressionMul
-    ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
-                  | ExpressionMul "/" ExpressionUnary --div
-                  | ExpressionUnary
-    ExpressionUnary = "-" ExpressionUnary --neg
-                    | "+" ExpressionUnary --add
-                    | "!" ExpressionUnary --not
+    ExpressionMul = ExpressionMul "*" ExpressionUnarySuffix --mul
+                  | ExpressionMul "/" ExpressionUnarySuffix --div
+                  | ExpressionUnarySuffix
+    ExpressionUnarySuffix = ExpressionUnary "!!" --notNull
+                          | ExpressionUnary
+    ExpressionUnary = "-" ExpressionUnarySuffix --neg
+                    | "+" ExpressionUnarySuffix --add
+                    | "!" ExpressionUnarySuffix --not
                     | ExpressionValue
     ExpressionBracket = "(" Expression ")"
 
