@@ -39,9 +39,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         "index": 0,
         "name": "a",
         "type": {
-          "fields": [],
-          "functions": [],
-          "kind": "primitive",
+          "kind": "direct",
           "name": "Int",
         },
       },
@@ -49,9 +47,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         "index": 1,
         "name": "b",
         "type": {
-          "fields": [],
-          "functions": [],
-          "kind": "primitive",
+          "kind": "direct",
           "name": "Bool",
         },
       },
@@ -66,30 +62,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         "index": 0,
         "name": "a",
         "type": {
-          "fields": [
-            {
-              "index": 0,
-              "name": "a",
-              "type": {
-                "fields": [],
-                "functions": [],
-                "kind": "primitive",
-                "name": "Int",
-              },
-            },
-            {
-              "index": 1,
-              "name": "b",
-              "type": {
-                "fields": [],
-                "functions": [],
-                "kind": "primitive",
-                "name": "Bool",
-              },
-            },
-          ],
-          "functions": [],
-          "kind": "struct",
+          "kind": "direct",
           "name": "Struct1",
         },
       },
@@ -158,9 +131,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "isPublic": false,
     "name": "testFunc",
     "returns": {
-      "fields": [],
-      "functions": [],
-      "kind": "primitive",
+      "kind": "direct",
       "name": "Int",
     },
     "self": null,
@@ -202,18 +173,14 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       {
         "name": "a",
         "type": {
-          "fields": [],
-          "functions": [],
-          "kind": "primitive",
+          "kind": "direct",
           "name": "Int",
         },
       },
       {
         "name": "b",
         "type": {
-          "fields": [],
-          "functions": [],
-          "kind": "primitive",
+          "kind": "direct",
           "name": "Bool",
         },
       },
@@ -292,9 +259,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "index": 0,
         "name": "a",
         "type": {
-          "fields": [],
-          "functions": [],
-          "kind": "primitive",
+          "kind": "direct",
           "name": "Int",
         },
       },
@@ -302,9 +267,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "index": 1,
         "name": "b",
         "type": {
-          "fields": [],
-          "functions": [],
-          "kind": "primitive",
+          "kind": "direct",
           "name": "Bool",
         },
       },

@@ -51,9 +51,7 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "x",
           "type": {
-            "fields": [],
-            "functions": [],
-            "kind": "primitive",
+            "kind": "direct",
             "name": "Int",
           },
         },
@@ -61,9 +59,7 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "y",
           "type": {
-            "fields": [],
-            "functions": [],
-            "kind": "primitive",
+            "kind": "direct",
             "name": "Int",
           },
         },
@@ -92,9 +88,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 0,
                   "name": "x",
                   "type": {
-                    "fields": [],
-                    "functions": [],
-                    "kind": "primitive",
+                    "kind": "direct",
                     "name": "Int",
                   },
                 },
@@ -102,9 +96,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 1,
                   "name": "y",
                   "type": {
-                    "fields": [],
-                    "functions": [],
-                    "kind": "primitive",
+                    "kind": "direct",
                     "name": "Int",
                   },
                 },
@@ -128,30 +120,7 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "z",
           "type": {
-            "fields": [
-              {
-                "index": 0,
-                "name": "x",
-                "type": {
-                  "fields": [],
-                  "functions": [],
-                  "kind": "primitive",
-                  "name": "Int",
-                },
-              },
-              {
-                "index": 1,
-                "name": "y",
-                "type": {
-                  "fields": [],
-                  "functions": [],
-                  "kind": "primitive",
-                  "name": "Int",
-                },
-              },
-            ],
-            "functions": [],
-            "kind": "struct",
+            "kind": "direct",
             "name": "Point",
           },
         },
@@ -180,9 +149,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 0,
                   "name": "x",
                   "type": {
-                    "fields": [],
-                    "functions": [],
-                    "kind": "primitive",
+                    "kind": "direct",
                     "name": "Int",
                   },
                 },
@@ -190,9 +157,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 1,
                   "name": "y",
                   "type": {
-                    "fields": [],
-                    "functions": [],
-                    "kind": "primitive",
+                    "kind": "direct",
                     "name": "Int",
                   },
                 },
@@ -219,30 +184,7 @@ exports[`resolveAllocation should write program 1`] = `
                     "index": 0,
                     "name": "z",
                     "type": {
-                      "fields": [
-                        {
-                          "index": 0,
-                          "name": "x",
-                          "type": {
-                            "fields": [],
-                            "functions": [],
-                            "kind": "primitive",
-                            "name": "Int",
-                          },
-                        },
-                        {
-                          "index": 1,
-                          "name": "y",
-                          "type": {
-                            "fields": [],
-                            "functions": [],
-                            "kind": "primitive",
-                            "name": "Int",
-                          },
-                        },
-                      ],
-                      "functions": [],
-                      "kind": "struct",
+                      "kind": "direct",
                       "name": "Point",
                     },
                   },
@@ -271,30 +213,7 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "a",
           "type": {
-            "fields": [
-              {
-                "index": 0,
-                "name": "x",
-                "type": {
-                  "fields": [],
-                  "functions": [],
-                  "kind": "primitive",
-                  "name": "Int",
-                },
-              },
-              {
-                "index": 1,
-                "name": "y",
-                "type": {
-                  "fields": [],
-                  "functions": [],
-                  "kind": "primitive",
-                  "name": "Int",
-                },
-              },
-            ],
-            "functions": [],
-            "kind": "struct",
+            "kind": "direct",
             "name": "Point",
           },
         },
@@ -302,41 +221,7 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "b",
           "type": {
-            "fields": [
-              {
-                "index": 0,
-                "name": "z",
-                "type": {
-                  "fields": [
-                    {
-                      "index": 0,
-                      "name": "x",
-                      "type": {
-                        "fields": [],
-                        "functions": [],
-                        "kind": "primitive",
-                        "name": "Int",
-                      },
-                    },
-                    {
-                      "index": 1,
-                      "name": "y",
-                      "type": {
-                        "fields": [],
-                        "functions": [],
-                        "kind": "primitive",
-                        "name": "Int",
-                      },
-                    },
-                  ],
-                  "functions": [],
-                  "kind": "struct",
-                  "name": "Point",
-                },
-              },
-            ],
-            "functions": [],
-            "kind": "struct",
+            "kind": "direct",
             "name": "Point2",
           },
         },

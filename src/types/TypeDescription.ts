@@ -1,4 +1,4 @@
-import { ASTFunction, ASTNativeFunction } from "../ast/ast";
+import { ASTFunction, ASTNativeFunction, ASTTypeRef } from "../ast/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
@@ -7,15 +7,23 @@ export type TypeDescription = {
     functions: FunctionDescription[];
 }
 
+export type TypeRef = {
+    kind: 'direct',
+    name: string;
+} | {
+    kind: 'optional',
+    inner: TypeRef
+}
+
 export type FieldDescription = {
     name: string,
     index: number,
-    type: TypeDescription
+    type: TypeRef
 }
 
 export type FunctionArgument = {
     name: string,
-    type: TypeDescription
+    type: TypeRef
 }
 
 export type FunctionDescription = {
@@ -23,7 +31,7 @@ export type FunctionDescription = {
     isPublic: boolean,
     isGetter: boolean,
     self: TypeDescription | null,
-    returns: TypeDescription | null,
+    returns: TypeRef | null,
     args: FunctionArgument[],
     ast: ASTFunction | ASTNativeFunction
 }

@@ -188,7 +188,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
 
     // TypeRefs
     Type_optional(arg0, arg1) {
-        return createNode({ kind: 'type_ref', name: arg1.sourceString, optional: true, ref: createRef(this) });
+        return createNode({ kind: 'type_ref', name: arg0.sourceString, optional: true, ref: createRef(this) });
     },
     Type_required(arg0) {
         return createNode({ kind: 'type_ref', name: arg0.sourceString, optional: false, ref: createRef(this) });

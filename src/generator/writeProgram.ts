@@ -1,13 +1,18 @@
+import assert from "assert";
 import { ASTExpression, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell } from "../storage/StorageAllocation";
 import { getExpType, getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FunctionDescription, TypeDescription } from "../types/TypeDescription";
+import { FunctionDescription, TypeDescription, TypeRef } from "../types/TypeDescription";
 import { getMethodId } from "../utils";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer } from "./Writer";
+
+function resolveFunCTypeRef(descriptor: TypeRef): string {
+    return resolveFunCType(descriptor.type);
+}
 
 function resolveFunCType(descriptor: TypeDescription): string {
     if (descriptor.kind === 'primitive') {
@@ -130,7 +135,9 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, stdlib
             let valueExpr = writeExpression(ctx, f.expression, stdlib);
             let lvalueTypes = getLValuePaths(ctx, f);
             let srcExpr = f.path[1];
-            let targetIndex = lvalueTypes[0].fields.findIndex((v) => v.name === srcExpr);
+            assert(lvalueTypes[0].kind === 'direct');
+            let tt = getType(ctx, lvalueTypes[0].name);
+            let targetIndex = tt.fields.findIndex((v) => v.name === srcExpr);
             stdlib.add('__tact_set');
             valueExpr = '__tact_set(' + f.path[0] + ', ' + targetIndex + ', ' + valueExpr + ')';
             w.append(f.path[0] + ' = ' + valueExpr + ';');
@@ -151,11 +158,11 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
     const fd = f.ast;
 
     // Write function header
-    let args = f.args.map((a) => resolveFunCType(a.type) + ' ' + a.name);
+    let args = f.args.map((a) => resolveFunCTypeRef(a.type) + ' ' + a.name);
     if (f.self) {
         args.unshift(resolveFunCType(f.self) + ' self');
     }
-    let returns: string = f.returns ? resolveFunCType(f.returns) : '()';
+    let returns: string = f.returns ? resolveFunCTypeRef(f.returns) : '()';
     if (f.self && f.returns) {
         returns = '(tuple, ' + returns + ')';
     } else if (f.self) {
@@ -266,7 +273,7 @@ function writeStorageOps(ctx: CompilerContext, type: TypeDescription, w: Writer,
 }
 
 function writeGetter(ctx: CompilerContext, f: FunctionDescription, w: Writer, stdlib: Set<string>) {
-    let args = f.args.map((a) => resolveFunCType(a.type) + ' ' + a.name);
+    let args = f.args.map((a) => resolveFunCTypeRef(a.type) + ' ' + a.name);
     w.append('_ __gen_get_' + f.name + '(' + args.join(', ') + ') method_id(' + getMethodId(f.name) + ') {');
     w.inIndent(() => {
         w.append('tuple self = __gen_load_' + f.self!.name + '();');

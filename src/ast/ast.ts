@@ -256,6 +256,6 @@ export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
     return new ASTRef(i);
 }
 
-export function thowError(message: string, ref: ASTRef): never {
+export function throwError(message: string, ref: ASTRef): never {
     throw new Error(ref.interval.getLineAndColumnMessage() + message);
 }

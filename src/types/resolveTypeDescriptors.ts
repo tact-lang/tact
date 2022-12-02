@@ -1,6 +1,6 @@
-import { ASTField, ASTFunction, ASTNativeFunction, thowError } from "../ast/ast";
+import { ASTField, ASTFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription } from "./TypeDescription";
+import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription, TypeRef } from "./TypeDescription";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -13,7 +13,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];
         if (types[a.name]) {
-            thowError(`Type ${a.name} already exists`, a.ref);
+            throwError(`Type ${a.name} already exists`, a.ref);
         }
         if (a.kind === 'primitive') {
             types[a.name] = {
@@ -39,24 +39,40 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         }
     }
 
-    function getType(type: string) {
-        let t = types[type];
-        if (!t) {
-            throw Error('Type ' + type + ' not found');
+    function resolveTypeRef(src: ASTTypeRef): TypeRef {
+        if (!types[src.name]) {
+            throwError('Type ' + src.name + ' not found', src.ref);
         }
-        return t;
+        if (src.optional) {
+            return {
+                kind: 'optional',
+                inner: {
+                    kind: 'direct',
+                    name: src.name
+                }
+            };
+        } else {
+            return {
+                kind: 'direct',
+                name: src.name
+            }
+        }
     }
 
     function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction) {
+
         // Resolve return
-        let returns = a.return ? getType(a.return.name) : null;
+        let returns: TypeRef | null = null;
+        if (a.return) {
+            returns = resolveTypeRef(a.return);
+        }
 
         // Resolve args
         let args: FunctionArgument[] = [];
         for (let r of a.args) {
             args.push({
                 name: r.name,
-                type: getType(r.type.name)
+                type: resolveTypeRef(r.type)
             });
         }
 
@@ -85,11 +101,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
 
     // Resolve fields
     function resolveField(src: ASTField, index: number): FieldDescription {
-        let t = types[src.type.name];
-        if (!t) {
-            throw Error('Type ' + src.type + ' not found');
-        }
-        return { name: src.name, type: t, index };
+        return { name: src.name, type: resolveTypeRef(src.type), index };
     }
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];
@@ -164,4 +176,14 @@ export function getStaticFunction(ctx: CompilerContext, name: string): FunctionD
 
 export function getAllStaticFunctions(ctx: CompilerContext) {
     return staticFunctionsStore.all(ctx);
+}
+
+export function printTypeRef(src: TypeRef): string {
+    if (src.kind === 'direct') {
+        return src.name;
+    } else if (src.kind === 'optional') {
+        return printTypeRef(src.inner) + '?';
+    } else {
+        throw Error('Invalid type ref');
+    }
 }
