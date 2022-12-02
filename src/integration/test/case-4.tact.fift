@@ -1,0 +1,276 @@
+PROGRAM{
+  DECLPROC __gen_write_Operation
+  DECLPROC __gen_writecell_Operation
+  DECLPROC __gen_writeslice_Operation
+  DECLPROC __gen_read_Operation
+  DECLPROC __gen_write_MultisigContract
+  DECLPROC __gen_writecell_MultisigContract
+  DECLPROC __gen_writeslice_MultisigContract
+  DECLPROC __gen_read_MultisigContract
+  DECLPROC __gen_write_MultisigContract_execute
+  DECLPROC __gen_writecell_MultisigContract_execute
+  DECLPROC __gen_writeslice_MultisigContract_execute
+  DECLPROC __gen_read_MultisigContract_execute
+  DECLPROC __gen_load_MultisigContract
+  DECLPROC __gen_store_MultisigContract
+  DECLPROC __gen_MultisigContract_execute
+  DECLPROC recv_internal
+  __gen_write_Operation PROC:<{
+    DUP
+    0 PUSHINT
+    INDEXVAR
+    257 PUSHINT
+    s0 s3 s3 XCHG3
+    STIX
+    OVER
+    1 PUSHINT
+    INDEXVAR
+    ENDC
+    SWAP
+    STREF
+    SWAP
+    2 PUSHINT
+    INDEXVAR
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      FALSE
+      SWAP
+      1 STI
+    }>ELSE<{
+      TRUE
+      ROT
+      1 STI
+      257 PUSHINT
+      s0 s2 XCHG
+      STIX
+    }>
+  }>
+  __gen_writecell_Operation PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Operation CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_Operation PROC:<{
+    __gen_writecell_Operation CALLDICT
+    CTOS
+  }>
+  __gen_read_Operation PROC:<{
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    PUSHNULL
+    s0 s2 XCHG
+    1 LDI
+    SWAP
+    IF:<{
+      1 2 BLKDROP2
+      257 PUSHINT
+      LDIX
+      s1 s2 XCHG
+    }>
+    NIL
+    s0 s4 XCHG2
+    TPUSH
+    SWAP
+    TPUSH
+    SWAP
+    TPUSH
+  }>
+  __gen_write_MultisigContract PROC:<{
+    DUP
+    0 PUSHINT
+    INDEXVAR
+    ENDC
+    ROT
+    STREF
+    OVER
+    1 PUSHINT
+    INDEXVAR
+    257 PUSHINT
+    -ROT
+    STIX
+    OVER
+    2 PUSHINT
+    INDEXVAR
+    ENDC
+    SWAP
+    STREF
+    OVER
+    3 PUSHINT
+    INDEXVAR
+    257 PUSHINT
+    -ROT
+    STIX
+    OVER
+    4 PUSHINT
+    INDEXVAR
+    ENDC
+    SWAP
+    STREF
+    SWAP
+    5 PUSHINT
+    INDEXVAR
+    257 PUSHINT
+    -ROT
+    STIX
+  }>
+  __gen_writecell_MultisigContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_MultisigContract CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_MultisigContract PROC:<{
+    __gen_writecell_MultisigContract CALLDICT
+    CTOS
+  }>
+  __gen_read_MultisigContract PROC:<{
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    257 PUSHINT
+    LDIX
+    NIL
+    s0 s7 XCHG2
+    TPUSH
+    s0 s5 XCHG2
+    TPUSH
+    s0 s3 XCHG2
+    TPUSH
+    SWAP
+    TPUSH
+    SWAP
+    TPUSH
+    SWAP
+    TPUSH
+  }>
+  __gen_write_MultisigContract_execute PROC:<{
+    DUP
+    0 PUSHINT
+    INDEXVAR
+    s1 s2 XCHG
+    __gen_write_Operation CALLDICT
+    OVER
+    1 PUSHINT
+    INDEXVAR
+    ENDC
+    SWAP
+    STREF
+    OVER
+    2 PUSHINT
+    INDEXVAR
+    ENDC
+    SWAP
+    STREF
+    NEWC
+    s0 s2 XCHG
+    3 PUSHINT
+    INDEXVAR
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_writecell_MultisigContract_execute PROC:<{
+    NEWC
+    SWAP
+    __gen_write_MultisigContract_execute CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_MultisigContract_execute PROC:<{
+    __gen_writecell_MultisigContract_execute CALLDICT
+    CTOS
+  }>
+  __gen_read_MultisigContract_execute PROC:<{
+    __gen_read_Operation CALLDICT
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    LDREF
+    DROP
+    CTOS
+    LDREF
+    SWAP
+    CTOS
+    NIL
+    s0 s5 XCHG2
+    TPUSH
+    s0 s3 XCHG2
+    TPUSH
+    SWAP
+    TPUSH
+    ROT
+    TPUSH
+  }>
+  __gen_load_MultisigContract PROC:<{
+    c4 PUSH
+    CTOS
+    __gen_read_MultisigContract CALLDICT
+    NIP
+  }>
+  __gen_store_MultisigContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_MultisigContract CALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_MultisigContract_execute PROC:<{
+    4 BLKDROP
+  }>
+  recv_internal PROC:<{
+    NIP
+    32 LDI
+    __gen_load_MultisigContract CALLDICT
+    s0 s2 XCHG
+    4284682462 PUSHINT
+    EQUAL
+    IF:<{
+      __gen_read_MultisigContract_execute CALLDICT
+      NIP
+      DUP
+      0 PUSHINT
+      INDEXVAR
+      OVER
+      1 PUSHINT
+      INDEXVAR
+      s2 PUSH
+      2 PUSHINT
+      INDEXVAR
+      s0 s3 XCHG
+      3 PUSHINT
+      INDEXVAR
+      s1 s3 s0 XCHG3
+      __gen_MultisigContract_execute CALLDICT
+    }>ELSE<{
+      DROP
+    }>
+    __gen_store_MultisigContract CALLDICT
+  }>
+}END>c

@@ -198,8 +198,7 @@ export function writeProgram(ctx: CompilerContext) {
                     writer.append('}');
                 }
             }
-            // TODO Implement
-            writer.append('__gen_store_SampleContract(self);');
+            writer.append('__gen_store_' + contracts[0].name + '(self);');
         });
         writer.append('}');
     }

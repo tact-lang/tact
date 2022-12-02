@@ -1,9 +1,15 @@
 PROGRAM{
   DECLPROC __gen_write_Source
+  DECLPROC __gen_writecell_Source
+  DECLPROC __gen_writeslice_Source
   DECLPROC __gen_read_Source
   DECLPROC __gen_write_SampleContract
+  DECLPROC __gen_writecell_SampleContract
+  DECLPROC __gen_writeslice_SampleContract
   DECLPROC __gen_read_SampleContract
   DECLPROC __gen_write_SampleContract_addStake
+  DECLPROC __gen_writecell_SampleContract_addStake
+  DECLPROC __gen_writeslice_SampleContract_addStake
   DECLPROC __gen_read_SampleContract_addStake
   DECLPROC __gen_load_SampleContract
   DECLPROC __gen_store_SampleContract
@@ -25,6 +31,16 @@ PROGRAM{
     257 PUSHINT
     -ROT
     STIX
+  }>
+  __gen_writecell_Source PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Source CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_Source PROC:<{
+    __gen_writecell_Source CALLDICT
+    CTOS
   }>
   __gen_read_Source PROC:<{
     257 PUSHINT
@@ -60,6 +76,16 @@ PROGRAM{
     SWAP
     STREF
   }>
+  __gen_writecell_SampleContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_SampleContract CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_SampleContract PROC:<{
+    __gen_writecell_SampleContract CALLDICT
+    CTOS
+  }>
   __gen_read_SampleContract PROC:<{
     257 PUSHINT
     LDIX
@@ -79,6 +105,16 @@ PROGRAM{
   }>
   __gen_write_SampleContract_addStake PROC:<{
     DROP
+  }>
+  __gen_writecell_SampleContract_addStake PROC:<{
+    NEWC
+    SWAP
+    __gen_write_SampleContract_addStake CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_SampleContract_addStake PROC:<{
+    __gen_writecell_SampleContract_addStake CALLDICT
+    CTOS
   }>
   __gen_read_SampleContract_addStake PROC:<{
     NIL

@@ -1,0 +1,145 @@
+forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
+
+builder __gen_write_Operation(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    build_0 = store_int(build_0, 257, v_0);
+    var v_1 = __tact_get(v, 1);
+    build_0 = store_ref(build_0, v_1.end_cell());
+    var v_2 = __tact_get(v, 2);
+    if (null?(v_2)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, 257, v_2);
+    }
+    return build_0;
+}
+
+cell __gen_writecell_Operation(tuple v) {
+    return __gen_write_Operation(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_Operation(tuple v) {
+    return __gen_writecell_Operation(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_Operation(slice sc) {
+    int __kind = sc~load_int(257);
+    slice __target = sc~load_ref().begin_parse();
+    int __amount = null();
+    if (sc~load_int(1)) {
+         __amount = sc~load_int(257);
+    }
+    tuple res = empty_tuple();
+    res = tpush(res, __kind);
+    res = tpush(res, __target);
+    res = tpush(res, __amount);
+    return (sc, res);
+}
+
+builder __gen_write_MultisigContract(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    build_0 = store_ref(build_0, v_0.end_cell());
+    var v_1 = __tact_get(v, 1);
+    build_0 = store_int(build_0, 257, v_1);
+    var v_2 = __tact_get(v, 2);
+    build_0 = store_ref(build_0, v_2.end_cell());
+    var v_3 = __tact_get(v, 3);
+    build_0 = store_int(build_0, 257, v_3);
+    var v_4 = __tact_get(v, 4);
+    build_0 = store_ref(build_0, v_4.end_cell());
+    var v_5 = __tact_get(v, 5);
+    build_0 = store_int(build_0, 257, v_5);
+    return build_0;
+}
+
+cell __gen_writecell_MultisigContract(tuple v) {
+    return __gen_write_MultisigContract(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_MultisigContract(tuple v) {
+    return __gen_writecell_MultisigContract(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_MultisigContract(slice sc) {
+    slice __user1 = sc~load_ref().begin_parse();
+    int __user1_key = sc~load_int(257);
+    slice __user2 = sc~load_ref().begin_parse();
+    int __user2_key = sc~load_int(257);
+    slice __user3 = sc~load_ref().begin_parse();
+    int __user3_key = sc~load_int(257);
+    tuple res = empty_tuple();
+    res = tpush(res, __user1);
+    res = tpush(res, __user1_key);
+    res = tpush(res, __user2);
+    res = tpush(res, __user2_key);
+    res = tpush(res, __user3);
+    res = tpush(res, __user3_key);
+    return (sc, res);
+}
+
+builder __gen_write_MultisigContract_execute(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    build_0 = __gen_write_Operation(build_0, v_0);
+    var v_1 = __tact_get(v, 1);
+    build_0 = store_ref(build_0, v_1.end_cell());
+    var v_2 = __tact_get(v, 2);
+    build_0 = store_ref(build_0, v_2.end_cell());
+    var build_1 = begin_cell();
+    var v_3 = __tact_get(v, 3);
+    build_1 = store_ref(build_1, v_3.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell __gen_writecell_MultisigContract_execute(tuple v) {
+    return __gen_write_MultisigContract_execute(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_MultisigContract_execute(tuple v) {
+    return __gen_writecell_MultisigContract_execute(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_MultisigContract_execute(slice sc) {
+    tuple __operation = sc~__gen_read_Operation();
+    slice __signature1 = sc~load_ref().begin_parse();
+    slice __signature2 = sc~load_ref().begin_parse();
+    sc = (sc~load_ref()).begin_parse();
+    slice __signature3 = sc~load_ref().begin_parse();
+    tuple res = empty_tuple();
+    res = tpush(res, __operation);
+    res = tpush(res, __signature1);
+    res = tpush(res, __signature2);
+    res = tpush(res, __signature3);
+    return (sc, res);
+}
+
+tuple __gen_load_MultisigContract() {
+    slice sc = get_data().begin_parse();
+    tuple res = sc~__gen_read_MultisigContract();
+    return res;
+}
+
+() __gen_store_MultisigContract(tuple v) impure {
+    builder b = begin_cell();
+    b = __gen_write_MultisigContract(b, v);
+    set_data(b.end_cell());
+}
+
+(tuple, ()) __gen_MultisigContract_execute(tuple self, tuple operation, slice signature1, slice signature2, slice signature3) {
+    int op_hash = cell_hash(__gen_writecell_Operation(operation));
+    int ok1 = check_signature(op_hash, signature1, __tact_get(self, 1));
+    int ok2 = check_signature(op_hash, signature2, __tact_get(self, 3));
+    int ok3 = check_signature(op_hash, signature3, __tact_get(self, 5));
+    return (self, ());
+}
+
+() recv_internal(cell in_msg_cell, slice in_msg) impure {
+    int op = in_msg~load_int(32);
+    tuple self = __gen_load_MultisigContract();
+    if (op == 4284682462) {
+        tuple msg = in_msg~__gen_read_MultisigContract_execute();
+        self~__gen_MultisigContract_execute(__tact_get(msg, 0),__tact_get(msg, 1),__tact_get(msg, 2),__tact_get(msg, 3));
+    }
+    __gen_store_MultisigContract(self);
+}

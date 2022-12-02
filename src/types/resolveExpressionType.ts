@@ -1,3 +1,4 @@
+import { ABIFunctions } from "../abi/AbiFunction";
 import { ASTExpression, ASTFunction, ASTNativeFunction, ASTOpCall, ASTOpCallStatic, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType } from "./resolveTypeDescriptors";
@@ -52,19 +53,36 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         return store.set(ctx, exp.id, { ast: exp, description });
     }
     function resolveCall(ctx: CompilerContext, vctx: VariableCTX, exp: ASTOpCall): CompilerContext {
+
+        // Resolve source
         ctx = resolveExpression(ctx, vctx, exp.src);
         let src = getExpType(ctx, exp.src);
         if (!src || src.kind !== 'direct') {
             throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);
         }
+
+        // Resolve expressions
+        for (let e of exp.args) {
+            ctx = resolveExpression(ctx, vctx, e);
+        }
+
+        // Check ABI
+        if (src.name === '$ABI') {
+            let abf = ABIFunctions[exp.name];
+            if (!abf) {
+                throwError(`ABI function "${exp.name}" not found`, exp.ref);
+            }
+            abf.resolve(ctx, exp.args.map((v) => getExpType(ctx, v)), exp.ref);
+            return ctx;
+        }
+
+        // Check types;
         let srcT = getType(ctx, src.name);
         let f = srcT.functions.find((v) => v.name === exp.name);
         if (!f) {
             throwError(`Function ${exp.name} not found in ${printTypeRef(src)}'`, exp.ref);
         }
-        for (let e of exp.args) {
-            ctx = resolveExpression(ctx, vctx, e);
-        }
+
         return ctx;
     }
     function resolveStaticCall(ctx: CompilerContext, vctx: VariableCTX, exp: ASTOpCallStatic): CompilerContext {
@@ -163,6 +181,13 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             // Register result
             return registerExpType(ctx, exp, resolvedType);
         } else if (exp.kind === 'id') {
+
+            // Work-around for "ABI"
+            if (exp.value === 'abi') {
+                return registerExpType(ctx, exp, { kind: 'direct', name: '$ABI' });
+            }
+
+            // Find variable
             let v = vctx[exp.value];
             if (!v) {
                 throwError('Unabe to resolve id ' + exp.value, exp.ref);
@@ -190,6 +215,17 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             if (src === null || src.kind !== 'direct') {
                 throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
             }
+
+            // Check ABI type
+            if (src.name === '$ABI') {
+                let abf = ABIFunctions[exp.name];
+                if (!abf) {
+                    throwError(`ABI function "${exp.name}" not found`, exp.ref);
+                }
+                let resolved = abf.resolve(ctx, exp.args.map((v) => getExpType(ctx, v)), exp.ref);
+                return registerExpType(ctx, exp, resolved);
+            }
+
             let srcT = getType(ctx, src.name);
             let f = srcT.functions.find((v) => v.name === exp.name)!;
             if (!f.returns) {

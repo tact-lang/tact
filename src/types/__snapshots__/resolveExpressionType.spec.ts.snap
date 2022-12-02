@@ -216,3 +216,56 @@ exports[`resolveExpressionType should resolve expressions for case-4.tact 1`] = 
   ],
 ]
 `;
+
+exports[`resolveExpressionType should resolve expressions for case-5.tact 1`] = `
+[
+  [
+    "p",
+    "Point",
+  ],
+  [
+    "p.x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "p.x == 0",
+    "Bool",
+  ],
+  [
+    "p",
+    "Point",
+  ],
+  [
+    "p.y",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "p.y == 0",
+    "Bool",
+  ],
+  [
+    "p.x == 0 && p.y == 0",
+    "Bool",
+  ],
+  [
+    "abi",
+    "$ABI",
+  ],
+  [
+    "p",
+    "Point",
+  ],
+  [
+    "abi.pack_cell(p)",
+    "Cell",
+  ],
+]
+`;

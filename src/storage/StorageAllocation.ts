@@ -15,6 +15,6 @@ export type StorageField = {
     index: number,
     size: { bits: number, refs: number },
     name: string,
-    kind: 'int' | 'int-optional' | 'struct' | 'struct-optional',
+    kind: 'int' | 'int-optional' | 'struct' | 'struct-optional' | 'slice' | 'slice-optional',
     type: TypeDescription
 }

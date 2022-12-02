@@ -1,7 +1,8 @@
+import { ABIFunctions } from "../../abi/AbiFunction";
 import { ASTExpression, throwError } from "../../ast/ast";
 import { CompilerContext } from "../../ast/context";
 import { getExpType } from "../../types/resolveExpressionType";
-import { getType } from "../../types/resolveTypeDescriptors";
+import { getAllStaticFunctions, getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
@@ -26,7 +27,7 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     //
     // Null
     //
-    
+
     if (f.kind === 'null') {
         return 'null()';
     }
@@ -135,7 +136,12 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     //
 
     if (f.kind === 'op_static_call') {
-        return '__tact_gen_' + f.name + '(' + f.args.map((a) => writeExpression(ctx, a, wctx)).join(', ') + ')';
+        let sf = getStaticFunction(ctx, f.name);
+        let n = f.name;
+        if (sf.ast.kind === 'def_native_function') {
+            n = sf.ast.nativeName;
+        }
+        return n + '(' + f.args.map((a) => writeExpression(ctx, a, wctx)).join(', ') + ')';
     }
 
     //
@@ -153,20 +159,29 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     }
 
     //
-    // Function call with a custom self
-    // TODO: Implement (not used yet)
+    // Object-based function call
     //
 
-    // if (f.kind === 'op_call') {
-    //     let src = getExpType(ctx, f.src);
-    //     if (src.kind === 'optional') {
-    //         throw Error('Expected optional type');
-    //     }
-    //     let srcT = getType(ctx, src.name);
-    //     let index = srcT.functions.findIndex((v) => v.name === f.name);
-    //     wctx.useLib('__tact_call');
-    //     return '__tact_call(' + writeExpression(ctx, f.src, wctx) + ', ' + index + ', [' + f.args.map((a) => writeExpression(ctx, a, wctx)).join(', ') + '])';
-    // }
+    if (f.kind === 'op_call') {
+
+        // Resolve source type
+        let src = getExpType(ctx, f.src);
+        if (src === null || src.kind !== 'direct') {
+            throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
+        }
+
+        // Check ABI
+        if (src.name === '$ABI') {
+            let abf = ABIFunctions[f.name];
+            if (!abf) {
+                throwError(`ABI function "${f.name}" not found`, f.ref);
+            }
+            return abf.generate(ctx, f.args.map((v) => getExpType(ctx, v)), f.args.map((a) => writeExpression(ctx, a, wctx)), f.ref, wctx);
+        }
+
+        // Render function call
+        return '__gen_' + src.name + '_' + writeExpression(ctx, f.src, wctx) + '(' + f.args.map((a) => writeExpression(ctx, a, wctx)).join(', ') + ');';
+    }
 
     //
     // Unreachable

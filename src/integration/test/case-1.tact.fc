@@ -14,6 +14,14 @@ builder __gen_write_Source(builder build_0, tuple v) {
     return build_0;
 }
 
+cell __gen_writecell_Source(tuple v) {
+    return __gen_write_Source(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_Source(tuple v) {
+    return __gen_writecell_Source(v).begin_parse();
+}
+
 (slice, tuple) __gen_read_Source(slice sc) {
     int __a = sc~load_int(257);
     int __b = sc~load_int(257);

@@ -63,6 +63,8 @@ function resolveFieldSize(ctx: CompilerContext, src: FieldDescription, type: Typ
             return { bits: 1, refs: 0 };
         } else if (td.name === 'Cell') {
             return { bits: 0, refs: 1 }
+        } else if (td.name === 'Slice') {
+            return { bits: 0, refs: 1 }
         } else {
             throw Error('Unknown primitive type: ' + td.name);
         }
@@ -88,9 +90,10 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
             return { index: src.index, size: { bits: 257, refs: 0 }, name: src.name, kind: optional ? 'int-optional' : 'int', type: td };
         } else if (type.name === 'Bool') {
             return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: optional ? 'int-optional' : 'int', type: td };
-        } else {
-            throw Error('Unknown primitive type: ' + type.name);
+        } else if (type.name === 'Slice') {
+            return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: optional ? 'slice-optional' : 'slice', type: td };
         }
+        throw Error('Unknown primitive type: ' + type.name);
     } else if (td.kind === 'struct') {
         let allocation = getAllocation(ctx, type.name);
         return { index: src.index, size: allocation.root.size, name: src.name, kind: optional ? 'struct-optional' : 'struct', type: td };
