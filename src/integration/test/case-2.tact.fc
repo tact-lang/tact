@@ -26,11 +26,42 @@ slice __gen_writeslice_Source(tuple v) {
     return (sc, res);
 }
 
+builder __gen_write_Empty(builder build_0, tuple v) {
+    return build_0;
+}
+
+cell __gen_writecell_Empty(tuple v) {
+    return __gen_write_Empty(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_Empty(tuple v) {
+    return __gen_writecell_Empty(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_Empty(slice sc) {
+    tuple res = empty_tuple();
+    return (sc, res);
+}
+
+tuple __gen_load_Empty() {
+    slice sc = get_data().begin_parse();
+    tuple res = sc~__gen_read_Empty();
+    return res;
+}
+
+() __gen_store_Empty(tuple v) impure {
+    builder b = begin_cell();
+    b = __gen_write_Empty(b, v);
+    set_data(b.end_cell());
+}
+
 int isZero(int x, int y, int z, tuple m) {
     m = __tact_set(m, 1, 10);
     return (((x + __tact_get(m, 1)) > 0) & z);
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    throw(100);
+    int op = in_msg~load_int(32);
+    tuple self = __gen_load_Empty();
+    __gen_store_Empty(self);
 }

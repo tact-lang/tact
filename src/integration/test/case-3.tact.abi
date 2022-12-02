@@ -1,0 +1,26 @@
+{
+  "name": "SampleContract",
+  "structs": [
+    {
+      "name": "Source",
+      "header": 0,
+      "fields": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        }
+      ]
+    }
+  ],
+  "code": "te6ccgECHAEAASwAART/APSkE/S88sgLAQIBYgIDAgLLBAUAD6B4seAb4CJjAgEgBgcCAc4aGwIBIAgJAgEgEhMCASAKCwIBIA4PAgEgDA0AC0yAHwAcmAApDHSHzDwDQGCEPzVXoq6kvAQ3vAOgACsIHBvgYEBAUAzzwABcW+BgQEBWc8AgAgEgEBEAC0yAHwBcmAAnIEBAdcAgQEB1wBvAFADb4wBb4yAAQQgcG+BgQEBQDPPACFxb4GBAQFZzwDIAnJvgRLwAckBzIAIBIBQVAgEgGBkCASAWFwALTIAfAJyYADcgQEB1wCBAQHXANQw0PAEbwBQBG+MWG+MWG+MgAAMMIAANXtRNDwCDGAAPTIAfAFye1UgAKxwem+HcYDsb4dybwB6b4yAFG+Mb4eAACQgcG+Bg"
+}

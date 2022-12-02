@@ -1,0 +1,36 @@
+{
+  "name": "MultisigContract",
+  "structs": [
+    {
+      "name": "Operation",
+      "header": 0,
+      "fields": [
+        {
+          "name": "kind",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "target",
+          "type": {
+            "kind": "direct",
+            "name": "Slice"
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "kind": "optional",
+            "inner": {
+              "kind": "direct",
+              "name": "Int"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "code": "te6ccgECGgEAAdUAART/APSkE/S88sgLAQICzwIDAgEgBAUCASAODwIBIAYHAgEgCgsCASAICQALTIAfAByYAFcMdIf8A0CghD/YxDeuo4X8AwxIHBvgSFxb4Eicm+BA3NvgUEw8A+RMOLwDoABVCBwb4GBAQFAM88AIXFvgckBzAFyb4EgbpUwcAHKAJp/WMoAgQEBAs8A4oAIBIAwNAAtMgB8AXJgARyBAQHXANQB0G0C0gABmGwSgQEB1wAS3m8AUARvjAFvjAFvjIABnCBwb4HJWMwhcW+BgQEBWc8AIXJvgckBzCFzb4GBAQFZzwAhdG+ByQHMAXVvgYEBAVnPAIAIBIBARAgEgFBUCASASEwALTIAfAJyYAGU1AHQAYEBAdcA1AHQAYEBAdcA1AHQAYEBAdcAbwBQB2+MUAVvjFADb4wBb4wBb4wBb4yAAQQgcG+BEvABIXFvgckBzCFyb4HJAczIAnNvgclYzMkBzIAIBIBYXAgEgGBkAQzwBAHUAdAB1AHQAdQw0NQB0G8AUAVvjFADb4wBb4xYb4yAADTtRNDwCDGAADzIAfAFye1UgAFcA/AC+QAkcW+BVEFE+RAkc2+BVEMz+RAkdW+BXiH5EFESsAGwkTCTwP8w4oA=="
+}

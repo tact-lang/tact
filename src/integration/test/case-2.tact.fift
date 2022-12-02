@@ -3,6 +3,12 @@ PROGRAM{
   DECLPROC __gen_writecell_Source
   DECLPROC __gen_writeslice_Source
   DECLPROC __gen_read_Source
+  DECLPROC __gen_write_Empty
+  DECLPROC __gen_writecell_Empty
+  DECLPROC __gen_writeslice_Empty
+  DECLPROC __gen_read_Empty
+  DECLPROC __gen_load_Empty
+  DECLPROC __gen_store_Empty
   DECLPROC isZero
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
@@ -40,6 +46,35 @@ PROGRAM{
     SWAP
     TPUSH
   }>
+  __gen_write_Empty PROC:<{
+    DROP
+  }>
+  __gen_writecell_Empty PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Empty CALLDICT
+    ENDC
+  }>
+  __gen_writeslice_Empty PROC:<{
+    __gen_writecell_Empty CALLDICT
+    CTOS
+  }>
+  __gen_read_Empty PROC:<{
+    NIL
+  }>
+  __gen_load_Empty PROC:<{
+    c4 PUSH
+    CTOS
+    __gen_read_Empty CALLDICT
+    NIP
+  }>
+  __gen_store_Empty PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Empty CALLDICT
+    ENDC
+    c4 POP
+  }>
   isZero PROC:<{
     1 2 BLKDROP2
     1 PUSHINT
@@ -55,6 +90,7 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     2DROP
-    100 THROW
+    __gen_load_Empty CALLDICT
+    __gen_store_Empty CALLDICT
   }>
 }END>c

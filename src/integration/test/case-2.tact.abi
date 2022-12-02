@@ -1,0 +1,26 @@
+{
+  "name": "Empty",
+  "structs": [
+    {
+      "name": "Source",
+      "header": 0,
+      "fields": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        }
+      ]
+    }
+  ],
+  "code": "te6ccgEBEAEAfAABFP8A9KQT9LzyyAsBAgLPAgMCASAEBQIBSAwNAgEgBgcCASAKCwIBIAgJAAtMgB8AHJgACxb8AnwCoAArCBwb4GBAQFAM88AAXFvgYEBAVnPAIAADUwgAC0yAHwBcmAIBIA4PAA9MgB8AXJ7VSAAFG8AgAA07UTQ8Agxg"
+}

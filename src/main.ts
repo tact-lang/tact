@@ -14,5 +14,5 @@ export function compile(src: string) {
     ctx = resolveAllocations(ctx);
     let output = writeProgram(ctx);
     let cOutput = output;
-    return cOutput;
+    return { output: cOutput, ctx };
 }
