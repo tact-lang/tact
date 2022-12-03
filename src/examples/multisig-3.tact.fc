@@ -5,9 +5,9 @@ builder __gen_write_Operation(builder build_0, tuple v) {
     var v_0 = __tact_get(v, 0);
     var v_1 = __tact_get(v, 1);
     var v_2 = __tact_get(v, 2);
-    build_0 = store_int(build_0, 257, v_0);
+    build_0 = store_int(build_0, v_0, 257);
     build_0 = store_ref(build_0, v_1.end_cell());
-    build_0 = store_int(build_0, 257, v_2);
+    build_0 = store_int(build_0, v_2, 257);
     return build_0;
 }
 
@@ -38,11 +38,11 @@ builder __gen_write_MultisigContract(builder build_0, tuple v) {
     var v_1 = __tact_get(v, 1);
     var v_2 = __tact_get(v, 2);
     var v_3 = __tact_get(v, 3);
-    build_0 = store_int(build_0, 257, v_0);
-    build_0 = store_int(build_0, 257, v_1);
-    build_0 = store_int(build_0, 257, v_2);
+    build_0 = store_int(build_0, v_0, 257);
+    build_0 = store_int(build_0, v_1, 257);
+    build_0 = store_int(build_0, v_2, 257);
     var build_1 = begin_cell();
-    build_1 = store_int(build_1, 257, v_3);
+    build_1 = store_int(build_1, v_3, 257);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -139,6 +139,16 @@ tuple __gen_load_MultisigContract() {
     b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
     send_raw_message(end_cell(b), 0);
     return (self, ());
+}
+
+(tuple, int) __gen_MultisigContract_seqno(tuple self) {
+    return (self, __tact_get(self, 0));
+}
+
+_ __gen_get_seqno() method_id(85143) {
+    tuple self = __gen_load_MultisigContract();
+    var res = self~__gen_MultisigContract_seqno();
+    return res;
 }
 
 cell __gen_MultisigContract_init(int key1, int key2, int key3) {

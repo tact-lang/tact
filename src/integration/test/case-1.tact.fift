@@ -24,18 +24,16 @@ PROGRAM{
     s0 s3 XCHG
     3 PUSHINT
     INDEXVAR
+    s2 s4 XCHG2
     257 PUSHINT
-    s0 s5 s3 XCHG3
     STIX
     257 PUSHINT
-    s0 s2 XCHG
     STIX
     257 PUSHINT
-    s0 s2 XCHG
     STIX
+    SWAP
     NEWC
     257 PUSHINT
-    s0 s1 s3 XCHG3
     STIX
     ENDC
     SWAP

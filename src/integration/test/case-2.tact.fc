@@ -4,8 +4,8 @@ forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 builder __gen_write_Source(builder build_0, tuple v) {
     var v_0 = __tact_get(v, 0);
     var v_1 = __tact_get(v, 1);
-    build_0 = store_int(build_0, 257, v_0);
-    build_0 = store_int(build_0, 257, v_1);
+    build_0 = store_int(build_0, v_0, 257);
+    build_0 = store_int(build_0, v_1, 257);
     return build_0;
 }
 

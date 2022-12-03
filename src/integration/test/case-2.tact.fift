@@ -18,11 +18,10 @@ PROGRAM{
     SWAP
     1 PUSHINT
     INDEXVAR
+    s0 s2 XCHG
     257 PUSHINT
-    2SWAP
     STIX
     257 PUSHINT
-    s0 s2 XCHG
     STIX
   }>
   __gen_writecell_Source PROC:<{

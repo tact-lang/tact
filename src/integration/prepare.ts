@@ -2,6 +2,7 @@ import fs from 'fs';
 import { compile } from '../main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from '../generator/createABI';
+import { writeTypescript } from '../generator/writeTypescript';
 
 // Read cases
 (async () => {
@@ -29,6 +30,10 @@ import { createABI } from '../generator/createABI';
                 // Tact -> ABI
                 let abi = createABI(res.ctx, c.output!.toString('base64'));
                 fs.writeFileSync(p + r + ".abi", JSON.stringify(abi, null, 2));
+
+                // ABI -> Typescript
+                let ts = writeTypescript(abi);
+                fs.writeFileSync(p + r + ".api.ts", ts);
             }
         }
     } catch (e) {

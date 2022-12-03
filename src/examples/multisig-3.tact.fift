@@ -14,6 +14,8 @@ PROGRAM{
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC __gen_MultisigContract_execute
+  DECLPROC __gen_MultisigContract_seqno
+  85143 DECLMETHOD __gen_get_seqno
   DECLPROC __gen_MultisigContract_init
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
@@ -27,15 +29,14 @@ PROGRAM{
     s0 s2 XCHG
     2 PUSHINT
     INDEXVAR
+    s0 s3 XCHG
     257 PUSHINT
-    s4 s2 XCHG2
     STIX
     SWAP
     ENDC
     SWAP
     STREF
     257 PUSHINT
-    s0 s2 XCHG
     STIX
   }>
   __gen_writecell_Operation PROC:<{
@@ -78,18 +79,16 @@ PROGRAM{
     s0 s3 XCHG
     3 PUSHINT
     INDEXVAR
+    s2 s4 XCHG2
     257 PUSHINT
-    s0 s5 s3 XCHG3
     STIX
     257 PUSHINT
-    s0 s2 XCHG
     STIX
     257 PUSHINT
-    s0 s2 XCHG
     STIX
+    SWAP
     NEWC
     257 PUSHINT
-    s0 s1 s3 XCHG3
     STIX
     ENDC
     SWAP
@@ -259,6 +258,16 @@ PROGRAM{
     ENDC
     0 PUSHINT
     SENDRAWMSG
+  }>
+  __gen_MultisigContract_seqno PROC:<{
+    DUP
+    0 PUSHINT
+    INDEXVAR
+  }>
+  __gen_get_seqno PROC:<{
+    __gen_load_MultisigContract CALLDICT
+    __gen_MultisigContract_seqno CALLDICT
+    NIP
   }>
   __gen_MultisigContract_init PROC:<{
     NIL

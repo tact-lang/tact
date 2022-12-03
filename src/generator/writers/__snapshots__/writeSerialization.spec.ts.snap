@@ -9,24 +9,24 @@ exports[`writeSerialization should write serializer for A 1`] = `
     var v_4 = __tact_get(v, 4);
     var v_5 = __tact_get(v, 5);
     var v_6 = __tact_get(v, 6);
-    build_0 = store_int(build_0, 257, v_0);
-    build_0 = store_int(build_0, 257, v_1);
+    build_0 = store_int(build_0, v_0, 257);
+    build_0 = store_int(build_0, v_1, 257);
     if (null?(v_2)) {
         build_0 = store_int(build_0, false, 1);
     } else {
         build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, 257, v_2);
+        build_0 = store_int(build_0, v_2, 257);
     }
-    build_0 = store_int(build_0, 1, v_3);
+    build_0 = store_int(build_0, v_3, 1);
     if (null?(v_4)) {
         build_0 = store_int(build_0, false, 1);
     } else {
         build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, 1, v_4);
+        build_0 = store_int(build_0, v_4, 1);
     }
     var build_1 = begin_cell();
-    build_1 = store_int(build_1, 257, v_5);
-    build_1 = store_int(build_1, 257, v_6);
+    build_1 = store_int(build_1, v_5, 257);
+    build_1 = store_int(build_1, v_6, 257);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -81,24 +81,24 @@ exports[`writeSerialization should write serializer for B 1`] = `
     var v_4 = __tact_get(v, 4);
     var v_5 = __tact_get(v, 5);
     var v_6 = __tact_get(v, 6);
-    build_0 = store_int(build_0, 257, v_0);
-    build_0 = store_int(build_0, 257, v_1);
+    build_0 = store_int(build_0, v_0, 257);
+    build_0 = store_int(build_0, v_1, 257);
     if (null?(v_2)) {
         build_0 = store_int(build_0, false, 1);
     } else {
         build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, 257, v_2);
+        build_0 = store_int(build_0, v_2, 257);
     }
-    build_0 = store_int(build_0, 1, v_3);
+    build_0 = store_int(build_0, v_3, 1);
     if (null?(v_4)) {
         build_0 = store_int(build_0, false, 1);
     } else {
         build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, 1, v_4);
+        build_0 = store_int(build_0, v_4, 1);
     }
     var build_1 = begin_cell();
-    build_1 = store_int(build_1, 257, v_5);
-    build_1 = store_int(build_1, 257, v_6);
+    build_1 = store_int(build_1, v_5, 257);
+    build_1 = store_int(build_1, v_6, 257);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -173,9 +173,9 @@ exports[`writeSerialization should write serializer for C 1`] = `
         build_1 = store_int(build_1, true, 1);
         build_1 = store_ref(build_1, v_3.end_cell());
     }
-    build_1 = store_int(build_1, 1, v_4);
-    build_1 = store_int(build_1, 257, v_5);
-    build_1 = store_int(build_1, 257, v_6);
+    build_1 = store_int(build_1, v_4, 1);
+    build_1 = store_int(build_1, v_5, 257);
+    build_1 = store_int(build_1, v_6, 257);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }

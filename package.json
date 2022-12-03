@@ -9,8 +9,13 @@
     "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/integration/prepare.ts"
   },
   "dependencies": {
+    "@types/bn.js": "^5.1.1",
+    "bn.js": "^5.2.1",
     "ohm-js": "^16.4.0",
-    "ton-compiler": "^2.0.0"
+    "ton": "^12.1.5",
+    "ton-compiler": "^2.0.0",
+    "ton-contract-executor": "^0.6.0",
+    "ton-nodejs": "^1.4.1"
   },
   "devDependencies": {
     "@ohm-js/cli": "^1.1.0",

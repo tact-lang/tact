@@ -28,12 +28,12 @@ function writeSerializerField(ctx: CompilerContext, f: StorageField, w: Writer, 
     // Handle primitives
 
     if (f.kind === 'int') {
-        w.append(`build_${index} = store_int(build_${index}, ${f.size.bits}, v_${f.index});`);
+        w.append(`build_${index} = store_int(build_${index}, v_${f.index}, ${f.size.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        w.append(`build_${index} = store_uint(build_${index}, ${f.size.bits}, v_${f.index});`);
+        w.append(`build_${index} = store_uint(build_${index}, v_${f.index}, ${f.size.bits});`);
         return;
     }
 

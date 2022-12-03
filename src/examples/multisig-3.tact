@@ -32,4 +32,8 @@ contract MultisigContract {
         b = storeUint(b, 1, 1 + 4 + 4 + 64 + 32 + 1 + 1);
         nativeSendMessage(endCell(b), 0);
     }
+
+    get fun seqno(): Int {
+        return self.seqno;
+    }
 }
