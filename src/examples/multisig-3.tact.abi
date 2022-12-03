@@ -13,13 +13,6 @@
           }
         },
         {
-          "name": "kind",
-          "type": {
-            "kind": "direct",
-            "name": "Int"
-          }
-        },
-        {
           "name": "target",
           "type": {
             "kind": "direct",
@@ -29,15 +22,38 @@
         {
           "name": "amount",
           "type": {
-            "kind": "optional",
-            "inner": {
-              "kind": "direct",
-              "name": "Int"
-            }
+            "kind": "direct",
+            "name": "Int"
           }
         }
       ]
     }
   ],
-  "code": "te6ccgECHAEAAgoAART/APSkE/S88sgLAQICzgIDAgEgBAUAmdCPwA/kAJXFvgVRBVfkQJXJvgVRERPkQJXNvgURA+RAjcG+BJXBvgbryigKwAbDyisiAEAHLBSFyb4HPFgFzb4HwAfoCcQHLaslw+wCAgEgBgcCASASEwIBIAgJAgEgDg8CASAKCwIBIAwNAFcMdIf8A4CghD/YxDeuo4X8A0xIHBvgSFxb4Eicm+BA3NvgUEw8BCRMOLwD4AAJCBu8k6AAaQgcG+BIXFvgSJyb4EDc2+BgQEBQFPPAIEBAQLPAAHJAcwhbpRwMsoAmn8BygCBAQECzwDigAAsyAHwAsmAAWVbQGBAQHXAIEBAdcA1AHQAdIAAZg0A4EBAdcAFN5vAFAEb4xYb4wBb4xYb4yAIBIBARAF0IHBvgSFxb4Eicm+BA3NvgYEBAUBTzwCBAQECzwCBAQECzwDIgQEBQBPPAMkBzIAALMgB8AbJgAgEgFBUCASAYGQBPWBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAG8AUAVvjFADb4wBb4wBb4yAIBIBYXAEsIHBvgSFxb4Eicm+BA3NvgVBC8AIDyVADzAHJAczIAslYzMkBzIAALMgB8ArJgAENfAFAdQB0AHUAdAB1DDQ1AHQbwBQBW+MUANvjAFvjFhvjIAgEgGhsADTtRNDwCTGAADzIAfAGye1Ug"
+  "code": "te6ccgECHgEAAggAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaGVj+AhAgEgBgcAQ9G8AbW+MbW+MbW+MbW+McCBvh3FYBG+Hclhvh3NYb4fwBoCASAICQIBIBITAgEgCgsCASAODwIBIAwNAAtMgB8AHJgAVwx0h/wDQKCEP9jEN66jhfwDDEgcG+BIXFvgSJyb4EDc2+BQTDwD5Ew4vAOgADsIHBvgSFxb4ECcm+BgQEBUELPAAHJAcyBAQECzwCACASAQEQALTIAfAFyYADUgQEB1wDUAdABgQEB1wBvAFAEb4xYb4wBb4yAAXQgcG+BIXFvgSJyb4EDc2+BgQEBQFPPAIEBAQLPAIEBAQLPAMiBAQFAE88AyQHMgAgEgFBUCASAYGQIBIBYXAAtMgB8AnJgATyBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAG8AUAVvjFADb4wBb4wBb4yAASwgcG+BIXFvgSJyb4EDc2+BUELwAQPJUAPMAckBzMgCyVjMyQHMgAgEgGhsCASAcHQBDPAEAdQB0AHUAdAB1DDQ1AHQbwBQBW+MUANvjAFvjFhvjIAANO1E0PAIMYAAPMgB8AXJ7VSAAlQj8AL5ACVxb4FUQVX5ECVyb4FURET5ECVzb4FEQPkQI3BvgSVwb4G68ooCsAGw8orIgBABywUhcW+BzxYBcm+B+gJxActqyXD7AIA==",
+  "init": {
+    "name": "init_MultisigContract",
+    "args": [
+      {
+        "name": "key1",
+        "type": {
+          "kind": "direct",
+          "name": "Int"
+        }
+      },
+      {
+        "name": "key2",
+        "type": {
+          "kind": "direct",
+          "name": "Int"
+        }
+      },
+      {
+        "name": "key3",
+        "type": {
+          "kind": "direct",
+          "name": "Int"
+        }
+      }
+    ]
+  }
 }

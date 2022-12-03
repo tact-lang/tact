@@ -118,6 +118,14 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
+    ContractInit(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_init_function',
+            args: arg2.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
 });
 
 // Statements

@@ -322,7 +322,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         let a = ctx.astTypes[t];
         if (a.kind === 'def_contract') {
             for (let f of a.declarations) {
-                if (f.kind === 'def_function') {
+                if (f.kind === 'def_function' || f.kind === 'def_init_function') {
 
                     // Function variables
                     let vctx: VariableCTX = {};

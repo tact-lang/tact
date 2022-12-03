@@ -1,6 +1,6 @@
-import { ASTField, ASTFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../ast/ast";
+import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { FieldDescription, FunctionArgument, FunctionDescription, TypeDescription, TypeRef } from "./types";
+import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef } from "./types";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -20,21 +20,24 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 kind: 'primitive',
                 name: a.name,
                 fields: [],
-                functions: []
+                functions: [],
+                init: null
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
                 kind: 'contract',
                 name: a.name,
                 fields: [],
-                functions: []
+                functions: [],
+                init: null
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
                 kind: 'struct',
                 name: a.name,
                 fields: [],
-                functions: []
+                functions: [],
+                init: null
             };
         }
     }
@@ -59,7 +62,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         }
     }
 
-    function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction) {
+    function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
 
         // Resolve return
         let returns: TypeRef | null = null;
@@ -88,6 +91,20 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         };
     }
 
+    function resolveInitFunction(a: ASTInitFunction): InitDescription {
+        let args: FunctionArgument[] = [];
+        for (let r of a.args) {
+            args.push({
+                name: r.name,
+                type: resolveTypeRef(r.type)
+            });
+        }
+        return {
+            args,
+            ast: a
+        }
+    }
+
     // Resolve static functions
     for (let f in ctx.astFunctionStatic) {
         let a = ctx.astFunctionStatic[f];
@@ -108,7 +125,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
 
         // Contract
         if (a.kind === 'def_contract') {
-            for (let f of a.declarations) {
+            for (const f of a.declarations) {
                 if (f.kind !== 'def_field') {
                     continue;
                 }
@@ -138,6 +155,12 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             for (let d of a.declarations) {
                 if (d.kind === 'def_function') {
                     s.functions.push(resolveFunctionDescriptor(s, d));
+                }
+                if (d.kind === 'def_init_function') {
+                    if (s.init) {
+                        throw Error('Init function already exists');
+                    }
+                    s.init = resolveInitFunction(d);
                 }
             }
         }

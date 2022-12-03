@@ -1,4 +1,4 @@
-import { ContractABI, ContractStruct } from "../abi/ContractABI";
+import { ContractABI, ContractInit, ContractStruct } from "../abi/ContractABI";
 import { CompilerContext } from "../ast/context";
 import { getAllTypes } from "../types/resolveTypeDescriptors";
 
@@ -20,9 +20,16 @@ export function createABI(ctx: CompilerContext, code: string): ContractABI {
         }
     }
 
+    // Init
+    let init: ContractInit | null = null;
+    if (contract.init) {
+        init = { name: 'init_' + contract.name, args: contract.init.args.map((v) => ({ name: v.name, type: v.type })) };
+    }
+
     return {
         name: contract.name,
         structs,
-        code
-    }
+        code,
+        init
+    };
 }

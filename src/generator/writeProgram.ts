@@ -4,7 +4,7 @@ import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FunctionDescription, TypeDescription } from "../types/types";
+import { FunctionDescription, InitDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";
 import { writeStdlib } from "./stdlib/writeStdlib";
 import { Writer, WriterContext } from "./Writer";
@@ -55,7 +55,7 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, self: 
         w.append(exp + ';');
         return;
     }
-    
+
     throw Error('Unknown statement kind');
 }
 
@@ -115,6 +115,30 @@ function writeFunction(ctx: CompilerContext, f: FunctionDescription, w: Writer, 
     w.append();
 }
 
+function writeInit(ctx: CompilerContext, t: TypeDescription, init: InitDescription, w: Writer, wctx: WriterContext) {
+
+    // Resolve args
+    let args = init.args.map((a) => resolveFuncType(ctx, a.type) + ' ' + a.name);
+
+    w.append(`cell __gen_${t.name}_init(${args.join(', ')}) {`);
+    w.inIndent(() => {
+        let selfInit = 'empty_tuple()';
+        for (let i = 0; i < t.fields.length; i++) {
+            selfInit = `tpush(${selfInit}, null())`;
+        }
+        w.append(`tuple self = ${selfInit};`);
+
+        // Generate statements
+        for (let s of init.ast.statements) {
+            writeStatement(ctx, s, w, true, wctx);
+        }
+
+        w.append('return __gen_writecell_' + t.name + '(self);');
+    });
+    w.append('}');
+    w.append();
+}
+
 function writeStorageOps(ctx: CompilerContext, type: TypeDescription, w: Writer, wctx: WriterContext) {
     w.append('tuple __gen_load_' + type.name + '() {');
     w.inIndent(() => {
@@ -146,7 +170,7 @@ function writeGetter(ctx: CompilerContext, f: FunctionDescription, w: Writer, wc
     w.append();
 }
 
-export function writeProgram(ctx: CompilerContext, mode: 'contract' | 'init' = 'contract') {
+export function writeProgram(ctx: CompilerContext) {
     const writer = new Writer();
     const wctx = new WriterContext();
     let contracts = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract');
@@ -196,6 +220,13 @@ export function writeProgram(ctx: CompilerContext, mode: 'contract' | 'init' = '
         }
     }
 
+    // Contract inits
+    for (let c of contracts) {
+        if (c.init) {
+            writeInit(ctx, c, c.init, writer, wctx);
+        }
+    }
+
     // Contract
     if (contracts.length > 1) {
         throw Error('Too many contracts');
@@ -208,33 +239,41 @@ export function writeProgram(ctx: CompilerContext, mode: 'contract' | 'init' = '
             writer.append('throw(100);');
         });
         writer.append('}');
+        writer.append();
     }
 
     // Entry Point
     if (contracts.length === 1) {
-        if (mode === 'contract') {
-            let c = contracts[0];
-            writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
-            writer.inIndent(() => {
-                writer.append('int op = in_msg~load_int(32);');
-                writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
-                for (let f of c.functions) {
-                    if (f.isPublic) {
-                        let allocation = getAllocation(ctx, c.name + '$$' + f.name);
-                        writer.append('if (op == ' + allocation.prefix + ') {');
-                        writer.inIndent(() => {
-                            writer.append('tuple msg = in_msg~__gen_read_' + c.name + '_' + f.name + '();');
-                            writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => '__tact_get(msg, ' + i + ')')].join(',') + ');');
-                        })
-                        writer.append('}');
-                    }
+
+        const c = contracts[0];
+        writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
+        writer.inIndent(() => {
+            writer.append('int op = in_msg~load_int(32);');
+            writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
+            for (let f of c.functions) {
+                if (f.isPublic) {
+                    let allocation = getAllocation(ctx, c.name + '$$' + f.name);
+                    writer.append('if (op == ' + allocation.prefix + ') {');
+                    writer.inIndent(() => {
+                        writer.append('tuple msg = in_msg~__gen_read_' + c.name + '_' + f.name + '();');
+                        writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => '__tact_get(msg, ' + i + ')')].join(',') + ');');
+                    })
+                    writer.append('}');
                 }
-                writer.append('__gen_store_' + contracts[0].name + '(self);');
+            }
+            writer.append('__gen_store_' + contracts[0].name + '(self);');
+        });
+        writer.append('}');
+        writer.append();
+
+        // Generate Init
+        if (c.init) {
+            writer.append(`cell init_${c.name}(${c.init.args.map((a) => resolveFuncType(ctx, a.type) + ' ' + a.name).join(', ')}) method_id {`);
+            writer.inIndent(() => {
+                writer.append(`return __gen_${c.name}_init(${c.init!.args.map((a) => a.name).join(', ')});`);
             });
             writer.append('}');
-        }
-        if (mode === 'init') {
-
+            writer.append();
         }
     }
 

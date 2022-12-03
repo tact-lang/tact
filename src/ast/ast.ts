@@ -158,7 +158,7 @@ export type ASTContract = {
     kind: 'def_contract',
     id: number,
     name: string,
-    declarations: (ASTField | ASTFunction)[],
+    declarations: (ASTField | ASTFunction | ASTInitFunction)[],
     ref: ASTRef
 }
 
@@ -190,6 +190,14 @@ export type ASTNativeFunction = {
     nativeName: string,
     return: ASTTypeRef | null,
     args: ASTArgument[],
+    ref: ASTRef
+}
+
+export type ASTInitFunction = {
+    kind: 'def_init_function',
+    id: number,
+    args: ASTArgument[],
+    statements: ASTStatement[],
     ref: ASTRef
 }
 
@@ -244,7 +252,7 @@ export type ASTCondition = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign | ASTCondition;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {

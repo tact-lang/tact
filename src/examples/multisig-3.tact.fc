@@ -1,20 +1,13 @@
 forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
 builder __gen_write_Operation(builder build_0, tuple v) {
     var v_0 = __tact_get(v, 0);
     var v_1 = __tact_get(v, 1);
     var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
     build_0 = store_int(build_0, 257, v_0);
-    build_0 = store_int(build_0, 257, v_1);
-    build_0 = store_ref(build_0, v_2.end_cell());
-    if (null?(v_3)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, 257, v_3);
-    }
+    build_0 = store_ref(build_0, v_1.end_cell());
+    build_0 = store_int(build_0, 257, v_2);
     return build_0;
 }
 
@@ -28,18 +21,13 @@ slice __gen_writeslice_Operation(tuple v) {
 
 (slice, tuple) __gen_read_Operation(slice sc) {
     int __seqno = null();
-    int __kind = null();
     slice __target = null();
     int __amount = null();
      __seqno = sc~load_int(257);
-     __kind = sc~load_int(257);
      __target = sc~load_ref().begin_parse();
-    if (sc~load_int(1)) {
-         __amount = sc~load_int(257);
-    }
+     __amount = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __seqno);
-    res = tpush(res, __kind);
     res = tpush(res, __target);
     res = tpush(res, __amount);
     return (sc, res);
@@ -146,11 +134,20 @@ tuple __gen_load_MultisigContract() {
     throw_unless(10, ((ok1 & ok2) & ok3));
     builder b = begin_cell();
     b = store_uint(b, 16, 6);
-    b = store_slice(b, __tact_get(operation, 2));
-    b = store_coins(b, __tact_not_null(__tact_get(operation, 3)));
+    b = store_slice(b, __tact_get(operation, 1));
+    b = store_coins(b, __tact_get(operation, 2));
     b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
     send_raw_message(end_cell(b), 0);
     return (self, ());
+}
+
+cell __gen_MultisigContract_init(int key1, int key2, int key3) {
+    tuple self = tpush(tpush(tpush(tpush(empty_tuple(), null()), null()), null()), null());
+    self = __tact_set(self, 0, 0);
+    self = __tact_set(self, 1, key1);
+    self = __tact_set(self, 2, key2);
+    self = __tact_set(self, 3, key3);
+    return __gen_writecell_MultisigContract(self);
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
@@ -161,4 +158,8 @@ tuple __gen_load_MultisigContract() {
         self~__gen_MultisigContract_execute(__tact_get(msg, 0),__tact_get(msg, 1),__tact_get(msg, 2),__tact_get(msg, 3));
     }
     __gen_store_MultisigContract(self);
+}
+
+cell init_MultisigContract(int key1, int key2, int key3) method_id {
+    return __gen_MultisigContract_init(key1, key2, key3);
 }

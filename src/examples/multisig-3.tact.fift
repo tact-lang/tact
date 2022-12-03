@@ -1,5 +1,4 @@
 PROGRAM{
-  DECLPROC __tact_not_null
   DECLPROC __gen_write_Operation
   DECLPROC __gen_writecell_Operation
   DECLPROC __gen_writeslice_Operation
@@ -15,12 +14,9 @@ PROGRAM{
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC __gen_MultisigContract_execute
+  DECLPROC __gen_MultisigContract_init
   DECLPROC recv_internal
-  __tact_not_null PROC:<{
-    DUP
-    ISNULL
-    14 THROWIF
-  }>
+  117447 DECLMETHOD init_MultisigContract
   __gen_write_Operation PROC:<{
     DUP
     0 PUSHINT
@@ -28,36 +24,19 @@ PROGRAM{
     OVER
     1 PUSHINT
     INDEXVAR
-    s2 PUSH
+    s0 s2 XCHG
     2 PUSHINT
     INDEXVAR
-    s0 s3 XCHG
-    3 PUSHINT
-    INDEXVAR
     257 PUSHINT
-    s0 s5 s3 XCHG3
-    STIX
-    257 PUSHINT
-    s0 s2 XCHG
+    s4 s2 XCHG2
     STIX
     SWAP
     ENDC
     SWAP
     STREF
-    OVER
-    ISNULL
-    IF:<{
-      FALSE
-      s2 POP
-      1 STI
-    }>ELSE<{
-      TRUE
-      SWAP
-      1 STI
-      257 PUSHINT
-      s0 s2 XCHG
-      STIX
-    }>
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
   }>
   __gen_writecell_Operation PROC:<{
     NEWC
@@ -70,33 +49,20 @@ PROGRAM{
     CTOS
   }>
   __gen_read_Operation PROC:<{
-    PUSHNULL
-    SWAP
-    257 PUSHINT
-    LDIX
     257 PUSHINT
     LDIX
     LDREF
     SWAP
     CTOS
     SWAP
-    1 LDI
-    SWAP
-    IF:<{
-      s4 POP
-      s0 s3 XCHG
-      257 PUSHINT
-      LDIX
-      s1 s4 XCHG
-    }>
+    257 PUSHINT
+    LDIX
     NIL
     s0 s4 XCHG2
     TPUSH
     ROT
     TPUSH
     SWAP
-    TPUSH
-    ROT
     TPUSH
   }>
   __gen_write_MultisigContract PROC:<{
@@ -280,13 +246,12 @@ PROGRAM{
     SWAP
     6 STU
     OVER
-    2 PUSHINT
+    1 PUSHINT
     INDEXVAR
     STSLICER
     SWAP
-    3 PUSHINT
+    2 PUSHINT
     INDEXVAR
-    __tact_not_null CALLDICT
     STGRAMS
     1 PUSHINT
     SWAP
@@ -294,6 +259,31 @@ PROGRAM{
     ENDC
     0 PUSHINT
     SENDRAWMSG
+  }>
+  __gen_MultisigContract_init PROC:<{
+    NIL
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    0 PUSHINT
+    DUP
+    SETINDEXVARQ
+    1 PUSHINT
+    ROT
+    s0 s4 XCHG
+    SETINDEXVARQ
+    2 PUSHINT
+    ROT
+    SETINDEXVARQ
+    3 PUSHINT
+    ROT
+    SETINDEXVARQ
+    __gen_writecell_MultisigContract CALLDICT
   }>
   recv_internal PROC:<{
     NIP
@@ -323,5 +313,8 @@ PROGRAM{
       DROP
     }>
     __gen_store_MultisigContract CALLDICT
+  }>
+  init_MultisigContract PROC:<{
+    __gen_MultisigContract_init CALLDICT
   }>
 }END>c
