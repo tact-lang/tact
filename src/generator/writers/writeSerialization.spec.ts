@@ -20,17 +20,39 @@ struct A {
     var f: Int;
     var g: Int;
 }
+
+struct B {
+    var a: Int;
+    var b: Int;
+    var c: Int?;
+    var d: Bool;
+    var e: Bool?;
+    var f: Int;
+    var g: Int;
+}
+
+struct C {
+    var a: Cell;
+    var b: Cell?;
+    var c: Slice?;
+    var d: Slice?;
+    var e: Bool;
+    var f: Int;
+    var g: Int;
+}
 `;
 
 describe('writeSerialization', () => {
-    it('should write serializer', () => {
-        let ctx = CompilerContext.fromSources([code]);
-        ctx = resolveTypeDescriptors(ctx);
-        ctx = resolveAllocations(ctx);
-        let w = new Writer();
-        let wctx = new WriterContext();
-        writeSerializer(ctx, 'A', getAllocation(ctx, 'A'), w, wctx);
-        writeParser(ctx, 'A', getAllocation(ctx, 'A'), w, wctx);
-        console.warn(w.end());
-    });
+    for (let s of ['A', 'B', 'C']) {
+        it('should write serializer for ' + s, () => {
+            let ctx = CompilerContext.fromSources([code]);
+            ctx = resolveTypeDescriptors(ctx);
+            ctx = resolveAllocations(ctx);
+            let w = new Writer();
+            let wctx = new WriterContext();
+            writeSerializer(ctx, s, getAllocation(ctx, s), w, wctx);
+            writeParser(ctx, s, getAllocation(ctx, s), w, wctx);
+            expect(w.end().toString()).toMatchSnapshot();
+        });
+    }
 });

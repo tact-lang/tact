@@ -2,10 +2,10 @@ forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 
 builder __gen_write_Operation(builder build_0, tuple v) {
     var v_0 = __tact_get(v, 0);
-    build_0 = store_int(build_0, 257, v_0);
     var v_1 = __tact_get(v, 1);
-    build_0 = store_ref(build_0, v_1.end_cell());
     var v_2 = __tact_get(v, 2);
+    build_0 = store_int(build_0, 257, v_0);
+    build_0 = store_ref(build_0, v_1.end_cell());
     if (null?(v_2)) {
         build_0 = store_int(build_0, false, 1);
     } else {
@@ -24,9 +24,11 @@ slice __gen_writeslice_Operation(tuple v) {
 }
 
 (slice, tuple) __gen_read_Operation(slice sc) {
-    int __kind = sc~load_int(257);
-    slice __target = sc~load_ref().begin_parse();
+    int __kind = null();
+    slice __target = null();
     int __amount = null();
+     __kind = sc~load_int(257);
+     __target = sc~load_ref().begin_parse();
     if (sc~load_int(1)) {
          __amount = sc~load_int(257);
     }
@@ -39,16 +41,16 @@ slice __gen_writeslice_Operation(tuple v) {
 
 builder __gen_write_MultisigContract(builder build_0, tuple v) {
     var v_0 = __tact_get(v, 0);
-    build_0 = store_ref(build_0, v_0.end_cell());
     var v_1 = __tact_get(v, 1);
-    build_0 = store_int(build_0, 257, v_1);
     var v_2 = __tact_get(v, 2);
-    build_0 = store_ref(build_0, v_2.end_cell());
     var v_3 = __tact_get(v, 3);
-    build_0 = store_int(build_0, 257, v_3);
     var v_4 = __tact_get(v, 4);
-    build_0 = store_ref(build_0, v_4.end_cell());
     var v_5 = __tact_get(v, 5);
+    build_0 = store_ref(build_0, v_0.end_cell());
+    build_0 = store_int(build_0, 257, v_1);
+    build_0 = store_ref(build_0, v_2.end_cell());
+    build_0 = store_int(build_0, 257, v_3);
+    build_0 = store_ref(build_0, v_4.end_cell());
     build_0 = store_int(build_0, 257, v_5);
     return build_0;
 }
@@ -62,12 +64,18 @@ slice __gen_writeslice_MultisigContract(tuple v) {
 }
 
 (slice, tuple) __gen_read_MultisigContract(slice sc) {
-    slice __user1 = sc~load_ref().begin_parse();
-    int __user1_key = sc~load_int(257);
-    slice __user2 = sc~load_ref().begin_parse();
-    int __user2_key = sc~load_int(257);
-    slice __user3 = sc~load_ref().begin_parse();
-    int __user3_key = sc~load_int(257);
+    slice __user1 = null();
+    int __user1_key = null();
+    slice __user2 = null();
+    int __user2_key = null();
+    slice __user3 = null();
+    int __user3_key = null();
+     __user1 = sc~load_ref().begin_parse();
+     __user1_key = sc~load_int(257);
+     __user2 = sc~load_ref().begin_parse();
+     __user2_key = sc~load_int(257);
+     __user3 = sc~load_ref().begin_parse();
+     __user3_key = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __user1);
     res = tpush(res, __user1_key);
@@ -79,14 +87,10 @@ slice __gen_writeslice_MultisigContract(tuple v) {
 }
 
 builder __gen_write_MultisigContract_execute(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
     build_0 = __gen_write_Operation(build_0, v_0);
-    var v_1 = __tact_get(v, 1);
     build_0 = store_ref(build_0, v_1.end_cell());
-    var v_2 = __tact_get(v, 2);
     build_0 = store_ref(build_0, v_2.end_cell());
     var build_1 = begin_cell();
-    var v_3 = __tact_get(v, 3);
     build_1 = store_ref(build_1, v_3.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
@@ -101,11 +105,11 @@ slice __gen_writeslice_MultisigContract_execute(tuple v) {
 }
 
 (slice, tuple) __gen_read_MultisigContract_execute(slice sc) {
-    tuple __operation = sc~__gen_read_Operation();
-    slice __signature1 = sc~load_ref().begin_parse();
-    slice __signature2 = sc~load_ref().begin_parse();
+     __operation = sc~__gen_read_Operation();
+     __signature1 = sc~load_ref().begin_parse();
+     __signature2 = sc~load_ref().begin_parse();
     sc = (sc~load_ref()).begin_parse();
-    slice __signature3 = sc~load_ref().begin_parse();
+     __signature3 = sc~load_ref().begin_parse();
     tuple res = empty_tuple();
     res = tpush(res, __operation);
     res = tpush(res, __signature1);

@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`writeSerialization should write serializer for A 1`] = `
+"builder __gen_write_A(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    var v_1 = __tact_get(v, 1);
+    var v_2 = __tact_get(v, 2);
+    var v_3 = __tact_get(v, 3);
+    var v_4 = __tact_get(v, 4);
+    var v_5 = __tact_get(v, 5);
+    var v_6 = __tact_get(v, 6);
+    build_0 = store_int(build_0, 257, v_0);
+    build_0 = store_int(build_0, 257, v_1);
+    if (null?(v_2)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, 257, v_2);
+    }
+    build_0 = store_int(build_0, 1, v_3);
+    if (null?(v_4)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, 1, v_4);
+    }
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, 257, v_5);
+    build_1 = store_int(build_1, 257, v_6);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell __gen_writecell_A(tuple v) {
+    return __gen_write_A(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_A(tuple v) {
+    return __gen_writecell_A(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_A(slice sc) {
+    int __a = null();
+    int __b = null();
+    int __c = null();
+    int __d = null();
+    int __e = null();
+    int __f = null();
+    int __g = null();
+     __a = sc~load_int(257);
+     __b = sc~load_int(257);
+    if (sc~load_int(1)) {
+         __c = sc~load_int(257);
+    }
+     __d = sc~load_int(1);
+    if (sc~load_int(1)) {
+         __e = sc~load_int(1);
+    }
+    sc = (sc~load_ref()).begin_parse();
+     __f = sc~load_int(257);
+     __g = sc~load_int(257);
+    tuple res = empty_tuple();
+    res = tpush(res, __a);
+    res = tpush(res, __b);
+    res = tpush(res, __c);
+    res = tpush(res, __d);
+    res = tpush(res, __e);
+    res = tpush(res, __f);
+    res = tpush(res, __g);
+    return (sc, res);
+}
+"
+`;
+
+exports[`writeSerialization should write serializer for B 1`] = `
+"builder __gen_write_B(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    var v_1 = __tact_get(v, 1);
+    var v_2 = __tact_get(v, 2);
+    var v_3 = __tact_get(v, 3);
+    var v_4 = __tact_get(v, 4);
+    var v_5 = __tact_get(v, 5);
+    var v_6 = __tact_get(v, 6);
+    build_0 = store_int(build_0, 257, v_0);
+    build_0 = store_int(build_0, 257, v_1);
+    if (null?(v_2)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, 257, v_2);
+    }
+    build_0 = store_int(build_0, 1, v_3);
+    if (null?(v_4)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, 1, v_4);
+    }
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, 257, v_5);
+    build_1 = store_int(build_1, 257, v_6);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell __gen_writecell_B(tuple v) {
+    return __gen_write_B(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_B(tuple v) {
+    return __gen_writecell_B(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_B(slice sc) {
+    int __a = null();
+    int __b = null();
+    int __c = null();
+    int __d = null();
+    int __e = null();
+    int __f = null();
+    int __g = null();
+     __a = sc~load_int(257);
+     __b = sc~load_int(257);
+    if (sc~load_int(1)) {
+         __c = sc~load_int(257);
+    }
+     __d = sc~load_int(1);
+    if (sc~load_int(1)) {
+         __e = sc~load_int(1);
+    }
+    sc = (sc~load_ref()).begin_parse();
+     __f = sc~load_int(257);
+     __g = sc~load_int(257);
+    tuple res = empty_tuple();
+    res = tpush(res, __a);
+    res = tpush(res, __b);
+    res = tpush(res, __c);
+    res = tpush(res, __d);
+    res = tpush(res, __e);
+    res = tpush(res, __f);
+    res = tpush(res, __g);
+    return (sc, res);
+}
+"
+`;
+
+exports[`writeSerialization should write serializer for C 1`] = `
+"builder __gen_write_C(builder build_0, tuple v) {
+    var v_0 = __tact_get(v, 0);
+    var v_1 = __tact_get(v, 1);
+    var v_2 = __tact_get(v, 2);
+    var v_3 = __tact_get(v, 3);
+    var v_4 = __tact_get(v, 4);
+    var v_5 = __tact_get(v, 5);
+    var v_6 = __tact_get(v, 6);
+    build_0 = store_ref(build_0, v_0);
+    if (null?(v_1)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v_1);
+    }
+    if (null?(v_2)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v_2.end_cell());
+    }
+    var build_1 = begin_cell();
+    if (null?(v_3)) {
+        build_1 = store_int(build_1, false, 1);
+    } else {
+        build_1 = store_int(build_1, true, 1);
+        build_1 = store_ref(build_1, v_3.end_cell());
+    }
+    build_1 = store_int(build_1, 1, v_4);
+    build_1 = store_int(build_1, 257, v_5);
+    build_1 = store_int(build_1, 257, v_6);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell __gen_writecell_C(tuple v) {
+    return __gen_write_C(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_C(tuple v) {
+    return __gen_writecell_C(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_C(slice sc) {
+    cell __a = null();
+    cell __b = null();
+    slice __c = null();
+    slice __d = null();
+    int __e = null();
+    int __f = null();
+    int __g = null();
+     __a = sc~load_ref();
+    if (sc~load_int(1)) {
+         __b = sc~load_ref();
+    }
+    if (sc~load_int(1)) {
+         __c = sc~load_ref().begin_parse();
+    }
+    sc = (sc~load_ref()).begin_parse();
+    if (sc~load_int(1)) {
+         __d = sc~load_ref().begin_parse();
+    }
+     __e = sc~load_int(1);
+     __f = sc~load_int(257);
+     __g = sc~load_int(257);
+    tuple res = empty_tuple();
+    res = tpush(res, __a);
+    res = tpush(res, __b);
+    res = tpush(res, __c);
+    res = tpush(res, __d);
+    res = tpush(res, __e);
+    res = tpush(res, __f);
+    res = tpush(res, __g);
+    return (sc, res);
+}
+"
+`;

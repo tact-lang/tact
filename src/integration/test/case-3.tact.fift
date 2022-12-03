@@ -22,14 +22,14 @@ PROGRAM{
     DUP
     0 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    s0 s3 s3 XCHG3
-    STIX
     SWAP
     1 PUSHINT
     INDEXVAR
     257 PUSHINT
-    -ROT
+    2SWAP
+    STIX
+    257 PUSHINT
+    s0 s2 XCHG
     STIX
   }>
   __gen_writecell_Source PROC:<{
@@ -57,20 +57,20 @@ PROGRAM{
     DUP
     0 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    s0 s3 s3 XCHG3
-    STIX
     OVER
     1 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    -ROT
-    STIX
-    NEWC
     s0 s2 XCHG
     2 PUSHINT
     INDEXVAR
-    s1 s2 XCHG
+    257 PUSHINT
+    s4 s2 XCHG2
+    STIX
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
+    NEWC
+    ROT
     __gen_write_Source CALLDICT
     ENDC
     SWAP

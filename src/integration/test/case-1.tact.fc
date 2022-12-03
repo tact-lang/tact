@@ -2,13 +2,13 @@ forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 
 builder __gen_write_Source(builder build_0, tuple v) {
     var v_0 = __tact_get(v, 0);
-    build_0 = store_int(build_0, 257, v_0);
     var v_1 = __tact_get(v, 1);
-    build_0 = store_int(build_0, 257, v_1);
     var v_2 = __tact_get(v, 2);
+    var v_3 = __tact_get(v, 3);
+    build_0 = store_int(build_0, 257, v_0);
+    build_0 = store_int(build_0, 257, v_1);
     build_0 = store_int(build_0, 257, v_2);
     var build_1 = begin_cell();
-    var v_3 = __tact_get(v, 3);
     build_1 = store_int(build_1, 257, v_3);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
@@ -23,11 +23,15 @@ slice __gen_writeslice_Source(tuple v) {
 }
 
 (slice, tuple) __gen_read_Source(slice sc) {
-    int __a = sc~load_int(257);
-    int __b = sc~load_int(257);
-    int __c = sc~load_int(257);
+    int __a = null();
+    int __b = null();
+    int __c = null();
+    int __d = null();
+     __a = sc~load_int(257);
+     __b = sc~load_int(257);
+     __c = sc~load_int(257);
     sc = (sc~load_ref()).begin_parse();
-    int __d = sc~load_int(257);
+     __d = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __a);
     res = tpush(res, __b);

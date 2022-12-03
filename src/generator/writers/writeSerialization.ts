@@ -1,5 +1,5 @@
 import { CompilerContext } from "../../ast/context";
-import { StorageAllocation, StorageCell } from "../../storage/StorageAllocation";
+import { StorageAllocation, StorageCell, StorageField } from "../../storage/StorageAllocation";
 import { Writer, WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 
@@ -7,54 +7,61 @@ import { resolveFuncType } from "./resolveFuncType";
 // Serializer
 //
 
+function writeSerializerField(ctx: CompilerContext, f: StorageField, w: Writer, index: number, wctx: WriterContext) {
+
+    // Handle optional
+
+    if (f.kind === 'optional') {
+        w.append(`if (null?(v_${f.index})) {`);
+        w.inIndent(() => {
+            w.append(`build_${index} = store_int(build_${index}, false, 1);`);
+        });
+        w.append(`} else {`);
+        w.inIndent(() => {
+            w.append(`build_${index} = store_int(build_${index}, true, 1);`);
+            writeSerializerField(ctx, f.inner, w, index, wctx);
+        });
+        w.append(`}`);
+        return;
+    }
+
+    // Handle primitives
+
+    if (f.kind === 'int') {
+        w.append(`build_${index} = store_int(build_${index}, ${f.size.bits}, v_${f.index});`);
+        return;
+    }
+
+    if (f.kind === 'uint') {
+        w.append(`build_${index} = store_uint(build_${index}, ${f.size.bits}, v_${f.index});`);
+        return;
+    }
+
+    if (f.kind === 'slice') {
+        w.append(`build_${index} = store_ref(build_${index}, v_${f.index}.end_cell());`);
+        return;
+    }
+
+    if (f.kind === 'cell') {
+        w.append(`build_${index} = store_ref(build_${index}, v_${f.index});`);
+        return;
+    }
+
+    // Handle structs
+
+    if (f.kind === 'struct') {
+        w.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v_${f.index});`);
+        return;
+    }
+
+    throw Error('Unsupported field kind: ' + f.kind);
+}
+
 function writeSerializerCell(ctx: CompilerContext, cell: StorageCell, w: Writer, index: number, wctx: WriterContext) {
+
+    // Write fields
     for (let f of cell.fields) {
-
-        // Read variable
-        wctx.useLib('__tact_get');
-        w.append(`var v_${f.index} = __tact_get(v, ${f.index});`);
-
-        // Write serializator
-        if (f.kind === 'int') {
-            w.append(`build_${index} = store_int(build_${index}, ${f.size.bits}, v_${f.index});`);
-        } else if (f.kind === 'int-optional') {
-            w.append(`if (null?(v_${f.index})) {`);
-            w.inIndent(() => {
-                w.append(`build_${index} = store_int(build_${index}, false, 1);`);
-            });
-            w.append(`} else {`);
-            w.inIndent(() => {
-                w.append(`build_${index} = store_int(build_${index}, true, 1);`);
-                w.append(`build_${index} = store_int(build_${index}, ${f.size.bits}, v_${f.index});`);
-            });
-            w.append(`}`);
-        } else if (f.kind === 'struct') {
-            w.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v_${f.index});`);
-        } else if (f.kind === 'struct-optional') {
-            w.append(`if (null?(v_${f.index})) {`);
-            w.inIndent(() => {
-                w.append(`build_${index} = store_int(build_${index}, false, 1);`);
-            });
-            w.append(`} else {`);
-            w.inIndent(() => {
-                w.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v_${f.index});`);
-                w.append(`build_${index} = store_int(build_${index}, true, 1);`);
-            });
-            w.append(`}`);
-        } else if (f.kind === 'slice') {
-            w.append(`build_${index} = store_ref(build_${index}, v_${f.index}.end_cell());`);
-        } else if (f.kind === 'slice-optional') {
-            w.append(`if (null?(v_${f.index})) {`);
-            w.inIndent(() => {
-                w.append(`build_${index} = store_int(build_${index}, false, 1);`);
-            });
-            w.append(`} else {`);
-            w.inIndent(() => {
-                w.append(`build_${index} = store_int(build_${index}, true, 1);`);
-                w.append(`build_${index} = store_ref(build_${index}, v_${f.index}.end_cell());`);
-            });
-            w.append(`}`);
-        }
+        writeSerializerField(ctx, f, w, index, wctx);
     }
 
     // Tail
@@ -68,6 +75,10 @@ function writeSerializerCell(ctx: CompilerContext, cell: StorageCell, w: Writer,
 export function writeSerializer(ctx: CompilerContext, name: string, allocation: StorageAllocation, w: Writer, wctx: WriterContext) {
     w.append('builder __gen_write_' + name + '(builder build_0, tuple v) {');
     w.inIndent(() => {
+        for (let f of allocation.fields) {
+            wctx.useLib('__tact_get');
+            w.append(`var v_${f.index} = __tact_get(v, ${f.index});`);
+        }
         writeSerializerCell(ctx, allocation.root, w, 0, wctx);
         w.append('return build_0;');
     });
@@ -93,37 +104,59 @@ export function writeSerializer(ctx: CompilerContext, name: string, allocation: 
 // Parser
 //
 
-function writeCellParser(ctx: CompilerContext, cell: StorageCell, w: Writer, wctx: WriterContext) {
-    for (let f of cell.fields) {
-        if (f.kind === 'int') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = sc~load_int(' + f.size.bits + ');');
-        } else if (f.kind === 'int-optional') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = null();');
-            w.append('if (sc~load_int(1)) {');
-            w.inIndent(() => {
-                w.append(' __' + f.name + ' = sc~load_int(' + f.size.bits + ');');
-            });
-            w.append('}');
-        } else if (f.kind === 'struct') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = sc~__gen_read_' + f.type.name + '();');
-        } else if (f.kind === 'struct-optional') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = null();');
-            w.append('if (sc~load_int(1)) {')
-            w.inIndent(() => {
-                w.append(' __' + f.name + ' = sc~__gen_read_' + f.type.name + '();');
-            });
-            w.append('}');
-        } else if (f.kind === 'slice') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = sc~load_ref().begin_parse();');
-        } else if (f.kind === 'slice-optional') {
-            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = null();');
-            w.append('if (sc~load_int(1)) {')
-            w.inIndent(() => {
-                w.append(' __' + f.name + ' = sc~load_ref().begin_parse();');
-            });
-            w.append('}');
-        }
+function writeFieldParser(ctx: CompilerContext, f: StorageField, w: Writer, wctx: WriterContext) {
+
+    // Handle optional
+
+    if (f.kind === 'optional') {
+        w.append('if (sc~load_int(1)) {');
+        w.inIndent(() => {
+            writeFieldParser(ctx, f.inner, w, wctx);
+        });
+        w.append('}');
+        return;
     }
+
+    // Handle primitive values
+
+    if (f.kind === 'int') {
+        w.append(' __' + f.name + ' = sc~load_int(' + f.bits + ');');
+        return;
+    }
+
+    if (f.kind === 'uint') {
+        w.append(' __' + f.name + ' = sc~load_uint(' + f.bits + ');');
+        return;
+    }
+
+    if (f.kind === 'slice') {
+        w.append(' __' + f.name + ' = sc~load_ref().begin_parse();');
+        return;
+    }
+
+    if (f.kind === 'cell') {
+        w.append(' __' + f.name + ' = sc~load_ref();');
+        return;
+    }
+
+    // Handle structs
+
+    if (f.kind === 'struct') {
+        w.append(' __' + f.name + ' = sc~__gen_read_' + f.type.name + '();');
+        return;
+    }
+
+    throw Error('Unsupported field kind: ' + f.kind);
+}
+
+function writeCellParser(ctx: CompilerContext, cell: StorageCell, w: Writer, wctx: WriterContext) {
+
+    // Write current fields
+    for (let f of cell.fields) {
+        writeFieldParser(ctx, f, w, wctx);
+    }
+
+    // Handle next cell
     if (cell.next) {
         w.append('sc = (sc~load_ref()).begin_parse();');
         writeCellParser(ctx, cell.next, w, wctx);
@@ -133,6 +166,11 @@ function writeCellParser(ctx: CompilerContext, cell: StorageCell, w: Writer, wct
 export function writeParser(ctx: CompilerContext, name: string, allocation: StorageAllocation, w: Writer, wctx: WriterContext) {
     w.append('(slice, tuple) __gen_read_' + name + '(slice sc) {');
     w.inIndent(() => {
+
+        // Create variables
+        for (let f of allocation.fields) {
+            w.append(resolveFuncType(ctx, f.type) + ' __' + f.name + ' = null();');
+        }
 
         // Write cell parser
         writeCellParser(ctx, allocation.root, w, wctx);

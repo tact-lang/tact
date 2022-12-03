@@ -20,6 +20,11 @@ struct Point {
 struct Point2 {
     var z: Point;
 }
+
+contract Sample {
+    public fun main(a: Int, b: Int) {
+    }
+}
 `;
 
 describe('resolveAllocation', () => {

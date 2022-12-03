@@ -27,7 +27,9 @@ Tact {
 
     // Contract
     Contract = contract id "{" ContractBody* "}"
+    ContractInit = init "(" ListOf<FunctionArg,","> ")" "{" Statement* "}"
     ContractBody = Field
+                 | ContractInit
                  | Function 
 
     // Function
@@ -130,7 +132,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get | null | if | else // Order is important
+    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get | null | if | else | init // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     var = "var" ~idPart
@@ -145,6 +147,7 @@ Tact {
     get = "get" ~idPart
     if = "if" ~idPart
     else = "else" ~idPart
+    init = "init" ~idPart
 
     // Attributes
     nameAttribute = "@name"

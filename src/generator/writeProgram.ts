@@ -141,7 +141,7 @@ function writeGetter(ctx: CompilerContext, f: FunctionDescription, w: Writer, wc
     w.append();
 }
 
-export function writeProgram(ctx: CompilerContext) {
+export function writeProgram(ctx: CompilerContext, mode: 'contract' | 'init' = 'contract') {
     const writer = new Writer();
     const wctx = new WriterContext();
     let contracts = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract');
@@ -207,25 +207,30 @@ export function writeProgram(ctx: CompilerContext) {
 
     // Entry Point
     if (contracts.length === 1) {
-        let c = contracts[0];
-        writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
-        writer.inIndent(() => {
-            writer.append('int op = in_msg~load_int(32);');
-            writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
-            for (let f of c.functions) {
-                if (f.isPublic) {
-                    let allocation = getAllocation(ctx, c.name + '$$' + f.name);
-                    writer.append('if (op == ' + allocation.prefix + ') {');
-                    writer.inIndent(() => {
-                        writer.append('tuple msg = in_msg~__gen_read_' + c.name + '_' + f.name + '();');
-                        writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => '__tact_get(msg, ' + i + ')')].join(',') + ');');
-                    })
-                    writer.append('}');
+        if (mode === 'contract') {
+            let c = contracts[0];
+            writer.append('() recv_internal(cell in_msg_cell, slice in_msg) impure {');
+            writer.inIndent(() => {
+                writer.append('int op = in_msg~load_int(32);');
+                writer.append('tuple self = __gen_load_' + contracts[0].name + '();');
+                for (let f of c.functions) {
+                    if (f.isPublic) {
+                        let allocation = getAllocation(ctx, c.name + '$$' + f.name);
+                        writer.append('if (op == ' + allocation.prefix + ') {');
+                        writer.inIndent(() => {
+                            writer.append('tuple msg = in_msg~__gen_read_' + c.name + '_' + f.name + '();');
+                            writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => '__tact_get(msg, ' + i + ')')].join(',') + ');');
+                        })
+                        writer.append('}');
+                    }
                 }
-            }
-            writer.append('__gen_store_' + contracts[0].name + '(self);');
-        });
-        writer.append('}');
+                writer.append('__gen_store_' + contracts[0].name + '(self);');
+            });
+            writer.append('}');
+        }
+        if (mode === 'init') {
+
+        }
     }
 
     // Write header

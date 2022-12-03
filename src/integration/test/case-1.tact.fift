@@ -15,27 +15,27 @@ PROGRAM{
     DUP
     0 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    s0 s3 s3 XCHG3
-    STIX
     OVER
     1 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    -ROT
-    STIX
-    OVER
+    s2 PUSH
     2 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    -ROT
-    STIX
-    NEWC
-    s0 s2 XCHG
+    s0 s3 XCHG
     3 PUSHINT
     INDEXVAR
     257 PUSHINT
-    s0 s3 s3 XCHG3
+    s0 s5 s3 XCHG3
+    STIX
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
+    NEWC
+    257 PUSHINT
+    s0 s1 s3 XCHG3
     STIX
     ENDC
     SWAP

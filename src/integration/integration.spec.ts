@@ -8,7 +8,7 @@ describe('integration', () => {
             it('should resolve expressions for ' + r, () => {
                 let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
                 let res = compile(code);
-                expect(res).toEqual(fs.readFileSync(__dirname + "/test/" + r + '.fc', 'utf8'));
+                expect(res.output).toEqual(fs.readFileSync(__dirname + "/test/" + r + '.fc', 'utf8'));
             });
         }
     }

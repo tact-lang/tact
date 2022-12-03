@@ -46,60 +46,42 @@ function getSortedTypes(ctx: CompilerContext) {
     return structs;
 }
 
-function resolveFieldSize(ctx: CompilerContext, src: FieldDescription, type: TypeRef = src.type): { bits: number, refs: number } {
+function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRef): StorageField {
 
-    // Optional type
+    // Resolve Optional
     if (type.kind === 'optional') {
-        let r = resolveFieldSize(ctx, src, type.inner);
-        return { bits: r.bits + 1, refs: r.refs };
+        let inner = allocateField(ctx, src, type.inner);
+        return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits + 1, refs: inner.size.refs }, index: src.index };
     }
 
-    // Direct type
+    // Resolve Direct
     let td = getType(ctx, type.name);
+
+    // Primitive types
     if (td.kind === 'primitive') {
         if (td.name === 'Int') {
-            return { bits: 257, refs: 0 };
-        } else if (td.name === 'Bool') {
-            return { bits: 1, refs: 0 };
-        } else if (td.name === 'Cell') {
-            return { bits: 0, refs: 1 }
-        } else if (td.name === 'Slice') {
-            return { bits: 0, refs: 1 }
-        } else {
-            throw Error('Unknown primitive type: ' + td.name);
-        }
-    } else if (td.kind === 'struct') {
-        let allocation = getAllocation(ctx, type.name);
-        return allocation.root.size;
-    } else if (td.kind === 'contract') {
-        throw Error('Contract type not supported for storage');
-    }
-
-    // Unknown type
-    throw Error('Unknown field type: ' + src.type.kind);
-}
-
-function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRef, optional: boolean = false): StorageField {
-    if (type.kind === 'optional') {
-        return allocateField(ctx, src, type.inner, true);
-    }
-
-    let td = getType(ctx, type.name);
-    if (td.kind === 'primitive') {
-        if (td.name === 'Int') {
-            return { index: src.index, size: { bits: 257, refs: 0 }, name: src.name, kind: optional ? 'int-optional' : 'int', type: td };
+            return { index: src.index, size: { bits: 257, refs: 0 }, bits: 257, name: src.name, kind: 'int' };
         } else if (type.name === 'Bool') {
-            return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: optional ? 'int-optional' : 'int', type: td };
+            return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: 'int', bits: 1 };
         } else if (type.name === 'Slice') {
-            return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: optional ? 'slice-optional' : 'slice', type: td };
+            return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'slice' };
+        } else if (type.name === 'Cell') {
+            return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'cell' };
         }
         throw Error('Unknown primitive type: ' + type.name);
-    } else if (td.kind === 'struct') {
-        let allocation = getAllocation(ctx, type.name);
-        return { index: src.index, size: allocation.root.size, name: src.name, kind: optional ? 'struct-optional' : 'struct', type: td };
-    } else if (td.kind === 'contract') {
-        throw Error('Contract type not supported for storage');
     }
+
+    // Struct types
+    if (td.kind === 'struct') {
+        let allocation = getAllocation(ctx, type.name);
+        return { index: src.index, size: allocation.root.size, name: src.name, kind: 'struct', type: td };
+    }
+
+    // Contract types
+    if (td.kind === 'contract') {
+        throw Error('Contract references are not supported for storage');
+    }
+
     throw Error('Unknown field type: ' + src.type.kind);
 }
 
@@ -111,7 +93,7 @@ function allocateFields(ctx: CompilerContext, src: FieldDescription[], bits: num
 
     while (src.length > 0) {
         let f = src.shift()!;
-        let d = resolveFieldSize(ctx, f);
+        let d = allocateField(ctx, f, f.type).size;
         if (d.bits > bits || d.refs > refs) {
             used.refs += 1;
             next = allocateFields(ctx, [f, ...src], 1023, 3);
@@ -135,8 +117,8 @@ export function resolveAllocations(ctx: CompilerContext) {
 
     // Generate allocations
     for (let s of types) {
-        let root = allocateFields(ctx, [...s.fields], 1023, 3);
-        let allocation: StorageAllocation = { prefix: null, root };
+        let root = allocateFields(ctx, [...s.fields], 1023, 3); s
+        let allocation: StorageAllocation = { prefix: null, root, fields: s.fields };
         ctx = store.set(ctx, s.name, allocation);
     }
 
@@ -147,8 +129,8 @@ export function resolveAllocations(ctx: CompilerContext) {
                 if (f.isPublic) {
                     let fields = f.args.map((v, i) => ({ index: i, name: v.name, type: v.type }));
                     let prefix = crc32(Buffer.from(f.name));
-                    let root = allocateFields(ctx, fields, 1023 - 8 * 4, 3);
-                    let allocation: StorageAllocation = { prefix, root };
+                    let root = allocateFields(ctx, [...fields], 1023 - 8 * 4, 3);
+                    let allocation: StorageAllocation = { prefix, root, fields: fields };
                     ctx = store.set(ctx, t.name + '$$' + f.name, allocation);
                 }
             }

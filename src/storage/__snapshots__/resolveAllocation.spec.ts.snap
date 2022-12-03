@@ -4,10 +4,29 @@ exports[`resolveAllocation should write program 1`] = `
 [
   {
     "allocation": {
+      "fields": [
+        {
+          "index": 0,
+          "name": "x",
+          "type": {
+            "kind": "direct",
+            "name": "Int",
+          },
+        },
+        {
+          "index": 1,
+          "name": "y",
+          "type": {
+            "kind": "direct",
+            "name": "Int",
+          },
+        },
+      ],
       "prefix": null,
       "root": {
         "fields": [
           {
+            "bits": 257,
             "index": 0,
             "kind": "int",
             "name": "x",
@@ -15,26 +34,15 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 257,
               "refs": 0,
             },
-            "type": {
-              "fields": [],
-              "functions": [],
-              "kind": "primitive",
-              "name": "Int",
-            },
           },
           {
+            "bits": 257,
             "index": 1,
             "kind": "int",
             "name": "y",
             "size": {
               "bits": 257,
               "refs": 0,
-            },
-            "type": {
-              "fields": [],
-              "functions": [],
-              "kind": "primitive",
-              "name": "Int",
             },
           },
         ],
@@ -71,6 +79,16 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "fields": [
+        {
+          "index": 0,
+          "name": "z",
+          "type": {
+            "kind": "direct",
+            "name": "Point",
+          },
+        },
+      ],
       "prefix": null,
       "root": {
         "fields": [
@@ -132,6 +150,24 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "fields": [
+        {
+          "index": 0,
+          "name": "a",
+          "type": {
+            "kind": "direct",
+            "name": "Point",
+          },
+        },
+        {
+          "index": 1,
+          "name": "b",
+          "type": {
+            "kind": "direct",
+            "name": "Point2",
+          },
+        },
+      ],
       "prefix": null,
       "root": {
         "fields": [
@@ -229,6 +265,91 @@ exports[`resolveAllocation should write program 1`] = `
       "functions": [],
       "kind": "struct",
       "name": "Point3",
+    },
+  },
+  {
+    "allocation": {
+      "fields": [],
+      "prefix": null,
+      "root": {
+        "fields": [],
+        "next": null,
+        "size": {
+          "bits": 0,
+          "refs": 0,
+        },
+      },
+    },
+    "type": {
+      "fields": [],
+      "functions": [
+        {
+          "args": [
+            {
+              "name": "a",
+              "type": {
+                "kind": "direct",
+                "name": "Int",
+              },
+            },
+            {
+              "name": "b",
+              "type": {
+                "kind": "direct",
+                "name": "Int",
+              },
+            },
+          ],
+          "ast": {
+            "args": [
+              {
+                "id": 67,
+                "kind": "def_argument",
+                "name": "a",
+                "ref": ASTRef {},
+                "type": {
+                  "id": 66,
+                  "kind": "type_ref",
+                  "name": "Int",
+                  "optional": false,
+                  "ref": ASTRef {},
+                },
+              },
+              {
+                "id": 69,
+                "kind": "def_argument",
+                "name": "b",
+                "ref": ASTRef {},
+                "type": {
+                  "id": 68,
+                  "kind": "type_ref",
+                  "name": "Int",
+                  "optional": false,
+                  "ref": ASTRef {},
+                },
+              },
+            ],
+            "attribute": [
+              {
+                "type": "public",
+              },
+            ],
+            "id": 70,
+            "kind": "def_function",
+            "name": "main",
+            "ref": ASTRef {},
+            "return": null,
+            "statements": [],
+          },
+          "isGetter": false,
+          "isPublic": true,
+          "name": "main",
+          "returns": null,
+          "self": [Circular],
+        },
+      ],
+      "kind": "contract",
+      "name": "Sample",
     },
   },
 ]
