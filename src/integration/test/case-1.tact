@@ -1,8 +1,8 @@
 struct Source {
-    var a: Int;
-    var b: Int;
-    var c: Int;
-    var d: Int;
+    a: Int;
+    b: Int;
+    c: Int;
+    d: Int;
 }
 
 fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {

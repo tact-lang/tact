@@ -8,17 +8,17 @@ const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8')
 const src = `
 
 struct Point3 {
-    var a: Point;
-    var b: Point2;
+    a: Point;
+    b: Point2;
 }
 
 struct Point {
-    var x: Int;
-    var y: Int;
+    x: Int;
+    y: Int;
 }
 
 struct Point2 {
-    var z: Point;
+    z: Point;
 }
 
 contract Sample {

@@ -12,33 +12,33 @@ primitive Cell;
 primitive Slice;
 
 struct A {
-    var a: Int;
-    var b: Int;
-    var c: Int?;
-    var d: Bool;
-    var e: Bool?;
-    var f: Int;
-    var g: Int;
+    a: Int;
+    b: Int;
+    c: Int?;
+    d: Bool;
+    e: Bool?;
+    f: Int;
+    g: Int;
 }
 
 struct B {
-    var a: Int;
-    var b: Int;
-    var c: Int?;
-    var d: Bool;
-    var e: Bool?;
-    var f: Int;
-    var g: Int;
+    a: Int;
+    b: Int;
+    c: Int?;
+    d: Bool;
+    e: Bool?;
+    f: Int;
+    g: Int;
 }
 
 struct C {
-    var a: Cell;
-    var b: Cell?;
-    var c: Slice?;
-    var d: Slice?;
-    var e: Bool;
-    var f: Int;
-    var g: Int;
+    a: Cell;
+    b: Cell?;
+    c: Slice?;
+    d: Slice?;
+    e: Bool;
+    f: Int;
+    g: Int;
 }
 `;
 

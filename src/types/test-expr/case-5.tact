@@ -3,8 +3,8 @@ primitive Bool;
 primitive Cell;
 
 struct Point {
-    var x: Int;
-    var y: Int;
+    x: Int;
+    y: Int;
 }
 
 fun isZero(p: Point): Bool {

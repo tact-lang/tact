@@ -2,10 +2,10 @@ primitive Int;
 primitive Bool;
 
 struct Struct1 {
-    var a: Int;
-    var b: Bool;
+    a: Int;
+    b: Bool;
 }
 
 struct Struct2 {
-    var a: Struct1;
+    a: Struct1;
 }

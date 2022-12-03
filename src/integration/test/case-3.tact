@@ -1,6 +1,6 @@
 struct Source {
-    var a: Int;
-    var b: Int;
+    a: Int;
+    b: Int;
 }
 
 fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
@@ -9,9 +9,9 @@ fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
 }
 
 contract SampleContract {
-    var a: Int;
-    var b: Int;
-    var c: Source;
+    a: Int;
+    b: Int;
+    c: Source;
 
     public fun addStake() { 
         self.a = 10;

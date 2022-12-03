@@ -19,7 +19,7 @@ Tact {
     // Field declarations
     Type = typeLiteral "?" --optional
          | typeLiteral --required
-    Field = var id ":" Type ";"
+    Field = id ":" Type ";"
 
     // Struct
     Struct = struct id "{" StructBody* "}"
@@ -132,10 +132,9 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | var | fun | let | return | primitive | extend | native | public | get | null | if | else | init // Order is important
+    keyword = struct | contract | fun | let | return | primitive | extend | native | public | get | null | if | else | init // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
-    var = "var" ~idPart
     let = "let" ~idPart
     fun = "fun" ~idPart
     return = "return" ~idPart

@@ -17,8 +17,8 @@ fun f1(a: Int): Int {
 }
 
 struct A {
-    var a: Int;
-    var b: Int;
+    a: Int;
+    b: Int;
 }
 
 fun main() {

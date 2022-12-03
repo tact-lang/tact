@@ -8,8 +8,8 @@ import { writeProgram } from './writeProgram';
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
 const src = `
 struct Point {
-    var x: Int;
-    var y: Int;
+    x: Int;
+    y: Int;
 }
 
 fun improve(p: Point): Int {

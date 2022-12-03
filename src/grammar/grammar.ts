@@ -60,7 +60,7 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
 
 // Struct and class declarations
 semantics.addOperation<ASTNode>('resolve_declaration', {
-    Field(arg0, arg1, arg2, arg3, arg4) {
+    Field(arg1, arg2, arg3, arg4) {
         return createNode({
             kind: 'def_field',
             name: arg1.sourceString,

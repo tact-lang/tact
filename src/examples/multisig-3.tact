@@ -1,15 +1,15 @@
 struct Operation {
-    var seqno: Int;
-    var kind: Int;
-    var target: Slice;
-    var amount: Int?;
+    seqno: Int;
+    kind: Int;
+    target: Slice;
+    amount: Int?;
 }
 
 contract MultisigContract {
-    var seqno: Int;
-    var user1_key: Int;
-    var user2_key: Int;
-    var user3_key: Int;
+    seqno: Int;
+    user1_key: Int;
+    user2_key: Int;
+    user3_key: Int;
 
     public fun execute(operation: Operation, signature1: Slice, signature2: Slice, signature3: Slice) {
         let op_hash: Int = hashCell(abi.pack_cell(operation));

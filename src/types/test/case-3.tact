@@ -2,8 +2,8 @@ primitive Int;
 primitive Bool;
 
 contract HelloWorld {
-    var a: Int;
-    var b: Bool;
+    a: Int;
+    b: Bool;
 
     fun hello() {
         

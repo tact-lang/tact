@@ -303,12 +303,12 @@ exports[`resolveAllocation should write program 1`] = `
           "ast": {
             "args": [
               {
-                "id": 67,
+                "id": 101,
                 "kind": "def_argument",
                 "name": "a",
                 "ref": ASTRef {},
                 "type": {
-                  "id": 66,
+                  "id": 100,
                   "kind": "type_ref",
                   "name": "Int",
                   "optional": false,
@@ -316,12 +316,12 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
               {
-                "id": 69,
+                "id": 103,
                 "kind": "def_argument",
                 "name": "b",
                 "ref": ASTRef {},
                 "type": {
-                  "id": 68,
+                  "id": 102,
                   "kind": "type_ref",
                   "name": "Int",
                   "optional": false,
@@ -334,7 +334,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "type": "public",
               },
             ],
-            "id": 70,
+            "id": 104,
             "kind": "def_function",
             "name": "main",
             "ref": ASTRef {},
