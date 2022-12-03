@@ -50,8 +50,13 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, self: 
     } else if (f.kind === 'statement_condition') {
         writeCondition(ctx, f, w, self, wctx);
         return;
+    } else if (f.kind === 'statement_call') {
+        let exp = writeExpression(ctx, f.expression, wctx);
+        w.append(exp + ';');
+        return;
     }
-    throw Error('Unknown statement kind: ' + f.kind);
+    
+    throw Error('Unknown statement kind');
 }
 
 function writeCondition(ctx: CompilerContext, f: ASTCondition, w: Writer, self: boolean, wctx: WriterContext, elseif: boolean = false) {

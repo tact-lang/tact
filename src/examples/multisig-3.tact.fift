@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_not_null
   DECLPROC __gen_write_Operation
   DECLPROC __gen_writecell_Operation
   DECLPROC __gen_writeslice_Operation
@@ -15,32 +16,43 @@ PROGRAM{
   DECLPROC __gen_store_MultisigContract
   DECLPROC __gen_MultisigContract_execute
   DECLPROC recv_internal
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
   __gen_write_Operation PROC:<{
     DUP
     0 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    s0 s3 s3 XCHG3
-    STIX
     OVER
     1 PUSHINT
     INDEXVAR
+    s2 PUSH
+    2 PUSHINT
+    INDEXVAR
+    s0 s3 XCHG
+    3 PUSHINT
+    INDEXVAR
+    257 PUSHINT
+    s0 s5 s3 XCHG3
+    STIX
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
+    SWAP
     ENDC
     SWAP
     STREF
-    SWAP
-    2 PUSHINT
-    INDEXVAR
-    DUP
+    OVER
     ISNULL
     IF:<{
-      DROP
       FALSE
-      SWAP
+      s2 POP
       1 STI
     }>ELSE<{
       TRUE
-      ROT
+      SWAP
       1 STI
       257 PUSHINT
       s0 s2 XCHG
@@ -58,66 +70,64 @@ PROGRAM{
     CTOS
   }>
   __gen_read_Operation PROC:<{
+    PUSHNULL
+    SWAP
+    257 PUSHINT
+    LDIX
     257 PUSHINT
     LDIX
     LDREF
     SWAP
     CTOS
-    PUSHNULL
-    s0 s2 XCHG
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      1 2 BLKDROP2
+      s4 POP
+      s0 s3 XCHG
       257 PUSHINT
       LDIX
-      s1 s2 XCHG
+      s1 s4 XCHG
     }>
     NIL
     s0 s4 XCHG2
     TPUSH
-    SWAP
+    ROT
     TPUSH
     SWAP
+    TPUSH
+    ROT
     TPUSH
   }>
   __gen_write_MultisigContract PROC:<{
     DUP
     0 PUSHINT
     INDEXVAR
-    ENDC
-    ROT
-    STREF
     OVER
     1 PUSHINT
     INDEXVAR
-    257 PUSHINT
-    -ROT
-    STIX
-    OVER
+    s2 PUSH
     2 PUSHINT
     INDEXVAR
-    ENDC
-    SWAP
-    STREF
-    OVER
+    s0 s3 XCHG
     3 PUSHINT
     INDEXVAR
     257 PUSHINT
-    -ROT
+    s0 s5 s3 XCHG3
     STIX
-    OVER
-    4 PUSHINT
-    INDEXVAR
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
+    257 PUSHINT
+    s0 s2 XCHG
+    STIX
+    NEWC
+    257 PUSHINT
+    s0 s1 s3 XCHG3
+    STIX
     ENDC
     SWAP
     STREF
-    SWAP
-    5 PUSHINT
-    INDEXVAR
-    257 PUSHINT
-    -ROT
-    STIX
   }>
   __gen_writecell_MultisigContract PROC:<{
     NEWC
@@ -130,32 +140,21 @@ PROGRAM{
     CTOS
   }>
   __gen_read_MultisigContract PROC:<{
-    LDREF
-    SWAP
-    CTOS
-    SWAP
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
     257 PUSHINT
     LDIX
     LDREF
-    SWAP
+    DROP
     CTOS
-    SWAP
-    257 PUSHINT
-    LDIX
-    LDREF
-    SWAP
-    CTOS
-    SWAP
     257 PUSHINT
     LDIX
     NIL
-    s0 s7 XCHG2
-    TPUSH
     s0 s5 XCHG2
     TPUSH
     s0 s3 XCHG2
-    TPUSH
-    SWAP
     TPUSH
     SWAP
     TPUSH
@@ -166,24 +165,27 @@ PROGRAM{
     DUP
     0 PUSHINT
     INDEXVAR
-    s1 s2 XCHG
-    __gen_write_Operation CALLDICT
     OVER
     1 PUSHINT
     INDEXVAR
-    ENDC
-    SWAP
-    STREF
-    OVER
+    s2 PUSH
     2 PUSHINT
     INDEXVAR
+    s0 s3 XCHG
+    3 PUSHINT
+    INDEXVAR
+    s4 s2 XCHG2
+    __gen_write_Operation CALLDICT
+    s0 s3 XCHG
+    ENDC
+    s0 s3 XCHG2
+    STREF
+    SWAP
     ENDC
     SWAP
     STREF
     NEWC
     s0 s2 XCHG
-    3 PUSHINT
-    INDEXVAR
     ENDC
     ROT
     STREF
@@ -242,36 +244,56 @@ PROGRAM{
     c4 POP
   }>
   __gen_MultisigContract_execute PROC:<{
-    s0 s3 XCHG
+    s3 PUSH
     __gen_writecell_Operation CALLDICT
     HASHCU
-    s4 PUSH
+    s5 PUSH
     1 PUSHINT
     INDEXVAR
-    s1 s3 s3 PUXC2
+    s1 s4 s4 PUXC2
     CHKSIGNU
-    s4 PUSH
+    s5 PUSH
+    2 PUSHINT
+    INDEXVAR
+    s4 s3 s3 PUXC2
+    CHKSIGNU
+    s5 PUSH
     3 PUSHINT
     INDEXVAR
-    s3 s2 s2 PUXC2
+    s4 s4 s0 XCHG3
     CHKSIGNU
-    s4 PUSH
-    5 PUSHINT
+    s3 PUSH
+    0 PUSHINT
     INDEXVAR
-    4 1 REVERSE
-    CHKSIGNU
-    s1 s2 XCPU
+    s5 PUSH
+    0 PUSHINT
+    INDEXVAR
+    EQUAL
+    10 THROWIFNOT
+    s0 s2 XCHG
     AND
     SWAP
     AND
-    IF:<{
-      DROP
-    }>ELSE<{
-      -1 EQINT
-      IF:<{
-      }>ELSE<{
-      }>
-    }>
+    10 THROWIFNOT
+    NEWC
+    16 PUSHINT
+    SWAP
+    6 STU
+    OVER
+    2 PUSHINT
+    INDEXVAR
+    STSLICER
+    SWAP
+    3 PUSHINT
+    INDEXVAR
+    __tact_not_null CALLDICT
+    STGRAMS
+    1 PUSHINT
+    SWAP
+    107 STU
+    ENDC
+    0 PUSHINT
+    SENDRAWMSG
   }>
   recv_internal PROC:<{
     NIP
