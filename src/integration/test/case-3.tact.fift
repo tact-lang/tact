@@ -20,11 +20,9 @@ PROGRAM{
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     SWAP
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s0 s2 XCHG
     257 PUSHINT
     STIX
@@ -54,14 +52,11 @@ PROGRAM{
   }>
   __gen_write_SampleContract PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     OVER
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s0 s2 XCHG
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     s0 s3 XCHG
     257 PUSHINT
     STIX
@@ -135,8 +130,7 @@ PROGRAM{
     1 PUSHINT
     10 PUSHINT
     SETINDEXVARQ
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s1 s2 XCHG
     ADD
     0 GTINT
@@ -160,8 +154,7 @@ PROGRAM{
   }>
   __gen_SampleContract_stake PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
   }>
   __gen_get_stake PROC:<{
     __gen_load_SampleContract CALLDICT

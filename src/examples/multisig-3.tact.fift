@@ -21,14 +21,11 @@ PROGRAM{
   117447 DECLMETHOD init_MultisigContract
   __gen_write_Operation PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     OVER
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s0 s2 XCHG
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     s0 s3 XCHG
     257 PUSHINT
     STIX
@@ -68,17 +65,13 @@ PROGRAM{
   }>
   __gen_write_MultisigContract PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     OVER
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s2 PUSH
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     s0 s3 XCHG
-    3 PUSHINT
-    INDEXVAR
+    3 INDEX
     s2 s4 XCHG2
     257 PUSHINT
     STIX
@@ -128,17 +121,13 @@ PROGRAM{
   }>
   __gen_write_MultisigContract_execute PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     OVER
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s2 PUSH
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     s0 s3 XCHG
-    3 PUSHINT
-    INDEXVAR
+    3 INDEX
     s4 s2 XCHG2
     __gen_write_Operation CALLDICT
     s0 s3 XCHG
@@ -213,26 +202,21 @@ PROGRAM{
     __gen_writecell_Operation CALLDICT
     HASHCU
     s5 PUSH
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s1 s4 s4 PUXC2
     CHKSIGNU
     s5 PUSH
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     s4 s3 s3 PUXC2
     CHKSIGNU
     s5 PUSH
-    3 PUSHINT
-    INDEXVAR
+    3 INDEX
     s4 s4 s0 XCHG3
     CHKSIGNU
     s3 PUSH
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     s5 PUSH
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     EQUAL
     10 THROWIFNOT
     s0 s2 XCHG
@@ -245,12 +229,10 @@ PROGRAM{
     SWAP
     6 STU
     OVER
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     STSLICER
     SWAP
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     STGRAMS
     1 PUSHINT
     SWAP
@@ -261,8 +243,7 @@ PROGRAM{
   }>
   __gen_MultisigContract_seqno PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
   }>
   __gen_get_seqno PROC:<{
     __gen_load_MultisigContract CALLDICT
@@ -305,17 +286,13 @@ PROGRAM{
       __gen_read_MultisigContract_execute CALLDICT
       NIP
       DUP
-      0 PUSHINT
-      INDEXVAR
+      0 INDEX
       OVER
-      1 PUSHINT
-      INDEXVAR
+      1 INDEX
       s2 PUSH
-      2 PUSHINT
-      INDEXVAR
+      2 INDEX
       s0 s3 XCHG
-      3 PUSHINT
-      INDEXVAR
+      3 INDEX
       s1 s3 s0 XCHG3
       __gen_MultisigContract_execute CALLDICT
     }>ELSE<{

@@ -54,6 +54,33 @@ function writeStatement(ctx: CompilerContext, f: ASTStatement, w: Writer, self: 
         let exp = writeExpression(ctx, f.expression, wctx);
         w.append(exp + ';');
         return;
+    } else if (f.kind === 'statement_while') {
+        w.append(`while (${writeExpression(ctx, f.condition, wctx)}) {`);
+        w.inIndent(() => {
+            for (let s of f.statements) {
+                writeStatement(ctx, s, w, self, wctx);
+            }
+        });
+        w.append(`}`);
+        return;
+    } else if (f.kind === 'statement_until') {
+        w.append(`do {`);
+        w.inIndent(() => {
+            for (let s of f.statements) {
+                writeStatement(ctx, s, w, self, wctx);
+            }
+        });
+        w.append(`} until (${writeExpression(ctx, f.condition, wctx)});`);
+        return;
+    } else if (f.kind === 'statement_repeat') {
+        w.append(`repeat (${writeExpression(ctx, f.condition, wctx)}) {`);
+        w.inIndent(() => {
+            for (let s of f.statements) {
+                writeStatement(ctx, s, w, self, wctx);
+            }
+        });
+        w.append(`}`);
+        return;
     }
 
     throw Error('Unknown statement kind');
@@ -256,7 +283,7 @@ export function writeProgram(ctx: CompilerContext) {
                     writer.append('if (op == ' + allocation.prefix + ') {');
                     writer.inIndent(() => {
                         writer.append('tuple msg = in_msg~__gen_read_' + c.name + '_' + f.name + '();');
-                        writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => '__tact_get(msg, ' + i + ')')].join(',') + ');');
+                        writer.append('self~__gen_' + c.name + '_' + f.name + '(' + [...f.args.map((v, i) => 'at(msg, ' + i + ')')].join(', ') + ');');
                     })
                     writer.append('}');
                 }

@@ -246,17 +246,42 @@ export type ASTCondition = {
     ref: ASTRef,
 }
 
+export type ASTStatementWhile = {
+    kind: 'statement_while'
+    id: number,
+    condition: ASTExpression,
+    statements: ASTStatement[],
+    ref: ASTRef
+}
+
+export type ASTStatementUntil = {
+    kind: 'statement_until'
+    id: number,
+    condition: ASTExpression,
+    statements: ASTStatement[],
+    ref: ASTRef
+}
+
+export type ASTStatementRepeat = {
+    kind: 'statement_repeat'
+    id: number,
+    condition: ASTExpression,
+    statements: ASTStatement[],
+    ref: ASTRef
+}
+
+
 //
 // Unions
 //
 
-export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign | ASTCondition;
+export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
-    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call' || src.kind === 'statement_assign' || src.kind === 'statement_condition';
+    return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_call' || src.kind === 'statement_assign' || src.kind === 'statement_condition' || src.kind === 'statement_while' || src.kind === 'statement_until' || src.kind === 'statement_repeat';
 }
 
 export function isExpression(src: ASTNode): src is ASTExpression {

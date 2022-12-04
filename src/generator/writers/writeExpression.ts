@@ -127,8 +127,7 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
         }
 
         // Write getter
-        wctx.useLib('__tact_get');
-        return '__tact_get(' + writeExpression(ctx, f.src, wctx) + ', ' + field.index + ')';
+        return 'at(' + writeExpression(ctx, f.src, wctx) + ', ' + field.index + ')';
     }
 
     //

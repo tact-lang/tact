@@ -2,13 +2,13 @@
 
 exports[`writeSerialization should write serializer for A 1`] = `
 "builder __gen_write_A(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
-    var v_4 = __tact_get(v, 4);
-    var v_5 = __tact_get(v, 5);
-    var v_6 = __tact_get(v, 6);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
+    var v_4 = at(v, 4);
+    var v_5 = at(v, 5);
+    var v_6 = at(v, 6);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     if (null?(v_2)) {
@@ -74,13 +74,13 @@ slice __gen_writeslice_A(tuple v) {
 
 exports[`writeSerialization should write serializer for B 1`] = `
 "builder __gen_write_B(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
-    var v_4 = __tact_get(v, 4);
-    var v_5 = __tact_get(v, 5);
-    var v_6 = __tact_get(v, 6);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
+    var v_4 = at(v, 4);
+    var v_5 = at(v, 5);
+    var v_6 = at(v, 6);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     if (null?(v_2)) {
@@ -146,13 +146,13 @@ slice __gen_writeslice_B(tuple v) {
 
 exports[`writeSerialization should write serializer for C 1`] = `
 "builder __gen_write_C(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
-    var v_4 = __tact_get(v, 4);
-    var v_5 = __tact_get(v, 5);
-    var v_6 = __tact_get(v, 6);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
+    var v_4 = at(v, 4);
+    var v_5 = at(v, 5);
+    var v_6 = at(v, 6);
     build_0 = store_ref(build_0, v_0);
     if (null?(v_1)) {
         build_0 = store_int(build_0, false, 1);

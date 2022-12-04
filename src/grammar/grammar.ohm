@@ -48,6 +48,9 @@ Tact {
               | StatementStaticCall
               | StatementAssign
               | StatementCondition
+              | StatementWhile
+              | StatementRepeat
+              | StatementUntil
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";"
@@ -57,6 +60,9 @@ Tact {
     StatementCondition = if Expression "{" Statement* "}" ~else --simple
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
                        | if Expression "{" Statement* "}" else StatementCondition --withElseIf
+    StatementWhile = while "(" Expression ")" "{" Statement* "}"
+    StatementRepeat = repeat "(" Expression ")" "{" Statement* "}"
+    StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
 
     // L-value
     LValue = id "=" --id
@@ -132,7 +138,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | fun | let | return | primitive | extend | native | public | get | null | if | else | init // Order is important
+    keyword = struct | contract | fun | let | return | primitive | extend | native | public | get | null | if | else | init | while | repeat | do | until // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -147,6 +153,10 @@ Tact {
     if = "if" ~idPart
     else = "else" ~idPart
     init = "init" ~idPart
+    while = "while" ~idPart
+    repeat = "repeat" ~idPart
+    do = "do" ~idPart
+    until = "until" ~idPart
 
     // Attributes
     nameAttribute = "@name"

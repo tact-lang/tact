@@ -309,6 +309,9 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                 ctx = lValueStore.set(ctx, s.id, { ast: s, description: pathTypes });
             } else if (s.kind === 'statement_condition') {
                 ctx = resolveCondition(ctx, vctx, s);
+            } else if (s.kind === 'statement_while' || s.kind === 'statement_repeat' || s.kind === 'statement_until') {
+                ctx = resolveExpression(ctx, vctx, s.condition);
+                ctx = resolveStatements(ctx, vctx, s.statements);
             } else {
                 throw Error('Unknown statement');
             }

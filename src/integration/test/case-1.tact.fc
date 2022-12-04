@@ -1,10 +1,10 @@
-forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
+
 
 builder __gen_write_Source(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     build_0 = store_int(build_0, v_2, 257);
@@ -71,7 +71,7 @@ tuple __gen_load_Empty() {
 
 int isZero(int x, int y, int z, tuple m) {
     int b = (x + y);
-    b = (((b + 1) + __tact_get(m, 0)) + __tact_get(m, 1));
+    b = (((b + 1) + at(m, 0)) + at(m, 1));
     return ((b > 0) & z);
 }
 

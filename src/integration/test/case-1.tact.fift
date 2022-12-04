@@ -13,17 +13,13 @@ PROGRAM{
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
     DUP
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     OVER
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     s2 PUSH
-    2 PUSHINT
-    INDEXVAR
+    2 INDEX
     s0 s3 XCHG
-    3 PUSHINT
-    INDEXVAR
+    3 INDEX
     s2 s4 XCHG2
     257 PUSHINT
     STIX
@@ -105,12 +101,10 @@ PROGRAM{
     ADD
     INC
     OVER
-    0 PUSHINT
-    INDEXVAR
+    0 INDEX
     ADD
     SWAP
-    1 PUSHINT
-    INDEXVAR
+    1 INDEX
     ADD
     0 GTINT
     SWAP

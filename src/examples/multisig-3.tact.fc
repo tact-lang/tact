@@ -1,10 +1,9 @@
-forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
 builder __gen_write_Operation(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_ref(build_0, v_1.end_cell());
     build_0 = store_int(build_0, v_2, 257);
@@ -34,10 +33,10 @@ slice __gen_writeslice_Operation(tuple v) {
 }
 
 builder __gen_write_MultisigContract(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     build_0 = store_int(build_0, v_2, 257);
@@ -74,10 +73,10 @@ slice __gen_writeslice_MultisigContract(tuple v) {
 }
 
 builder __gen_write_MultisigContract_execute(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
-    var v_3 = __tact_get(v, 3);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
     build_0 = __gen_write_Operation(build_0, v_0);
     build_0 = store_ref(build_0, v_1.end_cell());
     build_0 = store_ref(build_0, v_2.end_cell());
@@ -127,22 +126,22 @@ tuple __gen_load_MultisigContract() {
 
 (tuple, ()) __gen_MultisigContract_execute(tuple self, tuple operation, slice signature1, slice signature2, slice signature3) {
     int op_hash = cell_hash(__gen_writecell_Operation(operation));
-    int ok1 = check_signature(op_hash, signature1, __tact_get(self, 1));
-    int ok2 = check_signature(op_hash, signature2, __tact_get(self, 2));
-    int ok3 = check_signature(op_hash, signature3, __tact_get(self, 3));
-    throw_unless(10, (__tact_get(operation, 0) == __tact_get(self, 0)));
+    int ok1 = check_signature(op_hash, signature1, at(self, 1));
+    int ok2 = check_signature(op_hash, signature2, at(self, 2));
+    int ok3 = check_signature(op_hash, signature3, at(self, 3));
+    throw_unless(10, (at(operation, 0) == at(self, 0)));
     throw_unless(10, ((ok1 & ok2) & ok3));
     builder b = begin_cell();
     b = store_uint(b, 16, 6);
-    b = store_slice(b, __tact_get(operation, 1));
-    b = store_coins(b, __tact_get(operation, 2));
+    b = store_slice(b, at(operation, 1));
+    b = store_coins(b, at(operation, 2));
     b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
     send_raw_message(end_cell(b), 0);
     return (self, ());
 }
 
 (tuple, int) __gen_MultisigContract_seqno(tuple self) {
-    return (self, __tact_get(self, 0));
+    return (self, at(self, 0));
 }
 
 _ __gen_get_seqno() method_id(85143) {
@@ -165,7 +164,7 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) {
     tuple self = __gen_load_MultisigContract();
     if (op == 4284682462) {
         tuple msg = in_msg~__gen_read_MultisigContract_execute();
-        self~__gen_MultisigContract_execute(__tact_get(msg, 0),__tact_get(msg, 1),__tact_get(msg, 2),__tact_get(msg, 3));
+        self~__gen_MultisigContract_execute(at(msg, 0), at(msg, 1), at(msg, 2), at(msg, 3));
     }
     __gen_store_MultisigContract(self);
 }

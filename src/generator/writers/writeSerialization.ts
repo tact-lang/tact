@@ -76,8 +76,7 @@ export function writeSerializer(ctx: CompilerContext, name: string, allocation: 
     w.append('builder __gen_write_' + name + '(builder build_0, tuple v) {');
     w.inIndent(() => {
         for (let f of allocation.fields) {
-            wctx.useLib('__tact_get');
-            w.append(`var v_${f.index} = __tact_get(v, ${f.index});`);
+            w.append(`var v_${f.index} = at(v, ${f.index});`);
         }
         writeSerializerCell(ctx, allocation.root, w, 0, wctx);
         w.append('return build_0;');

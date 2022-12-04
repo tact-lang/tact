@@ -1,9 +1,8 @@
-forall X -> X __tact_get(tuple x, int i) asm "INDEXVAR";
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
 builder __gen_write_Source(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     return build_0;
@@ -29,9 +28,9 @@ slice __gen_writeslice_Source(tuple v) {
 }
 
 builder __gen_write_SampleContract(builder build_0, tuple v) {
-    var v_0 = __tact_get(v, 0);
-    var v_1 = __tact_get(v, 1);
-    var v_2 = __tact_get(v, 2);
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     var build_1 = begin_cell();
@@ -94,7 +93,7 @@ tuple __gen_load_SampleContract() {
 
 int isZero(int x, int y, int z, tuple m) {
     m = __tact_set(m, 1, 10);
-    return (((x + __tact_get(m, 1)) > 0) & z);
+    return (((x + at(m, 1)) > 0) & z);
 }
 
 (tuple, ()) __gen_SampleContract_addStake(tuple self) {
@@ -105,7 +104,7 @@ int isZero(int x, int y, int z, tuple m) {
 }
 
 (tuple, int) __gen_SampleContract_stake(tuple self) {
-    return (self, __tact_get(self, 0));
+    return (self, at(self, 0));
 }
 
 _ __gen_get_stake() method_id(80984) {

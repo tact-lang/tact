@@ -198,6 +198,30 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
+    StatementWhile(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'statement_while',
+            condition: arg2.resolve_expression(),
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    StatementRepeat(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'statement_repeat',
+            condition: arg2.resolve_expression(),
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    StatementUntil(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+        return createNode({
+            kind: 'statement_until',
+            condition: arg6.resolve_expression(),
+            statements: arg2.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
 });
 
 // LValue

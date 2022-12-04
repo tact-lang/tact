@@ -30,6 +30,6 @@ describe('writeProgram', () => {
         ctx = resolveExpressionTypes(ctx);
         ctx = resolveAllocations(ctx);
         let output = writeProgram(ctx);
-        console.warn(output);
+        expect(output).toMatchSnapshot();
     });
 });
