@@ -1,5 +1,6 @@
 import rawGrammar from './grammar.ohm-bundle';
 import { ASTFunctionAttribute, ASTNode, ASTProgram, createNode, createRef } from '../ast/ast';
+import { checkVariableName } from './checkVariableName';
 
 
 // Semantics
@@ -18,6 +19,7 @@ semantics.addOperation<ASTNode>('resolve_program', {
 // Resolve program items
 semantics.addOperation<ASTNode>('resolve_program_item', {
     Primitive(arg0, arg1, arg2) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'primitive',
             name: arg1.sourceString,
@@ -25,6 +27,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         });
     },
     Struct(arg0, arg1, arg2, arg3, arg4) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_struct',
             name: arg1.sourceString,
@@ -33,6 +36,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         })
     },
     Contract(arg0, arg1, arg2, arg3, arg4) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_contract',
             name: arg1.sourceString,
@@ -69,6 +73,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     FunctionArg(arg0, arg1, arg2) {
+        checkVariableName(arg0.sourceString, createRef(arg0));
         return createNode({
             kind: 'def_argument',
             name: arg0.sourceString,
@@ -77,6 +82,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
             attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
@@ -88,6 +94,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
             attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
@@ -99,6 +106,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     NativeFunction_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) {
+        checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
             name: arg5.sourceString,
@@ -109,6 +117,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     NativeFunction_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+        checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
             name: arg5.sourceString,
@@ -131,6 +140,8 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
 // Statements
 semantics.addOperation<ASTNode>('resolve_statement', {
     StatementLet(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
+        
         return createNode({
             kind: 'statement_let',
             name: arg1.sourceString,

@@ -6,7 +6,7 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/integration/prepare.ts"
+    "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/prepare.ts"
   },
   "dependencies": {
     "@types/bn.js": "^5.1.1",

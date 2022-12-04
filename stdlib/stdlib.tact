@@ -8,22 +8,22 @@ primitive Cell;
 native beginCell(): Builder;
 
 @name(store_int)
-native storeInt(self: Builder, value: Int, bits: Int): Builder;
+native storeInt(s: Builder, value: Int, bits: Int): Builder;
 
 @name(store_uint)
-native storeUint(self: Builder, value: Int, bits: Int): Builder;
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
 
 @name(store_coins)
-native storeCoins(self: Builder, value: Int): Builder;
+native storeCoins(s: Builder, value: Int): Builder;
 
 @name(store_ref)
-native storeRef(self: Builder, cell: Cell): Builder;
+native storeRef(s: Builder, cell: Cell): Builder;
 
 @name(store_slice)
-native storeSlice(self: Builder, cell: Slice): Builder;
+native storeSlice(s: Builder, cell: Slice): Builder;
 
 @name(end_cell)
-native endCell(self: Builder): Cell;
+native endCell(s: Builder): Cell;
 
 @name(check_signature)
 native checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;

@@ -1,13 +1,13 @@
 import fs from 'fs';
-import { compile } from '../main';
+import { compile } from './main';
 import { compileContract } from 'ton-compiler';
-import { createABI } from '../generator/createABI';
-import { writeTypescript } from '../generator/writeTypescript';
+import { createABI } from './generator/createABI';
+import { writeTypescript } from './generator/writeTypescript';
 
 // Read cases
 (async () => {
     try {
-        for (let p of [__dirname + "/test/", __dirname + "/../examples/"]) {
+        for (let p of [__dirname + "/test/", __dirname + "/examples/"]) {
             let recs = fs.readdirSync(p);
             for (let r of recs) {
                 if (!r.endsWith('.tact')) {

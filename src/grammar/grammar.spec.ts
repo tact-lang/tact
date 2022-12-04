@@ -1,6 +1,6 @@
 import { parse } from "./grammar";
-import fs from 'fs';
 import { ASTRef } from "../ast/ast";
+import { loadCases } from "../utils/loadCases";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof ASTRef,
@@ -8,11 +8,15 @@ expect.addSnapshotSerializer({
 });
 
 describe('grammar', () => {
-    let recs = fs.readdirSync(__dirname + "/test/");
-    for (let r of recs) {
-        it('should parse ' + r, () => {
-            let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
-            expect(parse(code)).toMatchSnapshot();
+    for (let r of loadCases(__dirname + "/test/")) {
+        it('should parse ' + r.name, () => {
+            expect(parse(r.code)).toMatchSnapshot();
+        });
+    }
+
+    for (let r of loadCases(__dirname + "/test-failed/")) {
+        it('should fail ' + r.name, () => {
+            expect(() => parse(r.code)).toThrowErrorMatchingSnapshot();
         });
     }
 });

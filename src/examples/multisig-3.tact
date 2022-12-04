@@ -18,6 +18,8 @@ contract MultisigContract {
     }
 
     public fun execute(operation: Operation, signature1: Slice, signature2: Slice, signature3: Slice) {
+
+        // Check all signatures
         let op_hash: Int = hashCell(abi.pack_cell(operation));
         let ok1: Bool = checkSignature(op_hash, signature1, self.user1_key);
         let ok2: Bool = checkSignature(op_hash, signature2, self.user2_key);
@@ -25,6 +27,7 @@ contract MultisigContract {
         require(10, operation.seqno == self.seqno);
         require(10, ok1 && ok2 && ok3);
 
+        // Send messages
         let b: Builder = beginCell();
         b = storeUint(b, 0x10, 6);
         b = storeSlice(b, operation.target);
