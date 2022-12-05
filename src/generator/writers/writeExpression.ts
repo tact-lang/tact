@@ -139,6 +139,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         let n = f.name;
         if (sf.ast.kind === 'def_native_function') {
             n = sf.ast.nativeName;
+            if (n.startsWith('__tact')) {
+                ctx.used(n);
+            }
         } else {
             ctx.used(n);
         }

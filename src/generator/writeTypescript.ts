@@ -10,6 +10,8 @@ function printFieldType(ref: TypeRef): string {
             return 'Cell';
         } else if (ref.name === 'Slice') {
             return 'Slice';
+        } else if (ref.name === 'Address') {
+            return 'Address';
         } else {
             return ref.name;
         }
@@ -61,9 +63,9 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
 
 export function writeTypescript(abi: ContractABI) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem } from 'ton';`);
+    w.append(`import { Cell, Slice, StackItem, Address } from 'ton';`);
     w.append(`import { BN } from 'bn.js';`);
-    w.append(`import { deploy } from '../abi/deploy';`)
+    w.append(`import { deploy } from '../abi/deploy';`);
     w.append();
 
     // Structs

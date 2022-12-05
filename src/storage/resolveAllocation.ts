@@ -86,6 +86,8 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
             return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'slice' };
         } else if (type.name === 'Cell') {
             return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'cell' };
+        } else if (type.name === 'Address') {
+            return { index: src.index, size: { bits: 2 + 1 + 8 + 256, refs: 0 }, name: src.name, kind: 'address' };
         }
         throw Error('Unknown primitive type: ' + type.name);
     }

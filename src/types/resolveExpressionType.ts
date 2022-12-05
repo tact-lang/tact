@@ -137,6 +137,9 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     if (r.name !== r.name) {
                         throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                     }
+                    if (r.name !== 'Int' && r.name !== 'Bool' && r.name !== 'Address') {
+                        throwError(`Invalid type "${r.name}" for binary operator "${exp.op}"`, exp.ref);
+                    }
                 }
 
                 resolved = { kind: 'direct', name: 'Bool' };

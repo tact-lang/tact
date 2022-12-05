@@ -1,12 +1,37 @@
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
+(slice, [int, int]) __tact_load_address(slice cs) {
+    slice raw = cs~load_msg_addr();
+    var (r1, r2) = parse_std_addr(raw);
+    return (cs, [r1, r2]);
+}
+
+builder __tact_store_address(builder b, [int, int] address) {
+    b = b.store_uint(2,2);
+    b = b.store_uint(0, 1);
+    b = b.store_int(pair_first(address), 8);
+    b = b.store_uint(pair_second(address), 256);
+    return b;
+}
+
+[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+    var b = begin_cell();
+    b = b.store_uint(0, 2);
+    b = b.store_uint(3, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_ref(code);
+    b = b.store_ref(data);
+    var hash = cell_hash(b.end_cell());
+    return [chain, hash];
+}
+
 builder __gen_write_Operation(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
     build_0 = store_uint(build_0, v_0, 32);
-    build_0 = store_ref(build_0, v_1.end_cell());
-    build_0 = store_coins(build_0, v_2);
+    build_0 = store_coins(build_0, v_1);
+    build_0 = __tact_store_address(build_0, v_2);
     return build_0;
 }
 
@@ -16,15 +41,15 @@ cell __gen_writecell_Operation(tuple v) {
 
 (slice, tuple) __gen_read_Operation(slice sc) {
     int __seqno = null();
-    slice __target = null();
     int __amount = null();
+    [int, int] __target = null();
     __seqno = sc~load_uint(32);
-    __target = sc~load_ref().begin_parse();
     __amount = sc~load_coins();
+    __target = sc~__tact_load_address();
     tuple res = empty_tuple();
     res = tpush(res, __seqno);
-    res = tpush(res, __target);
     res = tpush(res, __amount);
+    res = tpush(res, __target);
     return (sc, res);
 }
 
@@ -36,7 +61,6 @@ cell __gen_writecell_Operation(tuple v) {
     __operation = sc~__gen_read_Operation();
     __signature1 = sc~load_ref().begin_parse();
     __signature2 = sc~load_ref().begin_parse();
-    sc = (sc~load_ref()).begin_parse();
     __signature3 = sc~load_ref().begin_parse();
     tuple res = empty_tuple();
     res = tpush(res, __operation);
@@ -103,11 +127,21 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) {
 (tuple, ()) __gen_MultisigContract_execute(tuple self, tuple op) {
     builder b = begin_cell();
     b = store_uint(b, 16, 6);
-    b = store_slice(b, at(op, 1));
-    b = store_coins(b, at(op, 2));
+    b = store_slice(b, at(op, 2));
+    b = store_coins(b, at(op, 1));
     b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
     send_raw_message(end_cell(b), 0);
     return (self, ());
+}
+
+(tuple, [int, int]) __gen_MultisigContract_testAddress(tuple self) {
+    return (self, __tact_compute_contract_address(0, end_cell(begin_cell()), end_cell(begin_cell())));
+}
+
+_ __gen_get_testAddress() method_id(80602) {
+    tuple self = __gen_load_MultisigContract();
+    var res = self~__gen_MultisigContract_testAddress();
+    return res;
 }
 
 (tuple, int) __gen_MultisigContract_seqno(tuple self) {

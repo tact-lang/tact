@@ -51,6 +51,12 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
         return;
     }
 
+    if (f.kind === 'address') {
+        ctx.used(`__tact_store_address`);
+        ctx.append(`build_${index} = __tact_store_address(build_${index}, v_${f.index});`);
+        return;
+    }
+
     // Handle structs
 
     if (f.kind === 'struct') {
@@ -154,6 +160,12 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
 
     if (f.kind === 'cell') {
         ctx.append(`__${f.name} = sc~load_ref();`);
+        return;
+    }
+
+    if (f.kind === 'address') {
+        ctx.used(`__tact_load_address`);
+        ctx.append(`__${f.name} = sc~__tact_load_address();`);
         return;
     }
 

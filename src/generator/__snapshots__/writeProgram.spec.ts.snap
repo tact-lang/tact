@@ -5,6 +5,20 @@ exports[`writeProgram should write program 1`] = `
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
+(slice, [int, int]) __tact_load_address(slice cs) {
+    slice raw = cs~load_msg_addr();
+    var (r1, r2) = parse_std_addr(raw);
+    return (cs, [r1, r2]);
+}
+
+builder __tact_store_address(builder b, [int, int] address) {
+    b = b.store_uint(2,2);
+    b = b.store_uint(0, 1);
+    b = b.store_uint(pair_first(address), 8);
+    b = b.store_uint(pair_second(address), 256);
+    return b;
+}
+
 builder __gen_write_Point(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);

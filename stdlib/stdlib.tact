@@ -3,6 +3,7 @@ primitive Bool;
 primitive Builder;
 primitive Slice;
 primitive Cell;
+primitive Address;
 
 @name(begin_cell)
 native beginCell(): Builder;
@@ -34,7 +35,7 @@ native hashCell(cell: Cell): Int;
 @name(send_raw_message)
 native nativeSendMessage(cell: Cell, mode: Int);
 
-@name(send_raw_message)
+@name(raw_reserve)
 native nativeReserve(amount: Int, mode: Int);
 
 @name(throw)
@@ -49,7 +50,5 @@ native require(code: Int, condition: Bool);
 @name(throw_unless)
 native nativeThrowUnless(code: Int, condition: Bool);
 
-struct StateInit {
-    code: Cell;
-    data: Cell;
-}
+@name(__tact_compute_contract_address)
+native computeAddress(chain: Int, code: Cell, data: Cell): Address;

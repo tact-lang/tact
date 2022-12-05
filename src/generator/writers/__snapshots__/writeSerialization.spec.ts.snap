@@ -1,7 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeSerialization should write serializer for A 1`] = `
-"builder __gen_write_A(builder build_0, tuple v) {
+"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+
+forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+
+(slice, [int, int]) __tact_load_address(slice cs) {
+    slice raw = cs~load_msg_addr();
+    var (r1, r2) = parse_std_addr(raw);
+    return (cs, [r1, r2]);
+}
+
+builder __tact_store_address(builder b, [int, int] address) {
+    b = b.store_uint(2,2);
+    b = b.store_uint(0, 1);
+    b = b.store_uint(pair_first(address), 8);
+    b = b.store_uint(pair_second(address), 256);
+    return b;
+}
+
+builder __gen_write_A(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -72,7 +90,25 @@ slice __gen_writeslice_A(tuple v) {
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
-"builder __gen_write_B(builder build_0, tuple v) {
+"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+
+forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+
+(slice, [int, int]) __tact_load_address(slice cs) {
+    slice raw = cs~load_msg_addr();
+    var (r1, r2) = parse_std_addr(raw);
+    return (cs, [r1, r2]);
+}
+
+builder __tact_store_address(builder b, [int, int] address) {
+    b = b.store_uint(2,2);
+    b = b.store_uint(0, 1);
+    b = b.store_uint(pair_first(address), 8);
+    b = b.store_uint(pair_second(address), 256);
+    return b;
+}
+
+builder __gen_write_B(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -143,7 +179,25 @@ slice __gen_writeslice_B(tuple v) {
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
-"builder __gen_write_C(builder build_0, tuple v) {
+"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+
+forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+
+(slice, [int, int]) __tact_load_address(slice cs) {
+    slice raw = cs~load_msg_addr();
+    var (r1, r2) = parse_std_addr(raw);
+    return (cs, [r1, r2]);
+}
+
+builder __tact_store_address(builder b, [int, int] address) {
+    b = b.store_uint(2,2);
+    b = b.store_uint(0, 1);
+    b = b.store_uint(pair_first(address), 8);
+    b = b.store_uint(pair_second(address), 256);
+    return b;
+}
+
+builder __gen_write_C(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -151,6 +205,7 @@ exports[`writeSerialization should write serializer for C 1`] = `
     var v_4 = at(v, 4);
     var v_5 = at(v, 5);
     var v_6 = at(v, 6);
+    var v_7 = at(v, 7);
     build_0 = store_ref(build_0, v_0);
     if (null?(v_1)) {
         build_0 = store_int(build_0, false, 1);
@@ -174,6 +229,7 @@ exports[`writeSerialization should write serializer for C 1`] = `
     build_1 = store_int(build_1, v_4, 1);
     build_1 = store_int(build_1, v_5, 257);
     build_1 = store_int(build_1, v_6, 257);
+    build_1 = __tact_store_address(build_1, v_7);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -194,6 +250,7 @@ slice __gen_writeslice_C(tuple v) {
     int __e = null();
     int __f = null();
     int __g = null();
+    [int, int] __h = null();
     __a = sc~load_ref();
     if (sc~load_int(1)) {
         __b = sc~load_ref();
@@ -208,6 +265,7 @@ slice __gen_writeslice_C(tuple v) {
     __e = sc~load_int(1);
     __f = sc~load_int(257);
     __g = sc~load_int(257);
+    __h = sc~__tact_load_address();
     tuple res = empty_tuple();
     res = tpush(res, __a);
     res = tpush(res, __b);
@@ -216,6 +274,7 @@ slice __gen_writeslice_C(tuple v) {
     res = tpush(res, __e);
     res = tpush(res, __f);
     res = tpush(res, __g);
+    res = tpush(res, __h);
     return (sc, res);
 }"
 `;

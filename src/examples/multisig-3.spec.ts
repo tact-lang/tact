@@ -1,9 +1,10 @@
 import { MultisigContract_init } from "./multisig-3.tact.api";
 import { createExecutorFromCode } from 'ton-nodejs';
+import { Address, Cell, contractAddress } from "ton";
 
 describe('muiltisig-3', () => {
     it('should deploy', async () => {
-        
+
         let key1 = 1n;
         let key2 = 2n;
         let key3 = 3n;
@@ -12,5 +13,13 @@ describe('muiltisig-3', () => {
 
         let executor = await createExecutorFromCode(res);
         expect((await executor.get('seqno')).stack.readBigNumber().toString(10)).toBe('0');
+
+        let tp = (await executor.get('testAddress')).stack.readTuple();
+        let n = tp.readNumber();
+        let n2 = tp.readBigNumber();
+        let a = new Address(n, Buffer.from(n2.toString(16).padStart(64, '0'), 'hex'));
+        console.warn(a.toFriendly());
+        let addr = contractAddress({ workchain: 0, initialCode: new Cell(), initialData: new Cell() });
+        console.warn(addr.toFriendly());
     });
 });

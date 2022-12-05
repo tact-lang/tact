@@ -1,7 +1,7 @@
 struct Operation {
     seqno: Int as uint32;
-    target: Slice;
     amount: Int as coins;
+    target: Address;
 }
 
 message Execute {
@@ -45,6 +45,10 @@ contract MultisigContract {
         b = storeCoins(b, op.amount);
         b = storeUint(b, 1, 1 + 4 + 4 + 64 + 32 + 1 + 1);
         nativeSendMessage(endCell(b), 0);
+    }
+
+    get fun testAddress(): Address {
+        return computeAddress(0, endCell(beginCell()), endCell(beginCell()));
     }
 
     get fun seqno(): Int {

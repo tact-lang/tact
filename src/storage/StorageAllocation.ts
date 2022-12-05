@@ -19,6 +19,7 @@ export type StorageField = {
 } & (
         | { kind: 'int' | 'uint', bits: number }
         | { kind: 'coins' }
+        | { kind: 'address' }
         | { kind: 'struct', type: TypeDescription }
         | { kind: 'slice' | 'cell' }
         | { kind: 'optional', inner: StorageField }

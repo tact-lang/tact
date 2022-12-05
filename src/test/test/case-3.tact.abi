@@ -2,26 +2,6 @@
   "name": "SampleContract",
   "structs": [
     {
-      "name": "StateInit",
-      "header": 0,
-      "fields": [
-        {
-          "name": "code",
-          "type": {
-            "kind": "direct",
-            "name": "Cell"
-          }
-        },
-        {
-          "name": "data",
-          "type": {
-            "kind": "direct",
-            "name": "Cell"
-          }
-        }
-      ]
-    },
-    {
       "name": "Source",
       "header": 0,
       "fields": [

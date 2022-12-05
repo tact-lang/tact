@@ -3,6 +3,7 @@ import { getAllocation, resolveAllocations } from "../../storage/resolveAllocati
 import { getType, resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
 import { Writer, WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
+import { writeStdlib } from "./writeStdlib";
 
 const code = `
 primitive Int;
@@ -10,6 +11,7 @@ primitive Bool;
 primitive Builder;
 primitive Cell;
 primitive Slice;
+primitive Address;
 
 struct A {
     a: Int;
@@ -39,6 +41,7 @@ struct C {
     e: Bool;
     f: Int;
     g: Int;
+    h: Address;
 }
 `;
 
@@ -49,6 +52,7 @@ describe('writeSerialization', () => {
             ctx = resolveTypeDescriptors(ctx);
             ctx = resolveAllocations(ctx);
             let wctx = new WriterContext(ctx);
+            writeStdlib(wctx);
             writeSerializer(s, getAllocation(ctx, s), wctx);
             writeParser(s, getAllocation(ctx, s), wctx);
             expect(wctx.render(true)).toMatchSnapshot();

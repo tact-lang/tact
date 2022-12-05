@@ -28,3 +28,8 @@ export type ContractABI = {
     init: ContractInit | null;
     receivers: string[];
 }
+
+export type Address = {
+    wc: number;
+    hash: number;
+}

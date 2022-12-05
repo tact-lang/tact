@@ -3,18 +3,32 @@
 exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 1`] = `
 {
   "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Bool",
+    "receivers": [],
   },
   "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Int",
+    "receivers": [],
   },
 }
 `;
@@ -24,20 +38,74 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 2`] =
 exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] = `
 {
   "Bool": {
+    "ast": {
+      "id": 5,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Bool",
+    "receivers": [],
   },
   "Int": {
+    "ast": {
+      "id": 4,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Int",
+    "receivers": [],
   },
   "Struct1": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 7,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int;,
+          "type": {
+            "id": 6,
+            "kind": "type_ref",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 9,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Bool;,
+          "type": {
+            "id": 8,
+            "kind": "type_ref",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "def_struct",
+      "message": false,
+      "name": "Struct1",
+      "ref": struct Struct1 {
+    a: Int;
+    b: Bool;
+},
+    },
     "fields": [
       {
         "as": null,
@@ -62,8 +130,34 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
     "init": null,
     "kind": "struct",
     "name": "Struct1",
+    "receivers": [],
   },
   "Struct2": {
+    "ast": {
+      "fields": [
+        {
+          "as": null,
+          "id": 12,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Struct1;,
+          "type": {
+            "id": 11,
+            "kind": "type_ref",
+            "name": "Struct1",
+            "optional": false,
+            "ref": Struct1,
+          },
+        },
+      ],
+      "id": 13,
+      "kind": "def_struct",
+      "message": false,
+      "name": "Struct2",
+      "ref": struct Struct2 {
+    a: Struct1;
+},
+    },
     "fields": [
       {
         "as": null,
@@ -79,6 +173,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
     "init": null,
     "kind": "struct",
     "name": "Struct2",
+    "receivers": [],
   },
 }
 `;
@@ -88,18 +183,32 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 2`] =
 exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 1`] = `
 {
   "Bool": {
+    "ast": {
+      "id": 16,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Bool",
+    "receivers": [],
   },
   "Int": {
+    "ast": {
+      "id": 15,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Int",
+    "receivers": [],
   },
 }
 `;
@@ -261,13 +370,91 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
 exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] = `
 {
   "Bool": {
+    "ast": {
+      "id": 33,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Bool",
+    "receivers": [],
   },
   "HelloWorld": {
+    "ast": {
+      "declarations": [
+        {
+          "as": null,
+          "id": 35,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int;,
+          "type": {
+            "id": 34,
+            "kind": "type_ref",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 37,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Bool;,
+          "type": {
+            "id": 36,
+            "kind": "type_ref",
+            "name": "Bool",
+            "optional": false,
+            "ref": Bool,
+          },
+        },
+        {
+          "args": [],
+          "attribute": [],
+          "id": 38,
+          "kind": "def_function",
+          "name": "hello",
+          "ref": fun hello() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+        {
+          "args": [],
+          "attribute": [],
+          "id": 39,
+          "kind": "def_function",
+          "name": "hello2",
+          "ref": fun hello2() {
+        
+    },
+          "return": null,
+          "statements": [],
+        },
+      ],
+      "id": 40,
+      "kind": "def_contract",
+      "name": "HelloWorld",
+      "ref": contract HelloWorld {
+    a: Int;
+    b: Bool;
+
+    fun hello() {
+        
+    }
+
+    fun hello2() {
+        
+    }
+},
+    },
     "fields": [
       {
         "as": null,
@@ -333,13 +520,21 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
     "init": null,
     "kind": "contract",
     "name": "HelloWorld",
+    "receivers": [],
   },
   "Int": {
+    "ast": {
+      "id": 32,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
     "fields": [],
     "functions": [],
     "init": null,
     "kind": "primitive",
     "name": "Int",
+    "receivers": [],
   },
 }
 `;
