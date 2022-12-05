@@ -1,6 +1,7 @@
-import { Wallet_init } from "./wallet.tact.api";
-import { mnemonicNew, mnemonicToWalletKey } from 'ton-crypto';
-import { createExecutorFromCode } from "ton-nodejs";
+import { packTransfer, packTransferMessage, Transfer, Wallet_init } from "./wallet.tact.api";
+import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
+import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
+import { Address, beginCell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
 
 describe('wallet', () => {
     it('should deploy', async () => {
@@ -16,5 +17,38 @@ describe('wallet', () => {
         expect((await executor.get('publicKey')).stack.readBigNumber().toString('hex')).toBe(pk.toString(16));
         expect((await executor.get('walletId')).stack.readNumber()).toBe(0);
         expect((await executor.get('seqno')).stack.readNumber()).toBe(0);
+
+        // Try send
+
+        let transfer: Transfer = {
+            $$type: 'Transfer',
+            mode: 1n,
+            amount: BigInt(toNano(10).toString(10)),
+            to: executor.address,
+            body: null
+        };
+        let signed = sign(packTransfer(transfer).hash(), key.secretKey);
+
+        try {
+            let res = await executor.internal(new InternalMessage({
+                to: executor.address,
+                from: executor.address,
+                bounce: false,
+                value: toNano(10),
+                body: new CommonMessageInfo({
+                    body: new CellMessage(packTransferMessage({
+                        $$type: 'TransferMessage',
+                        transfer,
+                        signature: beginCell().storeBuffer(signed).endCell().beginParse()
+                    }))
+                })
+            }));
+            console.warn(res);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                console.warn(e.debugLogs);
+            }
+            throw e;
+        }
     });
 });

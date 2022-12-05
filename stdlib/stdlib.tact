@@ -66,9 +66,11 @@ struct SendParameters {
 
 fun send(params: SendParameters) {
     let b: Builder = beginCell();
-    b = storeInt(b, 0, 1); // Header
+    b = storeInt(b, 0, 1); // internal_message
     b = storeInt(b, true, 1); // ihd_disabled
-    b = storeInt(b, 0 ,2); // From
+    b = storeInt(b, params.bounce, 1); // bounce
+    b = storeInt(b, false, 1); // bounced
+    b = storeInt(b, 0, 2); // From
     b = storeAddress(b, params.to); // To
     b = storeCoins(b, params.value); // Value
     b = storeInt(b, false, 1); // currency_collection
@@ -79,14 +81,16 @@ fun send(params: SendParameters) {
 
     // Stateinit
     b = storeInt(b, false, 1); // No state init
-    
+
     // Body
-    if (params.body != null) {
-        b = storeInt(b, true, 1);
-        b = storeRef(b, params.body);
-    } else {
+    // let body: Cell? = params.body;
+    // abi.dump(body);
+    // if (body != null) {
+        // b = storeInt(b, true, 1);
+        // b = storeRef(b, body!!);
+    // } else {
         b = storeInt(b, false, 1); // No body
-    }
+    // }
 
     // Send
     let c: Cell = endCell(b);

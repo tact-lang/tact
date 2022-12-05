@@ -168,11 +168,8 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 throwError(`Missing argument for field "${v.name}" in struct "${src.name}"`, f.ref);
             }
         }, ctx);
-        let res = 'tpush(empty_tuple(), ' + expressions[0] + ')';
-        for (let i = 1; i < expressions.length; i++) {
-            res = 'tpush(' + res + ', ' + expressions[i] + ')';
-        }
-        return res;
+        ctx.used('__tact_to_tuple');
+        return `__tact_to_tuple([${expressions.join(', ')}])`;
     }
 
     //

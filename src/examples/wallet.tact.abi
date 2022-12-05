@@ -43,7 +43,70 @@
             }
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 4,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 783,
+            "refs": 1
+          }
+        }
+      }
     },
     {
       "name": "Transfer",
@@ -80,7 +143,60 @@
             }
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 8,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 8
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 3,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 400,
+            "refs": 1
+          }
+        }
+      }
     },
     {
       "name": "TransferMessage",
@@ -100,10 +216,39 @@
             "name": "Transfer"
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": 1843760589,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 400,
+                "refs": 1
+              },
+              "kind": "struct",
+              "type": "Transfer"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 400,
+            "refs": 2
+          }
+        }
+      }
     }
   ],
-  "code": "te6ccgECKgEAAi0AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgHOIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCTECghBt5Y3NupXwBjHwEZEw4vALgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gAEkIG8QIW8RIm8SA28TUCTLBwHwAgH6AiFulHAyygCVfwHKAMzigAgEgEhMCASAUFQALMgB8APJgAEMbQHTB/ABAfoA0gABlDQD1BTebwBQBG+MWG+MAW+MWG+MgAB81AHQAfAFbwBQA2+MWG+MgACEIG8QIW8RAm8SA8sfy//LP4AIBIBgZAgEgHB0CASAaGwAPXIAfAHye1UgACzIAfAHyYAAlNMf0//TP28AUARvjFhvjAFvjIAIBIB4fAgEgICEAkTIcAHKAH8BygBwAcoBIW8R8AIhbxL6AnABygBw+gJw+gJwAcs/cAHLH3ABygAhbxRtvZl/AcoAIW8UAcyUcAHKAOLJAW8T+wCAAKxvAHBvjG1vjG1vjFhxb4cBcm+H8AiAABwgbxGAABwgbxKAABwgbxCAAaQgbxHwBPkAIW8QI28R+RDyim8Af2+MIW8RbxJvjCFvEW8Sb4whbxFvEG+MAW8RbxNvjPAMgAgEgJicAF74CV2omh4BJj4B5jAAJu6E/ANgCAUgoKQAXsyX7UTQ8Akx8BAxgABewfjtRNDwCTHwDjGA=",
+  "code": "te6ccgECKgEAAhoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgHOIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCTECghBt5Y3NupXwBjHwEZEw4vALgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gAEkIG8QIW8RIm8SA28TUCTLBwHwAgH6AiFulHAyygCVfwHKAMzigAgEgEhMCASAUFQALMgB8APJgAEMbQHTB/ABAfoA0gABlDQD1BTebwBQBG+MWG+MAW+MWG+MgAB81AHQAfAFbwBQA2+MWG+MgACEIG8QIW8RAm8SA8sfy//LP4AIBIBgZAgEgHB0CASAaGwAPXIAfAHye1UgACzIAfAHyYAAlNMf0//TP28AUARvjFhvjAFvjIAIBIB4fAgEgICEAgzIcAHKAH8BygAhbxABygBwAcoAcAHKASFvEfACIW8S+gJwAcoAcPoCcPoCcAHLP3AByx9wAcoAcAHKAMkBbxP7AIAAfHBtbW8DWHFvhwFyb4fwCIAAHCBvEYAAHCBvEoAAHCBvEIABdCBvEfAE+QAhbxAjbxH5EPKqfyFvEW8RIm8RbxIjbxFvEARvEW8TEDRBMG8F8AyACASAmJwAXvgJXaiaHgEmPgHmMAAm7oT8A2AIBSCgpABezJftRNDwCTHwEDGAAF7B+O1E0PAJMfAOMYA==",
   "init": {
     "name": "init_Wallet",
     "args": [

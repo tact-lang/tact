@@ -180,6 +180,13 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
+    OVER
+    0 INDEX
+    SWAP
+    1 STI
+    FALSE
+    SWAP
+    1 STI
     0 PUSHINT
     SWAP
     2 STI
@@ -205,38 +212,20 @@ PROGRAM{
     FALSE
     SWAP
     1 STI
-    OVER
-    4 INDEX
-    PUSHNULL
-    NEQ
-    IF:<{
-      TRUE
-      SWAP
-      1 STI
-      OVER
-      4 INDEX
-      SWAP
-      STREF
-    }>ELSE<{
-      FALSE
-      SWAP
-      1 STI
-    }>
+    FALSE
+    SWAP
+    1 STI
     ENDC
     SWAP
     3 INDEX
     SENDRAWMSG
   }>
   __gen_MultisigContract_init PROC:<{
-    NIL
     0 PUSHINT
-    TPUSH
     PUSHNULL
-    TPUSH
     PUSHNULL
-    TPUSH
     PUSHNULL
-    TPUSH
+    4 TUPLE
     s0 s3 XCHG2
     1 PUSHINT
     SETINDEXVARQ
@@ -249,19 +238,15 @@ PROGRAM{
     __gen_writecell_MultisigContract CALLDICT
   }>
   __gen_MultisigContract_execute PROC:<{
-    NIL
     TRUE
-    TPUSH
     OVER
     2 INDEX
-    TPUSH
-    SWAP
+    s0 s2 XCHG
     1 INDEX
-    TPUSH
+    s1 s2 XCHG
     0 PUSHINT
-    TPUSH
     PUSHNULL
-    TPUSH
+    5 TUPLE
     send CALLDICT
   }>
   __gen_MultisigContract_testAddress PROC:<{

@@ -170,7 +170,7 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
         let args = init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
         ctx.append(`cell __gen_${t.name}_init(${args.join(', ')}) impure {`);
         ctx.inIndent(() => {
-            let selfInit = 'empty_tuple()';
+            let initValues: string[] = [];
             for (let i = 0; i < t.fields.length; i++) {
                 let init = 'null()';
                 if (typeof t.fields[i].default === 'bigint') {
@@ -178,9 +178,10 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
                 } else if (typeof t.fields[i].default === 'boolean') {
                     init = t.fields[i].default!.toString();
                 }
-                selfInit = `tpush(${selfInit}, ${init})`;
+                initValues.push(init);
             }
-            ctx.append(`tuple self = ${selfInit};`);
+            ctx.used('__tact_to_tuple');
+            ctx.append(`tuple self = __tact_to_tuple([${initValues.join(', ')}]);`);
 
             // Generate statements
             for (let s of init.ast.statements) {

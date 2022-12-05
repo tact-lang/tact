@@ -19,7 +19,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_store_address', () => {
         ctx.append(`builder __tact_store_address(builder b, [int, int] address) {`);
         ctx.inIndent(() => {
-            ctx.append(`b = b.store_uint(2,2);`) // Is std address
+            ctx.append(`b = b.store_uint(2, 2);`) // Is std address
             ctx.append(`b = b.store_uint(0, 1);`) // Non-unicast
             ctx.append(`b = b.store_int(pair_first(address), 8);`) // Workchain (0 or -1)
             ctx.append(`b = b.store_uint(pair_second(address), 256);`) // Address hash
@@ -40,5 +40,8 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.append(`return [chain, hash];`);
         });
         ctx.append('}');
+    });
+    ctx.fun('__tact_to_tuple', () => {
+        ctx.append(`forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";`);
     });
 }

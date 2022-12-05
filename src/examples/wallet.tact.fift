@@ -165,6 +165,13 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
+    OVER
+    0 INDEX
+    SWAP
+    1 STI
+    FALSE
+    SWAP
+    1 STI
     0 PUSHINT
     SWAP
     2 STI
@@ -190,36 +197,19 @@ PROGRAM{
     FALSE
     SWAP
     1 STI
-    OVER
-    4 INDEX
-    PUSHNULL
-    NEQ
-    IF:<{
-      TRUE
-      SWAP
-      1 STI
-      OVER
-      4 INDEX
-      SWAP
-      STREF
-    }>ELSE<{
-      FALSE
-      SWAP
-      1 STI
-    }>
+    FALSE
+    SWAP
+    1 STI
     ENDC
     SWAP
     3 INDEX
     SENDRAWMSG
   }>
   __gen_Wallet_init PROC:<{
-    NIL
     0 PUSHINT
-    TPUSH
     PUSHNULL
-    TPUSH
     PUSHNULL
-    TPUSH
+    TRIPLE
     ROT
     1 PUSHINT
     SETINDEXVARQ
@@ -265,26 +255,23 @@ PROGRAM{
     s3 PUSH
     1 INDEX
     CHKSIGNU
-    10 THROWIFNOT
-    NIL
+    42 THROWIFNOT
     TRUE
-    TPUSH
     OVER
     1 INDEX
-    2 INDEX
-    TPUSH
-    OVER
+    1 INDEX
+    s2 PUSH
     1 INDEX
     2 INDEX
-    TPUSH
-    OVER
+    s3 PUSH
     1 INDEX
     0 INDEX
-    TPUSH
-    SWAP
+    s0 s4 XCHG
     1 INDEX
     3 INDEX
-    TPUSH
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+    5 TUPLE
     send CALLDICT
   }>
   recv_internal PROC:<{

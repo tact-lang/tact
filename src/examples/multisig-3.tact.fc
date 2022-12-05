@@ -7,7 +7,7 @@ forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 }
 
 builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2,2);
+    b = b.store_uint(2, 2);
     b = b.store_uint(0, 1);
     b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
@@ -24,6 +24,8 @@ builder __tact_store_address(builder b, [int, int] address) {
     var hash = cell_hash(b.end_cell());
     return [chain, hash];
 }
+
+forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 builder __gen_write_Operation(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
@@ -119,6 +121,8 @@ tuple __gen_load_MultisigContract() inline {
     builder b = begin_cell();
     b = store_int(b, 0, 1);
     b = store_int(b, true, 1);
+    b = store_int(b, at(params, 0), 1);
+    b = store_int(b, false, 1);
     b = store_int(b, 0, 2);
     b = __tact_store_address(b, at(params, 1));
     b = store_coins(b, at(params, 2));
@@ -128,18 +132,13 @@ tuple __gen_load_MultisigContract() inline {
     b = store_uint(b, 0, 64);
     b = store_uint(b, 0, 32);
     b = store_int(b, false, 1);
-    if ((at(params, 4) != null())) {
-        b = store_int(b, true, 1);
-        b = store_ref(b, at(params, 4));
-    } else {
-        b = store_int(b, false, 1);
-    }
+    b = store_int(b, false, 1);
     cell c = end_cell(b);
     send_raw_message(c, at(params, 3));
 }
 
 cell __gen_MultisigContract_init(int key1, int key2, int key3) impure {
-    tuple self = tpush(tpush(tpush(tpush(empty_tuple(), 0), null()), null()), null());
+    tuple self = __tact_to_tuple([0, null(), null(), null()]);
     self = __tact_set(self, key1, 1);
     self = __tact_set(self, key2, 2);
     self = __tact_set(self, key3, 3);
@@ -147,7 +146,7 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) impure {
 }
 
 (tuple, ()) __gen_MultisigContract_execute(tuple self, tuple op) impure {
-    send(tpush(tpush(tpush(tpush(tpush(empty_tuple(), true), at(op, 2)), at(op, 1)), 0), null()));
+    send(__tact_to_tuple([true, at(op, 2), at(op, 1), 0, null()]));
     return (self, ());
 }
 

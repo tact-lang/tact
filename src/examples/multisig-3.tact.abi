@@ -43,7 +43,70 @@
             }
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 4,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 783,
+            "refs": 1
+          }
+        }
+      }
     },
     {
       "name": "Operation",
@@ -70,7 +133,44 @@
             "name": "Address"
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 32,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 32
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 423,
+            "refs": 0
+          }
+        }
+      }
     },
     {
       "name": "Execute",
@@ -104,7 +204,52 @@
             "name": "Slice"
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": 819865922,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 423,
+                "refs": 0
+              },
+              "kind": "struct",
+              "type": "Operation"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 423,
+            "refs": 3
+          }
+        }
+      }
     },
     {
       "name": "Executed",
@@ -117,10 +262,31 @@
             "name": "Int"
           }
         }
-      ]
+      ],
+      "allocation": {
+        "prefix": 4174937,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 32,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 32
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 32,
+            "refs": 0
+          }
+        }
+      }
     }
   ],
-  "code": "te6ccgECNgEAArEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAsLQIBIAYHAgFIIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCjECghAw3ilCupXwBzHwFZEw4vAMgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gACsyHABywFzAcsBcAHLABLMzMn5AG8CgAgEgEhMCASAUFQAlCBvECFvEQJvEgPLHwH6AgHwAoAALMgB8ATJgACU0x/6APABbwBQBG+MWG+MWG+MgAD08AYB1AHQAdQB0AHUAdBvAFAFb4xQA2+MAW+MWG+MgAgEgGBkCASAcHQIBIBobADFNMf0//T/9P/bwBQBW+MUANvjAFvjAFvjIAC0IG8QIW8RIm8SA28TUCTLH8v/y//L/4AALMgB8AjJgAgEgHh8CASAgIQAPMgB8AjJ7VSAAkTIcAHKAH8BygBwAcoBIW8R8AIhbxL6AnABygBw+gJw+gJwAcs/cAHLH3ABygAhbxRtvZl/AcoAIW8UAcyUcAHKAOLJAW8T+wCAAOxvAHBvjG1vjG1vjG1vjFADcW+HAXJvhwFzb4fwCYAAvG8Af2+MIW8Sb4wBbxFvjHBvjG1vjPANgAgEgJCUCAUgqKwIBICYnAgEgKCkADxwyMnIyfADgAAcIG8RgAAcIG8SgAAcIG8TgAAcIG8QgAHUIG8Q8AX5ACFvESNvESJZ+RAibxIkbxIjWfkQI28TJW8TECT5ECNvEG8QJW8QuvKKArABsPKKbxDwD4AIBIC4vAgEgMDEAF7utrtRNDwCjHwEDGAAXuMl+1E0PAKMfAUMYAgEgMjMACbisfwDoAgEgNDUAF7R8vaiaHgFGPgImMAAXsOn7UTQ8Aox8BMxgABew4btRNDwCjHwEjGA=",
+  "code": "te6ccgECNgEAApkAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAsLQIBIAYHAgFIIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCjECghAw3ilCupXwBzHwFZEw4vAMgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gACsyHABywFzAcsBcAHLABLMzMn5AG8CgAgEgEhMCASAUFQAlCBvECFvEQJvEgPLHwH6AgHwAoAALMgB8ATJgACU0x/6APABbwBQBG+MWG+MWG+MgAD08AYB1AHQAdQB0AHUAdBvAFAFb4xQA2+MAW+MWG+MgAgEgGBkCASAcHQIBIBobADFNMf0//T/9P/bwBQBW+MUANvjAFvjAFvjIAC0IG8QIW8RIm8SA28TUCTLH8v/y//L/4AALMgB8AjJgAgEgHh8CASAgIQAPMgB8AjJ7VSAAgzIcAHKAH8BygAhbxABygBwAcoAcAHKASFvEfACIW8S+gJwAcoAcPoCcPoCcAHLP3AByx9wAcoAcAHKAMkBbxP7AIAArHBtbW1vBFADcW+HAXJvhwFzb4fwCYAAdH8hbxICbxEScG1vBfANgAgEgJCUCAUgqKwIBICYnAgEgKCkADxwyMnIyfADgAAcIG8RgAAcIG8SgAAcIG8TgAAcIG8QgAHUIG8Q8AX5ACFvESNvESJZ+RAibxIkbxIjWfkQI28TJW8TECT5ECNvEG8QJW8QuvKKArABsPKKbxDwD4AIBIC4vAgEgMDEAF7utrtRNDwCjHwEDGAAXuMl+1E0PAKMfAUMYAgEgMjMACbisfwDoAgEgNDUAF7R8vaiaHgFGPgImMAAXsOn7UTQ8Aox8BMxgABew4btRNDwCjHwEjGA=",
   "init": {
     "name": "init_MultisigContract",
     "args": [
