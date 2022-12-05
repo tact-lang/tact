@@ -4,6 +4,7 @@ import { getExpType } from "../../types/resolveExpressionType";
 import { getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { resolveFuncType } from "./resolveFuncType";
 
 export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
@@ -180,8 +181,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         }
 
         // Render function call
-        ctx.used(`__gen_${src.name}_${writeExpression(f.src, ctx)}`);
-        return `__gen_${src.name}_${writeExpression(f.src, ctx)}(${f.args.map((a) => writeExpression(a, ctx)).join(', ')});`;
+        ctx.used(`__gen_${src.name}_${f.name}`);
+        let s = writeExpression(f.src, ctx);
+        return `${s}~__gen_${src.name}_${f.name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
     }
 
     //

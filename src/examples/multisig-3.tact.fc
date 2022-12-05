@@ -4,9 +4,9 @@ builder __gen_write_Operation(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
-    build_0 = store_int(build_0, v_0, 257);
+    build_0 = store_uint(build_0, v_0, 32);
     build_0 = store_ref(build_0, v_1.end_cell());
-    build_0 = store_int(build_0, v_2, 257);
+    build_0 = store_coins(build_0, v_2);
     return build_0;
 }
 
@@ -18,13 +18,31 @@ cell __gen_writecell_Operation(tuple v) {
     int __seqno = null();
     slice __target = null();
     int __amount = null();
-    __seqno = sc~load_int(257);
+    __seqno = sc~load_uint(32);
     __target = sc~load_ref().begin_parse();
-    __amount = sc~load_int(257);
+    __amount = sc~load_coins();
     tuple res = empty_tuple();
     res = tpush(res, __seqno);
     res = tpush(res, __target);
     res = tpush(res, __amount);
+    return (sc, res);
+}
+
+(slice, tuple) __gen_read_Execute(slice sc) {
+    tuple __operation = null();
+    slice __signature1 = null();
+    slice __signature2 = null();
+    slice __signature3 = null();
+    __operation = sc~__gen_read_Operation();
+    __signature1 = sc~load_ref().begin_parse();
+    __signature2 = sc~load_ref().begin_parse();
+    sc = (sc~load_ref()).begin_parse();
+    __signature3 = sc~load_ref().begin_parse();
+    tuple res = empty_tuple();
+    res = tpush(res, __operation);
+    res = tpush(res, __signature1);
+    res = tpush(res, __signature2);
+    res = tpush(res, __signature3);
     return (sc, res);
 }
 
@@ -61,24 +79,6 @@ cell __gen_writecell_MultisigContract(tuple v) {
     return (sc, res);
 }
 
-(slice, tuple) __gen_read_MultisigContract_execute(slice sc) {
-    tuple __operation = null();
-    slice __signature1 = null();
-    slice __signature2 = null();
-    slice __signature3 = null();
-    __operation = sc~__gen_read_Operation();
-    __signature1 = sc~load_ref().begin_parse();
-    __signature2 = sc~load_ref().begin_parse();
-    sc = (sc~load_ref()).begin_parse();
-    __signature3 = sc~load_ref().begin_parse();
-    tuple res = empty_tuple();
-    res = tpush(res, __operation);
-    res = tpush(res, __signature1);
-    res = tpush(res, __signature2);
-    res = tpush(res, __signature3);
-    return (sc, res);
-}
-
 tuple __gen_load_MultisigContract() inline {
     slice sc = get_data().begin_parse();
     tuple res = sc~__gen_read_MultisigContract();
@@ -91,17 +91,20 @@ tuple __gen_load_MultisigContract() inline {
     set_data(b.end_cell());
 }
 
-(tuple, ()) __gen_MultisigContract_execute(tuple self, tuple operation, slice signature1, slice signature2, slice signature3) {
-    int op_hash = cell_hash(__gen_writecell_Operation(operation));
-    int ok1 = check_signature(op_hash, signature1, at(self, 1));
-    int ok2 = check_signature(op_hash, signature2, at(self, 2));
-    int ok3 = check_signature(op_hash, signature3, at(self, 3));
-    throw_unless(10, (at(operation, 0) == at(self, 0)));
-    throw_unless(10, ((ok1 & ok2) & ok3));
+cell __gen_MultisigContract_init(int key1, int key2, int key3) {
+    tuple self = tpush(tpush(tpush(tpush(empty_tuple(), null()), null()), null()), null());
+    self = __tact_set(self, 0, 0);
+    self = __tact_set(self, 1, key1);
+    self = __tact_set(self, 2, key2);
+    self = __tact_set(self, 3, key3);
+    return __gen_writecell_MultisigContract(self);
+}
+
+(tuple, ()) __gen_MultisigContract_execute(tuple self, tuple op) {
     builder b = begin_cell();
     b = store_uint(b, 16, 6);
-    b = store_slice(b, at(operation, 1));
-    b = store_coins(b, at(operation, 2));
+    b = store_slice(b, at(op, 1));
+    b = store_coins(b, at(op, 2));
     b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
     send_raw_message(end_cell(b), 0);
     return (self, ());
@@ -117,21 +120,23 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-cell __gen_MultisigContract_init(int key1, int key2, int key3) {
-    tuple self = tpush(tpush(tpush(tpush(empty_tuple(), null()), null()), null()), null());
-    self = __tact_set(self, 0, 0);
-    self = __tact_set(self, 1, key1);
-    self = __tact_set(self, 2, key2);
-    self = __tact_set(self, 3, key3);
-    return __gen_writecell_MultisigContract(self);
+(tuple, ()) __gen_MultisigContract_receive_Execute(tuple self, tuple msg) {
+    int op_hash = cell_hash(__gen_writecell_Operation(at(msg, 0)));
+    int ok1 = check_signature(op_hash, at(msg, 1), at(self, 1));
+    int ok2 = check_signature(op_hash, at(msg, 2), at(self, 2));
+    int ok3 = check_signature(op_hash, at(msg, 3), at(self, 3));
+    throw_unless(10, (at(at(msg, 0), 0) == at(self, 0)));
+    throw_unless(10, ((ok1 & ok2) & ok3));
+    self~__gen_MultisigContract_execute(at(msg, 0));
+    return (self, ());
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_int(32);
     tuple self = __gen_load_MultisigContract();
-    if (op == 4284682462) {
-        tuple msg = in_msg~__gen_read_MultisigContract_execute();
-        self~__gen_MultisigContract_execute(at(msg, 0), at(msg, 1), at(msg, 2), at(msg, 3));
+    if (op == 819865922) {
+        tuple msg = in_msg~__gen_read_Execute();
+        self~__gen_MultisigContract_receive_Execute(msg);
     }
     __gen_store_MultisigContract(self);
 }

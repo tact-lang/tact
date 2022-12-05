@@ -39,6 +39,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Function_withType?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: TerminalNode, arg7: NonterminalNode, arg8: TerminalNode, arg9: IterationNode, arg10: TerminalNode) => T;
   Function?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionArg?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
+  ReceiveFunction?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   Statement?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   StatementBlock?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode, arg2: TerminalNode) => T;
   StatementLet?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: TerminalNode) => T;
@@ -120,6 +121,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   until?: (this: NonterminalNode, arg0: TerminalNode) => T;
   message?: (this: NonterminalNode, arg0: TerminalNode) => T;
   as?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  receive?: (this: NonterminalNode, arg0: TerminalNode) => T;
   nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   space?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;

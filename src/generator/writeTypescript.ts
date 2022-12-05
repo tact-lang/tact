@@ -10,12 +10,14 @@ function printFieldType(ref: TypeRef): string {
             return 'Cell';
         } else if (ref.name === 'Slice') {
             return 'Slice';
+        } else {
+            return ref.name;
         }
     } else if (ref.kind === 'optional') {
         return `${printFieldType(ref.inner)} | null`;
     }
 
-    throw Error(`Unsupported type: ${ref.kind}`);
+    throw Error(`Unsupported type`);
 }
 
 function writeArguments(args: ContractFunctionArg[]) {

@@ -4,7 +4,7 @@ import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getLValuePaths } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
-import { FunctionDescription, InitDescription, TypeDescription } from "../types/types";
+import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";
 import { WriterContext } from "./Writer";
 import { resolveFuncType } from "./writers/resolveFuncType";
@@ -147,6 +147,24 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     });
 }
 
+function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
+    ctx.fun(`__gen_${self.name}_receive_${f.type}`, () => {
+        let args = [`tuple self`, `tuple ${f.name}`].join(', ');
+        ctx.append(`(tuple, ()) __gen_${self.name}_receive_${f.type}(${args}) {`);
+        ctx.inIndent(() => {
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, true, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (self, ());`);
+            }
+        });
+        ctx.append(`}`);
+    });
+}
+
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
         let args = init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
@@ -244,22 +262,24 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`tuple self = __gen_load_${type.name}();`);
 
             // Routing
-            for (let f of type.functions) {
-                if (f.isPublic) {
-                    let allocation = getAllocation(ctx.ctx, type.name + '$$' + f.name);
-                    ctx.append(`if (op == ${allocation.prefix}) {`);
-                    ctx.inIndent(() => {
+            for (let f of type.receivers) {
 
-                        // Read message
-                        ctx.used(`__gen_read_${type.name}_${f.name}`);
-                        ctx.append(`tuple msg = in_msg~__gen_read_${type.name}_${f.name}();`);
-
-                        // Execute function
-                        ctx.used(`__gen_${type.name}_${f.name}`);
-                        ctx.append('self~__gen_' + type.name + '_' + f.name + '(' + [...f.args.map((v, i) => 'at(msg, ' + i + ')')].join(', ') + ');');
-                    })
-                    ctx.append(`}`);
+                let allocation = getAllocation(ctx.ctx, f.type);
+                if (!allocation.prefix) {
+                    throw Error('Invalid allocation');
                 }
+                ctx.append(`if (op == ${allocation.prefix}) {`);
+                ctx.inIndent(() => {
+
+                    // Read message
+                    ctx.used(`__gen_read_${f.type}`);
+                    ctx.append(`tuple msg = in_msg~__gen_read_${f.type}();`);
+
+                    // Execute function
+                    ctx.used(`__gen_${type.name}_receive_${f.type}`);
+                    ctx.append('self~__gen_' + type.name + '_receive_' + f.type + '(msg);');
+                })
+                ctx.append(`}`);
             }
 
             // Persist
@@ -301,14 +321,6 @@ export function writeProgram(ctx: CompilerContext, debug: boolean = false) {
         writeSerializer(k.type.name, k.allocation, wctx);
         writeParser(k.type.name, k.allocation, wctx);
     }
-    for (let c of contracts) {
-        for (let f of c.functions) {
-            if (f.isPublic) {
-                writeSerializer(c.name + '_' + f.name, getAllocation(ctx, c.name + '$$' + f.name), wctx);
-                writeParser(c.name + '_' + f.name, getAllocation(ctx, c.name + '$$' + f.name), wctx);
-            }
-        }
-    }
 
     // Storage Functions
     for (let k of allocations) {
@@ -326,24 +338,24 @@ export function writeProgram(ctx: CompilerContext, debug: boolean = false) {
 
     // Contract functions
     for (let c of contracts) {
+
+        // Init
+        if (c.init) {
+            writeInit(c, c.init, wctx);
+        }
+
+        // Functions
         for (let f of c.functions) {
             writeFunction(f, wctx);
-        }
-    }
 
-    // Contract getters
-    for (let c of contracts) {
-        for (let f of c.functions) {
             if (f.isGetter) {
                 writeGetter(f, wctx);
             }
         }
-    }
 
-    // Contract inits
-    for (let c of contracts) {
-        if (c.init) {
-            writeInit(c, c.init, wctx);
+        // Receivers
+        for (let r of c.receivers) {
+            writeReceiver(c, r, wctx);
         }
     }
 

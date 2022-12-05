@@ -160,7 +160,7 @@ export type ASTContract = {
     kind: 'def_contract',
     id: number,
     name: string,
-    declarations: (ASTField | ASTFunction | ASTInitFunction)[],
+    declarations: (ASTField | ASTFunction | ASTInitFunction | ASTReceive)[],
     ref: ASTRef
 }
 
@@ -181,6 +181,14 @@ export type ASTFunction = {
     name: string,
     return: ASTTypeRef | null,
     args: ASTArgument[],
+    statements: ASTStatement[],
+    ref: ASTRef
+}
+
+export type ASTReceive = {
+    kind: 'def_receive',
+    id: number,
+    arg: ASTArgument,
     statements: ASTStatement[],
     ref: ASTRef
 }
@@ -279,7 +287,7 @@ export type ASTStatementRepeat = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementCall | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementCall | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {

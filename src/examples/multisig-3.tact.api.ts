@@ -8,8 +8,15 @@ export type Operation = {
     amount: BigInt;
 }
 
+export type Execute = {
+    operation: Operation;
+    signature1: Slice;
+    signature2: Slice;
+    signature3: Slice;
+}
+
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECHAEAAasAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAaGwIBIAYHAgEgFBUCASAICQIBIA4PAgEgCgsCASAMDQBXDHSH+1E0PAGMQKCEP9jEN66jhPwBzEgbxAhbxEibxIDbxNBMPAKkTDi8AmAAMQgbxAhbxECbxIDgQEBzwAByQHMgQEBzwCAACzIAfAByYAA1IEBAdcA1AHQAYEBAdcAbwBQBG+MWG+MAW+MgAgEgEBECASASEwAtCBvECFvESJvEgNvE1Akyx/L/8v/y/+AACzIAfAEyYAAxNMf0//T/9P/bwBQBW+MUANvjAFvjAFvjIABDPADAdQB0AHUAdAB1DDQ1AHQbwBQBW+MUANvjAFvjFhvjIAIBIBYXAEPTeANrfGNrfGNrfGNrfGOBA3w7isAjfDuSw3w7msN8P4AsAA9cgB8ATJ7VSAIBIBgZAIcI/AC+QAlbxFUQVX5ECVvElRERPkQJW8TRED5ECNvECVvELryigKwAbDyisiAEAHLBSFvEc8WAW8S+gJxActqyXD7AIAAHCBvEIAAXvmS/aiaHgDGPgFmMAAm+Vj+AZA==';
+    const __code = 'te6ccgECHgEAAagAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAcHQIBIAYHAgEgFBUCASAICQIBIA4PAgEgCgsCASAMDQA5DHSH+1E0PAHMQKCEDDeKUK6lfAEMfANkTDi8AmAAJwgbxAhbxECbxIDyx8ByQHMAfoCgAAsyAHwAcmAAKTTH9QB0AH6AG8AUARvjFhvjAFvjIAIBIBARAgEgEhMAQzwAwHUAdAB1AHQAdQw0NQB0G8AUAVvjFADb4wBb4xYb4yAALQgbxAhbxEibxIDbxNQJMsfy//L/8v/gAAsyAHwBcmAAMTTH9P/0//T/28AUAVvjFADb4wBb4wBb4yACASAWFwIBSBobAA9cgB8AXJ7VSAIBIBgZAEMbwBtb4xtb4xtb4xtb4xwIG+HcVgEb4dyWG+Hc1hvh/AGgADEyIAQAcsFIW8RzxYBbxL6AnEBy2rJcPsAgAAcIG8QgAHUIG8Q8AL5ACFvESNvESJZ+RAibxIkbxIjWfkQI28TJW8TECT5ECNvEG8QJW8QuvKKArABsPKKbxDwC4AAXvmS/aiaHgDmPgGGMAAm+Vj+AVA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});

@@ -61,7 +61,7 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
     if (td.kind === 'primitive') {
         if (td.name === 'Int') {
             if (src.as) {
-                if (src.as === 'coin') {
+                if (src.as === 'coins') {
                     return { index: src.index, size: { bits: 124, refs: 0 }, name: src.name, kind: 'coins' };
                 } else if (src.as === 'int8') {
                     return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'int' };
@@ -137,23 +137,12 @@ export function resolveAllocations(ctx: CompilerContext) {
     // Generate allocations
     for (let s of types) {
         let root = allocateFields(ctx, [...s.fields], 1023, 3); s
-        let allocation: StorageAllocation = { prefix: null, root, fields: s.fields };
-        ctx = store.set(ctx, s.name, allocation);
-    }
-
-    // Generate function allocations
-    for (let t of types) {
-        if (t.kind === 'contract') {
-            for (let f of t.functions) {
-                if (f.isPublic) {
-                    let fields = f.args.map((v, i) => ({ index: i, name: v.name, type: v.type, as: v.as }));
-                    let prefix = crc32(Buffer.from(f.name));
-                    let root = allocateFields(ctx, [...fields], 1023 - 8 * 4, 3);
-                    let allocation: StorageAllocation = { prefix, root, fields: fields };
-                    ctx = store.set(ctx, t.name + '$$' + f.name, allocation);
-                }
-            }
+        let prefix: number | null = null;
+        if (s.ast.kind === 'def_struct' && s.ast.message) {
+            prefix = crc32(Buffer.from(s.name)); // TODO: Better allocation
         }
+        let allocation: StorageAllocation = { prefix, root, fields: s.fields };
+        ctx = store.set(ctx, s.name, allocation);
     }
 
     return ctx;

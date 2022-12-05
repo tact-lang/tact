@@ -1,11 +1,13 @@
-import { ASTFunction, ASTInitFunction, ASTNativeFunction } from "../ast/ast";
+import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTType } from "../ast/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
     name: string;
     fields: FieldDescription[];
     functions: FunctionDescription[];
+    receivers: ReceiverDescription[];
     init: InitDescription | null;
+    ast: ASTType
 }
 
 export type TypeRef = {
@@ -37,6 +39,12 @@ export type FunctionDescription = {
     returns: TypeRef | null,
     args: FunctionArgument[],
     ast: ASTFunction | ASTNativeFunction
+}
+
+export type ReceiverDescription = {
+    type: string,
+    name: string,
+    ast: ASTReceive
 }
 
 export type InitDescription = {

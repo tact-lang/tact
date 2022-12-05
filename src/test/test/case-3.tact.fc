@@ -1,5 +1,3 @@
-forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
-
 builder __gen_write_Source(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
@@ -46,11 +44,6 @@ builder __gen_write_SampleContract(builder build_0, tuple v) {
     return (sc, res);
 }
 
-(slice, tuple) __gen_read_SampleContract_addStake(slice sc) {
-    tuple res = empty_tuple();
-    return (sc, res);
-}
-
 tuple __gen_load_SampleContract() inline {
     slice sc = get_data().begin_parse();
     tuple res = sc~__gen_read_SampleContract();
@@ -61,13 +54,6 @@ tuple __gen_load_SampleContract() inline {
     builder b = begin_cell();
     b = __gen_write_SampleContract(b, v);
     set_data(b.end_cell());
-}
-
-(tuple, ()) __gen_SampleContract_addStake(tuple self) {
-    self = __tact_set(self, 0, 10);
-    self = __tact_set(self, 1, (- 20));
-    self = __tact_set(self, 2, tpush(tpush(empty_tuple(), 10), 20));
-    return (self, ());
 }
 
 (tuple, int) __gen_SampleContract_stake(tuple self) {
@@ -83,9 +69,5 @@ _ __gen_get_stake() method_id(80984) {
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_int(32);
     tuple self = __gen_load_SampleContract();
-    if (op == 4241841802) {
-        tuple msg = in_msg~__gen_read_SampleContract_addStake();
-        self~__gen_SampleContract_addStake();
-    }
     __gen_store_SampleContract(self);
 }

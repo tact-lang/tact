@@ -21,7 +21,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 name: a.name,
                 fields: [],
                 functions: [],
-                init: null
+                receivers: [],
+                init: null,
+                ast: a
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -29,7 +31,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 name: a.name,
                 fields: [],
                 functions: [],
-                init: null
+                receivers: [],
+                init: null,
+                ast: a
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -37,7 +41,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 name: a.name,
                 fields: [],
                 functions: [],
-                init: null
+                receivers: [],
+                init: null,
+                ast: a
             };
         }
     }
@@ -163,6 +169,26 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                         throw Error('Init function already exists');
                     }
                     s.init = resolveInitFunction(d);
+                }
+                if (d.kind === 'def_receive') {
+                    if (d.arg.type.optional) {
+                        throw Error('Receive function cannot accept optional argument');
+                    }
+                    let t = types[d.arg.type.name];
+                    if (t.kind !== 'struct') {
+                        throw Error('Receive function can only accept message');
+                    }
+                    if (t.ast.kind !== 'def_struct') {
+                        throw Error('Receive function can only accept message');
+                    }
+                    if (!t.ast.message) {
+                        throw Error('Receive function can only accept message');
+                    }
+                    s.receivers.push({
+                        name: d.arg.name,
+                        type: d.arg.type.name,
+                        ast: d
+                    });
                 }
             }
         }

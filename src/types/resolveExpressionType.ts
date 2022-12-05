@@ -337,6 +337,17 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     // Process function
                     ctx = resolveStatements(ctx, vctx, f.statements);
                 }
+
+                if (f.kind === 'def_receive') {
+
+                    // Receiver variables
+                    let vctx: VariableCTX = {};
+                    vctx['self'] = { kind: 'direct', name: getType(ctx, a.name).name };
+                    vctx[f.arg.name] = resolveTypeRef(ctx, f.arg.type);
+
+                    // Resolve statements
+                    ctx = resolveStatements(ctx, vctx, f.statements);
+                }
             }
         }
     }
