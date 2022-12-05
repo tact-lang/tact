@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_not_null
   DECLPROC __gen_write_Source
   DECLPROC __gen_writecell_Source
   DECLPROC __gen_writeslice_Source
@@ -18,6 +19,11 @@ PROGRAM{
   DECLPROC __gen_SampleContract_stake
   80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
   __gen_write_Source PROC:<{
     DUP
     0 INDEX
@@ -112,7 +118,7 @@ PROGRAM{
   __gen_read_SampleContract_addStake PROC:<{
     NIL
   }>
-  __gen_load_SampleContract PROC:<{
+  __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH
     CTOS
     __gen_read_SampleContract CALLDICT
@@ -157,7 +163,7 @@ PROGRAM{
     0 INDEX
   }>
   __gen_get_stake PROC:<{
-    __gen_load_SampleContract CALLDICT
+    __gen_load_SampleContract INLINECALLDICT
     __gen_SampleContract_stake CALLDICT
     NIP
   }>
@@ -165,7 +171,7 @@ PROGRAM{
     NIP
     32 LDI
     DROP
-    __gen_load_SampleContract CALLDICT
+    __gen_load_SampleContract INLINECALLDICT
     SWAP
     4241841802 PUSHINT
     EQUAL

@@ -72,12 +72,14 @@ describe('writeExpression', () => {
             throw Error('Unexpected function kind');
         }
         let i = 0;
-        for (let s of main.ast.statements) {
+        for (const s of main.ast.statements) {
             if (s.kind !== 'statement_let') {
                 throw Error('Unexpected statement kind');
             }
-            let wctx = new WriterContext();
-            expect(writeExpression(ctx, s.expression, wctx)).toBe(golden[i]);
+            let wctx = new WriterContext(ctx);
+            wctx.fun('main', () => {
+                expect(writeExpression(s.expression, wctx)).toBe(golden[i]);
+            });
             i++
         }
     });

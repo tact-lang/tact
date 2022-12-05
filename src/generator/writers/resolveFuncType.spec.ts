@@ -1,5 +1,6 @@
 import { CompilerContext } from "../../ast/context";
 import { resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
+import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 
 const primitiveCode = `
@@ -27,32 +28,34 @@ contract Contract2 {
 `;
 
 describe('resolveFuncType', () => {
-    
+
     it('should process primitive types', () => {
         let ctx = CompilerContext.fromSources([primitiveCode]);
         ctx = resolveTypeDescriptors(ctx);
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Int' })).toBe('int');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Bool' })).toBe('int');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Cell' })).toBe('cell');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Slice' })).toBe('slice');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Builder' })).toBe('builder');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Int' } })).toBe('int');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Bool' } })).toBe('int');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Cell' } })).toBe('cell');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Slice' } })).toBe('slice');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Builder' } })).toBe('builder');
+        let wctx = new WriterContext(ctx);
+        expect(resolveFuncType({ kind: 'direct', name: 'Int' }, wctx)).toBe('int');
+        expect(resolveFuncType({ kind: 'direct', name: 'Bool' }, wctx)).toBe('int');
+        expect(resolveFuncType({ kind: 'direct', name: 'Cell' }, wctx)).toBe('cell');
+        expect(resolveFuncType({ kind: 'direct', name: 'Slice' }, wctx)).toBe('slice');
+        expect(resolveFuncType({ kind: 'direct', name: 'Builder' }, wctx)).toBe('builder');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Int' } }, wctx)).toBe('int');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Bool' } }, wctx)).toBe('int');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Cell' } }, wctx)).toBe('cell');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Slice' } }, wctx)).toBe('slice');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Builder' } }, wctx)).toBe('builder');
     });
 
     it('should process contract and struct types', () => {
         let ctx = CompilerContext.fromSources([primitiveCode]);
         ctx = resolveTypeDescriptors(ctx);
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Struct1' })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Struct2' })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Contract1' })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'direct', name: 'Contract2' })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Struct1' } })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Struct2' } })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Contract1' } })).toBe('tuple');
-        expect(resolveFuncType(ctx, { kind: 'optional', inner: { kind: 'direct', name: 'Contract2' } })).toBe('tuple');
+        let wctx = new WriterContext(ctx);
+        expect(resolveFuncType({ kind: 'direct', name: 'Struct1' }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'direct', name: 'Struct2' }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'direct', name: 'Contract1' }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'direct', name: 'Contract2' }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Struct1' } }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Struct2' } }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Contract1' } }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'optional', inner: { kind: 'direct', name: 'Contract2' } }, wctx)).toBe('tuple');
     });
 });

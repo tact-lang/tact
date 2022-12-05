@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_not_null
   DECLPROC __gen_write_Operation
   DECLPROC __gen_writecell_Operation
   DECLPROC __gen_writeslice_Operation
@@ -19,6 +20,11 @@ PROGRAM{
   DECLPROC __gen_MultisigContract_init
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
   __gen_write_Operation PROC:<{
     DUP
     0 INDEX
@@ -184,7 +190,7 @@ PROGRAM{
     ROT
     TPUSH
   }>
-  __gen_load_MultisigContract PROC:<{
+  __gen_load_MultisigContract PROCINLINE:<{
     c4 PUSH
     CTOS
     __gen_read_MultisigContract CALLDICT
@@ -246,7 +252,7 @@ PROGRAM{
     0 INDEX
   }>
   __gen_get_seqno PROC:<{
-    __gen_load_MultisigContract CALLDICT
+    __gen_load_MultisigContract INLINECALLDICT
     __gen_MultisigContract_seqno CALLDICT
     NIP
   }>
@@ -278,7 +284,7 @@ PROGRAM{
   recv_internal PROC:<{
     NIP
     32 LDI
-    __gen_load_MultisigContract CALLDICT
+    __gen_load_MultisigContract INLINECALLDICT
     s0 s2 XCHG
     4284682462 PUSHINT
     EQUAL

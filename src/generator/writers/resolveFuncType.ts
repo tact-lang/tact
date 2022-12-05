@@ -1,14 +1,14 @@
-import { CompilerContext } from "../../ast/context";
 import { getType } from "../../types/resolveTypeDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
+import { WriterContext } from "../Writer";
 
-export function resolveFuncType(ctx: CompilerContext, descriptor: TypeRef | TypeDescription): string {
+export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: WriterContext): string {
 
     // TypeRef
     if (descriptor.kind === 'optional') {
-        return resolveFuncType(ctx, descriptor.inner);
+        return resolveFuncType(descriptor.inner, ctx);
     } else if (descriptor.kind === 'direct') {
-        return resolveFuncType(ctx, getType(ctx, descriptor.name));
+        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx);
     }
 
     // TypeDescription

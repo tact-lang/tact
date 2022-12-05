@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeProgram should write program 1`] = `
-"
-
+"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 builder __gen_write_Point(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
@@ -10,7 +10,6 @@ builder __gen_write_Point(builder build_0, tuple v) {
     build_0 = store_int(build_0, v_1, 257);
     return build_0;
 }
-
 cell __gen_writecell_Point(tuple v) {
     return __gen_write_Point(begin_cell(), v).end_cell();
 }
@@ -22,26 +21,22 @@ slice __gen_writeslice_Point(tuple v) {
 (slice, tuple) __gen_read_Point(slice sc) {
     int __x = null();
     int __y = null();
-     __x = sc~load_int(257);
-     __y = sc~load_int(257);
+    __x = sc~load_int(257);
+    __y = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __x);
     res = tpush(res, __y);
     return (sc, res);
 }
-
 int improve(tuple p) {
     return (at(p, 0) + at(p, 1));
 }
-
 int hello_world(int a, int b, tuple p) {
     int c = (a + 1);
     c = (c + 1);
     return ((a + b) + improve(p));
 }
-
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     throw(100);
-}
-"
+}"
 `;

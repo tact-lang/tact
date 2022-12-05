@@ -48,11 +48,10 @@ describe('writeSerialization', () => {
             let ctx = CompilerContext.fromSources([code]);
             ctx = resolveTypeDescriptors(ctx);
             ctx = resolveAllocations(ctx);
-            let w = new Writer();
-            let wctx = new WriterContext();
-            writeSerializer(ctx, s, getAllocation(ctx, s), w, wctx);
-            writeParser(ctx, s, getAllocation(ctx, s), w, wctx);
-            expect(w.end().toString()).toMatchSnapshot();
+            let wctx = new WriterContext(ctx);
+            writeSerializer(s, getAllocation(ctx, s), wctx);
+            writeParser(s, getAllocation(ctx, s), wctx);
+            expect(wctx.render(true)).toMatchSnapshot();
         });
     }
 });

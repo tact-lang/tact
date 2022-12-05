@@ -1,12 +1,11 @@
 import { ABIFunctions } from "../../abi/AbiFunction";
 import { ASTExpression, throwError } from "../../ast/ast";
-import { CompilerContext } from "../../ast/context";
 import { getExpType } from "../../types/resolveExpressionType";
-import { getAllStaticFunctions, getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
+import { getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
-export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: WriterContext): string {
+export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     //
     // Boolean
@@ -74,7 +73,7 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
         } else {
             throwError('Unknown binary operator: ' + f.op, f.ref);
         }
-        return '(' + writeExpression(ctx, f.left, wctx) + ' ' + op + ' ' + writeExpression(ctx, f.right, wctx) + ')';
+        return '(' + writeExpression(f.left, ctx) + ' ' + op + ' ' + writeExpression(f.right, ctx) + ')';
     }
 
     //
@@ -86,21 +85,21 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
 
         // NOTE: Logical not is written as a bitwise not
         if (f.op === '!') {
-            return '(~ ' + writeExpression(ctx, f.right, wctx) + ')';
+            return '(~ ' + writeExpression(f.right, ctx) + ')';
         }
 
         if (f.op === '-') {
-            return '(- ' + writeExpression(ctx, f.right, wctx) + ')';
+            return '(- ' + writeExpression(f.right, ctx) + ')';
         }
 
         if (f.op === '+') {
-            return '(+ ' + writeExpression(ctx, f.right, wctx) + ')';
+            return '(+ ' + writeExpression(f.right, ctx) + ')';
         }
 
         // NOTE: Assert function that ensures that the value is not null
         if (f.op === '!!') {
-            wctx.useLib('__tact_not_null');
-            return '__tact_not_null(' + writeExpression(ctx, f.right, wctx) + ')';
+            ctx.used('__tact_not_null');
+            return '__tact_not_null(' + writeExpression(f.right, ctx) + ')';
         }
 
         throwError('Unknown unary operator: ' + f.op, f.ref);
@@ -114,11 +113,11 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     if (f.kind === 'op_field') {
 
         // Resolve the type of the expression
-        let src = getExpType(ctx, f.src);
+        let src = getExpType(ctx.ctx, f.src);
         if (src === null || src.kind !== 'direct') {
             throwError(`Cannot access field of non-struct type: ${printTypeRef(src)}`, f.ref);
         }
-        let srcT = getType(ctx, src.name);
+        let srcT = getType(ctx.ctx, src.name);
 
         // Resolve field
         let field = srcT.fields.find((v) => v.name === f.name)!;
@@ -127,7 +126,7 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
         }
 
         // Write getter
-        return 'at(' + writeExpression(ctx, f.src, wctx) + ', ' + field.index + ')';
+        return 'at(' + writeExpression(f.src, ctx) + ', ' + field.index + ')';
     }
 
     //
@@ -135,12 +134,14 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     //
 
     if (f.kind === 'op_static_call') {
-        let sf = getStaticFunction(ctx, f.name);
+        let sf = getStaticFunction(ctx.ctx, f.name);
         let n = f.name;
         if (sf.ast.kind === 'def_native_function') {
             n = sf.ast.nativeName;
+        } else {
+            ctx.used(n);
         }
-        return n + '(' + f.args.map((a) => writeExpression(ctx, a, wctx)).join(', ') + ')';
+        return n + '(' + f.args.map((a) => writeExpression(a, ctx)).join(', ') + ')';
     }
 
     //
@@ -148,8 +149,8 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     //
 
     if (f.kind === 'op_new') {
-        let src = getType(ctx, f.type);
-        let expressions = src.fields.map((v) => writeExpression(ctx, f.args.find((v2) => v2.name === v.name)!.exp, wctx));
+        let src = getType(ctx.ctx, f.type);
+        let expressions = src.fields.map((v) => writeExpression(f.args.find((v2) => v2.name === v.name)!.exp, ctx));
         let res = 'tpush(empty_tuple(), ' + expressions[0] + ')';
         for (let i = 1; i < expressions.length; i++) {
             res = 'tpush(' + res + ', ' + expressions[i] + ')';
@@ -164,7 +165,7 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
     if (f.kind === 'op_call') {
 
         // Resolve source type
-        let src = getExpType(ctx, f.src);
+        let src = getExpType(ctx.ctx, f.src);
         if (src === null || src.kind !== 'direct') {
             throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
         }
@@ -175,11 +176,12 @@ export function writeExpression(ctx: CompilerContext, f: ASTExpression, wctx: Wr
             if (!abf) {
                 throwError(`ABI function "${f.name}" not found`, f.ref);
             }
-            return abf.generate(ctx, f.args.map((v) => getExpType(ctx, v)), f.args.map((a) => writeExpression(ctx, a, wctx)), f.ref, wctx);
+            return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), f.args.map((a) => writeExpression(a, ctx)), f.ref);
         }
 
         // Render function call
-        return '__gen_' + src.name + '_' + writeExpression(ctx, f.src, wctx) + '(' + f.args.map((a) => writeExpression(ctx, a, wctx)).join(', ') + ');';
+        ctx.used(`__gen_${src.name}_${writeExpression(f.src, ctx)}`);
+        return `__gen_${src.name}_${writeExpression(f.src, ctx)}(${f.args.map((a) => writeExpression(a, ctx)).join(', ')});`;
     }
 
     //

@@ -30,7 +30,6 @@ exports[`writeSerialization should write serializer for A 1`] = `
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
-
 cell __gen_writecell_A(tuple v) {
     return __gen_write_A(begin_cell(), v).end_cell();
 }
@@ -47,18 +46,18 @@ slice __gen_writeslice_A(tuple v) {
     int __e = null();
     int __f = null();
     int __g = null();
-     __a = sc~load_int(257);
-     __b = sc~load_int(257);
+    __a = sc~load_int(257);
+    __b = sc~load_int(257);
     if (sc~load_int(1)) {
-         __c = sc~load_int(257);
+        __c = sc~load_int(257);
     }
-     __d = sc~load_int(1);
+    __d = sc~load_int(1);
     if (sc~load_int(1)) {
-         __e = sc~load_int(1);
+        __e = sc~load_int(1);
     }
     sc = (sc~load_ref()).begin_parse();
-     __f = sc~load_int(257);
-     __g = sc~load_int(257);
+    __f = sc~load_int(257);
+    __g = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __a);
     res = tpush(res, __b);
@@ -68,8 +67,7 @@ slice __gen_writeslice_A(tuple v) {
     res = tpush(res, __f);
     res = tpush(res, __g);
     return (sc, res);
-}
-"
+}"
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
@@ -102,7 +100,6 @@ exports[`writeSerialization should write serializer for B 1`] = `
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
-
 cell __gen_writecell_B(tuple v) {
     return __gen_write_B(begin_cell(), v).end_cell();
 }
@@ -119,18 +116,18 @@ slice __gen_writeslice_B(tuple v) {
     int __e = null();
     int __f = null();
     int __g = null();
-     __a = sc~load_int(257);
-     __b = sc~load_int(257);
+    __a = sc~load_int(257);
+    __b = sc~load_int(257);
     if (sc~load_int(1)) {
-         __c = sc~load_int(257);
+        __c = sc~load_int(257);
     }
-     __d = sc~load_int(1);
+    __d = sc~load_int(1);
     if (sc~load_int(1)) {
-         __e = sc~load_int(1);
+        __e = sc~load_int(1);
     }
     sc = (sc~load_ref()).begin_parse();
-     __f = sc~load_int(257);
-     __g = sc~load_int(257);
+    __f = sc~load_int(257);
+    __g = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __a);
     res = tpush(res, __b);
@@ -140,8 +137,7 @@ slice __gen_writeslice_B(tuple v) {
     res = tpush(res, __f);
     res = tpush(res, __g);
     return (sc, res);
-}
-"
+}"
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
@@ -179,7 +175,6 @@ exports[`writeSerialization should write serializer for C 1`] = `
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
-
 cell __gen_writecell_C(tuple v) {
     return __gen_write_C(begin_cell(), v).end_cell();
 }
@@ -196,20 +191,20 @@ slice __gen_writeslice_C(tuple v) {
     int __e = null();
     int __f = null();
     int __g = null();
-     __a = sc~load_ref();
+    __a = sc~load_ref();
     if (sc~load_int(1)) {
-         __b = sc~load_ref();
+        __b = sc~load_ref();
     }
     if (sc~load_int(1)) {
-         __c = sc~load_ref().begin_parse();
+        __c = sc~load_ref().begin_parse();
     }
     sc = (sc~load_ref()).begin_parse();
     if (sc~load_int(1)) {
-         __d = sc~load_ref().begin_parse();
+        __d = sc~load_ref().begin_parse();
     }
-     __e = sc~load_int(1);
-     __f = sc~load_int(257);
-     __g = sc~load_int(257);
+    __e = sc~load_int(1);
+    __f = sc~load_int(257);
+    __g = sc~load_int(257);
     tuple res = empty_tuple();
     res = tpush(res, __a);
     res = tpush(res, __b);
@@ -219,6 +214,5 @@ slice __gen_writeslice_C(tuple v) {
     res = tpush(res, __f);
     res = tpush(res, __g);
     return (sc, res);
-}
-"
+}"
 `;

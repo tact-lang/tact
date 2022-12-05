@@ -7,7 +7,7 @@ import { writeTypescript } from './generator/writeTypescript';
 // Read cases
 (async () => {
     try {
-        for (let p of [__dirname + "/test/", __dirname + "/examples/"]) {
+        for (let p of [__dirname + "/test/test/", __dirname + "/examples/"]) {
             let recs = fs.readdirSync(p);
             for (let r of recs) {
                 if (!r.endsWith('.tact')) {
