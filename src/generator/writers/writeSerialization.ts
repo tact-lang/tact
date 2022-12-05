@@ -87,7 +87,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to builder
     ctx.fun(`__gen_write_${name}`, () => {
-        ctx.append(`builder __gen_write_${name}(builder build_0, tuple v) {`);
+        ctx.append(`builder __gen_write_${name}(builder build_0, tuple v) impure {`);
         ctx.inIndent(() => {
             for (let f of allocation.fields) {
                 ctx.append(`var v_${f.index} = at(v, ${f.index});`);
@@ -100,7 +100,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to cell
     ctx.fun(`__gen_writecell_${name}`, () => {
-        ctx.append(`cell __gen_writecell_${name}(tuple v) {`);
+        ctx.append(`cell __gen_writecell_${name}(tuple v) impure {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_write_${name}`);
             ctx.append(`return __gen_write_${name}(begin_cell(), v).end_cell();`);
@@ -110,7 +110,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to slice
     ctx.fun(` __gen_writeslice_${name}`, () => {
-        ctx.append(`slice __gen_writeslice_${name}(tuple v) {`);
+        ctx.append(`slice __gen_writeslice_${name}(tuple v) impure {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_writecell_${name}`);
             ctx.append(`return __gen_writecell_${name}(v).begin_parse();`);
@@ -196,7 +196,7 @@ function writeCellParser(cell: StorageCell, ctx: WriterContext) {
 
 export function writeParser(name: string, allocation: StorageAllocation, ctx: WriterContext) {
     ctx.fun(`__gen_read_${name}`, () => {
-        ctx.append(`(slice, tuple) __gen_read_${name}(slice sc) {`);
+        ctx.append(`(slice, tuple) __gen_read_${name}(slice sc) impure {`);
         ctx.inIndent(() => {
 
             // Create variables

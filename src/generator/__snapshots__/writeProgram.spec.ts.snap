@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeProgram should write program 1`] = `
-"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
@@ -30,7 +30,7 @@ builder __tact_store_address(builder b, [int, int] address) {
     return [chain, hash];
 }
 
-builder __gen_write_SendParameters(builder build_0, tuple v) {
+builder __gen_write_SendParameters(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -49,15 +49,15 @@ builder __gen_write_SendParameters(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_SendParameters(tuple v) {
+cell __gen_writecell_SendParameters(tuple v) impure {
     return __gen_write_SendParameters(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_SendParameters(tuple v) {
+slice __gen_writeslice_SendParameters(tuple v) impure {
     return __gen_writecell_SendParameters(v).begin_parse();
 }
 
-(slice, tuple) __gen_read_SendParameters(slice sc) {
+(slice, tuple) __gen_read_SendParameters(slice sc) impure {
     int __bounce = null();
     [int, int] __to = null();
     int __value = null();
@@ -79,7 +79,7 @@ slice __gen_writeslice_SendParameters(tuple v) {
     return (sc, res);
 }
 
-builder __gen_write_Point(builder build_0, tuple v) {
+builder __gen_write_Point(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     build_0 = store_int(build_0, v_0, 257);
@@ -87,15 +87,15 @@ builder __gen_write_Point(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_Point(tuple v) {
+cell __gen_writecell_Point(tuple v) impure {
     return __gen_write_Point(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_Point(tuple v) {
+slice __gen_writeslice_Point(tuple v) impure {
     return __gen_writecell_Point(v).begin_parse();
 }
 
-(slice, tuple) __gen_read_Point(slice sc) {
+(slice, tuple) __gen_read_Point(slice sc) impure {
     int __x = null();
     int __y = null();
     __x = sc~load_int(257);
@@ -106,7 +106,7 @@ slice __gen_writeslice_Point(tuple v) {
     return (sc, res);
 }
 
-() send(tuple params) {
+() send(tuple params) impure {
     builder b = begin_cell();
     b = store_int(b, 0, 1);
     b = store_int(b, true, 1);
@@ -129,11 +129,11 @@ slice __gen_writeslice_Point(tuple v) {
     send_raw_message(c, at(params, 3));
 }
 
-int improve(tuple p) {
+int improve(tuple p) impure {
     return (at(p, 0) + at(p, 1));
 }
 
-int hello_world(int a, int b, tuple p) {
+int hello_world(int a, int b, tuple p) impure {
     int c = (a + 1);
     c = (c + 1);
     return ((a + b) + improve(p));

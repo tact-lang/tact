@@ -14,6 +14,8 @@ PROGRAM{
   DECLPROC __gen_Wallet_init
   DECLPROC __gen_Wallet_publicKey
   86520 DECLMETHOD __gen_get_publicKey
+  DECLPROC __gen_Wallet_walletId
+  114762 DECLMETHOD __gen_get_walletId
   DECLPROC __gen_Wallet_seqno
   85143 DECLMETHOD __gen_get_seqno
   DECLPROC __gen_Wallet_receive_TransferMessage
@@ -122,7 +124,7 @@ PROGRAM{
     s0 s3 XCHG
     32 STU
     256 STU
-    32 STU
+    64 STU
   }>
   __gen_writecell_Wallet PROC:<{
     NEWC
@@ -133,7 +135,7 @@ PROGRAM{
   __gen_read_Wallet PROC:<{
     32 LDU
     256 LDU
-    32 LDU
+    64 LDU
     NIL
     s0 s4 XCHG2
     TPUSH
@@ -212,21 +214,17 @@ PROGRAM{
   }>
   __gen_Wallet_init PROC:<{
     NIL
-    PUSHNULL
-    TPUSH
-    PUSHNULL
-    TPUSH
-    PUSHNULL
-    TPUSH
     0 PUSHINT
-    DUP
-    SETINDEXVARQ
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    ROT
     1 PUSHINT
-    ROT
-    s0 s3 XCHG
     SETINDEXVARQ
+    SWAP
     2 PUSHINT
-    ROT
     SETINDEXVARQ
     __gen_writecell_Wallet CALLDICT
   }>
@@ -237,6 +235,15 @@ PROGRAM{
   __gen_get_publicKey PROC:<{
     __gen_load_Wallet INLINECALLDICT
     __gen_Wallet_publicKey CALLDICT
+    NIP
+  }>
+  __gen_Wallet_walletId PROC:<{
+    DUP
+    2 INDEX
+  }>
+  __gen_get_walletId PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    __gen_Wallet_walletId CALLDICT
     NIP
   }>
   __gen_Wallet_seqno PROC:<{
@@ -255,12 +262,30 @@ PROGRAM{
     HASHCU
     OVER
     0 INDEX
-    s2 POP
-    s2 PUSH
+    s3 PUSH
     1 INDEX
-    s1 s2 XCHG
     CHKSIGNU
     10 THROWIFNOT
+    NIL
+    TRUE
+    TPUSH
+    OVER
+    1 INDEX
+    2 INDEX
+    TPUSH
+    OVER
+    1 INDEX
+    2 INDEX
+    TPUSH
+    OVER
+    1 INDEX
+    0 INDEX
+    TPUSH
+    SWAP
+    1 INDEX
+    3 INDEX
+    TPUSH
+    send CALLDICT
   }>
   recv_internal PROC:<{
     NIP

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeSerialization should write serializer for A 1`] = `
-"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
@@ -30,7 +30,7 @@ builder __tact_store_address(builder b, [int, int] address) {
     return [chain, hash];
 }
 
-builder __gen_write_A(builder build_0, tuple v) {
+builder __gen_write_A(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -60,15 +60,15 @@ builder __gen_write_A(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_A(tuple v) {
+cell __gen_writecell_A(tuple v) impure {
     return __gen_write_A(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_A(tuple v) {
+slice __gen_writeslice_A(tuple v) impure {
     return __gen_writecell_A(v).begin_parse();
 }
 
-(slice, tuple) __gen_read_A(slice sc) {
+(slice, tuple) __gen_read_A(slice sc) impure {
     int __a = null();
     int __b = null();
     int __c = null();
@@ -101,7 +101,7 @@ slice __gen_writeslice_A(tuple v) {
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
-"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
@@ -130,7 +130,7 @@ builder __tact_store_address(builder b, [int, int] address) {
     return [chain, hash];
 }
 
-builder __gen_write_B(builder build_0, tuple v) {
+builder __gen_write_B(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -160,15 +160,15 @@ builder __gen_write_B(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_B(tuple v) {
+cell __gen_writecell_B(tuple v) impure {
     return __gen_write_B(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_B(tuple v) {
+slice __gen_writeslice_B(tuple v) impure {
     return __gen_writecell_B(v).begin_parse();
 }
 
-(slice, tuple) __gen_read_B(slice sc) {
+(slice, tuple) __gen_read_B(slice sc) impure {
     int __a = null();
     int __b = null();
     int __c = null();
@@ -201,7 +201,7 @@ slice __gen_writeslice_B(tuple v) {
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
-"forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
@@ -230,7 +230,7 @@ builder __tact_store_address(builder b, [int, int] address) {
     return [chain, hash];
 }
 
-builder __gen_write_C(builder build_0, tuple v) {
+builder __gen_write_C(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -267,15 +267,15 @@ builder __gen_write_C(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_C(tuple v) {
+cell __gen_writecell_C(tuple v) impure {
     return __gen_write_C(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_C(tuple v) {
+slice __gen_writeslice_C(tuple v) impure {
     return __gen_writecell_C(v).begin_parse();
 }
 
-(slice, tuple) __gen_read_C(slice sc) {
+(slice, tuple) __gen_read_C(slice sc) impure {
     cell __a = null();
     cell __b = null();
     slice __c = null();

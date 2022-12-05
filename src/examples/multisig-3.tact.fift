@@ -237,20 +237,32 @@ PROGRAM{
     TPUSH
     PUSHNULL
     TPUSH
+    s0 s3 XCHG2
     1 PUSHINT
-    ROT
-    s0 s4 XCHG
     SETINDEXVARQ
+    SWAP
     2 PUSHINT
-    ROT
     SETINDEXVARQ
+    SWAP
     3 PUSHINT
-    ROT
     SETINDEXVARQ
     __gen_writecell_MultisigContract CALLDICT
   }>
   __gen_MultisigContract_execute PROC:<{
-    DROP
+    NIL
+    TRUE
+    TPUSH
+    OVER
+    2 INDEX
+    TPUSH
+    SWAP
+    1 INDEX
+    TPUSH
+    0 PUSHINT
+    TPUSH
+    PUSHNULL
+    TPUSH
+    send CALLDICT
   }>
   __gen_MultisigContract_testAddress PROC:<{
     0 PUSHINT

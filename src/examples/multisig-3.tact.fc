@@ -1,4 +1,4 @@
-forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 (slice, [int, int]) __tact_load_address(slice cs) {
     slice raw = cs~load_msg_addr();
@@ -25,7 +25,7 @@ builder __tact_store_address(builder b, [int, int] address) {
     return [chain, hash];
 }
 
-builder __gen_write_Operation(builder build_0, tuple v) {
+builder __gen_write_Operation(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -35,11 +35,11 @@ builder __gen_write_Operation(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_Operation(tuple v) {
+cell __gen_writecell_Operation(tuple v) impure {
     return __gen_write_Operation(begin_cell(), v).end_cell();
 }
 
-(slice, tuple) __gen_read_Operation(slice sc) {
+(slice, tuple) __gen_read_Operation(slice sc) impure {
     int __seqno = null();
     int __amount = null();
     [int, int] __target = null();
@@ -53,7 +53,7 @@ cell __gen_writecell_Operation(tuple v) {
     return (sc, res);
 }
 
-(slice, tuple) __gen_read_Execute(slice sc) {
+(slice, tuple) __gen_read_Execute(slice sc) impure {
     tuple __operation = null();
     slice __signature1 = null();
     slice __signature2 = null();
@@ -70,7 +70,7 @@ cell __gen_writecell_Operation(tuple v) {
     return (sc, res);
 }
 
-builder __gen_write_MultisigContract(builder build_0, tuple v) {
+builder __gen_write_MultisigContract(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -82,11 +82,11 @@ builder __gen_write_MultisigContract(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_MultisigContract(tuple v) {
+cell __gen_writecell_MultisigContract(tuple v) impure {
     return __gen_write_MultisigContract(begin_cell(), v).end_cell();
 }
 
-(slice, tuple) __gen_read_MultisigContract(slice sc) {
+(slice, tuple) __gen_read_MultisigContract(slice sc) impure {
     int __seqno = null();
     int __user1_key = null();
     int __user2_key = null();
@@ -115,7 +115,7 @@ tuple __gen_load_MultisigContract() inline {
     set_data(b.end_cell());
 }
 
-() send(tuple params) {
+() send(tuple params) impure {
     builder b = begin_cell();
     b = store_int(b, 0, 1);
     b = store_int(b, true, 1);
@@ -138,20 +138,20 @@ tuple __gen_load_MultisigContract() inline {
     send_raw_message(c, at(params, 3));
 }
 
-cell __gen_MultisigContract_init(int key1, int key2, int key3) {
+cell __gen_MultisigContract_init(int key1, int key2, int key3) impure {
     tuple self = tpush(tpush(tpush(tpush(empty_tuple(), 0), null()), null()), null());
-    self = __tact_set(self, 1, key1);
-    self = __tact_set(self, 2, key2);
-    self = __tact_set(self, 3, key3);
+    self = __tact_set(self, key1, 1);
+    self = __tact_set(self, key2, 2);
+    self = __tact_set(self, key3, 3);
     return __gen_writecell_MultisigContract(self);
 }
 
-(tuple, ()) __gen_MultisigContract_execute(tuple self, tuple op) {
+(tuple, ()) __gen_MultisigContract_execute(tuple self, tuple op) impure {
     send(tpush(tpush(tpush(tpush(tpush(empty_tuple(), true), at(op, 2)), at(op, 1)), 0), null()));
     return (self, ());
 }
 
-(tuple, [int, int]) __gen_MultisigContract_testAddress(tuple self) {
+(tuple, [int, int]) __gen_MultisigContract_testAddress(tuple self) impure {
     return (self, __tact_compute_contract_address(0, end_cell(begin_cell()), end_cell(begin_cell())));
 }
 
@@ -161,7 +161,7 @@ _ __gen_get_testAddress() method_id(80602) {
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_key1(tuple self) {
+(tuple, int) __gen_MultisigContract_key1(tuple self) impure {
     return (self, at(self, 1));
 }
 
@@ -171,7 +171,7 @@ _ __gen_get_key1() method_id(107493) {
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_key2(tuple self) {
+(tuple, int) __gen_MultisigContract_key2(tuple self) impure {
     return (self, at(self, 2));
 }
 
@@ -181,7 +181,7 @@ _ __gen_get_key2() method_id(103302) {
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_key3(tuple self) {
+(tuple, int) __gen_MultisigContract_key3(tuple self) impure {
     return (self, at(self, 3));
 }
 
@@ -191,7 +191,7 @@ _ __gen_get_key3() method_id(99239) {
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_seqno(tuple self) {
+(tuple, int) __gen_MultisigContract_seqno(tuple self) impure {
     return (self, at(self, 0));
 }
 
@@ -201,7 +201,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-(tuple, ()) __gen_MultisigContract_receive_Execute(tuple self, tuple msg) {
+(tuple, ()) __gen_MultisigContract_receive_Execute(tuple self, tuple msg) impure {
     int op_hash = cell_hash(__gen_writecell_Operation(at(msg, 0)));
     int ok1 = check_signature(op_hash, at(msg, 1), at(self, 1));
     int ok2 = check_signature(op_hash, at(msg, 2), at(self, 2));

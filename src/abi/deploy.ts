@@ -1,4 +1,4 @@
-import { createExecutorFromCode } from 'ton-nodejs';
+import { createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import { Cell, StackItem } from 'ton';
 
 export async function deploy(code: string, name: string, args: StackItem[]) {
@@ -11,11 +11,18 @@ export async function deploy(code: string, name: string, args: StackItem[]) {
     });
 
     // Execute
-    let res = await executor.get(name, args);
-    let data = res.stack.readCell();
+    try {
+        let res = await executor.get(name, args, { debug: true });
+        let data = res.stack.readCell();
 
-    return {
-        code: codeCell,
-        data
-    };
+        return {
+            code: codeCell,
+            data
+        };
+    } catch (e) {
+        if (e instanceof ExecuteError) {
+            console.warn(e.debugLogs);
+        }
+        throw e;
+    }
 }

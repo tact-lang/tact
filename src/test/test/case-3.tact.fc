@@ -1,4 +1,4 @@
-builder __gen_write_Source(builder build_0, tuple v) {
+builder __gen_write_Source(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     build_0 = store_int(build_0, v_0, 257);
@@ -6,7 +6,7 @@ builder __gen_write_Source(builder build_0, tuple v) {
     return build_0;
 }
 
-(slice, tuple) __gen_read_Source(slice sc) {
+(slice, tuple) __gen_read_Source(slice sc) impure {
     int __a = null();
     int __b = null();
     __a = sc~load_int(257);
@@ -17,7 +17,7 @@ builder __gen_write_Source(builder build_0, tuple v) {
     return (sc, res);
 }
 
-builder __gen_write_SampleContract(builder build_0, tuple v) {
+builder __gen_write_SampleContract(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -29,7 +29,7 @@ builder __gen_write_SampleContract(builder build_0, tuple v) {
     return build_0;
 }
 
-(slice, tuple) __gen_read_SampleContract(slice sc) {
+(slice, tuple) __gen_read_SampleContract(slice sc) impure {
     int __a = null();
     int __b = null();
     tuple __c = null();
@@ -56,7 +56,7 @@ tuple __gen_load_SampleContract() inline {
     set_data(b.end_cell());
 }
 
-(tuple, int) __gen_SampleContract_stake(tuple self) {
+(tuple, int) __gen_SampleContract_stake(tuple self) impure {
     return (self, at(self, 0));
 }
 

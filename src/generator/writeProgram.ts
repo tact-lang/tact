@@ -41,7 +41,7 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
             let tt = getType(ctx.ctx, lvalueTypes[0].name);
             let targetIndex = tt.fields.findIndex((v) => v.name === srcExpr);
             ctx.used('__tact_set');
-            ctx.append(`${f.path[0]} = __tact_set(${f.path[0]}, ${targetIndex}, ${valueExpr});`);
+            ctx.append(`${f.path[0]} = __tact_set(${f.path[0]}, ${valueExpr}, ${targetIndex});`);
             return;
         }
 
@@ -132,7 +132,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.append(`${returns} ${name}(${args.join(', ')}) {`);
+        ctx.append(`${returns} ${name}(${args.join(', ')}) impure {`);
         ctx.inIndent(() => {
             for (let s of fd.statements) {
                 writeStatement(s, !!f.self, ctx);
@@ -150,7 +150,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${self.name}_receive_${f.type}`, () => {
         let args = [`tuple self`, `tuple ${f.name}`].join(', ');
-        ctx.append(`(tuple, ()) __gen_${self.name}_receive_${f.type}(${args}) {`);
+        ctx.append(`(tuple, ()) __gen_${self.name}_receive_${f.type}(${args}) impure {`);
         ctx.inIndent(() => {
 
             for (let s of f.ast.statements) {
@@ -168,7 +168,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
         let args = init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
-        ctx.append(`cell __gen_${t.name}_init(${args.join(', ')}) {`);
+        ctx.append(`cell __gen_${t.name}_init(${args.join(', ')}) impure {`);
         ctx.inIndent(() => {
             let selfInit = 'empty_tuple()';
             for (let i = 0; i < t.fields.length; i++) {

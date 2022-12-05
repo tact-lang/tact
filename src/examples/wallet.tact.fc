@@ -1,4 +1,4 @@
-forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 (slice, [int, int]) __tact_load_address(slice cs) {
     slice raw = cs~load_msg_addr();
@@ -14,7 +14,7 @@ builder __tact_store_address(builder b, [int, int] address) {
     return b;
 }
 
-builder __gen_write_Transfer(builder build_0, tuple v) {
+builder __gen_write_Transfer(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
@@ -31,11 +31,11 @@ builder __gen_write_Transfer(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_Transfer(tuple v) {
+cell __gen_writecell_Transfer(tuple v) impure {
     return __gen_write_Transfer(begin_cell(), v).end_cell();
 }
 
-(slice, tuple) __gen_read_Transfer(slice sc) {
+(slice, tuple) __gen_read_Transfer(slice sc) impure {
     int __mode = null();
     [int, int] __to = null();
     int __amount = null();
@@ -54,7 +54,7 @@ cell __gen_writecell_Transfer(tuple v) {
     return (sc, res);
 }
 
-(slice, tuple) __gen_read_TransferMessage(slice sc) {
+(slice, tuple) __gen_read_TransferMessage(slice sc) impure {
     slice __signature = null();
     tuple __transfer = null();
     __signature = sc~load_ref().begin_parse();
@@ -65,27 +65,27 @@ cell __gen_writecell_Transfer(tuple v) {
     return (sc, res);
 }
 
-builder __gen_write_Wallet(builder build_0, tuple v) {
+builder __gen_write_Wallet(builder build_0, tuple v) impure {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
     build_0 = store_uint(build_0, v_0, 32);
     build_0 = store_uint(build_0, v_1, 256);
-    build_0 = store_uint(build_0, v_2, 32);
+    build_0 = store_uint(build_0, v_2, 64);
     return build_0;
 }
 
-cell __gen_writecell_Wallet(tuple v) {
+cell __gen_writecell_Wallet(tuple v) impure {
     return __gen_write_Wallet(begin_cell(), v).end_cell();
 }
 
-(slice, tuple) __gen_read_Wallet(slice sc) {
+(slice, tuple) __gen_read_Wallet(slice sc) impure {
     int __seqno = null();
     int __key = null();
     int __walletId = null();
     __seqno = sc~load_uint(32);
     __key = sc~load_uint(256);
-    __walletId = sc~load_uint(32);
+    __walletId = sc~load_uint(64);
     tuple res = empty_tuple();
     res = tpush(res, __seqno);
     res = tpush(res, __key);
@@ -105,7 +105,7 @@ tuple __gen_load_Wallet() inline {
     set_data(b.end_cell());
 }
 
-() send(tuple params) {
+() send(tuple params) impure {
     builder b = begin_cell();
     b = store_int(b, 0, 1);
     b = store_int(b, true, 1);
@@ -128,15 +128,14 @@ tuple __gen_load_Wallet() inline {
     send_raw_message(c, at(params, 3));
 }
 
-cell __gen_Wallet_init(int key, int walletId) {
-    tuple self = tpush(tpush(tpush(empty_tuple(), null()), null()), null());
-    self = __tact_set(self, 0, 0);
-    self = __tact_set(self, 1, key);
-    self = __tact_set(self, 2, walletId);
+cell __gen_Wallet_init(int key, int walletId) impure {
+    tuple self = tpush(tpush(tpush(empty_tuple(), 0), null()), null());
+    self = __tact_set(self, key, 1);
+    self = __tact_set(self, walletId, 2);
     return __gen_writecell_Wallet(self);
 }
 
-(tuple, int) __gen_Wallet_publicKey(tuple self) {
+(tuple, int) __gen_Wallet_publicKey(tuple self) impure {
     return (self, at(self, 1));
 }
 
@@ -146,7 +145,17 @@ _ __gen_get_publicKey() method_id(86520) {
     return res;
 }
 
-(tuple, int) __gen_Wallet_seqno(tuple self) {
+(tuple, int) __gen_Wallet_walletId(tuple self) impure {
+    return (self, at(self, 2));
+}
+
+_ __gen_get_walletId() method_id(114762) {
+    tuple self = __gen_load_Wallet();
+    var res = self~__gen_Wallet_walletId();
+    return res;
+}
+
+(tuple, int) __gen_Wallet_seqno(tuple self) impure {
     return (self, at(self, 0));
 }
 
@@ -156,7 +165,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-(tuple, ()) __gen_Wallet_receive_TransferMessage(tuple self, tuple msg) {
+(tuple, ()) __gen_Wallet_receive_TransferMessage(tuple self, tuple msg) impure {
     int op_hash = cell_hash(__gen_writecell_Transfer(at(msg, 1)));
     throw_unless(10, check_signature(op_hash, at(msg, 0), at(self, 1)));
     send(tpush(tpush(tpush(tpush(tpush(empty_tuple(), true), at(at(msg, 1), 2)), at(at(msg, 1), 2)), at(at(msg, 1), 0)), at(at(msg, 1), 3)));

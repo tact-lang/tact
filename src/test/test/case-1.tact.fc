@@ -1,8 +1,8 @@
-builder __gen_write_Empty(builder build_0, tuple v) {
+builder __gen_write_Empty(builder build_0, tuple v) impure {
     return build_0;
 }
 
-(slice, tuple) __gen_read_Empty(slice sc) {
+(slice, tuple) __gen_read_Empty(slice sc) impure {
     tuple res = empty_tuple();
     return (sc, res);
 }

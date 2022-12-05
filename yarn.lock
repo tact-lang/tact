@@ -2369,10 +2369,10 @@ ton-crypto@^3.2.0:
     ton-crypto-primitives "2.0.0"
     tweetnacl "1.0.3"
 
-ton-nodejs@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.1.tgz#dcc8e81ef22fc1fbc8909a85f0378bb1d8d520e2"
-  integrity sha512-o1FzTo9TjMW6zhlbeywYWMFvua48hRf3EYWZ+4z7+McYDFhWvxVbZmHs0gxCY+uZPPNfsRyJfnLGZ4UCDFI50w==
+ton-nodejs@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.2.tgz#7fa16bbff2b81481006ea807ab9b6d20f1fdc836"
+  integrity sha512-hjSn2l0O8QO9+dhldth/+lJKpG1NMKQitQ/CxAp9r7qD/cHcN5VdtevacNjXReajtj3ihlwwZYEZcZXOyo7xzw==
 
 ton@^12.1.5:
   version "12.1.5"

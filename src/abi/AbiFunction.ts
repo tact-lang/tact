@@ -11,6 +11,18 @@ export type AbiFunction = {
 }
 
 export const ABIFunctions: { [key: string]: AbiFunction } = {
+    dump: {
+        name: 'dump',
+        resolve: (ctx, args, ref) => {
+            if (args.length !== 1) {
+                throwError('dump expects 1 argument', ref);
+            }
+            return null;
+        },
+        generate: (ctx, args, resolved, ref) => {
+            return `${resolved[0]}~dump()`;
+        }
+    },
     pack_cell: {
         name: 'pack_cell',
         resolve: (ctx, args, ref) => {
