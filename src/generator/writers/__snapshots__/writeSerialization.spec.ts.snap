@@ -12,7 +12,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 }
 
 builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2,2);
+    b = b.store_uint(2, 2);
     b = b.store_uint(0, 1);
     b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
@@ -90,15 +90,7 @@ slice __gen_writeslice_A(tuple v) impure {
     sc = (sc~load_ref()).begin_parse();
     __f = sc~load_int(257);
     __g = sc~load_int(257);
-    tuple res = empty_tuple();
-    res = tpush(res, __a);
-    res = tpush(res, __b);
-    res = tpush(res, __c);
-    res = tpush(res, __d);
-    res = tpush(res, __e);
-    res = tpush(res, __f);
-    res = tpush(res, __g);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__a, __b, __c, __d, __e, __f, __g]));
 }"
 `;
 
@@ -114,7 +106,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 }
 
 builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2,2);
+    b = b.store_uint(2, 2);
     b = b.store_uint(0, 1);
     b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
@@ -192,15 +184,7 @@ slice __gen_writeslice_B(tuple v) impure {
     sc = (sc~load_ref()).begin_parse();
     __f = sc~load_int(257);
     __g = sc~load_int(257);
-    tuple res = empty_tuple();
-    res = tpush(res, __a);
-    res = tpush(res, __b);
-    res = tpush(res, __c);
-    res = tpush(res, __d);
-    res = tpush(res, __e);
-    res = tpush(res, __f);
-    res = tpush(res, __g);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__a, __b, __c, __d, __e, __f, __g]));
 }"
 `;
 
@@ -216,7 +200,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 }
 
 builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2,2);
+    b = b.store_uint(2, 2);
     b = b.store_uint(0, 1);
     b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
@@ -305,15 +289,6 @@ slice __gen_writeslice_C(tuple v) impure {
     __f = sc~load_int(257);
     __g = sc~load_int(257);
     __h = sc~__tact_load_address();
-    tuple res = empty_tuple();
-    res = tpush(res, __a);
-    res = tpush(res, __b);
-    res = tpush(res, __c);
-    res = tpush(res, __d);
-    res = tpush(res, __e);
-    res = tpush(res, __f);
-    res = tpush(res, __g);
-    res = tpush(res, __h);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__a, __b, __c, __d, __e, __f, __g, __h]));
 }"
 `;

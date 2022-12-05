@@ -12,7 +12,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 }
 
 builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2,2);
+    b = b.store_uint(2, 2);
     b = b.store_uint(0, 1);
     b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
@@ -72,13 +72,7 @@ slice __gen_writeslice_SendParameters(tuple v) impure {
     if (sc~load_int(1)) {
         __body = sc~load_ref();
     }
-    tuple res = empty_tuple();
-    res = tpush(res, __bounce);
-    res = tpush(res, __to);
-    res = tpush(res, __value);
-    res = tpush(res, __mode);
-    res = tpush(res, __body);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__bounce, __to, __value, __mode, __body]));
 }
 
 builder __gen_write_Point(builder build_0, tuple v) impure {
@@ -102,18 +96,15 @@ slice __gen_writeslice_Point(tuple v) impure {
     int __y = null();
     __x = sc~load_int(257);
     __y = sc~load_int(257);
-    tuple res = empty_tuple();
-    res = tpush(res, __x);
-    res = tpush(res, __y);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__x, __y]));
 }
 
 () send(tuple params) impure {
-    [int, int] addr = at(params, 1);
-    addr~dump();
     builder b = begin_cell();
     b = store_int(b, 0, 1);
     b = store_int(b, true, 1);
+    b = store_int(b, at(params, 0), 1);
+    b = store_int(b, false, 1);
     b = store_int(b, 0, 2);
     b = __tact_store_address(b, at(params, 1));
     b = store_coins(b, at(params, 2));
@@ -123,9 +114,10 @@ slice __gen_writeslice_Point(tuple v) impure {
     b = store_uint(b, 0, 64);
     b = store_uint(b, 0, 32);
     b = store_int(b, false, 1);
-    if ((at(params, 4) != null())) {
+    cell body = at(params, 4);
+    if ((~ null?(body))) {
         b = store_int(b, true, 1);
-        b = store_ref(b, at(params, 4));
+        b = store_ref(b, __tact_not_null(body));
     } else {
         b = store_int(b, false, 1);
     }
