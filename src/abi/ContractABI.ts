@@ -25,5 +25,6 @@ export type ContractABI = {
     name: string;
     structs: ContractStruct[];
     code: string;
-    init: ContractInit | null
+    init: ContractInit | null;
+    receivers: string[];
 }

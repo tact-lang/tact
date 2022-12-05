@@ -70,6 +70,7 @@ export function writeTypescript(abi: ContractABI) {
     for (let s of abi.structs) {
         w.append(`export type ${s.name} = {`);
         w.inIndent(() => {
+            w.append(`$$type: '${s.name}';`);
             for (let f of s.fields) {
                 writeField(f, w);
             }

@@ -2,13 +2,21 @@ import { Cell, Slice, StackItem } from 'ton';
 import { BN } from 'bn.js';
 import { deploy } from '../abi/deploy';
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
 export type Operation = {
+    $$type: 'Operation';
     seqno: BigInt;
     target: Slice;
     amount: BigInt;
 }
 
 export type Execute = {
+    $$type: 'Execute';
     operation: Operation;
     signature1: Slice;
     signature2: Slice;

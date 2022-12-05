@@ -136,7 +136,7 @@ export function resolveAllocations(ctx: CompilerContext) {
 
     // Generate allocations
     for (let s of types) {
-        let root = allocateFields(ctx, [...s.fields], 1023, 3); s
+        let root = allocateFields(ctx, [...s.fields], 1023, 3);
         let prefix: number | null = null;
         if (s.ast.kind === 'def_struct' && s.ast.message) {
             prefix = crc32(Buffer.from(s.name)); // TODO: Better allocation

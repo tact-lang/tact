@@ -48,3 +48,8 @@ native require(code: Int, condition: Bool);
 
 @name(throw_unless)
 native nativeThrowUnless(code: Int, condition: Bool);
+
+struct StateInit {
+    code: Cell;
+    data: Cell;
+}

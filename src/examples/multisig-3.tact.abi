@@ -2,6 +2,26 @@
   "name": "MultisigContract",
   "structs": [
     {
+      "name": "StateInit",
+      "header": 0,
+      "fields": [
+        {
+          "name": "code",
+          "type": {
+            "kind": "direct",
+            "name": "Cell"
+          }
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "direct",
+            "name": "Cell"
+          }
+        }
+      ]
+    },
+    {
       "name": "Operation",
       "header": 0,
       "fields": [
@@ -89,5 +109,8 @@
         }
       }
     ]
-  }
+  },
+  "receivers": [
+    "Execute"
+  ]
 }

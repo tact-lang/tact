@@ -26,10 +26,17 @@ export function createABI(ctx: CompilerContext, code: string): ContractABI {
         init = { name: 'init_' + contract.name, args: contract.init.args.map((v) => ({ name: v.name, type: v.type })) };
     }
 
+    // Receivers
+    let receivers: string[] = [];
+    for (let r of contract.receivers) {
+        receivers.push(r.type);
+    }
+
     return {
         name: contract.name,
         structs,
         code,
-        init
+        init,
+        receivers
     };
 }
