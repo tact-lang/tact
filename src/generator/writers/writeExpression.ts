@@ -6,6 +6,13 @@ import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 
+function isNull(f: ASTExpression) {
+    if (f.kind === 'null') {
+        return true;
+    }
+    return false;
+}
+
 export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     //
@@ -46,6 +53,30 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'op_binary') {
+
+        // Special case for non-integer types
+        if (f.op === '==' || f.op === '!=') {
+            if (isNull(f.left) && isNull(f.right)) {
+                if (f.op === '==') {
+                    return 'true';
+                } else {
+                    return 'false';
+                }
+            } else if (isNull(f.left) && !isNull(f.right)) {
+                if (f.op === '==') {
+                    return `null?(${writeExpression(f.right, ctx)})`;
+                } else {
+                    return `(~ null?(${writeExpression(f.right, ctx)}))`;
+                }
+            } else if (!isNull(f.left) && isNull(f.right)) {
+                if (f.op === '==') {
+                    return `null?(${writeExpression(f.left, ctx)})`;
+                } else {
+                    return `(~ null?(${writeExpression(f.left, ctx)}))`;
+                }
+            }
+        }
+
         let op: string;
         if (f.op === '*') {
             op = '*';

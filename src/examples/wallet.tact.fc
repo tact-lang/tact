@@ -1,5 +1,7 @@
 forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
+forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+
 (slice, [int, int]) __tact_load_address(slice cs) {
     slice raw = cs~load_msg_addr();
     var (r1, r2) = parse_std_addr(raw);
@@ -127,7 +129,13 @@ tuple __gen_load_Wallet() inline {
     b = store_uint(b, 0, 64);
     b = store_uint(b, 0, 32);
     b = store_int(b, false, 1);
-    b = store_int(b, false, 1);
+    cell body = at(params, 4);
+    if ((~ null?(body))) {
+        b = store_int(b, true, 1);
+        b = store_ref(b, __tact_not_null(body));
+    } else {
+        b = store_int(b, false, 1);
+    }
     cell c = end_cell(b);
     send_raw_message(c, at(params, 3));
 }

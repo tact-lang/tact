@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_not_null
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_compute_contract_address
@@ -27,6 +28,11 @@ PROGRAM{
   DECLPROC __gen_MultisigContract_receive_Execute
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
   __tact_load_address PROC:<{
     LDMSGADDR
     SWAP
@@ -212,9 +218,25 @@ PROGRAM{
     FALSE
     SWAP
     1 STI
-    FALSE
-    SWAP
-    1 STI
+    OVER
+    4 INDEX
+    DUP
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      ROT
+      1 STI
+      SWAP
+      __tact_not_null CALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      DROP
+      FALSE
+      SWAP
+      1 STI
+    }>
     ENDC
     SWAP
     3 INDEX

@@ -83,14 +83,13 @@ fun send(params: SendParameters) {
     b = storeInt(b, false, 1); // No state init
 
     // Body
-    // let body: Cell? = params.body;
-    // abi.dump(body);
-    // if (body != null) {
-        // b = storeInt(b, true, 1);
-        // b = storeRef(b, body!!);
-    // } else {
+    let body: Cell? = params.body;
+    if (body != null) {
+        b = storeInt(b, true, 1);
+        b = storeRef(b, body!!);
+    } else {
         b = storeInt(b, false, 1); // No body
-    // }
+    }
 
     // Send
     let c: Cell = endCell(b);
