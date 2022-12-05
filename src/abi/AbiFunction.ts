@@ -37,7 +37,8 @@ export const ABIFunctions: { [key: string]: AbiFunction } = {
             if (tp.kind !== 'struct') {
                 throwError('pack_cell expects a struct type', ref);
             }
-            return '__gen_writecell_' + args[0].name + '(' + resolved.join(', ') + ')';
+            ctx.used(`__gen_writecell_${args[0].name}`);
+            return `__gen_writecell_${args[0].name}(${resolved.join(', ')})`;
         }
     },
     pack_slice: {
@@ -66,7 +67,8 @@ export const ABIFunctions: { [key: string]: AbiFunction } = {
             if (tp.kind !== 'struct') {
                 throwError('pack_slice expects a struct type', ref);
             }
-            return '__gen_writeslice_' + args[0].name + '(' + resolved.join(', ') + ')';
+            ctx.used(`__gen_writeslice_${args[0].name}`);
+            return `__gen_writeslice_${args[0].name}(${resolved.join(', ')})`;
         }
     }
 };

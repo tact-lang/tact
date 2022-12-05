@@ -1,7 +1,5 @@
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
-
 builder __gen_write_Operation(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
@@ -14,10 +12,6 @@ builder __gen_write_Operation(builder build_0, tuple v) {
 
 cell __gen_writecell_Operation(tuple v) {
     return __gen_write_Operation(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_Operation(tuple v) {
-    return __gen_writecell_Operation(v).begin_parse();
 }
 
 (slice, tuple) __gen_read_Operation(slice sc) {
@@ -52,10 +46,6 @@ cell __gen_writecell_MultisigContract(tuple v) {
     return __gen_write_MultisigContract(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_MultisigContract(tuple v) {
-    return __gen_writecell_MultisigContract(v).begin_parse();
-}
-
 (slice, tuple) __gen_read_MultisigContract(slice sc) {
     int __seqno = null();
     int __user1_key = null();
@@ -72,28 +62,6 @@ slice __gen_writeslice_MultisigContract(tuple v) {
     res = tpush(res, __user2_key);
     res = tpush(res, __user3_key);
     return (sc, res);
-}
-
-builder __gen_write_MultisigContract_execute(builder build_0, tuple v) {
-    var v_0 = at(v, 0);
-    var v_1 = at(v, 1);
-    var v_2 = at(v, 2);
-    var v_3 = at(v, 3);
-    build_0 = __gen_write_Operation(build_0, v_0);
-    build_0 = store_ref(build_0, v_1.end_cell());
-    build_0 = store_ref(build_0, v_2.end_cell());
-    var build_1 = begin_cell();
-    build_1 = store_ref(build_1, v_3.end_cell());
-    build_0 = store_ref(build_0, build_1.end_cell());
-    return build_0;
-}
-
-cell __gen_writecell_MultisigContract_execute(tuple v) {
-    return __gen_write_MultisigContract_execute(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_MultisigContract_execute(tuple v) {
-    return __gen_writecell_MultisigContract_execute(v).begin_parse();
 }
 
 (slice, tuple) __gen_read_MultisigContract_execute(slice sc) {
@@ -140,16 +108,6 @@ tuple __gen_load_MultisigContract() inline {
     b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
     send_raw_message(end_cell(b), 0);
     return (self, ());
-}
-
-(tuple, int) __gen_MultisigContract_seqno(tuple self) {
-    return (self, at(self, 0));
-}
-
-_ __gen_get_seqno() method_id(85143) {
-    tuple self = __gen_load_MultisigContract();
-    var res = self~__gen_MultisigContract_seqno();
-    return res;
 }
 
 cell __gen_MultisigContract_init(int key1, int key2, int key3) {

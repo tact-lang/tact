@@ -24,7 +24,7 @@ export class Writer {
 export class WriterContext {
 
     readonly ctx: CompilerContext;
-    #functions: Map<string, { code: string, depends: Set<string> }> = new Map();
+    #functions: Map<string, { name: string, code: string, depends: Set<string> }> = new Map();
     #pendingWriter: Writer | null = null;
     #pendingDepends: Set<string> | null = null;
 
@@ -53,6 +53,20 @@ export class WriterContext {
 
         // All functions
         let all = Array.from(this.#functions.values());
+
+        // Remove unused
+        if (!debug) {
+            let used = new Set<string>();
+            let visit = (name: string) => {
+                used.add(name);
+                let f = this.#functions.get(name)!!;
+                for (let d of f.depends) {
+                    visit(d);
+                }
+            }
+            visit('$main');
+            all = all.filter((v) => used.has(v.name));
+        }
 
         // Sort functions
         let sorted = topologicalSort(all, (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!!));
@@ -89,7 +103,7 @@ export class WriterContext {
         let depends = this.#pendingDepends;
         this.#pendingDepends = null;
         this.#pendingWriter = null;
-        this.#functions.set(name, { code, depends });
+        this.#functions.set(name, { name, code, depends });
     }
 
     used(name: string) {

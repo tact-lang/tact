@@ -1,90 +1,11 @@
 PROGRAM{
-  DECLPROC __tact_not_null
-  DECLPROC __gen_write_Source
-  DECLPROC __gen_writecell_Source
-  DECLPROC __gen_writeslice_Source
-  DECLPROC __gen_read_Source
   DECLPROC __gen_write_Empty
-  DECLPROC __gen_writecell_Empty
-  DECLPROC __gen_writeslice_Empty
   DECLPROC __gen_read_Empty
   DECLPROC __gen_load_Empty
   DECLPROC __gen_store_Empty
-  DECLPROC isZero
   DECLPROC recv_internal
-  __tact_not_null PROC:<{
-    DUP
-    ISNULL
-    14 THROWIF
-  }>
-  __gen_write_Source PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s2 PUSH
-    2 INDEX
-    s0 s3 XCHG
-    3 INDEX
-    s2 s4 XCHG2
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    SWAP
-    NEWC
-    257 PUSHINT
-    STIX
-    ENDC
-    SWAP
-    STREF
-  }>
-  __gen_writecell_Source PROC:<{
-    NEWC
-    SWAP
-    __gen_write_Source CALLDICT
-    ENDC
-  }>
-  __gen_writeslice_Source PROC:<{
-    __gen_writecell_Source CALLDICT
-    CTOS
-  }>
-  __gen_read_Source PROC:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
-    DROP
-    CTOS
-    257 PUSHINT
-    LDIX
-    NIL
-    s0 s5 XCHG2
-    TPUSH
-    s0 s3 XCHG2
-    TPUSH
-    SWAP
-    TPUSH
-    SWAP
-    TPUSH
-  }>
   __gen_write_Empty PROC:<{
     DROP
-  }>
-  __gen_writecell_Empty PROC:<{
-    NEWC
-    SWAP
-    __gen_write_Empty CALLDICT
-    ENDC
-  }>
-  __gen_writeslice_Empty PROC:<{
-    __gen_writecell_Empty CALLDICT
-    CTOS
   }>
   __gen_read_Empty PROC:<{
     NIL
@@ -101,20 +22,6 @@ PROGRAM{
     __gen_write_Empty CALLDICT
     ENDC
     c4 POP
-  }>
-  isZero PROC:<{
-    2SWAP
-    ADD
-    INC
-    OVER
-    0 INDEX
-    ADD
-    SWAP
-    1 INDEX
-    ADD
-    0 GTINT
-    SWAP
-    AND
   }>
   recv_internal PROC:<{
     2DROP

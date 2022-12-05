@@ -189,6 +189,7 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`() __gen_store_${type.name}(tuple v) impure {`);
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
+            ctx.used(`__gen_write_${type.name}`);
             ctx.append(`b = __gen_write_${type.name}(b, v);`);
             ctx.append(`set_data(b.end_cell());`);
         });
@@ -266,6 +267,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             }
 
             // Persist
+            ctx.used(`__gen_store_${type.name}`);
             ctx.append(`__gen_store_${type.name}(self);`);
         });
         ctx.append('}');

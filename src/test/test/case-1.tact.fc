@@ -1,57 +1,5 @@
-forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
-
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
-
-builder __gen_write_Source(builder build_0, tuple v) {
-    var v_0 = at(v, 0);
-    var v_1 = at(v, 1);
-    var v_2 = at(v, 2);
-    var v_3 = at(v, 3);
-    build_0 = store_int(build_0, v_0, 257);
-    build_0 = store_int(build_0, v_1, 257);
-    build_0 = store_int(build_0, v_2, 257);
-    var build_1 = begin_cell();
-    build_1 = store_int(build_1, v_3, 257);
-    build_0 = store_ref(build_0, build_1.end_cell());
-    return build_0;
-}
-
-cell __gen_writecell_Source(tuple v) {
-    return __gen_write_Source(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_Source(tuple v) {
-    return __gen_writecell_Source(v).begin_parse();
-}
-
-(slice, tuple) __gen_read_Source(slice sc) {
-    int __a = null();
-    int __b = null();
-    int __c = null();
-    int __d = null();
-    __a = sc~load_int(257);
-    __b = sc~load_int(257);
-    __c = sc~load_int(257);
-    sc = (sc~load_ref()).begin_parse();
-    __d = sc~load_int(257);
-    tuple res = empty_tuple();
-    res = tpush(res, __a);
-    res = tpush(res, __b);
-    res = tpush(res, __c);
-    res = tpush(res, __d);
-    return (sc, res);
-}
-
 builder __gen_write_Empty(builder build_0, tuple v) {
     return build_0;
-}
-
-cell __gen_writecell_Empty(tuple v) {
-    return __gen_write_Empty(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_Empty(tuple v) {
-    return __gen_writecell_Empty(v).begin_parse();
 }
 
 (slice, tuple) __gen_read_Empty(slice sc) {
@@ -69,12 +17,6 @@ tuple __gen_load_Empty() inline {
     builder b = begin_cell();
     b = __gen_write_Empty(b, v);
     set_data(b.end_cell());
-}
-
-int isZero(int x, int y, int z, tuple m) {
-    int b = (x + y);
-    b = (((b + 1) + at(m, 0)) + at(m, 1));
-    return ((b > 0) & z);
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {

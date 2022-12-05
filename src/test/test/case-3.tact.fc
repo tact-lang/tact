@@ -1,21 +1,11 @@
 forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
 
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
-
 builder __gen_write_Source(builder build_0, tuple v) {
     var v_0 = at(v, 0);
     var v_1 = at(v, 1);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     return build_0;
-}
-
-cell __gen_writecell_Source(tuple v) {
-    return __gen_write_Source(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_Source(tuple v) {
-    return __gen_writecell_Source(v).begin_parse();
 }
 
 (slice, tuple) __gen_read_Source(slice sc) {
@@ -41,14 +31,6 @@ builder __gen_write_SampleContract(builder build_0, tuple v) {
     return build_0;
 }
 
-cell __gen_writecell_SampleContract(tuple v) {
-    return __gen_write_SampleContract(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_SampleContract(tuple v) {
-    return __gen_writecell_SampleContract(v).begin_parse();
-}
-
 (slice, tuple) __gen_read_SampleContract(slice sc) {
     int __a = null();
     int __b = null();
@@ -62,18 +44,6 @@ slice __gen_writeslice_SampleContract(tuple v) {
     res = tpush(res, __b);
     res = tpush(res, __c);
     return (sc, res);
-}
-
-builder __gen_write_SampleContract_addStake(builder build_0, tuple v) {
-    return build_0;
-}
-
-cell __gen_writecell_SampleContract_addStake(tuple v) {
-    return __gen_write_SampleContract_addStake(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_SampleContract_addStake(tuple v) {
-    return __gen_writecell_SampleContract_addStake(v).begin_parse();
 }
 
 (slice, tuple) __gen_read_SampleContract_addStake(slice sc) {
@@ -93,26 +63,11 @@ tuple __gen_load_SampleContract() inline {
     set_data(b.end_cell());
 }
 
-int isZero(int x, int y, int z, tuple m) {
-    m = __tact_set(m, 1, 10);
-    return (((x + at(m, 1)) > 0) & z);
-}
-
 (tuple, ()) __gen_SampleContract_addStake(tuple self) {
     self = __tact_set(self, 0, 10);
     self = __tact_set(self, 1, (- 20));
     self = __tact_set(self, 2, tpush(tpush(empty_tuple(), 10), 20));
     return (self, ());
-}
-
-(tuple, int) __gen_SampleContract_stake(tuple self) {
-    return (self, at(self, 0));
-}
-
-_ __gen_get_stake() method_id(80984) {
-    tuple self = __gen_load_SampleContract();
-    var res = self~__gen_SampleContract_stake();
-    return res;
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {

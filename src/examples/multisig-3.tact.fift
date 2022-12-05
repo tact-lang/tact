@@ -1,30 +1,17 @@
 PROGRAM{
-  DECLPROC __tact_not_null
   DECLPROC __gen_write_Operation
   DECLPROC __gen_writecell_Operation
-  DECLPROC __gen_writeslice_Operation
   DECLPROC __gen_read_Operation
   DECLPROC __gen_write_MultisigContract
   DECLPROC __gen_writecell_MultisigContract
-  DECLPROC __gen_writeslice_MultisigContract
   DECLPROC __gen_read_MultisigContract
-  DECLPROC __gen_write_MultisigContract_execute
-  DECLPROC __gen_writecell_MultisigContract_execute
-  DECLPROC __gen_writeslice_MultisigContract_execute
   DECLPROC __gen_read_MultisigContract_execute
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC __gen_MultisigContract_execute
-  DECLPROC __gen_MultisigContract_seqno
-  85143 DECLMETHOD __gen_get_seqno
   DECLPROC __gen_MultisigContract_init
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
-  __tact_not_null PROC:<{
-    DUP
-    ISNULL
-    14 THROWIF
-  }>
   __gen_write_Operation PROC:<{
     DUP
     0 INDEX
@@ -47,10 +34,6 @@ PROGRAM{
     SWAP
     __gen_write_Operation CALLDICT
     ENDC
-  }>
-  __gen_writeslice_Operation PROC:<{
-    __gen_writecell_Operation CALLDICT
-    CTOS
   }>
   __gen_read_Operation PROC:<{
     257 PUSHINT
@@ -99,10 +82,6 @@ PROGRAM{
     __gen_write_MultisigContract CALLDICT
     ENDC
   }>
-  __gen_writeslice_MultisigContract PROC:<{
-    __gen_writecell_MultisigContract CALLDICT
-    CTOS
-  }>
   __gen_read_MultisigContract PROC:<{
     257 PUSHINT
     LDIX
@@ -124,44 +103,6 @@ PROGRAM{
     TPUSH
     SWAP
     TPUSH
-  }>
-  __gen_write_MultisigContract_execute PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s2 PUSH
-    2 INDEX
-    s0 s3 XCHG
-    3 INDEX
-    s4 s2 XCHG2
-    __gen_write_Operation CALLDICT
-    s0 s3 XCHG
-    ENDC
-    s0 s3 XCHG2
-    STREF
-    SWAP
-    ENDC
-    SWAP
-    STREF
-    NEWC
-    s0 s2 XCHG
-    ENDC
-    ROT
-    STREF
-    ENDC
-    SWAP
-    STREF
-  }>
-  __gen_writecell_MultisigContract_execute PROC:<{
-    NEWC
-    SWAP
-    __gen_write_MultisigContract_execute CALLDICT
-    ENDC
-  }>
-  __gen_writeslice_MultisigContract_execute PROC:<{
-    __gen_writecell_MultisigContract_execute CALLDICT
-    CTOS
   }>
   __gen_read_MultisigContract_execute PROC:<{
     __gen_read_Operation CALLDICT
@@ -246,15 +187,6 @@ PROGRAM{
     ENDC
     0 PUSHINT
     SENDRAWMSG
-  }>
-  __gen_MultisigContract_seqno PROC:<{
-    DUP
-    0 INDEX
-  }>
-  __gen_get_seqno PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_seqno CALLDICT
-    NIP
   }>
   __gen_MultisigContract_init PROC:<{
     NIL

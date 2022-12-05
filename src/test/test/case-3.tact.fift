@@ -1,29 +1,13 @@
 PROGRAM{
-  DECLPROC __tact_not_null
   DECLPROC __gen_write_Source
-  DECLPROC __gen_writecell_Source
-  DECLPROC __gen_writeslice_Source
   DECLPROC __gen_read_Source
   DECLPROC __gen_write_SampleContract
-  DECLPROC __gen_writecell_SampleContract
-  DECLPROC __gen_writeslice_SampleContract
   DECLPROC __gen_read_SampleContract
-  DECLPROC __gen_write_SampleContract_addStake
-  DECLPROC __gen_writecell_SampleContract_addStake
-  DECLPROC __gen_writeslice_SampleContract_addStake
   DECLPROC __gen_read_SampleContract_addStake
   DECLPROC __gen_load_SampleContract
   DECLPROC __gen_store_SampleContract
-  DECLPROC isZero
   DECLPROC __gen_SampleContract_addStake
-  DECLPROC __gen_SampleContract_stake
-  80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
-  __tact_not_null PROC:<{
-    DUP
-    ISNULL
-    14 THROWIF
-  }>
   __gen_write_Source PROC:<{
     DUP
     0 INDEX
@@ -34,16 +18,6 @@ PROGRAM{
     STIX
     257 PUSHINT
     STIX
-  }>
-  __gen_writecell_Source PROC:<{
-    NEWC
-    SWAP
-    __gen_write_Source CALLDICT
-    ENDC
-  }>
-  __gen_writeslice_Source PROC:<{
-    __gen_writecell_Source CALLDICT
-    CTOS
   }>
   __gen_read_Source PROC:<{
     257 PUSHINT
@@ -75,16 +49,6 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_writecell_SampleContract PROC:<{
-    NEWC
-    SWAP
-    __gen_write_SampleContract CALLDICT
-    ENDC
-  }>
-  __gen_writeslice_SampleContract PROC:<{
-    __gen_writecell_SampleContract CALLDICT
-    CTOS
-  }>
   __gen_read_SampleContract PROC:<{
     257 PUSHINT
     LDIX
@@ -102,19 +66,6 @@ PROGRAM{
     ROT
     TPUSH
   }>
-  __gen_write_SampleContract_addStake PROC:<{
-    DROP
-  }>
-  __gen_writecell_SampleContract_addStake PROC:<{
-    NEWC
-    SWAP
-    __gen_write_SampleContract_addStake CALLDICT
-    ENDC
-  }>
-  __gen_writeslice_SampleContract_addStake PROC:<{
-    __gen_writecell_SampleContract_addStake CALLDICT
-    CTOS
-  }>
   __gen_read_SampleContract_addStake PROC:<{
     NIL
   }>
@@ -131,18 +82,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  isZero PROC:<{
-    1 2 BLKDROP2
-    1 PUSHINT
-    10 PUSHINT
-    SETINDEXVARQ
-    1 INDEX
-    s1 s2 XCHG
-    ADD
-    0 GTINT
-    SWAP
-    AND
-  }>
   __gen_SampleContract_addStake PROC:<{
     0 PUSHINT
     10 PUSHINT
@@ -157,15 +96,6 @@ PROGRAM{
     20 PUSHINT
     TPUSH
     SETINDEXVARQ
-  }>
-  __gen_SampleContract_stake PROC:<{
-    DUP
-    0 INDEX
-  }>
-  __gen_get_stake PROC:<{
-    __gen_load_SampleContract INLINECALLDICT
-    __gen_SampleContract_stake CALLDICT
-    NIP
   }>
   recv_internal PROC:<{
     NIP

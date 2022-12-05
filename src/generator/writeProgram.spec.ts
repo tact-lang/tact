@@ -29,7 +29,7 @@ describe('writeProgram', () => {
         ctx = resolveTypeDescriptors(ctx);
         ctx = resolveExpressionTypes(ctx);
         ctx = resolveAllocations(ctx);
-        let output = writeProgram(ctx);
+        let output = writeProgram(ctx, true);
         expect(output).toMatchSnapshot();
     });
 });
