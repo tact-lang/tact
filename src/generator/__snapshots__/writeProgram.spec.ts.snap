@@ -14,9 +14,69 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_uint(2,2);
     b = b.store_uint(0, 1);
-    b = b.store_uint(pair_first(address), 8);
+    b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
     return b;
+}
+
+[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+    var b = begin_cell();
+    b = b.store_uint(0, 2);
+    b = b.store_uint(3, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_ref(code);
+    b = b.store_ref(data);
+    var hash = cell_hash(b.end_cell());
+    return [chain, hash];
+}
+
+builder __gen_write_SendParameters(builder build_0, tuple v) {
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
+    var v_4 = at(v, 4);
+    build_0 = store_int(build_0, v_0, 1);
+    build_0 = __tact_store_address(build_0, v_1);
+    build_0 = store_int(build_0, v_2, 257);
+    build_0 = store_int(build_0, v_3, 257);
+    if (null?(v_4)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v_4);
+    }
+    return build_0;
+}
+
+cell __gen_writecell_SendParameters(tuple v) {
+    return __gen_write_SendParameters(begin_cell(), v).end_cell();
+}
+
+slice __gen_writeslice_SendParameters(tuple v) {
+    return __gen_writecell_SendParameters(v).begin_parse();
+}
+
+(slice, tuple) __gen_read_SendParameters(slice sc) {
+    int __bounce = null();
+    [int, int] __to = null();
+    int __value = null();
+    int __mode = null();
+    cell __body = null();
+    __bounce = sc~load_int(1);
+    __to = sc~__tact_load_address();
+    __value = sc~load_int(257);
+    __mode = sc~load_int(257);
+    if (sc~load_int(1)) {
+        __body = sc~load_ref();
+    }
+    tuple res = empty_tuple();
+    res = tpush(res, __bounce);
+    res = tpush(res, __to);
+    res = tpush(res, __value);
+    res = tpush(res, __mode);
+    res = tpush(res, __body);
+    return (sc, res);
 }
 
 builder __gen_write_Point(builder build_0, tuple v) {
@@ -44,6 +104,29 @@ slice __gen_writeslice_Point(tuple v) {
     res = tpush(res, __x);
     res = tpush(res, __y);
     return (sc, res);
+}
+
+() send(tuple params) {
+    builder b = begin_cell();
+    b = store_int(b, 0, 1);
+    b = store_int(b, true, 1);
+    b = store_int(b, 0, 2);
+    b = __tact_store_address(b, at(params, 1));
+    b = store_coins(b, at(params, 2));
+    b = store_int(b, false, 1);
+    b = store_coins(b, 0);
+    b = store_coins(b, 0);
+    b = store_uint(b, 0, 64);
+    b = store_uint(b, 0, 32);
+    b = store_int(b, false, 1);
+    if ((at(params, 4) != null())) {
+        b = store_int(b, true, 1);
+        b = store_ref(b, at(params, 4));
+    } else {
+        b = store_int(b, false, 1);
+    }
+    cell c = end_cell(b);
+    send_raw_message(c, at(params, 3));
 }
 
 int improve(tuple p) {

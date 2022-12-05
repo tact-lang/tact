@@ -11,14 +11,17 @@ message Execute {
     signature3: Slice;
 }
 
-contract MultisigContract {
+message Executed {
     seqno: Int as uint32;
+}
+
+contract MultisigContract {
+    seqno: Int as uint32 = 0;
     user1_key: Int as uint256;
     user2_key: Int as uint256;
     user3_key: Int as uint256;
 
     init(key1: Int, key2: Int, key3: Int) {
-        self.seqno = 0;
         self.user1_key = key1;
         self.user2_key = key2;
         self.user3_key = key3;
@@ -39,16 +42,23 @@ contract MultisigContract {
     }
 
     fun execute(op: Operation) {
-        let b: Builder = beginCell();
-        b = storeUint(b, 0x10, 6);
-        b = storeSlice(b, op.target);
-        b = storeCoins(b, op.amount);
-        b = storeUint(b, 1, 1 + 4 + 4 + 64 + 32 + 1 + 1);
-        nativeSendMessage(endCell(b), 0);
+        send(SendParameters{ to: op.target, value: op.amount });
     }
 
     get fun testAddress(): Address {
         return computeAddress(0, endCell(beginCell()), endCell(beginCell()));
+    }
+
+    get fun key1(): Int {
+        return self.user1_key;
+    }
+
+    get fun key2(): Int {
+        return self.user2_key;
+    }
+
+    get fun key3(): Int {
+        return self.user3_key;
     }
 
     get fun seqno(): Int {

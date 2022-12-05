@@ -172,7 +172,13 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
         ctx.inIndent(() => {
             let selfInit = 'empty_tuple()';
             for (let i = 0; i < t.fields.length; i++) {
-                selfInit = `tpush(${selfInit}, null())`;
+                let init = 'null()';
+                if (typeof t.fields[i].default === 'bigint') {
+                    init = t.fields[i].default!.toString();
+                } else if (typeof t.fields[i].default === 'boolean') {
+                    init = t.fields[i].default!.toString();
+                }
+                selfInit = `tpush(${selfInit}, ${init})`;
             }
             ctx.append(`tuple self = ${selfInit};`);
 

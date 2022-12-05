@@ -205,7 +205,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             let srcT = getType(ctx, src.name);
             let field = srcT.fields.find((v) => v.name === exp.name);
             if (!field) {
-                throw Error('Field ' + exp.name + ' not found');
+                throwError(`Type "${src.name}" does not have a field named "${exp.name}"`, exp.ref);
             }
             return registerExpType(ctx, exp, field.type);
         } else if (exp.kind === 'op_call') {

@@ -6,6 +6,8 @@ function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'direct') {
         if (ref.name === 'Int') {
             return 'BigInt';
+        } else if (ref.name === 'Bool') {
+            return 'boolean';
         } else if (ref.name === 'Cell') {
             return 'Cell';
         } else if (ref.name === 'Slice') {

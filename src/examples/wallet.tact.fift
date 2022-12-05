@@ -1,0 +1,284 @@
+PROGRAM{
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_Transfer
+  DECLPROC __gen_writecell_Transfer
+  DECLPROC __gen_read_Transfer
+  DECLPROC __gen_read_TransferMessage
+  DECLPROC __gen_write_Wallet
+  DECLPROC __gen_writecell_Wallet
+  DECLPROC __gen_read_Wallet
+  DECLPROC __gen_load_Wallet
+  DECLPROC __gen_store_Wallet
+  DECLPROC send
+  DECLPROC __gen_Wallet_init
+  DECLPROC __gen_Wallet_publicKey
+  86520 DECLMETHOD __gen_get_publicKey
+  DECLPROC __gen_Wallet_seqno
+  85143 DECLMETHOD __gen_get_seqno
+  DECLPROC __gen_Wallet_receive_TransferMessage
+  DECLPROC recv_internal
+  80403 DECLMETHOD init_Wallet
+  __tact_load_address PROC:<{
+    LDMSGADDR
+    SWAP
+    REWRITESTDADDR
+    PAIR
+  }>
+  __tact_store_address PROC:<{
+    2 PUSHINT
+    ROT
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    OVER
+    FIRST
+    SWAP
+    8 STI
+    SWAP
+    SECOND
+    SWAP
+    256 STU
+  }>
+  __gen_write_Transfer PROC:<{
+    DUP
+    0 INDEX
+    OVER
+    1 INDEX
+    s2 PUSH
+    2 INDEX
+    s0 s3 XCHG
+    3 INDEX
+    s2 s4 XCHG2
+    8 STU
+    SWAP
+    __tact_store_address CALLDICT
+    SWAP
+    STGRAMS
+    OVER
+    ISNULL
+    IF:<{
+      FALSE
+      s2 POP
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>
+  }>
+  __gen_writecell_Transfer PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Transfer CALLDICT
+    ENDC
+  }>
+  __gen_read_Transfer PROC:<{
+    PUSHNULL
+    SWAP
+    8 LDU
+    __tact_load_address CALLDICT
+    SWAP
+    LDGRAMS
+    1 LDI
+    SWAP
+    IF:<{
+      s4 POP
+      s0 s3 XCHG
+      LDREF
+      s1 s4 XCHG
+    }>
+    NIL
+    s0 s4 XCHG2
+    TPUSH
+    ROT
+    TPUSH
+    SWAP
+    TPUSH
+    ROT
+    TPUSH
+  }>
+  __gen_read_TransferMessage PROC:<{
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    __gen_read_Transfer CALLDICT
+    NIL
+    s0 s3 XCHG2
+    TPUSH
+    ROT
+    TPUSH
+  }>
+  __gen_write_Wallet PROC:<{
+    DUP
+    0 INDEX
+    OVER
+    1 INDEX
+    s0 s2 XCHG
+    2 INDEX
+    s0 s3 XCHG
+    32 STU
+    256 STU
+    32 STU
+  }>
+  __gen_writecell_Wallet PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Wallet CALLDICT
+    ENDC
+  }>
+  __gen_read_Wallet PROC:<{
+    32 LDU
+    256 LDU
+    32 LDU
+    NIL
+    s0 s4 XCHG2
+    TPUSH
+    ROT
+    TPUSH
+    SWAP
+    TPUSH
+  }>
+  __gen_load_Wallet PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    __gen_read_Wallet CALLDICT
+    NIP
+  }>
+  __gen_store_Wallet PROC:<{
+    NEWC
+    SWAP
+    __gen_write_Wallet CALLDICT
+    ENDC
+    c4 POP
+  }>
+  send PROC:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    1 STI
+    TRUE
+    SWAP
+    1 STI
+    0 PUSHINT
+    SWAP
+    2 STI
+    OVER
+    1 INDEX
+    __tact_store_address CALLDICT
+    OVER
+    2 INDEX
+    STGRAMS
+    FALSE
+    SWAP
+    1 STI
+    0 PUSHINT
+    STGRAMS
+    0 PUSHINT
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    64 STU
+    0 PUSHINT
+    SWAP
+    32 STU
+    FALSE
+    SWAP
+    1 STI
+    OVER
+    4 INDEX
+    PUSHNULL
+    NEQ
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      OVER
+      4 INDEX
+      SWAP
+      STREF
+    }>ELSE<{
+      FALSE
+      SWAP
+      1 STI
+    }>
+    ENDC
+    SWAP
+    3 INDEX
+    SENDRAWMSG
+  }>
+  __gen_Wallet_init PROC:<{
+    NIL
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    0 PUSHINT
+    DUP
+    SETINDEXVARQ
+    1 PUSHINT
+    ROT
+    s0 s3 XCHG
+    SETINDEXVARQ
+    2 PUSHINT
+    ROT
+    SETINDEXVARQ
+    __gen_writecell_Wallet CALLDICT
+  }>
+  __gen_Wallet_publicKey PROC:<{
+    DUP
+    1 INDEX
+  }>
+  __gen_get_publicKey PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    __gen_Wallet_publicKey CALLDICT
+    NIP
+  }>
+  __gen_Wallet_seqno PROC:<{
+    DUP
+    0 INDEX
+  }>
+  __gen_get_seqno PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    __gen_Wallet_seqno CALLDICT
+    NIP
+  }>
+  __gen_Wallet_receive_TransferMessage PROC:<{
+    DUP
+    1 INDEX
+    __gen_writecell_Transfer CALLDICT
+    HASHCU
+    OVER
+    0 INDEX
+    s2 POP
+    s2 PUSH
+    1 INDEX
+    s1 s2 XCHG
+    CHKSIGNU
+    10 THROWIFNOT
+  }>
+  recv_internal PROC:<{
+    NIP
+    32 LDI
+    __gen_load_Wallet INLINECALLDICT
+    s0 s2 XCHG
+    1843760589 PUSHINT
+    EQUAL
+    IF:<{
+      __gen_read_TransferMessage CALLDICT
+      NIP
+      __gen_Wallet_receive_TransferMessage CALLDICT
+    }>ELSE<{
+      DROP
+    }>
+    __gen_store_Wallet CALLDICT
+  }>
+  init_Wallet PROC:<{
+    __gen_Wallet_init CALLDICT
+  }>
+}END>c

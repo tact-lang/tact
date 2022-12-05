@@ -115,9 +115,31 @@ tuple __gen_load_MultisigContract() inline {
     set_data(b.end_cell());
 }
 
+() send(tuple params) {
+    builder b = begin_cell();
+    b = store_int(b, 0, 1);
+    b = store_int(b, true, 1);
+    b = store_int(b, 0, 2);
+    b = __tact_store_address(b, at(params, 1));
+    b = store_coins(b, at(params, 2));
+    b = store_int(b, false, 1);
+    b = store_coins(b, 0);
+    b = store_coins(b, 0);
+    b = store_uint(b, 0, 64);
+    b = store_uint(b, 0, 32);
+    b = store_int(b, false, 1);
+    if ((at(params, 4) != null())) {
+        b = store_int(b, true, 1);
+        b = store_ref(b, at(params, 4));
+    } else {
+        b = store_int(b, false, 1);
+    }
+    cell c = end_cell(b);
+    send_raw_message(c, at(params, 3));
+}
+
 cell __gen_MultisigContract_init(int key1, int key2, int key3) {
-    tuple self = tpush(tpush(tpush(tpush(empty_tuple(), null()), null()), null()), null());
-    self = __tact_set(self, 0, 0);
+    tuple self = tpush(tpush(tpush(tpush(empty_tuple(), 0), null()), null()), null());
     self = __tact_set(self, 1, key1);
     self = __tact_set(self, 2, key2);
     self = __tact_set(self, 3, key3);
@@ -125,12 +147,7 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) {
 }
 
 (tuple, ()) __gen_MultisigContract_execute(tuple self, tuple op) {
-    builder b = begin_cell();
-    b = store_uint(b, 16, 6);
-    b = store_slice(b, at(op, 2));
-    b = store_coins(b, at(op, 1));
-    b = store_uint(b, 1, ((((((1 + 4) + 4) + 64) + 32) + 1) + 1));
-    send_raw_message(end_cell(b), 0);
+    send(tpush(tpush(tpush(tpush(tpush(empty_tuple(), true), at(op, 2)), at(op, 1)), 0), null()));
     return (self, ());
 }
 
@@ -141,6 +158,36 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) {
 _ __gen_get_testAddress() method_id(80602) {
     tuple self = __gen_load_MultisigContract();
     var res = self~__gen_MultisigContract_testAddress();
+    return res;
+}
+
+(tuple, int) __gen_MultisigContract_key1(tuple self) {
+    return (self, at(self, 1));
+}
+
+_ __gen_get_key1() method_id(107493) {
+    tuple self = __gen_load_MultisigContract();
+    var res = self~__gen_MultisigContract_key1();
+    return res;
+}
+
+(tuple, int) __gen_MultisigContract_key2(tuple self) {
+    return (self, at(self, 2));
+}
+
+_ __gen_get_key2() method_id(103302) {
+    tuple self = __gen_load_MultisigContract();
+    var res = self~__gen_MultisigContract_key2();
+    return res;
+}
+
+(tuple, int) __gen_MultisigContract_key3(tuple self) {
+    return (self, at(self, 3));
+}
+
+_ __gen_get_key3() method_id(99239) {
+    tuple self = __gen_load_MultisigContract();
+    var res = self~__gen_MultisigContract_key3();
     return res;
 }
 

@@ -14,9 +14,20 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_uint(2,2);
     b = b.store_uint(0, 1);
-    b = b.store_uint(pair_first(address), 8);
+    b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
     return b;
+}
+
+[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+    var b = begin_cell();
+    b = b.store_uint(0, 2);
+    b = b.store_uint(3, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_ref(code);
+    b = b.store_ref(data);
+    var hash = cell_hash(b.end_cell());
+    return [chain, hash];
 }
 
 builder __gen_write_A(builder build_0, tuple v) {
@@ -103,9 +114,20 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_uint(2,2);
     b = b.store_uint(0, 1);
-    b = b.store_uint(pair_first(address), 8);
+    b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
     return b;
+}
+
+[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+    var b = begin_cell();
+    b = b.store_uint(0, 2);
+    b = b.store_uint(3, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_ref(code);
+    b = b.store_ref(data);
+    var hash = cell_hash(b.end_cell());
+    return [chain, hash];
 }
 
 builder __gen_write_B(builder build_0, tuple v) {
@@ -192,9 +214,20 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_uint(2,2);
     b = b.store_uint(0, 1);
-    b = b.store_uint(pair_first(address), 8);
+    b = b.store_int(pair_first(address), 8);
     b = b.store_uint(pair_second(address), 256);
     return b;
+}
+
+[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+    var b = begin_cell();
+    b = b.store_uint(0, 2);
+    b = b.store_uint(3, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_ref(code);
+    b = b.store_ref(data);
+    var hash = cell_hash(b.end_cell());
+    return [chain, hash];
 }
 
 builder __gen_write_C(builder build_0, tuple v) {

@@ -154,7 +154,20 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     if (f.kind === 'op_new') {
         let src = getType(ctx.ctx, f.type);
-        let expressions = src.fields.map((v) => writeExpression(f.args.find((v2) => v2.name === v.name)!.exp, ctx));
+        let expressions = src.fields.map((v) => {
+            let arg = f.args.find((v2) => v2.name === v.name);
+            if (arg) {
+                return writeExpression(arg.exp, ctx);
+            } else if (v.default !== undefined) {
+                if (v.default === null) {
+                    return 'null()';
+                } else {
+                    return v.default.toString();
+                }
+            } else {
+                throwError(`Missing argument for field "${v.name}" in struct "${src.name}"`, f.ref);
+            }
+        }, ctx);
         let res = 'tpush(empty_tuple(), ' + expressions[0] + ')';
         for (let i = 1; i < expressions.length; i++) {
             res = 'tpush(' + res + ', ' + expressions[i] + ')';

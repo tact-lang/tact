@@ -11,10 +11,17 @@ PROGRAM{
   DECLPROC __gen_read_MultisigContract
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
+  DECLPROC send
   DECLPROC __gen_MultisigContract_init
   DECLPROC __gen_MultisigContract_execute
   DECLPROC __gen_MultisigContract_testAddress
   80602 DECLMETHOD __gen_get_testAddress
+  DECLPROC __gen_MultisigContract_key1
+  107493 DECLMETHOD __gen_get_key1
+  DECLPROC __gen_MultisigContract_key2
+  103302 DECLMETHOD __gen_get_key2
+  DECLPROC __gen_MultisigContract_key3
+  99239 DECLMETHOD __gen_get_key3
   DECLPROC __gen_MultisigContract_seqno
   85143 DECLMETHOD __gen_get_seqno
   DECLPROC __gen_MultisigContract_receive_Execute
@@ -165,19 +172,71 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  send PROC:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    1 STI
+    TRUE
+    SWAP
+    1 STI
+    0 PUSHINT
+    SWAP
+    2 STI
+    OVER
+    1 INDEX
+    __tact_store_address CALLDICT
+    OVER
+    2 INDEX
+    STGRAMS
+    FALSE
+    SWAP
+    1 STI
+    0 PUSHINT
+    STGRAMS
+    0 PUSHINT
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    64 STU
+    0 PUSHINT
+    SWAP
+    32 STU
+    FALSE
+    SWAP
+    1 STI
+    OVER
+    4 INDEX
+    PUSHNULL
+    NEQ
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      OVER
+      4 INDEX
+      SWAP
+      STREF
+    }>ELSE<{
+      FALSE
+      SWAP
+      1 STI
+    }>
+    ENDC
+    SWAP
+    3 INDEX
+    SENDRAWMSG
+  }>
   __gen_MultisigContract_init PROC:<{
     NIL
-    PUSHNULL
-    TPUSH
-    PUSHNULL
-    TPUSH
-    PUSHNULL
-    TPUSH
-    PUSHNULL
-    TPUSH
     0 PUSHINT
-    DUP
-    SETINDEXVARQ
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHNULL
+    TPUSH
     1 PUSHINT
     ROT
     s0 s4 XCHG
@@ -191,22 +250,7 @@ PROGRAM{
     __gen_writecell_MultisigContract CALLDICT
   }>
   __gen_MultisigContract_execute PROC:<{
-    NEWC
-    16 PUSHINT
-    SWAP
-    6 STU
-    OVER
-    2 INDEX
-    STSLICER
-    SWAP
-    1 INDEX
-    STGRAMS
-    1 PUSHINT
-    SWAP
-    107 STU
-    ENDC
-    0 PUSHINT
-    SENDRAWMSG
+    DROP
   }>
   __gen_MultisigContract_testAddress PROC:<{
     0 PUSHINT
@@ -219,6 +263,33 @@ PROGRAM{
   __gen_get_testAddress PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
     __gen_MultisigContract_testAddress CALLDICT
+    NIP
+  }>
+  __gen_MultisigContract_key1 PROC:<{
+    DUP
+    1 INDEX
+  }>
+  __gen_get_key1 PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    __gen_MultisigContract_key1 CALLDICT
+    NIP
+  }>
+  __gen_MultisigContract_key2 PROC:<{
+    DUP
+    2 INDEX
+  }>
+  __gen_get_key2 PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    __gen_MultisigContract_key2 CALLDICT
+    NIP
+  }>
+  __gen_MultisigContract_key3 PROC:<{
+    DUP
+    3 INDEX
+  }>
+  __gen_get_key3 PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    __gen_MultisigContract_key3 CALLDICT
     NIP
   }>
   __gen_MultisigContract_seqno PROC:<{

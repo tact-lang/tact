@@ -67,12 +67,16 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
                     return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'int' };
                 } else if (src.as === 'int32') {
                     return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'int' };
+                } else if (src.as === 'int64') {
+                    return { index: src.index, size: { bits: 64, refs: 0 }, bits: 64, name: src.name, kind: 'int' };
                 } else if (src.as === 'int256') {
                     return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'int' };
                 } else if (src.as === 'uint8') {
                     return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'uint' };
                 } else if (src.as === 'uint32') {
                     return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'uint' };
+                } else if (src.as === 'uint64') {
+                    return { index: src.index, size: { bits: 64, refs: 0 }, bits: 64, name: src.name, kind: 'uint' };
                 } else if (src.as === 'uint256') {
                     return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'uint' };
                 } else {

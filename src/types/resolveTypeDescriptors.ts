@@ -126,7 +126,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
 
     // Resolve fields
     function resolveField(src: ASTField, index: number): FieldDescription {
-        return { name: src.name, type: resolveTypeRef(src.type), index, as: src.as };
+        return { name: src.name, type: resolveTypeRef(src.type), index, as: src.as, default: src.init };
     }
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];

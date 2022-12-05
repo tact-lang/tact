@@ -1,0 +1,178 @@
+forall X -> tuple __tact_set(tuple x, int i, X v) asm "SETINDEXVARQ";
+
+(slice, [int, int]) __tact_load_address(slice cs) {
+    slice raw = cs~load_msg_addr();
+    var (r1, r2) = parse_std_addr(raw);
+    return (cs, [r1, r2]);
+}
+
+builder __tact_store_address(builder b, [int, int] address) {
+    b = b.store_uint(2,2);
+    b = b.store_uint(0, 1);
+    b = b.store_int(pair_first(address), 8);
+    b = b.store_uint(pair_second(address), 256);
+    return b;
+}
+
+builder __gen_write_Transfer(builder build_0, tuple v) {
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    var v_3 = at(v, 3);
+    build_0 = store_uint(build_0, v_0, 8);
+    build_0 = __tact_store_address(build_0, v_1);
+    build_0 = store_coins(build_0, v_2);
+    if (null?(v_3)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v_3);
+    }
+    return build_0;
+}
+
+cell __gen_writecell_Transfer(tuple v) {
+    return __gen_write_Transfer(begin_cell(), v).end_cell();
+}
+
+(slice, tuple) __gen_read_Transfer(slice sc) {
+    int __mode = null();
+    [int, int] __to = null();
+    int __amount = null();
+    cell __body = null();
+    __mode = sc~load_uint(8);
+    __to = sc~__tact_load_address();
+    __amount = sc~load_coins();
+    if (sc~load_int(1)) {
+        __body = sc~load_ref();
+    }
+    tuple res = empty_tuple();
+    res = tpush(res, __mode);
+    res = tpush(res, __to);
+    res = tpush(res, __amount);
+    res = tpush(res, __body);
+    return (sc, res);
+}
+
+(slice, tuple) __gen_read_TransferMessage(slice sc) {
+    slice __signature = null();
+    tuple __transfer = null();
+    __signature = sc~load_ref().begin_parse();
+    __transfer = sc~__gen_read_Transfer();
+    tuple res = empty_tuple();
+    res = tpush(res, __signature);
+    res = tpush(res, __transfer);
+    return (sc, res);
+}
+
+builder __gen_write_Wallet(builder build_0, tuple v) {
+    var v_0 = at(v, 0);
+    var v_1 = at(v, 1);
+    var v_2 = at(v, 2);
+    build_0 = store_uint(build_0, v_0, 32);
+    build_0 = store_uint(build_0, v_1, 256);
+    build_0 = store_uint(build_0, v_2, 32);
+    return build_0;
+}
+
+cell __gen_writecell_Wallet(tuple v) {
+    return __gen_write_Wallet(begin_cell(), v).end_cell();
+}
+
+(slice, tuple) __gen_read_Wallet(slice sc) {
+    int __seqno = null();
+    int __key = null();
+    int __walletId = null();
+    __seqno = sc~load_uint(32);
+    __key = sc~load_uint(256);
+    __walletId = sc~load_uint(32);
+    tuple res = empty_tuple();
+    res = tpush(res, __seqno);
+    res = tpush(res, __key);
+    res = tpush(res, __walletId);
+    return (sc, res);
+}
+
+tuple __gen_load_Wallet() inline {
+    slice sc = get_data().begin_parse();
+    tuple res = sc~__gen_read_Wallet();
+    return res;
+}
+
+() __gen_store_Wallet(tuple v) impure {
+    builder b = begin_cell();
+    b = __gen_write_Wallet(b, v);
+    set_data(b.end_cell());
+}
+
+() send(tuple params) {
+    builder b = begin_cell();
+    b = store_int(b, 0, 1);
+    b = store_int(b, true, 1);
+    b = store_int(b, 0, 2);
+    b = __tact_store_address(b, at(params, 1));
+    b = store_coins(b, at(params, 2));
+    b = store_int(b, false, 1);
+    b = store_coins(b, 0);
+    b = store_coins(b, 0);
+    b = store_uint(b, 0, 64);
+    b = store_uint(b, 0, 32);
+    b = store_int(b, false, 1);
+    if ((at(params, 4) != null())) {
+        b = store_int(b, true, 1);
+        b = store_ref(b, at(params, 4));
+    } else {
+        b = store_int(b, false, 1);
+    }
+    cell c = end_cell(b);
+    send_raw_message(c, at(params, 3));
+}
+
+cell __gen_Wallet_init(int key, int walletId) {
+    tuple self = tpush(tpush(tpush(empty_tuple(), null()), null()), null());
+    self = __tact_set(self, 0, 0);
+    self = __tact_set(self, 1, key);
+    self = __tact_set(self, 2, walletId);
+    return __gen_writecell_Wallet(self);
+}
+
+(tuple, int) __gen_Wallet_publicKey(tuple self) {
+    return (self, at(self, 1));
+}
+
+_ __gen_get_publicKey() method_id(86520) {
+    tuple self = __gen_load_Wallet();
+    var res = self~__gen_Wallet_publicKey();
+    return res;
+}
+
+(tuple, int) __gen_Wallet_seqno(tuple self) {
+    return (self, at(self, 0));
+}
+
+_ __gen_get_seqno() method_id(85143) {
+    tuple self = __gen_load_Wallet();
+    var res = self~__gen_Wallet_seqno();
+    return res;
+}
+
+(tuple, ()) __gen_Wallet_receive_TransferMessage(tuple self, tuple msg) {
+    int op_hash = cell_hash(__gen_writecell_Transfer(at(msg, 1)));
+    throw_unless(10, check_signature(op_hash, at(msg, 0), at(self, 1)));
+    send(tpush(tpush(tpush(tpush(tpush(empty_tuple(), true), at(at(msg, 1), 2)), at(at(msg, 1), 2)), at(at(msg, 1), 0)), at(at(msg, 1), 3)));
+    return (self, ());
+}
+
+() recv_internal(cell in_msg_cell, slice in_msg) impure {
+    int op = in_msg~load_int(32);
+    tuple self = __gen_load_Wallet();
+    if (op == 1843760589) {
+        tuple msg = in_msg~__gen_read_TransferMessage();
+        self~__gen_Wallet_receive_TransferMessage(msg);
+    }
+    __gen_store_Wallet(self);
+}
+
+cell init_Wallet(int key, int walletId) method_id {
+    return __gen_Wallet_init(key, walletId);
+}

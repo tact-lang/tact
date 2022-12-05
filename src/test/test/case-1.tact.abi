@@ -2,6 +2,50 @@
   "name": "Empty",
   "structs": [
     {
+      "name": "SendParameters",
+      "header": 0,
+      "fields": [
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "direct",
+            "name": "Bool"
+          }
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "direct",
+            "name": "Address"
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "mode",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "optional",
+            "inner": {
+              "kind": "direct",
+              "name": "Cell"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Source",
       "header": 0,
       "fields": [

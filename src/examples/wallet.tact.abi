@@ -1,0 +1,129 @@
+{
+  "name": "Wallet",
+  "structs": [
+    {
+      "name": "SendParameters",
+      "header": 0,
+      "fields": [
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "direct",
+            "name": "Bool"
+          }
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "direct",
+            "name": "Address"
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "mode",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "optional",
+            "inner": {
+              "kind": "direct",
+              "name": "Cell"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transfer",
+      "header": 0,
+      "fields": [
+        {
+          "name": "mode",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "direct",
+            "name": "Address"
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "optional",
+            "inner": {
+              "kind": "direct",
+              "name": "Cell"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "TransferMessage",
+      "header": 0,
+      "fields": [
+        {
+          "name": "signature",
+          "type": {
+            "kind": "direct",
+            "name": "Slice"
+          }
+        },
+        {
+          "name": "transfer",
+          "type": {
+            "kind": "direct",
+            "name": "Transfer"
+          }
+        }
+      ]
+    }
+  ],
+  "code": "te6ccgECJAEAAaMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAUggIQIBIAYHACfQgbxHwBPkAIW8QMiJvERL5EPKKgIBIAgJAgEgFhcCASAKCwIBIBARAgEgDA0CASAODwA5DHSH+1E0PAJMQKCEG3ljc26lfAGMfAQkTDi8AuAADz6QAH6RG8CgACkcljLAXABywAhbxABygcBbxEBy/+AASQgbxAhbxEibxIDbxNQJMsHAfACAfoCIW6UcDLKAJV/AcoAzOKACASASEwIBIBQVAAsyAHwA8mAAQxtAdMH8AEB+gDSAAGUNAPUFN5vAFAEb4xYb4wBb4xYb4yAAHzUAdAB8AVvAFADb4xYb4yAAIQgbxAhbxECbxIDyx/L/8sfgAgEgGBkCASAcHQIBIBobAA9cgB8AfJ7VSAALMgB8AfJgACU0x/T/9MfbwBQBG+MWG+MAW+MgADVW8AbW+MbW+MbW+McCBvh3FYA2+Hclhvh/AIgCASAeHwAHCBvEYAAHCBvEIAAJu6E/ANgCAUgiIwAXsyX7UTQ8Akx8A8xgABewfjtRNDwCTHwDjGA=",
+  "init": {
+    "name": "init_Wallet",
+    "args": [
+      {
+        "name": "key",
+        "type": {
+          "kind": "direct",
+          "name": "Int"
+        }
+      },
+      {
+        "name": "walletId",
+        "type": {
+          "kind": "direct",
+          "name": "Int"
+        }
+      }
+    ]
+  },
+  "receivers": [
+    "TransferMessage"
+  ]
+}

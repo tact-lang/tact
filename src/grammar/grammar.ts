@@ -1,6 +1,8 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTFunctionAttribute, ASTNode, ASTProgram, createNode, createRef } from '../ast/ast';
+import { ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from '../ast/ast';
 import { checkVariableName } from './checkVariableName';
+import { TypeRef } from '../types/types';
+import { resolveConstantValue } from '../types/resolveConstantValue';
 
 
 // Semantics
@@ -81,6 +83,18 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg0.sourceString,
             type: arg2.resolve_expression(),
             as: null,
+            init: undefined,
+            ref: createRef(this)
+        })
+    },
+    Field_defaultWithInit(arg0, arg1, arg2, arg3, arg4, arg5) {
+        let tr = (arg2.resolve_expression() as ASTTypeRef);
+        return createNode({
+            kind: 'def_field',
+            name: arg0.sourceString,
+            type: tr,
+            as: null,
+            init: resolveConstantValue(tr, arg4.resolve_expression()),
             ref: createRef(this)
         })
     },
@@ -90,6 +104,18 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg0.sourceString,
             type: arg2.resolve_expression(),
             as: arg4.sourceString,
+            init: undefined,
+            ref: createRef(this)
+        })
+    },
+    Field_withSerializationAndInit(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        let tr = (arg2.resolve_expression() as ASTTypeRef);
+        return createNode({
+            kind: 'def_field',
+            name: arg0.sourceString,
+            type: tr,
+            as: arg4.sourceString,
+            init: resolveConstantValue(tr, arg6.resolve_expression()),
             ref: createRef(this)
         })
     },

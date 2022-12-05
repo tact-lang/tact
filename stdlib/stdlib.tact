@@ -52,3 +52,43 @@ native nativeThrowUnless(code: Int, condition: Bool);
 
 @name(__tact_compute_contract_address)
 native computeAddress(chain: Int, code: Cell, data: Cell): Address;
+
+@name(__tact_store_address)
+native storeAddress(s: Builder, address: Address): Builder;
+
+struct SendParameters {
+    bounce: Bool = true;
+    to: Address;
+    value: Int;
+    mode: Int = 0;
+    body: Cell? = null;
+}
+
+fun send(params: SendParameters) {
+    let b: Builder = beginCell();
+    b = storeInt(b, 0, 1); // Header
+    b = storeInt(b, true, 1); // ihd_disabled
+    b = storeInt(b, 0 ,2); // From
+    b = storeAddress(b, params.to); // To
+    b = storeCoins(b, params.value); // Value
+    b = storeInt(b, false, 1); // currency_collection
+    b = storeCoins(b, 0); // IHR fees
+    b = storeCoins(b, 0); // Fwd fees
+    b = storeUint(b, 0, 64); // CreatedLT
+    b = storeUint(b, 0, 32); // CreatedAt
+
+    // Stateinit
+    b = storeInt(b, false, 1); // No state init
+    
+    // Body
+    if (params.body != null) {
+        b = storeInt(b, true, 1);
+        b = storeRef(b, params.body);
+    } else {
+        b = storeInt(b, false, 1); // No body
+    }
+
+    // Send
+    let c: Cell = endCell(b);
+    nativeSendMessage(c, params.mode);
+}

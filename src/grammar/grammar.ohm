@@ -20,7 +20,9 @@ Tact {
     Type = typeLiteral "?" --optional
          | typeLiteral --required
     Field = id ":" Type ";" --default
+          | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization
+          | id ":" Type as id "=" Expression ";" --withSerializationAndInit
 
     // Struct
     Struct = struct id "{" StructBody* "}" --originary
