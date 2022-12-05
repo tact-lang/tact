@@ -89,10 +89,11 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
     ctx.fun(`__gen_write_${name}`, () => {
         ctx.append(`builder __gen_write_${name}(builder build_0, tuple v) impure {`);
         ctx.inIndent(() => {
-            for (let f of allocation.fields) {
-                ctx.append(`var v_${f.index} = at(v, ${f.index});`);
+            if (allocation.fields.length > 0) {
+                ctx.used(`__tact_from_tuple`);
+                ctx.append(`var [${allocation.fields.map((f) => `v_${f.index}`).join(', ')}] = __tact_from_tuple(v);`);
+                writeSerializerCell(allocation.root, 0, ctx);
             }
-            writeSerializerCell(allocation.root, 0, ctx);
             ctx.append(`return build_0;`);
         });
         ctx.append(`}`);
@@ -128,6 +129,7 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle optional
 
     if (f.kind === 'optional') {
+        ctx.append(`var __${f.name} = null();`);
         ctx.append('if (sc~load_int(1)) {');
         ctx.inIndent(() => {
             writeFieldParser(f.inner, ctx);
@@ -139,33 +141,33 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle primitive values
 
     if (f.kind === 'int') {
-        ctx.append(`__${f.name} = sc~load_int(${f.bits});`);
+        ctx.append(`var __${f.name} = sc~load_int(${f.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        ctx.append(`__${f.name} = sc~load_uint(${f.bits});`);
+        ctx.append(`var __${f.name} = sc~load_uint(${f.bits});`);
         return;
     }
 
     if (f.kind === 'coins') {
-        ctx.append(`__${f.name} = sc~load_coins();`);
+        ctx.append(`var __${f.name} = sc~load_coins();`);
         return;
     }
 
     if (f.kind === 'slice') {
-        ctx.append(`__${f.name} = sc~load_ref().begin_parse();`);
+        ctx.append(`var __${f.name} = sc~load_ref().begin_parse();`);
         return;
     }
 
     if (f.kind === 'cell') {
-        ctx.append(`__${f.name} = sc~load_ref();`);
+        ctx.append(`var __${f.name} = sc~load_ref();`);
         return;
     }
 
     if (f.kind === 'address') {
         ctx.used(`__tact_load_address`);
-        ctx.append(`__${f.name} = sc~__tact_load_address();`);
+        ctx.append(`var __${f.name} = sc~__tact_load_address();`);
         return;
     }
 
@@ -173,7 +175,7 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
 
     if (f.kind === 'struct') {
         ctx.used(`__gen_read_${f.type.name}`);
-        ctx.append(`__${f.name} = sc~__gen_read_${f.type.name}();`);
+        ctx.append(`var __${f.name} = sc~__gen_read_${f.type.name}();`);
         return;
     }
 
@@ -200,9 +202,9 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
         ctx.inIndent(() => {
 
             // Create variables
-            for (let f of allocation.fields) {
-                ctx.append(`${resolveFuncType(f.type, ctx)} __${f.name} = null();`);
-            }
+            // for (let f of allocation.fields) {
+            //     ctx.append(`${resolveFuncType(f.type, ctx)} __${f.name} = null();`);
+            // }
 
             // Write cell parser
             writeCellParser(allocation.root, ctx);

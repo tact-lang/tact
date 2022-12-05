@@ -25,12 +25,14 @@ contract Wallet {
     receive(msg: TransferMessage) {
 
         // Check Signature
-        let op_hash: Int = hashCell(abi.pack_cell(msg.transfer));
+        let op: Transfer = msg.transfer;
+        let op_hash: Int = hashCell(abi.pack_cell(op));
         require(42, checkSignature(op_hash, msg.signature, self.key));
-        require(43, msg.transfer.seqno == self.seqno);
+        require(43, op.seqno == self.seqno);
 
         // Send message
-        send(SendParameters{value: msg.transfer.amount, to: msg.transfer.to, mode: msg.transfer.mode, body: msg.transfer.body});
+        send(SendParameters{value: op.amount, to: op.to, mode: op.mode, body: op.body});
+        // nativeSendMessage(msg.transfer, 0);
     }
 
     get fun publicKey(): Int {

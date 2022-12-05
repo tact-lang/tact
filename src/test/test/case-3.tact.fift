@@ -9,10 +9,7 @@ PROGRAM{
   80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
   __gen_write_Source PROC:<{
-    DUP
-    0 INDEX
-    SWAP
-    1 INDEX
+    UNPAIR
     s0 s2 XCHG
     257 PUSHINT
     STIX
@@ -28,13 +25,8 @@ PROGRAM{
     PAIR
   }>
   __gen_write_SampleContract PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s0 s2 XCHG
-    2 INDEX
-    s0 s3 XCHG
+    UNTRIPLE
+    s2 s3 XCHG2
     257 PUSHINT
     STIX
     257 PUSHINT

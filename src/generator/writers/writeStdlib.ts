@@ -44,4 +44,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_to_tuple', () => {
         ctx.append(`forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";`);
     });
+    ctx.fun('__tact_from_tuple', () => {
+        ctx.append(`forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";`);
+    });
 }

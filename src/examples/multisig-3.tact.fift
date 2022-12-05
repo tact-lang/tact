@@ -74,13 +74,8 @@ PROGRAM{
     PAIR
   }>
   __gen_write_Operation PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s0 s2 XCHG
-    2 INDEX
-    s0 s3 XCHG
+    UNTRIPLE
+    s2 s3 XCHG2
     32 STU
     SWAP
     STGRAMS
@@ -119,15 +114,8 @@ PROGRAM{
     4 TUPLE
   }>
   __gen_write_MultisigContract PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s2 PUSH
-    2 INDEX
-    s0 s3 XCHG
-    3 INDEX
-    s2 s4 XCHG2
+    4 UNTUPLE
+    s3 s4 XCHG2
     32 STU
     256 STU
     256 STU
@@ -162,41 +150,25 @@ PROGRAM{
   }>
   send PROC:<{
     NEWC
-    0 PUSHINT
+    1 PUSHINT
     SWAP
-    1 STI
-    TRUE
-    SWAP
-    1 STI
+    2 STI
     OVER
     0 INDEX
     SWAP
     1 STI
-    FALSE
-    SWAP
-    1 STI
     0 PUSHINT
     SWAP
-    2 STI
+    3 STI
     OVER
     1 INDEX
     __tact_store_address CALLDICT
     OVER
     2 INDEX
     STGRAMS
-    FALSE
-    SWAP
-    1 STI
-    0 PUSHINT
-    STGRAMS
-    0 PUSHINT
-    STGRAMS
     0 PUSHINT
     SWAP
-    64 STU
-    0 PUSHINT
-    SWAP
-    32 STU
+    105 STI
     FALSE
     SWAP
     1 STI

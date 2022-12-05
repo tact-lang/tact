@@ -66,18 +66,12 @@ struct SendParameters {
 
 fun send(params: SendParameters) {
     let b: Builder = beginCell();
-    b = storeInt(b, 0, 1); // internal_message
-    b = storeInt(b, true, 1); // ihd_disabled
+    b = storeInt(b, 1, 2); // internal_message + ihd_disabled
     b = storeInt(b, params.bounce, 1); // bounce
-    b = storeInt(b, false, 1); // bounced
-    b = storeInt(b, 0, 2); // From
+    b = storeInt(b, 0, 3); // bounced + from
     b = storeAddress(b, params.to); // To
     b = storeCoins(b, params.value); // Value
-    b = storeInt(b, false, 1); // currency_collection
-    b = storeCoins(b, 0); // IHR fees
-    b = storeCoins(b, 0); // Fwd fees
-    b = storeUint(b, 0, 64); // CreatedLT
-    b = storeUint(b, 0, 32); // CreatedAt
+    b = storeInt(b, 0, 1 + 4 + 4 + 64 + 32); // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
 
     // Stateinit
     b = storeInt(b, false, 1); // No state init

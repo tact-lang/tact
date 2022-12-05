@@ -50,18 +50,10 @@ PROGRAM{
     256 STU
   }>
   __gen_write_Transfer PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s2 PUSH
-    2 INDEX
-    s3 PUSH
-    3 INDEX
-    s0 s4 XCHG
-    4 INDEX
-    s3 s5 XCHG2
+    5 UNTUPLE
+    s4 s5 XCHG2
     32 STU
+    s1 s2 XCHG
     8 STU
     SWAP
     __tact_store_address CALLDICT
@@ -87,22 +79,20 @@ PROGRAM{
     ENDC
   }>
   __gen_read_Transfer PROC:<{
-    PUSHNULL
-    SWAP
     32 LDU
     8 LDU
     __tact_load_address CALLDICT
     SWAP
     LDGRAMS
+    PUSHNULL
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      s5 POP
-      s0 s4 XCHG
       LDREF
-      s1 s5 XCHG
+      NIP
     }>
-    s0 s5 XCHG
+    5 -ROLL
     5 TUPLE
   }>
   __gen_read_TransferMessage PROC:<{
@@ -115,13 +105,8 @@ PROGRAM{
     PAIR
   }>
   __gen_write_Wallet PROC:<{
-    DUP
-    0 INDEX
-    OVER
-    1 INDEX
-    s0 s2 XCHG
-    2 INDEX
-    s0 s3 XCHG
+    UNTRIPLE
+    s2 s3 XCHG2
     32 STU
     256 STU
     64 STU
@@ -154,41 +139,25 @@ PROGRAM{
   }>
   send PROC:<{
     NEWC
-    0 PUSHINT
+    1 PUSHINT
     SWAP
-    1 STI
-    TRUE
-    SWAP
-    1 STI
+    2 STI
     OVER
     0 INDEX
     SWAP
     1 STI
-    FALSE
-    SWAP
-    1 STI
     0 PUSHINT
     SWAP
-    2 STI
+    3 STI
     OVER
     1 INDEX
     __tact_store_address CALLDICT
     OVER
     2 INDEX
     STGRAMS
-    FALSE
-    SWAP
-    1 STI
-    0 PUSHINT
-    STGRAMS
-    0 PUSHINT
-    STGRAMS
     0 PUSHINT
     SWAP
-    64 STU
-    0 PUSHINT
-    SWAP
-    32 STU
+    105 STI
     FALSE
     SWAP
     1 STI
@@ -259,16 +228,17 @@ PROGRAM{
   __gen_Wallet_receive_TransferMessage PROC:<{
     DUP
     1 INDEX
+    DUP
     __gen_writecell_Transfer CALLDICT
     HASHCU
-    OVER
+    s0 s2 XCHG
     0 INDEX
     s3 PUSH
     1 INDEX
+    s2 s3 XCHG
     CHKSIGNU
     42 THROWIFNOT
     DUP
-    1 INDEX
     0 INDEX
     s2 PUSH
     0 INDEX
@@ -276,16 +246,12 @@ PROGRAM{
     43 THROWIFNOT
     TRUE
     OVER
-    1 INDEX
     2 INDEX
     s2 PUSH
-    1 INDEX
     3 INDEX
     s3 PUSH
     1 INDEX
-    1 INDEX
     s0 s4 XCHG
-    1 INDEX
     4 INDEX
     s3 s4 XCHG
     s1 s3 s0 XCHG3

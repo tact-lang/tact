@@ -32,14 +32,10 @@ builder __tact_store_address(builder b, [int, int] address) {
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
+forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+
 builder __gen_write_A(builder build_0, tuple v) impure {
-    var v_0 = at(v, 0);
-    var v_1 = at(v, 1);
-    var v_2 = at(v, 2);
-    var v_3 = at(v, 3);
-    var v_4 = at(v, 4);
-    var v_5 = at(v, 5);
-    var v_6 = at(v, 6);
+    var [v_0, v_1, v_2, v_3, v_4, v_5, v_6] = __tact_from_tuple(v);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     if (null?(v_2)) {
@@ -71,25 +67,20 @@ slice __gen_writeslice_A(tuple v) impure {
 }
 
 (slice, tuple) __gen_read_A(slice sc) impure {
-    int __a = null();
-    int __b = null();
-    int __c = null();
-    int __d = null();
-    int __e = null();
-    int __f = null();
-    int __g = null();
-    __a = sc~load_int(257);
-    __b = sc~load_int(257);
+    var __a = sc~load_int(257);
+    var __b = sc~load_int(257);
+    var __c = null();
     if (sc~load_int(1)) {
-        __c = sc~load_int(257);
+        var __c = sc~load_int(257);
     }
-    __d = sc~load_int(1);
+    var __d = sc~load_int(1);
+    var __e = null();
     if (sc~load_int(1)) {
-        __e = sc~load_int(1);
+        var __e = sc~load_int(1);
     }
     sc = (sc~load_ref()).begin_parse();
-    __f = sc~load_int(257);
-    __g = sc~load_int(257);
+    var __f = sc~load_int(257);
+    var __g = sc~load_int(257);
     return (sc, __tact_to_tuple([__a, __b, __c, __d, __e, __f, __g]));
 }"
 `;
@@ -126,14 +117,10 @@ builder __tact_store_address(builder b, [int, int] address) {
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
+forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+
 builder __gen_write_B(builder build_0, tuple v) impure {
-    var v_0 = at(v, 0);
-    var v_1 = at(v, 1);
-    var v_2 = at(v, 2);
-    var v_3 = at(v, 3);
-    var v_4 = at(v, 4);
-    var v_5 = at(v, 5);
-    var v_6 = at(v, 6);
+    var [v_0, v_1, v_2, v_3, v_4, v_5, v_6] = __tact_from_tuple(v);
     build_0 = store_int(build_0, v_0, 257);
     build_0 = store_int(build_0, v_1, 257);
     if (null?(v_2)) {
@@ -165,25 +152,20 @@ slice __gen_writeslice_B(tuple v) impure {
 }
 
 (slice, tuple) __gen_read_B(slice sc) impure {
-    int __a = null();
-    int __b = null();
-    int __c = null();
-    int __d = null();
-    int __e = null();
-    int __f = null();
-    int __g = null();
-    __a = sc~load_int(257);
-    __b = sc~load_int(257);
+    var __a = sc~load_int(257);
+    var __b = sc~load_int(257);
+    var __c = null();
     if (sc~load_int(1)) {
-        __c = sc~load_int(257);
+        var __c = sc~load_int(257);
     }
-    __d = sc~load_int(1);
+    var __d = sc~load_int(1);
+    var __e = null();
     if (sc~load_int(1)) {
-        __e = sc~load_int(1);
+        var __e = sc~load_int(1);
     }
     sc = (sc~load_ref()).begin_parse();
-    __f = sc~load_int(257);
-    __g = sc~load_int(257);
+    var __f = sc~load_int(257);
+    var __g = sc~load_int(257);
     return (sc, __tact_to_tuple([__a, __b, __c, __d, __e, __f, __g]));
 }"
 `;
@@ -220,15 +202,10 @@ builder __tact_store_address(builder b, [int, int] address) {
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
+forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+
 builder __gen_write_C(builder build_0, tuple v) impure {
-    var v_0 = at(v, 0);
-    var v_1 = at(v, 1);
-    var v_2 = at(v, 2);
-    var v_3 = at(v, 3);
-    var v_4 = at(v, 4);
-    var v_5 = at(v, 5);
-    var v_6 = at(v, 6);
-    var v_7 = at(v, 7);
+    var [v_0, v_1, v_2, v_3, v_4, v_5, v_6, v_7] = __tact_from_tuple(v);
     build_0 = store_ref(build_0, v_0);
     if (null?(v_1)) {
         build_0 = store_int(build_0, false, 1);
@@ -266,29 +243,24 @@ slice __gen_writeslice_C(tuple v) impure {
 }
 
 (slice, tuple) __gen_read_C(slice sc) impure {
-    cell __a = null();
-    cell __b = null();
-    slice __c = null();
-    slice __d = null();
-    int __e = null();
-    int __f = null();
-    int __g = null();
-    [int, int] __h = null();
-    __a = sc~load_ref();
+    var __a = sc~load_ref();
+    var __b = null();
     if (sc~load_int(1)) {
-        __b = sc~load_ref();
+        var __b = sc~load_ref();
     }
+    var __c = null();
     if (sc~load_int(1)) {
-        __c = sc~load_ref().begin_parse();
+        var __c = sc~load_ref().begin_parse();
     }
     sc = (sc~load_ref()).begin_parse();
+    var __d = null();
     if (sc~load_int(1)) {
-        __d = sc~load_ref().begin_parse();
+        var __d = sc~load_ref().begin_parse();
     }
-    __e = sc~load_int(1);
-    __f = sc~load_int(257);
-    __g = sc~load_int(257);
-    __h = sc~__tact_load_address();
+    var __e = sc~load_int(1);
+    var __f = sc~load_int(257);
+    var __g = sc~load_int(257);
+    var __h = sc~__tact_load_address();
     return (sc, __tact_to_tuple([__a, __b, __c, __d, __e, __f, __g, __h]));
 }"
 `;

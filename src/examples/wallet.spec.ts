@@ -1,7 +1,7 @@
 import { packTransfer, packTransferMessage, Transfer, Wallet_init } from "./wallet.tact.api";
 import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
-import { Address, beginCell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
+import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
 
 describe('wallet', () => {
     it('should deploy', async () => {
@@ -28,6 +28,8 @@ describe('wallet', () => {
             to: executor.address,
             body: null
         };
+        // let transfer = new Cell();
+        // new InternalMessage({ to: executor.address, value: toNano(10), bounce: false, body: new CommonMessageInfo() }).writeTo(transfer);
         let signed = sign(packTransfer(transfer).hash(), key.secretKey);
 
         try {
