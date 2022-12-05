@@ -95,7 +95,6 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
             ctx.append(`return __gen_write_${name}(begin_cell(), v).end_cell();`);
         });
         ctx.append(`}`);
-        ctx.append();
     });
 
     // Write to slice
@@ -106,7 +105,6 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
             ctx.append(`return __gen_writecell_${name}(v).begin_parse();`);
         });
         ctx.append(`}`);
-        ctx.append();
     });
 }
 

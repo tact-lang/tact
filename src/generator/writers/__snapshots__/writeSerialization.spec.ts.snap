@@ -30,6 +30,7 @@ exports[`writeSerialization should write serializer for A 1`] = `
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
+
 cell __gen_writecell_A(tuple v) {
     return __gen_write_A(begin_cell(), v).end_cell();
 }
@@ -100,6 +101,7 @@ exports[`writeSerialization should write serializer for B 1`] = `
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
+
 cell __gen_writecell_B(tuple v) {
     return __gen_write_B(begin_cell(), v).end_cell();
 }
@@ -175,6 +177,7 @@ exports[`writeSerialization should write serializer for C 1`] = `
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
+
 cell __gen_writecell_C(tuple v) {
     return __gen_write_C(begin_cell(), v).end_cell();
 }

@@ -61,7 +61,7 @@ export class WriterContext {
         let res = '';
         for (let f of sorted) {
             if (res !== '') {
-                res += '\n';
+                res += '\n\n';
             }
             res += f.code;
         }
