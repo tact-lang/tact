@@ -113,6 +113,13 @@
       "header": 0,
       "fields": [
         {
+          "name": "seqno",
+          "type": {
+            "kind": "direct",
+            "name": "Int"
+          }
+        },
+        {
           "name": "mode",
           "type": {
             "kind": "direct",
@@ -151,6 +158,15 @@
             {
               "index": 0,
               "size": {
+                "bits": 32,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 32
+            },
+            {
+              "index": 1,
+              "size": {
                 "bits": 8,
                 "refs": 0
               },
@@ -158,7 +174,7 @@
               "bits": 8
             },
             {
-              "index": 1,
+              "index": 2,
               "size": {
                 "bits": 267,
                 "refs": 0
@@ -166,7 +182,7 @@
               "kind": "address"
             },
             {
-              "index": 2,
+              "index": 3,
               "size": {
                 "bits": 124,
                 "refs": 0
@@ -174,14 +190,14 @@
               "kind": "coins"
             },
             {
-              "index": 3,
+              "index": 4,
               "size": {
                 "bits": 1,
                 "refs": 1
               },
               "kind": "optional",
               "inner": {
-                "index": 3,
+                "index": 4,
                 "size": {
                   "bits": 0,
                   "refs": 1
@@ -192,7 +208,7 @@
           ],
           "next": null,
           "size": {
-            "bits": 400,
+            "bits": 432,
             "refs": 1
           }
         }
@@ -232,7 +248,7 @@
             {
               "index": 1,
               "size": {
-                "bits": 400,
+                "bits": 432,
                 "refs": 1
               },
               "kind": "struct",
@@ -241,14 +257,14 @@
           ],
           "next": null,
           "size": {
-            "bits": 400,
+            "bits": 432,
             "refs": 2
           }
         }
       }
     }
   ],
-  "code": "te6ccgECKgEAAhoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgHOIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCTECghBt5Y3NupXwBjHwEZEw4vALgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gAEkIG8QIW8RIm8SA28TUCTLBwHwAgH6AiFulHAyygCVfwHKAMzigAgEgEhMCASAUFQALMgB8APJgAEMbQHTB/ABAfoA0gABlDQD1BTebwBQBG+MWG+MAW+MWG+MgAB81AHQAfAFbwBQA2+MWG+MgACEIG8QIW8RAm8SA8sfy//LP4AIBIBgZAgEgHB0CASAaGwAPXIAfAHye1UgACzIAfAHyYAAlNMf0//TP28AUARvjFhvjAFvjIAIBIB4fAgEgICEAgzIcAHKAH8BygAhbxABygBwAcoAcAHKASFvEfACIW8S+gJwAcoAcPoCcPoCcAHLP3AByx9wAcoAcAHKAMkBbxP7AIAAfHBtbW8DWHFvhwFyb4fwCIAAHCBvEYAAHCBvEoAAHCBvEIABdCBvEfAE+QAhbxAjbxH5EPKqfyFvEW8RIm8RbxIjbxFvEARvEW8TEDRBMG8F8AyACASAmJwAXvgJXaiaHgEmPgHmMAAm7oT8A2AIBSCgpABezJftRNDwCTHwEDGAAF7B+O1E0PAJMfAOMYA==",
+  "code": "te6ccgECKgEAAjAAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgHOIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCTECghBt5Y3NupXwBjHwEZEw4vALgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gAFMIG8QIW8RIm8SI28TBG8UUDXLH8sHAfACAfoCIW6UcDLKAJV/AcoAzOKACASASEwIBIBQVAAsyAHwA8mAATxtAdMf0wfwAQH6ANIAAZQ1BNQV3m8AUAVvjFADb4wBb4wBb4xYb4yAAHzUAdAB8AVvAFADb4xYb4yAAIQgbxAhbxECbxIDyx/L/8s/gAgEgGBkCASAcHQIBIBobAA9cgB8AfJ7VSAALMgB8AfJgACU0x/T/9M/bwBQBG+MWG+MAW+MgAgEgHh8CASAgIQCDMhwAcoAfwHKACFvEAHKAHABygBwAcoBIW8R8AIhbxL6AnABygBw+gJw+gJwAcs/cAHLH3ABygBwAcoAyQFvE/sAgAB8cG1tbwNYcW+HAXJvh/AIgAAcIG8RgAAcIG8SgAAcIG8QgAHMIG8R8AT5ACFvECNvEfkQ8qogbxFvECJvELryq38hbxFvEiJvEW8TI28RbxEEbxFvFBA0QTBvBfAMgAgEgJicAF74CV2omh4BJj4B5jAAJu6E/ANgCAUgoKQAXsyX7UTQ8Akx8BAxgABewfjtRNDwCTHwDjGA=",
   "init": {
     "name": "init_Wallet",
     "args": [

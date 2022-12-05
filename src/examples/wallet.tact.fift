@@ -50,9 +50,12 @@ PROGRAM{
     1 INDEX
     s2 PUSH
     2 INDEX
-    s0 s3 XCHG
+    s3 PUSH
     3 INDEX
-    s2 s4 XCHG2
+    s0 s4 XCHG
+    4 INDEX
+    s3 s5 XCHG2
+    32 STU
     8 STU
     SWAP
     __tact_store_address CALLDICT
@@ -80,6 +83,7 @@ PROGRAM{
   __gen_read_Transfer PROC:<{
     PUSHNULL
     SWAP
+    32 LDU
     8 LDU
     __tact_load_address CALLDICT
     SWAP
@@ -87,15 +91,17 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      s4 POP
-      s0 s3 XCHG
+      s5 POP
+      s0 s4 XCHG
       LDREF
-      s1 s4 XCHG
+      s1 s5 XCHG
     }>
     NIL
-    s0 s4 XCHG2
+    s0 s5 XCHG2
     TPUSH
-    ROT
+    s0 s3 XCHG2
+    TPUSH
+    SWAP
     TPUSH
     SWAP
     TPUSH
@@ -256,19 +262,26 @@ PROGRAM{
     1 INDEX
     CHKSIGNU
     42 THROWIFNOT
+    DUP
+    1 INDEX
+    0 INDEX
+    s2 PUSH
+    0 INDEX
+    EQUAL
+    43 THROWIFNOT
     TRUE
     OVER
     1 INDEX
-    1 INDEX
+    2 INDEX
     s2 PUSH
     1 INDEX
-    2 INDEX
+    3 INDEX
     s3 PUSH
     1 INDEX
-    0 INDEX
+    1 INDEX
     s0 s4 XCHG
     1 INDEX
-    3 INDEX
+    4 INDEX
     s3 s4 XCHG
     s1 s3 s0 XCHG3
     5 TUPLE

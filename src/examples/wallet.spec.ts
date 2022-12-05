@@ -22,6 +22,7 @@ describe('wallet', () => {
 
         let transfer: Transfer = {
             $$type: 'Transfer',
+            seqno: 0n,
             mode: 1n,
             amount: BigInt(toNano(10).toString(10)),
             to: executor.address,

@@ -1,4 +1,5 @@
 struct Transfer {
+    seqno: Int as uint32;
     mode: Int as uint8;
     to: Address;
     amount: Int as coins;
@@ -26,6 +27,7 @@ contract Wallet {
         // Check Signature
         let op_hash: Int = hashCell(abi.pack_cell(msg.transfer));
         require(42, checkSignature(op_hash, msg.signature, self.key));
+        require(43, msg.transfer.seqno == self.seqno);
 
         // Send message
         send(SendParameters{value: msg.transfer.amount, to: msg.transfer.to, mode: msg.transfer.mode, body: msg.transfer.body});

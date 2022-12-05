@@ -21,14 +21,16 @@ builder __gen_write_Transfer(builder build_0, tuple v) impure {
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
     var v_3 = at(v, 3);
-    build_0 = store_uint(build_0, v_0, 8);
-    build_0 = __tact_store_address(build_0, v_1);
-    build_0 = store_coins(build_0, v_2);
-    if (null?(v_3)) {
+    var v_4 = at(v, 4);
+    build_0 = store_uint(build_0, v_0, 32);
+    build_0 = store_uint(build_0, v_1, 8);
+    build_0 = __tact_store_address(build_0, v_2);
+    build_0 = store_coins(build_0, v_3);
+    if (null?(v_4)) {
         build_0 = store_int(build_0, false, 1);
     } else {
         build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v_3);
+        build_0 = store_ref(build_0, v_4);
     }
     return build_0;
 }
@@ -38,10 +40,12 @@ cell __gen_writecell_Transfer(tuple v) impure {
 }
 
 (slice, tuple) __gen_read_Transfer(slice sc) impure {
+    int __seqno = null();
     int __mode = null();
     [int, int] __to = null();
     int __amount = null();
     cell __body = null();
+    __seqno = sc~load_uint(32);
     __mode = sc~load_uint(8);
     __to = sc~__tact_load_address();
     __amount = sc~load_coins();
@@ -49,6 +53,7 @@ cell __gen_writecell_Transfer(tuple v) impure {
         __body = sc~load_ref();
     }
     tuple res = empty_tuple();
+    res = tpush(res, __seqno);
     res = tpush(res, __mode);
     res = tpush(res, __to);
     res = tpush(res, __amount);
@@ -167,7 +172,8 @@ _ __gen_get_seqno() method_id(85143) {
 (tuple, ()) __gen_Wallet_receive_TransferMessage(tuple self, tuple msg) impure {
     int op_hash = cell_hash(__gen_writecell_Transfer(at(msg, 1)));
     throw_unless(42, check_signature(op_hash, at(msg, 0), at(self, 1)));
-    send(__tact_to_tuple([true, at(at(msg, 1), 1), at(at(msg, 1), 2), at(at(msg, 1), 0), at(at(msg, 1), 3)]));
+    throw_unless(43, (at(at(msg, 1), 0) == at(self, 0)));
+    send(__tact_to_tuple([true, at(at(msg, 1), 2), at(at(msg, 1), 3), at(at(msg, 1), 1), at(at(msg, 1), 4)]));
     return (self, ());
 }
 
