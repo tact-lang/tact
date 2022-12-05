@@ -9,6 +9,8 @@ PROGRAM{
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC __gen_MultisigContract_execute
+  DECLPROC __gen_MultisigContract_seqno
+  85143 DECLMETHOD __gen_get_seqno
   DECLPROC __gen_MultisigContract_init
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
@@ -187,6 +189,15 @@ PROGRAM{
     ENDC
     0 PUSHINT
     SENDRAWMSG
+  }>
+  __gen_MultisigContract_seqno PROC:<{
+    DUP
+    0 INDEX
+  }>
+  __gen_get_seqno PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    __gen_MultisigContract_seqno CALLDICT
+    NIP
   }>
   __gen_MultisigContract_init PROC:<{
     NIL

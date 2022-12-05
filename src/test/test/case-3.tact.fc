@@ -70,6 +70,16 @@ tuple __gen_load_SampleContract() inline {
     return (self, ());
 }
 
+(tuple, int) __gen_SampleContract_stake(tuple self) {
+    return (self, at(self, 0));
+}
+
+_ __gen_get_stake() method_id(80984) {
+    tuple self = __gen_load_SampleContract();
+    var res = self~__gen_SampleContract_stake();
+    return res;
+}
+
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_int(32);
     tuple self = __gen_load_SampleContract();

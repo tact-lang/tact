@@ -110,6 +110,16 @@ tuple __gen_load_MultisigContract() inline {
     return (self, ());
 }
 
+(tuple, int) __gen_MultisigContract_seqno(tuple self) {
+    return (self, at(self, 0));
+}
+
+_ __gen_get_seqno() method_id(85143) {
+    tuple self = __gen_load_MultisigContract();
+    var res = self~__gen_MultisigContract_seqno();
+    return res;
+}
+
 cell __gen_MultisigContract_init(int key1, int key2, int key3) {
     tuple self = tpush(tpush(tpush(tpush(empty_tuple(), null()), null()), null()), null());
     self = __tact_set(self, 0, 0);

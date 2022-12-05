@@ -220,15 +220,11 @@ function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
 function writeMainEmpty(ctx: WriterContext) {
     ctx.fun('$main', () => {
-
-        // Render empty body
         ctx.append(`() recv_internal(cell in_msg_cell, slice in_msg) impure {`);
         ctx.inIndent(() => {
             ctx.append(`throw(100);`);
         });
         ctx.append(`}`);
-
-        // TODO: Implicit dependencies
     });
 }
 
@@ -283,7 +279,12 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`}`);
         }
 
-        // TODO: Implicit dependencies
+        // Implicit dependencies
+        for (let f of type.functions) {
+            if (f.isGetter) {
+                ctx.used(`__gen_get_${f.name}`);
+            }
+        }
     });
 }
 
