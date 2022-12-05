@@ -60,6 +60,25 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
     // Primitive types
     if (td.kind === 'primitive') {
         if (td.name === 'Int') {
+            if (src.as) {
+                if (src.as === 'coin') {
+                    return { index: src.index, size: { bits: 124, refs: 0 }, name: src.name, kind: 'coins' };
+                } else if (src.as === 'int8') {
+                    return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'int' };
+                } else if (src.as === 'int32') {
+                    return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'int' };
+                } else if (src.as === 'int256') {
+                    return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'int' };
+                } else if (src.as === 'uint8') {
+                    return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'uint' };
+                } else if (src.as === 'uint32') {
+                    return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'uint' };
+                } else if (src.as === 'uint256') {
+                    return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'uint' };
+                } else {
+                    throw ('Unknown serialization type ' + src.as);
+                }
+            }
             return { index: src.index, size: { bits: 257, refs: 0 }, bits: 257, name: src.name, kind: 'int' };
         } else if (type.name === 'Bool') {
             return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: 'int', bits: 1 };
@@ -127,7 +146,7 @@ export function resolveAllocations(ctx: CompilerContext) {
         if (t.kind === 'contract') {
             for (let f of t.functions) {
                 if (f.isPublic) {
-                    let fields = f.args.map((v, i) => ({ index: i, name: v.name, type: v.type }));
+                    let fields = f.args.map((v, i) => ({ index: i, name: v.name, type: v.type, as: v.as }));
                     let prefix = crc32(Buffer.from(f.name));
                     let root = allocateFields(ctx, [...fields], 1023 - 8 * 4, 3);
                     let allocation: StorageAllocation = { prefix, root, fields: fields };

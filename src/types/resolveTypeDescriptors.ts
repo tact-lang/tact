@@ -75,7 +75,8 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         for (let r of a.args) {
             args.push({
                 name: r.name,
-                type: resolveTypeRef(r.type)
+                type: resolveTypeRef(r.type),
+                as: null
             });
         }
 
@@ -96,7 +97,8 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         for (let r of a.args) {
             args.push({
                 name: r.name,
-                type: resolveTypeRef(r.type)
+                type: resolveTypeRef(r.type),
+                as: null
             });
         }
         return {
@@ -118,7 +120,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
 
     // Resolve fields
     function resolveField(src: ASTField, index: number): FieldDescription {
-        return { name: src.name, type: resolveTypeRef(src.type), index };
+        return { name: src.name, type: resolveTypeRef(src.type), index, as: src.as };
     }
     for (let t in ctx.astTypes) {
         let a = ctx.astTypes[t];

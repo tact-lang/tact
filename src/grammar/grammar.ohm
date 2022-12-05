@@ -19,10 +19,12 @@ Tact {
     // Field declarations
     Type = typeLiteral "?" --optional
          | typeLiteral --required
-    Field = id ":" Type ";"
+    Field = id ":" Type ";" --default
+          | id ":" Type as id ";" --withSerialization
 
     // Struct
-    Struct = struct id "{" StructBody* "}"
+    Struct = struct id "{" StructBody* "}" --originary
+           | message id "{" StructBody* "}" --message
     StructBody = Field
 
     // Contract
@@ -138,7 +140,7 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | fun | let | return | primitive | extend | native | public | get | null | if | else | init | while | repeat | do | until // Order is important
+    keyword = struct | contract | fun | let | return | primitive | extend | native | public | get | null | if | else | init | while | repeat | do | until | message | as // Order is important
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -157,6 +159,8 @@ Tact {
     repeat = "repeat" ~idPart
     do = "do" ~idPart
     until = "until" ~idPart
+    message = "message" ~idPart
+    as = "as" ~idPart
 
     // Attributes
     nameAttribute = "@name"

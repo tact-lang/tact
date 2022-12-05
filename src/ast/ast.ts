@@ -141,7 +141,8 @@ export type ASTProgram = {
 export type ASTStruct = {
     kind: 'def_struct',
     id: number,
-    name: string
+    name: string,
+    message: boolean,
     fields: ASTField[],
     ref: ASTRef
 }
@@ -151,6 +152,7 @@ export type ASTField = {
     id: number,
     name: string,
     type: ASTTypeRef,
+    as: string | null,
     ref: ASTRef
 }
 

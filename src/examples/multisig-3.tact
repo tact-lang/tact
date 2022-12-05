@@ -1,14 +1,14 @@
 struct Operation {
-    seqno: Int;
+    seqno: Int as uint32;
     target: Slice;
-    amount: Int;
+    amount: Int as coins;
 }
 
 contract MultisigContract {
-    seqno: Int;
-    user1_key: Int;
-    user2_key: Int;
-    user3_key: Int;
+    seqno: Int as uint32;
+    user1_key: Int as uint256;
+    user2_key: Int as uint256;
+    user3_key: Int as uint256;
 
     init(key1: Int, key2: Int, key3: Int) {
         self.seqno = 0;

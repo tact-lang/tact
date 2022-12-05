@@ -22,8 +22,12 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Type_optional?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   Type_required?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  Field?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
-  Struct?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Field_default?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
+  Field_withSerialization?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: NonterminalNode, arg5: TerminalNode) => T;
+  Field?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Struct_originary?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Struct_message?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Struct?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   StructBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Contract?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
   ContractInit?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
@@ -114,6 +118,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   repeat?: (this: NonterminalNode, arg0: TerminalNode) => T;
   do?: (this: NonterminalNode, arg0: TerminalNode) => T;
   until?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  message?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  as?: (this: NonterminalNode, arg0: TerminalNode) => T;
   nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   space?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;

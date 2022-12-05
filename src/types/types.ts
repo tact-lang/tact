@@ -19,12 +19,14 @@ export type TypeRef = {
 export type FieldDescription = {
     name: string,
     index: number,
-    type: TypeRef
+    type: TypeRef,
+    as: string | null
 }
 
 export type FunctionArgument = {
     name: string,
-    type: TypeRef
+    type: TypeRef,
+    as: string | null
 }
 
 export type FunctionDescription = {

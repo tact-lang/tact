@@ -26,12 +26,23 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             ref: createRef(this)
         });
     },
-    Struct(arg0, arg1, arg2, arg3, arg4) {
+    Struct_originary(arg0, arg1, arg2, arg3, arg4) {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_struct',
             name: arg1.sourceString,
             fields: arg3.children.map((v) => v.resolve_declaration()),
+            message: false,
+            ref: createRef(this)
+        })
+    },
+    Struct_message(arg0, arg1, arg2, arg3, arg4) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
+        return createNode({
+            kind: 'def_struct',
+            name: arg1.sourceString,
+            fields: arg3.children.map((v) => v.resolve_declaration()),
+            message: true,
             ref: createRef(this)
         })
     },
@@ -64,11 +75,21 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
 
 // Struct and class declarations
 semantics.addOperation<ASTNode>('resolve_declaration', {
-    Field(arg1, arg2, arg3, arg4) {
+    Field_default(arg0, arg1, arg2, arg3) {
         return createNode({
             kind: 'def_field',
-            name: arg1.sourceString,
-            type: arg3.resolve_expression(),
+            name: arg0.sourceString,
+            type: arg2.resolve_expression(),
+            as: null,
+            ref: createRef(this)
+        })
+    },
+    Field_withSerialization(arg0, arg1, arg2, arg3, arg4, arg5) {
+        return createNode({
+            kind: 'def_field',
+            name: arg0.sourceString,
+            type: arg2.resolve_expression(),
+            as: arg4.sourceString,
             ref: createRef(this)
         })
     },
@@ -141,7 +162,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
 semantics.addOperation<ASTNode>('resolve_statement', {
     StatementLet(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         checkVariableName(arg1.sourceString, createRef(arg1));
-        
+
         return createNode({
             kind: 'statement_let',
             name: arg1.sourceString,

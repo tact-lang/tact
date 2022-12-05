@@ -27,12 +27,17 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
     // Handle primitives
 
     if (f.kind === 'int') {
-        ctx.append(`build_${index} = store_int(build_${index}, v_${f.index}, ${f.size.bits});`);
+        ctx.append(`build_${index} = store_int(build_${index}, v_${f.index}, ${f.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        ctx.append(`build_${index} = store_uint(build_${index}, v_${f.index}, ${f.size.bits});`);
+        ctx.append(`build_${index} = store_uint(build_${index}, v_${f.index}, ${f.bits});`);
+        return;
+    }
+
+    if (f.kind === 'coins') {
+        ctx.append(`build_${index} = store_coins(build_${index}, v_${f.index});`);
         return;
     }
 
@@ -134,6 +139,11 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
 
     if (f.kind === 'uint') {
         ctx.append(`__${f.name} = sc~load_uint(${f.bits});`);
+        return;
+    }
+
+    if (f.kind === 'coins') {
+        ctx.append(`__${f.name} = sc~load_coins();`);
         return;
     }
 

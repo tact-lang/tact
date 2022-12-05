@@ -6,6 +6,7 @@ exports[`resolveAllocation should write program 1`] = `
     "allocation": {
       "fields": [
         {
+          "as": null,
           "index": 0,
           "name": "x",
           "type": {
@@ -14,6 +15,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
         },
         {
+          "as": null,
           "index": 1,
           "name": "y",
           "type": {
@@ -56,6 +58,7 @@ exports[`resolveAllocation should write program 1`] = `
     "type": {
       "fields": [
         {
+          "as": null,
           "index": 0,
           "name": "x",
           "type": {
@@ -64,6 +67,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
         },
         {
+          "as": null,
           "index": 1,
           "name": "y",
           "type": {
@@ -82,6 +86,7 @@ exports[`resolveAllocation should write program 1`] = `
     "allocation": {
       "fields": [
         {
+          "as": null,
           "index": 0,
           "name": "z",
           "type": {
@@ -104,6 +109,7 @@ exports[`resolveAllocation should write program 1`] = `
             "type": {
               "fields": [
                 {
+                  "as": null,
                   "index": 0,
                   "name": "x",
                   "type": {
@@ -112,6 +118,7 @@ exports[`resolveAllocation should write program 1`] = `
                   },
                 },
                 {
+                  "as": null,
                   "index": 1,
                   "name": "y",
                   "type": {
@@ -137,6 +144,7 @@ exports[`resolveAllocation should write program 1`] = `
     "type": {
       "fields": [
         {
+          "as": null,
           "index": 0,
           "name": "z",
           "type": {
@@ -155,6 +163,7 @@ exports[`resolveAllocation should write program 1`] = `
     "allocation": {
       "fields": [
         {
+          "as": null,
           "index": 0,
           "name": "a",
           "type": {
@@ -163,6 +172,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
         },
         {
+          "as": null,
           "index": 1,
           "name": "b",
           "type": {
@@ -185,6 +195,7 @@ exports[`resolveAllocation should write program 1`] = `
             "type": {
               "fields": [
                 {
+                  "as": null,
                   "index": 0,
                   "name": "x",
                   "type": {
@@ -193,6 +204,7 @@ exports[`resolveAllocation should write program 1`] = `
                   },
                 },
                 {
+                  "as": null,
                   "index": 1,
                   "name": "y",
                   "type": {
@@ -221,6 +233,7 @@ exports[`resolveAllocation should write program 1`] = `
               "type": {
                 "fields": [
                   {
+                    "as": null,
                     "index": 0,
                     "name": "z",
                     "type": {
@@ -251,6 +264,7 @@ exports[`resolveAllocation should write program 1`] = `
     "type": {
       "fields": [
         {
+          "as": null,
           "index": 0,
           "name": "a",
           "type": {
@@ -259,6 +273,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
         },
         {
+          "as": null,
           "index": 1,
           "name": "b",
           "type": {
@@ -292,6 +307,7 @@ exports[`resolveAllocation should write program 1`] = `
         {
           "args": [
             {
+              "as": null,
               "name": "a",
               "type": {
                 "kind": "direct",
@@ -299,6 +315,7 @@ exports[`resolveAllocation should write program 1`] = `
               },
             },
             {
+              "as": null,
               "name": "b",
               "type": {
                 "kind": "direct",

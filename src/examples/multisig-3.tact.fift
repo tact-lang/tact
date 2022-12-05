@@ -64,19 +64,10 @@ PROGRAM{
     s0 s3 XCHG
     3 INDEX
     s2 s4 XCHG2
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    SWAP
-    NEWC
-    257 PUSHINT
-    STIX
-    ENDC
-    SWAP
-    STREF
+    32 STU
+    256 STU
+    256 STU
+    256 STU
   }>
   __gen_writecell_MultisigContract PROC:<{
     NEWC
@@ -85,17 +76,10 @@ PROGRAM{
     ENDC
   }>
   __gen_read_MultisigContract PROC:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
-    DROP
-    CTOS
-    257 PUSHINT
-    LDIX
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
     NIL
     s0 s5 XCHG2
     TPUSH

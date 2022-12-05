@@ -33,12 +33,10 @@ builder __gen_write_MultisigContract(builder build_0, tuple v) {
     var v_1 = at(v, 1);
     var v_2 = at(v, 2);
     var v_3 = at(v, 3);
-    build_0 = store_int(build_0, v_0, 257);
-    build_0 = store_int(build_0, v_1, 257);
-    build_0 = store_int(build_0, v_2, 257);
-    var build_1 = begin_cell();
-    build_1 = store_int(build_1, v_3, 257);
-    build_0 = store_ref(build_0, build_1.end_cell());
+    build_0 = store_uint(build_0, v_0, 32);
+    build_0 = store_uint(build_0, v_1, 256);
+    build_0 = store_uint(build_0, v_2, 256);
+    build_0 = store_uint(build_0, v_3, 256);
     return build_0;
 }
 
@@ -51,11 +49,10 @@ cell __gen_writecell_MultisigContract(tuple v) {
     int __user1_key = null();
     int __user2_key = null();
     int __user3_key = null();
-    __seqno = sc~load_int(257);
-    __user1_key = sc~load_int(257);
-    __user2_key = sc~load_int(257);
-    sc = (sc~load_ref()).begin_parse();
-    __user3_key = sc~load_int(257);
+    __seqno = sc~load_uint(32);
+    __user1_key = sc~load_uint(256);
+    __user2_key = sc~load_uint(256);
+    __user3_key = sc~load_uint(256);
     tuple res = empty_tuple();
     res = tpush(res, __seqno);
     res = tpush(res, __user1_key);
