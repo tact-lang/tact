@@ -24,11 +24,8 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    NIL
-    s0 s3 XCHG2
-    TPUSH
-    SWAP
-    TPUSH
+    -ROT
+    PAIR
   }>
   __gen_write_SampleContract PROC:<{
     DUP
@@ -58,13 +55,8 @@ PROGRAM{
     DROP
     CTOS
     __gen_read_Source CALLDICT
-    NIL
-    s0 s4 XCHG2
-    TPUSH
-    ROT
-    TPUSH
-    ROT
-    TPUSH
+    s3 s3 s0 XCHG3
+    TRIPLE
   }>
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH

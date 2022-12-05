@@ -97,13 +97,8 @@ PROGRAM{
     32 LDU
     LDGRAMS
     __tact_load_address CALLDICT
-    NIL
-    s0 s4 XCHG2
-    TPUSH
-    ROT
-    TPUSH
-    ROT
-    TPUSH
+    s3 s3 s0 XCHG3
+    TRIPLE
   }>
   __gen_read_Execute PROC:<{
     __gen_read_Operation CALLDICT
@@ -119,15 +114,9 @@ PROGRAM{
     LDREF
     SWAP
     CTOS
-    NIL
-    s0 s5 XCHG2
-    TPUSH
-    s0 s3 XCHG2
-    TPUSH
-    SWAP
-    TPUSH
-    ROT
-    TPUSH
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+    4 TUPLE
   }>
   __gen_write_MultisigContract PROC:<{
     DUP
@@ -155,15 +144,8 @@ PROGRAM{
     256 LDU
     256 LDU
     256 LDU
-    NIL
-    s0 s5 XCHG2
-    TPUSH
-    s0 s3 XCHG2
-    TPUSH
-    SWAP
-    TPUSH
-    SWAP
-    TPUSH
+    4 -ROLL
+    4 TUPLE
   }>
   __gen_load_MultisigContract PROCINLINE:<{
     c4 PUSH

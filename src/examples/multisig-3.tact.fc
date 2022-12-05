@@ -50,11 +50,7 @@ cell __gen_writecell_Operation(tuple v) impure {
     __seqno = sc~load_uint(32);
     __amount = sc~load_coins();
     __target = sc~__tact_load_address();
-    tuple res = empty_tuple();
-    res = tpush(res, __seqno);
-    res = tpush(res, __amount);
-    res = tpush(res, __target);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__seqno, __amount, __target]));
 }
 
 (slice, tuple) __gen_read_Execute(slice sc) impure {
@@ -66,12 +62,7 @@ cell __gen_writecell_Operation(tuple v) impure {
     __signature1 = sc~load_ref().begin_parse();
     __signature2 = sc~load_ref().begin_parse();
     __signature3 = sc~load_ref().begin_parse();
-    tuple res = empty_tuple();
-    res = tpush(res, __operation);
-    res = tpush(res, __signature1);
-    res = tpush(res, __signature2);
-    res = tpush(res, __signature3);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__operation, __signature1, __signature2, __signature3]));
 }
 
 builder __gen_write_MultisigContract(builder build_0, tuple v) impure {
@@ -99,12 +90,7 @@ cell __gen_writecell_MultisigContract(tuple v) impure {
     __user1_key = sc~load_uint(256);
     __user2_key = sc~load_uint(256);
     __user3_key = sc~load_uint(256);
-    tuple res = empty_tuple();
-    res = tpush(res, __seqno);
-    res = tpush(res, __user1_key);
-    res = tpush(res, __user2_key);
-    res = tpush(res, __user3_key);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__seqno, __user1_key, __user2_key, __user3_key]));
 }
 
 tuple __gen_load_MultisigContract() inline {

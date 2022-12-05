@@ -208,17 +208,18 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
             writeCellParser(allocation.root, ctx);
 
             // Compile tuple
-            ctx.append("tuple res = empty_tuple();");
+            let res: string[] = [];
             function writeCell(src: StorageCell) {
                 for (let s of src.fields) {
-                    ctx.append('res = tpush(res, __' + s.name + ');');
+                    res.push(`__${s.name}`);
                 }
                 if (src.next) {
                     writeCell(src.next);
                 }
             }
             writeCell(allocation.root);
-            ctx.append('return (sc, res);');
+            ctx.used('__tact_to_tuple')
+            ctx.append(`return (sc, __tact_to_tuple([${res.join(', ')}]));`);
         });
         ctx.append("}");
     });

@@ -54,13 +54,7 @@ cell __gen_writecell_Transfer(tuple v) impure {
     if (sc~load_int(1)) {
         __body = sc~load_ref();
     }
-    tuple res = empty_tuple();
-    res = tpush(res, __seqno);
-    res = tpush(res, __mode);
-    res = tpush(res, __to);
-    res = tpush(res, __amount);
-    res = tpush(res, __body);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__seqno, __mode, __to, __amount, __body]));
 }
 
 (slice, tuple) __gen_read_TransferMessage(slice sc) impure {
@@ -68,10 +62,7 @@ cell __gen_writecell_Transfer(tuple v) impure {
     tuple __transfer = null();
     __signature = sc~load_ref().begin_parse();
     __transfer = sc~__gen_read_Transfer();
-    tuple res = empty_tuple();
-    res = tpush(res, __signature);
-    res = tpush(res, __transfer);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__signature, __transfer]));
 }
 
 builder __gen_write_Wallet(builder build_0, tuple v) impure {
@@ -95,11 +86,7 @@ cell __gen_writecell_Wallet(tuple v) impure {
     __seqno = sc~load_uint(32);
     __key = sc~load_uint(256);
     __walletId = sc~load_uint(64);
-    tuple res = empty_tuple();
-    res = tpush(res, __seqno);
-    res = tpush(res, __key);
-    res = tpush(res, __walletId);
-    return (sc, res);
+    return (sc, __tact_to_tuple([__seqno, __key, __walletId]));
 }
 
 tuple __gen_load_Wallet() inline {

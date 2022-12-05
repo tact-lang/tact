@@ -8,7 +8,7 @@ PROGRAM{
     DROP
   }>
   __gen_read_Empty PROC:<{
-    NIL
+    0 TUPLE
   }>
   __gen_load_Empty PROCINLINE:<{
     c4 PUSH

@@ -102,17 +102,8 @@ PROGRAM{
       LDREF
       s1 s5 XCHG
     }>
-    NIL
-    s0 s5 XCHG2
-    TPUSH
-    s0 s3 XCHG2
-    TPUSH
-    SWAP
-    TPUSH
-    SWAP
-    TPUSH
-    ROT
-    TPUSH
+    s0 s5 XCHG
+    5 TUPLE
   }>
   __gen_read_TransferMessage PROC:<{
     LDREF
@@ -120,11 +111,8 @@ PROGRAM{
     CTOS
     SWAP
     __gen_read_Transfer CALLDICT
-    NIL
-    s0 s3 XCHG2
-    TPUSH
-    ROT
-    TPUSH
+    s1 s2 XCHG
+    PAIR
   }>
   __gen_write_Wallet PROC:<{
     DUP
@@ -148,13 +136,8 @@ PROGRAM{
     32 LDU
     256 LDU
     64 LDU
-    NIL
-    s0 s4 XCHG2
-    TPUSH
-    ROT
-    TPUSH
-    SWAP
-    TPUSH
+    3 -ROLL
+    TRIPLE
   }>
   __gen_load_Wallet PROCINLINE:<{
     c4 PUSH
