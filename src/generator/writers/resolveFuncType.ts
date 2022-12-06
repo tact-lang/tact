@@ -8,6 +8,9 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: Writ
     if (descriptor.kind === 'ref') {
         return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx);
     }
+    if (descriptor.kind === 'map') {
+        return 'cell';
+    }
 
     // TypeDescription
     if (descriptor.kind === 'primitive') {

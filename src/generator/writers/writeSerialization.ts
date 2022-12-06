@@ -56,6 +56,11 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
         return;
     }
 
+    if (f.kind === 'map') {
+        ctx.append(`build_${index} = store_dict(build_${index}, v_${f.index});`);
+        return;
+    }
+
     // Handle structs
 
     if (f.kind === 'struct') {
@@ -167,6 +172,11 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     if (f.kind === 'address') {
         ctx.used(`__tact_load_address`);
         ctx.append(`var __${f.name} = sc~__tact_load_address();`);
+        return;
+    }
+
+    if (f.kind === 'map') {
+        ctx.append(`var __${f.name} = sc~load_dict();`);
         return;
     }
 

@@ -1,0 +1,169 @@
+{
+  "name": "SampleContract",
+  "structs": [
+    {
+      "name": "SendParameters",
+      "header": 0,
+      "fields": [
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
+          }
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "mode",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 4,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 783,
+            "refs": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "Source",
+      "header": 0,
+      "fields": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 514,
+            "refs": 0
+          }
+        }
+      }
+    }
+  ],
+  "code": "te6ccgEBEAEArgABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAXoHix2omh4Ahj4A5jAgEgBgcCASAMDQIBIAgJAgEgCgsAExb7UTQ8AQx8AaAAGxvIgKBAQHPAIEBAc8AgABsgQEB1wCBAQHXAFlvAoAAxG8kUDSBAQHPAIEBAc8AyFjwARL0AMkBzIAAtSBAQHXAIEBAdcA1DDQ8AIB9ARVMG8EgCASAODwAPMgB8APJ7VSAABwgbxCA=",
+  "init": null,
+  "receivers": []
+}

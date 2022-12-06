@@ -23,4 +23,5 @@ export type StorageField = {
         | { kind: 'struct', type: TypeDescription }
         | { kind: 'slice' | 'cell' }
         | { kind: 'optional', inner: StorageField }
+        | { kind: 'map' }
     )

@@ -1,0 +1,84 @@
+PROGRAM{
+  DECLPROC __gen_write_Source
+  DECLPROC __gen_read_Source
+  DECLPROC __gen_write_SampleContract
+  DECLPROC __gen_read_SampleContract
+  DECLPROC __gen_load_SampleContract
+  DECLPROC __gen_store_SampleContract
+  DECLPROC __gen_SampleContract_stake
+  80984 DECLMETHOD __gen_get_stake
+  DECLPROC recv_internal
+  __gen_write_Source PROC:<{
+    UNPAIR
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
+  __gen_read_Source PROC:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    -ROT
+    PAIR
+  }>
+  __gen_write_SampleContract PROC:<{
+    4 UNTUPLE
+    s3 s4 XCHG2
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    NEWC
+    ROT
+    __gen_write_Source CALLDICT
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_SampleContract PROC:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    DROP
+    CTOS
+    __gen_read_Source CALLDICT
+    SWAP
+    LDDICT
+    4 -ROLL
+    4 TUPLE
+  }>
+  __gen_load_SampleContract PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    __gen_read_SampleContract CALLDICT
+    NIP
+  }>
+  __gen_store_SampleContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_SampleContract CALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_SampleContract_stake PROC:<{
+    DUP
+    0 INDEX
+  }>
+  __gen_get_stake PROC:<{
+    __gen_load_SampleContract INLINECALLDICT
+    __gen_SampleContract_stake CALLDICT
+    NIP
+  }>
+  recv_internal PROC:<{
+    2DROP
+    __gen_load_SampleContract INLINECALLDICT
+    __gen_store_SampleContract CALLDICT
+  }>
+}END>c

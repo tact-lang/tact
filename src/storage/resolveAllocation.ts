@@ -110,6 +110,11 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
         throw Error('Unknown field type: ' + src.type.kind);
     }
 
+    // Map
+    if (type.kind === 'map') {
+        return { index: src.index, size: { bits: 1, refs: 1 }, name: src.name, kind: 'map' };
+    }
+
     throw Error('Unknown field type');
 }
 
