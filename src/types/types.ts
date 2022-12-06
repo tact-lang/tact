@@ -14,6 +14,10 @@ export type TypeRef = {
     kind: 'ref',
     name: string,
     optional: boolean
+} | {
+    kind: 'map',
+    key: string,
+    value: string
 };
 
 export type FieldDescription = {

@@ -58,13 +58,23 @@ export type ASTNull = {
 // Types
 //
 
-export type ASTTypeRef = {
-    kind: 'type_ref',
+export type ASTTypeRefSimple = {
+    kind: 'type_ref_simple',
     id: number,
     name: string,
     optional: boolean,
     ref: ASTRef
 }
+
+export type ASTTypeRefMap = {
+    kind: 'type_ref_map',
+    id: number,
+    key: string,
+    value: string,
+    ref: ASTRef
+}
+
+export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap;
 
 //
 // Expressions

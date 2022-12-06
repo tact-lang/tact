@@ -21,6 +21,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   NativeFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Type_optional?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   Type_required?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Type_map?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode) => T;
   Type?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Field_default?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
   Field_defaultWithInit?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode) => T;

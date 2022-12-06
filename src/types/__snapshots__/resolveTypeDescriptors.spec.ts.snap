@@ -77,7 +77,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
           "ref": a: Int;,
           "type": {
             "id": 6,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
             "ref": Int,
@@ -92,7 +92,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
           "ref": b: Bool;,
           "type": {
             "id": 8,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
             "ref": Bool,
@@ -150,7 +150,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
           "ref": a: Struct1;,
           "type": {
             "id": 11,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Struct1",
             "optional": false,
             "ref": Struct1,
@@ -237,7 +237,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
 },
       "return": {
         "id": 17,
-        "kind": "type_ref",
+        "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
         "ref": Int,
@@ -328,7 +328,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
           "ref": a: Int,
           "type": {
             "id": 24,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
             "ref": Int,
@@ -341,7 +341,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
           "ref": b: Bool,
           "type": {
             "id": 26,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
             "ref": Bool,
@@ -407,7 +407,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
           "ref": a: Int;,
           "type": {
             "id": 34,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
             "ref": Int,
@@ -422,7 +422,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
           "ref": b: Bool;,
           "type": {
             "id": 36,
-            "kind": "type_ref",
+            "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
             "ref": Bool,

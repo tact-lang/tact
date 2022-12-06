@@ -5,6 +5,27 @@ import { FieldDescription, FunctionArgument, FunctionDescription, InitDescriptio
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
 
+export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
+    if (src.kind === 'type_ref_simple') {
+        let n = getType(ctx, src.name).name; // TODO: Check
+        return {
+            kind: 'ref',
+            name: n,
+            optional: src.optional
+        };
+    }
+    if (src.kind === 'type_ref_map') {
+        let k = getType(ctx, src.key).name;
+        let v = getType(ctx, src.value).name;
+        return {
+            kind: 'map',
+            key: k,
+            value: v
+        };
+    }
+    throw Error('Invalid type ref');
+}
+
 export function resolveTypeDescriptors(ctx: CompilerContext) {
     let types: { [key: string]: TypeDescription } = {};
     let staticFunctions: { [key: string]: FunctionDescription } = {};
@@ -49,14 +70,31 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     }
 
     function resolveTypeRef(src: ASTTypeRef): TypeRef {
-        if (!types[src.name]) {
-            throwError('Type ' + src.name + ' not found', src.ref);
+        if (src.kind === 'type_ref_simple') {
+            if (!types[src.name]) {
+                throwError('Type ' + src.name + ' not found', src.ref);
+            }
+            return {
+                kind: 'ref',
+                name: src.name,
+                optional: src.optional
+            };
         }
-        return {
-            kind: 'ref',
-            name: src.name,
-            optional: src.optional
-        };
+        if (src.kind === 'type_ref_map') {
+            if (!types[src.key]) {
+                throwError('Type ' + src.key + ' not found', src.ref);
+            }
+            if (!types[src.value]) {
+                throwError('Type ' + src.value + ' not found', src.ref);
+            }
+            return {
+                kind: 'map',
+                key: src.key,
+                value: src.value
+            };
+        }
+
+        throw Error('Unknown type ref');
     }
 
     function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
@@ -162,6 +200,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                     s.init = resolveInitFunction(d);
                 }
                 if (d.kind === 'def_receive') {
+                    if (d.arg.type.kind !== 'type_ref_simple') {
+                        throw Error('Receive function cannot accept optional argument');
+                    }
                     if (d.arg.type.optional) {
                         throw Error('Receive function cannot accept optional argument');
                     }

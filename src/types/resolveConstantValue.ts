@@ -2,13 +2,19 @@ import { ASTExpression, ASTTypeRef, throwError } from "../ast/ast";
 import { printTypeRef, TypeRef } from "./types";
 
 function resolveTypeRef(src: ASTTypeRef): TypeRef {
-    if (src.kind === 'type_ref') {
+    if (src.kind === 'type_ref_simple') {
         return {
             kind: 'ref',
             name: src.name,
             optional: src.optional
-        }
-
+        };
+    }
+    if (src.kind === 'type_ref_map') {
+        return {
+            kind: 'map',
+            key: src.key,
+            value: src.value
+        };
     }
     throw Error('Unknown type')
 }
@@ -40,14 +46,16 @@ function reduceInt(ast: ASTExpression): bigint {
 
 export function resolveConstantValue(type: ASTTypeRef, ast: ASTExpression) {
 
+    if (type.kind !== 'type_ref_simple') {
+        throwError(`Expected constant value, got ${printTypeRef(resolveTypeRef(type))}`, ast.ref);
+    }
+
     // Handle optional
     if (type.optional) {
         if (ast.kind === 'null') {
             return null;
         }
     }
-
-
 
     // Handle non-optionals
     if (type.name === 'Int') {
@@ -62,5 +70,5 @@ export function resolveConstantValue(type: ASTTypeRef, ast: ASTExpression) {
         }
     }
 
-    throwError(`Expected constant value, got ${ast.kind}`, ast.ref);
+    throwError(`Expected constant value, got ${printTypeRef(resolveTypeRef(type))}`, ast.ref);
 }

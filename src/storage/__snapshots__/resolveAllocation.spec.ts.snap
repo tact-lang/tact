@@ -141,7 +141,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 101,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Bool",
               "optional": false,
               "ref": ASTRef {},
@@ -156,7 +156,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 104,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Address",
               "optional": false,
               "ref": ASTRef {},
@@ -171,7 +171,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 106,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Int",
               "optional": false,
               "ref": ASTRef {},
@@ -186,7 +186,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 108,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Int",
               "optional": false,
               "ref": ASTRef {},
@@ -201,7 +201,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 111,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Cell",
               "optional": true,
               "ref": ASTRef {},
@@ -347,7 +347,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 231,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Int",
               "optional": false,
               "ref": ASTRef {},
@@ -362,7 +362,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 233,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Int",
               "optional": false,
               "ref": ASTRef {},
@@ -444,7 +444,7 @@ exports[`resolveAllocation should write program 1`] = `
                     "ref": ASTRef {},
                     "type": {
                       "id": 231,
-                      "kind": "type_ref",
+                      "kind": "type_ref_simple",
                       "name": "Int",
                       "optional": false,
                       "ref": ASTRef {},
@@ -459,7 +459,7 @@ exports[`resolveAllocation should write program 1`] = `
                     "ref": ASTRef {},
                     "type": {
                       "id": 233,
-                      "kind": "type_ref",
+                      "kind": "type_ref_simple",
                       "name": "Int",
                       "optional": false,
                       "ref": ASTRef {},
@@ -523,7 +523,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 236,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Point",
               "optional": false,
               "ref": ASTRef {},
@@ -605,7 +605,7 @@ exports[`resolveAllocation should write program 1`] = `
                     "ref": ASTRef {},
                     "type": {
                       "id": 231,
-                      "kind": "type_ref",
+                      "kind": "type_ref_simple",
                       "name": "Int",
                       "optional": false,
                       "ref": ASTRef {},
@@ -620,7 +620,7 @@ exports[`resolveAllocation should write program 1`] = `
                     "ref": ASTRef {},
                     "type": {
                       "id": 233,
-                      "kind": "type_ref",
+                      "kind": "type_ref_simple",
                       "name": "Int",
                       "optional": false,
                       "ref": ASTRef {},
@@ -687,7 +687,7 @@ exports[`resolveAllocation should write program 1`] = `
                       "ref": ASTRef {},
                       "type": {
                         "id": 236,
-                        "kind": "type_ref",
+                        "kind": "type_ref_simple",
                         "name": "Point",
                         "optional": false,
                         "ref": ASTRef {},
@@ -745,7 +745,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 226,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Point",
               "optional": false,
               "ref": ASTRef {},
@@ -760,7 +760,7 @@ exports[`resolveAllocation should write program 1`] = `
             "ref": ASTRef {},
             "type": {
               "id": 228,
-              "kind": "type_ref",
+              "kind": "type_ref_simple",
               "name": "Point2",
               "optional": false,
               "ref": ASTRef {},
@@ -829,7 +829,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": ASTRef {},
                 "type": {
                   "id": 239,
-                  "kind": "type_ref",
+                  "kind": "type_ref_simple",
                   "name": "Int",
                   "optional": false,
                   "ref": ASTRef {},
@@ -842,7 +842,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": ASTRef {},
                 "type": {
                   "id": 241,
-                  "kind": "type_ref",
+                  "kind": "type_ref_simple",
                   "name": "Int",
                   "optional": false,
                   "ref": ASTRef {},
@@ -899,7 +899,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": ASTRef {},
                 "type": {
                   "id": 239,
-                  "kind": "type_ref",
+                  "kind": "type_ref_simple",
                   "name": "Int",
                   "optional": false,
                   "ref": ASTRef {},
@@ -912,7 +912,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": ASTRef {},
                 "type": {
                   "id": 241,
-                  "kind": "type_ref",
+                  "kind": "type_ref_simple",
                   "name": "Int",
                   "optional": false,
                   "ref": ASTRef {},

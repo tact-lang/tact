@@ -1,7 +1,7 @@
 import { ABIFunctions } from "../abi/AbiFunction";
 import { ASTCondition, ASTExpression, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { getStaticFunction, getType } from "./resolveTypeDescriptors";
+import { getStaticFunction, getType, resolveTypeRef } from "./resolveTypeDescriptors";
 import { printTypeRef, TypeRef } from "./types";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef | null }>();
@@ -23,15 +23,6 @@ export function getLValuePaths(ctx: CompilerContext, exp: ASTSTatementAssign) {
         throw Error('LValue ' + exp.id + ' not found');
     }
     return lv.description;
-}
-
-function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
-    let n = getType(ctx, src.name).name; // TODO: Check
-    return {
-        kind: 'ref',
-        name: n,
-        optional: src.optional
-    };
 }
 
 export function resolveExpressionTypes(ctx: CompilerContext) {
@@ -153,15 +144,15 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             // Check right type dependent on operator
             let resolvedType = getExpType(ctx, exp.right);
             if (exp.op === '-' || exp.op === '+') {
-                if (resolvedType === null || resolvedType.optional || resolvedType.name !== 'Int') {
+                if (resolvedType === null || resolvedType.kind !== 'ref' || resolvedType.optional || resolvedType.name !== 'Int') {
                     throwError(`Invalid type "${printTypeRef(resolvedType)}" for unary operator "${exp.op}"`, exp.ref);
                 }
             } else if (exp.op === '!') {
-                if (resolvedType === null || resolvedType.optional || resolvedType.name !== 'Bool') {
+                if (resolvedType === null || resolvedType.kind !== 'ref' || resolvedType.optional || resolvedType.name !== 'Bool') {
                     throwError(`Invalid type "${printTypeRef(resolvedType)}" for unary operator "${exp.op}"`, exp.ref);
                 }
             } else if (exp.op === '!!') {
-                if (resolvedType === null || !resolvedType.optional) {
+                if (resolvedType === null || resolvedType.kind !== 'ref' || !resolvedType.optional) {
                     throwError(`Type "${printTypeRef(resolvedType)}" is not optional`, exp.ref);
                 }
                 resolvedType = { kind: 'ref', name: resolvedType.name, optional: false };

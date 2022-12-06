@@ -31,21 +31,21 @@ function writeField(field: ContractField, w: Writer) {
 }
 
 function writeStackItem(name: string, ref: TypeRef, w: Writer) {
-
-    if (ref.optional) {
-        w.append(`if (${name} !== null) {`);
-        w.inIndent(() => {
-            writeStackItem(name, { ...ref, optional: false }, w);
-        });
-        w.append('} else {');
-        w.inIndent(() => {
-            w.append(`__stack.push({ type: 'null' });`);
-        });
-        w.append('}');
-        return;
-    }
-
     if (ref.kind === 'ref') {
+        
+        if (ref.optional) {
+            w.append(`if (${name} !== null) {`);
+            w.inIndent(() => {
+                writeStackItem(name, { ...ref, optional: false }, w);
+            });
+            w.append('} else {');
+            w.inIndent(() => {
+                w.append(`__stack.push({ type: 'null' });`);
+            });
+            w.append('}');
+            return;
+        }
+
         if (ref.name === 'Int') {
             w.append(`__stack.push({ type: 'int', value: new BN(${name}.toString(), 10)});`);
             return;

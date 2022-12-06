@@ -46,66 +46,71 @@ function getSortedTypes(ctx: CompilerContext) {
 
 function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRef): StorageField {
 
-    // Resolve Optional
-    if (type.kind === 'ref' && type.optional) {
-        let inner = allocateField(ctx, src, { ...type, optional: false });
-        return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits + 1, refs: inner.size.refs }, index: src.index };
-    }
+    if (type.kind === 'ref') {
 
-    // Resolve Direct
-    let td = getType(ctx, type.name);
-
-    // Primitive types
-    if (td.kind === 'primitive') {
-        if (td.name === 'Int') {
-            if (src.as) {
-                if (src.as === 'coins') {
-                    return { index: src.index, size: { bits: 124, refs: 0 }, name: src.name, kind: 'coins' };
-                } else if (src.as === 'int8') {
-                    return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'int' };
-                } else if (src.as === 'int32') {
-                    return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'int' };
-                } else if (src.as === 'int64') {
-                    return { index: src.index, size: { bits: 64, refs: 0 }, bits: 64, name: src.name, kind: 'int' };
-                } else if (src.as === 'int256') {
-                    return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'int' };
-                } else if (src.as === 'uint8') {
-                    return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'uint' };
-                } else if (src.as === 'uint32') {
-                    return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'uint' };
-                } else if (src.as === 'uint64') {
-                    return { index: src.index, size: { bits: 64, refs: 0 }, bits: 64, name: src.name, kind: 'uint' };
-                } else if (src.as === 'uint256') {
-                    return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'uint' };
-                } else {
-                    throw ('Unknown serialization type ' + src.as);
-                }
-            }
-            return { index: src.index, size: { bits: 257, refs: 0 }, bits: 257, name: src.name, kind: 'int' };
-        } else if (type.name === 'Bool') {
-            return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: 'int', bits: 1 };
-        } else if (type.name === 'Slice') {
-            return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'slice' };
-        } else if (type.name === 'Cell') {
-            return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'cell' };
-        } else if (type.name === 'Address') {
-            return { index: src.index, size: { bits: 2 + 1 + 8 + 256, refs: 0 }, name: src.name, kind: 'address' };
+        // Resolve Optional
+        if (type.optional) {
+            let inner = allocateField(ctx, src, { ...type, optional: false });
+            return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits + 1, refs: inner.size.refs }, index: src.index };
         }
-        throw Error('Unknown primitive type: ' + type.name);
+
+        // Resolve Direct
+        let td = getType(ctx, type.name);
+
+        // Primitive types
+        if (td.kind === 'primitive') {
+            if (td.name === 'Int') {
+                if (src.as) {
+                    if (src.as === 'coins') {
+                        return { index: src.index, size: { bits: 124, refs: 0 }, name: src.name, kind: 'coins' };
+                    } else if (src.as === 'int8') {
+                        return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'int' };
+                    } else if (src.as === 'int32') {
+                        return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'int' };
+                    } else if (src.as === 'int64') {
+                        return { index: src.index, size: { bits: 64, refs: 0 }, bits: 64, name: src.name, kind: 'int' };
+                    } else if (src.as === 'int256') {
+                        return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'int' };
+                    } else if (src.as === 'uint8') {
+                        return { index: src.index, size: { bits: 8, refs: 0 }, bits: 8, name: src.name, kind: 'uint' };
+                    } else if (src.as === 'uint32') {
+                        return { index: src.index, size: { bits: 32, refs: 0 }, bits: 32, name: src.name, kind: 'uint' };
+                    } else if (src.as === 'uint64') {
+                        return { index: src.index, size: { bits: 64, refs: 0 }, bits: 64, name: src.name, kind: 'uint' };
+                    } else if (src.as === 'uint256') {
+                        return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'uint' };
+                    } else {
+                        throw ('Unknown serialization type ' + src.as);
+                    }
+                }
+                return { index: src.index, size: { bits: 257, refs: 0 }, bits: 257, name: src.name, kind: 'int' };
+            } else if (type.name === 'Bool') {
+                return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: 'int', bits: 1 };
+            } else if (type.name === 'Slice') {
+                return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'slice' };
+            } else if (type.name === 'Cell') {
+                return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'cell' };
+            } else if (type.name === 'Address') {
+                return { index: src.index, size: { bits: 2 + 1 + 8 + 256, refs: 0 }, name: src.name, kind: 'address' };
+            }
+            throw Error('Unknown primitive type: ' + type.name);
+        }
+
+        // Struct types
+        if (td.kind === 'struct') {
+            let allocation = getAllocation(ctx, type.name);
+            return { index: src.index, size: allocation.root.size, name: src.name, kind: 'struct', type: td };
+        }
+
+        // Contract types
+        if (td.kind === 'contract') {
+            throw Error('Contract references are not supported for storage');
+        }
+
+        throw Error('Unknown field type: ' + src.type.kind);
     }
 
-    // Struct types
-    if (td.kind === 'struct') {
-        let allocation = getAllocation(ctx, type.name);
-        return { index: src.index, size: allocation.root.size, name: src.name, kind: 'struct', type: td };
-    }
-
-    // Contract types
-    if (td.kind === 'contract') {
-        throw Error('Contract references are not supported for storage');
-    }
-
-    throw Error('Unknown field type: ' + src.type.kind);
+    throw Error('Unknown field type');
 }
 
 function allocateFields(ctx: CompilerContext, src: FieldDescription[], bits: number, refs: number): StorageCell {

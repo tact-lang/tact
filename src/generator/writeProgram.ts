@@ -3,7 +3,7 @@ import { ASTCondition, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getLValuePaths } from "../types/resolveExpressionType";
-import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveTypeDescriptors";
+import { getAllStaticFunctions, getAllTypes, getType, resolveTypeRef } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";
 import { WriterContext } from "./Writer";
@@ -22,7 +22,7 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
         }
         return;
     } else if (f.kind === 'statement_let') {
-        ctx.append(`${resolveFuncType(getType(ctx.ctx, f.type.name), ctx)} ${f.name} = ${writeExpression(f.expression, ctx)};`);
+        ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${f.name} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_assign') {
 
