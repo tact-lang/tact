@@ -84,3 +84,36 @@ export const ABIFunctions: { [key: string]: AbiFunction } = {
         }
     }
 };
+
+export const MapFunctions: { [key: string]: AbiFunction } = {
+    set: {
+        name: 'set',
+        resolve(ctx, args, ref) {
+            if (args.length !== 3) {
+                throwError('set expects 2 argument', ref); // Ignore self
+            }
+            if (!args[0] || args[0].kind !== 'map') {
+                throwError('set expects a map as first argument', ref);
+            }
+            if (args[1] === null || args[1].kind !== 'ref' || args[1].optional) {
+                throwError('set expects a direct type as second argument', ref);
+            }
+            // TODO: Check values
+            return null;
+        },
+        generate: (ctx, args, resolved, ref) => {
+            if (args.length !== 3) {
+                throwError('set expects 2 argument', ref); // Ignore self
+            }
+            if (!args[0] || args[0].kind !== 'map') {
+                throwError('set expects a map as first argument', ref);
+            }
+            if (args[1] === null || args[1].kind !== 'ref' || args[1].optional) {
+                throwError('set expects a direct type as second argument', ref);
+            }
+
+            ctx.used(`__tact_dict_set_int_int`);
+            return `__tact_dict_set_int_int(${resolved[0]}, 257, ${resolved[1]}, ${resolved[2]}, 257)`;
+        }
+    }
+}

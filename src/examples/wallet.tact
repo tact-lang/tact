@@ -30,6 +30,9 @@ contract Wallet {
         require(42, checkSignature(op_hash, msg.signature, self.key));
         require(43, op.seqno == self.seqno);
 
+        // Increment seqno
+        self.seqno = self.seqno + 1;
+
         // Send message
         send(SendParameters{value: op.amount, to: op.to, mode: op.mode, body: op.body});
         // nativeSendMessage(msg.transfer, 0);

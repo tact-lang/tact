@@ -34,6 +34,24 @@ forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
 
+cell __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, v);
+    }
+}
+
+cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell());
+    }
+}
+
 builder __gen_write_A(builder build_0, tuple v) impure {
     var [v_0, v_1, v_2, v_3, v_4, v_5, v_6] = __tact_from_tuple(v);
     build_0 = store_int(build_0, v_0, 257);
@@ -119,6 +137,24 @@ forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
 
+cell __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, v);
+    }
+}
+
+cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell());
+    }
+}
+
 builder __gen_write_B(builder build_0, tuple v) impure {
     var [v_0, v_1, v_2, v_3, v_4, v_5, v_6] = __tact_from_tuple(v);
     build_0 = store_int(build_0, v_0, 257);
@@ -203,6 +239,24 @@ builder __tact_store_address(builder b, [int, int] address) {
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+
+cell __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, v);
+    }
+}
+
+cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell());
+    }
+}
 
 builder __gen_write_C(builder build_0, tuple v) impure {
     var [v_0, v_1, v_2, v_3, v_4, v_5, v_6, v_7] = __tact_from_tuple(v);

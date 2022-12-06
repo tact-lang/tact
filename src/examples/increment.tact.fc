@@ -1,0 +1,87 @@
+forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
+
+forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
+
+forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+
+cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return r;
+    } else {
+        return idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell());
+    }
+}
+
+(slice, tuple) __gen_read_Inrement(slice sc) impure {
+    var __key = sc~load_int(257);
+    var __value = sc~load_int(257);
+    return (sc, __tact_to_tuple([__key, __value]));
+}
+
+builder __gen_write_IncrementContract(builder build_0, tuple v) impure {
+    var [v_0] = __tact_from_tuple(v);
+    build_0 = store_dict(build_0, v_0);
+    return build_0;
+}
+
+cell __gen_writecell_IncrementContract(tuple v) impure {
+    return __gen_write_IncrementContract(begin_cell(), v).end_cell();
+}
+
+(slice, tuple) __gen_read_IncrementContract(slice sc) impure {
+    var __counters = sc~load_dict();
+    return (sc, __tact_to_tuple([__counters]));
+}
+
+tuple __gen_load_IncrementContract() inline {
+    slice sc = get_data().begin_parse();
+    tuple res = sc~__gen_read_IncrementContract();
+    return res;
+}
+
+() __gen_store_IncrementContract(tuple v) impure {
+    builder b = begin_cell();
+    b = __gen_write_IncrementContract(b, v);
+    set_data(b.end_cell());
+}
+
+cell __gen_IncrementContract_init() impure {
+    tuple self = __tact_to_tuple([null()]);
+    return __gen_writecell_IncrementContract(self);
+}
+
+(tuple, cell) __gen_IncrementContract_counters(tuple self) impure {
+    return (self, at(self, 0));
+}
+
+_ __gen_get_counters() method_id(95239) {
+    tuple self = __gen_load_IncrementContract();
+    var res = self~__gen_IncrementContract_counters();
+    return res;
+}
+
+(tuple, ()) __gen_IncrementContract_receive_Inrement(tuple self, tuple msg) impure {
+    self~dump();
+    msg~dump();
+    int key = at(msg, 0);
+    self = __tact_set(self, __tact_dict_set_int_int(at(self, 0), 257, key, at(msg, 1), 257), 0);
+    return (self, ());
+}
+
+() recv_internal(cell in_msg_cell, slice in_msg) impure {
+    int op = in_msg~load_uint(32);
+    tuple self = __gen_load_IncrementContract();
+    if (op == 3020402937) {
+        tuple msg = in_msg~__gen_read_Inrement();
+        self~__gen_IncrementContract_receive_Inrement(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    throw(100);
+}
+
+cell init_IncrementContract() method_id {
+    return __gen_IncrementContract_init();
+}

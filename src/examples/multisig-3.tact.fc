@@ -186,13 +186,16 @@ _ __gen_get_seqno() method_id(85143) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg~load_int(32);
+    int op = in_msg~load_uint(32);
     tuple self = __gen_load_MultisigContract();
     if (op == 819865922) {
         tuple msg = in_msg~__gen_read_Execute();
         self~__gen_MultisigContract_receive_Execute(msg);
+        __gen_store_MultisigContract(self);
+        return ();
     }
-    __gen_store_MultisigContract(self);
+    
+    throw(100);
 }
 
 cell init_MultisigContract(int key1, int key2, int key3) method_id {

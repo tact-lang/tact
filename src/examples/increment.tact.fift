@@ -1,0 +1,119 @@
+PROGRAM{
+  DECLPROC __tact_dict_set_int_int
+  DECLPROC __gen_read_Inrement
+  DECLPROC __gen_write_IncrementContract
+  DECLPROC __gen_writecell_IncrementContract
+  DECLPROC __gen_read_IncrementContract
+  DECLPROC __gen_load_IncrementContract
+  DECLPROC __gen_store_IncrementContract
+  DECLPROC __gen_IncrementContract_init
+  DECLPROC __gen_IncrementContract_counters
+  95239 DECLMETHOD __gen_get_counters
+  DECLPROC __gen_IncrementContract_receive_Inrement
+  DECLPROC recv_internal
+  66039 DECLMETHOD init_IncrementContract
+  __tact_dict_set_int_int PROC:<{
+    OVER
+    ISNULL
+    IFJMP:<{
+      2DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>
+    NEWC
+    SWAP
+    STIX
+    ENDC
+    s1 s3 s3 XCHG3
+    DICTISETREF
+  }>
+  __gen_read_Inrement PROC:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    -ROT
+    PAIR
+  }>
+  __gen_write_IncrementContract PROC:<{
+    UNSINGLE
+    SWAP
+    STDICT
+  }>
+  __gen_writecell_IncrementContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_IncrementContract CALLDICT
+    ENDC
+  }>
+  __gen_read_IncrementContract PROC:<{
+    LDDICT
+    SWAP
+    SINGLE
+  }>
+  __gen_load_IncrementContract PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    __gen_read_IncrementContract CALLDICT
+    NIP
+  }>
+  __gen_store_IncrementContract PROC:<{
+    NEWC
+    SWAP
+    __gen_write_IncrementContract CALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_IncrementContract_init PROC:<{
+    PUSHNULL
+    SINGLE
+    __gen_writecell_IncrementContract CALLDICT
+  }>
+  __gen_IncrementContract_counters PROC:<{
+    DUP
+    0 INDEX
+  }>
+  __gen_get_counters PROC:<{
+    __gen_load_IncrementContract INLINECALLDICT
+    __gen_IncrementContract_counters CALLDICT
+    NIP
+  }>
+  __gen_IncrementContract_receive_Inrement PROC:<{
+    SWAP
+    s0 DUMP
+    SWAP
+    s0 DUMP
+    DUP
+    0 INDEX
+    s2 PUSH
+    0 INDEX
+    257 PUSHINT
+    s0 s3 XCHG
+    1 INDEX
+    s3 s0 s1 XC2PU
+    s2 s3 XCHG
+    __tact_dict_set_int_int CALLDICT
+    0 PUSHINT
+    SETINDEXVARQ
+  }>
+  recv_internal PROC:<{
+    NIP
+    32 LDU
+    __gen_load_IncrementContract INLINECALLDICT
+    s0 s2 XCHG
+    3020402937 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_Inrement CALLDICT
+      NIP
+      __gen_IncrementContract_receive_Inrement CALLDICT
+      __gen_store_IncrementContract CALLDICT
+    }>
+    2DROP
+    100 THROW
+  }>
+  init_IncrementContract PROC:<{
+    __gen_IncrementContract_init CALLDICT
+  }>
+}END>c

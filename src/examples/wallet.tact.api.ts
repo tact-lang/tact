@@ -58,14 +58,14 @@ export type TransferMessage = {
 
 export function packTransferMessage(src: TransferMessage): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeInt(1843760589, 32);
+    b_0 = b_0.storeUint(1843760589, 32);
     b_0 = b_0.storeRef(src.signature.toCell());
     b_0 = b_0.storeCellCopy(packTransfer(src.transfer));
     return b_0.endCell();
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECLAEAAgEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAmJwIBIAYHAgFiIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCjECghBt5Y3NupXwBzHwEpEw4vAMgAAkIG7yToAAPPpAAfpEbwKAAKRyWMsBcAHLACFvEAHKBwFvEQHL/4AIBIBITAgEgFBUAOxvJVBFyx8SywcB8AMB+gIhbpRwMsoAlX8BygDM4oAALMgB8ATJgAC00x/TB/ACAfoAbQHSAAGS1DHeVUBvBYAATNQB0AHwBhJvAoAIBIBgZAgEgHB0CASAaGwAVTTH9P/0z9VIG8DgAFRvI1Ajyx/L/8s/gAAsyAHwCMmACASAeHwIBICAhAA8yAHwCMntVIAB9MhxAcoBIW8QAcoAcAHKAiFvEfADIW8S+gJwAcpocAHKACFvFCBus5l/WMoAAfABAcyVMHABygDiyQFvE/sAgAB8cG1tbwNYcW+HAXJvh/AJgAAcIG8RgAgEgJCUAZUIG8RIPAF+QACbxAjbxEQI/kQ8qogbxAibxC68qt/IW8SIm8TI28RBG8UEDRBMG8F8A2AAHCBvEoAAHCBvEIAIBICgpABe+AldqJoeAUY+AgYwACbuhPwDoAgFIKisAF7Ml+1E0PAKMfARMYAAXsH47UTQ8Aox8A8xg';
+    const __code = 'te6ccgECLAEAAgwAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAmJwIBIAYHAgFiIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8APQx0x/tRNDwCjECghBt5Y3NupfwBzHwEvAM4FvywGSAACQgbvJOgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gAgEgEhMCASAUFQA7G8lUEXLHxLLBwHwAwH6AiFulHAyygCVfwHKAMzigAAsyAHwBMmAALTTH9MH8AIB+gBtAdIAAZLUMd5VQG8FgABM1AHQAfAGEm8CgAgEgGBkCASAcHQIBIBobABVNMf0//TP1UgbwOAAVG8jUCPLH8v/yz+AACzIAfAIyYAIBIB4fAgEgICEADzIAfAIye1UgAH0yHEBygEhbxABygBwAcoCIW8R8AMhbxL6AnABymhwAcoAIW8UIG6zmX9YygAB8AEBzJUwcAHKAOLJAW8T+wCAAHxwbW1vA1hxb4cBcm+H8AmAABwgbxGACASAkJQB3QgbxEg8AX5AAJvECNvERAj+RDyqiBvECJvELryqyFvEKQScG+HfyJvEiNvEyRvEQVvFBA0QTAVbwXwDYAAcIG8SgAAcIG8QgAgEgKCkAF74CV2omh4BRj4CBjAAJu6E/AOgCAUgqKwAXsyX7UTQ8Aox8BExgABewfjtRNDwCjHwDzGA=';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

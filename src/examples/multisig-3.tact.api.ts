@@ -51,7 +51,7 @@ export type Execute = {
 
 export function packExecute(src: Execute): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeInt(819865922, 32);
+    b_0 = b_0.storeUint(819865922, 32);
     b_0 = b_0.storeCellCopy(packOperation(src.operation));
     b_0 = b_0.storeRef(src.signature1.toCell());
     b_0 = b_0.storeRef(src.signature2.toCell());
@@ -66,13 +66,13 @@ export type Executed = {
 
 export function packExecuted(src: Executed): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeInt(4174937, 32);
+    b_0 = b_0.storeUint(4174937, 32);
     b_0 = b_0.storeUint(new BN(src.seqno.toString(10), 10), 32);
     return b_0.endCell();
 }
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECOAEAAnMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAuLwIBIAYHAgFIIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8AOQx0h/tRNDwCzECghAw3ilCupXwCDHwFpEw4vANgAAkIG7yToAAPPpAAfpEbwKAAKRyWMsBcAHLACFvEAHKBwFvEQHL/4AIBIBITAgEgFBUAKzIcAHLAXMBywFwAcsAEszMyfkAbwKAAGRvI1Ajyx8B+gIB8AOAACzIAfAFyYAAVNMf+gDwAkMwbwOACASAYGQIBIB4fAgEgGhsCASAcHQAnPAHAdQB0AHUAdAB1AHQFEMwbwSAAGRvJFA0yx/L/8v/y/+AACzIAfAJyYAAZNMf0//T/9P/VTBvBIAAPXIAfAJye1UgCASAgIQB9MhxAcoBIW8QAcoAcAHKAiFvEfADIW8S+gJwAcpocAHKACFvFCBus5l/WMoAAfABAcyVMHABygDiyQFvE/sAgACscG1tbW8EUANxb4cBcm+HAXNvh/AKgAgEgJCUCASAqKwIBICYnAgEgKCkAHR/IW8SAm8REnBtbwXwDoAAPHDIycjJ8ASAABwgbxGAABwgbxKACASAsLQB1QgbxDwBvkAIW8RI28RIln5ECJvEiRvEiNZ+RAjbxMlbxMQJPkQI28QbxAlbxC68ooCsAGw8opvEPAQgABwgbxOAABwgbxCACASAwMQIBIDIzABe7ra7UTQ8Asx8BExgAF7jJftRNDwCzHwFTGAIBIDQ1AAm4rH8A+AIBIDY3ABe0fL2omh4BZj4CRjAAF7Dp+1E0PALMfAUMYAAXsOG7UTQ8Asx8BMxg';
+    const __code = 'te6ccgECOAEAAnUAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAuLwIBIAYHAgFIIiMCASAICQIBIBYXAgEgCgsCASAQEQIBIAwNAgEgDg8APQx0x/tRNDwCzECghAw3ilCupfwCDHwFvAN4FvywGSAACQgbvJOgAA8+kAB+kRvAoAApHJYywFwAcsAIW8QAcoHAW8RAcv/gAgEgEhMCASAUFQArMhwAcsBcwHLAXABywASzMzJ+QBvAoAAZG8jUCPLHwH6AgHwA4AALMgB8AXJgABU0x/6APACQzBvA4AIBIBgZAgEgHh8CASAaGwIBIBwdACc8AcB1AHQAdQB0AHUAdAUQzBvBIAAZG8kUDTLH8v/y//L/4AALMgB8AnJgABk0x/T/9P/0/9VMG8EgAA9cgB8AnJ7VSAIBICAhAH0yHEBygEhbxABygBwAcoCIW8R8AMhbxL6AnABymhwAcoAIW8UIG6zmX9YygAB8AEBzJUwcAHKAOLJAW8T+wCAAKxwbW1tbwRQA3FvhwFyb4cBc2+H8AqACASAkJQIBICorAgEgJicCASAoKQAdH8hbxICbxEScG1vBfAOgAA8cMjJyMnwBIAAHCBvEYAAHCBvEoAIBICwtAHVCBvEPAG+QAhbxEjbxEiWfkQIm8SJG8SI1n5ECNvEyVvExAk+RAjbxBvECVvELryigKwAbDyim8Q8BCAAHCBvE4AAHCBvEIAIBIDAxAgEgMjMAF7utrtRNDwCzHwETGAAXuMl+1E0PALMfAVMYAgEgNDUACbisfwD4AgEgNjcAF7R8vaiaHgFmPgJGMAAXsOn7UTQ8Asx8BQxgABew4btRNDwCzHwEzGA=';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});

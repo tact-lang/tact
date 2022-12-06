@@ -1,4 +1,4 @@
-import { ABIFunctions } from "../../abi/AbiFunction";
+import { ABIFunctions, MapFunctions } from "../../abi/AbiFunction";
 import { ASTExpression, throwError } from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpressionType";
 import { getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
@@ -210,23 +210,42 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve source type
         let src = getExpType(ctx.ctx, f.src);
-        if (src === null || src.kind !== 'ref' || src.optional) {
+        if (src === null) {
             throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
         }
 
-        // Check ABI
-        if (src.name === '$ABI') {
-            let abf = ABIFunctions[f.name];
-            if (!abf) {
-                throwError(`ABI function "${f.name}" not found`, f.ref);
+        // Reference type
+        if (src.kind === 'ref') {
+
+            if (src.optional) {
+                throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
             }
-            return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), f.args.map((a) => writeExpression(a, ctx)), f.ref);
+
+            // Check ABI
+            if (src.name === '$ABI') {
+                let abf = ABIFunctions[f.name];
+                if (!abf) {
+                    throwError(`ABI function "${f.name}" not found`, f.ref);
+                }
+                return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), f.args.map((a) => writeExpression(a, ctx)), f.ref);
+            }
+
+            // Render function call
+            ctx.used(`__gen_${src.name}_${f.name}`);
+            let s = writeExpression(f.src, ctx);
+            return `${s}~__gen_${src.name}_${f.name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
         }
 
-        // Render function call
-        ctx.used(`__gen_${src.name}_${f.name}`);
-        let s = writeExpression(f.src, ctx);
-        return `${s}~__gen_${src.name}_${f.name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+        // Map types
+        if (src.kind === 'map') {
+            let abf = MapFunctions[f.name];
+            if (!abf) {
+                throwError(`Map function "${f.name}" not found`, f.ref);
+            }
+            return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [writeExpression(f.src, ctx), ...f.args.map((a) => writeExpression(a, ctx))], f.ref);
+        }
+
+        throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
     }
 
     //

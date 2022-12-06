@@ -18,6 +18,9 @@ function printFieldType(ref: TypeRef): string {
             return ref.name + (ref.optional ? ' | null' : '');
         }
     }
+    if (ref.kind === 'map') {
+        return `Cell`;
+    }
 
     throw Error(`Unsupported type`);
 }
@@ -32,7 +35,7 @@ function writeField(field: ContractField, w: Writer) {
 
 function writeStackItem(name: string, ref: TypeRef, w: Writer) {
     if (ref.kind === 'ref') {
-        
+
         if (ref.optional) {
             w.append(`if (${name} !== null) {`);
             w.inIndent(() => {
@@ -55,10 +58,20 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
         } else if (ref.name === 'Slice') {
             w.append(`__stack.push({ type: 'slice', value: ${name}});`);
             return;
+        } else if (ref.name === 'Address') {
+            w.append(`__stack.push({ type: 'slice', value: ${name}});`);
+            return;
+        } else {
+            throw Error(`Unsupported type: ${ref.name}`);
         }
     }
 
-    throw Error(`Unsupported type: ${ref.kind}`);
+    if (ref.kind === 'map') {
+        w.append(`__stack.push({ type: 'cell', value: ${name}});`);
+        return;
+    }
+
+    throw Error(`Unsupported type`);
 }
 
 export function writeTypescript(abi: ContractABI) {
@@ -84,7 +97,7 @@ export function writeTypescript(abi: ContractABI) {
         w.inIndent(() => {
             w.append(`let b_0 = new Builder();`);
             if (s.allocation.prefix) {
-                w.append(`b_0 = b_0.storeInt(${s.allocation.prefix}, 32);`);
+                w.append(`b_0 = b_0.storeUint(${s.allocation.prefix}, 32);`);
             }
 
             function processField(index: number, f: AllocationField) {

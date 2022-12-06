@@ -244,35 +244,42 @@ PROGRAM{
     0 INDEX
     EQUAL
     43 THROWIFNOT
-    TRUE
     OVER
-    2 INDEX
+    0 INDEX
+    INC
+    s1 s2 XCHG
+    0 PUSHINT
+    SETINDEXVARQ
+    TRUE
     s2 PUSH
-    3 INDEX
+    2 INDEX
     s3 PUSH
+    3 INDEX
+    s4 PUSH
     1 INDEX
-    s0 s4 XCHG
+    s0 s5 XCHG
     4 INDEX
     s3 s4 XCHG
     s1 s3 s0 XCHG3
+    s1 s5 XCHG
     5 TUPLE
     send CALLDICT
   }>
   recv_internal PROC:<{
     NIP
-    32 LDI
+    32 LDU
     __gen_load_Wallet INLINECALLDICT
     s0 s2 XCHG
     1843760589 PUSHINT
     EQUAL
-    IF:<{
+    IFJMP:<{
       __gen_read_TransferMessage CALLDICT
       NIP
       __gen_Wallet_receive_TransferMessage CALLDICT
-    }>ELSE<{
-      DROP
+      __gen_store_Wallet CALLDICT
     }>
-    __gen_store_Wallet CALLDICT
+    2DROP
+    100 THROW
   }>
   init_Wallet PROC:<{
     __gen_Wallet_init CALLDICT

@@ -264,7 +264,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
         ctx.inIndent(() => {
 
             // Begin parsing
-            ctx.append(`int op = in_msg~load_int(32);`);
+            ctx.append(`int op = in_msg~load_uint(32);`);
 
             ctx.used(`__gen_load_${type.name}`);
             ctx.append(`tuple self = __gen_load_${type.name}();`);
@@ -286,13 +286,19 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                     // Execute function
                     ctx.used(`__gen_${type.name}_receive_${f.type}`);
                     ctx.append('self~__gen_' + type.name + '_receive_' + f.type + '(msg);');
+
+                    // Persist
+                    ctx.used(`__gen_store_${type.name}`);
+                    ctx.append(`__gen_store_${type.name}(self);`);
+
+                    // Exit
+                    ctx.append(`return ();`);
                 })
                 ctx.append(`}`);
             }
 
-            // Persist
-            ctx.used(`__gen_store_${type.name}`);
-            ctx.append(`__gen_store_${type.name}(self);`);
+            ctx.append();
+            ctx.append(`throw(100);`);
         });
         ctx.append('}');
 

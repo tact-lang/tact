@@ -1,4 +1,4 @@
-import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTType } from "../ast/ast";
+import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTStatement, ASTType } from "../ast/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
@@ -44,6 +44,13 @@ export type FunctionDescription = {
     ast: ASTFunction | ASTNativeFunction
 }
 
+export type StatementDescription = {
+    kind: 'native',
+    src: ASTStatement
+} | {
+    kind: 'intrinsic'
+}
+
 export type ReceiverDescription = {
     type: string,
     name: string,
@@ -60,6 +67,8 @@ export function printTypeRef(src: TypeRef | null): string {
         return '<null>';
     } else if (src.kind === 'ref') {
         return src.name + (src.optional ? '?' : '');
+    } else if (src.kind === 'map') {
+        return `map[${src.key}]${src.value}`;
     } else {
         throw Error('Invalid type ref');
     }

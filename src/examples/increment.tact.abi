@@ -1,5 +1,5 @@
 {
-  "name": "SampleContract",
+  "name": "IncrementContract",
   "structs": [
     {
       "name": "SendParameters",
@@ -111,11 +111,11 @@
       }
     },
     {
-      "name": "Source",
+      "name": "Inrement",
       "header": 0,
       "fields": [
         {
-          "name": "a",
+          "name": "key",
           "type": {
             "kind": "ref",
             "name": "Int",
@@ -123,7 +123,7 @@
           }
         },
         {
-          "name": "b",
+          "name": "value",
           "type": {
             "kind": "ref",
             "name": "Int",
@@ -132,7 +132,7 @@
         }
       ],
       "allocation": {
-        "prefix": null,
+        "prefix": 3020402937,
         "root": {
           "fields": [
             {
@@ -163,7 +163,12 @@
       }
     }
   ],
-  "code": "te6ccgEBCgEAYgABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAXoHix2omh4ARj4AhjAgEgBgcAB9EDeIQCASAICQAnSBAQHXAIEBAdcA1DDQ8AFDMG8DgACRb8sBkgABsgQEB1wCBAQHXAFlvAoA==",
-  "init": null,
-  "receivers": []
+  "code": "te6ccgEBGAEA7gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSBYXAgEgBgcCAUgSEwIBIAgJAgEgDg8CASAKCwIBIAwNAD0MdMf7UTQ8AUxAoIQtAew+bqX8AIx8ArwB+Bb8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgABsgQEB1wCBAQHXAFlvAoAALG8hAfQAgAgEgEBEAD1yAHwA8ntVIAAsyAHwA8mAACz0BAFvAYAIBIBQVADlAH+IAH+ICBvECJvEIEBAQNvEVQTARAj8AFwb4eAALG1vAfAEgAAcIG8QgAAm4H38AiAAXu0B+1E0PAFMfAJMY",
+  "init": {
+    "name": "init_IncrementContract",
+    "args": []
+  },
+  "receivers": [
+    "Inrement"
+  ]
 }

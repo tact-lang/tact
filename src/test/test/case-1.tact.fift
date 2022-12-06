@@ -1,12 +1,7 @@
 PROGRAM{
-  DECLPROC __gen_write_Empty
   DECLPROC __gen_read_Empty
   DECLPROC __gen_load_Empty
-  DECLPROC __gen_store_Empty
   DECLPROC recv_internal
-  __gen_write_Empty PROC:<{
-    DROP
-  }>
   __gen_read_Empty PROC:<{
     0 TUPLE
   }>
@@ -16,16 +11,8 @@ PROGRAM{
     __gen_read_Empty CALLDICT
     NIP
   }>
-  __gen_store_Empty PROC:<{
-    NEWC
-    SWAP
-    __gen_write_Empty CALLDICT
-    ENDC
-    c4 POP
-  }>
   recv_internal PROC:<{
     2DROP
-    __gen_load_Empty INLINECALLDICT
-    __gen_store_Empty CALLDICT
+    100 THROW
   }>
 }END>c

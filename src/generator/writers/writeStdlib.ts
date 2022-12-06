@@ -47,4 +47,36 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_from_tuple', () => {
         ctx.append(`forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";`);
     });
+    ctx.fun('__tact_dict_set_int_cell', () => {
+        ctx.append(`cell __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
+                ctx.append(`return r;`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return idict_set_ref(d, kl, k, v);`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
+    ctx.fun('__tact_dict_set_int_int', () => {
+        ctx.append(`cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
+                ctx.append(`return r;`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell());`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
 }

@@ -316,19 +316,19 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     NIP
-    32 LDI
+    32 LDU
     __gen_load_MultisigContract INLINECALLDICT
     s0 s2 XCHG
     819865922 PUSHINT
     EQUAL
-    IF:<{
+    IFJMP:<{
       __gen_read_Execute CALLDICT
       NIP
       __gen_MultisigContract_receive_Execute CALLDICT
-    }>ELSE<{
-      DROP
+      __gen_store_MultisigContract CALLDICT
     }>
-    __gen_store_MultisigContract CALLDICT
+    2DROP
+    100 THROW
   }>
   init_MultisigContract PROC:<{
     __gen_MultisigContract_init CALLDICT
