@@ -5,9 +5,7 @@ import { WriterContext } from "../Writer";
 export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: WriterContext): string {
 
     // TypeRef
-    if (descriptor.kind === 'optional') {
-        return resolveFuncType(descriptor.inner, ctx);
-    } else if (descriptor.kind === 'direct') {
+    if (descriptor.kind === 'ref') {
         return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx);
     }
 
@@ -23,7 +21,7 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: Writ
             return 'cell';
         } else if (descriptor.name === 'Builder') {
             return 'builder';
-        } else if (descriptor.name === 'Address') { 
+        } else if (descriptor.name === 'Address') {
             return '[int, int]';
         } else {
             throw Error('Unknown primitive type: ' + descriptor.name);

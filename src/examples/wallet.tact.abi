@@ -8,39 +8,41 @@
         {
           "name": "bounce",
           "type": {
-            "kind": "direct",
-            "name": "Bool"
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
           }
         },
         {
           "name": "to",
           "type": {
-            "kind": "direct",
-            "name": "Address"
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
           }
         },
         {
           "name": "value",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "mode",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "body",
           "type": {
-            "kind": "optional",
-            "inner": {
-              "kind": "direct",
-              "name": "Cell"
-            }
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
           }
         }
       ],
@@ -115,39 +117,41 @@
         {
           "name": "seqno",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "mode",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "to",
           "type": {
-            "kind": "direct",
-            "name": "Address"
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
           }
         },
         {
           "name": "amount",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "body",
           "type": {
-            "kind": "optional",
-            "inner": {
-              "kind": "direct",
-              "name": "Cell"
-            }
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
           }
         }
       ],
@@ -221,15 +225,17 @@
         {
           "name": "signature",
           "type": {
-            "kind": "direct",
-            "name": "Slice"
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
           }
         },
         {
           "name": "transfer",
           "type": {
-            "kind": "direct",
-            "name": "Transfer"
+            "kind": "ref",
+            "name": "Transfer",
+            "optional": false
           }
         }
       ],
@@ -271,15 +277,17 @@
       {
         "name": "key",
         "type": {
-          "kind": "direct",
-          "name": "Int"
+          "kind": "ref",
+          "name": "Int",
+          "optional": false
         }
       },
       {
         "name": "walletId",
         "type": {
-          "kind": "direct",
-          "name": "Int"
+          "kind": "ref",
+          "name": "Int",
+          "optional": false
         }
       }
     ]

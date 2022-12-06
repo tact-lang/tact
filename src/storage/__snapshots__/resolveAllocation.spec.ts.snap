@@ -11,8 +11,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "bounce",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Bool",
+            "optional": false,
           },
         },
         {
@@ -21,8 +22,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "to",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Address",
+            "optional": false,
           },
         },
         {
@@ -31,8 +33,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 2,
           "name": "value",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
         {
@@ -41,8 +44,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 3,
           "name": "mode",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
         {
@@ -51,11 +55,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 4,
           "name": "body",
           "type": {
-            "inner": {
-              "kind": "direct",
-              "name": "Cell",
-            },
-            "kind": "optional",
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true,
           },
         },
       ],
@@ -219,8 +221,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "bounce",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Bool",
+            "optional": false,
           },
         },
         {
@@ -229,8 +232,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "to",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Address",
+            "optional": false,
           },
         },
         {
@@ -239,8 +243,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 2,
           "name": "value",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
         {
@@ -249,8 +254,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 3,
           "name": "mode",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
         {
@@ -259,11 +265,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 4,
           "name": "body",
           "type": {
-            "inner": {
-              "kind": "direct",
-              "name": "Cell",
-            },
-            "kind": "optional",
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true,
           },
         },
       ],
@@ -283,8 +287,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "x",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
         {
@@ -293,8 +298,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "y",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
       ],
@@ -334,13 +340,13 @@ exports[`resolveAllocation should write program 1`] = `
         "fields": [
           {
             "as": null,
-            "id": 204,
+            "id": 232,
             "init": undefined,
             "kind": "def_field",
             "name": "x",
             "ref": ASTRef {},
             "type": {
-              "id": 203,
+              "id": 231,
               "kind": "type_ref",
               "name": "Int",
               "optional": false,
@@ -349,13 +355,13 @@ exports[`resolveAllocation should write program 1`] = `
           },
           {
             "as": null,
-            "id": 206,
+            "id": 234,
             "init": undefined,
             "kind": "def_field",
             "name": "y",
             "ref": ASTRef {},
             "type": {
-              "id": 205,
+              "id": 233,
               "kind": "type_ref",
               "name": "Int",
               "optional": false,
@@ -363,7 +369,7 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
         ],
-        "id": 207,
+        "id": 235,
         "kind": "def_struct",
         "message": false,
         "name": "Point",
@@ -376,8 +382,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "x",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
         {
@@ -386,8 +393,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "y",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Int",
+            "optional": false,
           },
         },
       ],
@@ -407,8 +415,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "z",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Point",
+            "optional": false,
           },
         },
       ],
@@ -428,13 +437,13 @@ exports[`resolveAllocation should write program 1`] = `
                 "fields": [
                   {
                     "as": null,
-                    "id": 204,
+                    "id": 232,
                     "init": undefined,
                     "kind": "def_field",
                     "name": "x",
                     "ref": ASTRef {},
                     "type": {
-                      "id": 203,
+                      "id": 231,
                       "kind": "type_ref",
                       "name": "Int",
                       "optional": false,
@@ -443,13 +452,13 @@ exports[`resolveAllocation should write program 1`] = `
                   },
                   {
                     "as": null,
-                    "id": 206,
+                    "id": 234,
                     "init": undefined,
                     "kind": "def_field",
                     "name": "y",
                     "ref": ASTRef {},
                     "type": {
-                      "id": 205,
+                      "id": 233,
                       "kind": "type_ref",
                       "name": "Int",
                       "optional": false,
@@ -457,7 +466,7 @@ exports[`resolveAllocation should write program 1`] = `
                     },
                   },
                 ],
-                "id": 207,
+                "id": 235,
                 "kind": "def_struct",
                 "message": false,
                 "name": "Point",
@@ -470,8 +479,9 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 0,
                   "name": "x",
                   "type": {
-                    "kind": "direct",
+                    "kind": "ref",
                     "name": "Int",
+                    "optional": false,
                   },
                 },
                 {
@@ -480,8 +490,9 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 1,
                   "name": "y",
                   "type": {
-                    "kind": "direct",
+                    "kind": "ref",
                     "name": "Int",
+                    "optional": false,
                   },
                 },
               ],
@@ -505,13 +516,13 @@ exports[`resolveAllocation should write program 1`] = `
         "fields": [
           {
             "as": null,
-            "id": 209,
+            "id": 237,
             "init": undefined,
             "kind": "def_field",
             "name": "z",
             "ref": ASTRef {},
             "type": {
-              "id": 208,
+              "id": 236,
               "kind": "type_ref",
               "name": "Point",
               "optional": false,
@@ -519,7 +530,7 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
         ],
-        "id": 210,
+        "id": 238,
         "kind": "def_struct",
         "message": false,
         "name": "Point2",
@@ -532,8 +543,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "z",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Point",
+            "optional": false,
           },
         },
       ],
@@ -553,8 +565,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "a",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Point",
+            "optional": false,
           },
         },
         {
@@ -563,8 +576,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "b",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Point2",
+            "optional": false,
           },
         },
       ],
@@ -584,13 +598,13 @@ exports[`resolveAllocation should write program 1`] = `
                 "fields": [
                   {
                     "as": null,
-                    "id": 204,
+                    "id": 232,
                     "init": undefined,
                     "kind": "def_field",
                     "name": "x",
                     "ref": ASTRef {},
                     "type": {
-                      "id": 203,
+                      "id": 231,
                       "kind": "type_ref",
                       "name": "Int",
                       "optional": false,
@@ -599,13 +613,13 @@ exports[`resolveAllocation should write program 1`] = `
                   },
                   {
                     "as": null,
-                    "id": 206,
+                    "id": 234,
                     "init": undefined,
                     "kind": "def_field",
                     "name": "y",
                     "ref": ASTRef {},
                     "type": {
-                      "id": 205,
+                      "id": 233,
                       "kind": "type_ref",
                       "name": "Int",
                       "optional": false,
@@ -613,7 +627,7 @@ exports[`resolveAllocation should write program 1`] = `
                     },
                   },
                 ],
-                "id": 207,
+                "id": 235,
                 "kind": "def_struct",
                 "message": false,
                 "name": "Point",
@@ -626,8 +640,9 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 0,
                   "name": "x",
                   "type": {
-                    "kind": "direct",
+                    "kind": "ref",
                     "name": "Int",
+                    "optional": false,
                   },
                 },
                 {
@@ -636,8 +651,9 @@ exports[`resolveAllocation should write program 1`] = `
                   "index": 1,
                   "name": "y",
                   "type": {
-                    "kind": "direct",
+                    "kind": "ref",
                     "name": "Int",
+                    "optional": false,
                   },
                 },
               ],
@@ -664,13 +680,13 @@ exports[`resolveAllocation should write program 1`] = `
                   "fields": [
                     {
                       "as": null,
-                      "id": 209,
+                      "id": 237,
                       "init": undefined,
                       "kind": "def_field",
                       "name": "z",
                       "ref": ASTRef {},
                       "type": {
-                        "id": 208,
+                        "id": 236,
                         "kind": "type_ref",
                         "name": "Point",
                         "optional": false,
@@ -678,7 +694,7 @@ exports[`resolveAllocation should write program 1`] = `
                       },
                     },
                   ],
-                  "id": 210,
+                  "id": 238,
                   "kind": "def_struct",
                   "message": false,
                   "name": "Point2",
@@ -691,8 +707,9 @@ exports[`resolveAllocation should write program 1`] = `
                     "index": 0,
                     "name": "z",
                     "type": {
-                      "kind": "direct",
+                      "kind": "ref",
                       "name": "Point",
+                      "optional": false,
                     },
                   },
                 ],
@@ -721,13 +738,13 @@ exports[`resolveAllocation should write program 1`] = `
         "fields": [
           {
             "as": null,
-            "id": 199,
+            "id": 227,
             "init": undefined,
             "kind": "def_field",
             "name": "a",
             "ref": ASTRef {},
             "type": {
-              "id": 198,
+              "id": 226,
               "kind": "type_ref",
               "name": "Point",
               "optional": false,
@@ -736,13 +753,13 @@ exports[`resolveAllocation should write program 1`] = `
           },
           {
             "as": null,
-            "id": 201,
+            "id": 229,
             "init": undefined,
             "kind": "def_field",
             "name": "b",
             "ref": ASTRef {},
             "type": {
-              "id": 200,
+              "id": 228,
               "kind": "type_ref",
               "name": "Point2",
               "optional": false,
@@ -750,7 +767,7 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
         ],
-        "id": 202,
+        "id": 230,
         "kind": "def_struct",
         "message": false,
         "name": "Point3",
@@ -763,8 +780,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 0,
           "name": "a",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Point",
+            "optional": false,
           },
         },
         {
@@ -773,8 +791,9 @@ exports[`resolveAllocation should write program 1`] = `
           "index": 1,
           "name": "b",
           "type": {
-            "kind": "direct",
+            "kind": "ref",
             "name": "Point2",
+            "optional": false,
           },
         },
       ],
@@ -804,12 +823,12 @@ exports[`resolveAllocation should write program 1`] = `
           {
             "args": [
               {
-                "id": 212,
+                "id": 240,
                 "kind": "def_argument",
                 "name": "a",
                 "ref": ASTRef {},
                 "type": {
-                  "id": 211,
+                  "id": 239,
                   "kind": "type_ref",
                   "name": "Int",
                   "optional": false,
@@ -817,12 +836,12 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
               {
-                "id": 214,
+                "id": 242,
                 "kind": "def_argument",
                 "name": "b",
                 "ref": ASTRef {},
                 "type": {
-                  "id": 213,
+                  "id": 241,
                   "kind": "type_ref",
                   "name": "Int",
                   "optional": false,
@@ -835,7 +854,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "type": "public",
               },
             ],
-            "id": 215,
+            "id": 243,
             "kind": "def_function",
             "name": "main",
             "ref": ASTRef {},
@@ -843,7 +862,7 @@ exports[`resolveAllocation should write program 1`] = `
             "statements": [],
           },
         ],
-        "id": 216,
+        "id": 244,
         "kind": "def_contract",
         "name": "Sample",
         "ref": ASTRef {},
@@ -856,28 +875,30 @@ exports[`resolveAllocation should write program 1`] = `
               "as": null,
               "name": "a",
               "type": {
-                "kind": "direct",
+                "kind": "ref",
                 "name": "Int",
+                "optional": false,
               },
             },
             {
               "as": null,
               "name": "b",
               "type": {
-                "kind": "direct",
+                "kind": "ref",
                 "name": "Int",
+                "optional": false,
               },
             },
           ],
           "ast": {
             "args": [
               {
-                "id": 212,
+                "id": 240,
                 "kind": "def_argument",
                 "name": "a",
                 "ref": ASTRef {},
                 "type": {
-                  "id": 211,
+                  "id": 239,
                   "kind": "type_ref",
                   "name": "Int",
                   "optional": false,
@@ -885,12 +906,12 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
               {
-                "id": 214,
+                "id": 242,
                 "kind": "def_argument",
                 "name": "b",
                 "ref": ASTRef {},
                 "type": {
-                  "id": 213,
+                  "id": 241,
                   "kind": "type_ref",
                   "name": "Int",
                   "optional": false,
@@ -903,7 +924,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "type": "public",
               },
             ],
-            "id": 215,
+            "id": 243,
             "kind": "def_function",
             "name": "main",
             "ref": ASTRef {},

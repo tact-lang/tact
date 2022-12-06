@@ -27,15 +27,13 @@ function getSortedTypes(ctx: CompilerContext) {
         let t = new Set<string>();
         for (let f of src.fields) {
             let r = f.type;
-            while (r.kind !== 'direct') {
-                r = r.inner;
-            }
-
-            let tp = getType(ctx, r.name);
-            if (tp.kind === 'struct') {
-                if (!t.has(tp.name)) {
-                    t.add(r.name);
-                    res.push(tp);
+            if (r.kind === 'ref') {
+                let tp = getType(ctx, r.name);
+                if (tp.kind === 'struct') {
+                    if (!t.has(tp.name)) {
+                        t.add(r.name);
+                        res.push(tp);
+                    }
                 }
             }
         }
@@ -49,8 +47,8 @@ function getSortedTypes(ctx: CompilerContext) {
 function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRef): StorageField {
 
     // Resolve Optional
-    if (type.kind === 'optional') {
-        let inner = allocateField(ctx, src, type.inner);
+    if (type.kind === 'ref' && type.optional) {
+        let inner = allocateField(ctx, src, { ...type, optional: false });
         return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits + 1, refs: inner.size.refs }, index: src.index };
     }
 

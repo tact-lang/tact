@@ -2,20 +2,15 @@ import { ASTExpression, ASTTypeRef, throwError } from "../ast/ast";
 import { printTypeRef, TypeRef } from "./types";
 
 function resolveTypeRef(src: ASTTypeRef): TypeRef {
-    if (src.optional) {
+    if (src.kind === 'type_ref') {
         return {
-            kind: 'optional',
-            inner: {
-                kind: 'direct',
-                name: src.name
-            }
-        };
-    } else {
-        return {
-            kind: 'direct',
-            name: src.name
+            kind: 'ref',
+            name: src.name,
+            optional: src.optional
         }
+
     }
+    throw Error('Unknown type')
 }
 
 function reduceInt(ast: ASTExpression): bigint {

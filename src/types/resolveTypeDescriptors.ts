@@ -52,20 +52,11 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         if (!types[src.name]) {
             throwError('Type ' + src.name + ' not found', src.ref);
         }
-        if (src.optional) {
-            return {
-                kind: 'optional',
-                inner: {
-                    kind: 'direct',
-                    name: src.name
-                }
-            };
-        } else {
-            return {
-                kind: 'direct',
-                name: src.name
-            }
-        }
+        return {
+            kind: 'ref',
+            name: src.name,
+            optional: src.optional
+        };
     }
 
     function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {

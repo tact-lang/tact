@@ -37,7 +37,8 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
             let valueExpr = writeExpression(f.expression, ctx);
             let lvalueTypes = getLValuePaths(ctx.ctx, f);
             let srcExpr = f.path[1];
-            assert(lvalueTypes[0].kind === 'direct');
+            assert(lvalueTypes[0].kind === 'ref');
+            assert(!lvalueTypes[0].optional);
             let tt = getType(ctx.ctx, lvalueTypes[0].name);
             let targetIndex = tt.fields.findIndex((v) => v.name === srcExpr);
             ctx.used('__tact_set');

@@ -1,6 +1,5 @@
 import { StorageAllocation, StorageCell, StorageField } from "../../storage/StorageAllocation";
 import { WriterContext } from "../Writer";
-import { resolveFuncType } from "./resolveFuncType";
 
 //
 // Serializer

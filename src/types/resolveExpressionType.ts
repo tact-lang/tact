@@ -1,8 +1,8 @@
 import { ABIFunctions } from "../abi/AbiFunction";
-import { ASTCondition, ASTExpression, ASTFunction, ASTNativeFunction, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
+import { ASTCondition, ASTExpression, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType } from "./resolveTypeDescriptors";
-import { printTypeRef, TypeDescription, TypeRef } from "./types";
+import { printTypeRef, TypeRef } from "./types";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef | null }>();
 let lValueStore = createContextStore<{ ast: ASTSTatementAssign, description: TypeRef[] }>();
@@ -27,20 +27,11 @@ export function getLValuePaths(ctx: CompilerContext, exp: ASTSTatementAssign) {
 
 function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     let n = getType(ctx, src.name).name; // TODO: Check
-    if (src.optional) {
-        return {
-            kind: 'optional',
-            inner: {
-                kind: 'direct',
-                name: n
-            }
-        };
-    } else {
-        return {
-            kind: 'direct',
-            name: n
-        }
-    }
+    return {
+        kind: 'ref',
+        name: n,
+        optional: src.optional
+    };
 }
 
 export function resolveExpressionTypes(ctx: CompilerContext) {
@@ -57,7 +48,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         // Resolve source
         ctx = resolveExpression(ctx, vctx, exp.src);
         let src = getExpType(ctx, exp.src);
-        if (!src || src.kind !== 'direct') {
+        if (!src || src.kind !== 'ref' || src.optional) {
             throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);
         }
 
@@ -93,9 +84,9 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
     }
     function resolveExpression(ctx: CompilerContext, vctx: VariableCTX, exp: ASTExpression): CompilerContext {
         if (exp.kind === 'boolean') {
-            return registerExpType(ctx, exp, { kind: 'direct', name: 'Bool' });
+            return registerExpType(ctx, exp, { kind: 'ref', name: 'Bool', optional: false });
         } else if (exp.kind === 'number') {
-            return registerExpType(ctx, exp, { kind: 'direct', name: 'Int' });
+            return registerExpType(ctx, exp, { kind: 'ref', name: 'Int', optional: false });
         } else if (exp.kind === 'op_binary') {
 
             // Resolve left and right expressions
@@ -107,32 +98,29 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             // Check operands
             let resolved: TypeRef;
             if (exp.op === '-' || exp.op === '+' || exp.op === '*' || exp.op === '/') {
-                if (le === null || le.kind !== 'direct' || le.name !== 'Int') {
+                if (le === null || le.kind !== 'ref' || le.optional || le.name !== 'Int') {
                     throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                if (re === null || re.kind !== 'direct' || re.name !== 'Int') {
+                if (re === null || re.kind !== 'ref' || re.optional || re.name !== 'Int') {
                     throwError(`Invalid type "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                resolved = { kind: 'direct', name: 'Int' };
+                resolved = { kind: 'ref', name: 'Int', optional: false };
             } else if (exp.op === '<' || exp.op === '<=' || exp.op === '>' || exp.op === '>=') {
-                if (le === null || le.kind !== 'direct' || le.name !== 'Int') {
+                if (le === null || le.kind !== 'ref' || le.optional || le.name !== 'Int') {
                     throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                if (re === null || re.kind !== 'direct' || re.name !== 'Int') {
+                if (re === null || re.kind !== 'ref' || re.optional || re.name !== 'Int') {
                     throwError(`Invalid type "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                resolved = { kind: 'direct', name: 'Bool' };
+                resolved = { kind: 'ref', name: 'Bool', optional: false };
             } else if (exp.op === '==' || exp.op === '!=') {
 
                 // Check if types are compatible
                 if (le !== null && re !== null) {
                     let l = le;
                     let r = re;
-                    while (l.kind === 'optional') {
-                        l = l.inner;
-                    }
-                    while (r.kind === 'optional') {
-                        r = r.inner;
+                    if (l.kind !== 'ref' || r.kind !== 'ref') {
+                        throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                     }
                     if (r.name !== r.name) {
                         throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
@@ -142,15 +130,15 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     }
                 }
 
-                resolved = { kind: 'direct', name: 'Bool' };
+                resolved = { kind: 'ref', name: 'Bool', optional: false };
             } else if (exp.op === '&&' || exp.op === '||') {
-                if (le === null || le.kind !== 'direct' || le.name !== 'Bool') {
+                if (le === null || le.kind !== 'ref' || le.optional || le.name !== 'Bool') {
                     throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                if (re === null || re.kind !== 'direct' || re.name !== 'Bool') {
+                if (re === null || re.kind !== 'ref' || re.optional || re.name !== 'Bool') {
                     throwError(`Invalid type "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
-                resolved = { kind: 'direct', name: 'Bool' };
+                resolved = { kind: 'ref', name: 'Bool', optional: false };
             } else {
                 throw Error('Unsupported operator: ' + exp.op);
             }
@@ -165,18 +153,18 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             // Check right type dependent on operator
             let resolvedType = getExpType(ctx, exp.right);
             if (exp.op === '-' || exp.op === '+') {
-                if (resolvedType === null || resolvedType.kind !== 'direct' || resolvedType.name !== 'Int') {
+                if (resolvedType === null || resolvedType.optional || resolvedType.name !== 'Int') {
                     throwError(`Invalid type "${printTypeRef(resolvedType)}" for unary operator "${exp.op}"`, exp.ref);
                 }
             } else if (exp.op === '!') {
-                if (resolvedType === null || resolvedType.kind !== 'direct' || resolvedType.name !== 'Bool') {
+                if (resolvedType === null || resolvedType.optional || resolvedType.name !== 'Bool') {
                     throwError(`Invalid type "${printTypeRef(resolvedType)}" for unary operator "${exp.op}"`, exp.ref);
                 }
             } else if (exp.op === '!!') {
-                if (resolvedType === null || resolvedType.kind !== 'optional') {
+                if (resolvedType === null || !resolvedType.optional) {
                     throwError(`Type "${printTypeRef(resolvedType)}" is not optional`, exp.ref);
                 }
-                resolvedType = resolvedType.inner;
+                resolvedType = { kind: 'ref', name: resolvedType.name, optional: false };
             } else {
                 throwError('Unknown operator ' + exp.op, exp.ref);
             }
@@ -187,7 +175,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
             // Work-around for "ABI"
             if (exp.value === 'abi') {
-                return registerExpType(ctx, exp, { kind: 'direct', name: '$ABI' });
+                return registerExpType(ctx, exp, { kind: 'ref', name: '$ABI', optional: false });
             }
 
             // Find variable
@@ -199,7 +187,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         } else if (exp.kind === 'op_field') {
             ctx = resolveExpression(ctx, vctx, exp.src);
             let src = getExpType(ctx, exp.src);
-            if (src === null || src.kind !== 'direct') {
+            if (src === null || src.kind !== 'ref' || src.optional) {
                 throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
             }
             let srcT = getType(ctx, src.name);
@@ -215,7 +203,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
             // Resolve return value
             let src = getExpType(ctx, exp.src);
-            if (src === null || src.kind !== 'direct') {
+            if (src === null || src.kind !== 'ref' || src.optional) {
                 throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
             }
 
@@ -250,7 +238,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             for (let e of exp.args) {
                 ctx = resolveExpression(ctx, vctx, e.exp);
             }
-            return registerExpType(ctx, exp, { kind: 'direct', name: exp.type });
+            return registerExpType(ctx, exp, { kind: 'ref', name: exp.type, optional: false });
         } else if (exp.kind === 'null') {
             return registerExpType(ctx, exp, null);
         }
@@ -296,7 +284,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
                 // Paths
                 for (let i = 1; i < paths.length; i++) {
-                    if (t.kind !== 'direct') {
+                    if (t.kind !== 'ref' || t.optional) {
                         throwError(`Invalid type "${printTypeRef(t)}" for field access`, s.ref);
                     }
                     let srcT = getType(ctx, t.name);
@@ -332,7 +320,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
                     // Function variables
                     let vctx: VariableCTX = {};
-                    vctx['self'] = { kind: 'direct', name: getType(ctx, a.name).name };
+                    vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
                     for (let arg of f.args) {
                         vctx[arg.name] = resolveTypeRef(ctx, arg.type);
                     }
@@ -345,7 +333,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
                     // Receiver variables
                     let vctx: VariableCTX = {};
-                    vctx['self'] = { kind: 'direct', name: getType(ctx, a.name).name };
+                    vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
                     vctx[f.arg.name] = resolveTypeRef(ctx, f.arg.type);
 
                     // Resolve statements

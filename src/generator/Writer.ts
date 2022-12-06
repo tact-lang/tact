@@ -1,4 +1,3 @@
-import { ASTRef } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { topologicalSort } from "../utils";
 

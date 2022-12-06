@@ -115,8 +115,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         "index": 0,
         "name": "a",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Int",
+          "optional": false,
         },
       },
       {
@@ -125,8 +126,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         "index": 1,
         "name": "b",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Bool",
+          "optional": false,
         },
       },
     ],
@@ -170,8 +172,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         "index": 0,
         "name": "a",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Struct1",
+          "optional": false,
         },
       },
     ],
@@ -257,8 +260,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "isPublic": false,
     "name": "testFunc",
     "returns": {
-      "kind": "direct",
+      "kind": "ref",
       "name": "Int",
+      "optional": false,
     },
     "self": null,
   },
@@ -300,16 +304,18 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
         "as": null,
         "name": "a",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Int",
+          "optional": false,
         },
       },
       {
         "as": null,
         "name": "b",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Bool",
+          "optional": false,
         },
       },
     ],
@@ -470,8 +476,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "index": 0,
         "name": "a",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Int",
+          "optional": false,
         },
       },
       {
@@ -480,8 +487,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "index": 1,
         "name": "b",
         "type": {
-          "kind": "direct",
+          "kind": "ref",
           "name": "Bool",
+          "optional": false,
         },
       },
     ],

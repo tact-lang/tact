@@ -11,11 +11,9 @@ export type TypeDescription = {
 }
 
 export type TypeRef = {
-    kind: 'direct',
-    name: string;
-} | {
-    kind: 'optional',
-    inner: TypeRef
+    kind: 'ref',
+    name: string,
+    optional: boolean
 };
 
 export type FieldDescription = {
@@ -56,10 +54,8 @@ export type InitDescription = {
 export function printTypeRef(src: TypeRef | null): string {
     if (!src) {
         return '<null>';
-    } else if (src.kind === 'direct') {
-        return src.name;
-    } else if (src.kind === 'optional') {
-        return printTypeRef(src.inner) + '?';
+    } else if (src.kind === 'ref') {
+        return src.name + (src.optional ? '?' : '');
     } else {
         throw Error('Invalid type ref');
     }

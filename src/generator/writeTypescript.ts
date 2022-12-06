@@ -3,22 +3,20 @@ import { TypeRef } from "../types/types";
 import { Writer } from "./Writer";
 
 function printFieldType(ref: TypeRef): string {
-    if (ref.kind === 'direct') {
+    if (ref.kind === 'ref') {
         if (ref.name === 'Int') {
-            return 'BigInt';
+            return 'BigInt' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Bool') {
-            return 'boolean';
+            return 'boolean' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Cell') {
-            return 'Cell';
+            return 'Cell' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Slice') {
-            return 'Slice';
+            return 'Slice' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Address') {
-            return 'Address';
+            return 'Address' + (ref.optional ? ' | null' : '');
         } else {
-            return ref.name;
+            return ref.name + (ref.optional ? ' | null' : '');
         }
-    } else if (ref.kind === 'optional') {
-        return `${printFieldType(ref.inner)} | null`;
     }
 
     throw Error(`Unsupported type`);
@@ -34,10 +32,10 @@ function writeField(field: ContractField, w: Writer) {
 
 function writeStackItem(name: string, ref: TypeRef, w: Writer) {
 
-    if (ref.kind === 'optional') {
+    if (ref.optional) {
         w.append(`if (${name} !== null) {`);
         w.inIndent(() => {
-            writeStackItem(name, ref.inner, w);
+            writeStackItem(name, { ...ref, optional: false }, w);
         });
         w.append('} else {');
         w.inIndent(() => {
@@ -47,7 +45,7 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
         return;
     }
 
-    if (ref.kind === 'direct') {
+    if (ref.kind === 'ref') {
         if (ref.name === 'Int') {
             w.append(`__stack.push({ type: 'int', value: new BN(${name}.toString(), 10)});`);
             return;

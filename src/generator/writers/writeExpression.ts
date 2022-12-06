@@ -4,7 +4,6 @@ import { getExpType } from "../../types/resolveExpressionType";
 import { getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { resolveFuncType } from "./resolveFuncType";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -146,7 +145,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve the type of the expression
         let src = getExpType(ctx.ctx, f.src);
-        if (src === null || src.kind !== 'direct') {
+        if (src === null || src.kind !== 'ref' || src.optional) {
             throwError(`Cannot access field of non-struct type: ${printTypeRef(src)}`, f.ref);
         }
         let srcT = getType(ctx.ctx, src.name);
@@ -211,7 +210,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve source type
         let src = getExpType(ctx.ctx, f.src);
-        if (src === null || src.kind !== 'direct') {
+        if (src === null || src.kind !== 'ref' || src.optional) {
             throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
         }
 

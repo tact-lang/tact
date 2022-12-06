@@ -8,39 +8,41 @@
         {
           "name": "bounce",
           "type": {
-            "kind": "direct",
-            "name": "Bool"
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
           }
         },
         {
           "name": "to",
           "type": {
-            "kind": "direct",
-            "name": "Address"
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
           }
         },
         {
           "name": "value",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "mode",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "body",
           "type": {
-            "kind": "optional",
-            "inner": {
-              "kind": "direct",
-              "name": "Cell"
-            }
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
           }
         }
       ],
@@ -115,15 +117,17 @@
         {
           "name": "a",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         },
         {
           "name": "b",
           "type": {
-            "kind": "direct",
-            "name": "Int"
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
           }
         }
       ],
