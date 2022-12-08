@@ -2,7 +2,7 @@ import assert from "assert";
 import { ASTCondition, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
-import { getLValuePaths } from "../types/resolveExpressionType";
+import { getExpType } from "../types/resolveExpressionType";
 import { getAllStaticFunctions, getAllTypes, getType, resolveTypeRef } from "../types/resolveTypeDescriptors";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";
@@ -28,21 +28,21 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
 
         // Local variable case
         if (f.path.length === 1) {
-            ctx.append(`${f.path[0]} = ${writeExpression(f.expression, ctx)};`);
+            ctx.append(`${f.path[0].name} = ${writeExpression(f.expression, ctx)};`);
             return;
         }
 
         // Depth = 2
         if (f.path.length === 2) {
             let valueExpr = writeExpression(f.expression, ctx);
-            let lvalueTypes = getLValuePaths(ctx.ctx, f);
+            let lvalueTypes = f.path.map((v) => getExpType(ctx.ctx, v)!);
             let srcExpr = f.path[1];
             assert(lvalueTypes[0].kind === 'ref');
             assert(!lvalueTypes[0].optional);
             let tt = getType(ctx.ctx, lvalueTypes[0].name);
-            let targetIndex = tt.fields.findIndex((v) => v.name === srcExpr);
+            let targetIndex = tt.fields.findIndex((v) => v.name === srcExpr.name);
             ctx.used('__tact_set');
-            ctx.append(`${f.path[0]} = __tact_set(${f.path[0]}, ${valueExpr}, ${targetIndex});`);
+            ctx.append(`${f.path[0].name} = __tact_set(${f.path[0].name}, ${valueExpr}, ${targetIndex});`);
             return;
         }
 

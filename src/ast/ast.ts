@@ -54,6 +54,13 @@ export type ASTNull = {
     ref: ASTRef
 }
 
+export type ASTLvalueRef = {
+    kind: 'lvalue_ref',
+    id: number,
+    name: string,
+    ref: ASTRef
+}
+
 //
 // Types
 //
@@ -252,7 +259,7 @@ export type ASTStatementExpression = {
 export type ASTSTatementAssign = {
     kind: 'statement_assign',
     id: number,
-    path: string[],
+    path: ASTLvalueRef[],
     expression: ASTExpression,
     ref: ASTRef
 }
@@ -297,8 +304,8 @@ export type ASTStatementRepeat = {
 //
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
-export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive;
+export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {

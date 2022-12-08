@@ -1,11 +1,10 @@
 import { ABIFunctions, MapFunctions } from "../abi/AbiFunction";
-import { ASTCondition, ASTExpression, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
+import { ASTCondition, ASTExpression, ASTLvalueRef, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType, resolveTypeRef } from "./resolveTypeDescriptors";
 import { printTypeRef, TypeRef } from "./types";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef | null }>();
-let lValueStore = createContextStore<{ ast: ASTSTatementAssign, description: TypeRef[] }>();
 
 type VariableCTX = { [key: string]: TypeRef };
 
@@ -15,14 +14,6 @@ export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
         throw Error('Expression ' + exp.id + ' not found');
     }
     return t.description;
-}
-
-export function getLValuePaths(ctx: CompilerContext, exp: ASTSTatementAssign) {
-    let lv = lValueStore.get(ctx, exp.id);
-    if (!lv) {
-        throw Error('LValue ' + exp.id + ' not found');
-    }
-    return lv.description;
 }
 
 export function resolveExpressionTypes(ctx: CompilerContext) {
@@ -301,10 +292,9 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                 ctx = resolveExpression(ctx, vctx, s.expression);
 
                 // Resolve LValue
-                let paths: string[] = s.path;
-                let pathTypes: TypeRef[] = [];
-                let t = vctx[paths[0]];
-                pathTypes.push(t);
+                let paths: ASTLvalueRef[] = s.path;
+                let t = vctx[paths[0].name];
+                ctx = registerExpType(ctx, paths[0], t);
 
                 // Paths
                 for (let i = 1; i < paths.length; i++) {
@@ -312,16 +302,14 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                         throwError(`Invalid type "${printTypeRef(t)}" for field access`, s.ref);
                     }
                     let srcT = getType(ctx, t.name);
-                    let ex = srcT.fields.find((v) => v.name === paths[i]);
+                    let ex = srcT.fields.find((v) => v.name === paths[i].name);
                     if (!ex) {
                         throw Error('Field ' + paths[i] + ' not found');
                     }
-                    pathTypes.push(ex.type);
+                    ctx = registerExpType(ctx, paths[i], t);
                     t = ex.type;
                 }
-
-                // Persist LValue
-                ctx = lValueStore.set(ctx, s.id, { ast: s, description: pathTypes });
+                
             } else if (s.kind === 'statement_condition') {
                 ctx = resolveCondition(ctx, vctx, s);
             } else if (s.kind === 'statement_while' || s.kind === 'statement_repeat' || s.kind === 'statement_until') {

@@ -118,6 +118,10 @@ exports[`resolveExpressionType should resolve expressions for case-3.tact 1`] = 
     "Int",
   ],
   [
+    "b",
+    "Int",
+  ],
+  [
     "1",
     "Int",
   ],
@@ -160,6 +164,10 @@ exports[`resolveExpressionType should resolve expressions for case-4.tact 1`] = 
   ],
   [
     "x + y",
+    "Int",
+  ],
+  [
+    "b",
     "Int",
   ],
   [
@@ -289,6 +297,10 @@ exports[`resolveExpressionType should resolve expressions for case-6.tact 1`] = 
     "Bool",
   ],
   [
+    "a",
+    "Int",
+  ],
+  [
     "10",
     "Int",
   ],
@@ -309,11 +321,19 @@ exports[`resolveExpressionType should resolve expressions for case-6.tact 1`] = 
     "Bool",
   ],
   [
+    "a",
+    "Int",
+  ],
+  [
     "1",
     "Int",
   ],
   [
     "-1",
+    "Int",
+  ],
+  [
+    "a",
     "Int",
   ],
   [

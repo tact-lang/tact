@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef } from '../ast/ast';
+import { ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef } from '../ast/ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 
@@ -283,12 +283,20 @@ semantics.addOperation<ASTNode>('resolve_statement', {
 });
 
 // LValue
-semantics.addOperation<string[]>('resolve_lvalue', {
+semantics.addOperation<ASTNode[]>('resolve_lvalue', {
     LValue_single(arg0) {
-        return [arg0.sourceString];
+        return [createNode({
+            kind: 'lvalue_ref',
+            name: arg0.sourceString,
+            ref: createRef(this)
+        })];
     },
     LValue_more(arg0, arg1, arg2) {
-        return [arg0.sourceString, ...arg2.resolve_lvalue()];
+        return [createNode({
+            kind: 'lvalue_ref',
+            name: arg0.sourceString,
+            ref: createRef(this)
+        }), ...arg2.resolve_lvalue()];
     }
 });
 

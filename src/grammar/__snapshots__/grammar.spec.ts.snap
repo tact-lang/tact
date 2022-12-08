@@ -204,14 +204,14 @@ exports[`grammar should parse case-2 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 165,
+      "id": 173,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10;
 },
       "return": {
-        "id": 154,
+        "id": 162,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -220,19 +220,19 @@ exports[`grammar should parse case-2 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 163,
+            "id": 171,
             "kind": "op_binary",
             "left": {
-              "id": 161,
+              "id": 169,
               "kind": "op_binary",
               "left": {
-                "id": 159,
+                "id": 167,
                 "kind": "op_binary",
                 "left": {
-                  "id": 157,
+                  "id": 165,
                   "kind": "op_binary",
                   "left": {
-                    "id": 155,
+                    "id": 163,
                     "kind": "number",
                     "ref": 0,
                     "value": 0n,
@@ -240,7 +240,7 @@ exports[`grammar should parse case-2 1`] = `
                   "op": "+",
                   "ref": 0 + 1,
                   "right": {
-                    "id": 156,
+                    "id": 164,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
@@ -249,7 +249,7 @@ exports[`grammar should parse case-2 1`] = `
                 "op": "*",
                 "ref": (0 + 1) * 10,
                 "right": {
-                  "id": 158,
+                  "id": 166,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -258,7 +258,7 @@ exports[`grammar should parse case-2 1`] = `
               "op": "/",
               "ref": (0 + 1) * 10 / 20,
               "right": {
-                "id": 160,
+                "id": 168,
                 "kind": "number",
                 "ref": 20,
                 "value": 20n,
@@ -267,20 +267,20 @@ exports[`grammar should parse case-2 1`] = `
             "op": "!=",
             "ref": (0 + 1) * 10 / 20 != 10,
             "right": {
-              "id": 162,
+              "id": 170,
               "kind": "number",
               "ref": 10,
               "value": 10n,
             },
           },
-          "id": 164,
+          "id": 172,
           "kind": "statement_return",
           "ref": return (0 + 1) * 10 / 20 != 10;,
         },
       ],
     },
   ],
-  "id": 166,
+  "id": 174,
   "kind": "program",
 }
 `;
@@ -291,14 +291,14 @@ exports[`grammar should parse case-3 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 187,
+      "id": 195,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId;
 },
       "return": {
-        "id": 174,
+        "id": 182,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -307,19 +307,19 @@ exports[`grammar should parse case-3 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 185,
+            "id": 193,
             "kind": "op_binary",
             "left": {
-              "id": 181,
+              "id": 189,
               "kind": "op_binary",
               "left": {
-                "id": 179,
+                "id": 187,
                 "kind": "op_binary",
                 "left": {
-                  "id": 177,
+                  "id": 185,
                   "kind": "op_binary",
                   "left": {
-                    "id": 175,
+                    "id": 183,
                     "kind": "number",
                     "ref": 0,
                     "value": 0n,
@@ -327,7 +327,7 @@ exports[`grammar should parse case-3 1`] = `
                   "op": "+",
                   "ref": 0 + 1,
                   "right": {
-                    "id": 176,
+                    "id": 184,
                     "kind": "number",
                     "ref": 1,
                     "value": 1n,
@@ -336,7 +336,7 @@ exports[`grammar should parse case-3 1`] = `
                 "op": "*",
                 "ref": (0 + 1) * 10,
                 "right": {
-                  "id": 178,
+                  "id": 186,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -345,7 +345,7 @@ exports[`grammar should parse case-3 1`] = `
               "op": "/",
               "ref": (0 + 1) * 10 / 20,
               "right": {
-                "id": 180,
+                "id": 188,
                 "kind": "number",
                 "ref": 20,
                 "value": 20n,
@@ -354,10 +354,10 @@ exports[`grammar should parse case-3 1`] = `
             "op": "!=",
             "ref": (0 + 1) * 10 / 20 != 10 * someId,
             "right": {
-              "id": 184,
+              "id": 192,
               "kind": "op_binary",
               "left": {
-                "id": 182,
+                "id": 190,
                 "kind": "number",
                 "ref": 10,
                 "value": 10n,
@@ -365,21 +365,21 @@ exports[`grammar should parse case-3 1`] = `
               "op": "*",
               "ref": 10 * someId,
               "right": {
-                "id": 183,
+                "id": 191,
                 "kind": "id",
                 "ref": someId,
                 "value": "someId",
               },
             },
           },
-          "id": 186,
+          "id": 194,
           "kind": "statement_return",
           "ref": return (0 + 1) * 10 / 20 != 10 * someId;,
         },
       ],
     },
   ],
-  "id": 188,
+  "id": 196,
   "kind": "program",
 }
 `;
@@ -390,14 +390,14 @@ exports[`grammar should parse case-4 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 210,
+      "id": 218,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 10;
 },
       "return": {
-        "id": 189,
+        "id": 197,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -406,22 +406,22 @@ exports[`grammar should parse case-4 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 208,
+            "id": 216,
             "kind": "op_binary",
             "left": {
-              "id": 200,
+              "id": 208,
               "kind": "op_binary",
               "left": {
-                "id": 196,
+                "id": 204,
                 "kind": "op_binary",
                 "left": {
-                  "id": 194,
+                  "id": 202,
                   "kind": "op_binary",
                   "left": {
-                    "id": 192,
+                    "id": 200,
                     "kind": "op_binary",
                     "left": {
-                      "id": 190,
+                      "id": 198,
                       "kind": "number",
                       "ref": 0,
                       "value": 0n,
@@ -429,7 +429,7 @@ exports[`grammar should parse case-4 1`] = `
                     "op": "+",
                     "ref": 0 + 1,
                     "right": {
-                      "id": 191,
+                      "id": 199,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
@@ -438,7 +438,7 @@ exports[`grammar should parse case-4 1`] = `
                   "op": "*",
                   "ref": (0 + 1) * 10,
                   "right": {
-                    "id": 193,
+                    "id": 201,
                     "kind": "number",
                     "ref": 10,
                     "value": 10n,
@@ -447,7 +447,7 @@ exports[`grammar should parse case-4 1`] = `
                 "op": "/",
                 "ref": (0 + 1) * 10 / 20,
                 "right": {
-                  "id": 195,
+                  "id": 203,
                   "kind": "number",
                   "ref": 20,
                   "value": 20n,
@@ -456,10 +456,10 @@ exports[`grammar should parse case-4 1`] = `
               "op": "!=",
               "ref": (0 + 1) * 10 / 20 != 10 * someId,
               "right": {
-                "id": 199,
+                "id": 207,
                 "kind": "op_binary",
                 "left": {
-                  "id": 197,
+                  "id": 205,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -467,7 +467,7 @@ exports[`grammar should parse case-4 1`] = `
                 "op": "*",
                 "ref": 10 * someId,
                 "right": {
-                  "id": 198,
+                  "id": 206,
                   "kind": "id",
                   "ref": someId,
                   "value": "someId",
@@ -477,13 +477,13 @@ exports[`grammar should parse case-4 1`] = `
             "op": "||",
             "ref": (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 10,
             "right": {
-              "id": 207,
+              "id": 215,
               "kind": "op_binary",
               "left": {
-                "id": 203,
+                "id": 211,
                 "kind": "op_binary",
                 "left": {
-                  "id": 201,
+                  "id": 209,
                   "kind": "id",
                   "ref": some2,
                   "value": "some2",
@@ -491,7 +491,7 @@ exports[`grammar should parse case-4 1`] = `
                 "op": ">",
                 "ref": some2 > 10,
                 "right": {
-                  "id": 202,
+                  "id": 210,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -500,10 +500,10 @@ exports[`grammar should parse case-4 1`] = `
               "op": "&&",
               "ref": some2 > 10 && some3 < 10,
               "right": {
-                "id": 206,
+                "id": 214,
                 "kind": "op_binary",
                 "left": {
-                  "id": 204,
+                  "id": 212,
                   "kind": "id",
                   "ref": some3,
                   "value": "some3",
@@ -511,7 +511,7 @@ exports[`grammar should parse case-4 1`] = `
                 "op": ">",
                 "ref": some3 < 10,
                 "right": {
-                  "id": 205,
+                  "id": 213,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -519,14 +519,14 @@ exports[`grammar should parse case-4 1`] = `
               },
             },
           },
-          "id": 209,
+          "id": 217,
           "kind": "statement_return",
           "ref": return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 10;,
         },
       ],
     },
   ],
-  "id": 211,
+  "id": 219,
   "kind": "program",
 }
 `;
@@ -537,14 +537,14 @@ exports[`grammar should parse case-5 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 235,
+      "id": 243,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);
 },
       "return": {
-        "id": 212,
+        "id": 220,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -553,22 +553,22 @@ exports[`grammar should parse case-5 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 233,
+            "id": 241,
             "kind": "op_binary",
             "left": {
-              "id": 223,
+              "id": 231,
               "kind": "op_binary",
               "left": {
-                "id": 219,
+                "id": 227,
                 "kind": "op_binary",
                 "left": {
-                  "id": 217,
+                  "id": 225,
                   "kind": "op_binary",
                   "left": {
-                    "id": 215,
+                    "id": 223,
                     "kind": "op_binary",
                     "left": {
-                      "id": 213,
+                      "id": 221,
                       "kind": "number",
                       "ref": 0,
                       "value": 0n,
@@ -576,7 +576,7 @@ exports[`grammar should parse case-5 1`] = `
                     "op": "+",
                     "ref": 0 + 1,
                     "right": {
-                      "id": 214,
+                      "id": 222,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
@@ -585,7 +585,7 @@ exports[`grammar should parse case-5 1`] = `
                   "op": "*",
                   "ref": (0 + 1) * 10,
                   "right": {
-                    "id": 216,
+                    "id": 224,
                     "kind": "number",
                     "ref": 10,
                     "value": 10n,
@@ -594,7 +594,7 @@ exports[`grammar should parse case-5 1`] = `
                 "op": "/",
                 "ref": (0 + 1) * 10 / 20,
                 "right": {
-                  "id": 218,
+                  "id": 226,
                   "kind": "number",
                   "ref": 20,
                   "value": 20n,
@@ -603,10 +603,10 @@ exports[`grammar should parse case-5 1`] = `
               "op": "!=",
               "ref": (0 + 1) * 10 / 20 != 10 * someId,
               "right": {
-                "id": 222,
+                "id": 230,
                 "kind": "op_binary",
                 "left": {
-                  "id": 220,
+                  "id": 228,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -614,7 +614,7 @@ exports[`grammar should parse case-5 1`] = `
                 "op": "*",
                 "ref": 10 * someId,
                 "right": {
-                  "id": 221,
+                  "id": 229,
                   "kind": "id",
                   "ref": someId,
                   "value": "someId",
@@ -624,13 +624,13 @@ exports[`grammar should parse case-5 1`] = `
             "op": "||",
             "ref": (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10),
             "right": {
-              "id": 232,
+              "id": 240,
               "kind": "op_binary",
               "left": {
-                "id": 226,
+                "id": 234,
                 "kind": "op_binary",
                 "left": {
-                  "id": 224,
+                  "id": 232,
                   "kind": "id",
                   "ref": some2,
                   "value": "some2",
@@ -638,7 +638,7 @@ exports[`grammar should parse case-5 1`] = `
                 "op": ">",
                 "ref": some2 > 10,
                 "right": {
-                  "id": 225,
+                  "id": 233,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -647,10 +647,10 @@ exports[`grammar should parse case-5 1`] = `
               "op": "&&",
               "ref": some2 > 10 && some3 < 123.add(10),
               "right": {
-                "id": 231,
+                "id": 239,
                 "kind": "op_binary",
                 "left": {
-                  "id": 227,
+                  "id": 235,
                   "kind": "id",
                   "ref": some3,
                   "value": "some3",
@@ -660,18 +660,18 @@ exports[`grammar should parse case-5 1`] = `
                 "right": {
                   "args": [
                     {
-                      "id": 229,
+                      "id": 237,
                       "kind": "number",
                       "ref": 10,
                       "value": 10n,
                     },
                   ],
-                  "id": 230,
+                  "id": 238,
                   "kind": "op_call",
                   "name": "add",
                   "ref": 123.add(10),
                   "src": {
-                    "id": 228,
+                    "id": 236,
                     "kind": "number",
                     "ref": 123,
                     "value": 123n,
@@ -680,14 +680,14 @@ exports[`grammar should parse case-5 1`] = `
               },
             },
           },
-          "id": 234,
+          "id": 242,
           "kind": "statement_return",
           "ref": return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);,
         },
       ],
     },
   ],
-  "id": 236,
+  "id": 244,
   "kind": "program",
 }
 `;
@@ -698,14 +698,14 @@ exports[`grammar should parse case-6 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 261,
+      "id": 269,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));
 },
       "return": {
-        "id": 237,
+        "id": 245,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -714,22 +714,22 @@ exports[`grammar should parse case-6 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 259,
+            "id": 267,
             "kind": "op_binary",
             "left": {
-              "id": 248,
+              "id": 256,
               "kind": "op_binary",
               "left": {
-                "id": 244,
+                "id": 252,
                 "kind": "op_binary",
                 "left": {
-                  "id": 242,
+                  "id": 250,
                   "kind": "op_binary",
                   "left": {
-                    "id": 240,
+                    "id": 248,
                     "kind": "op_binary",
                     "left": {
-                      "id": 238,
+                      "id": 246,
                       "kind": "number",
                       "ref": 0,
                       "value": 0n,
@@ -737,7 +737,7 @@ exports[`grammar should parse case-6 1`] = `
                     "op": "+",
                     "ref": 0 + 1,
                     "right": {
-                      "id": 239,
+                      "id": 247,
                       "kind": "number",
                       "ref": 1,
                       "value": 1n,
@@ -746,7 +746,7 @@ exports[`grammar should parse case-6 1`] = `
                   "op": "*",
                   "ref": (0 + 1) * 10,
                   "right": {
-                    "id": 241,
+                    "id": 249,
                     "kind": "number",
                     "ref": 10,
                     "value": 10n,
@@ -755,7 +755,7 @@ exports[`grammar should parse case-6 1`] = `
                 "op": "/",
                 "ref": (0 + 1) * 10 / 20,
                 "right": {
-                  "id": 243,
+                  "id": 251,
                   "kind": "number",
                   "ref": 20,
                   "value": 20n,
@@ -764,10 +764,10 @@ exports[`grammar should parse case-6 1`] = `
               "op": "!=",
               "ref": (0 + 1) * 10 / 20 != 10 * someId,
               "right": {
-                "id": 247,
+                "id": 255,
                 "kind": "op_binary",
                 "left": {
-                  "id": 245,
+                  "id": 253,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -775,7 +775,7 @@ exports[`grammar should parse case-6 1`] = `
                 "op": "*",
                 "ref": 10 * someId,
                 "right": {
-                  "id": 246,
+                  "id": 254,
                   "kind": "id",
                   "ref": someId,
                   "value": "someId",
@@ -785,13 +785,13 @@ exports[`grammar should parse case-6 1`] = `
             "op": "||",
             "ref": (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10)),
             "right": {
-              "id": 258,
+              "id": 266,
               "kind": "op_binary",
               "left": {
-                "id": 251,
+                "id": 259,
                 "kind": "op_binary",
                 "left": {
-                  "id": 249,
+                  "id": 257,
                   "kind": "id",
                   "ref": some2,
                   "value": "some2",
@@ -799,7 +799,7 @@ exports[`grammar should parse case-6 1`] = `
                 "op": ">",
                 "ref": some2 > 10,
                 "right": {
-                  "id": 250,
+                  "id": 258,
                   "kind": "number",
                   "ref": 10,
                   "value": 10n,
@@ -808,10 +808,10 @@ exports[`grammar should parse case-6 1`] = `
               "op": "&&",
               "ref": some2 > 10 && some3 < abs(123.add(10)),
               "right": {
-                "id": 257,
+                "id": 265,
                 "kind": "op_binary",
                 "left": {
-                  "id": 252,
+                  "id": 260,
                   "kind": "id",
                   "ref": some3,
                   "value": "some3",
@@ -823,25 +823,25 @@ exports[`grammar should parse case-6 1`] = `
                     {
                       "args": [
                         {
-                          "id": 254,
+                          "id": 262,
                           "kind": "number",
                           "ref": 10,
                           "value": 10n,
                         },
                       ],
-                      "id": 255,
+                      "id": 263,
                       "kind": "op_call",
                       "name": "add",
                       "ref": 123.add(10),
                       "src": {
-                        "id": 253,
+                        "id": 261,
                         "kind": "number",
                         "ref": 123,
                         "value": 123n,
                       },
                     },
                   ],
-                  "id": 256,
+                  "id": 264,
                   "kind": "op_static_call",
                   "name": "abs",
                   "ref": abs(123.add(10)),
@@ -849,14 +849,14 @@ exports[`grammar should parse case-6 1`] = `
               },
             },
           },
-          "id": 260,
+          "id": 268,
           "kind": "statement_return",
           "ref": return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));,
         },
       ],
     },
   ],
-  "id": 262,
+  "id": 270,
   "kind": "program",
 }
 `;
@@ -867,73 +867,13 @@ exports[`grammar should parse case-7 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 265,
+      "id": 273,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc() {
     return 0;
 },
       "return": null,
-      "statements": [
-        {
-          "expression": {
-            "id": 263,
-            "kind": "number",
-            "ref": 0,
-            "value": 0n,
-          },
-          "id": 264,
-          "kind": "statement_return",
-          "ref": return 0;,
-        },
-      ],
-    },
-    {
-      "args": [],
-      "attribute": [],
-      "id": 269,
-      "kind": "def_function",
-      "name": "testFunc",
-      "ref": fun testFunc(): Int {
-    return 0;
-},
-      "return": {
-        "id": 266,
-        "kind": "type_ref_simple",
-        "name": "Int",
-        "optional": false,
-        "ref": Int,
-      },
-      "statements": [
-        {
-          "expression": {
-            "id": 267,
-            "kind": "number",
-            "ref": 0,
-            "value": 0n,
-          },
-          "id": 268,
-          "kind": "statement_return",
-          "ref": return 0;,
-        },
-      ],
-    },
-    {
-      "args": [],
-      "attribute": [],
-      "id": 273,
-      "kind": "def_function",
-      "name": "testFunc",
-      "ref": fun testFunc(): Bool {
-    return 0;
-},
-      "return": {
-        "id": 270,
-        "kind": "type_ref_simple",
-        "name": "Bool",
-        "optional": false,
-        "ref": Bool,
-      },
       "statements": [
         {
           "expression": {
@@ -948,8 +888,68 @@ exports[`grammar should parse case-7 1`] = `
         },
       ],
     },
+    {
+      "args": [],
+      "attribute": [],
+      "id": 277,
+      "kind": "def_function",
+      "name": "testFunc",
+      "ref": fun testFunc(): Int {
+    return 0;
+},
+      "return": {
+        "id": 274,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 275,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 276,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
+    {
+      "args": [],
+      "attribute": [],
+      "id": 281,
+      "kind": "def_function",
+      "name": "testFunc",
+      "ref": fun testFunc(): Bool {
+    return 0;
+},
+      "return": {
+        "id": 278,
+        "kind": "type_ref_simple",
+        "name": "Bool",
+        "optional": false,
+        "ref": Bool,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 279,
+            "kind": "number",
+            "ref": 0,
+            "value": 0n,
+          },
+          "id": 280,
+          "kind": "statement_return",
+          "ref": return 0;,
+        },
+      ],
+    },
   ],
-  "id": 274,
+  "id": 282,
   "kind": "program",
 }
 `;
@@ -959,7 +959,7 @@ exports[`grammar should parse case-8 1`] = `
   "entries": [
     {
       "args": [],
-      "id": 275,
+      "id": 283,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_1",
@@ -969,14 +969,14 @@ native testFunc();,
     },
     {
       "args": [],
-      "id": 277,
+      "id": 285,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_2",
       "ref": @name(native_name_2)
 native testFunc(): Int;,
       "return": {
-        "id": 276,
+        "id": 284,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -985,14 +985,14 @@ native testFunc(): Int;,
     },
     {
       "args": [],
-      "id": 279,
+      "id": 287,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_3",
       "ref": @name(native_name_3)
 native testFunc(): Bool;,
       "return": {
-        "id": 278,
+        "id": 286,
         "kind": "type_ref_simple",
         "name": "Bool",
         "optional": false,
@@ -1000,7 +1000,7 @@ native testFunc(): Bool;,
       },
     },
   ],
-  "id": 280,
+  "id": 288,
   "kind": "program",
 }
 `;
@@ -1011,14 +1011,14 @@ exports[`grammar should parse case-9 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 291,
+      "id": 299,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 1 + 2 + 3!! > 123;
 },
       "return": {
-        "id": 281,
+        "id": 289,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -1027,16 +1027,16 @@ exports[`grammar should parse case-9 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 289,
+            "id": 297,
             "kind": "op_binary",
             "left": {
-              "id": 287,
+              "id": 295,
               "kind": "op_binary",
               "left": {
-                "id": 284,
+                "id": 292,
                 "kind": "op_binary",
                 "left": {
-                  "id": 282,
+                  "id": 290,
                   "kind": "number",
                   "ref": 1,
                   "value": 1n,
@@ -1044,7 +1044,7 @@ exports[`grammar should parse case-9 1`] = `
                 "op": "+",
                 "ref": 1 + 2,
                 "right": {
-                  "id": 283,
+                  "id": 291,
                   "kind": "number",
                   "ref": 2,
                   "value": 2n,
@@ -1053,12 +1053,12 @@ exports[`grammar should parse case-9 1`] = `
               "op": "+",
               "ref": 1 + 2 + 3!!,
               "right": {
-                "id": 286,
+                "id": 294,
                 "kind": "op_unary",
                 "op": "!!",
                 "ref": 3!!,
                 "right": {
-                  "id": 285,
+                  "id": 293,
                   "kind": "number",
                   "ref": 3,
                   "value": 3n,
@@ -1068,20 +1068,20 @@ exports[`grammar should parse case-9 1`] = `
             "op": ">",
             "ref": 1 + 2 + 3!! > 123,
             "right": {
-              "id": 288,
+              "id": 296,
               "kind": "number",
               "ref": 123,
               "value": 123n,
             },
           },
-          "id": 290,
+          "id": 298,
           "kind": "statement_return",
           "ref": return 1 + 2 + 3!! > 123;,
         },
       ],
     },
   ],
-  "id": 292,
+  "id": 300,
   "kind": "program",
 }
 `;
@@ -1544,7 +1544,7 @@ exports[`grammar should parse case-14 1`] = `
               },
             },
           ],
-          "id": 85,
+          "id": 89,
           "kind": "def_init_function",
           "ref": init(a: Int, b: Int) {
         self.a = a;
@@ -1553,38 +1553,58 @@ exports[`grammar should parse case-14 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 81,
+                "id": 83,
                 "kind": "id",
                 "ref": a,
                 "value": "a",
               },
-              "id": 82,
+              "id": 84,
               "kind": "statement_assign",
               "path": [
-                "self",
-                "a",
+                {
+                  "id": 81,
+                  "kind": "lvalue_ref",
+                  "name": "self",
+                  "ref": self.a,
+                },
+                {
+                  "id": 82,
+                  "kind": "lvalue_ref",
+                  "name": "a",
+                  "ref": a,
+                },
               ],
               "ref": self.a = a;,
             },
             {
               "expression": {
-                "id": 83,
+                "id": 87,
                 "kind": "id",
                 "ref": b,
                 "value": "b",
               },
-              "id": 84,
+              "id": 88,
               "kind": "statement_assign",
               "path": [
-                "self",
-                "b",
+                {
+                  "id": 85,
+                  "kind": "lvalue_ref",
+                  "name": "self",
+                  "ref": self.b,
+                },
+                {
+                  "id": 86,
+                  "kind": "lvalue_ref",
+                  "name": "b",
+                  "ref": b,
+                },
               ],
               "ref": self.b = b;,
             },
           ],
         },
       ],
-      "id": 86,
+      "id": 90,
       "kind": "def_contract",
       "name": "Sample",
       "ref": contract Sample {
@@ -1598,7 +1618,7 @@ exports[`grammar should parse case-14 1`] = `
 },
     },
   ],
-  "id": 87,
+  "id": 91,
   "kind": "program",
 }
 `;
@@ -1609,7 +1629,7 @@ exports[`grammar should parse case-15 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 109,
+      "id": 116,
       "kind": "def_function",
       "name": "main",
       "ref": fun main() {
@@ -1628,17 +1648,17 @@ exports[`grammar should parse case-15 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 89,
+            "id": 93,
             "kind": "number",
             "ref": 1,
             "value": 1n,
           },
-          "id": 90,
+          "id": 94,
           "kind": "statement_let",
           "name": "i",
           "ref": let i: Int = 1;,
           "type": {
-            "id": 88,
+            "id": 92,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -1647,12 +1667,12 @@ exports[`grammar should parse case-15 1`] = `
         },
         {
           "condition": {
-            "id": 91,
+            "id": 95,
             "kind": "boolean",
             "ref": true,
             "value": true,
           },
-          "id": 96,
+          "id": 101,
           "kind": "statement_while",
           "ref": while(true) {
         i = i + 1;
@@ -1660,10 +1680,10 @@ exports[`grammar should parse case-15 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 94,
+                "id": 99,
                 "kind": "op_binary",
                 "left": {
-                  "id": 92,
+                  "id": 97,
                   "kind": "id",
                   "ref": i,
                   "value": "i",
@@ -1671,16 +1691,21 @@ exports[`grammar should parse case-15 1`] = `
                 "op": "+",
                 "ref": i + 1,
                 "right": {
-                  "id": 93,
+                  "id": 98,
                   "kind": "number",
                   "ref": 1,
                   "value": 1n,
                 },
               },
-              "id": 95,
+              "id": 100,
               "kind": "statement_assign",
               "path": [
-                "i",
+                {
+                  "id": 96,
+                  "kind": "lvalue_ref",
+                  "name": "i",
+                  "ref": i,
+                },
               ],
               "ref": i = i + 1;,
             },
@@ -1688,57 +1713,16 @@ exports[`grammar should parse case-15 1`] = `
         },
         {
           "condition": {
-            "id": 97,
+            "id": 102,
             "kind": "number",
             "ref": 10,
             "value": 10n,
           },
-          "id": 102,
+          "id": 108,
           "kind": "statement_repeat",
           "ref": repeat(10) {
         i = i * 10;
     },
-          "statements": [
-            {
-              "expression": {
-                "id": 100,
-                "kind": "op_binary",
-                "left": {
-                  "id": 98,
-                  "kind": "id",
-                  "ref": i,
-                  "value": "i",
-                },
-                "op": "*",
-                "ref": i * 10,
-                "right": {
-                  "id": 99,
-                  "kind": "number",
-                  "ref": 10,
-                  "value": 10n,
-                },
-              },
-              "id": 101,
-              "kind": "statement_assign",
-              "path": [
-                "i",
-              ],
-              "ref": i = i * 10;,
-            },
-          ],
-        },
-        {
-          "condition": {
-            "id": 103,
-            "kind": "boolean",
-            "ref": false,
-            "value": false,
-          },
-          "id": 108,
-          "kind": "statement_until",
-          "ref": do {
-        i = i - 1;
-    } until(false);,
           "statements": [
             {
               "expression": {
@@ -1750,19 +1734,70 @@ exports[`grammar should parse case-15 1`] = `
                   "ref": i,
                   "value": "i",
                 },
-                "op": "-",
-                "ref": i - 1,
+                "op": "*",
+                "ref": i * 10,
                 "right": {
                   "id": 105,
                   "kind": "number",
-                  "ref": 1,
-                  "value": 1n,
+                  "ref": 10,
+                  "value": 10n,
                 },
               },
               "id": 107,
               "kind": "statement_assign",
               "path": [
-                "i",
+                {
+                  "id": 103,
+                  "kind": "lvalue_ref",
+                  "name": "i",
+                  "ref": i,
+                },
+              ],
+              "ref": i = i * 10;,
+            },
+          ],
+        },
+        {
+          "condition": {
+            "id": 109,
+            "kind": "boolean",
+            "ref": false,
+            "value": false,
+          },
+          "id": 115,
+          "kind": "statement_until",
+          "ref": do {
+        i = i - 1;
+    } until(false);,
+          "statements": [
+            {
+              "expression": {
+                "id": 113,
+                "kind": "op_binary",
+                "left": {
+                  "id": 111,
+                  "kind": "id",
+                  "ref": i,
+                  "value": "i",
+                },
+                "op": "-",
+                "ref": i - 1,
+                "right": {
+                  "id": 112,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+              },
+              "id": 114,
+              "kind": "statement_assign",
+              "path": [
+                {
+                  "id": 110,
+                  "kind": "lvalue_ref",
+                  "name": "i",
+                  "ref": i,
+                },
               ],
               "ref": i = i - 1;,
             },
@@ -1771,7 +1806,7 @@ exports[`grammar should parse case-15 1`] = `
       ],
     },
   ],
-  "id": 110,
+  "id": 117,
   "kind": "program",
 }
 `;
@@ -1782,7 +1817,7 @@ exports[`grammar should parse case-16 1`] = `
     {
       "args": [],
       "attribute": [],
-      "id": 126,
+      "id": 134,
       "kind": "def_function",
       "name": "main",
       "ref": fun main() {
@@ -1795,17 +1830,17 @@ exports[`grammar should parse case-16 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 112,
+            "id": 119,
             "kind": "number",
             "ref": 1,
             "value": 1n,
           },
-          "id": 113,
+          "id": 120,
           "kind": "statement_let",
           "name": "i",
           "ref": let i: Int = 1;,
           "type": {
-            "id": 111,
+            "id": 118,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -1814,13 +1849,13 @@ exports[`grammar should parse case-16 1`] = `
         },
         {
           "condition": {
-            "id": 120,
+            "id": 127,
             "kind": "op_binary",
             "left": {
-              "id": 116,
+              "id": 123,
               "kind": "op_binary",
               "left": {
-                "id": 114,
+                "id": 121,
                 "kind": "id",
                 "ref": i,
                 "value": "i",
@@ -1828,7 +1863,7 @@ exports[`grammar should parse case-16 1`] = `
               "op": ">=",
               "ref": i >= 10,
               "right": {
-                "id": 115,
+                "id": 122,
                 "kind": "number",
                 "ref": 10,
                 "value": 10n,
@@ -1837,10 +1872,10 @@ exports[`grammar should parse case-16 1`] = `
             "op": "||",
             "ref": i >= 10 || i <= 100,
             "right": {
-              "id": 119,
+              "id": 126,
               "kind": "op_binary",
               "left": {
-                "id": 117,
+                "id": 124,
                 "kind": "id",
                 "ref": i,
                 "value": "i",
@@ -1848,14 +1883,14 @@ exports[`grammar should parse case-16 1`] = `
               "op": ">=",
               "ref": i <= 100,
               "right": {
-                "id": 118,
+                "id": 125,
                 "kind": "number",
                 "ref": 100,
                 "value": 100n,
               },
             },
           },
-          "id": 125,
+          "id": 133,
           "kind": "statement_while",
           "ref": while(i >= 10 || i <= 100) {
         i = i + 1;
@@ -1863,10 +1898,10 @@ exports[`grammar should parse case-16 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 123,
+                "id": 131,
                 "kind": "op_binary",
                 "left": {
-                  "id": 121,
+                  "id": 129,
                   "kind": "id",
                   "ref": i,
                   "value": "i",
@@ -1874,16 +1909,21 @@ exports[`grammar should parse case-16 1`] = `
                 "op": "+",
                 "ref": i + 1,
                 "right": {
-                  "id": 122,
+                  "id": 130,
                   "kind": "number",
                   "ref": 1,
                   "value": 1n,
                 },
               },
-              "id": 124,
+              "id": 132,
               "kind": "statement_assign",
               "path": [
-                "i",
+                {
+                  "id": 128,
+                  "kind": "lvalue_ref",
+                  "name": "i",
+                  "ref": i,
+                },
               ],
               "ref": i = i + 1;,
             },
@@ -1892,7 +1932,7 @@ exports[`grammar should parse case-16 1`] = `
       ],
     },
   ],
-  "id": 127,
+  "id": 135,
   "kind": "program",
 }
 `;
@@ -1904,13 +1944,13 @@ exports[`grammar should parse case-17 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 129,
+          "id": 137,
           "init": undefined,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int;,
           "type": {
-            "id": 128,
+            "id": 136,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -1918,7 +1958,7 @@ exports[`grammar should parse case-17 1`] = `
           },
         },
       ],
-      "id": 130,
+      "id": 138,
       "kind": "def_struct",
       "message": false,
       "name": "A",
@@ -1930,13 +1970,13 @@ exports[`grammar should parse case-17 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 132,
+          "id": 140,
           "init": undefined,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int;,
           "type": {
-            "id": 131,
+            "id": 139,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -1944,7 +1984,7 @@ exports[`grammar should parse case-17 1`] = `
           },
         },
       ],
-      "id": 133,
+      "id": 141,
       "kind": "def_struct",
       "message": true,
       "name": "B",
@@ -1953,7 +1993,7 @@ exports[`grammar should parse case-17 1`] = `
 },
     },
   ],
-  "id": 134,
+  "id": 142,
   "kind": "program",
 }
 `;
@@ -1965,74 +2005,13 @@ exports[`grammar should parse case-18 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 136,
+          "id": 144,
           "init": undefined,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int;,
           "type": {
-            "id": 135,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-      ],
-      "id": 137,
-      "kind": "def_struct",
-      "message": false,
-      "name": "A",
-      "ref": struct A {
-    x: Int;
-},
-    },
-    {
-      "fields": [
-        {
-          "as": "coin",
-          "id": 139,
-          "init": undefined,
-          "kind": "def_field",
-          "name": "x",
-          "ref": x: Int as coin;,
-          "type": {
-            "id": 138,
-            "kind": "type_ref_simple",
-            "name": "Int",
-            "optional": false,
-            "ref": Int,
-          },
-        },
-      ],
-      "id": 140,
-      "kind": "def_struct",
-      "message": true,
-      "name": "B",
-      "ref": message B {
-    x: Int as coin;
-},
-    },
-  ],
-  "id": 141,
-  "kind": "program",
-}
-`;
-
-exports[`grammar should parse case-19 1`] = `
-{
-  "entries": [
-    {
-      "fields": [
-        {
-          "as": null,
-          "id": 144,
-          "init": 1000n,
-          "kind": "def_field",
-          "name": "x",
-          "ref": x: Int = 1000;,
-          "type": {
-            "id": 142,
+            "id": 143,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -2045,18 +2024,18 @@ exports[`grammar should parse case-19 1`] = `
       "message": false,
       "name": "A",
       "ref": struct A {
-    x: Int = 1000;
+    x: Int;
 },
     },
     {
       "fields": [
         {
-          "as": "coins",
-          "id": 148,
-          "init": 1000n,
+          "as": "coin",
+          "id": 147,
+          "init": undefined,
           "kind": "def_field",
           "name": "x",
-          "ref": x: Int as coins = 1000;,
+          "ref": x: Int as coin;,
           "type": {
             "id": 146,
             "kind": "type_ref_simple",
@@ -2065,15 +2044,76 @@ exports[`grammar should parse case-19 1`] = `
             "ref": Int,
           },
         },
+      ],
+      "id": 148,
+      "kind": "def_struct",
+      "message": true,
+      "name": "B",
+      "ref": message B {
+    x: Int as coin;
+},
+    },
+  ],
+  "id": 149,
+  "kind": "program",
+}
+`;
+
+exports[`grammar should parse case-19 1`] = `
+{
+  "entries": [
+    {
+      "fields": [
         {
           "as": null,
-          "id": 151,
+          "id": 152,
+          "init": 1000n,
+          "kind": "def_field",
+          "name": "x",
+          "ref": x: Int = 1000;,
+          "type": {
+            "id": 150,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "id": 153,
+      "kind": "def_struct",
+      "message": false,
+      "name": "A",
+      "ref": struct A {
+    x: Int = 1000;
+},
+    },
+    {
+      "fields": [
+        {
+          "as": "coins",
+          "id": 156,
+          "init": 1000n,
+          "kind": "def_field",
+          "name": "x",
+          "ref": x: Int as coins = 1000;,
+          "type": {
+            "id": 154,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "as": null,
+          "id": 159,
           "init": true,
           "kind": "def_field",
           "name": "y",
           "ref": y: Bool = true;,
           "type": {
-            "id": 149,
+            "id": 157,
             "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
@@ -2081,7 +2121,7 @@ exports[`grammar should parse case-19 1`] = `
           },
         },
       ],
-      "id": 152,
+      "id": 160,
       "kind": "def_struct",
       "message": true,
       "name": "B",
@@ -2091,7 +2131,7 @@ exports[`grammar should parse case-19 1`] = `
 },
     },
   ],
-  "id": 153,
+  "id": 161,
   "kind": "program",
 }
 `;
@@ -2103,13 +2143,13 @@ exports[`grammar should parse case-20 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 168,
+          "id": 176,
           "init": undefined,
           "kind": "def_field",
           "name": "y",
           "ref": y: map[Int]Int;,
           "type": {
-            "id": 167,
+            "id": 175,
             "key": "Int",
             "kind": "type_ref_map",
             "ref": map[Int]Int,
@@ -2117,7 +2157,7 @@ exports[`grammar should parse case-20 1`] = `
           },
         },
       ],
-      "id": 169,
+      "id": 177,
       "kind": "def_struct",
       "message": false,
       "name": "A",
@@ -2129,13 +2169,13 @@ exports[`grammar should parse case-20 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 171,
+          "id": 179,
           "init": undefined,
           "kind": "def_field",
           "name": "x",
           "ref": x: map[Int]Int;,
           "type": {
-            "id": 170,
+            "id": 178,
             "key": "Int",
             "kind": "type_ref_map",
             "ref": map[Int]Int,
@@ -2143,7 +2183,7 @@ exports[`grammar should parse case-20 1`] = `
           },
         },
       ],
-      "id": 172,
+      "id": 180,
       "kind": "def_struct",
       "message": true,
       "name": "B",
@@ -2152,7 +2192,7 @@ exports[`grammar should parse case-20 1`] = `
 },
     },
   ],
-  "id": 173,
+  "id": 181,
   "kind": "program",
 }
 `;
