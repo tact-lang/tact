@@ -849,8 +849,9 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
             ],
-            "attribute": [
+            "attributes": [
               {
+                "ref": ASTRef {},
                 "type": "public",
               },
             ],
@@ -919,8 +920,9 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
             ],
-            "attribute": [
+            "attributes": [
               {
+                "ref": ASTRef {},
                 "type": "public",
               },
             ],
@@ -932,6 +934,7 @@ exports[`resolveAllocation should write program 1`] = `
             "statements": [],
           },
           "isGetter": false,
+          "isMutating": false,
           "isPublic": true,
           "name": "main",
           "returns": null,

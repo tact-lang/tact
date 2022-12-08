@@ -190,12 +190,12 @@ export type ASTArgument = {
     ref: ASTRef
 }
 
-export type ASTFunctionAttribute = { type: 'public' } | { type: 'get' };
+export type ASTFunctionAttribute = { type: 'public', ref: ASTRef } | { type: 'get', ref: ASTRef } | { type: 'mutates', ref: ASTRef } | { type: 'extends', ref: ASTRef };
 
 export type ASTFunction = {
     kind: 'def_function',
     id: number,
-    attribute: ASTFunctionAttribute[],
+    attributes: ASTFunctionAttribute[],
     name: string,
     return: ASTTypeRef | null,
     args: ASTArgument[],
@@ -214,6 +214,7 @@ export type ASTReceive = {
 export type ASTNativeFunction = {
     kind: 'def_native_function',
     id: number,
+    attributes: ASTFunctionAttribute[],
     name: string,
     nativeName: string,
     return: ASTTypeRef | null,

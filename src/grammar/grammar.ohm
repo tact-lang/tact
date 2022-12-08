@@ -13,8 +13,8 @@ Tact {
 
     // Static function
     StaticFunction = Function
-    NativeFunction = nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
-                   | nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
+    NativeFunction = ListOf<FunctionAttribute," "> nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
+                   | ListOf<FunctionAttribute," "> nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
     
     // Field declarations
     Type = typeLiteral "?" --optional
@@ -41,6 +41,8 @@ Tact {
     // Function
     FunctionAttribute = public --public
                       | get    --getter
+                      | mutates --mutates
+                      | extends --extends
     Function = ListOf<FunctionAttribute," "> fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | ListOf<FunctionAttribute," "> fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
@@ -114,7 +116,7 @@ Tact {
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
     ExpressionNew = id "{" ListOf<NewParameter, ","> "}"
     NewParameter = id ":" Expression
-    ExpressionStaticCall = ExpressionValue "(" ListOf<Expression, ","> ")"
+    ExpressionStaticCall = id "(" ListOf<Expression, ","> ")"
 
     // Type Literal
     typeLiteral = letterAsciiUC typeLiteralPart*
@@ -142,7 +144,30 @@ Tact {
     boolLiteral = ("true" | "false") ~idPart
 
     // Keywords
-    keyword = struct | contract | fun | let | return | primitive | extend | native | public | get | null | if | else | init | while | repeat | do | until | message | as | receive // Order is important
+    // NOTE Order is important
+    keyword = struct 
+            | contract 
+            | fun 
+            | let
+            | return 
+            | primitive 
+            | extend 
+            | native 
+            | public 
+            | get 
+            | null 
+            | if 
+            | else 
+            | init 
+            | while 
+            | repeat 
+            | do 
+            | until 
+            | message 
+            | as 
+            | receive 
+            | mutates
+            | extends
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -164,6 +189,8 @@ Tact {
     message = "message" ~idPart
     as = "as" ~idPart
     receive = "receive" ~idPart
+    mutates = "mutates" ~idPart
+    extends = "extends" ~idPart
 
     // Attributes
     nameAttribute = "@name"

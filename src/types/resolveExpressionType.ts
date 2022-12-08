@@ -1,5 +1,5 @@
 import { ABIFunctions, MapFunctions } from "../abi/AbiFunction";
-import { ASTCondition, ASTExpression, ASTLvalueRef, ASTOpCall, ASTOpCallStatic, ASTStatement, ASTSTatementAssign, ASTTypeRef, throwError } from "../ast/ast";
+import { ASTCondition, ASTExpression, ASTLvalueRef, ASTOpCall, ASTOpCallStatic, ASTStatement, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
 import { getStaticFunction, getType, resolveTypeRef } from "./resolveTypeDescriptors";
 import { printTypeRef, TypeRef } from "./types";
@@ -309,7 +309,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                     ctx = registerExpType(ctx, paths[i], t);
                     t = ex.type;
                 }
-                
+
             } else if (s.kind === 'statement_condition') {
                 ctx = resolveCondition(ctx, vctx, s);
             } else if (s.kind === 'statement_while' || s.kind === 'statement_repeat' || s.kind === 'statement_until') {

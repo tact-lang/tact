@@ -38,6 +38,7 @@ export type FunctionDescription = {
     name: string,
     isPublic: boolean,
     isGetter: boolean,
+    isMutating: boolean,
     self: TypeDescription | null,
     returns: TypeRef | null,
     args: FunctionArgument[],

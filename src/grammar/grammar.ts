@@ -67,10 +67,16 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
 // Resolve attributes
 semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
     FunctionAttribute_public(arg0) {
-        return { type: 'public' };
+        return { type: 'public', ref: createRef(this) };
     },
     FunctionAttribute_getter(arg0) {
-        return { type: 'get' };
+        return { type: 'get', ref: createRef(this) };
+    },
+    FunctionAttribute_extends(arg0) {
+        return { type: 'extends', ref: createRef(this) };
+    },
+    FunctionAttribute_mutates(arg0) {
+        return { type: 'mutates', ref: createRef(this) };
     }
 });
 
@@ -131,7 +137,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
-            attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
             return: arg7.resolve_expression(),
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
@@ -143,7 +149,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
-            attribute: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
             return: null,
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
@@ -151,25 +157,27 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    NativeFunction_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) {
+    NativeFunction_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
-            name: arg5.sourceString,
-            nativeName: arg2.sourceString,
-            return: arg10.resolve_expression(),
-            args: arg7.asIteration().children.map((v: any) => v.resolve_declaration()),
+            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            name: arg6.sourceString,
+            nativeName: arg3.sourceString,
+            return: arg11.resolve_expression(),
+            args: arg8.asIteration().children.map((v: any) => v.resolve_declaration()),
             ref: createRef(this)
         })
     },
-    NativeFunction_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+    NativeFunction_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
-            name: arg5.sourceString,
-            nativeName: arg2.sourceString,
+            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            name: arg6.sourceString,
+            nativeName: arg3.sourceString,
             return: null,
-            args: arg7.asIteration().children.map((v: any) => v.resolve_declaration()),
+            args: arg8.asIteration().children.map((v: any) => v.resolve_declaration()),
             ref: createRef(this)
         })
     },

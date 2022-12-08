@@ -89,7 +89,7 @@ exports[`grammar should parse case-0 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 4,
       "kind": "def_function",
       "name": "testFunc",
@@ -128,7 +128,7 @@ exports[`grammar should parse case-1 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 15,
       "kind": "def_function",
       "name": "testFunc",
@@ -203,7 +203,7 @@ exports[`grammar should parse case-2 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 173,
       "kind": "def_function",
       "name": "testFunc",
@@ -290,7 +290,7 @@ exports[`grammar should parse case-3 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 195,
       "kind": "def_function",
       "name": "testFunc",
@@ -389,7 +389,7 @@ exports[`grammar should parse case-4 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 218,
       "kind": "def_function",
       "name": "testFunc",
@@ -536,7 +536,7 @@ exports[`grammar should parse case-5 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 243,
       "kind": "def_function",
       "name": "testFunc",
@@ -697,7 +697,7 @@ exports[`grammar should parse case-6 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 269,
       "kind": "def_function",
       "name": "testFunc",
@@ -866,7 +866,7 @@ exports[`grammar should parse case-7 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 273,
       "kind": "def_function",
       "name": "testFunc",
@@ -890,7 +890,7 @@ exports[`grammar should parse case-7 1`] = `
     },
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 277,
       "kind": "def_function",
       "name": "testFunc",
@@ -920,7 +920,7 @@ exports[`grammar should parse case-7 1`] = `
     },
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 281,
       "kind": "def_function",
       "name": "testFunc",
@@ -959,6 +959,7 @@ exports[`grammar should parse case-8 1`] = `
   "entries": [
     {
       "args": [],
+      "attributes": [],
       "id": 283,
       "kind": "def_native_function",
       "name": "testFunc",
@@ -969,6 +970,7 @@ native testFunc();,
     },
     {
       "args": [],
+      "attributes": [],
       "id": 285,
       "kind": "def_native_function",
       "name": "testFunc",
@@ -985,6 +987,7 @@ native testFunc(): Int;,
     },
     {
       "args": [],
+      "attributes": [],
       "id": 287,
       "kind": "def_native_function",
       "name": "testFunc",
@@ -1010,7 +1013,7 @@ exports[`grammar should parse case-9 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 299,
       "kind": "def_function",
       "name": "testFunc",
@@ -1091,7 +1094,7 @@ exports[`grammar should parse case-10 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 29,
       "kind": "def_function",
       "name": "testFunc",
@@ -1198,7 +1201,7 @@ exports[`grammar should parse case-11 1`] = `
           },
         },
       ],
-      "attribute": [],
+      "attributes": [],
       "id": 45,
       "kind": "def_function",
       "name": "testFunc",
@@ -1305,7 +1308,7 @@ exports[`grammar should parse case-12 1`] = `
           },
         },
       ],
-      "attribute": [],
+      "attributes": [],
       "id": 58,
       "kind": "def_function",
       "name": "testFunc",
@@ -1400,7 +1403,7 @@ exports[`grammar should parse case-13 1`] = `
           },
         },
       ],
-      "attribute": [],
+      "attributes": [],
       "id": 71,
       "kind": "def_function",
       "name": "testFunc",
@@ -1628,7 +1631,7 @@ exports[`grammar should parse case-15 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 116,
       "kind": "def_function",
       "name": "main",
@@ -1816,7 +1819,7 @@ exports[`grammar should parse case-16 1`] = `
   "entries": [
     {
       "args": [],
-      "attribute": [],
+      "attributes": [],
       "id": 134,
       "kind": "def_function",
       "name": "main",

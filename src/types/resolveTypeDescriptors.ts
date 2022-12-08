@@ -115,6 +115,34 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             });
         }
 
+        // Resolve flags
+        let isPublic = a.attributes.some(a => a.type === 'public');
+        let isGetter = a.attributes.some(a => a.type === 'get');
+        let isMutating = a.attributes.some(a => a.type === 'mutates');
+        if (a.kind === 'def_native_function') {
+            if (isPublic) {
+                throw throwError('Native functions cannot be public', a.ref);
+            }
+            if (isGetter) {
+                throw throwError('Native functions cannot be getters', a.ref);
+            }
+        }
+
+        // TODO: Validate
+        // if (isMutating) {
+
+        // }
+        // if (isMutating && !!self) {
+        //     throw throwError('Mutating functions must be defined as extensions', a.ref);
+        // }
+        // if (isMutating && args.length < 1) {
+        //     throw throwError('Mutating functions must have a self argument', a.ref);
+        // }
+        // if (isMutating && !returns) {
+        //     throw throwError('Mutating functions must have a return type', a.ref);
+        // }
+        
+
         // Register function
         return {
             name: a.name,
@@ -122,8 +150,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             args,
             returns,
             ast: a,
-            isPublic: a.kind === 'def_function' ? a.attribute.some(a => a.type === 'public') : false,
-            isGetter: a.kind === 'def_function' ? a.attribute.some(a => a.type === 'get') : false,
+            isMutating,
+            isPublic,
+            isGetter
         };
     }
 
