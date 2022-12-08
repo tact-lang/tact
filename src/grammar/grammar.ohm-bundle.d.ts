@@ -47,8 +47,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   StatementBlock?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode, arg2: TerminalNode) => T;
   StatementLet?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: NonterminalNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: TerminalNode) => T;
   StatementReturn?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
-  StatementCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
-  StatementStaticCall?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
+  StatementExpression?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode) => T;
   StatementAssign?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
   StatementCondition_simple?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
   StatementCondition_withElse?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: NonterminalNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;

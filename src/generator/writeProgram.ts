@@ -50,7 +50,7 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
     } else if (f.kind === 'statement_condition') {
         writeCondition(f, self, false, ctx);
         return;
-    } else if (f.kind === 'statement_call') {
+    } else if (f.kind === 'statement_expression') {
         let exp = writeExpression(f.expression, ctx);
         ctx.append(`${exp};`);
         return;

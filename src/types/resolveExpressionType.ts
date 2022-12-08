@@ -237,7 +237,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                 let srcT = getType(ctx, src.name);
                 let f = srcT.functions.find((v) => v.name === exp.name)!;
                 if (!f.returns) {
-                    throw Error('Function ' + exp.name + ' does not return a value');
+                    return registerExpType(ctx, exp, null);
                 }
                 return registerExpType(ctx, exp, f.returns);
             }
@@ -261,7 +261,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
             // Resolve static
             let f = getStaticFunction(ctx, exp.name);
             if (!f.returns) {
-                throw Error('Function ' + exp.name + ' does not return a value');
+                return registerExpType(ctx, exp, null);
             }
             return registerExpType(ctx, exp, f.returns);
         } else if (exp.kind === 'op_new') {
@@ -295,14 +295,8 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                 vctx[s.name] = resolveTypeRef(ctx, s.type);
             } else if (s.kind === 'statement_return') {
                 ctx = resolveExpression(ctx, vctx, s.expression);
-            } else if (s.kind === 'statement_call') {
-                if (s.expression.kind === 'op_call') {
-                    ctx = resolveCall(ctx, vctx, s.expression);
-                } else if (s.expression.kind === 'op_static_call') {
-                    ctx = resolveStaticCall(ctx, vctx, s.expression);
-                } else {
-                    throw Error('Unknown expression');
-                }
+            } else if (s.kind === 'statement_expression') {
+                ctx = resolveExpression(ctx, vctx, s.expression);
             } else if (s.kind === 'statement_assign') {
                 ctx = resolveExpression(ctx, vctx, s.expression);
 

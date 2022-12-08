@@ -50,8 +50,7 @@ Tact {
     Statement = StatementLet
               | StatementBlock
               | StatementReturn
-              | StatementCall
-              | StatementStaticCall
+              | StatementExpression
               | StatementAssign
               | StatementCondition
               | StatementWhile
@@ -60,8 +59,7 @@ Tact {
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
     StatementReturn = return Expression ";"
-    StatementCall = ExpressionCall ";"
-    StatementStaticCall = ExpressionStaticCall ";"
+    StatementExpression = Expression ";"
     StatementAssign = LValue "=" Expression ";"
     StatementCondition = if Expression "{" Statement* "}" ~else --simple
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse

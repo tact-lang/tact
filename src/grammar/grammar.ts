@@ -1,7 +1,6 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from '../ast/ast';
+import { ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef } from '../ast/ast';
 import { checkVariableName } from './checkVariableName';
-import { TypeRef } from '../types/types';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 
 
@@ -212,16 +211,9 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
-    StatementCall(arg0, arg1) {
+    StatementExpression(arg0, arg1) {
         return createNode({
-            kind: 'statement_call',
-            expression: arg0.resolve_expression(),
-            ref: createRef(this)
-        })
-    },
-    StatementStaticCall(arg0, arg1) {
-        return createNode({
-            kind: 'statement_call',
+            kind: 'statement_expression',
             expression: arg0.resolve_expression(),
             ref: createRef(this)
         })
