@@ -5,6 +5,10 @@ primitive Slice;
 primitive Cell;
 primitive Address;
 
+//
+// Cell
+//
+
 @name(begin_cell)
 native beginCell(): Builder;
 
@@ -25,6 +29,32 @@ native storeSlice(s: Builder, cell: Slice): Builder;
 
 @name(end_cell)
 native endCell(s: Builder): Cell;
+
+//
+// Slice
+//
+
+@name(begin_parse)
+extends native beginParse(self: Cell): Slice;
+
+@name(load_ref)
+extends mutates native loadRef(self: Slice): Cell;
+
+@name(preload_ref)
+extends native preload_ref(self: Slice): Cell;
+
+@name(end_parse)
+extends native endParse(self: Slice);
+
+@name(slice_refs)
+extends native refs(self: Slice): Int;
+
+@name(slice_bits)
+extends native bits(self: Slice): Int;
+
+//
+// Application-specific
+//
 
 @name(check_signature)
 native checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
