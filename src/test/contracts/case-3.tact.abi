@@ -165,5 +165,16 @@
   ],
   "code": "te6ccgEBCgEAYgABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAXoHix2omh4ARj4AhjAgEgBgcAB9EDeIQCASAICQAnSBAQHXAIEBAdcA1DDQ8AFDMG8DgACRb8sBkgABsgQEB1wCBAQHXAFlvAoA==",
   "init": null,
-  "receivers": []
+  "receivers": [],
+  "getters": [
+    {
+      "name": "stake",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    }
+  ]
 }

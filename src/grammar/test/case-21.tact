@@ -1,3 +1,3 @@
-fun mai n(): Int {
+fun main(): Int {
     return 1;
 }

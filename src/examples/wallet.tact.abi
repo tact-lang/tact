@@ -294,5 +294,34 @@
   },
   "receivers": [
     "TransferMessage"
+  ],
+  "getters": [
+    {
+      "name": "publicKey",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "walletId",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "seqno",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    }
   ]
 }

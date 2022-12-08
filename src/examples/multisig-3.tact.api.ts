@@ -101,4 +101,28 @@ export class MultisigContract {
             })
         }), { debug: args.debug });
     }
+    async getTestAddress() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('testAddress', __stack);
+    }
+    async getKey1() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('key1', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getKey2() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('key2', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getKey3() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('key3', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getSeqno() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('seqno', __stack);
+        return result.stack.readBigNumber();
+    }
 }

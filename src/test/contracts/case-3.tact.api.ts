@@ -44,4 +44,9 @@ export class SampleContract {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
+    async getStake() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('stake', __stack);
+        return result.stack.readBigNumber();
+    }
 }

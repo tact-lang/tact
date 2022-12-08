@@ -207,5 +207,6 @@
   ],
   "code": "te6ccgEBBAEAHgABFP8A9KQT9LzyyAsBAgLSAgMACRb8sBkgAAUbwCA=",
   "init": null,
-  "receivers": []
+  "receivers": [],
+  "getters": []
 }

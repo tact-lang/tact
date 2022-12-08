@@ -93,4 +93,19 @@ export class Wallet {
             })
         }), { debug: args.debug });
     }
+    async getPublicKey() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('publicKey', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getWalletId() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('walletId', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getSeqno() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('seqno', __stack);
+        return result.stack.readBigNumber();
+    }
 }

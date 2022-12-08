@@ -67,4 +67,9 @@ export class IncrementContract {
             })
         }), { debug: args.debug });
     }
+    async getCounters() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('counters', __stack);
+        return result.stack.readCell();
+    }
 }

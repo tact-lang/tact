@@ -42,12 +42,19 @@ export type ContractInit = {
     args: ContractFunctionArg[];
 }
 
+export type CotnractFunction = {
+    name: string;
+    args: ContractFunctionArg[];
+    returns: TypeRef | null;
+}
+
 export type ContractABI = {
     name: string;
     structs: ContractStruct[];
     code: string;
     init: ContractInit | null;
     receivers: string[];
+    getters: CotnractFunction[];
 }
 
 export type Address = {

@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/bn.js": "^5.1.1",
     "bn.js": "^5.2.1",
+    "change-case": "^4.1.2",
     "ohm-js": "^16.4.0",
     "ton": "^12.1.5",
     "ton-compiler": "^2.0.0",

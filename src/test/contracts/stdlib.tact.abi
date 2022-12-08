@@ -116,5 +116,61 @@
     "name": "init_StdlibTest",
     "args": []
   },
-  "receivers": []
+  "receivers": [],
+  "getters": [
+    {
+      "name": "sliceEmpty",
+      "args": [
+        {
+          "name": "sc",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Bool",
+        "optional": false
+      }
+    },
+    {
+      "name": "sliceBits",
+      "args": [
+        {
+          "name": "sc",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "sliceRefs",
+      "args": [
+        {
+          "name": "sc",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    }
+  ]
 }

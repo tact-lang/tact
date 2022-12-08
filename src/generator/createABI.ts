@@ -1,4 +1,4 @@
-import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractStruct } from "../abi/ContractABI";
+import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractStruct, CotnractFunction } from "../abi/ContractABI";
 import { CompilerContext } from "../ast/context";
 import { getAllocation } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
@@ -82,11 +82,24 @@ export function createABI(ctx: CompilerContext, code: string): ContractABI {
         receivers.push(r.type);
     }
 
+    // Getters
+    let getters: CotnractFunction[] = [];
+    for (let f of contract.functions) {
+        if (f.isGetter) {
+            getters.push({
+                name: f.name,
+                args: f.args.map((v) => ({ name: v.name, type: v.type })),
+                returns: f.returns
+            });
+        }
+    }
+
     return {
         name: contract.name,
         structs,
         code,
         init,
-        receivers
+        receivers,
+        getters
     };
 }

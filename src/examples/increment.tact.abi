@@ -170,5 +170,16 @@
   },
   "receivers": [
     "Increment"
+  ],
+  "getters": [
+    {
+      "name": "counters",
+      "args": [],
+      "returns": {
+        "kind": "map",
+        "key": "Int",
+        "value": "Int"
+      }
+    }
   ]
 }

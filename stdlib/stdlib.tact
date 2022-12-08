@@ -6,7 +6,7 @@ primitive Cell;
 primitive Address;
 
 //
-// Cell
+// Builder
 //
 
 @name(begin_cell)
@@ -43,8 +43,24 @@ extends mutates native loadRef(self: Slice): Cell;
 @name(preload_ref)
 extends native preload_ref(self: Slice): Cell;
 
+@name(load_int)
+extends mutates native loadInt(self: Slice, l: Int): Int;
+
+@name(preload_int)
+extends native preloadInt(self: Slice, l: Int): Int;
+
+@name(load_int)
+extends mutates native loadUint(self: Slice, l: Int): Int;
+
+@name(preload_int)
+extends native preloadUint(self: Slice, l: Int): Int;
+
 @name(end_parse)
 extends native endParse(self: Slice);
+
+//
+// Slice size
+//
 
 @name(slice_refs)
 extends native refs(self: Slice): Int;
@@ -54,6 +70,12 @@ extends native bits(self: Slice): Int;
 
 @name(slice_empty?)
 extends native empty(self: Slice): Bool;
+
+@name(slice_data_empty?)
+extends native dataEmpty(self: Slice): Bool;
+
+@name(slice_refs_empty?)
+extends native refsEmpty(self: Slice): Bool;
 
 //
 // Application-specific

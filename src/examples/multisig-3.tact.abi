@@ -328,5 +328,52 @@
   },
   "receivers": [
     "Execute"
+  ],
+  "getters": [
+    {
+      "name": "testAddress",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Address",
+        "optional": false
+      }
+    },
+    {
+      "name": "key1",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "key2",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "key3",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "seqno",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    }
   ]
 }

@@ -52,7 +52,7 @@ export class CompilerContext {
 
     addASTStaticFunction = (ref: ASTFunction | ASTNativeFunction) => {
         if (this.astFunctionStatic[ref.name]) {
-            throw Error('Type already exists');
+            throw Error('Type ' + ref.name + ' already exists');
         }
         return new CompilerContext({ astTypes: this.astTypes, astFunctionStatic: { ...this.astFunctionStatic, [ref.name]: ref }, shared: this.shared });
     }

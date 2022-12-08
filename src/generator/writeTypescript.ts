@@ -1,6 +1,7 @@
 import { AllocationCell, AllocationField, ContractABI, ContractField, ContractFunctionArg } from "../abi/ContractABI";
 import { TypeRef } from "../types/types";
 import { Writer } from "./Writer";
+import * as changeCase from "change-case";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -56,10 +57,10 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
             w.append(`__stack.push({ type: 'cell', value: ${name}});`);
             return;
         } else if (ref.name === 'Slice') {
-            w.append(`__stack.push({ type: 'slice', value: ${name}});`);
+            w.append(`__stack.push({ type: 'slice', cell: ${name}.toCell()});`);
             return;
         } else if (ref.name === 'Address') {
-            w.append(`__stack.push({ type: 'slice', value: ${name}});`);
+            w.append(`__stack.push({ type: 'slice', cell: ${name}});`);
             return;
         } else {
             throw Error(`Unsupported type: ${ref.name}`);
@@ -173,6 +174,8 @@ export function writeTypescript(abi: ContractABI, importPath: string) {
         w.append(`readonly executor: ContractExecutor;`);
         w.append(`constructor(executor: ContractExecutor) { this.executor = executor; }`);
         w.append();
+
+        // Receivers
         if (abi.receivers.length > 0) {
             w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${abi.receivers.join(' | ')}) {`);
             w.inIndent(() => {
@@ -198,6 +201,35 @@ export function writeTypescript(abi: ContractABI, importPath: string) {
                     w.append(`})`);
                 });
                 w.append(`}), { debug: args.debug });`);
+            });
+            w.append(`}`);
+        }
+
+        // Getters
+        for (let g of abi.getters) {
+            w.append(`async get${changeCase.pascalCase(g.name)}(${writeArguments(g.args)}) {`);
+            w.inIndent(() => {
+                w.append(`let __stack: StackItem[] = [];`);
+                for (let a of g.args) {
+                    writeStackItem(a.name, a.type, w);
+                }
+                w.append(`let result = await this.executor.get('${g.name}', __stack);`);
+
+                if (g.returns) {
+                    if (g.returns.kind === 'ref') {
+                        if (g.returns.name === 'Bool') {
+                            w.append(`return result.stack.readBoolean();`);
+                        } else if (g.returns.name === 'Int') {
+                            w.append(`return result.stack.readBigNumber();`);
+                        } else if (g.returns.name === 'Address') {
+                            // TODO: Implement
+                        } else {
+                            throw new Error(`Unsupported getter return type: ${g.returns.name}`);
+                        }
+                    } else {
+                        w.append(`return result.stack.readCell();`);
+                    }
+                }
             });
             w.append(`}`);
         }

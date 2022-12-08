@@ -2199,3 +2199,42 @@ exports[`grammar should parse case-20 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-21 1`] = `
+{
+  "entries": [
+    {
+      "args": [],
+      "attributes": [],
+      "id": 4,
+      "kind": "def_function",
+      "name": "main",
+      "ref": fun main(): Int {
+    return 1;
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 2,
+            "kind": "number",
+            "ref": 1,
+            "value": 1n,
+          },
+          "id": 3,
+          "kind": "statement_return",
+          "ref": return 1;,
+        },
+      ],
+    },
+  ],
+  "id": 5,
+  "kind": "program",
+}
+`;
