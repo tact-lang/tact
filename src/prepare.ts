@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { compile } from './main';
+import { compile, precompile } from './main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from './generator/createABI';
 import { writeTypescript } from './generator/writeTypescript';
@@ -16,9 +16,12 @@ import { writeTypescript } from './generator/writeTypescript';
 
             try {
 
-                // Tact -> FunC
+                // Precompile
                 let code = fs.readFileSync(p.path + r, 'utf8');
-                let res = compile(code);
+                let ctx = precompile(code);
+
+                // Tact -> FunC
+                let res = compile(ctx);
                 fs.writeFileSync(p.path + r + ".fc", res.output);
 
                 // FunC -> Fift/Cell
@@ -31,11 +34,11 @@ import { writeTypescript } from './generator/writeTypescript';
                 fs.writeFileSync(p.path + r + ".cell", c.output!);
 
                 // Tact -> ABI
-                let abi = createABI(res.ctx, c.output!.toString('base64'));
+                let abi = createABI(res.ctx);
                 fs.writeFileSync(p.path + r + ".abi", JSON.stringify(abi, null, 2));
 
                 // ABI -> Typescript
-                let ts = writeTypescript(abi, p.importPath);
+                let ts = writeTypescript(abi, c.output.toString('base64'), p.importPath);
                 fs.writeFileSync(p.path + r + ".api.ts", ts);
             } catch (e) {
                 console.warn(e);

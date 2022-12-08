@@ -52,7 +52,7 @@ function createAbiAllocation(src: StorageAllocation): Allocation {
     };
 }
 
-export function createABI(ctx: CompilerContext, code: string): ContractABI {
+export function createABI(ctx: CompilerContext): ContractABI {
 
     let allTypes = Object.values(getAllTypes(ctx));
 
@@ -97,7 +97,6 @@ export function createABI(ctx: CompilerContext, code: string): ContractABI {
     return {
         name: contract.name,
         structs,
-        code,
         init,
         receivers,
         getters

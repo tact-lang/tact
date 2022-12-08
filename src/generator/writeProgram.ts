@@ -1,4 +1,5 @@
 import assert from "assert";
+import { ContractABI } from "../abi/ContractABI";
 import { ASTCondition, ASTStatement } from "../ast/ast";
 import { CompilerContext } from "../ast/context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
@@ -331,7 +332,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
     });
 }
 
-export function writeProgram(ctx: CompilerContext, debug: boolean = false) {
+export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: boolean = false) {
     const wctx = new WriterContext(ctx);
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');

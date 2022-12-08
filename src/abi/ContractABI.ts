@@ -51,7 +51,6 @@ export type CotnractFunction = {
 export type ContractABI = {
     name: string;
     structs: ContractStruct[];
-    code: string;
     init: ContractInit | null;
     receivers: string[];
     getters: CotnractFunction[];

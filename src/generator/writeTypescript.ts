@@ -75,7 +75,7 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
     throw Error(`Unsupported type`);
 }
 
-export function writeTypescript(abi: ContractABI, importPath: string) {
+export function writeTypescript(abi: ContractABI, code: string, importPath: string) {
     let w = new Writer();
     w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';`);
     w.append(`import { ContractExecutor } from 'ton-nodejs';`);
@@ -157,7 +157,7 @@ export function writeTypescript(abi: ContractABI, importPath: string) {
     if (abi.init) {
         w.append(`export function ${abi.name}_init(${writeArguments(abi.init.args)}) {`);
         w.inIndent(() => {
-            w.append(`const __code = '${abi.code}';`);
+            w.append(`const __code = '${code}';`);
             w.append('let __stack: StackItem[] = [];');
             for (let a of abi.init!.args) {
                 writeStackItem(a.name, a.type, w);
