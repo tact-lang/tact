@@ -229,15 +229,18 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     // Resolve static functions
     for (let f in ctx.astFunctionStatic) {
         let a = ctx.astFunctionStatic[f];
-        if (staticFunctions[a.name]) {
-            throw Error('Function ' + a.name + ' already exists');
-        }
 
         // Register function
         let r = resolveFunctionDescriptor(null, a);
         if (r.self) {
+            if (types[r.self].functions.find((v) => v.name === r.name)) {
+                throwError(`Function ${r.name} already exists`, r.ast.ref);
+            }
             types[r.self].functions.push(r);
         } else {
+            if (staticFunctions[a.name]) {
+                throwError(`Static function ${r.name} already exists`, r.ast.ref);
+            }
             staticFunctions[a.name] = resolveFunctionDescriptor(null, a);
         }
     }
@@ -256,7 +259,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                     continue;
                 }
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
-                    throw Error('Field ' + f.name + ' already exists');
+                    throwError(`Field ${f.name} already exists`, f.ref);
                 }
                 types[a.name].fields.push(resolveField(f, types[a.name].fields.length));
             }
@@ -266,7 +269,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         if (a.kind === 'def_struct') {
             for (let f of a.fields) {
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
-                    throw Error('Field ' + f.name + ' already exists');
+                    throwError(`Field ${f.name} already exists`, f.ref);
                 }
                 types[a.name].fields.push(resolveField(f, types[a.name].fields.length));
             }
@@ -274,11 +277,11 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     }
 
     // Resolve contract functions
-    for (let t in ctx.astTypes) {
-        let a = ctx.astTypes[t];
+    for (const t in ctx.astTypes) {
+        const a = ctx.astTypes[t];
         if (a.kind === 'def_contract') {
-            let s = types[a.name];
-            for (let d of a.declarations) {
+            const s = types[a.name];
+            for (const d of a.declarations) {
                 if (d.kind === 'def_function') {
                     let f = resolveFunctionDescriptor(s.name, d);
                     if (f.self !== s.name) {
@@ -288,27 +291,38 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
                 }
                 if (d.kind === 'def_init_function') {
                     if (s.init) {
-                        throw Error('Init function already exists');
+                        throwError('Init function already exists', d.ref);
                     }
                     s.init = resolveInitFunction(d);
                 }
                 if (d.kind === 'def_receive') {
+
+                    // Check argument type
                     if (d.arg.type.kind !== 'type_ref_simple') {
-                        throw Error('Receive function cannot accept optional argument');
+                        throwError('Receive function can only accept message', d.arg.ref);
                     }
                     if (d.arg.type.optional) {
-                        throw Error('Receive function cannot accept optional argument');
+                        throwError('Receive function cannot have optional argument', d.arg.ref);
                     }
+
+                    // Check resolved argument type
                     let t = types[d.arg.type.name];
                     if (t.kind !== 'struct') {
-                        throw Error('Receive function can only accept message');
+                        throwError('Receive function can only accept message', d.arg.ref);
                     }
                     if (t.ast.kind !== 'def_struct') {
-                        throw Error('Receive function can only accept message');
+                        throwError('Receive function can only accept message', d.arg.ref);
                     }
                     if (!t.ast.message) {
-                        throw Error('Receive function can only accept message');
+                        throwError('Receive function can only accept message', d.arg.ref);
                     }
+
+                    // Check for duplicate
+                    if (s.receivers.find((v) => v.name === d.arg.name)) {
+                        throwError(`Receive function for ${d.arg.name} already exists`, d.arg.ref);
+                    }
+
+                    // Persist receiver
                     s.receivers.push({
                         name: d.arg.name,
                         type: d.arg.type.name,

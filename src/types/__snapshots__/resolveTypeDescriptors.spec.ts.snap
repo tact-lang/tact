@@ -52,6 +52,24 @@ exports[`resolveTypeDescriptors should fail descriptors for case-5 1`] = `
 Argument name "self" is reserved"
 `;
 
+exports[`resolveTypeDescriptors should fail descriptors for case-6 1`] = `
+"Line 7, col 3:
+  6 |   b: Int;
+> 7 |   b: Int;
+        ^~~~~~~
+  8 | }
+Field b already exists"
+`;
+
+exports[`resolveTypeDescriptors should fail descriptors for case-7 1`] = `
+"Line 7, col 3:
+  6 |   b: Int;
+> 7 |   b: Int;
+        ^~~~~~~
+  8 | }
+Field b already exists"
+`;
+
 exports[`resolveTypeDescriptors should resolve descriptors for case-0 1`] = `
 {
   "Bool": {
