@@ -1,7 +1,7 @@
 import { ABIFunctions, MapFunctions } from "../../abi/AbiFunction";
-import { ASTExpression, throwError } from "../../ast/ast";
+import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpressionType";
-import { getStaticFunction, getType } from "../../types/resolveTypeDescriptors";
+import { getStaticFunction, getType } from "../../types/resolveDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 

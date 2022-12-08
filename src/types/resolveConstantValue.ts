@@ -1,4 +1,4 @@
-import { ASTExpression, ASTTypeRef, throwError } from "../ast/ast";
+import { ASTExpression, ASTTypeRef, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
 
 function resolveTypeRef(src: ASTTypeRef): TypeRef {

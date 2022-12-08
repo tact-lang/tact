@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef } from '../ast/ast';
+import { ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 

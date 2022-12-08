@@ -1,7 +1,7 @@
-import { ASTRef, throwError } from "../ast/ast";
-import { CompilerContext } from "../ast/context";
+import { ASTRef, throwError } from "../grammar/ast";
+import { CompilerContext } from "../context";
 import { WriterContext } from "../generator/Writer";
-import { getType } from "../types/resolveTypeDescriptors";
+import { getType } from "../types/resolveDescriptors";
 import { TypeRef } from "../types/types";
 
 export type AbiFunction = {

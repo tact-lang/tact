@@ -1,8 +1,9 @@
-import { __DANGER_resetNodeId } from "../../ast/ast";
-import { CompilerContext } from "../../ast/context";
-import { resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { CompilerContext } from "../../context";
+import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
+import { openContext } from "../../grammar/store";
 
 const primitiveCode = `
 primitive Int;
@@ -35,8 +36,8 @@ describe('resolveFuncType', () => {
     });
 
     it('should process primitive types', () => {
-        let ctx = CompilerContext.fromSources([primitiveCode]);
-        ctx = resolveTypeDescriptors(ctx);
+        let ctx = openContext([primitiveCode]);
+        ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
         expect(resolveFuncType({ kind: 'ref', name: 'Int', optional: false }, wctx)).toBe('int');
         expect(resolveFuncType({ kind: 'ref', name: 'Bool', optional: false }, wctx)).toBe('int');
@@ -51,8 +52,8 @@ describe('resolveFuncType', () => {
     });
 
     it('should process contract and struct types', () => {
-        let ctx = CompilerContext.fromSources([primitiveCode]);
-        ctx = resolveTypeDescriptors(ctx);
+        let ctx = openContext([primitiveCode]);
+        ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
         expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: false }, wctx)).toBe('tuple');
         expect(resolveFuncType({ kind: 'ref', name: 'Struct2', optional: false }, wctx)).toBe('tuple');

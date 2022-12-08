@@ -1,4 +1,4 @@
-import { ASTRef, throwError } from "../ast/ast";
+import { ASTRef, throwError } from "./ast";
 
 let blacklisted = [
     "for",

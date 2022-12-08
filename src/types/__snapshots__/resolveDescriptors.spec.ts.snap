@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveTypeDescriptors should fail descriptors for case-0 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-0 1`] = `
 "Line 5, col 1:
   4 | @name(hello_world)
 > 5 | get native sample(a: Int): Int;
@@ -8,7 +8,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-0 1`] = `
 Native functions cannot be getters"
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-1 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-1 1`] = `
 "Line 5, col 1:
   4 | @name(hello_world)
 > 5 | public native sample(a: Int): Int;
@@ -16,7 +16,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-1 1`] = `
 Native functions cannot be public"
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-2 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-2 1`] = `
 "Line 4, col 1:
   3 | 
 > 4 | public fun sample(a: Int): Int {
@@ -25,7 +25,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-2 1`] = `
 Public functions must be defined within a contract"
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-3 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-3 1`] = `
 "Line 4, col 1:
   3 | 
 > 4 | get fun sample(a: Int): Int {
@@ -34,7 +34,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-3 1`] = `
 Getters must be defined within a contract"
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-4 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-4 1`] = `
 "Line 4, col 17:
   3 | 
 > 4 | extends fun inc(a: Int): Int {
@@ -43,7 +43,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-4 1`] = `
 Extend function must have first argument named "self""
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-5 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-5 1`] = `
 "Line 4, col 17:
   3 | 
 > 4 | fun inc(a: Int, self: Int): Int {
@@ -52,7 +52,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-5 1`] = `
 Argument name "self" is reserved"
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-6 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-6 1`] = `
 "Line 7, col 3:
   6 |   b: Int;
 > 7 |   b: Int;
@@ -61,7 +61,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-6 1`] = `
 Field b already exists"
 `;
 
-exports[`resolveTypeDescriptors should fail descriptors for case-7 1`] = `
+exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
 "Line 7, col 3:
   6 |   b: Int;
 > 7 |   b: Int;
@@ -70,7 +70,7 @@ exports[`resolveTypeDescriptors should fail descriptors for case-7 1`] = `
 Field b already exists"
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-0 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "Bool": {
     "ast": {
@@ -103,9 +103,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-0 1`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-0 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for case-0 2`] = `{}`;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-1 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
 {
   "Bool": {
     "ast": {
@@ -257,9 +257,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1 1`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-1 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for case-1 2`] = `{}`;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-2 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
 {
   "Bool": {
     "ast": {
@@ -292,7 +292,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2 1`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-2 2`] = `
+exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
 {
   "testFunc": {
     "args": [],
@@ -454,7 +454,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2 2`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-3 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
 {
   "Bool": {
     "ast": {
@@ -634,9 +634,9 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3 1`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-3 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for case-3 2`] = `{}`;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-4 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
 {
   "Bool": {
     "ast": {
@@ -669,7 +669,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-4 1`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-4 2`] = `
+exports[`resolveDescriptors should resolve descriptors for case-4 2`] = `
 {
   "sample": {
     "args": [
@@ -729,7 +729,7 @@ native sample(a: Int): Int;,
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-5 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
 {
   "Bool": {
     "ast": {
@@ -816,9 +816,9 @@ mutates extends native inc(self: Int): Int;,
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-5 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for case-5 2`] = `{}`;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-6 1`] = `
+exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
 {
   "Bool": {
     "ast": {
@@ -926,4 +926,4 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-6 1`] = `
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-6 2`] = `{}`;
+exports[`resolveDescriptors should resolve descriptors for case-6 2`] = `{}`;

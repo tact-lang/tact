@@ -1,8 +1,8 @@
-import { CompilerContext } from "../ast/context";
 import { getAllExpressionTypes, resolveExpressionTypes } from "./resolveExpressionType";
-import { resolveTypeDescriptors } from "./resolveTypeDescriptors";
+import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
-import { __DANGER_resetNodeId } from "../ast/ast";
+import { __DANGER_resetNodeId } from "../grammar/ast";
+import { openContext } from "../grammar/store";
 
 describe('resolveExpressionType', () => {
     beforeEach(() => {
@@ -10,8 +10,8 @@ describe('resolveExpressionType', () => {
     });
     for (let r of loadCases(__dirname + "/expr/")) {
         it('should resolve expressions for ' + r.name, () => {
-            let ctx = CompilerContext.fromSources([r.code]);
-            ctx = resolveTypeDescriptors(ctx);
+            let ctx = openContext([r.code]);
+            ctx = resolveDescriptors(ctx);
             ctx = resolveExpressionTypes(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });

@@ -1,7 +1,7 @@
 import { ABIFunctions, MapFunctions } from "../abi/AbiFunction";
-import { ASTCondition, ASTExpression, ASTLvalueRef, ASTOpCall, ASTOpCallStatic, ASTStatement, throwError } from "../ast/ast";
-import { CompilerContext, createContextStore } from "../ast/context";
-import { getStaticFunction, getType, resolveTypeRef } from "./resolveTypeDescriptors";
+import { ASTCondition, ASTExpression, ASTLvalueRef, ASTOpCall, ASTOpCallStatic, ASTStatement, throwError } from "../grammar/ast";
+import { CompilerContext, createContextStore } from "../context";
+import { getAllStaticFunctions, getAllTypes, getStaticFunction, getType, resolveTypeRef } from "./resolveDescriptors";
 import { printTypeRef, TypeRef } from "./types";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef | null }>();
@@ -324,50 +324,66 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
 
     // Process all contracts
-    for (let t in ctx.astTypes) {
-        let a = ctx.astTypes[t];
-        if (a.kind === 'def_contract') {
-            for (let f of a.declarations) {
-                if (f.kind === 'def_function' || f.kind === 'def_init_function') {
+    for (let t in getAllTypes(ctx)) {
+        let a = getType(ctx, t);
 
-                    // Function variables
-                    let vctx: VariableCTX = {};
-                    vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
-                    for (let arg of f.args) {
-                        vctx[arg.name] = resolveTypeRef(ctx, arg.type);
-                    }
+        // Process receivers
+        for (let r of a.receivers) {
 
-                    // Process function
-                    ctx = resolveStatements(ctx, vctx, f.statements);
+            // Receiver variables
+            let vctx: VariableCTX = {};
+            vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
+            vctx[r.ast.arg.name] = resolveTypeRef(ctx, r.ast.arg.type);
+
+            // Resolve statements
+            ctx = resolveStatements(ctx, vctx, r.ast.statements);
+        }
+
+        // Process init
+        if (a.init) {
+
+            // Init variables
+            let vctx: VariableCTX = {};
+            vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
+            for (let arg of a.init.args) {
+                vctx[arg.name] = arg.type;
+            }
+
+            // Resolve statements
+            ctx = resolveStatements(ctx, vctx, a.init.ast.statements);
+        }
+
+        // Process functions
+        for (let f of a.functions) {
+
+            if (f.ast.kind !== 'def_native_function') {
+
+                // Function variables
+                let vctx: VariableCTX = {};
+                vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
+                for (let arg of f.args) {
+                    vctx[arg.name] = arg.type;
                 }
 
-                if (f.kind === 'def_receive') {
-
-                    // Receiver variables
-                    let vctx: VariableCTX = {};
-                    vctx['self'] = { kind: 'ref', name: getType(ctx, a.name).name, optional: false };
-                    vctx[f.arg.name] = resolveTypeRef(ctx, f.arg.type);
-
-                    // Resolve statements
-                    ctx = resolveStatements(ctx, vctx, f.statements);
-                }
+                // Process function
+                ctx = resolveStatements(ctx, vctx, f.ast.statements);
             }
         }
     }
 
     // Process all functions
-    for (let t in ctx.astFunctionStatic) {
-        let f = ctx.astFunctionStatic[t];
+    for (let k in getAllStaticFunctions(ctx)) {
+        let f = getStaticFunction(ctx, k);
 
         // Function variables
         let vctx: VariableCTX = {};
         for (let arg of f.args) {
-            vctx[arg.name] = resolveTypeRef(ctx, arg.type);
+            vctx[arg.name] = arg.type;
         }
 
         // Process function
-        if (f.kind === 'def_function') {
-            ctx = resolveStatements(ctx, vctx, f.statements);
+        if (f.ast.kind !== 'def_native_function') {
+            ctx = resolveStatements(ctx, vctx, f.ast.statements);
         }
     }
 

@@ -1,10 +1,11 @@
-import { __DANGER_resetNodeId } from "../../ast/ast";
-import { CompilerContext } from "../../ast/context";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { CompilerContext } from "../../context";
 import { getAllocation, resolveAllocations } from "../../storage/resolveAllocation";
-import { getType, resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
-import { Writer, WriterContext } from "../Writer";
+import { resolveDescriptors } from "../../types/resolveDescriptors";
+import { WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
+import { openContext } from "../../grammar/store";
 
 const code = `
 primitive Int;
@@ -52,8 +53,8 @@ describe('writeSerialization', () => {
     });
     for (let s of ['A', 'B', 'C']) {
         it('should write serializer for ' + s, () => {
-            let ctx = CompilerContext.fromSources([code]);
-            ctx = resolveTypeDescriptors(ctx);
+            let ctx = openContext([code]);
+            ctx = resolveDescriptors(ctx);
             ctx = resolveAllocations(ctx);
             let wctx = new WriterContext(ctx);
             writeStdlib(wctx);

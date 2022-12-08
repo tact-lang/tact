@@ -1,5 +1,5 @@
 import { parse } from "./grammar";
-import { ASTRef, __DANGER_resetNodeId } from "../ast/ast";
+import { ASTRef, __DANGER_resetNodeId } from "./ast";
 import { loadCases } from "../utils/loadCases";
 
 expect.addSnapshotSerializer({

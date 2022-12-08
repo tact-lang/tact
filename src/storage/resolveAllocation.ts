@@ -1,5 +1,5 @@
-import { CompilerContext, createContextStore } from "../ast/context";
-import { getAllTypes, getType } from "../types/resolveTypeDescriptors";
+import { CompilerContext, createContextStore } from "../context";
+import { getAllTypes, getType } from "../types/resolveDescriptors";
 import { FieldDescription, TypeDescription, TypeRef } from "../types/types";
 import { topologicalSort } from "../utils";
 import { crc32 } from "../utils/crc32";

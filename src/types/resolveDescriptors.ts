@@ -1,6 +1,7 @@
-import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../ast/ast";
-import { CompilerContext, createContextStore } from "../ast/context";
-import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef, typeRefEquals } from "./types";
+import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../grammar/ast";
+import { CompilerContext, createContextStore } from "../context";
+import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef } from "./types";
+import { getRawAST } from "../grammar/store";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -26,13 +27,13 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     throw Error('Invalid type ref');
 }
 
-export function resolveTypeDescriptors(ctx: CompilerContext) {
+export function resolveDescriptors(ctx: CompilerContext) {
     let types: { [key: string]: TypeDescription } = {};
     let staticFunctions: { [key: string]: FunctionDescription } = {};
+    let ast = getRawAST(ctx);
 
     // Register types
-    for (let t in ctx.astTypes) {
-        let a = ctx.astTypes[t];
+    for (let a of ast.types) {
         if (types[a.name]) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
@@ -227,8 +228,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     }
 
     // Resolve static functions
-    for (let f in ctx.astFunctionStatic) {
-        let a = ctx.astFunctionStatic[f];
+    for (let a of ast.functions) {
 
         // Register function
         let r = resolveFunctionDescriptor(null, a);
@@ -249,8 +249,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     function resolveField(src: ASTField, index: number): FieldDescription {
         return { name: src.name, type: resolveTypeRef(src.type), index, as: src.as, default: src.init };
     }
-    for (let t in ctx.astTypes) {
-        let a = ctx.astTypes[t];
+    for (let a of ast.types) {
 
         // Contract
         if (a.kind === 'def_contract') {
@@ -277,8 +276,8 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
     }
 
     // Resolve contract functions
-    for (const t in ctx.astTypes) {
-        const a = ctx.astTypes[t];
+    for (const a of ast.types) {
+
         if (a.kind === 'def_contract') {
             const s = types[a.name];
             for (const d of a.declarations) {

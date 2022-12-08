@@ -1,8 +1,8 @@
 import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractStruct, CotnractFunction } from "../abi/ContractABI";
-import { CompilerContext } from "../ast/context";
+import { CompilerContext } from "../context";
 import { getAllocation } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
-import { getAllTypes } from "../types/resolveTypeDescriptors";
+import { getAllTypes } from "../types/resolveDescriptors";
 
 function createAbiAllocationField(src: StorageField): AllocationField {
     if (src.kind === 'optional') {

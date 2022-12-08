@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { __DANGER_resetNodeId } from '../ast/ast';
+import { __DANGER_resetNodeId } from '../grammar/ast';
 import { compile, precompile } from '../main';
 import { loadCases } from '../utils/loadCases';
 

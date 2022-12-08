@@ -1,4 +1,4 @@
-import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTRef, ASTStatement, ASTType } from "../ast/ast";
+import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
@@ -19,19 +19,6 @@ export type TypeRef = {
     key: string,
     value: string
 };
-
-export function typeRefEquals(a: TypeRef, b: TypeRef) {
-    if (a.kind !== b.kind) {
-        return false;
-    }
-    if (a.kind === 'ref' && b.kind === 'ref') {
-        return a.name === b.name && a.optional === b.optional;
-    }
-    if (a.kind === 'map' && b.kind === 'map') {
-        return a.key === b.key && a.value === b.value;
-    }
-    return false;
-}
 
 export type FieldDescription = {
     name: string,
@@ -87,4 +74,17 @@ export function printTypeRef(src: TypeRef | null): string {
     } else {
         throw Error('Invalid type ref');
     }
+}
+
+export function typeRefEquals(a: TypeRef, b: TypeRef) {
+    if (a.kind !== b.kind) {
+        return false;
+    }
+    if (a.kind === 'ref' && b.kind === 'ref') {
+        return a.name === b.name && a.optional === b.optional;
+    }
+    if (a.kind === 'map' && b.kind === 'map') {
+        return a.key === b.key && a.value === b.value;
+    }
+    return false;
 }

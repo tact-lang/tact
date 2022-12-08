@@ -1,4 +1,4 @@
-import { CompilerContext } from "../ast/context";
+import { CompilerContext } from "../context";
 import { topologicalSort } from "../utils";
 
 export class Writer {

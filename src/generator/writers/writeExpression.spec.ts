@@ -1,9 +1,10 @@
-import { __DANGER_resetNodeId } from "../../ast/ast";
-import { CompilerContext } from "../../ast/context";
+import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { CompilerContext } from "../../context";
 import { resolveExpressionTypes } from "../../types/resolveExpressionType";
-import { getStaticFunction, resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
+import { getStaticFunction, resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
+import { openContext } from "../../grammar/store";
 
 const code = `
 
@@ -68,8 +69,8 @@ describe('writeExpression', () => {
         __DANGER_resetNodeId();
     });
     it('should write expression', () => {
-        let ctx = CompilerContext.fromSources([code]);
-        ctx = resolveTypeDescriptors(ctx);
+        let ctx = openContext([code]);
+        ctx = resolveDescriptors(ctx);
         ctx = resolveExpressionTypes(ctx);
         let main = getStaticFunction(ctx, 'main');
         if (main.ast.kind !== 'def_function') {

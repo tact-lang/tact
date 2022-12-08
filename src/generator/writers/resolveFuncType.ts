@@ -1,4 +1,4 @@
-import { getType } from "../../types/resolveTypeDescriptors";
+import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 

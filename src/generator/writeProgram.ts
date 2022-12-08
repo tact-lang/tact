@@ -1,10 +1,10 @@
 import assert from "assert";
 import { ContractABI } from "../abi/ContractABI";
-import { ASTCondition, ASTStatement } from "../ast/ast";
-import { CompilerContext } from "../ast/context";
+import { ASTCondition, ASTStatement } from "../grammar/ast";
+import { CompilerContext } from "../context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getExpType } from "../types/resolveExpressionType";
-import { getAllStaticFunctions, getAllTypes, getType, resolveTypeRef } from "../types/resolveTypeDescriptors";
+import { getAllStaticFunctions, getAllTypes, getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";
 import { WriterContext } from "./Writer";
