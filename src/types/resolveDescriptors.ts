@@ -27,12 +27,43 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     throw Error('Invalid type ref');
 }
 
+function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }): TypeRef {
+    if (src.kind === 'type_ref_simple') {
+        if (!types[src.name]) {
+            throwError('Type ' + src.name + ' not found', src.ref);
+        }
+        return {
+            kind: 'ref',
+            name: src.name,
+            optional: src.optional
+        };
+    }
+    if (src.kind === 'type_ref_map') {
+        if (!types[src.key]) {
+            throwError('Type ' + src.key + ' not found', src.ref);
+        }
+        if (!types[src.value]) {
+            throwError('Type ' + src.value + ' not found', src.ref);
+        }
+        return {
+            kind: 'map',
+            key: src.key,
+            value: src.value
+        };
+    }
+
+    throw Error('Unknown type ref');
+}
+
 export function resolveDescriptors(ctx: CompilerContext) {
     let types: { [key: string]: TypeDescription } = {};
     let staticFunctions: { [key: string]: FunctionDescription } = {};
     let ast = getRawAST(ctx);
 
+    //
     // Register types
+    //
+
     for (let a of ast.types) {
         if (types[a.name]) {
             throwError(`Type ${a.name} already exists`, a.ref);
@@ -42,8 +73,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'primitive',
                 name: a.name,
                 fields: [],
-                functions: [],
-                receivers: [],
+                functions: {},
+                receivers: {},
                 init: null,
                 ast: a
             };
@@ -52,8 +83,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'contract',
                 name: a.name,
                 fields: [],
-                functions: [],
-                receivers: [],
+                functions: {},
+                receivers: {},
                 init: null,
                 ast: a
             };
@@ -62,40 +93,45 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'struct',
                 name: a.name,
                 fields: [],
-                functions: [],
-                receivers: [],
+                functions: {},
+                receivers: {},
                 init: null,
                 ast: a
             };
         }
     }
 
-    function resolveTypeRef(src: ASTTypeRef): TypeRef {
-        if (src.kind === 'type_ref_simple') {
-            if (!types[src.name]) {
-                throwError('Type ' + src.name + ' not found', src.ref);
+    //
+    // Resolve fields
+    //
+
+    function buildFieldDescription(src: ASTField, index: number): FieldDescription {
+        return { name: src.name, type: buildTypeRef(src.type, types), index, as: src.as, default: src.init };
+    }
+    for (let a of ast.types) {
+
+        // Contract
+        if (a.kind === 'def_contract') {
+            for (const f of a.declarations) {
+                if (f.kind !== 'def_field') {
+                    continue;
+                }
+                if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    throwError(`Field ${f.name} already exists`, f.ref);
+                }
+                types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
             }
-            return {
-                kind: 'ref',
-                name: src.name,
-                optional: src.optional
-            };
-        }
-        if (src.kind === 'type_ref_map') {
-            if (!types[src.key]) {
-                throwError('Type ' + src.key + ' not found', src.ref);
-            }
-            if (!types[src.value]) {
-                throwError('Type ' + src.value + ' not found', src.ref);
-            }
-            return {
-                kind: 'map',
-                key: src.key,
-                value: src.value
-            };
         }
 
-        throw Error('Unknown type ref');
+        // Struct
+        if (a.kind === 'def_struct') {
+            for (let f of a.fields) {
+                if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    throwError(`Field ${f.name} already exists`, f.ref);
+                }
+                types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+            }
+        }
     }
 
     function resolveFunctionDescriptor(sself: string | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
@@ -105,7 +141,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Resolve return
         let returns: TypeRef | null = null;
         if (a.return) {
-            returns = resolveTypeRef(a.return);
+            returns = buildTypeRef(a.return, types);
         }
 
         // Resolve args
@@ -113,7 +149,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         for (let r of a.args) {
             args.push({
                 name: r.name,
-                type: resolveTypeRef(r.type),
+                type: buildTypeRef(r.type, types),
                 as: null,
                 ref: r.ref
             });
@@ -211,71 +247,45 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    function resolveInitFunction(a: ASTInitFunction): InitDescription {
+    function resolveInitFunction(ast: ASTInitFunction): InitDescription {
         let args: FunctionArgument[] = [];
-        for (let r of a.args) {
+        for (let r of ast.args) {
             args.push({
                 name: r.name,
-                type: resolveTypeRef(r.type),
+                type: buildTypeRef(r.type, types),
                 as: null,
                 ref: r.ref
             });
         }
         return {
             args,
-            ast: a
-        }
+            ast
+        };
     }
 
+    //
     // Resolve static functions
-    for (let a of ast.functions) {
+    //
 
-        // Register function
+    for (let a of ast.functions) {
         let r = resolveFunctionDescriptor(null, a);
         if (r.self) {
-            if (types[r.self].functions.find((v) => v.name === r.name)) {
+            if (types[r.self].functions[r.name]) {
                 throwError(`Function ${r.name} already exists`, r.ast.ref);
             }
-            types[r.self].functions.push(r);
+            types[r.self].functions[r.name] = r;
         } else {
-            if (staticFunctions[a.name]) {
+            if (staticFunctions[r.name]) {
                 throwError(`Static function ${r.name} already exists`, r.ast.ref);
             }
-            staticFunctions[a.name] = resolveFunctionDescriptor(null, a);
+            staticFunctions[r.name] = r;
         }
     }
 
-    // Resolve fields
-    function resolveField(src: ASTField, index: number): FieldDescription {
-        return { name: src.name, type: resolveTypeRef(src.type), index, as: src.as, default: src.init };
-    }
-    for (let a of ast.types) {
-
-        // Contract
-        if (a.kind === 'def_contract') {
-            for (const f of a.declarations) {
-                if (f.kind !== 'def_field') {
-                    continue;
-                }
-                if (types[a.name].fields.find((v) => v.name === f.name)) {
-                    throwError(`Field ${f.name} already exists`, f.ref);
-                }
-                types[a.name].fields.push(resolveField(f, types[a.name].fields.length));
-            }
-        }
-
-        // Struct
-        if (a.kind === 'def_struct') {
-            for (let f of a.fields) {
-                if (types[a.name].fields.find((v) => v.name === f.name)) {
-                    throwError(`Field ${f.name} already exists`, f.ref);
-                }
-                types[a.name].fields.push(resolveField(f, types[a.name].fields.length));
-            }
-        }
-    }
-
+    //
     // Resolve contract functions
+    //
+
     for (const a of ast.types) {
 
         if (a.kind === 'def_contract') {
@@ -286,7 +296,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (f.self !== s.name) {
                         throw Error('Function self must be ' + s.name); // Impossible
                     }
-                    s.functions.push(resolveFunctionDescriptor(s.name, d));
+                    s.functions[f.name] = f;
                 }
                 if (d.kind === 'def_init_function') {
                     if (s.init) {
@@ -317,22 +327,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
 
                     // Check for duplicate
-                    if (s.receivers.find((v) => v.name === d.arg.name)) {
-                        throwError(`Receive function for ${d.arg.name} already exists`, d.arg.ref);
+                    if (s.receivers[d.arg.type.name]) {
+                        throwError(`Receive function for ${d.arg.type.name} already exists`, d.arg.ref);
                     }
 
                     // Persist receiver
-                    s.receivers.push({
+                    s.receivers[d.arg.type.name] = {
                         name: d.arg.name,
                         type: d.arg.type.name,
                         ast: d
-                    });
+                    };
                 }
             }
         }
     }
 
-    // Register types in context
+    //
+    // Register types and functions in context
+    //
+
     for (let t in types) {
         ctx = store.set(ctx, t, types[t]);
     }

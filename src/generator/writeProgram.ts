@@ -280,7 +280,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`tuple self = __gen_load_${type.name}();`);
 
             // Routing
-            for (let f of type.receivers) {
+            for (let f of Object.values(type.receivers)) {
 
                 let allocation = getAllocation(ctx.ctx, f.type);
                 if (!allocation.prefix) {
@@ -324,7 +324,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
         }
 
         // Implicit dependencies
-        for (let f of type.functions) {
+        for (let f of Object.values(type.functions)) {
             if (f.isGetter) {
                 ctx.used(`__gen_get_${f.name}`);
             }
@@ -364,7 +364,7 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: bool
     // Extensions
     for (let c of allTypes) {
         if (c.kind !== 'contract') { // We are rendering contract functions separately
-            for (let f of c.functions) {
+            for (let f of Object.values(c.functions)) {
                 writeFunction(f, wctx);
             }
         }
@@ -379,7 +379,7 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: bool
         }
 
         // Functions
-        for (let f of c.functions) {
+        for (let f of Object.values(c.functions)) {
             writeFunction(f, wctx);
 
             if (f.isGetter) {
@@ -388,7 +388,7 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: bool
         }
 
         // Receivers
-        for (let r of c.receivers) {
+        for (let r of Object.values(c.receivers)) {
             writeReceiver(c, r, wctx);
         }
     }

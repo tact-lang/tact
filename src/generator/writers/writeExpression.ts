@@ -232,7 +232,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Render function call
             let t = getType(ctx.ctx, src.name);
-            let ff = t.functions.find((v) => v.name === f.name)!;
+            let ff = t.functions[f.name]!;
 
             // Resolve name
             let name = `__gen_${src.name}_${f.name}`;

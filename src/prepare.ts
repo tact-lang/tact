@@ -17,6 +17,7 @@ import { writeTypescript } from './generator/writeTypescript';
             try {
 
                 // Precompile
+                console.log('Processing ' + p.path + r);
                 let code = fs.readFileSync(p.path + r, 'utf8');
                 let ctx = precompile(code);
 

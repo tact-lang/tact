@@ -60,7 +60,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
 
             // Check types;
             let srcT = getType(ctx, src.name);
-            let f = srcT.functions.find((v) => v.name === exp.name);
+            let f = srcT.functions[exp.name];
             if (!f) {
                 throwError(`Function ${exp.name} not found in ${printTypeRef(src)}'`, exp.ref);
             }
@@ -226,7 +226,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
                 }
 
                 let srcT = getType(ctx, src.name);
-                let f = srcT.functions.find((v) => v.name === exp.name)!;
+                let f = srcT.functions[exp.name]!;
                 if (!f.returns) {
                     return registerExpType(ctx, exp, null);
                 }
@@ -328,7 +328,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         let a = getType(ctx, t);
 
         // Process receivers
-        for (let r of a.receivers) {
+        for (let r of Object.values(a.receivers)) {
 
             // Receiver variables
             let vctx: VariableCTX = {};
@@ -354,7 +354,7 @@ export function resolveExpressionTypes(ctx: CompilerContext) {
         }
 
         // Process functions
-        for (let f of a.functions) {
+        for (let f of Object.values(a.functions)) {
 
             if (f.ast.kind !== 'def_native_function') {
 

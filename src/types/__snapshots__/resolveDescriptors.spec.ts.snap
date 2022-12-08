@@ -70,6 +70,42 @@ exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
 Field b already exists"
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-8 1`] = `
+"Line 9, col 11:
+   8 | contract Pair {
+>  9 |   receive(src: B?) {
+                 ^~~~~~~
+  10 |     
+Receive function cannot have optional argument"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-9 1`] = `
+"Line 9, col 11:
+   8 | contract Pair {
+>  9 |   receive(src: B) {
+                 ^~~~~~
+  10 |     
+Receive function can only accept message"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-10 1`] = `
+"Line 9, col 11:
+   8 | contract Pair {
+>  9 |   receive(src: Int) {
+                 ^~~~~~~~
+  10 |     
+Receive function can only accept message"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-11 1`] = `
+"Line 8, col 23:
+  7 |     }
+> 8 |     get fun hello2(): Point {
+                            ^~~~~
+  9 |         return 0;
+Type Point not found"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "Bool": {
@@ -80,11 +116,11 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -94,11 +130,11 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
@@ -115,11 +151,11 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -129,11 +165,11 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
   "Struct1": {
     "ast": {
@@ -202,11 +238,11 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         },
       },
     ],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "struct",
     "name": "Struct1",
-    "receivers": [],
+    "receivers": {},
   },
   "Struct2": {
     "ast": {
@@ -248,11 +284,11 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         },
       },
     ],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "struct",
     "name": "Struct2",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
@@ -269,11 +305,11 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -283,11 +319,11 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
@@ -464,11 +500,11 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "HelloWorld": {
     "ast": {
@@ -568,8 +604,8 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         },
       },
     ],
-    "functions": [
-      {
+    "functions": {
+      "hello": {
         "args": [],
         "ast": {
           "args": [],
@@ -590,7 +626,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "returns": null,
         "self": "HelloWorld",
       },
-      {
+      "hello2": {
         "args": [],
         "ast": {
           "args": [],
@@ -611,11 +647,11 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "returns": null,
         "self": "HelloWorld",
       },
-    ],
+    },
     "init": null,
     "kind": "contract",
     "name": "HelloWorld",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -625,11 +661,11 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
@@ -646,11 +682,11 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -660,11 +696,11 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
@@ -739,11 +775,11 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -753,8 +789,8 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [
-      {
+    "functions": {
+      "inc": {
         "args": [],
         "ast": {
           "args": [
@@ -807,11 +843,11 @@ mutates extends native inc(self: Int): Int;,
         },
         "self": "Int",
       },
-    ],
+    },
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
@@ -828,11 +864,11 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
       "ref": primitive Bool;,
     },
     "fields": [],
-    "functions": [],
+    "functions": {},
     "init": null,
     "kind": "primitive",
     "name": "Bool",
-    "receivers": [],
+    "receivers": {},
   },
   "Int": {
     "ast": {
@@ -842,8 +878,8 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
       "ref": primitive Int;,
     },
     "fields": [],
-    "functions": [
-      {
+    "functions": {
+      "inc": {
         "args": [],
         "ast": {
           "args": [
@@ -917,13 +953,256 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
         },
         "self": "Int",
       },
-    ],
+    },
     "init": null,
     "kind": "primitive",
     "name": "Int",
-    "receivers": [],
+    "receivers": {},
   },
 }
 `;
 
 exports[`resolveDescriptors should resolve descriptors for case-6 2`] = `{}`;
+
+exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
+{
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
+    "fields": [],
+    "functions": {},
+    "init": null,
+    "kind": "primitive",
+    "name": "Bool",
+    "receivers": {},
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
+    "fields": [],
+    "functions": {},
+    "init": null,
+    "kind": "primitive",
+    "name": "Int",
+    "receivers": {},
+  },
+  "Main": {
+    "ast": {
+      "declarations": [
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 7,
+          "kind": "def_function",
+          "name": "hello",
+          "ref": get fun hello(): Int {
+        return 0;
+    },
+          "return": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 5,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 6,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 11,
+          "kind": "def_function",
+          "name": "hello2",
+          "ref": get fun hello2(): Point {
+        return 0;
+    },
+          "return": {
+            "id": 8,
+            "kind": "type_ref_simple",
+            "name": "Point",
+            "optional": false,
+            "ref": Point,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 9,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 10,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+      ],
+      "id": 12,
+      "kind": "def_contract",
+      "name": "Main",
+      "ref": contract Main {
+    get fun hello(): Int {
+        return 0;
+    }
+    get fun hello2(): Point {
+        return 0;
+    }
+},
+    },
+    "fields": [],
+    "functions": {
+      "hello": {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 7,
+          "kind": "def_function",
+          "name": "hello",
+          "ref": get fun hello(): Int {
+        return 0;
+    },
+          "return": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 5,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 6,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+        "isGetter": true,
+        "isMutating": true,
+        "isPublic": false,
+        "name": "hello",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Main",
+      },
+      "hello2": {
+        "args": [],
+        "ast": {
+          "args": [],
+          "attributes": [
+            {
+              "ref": get,
+              "type": "get",
+            },
+          ],
+          "id": 11,
+          "kind": "def_function",
+          "name": "hello2",
+          "ref": get fun hello2(): Point {
+        return 0;
+    },
+          "return": {
+            "id": 8,
+            "kind": "type_ref_simple",
+            "name": "Point",
+            "optional": false,
+            "ref": Point,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 9,
+                "kind": "number",
+                "ref": 0,
+                "value": 0n,
+              },
+              "id": 10,
+              "kind": "statement_return",
+              "ref": return 0;,
+            },
+          ],
+        },
+        "isGetter": true,
+        "isMutating": true,
+        "isPublic": false,
+        "name": "hello2",
+        "returns": {
+          "kind": "ref",
+          "name": "Point",
+          "optional": false,
+        },
+        "self": "Main",
+      },
+    },
+    "init": null,
+    "kind": "contract",
+    "name": "Main",
+    "receivers": {},
+  },
+  "Point": {
+    "ast": {
+      "fields": [],
+      "id": 3,
+      "kind": "def_struct",
+      "message": false,
+      "name": "Point",
+      "ref": struct Point {
+    
+},
+    },
+    "fields": [],
+    "functions": {},
+    "init": null,
+    "kind": "struct",
+    "name": "Point",
+    "receivers": {},
+  },
+}
+`;
+
+exports[`resolveDescriptors should resolve descriptors for case-7 2`] = `{}`;

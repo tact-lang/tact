@@ -78,13 +78,13 @@ export function createABI(ctx: CompilerContext): ContractABI {
 
     // Receivers
     let receivers: string[] = [];
-    for (let r of contract.receivers) {
+    for (let r of Object.values(contract.receivers)) {
         receivers.push(r.type);
     }
 
     // Getters
     let getters: CotnractFunction[] = [];
-    for (let f of contract.functions) {
+    for (let f of Object.values(contract.functions)) {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
