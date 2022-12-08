@@ -13,8 +13,8 @@ Tact {
 
     // Static function
     StaticFunction = Function
-    NativeFunction = ListOf<FunctionAttribute," "> nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
-                   | ListOf<FunctionAttribute," "> nameAttribute "(" id ")" native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
+    NativeFunction = nameAttribute "(" id ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
+                   | nameAttribute "(" id ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
     
     // Field declarations
     Type = typeLiteral "?" --optional
@@ -43,8 +43,8 @@ Tact {
                       | get    --getter
                       | mutates --mutates
                       | extends --extends
-    Function = ListOf<FunctionAttribute," "> fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
-             | ListOf<FunctionAttribute," "> fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
+    Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
+             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
     ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}"
 

@@ -1,3 +1,4 @@
+import { __DANGER_resetNodeId } from "../../ast/ast";
 import { CompilerContext } from "../../ast/context";
 import { resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
 import { WriterContext } from "../Writer";
@@ -28,6 +29,10 @@ contract Contract2 {
 `;
 
 describe('resolveFuncType', () => {
+
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
 
     it('should process primitive types', () => {
         let ctx = CompilerContext.fromSources([primitiveCode]);

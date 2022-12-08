@@ -1,6 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 1`] = `
+exports[`resolveTypeDescriptors should fail descriptors for case-0 1`] = `
+"Line 5, col 1:
+  4 | @name(hello_world)
+> 5 | get native sample(a: Int): Int;
+      ^~~
+Native functions cannot be getters"
+`;
+
+exports[`resolveTypeDescriptors should fail descriptors for case-1 1`] = `
+"Line 5, col 1:
+  4 | @name(hello_world)
+> 5 | public native sample(a: Int): Int;
+      ^~~~~~
+Native functions cannot be public"
+`;
+
+exports[`resolveTypeDescriptors should fail descriptors for case-2 1`] = `
+"Line 4, col 1:
+  3 | 
+> 4 | public fun sample(a: Int): Int {
+      ^~~~~~
+  5 |     return 0;
+Public functions must be defined within a contract"
+`;
+
+exports[`resolveTypeDescriptors should fail descriptors for case-3 1`] = `
+"Line 4, col 1:
+  3 | 
+> 4 | get fun sample(a: Int): Int {
+      ^~~
+  5 |     return 0;
+Getters must be defined within a contract"
+`;
+
+exports[`resolveTypeDescriptors should fail descriptors for case-4 1`] = `
+"Line 4, col 17:
+  3 | 
+> 4 | extends fun inc(a: Int): Int {
+                      ^~~~~~
+  5 |     return a + 1;
+Extend function must have first argument named "self""
+`;
+
+exports[`resolveTypeDescriptors should fail descriptors for case-5 1`] = `
+"Line 4, col 17:
+  3 | 
+> 4 | fun inc(a: Int, self: Int): Int {
+                      ^~~~~~~~~
+  5 |     return a + 1 + self;
+Argument name "self" is reserved"
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-0 1`] = `
 {
   "Bool": {
     "ast": {
@@ -33,13 +85,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 1`] =
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-0.tact 2`] = `{}`;
+exports[`resolveTypeDescriptors should resolve descriptors for case-0 2`] = `{}`;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] = `
+exports[`resolveTypeDescriptors should resolve descriptors for case-1 1`] = `
 {
   "Bool": {
     "ast": {
-      "id": 5,
+      "id": 2,
       "kind": "primitive",
       "name": "Bool",
       "ref": primitive Bool;,
@@ -53,7 +105,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
   },
   "Int": {
     "ast": {
-      "id": 4,
+      "id": 1,
       "kind": "primitive",
       "name": "Int",
       "ref": primitive Int;,
@@ -70,13 +122,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
       "fields": [
         {
           "as": null,
-          "id": 7,
+          "id": 4,
           "init": undefined,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int;,
           "type": {
-            "id": 6,
+            "id": 3,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -85,13 +137,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
         },
         {
           "as": null,
-          "id": 9,
+          "id": 6,
           "init": undefined,
           "kind": "def_field",
           "name": "b",
           "ref": b: Bool;,
           "type": {
-            "id": 8,
+            "id": 5,
             "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
@@ -99,7 +151,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
           },
         },
       ],
-      "id": 10,
+      "id": 7,
       "kind": "def_struct",
       "message": false,
       "name": "Struct1",
@@ -143,13 +195,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
       "fields": [
         {
           "as": null,
-          "id": 12,
+          "id": 9,
           "init": undefined,
           "kind": "def_field",
           "name": "a",
           "ref": a: Struct1;,
           "type": {
-            "id": 11,
+            "id": 8,
             "kind": "type_ref_simple",
             "name": "Struct1",
             "optional": false,
@@ -157,7 +209,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
           },
         },
       ],
-      "id": 13,
+      "id": 10,
       "kind": "def_struct",
       "message": false,
       "name": "Struct2",
@@ -187,13 +239,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 1`] =
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-1.tact 2`] = `{}`;
+exports[`resolveTypeDescriptors should resolve descriptors for case-1 2`] = `{}`;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 1`] = `
+exports[`resolveTypeDescriptors should resolve descriptors for case-2 1`] = `
 {
   "Bool": {
     "ast": {
-      "id": 16,
+      "id": 2,
       "kind": "primitive",
       "name": "Bool",
       "ref": primitive Bool;,
@@ -207,7 +259,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 1`] =
   },
   "Int": {
     "ast": {
-      "id": 15,
+      "id": 1,
       "kind": "primitive",
       "name": "Int",
       "ref": primitive Int;,
@@ -222,21 +274,21 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 1`] =
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] = `
+exports[`resolveTypeDescriptors should resolve descriptors for case-2 2`] = `
 {
   "testFunc": {
     "args": [],
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 20,
+      "id": 6,
       "kind": "def_function",
       "name": "testFunc",
       "ref": fun testFunc(): Int {
     return 0;
 },
       "return": {
-        "id": 17,
+        "id": 3,
         "kind": "type_ref_simple",
         "name": "Int",
         "optional": false,
@@ -245,12 +297,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       "statements": [
         {
           "expression": {
-            "id": 18,
+            "id": 4,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 19,
+          "id": 5,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -272,7 +324,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "ast": {
       "args": [],
       "attributes": [],
-      "id": 23,
+      "id": 9,
       "kind": "def_function",
       "name": "testFunc2",
       "ref": fun testFunc2() {
@@ -282,12 +334,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       "statements": [
         {
           "expression": {
-            "id": 21,
+            "id": 7,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 22,
+          "id": 8,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -305,6 +357,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       {
         "as": null,
         "name": "a",
+        "ref": a: Int,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -314,6 +367,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       {
         "as": null,
         "name": "b",
+        "ref": b: Bool,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -324,12 +378,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
     "ast": {
       "args": [
         {
-          "id": 25,
+          "id": 11,
           "kind": "def_argument",
           "name": "a",
           "ref": a: Int,
           "type": {
-            "id": 24,
+            "id": 10,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -337,12 +391,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
           },
         },
         {
-          "id": 27,
+          "id": 13,
           "kind": "def_argument",
           "name": "b",
           "ref": b: Bool,
           "type": {
-            "id": 26,
+            "id": 12,
             "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
@@ -351,7 +405,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
         },
       ],
       "attributes": [],
-      "id": 30,
+      "id": 16,
       "kind": "def_function",
       "name": "testFunc3",
       "ref": fun testFunc3(a: Int, b: Bool) {
@@ -361,12 +415,12 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
       "statements": [
         {
           "expression": {
-            "id": 28,
+            "id": 14,
             "kind": "number",
             "ref": 0,
             "value": 0n,
           },
-          "id": 29,
+          "id": 15,
           "kind": "statement_return",
           "ref": return 0;,
         },
@@ -382,11 +436,11 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-2.tact 2`] =
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] = `
+exports[`resolveTypeDescriptors should resolve descriptors for case-3 1`] = `
 {
   "Bool": {
     "ast": {
-      "id": 33,
+      "id": 2,
       "kind": "primitive",
       "name": "Bool",
       "ref": primitive Bool;,
@@ -403,13 +457,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
       "declarations": [
         {
           "as": null,
-          "id": 35,
+          "id": 4,
           "init": undefined,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int;,
           "type": {
-            "id": 34,
+            "id": 3,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -418,13 +472,13 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         },
         {
           "as": null,
-          "id": 37,
+          "id": 6,
           "init": undefined,
           "kind": "def_field",
           "name": "b",
           "ref": b: Bool;,
           "type": {
-            "id": 36,
+            "id": 5,
             "kind": "type_ref_simple",
             "name": "Bool",
             "optional": false,
@@ -434,7 +488,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         {
           "args": [],
           "attributes": [],
-          "id": 38,
+          "id": 7,
           "kind": "def_function",
           "name": "hello",
           "ref": fun hello() {
@@ -446,7 +500,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         {
           "args": [],
           "attributes": [],
-          "id": 39,
+          "id": 8,
           "kind": "def_function",
           "name": "hello2",
           "ref": fun hello2() {
@@ -456,7 +510,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
           "statements": [],
         },
       ],
-      "id": 40,
+      "id": 9,
       "kind": "def_contract",
       "name": "HelloWorld",
       "ref": contract HelloWorld {
@@ -502,7 +556,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "ast": {
           "args": [],
           "attributes": [],
-          "id": 38,
+          "id": 7,
           "kind": "def_function",
           "name": "hello",
           "ref": fun hello() {
@@ -516,14 +570,14 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "isPublic": false,
         "name": "hello",
         "returns": null,
-        "self": [Circular],
+        "self": "HelloWorld",
       },
       {
         "args": [],
         "ast": {
           "args": [],
           "attributes": [],
-          "id": 39,
+          "id": 8,
           "kind": "def_function",
           "name": "hello2",
           "ref": fun hello2() {
@@ -537,7 +591,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
         "isPublic": false,
         "name": "hello2",
         "returns": null,
-        "self": [Circular],
+        "self": "HelloWorld",
       },
     ],
     "init": null,
@@ -547,7 +601,7 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
   },
   "Int": {
     "ast": {
-      "id": 32,
+      "id": 1,
       "kind": "primitive",
       "name": "Int",
       "ref": primitive Int;,
@@ -562,4 +616,296 @@ exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 1`] =
 }
 `;
 
-exports[`resolveTypeDescriptors should resolve descriptors for case-3.tact 2`] = `{}`;
+exports[`resolveTypeDescriptors should resolve descriptors for case-3 2`] = `{}`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-4 1`] = `
+{
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
+    "fields": [],
+    "functions": [],
+    "init": null,
+    "kind": "primitive",
+    "name": "Bool",
+    "receivers": [],
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
+    "fields": [],
+    "functions": [],
+    "init": null,
+    "kind": "primitive",
+    "name": "Int",
+    "receivers": [],
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-4 2`] = `
+{
+  "sample": {
+    "args": [
+      {
+        "as": null,
+        "name": "a",
+        "ref": a: Int,
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "ast": {
+      "args": [
+        {
+          "id": 5,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 6,
+      "kind": "def_native_function",
+      "name": "sample",
+      "nativeName": "hello_world",
+      "ref": @name(hello_world)
+native sample(a: Int): Int;,
+      "return": {
+        "id": 3,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+    },
+    "isGetter": false,
+    "isMutating": false,
+    "isPublic": false,
+    "name": "sample",
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-5 1`] = `
+{
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
+    "fields": [],
+    "functions": [],
+    "init": null,
+    "kind": "primitive",
+    "name": "Bool",
+    "receivers": [],
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
+    "fields": [],
+    "functions": [
+      {
+        "args": [],
+        "ast": {
+          "args": [
+            {
+              "id": 5,
+              "kind": "def_argument",
+              "name": "self",
+              "ref": self: Int,
+              "type": {
+                "id": 4,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "attributes": [
+            {
+              "ref": mutates,
+              "type": "mutates",
+            },
+            {
+              "ref": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 6,
+          "kind": "def_native_function",
+          "name": "inc",
+          "nativeName": "inc",
+          "ref": @name(inc)
+mutates extends native inc(self: Int): Int;,
+          "return": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        "isGetter": false,
+        "isMutating": true,
+        "isPublic": false,
+        "name": "inc",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Int",
+      },
+    ],
+    "init": null,
+    "kind": "primitive",
+    "name": "Int",
+    "receivers": [],
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-5 2`] = `{}`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-6 1`] = `
+{
+  "Bool": {
+    "ast": {
+      "id": 2,
+      "kind": "primitive",
+      "name": "Bool",
+      "ref": primitive Bool;,
+    },
+    "fields": [],
+    "functions": [],
+    "init": null,
+    "kind": "primitive",
+    "name": "Bool",
+    "receivers": [],
+  },
+  "Int": {
+    "ast": {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
+    "fields": [],
+    "functions": [
+      {
+        "args": [],
+        "ast": {
+          "args": [
+            {
+              "id": 5,
+              "kind": "def_argument",
+              "name": "self",
+              "ref": self: Int,
+              "type": {
+                "id": 4,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "attributes": [
+            {
+              "ref": extends,
+              "type": "extends",
+            },
+          ],
+          "id": 10,
+          "kind": "def_function",
+          "name": "inc",
+          "ref": extends fun inc(self: Int): Int {
+    return self + 1;
+},
+          "return": {
+            "id": 3,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 8,
+                "kind": "op_binary",
+                "left": {
+                  "id": 6,
+                  "kind": "id",
+                  "ref": self,
+                  "value": "self",
+                },
+                "op": "+",
+                "ref": self + 1,
+                "right": {
+                  "id": 7,
+                  "kind": "number",
+                  "ref": 1,
+                  "value": 1n,
+                },
+              },
+              "id": 9,
+              "kind": "statement_return",
+              "ref": return self + 1;,
+            },
+          ],
+        },
+        "isGetter": false,
+        "isMutating": false,
+        "isPublic": false,
+        "name": "inc",
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": "Int",
+      },
+    ],
+    "init": null,
+    "kind": "primitive",
+    "name": "Int",
+    "receivers": [],
+  },
+}
+`;
+
+exports[`resolveTypeDescriptors should resolve descriptors for case-6 2`] = `{}`;

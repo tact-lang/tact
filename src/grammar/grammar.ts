@@ -137,7 +137,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
-            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            attributes: arg0.children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
             return: arg7.resolve_expression(),
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
@@ -149,7 +149,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
-            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            attributes: arg0.children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
             return: null,
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
@@ -161,9 +161,9 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
-            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            attributes: arg4.children.map((v: any) => v.resolve_attributes()),
             name: arg6.sourceString,
-            nativeName: arg3.sourceString,
+            nativeName: arg2.sourceString,
             return: arg11.resolve_expression(),
             args: arg8.asIteration().children.map((v: any) => v.resolve_declaration()),
             ref: createRef(this)
@@ -173,9 +173,9 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
-            attributes: arg0.asIteration().children.map((v: any) => v.resolve_attributes()),
+            attributes: arg4.children.map((v: any) => v.resolve_attributes()),
             name: arg6.sourceString,
-            nativeName: arg3.sourceString,
+            nativeName: arg2.sourceString,
             return: null,
             args: arg8.asIteration().children.map((v: any) => v.resolve_declaration()),
             ref: createRef(this)

@@ -1,14 +1,16 @@
 import { CompilerContext } from "../ast/context";
 import { getAllExpressionTypes, resolveExpressionTypes } from "./resolveExpressionType";
 import { resolveTypeDescriptors } from "./resolveTypeDescriptors";
-import fs from 'fs';
+import { loadCases } from "../utils/loadCases";
+import { __DANGER_resetNodeId } from "../ast/ast";
 
 describe('resolveExpressionType', () => {
-    let recs = fs.readdirSync(__dirname + "/test-expr/");
-    for (let r of recs) {
-        it('should resolve expressions for ' + r, () => {
-            let code = fs.readFileSync(__dirname + "/test-expr/" + r, 'utf8');
-            let ctx = CompilerContext.fromSources([code]);
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
+    for (let r of loadCases(__dirname + "/expr/")) {
+        it('should resolve expressions for ' + r.name, () => {
+            let ctx = CompilerContext.fromSources([r.code]);
             ctx = resolveTypeDescriptors(ctx);
             ctx = resolveExpressionTypes(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();

@@ -1,3 +1,4 @@
+import { __DANGER_resetNodeId } from "../../ast/ast";
 import { CompilerContext } from "../../ast/context";
 import { getAllocation, resolveAllocations } from "../../storage/resolveAllocation";
 import { getType, resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
@@ -46,6 +47,9 @@ struct C {
 `;
 
 describe('writeSerialization', () => {
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
     for (let s of ['A', 'B', 'C']) {
         it('should write serializer for ' + s, () => {
             let ctx = CompilerContext.fromSources([code]);

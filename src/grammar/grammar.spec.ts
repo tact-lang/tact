@@ -1,5 +1,5 @@
 import { parse } from "./grammar";
-import { ASTRef } from "../ast/ast";
+import { ASTRef, __DANGER_resetNodeId } from "../ast/ast";
 import { loadCases } from "../utils/loadCases";
 
 expect.addSnapshotSerializer({
@@ -8,6 +8,11 @@ expect.addSnapshotSerializer({
 });
 
 describe('grammar', () => {
+    
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
+
     for (let r of loadCases(__dirname + "/test/")) {
         it('should parse ' + r.name, () => {
             expect(parse(r.code)).toMatchSnapshot();

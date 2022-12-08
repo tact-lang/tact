@@ -875,6 +875,7 @@ exports[`resolveAllocation should write program 1`] = `
             {
               "as": null,
               "name": "a",
+              "ref": ASTRef {},
               "type": {
                 "kind": "ref",
                 "name": "Int",
@@ -884,6 +885,7 @@ exports[`resolveAllocation should write program 1`] = `
             {
               "as": null,
               "name": "b",
+              "ref": ASTRef {},
               "type": {
                 "kind": "ref",
                 "name": "Int",
@@ -938,7 +940,7 @@ exports[`resolveAllocation should write program 1`] = `
           "isPublic": true,
           "name": "main",
           "returns": null,
-          "self": [Circular],
+          "self": "Sample",
         },
       ],
       "init": null,

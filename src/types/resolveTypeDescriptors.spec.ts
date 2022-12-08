@@ -1,7 +1,8 @@
 import { CompilerContext } from "../ast/context";
 import { getAllStaticFunctions, getAllTypes, resolveTypeDescriptors } from "./resolveTypeDescriptors";
 import fs from 'fs';
-import { ASTRef } from "../ast/ast";
+import { ASTRef, __DANGER_resetNodeId } from "../ast/ast";
+import { loadCases } from "../utils/loadCases";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof ASTRef,
@@ -9,14 +10,21 @@ expect.addSnapshotSerializer({
 });
 
 describe('resolveTypeDescriptors', () => {
-    let recs = fs.readdirSync(__dirname + "/test/");
-    for (let r of recs) {
-        it('should resolve descriptors for ' + r, () => {
-            let code = fs.readFileSync(__dirname + "/test/" + r, 'utf8');
-            let ctx = CompilerContext.fromSources([code]);
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
+    for (let r of loadCases(__dirname + "/test/")) {
+        it('should resolve descriptors for ' + r.name, () => {
+            let ctx = CompilerContext.fromSources([r.code]);
             ctx = resolveTypeDescriptors(ctx);
             expect(getAllTypes(ctx)).toMatchSnapshot();
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
+        });
+    }
+    for (let r of loadCases(__dirname + "/test-failed/")) {
+        it('should fail descriptors for ' + r.name, () => {
+            let ctx = CompilerContext.fromSources([r.code]);
+            expect(() => resolveTypeDescriptors(ctx)).toThrowErrorMatchingSnapshot();
         });
     }
 });

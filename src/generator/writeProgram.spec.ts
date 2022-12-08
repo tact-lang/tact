@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { __DANGER_resetNodeId } from '../ast/ast';
 import { CompilerContext } from '../ast/context';
 import { resolveAllocations } from '../storage/resolveAllocation';
 import { resolveExpressionTypes } from '../types/resolveExpressionType';
@@ -24,6 +25,9 @@ fun hello_world(a: Int, b: Int, p: Point): Int {
 `;
 
 describe('writeProgram', () => {
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
     it('should write program', () => {
         let ctx = CompilerContext.fromSources([stdlib, src]);
         ctx = resolveTypeDescriptors(ctx);

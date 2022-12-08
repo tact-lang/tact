@@ -116,20 +116,22 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
     const fd = f.ast;
 
+    let self = f.self ? getType(ctx.ctx, f.self) : null;
+
     // Write function header
     let args = f.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
-    if (f.self) {
-        args.unshift(`${resolveFuncType(f.self, ctx)} self`);
+    if (self) {
+        args.unshift(`${resolveFuncType(self, ctx)} self`);
     }
     let returns: string = f.returns ? resolveFuncType(f.returns, ctx) : '()';
-    if (f.self && f.returns) {
+    if (self && f.returns) {
         returns = '(tuple, ' + returns + ')';
-    } else if (f.self) {
+    } else if (self) {
         returns = '(tuple, ())';
     }
 
     // Resolve function name
-    let name = (f.self ? '__gen_' + f.self.name + '_' : '') + f.name;
+    let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
 
     // Write function body
     ctx.fun(name, () => {
@@ -229,13 +231,18 @@ function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         ctx.append(`_ __gen_get_${f.name}(${args.join(', ')}) method_id(${getMethodId(f.name)}) {`);
         ctx.inIndent(() => {
 
+            let self = f.self ? getType(ctx.ctx, f.self) : null;
+            if (!self) {
+                throw new Error(`No self type for getter ${f.name}`); // Impossible
+            }
+
             // Load contract state
-            ctx.used(`__gen_load_${f.self!.name}`);
-            ctx.append(`tuple self = __gen_load_${f.self!.name}();`);
+            ctx.used(`__gen_load_${self.name}`);
+            ctx.append(`tuple self = __gen_load_${self.name}();`);
 
             // Execute get method
-            ctx.used(`__gen_${f.self!.name}_${f.name}`);
-            ctx.append(`var res = self~__gen_${f.self!.name}_${f.name}(${[...f.args.map((a) => a.name)].join(', ')});`);
+            ctx.used(`__gen_${self.name}_${f.name}`);
+            ctx.append(`var res = self~__gen_${self.name}_${f.name}(${[...f.args.map((a) => a.name)].join(', ')});`);
 
             // Return restult
             ctx.append(`return res;`);

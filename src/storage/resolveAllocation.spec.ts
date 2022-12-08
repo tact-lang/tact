@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { __DANGER_resetNodeId } from '../ast/ast';
 import { CompilerContext } from '../ast/context';
 import { resolveExpressionTypes } from '../types/resolveExpressionType';
 import { getAllTypes, resolveTypeDescriptors } from '../types/resolveTypeDescriptors';
@@ -28,6 +29,9 @@ contract Sample {
 `;
 
 describe('resolveAllocation', () => {
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
     it('should write program', () => {
         let ctx = CompilerContext.fromSources([stdlib, src]);
         ctx = resolveTypeDescriptors(ctx);

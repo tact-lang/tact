@@ -15,7 +15,6 @@ let blacklisted = [
     "let",
     "const",
     "new",
-    "self",
     "this",
     "true",
     "false",

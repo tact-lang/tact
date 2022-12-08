@@ -326,6 +326,10 @@ export function createNode(src: DistributiveOmit<ASTNode, 'id'>): ASTNode {
     return Object.freeze(Object.assign({ id: nextId++ }, src));
 }
 
+export function __DANGER_resetNodeId() {
+    nextId = 1;
+}
+
 export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
     let i = s.source;
     if (extra.length > 0) {

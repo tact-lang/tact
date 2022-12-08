@@ -1,4 +1,4 @@
-import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTStatement, ASTType } from "../ast/ast";
+import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTRef, ASTStatement, ASTType } from "../ast/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract';
@@ -20,6 +20,19 @@ export type TypeRef = {
     value: string
 };
 
+export function typeRefEquals(a: TypeRef, b: TypeRef) {
+    if (a.kind !== b.kind) {
+        return false;
+    }
+    if (a.kind === 'ref' && b.kind === 'ref') {
+        return a.name === b.name && a.optional === b.optional;
+    }
+    if (a.kind === 'map' && b.kind === 'map') {
+        return a.key === b.key && a.value === b.value;
+    }
+    return false;
+}
+
 export type FieldDescription = {
     name: string,
     index: number,
@@ -31,7 +44,8 @@ export type FieldDescription = {
 export type FunctionArgument = {
     name: string,
     type: TypeRef,
-    as: string | null
+    as: string | null,
+    ref: ASTRef
 }
 
 export type FunctionDescription = {
@@ -39,7 +53,7 @@ export type FunctionDescription = {
     isPublic: boolean,
     isGetter: boolean,
     isMutating: boolean,
-    self: TypeDescription | null,
+    self: string | null,
     returns: TypeRef | null,
     args: FunctionArgument[],
     ast: ASTFunction | ASTNativeFunction

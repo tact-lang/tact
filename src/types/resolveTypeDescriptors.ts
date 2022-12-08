@@ -1,6 +1,6 @@
 import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../ast/ast";
 import { CompilerContext, createContextStore } from "../ast/context";
-import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef } from "./types";
+import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef, typeRefEquals } from "./types";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -97,7 +97,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         throw Error('Unknown type ref');
     }
 
-    function resolveFunctionDescriptor(self: TypeDescription | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
+    function resolveFunctionDescriptor(self: string | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
 
         // Resolve return
         let returns: TypeRef | null = null;
@@ -111,48 +111,100 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             args.push({
                 name: r.name,
                 type: resolveTypeRef(r.type),
-                as: null
+                as: null,
+                ref: r.ref
             });
         }
 
         // Resolve flags
-        let isPublic = a.attributes.some(a => a.type === 'public');
-        let isGetter = a.attributes.some(a => a.type === 'get');
-        let isMutating = a.attributes.some(a => a.type === 'mutates');
+        let isPublic = a.attributes.find(a => a.type === 'public');
+        let isGetter = a.attributes.find(a => a.type === 'get');
+        let isMutating = a.attributes.find(a => a.type === 'mutates');
+        let isExtends = a.attributes.find(a => a.type === 'extends');
+
+        // Check for native
         if (a.kind === 'def_native_function') {
             if (isPublic) {
-                throw throwError('Native functions cannot be public', a.ref);
+                throwError('Native functions cannot be public', isPublic.ref);
             }
             if (isGetter) {
-                throw throwError('Native functions cannot be getters', a.ref);
+                throwError('Native functions cannot be getters', isGetter.ref);
+            }
+            if (self) {
+                throwError('Native functions cannot be delated within a contract', a.ref);
             }
         }
 
-        // TODO: Validate
-        // if (isMutating) {
+        // Check for common
+        if (a.kind === 'def_function') {
+            if (isPublic && !self) {
+                throwError('Public functions must be defined within a contract', isPublic.ref);
+            }
+            if (isGetter && !self) {
+                throwError('Getters must be defined within a contract', isGetter.ref);
+            }
+        }
 
-        // }
-        // if (isMutating && !!self) {
-        //     throw throwError('Mutating functions must be defined as extensions', a.ref);
-        // }
-        // if (isMutating && args.length < 1) {
-        //     throw throwError('Mutating functions must have a self argument', a.ref);
-        // }
-        // if (isMutating && !returns) {
-        //     throw throwError('Mutating functions must have a return type', a.ref);
-        // }
-        
+        // Common checks
+        if (isPublic && isGetter) {
+            throwError('Functions cannot be both public and getters', isPublic.ref);
+        }
+
+        // Validate mutating
+        if (isExtends) {
+
+            // Validate arguments
+            if (self) {
+                throwError('Extend functions cannot be defined within a contract', isExtends.ref);
+            }
+            if (args.length === 0) {
+                throwError('Extend functions must have at least one argument', isExtends.ref);
+            }
+            if (args[0].name !== 'self') {
+                throwError('Extend function must have first argument named "self"', args[0].ref);
+            }
+            if (args[0].type.kind !== 'ref') {
+                throwError('Extend functions must have a reference type as the first argument', args[0].ref);
+            }
+            if (args[0].type.optional) {
+                throwError('Extend functions must have a non-optional type as the first argument', args[0].ref);
+            }
+            if (!types[args[0].type.name]) {
+                throwError('Type ' + args[0].type.name + ' not found', args[0].ref);
+            }
+
+            // Update self and remove first argument
+            self = args[0].type.name;
+            args.shift();
+        }
+
+        // Check for mutating and extends
+        if (isMutating && !isExtends) {
+            throwError('Mutating functions must be extend functions', isMutating.ref);
+        }
+
+        // Check argumen names
+        let exNames = new Set<string>();
+        for (let arg of args) {
+            if (arg.name === 'self') {
+                throwError('Argument name "self" is reserved', arg.ref);
+            }
+            if (exNames.has(arg.name)) {
+                throwError('Argument name "' + arg.name + '" is already used', arg.ref);
+            }
+            exNames.add(arg.name);
+        }
 
         // Register function
         return {
             name: a.name,
-            self,
+            self: self,
             args,
             returns,
             ast: a,
-            isMutating,
-            isPublic,
-            isGetter
+            isMutating: !!isMutating,
+            isPublic: !!isPublic,
+            isGetter: !!isGetter
         };
     }
 
@@ -162,7 +214,8 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             args.push({
                 name: r.name,
                 type: resolveTypeRef(r.type),
-                as: null
+                as: null,
+                ref: r.ref
             });
         }
         return {
@@ -179,7 +232,12 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         }
 
         // Register function
-        staticFunctions[a.name] = resolveFunctionDescriptor(null, a);
+        let r = resolveFunctionDescriptor(null, a);
+        if (r.self) {
+            types[r.self].functions.push(r);
+        } else {
+            staticFunctions[a.name] = resolveFunctionDescriptor(null, a);
+        }
     }
 
     // Resolve fields
@@ -220,7 +278,11 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             let s = types[a.name];
             for (let d of a.declarations) {
                 if (d.kind === 'def_function') {
-                    s.functions.push(resolveFunctionDescriptor(s, d));
+                    let f = resolveFunctionDescriptor(s.name, d);
+                    if (f.self !== s.name) {
+                        throw Error('Function self must be ' + s.name); // Impossible
+                    }
+                    s.functions.push(resolveFunctionDescriptor(s.name, d));
                 }
                 if (d.kind === 'def_init_function') {
                     if (s.init) {

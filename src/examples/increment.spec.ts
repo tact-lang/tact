@@ -26,7 +26,6 @@ describe('increment', () => {
                     }))
                 })
             }), { debug: true });
-            console.warn(res);
         } catch (e) {
             if (e instanceof ExecuteError) {
                 console.warn(e.debugLogs);

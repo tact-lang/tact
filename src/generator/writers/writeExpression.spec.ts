@@ -1,3 +1,4 @@
+import { __DANGER_resetNodeId } from "../../ast/ast";
 import { CompilerContext } from "../../ast/context";
 import { resolveExpressionTypes } from "../../types/resolveExpressionType";
 import { getStaticFunction, resolveTypeDescriptors } from "../../types/resolveTypeDescriptors";
@@ -63,6 +64,9 @@ const golden: string[] = [
 ]
 
 describe('writeExpression', () => {
+    beforeEach(() => {
+        __DANGER_resetNodeId();
+    });
     it('should write expression', () => {
         let ctx = CompilerContext.fromSources([code]);
         ctx = resolveTypeDescriptors(ctx);
