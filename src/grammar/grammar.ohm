@@ -62,7 +62,7 @@ Tact {
     StatementReturn = return Expression ";"
     StatementCall = ExpressionCall ";"
     StatementStaticCall = ExpressionStaticCall ";"
-    StatementAssign = LValue Expression ";"
+    StatementAssign = LValue "=" Expression ";"
     StatementCondition = if Expression "{" Statement* "}" ~else --simple
                        | if Expression "{" Statement* "}" else "{" Statement* "}" --withElse
                        | if Expression "{" Statement* "}" else StatementCondition --withElseIf
@@ -71,8 +71,8 @@ Tact {
     StatementUntil = do "{" Statement* "}" until "(" Expression ")" ";"
 
     // L-value
-    LValue = id "=" --id
-           | id "." LValue --subId
+    LValue = id "." LValue --more
+           | id --single
 
     // Expressions
     Expression = ExpressionOr
