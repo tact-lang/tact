@@ -271,7 +271,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let r = resolveFunctionDescriptor(null, a);
         if (r.self) {
             if (types[r.self].functions[r.name]) {
-                throwError(`Function ${r.name} already exists`, r.ast.ref);
+                throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);
             }
             types[r.self].functions[r.name] = r;
         } else {
@@ -295,6 +295,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     let f = resolveFunctionDescriptor(s.name, d);
                     if (f.self !== s.name) {
                         throw Error('Function self must be ' + s.name); // Impossible
+                    }
+                    if (s.functions[f.name]) {
+                        throwError(`Static function ${f.name} already exists in type ${s.name}`, s.ast.ref);
                     }
                     s.functions[f.name] = f;
                 }

@@ -106,6 +106,87 @@ exports[`resolveDescriptors should fail descriptors for case-11 1`] = `
 Type Point not found"
 `;
 
+exports[`resolveDescriptors should fail descriptors for case-12 1`] = `
+"Line 8, col 1:
+  7 | 
+> 8 | struct Main {
+      ^~~~~~~~~~~~~
+  9 |     
+Type Main already exists"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-13 1`] = `
+"Line 8, col 1:
+  7 | 
+> 8 | struct Main {
+      ^~~~~~~~~~~~~
+  9 |     
+Type Main already exists"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-14 1`] = `
+"Line 8, col 1:
+  7 | 
+> 8 | contract Main {
+      ^~~~~~~~~~~~~~~
+  9 |     
+Type Main already exists"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-15 1`] = `
+"Line 4, col 1:
+  3 | 
+> 4 | mutates fun hello(self: Main): Int {
+      ^~~~~~~
+  5 | 
+Mutating functions must be extend functions"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-16 1`] = `
+"Line 8, col 1:
+  7 | 
+> 8 | fun hello(b: Main): Int {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~
+  9 | 
+Static function hello already exists"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-17 1`] = `
+"Line 4, col 1:
+  3 | 
+> 4 | contract Main {
+      ^~~~~~~~~~~~~~~
+  5 |     fun hello(a: Main): Int {
+Static function hello already exists in type Main"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-18 1`] = `
+"Line 5, col 24:
+  4 | contract Main {
+> 5 |     fun hello(a: Bool, a: Int): Int {
+                             ^~~~~~
+  6 | 
+Argument name "a" is already used"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-19 1`] = `
+"Line 9, col 5:
+   8 | 
+>  9 |     init(a: Bool) {
+           ^~~~~~~~~~~~~~~
+  10 | 
+Init function already exists"
+`;
+
+exports[`resolveDescriptors should fail descriptors for case-20 1`] = `
+"Line 8, col 1:
+  7 | 
+> 8 | extends fun hello(self: Main): Bool {
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  9 |     return true;
+Function hello already exists in type Main"
+`;
+
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
 {
   "Bool": {
@@ -998,6 +1079,70 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "ast": {
       "declarations": [
         {
+          "as": null,
+          "id": 5,
+          "init": undefined,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int;,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "args": [
+            {
+              "id": 7,
+              "kind": "def_argument",
+              "name": "a",
+              "ref": a: Int,
+              "type": {
+                "id": 6,
+                "kind": "type_ref_simple",
+                "name": "Int",
+                "optional": false,
+                "ref": Int,
+              },
+            },
+          ],
+          "id": 12,
+          "kind": "def_init_function",
+          "ref": init(a: Int) {
+        self.a = a;
+    },
+          "statements": [
+            {
+              "expression": {
+                "id": 10,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "id": 11,
+              "kind": "statement_assign",
+              "path": [
+                {
+                  "id": 8,
+                  "kind": "lvalue_ref",
+                  "name": "self",
+                  "ref": self.a,
+                },
+                {
+                  "id": 9,
+                  "kind": "lvalue_ref",
+                  "name": "a",
+                  "ref": a,
+                },
+              ],
+              "ref": self.a = a;,
+            },
+          ],
+        },
+        {
           "args": [],
           "attributes": [
             {
@@ -1005,14 +1150,14 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
               "type": "get",
             },
           ],
-          "id": 7,
+          "id": 16,
           "kind": "def_function",
           "name": "hello",
           "ref": get fun hello(): Int {
         return 0;
     },
           "return": {
-            "id": 4,
+            "id": 13,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -1021,12 +1166,12 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 5,
+                "id": 14,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 6,
+              "id": 15,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -1040,14 +1185,14 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
               "type": "get",
             },
           ],
-          "id": 11,
+          "id": 20,
           "kind": "def_function",
           "name": "hello2",
           "ref": get fun hello2(): Point {
         return 0;
     },
           "return": {
-            "id": 8,
+            "id": 17,
             "kind": "type_ref_simple",
             "name": "Point",
             "optional": false,
@@ -1056,22 +1201,27 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 9,
+                "id": 18,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 10,
+              "id": 19,
               "kind": "statement_return",
               "ref": return 0;,
             },
           ],
         },
       ],
-      "id": 12,
+      "id": 21,
       "kind": "def_contract",
       "name": "Main",
       "ref": contract Main {
+    a: Int;
+    init(a: Int) {
+        self.a = a;
+    }
+
     get fun hello(): Int {
         return 0;
     }
@@ -1080,7 +1230,19 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     }
 },
     },
-    "fields": [],
+    "fields": [
+      {
+        "as": null,
+        "default": undefined,
+        "index": 0,
+        "name": "a",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
     "functions": {
       "hello": {
         "args": [],
@@ -1092,14 +1254,14 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
               "type": "get",
             },
           ],
-          "id": 7,
+          "id": 16,
           "kind": "def_function",
           "name": "hello",
           "ref": get fun hello(): Int {
         return 0;
     },
           "return": {
-            "id": 4,
+            "id": 13,
             "kind": "type_ref_simple",
             "name": "Int",
             "optional": false,
@@ -1108,12 +1270,12 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 5,
+                "id": 14,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 6,
+              "id": 15,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -1140,14 +1302,14 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
               "type": "get",
             },
           ],
-          "id": 11,
+          "id": 20,
           "kind": "def_function",
           "name": "hello2",
           "ref": get fun hello2(): Point {
         return 0;
     },
           "return": {
-            "id": 8,
+            "id": 17,
             "kind": "type_ref_simple",
             "name": "Point",
             "optional": false,
@@ -1156,12 +1318,12 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 9,
+                "id": 18,
                 "kind": "number",
                 "ref": 0,
                 "value": 0n,
               },
-              "id": 10,
+              "id": 19,
               "kind": "statement_return",
               "ref": return 0;,
             },
@@ -1179,7 +1341,69 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "self": "Main",
       },
     },
-    "init": null,
+    "init": {
+      "args": [
+        {
+          "as": null,
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false,
+          },
+        },
+      ],
+      "ast": {
+        "args": [
+          {
+            "id": 7,
+            "kind": "def_argument",
+            "name": "a",
+            "ref": a: Int,
+            "type": {
+              "id": 6,
+              "kind": "type_ref_simple",
+              "name": "Int",
+              "optional": false,
+              "ref": Int,
+            },
+          },
+        ],
+        "id": 12,
+        "kind": "def_init_function",
+        "ref": init(a: Int) {
+        self.a = a;
+    },
+        "statements": [
+          {
+            "expression": {
+              "id": 10,
+              "kind": "id",
+              "ref": a,
+              "value": "a",
+            },
+            "id": 11,
+            "kind": "statement_assign",
+            "path": [
+              {
+                "id": 8,
+                "kind": "lvalue_ref",
+                "name": "self",
+                "ref": self.a,
+              },
+              {
+                "id": 9,
+                "kind": "lvalue_ref",
+                "name": "a",
+                "ref": a,
+              },
+            ],
+            "ref": self.a = a;,
+          },
+        ],
+      },
+    },
     "kind": "contract",
     "name": "Main",
     "receivers": {},

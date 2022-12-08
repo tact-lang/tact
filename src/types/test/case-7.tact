@@ -6,6 +6,11 @@ struct Point {
 }
 
 contract Main {
+    a: Int;
+    init(a: Int) {
+        self.a = a;
+    }
+
     get fun hello(): Int {
         return 0;
     }
