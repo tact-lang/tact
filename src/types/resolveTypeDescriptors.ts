@@ -97,7 +97,9 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
         throw Error('Unknown type ref');
     }
 
-    function resolveFunctionDescriptor(self: string | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
+    function resolveFunctionDescriptor(sself: string | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
+
+        let self = sself;
 
         // Resolve return
         let returns: TypeRef | null = null;
@@ -202,7 +204,7 @@ export function resolveTypeDescriptors(ctx: CompilerContext) {
             args,
             returns,
             ast: a,
-            isMutating: !!isMutating,
+            isMutating: !!isMutating || !!sself, // Mark all contract functions as mutating
             isPublic: !!isPublic,
             isGetter: !!isGetter
         };

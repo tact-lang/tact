@@ -111,7 +111,7 @@
       }
     },
     {
-      "name": "Inrement",
+      "name": "Increment",
       "header": 0,
       "fields": [
         {
@@ -132,7 +132,7 @@
         }
       ],
       "allocation": {
-        "prefix": 3020402937,
+        "prefix": 3615081709,
         "root": {
           "fields": [
             {
@@ -163,12 +163,12 @@
       }
     }
   ],
-  "code": "te6ccgEBGAEA7gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSBYXAgEgBgcCAUgSEwIBIAgJAgEgDg8CASAKCwIBIAwNAD0MdMf7UTQ8AUxAoIQtAew+bqX8AIx8ArwB+Bb8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgABsgQEB1wCBAQHXAFlvAoAALG8hAfQAgAgEgEBEAD1yAHwA8ntVIAAsyAHwA8mAACz0BAFvAYAIBIBQVADlAH+IAH+ICBvECJvEIEBAQNvEVQTARAj8AFwb4eAALG1vAfAEgAAcIG8QgAAm4H38AiAAXu0B+1E0PAFMfAJMY",
+  "code": "te6ccgECHAEAAQUAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAUgaGwIBIAYHAgEgEhMCASAICQIBIA4PAgEgCgsCASAMDQA9DHTH+1E0PAFMQKCENd5xO26l/ACMfAM8AfgW/LAZIAAlCFulVtZ9Fow4MgBzwDJQTP0FYAAbIEBAdcAgQEB1wBZbwKAACxvIQH0AIAIBIBARAA9cgB8APJ7VSAALMgB8APJgAAs9AQBbwGACASAUFQBD0A/xAA/xAQN4g4ATeIvXgEiXgEETeIQICAqgmReAC4N8PAIBIBYXAgEgGBkAAyggAAMqIAALG1vAfAEgAAcIG8QgAAm4H38AqAAXu0B+1E0PAFMfALMY",
   "init": {
     "name": "init_IncrementContract",
     "args": []
   },
   "receivers": [
-    "Inrement"
+    "Increment"
   ]
 }

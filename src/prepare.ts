@@ -6,13 +6,15 @@ import { writeTypescript } from './generator/writeTypescript';
 
 // Read cases
 (async () => {
-    try {
-        for (let p of [__dirname + "/test/test/", __dirname + "/examples/"]) {
-            let recs = fs.readdirSync(p);
-            for (let r of recs) {
-                if (!r.endsWith('.tact')) {
-                    continue;
-                }
+
+    for (let p of [__dirname + "/test/test/", __dirname + "/examples/"]) {
+        let recs = fs.readdirSync(p);
+        for (let r of recs) {
+            if (!r.endsWith('.tact')) {
+                continue;
+            }
+
+            try {
 
                 // Tact -> FunC
                 let code = fs.readFileSync(p + r, 'utf8');
@@ -23,6 +25,7 @@ import { writeTypescript } from './generator/writeTypescript';
                 let c = await compileContract({ files: [p + r + ".fc"] });
                 if (!c.ok) {
                     console.warn(c.log);
+                    return;
                 }
                 fs.writeFileSync(p + r + ".fift", c.fift!);
                 fs.writeFileSync(p + r + ".cell", c.output!);
@@ -34,9 +37,9 @@ import { writeTypescript } from './generator/writeTypescript';
                 // ABI -> Typescript
                 let ts = writeTypescript(abi);
                 fs.writeFileSync(p + r + ".api.ts", ts);
+            } catch (e) {
+                console.warn(e);
             }
         }
-    } catch (e) {
-        console.warn(e);
     }
 })();

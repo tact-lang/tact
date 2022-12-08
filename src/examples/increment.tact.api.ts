@@ -26,22 +26,22 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
-export type Inrement = {
-    $$type: 'Inrement';
+export type Increment = {
+    $$type: 'Increment';
     key: BigInt;
     value: BigInt;
 }
 
-export function packInrement(src: Inrement): Cell {
+export function packIncrement(src: Increment): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(3020402937, 32);
+    b_0 = b_0.storeUint(3615081709, 32);
     b_0 = b_0.storeInt(new BN(src.key.toString(10), 10), 257);
     b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
     return b_0.endCell();
 }
 
 export function IncrementContract_init() {
-    const __code = 'te6ccgEBGAEA7gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSBYXAgEgBgcCAUgSEwIBIAgJAgEgDg8CASAKCwIBIAwNAD0MdMf7UTQ8AUxAoIQtAew+bqX8AIx8ArwB+Bb8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgABsgQEB1wCBAQHXAFlvAoAALG8hAfQAgAgEgEBEAD1yAHwA8ntVIAAsyAHwA8mAACz0BAFvAYAIBIBQVADlAH+IAH+ICBvECJvEIEBAQNvEVQTARAj8AFwb4eAALG1vAfAEgAAcIG8QgAAm4H38AiAAXu0B+1E0PAFMfAJMY';
+    const __code = 'te6ccgECHAEAAQUAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAUgaGwIBIAYHAgEgEhMCASAICQIBIA4PAgEgCgsCASAMDQA9DHTH+1E0PAFMQKCENd5xO26l/ACMfAM8AfgW/LAZIAAlCFulVtZ9Fow4MgBzwDJQTP0FYAAbIEBAdcAgQEB1wBZbwKAACxvIQH0AIAIBIBARAA9cgB8APJ7VSAALMgB8APJgAAs9AQBbwGACASAUFQBD0A/xAA/xAQN4g4ATeIvXgEiXgEETeIQICAqgmReAC4N8PAIBIBYXAgEgGBkAAyggAAMqIAALG1vAfAEgAAcIG8QgAAm4H38AqAAXu0B+1E0PAFMfALMY';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_IncrementContract', __stack);
 }

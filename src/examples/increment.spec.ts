@@ -1,7 +1,6 @@
-import { IncrementContract_init, packInrement } from "./increment.tact.api";
-import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
+import { IncrementContract_init, packIncrement } from "./increment.tact.api";
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
-import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, parseDict, parseDictRefs, toNano } from "ton";
+import { CellMessage, CommonMessageInfo, InternalMessage, parseDict, toNano } from "ton";
 
 describe('increment', () => {
     it('should deploy', async () => {
@@ -19,8 +18,8 @@ describe('increment', () => {
                 bounce: false,
                 value: toNano(10),
                 body: new CommonMessageInfo({
-                    body: new CellMessage(packInrement({
-                        $$type: 'Inrement',
+                    body: new CellMessage(packIncrement({
+                        $$type: 'Increment',
                         key: 1n,
                         value: -1232n
                     }))

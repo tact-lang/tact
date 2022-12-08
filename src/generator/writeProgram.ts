@@ -124,10 +124,12 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         args.unshift(`${resolveFuncType(self, ctx)} self`);
     }
     let returns: string = f.returns ? resolveFuncType(f.returns, ctx) : '()';
-    if (self && f.returns) {
-        returns = '(tuple, ' + returns + ')';
-    } else if (self) {
-        returns = '(tuple, ())';
+    if (self && f.isMutating) {
+        if (f.returns) {
+            returns = `(${resolveFuncType(self, ctx)}, ${returns})`;
+        } else {
+            returns = `(${resolveFuncType(self, ctx)}, ())`;
+        }
     }
 
     // Resolve function name
@@ -138,9 +140,9 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         ctx.append(`${returns} ${name}(${args.join(', ')}) impure {`);
         ctx.inIndent(() => {
             for (let s of fd.statements) {
-                writeStatement(s, !!f.self, ctx);
+                writeStatement(s, f.isMutating && !!f.self, ctx);
             }
-            if (f.self && !f.returns) {
+            if (f.self && !f.returns && f.isMutating) {
                 if (fd.statements.length === 0 || fd.statements[fd.statements.length - 1].kind !== 'statement_return') {
                     ctx.append(`return (self, ());`);
                 }
@@ -331,7 +333,8 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
 
 export function writeProgram(ctx: CompilerContext, debug: boolean = false) {
     const wctx = new WriterContext(ctx);
-    let contracts = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract');
+    let allTypes = Object.values(getAllTypes(ctx));
+    let contracts = allTypes.filter((v) => v.kind === 'contract');
 
     // Stdlib
     writeStdlib(wctx);
@@ -355,6 +358,15 @@ export function writeProgram(ctx: CompilerContext, debug: boolean = false) {
     for (let k in sf) {
         let f = sf[k];
         writeFunction(f, wctx);
+    }
+
+    // Extensions
+    for (let c of allTypes) {
+        if (c.kind !== 'contract') { // We are rendering contract functions separately
+            for (let f of c.functions) {
+                writeFunction(f, wctx);
+            }
+        }
     }
 
     // Contract functions

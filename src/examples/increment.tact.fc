@@ -13,7 +13,7 @@ cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     }
 }
 
-(slice, tuple) __gen_read_Inrement(slice sc) impure {
+(slice, tuple) __gen_read_Increment(slice sc) impure {
     var __key = sc~load_int(257);
     var __value = sc~load_int(257);
     return (sc, __tact_to_tuple([__key, __value]));
@@ -46,6 +46,15 @@ tuple __gen_load_IncrementContract() inline {
     set_data(b.end_cell());
 }
 
+(int, ()) __gen_Int_add(int self, int value) impure {
+    self = (self + value);
+    return (self, ());
+}
+
+int __gen_Int_mul(int self, int value) impure {
+    return (self * value);
+}
+
 cell __gen_IncrementContract_init() impure {
     tuple self = __tact_to_tuple([null()]);
     return __gen_writecell_IncrementContract(self);
@@ -61,20 +70,22 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-(tuple, ()) __gen_IncrementContract_receive_Inrement(tuple self, tuple msg) impure {
+(tuple, ()) __gen_IncrementContract_receive_Increment(tuple self, tuple msg) impure {
     self~dump();
     msg~dump();
     int key = at(msg, 0);
-    self = __tact_set(self, __tact_dict_set_int_int(at(self, 0), 257, key, at(msg, 1), 257), 0);
+    int v = 0;
+    v~__gen_Int_add(__gen_Int_mul(at(msg, 1), 10));
+    self = __tact_set(self, __tact_dict_set_int_int(at(self, 0), 257, key, v, 257), 0);
     return (self, ());
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_uint(32);
     tuple self = __gen_load_IncrementContract();
-    if (op == 3020402937) {
-        tuple msg = in_msg~__gen_read_Inrement();
-        self~__gen_IncrementContract_receive_Inrement(msg);
+    if (op == 3615081709) {
+        tuple msg = in_msg~__gen_read_Increment();
+        self~__gen_IncrementContract_receive_Increment(msg);
         __gen_store_IncrementContract(self);
         return ();
     }

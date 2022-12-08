@@ -232,8 +232,15 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Render function call
             ctx.used(`__gen_${src.name}_${f.name}`);
-            let s = writeExpression(f.src, ctx);
-            return `${s}~__gen_${src.name}_${f.name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+            let t = getType(ctx.ctx, src.name);
+            let ff = t.functions.find((v) => v.name === f.name)!;
+            if (ff.isMutating) {
+                let s = writeExpression(f.src, ctx);
+                return `${s}~__gen_${src.name}_${f.name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+            } else {
+                let s = writeExpression(f.src, ctx);
+                return `__gen_${src.name}_${f.name}(${[s, ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+            }
         }
 
         // Map types
