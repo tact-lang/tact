@@ -52,6 +52,9 @@ extends native refs(self: Slice): Int;
 @name(slice_bits)
 extends native bits(self: Slice): Int;
 
+@name(slice_empty?)
+extends native empty(self: Slice): Bool;
+
 //
 // Application-specific
 //

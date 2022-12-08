@@ -74,11 +74,12 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
     throw Error(`Unsupported type`);
 }
 
-export function writeTypescript(abi: ContractABI) {
+export function writeTypescript(abi: ContractABI, importPath: string) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem, Address, Builder } from 'ton';`);
-    w.append(`import { BN } from 'bn.js';`);
-    w.append(`import { deploy } from '../abi/deploy';`);
+    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';`);
+    w.append(`import { ContractExecutor } from 'ton-nodejs';`);
+    w.append(`import BN from 'bn.js';`);
+    w.append(`import { deploy } from '${importPath}';`);
     w.append();
 
     // Structs
@@ -165,6 +166,43 @@ export function writeTypescript(abi: ContractABI) {
         w.append(`}`);
         w.append();
     }
+
+    // Wrapper
+    w.append(`export class ${abi.name} {`);
+    w.inIndent(() => {
+        w.append(`readonly executor: ContractExecutor;`);
+        w.append(`constructor(executor: ContractExecutor) { this.executor = executor; }`);
+        w.append();
+        if (abi.receivers.length > 0) {
+            w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${abi.receivers.join(' | ')}) {`);
+            w.inIndent(() => {
+                w.append(`let body: Cell | null = null;`);
+                for (let r of abi.receivers) {
+                    w.append(`if (message.$$type === '${r}') {`);
+                    w.inIndent(() => {
+                        w.append(`body = pack${r}(message);`);
+                    });
+                    w.append(`}`);
+                }
+                w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
+                w.append(`await this.executor.internal(new InternalMessage({`);
+                w.inIndent(() => {
+                    w.append(`to: this.executor.address,`);
+                    w.append(`from: args.from || this.executor.address,`);
+                    w.append(`bounce: false,`);
+                    w.append(`value: args.amount,`);
+                    w.append(`body: new CommonMessageInfo({`);
+                    w.inIndent(() => {
+                        w.append(`body: new CellMessage(body!)`);
+                    });
+                    w.append(`})`);
+                });
+                w.append(`}), { debug: args.debug });`);
+            });
+            w.append(`}`);
+        }
+    });
+    w.append(`}`);
 
     return w.end();
 }

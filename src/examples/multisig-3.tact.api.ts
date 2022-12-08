@@ -1,5 +1,6 @@
-import { Cell, Slice, StackItem, Address, Builder } from 'ton';
-import { BN } from 'bn.js';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { ContractExecutor } from 'ton-nodejs';
+import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
 
 export type SendParameters = {
@@ -78,4 +79,26 @@ export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) 
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key3.toString(), 10)});
     return deploy(__code, 'init_MultisigContract', __stack);
+}
+
+export class MultisigContract {
+    readonly executor: ContractExecutor;
+    constructor(executor: ContractExecutor) { this.executor = executor; }
+    
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Execute) {
+        let body: Cell | null = null;
+        if (message.$$type === 'Execute') {
+            body = packExecute(message);
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        await this.executor.internal(new InternalMessage({
+            to: this.executor.address,
+            from: args.from || this.executor.address,
+            bounce: false,
+            value: args.amount,
+            body: new CommonMessageInfo({
+                body: new CellMessage(body!)
+            })
+        }), { debug: args.debug });
+    }
 }

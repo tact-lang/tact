@@ -1,0 +1,17 @@
+contract StdlibTest {
+    init() {
+        // Nothing to do
+    }
+
+    get fun sliceEmpty(sc: Slice): Bool {
+        return sc.empty();
+    }
+
+    get fun sliceBits(sc: Slice): Int {
+        return sc.bits();
+    }
+
+    get fun sliceRefs(sc: Slice): Int {
+        return sc.refs();
+    }
+}

@@ -1,5 +1,6 @@
-import { Cell, Slice, StackItem, Address, Builder } from 'ton';
-import { BN } from 'bn.js';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { ContractExecutor } from 'ton-nodejs';
+import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
 
 export type SendParameters = {
@@ -70,4 +71,26 @@ export function Wallet_init(key: BigInt, walletId: BigInt) {
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
     return deploy(__code, 'init_Wallet', __stack);
+}
+
+export class Wallet {
+    readonly executor: ContractExecutor;
+    constructor(executor: ContractExecutor) { this.executor = executor; }
+    
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage) {
+        let body: Cell | null = null;
+        if (message.$$type === 'TransferMessage') {
+            body = packTransferMessage(message);
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        await this.executor.internal(new InternalMessage({
+            to: this.executor.address,
+            from: args.from || this.executor.address,
+            bounce: false,
+            value: args.amount,
+            body: new CommonMessageInfo({
+                body: new CellMessage(body!)
+            })
+        }), { debug: args.debug });
+    }
 }

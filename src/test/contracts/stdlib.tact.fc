@@ -1,0 +1,65 @@
+forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
+
+builder __gen_write_StdlibTest(builder build_0, tuple v) impure {
+    return build_0;
+}
+
+cell __gen_writecell_StdlibTest(tuple v) impure {
+    return __gen_write_StdlibTest(begin_cell(), v).end_cell();
+}
+
+(slice, tuple) __gen_read_StdlibTest(slice sc) impure {
+    return (sc, __tact_to_tuple([]));
+}
+
+tuple __gen_load_StdlibTest() inline {
+    slice sc = get_data().begin_parse();
+    tuple res = sc~__gen_read_StdlibTest();
+    return res;
+}
+
+cell __gen_StdlibTest_init() impure {
+    tuple self = __tact_to_tuple([]);
+    return __gen_writecell_StdlibTest(self);
+}
+
+(tuple, int) __gen_StdlibTest_sliceEmpty(tuple self, slice sc) impure {
+    return (self, slice_empty?(sc));
+}
+
+_ __gen_get_sliceEmpty(slice sc) method_id(73995) {
+    tuple self = __gen_load_StdlibTest();
+    var res = self~__gen_StdlibTest_sliceEmpty(sc);
+    return res;
+}
+
+(tuple, int) __gen_StdlibTest_sliceBits(tuple self, slice sc) impure {
+    return (self, slice_bits(sc));
+}
+
+_ __gen_get_sliceBits(slice sc) method_id(75090) {
+    tuple self = __gen_load_StdlibTest();
+    var res = self~__gen_StdlibTest_sliceBits(sc);
+    return res;
+}
+
+(tuple, int) __gen_StdlibTest_sliceRefs(tuple self, slice sc) impure {
+    return (self, slice_refs(sc));
+}
+
+_ __gen_get_sliceRefs(slice sc) method_id(77445) {
+    tuple self = __gen_load_StdlibTest();
+    var res = self~__gen_StdlibTest_sliceRefs(sc);
+    return res;
+}
+
+() recv_internal(cell in_msg_cell, slice in_msg) impure {
+    int op = in_msg~load_uint(32);
+    tuple self = __gen_load_StdlibTest();
+    
+    throw(100);
+}
+
+cell init_StdlibTest() method_id {
+    return __gen_StdlibTest_init();
+}

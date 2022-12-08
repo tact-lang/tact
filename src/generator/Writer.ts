@@ -38,11 +38,16 @@ export class WriterContext {
     render(debug: boolean = false) {
 
         // Check dependencies
-        let missing = new Set<string>();
+        let missing = new Map<string, string[]>();
         for (let f of this.#functions.values()) {
             for (let d of f.depends) {
                 if (!this.#functions.has(d)) {
-                    missing.add(d);
+                    if (!missing.has(d)) {
+                        missing.set(d, [f.name]);
+                    } else {
+                        missing.set(d, [...missing.get(d)!!, f.name]);
+                    }
+
                 }
             }
         }

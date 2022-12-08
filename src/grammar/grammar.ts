@@ -321,6 +321,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     id(arg0, arg1) {
         return createNode({ kind: 'id', value: arg0.sourceString + arg1.sourceString, ref: createRef(this) });
     },
+    funcId(arg0, arg1) {
+        return createNode({ kind: 'id', value: arg0.sourceString + arg1.sourceString, ref: createRef(this) });
+    },
     null(arg0) {
         return createNode({ kind: 'null', ref: createRef(this) });
     },

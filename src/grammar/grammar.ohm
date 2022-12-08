@@ -13,8 +13,8 @@ Tact {
 
     // Static function
     StaticFunction = Function
-    NativeFunction = nameAttribute "(" id ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
-                   | nameAttribute "(" id ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
+    NativeFunction = nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ";" --withVoid
+                   | nameAttribute "(" funcId ")" FunctionAttribute* native id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --withType
     
     // Field declarations
     Type = typeLiteral "?" --optional
@@ -138,7 +138,11 @@ Tact {
     // ID Literal
     idStart = letterAscii | "_"
     idPart = letterAscii | digit | "_"
-    id = ~reservedWord idStart idPart*
+    id = ~reservedWord #idStart #(idPart*)
+
+    // FunC id
+    funcLetter = letterAscii | "_" | "'" | "?" | "!" | "::" | "&"
+    funcId = funcLetter #(funcLetter | digit)*
 
     // Bool Literal
     boolLiteral = ("true" | "false") ~idPart

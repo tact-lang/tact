@@ -1,6 +1,7 @@
-import { Cell, Slice, StackItem, Address, Builder } from 'ton';
-import { BN } from 'bn.js';
-import { deploy } from '../abi/deploy';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { ContractExecutor } from 'ton-nodejs';
+import BN from 'bn.js';
+import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -30,17 +31,17 @@ export type Source = {
     $$type: 'Source';
     a: BigInt;
     b: BigInt;
-    c: BigInt;
-    d: BigInt;
 }
 
 export function packSource(src: Source): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeInt(new BN(src.a.toString(10), 10), 257);
     b_0 = b_0.storeInt(new BN(src.b.toString(10), 10), 257);
-    b_0 = b_0.storeInt(new BN(src.c.toString(10), 10), 257);
-    let b_1 = new Builder();
-    b_1 = b_1.storeInt(new BN(src.d.toString(10), 10), 257);
-    b_0 = b_0.storeRef(b_1.endCell());
     return b_0.endCell();
+}
+
+export class SampleContract {
+    readonly executor: ContractExecutor;
+    constructor(executor: ContractExecutor) { this.executor = executor; }
+    
 }

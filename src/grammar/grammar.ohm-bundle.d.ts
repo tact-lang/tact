@@ -103,6 +103,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   idStart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   idPart?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   id?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
+  funcLetter?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
+  funcId?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   boolLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
   keyword?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   struct?: (this: NonterminalNode, arg0: TerminalNode) => T;

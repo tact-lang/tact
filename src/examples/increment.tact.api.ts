@@ -1,5 +1,6 @@
-import { Cell, Slice, StackItem, Address, Builder } from 'ton';
-import { BN } from 'bn.js';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { ContractExecutor } from 'ton-nodejs';
+import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
 
 export type SendParameters = {
@@ -44,4 +45,26 @@ export function IncrementContract_init() {
     const __code = 'te6ccgECHAEAAQUAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAUgaGwIBIAYHAgEgEhMCASAICQIBIA4PAgEgCgsCASAMDQA9DHTH+1E0PAFMQKCENd5xO26l/ACMfAM8AfgW/LAZIAAlCFulVtZ9Fow4MgBzwDJQTP0FYAAbIEBAdcAgQEB1wBZbwKAACxvIQH0AIAIBIBARAA9cgB8APJ7VSAALMgB8APJgAAs9AQBbwGACASAUFQBD0A/xAA/xAQN4g4ATeIvXgEiXgEETeIQICAqgmReAC4N8PAIBIBYXAgEgGBkAAyggAAMqIAALG1vAfAEgAAcIG8QgAAm4H38AqAAXu0B+1E0PAFMfALMY';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_IncrementContract', __stack);
+}
+
+export class IncrementContract {
+    readonly executor: ContractExecutor;
+    constructor(executor: ContractExecutor) { this.executor = executor; }
+    
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment) {
+        let body: Cell | null = null;
+        if (message.$$type === 'Increment') {
+            body = packIncrement(message);
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        await this.executor.internal(new InternalMessage({
+            to: this.executor.address,
+            from: args.from || this.executor.address,
+            bounce: false,
+            value: args.amount,
+            body: new CommonMessageInfo({
+                body: new CellMessage(body!)
+            })
+        }), { debug: args.debug });
+    }
 }

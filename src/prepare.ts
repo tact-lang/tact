@@ -7,8 +7,8 @@ import { writeTypescript } from './generator/writeTypescript';
 // Read cases
 (async () => {
 
-    for (let p of [__dirname + "/test/test/", __dirname + "/examples/"]) {
-        let recs = fs.readdirSync(p);
+    for (let p of [{ path: __dirname + "/test/contracts/", importPath: '../../abi/deploy' }, { path: __dirname + "/examples/", importPath: '../abi/deploy' }]) {
+        let recs = fs.readdirSync(p.path);
         for (let r of recs) {
             if (!r.endsWith('.tact')) {
                 continue;
@@ -17,26 +17,26 @@ import { writeTypescript } from './generator/writeTypescript';
             try {
 
                 // Tact -> FunC
-                let code = fs.readFileSync(p + r, 'utf8');
+                let code = fs.readFileSync(p.path + r, 'utf8');
                 let res = compile(code);
-                fs.writeFileSync(p + r + ".fc", res.output);
+                fs.writeFileSync(p.path + r + ".fc", res.output);
 
                 // FunC -> Fift/Cell
-                let c = await compileContract({ files: [p + r + ".fc"] });
+                let c = await compileContract({ files: [p.path + r + ".fc"] });
                 if (!c.ok) {
                     console.warn(c.log);
                     return;
                 }
-                fs.writeFileSync(p + r + ".fift", c.fift!);
-                fs.writeFileSync(p + r + ".cell", c.output!);
+                fs.writeFileSync(p.path + r + ".fift", c.fift!);
+                fs.writeFileSync(p.path + r + ".cell", c.output!);
 
                 // Tact -> ABI
                 let abi = createABI(res.ctx, c.output!.toString('base64'));
-                fs.writeFileSync(p + r + ".abi", JSON.stringify(abi, null, 2));
+                fs.writeFileSync(p.path + r + ".abi", JSON.stringify(abi, null, 2));
 
                 // ABI -> Typescript
-                let ts = writeTypescript(abi);
-                fs.writeFileSync(p + r + ".api.ts", ts);
+                let ts = writeTypescript(abi, p.importPath);
+                fs.writeFileSync(p.path + r + ".api.ts", ts);
             } catch (e) {
                 console.warn(e);
             }
