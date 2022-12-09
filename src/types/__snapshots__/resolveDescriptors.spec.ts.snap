@@ -484,7 +484,9 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
     "isMutating": false,
     "isPublic": false,
     "name": "testFunc2",
-    "returns": null,
+    "returns": {
+      "kind": "void",
+    },
     "self": null,
   },
   "testFunc3": {
@@ -565,7 +567,9 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
     "isMutating": false,
     "isPublic": false,
     "name": "testFunc3",
-    "returns": null,
+    "returns": {
+      "kind": "void",
+    },
     "self": null,
   },
 }
@@ -704,7 +708,9 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "isMutating": true,
         "isPublic": false,
         "name": "hello",
-        "returns": null,
+        "returns": {
+          "kind": "void",
+        },
         "self": "HelloWorld",
       },
       "hello2": {
@@ -725,7 +731,9 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "isMutating": true,
         "isPublic": false,
         "name": "hello2",
-        "returns": null,
+        "returns": {
+          "kind": "void",
+        },
         "self": "HelloWorld",
       },
     },

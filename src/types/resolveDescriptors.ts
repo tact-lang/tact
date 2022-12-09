@@ -139,7 +139,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let self = sself;
 
         // Resolve return
-        let returns: TypeRef | null = null;
+        let returns: TypeRef = { kind: 'void' };
         if (a.return) {
             returns = buildTypeRef(a.return, types);
         }

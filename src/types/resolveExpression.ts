@@ -5,7 +5,7 @@ import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescript
 import { printTypeRef, TypeRef } from "./types";
 import { StatementContext } from "./resolveStatements";
 
-let store = createContextStore<{ ast: ASTExpression, description: TypeRef | null }>();
+let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 
 export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
     let t = store.get(ctx, exp.id);
@@ -15,7 +15,7 @@ export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
     return t.description;
 }
 
-function registerExpType(ctx: CompilerContext, exp: ASTExpression, description: TypeRef | null): CompilerContext {
+function registerExpType(ctx: CompilerContext, exp: ASTExpression, description: TypeRef): CompilerContext {
     if (store.get(ctx, exp.id)) {
         throw Error('Expression ' + exp.id + ' already has a type');
     }
@@ -31,7 +31,7 @@ function resolveIntLiteral(exp: ASTNumber, sctx: StatementContext, ctx: Compiler
 }
 
 function resolveNullLiteral(exp: ASTNull, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
-    return registerExpType(ctx, exp, null);
+    return registerExpType(ctx, exp, { kind: 'null' });
 }
 
 function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
@@ -77,25 +77,25 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
     // Check operands
     let resolved: TypeRef;
     if (exp.op === '-' || exp.op === '+' || exp.op === '*' || exp.op === '/') {
-        if (le === null || le.kind !== 'ref' || le.optional || le.name !== 'Int') {
+        if (le.kind !== 'ref' || le.optional || le.name !== 'Int') {
             throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
         }
-        if (re === null || re.kind !== 'ref' || re.optional || re.name !== 'Int') {
+        if (re.kind !== 'ref' || re.optional || re.name !== 'Int') {
             throwError(`Invalid type "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
         }
         resolved = { kind: 'ref', name: 'Int', optional: false };
     } else if (exp.op === '<' || exp.op === '<=' || exp.op === '>' || exp.op === '>=') {
-        if (le === null || le.kind !== 'ref' || le.optional || le.name !== 'Int') {
+        if (le.kind !== 'ref' || le.optional || le.name !== 'Int') {
             throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
         }
-        if (re === null || re.kind !== 'ref' || re.optional || re.name !== 'Int') {
+        if (re.kind !== 'ref' || re.optional || re.name !== 'Int') {
             throwError(`Invalid type "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
         }
         resolved = { kind: 'ref', name: 'Bool', optional: false };
     } else if (exp.op === '==' || exp.op === '!=') {
 
         // Check if types are compatible
-        if (le !== null && re !== null) {
+        if (le.kind !== 'null' && re.kind !== 'null') {
             let l = le;
             let r = re;
             if (l.kind !== 'ref' || r.kind !== 'ref') {
@@ -111,10 +111,10 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
 
         resolved = { kind: 'ref', name: 'Bool', optional: false };
     } else if (exp.op === '&&' || exp.op === '||') {
-        if (le === null || le.kind !== 'ref' || le.optional || le.name !== 'Bool') {
+        if (le.kind !== 'ref' || le.optional || le.name !== 'Bool') {
             throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
         }
-        if (re === null || re.kind !== 'ref' || re.optional || re.name !== 'Bool') {
+        if (re.kind !== 'ref' || re.optional || re.name !== 'Bool') {
             throwError(`Invalid type "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
         }
         resolved = { kind: 'ref', name: 'Bool', optional: false };
@@ -134,15 +134,15 @@ function resolveUnaryOp(exp: ASTOpUnary, sctx: StatementContext, ctx: CompilerCo
     // Check right type dependent on operator
     let resolvedType = getExpType(ctx, exp.right);
     if (exp.op === '-' || exp.op === '+') {
-        if (resolvedType === null || resolvedType.kind !== 'ref' || resolvedType.optional || resolvedType.name !== 'Int') {
+        if (resolvedType.kind !== 'ref' || resolvedType.optional || resolvedType.name !== 'Int') {
             throwError(`Invalid type "${printTypeRef(resolvedType)}" for unary operator "${exp.op}"`, exp.ref);
         }
     } else if (exp.op === '!') {
-        if (resolvedType === null || resolvedType.kind !== 'ref' || resolvedType.optional || resolvedType.name !== 'Bool') {
+        if (resolvedType.kind !== 'ref' || resolvedType.optional || resolvedType.name !== 'Bool') {
             throwError(`Invalid type "${printTypeRef(resolvedType)}" for unary operator "${exp.op}"`, exp.ref);
         }
     } else if (exp.op === '!!') {
-        if (resolvedType === null || resolvedType.kind !== 'ref' || !resolvedType.optional) {
+        if (resolvedType.kind !== 'ref' || !resolvedType.optional) {
             throwError(`Type "${printTypeRef(resolvedType)}" is not optional`, exp.ref);
         }
         resolvedType = { kind: 'ref', name: resolvedType.name, optional: false };
@@ -192,9 +192,6 @@ function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: Co
     }
 
     // Resolve return type
-    if (!f.returns) {
-        return registerExpType(ctx, exp, null);
-    }
     return registerExpType(ctx, exp, f.returns);
 }
 
@@ -231,11 +228,9 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
             return registerExpType(ctx, exp, resolved);
         }
 
+        // Register return type
         let srcT = getType(ctx, src.name);
         let f = srcT.functions[exp.name]!;
-        if (!f.returns) {
-            return registerExpType(ctx, exp, null);
-        }
         return registerExpType(ctx, exp, f.returns);
     }
 
@@ -267,7 +262,7 @@ export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, c
         if (!ex) {
             throw Error('Field ' + paths[i] + ' not found');
         }
-        ctx = registerExpType(ctx, paths[i], t);
+        ctx = registerExpType(ctx, paths[i], ex.type);
         t = ex.type;
     }
 

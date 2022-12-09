@@ -124,7 +124,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     if (self) {
         args.unshift(`${resolveFuncType(self, ctx)} self`);
     }
-    let returns: string = f.returns ? resolveFuncType(f.returns, ctx) : '()';
+    let returns: string = resolveFuncType(f.returns, ctx);
     if (self && f.isMutating) {
         if (f.returns) {
             returns = `(${resolveFuncType(self, ctx)}, ${returns})`;
@@ -143,7 +143,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             for (let s of fd.statements) {
                 writeStatement(s, f.isMutating && !!f.self, ctx);
             }
-            if (f.self && !f.returns && f.isMutating) {
+            if (f.self && (f.returns.kind === 'void') && f.isMutating) {
                 if (fd.statements.length === 0 || fd.statements[fd.statements.length - 1].kind !== 'statement_return') {
                     ctx.append(`return (self, ());`);
                 }

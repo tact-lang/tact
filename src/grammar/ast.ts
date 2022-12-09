@@ -1,6 +1,18 @@
 import { Interval as RawInterval, Node as RawNode } from 'ohm-js';
 
 export class ASTRef {
+
+    static merge(...refs: ASTRef[]) {
+        if (refs.length === 0) {
+            throw Error('Cannot merge 0 refs');
+        }
+        let r = refs[0].#interval;
+        for (let i = 1; i < refs.length; i++) {
+            r = r.coverageWith(r, refs[i].#interval);
+        }
+        return new ASTRef(r);
+    }
+
     readonly #interval: RawInterval;
 
     constructor(interval: RawInterval) {

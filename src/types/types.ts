@@ -18,6 +18,10 @@ export type TypeRef = {
     kind: 'map',
     key: string,
     value: string
+} | {
+    kind: 'void'
+} | {
+    kind: 'null'
 };
 
 export type FieldDescription = {
@@ -41,7 +45,7 @@ export type FunctionDescription = {
     isGetter: boolean,
     isMutating: boolean,
     self: string | null,
-    returns: TypeRef | null,
+    returns: TypeRef,
     args: FunctionArgument[],
     ast: ASTFunction | ASTNativeFunction
 }
@@ -64,13 +68,15 @@ export type InitDescription = {
     ast: ASTInitFunction
 }
 
-export function printTypeRef(src: TypeRef | null): string {
-    if (!src) {
-        return '<null>';
-    } else if (src.kind === 'ref') {
+export function printTypeRef(src: TypeRef): string {
+    if (src.kind === 'ref') {
         return src.name + (src.optional ? '?' : '');
     } else if (src.kind === 'map') {
         return `map[${src.key}]${src.value}`;
+    } else if (src.kind === 'void') {
+        return '<void>';
+    } else if (src.kind === 'null') {
+        return '<null>';
     } else {
         throw Error('Invalid type ref');
     }
@@ -85,6 +91,12 @@ export function typeRefEquals(a: TypeRef, b: TypeRef) {
     }
     if (a.kind === 'map' && b.kind === 'map') {
         return a.key === b.key && a.value === b.value;
+    }
+    if (a.kind === 'null' && b.kind === 'null') {
+        return true;
+    }
+    if (a.kind === 'void' && b.kind === 'void') {
+        return true;
     }
     return false;
 }

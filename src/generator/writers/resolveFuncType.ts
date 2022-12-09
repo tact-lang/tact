@@ -11,6 +11,9 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: Writ
     if (descriptor.kind === 'map') {
         return 'cell';
     }
+    if (descriptor.kind === 'void') {
+        return '()';
+    }
 
     // TypeDescription
     if (descriptor.kind === 'primitive') {

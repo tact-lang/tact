@@ -6,7 +6,7 @@ import { TypeRef } from "../types/types";
 
 export type AbiFunction = {
     name: string;
-    resolve: (ctx: CompilerContext, args: (TypeRef | null)[], ref: ASTRef) => TypeRef | null;
+    resolve: (ctx: CompilerContext, args: (TypeRef | null)[], ref: ASTRef) => TypeRef;
     generate: (ctx: WriterContext, args: (TypeRef | null)[], resolved: string[], ref: ASTRef) => string;
 }
 
@@ -17,7 +17,7 @@ export const ABIFunctions: { [key: string]: AbiFunction } = {
             if (args.length !== 1) {
                 throwError('dump expects 1 argument', ref);
             }
-            return null;
+            return { kind: 'void' };
         },
         generate: (ctx, args, resolved, ref) => {
             return `${resolved[0]}~dump()`;
@@ -99,7 +99,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 throwError('set expects a direct type as second argument', ref);
             }
             // TODO: Check values
-            return null;
+            return args[0];
         },
         generate: (ctx, args, resolved, ref) => {
             if (args.length !== 3) {

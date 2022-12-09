@@ -1,15 +1,16 @@
 import { CompilerContext } from "../context";
 import { ASTCondition, ASTStatement, throwError } from "../grammar/ast";
+import { isAssignable } from "./isAssignable";
 import { getAllStaticFunctions, getAllTypes, resolveTypeRef } from "./resolveDescriptors";
-import { resolveExpression, resolveLValueRef } from "./resolveExpression";
-import { TypeRef } from "./types";
+import { getExpType, resolveExpression, resolveLValueRef } from "./resolveExpression";
+import { printTypeRef, TypeRef } from "./types";
 
 export type StatementContext = {
-    returns: TypeRef | null,
+    returns: TypeRef,
     vars: { [name: string]: TypeRef };
 };
 
-function emptyContext(returns: TypeRef | null): StatementContext {
+function emptyContext(returns: TypeRef): StatementContext {
     return {
         returns,
         vars: {}
@@ -66,11 +67,18 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
 
+            // Check type
+            let expressionType = getExpType(ctx, s.expression);
+            let variableType = resolveTypeRef(ctx, s.type);
+            if (!isAssignable(variableType, resolveTypeRef(ctx, s.type))) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(variableType)}`, s.ref);
+            }
+
             // Add variable to statement context
             if (sctx.vars[s.name]) {
                 throwError(`Variable already exists: ${s.name}`, s.ref);
             }
-            sctx = addVariable(s.name, resolveTypeRef(ctx, s.type), sctx);
+            sctx = addVariable(s.name, variableType, sctx);
 
         } else if (s.kind === 'statement_assign') {
 
@@ -79,6 +87,13 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
 
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
+
+            // Check type
+            let expressionType = getExpType(ctx, s.expression);
+            let tailType = getExpType(ctx, s.path[s.path.length - 1]);
+            if (!isAssignable(expressionType, tailType)) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`, s.ref);
+            }
 
         } else if (s.kind === 'statement_expression') {
 
@@ -90,10 +105,22 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             // Process condition (expression resolved inside)
             ctx = processCondition(s, sctx, ctx);
 
+            // Check type
+            let expressionType = getExpType(ctx, s.expression);
+            if (expressionType.kind !== 'ref' || expressionType.name !== 'Bool' || expressionType.optional) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to Bool`, s.ref);
+            }
+
         } else if (s.kind === 'statement_return') {
 
             // Process expression
             ctx = resolveExpression(s.expression, sctx, ctx);
+
+            // Check type
+            let expressionType = getExpType(ctx, s.expression);
+            if (!isAssignable(expressionType, sctx.returns)) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(sctx.returns)}`, s.ref);
+            }
 
             // Mark as ended
             exited = true;
@@ -103,6 +130,12 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             // Process expression
             ctx = resolveExpression(s.condition, sctx, ctx);
 
+            // Check type
+            let expressionType = getExpType(ctx, s.condition);
+            if (expressionType.kind !== 'ref' || expressionType.name !== 'Int' || expressionType.optional) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to Int`, s.ref);
+            }
+
             // Process inner statements
             ctx = processStatements(s.statements, sctx, ctx);
 
@@ -111,6 +144,12 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             // Process expression
             ctx = resolveExpression(s.condition, sctx, ctx);
 
+            // Check type
+            let expressionType = getExpType(ctx, s.condition);
+            if (expressionType.kind !== 'ref' || expressionType.name !== 'Bool' || expressionType.optional) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to bool`, s.ref);
+            }
+
             // Process inner statements
             ctx = processStatements(s.statements, sctx, ctx);
 
@@ -118,6 +157,12 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
 
             // Process expression
             ctx = resolveExpression(s.condition, sctx, ctx);
+
+            // Check type
+            let expressionType = getExpType(ctx, s.condition);
+            if (expressionType.kind !== 'ref' || expressionType.name !== 'Bool' || expressionType.optional) {
+                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to bool`, s.ref);
+            }
 
             // Process inner statements
             ctx = processStatements(s.statements, sctx, ctx);
@@ -154,7 +199,7 @@ export function resolveStatements(ctx: CompilerContext) {
         if (t.init) {
 
             // Build statement context
-            let sctx = emptyContext(null);
+            let sctx = emptyContext({ kind: 'void' });
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
             for (let p of t.init.args) {
                 sctx = addVariable(p.name, p.type, sctx);
@@ -168,7 +213,7 @@ export function resolveStatements(ctx: CompilerContext) {
         for (let f of Object.values(t.receivers)) {
 
             // Build statement context
-            let sctx = emptyContext(null);
+            let sctx = emptyContext({ kind: 'void' });
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
             sctx = addVariable(f.name, { kind: 'ref', name: f.type, optional: false }, sctx);
 
