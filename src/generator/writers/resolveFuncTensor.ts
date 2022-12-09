@@ -25,6 +25,16 @@ function resolveTensor(prefix: string, args: { name: string, type: TypeRef }[], 
     return res;
 }
 
-export function resolveFuncTensor(args: { name: string, type: TypeRef }[], ctx: WriterContext) {
-    return resolveTensor('', args, ctx);
+export function resolveFuncTensor(args: { name: string, type: TypeRef }[], ctx: WriterContext, prefix: string = '') {
+    return resolveTensor(prefix, args, ctx);
+}
+
+export function tensorToString(tensor: TensorDef, mode: 'full' | 'types' | 'names') {
+    if (mode === 'types') {
+        return tensor.map((t) => `${t.type}`);
+    } else if (mode === 'names') {
+        return tensor.map((t) => `${t.name}`);
+    } else {
+        return tensor.map((t) => `${t.type} ${t.name}`);
+    }
 }

@@ -1,5 +1,8 @@
 import { StorageAllocation, StorageCell, StorageField } from "../../storage/StorageAllocation";
+import { getType } from "../../types/resolveDescriptors";
+import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
 
 //
 // Serializer
@@ -10,7 +13,7 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
     // Handle optional
 
     if (f.kind === 'optional') {
-        ctx.append(`if (null?(v_${f.index})) {`);
+        ctx.append(`if (null?(v'${f.name})) {`);
         ctx.inIndent(() => {
             ctx.append(`build_${index} = store_int(build_${index}, false, 1);`);
         });
@@ -26,38 +29,38 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
     // Handle primitives
 
     if (f.kind === 'int') {
-        ctx.append(`build_${index} = store_int(build_${index}, v_${f.index}, ${f.bits});`);
+        ctx.append(`build_${index} = store_int(build_${index}, v'${f.name}, ${f.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        ctx.append(`build_${index} = store_uint(build_${index}, v_${f.index}, ${f.bits});`);
+        ctx.append(`build_${index} = store_uint(build_${index}, v'${f.name}, ${f.bits});`);
         return;
     }
 
     if (f.kind === 'coins') {
-        ctx.append(`build_${index} = store_coins(build_${index}, v_${f.index});`);
+        ctx.append(`build_${index} = store_coins(build_${index}, v'${f.name});`);
         return;
     }
 
     if (f.kind === 'slice') {
-        ctx.append(`build_${index} = store_ref(build_${index}, v_${f.index}.end_cell());`);
+        ctx.append(`build_${index} = store_ref(build_${index}, v'${f.name}.end_cell());`);
         return;
     }
 
     if (f.kind === 'cell') {
-        ctx.append(`build_${index} = store_ref(build_${index}, v_${f.index});`);
+        ctx.append(`build_${index} = store_ref(build_${index}, v'${f.name});`);
         return;
     }
 
     if (f.kind === 'address') {
         ctx.used(`__tact_store_address`);
-        ctx.append(`build_${index} = __tact_store_address(build_${index}, v_${f.index});`);
+        ctx.append(`build_${index} = __tact_store_address(build_${index}, v'${f.name});`);
         return;
     }
 
     if (f.kind === 'map') {
-        ctx.append(`build_${index} = store_dict(build_${index}, v_${f.index});`);
+        ctx.append(`build_${index} = store_dict(build_${index}, v'${f.name});`);
         return;
     }
 
@@ -65,7 +68,7 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
 
     if (f.kind === 'struct') {
         ctx.used(`__gen_write_${f.type.name}`);
-        ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v_${f.index});`);
+        ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v'${f.name});`);
         return;
     }
 
@@ -89,13 +92,15 @@ function writeSerializerCell(cell: StorageCell, index: number, ctx: WriterContex
 
 export function writeSerializer(name: string, allocation: StorageAllocation, ctx: WriterContext) {
 
+    let tensor = resolveFuncTensor(allocation.fields, ctx, `v'`);
+    let args = tensorToString(tensor, 'full');
+    let vvss = tensorToString(tensor, 'names');
+
     // Write to builder
     ctx.fun(`__gen_write_${name}`, () => {
-        ctx.append(`builder __gen_write_${name}(builder build_0, tuple v) impure {`);
+        ctx.append(`builder __gen_write_${name}(${['builder build_0', ...args].join(', ')}) impure {`);
         ctx.inIndent(() => {
             if (allocation.fields.length > 0) {
-                ctx.used(`__tact_from_tuple`);
-                ctx.append(`var [${allocation.fields.map((f) => `v_${f.index}`).join(', ')}] = __tact_from_tuple(v);`);
                 writeSerializerCell(allocation.root, 0, ctx);
             }
             ctx.append(`return build_0;`);
@@ -105,20 +110,20 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to cell
     ctx.fun(`__gen_writecell_${name}`, () => {
-        ctx.append(`cell __gen_writecell_${name}(tuple v) impure {`);
+        ctx.append(`cell __gen_writecell_${name}(${args}) impure {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_write_${name}`);
-            ctx.append(`return __gen_write_${name}(begin_cell(), v).end_cell();`);
+            ctx.append(`return __gen_write_${name}(begin_cell(), ${vvss.join(', ')}).end_cell();`);
         });
         ctx.append(`}`);
     });
 
     // Write to slice
     ctx.fun(` __gen_writeslice_${name}`, () => {
-        ctx.append(`slice __gen_writeslice_${name}(tuple v) impure {`);
+        ctx.append(`slice __gen_writeslice_${name}(${args}) impure {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_writecell_${name}`);
-            ctx.append(`return __gen_writecell_${name}(v).begin_parse();`);
+            ctx.append(`return __gen_writecell_${name}(${vvss.join(', ')}).begin_parse();`);
         });
         ctx.append(`}`);
     });
@@ -133,7 +138,7 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle optional
 
     if (f.kind === 'optional') {
-        ctx.append(`var __${f.name} = null();`);
+        ctx.append(`var ${f.name} = null();`);
         ctx.append('if (sc~load_int(1)) {');
         ctx.inIndent(() => {
             writeFieldParser(f.inner, ctx);
@@ -145,46 +150,47 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle primitive values
 
     if (f.kind === 'int') {
-        ctx.append(`var __${f.name} = sc~load_int(${f.bits});`);
+        ctx.append(`var ${f.name} = sc~load_int(${f.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        ctx.append(`var __${f.name} = sc~load_uint(${f.bits});`);
+        ctx.append(`var ${f.name} = sc~load_uint(${f.bits});`);
         return;
     }
 
     if (f.kind === 'coins') {
-        ctx.append(`var __${f.name} = sc~load_coins();`);
+        ctx.append(`var ${f.name} = sc~load_coins();`);
         return;
     }
 
     if (f.kind === 'slice') {
-        ctx.append(`var __${f.name} = sc~load_ref().begin_parse();`);
+        ctx.append(`var ${f.name} = sc~load_ref().begin_parse();`);
         return;
     }
 
     if (f.kind === 'cell') {
-        ctx.append(`var __${f.name} = sc~load_ref();`);
+        ctx.append(`var ${f.name} = sc~load_ref();`);
         return;
     }
 
     if (f.kind === 'address') {
         ctx.used(`__tact_load_address`);
-        ctx.append(`var __${f.name} = sc~__tact_load_address();`);
+        ctx.append(`var ${f.name} = sc~__tact_load_address();`);
         return;
     }
 
     if (f.kind === 'map') {
-        ctx.append(`var __${f.name} = sc~load_dict();`);
+        ctx.append(`var ${f.name} = sc~load_dict();`);
         return;
     }
 
     // Handle structs
 
     if (f.kind === 'struct') {
+        let ft = resolveFuncTensor(f.type.fields, ctx, `${f.name}'`);
         ctx.used(`__gen_read_${f.type.name}`);
-        ctx.append(`var __${f.name} = sc~__gen_read_${f.type.name}();`);
+        ctx.append(`var (${tensorToString(ft, 'full').join(', ')}) = sc~__gen_read_${f.type.name}();`);
         return;
     }
 
@@ -207,31 +213,30 @@ function writeCellParser(cell: StorageCell, ctx: WriterContext) {
 
 export function writeParser(name: string, allocation: StorageAllocation, ctx: WriterContext) {
     ctx.fun(`__gen_read_${name}`, () => {
-        ctx.append(`(slice, tuple) __gen_read_${name}(slice sc) impure {`);
+        let tensor = resolveFuncTensor(allocation.fields, ctx);
+        let returns = tensorToString(tensor, 'types');
+        ctx.append(`(slice, (${returns.join(', ')})) __gen_read_${name}(slice sc) {`);
         ctx.inIndent(() => {
-
-            // Create variables
-            // for (let f of allocation.fields) {
-            //     ctx.append(`${resolveFuncType(f.type, ctx)} __${f.name} = null();`);
-            // }
 
             // Write cell parser
             writeCellParser(allocation.root, ctx);
 
             // Compile tuple
-            let res: string[] = [];
-            function writeCell(src: StorageCell) {
-                for (let s of src.fields) {
-                    res.push(`__${s.name}`);
-                }
-                if (src.next) {
-                    writeCell(src.next);
-                }
-            }
-            writeCell(allocation.root);
-            ctx.used('__tact_to_tuple')
-            ctx.append(`return (sc, __tact_to_tuple([${res.join(', ')}]));`);
+            ctx.append(`return (sc, (${tensorToString(tensor, 'names').join(', ')}));`);
         });
         ctx.append("}");
     });
+}
+
+//
+// Resolve
+//
+
+export function resolveReadVariableName(name: string, type: string, ctx: WriterContext) {
+    let t = getType(ctx.ctx, type);
+    if (t.kind === 'contract' || t.kind === 'struct') {
+        let tz = resolveFuncTensor(t.fields, ctx, `${name}'`);
+        return '(' + tensorToString(tz, 'names').join(', ') + ')';
+    }
+    return `${name}`;
 }

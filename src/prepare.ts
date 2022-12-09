@@ -29,7 +29,7 @@ import { writeTypescript } from './generator/writeTypescript';
                 let c = await compileContract({ files: [p.path + r + ".fc"] });
                 if (!c.ok) {
                     console.warn(c.log);
-                    return;
+                    continue;
                 }
                 fs.writeFileSync(p.path + r + ".fift", c.fift!);
                 fs.writeFileSync(p.path + r + ".cell", c.output!);

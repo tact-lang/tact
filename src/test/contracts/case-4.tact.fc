@@ -1,24 +1,21 @@
-forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
-
-(slice, tuple) __gen_read_Source(slice sc) impure {
-    var __a = sc~load_int(257);
-    var __b = sc~load_int(257);
-    return (sc, __tact_to_tuple([__a, __b]));
+(slice, (int, int)) __gen_read_Source(slice sc) {
+    var a = sc~load_int(257);
+    var b = sc~load_int(257);
+    return (sc, (a, b));
 }
 
-(slice, tuple) __gen_read_SampleContract(slice sc) impure {
-    var __a = sc~load_int(257);
-    var __b = sc~load_int(257);
+(slice, (int, int, int, int, cell)) __gen_read_SampleContract(slice sc) {
+    var a = sc~load_int(257);
+    var b = sc~load_int(257);
     sc = (sc~load_ref()).begin_parse();
-    var __c = sc~__gen_read_Source();
-    var __d = sc~load_dict();
-    return (sc, __tact_to_tuple([__a, __b, __c, __d]));
+    var (int c'a, int c'b) = sc~__gen_read_Source();
+    var d = sc~load_dict();
+    return (sc, (a, b, c'a, c'b, d));
 }
 
-tuple __gen_load_SampleContract() inline {
+_ __gen_load_SampleContract() inline {
     slice sc = get_data().begin_parse();
-    tuple res = sc~__gen_read_SampleContract();
-    return res;
+    return sc~__gen_read_SampleContract();
 }
 
 (tuple, int) __gen_SampleContract_stake(tuple self) impure {
@@ -33,7 +30,7 @@ _ __gen_get_stake() method_id(80984) {
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_uint(32);
-    tuple self = __gen_load_SampleContract();
+    
     
     throw(100);
 }

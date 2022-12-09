@@ -2,8 +2,6 @@ forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
-forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
-
 cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
@@ -13,31 +11,29 @@ cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     }
 }
 
-(slice, tuple) __gen_read_Increment(slice sc) impure {
-    var __key = sc~load_int(257);
-    var __value = sc~load_int(257);
-    return (sc, __tact_to_tuple([__key, __value]));
+(slice, (int, int)) __gen_read_Increment(slice sc) {
+    var key = sc~load_int(257);
+    var value = sc~load_int(257);
+    return (sc, (key, value));
 }
 
-builder __gen_write_IncrementContract(builder build_0, tuple v) impure {
-    var [v_0] = __tact_from_tuple(v);
-    build_0 = store_dict(build_0, v_0);
+builder __gen_write_IncrementContract(builder build_0, cell v'counters) impure {
+    build_0 = store_dict(build_0, v'counters);
     return build_0;
 }
 
-cell __gen_writecell_IncrementContract(tuple v) impure {
-    return __gen_write_IncrementContract(begin_cell(), v).end_cell();
+cell __gen_writecell_IncrementContract(cell v'counters) impure {
+    return __gen_write_IncrementContract(begin_cell(), v'counters).end_cell();
 }
 
-(slice, tuple) __gen_read_IncrementContract(slice sc) impure {
-    var __counters = sc~load_dict();
-    return (sc, __tact_to_tuple([__counters]));
+(slice, (cell)) __gen_read_IncrementContract(slice sc) {
+    var counters = sc~load_dict();
+    return (sc, (counters));
 }
 
-tuple __gen_load_IncrementContract() inline {
+_ __gen_load_IncrementContract() inline {
     slice sc = get_data().begin_parse();
-    tuple res = sc~__gen_read_IncrementContract();
-    return res;
+    return sc~__gen_read_IncrementContract();
 }
 
 () __gen_store_IncrementContract(tuple v) impure {
@@ -82,9 +78,10 @@ _ __gen_get_counters() method_id(95239) {
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_uint(32);
-    tuple self = __gen_load_IncrementContract();
+    
     if (op == 3615081709) {
-        tuple msg = in_msg~__gen_read_Increment();
+        var self = __gen_load_IncrementContract();
+        var (msg'key, msg'value) = in_msg~__gen_read_Increment();
         self~__gen_IncrementContract_receive_Increment(msg);
         __gen_store_IncrementContract(self);
         return ();

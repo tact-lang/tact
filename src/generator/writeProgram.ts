@@ -10,7 +10,7 @@ import { getMethodId } from "../utils";
 import { WriterContext } from "./Writer";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeExpression } from "./writers/writeExpression";
-import { writeParser, writeSerializer } from "./writers/writeSerialization";
+import { resolveReadVariableName, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 
 function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
@@ -205,12 +205,11 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`tuple __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.append(`_ __gen_load_${type.name}() inline {`); // NOTE: Inline function
         ctx.inIndent(() => {
             ctx.append(`slice sc = get_data().begin_parse();`);
             ctx.used(`__gen_read_${type.name}`);
-            ctx.append(`tuple res = sc~__gen_read_${type.name}();`);
-            ctx.append(`return res;`);
+            ctx.append(`return sc~__gen_read_${type.name}();`);
         });
         ctx.append(`}`);
     });
@@ -275,9 +274,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
 
             // Begin parsing
             ctx.append(`int op = in_msg~load_uint(32);`);
-
-            ctx.used(`__gen_load_${type.name}`);
-            ctx.append(`tuple self = __gen_load_${type.name}();`);
+            ctx.append();
 
             // Routing
             for (let f of Object.values(type.receivers)) {
@@ -289,9 +286,13 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`if (op == ${allocation.prefix}) {`);
                 ctx.inIndent(() => {
 
+                    // Load storage
+                    ctx.used(`__gen_load_${type.name}`);
+                    ctx.append(`var self = __gen_load_${type.name}();`);
+
                     // Read message
                     ctx.used(`__gen_read_${f.type}`);
-                    ctx.append(`tuple msg = in_msg~__gen_read_${f.type}();`);
+                    ctx.append(`var ${resolveReadVariableName('msg', f.type, ctx)} = in_msg~__gen_read_${f.type}();`);
 
                     // Execute function
                     ctx.used(`__gen_${type.name}_receive_${f.type}`);

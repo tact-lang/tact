@@ -1,18 +1,6 @@
-forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
-
-(slice, tuple) __gen_read_Empty(slice sc) impure {
-    return (sc, __tact_to_tuple([]));
-}
-
-tuple __gen_load_Empty() inline {
-    slice sc = get_data().begin_parse();
-    tuple res = sc~__gen_read_Empty();
-    return res;
-}
-
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
     int op = in_msg~load_uint(32);
-    tuple self = __gen_load_Empty();
+    
     
     throw(100);
 }

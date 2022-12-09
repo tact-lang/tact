@@ -1,16 +1,5 @@
 PROGRAM{
-  DECLPROC __gen_read_Empty
-  DECLPROC __gen_load_Empty
   DECLPROC recv_internal
-  __gen_read_Empty PROC:<{
-    0 TUPLE
-  }>
-  __gen_load_Empty PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    __gen_read_Empty CALLDICT
-    NIP
-  }>
   recv_internal PROC:<{
     2DROP
     100 THROW
