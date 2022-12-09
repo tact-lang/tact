@@ -379,6 +379,10 @@ export function getStaticFunction(ctx: CompilerContext, name: string): FunctionD
     return r;
 }
 
+export function hasStaticFunction(ctx: CompilerContext, name: string) {
+    return !!staticFunctionsStore.get(ctx, name);
+}
+
 export function getAllStaticFunctions(ctx: CompilerContext) {
     return staticFunctionsStore.all(ctx);
 }

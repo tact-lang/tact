@@ -1,10 +1,9 @@
 import fs from 'fs';
 import { __DANGER_resetNodeId } from '../grammar/ast';
-import { CompilerContext } from '../context';
-import { resolveExpressionTypes } from '../types/resolveExpressionType';
 import { resolveDescriptors } from '../types/resolveDescriptors';
 import { getAllocations, resolveAllocations } from './resolveAllocation';
 import { openContext } from '../grammar/store';
+import { resolveStatements } from '../types/resolveStatements';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
 const src = `
@@ -36,7 +35,7 @@ describe('resolveAllocation', () => {
     it('should write program', () => {
         let ctx = openContext([stdlib, src]);
         ctx = resolveDescriptors(ctx);
-        ctx = resolveExpressionTypes(ctx);
+        ctx = resolveStatements(ctx);
         ctx = resolveAllocations(ctx);
         expect(getAllocations(ctx)).toMatchSnapshot();
     });

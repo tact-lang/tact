@@ -3,7 +3,7 @@ import { ContractABI } from "../abi/ContractABI";
 import { ASTCondition, ASTStatement } from "../grammar/ast";
 import { CompilerContext } from "../context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
-import { getExpType } from "../types/resolveExpressionType";
+import { getExpType } from "../types/resolveExpression";
 import { getAllStaticFunctions, getAllTypes, getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";

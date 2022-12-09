@@ -1,5 +1,4 @@
 import { __DANGER_resetNodeId } from "../../grammar/ast";
-import { CompilerContext } from "../../context";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";

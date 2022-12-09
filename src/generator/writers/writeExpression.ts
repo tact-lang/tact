@@ -1,6 +1,6 @@
 import { ABIFunctions, MapFunctions } from "../../abi/AbiFunction";
 import { ASTExpression, throwError } from "../../grammar/ast";
-import { getExpType } from "../../types/resolveExpressionType";
+import { getExpType } from "../../types/resolveExpression";
 import { getStaticFunction, getType } from "../../types/resolveDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";

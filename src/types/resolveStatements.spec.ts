@@ -1,10 +1,11 @@
-import { getAllExpressionTypes, resolveExpressionTypes } from "./resolveExpressionType";
+import { getAllExpressionTypes } from "./resolveExpression";
 import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { openContext } from "../grammar/store";
+import { resolveStatements } from "./resolveStatements";
 
-describe('resolveExpressionType', () => {
+describe('resolveStatements', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
@@ -12,7 +13,7 @@ describe('resolveExpressionType', () => {
         it('should resolve expressions for ' + r.name, () => {
             let ctx = openContext([r.code]);
             ctx = resolveDescriptors(ctx);
-            ctx = resolveExpressionTypes(ctx);
+            ctx = resolveStatements(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }

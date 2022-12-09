@@ -1,6 +1,3 @@
-import { parse } from "./grammar/grammar";
-import { ASTFunction, ASTNativeFunction, ASTType } from "./grammar/ast";
-
 export class CompilerContext {
 
     readonly shared: { [key: symbol]: any } = {};
