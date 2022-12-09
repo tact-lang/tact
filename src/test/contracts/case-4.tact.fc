@@ -13,17 +13,17 @@
     return (sc, (a, b, c'a, c'b, d));
 }
 
-_ __gen_load_SampleContract() inline {
+(int, int, int, int, cell) __gen_load_SampleContract() inline {
     slice sc = get_data().begin_parse();
     return sc~__gen_read_SampleContract();
 }
 
 (tuple, int) __gen_SampleContract_stake(tuple self) impure {
-    return (self, at(self, 0));
+    return (self, self'a);
 }
 
 _ __gen_get_stake() method_id(80984) {
-    tuple self = __gen_load_SampleContract();
+    var self = __gen_load_SampleContract();
     var res = self~__gen_SampleContract_stake();
     return res;
 }

@@ -157,7 +157,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         }
 
         // Write getter
-        return 'at(' + writeExpression(f.src, ctx) + ', ' + field.index + ')';
+        return `${writeExpression(f.src, ctx)}'${field.name}`;
     }
 
     //
@@ -199,7 +199,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
         }, ctx);
         ctx.used('__tact_to_tuple');
-        return `__tact_to_tuple([${expressions.join(', ')}])`;
+        return `__tact_to_tuple([${ expressions.join(', ') }])`;
     }
 
     //
@@ -211,14 +211,14 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Resolve source type
         let src = getExpType(ctx.ctx, f.src);
         if (src === null) {
-            throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
+            throwError(`Cannot call function of non - direct type: ${ printTypeRef(src) } `, f.ref);
         }
 
         // Reference type
         if (src.kind === 'ref') {
 
             if (src.optional) {
-                throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
+                throwError(`Cannot call function of non - direct type: ${ printTypeRef(src) } `, f.ref);
             }
 
             // Check ABI
@@ -235,7 +235,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             let ff = t.functions[f.name]!;
 
             // Resolve name
-            let name = `__gen_${src.name}_${f.name}`;
+            let name = `__gen_${ src.name }_${ f.name } `;
             if (ff.ast.kind === 'def_function') {
                 ctx.used(name);
             } else {
@@ -245,10 +245,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             // Render
             if (ff.isMutating) {
                 let s = writeExpression(f.src, ctx);
-                return `${s}~${name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+                return `${ s } ~${ name } (${ [...f.args.map((a) => writeExpression(a, ctx))].join(', ') })`;
             } else {
                 let s = writeExpression(f.src, ctx);
-                return `${name}(${[s, ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+                return `${ name } (${ [s, ...f.args.map((a) => writeExpression(a, ctx))].join(', ') })`;
             }
         }
 
@@ -261,7 +261,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [writeExpression(f.src, ctx), ...f.args.map((a) => writeExpression(a, ctx))], f.ref);
         }
 
-        throwError(`Cannot call function of non-direct type: ${printTypeRef(src)}`, f.ref);
+        throwError(`Cannot call function of non - direct type: ${ printTypeRef(src) } `, f.ref);
     }
 
     //

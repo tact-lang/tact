@@ -1,5 +1,3 @@
-forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
-
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -76,14 +74,14 @@ cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_ke
     return (sc, (seqno, user1_key, user2_key, user3_key));
 }
 
-_ __gen_load_MultisigContract() inline {
+(int, int, int, int) __gen_load_MultisigContract() inline {
     slice sc = get_data().begin_parse();
     return sc~__gen_read_MultisigContract();
 }
 
-() __gen_store_MultisigContract(tuple v) impure {
+() __gen_store_MultisigContract(int v'seqno, int v'user1_key, int v'user2_key, int v'user3_key) impure {
     builder b = begin_cell();
-    b = __gen_write_MultisigContract(b, v);
+    b = __gen_write_MultisigContract(b, v'seqno,v'user1_key,v'user2_key,v'user3_key);
     set_data(b.end_cell());
 }
 
@@ -109,9 +107,9 @@ _ __gen_load_MultisigContract() inline {
 
 cell __gen_MultisigContract_init(int key1, int key2, int key3) impure {
     tuple self = __tact_to_tuple([0, null(), null(), null()]);
-    self = __tact_set(self, key1, 1);
-    self = __tact_set(self, key2, 2);
-    self = __tact_set(self, key3, 3);
+    self'user1_key = key1;
+    self'user2_key = key2;
+    self'user3_key = key3;
     return __gen_writecell_MultisigContract(self);
 }
 
@@ -125,7 +123,7 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) impure {
 }
 
 _ __gen_get_testAddress() method_id(80602) {
-    tuple self = __gen_load_MultisigContract();
+    var self = __gen_load_MultisigContract();
     var res = self~__gen_MultisigContract_testAddress();
     return res;
 }
@@ -135,7 +133,7 @@ _ __gen_get_testAddress() method_id(80602) {
 }
 
 _ __gen_get_key1() method_id(107493) {
-    tuple self = __gen_load_MultisigContract();
+    var self = __gen_load_MultisigContract();
     var res = self~__gen_MultisigContract_key1();
     return res;
 }
@@ -145,7 +143,7 @@ _ __gen_get_key1() method_id(107493) {
 }
 
 _ __gen_get_key2() method_id(103302) {
-    tuple self = __gen_load_MultisigContract();
+    var self = __gen_load_MultisigContract();
     var res = self~__gen_MultisigContract_key2();
     return res;
 }
@@ -155,7 +153,7 @@ _ __gen_get_key2() method_id(103302) {
 }
 
 _ __gen_get_key3() method_id(99239) {
-    tuple self = __gen_load_MultisigContract();
+    var self = __gen_load_MultisigContract();
     var res = self~__gen_MultisigContract_key3();
     return res;
 }
@@ -165,7 +163,7 @@ _ __gen_get_key3() method_id(99239) {
 }
 
 _ __gen_get_seqno() method_id(85143) {
-    tuple self = __gen_load_MultisigContract();
+    var self = __gen_load_MultisigContract();
     var res = self~__gen_MultisigContract_seqno();
     return res;
 }
@@ -185,10 +183,10 @@ _ __gen_get_seqno() method_id(85143) {
     int op = in_msg~load_uint(32);
     
     if (op == 819865922) {
-        var self = __gen_load_MultisigContract();
-        var (msg'operation'seqno, msg'operation'amount, msg'operation'target, msg'signature1, msg'signature2, msg'signature3) = in_msg~__gen_read_Execute();
-        self~__gen_MultisigContract_receive_Execute(msg);
-        __gen_store_MultisigContract(self);
+        var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
+        var (int msg'operation'seqno, int msg'operation'amount, slice msg'operation'target, slice msg'signature1, slice msg'signature2, slice msg'signature3) = in_msg~__gen_read_Execute();
+        (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_receive_Execute(msg'operation'seqno, msg'operation'amount, msg'operation'target, msg'signature1, msg'signature2, msg'signature3);
+        __gen_store_MultisigContract(self'seqno, self'user1_key, self'user2_key, self'user3_key);
         return ();
     }
     

@@ -10,8 +10,9 @@ import { getMethodId } from "../utils";
 import { WriterContext } from "./Writer";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeExpression } from "./writers/writeExpression";
-import { resolveReadVariableName, writeParser, writeSerializer } from "./writers/writeSerialization";
+import { writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
+import { resolveFuncTensor, tensorToString } from "./writers/resolveFuncTensor";
 
 function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -26,28 +27,8 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
         ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${f.name} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_assign') {
-
-        // Local variable case
-        if (f.path.length === 1) {
-            ctx.append(`${f.path[0].name} = ${writeExpression(f.expression, ctx)};`);
-            return;
-        }
-
-        // Depth = 2
-        if (f.path.length === 2) {
-            let valueExpr = writeExpression(f.expression, ctx);
-            let lvalueTypes = f.path.map((v) => getExpType(ctx.ctx, v)!);
-            let srcExpr = f.path[1];
-            assert(lvalueTypes[0].kind === 'ref');
-            assert(!lvalueTypes[0].optional);
-            let tt = getType(ctx.ctx, lvalueTypes[0].name);
-            let targetIndex = tt.fields.findIndex((v) => v.name === srcExpr.name);
-            ctx.used('__tact_set');
-            ctx.append(`${f.path[0].name} = __tact_set(${f.path[0].name}, ${valueExpr}, ${targetIndex});`);
-            return;
-        }
-
-        throw Error('Too deep assignment');
+        ctx.append(`${f.path.map((v) => v.name).join(`'`)} = ${writeExpression(f.expression, ctx)};`);
+        return;
     } else if (f.kind === 'statement_condition') {
         writeCondition(f, self, false, ctx);
         return;
@@ -204,8 +185,9 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
 function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
+    let tensor = resolveFuncTensor(type.fields, ctx, `v'`);
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`_ __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.append(`(${tensorToString(tensor, 'types').join(', ')}) __gen_load_${type.name}() inline {`); // NOTE: Inline function
         ctx.inIndent(() => {
             ctx.append(`slice sc = get_data().begin_parse();`);
             ctx.used(`__gen_read_${type.name}`);
@@ -216,11 +198,11 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(tuple v) impure {`);
+        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure {`);
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
             ctx.used(`__gen_write_${type.name}`);
-            ctx.append(`b = __gen_write_${type.name}(b, v);`);
+            ctx.append(`b = __gen_write_${type.name}(${['b', tensorToString(tensor, 'names')].join(', ')});`);
             ctx.append(`set_data(b.end_cell());`);
         });
         ctx.append(`}`);
@@ -240,7 +222,7 @@ function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
             // Load contract state
             ctx.used(`__gen_load_${self.name}`);
-            ctx.append(`tuple self = __gen_load_${self.name}();`);
+            ctx.append(`var self = __gen_load_${self.name}();`);
 
             // Execute get method
             ctx.used(`__gen_${self.name}_${f.name}`);
@@ -286,21 +268,25 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`if (op == ${allocation.prefix}) {`);
                 ctx.inIndent(() => {
 
+                    // Resolve tensors
+                    let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+                    let msgTensor = resolveFuncTensor(allocation.fields, ctx, `msg'`);
+
                     // Load storage
                     ctx.used(`__gen_load_${type.name}`);
-                    ctx.append(`var self = __gen_load_${type.name}();`);
+                    ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
 
                     // Read message
                     ctx.used(`__gen_read_${f.type}`);
-                    ctx.append(`var ${resolveReadVariableName('msg', f.type, ctx)} = in_msg~__gen_read_${f.type}();`);
+                    ctx.append(`var (${tensorToString(msgTensor, 'full').join(', ')}) = in_msg~__gen_read_${f.type}();`);
 
                     // Execute function
                     ctx.used(`__gen_${type.name}_receive_${f.type}`);
-                    ctx.append('self~__gen_' + type.name + '_receive_' + f.type + '(msg);');
+                    ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_${f.type}(${tensorToString(msgTensor, 'names').join(', ')});`);
 
                     // Persist
                     ctx.used(`__gen_store_${type.name}`);
-                    ctx.append(`__gen_store_${type.name}(self);`);
+                    ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
 
                     // Exit
                     ctx.append(`return ();`);
