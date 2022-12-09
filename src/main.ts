@@ -6,14 +6,16 @@ import { resolveAllocations } from "./storage/resolveAllocation";
 import { createABI } from "./generator/createABI";
 import { openContext } from "./grammar/store";
 import { resolveStatements } from "./types/resolveStatements";
+import { resolvePackaging } from "./types/resolvePackaging";
 
 const stdlib = fs.readFileSync(__dirname + '/../stdlib/stdlib.tact', 'utf-8');
 
 export function precompile(src: string) {
     let ctx = openContext([stdlib, src]);
     ctx = resolveDescriptors(ctx);
-    ctx = resolveStatements(ctx);
     ctx = resolveAllocations(ctx);
+    ctx = resolveStatements(ctx);
+    ctx = resolvePackaging(ctx);
     return ctx;
 }
 

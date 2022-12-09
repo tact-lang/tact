@@ -35,7 +35,6 @@ contract Wallet {
 
         // Send message
         send(SendParameters{value: op.amount, to: op.to, mode: op.mode, body: op.body});
-        // nativeSendMessage(msg.transfer, 0);
     }
 
     get fun publicKey(): Int {
