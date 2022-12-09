@@ -27,27 +27,12 @@ PROGRAM{
     ISNULL
     14 THROWIF
   }>
-  __tact_load_address PROC:<{
+  __tact_load_address PROCINLINE:<{
     LDMSGADDR
     SWAP
-    REWRITESTDADDR
-    PAIR
   }>
-  __tact_store_address PROC:<{
-    2 PUSHINT
-    ROT
-    2 STU
-    0 PUSHINT
-    SWAP
-    1 STU
-    OVER
-    FIRST
-    SWAP
-    8 STI
-    SWAP
-    SECOND
-    SWAP
-    256 STU
+  __tact_store_address PROCINLINE:<{
+    STSLICER
   }>
   __gen_write_Transfer PROC:<{
     5 UNTUPLE
@@ -56,7 +41,7 @@ PROGRAM{
     s1 s2 XCHG
     8 STU
     SWAP
-    __tact_store_address CALLDICT
+    __tact_store_address INLINECALLDICT
     SWAP
     STGRAMS
     OVER
@@ -81,7 +66,7 @@ PROGRAM{
   __gen_read_Transfer PROC:<{
     32 LDU
     8 LDU
-    __tact_load_address CALLDICT
+    __tact_load_address INLINECALLDICT
     SWAP
     LDGRAMS
     PUSHNULL
@@ -151,7 +136,7 @@ PROGRAM{
     3 STI
     OVER
     1 INDEX
-    __tact_store_address CALLDICT
+    __tact_store_address INLINECALLDICT
     OVER
     2 INDEX
     STGRAMS

@@ -2,17 +2,13 @@ forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
-(slice, [int, int]) __tact_load_address(slice cs) {
+(slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    var (r1, r2) = parse_std_addr(raw);
-    return (cs, [r1, r2]);
+    return (cs, raw);
 }
 
-builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2, 2);
-    b = b.store_uint(0, 1);
-    b = b.store_int(pair_first(address), 8);
-    b = b.store_uint(pair_second(address), 256);
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
     return b;
 }
 

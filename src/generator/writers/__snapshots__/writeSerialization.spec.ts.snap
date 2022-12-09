@@ -5,21 +5,17 @@ exports[`writeSerialization should write serializer for A 1`] = `
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
-(slice, [int, int]) __tact_load_address(slice cs) {
+(slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    var (r1, r2) = parse_std_addr(raw);
-    return (cs, [r1, r2]);
+    return (cs, raw);
 }
 
-builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2, 2);
-    b = b.store_uint(0, 1);
-    b = b.store_int(pair_first(address), 8);
-    b = b.store_uint(pair_second(address), 256);
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
     return b;
 }
 
-[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) {
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -27,7 +23,12 @@ builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
-    return [chain, hash];
+    var b2 = begin_cell();
+    b2 = b2.store_uint(2, 2);
+    b2 = b2.store_uint(0, 1);
+    b2 = b2.store_int(chain, 8);
+    b2 = b2.store_uint(hash, 256);
+    return b2.end_cell().begin_parse();
 }
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
@@ -108,21 +109,17 @@ exports[`writeSerialization should write serializer for B 1`] = `
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
-(slice, [int, int]) __tact_load_address(slice cs) {
+(slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    var (r1, r2) = parse_std_addr(raw);
-    return (cs, [r1, r2]);
+    return (cs, raw);
 }
 
-builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2, 2);
-    b = b.store_uint(0, 1);
-    b = b.store_int(pair_first(address), 8);
-    b = b.store_uint(pair_second(address), 256);
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
     return b;
 }
 
-[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) {
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -130,7 +127,12 @@ builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
-    return [chain, hash];
+    var b2 = begin_cell();
+    b2 = b2.store_uint(2, 2);
+    b2 = b2.store_uint(0, 1);
+    b2 = b2.store_int(chain, 8);
+    b2 = b2.store_uint(hash, 256);
+    return b2.end_cell().begin_parse();
 }
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
@@ -211,21 +213,17 @@ exports[`writeSerialization should write serializer for C 1`] = `
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
-(slice, [int, int]) __tact_load_address(slice cs) {
+(slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    var (r1, r2) = parse_std_addr(raw);
-    return (cs, [r1, r2]);
+    return (cs, raw);
 }
 
-builder __tact_store_address(builder b, [int, int] address) {
-    b = b.store_uint(2, 2);
-    b = b.store_uint(0, 1);
-    b = b.store_int(pair_first(address), 8);
-    b = b.store_uint(pair_second(address), 256);
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
     return b;
 }
 
-[int, int] __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) {
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -233,7 +231,12 @@ builder __tact_store_address(builder b, [int, int] address) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
-    return [chain, hash];
+    var b2 = begin_cell();
+    b2 = b2.store_uint(2, 2);
+    b2 = b2.store_uint(0, 1);
+    b2 = b2.store_int(chain, 8);
+    b2 = b2.store_uint(hash, 256);
+    return b2.end_cell().begin_parse();
 }
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";

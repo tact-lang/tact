@@ -28,7 +28,7 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: Writ
         } else if (descriptor.name === 'Builder') {
             return 'builder';
         } else if (descriptor.name === 'Address') {
-            return '[int, int]';
+            return 'slice';
         } else {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
