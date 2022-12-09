@@ -1,6 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`resolveStatements should resolve expressions for case-0 1`] = `
+exports[`resolveStatements should fail statements for case-0 1`] = `
+"Line 5, col 5:
+  4 | fun isZero(x: Int): Bool {
+> 5 |     return x;
+          ^~~~~~~~~
+  6 | }
+Type mismatch: Int is not assignable to Bool"
+`;
+
+exports[`resolveStatements should fail statements for case-1 1`] = `
+"Line 5, col 5:
+  4 | fun isZero(x: Int): Bool {
+> 5 |     repeat(true) {
+          ^~~~~~~~~~~~~~
+  6 |         x = x + 1;
+Type mismatch: Bool is not assignable to Int"
+`;
+
+exports[`resolveStatements should fail statements for case-2 1`] = `
+"Line 5, col 5:
+  4 | fun isZero(x: Int): Bool {
+> 5 |     while(x) {
+          ^~~~~~~~~~
+  6 |         x = x + 1;
+Type mismatch: Int is not assignable to bool"
+`;
+
+exports[`resolveStatements should fail statements for case-3 1`] = `
+"Line 5, col 5:
+  4 | fun isZero(x: Int): Bool {
+> 5 |     do {
+          ^~~~
+  6 |         x = x + 1;
+Type mismatch: Int is not assignable to bool"
+`;
+
+exports[`resolveStatements should fail statements for case-4 1`] = `
+"Line 5, col 5:
+  4 | fun isZero(x: Int): Bool {
+> 5 |     if (x) {
+          ^~~~~~~~
+  6 |         x = x + 1;
+Type mismatch: Int is not assignable to Bool"
+`;
+
+exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
     "x",
@@ -17,7 +62,7 @@ exports[`resolveStatements should resolve expressions for case-0 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve expressions for case-1 1`] = `
+exports[`resolveStatements should resolve statements for case-1 1`] = `
 [
   [
     "123",
@@ -42,7 +87,7 @@ exports[`resolveStatements should resolve expressions for case-1 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve expressions for case-2 1`] = `
+exports[`resolveStatements should resolve statements for case-2 1`] = `
 [
   [
     "123",
@@ -99,7 +144,7 @@ exports[`resolveStatements should resolve expressions for case-2 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve expressions for case-3 1`] = `
+exports[`resolveStatements should resolve statements for case-3 1`] = `
 [
   [
     "x",
@@ -152,7 +197,7 @@ exports[`resolveStatements should resolve expressions for case-3 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve expressions for case-4 1`] = `
+exports[`resolveStatements should resolve statements for case-4 1`] = `
 [
   [
     "x",
@@ -225,7 +270,7 @@ exports[`resolveStatements should resolve expressions for case-4 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve expressions for case-5 1`] = `
+exports[`resolveStatements should resolve statements for case-5 1`] = `
 [
   [
     "p",
@@ -278,7 +323,7 @@ exports[`resolveStatements should resolve expressions for case-5 1`] = `
 ]
 `;
 
-exports[`resolveStatements should resolve expressions for case-6 1`] = `
+exports[`resolveStatements should resolve statements for case-6 1`] = `
 [
   [
     "10",

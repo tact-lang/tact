@@ -9,12 +9,19 @@ describe('resolveStatements', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    for (let r of loadCases(__dirname + "/expr/")) {
-        it('should resolve expressions for ' + r.name, () => {
+    for (let r of loadCases(__dirname + "/stmts/")) {
+        it('should resolve statements for ' + r.name, () => {
             let ctx = openContext([r.code]);
             ctx = resolveDescriptors(ctx);
             ctx = resolveStatements(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+        });
+    }
+    for (let r of loadCases(__dirname + "/stmts-failed/")) {
+        it('should fail statements for ' + r.name, () => {
+            let ctx = openContext([r.code]);
+            ctx = resolveDescriptors(ctx);
+            expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
         });
     }
 });
