@@ -28,7 +28,7 @@ builder __gen_write_Transfer(builder build_0, int v'seqno, int v'mode, slice v't
     return build_0;
 }
 
-cell __gen_writecell_Transfer(int v'seqno,int v'mode,slice v'to,int v'amount,cell v'body) impure {
+cell __gen_writecell_Transfer(int v'seqno,int v'mode,slice v'to,int v'amount,cell v'body) inline {
     return __gen_write_Transfer(begin_cell(), v'seqno, v'mode, v'to, v'amount, v'body).end_cell();
 }
 
@@ -57,7 +57,7 @@ builder __gen_write_Wallet(builder build_0, int v'seqno, int v'key, int v'wallet
     return build_0;
 }
 
-cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) impure {
+cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     return __gen_write_Wallet(begin_cell(), v'seqno, v'key, v'walletId).end_cell();
 }
 

@@ -22,7 +22,7 @@ builder __gen_write_IncrementContract(builder build_0, cell v'counters) impure {
     return build_0;
 }
 
-cell __gen_writecell_IncrementContract(cell v'counters) impure {
+cell __gen_writecell_IncrementContract(cell v'counters) inline {
     return __gen_write_IncrementContract(begin_cell(), v'counters).end_cell();
 }
 

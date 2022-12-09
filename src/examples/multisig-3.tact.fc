@@ -37,7 +37,7 @@ builder __gen_write_Operation(builder build_0, int v'seqno, int v'amount, slice 
     return build_0;
 }
 
-cell __gen_writecell_Operation(int v'seqno,int v'amount,slice v'target) impure {
+cell __gen_writecell_Operation(int v'seqno,int v'amount,slice v'target) inline {
     return __gen_write_Operation(begin_cell(), v'seqno, v'amount, v'target).end_cell();
 }
 
@@ -64,7 +64,7 @@ builder __gen_write_MultisigContract(builder build_0, int v'seqno, int v'user1_k
     return build_0;
 }
 
-cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_key,int v'user3_key) impure {
+cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_key,int v'user3_key) inline {
     return __gen_write_MultisigContract(begin_cell(), v'seqno, v'user1_key, v'user2_key, v'user3_key).end_cell();
 }
 

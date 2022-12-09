@@ -4,7 +4,7 @@ builder __gen_write_StdlibTest(builder build_0) impure {
     return build_0;
 }
 
-cell __gen_writecell_StdlibTest() impure {
+cell __gen_writecell_StdlibTest() inline {
     return __gen_write_StdlibTest(begin_cell(), ).end_cell();
 }
 
