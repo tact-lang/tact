@@ -54,10 +54,10 @@ const golden: string[] = [
     '(((a > 1) | ((b > 2) & (c == 3))) | (~ (((d != 4) & true) & (~ false))))',
     'f1(a)',
     '(1, 2)',
-    `__gen_A_get_a((j'a, j'b))`,
+    `j'a`,
     '__gen_A_get_b((1, 2))',
-    `((- __gen_A_get_b((j'a, j'b))) + a)`,
-    `(((- __gen_A_get_b((j'a, j'b))) + a) + (+ b))`,
+    `((- j'b) + a)`,
+    `(((- j'b) + a) + (+ b))`,
     'null()',
     '(__tact_not_null(o) + 1)',
     '__gen_writecell_A(j)'

@@ -12,17 +12,13 @@
     return (sc, (a, b, c'a, c'b));
 }
 
-_ __gen_SampleContract_get_a(int v'a, int v'b, int v'c'a, int v'c'b) inline {
-    return v'a;
-}
-
 (int, int, int, int) __gen_load_SampleContract() inline {
     slice sc = get_data().begin_parse();
     return sc~__gen_read_SampleContract();
 }
 
 int __gen_SampleContract_stake(int self'a, int self'b, int self'c'a, int self'c'b) impure {
-    return __gen_SampleContract_get_a((self'a, self'b, self'c'a, self'c'b));
+    return self'a;
 }
 
 _ __gen_get_stake() method_id(80984) {

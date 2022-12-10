@@ -7,20 +7,6 @@ PROGRAM{
   DECLPROC __gen_write_Wallet
   DECLPROC __gen_writecell_Wallet
   DECLPROC __gen_read_Wallet
-  DECLPROC __gen_SendParameters_get_bounce
-  DECLPROC __gen_SendParameters_get_to
-  DECLPROC __gen_SendParameters_get_value
-  DECLPROC __gen_SendParameters_get_mode
-  DECLPROC __gen_SendParameters_get_body
-  DECLPROC __gen_Transfer_get_seqno
-  DECLPROC __gen_Transfer_get_mode
-  DECLPROC __gen_Transfer_get_to
-  DECLPROC __gen_Transfer_get_amount
-  DECLPROC __gen_Transfer_get_body
-  DECLPROC __gen_TransferMessage_get_transfer
-  DECLPROC __gen_Wallet_get_seqno
-  DECLPROC __gen_Wallet_get_key
-  DECLPROC __gen_Wallet_get_walletId
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
   DECLPROC send
@@ -88,55 +74,6 @@ PROGRAM{
     64 LDU
     3 -ROLL
   }>
-  __gen_SendParameters_get_bounce PROCINLINE:<{
-    4 BLKDROP
-  }>
-  __gen_SendParameters_get_to PROCINLINE:<{
-    s3 s4 XCHG
-    4 BLKDROP
-  }>
-  __gen_SendParameters_get_value PROCINLINE:<{
-    s2 s4 XCHG
-    4 BLKDROP
-  }>
-  __gen_SendParameters_get_mode PROCINLINE:<{
-    s1 s4 XCHG
-    4 BLKDROP
-  }>
-  __gen_SendParameters_get_body PROCINLINE:<{
-    4 1 BLKDROP2
-  }>
-  __gen_Transfer_get_seqno PROCINLINE:<{
-    4 BLKDROP
-  }>
-  __gen_Transfer_get_mode PROCINLINE:<{
-    s3 s4 XCHG
-    4 BLKDROP
-  }>
-  __gen_Transfer_get_to PROCINLINE:<{
-    s2 s4 XCHG
-    4 BLKDROP
-  }>
-  __gen_Transfer_get_amount PROCINLINE:<{
-    s1 s4 XCHG
-    4 BLKDROP
-  }>
-  __gen_Transfer_get_body PROCINLINE:<{
-    4 1 BLKDROP2
-  }>
-  __gen_TransferMessage_get_transfer PROCINLINE:<{
-    1 5 BLKDROP2
-  }>
-  __gen_Wallet_get_seqno PROCINLINE:<{
-    2DROP
-  }>
-  __gen_Wallet_get_key PROCINLINE:<{
-    DROP
-    NIP
-  }>
-  __gen_Wallet_get_walletId PROCINLINE:<{
-    2 1 BLKDROP2
-  }>
   __gen_load_Wallet PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -155,21 +92,14 @@ PROGRAM{
     1 PUSHINT
     SWAP
     2 STI
-    s5 s4 s3 PUSH3
-    s5 s4 PUSH2
-    __gen_SendParameters_get_bounce INLINECALLDICT
-    SWAP
+    s1 s5 XCHG
     1 STI
     0 PUSHINT
     SWAP
     3 STI
-    s5 s4 s3 PUSH3
-    s5 s4 PUSH2
-    __gen_SendParameters_get_to INLINECALLDICT
+    s0 s3 XCHG2
     __tact_store_address INLINECALLDICT
-    s5 s4 s3 PUSH3
-    s5 s4 PUSH2
-    __gen_SendParameters_get_value INLINECALLDICT
+    SWAP
     STGRAMS
     0 PUSHINT
     SWAP
@@ -177,29 +107,25 @@ PROGRAM{
     FALSE
     SWAP
     1 STI
-    s5 s4 s3 PUSH3
-    s5 s4 PUSH2
-    __gen_SendParameters_get_body INLINECALLDICT
-    DUP
+    s2 PUSH
     ISNULL
     NOT
     IF:<{
       TRUE
-      ROT
+      SWAP
       1 STI
-      SWAP
+      s0 s2 XCHG
       __tact_not_null CALLDICT
-      SWAP
+      ROT
       STREF
     }>ELSE<{
-      DROP
+      s2 POP
       FALSE
-      SWAP
+      ROT
       1 STI
     }>
     ENDC
-    5 -ROLL
-    __gen_SendParameters_get_mode INLINECALLDICT
+    SWAP
     SENDRAWMSG
   }>
   __gen_Wallet_init PROC:<{
@@ -208,55 +134,37 @@ PROGRAM{
     __gen_writecell_Wallet INLINECALLDICT
   }>
   __gen_Wallet_publicKey PROC:<{
-    __gen_Wallet_get_key INLINECALLDICT
+    DROP
+    NIP
   }>
   __gen_get_publicKey PROC:<{
     __gen_load_Wallet INLINECALLDICT
     __gen_Wallet_publicKey CALLDICT
   }>
   __gen_Wallet_walletId PROC:<{
-    __gen_Wallet_get_walletId INLINECALLDICT
+    2 1 BLKDROP2
   }>
   __gen_get_walletId PROC:<{
     __gen_load_Wallet INLINECALLDICT
     __gen_Wallet_walletId CALLDICT
   }>
   __gen_Wallet_seqno PROC:<{
-    __gen_Wallet_get_seqno INLINECALLDICT
+    2DROP
   }>
   __gen_get_seqno PROC:<{
     __gen_load_Wallet INLINECALLDICT
     __gen_Wallet_seqno CALLDICT
   }>
   __gen_Wallet_receive_TransferMessage PROC:<{
-    __gen_TransferMessage_get_transfer INLINECALLDICT
-    s4 s3 s2 PUSH3
-    s4 s3 PUSH2
-    __gen_Transfer_get_seqno INLINECALLDICT
-    s8 s7 s6 PUSH3
-    __gen_Wallet_get_seqno INLINECALLDICT
+    s5 POP
+    s3 s7 XCPU
     EQUAL
     43 THROWIFNOT
-    s7 s6 s5 XCPU2
-    __gen_Wallet_get_seqno INLINECALLDICT
+    s0 s6 XCHG
     INC
     TRUE
-    s5 s4 s3 PUSH3
-    s5 s11 PUSH2
-    __gen_Transfer_get_to INLINECALLDICT
-    s6 s5 s4 PUSH3
-    s6 s12 PUSH2
-    __gen_Transfer_get_amount INLINECALLDICT
-    s7 s6 s5 PUSH3
-    s7 s13 PUSH2
-    __gen_Transfer_get_mode INLINECALLDICT
-    s4 s8 XCHG
-    s3 s7 XCHG
-    s6 s5 s11 XCHG3
-    __gen_Transfer_get_body INLINECALLDICT
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
-    s1 s7 XCHG
+    s7 s4 XCHG2
+    s3 s3 s0 XCHG3
     send CALLDICT
   }>
   recv_internal PROC:<{

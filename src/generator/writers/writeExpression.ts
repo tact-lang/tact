@@ -179,14 +179,25 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             throwError(`Cannot find field "${f.name}" in struct "${srcT.name}"`, f.ref);
         }
 
-        // Write getter
-        // let path = tryExtractPath(f);
-        // if (path) {
-        //     return path.join("'");
-        // } else {
+        // Trying to resolve field as a path
+        let path = tryExtractPath(f);
+        if (path) {
+
+            // Special case for structs
+            if (field.type.kind === 'ref') {
+                let ft = getType(ctx.ctx, field.type.name);
+                if (ft.kind === 'struct' || ft.kind === 'contract') {
+                    let tensor = resolveFuncTensor(ft.fields, ctx, `${path.join("'")}'`);
+                    return '(' + tensorToString(tensor, 'names').join(', ') + ')';
+                }
+            }
+
+            return path.join("'");
+        }
+
+        // Getter instead of direct field access
         ctx.used(`__gen_${srcT.name}_get_${field.name}`);
         return `__gen_${srcT.name}_get_${field.name}(${writeExpression(f.src, ctx)})`;
-        // }
     }
 
     //
