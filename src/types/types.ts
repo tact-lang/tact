@@ -29,7 +29,8 @@ export type FieldDescription = {
     index: number,
     type: TypeRef,
     as: string | null,
-    default: bigint | boolean | null | undefined
+    default: bigint | boolean | null | undefined,
+    ref: ASTRef
 }
 
 export type FunctionArgument = {

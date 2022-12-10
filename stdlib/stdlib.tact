@@ -87,6 +87,9 @@ native checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
 @name(cell_hash)
 native hashCell(cell: Cell): Int;
 
+@name(slice_hash)
+native hashSlice(slice: Slice): Int;
+
 @name(send_raw_message)
 native nativeSendMessage(cell: Cell, mode: Int);
 

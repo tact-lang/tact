@@ -132,6 +132,12 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                     w.append(`b_${index} = b_${index}.storeCellCopy(pack${f.type}(src.${s.fields[f.index].name}));`);
                 } else if (f.kind === 'address') {
                     w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
+                } else if (f.kind === 'remaining') {
+                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name}.toCell());`);
+                } else if (f.kind === 'bytes') {
+                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name}.toCell());`);
+                } else {
+                    throw Error('Unsupported field type');
                 }
             }
 

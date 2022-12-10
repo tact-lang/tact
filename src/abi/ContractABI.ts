@@ -25,6 +25,8 @@ export type AllocationField = { index: number, size: { bits: number, refs: numbe
     | { kind: 'struct', type: string }
     | { kind: 'slice' | 'cell' }
     | { kind: 'optional', inner: AllocationField }
+    | { kind: 'remaining' }
+    | { kind: 'bytes', bytes: number }
 )
 
 export type ContractField = {

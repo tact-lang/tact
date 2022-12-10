@@ -1,14 +1,6 @@
-struct Transfer {
-    seqno: Int as uint32;
-    mode: Int as uint8;
-    to: Address;
-    amount: Int as coins;
-    body: Cell?;
-}
-
 message TransferMessage {
-    signature: Slice;
-    transfer: Transfer;
+    signature: Slice as bytes64;
+    transfer: Slice as remaining;
 }
 
 contract Wallet {
@@ -25,15 +17,21 @@ contract Wallet {
     receive(msg: TransferMessage) {
 
         // Check Signature
-        let op_hash: Int = hashCell(abi.pack_cell(msg.transfer));
+        let op_hash: Int = hashSlice(msg.transfer);
         require(42, checkSignature(op_hash, msg.signature, self.key));
-        require(43, msg.transfer.seqno == self.seqno);
+
+        // Check parameters
+        let pkg: Slice = msg.transfer;
+        let seqno: Int = pkg.loadInt(32);
+        let mode: Int = pkg.loadInt(8);
+        let body: Cell = pkg.loadRef();
+        require(43, seqno == self.seqno);
 
         // Increment seqno
         self.seqno = self.seqno + 1;
 
         // Send message
-        send(SendParameters{value: msg.transfer.amount, to: msg.transfer.to, mode: msg.transfer.mode, body: msg.transfer.body});
+        nativeSendMessage(body, mode);
     }
 
     get fun publicKey(): Int {

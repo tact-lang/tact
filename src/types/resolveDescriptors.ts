@@ -106,7 +106,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
-        return { name: src.name, type: buildTypeRef(src.type, types), index, as: src.as, default: src.init };
+        return { name: src.name, type: buildTypeRef(src.type, types), index, as: src.as, default: src.init, ref: src.ref };
     }
     for (let a of ast.types) {
 

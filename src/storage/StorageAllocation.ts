@@ -24,4 +24,6 @@ export type StorageField = {
         | { kind: 'slice' | 'cell' }
         | { kind: 'optional', inner: StorageField }
         | { kind: 'map' }
+        | { kind: 'remaining' }
+        | { kind: 'bytes', bytes: number }
     )

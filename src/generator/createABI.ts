@@ -32,6 +32,19 @@ function createAbiAllocationField(src: StorageField): AllocationField {
             kind: src.kind,
             type: src.type.name
         };
+    } else if (src.kind === 'remaining') {
+        return {
+            index: src.index,
+            size: src.size,
+            kind: src.kind
+        };
+    } else if (src.kind === 'bytes') {
+        return {
+            index: src.index,
+            size: src.size,
+            kind: src.kind,
+            bytes: src.bytes
+        };
     } else {
         throw Error('Unknown kind');
     }

@@ -137,12 +137,11 @@ _ __gen_get_seqno() method_id(85143) {
 
 ((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, int msg'transfer'seqno, int msg'transfer'mode, slice msg'transfer'to, int msg'transfer'amount, cell msg'transfer'body) impure {
     var (self'seqno, self'key, self'walletId) = self;
-    var (int op'seqno, int op'mode, slice op'to, int op'amount, cell op'body) = (msg'transfer'seqno, msg'transfer'mode, msg'transfer'to, msg'transfer'amount, msg'transfer'body);
-    int op_hash = cell_hash(__gen_writecell_Transfer((op'seqno, op'mode, op'to, op'amount, op'body)));
+    int op_hash = cell_hash(__gen_writecell_Transfer((msg'transfer'seqno, msg'transfer'mode, msg'transfer'to, msg'transfer'amount, msg'transfer'body)));
     throw_unless(42, check_signature(op_hash, msg'signature, self'key));
-    throw_unless(43, (op'seqno == self'seqno));
+    throw_unless(43, (msg'transfer'seqno == self'seqno));
     self'seqno = (self'seqno + 1);
-    send((true, op'to, op'amount, op'mode, op'body));
+    send((true, msg'transfer'to, msg'transfer'amount, msg'transfer'mode, msg'transfer'body));
     return ((self'seqno, self'key, self'walletId), ());
 }
 

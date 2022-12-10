@@ -1,6 +1,5 @@
 import { StorageAllocation, StorageCell, StorageField } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
 
@@ -61,6 +60,16 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
 
     if (f.kind === 'map') {
         ctx.append(`build_${index} = store_dict(build_${index}, v'${f.name});`);
+        return;
+    }
+
+    if (f.kind === 'remaining') {
+        ctx.append(`build_${index} = store_slice(build_${index}, v'${f.name});`);
+        return;
+    }
+
+    if (f.kind === 'bytes') {
+        ctx.append(`build_${index} = store_slice(build_${index}, v'${f.name});`);
         return;
     }
 
@@ -182,6 +191,16 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
 
     if (f.kind === 'map') {
         ctx.append(`var ${f.name} = sc~load_dict();`);
+        return;
+    }
+
+    if (f.kind === 'remaining') {
+        ctx.append(`var ${f.name} = sc;`);
+        return;
+    }
+
+    if (f.kind === 'bytes') {
+        ctx.append(`var ${f.name} = sc~load_bits(${f.bytes * 8});`);
         return;
     }
 

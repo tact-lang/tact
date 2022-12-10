@@ -1,4 +1,5 @@
 import { CompilerContext, createContextStore } from "../context";
+import { throwError } from "../grammar/ast";
 import { getAllTypes, getType } from "../types/resolveDescriptors";
 import { FieldDescription, TypeDescription, TypeRef } from "../types/types";
 import { topologicalSort } from "../utils";
@@ -80,17 +81,36 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
                     } else if (src.as === 'uint256') {
                         return { index: src.index, size: { bits: 256, refs: 0 }, bits: 256, name: src.name, kind: 'uint' };
                     } else {
-                        throw ('Unknown serialization type ' + src.as);
+                        throwError('Unknown serialization type ' + src.as, src.ref);
                     }
                 }
                 return { index: src.index, size: { bits: 257, refs: 0 }, bits: 257, name: src.name, kind: 'int' };
             } else if (type.name === 'Bool') {
+                if (src.as) {
+                    throwError('Unknown serialization type ' + src.as, src.ref);
+                }
                 return { index: src.index, size: { bits: 1, refs: 0 }, name: src.name, kind: 'int', bits: 1 };
             } else if (type.name === 'Slice') {
+                if (src.as) {
+                    if (src.as === 'remaining') {
+                        return { index: src.index, size: { bits: 0, refs: 0 }, name: src.name, kind: 'remaining' };
+                    } else if (src.as === 'bytes64') {
+                        return { index: src.index, size: { bits: 512, refs: 0 }, name: src.name, kind: 'bytes', bytes: 64 };
+                    } else if (src.as === 'bytes32') {
+                        return { index: src.index, size: { bits: 256, refs: 0 }, name: src.name, kind: 'bytes', bytes: 32 };
+                    }
+                    throwError('Unknown serialization type ' + src.as, src.ref);
+                }
                 return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'slice' };
             } else if (type.name === 'Cell') {
+                if (src.as) {
+                    throwError('Unknown serialization type ' + src.as, src.ref);
+                }
                 return { index: src.index, size: { bits: 0, refs: 1 }, name: src.name, kind: 'cell' };
             } else if (type.name === 'Address') {
+                if (src.as) {
+                    throwError('Unknown serialization type ' + src.as, src.ref);
+                }
                 return { index: src.index, size: { bits: 2 + 1 + 8 + 256, refs: 0 }, name: src.name, kind: 'address' };
             }
             throw Error('Unknown primitive type: ' + type.name);
@@ -98,6 +118,9 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
 
         // Struct types
         if (td.kind === 'struct') {
+            if (src.as) {
+                throwError('Unknown serialization type ' + src.as, src.ref);
+            }
             let allocation = getAllocation(ctx, type.name);
             return { index: src.index, size: allocation.root.size, name: src.name, kind: 'struct', type: td };
         }
@@ -123,10 +146,17 @@ function allocateFields(ctx: CompilerContext, src: FieldDescription[], bits: num
     let fields: StorageField[] = [];
     let next: StorageCell | null = null;
     let used: { bits: number, refs: number } = { bits: 0, refs: 0 };
+    let ended = false;
 
     while (src.length > 0) {
         let f = src.shift()!;
+        if (ended) {
+            throwError('Not enough space for field ' + f.name, f.ref);
+        }
         let d = allocateField(ctx, f, f.type).size;
+        if (f.as === 'remaining') {
+            ended = true;
+        }
         if (d.bits > bits || d.refs > refs) {
             used.refs += 1;
             next = allocateFields(ctx, [f, ...src], 1023, 3);
