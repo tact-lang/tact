@@ -107,6 +107,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
     const fd = f.ast;
 
+    // Resolve self
     let self = f.self ? getType(ctx.ctx, f.self) : null;
     let selfTensor: TensorDef | null = null;
     if (self) {
@@ -114,7 +115,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
 
     // Write function header
-    let argsTensor = resolveFuncTensor([...(self ? [{ name: 'self', type: { kind: 'ref' as const, name: self.name, optional: false } }] : []), ...f.args], ctx);
+    let argsTensor = resolveFuncTensor(f.args, ctx);
     let returns: string = resolveFuncType(f.returns, ctx);
     if (selfTensor && f.isMutating) {
         if (f.returns) {
@@ -130,8 +131,14 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.append(`${returns} ${name}(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
+        ctx.append(`${returns} ${name}(${[...(selfTensor ? ['(' + tensorToString(selfTensor, 'types').join(', ') + ') self'] : []), ...tensorToString(argsTensor, 'full')].join(', ')}) impure {`);
         ctx.inIndent(() => {
+
+            // Unpack self
+            if (selfTensor) {
+                ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = self;`);
+            }
+
             for (let s of fd.statements) {
                 writeStatement(s, f.isMutating ? selfStr : null, ctx);
             }
@@ -152,7 +159,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
             { name: f.name, type: { kind: 'ref', name: f.type, optional: false } }
         ], ctx);
         let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), tensorToString(argsTensor, 'full')].join(', ')}) impure {`);
+        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), ...tensorToString(argsTensor, 'full')].join(', ')}) impure {`);
         ctx.inIndent(() => {
             ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
 

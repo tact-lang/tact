@@ -1,9 +1,9 @@
-cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
-        return r;
+        return (r, ());
     } else {
-        return idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell());
+        return (idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell()), ());
     }
 }
 
@@ -43,7 +43,8 @@ cell __gen_IncrementContract_init() impure {
     return __gen_writecell_IncrementContract(self'counters);
 }
 
-cell __gen_IncrementContract_counters(cell self'counters) impure {
+cell __gen_IncrementContract_counters((cell) self) impure {
+    var (cell self'counters) = self;
     return self'counters;
 }
 
@@ -53,9 +54,9 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key,int msg'value) impure {
+((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) impure {
     var (self'counters) = self;
-    self'counters = __tact_dict_set_int_int(self'counters, 257, msg'key, msg'value, 257);
+    self'counters~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
     return ((self'counters), ());
 }
 

@@ -20,7 +20,7 @@ contract IncrementContract {
 
     receive(msg: Increment) {
         // msg.key.add(msg.value.mul(10));
-        self.counters = self.counters.set(msg.key, msg.value);
+        self.counters.set(msg.key, msg.value);
     }
 
     get fun counters(): map[Int]Int {

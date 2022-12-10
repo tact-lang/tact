@@ -99,7 +99,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 throwError('set expects a direct type as second argument', ref);
             }
             // TODO: Check values
-            return args[0];
+            return { kind: 'void' };
         },
         generate: (ctx, args, resolved, ref) => {
             if (args.length !== 3) {
@@ -113,7 +113,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             }
 
             ctx.used(`__tact_dict_set_int_int`);
-            return `__tact_dict_set_int_int(${resolved[0]}, 257, ${resolved[1]}, ${resolved[2]}, 257)`;
+            return `${resolved[0]}~__tact_dict_set_int_int(257, ${resolved[1]}, ${resolved[2]}, 257)`;
         }
     }
 }

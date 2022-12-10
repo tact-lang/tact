@@ -330,15 +330,6 @@
   ],
   "getters": [
     {
-      "name": "testAddress",
-      "args": [],
-      "returns": {
-        "kind": "ref",
-        "name": "Address",
-        "optional": false
-      }
-    },
-    {
       "name": "key1",
       "args": [],
       "returns": {

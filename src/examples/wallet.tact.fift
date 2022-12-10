@@ -2,6 +2,8 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
+  DECLPROC __gen_write_Transfer
+  DECLPROC __gen_writecell_Transfer
   DECLPROC __gen_read_Transfer
   DECLPROC __gen_read_TransferMessage
   DECLPROC __gen_write_Wallet
@@ -31,6 +33,34 @@ PROGRAM{
   }>
   __tact_store_address PROCINLINE:<{
     STSLICER
+  }>
+  __gen_write_Transfer PROC:<{
+    s4 s5 XCHG2
+    32 STU
+    s1 s2 XCHG
+    8 STU
+    SWAP
+    __tact_store_address INLINECALLDICT
+    SWAP
+    STGRAMS
+    OVER
+    ISNULL
+    IF:<{
+      FALSE
+      s2 POP
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>
+  }>
+  __gen_writecell_Transfer PROCINLINE:<{
+    NEWC
+    5 -ROLL
+    __gen_write_Transfer CALLDICT
+    ENDC
   }>
   __gen_read_Transfer PROC:<{
     32 LDU
@@ -156,7 +186,13 @@ PROGRAM{
     __gen_Wallet_seqno CALLDICT
   }>
   __gen_Wallet_receive_TransferMessage PROC:<{
-    s5 POP
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
+    __gen_writecell_Transfer INLINECALLDICT
+    HASHCU
+    s0 s6 s8 XC2PU
+    CHKSIGNU
+    42 THROWIFNOT
     s3 s7 XCPU
     EQUAL
     43 THROWIFNOT

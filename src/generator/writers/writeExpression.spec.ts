@@ -60,7 +60,7 @@ const golden: string[] = [
     `(((- j'b) + a) + (+ b))`,
     'null()',
     '(__tact_not_null(o) + 1)',
-    '__gen_writecell_A(j)'
+    `__gen_writecell_A((j'a, j'b))`
 ]
 
 describe('writeExpression', () => {

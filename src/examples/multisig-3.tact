@@ -45,10 +45,6 @@ contract MultisigContract {
         send(SendParameters{ to: op.target, value: op.amount });
     }
 
-    get fun testAddress(): Address {
-        return computeAddress(0, endCell(beginCell()), endCell(beginCell()));
-    }
-
     get fun key1(): Int {
         return self.user1_key;
     }

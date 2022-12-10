@@ -73,7 +73,7 @@ export function packExecuted(src: Executed): Cell {
 }
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECNAEAAlkAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAqKwIBIAYHAgFIHh8CASAICQIBIBITAgFICgsCASAMDQA9DHTH+1E0PALMQKCEDDeKUK6l/AIMfAW8A3gW/LAZIAAJCBu8k6ACASAODwIBIBARAEcyHABywFzAcsBcAHLABLMzMn5AMhyAcsBcAHLABLKB8v/ydCAAGRvI1Ajyx8B+gIBzxaAACzIAfAFyYAAXNMf+gD6QAFDMG8DgAgEgFBUCASAaGwIBIBYXAgEgGBkAJzwBwHUAdAB1AHQAdQB0BRDMG8EgABkbyRQNMsfy//L/8v/gAAsyAHwCcmAAGTTH9P/0//T/1UwbwSAAD1yAHwCcntVIAgEgHB0AfTIcQHKASFvEAHKAHABygIhbxHPFiFvEvoCcAHKaHABygAhbxQgbrOZf1jKAAHwAQHMlTBwAcoA4skBbxP7AIAArHBtbW1vBFADcW+HAXJvhwFzb4fwCoAIBICAhAgEgJicCASAiIwIBICQlAB0fyFvEgJvERJwbW8F8A6AADxwyMnIyfAEgAAcIG8RgAAcIG8SgAgEgKCkAdUIG8Q8Ab5ACFvESNvESJZ+RAibxIkbxIjWfkQI28TJW8TECT5ECNvEG8QJW8QuvKKArABsPKKbxDwEIAAcIG8TgAAcIG8QgAgEgLC0CASAuLwAXu62u1E0PALMfARMYABe4yX7UTQ8Asx8BUxgCASAwMQAJuKx/APgCASAyMwAXtHy9qJoeAWY+AkYwABew6ftRNDwCzHwFDGAAF7Dhu1E0PALMfATMYA==';
+    const __code = 'te6ccgECKgEAAcIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAiIwIBIAYHAgFIGhsCASAICQIBIBARAgFICgsCASAMDQBTDHTHwGCEDDeKUK6jhftRNDwCmwUBPAHNhCJEHgQZ1UE8BTwDOAw8sBkgAAkIG7yToAAVRQI8sfAfoCAc8WgCASAODwATNMf+gD6QAFDMIAAjPAGA9QB0AHUAdAB1AHQFkMwgAgEgEhMCASAUFQAVRQNMsfy//L/8v/gAFU0x/T/9P/0/9VMIAgEgFhcCASAYGQARMhVMPAIye1UgAGcyHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAgABMcFUgyFUw8AjJgAA8fzMBcG3wDYAIBIBwdAE/So6oeQqkHgCZPyAKQIVfIgpGZT8iCoJm/yIKazdeUUBWADYeUV4B8AgEgHh8CASAgIQAJBAjXwOAABwTXwOAABRsMYAAFF8DgABe+ZL9qJoeAU2CngJwCASAkJQIBICYnAAm4rH8A6AIBICgpABe0fL2omh4BTYKeAhAAF7Dp+1E0PAKbBTwEoAAXsOG7UTQ8ApsFPARg';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});
@@ -100,10 +100,6 @@ export class MultisigContract {
                 body: new CellMessage(body!)
             })
         }), { debug: args.debug });
-    }
-    async getTestAddress() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('testAddress', __stack);
     }
     async getKey1() {
         let __stack: StackItem[] = [];

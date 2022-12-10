@@ -266,8 +266,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 if (!abf) {
                     throwError(`ABI function "${f.name}" not found`, f.ref);
                 }
-                // let argsTensor = resolveFuncTensor(f.args, ctx);
-                // return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), tensorToString(argsTensor, 'names'), f.ref);
+                return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), [...f.args.map((a) => writeExpression(a, ctx))], f.ref);
             }
 
             // Render function call
