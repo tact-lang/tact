@@ -234,7 +234,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             let ff = t.functions[f.name]!;
 
             // Resolve name
-            let name = `__gen_${src.name}_${f.name} `;
+            let name = `__gen_${src.name}_${f.name}`;
             if (ff.ast.kind === 'def_function') {
                 ctx.used(name);
             } else {

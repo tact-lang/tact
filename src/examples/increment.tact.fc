@@ -1,5 +1,3 @@
-forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
-
 cell __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
@@ -50,28 +48,28 @@ int __gen_Int_mul(int self, int value) impure {
 }
 
 cell __gen_IncrementContract_init() impure {
-    tuple self = __tact_to_tuple([null()]);
-    return __gen_writecell_IncrementContract(self);
+    var (cell self'counters) = (null());
+    return __gen_writecell_IncrementContract(self'counters);
 }
 
-(tuple, cell) __gen_IncrementContract_counters(tuple self) impure {
-    return (self, at(self, 0));
+(tuple, cell) __gen_IncrementContract_counters(cell self'counters) impure {
+    return self'counters;
 }
 
 _ __gen_get_counters() method_id(95239) {
-    var self = __gen_load_IncrementContract();
-    var res = self~__gen_IncrementContract_counters();
+    var (cell self'counters) = __gen_load_IncrementContract();
+    var res = (self'counters)~__gen_IncrementContract_counters();
     return res;
 }
 
-(tuple, ()) __gen_IncrementContract_receive_Increment(tuple self, tuple msg) impure {
+((cell), ()) __gen_IncrementContract_receive_Increment(cell self'counters, int msg'key, int msg'value) impure {
     self~dump();
     msg~dump();
-    int key = at(msg, 0);
+    int key = msg'key;
     int v = 0;
-    v~__gen_Int_add(__gen_Int_mul(at(msg, 1), 10));
-    self'counters = __tact_dict_set_int_int(at(self, 0), 257, key, v, 257);
-    return (self, ());
+    v ~__gen_Int_add (__gen_Int_mul (msg'value, 10));
+    self'counters = __tact_dict_set_int_int(self'counters, 257, key, v, 257);
+    return ((counters), ());
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {

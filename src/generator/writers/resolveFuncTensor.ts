@@ -3,7 +3,7 @@ import { TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 
-type TensorDef = { name: string, type: string }[];
+export type TensorDef = { name: string, type: string }[];
 
 function resolveTensor(prefix: string, args: { name: string, type: TypeRef }[], ctx: WriterContext): TensorDef {
     let res: TensorDef = [];

@@ -1,9 +1,7 @@
-import assert from "assert";
 import { ContractABI } from "../abi/ContractABI";
 import { ASTCondition, ASTStatement } from "../grammar/ast";
 import { CompilerContext } from "../context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
-import { getExpType } from "../types/resolveExpression";
 import { getAllStaticFunctions, getAllTypes, getType, resolveTypeRef } from "../types/resolveDescriptors";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../types/types";
 import { getMethodId } from "../utils";
@@ -14,11 +12,11 @@ import { writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { resolveFuncTensor, tensorToString } from "./writers/resolveFuncTensor";
 
-function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
+function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
         let exp = writeExpression(f.expression, ctx);
         if (self) {
-            ctx.append(`return (self, ${exp});`);
+            ctx.append(`return (${self}, ${exp});`);
         } else {
             ctx.append(`return ${exp};`);
         }
@@ -68,7 +66,7 @@ function writeStatement(f: ASTStatement, self: boolean, ctx: WriterContext) {
     throw Error('Unknown statement kind');
 }
 
-function writeCondition(f: ASTCondition, self: boolean, elseif: boolean, ctx: WriterContext) {
+function writeCondition(f: ASTCondition, self: string | null, elseif: boolean, ctx: WriterContext) {
     ctx.append(`${(elseif ? '} else' : '')}if (${writeExpression(f.expression, ctx)}) {`);
     ctx.inIndent(() => {
         for (let s of f.trueStatements) {
@@ -101,10 +99,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     let self = f.self ? getType(ctx.ctx, f.self) : null;
 
     // Write function header
-    let args = f.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
-    if (self) {
-        args.unshift(`${resolveFuncType(self, ctx)} self`);
-    }
+    let argsTensor = resolveFuncTensor([...(self ? [{ name: 'self', type: { kind: 'ref' as const, name: self.name, optional: false } }] : []), ...f.args], ctx);
     let returns: string = resolveFuncType(f.returns, ctx);
     if (self && f.isMutating) {
         if (f.returns) {
@@ -119,10 +114,10 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.append(`${returns} ${name}(${args.join(', ')}) impure {`);
+        ctx.append(`${returns} ${name}(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
         ctx.inIndent(() => {
             for (let s of fd.statements) {
-                writeStatement(s, f.isMutating && !!f.self, ctx);
+                writeStatement(s, null, ctx);
             }
             if (f.self && (f.returns.kind === 'void') && f.isMutating) {
                 if (fd.statements.length === 0 || fd.statements[fd.statements.length - 1].kind !== 'statement_return') {
@@ -136,16 +131,21 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
 function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${self.name}_receive_${f.type}`, () => {
-        let args = [`tuple self`, `tuple ${f.name}`].join(', ');
-        ctx.append(`(tuple, ()) __gen_${self.name}_receive_${f.type}(${args}) impure {`);
+        let selfTensor = resolveFuncTensor(self.fields, ctx);
+        let argsTensor = resolveFuncTensor([
+            { name: 'self', type: { kind: 'ref', name: self.name, optional: false } },
+            { name: f.name, type: { kind: 'ref', name: f.type, optional: false } }
+        ], ctx);
+        let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
         ctx.inIndent(() => {
 
             for (let s of f.ast.statements) {
-                writeStatement(s, true, ctx);
+                writeStatement(s, selfRes, ctx);
             }
 
             if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                ctx.append(`return (self, ());`);
+                ctx.append(`return (${selfRes}, ());`);
             }
         });
         ctx.append(`}`);
@@ -156,8 +156,11 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
     ctx.fun(`__gen_${t.name}_init`, () => {
         let argsTensor = resolveFuncTensor(init.args, ctx);
         let selfTensor = resolveFuncTensor(t.fields, ctx, `self'`);
+        let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
         ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
         ctx.inIndent(() => {
+
+            // Generate self initial tensor
             let initValues: string[] = [];
             for (let i = 0; i < t.fields.length; i++) {
                 let init = 'null()';
@@ -168,13 +171,16 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
                 }
                 initValues.push(init);
             }
-            ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = (${initValues.join(', ')});`);
+            if (initValues.length > 0) { // Special case for empty contracts
+                ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = (${initValues.join(', ')});`);
+            }
 
             // Generate statements
             for (let s of init.ast.statements) {
-                writeStatement(s, true, ctx);
+                writeStatement(s, selfRes, ctx);
             }
 
+            // Assemble result cell
             ctx.used(`__gen_writecell_${t.name}`);
             ctx.append(`return __gen_writecell_${t.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
         });
@@ -211,22 +217,23 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
 function writeGetter(f: FunctionDescription, ctx: WriterContext) {
     ctx.fun(`__gen_get_${f.name}`, () => {
-        let args = f.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
-        ctx.append(`_ __gen_get_${f.name}(${args.join(', ')}) method_id(${getMethodId(f.name)}) {`);
+        let argsTensor = resolveFuncTensor(f.args, ctx);
+        ctx.append(`_ __gen_get_${f.name}(${tensorToString(argsTensor, 'full').join(', ')}) method_id(${getMethodId(f.name)}) {`);
         ctx.inIndent(() => {
 
             let self = f.self ? getType(ctx.ctx, f.self) : null;
             if (!self) {
                 throw new Error(`No self type for getter ${f.name}`); // Impossible
             }
+            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
 
             // Load contract state
             ctx.used(`__gen_load_${self.name}`);
-            ctx.append(`var self = __gen_load_${self.name}();`);
+            ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${self.name}();`);
 
             // Execute get method
             ctx.used(`__gen_${self.name}_${f.name}`);
-            ctx.append(`var res = self~__gen_${self.name}_${f.name}(${[...f.args.map((a) => a.name)].join(', ')});`);
+            ctx.append(`var res = (${tensorToString(selfTensor, 'names').join(', ')})~__gen_${self.name}_${f.name}(${tensorToString(argsTensor, 'names')});`);
 
             // Return restult
             ctx.append(`return res;`);

@@ -52,7 +52,7 @@ export class WriterContext {
             }
         }
         if (missing.size > 0) {
-            throw new Error(`Functions ${Array.from(missing).join(', ')} wasn't rendered`);
+            throw new Error(`Functions ${Array.from(missing.keys()).map((v) => `"${v}"`).join(', ')} wasn't rendered`);
         }
 
         // All functions
@@ -98,6 +98,8 @@ export class WriterContext {
             throw new Error(`Nested function definition is not supported`); // Should not happen
         }
 
+        console.log(`Rendering: "${name}"`);
+
 
         // Write function
         this.#pendingWriter = new Writer();
@@ -112,6 +114,7 @@ export class WriterContext {
 
     used(name: string) {
         this.#pendingDepends!!.add(name);
+        console.log(`<-- "${name}"`);
     }
 
     //

@@ -16,37 +16,36 @@ cell __gen_writecell_StdlibTest() inline {
 }
 
 cell __gen_StdlibTest_init() impure {
-    var () = ();
     return __gen_writecell_StdlibTest();
 }
 
-(tuple, int) __gen_StdlibTest_sliceEmpty(tuple self, slice sc) impure {
-    return (self, slice_empty? (sc));
+(tuple, int) __gen_StdlibTest_sliceEmpty(slice sc) impure {
+    return slice_empty? (sc);
 }
 
 _ __gen_get_sliceEmpty(slice sc) method_id(73995) {
-    var self = __gen_load_StdlibTest();
-    var res = self~__gen_StdlibTest_sliceEmpty(sc);
+    var () = __gen_load_StdlibTest();
+    var res = ()~__gen_StdlibTest_sliceEmpty(sc);
     return res;
 }
 
-(tuple, int) __gen_StdlibTest_sliceBits(tuple self, slice sc) impure {
-    return (self, slice_bits (sc));
+(tuple, int) __gen_StdlibTest_sliceBits(slice sc) impure {
+    return slice_bits (sc);
 }
 
 _ __gen_get_sliceBits(slice sc) method_id(75090) {
-    var self = __gen_load_StdlibTest();
-    var res = self~__gen_StdlibTest_sliceBits(sc);
+    var () = __gen_load_StdlibTest();
+    var res = ()~__gen_StdlibTest_sliceBits(sc);
     return res;
 }
 
-(tuple, int) __gen_StdlibTest_sliceRefs(tuple self, slice sc) impure {
-    return (self, slice_refs (sc));
+(tuple, int) __gen_StdlibTest_sliceRefs(slice sc) impure {
+    return slice_refs (sc);
 }
 
 _ __gen_get_sliceRefs(slice sc) method_id(77445) {
-    var self = __gen_load_StdlibTest();
-    var res = self~__gen_StdlibTest_sliceRefs(sc);
+    var () = __gen_load_StdlibTest();
+    var res = ()~__gen_StdlibTest_sliceRefs(sc);
     return res;
 }
 
