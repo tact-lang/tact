@@ -131,7 +131,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.append(`${returns} ${name}(${[...(selfTensor ? ['(' + tensorToString(selfTensor, 'types').join(', ') + ') self'] : []), ...tensorToString(argsTensor, 'full')].join(', ')}) impure {`);
+        ctx.append(`${returns} ${name}(${[...(selfTensor ? ['(' + tensorToString(selfTensor, 'types').join(', ') + ') self'] : []), ...tensorToString(argsTensor, 'full')].join(', ')}) inline {`);
         ctx.inIndent(() => {
 
             // Unpack self
@@ -159,7 +159,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
             { name: f.name, type: { kind: 'ref', name: f.type, optional: false } }
         ], ctx);
         let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), ...tensorToString(argsTensor, 'full')].join(', ')}) impure {`);
+        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), ...tensorToString(argsTensor, 'full')].join(', ')}) inline {`);
         ctx.inIndent(() => {
             ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
 
@@ -180,7 +180,7 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
         let argsTensor = resolveFuncTensor(init.args, ctx);
         let selfTensor = resolveFuncTensor(t.fields, ctx, `self'`);
         let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-        ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
+        ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')}) inline {`);
         ctx.inIndent(() => {
 
             // Generate self initial tensor
@@ -227,7 +227,7 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure {`);
+        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure {`); // NOTE: Impure function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
             ctx.used(`__gen_write_${type.name}`);

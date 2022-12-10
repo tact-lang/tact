@@ -5,14 +5,14 @@ PROGRAM{
   DECLPROC __gen_SampleContract_stake
   80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
-  __gen_read_Source PROC:<{
+  __gen_read_Source PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
   }>
-  __gen_read_SampleContract PROC:<{
+  __gen_read_SampleContract PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -20,7 +20,7 @@ PROGRAM{
     LDREF
     DROP
     CTOS
-    __gen_read_Source CALLDICT
+    __gen_read_Source INLINECALLDICT
     s0 s2 XCHG
     LDDICT
     s0 s5 XCHG
@@ -30,15 +30,15 @@ PROGRAM{
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH
     CTOS
-    __gen_read_SampleContract CALLDICT
+    __gen_read_SampleContract INLINECALLDICT
     1 5 BLKDROP2
   }>
-  __gen_SampleContract_stake PROC:<{
+  __gen_SampleContract_stake PROCINLINE:<{
     4 BLKDROP
   }>
   __gen_get_stake PROC:<{
     __gen_load_SampleContract INLINECALLDICT
-    __gen_SampleContract_stake CALLDICT
+    __gen_SampleContract_stake INLINECALLDICT
   }>
   recv_internal PROC:<{
     2DROP

@@ -10,7 +10,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_Transfer(builder build_0, int v'seqno, int v'mode, slice v'to, int v'amount, cell v'body) impure {
+builder __gen_write_Transfer(builder build_0, int v'seqno, int v'mode, slice v'to, int v'amount, cell v'body) inline {
     build_0 = store_uint(build_0, v'seqno, 32);
     build_0 = store_uint(build_0, v'mode, 8);
     build_0 = __tact_store_address(build_0, v'to);
@@ -28,7 +28,7 @@ cell __gen_writecell_Transfer(int v'seqno,int v'mode,slice v'to,int v'amount,cel
     return __gen_write_Transfer(begin_cell(), v'seqno, v'mode, v'to, v'amount, v'body).end_cell();
 }
 
-(slice, (int, int, slice, int, cell)) __gen_read_Transfer(slice sc) {
+(slice, (int, int, slice, int, cell)) __gen_read_Transfer(slice sc) inline {
     var seqno = sc~load_uint(32);
     var mode = sc~load_uint(8);
     var to = sc~__tact_load_address();
@@ -40,13 +40,13 @@ cell __gen_writecell_Transfer(int v'seqno,int v'mode,slice v'to,int v'amount,cel
     return (sc, (seqno, mode, to, amount, body));
 }
 
-(slice, (slice, int, int, slice, int, cell)) __gen_read_TransferMessage(slice sc) {
+(slice, (slice, int, int, slice, int, cell)) __gen_read_TransferMessage(slice sc) inline {
     var signature = sc~load_ref().begin_parse();
     var (int transfer'seqno, int transfer'mode, slice transfer'to, int transfer'amount, cell transfer'body) = sc~__gen_read_Transfer();
     return (sc, (signature, transfer'seqno, transfer'mode, transfer'to, transfer'amount, transfer'body));
 }
 
-builder __gen_write_Wallet(builder build_0, int v'seqno, int v'key, int v'walletId) impure {
+builder __gen_write_Wallet(builder build_0, int v'seqno, int v'key, int v'walletId) inline {
     build_0 = store_uint(build_0, v'seqno, 32);
     build_0 = store_uint(build_0, v'key, 256);
     build_0 = store_uint(build_0, v'walletId, 64);
@@ -57,7 +57,7 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     return __gen_write_Wallet(begin_cell(), v'seqno, v'key, v'walletId).end_cell();
 }
 
-(slice, (int, int, int)) __gen_read_Wallet(slice sc) {
+(slice, (int, int, int)) __gen_read_Wallet(slice sc) inline {
     var seqno = sc~load_uint(32);
     var key = sc~load_uint(256);
     var walletId = sc~load_uint(64);
@@ -75,7 +75,7 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     set_data(b.end_cell());
 }
 
-() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) impure {
+() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) inline {
     builder b = begin_cell();
     b = store_int(b, 1, 2);
     b = store_int(b, params'bounce, 1);
@@ -95,14 +95,14 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     send_raw_message(c, params'mode);
 }
 
-cell __gen_Wallet_init(int key, int walletId) impure {
+cell __gen_Wallet_init(int key, int walletId) inline {
     var (int self'seqno, int self'key, int self'walletId) = (0, null(), null());
     self'key = key;
     self'walletId = walletId;
     return __gen_writecell_Wallet(self'seqno, self'key, self'walletId);
 }
 
-int __gen_Wallet_publicKey((int, int, int) self) impure {
+int __gen_Wallet_publicKey((int, int, int) self) inline {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'key;
 }
@@ -113,7 +113,7 @@ _ __gen_get_publicKey() method_id(86520) {
     return res;
 }
 
-int __gen_Wallet_walletId((int, int, int) self) impure {
+int __gen_Wallet_walletId((int, int, int) self) inline {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'walletId;
 }
@@ -124,7 +124,7 @@ _ __gen_get_walletId() method_id(114762) {
     return res;
 }
 
-int __gen_Wallet_seqno((int, int, int) self) impure {
+int __gen_Wallet_seqno((int, int, int) self) inline {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'seqno;
 }
@@ -135,7 +135,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, int msg'transfer'seqno, int msg'transfer'mode, slice msg'transfer'to, int msg'transfer'amount, cell msg'transfer'body) impure {
+((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, int msg'transfer'seqno, int msg'transfer'mode, slice msg'transfer'to, int msg'transfer'amount, cell msg'transfer'body) inline {
     var (self'seqno, self'key, self'walletId) = self;
     int op_hash = cell_hash(__gen_writecell_Transfer((msg'transfer'seqno, msg'transfer'mode, msg'transfer'to, msg'transfer'amount, msg'transfer'body)));
     throw_unless(42, check_signature(op_hash, msg'signature, self'key));

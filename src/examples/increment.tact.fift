@@ -28,37 +28,37 @@ PROGRAM{
     s1 s3 s3 XCHG3
     DICTISETREF
   }>
-  __gen_read_Increment PROC:<{
+  __gen_read_Increment PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
   }>
-  __gen_write_IncrementContract PROC:<{
+  __gen_write_IncrementContract PROCINLINE:<{
     SWAP
     STDICT
   }>
   __gen_writecell_IncrementContract PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_IncrementContract CALLDICT
+    __gen_write_IncrementContract INLINECALLDICT
     ENDC
   }>
-  __gen_read_IncrementContract PROC:<{
+  __gen_read_IncrementContract PROCINLINE:<{
     LDDICT
     SWAP
   }>
   __gen_load_IncrementContract PROCINLINE:<{
     c4 PUSH
     CTOS
-    __gen_read_IncrementContract CALLDICT
+    __gen_read_IncrementContract INLINECALLDICT
     NIP
   }>
   __gen_store_IncrementContract PROC:<{
     NEWC
     SWAP
-    __gen_write_IncrementContract CALLDICT
+    __gen_write_IncrementContract INLINECALLDICT
     ENDC
     c4 POP
   }>
@@ -86,7 +86,7 @@ PROGRAM{
     IFJMP:<{
       __gen_load_IncrementContract INLINECALLDICT
       SWAP
-      __gen_read_Increment CALLDICT
+      __gen_read_Increment INLINECALLDICT
       1 2 BLKDROP2
       __gen_IncrementContract_receive_Increment CALLDICT
       __gen_store_IncrementContract CALLDICT

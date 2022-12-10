@@ -7,13 +7,13 @@
     }
 }
 
-(slice, (int, int)) __gen_read_Increment(slice sc) {
+(slice, (int, int)) __gen_read_Increment(slice sc) inline {
     var key = sc~load_int(257);
     var value = sc~load_int(257);
     return (sc, (key, value));
 }
 
-builder __gen_write_IncrementContract(builder build_0, cell v'counters) impure {
+builder __gen_write_IncrementContract(builder build_0, cell v'counters) inline {
     build_0 = store_dict(build_0, v'counters);
     return build_0;
 }
@@ -22,7 +22,7 @@ cell __gen_writecell_IncrementContract(cell v'counters) inline {
     return __gen_write_IncrementContract(begin_cell(), v'counters).end_cell();
 }
 
-(slice, (cell)) __gen_read_IncrementContract(slice sc) {
+(slice, (cell)) __gen_read_IncrementContract(slice sc) inline {
     var counters = sc~load_dict();
     return (sc, (counters));
 }
@@ -38,12 +38,12 @@ cell __gen_writecell_IncrementContract(cell v'counters) inline {
     set_data(b.end_cell());
 }
 
-cell __gen_IncrementContract_init() impure {
+cell __gen_IncrementContract_init() inline {
     var (cell self'counters) = (null());
     return __gen_writecell_IncrementContract(self'counters);
 }
 
-cell __gen_IncrementContract_counters((cell) self) impure {
+cell __gen_IncrementContract_counters((cell) self) inline {
     var (cell self'counters) = self;
     return self'counters;
 }
@@ -54,7 +54,7 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) impure {
+((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) inline {
     var (self'counters) = self;
     self'counters~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
     return ((self'counters), ());

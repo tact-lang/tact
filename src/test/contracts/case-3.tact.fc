@@ -1,10 +1,10 @@
-(slice, (int, int)) __gen_read_Source(slice sc) {
+(slice, (int, int)) __gen_read_Source(slice sc) inline {
     var a = sc~load_int(257);
     var b = sc~load_int(257);
     return (sc, (a, b));
 }
 
-(slice, (int, int, int, int)) __gen_read_SampleContract(slice sc) {
+(slice, (int, int, int, int)) __gen_read_SampleContract(slice sc) inline {
     var a = sc~load_int(257);
     var b = sc~load_int(257);
     sc = (sc~load_ref()).begin_parse();
@@ -17,7 +17,7 @@
     return sc~__gen_read_SampleContract();
 }
 
-int __gen_SampleContract_stake((int, int, int, int) self) impure {
+int __gen_SampleContract_stake((int, int, int, int) self) inline {
     var (int self'a, int self'b, int self'c'a, int self'c'b) = self;
     return self'a;
 }

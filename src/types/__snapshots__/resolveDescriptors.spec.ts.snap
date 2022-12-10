@@ -301,6 +301,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
+        "ref": a: Int;,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -312,6 +313,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         "default": undefined,
         "index": 1,
         "name": "b",
+        "ref": b: Bool;,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -358,6 +360,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
+        "ref": a: Struct1;,
         "type": {
           "kind": "ref",
           "name": "Struct1",
@@ -671,6 +674,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
+        "ref": a: Int;,
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -682,6 +686,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "default": undefined,
         "index": 1,
         "name": "b",
+        "ref": b: Bool;,
         "type": {
           "kind": "ref",
           "name": "Bool",
@@ -1244,6 +1249,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "default": undefined,
         "index": 0,
         "name": "a",
+        "ref": a: Int;,
         "type": {
           "kind": "ref",
           "name": "Int",

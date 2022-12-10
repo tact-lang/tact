@@ -107,7 +107,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to builder
     ctx.fun(`__gen_write_${name}`, () => {
-        ctx.append(`builder __gen_write_${name}(${['builder build_0', ...args].join(', ')}) impure {`);
+        ctx.append(`builder __gen_write_${name}(${['builder build_0', ...args].join(', ')}) inline {`);
         ctx.inIndent(() => {
             if (allocation.fields.length > 0) {
                 writeSerializerCell(allocation.root, 0, ctx);
@@ -234,7 +234,7 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
     ctx.fun(`__gen_read_${name}`, () => {
         let tensor = resolveFuncTensor(allocation.fields, ctx);
         let returns = tensorToString(tensor, 'types');
-        ctx.append(`(slice, (${returns.join(', ')})) __gen_read_${name}(slice sc) {`);
+        ctx.append(`(slice, (${returns.join(', ')})) __gen_read_${name}(slice sc) inline {`);
         ctx.inIndent(() => {
 
             // Write cell parser
