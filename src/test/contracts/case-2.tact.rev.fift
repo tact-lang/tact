@@ -1,0 +1,8 @@
+SETCP0
+(:methods
+  recv_internal: 
+    2DROP
+    100 THROW
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

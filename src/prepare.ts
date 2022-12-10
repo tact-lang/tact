@@ -3,6 +3,8 @@ import { compile, precompile } from './main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from './generator/createABI';
 import { writeTypescript } from './generator/writeTypescript';
+import { fromCode } from 'tvm-disassembler';
+import { Cell } from 'ton';
 
 // Read cases
 (async () => {
@@ -33,6 +35,10 @@ import { writeTypescript } from './generator/writeTypescript';
                 }
                 fs.writeFileSync(p.path + r + ".fift", c.fift!);
                 fs.writeFileSync(p.path + r + ".cell", c.output!);
+
+                // Cell -> Fift decpmpiler
+                let source = fromCode(Cell.fromBoc(c.output!)[0]);
+                fs.writeFileSync(p.path + r + ".rev.fift", source);
 
                 // Tact -> ABI
                 let abi = createABI(res.ctx);

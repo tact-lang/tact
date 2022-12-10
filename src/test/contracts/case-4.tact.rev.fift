@@ -1,0 +1,31 @@
+SETCP0
+(:methods
+  recv_internal: 
+    2DROP
+    100 THROW
+
+  80984: 
+    c4 PUSH
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    LDREF
+    s0 POP
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    ROTREV
+    s0 s2 XCHG
+    LDDICT
+    s0 s5 XCHG
+    s0 s4 XCHG
+    s3 s3 XCHG2
+    1 5 BLKDROP2
+    4 BLKDROP
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

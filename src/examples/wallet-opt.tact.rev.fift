@@ -1,0 +1,99 @@
+SETCP0
+(:methods
+  recv_internal: 
+    s1 POP
+    32 LDU
+    s0 s1 XCHG
+    1843760589 PUSHINT
+    EQUAL
+    <{
+      c4 PUSH
+      CTOS
+      32 LDU
+      256 LDU
+      64 LDU
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+      s0 s3 XCHG
+      9 PUSHPOW2
+      LDSLICEX
+      TUCK
+      s2 POP
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      s0 PUSH
+      HASHSU
+      0 2 4 XC2PU
+      CHKSIGNU
+      42 THROWIFNOT
+      32 LDI
+      8 LDI
+      LDREF
+      s0 POP
+      s2 s5 XCPU
+      EQUAL
+      43 THROWIFNOT
+      s0 s4 XCHG
+      INC
+      s0 s4 XCHG
+      SENDRAWMSG
+      6 CALLDICT
+    }> PUSHCONT
+    IFJMP
+    s0 POP
+    100 THROW
+
+  6: 
+    NEWC
+    3 1 BLKSWAP
+    s2 s3 XCHG2
+    32 STU
+    256 STU
+    64 STU
+    ENDC
+    c4 POP
+
+  80403: 
+    0 PUSHINT
+    ROTREV
+    NEWC
+    3 1 BLKSWAP
+    s2 s3 XCHG2
+    32 STU
+    256 STU
+    64 STU
+    ENDC
+
+  seqno: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    64 LDU
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    2DROP
+
+  86520: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    64 LDU
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    s0 POP
+    s1 POP
+
+  114762: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    64 LDU
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    2 1 BLKDROP2
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

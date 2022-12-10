@@ -1,0 +1,152 @@
+SETCP0
+(:methods
+  recv_internal: 
+    s1 POP
+    32 LDU
+    s0 s1 XCHG
+    819865922 PUSHINT
+    EQUAL
+    <{
+      c4 PUSH
+      CTOS
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
+      1 4 BLKDROP2
+      s0 s4 XCHG
+      32 LDU
+      LDGRAMS
+      LDMSGADDR
+      s0 s1 XCHG
+      s3 s3 s0 XCHG3
+      s0 s3 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s0 s1 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s0 s1 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s1 s6 XCHG
+      s3 s3 s0 XCHG3
+      s6 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      1 5 BLKSWAP
+      5 4 3 PUSH3
+      NEWC
+      3 1 BLKSWAP
+      s2 s3 XCHG2
+      32 STU
+      s0 s1 XCHG
+      STGRAMS
+      s0 s1 XCHG
+      STSLICER
+      ENDC
+      HASHCU
+      s0 s3 PUXC
+      s10 PUSH
+      CHKSIGNU
+      s3 s2 PUXC
+      s9 PUSH
+      CHKSIGNU
+      3 3 7 XC2PU
+      CHKSIGNU
+      s5 s9 PUSH2
+      EQUAL
+      10 THROWIFNOT
+      s0 s2 XCHG
+      AND
+      s0 s1 XCHG
+      AND
+      10 THROWIFNOT
+      3 BLKDROP
+      12 CALLDICT
+    }> PUSHCONT
+    IFJMP
+    s0 POP
+    100 THROW
+
+  1: 
+    s0 PUSH
+    ISNULL
+    14 THROWIF
+
+  12: 
+    NEWC
+    4 1 BLKSWAP
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
+    ENDC
+    c4 POP
+
+  seqno: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
+    4 1 BLKSWAP
+    1 4 BLKDROP2
+    3 BLKDROP
+
+  99239: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
+    4 1 BLKSWAP
+    1 4 BLKDROP2
+    3 1 BLKDROP2
+
+  103302: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
+    4 1 BLKSWAP
+    1 4 BLKDROP2
+    s1 s3 XCHG
+    3 BLKDROP
+
+  107493: 
+    c4 PUSH
+    CTOS
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
+    4 1 BLKSWAP
+    1 4 BLKDROP2
+    s2 s3 XCHG
+    3 BLKDROP
+
+  117447: 
+    0 PUSHINT
+    3 1 BLKSWAP
+    NEWC
+    4 1 BLKSWAP
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
+    ENDC
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

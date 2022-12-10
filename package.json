@@ -17,7 +17,8 @@
     "ton-compiler": "^2.0.0",
     "ton-contract-executor": "^0.6.0",
     "ton-crypto": "^3.2.0",
-    "ton-nodejs": "^1.4.2"
+    "ton-nodejs": "^1.4.2",
+    "tvm-disassembler": "^1.2.1"
   },
   "devDependencies": {
     "@ohm-js/cli": "^1.1.0",
@@ -27,5 +28,8 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3"
+  },
+  "resolutions": {
+    "ton": "12.1.5"
   }
 }
