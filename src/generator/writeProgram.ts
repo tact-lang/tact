@@ -154,8 +154,9 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
-        let args = init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name);
-        ctx.append(`cell __gen_${t.name}_init(${args.join(', ')}) impure {`);
+        let argsTensor = resolveFuncTensor(init.args, ctx);
+        let selfTensor = resolveFuncTensor(t.fields, ctx, `self'`);
+        ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
         ctx.inIndent(() => {
             let initValues: string[] = [];
             for (let i = 0; i < t.fields.length; i++) {
@@ -167,8 +168,7 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
                 }
                 initValues.push(init);
             }
-            ctx.used('__tact_to_tuple');
-            ctx.append(`tuple self = __tact_to_tuple([${initValues.join(', ')}]);`);
+            ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = (${initValues.join(', ')});`);
 
             // Generate statements
             for (let s of init.ast.statements) {
@@ -176,7 +176,7 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
             }
 
             ctx.used(`__gen_writecell_${t.name}`);
-            ctx.append(`return __gen_writecell_${t.name}(self);`);
+            ctx.append(`return __gen_writecell_${t.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
         });
         ctx.append(`}`);
     });
