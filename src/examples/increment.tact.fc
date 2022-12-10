@@ -27,6 +27,18 @@ cell __gen_writecell_IncrementContract(cell v'counters) inline {
     return (sc, (counters));
 }
 
+_ __gen_Increment_get_key(int v'key, int v'value) inline {
+    return v'key;
+}
+
+_ __gen_Increment_get_value(int v'key, int v'value) inline {
+    return v'value;
+}
+
+_ __gen_IncrementContract_get_counters(cell v'counters) inline {
+    return v'counters;
+}
+
 (cell) __gen_load_IncrementContract() inline {
     slice sc = get_data().begin_parse();
     return sc~__gen_read_IncrementContract();
@@ -44,7 +56,7 @@ cell __gen_IncrementContract_init() impure {
 }
 
 cell __gen_IncrementContract_counters(cell self'counters) impure {
-    return self'counters;
+    return __gen_IncrementContract_get_counters((self'counters));
 }
 
 _ __gen_get_counters() method_id(95239) {
@@ -53,8 +65,9 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-((cell), ()) __gen_IncrementContract_receive_Increment(cell self'counters, int msg'key, int msg'value) impure {
-    self'counters = __tact_dict_set_int_int(self'counters, 257, msg'key, msg'value, 257);
+((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key,int msg'value) impure {
+    var (self'counters) = self;
+    self'counters = __tact_dict_set_int_int(__gen_IncrementContract_get_counters((self'counters)), 257, __gen_Increment_get_key((msg'key, msg'value)), __gen_Increment_get_value((msg'key, msg'value)), 257);
     return ((self'counters), ());
 }
 

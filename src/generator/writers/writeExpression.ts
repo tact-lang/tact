@@ -13,6 +13,21 @@ function isNull(f: ASTExpression) {
     return false;
 }
 
+function tryExtractPath(f: ASTExpression): string[] | null {
+    if (f.kind === 'id') {
+        return [f.value];
+    }
+    if (f.kind === 'op_field') {
+        let p = tryExtractPath(f.src);
+        if (p) {
+            return [...p, f.name];
+        } else {
+            return null;
+        }
+    }
+    return null;
+}
+
 export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     //
@@ -44,6 +59,13 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'id') {
+        let t = getExpType(ctx.ctx, f);
+        if (t.kind === 'ref') {
+            let tt = getType(ctx.ctx, t.name);
+            if (tt.kind === 'contract' || tt.kind === 'struct') {
+                return '(' + tensorToString(resolveFuncTensor(tt.fields, ctx, `${f.value}'`), 'names').join(', ') + ')';
+            }
+        }
         return f.value;
     }
 
@@ -158,7 +180,13 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         }
 
         // Write getter
-        return `${writeExpression(f.src, ctx)}'${field.name}`;
+        // let path = tryExtractPath(f);
+        // if (path) {
+        //     return path.join("'");
+        // } else {
+        ctx.used(`__gen_${srcT.name}_get_${field.name}`);
+        return `__gen_${srcT.name}_get_${field.name}(${writeExpression(f.src, ctx)})`;
+        // }
     }
 
     //

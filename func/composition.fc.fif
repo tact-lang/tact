@@ -1,6 +1,9 @@
 PROGRAM{
   DECLPROC do_something
   DECLPROC do_another
+  DECLPROC get_first
+  DECLPROC get_second
+  DECLPROC do_mutate
   DECLPROC main
   do_something PROC:<{
     DUP
@@ -8,9 +11,21 @@ PROGRAM{
   do_another PROC:<{
     ADD
   }>
+  get_first PROCINLINE:<{
+    DROP
+  }>
+  get_second PROCINLINE:<{
+    NIP
+  }>
+  do_mutate PROC:<{
+    s2 s1 PUXC
+    ADD
+    -ROT
+    ADD
+  }>
   main PROC:<{
     1 PUSHINT
     do_something CALLDICT
-    do_another CALLDICT
+    2DROP
   }>
 }END>c

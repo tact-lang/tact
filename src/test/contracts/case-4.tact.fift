@@ -1,6 +1,7 @@
 PROGRAM{
   DECLPROC __gen_read_Source
   DECLPROC __gen_read_SampleContract
+  DECLPROC __gen_SampleContract_get_a
   DECLPROC __gen_load_SampleContract
   DECLPROC __gen_SampleContract_stake
   80984 DECLMETHOD __gen_get_stake
@@ -27,6 +28,9 @@ PROGRAM{
     s0 s4 XCHG
     s3 s3 XCHG2
   }>
+  __gen_SampleContract_get_a PROCINLINE:<{
+    4 BLKDROP
+  }>
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -34,7 +38,7 @@ PROGRAM{
     1 5 BLKDROP2
   }>
   __gen_SampleContract_stake PROC:<{
-    4 BLKDROP
+    __gen_SampleContract_get_a INLINECALLDICT
   }>
   __gen_get_stake PROC:<{
     __gen_load_SampleContract INLINECALLDICT

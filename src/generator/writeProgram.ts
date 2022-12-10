@@ -11,6 +11,7 @@ import { writeExpression } from "./writers/writeExpression";
 import { writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { resolveFuncTensor, TensorDef, tensorToString } from "./writers/resolveFuncTensor";
+import { writeAccessors } from "./writers/writeAccessors";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -22,6 +23,16 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         }
         return;
     } else if (f.kind === 'statement_let') {
+        let t = resolveTypeRef(ctx.ctx, f.type);
+        if (t.kind === 'ref') {
+            let tt = getType(ctx.ctx, t.name);
+            if (tt.kind === 'contract' || tt.kind === 'struct') {
+                let tensor = resolveFuncTensor(tt.fields, ctx, `${f.name}'`);
+                ctx.append(`var (${tensorToString(tensor, 'full').join(', ')}) = ${writeExpression(f.expression, ctx)};`);
+                return;
+            }
+        }
+
         ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${f.name} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_assign') {
@@ -138,12 +149,12 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
     ctx.fun(`__gen_${self.name}_receive_${f.type}`, () => {
         let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
         let argsTensor = resolveFuncTensor([
-            { name: 'self', type: { kind: 'ref', name: self.name, optional: false } },
             { name: f.name, type: { kind: 'ref', name: f.type, optional: false } }
         ], ctx);
         let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
+        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), tensorToString(argsTensor, 'full')].join(', ')}) impure {`);
         ctx.inIndent(() => {
+            ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
 
             for (let s of f.ast.statements) {
                 writeStatement(s, selfRes, ctx);
@@ -241,7 +252,7 @@ function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
             // Execute get method
             ctx.used(`__gen_${self.name}_${f.name}`);
-            ctx.append(`var res = __gen_${self.name}_${f.name}(${tensorToString(argsFullTensor, 'names')});`);
+            ctx.append(`var res = __gen_${self.name}_${f.name}(${tensorToString(argsFullTensor, 'names').join(', ')});`);
 
             // Return restult
             ctx.append(`return res;`);
@@ -347,6 +358,13 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: bool
     for (let k of allocations) {
         writeSerializer(k.type.name, k.allocation, wctx);
         writeParser(k.type.name, k.allocation, wctx);
+    }
+
+    // Accessors
+    for (let t of allTypes) {
+        if (t.kind === 'contract' || t.kind === 'struct') {
+            writeAccessors(t, wctx);
+        }
     }
 
     // Storage Functions

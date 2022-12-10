@@ -1290,7 +1290,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           ],
         },
         "isGetter": true,
-        "isMutating": true,
+        "isMutating": false,
         "isPublic": false,
         "name": "hello",
         "returns": {
@@ -1338,7 +1338,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           ],
         },
         "isGetter": true,
-        "isMutating": true,
+        "isMutating": false,
         "isPublic": false,
         "name": "hello2",
         "returns": {

@@ -103,8 +103,7 @@ export class WriterContext {
             throw new Error(`Nested function definition is not supported`); // Should not happen
         }
 
-        console.log(`Rendering: "${name}"`);
-
+        // console.log(`Rendering: "${name}"`);
 
         // Write function
         this.#pendingWriter = new Writer();
@@ -119,7 +118,7 @@ export class WriterContext {
 
     used(name: string) {
         this.#pendingDepends!!.add(name);
-        console.log(`<-- "${name}"`);
+        // console.log(`<-- "${name}"`);
     }
 
     //
