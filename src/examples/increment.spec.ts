@@ -20,11 +20,12 @@ describe('increment', () => {
                 body: new CommonMessageInfo({
                     body: new CellMessage(packIncrement({
                         $$type: 'Increment',
-                        key: 1n,
+                        key: 0n,
                         value: -1232n
                     }))
                 })
             }), { debug: true });
+            console.warn(res.gasConsumed);
         } catch (e) {
             if (e instanceof ExecuteError) {
                 console.warn(e.debugLogs);

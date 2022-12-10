@@ -1,0 +1,11 @@
+(int, int) do_something(int a) {
+    return (a, a);
+}
+
+(int) do_another(int a, int b) {
+    return a + b;
+}
+
+_ main() {
+    return do_another(do_something(1));
+}

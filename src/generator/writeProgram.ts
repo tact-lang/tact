@@ -10,7 +10,7 @@ import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeExpression } from "./writers/writeExpression";
 import { writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
-import { resolveFuncTensor, tensorToString } from "./writers/resolveFuncTensor";
+import { resolveFuncTensor, TensorDef, tensorToString } from "./writers/resolveFuncTensor";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -97,31 +97,36 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     const fd = f.ast;
 
     let self = f.self ? getType(ctx.ctx, f.self) : null;
+    let selfTensor: TensorDef | null = null;
+    if (self) {
+        selfTensor = resolveFuncTensor([{ name: 'self', type: { kind: 'ref' as const, name: self.name, optional: false } }], ctx);
+    }
 
     // Write function header
     let argsTensor = resolveFuncTensor([...(self ? [{ name: 'self', type: { kind: 'ref' as const, name: self.name, optional: false } }] : []), ...f.args], ctx);
     let returns: string = resolveFuncType(f.returns, ctx);
-    if (self && f.isMutating) {
+    if (selfTensor && f.isMutating) {
         if (f.returns) {
-            returns = `(${resolveFuncType(self, ctx)}, ${returns})`;
+            returns = `((${tensorToString(selfTensor, 'types').join(', ')}), ${returns})`;
         } else {
-            returns = `(${resolveFuncType(self, ctx)}, ())`;
+            returns = `((${tensorToString(selfTensor, 'types').join(', ')}), ())`;
         }
     }
 
     // Resolve function name
     let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
+    let selfStr = selfTensor ? `(${tensorToString(selfTensor, 'names').join(', ')})` : null;
 
     // Write function body
     ctx.fun(name, () => {
         ctx.append(`${returns} ${name}(${tensorToString(argsTensor, 'full').join(', ')}) impure {`);
         ctx.inIndent(() => {
             for (let s of fd.statements) {
-                writeStatement(s, null, ctx);
+                writeStatement(s, f.isMutating ? selfStr : null, ctx);
             }
             if (f.self && (f.returns.kind === 'void') && f.isMutating) {
                 if (fd.statements.length === 0 || fd.statements[fd.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (self, ());`);
+                    ctx.append(`return (${selfStr}, ());`);
                 }
             }
         });
@@ -131,7 +136,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
 function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${self.name}_receive_${f.type}`, () => {
-        let selfTensor = resolveFuncTensor(self.fields, ctx);
+        let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
         let argsTensor = resolveFuncTensor([
             { name: 'self', type: { kind: 'ref', name: self.name, optional: false } },
             { name: f.name, type: { kind: 'ref', name: f.type, optional: false } }
@@ -217,14 +222,17 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
 function writeGetter(f: FunctionDescription, ctx: WriterContext) {
     ctx.fun(`__gen_get_${f.name}`, () => {
-        let argsTensor = resolveFuncTensor(f.args, ctx);
+
+        // Render tensors
+        const self = f.self ? getType(ctx.ctx, f.self) : null;
+        if (!self) {
+            throw new Error(`No self type for getter ${f.name}`); // Impossible
+        }
+        const argsTensor = resolveFuncTensor(f.args, ctx);
+        const argsFullTensor = resolveFuncTensor([{ name: 'self', type: { kind: 'ref', name: self.name, optional: false } }, ...f.args], ctx);
+
         ctx.append(`_ __gen_get_${f.name}(${tensorToString(argsTensor, 'full').join(', ')}) method_id(${getMethodId(f.name)}) {`);
         ctx.inIndent(() => {
-
-            let self = f.self ? getType(ctx.ctx, f.self) : null;
-            if (!self) {
-                throw new Error(`No self type for getter ${f.name}`); // Impossible
-            }
             let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
 
             // Load contract state
@@ -233,7 +241,7 @@ function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
             // Execute get method
             ctx.used(`__gen_${self.name}_${f.name}`);
-            ctx.append(`var res = (${tensorToString(selfTensor, 'names').join(', ')})~__gen_${self.name}_${f.name}(${tensorToString(argsTensor, 'names')});`);
+            ctx.append(`var res = __gen_${self.name}_${f.name}(${tensorToString(argsFullTensor, 'names')});`);
 
             // Return restult
             ctx.append(`return res;`);

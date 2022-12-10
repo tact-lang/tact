@@ -111,58 +111,58 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) impure {
     return __gen_writecell_MultisigContract(self'seqno, self'user1_key, self'user2_key, self'user3_key);
 }
 
-(tuple, ()) __gen_MultisigContract_execute(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key, int op'seqno, int op'amount, slice op'target) impure {
+((int, int, int, int), ()) __gen_MultisigContract_execute(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key, int op'seqno, int op'amount, slice op'target) impure {
     send((true, op'target, op'amount, 0, null()));
-    return (self, ());
+    return ((self'seqno, self'user1_key, self'user2_key, self'user3_key), ());
 }
 
-(tuple, slice) __gen_MultisigContract_testAddress(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
+slice __gen_MultisigContract_testAddress(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
     return __tact_compute_contract_address(0, end_cell(begin_cell()), end_cell(begin_cell()));
 }
 
 _ __gen_get_testAddress() method_id(80602) {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
-    var res = (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_testAddress();
+    var res = __gen_MultisigContract_testAddress(self'seqno,self'user1_key,self'user2_key,self'user3_key);
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_key1(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
+int __gen_MultisigContract_key1(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
     return self'user1_key;
 }
 
 _ __gen_get_key1() method_id(107493) {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
-    var res = (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_key1();
+    var res = __gen_MultisigContract_key1(self'seqno,self'user1_key,self'user2_key,self'user3_key);
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_key2(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
+int __gen_MultisigContract_key2(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
     return self'user2_key;
 }
 
 _ __gen_get_key2() method_id(103302) {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
-    var res = (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_key2();
+    var res = __gen_MultisigContract_key2(self'seqno,self'user1_key,self'user2_key,self'user3_key);
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_key3(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
+int __gen_MultisigContract_key3(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
     return self'user3_key;
 }
 
 _ __gen_get_key3() method_id(99239) {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
-    var res = (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_key3();
+    var res = __gen_MultisigContract_key3(self'seqno,self'user1_key,self'user2_key,self'user3_key);
     return res;
 }
 
-(tuple, int) __gen_MultisigContract_seqno(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
+int __gen_MultisigContract_seqno(int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) impure {
     return self'seqno;
 }
 
 _ __gen_get_seqno() method_id(85143) {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
-    var res = (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_seqno();
+    var res = __gen_MultisigContract_seqno(self'seqno,self'user1_key,self'user2_key,self'user3_key);
     return res;
 }
 
@@ -173,7 +173,7 @@ _ __gen_get_seqno() method_id(85143) {
     int ok3 = check_signature(op_hash, msg'signature3, self'user3_key);
     throw_unless(10, (msg'operation'seqno == self'seqno));
     throw_unless(10, ((ok1 & ok2) & ok3));
-    self ~__gen_MultisigContract_execute (msg'operation);
+    self~__gen_MultisigContract_execute(msg'operation);
     return ((seqno, user1_key, user2_key, user3_key), ());
 }
 

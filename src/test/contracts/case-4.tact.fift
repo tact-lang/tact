@@ -11,7 +11,6 @@ PROGRAM{
     257 PUSHINT
     LDIX
     -ROT
-    PAIR
   }>
   __gen_read_SampleContract PROC:<{
     257 PUSHINT
@@ -22,25 +21,24 @@ PROGRAM{
     DROP
     CTOS
     __gen_read_Source CALLDICT
-    SWAP
+    s0 s2 XCHG
     LDDICT
-    4 -ROLL
-    4 TUPLE
+    s0 s5 XCHG
+    s0 s4 XCHG
+    s3 s3 XCHG2
   }>
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH
     CTOS
     __gen_read_SampleContract CALLDICT
-    NIP
+    1 5 BLKDROP2
   }>
   __gen_SampleContract_stake PROC:<{
-    DUP
-    0 INDEX
+    4 BLKDROP
   }>
   __gen_get_stake PROC:<{
     __gen_load_SampleContract INLINECALLDICT
     __gen_SampleContract_stake CALLDICT
-    NIP
   }>
   recv_internal PROC:<{
     2DROP

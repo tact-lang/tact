@@ -1,0 +1,16 @@
+PROGRAM{
+  DECLPROC do_something
+  DECLPROC do_another
+  DECLPROC main
+  do_something PROC:<{
+    DUP
+  }>
+  do_another PROC:<{
+    ADD
+  }>
+  main PROC:<{
+    1 PUSHINT
+    do_something CALLDICT
+    do_another CALLDICT
+  }>
+}END>c

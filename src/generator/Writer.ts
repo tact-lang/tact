@@ -26,9 +26,14 @@ export class WriterContext {
     #functions: Map<string, { name: string, code: string, depends: Set<string> }> = new Map();
     #pendingWriter: Writer | null = null;
     #pendingDepends: Set<string> | null = null;
+    #nextId = 0;
 
     constructor(ctx: CompilerContext) {
         this.ctx = ctx;
+    }
+
+    allocateNextRandomName() {
+        return `__gen_internal_${this.#nextId++}`;
     }
 
     //

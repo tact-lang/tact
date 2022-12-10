@@ -19,12 +19,8 @@ contract IncrementContract {
     }
 
     receive(msg: Increment) {
-        abi.dump(self);
-        abi.dump(msg);
-        let key: Int = msg.key;
-        let v: Int = 0;
-        v.add(msg.value.mul(10));
-        self.counters = self.counters.set(key, v);
+        // msg.key.add(msg.value.mul(10));
+        self.counters = self.counters.set(msg.key, msg.value);
     }
 
     get fun counters(): map[Int]Int {

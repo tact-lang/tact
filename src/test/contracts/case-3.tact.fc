@@ -17,13 +17,13 @@
     return sc~__gen_read_SampleContract();
 }
 
-(tuple, int) __gen_SampleContract_stake(int self'a, int self'b, int self'c'a, int self'c'b) impure {
+int __gen_SampleContract_stake(int self'a, int self'b, int self'c'a, int self'c'b) impure {
     return self'a;
 }
 
 _ __gen_get_stake() method_id(80984) {
     var (int self'a, int self'b, int self'c'a, int self'c'b) = __gen_load_SampleContract();
-    var res = (self'a, self'b, self'c'a, self'c'b)~__gen_SampleContract_stake();
+    var res = __gen_SampleContract_stake(self'a,self'b,self'c'a,self'c'b);
     return res;
 }
 

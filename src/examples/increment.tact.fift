@@ -6,8 +6,6 @@ PROGRAM{
   DECLPROC __gen_read_IncrementContract
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
-  DECLPROC __gen_Int_add
-  DECLPROC __gen_Int_mul
   DECLPROC __gen_IncrementContract_init
   DECLPROC __gen_IncrementContract_counters
   95239 DECLMETHOD __gen_get_counters
@@ -36,14 +34,12 @@ PROGRAM{
     257 PUSHINT
     LDIX
     -ROT
-    PAIR
   }>
   __gen_write_IncrementContract PROC:<{
-    UNSINGLE
     SWAP
     STDICT
   }>
-  __gen_writecell_IncrementContract PROC:<{
+  __gen_writecell_IncrementContract PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_IncrementContract CALLDICT
@@ -52,7 +48,6 @@ PROGRAM{
   __gen_read_IncrementContract PROC:<{
     LDDICT
     SWAP
-    SINGLE
   }>
   __gen_load_IncrementContract PROCINLINE:<{
     c4 PUSH
@@ -67,62 +62,36 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  __gen_Int_add PROC:<{
-    ADD
-  }>
-  __gen_Int_mul PROC:<{
-    MUL
-  }>
   __gen_IncrementContract_init PROC:<{
     PUSHNULL
-    SINGLE
-    __gen_writecell_IncrementContract CALLDICT
+    __gen_writecell_IncrementContract INLINECALLDICT
   }>
   __gen_IncrementContract_counters PROC:<{
-    DUP
-    0 INDEX
   }>
   __gen_get_counters PROC:<{
     __gen_load_IncrementContract INLINECALLDICT
     __gen_IncrementContract_counters CALLDICT
-    NIP
   }>
   __gen_IncrementContract_receive_Increment PROC:<{
-    SWAP
-    s0 DUMP
-    SWAP
-    s0 DUMP
-    DUP
-    0 INDEX
-    0 PUSHINT
-    s0 s2 XCHG
-    1 INDEX
-    10 PUSHINT
-    __gen_Int_mul CALLDICT
-    s1 s2 XCHG
-    __gen_Int_add CALLDICT
-    s2 PUSH
-    0 INDEX
     257 PUSHINT
-    s3 s2 s2 XC2PU
+    s2 s2 s2 XC2PU
     __tact_dict_set_int_int CALLDICT
-    0 PUSHINT
-    SETINDEXVARQ
   }>
   recv_internal PROC:<{
     NIP
     32 LDU
-    __gen_load_IncrementContract INLINECALLDICT
-    s0 s2 XCHG
+    SWAP
     3615081709 PUSHINT
     EQUAL
     IFJMP:<{
+      __gen_load_IncrementContract INLINECALLDICT
+      SWAP
       __gen_read_Increment CALLDICT
-      NIP
+      1 2 BLKDROP2
       __gen_IncrementContract_receive_Increment CALLDICT
       __gen_store_IncrementContract CALLDICT
     }>
-    2DROP
+    DROP
     100 THROW
   }>
   init_IncrementContract PROC:<{
