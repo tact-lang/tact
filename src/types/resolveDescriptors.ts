@@ -322,6 +322,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                         // Check resolved argument type
                         let t = types[arg.type.name];
+                        if (!t) {
+                            throwError('Type ' + arg.type.name + ' not found', d.ref);
+                        }
 
                         // Raw receiver
                         if (t.kind === 'primitive' && t.name === 'Slice') {

@@ -7,15 +7,57 @@ import { createABI } from "./generator/createABI";
 import { openContext } from "./grammar/store";
 import { resolveStatements } from "./types/resolveStatements";
 import { resolvePackaging } from "./types/resolvePackaging";
+import { parseImports } from "./grammar/grammar";
 
-const stdlib = fs.readFileSync(__dirname + '/../stdlib/stdlib.tact', 'utf-8');
+function loadLibrary(path: string, name: string) {
 
-export function precompile(src: string) {
-    let ctx = openContext([stdlib, src]);
+    // Check stdlib
+    if (name.startsWith('@stdlib/')) {
+        let p = name.substring('@stdlib/'.length);
+        if (fs.existsSync(__dirname + '/../stdlib/' + p + '.tact')) {
+            return fs.readFileSync(__dirname + '/../stdlib/' + p + '.tact', 'utf-8');
+        } else {
+            console.warn(__dirname + '/../stdlib/' + p + '.tact');
+            throw new Error('Cannot find stdlib module ' + name);
+        }
+    }
+
+    throw new Error('Cannot find module ' + name);
+}
+
+export function precompile(path: string) {
+
+    // Load stdlib
+    const stdlib = fs.readFileSync(__dirname + '/../stdlib/stdlib.tact', 'utf-8');
+    const code = fs.readFileSync(path, 'utf8');
+    const imported: string[] = [];
+    let processed = new Set<string>();
+    let pending: string[] = parseImports(code);
+    while (pending.length > 0) {
+
+        // Pick next
+        let p = pending.shift()!;
+        if (processed.has(p)) {
+            continue;
+        }
+
+        // Load library
+        let loaded = loadLibrary(path, p);
+        imported.push(loaded);
+        processed.add(p);
+
+        // Add imports
+        pending = [...pending, ...parseImports(loaded)];
+    }
+
+    // Perform initial compiler steps
+    let ctx = openContext([stdlib, ...imported, code]);
     ctx = resolveDescriptors(ctx);
     ctx = resolveAllocations(ctx);
     ctx = resolveStatements(ctx);
     ctx = resolvePackaging(ctx);
+
+    // Prepared context
     return ctx;
 }
 

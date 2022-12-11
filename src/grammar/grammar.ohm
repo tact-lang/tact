@@ -8,6 +8,7 @@ Tact {
                 | StaticFunction
                 | NativeFunction
                 | ProgramImport
+                | Trait
     ProgramImport = import stringLiteral ";"
 
     // Built-in declarations
@@ -34,7 +35,8 @@ Tact {
     StructBody = Field
 
     // Contract
-    Contract = contract id "{" ContractBody* "}"
+    Contract = contract id "{" ContractBody* "}" --simple
+             | contract id with ListOf<id,","> "{" ContractBody* "}" --withTraits
     ContractInit = init "(" ListOf<FunctionArg,","> ")" "{" Statement* "}"
     ContractBody = Field
                  | ContractInit

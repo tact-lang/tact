@@ -2,6 +2,7 @@ message ChangeOnwer {
     newOwner: Address;
 }
 
+/*
 trait Ownable {
     owner: Address;
 
@@ -21,3 +22,4 @@ trait OwnableTransferable with Ownable {
         self.owner = msg.newOwner;
     }
 }
+*/

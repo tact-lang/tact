@@ -1,0 +1,215 @@
+PROGRAM{
+  DECLPROC __tact_not_null
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_read_ChangeOnwer
+  DECLPROC __gen_read_Withdraw
+  DECLPROC __gen_write_Treasure
+  DECLPROC __gen_writecell_Treasure
+  DECLPROC __gen_read_Treasure
+  DECLPROC __gen_load_Treasure
+  DECLPROC __gen_store_Treasure
+  DECLPROC send
+  DECLPROC __gen_Treasure_init
+  DECLPROC __gen_Treasure_doWithdraw
+  DECLPROC __gen_Treasure_receive_Withdraw
+  DECLPROC __gen_Treasure_receive_ChangeOnwer
+  DECLPROC __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
+  DECLPROC recv_internal
+  122670 DECLMETHOD init_Treasure
+  DECLGLOBVAR __tact_context
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_read_ChangeOnwer PROCINLINE:<{
+    32 LDU
+    SWAP
+    2284453861 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_read_Withdraw PROCINLINE:<{
+    32 LDU
+    SWAP
+    1286094280 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    LDGRAMS
+    8 LDU
+    -ROT
+  }>
+  __gen_write_Treasure PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_writecell_Treasure PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_Treasure INLINECALLDICT
+    ENDC
+  }>
+  __gen_read_Treasure PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_load_Treasure PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    __gen_read_Treasure INLINECALLDICT
+    NIP
+  }>
+  __gen_store_Treasure PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_Treasure INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  send PROCINLINE:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s1 s5 XCHG
+    1 STI
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s3 XCHG2
+    __tact_store_address INLINECALLDICT
+    SWAP
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    FALSE
+    SWAP
+    1 STI
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      s0 s2 XCHG
+      __tact_not_null CALLDICT
+      ROT
+      STREF
+    }>ELSE<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_Treasure_init PROCINLINE:<{
+    __gen_writecell_Treasure INLINECALLDICT
+  }>
+  __gen_Treasure_doWithdraw PROCINLINE:<{
+    TRUE
+    NEWC
+    ENDC
+    s3 s0 s4 XC2PU
+    s3 s3 XCHG2
+    send INLINECALLDICT
+  }>
+  __gen_Treasure_receive_Withdraw PROCINLINE:<{
+    __gen_Treasure_doWithdraw INLINECALLDICT
+  }>
+  __gen_Treasure_receive_ChangeOnwer PROCINLINE:<{
+    NIP
+  }>
+  __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROCINLINE:<{
+    0 PUSHINT
+    DUP
+    __gen_Treasure_doWithdraw INLINECALLDICT
+  }>
+  recv_internal PROC:<{
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    DUP
+    1286094280 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_Treasure INLINECALLDICT
+      SWAP
+      __gen_read_Withdraw INLINECALLDICT
+      1 2 BLKDROP2
+      __gen_Treasure_receive_Withdraw INLINECALLDICT
+      __gen_store_Treasure INLINECALLDICT
+    }>
+    DUP
+    2284453861 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_Treasure INLINECALLDICT
+      SWAP
+      __gen_read_ChangeOnwer INLINECALLDICT
+      NIP
+      __gen_Treasure_receive_ChangeOnwer INLINECALLDICT
+      __gen_store_Treasure INLINECALLDICT
+    }>
+    0 EQINT
+    IF:<{
+      HASHSU
+      68942673587165287250091431766268285359585855031594722650534428464957340454221 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_Treasure INLINECALLDICT
+        __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
+        __gen_store_Treasure INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    100 THROW
+  }>
+  init_Treasure PROC:<{
+    __gen_Treasure_init INLINECALLDICT
+  }>
+}END>c

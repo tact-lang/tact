@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef } from './ast';
+import { ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 
@@ -19,6 +19,13 @@ semantics.addOperation<ASTNode>('resolve_program', {
 
 // Resolve program items
 semantics.addOperation<ASTNode>('resolve_program_item', {
+    ProgramImport(arg0, arg1, arg2) {
+        return createNode({
+            kind: 'program_import',
+            path: arg1.resolve_expression(),
+            ref: createRef(this)
+        });
+    },
     Primitive(arg0, arg1, arg2) {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
@@ -60,7 +67,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             ref: createRef(this)
         })
     },
-    Contract(arg0, arg1, arg2, arg3, arg4) {
+    Contract_simple(arg0, arg1, arg2, arg3, arg4) {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_contract',
@@ -459,4 +466,21 @@ export function parse(src: string): ASTProgram {
     }
     let res = semantics(matchResult).resolve_program();
     return res;
+}
+
+export function parseImports(src: string): string[] {
+    let r = parse(src);
+    let imports: string[] = [];
+    let hasExpression = false;
+    for (let e of r.entries) {
+        if (e.kind === 'program_import') {
+            if (hasExpression) {
+                throwError('Import must be at the top of the file', e.ref);
+            }
+            imports.push(e.path.value);
+        } else {
+            hasExpression = true;
+        }
+    }
+    return imports;
 }

@@ -34,7 +34,9 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Struct_messageWithId?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: IterationNode, arg7: TerminalNode) => T;
   Struct?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   StructBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  Contract?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Contract_simple?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Contract_withTraits?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
+  Contract?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ContractInit?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ContractBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Trait?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;

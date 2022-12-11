@@ -20,8 +20,7 @@ import { Cell } from 'ton';
 
                 // Precompile
                 console.log('Processing ' + p.path + r);
-                let code = fs.readFileSync(p.path + r, 'utf8');
-                let ctx = precompile(code);
+                let ctx = precompile(p.path + r);
 
                 // Tact -> FunC
                 let res = compile(ctx);
