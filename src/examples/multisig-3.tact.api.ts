@@ -87,7 +87,7 @@ export class MultisigContract {
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Execute) {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && message.$$type === 'Execute') {
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Execute') {
             body = packExecute(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }

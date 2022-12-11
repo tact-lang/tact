@@ -106,6 +106,10 @@ export function createABI(ctx: CompilerContext): ContractABI {
                 kind: 'internal-comment',
                 comment: r.selector.comment
             });
+        } else if (r.selector.kind === 'internal-fallback') {
+            receivers.push({
+                kind: 'internal-fallback'
+            });
         }
     }
 

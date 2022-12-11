@@ -321,30 +321,51 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                         // Check resolved argument type
                         let t = types[d.arg.type.name];
-                        if (t.kind !== 'struct') {
-                            throwError('Receive function can only accept message', d.ref);
-                        }
-                        if (t.ast.kind !== 'def_struct') {
-                            throwError('Receive function can only accept message', d.ref);
-                        }
-                        if (!t.ast.message) {
-                            throwError('Receive function can only accept message', d.ref);
-                        }
 
-                        // Check for duplicate
-                        const n = d.arg.type.name;
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-binary' && v.selector.name === n)) {
-                            throwError(`Receive function for ${d.arg.type.name} already exists`, d.ref);
-                        }
+                        // Raw receiver
+                        if (t.kind === 'primitive' && t.name === 'Slice') {
 
-                        // Persist receiver
-                        s.receivers.push({
-                            selector: {
-                                kind: 'internal-binary', name: d.arg.name,
-                                type: d.arg.type.name,
-                            },
-                            ast: d
-                        });
+                            // Check for existing receiver
+                            if (s.receivers.find((v) => v.selector.kind === 'internal-fallback')) {
+                                throwError(`Fallback receive function already exists`, d.ref);
+                            }
+
+                            // Persist receiver
+                            s.receivers.push({
+                                selector: {
+                                    kind: 'internal-fallback',
+                                    name: d.arg.type.name
+                                },
+                                ast: d
+                            });
+                        } else {
+
+                            // Check type
+                            if (t.kind !== 'struct') {
+                                throwError('Receive function can only accept message', d.ref);
+                            }
+                            if (t.ast.kind !== 'def_struct') {
+                                throwError('Receive function can only accept message', d.ref);
+                            }
+                            if (!t.ast.message) {
+                                throwError('Receive function can only accept message', d.ref);
+                            }
+
+                            // Check for duplicate
+                            const n = d.arg.type.name;
+                            if (s.receivers.find((v) => v.selector.kind === 'internal-binary' && v.selector.name === n)) {
+                                throwError(`Receive function for ${d.arg.type.name} already exists`, d.ref);
+                            }
+
+                            // Persist receiver
+                            s.receivers.push({
+                                selector: {
+                                    kind: 'internal-binary', name: d.arg.name,
+                                    type: d.arg.type.name,
+                                },
+                                ast: d
+                            });
+                        }
                     } else if (d.arg && typeof d.arg === 'string') {
                         if (d.arg.length > 120 || d.arg === '') {
                             throwError('Comment length should be positive and less or equals to 120', d.ref);

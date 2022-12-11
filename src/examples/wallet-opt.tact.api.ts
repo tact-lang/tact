@@ -55,7 +55,7 @@ export class Wallet {
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage) {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && message.$$type === 'TransferMessage') {
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }

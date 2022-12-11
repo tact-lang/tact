@@ -191,6 +191,8 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                     receivers.push(`${r.type}`);
                 } else if (r.kind === 'internal-comment') {
                     receivers.push(`'${r.comment}'`);
+                } else if (r.kind === 'internal-fallback') {
+                    receivers.push(`Slice`);
                 }
             }
             w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${receivers.join(' | ')}) {`);
@@ -198,7 +200,7 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                 w.append(`let body: Cell | null = null;`);
                 for (const r of abi.receivers) {
                     if (r.kind === 'internal-binary') {
-                        w.append(`if (message && typeof message === 'object' && message.$$type === '${r.type}') {`);
+                        w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${r.type}') {`);
                         w.inIndent(() => {
                             w.append(`body = pack${r.type}(message);`);
                         });
@@ -213,6 +215,12 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                         w.append(`if (message === '${r.comment}') {`);
                         w.inIndent(() => {
                             w.append(`body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();`);
+                        });
+                        w.append(`}`);
+                    } else if (r.kind === 'internal-fallback') {
+                        w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
+                        w.inIndent(() => {
+                            w.append(`body = message.toCell();`);
                         });
                         w.append(`}`);
                     }

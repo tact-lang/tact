@@ -36,6 +36,10 @@ contract Wallet {
         send(SendParameters{value: msg.transfer.amount, to: msg.transfer.to, mode: msg.transfer.mode, body: msg.transfer.body});
     }
 
+    receive(msg: Slice) {
+        self.seqno = self.seqno + 1;
+    }
+
     receive() {
         self.seqno = self.seqno + 1;
     }

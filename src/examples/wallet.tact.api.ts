@@ -66,7 +66,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECDwEAAdUAART/APSkE/S88sgLAQIBYgIDAgLPBAUCASAJCgPbO37MXAh10nCH5UwINcLH94gghBt5Y3Nuo6+MO1E0NMf0//TP1UgbBMD0x8BghBt5Y3NuvLgZNQB0AHTH9MH+kABAfoAbQHSAAGS1DHeVUAQVjYQeBBnVQTgIMAAItdJwSGw4wLAAJEw4w3ywGSAGBwgACQgbvJOgAPRUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzDIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wDIVSBQI8sfy//LP8ntVAA+W+1E0NMf0//TP1UgbBMCpALIVSBQI8sfy//LP8ntVACQ+QGC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4g7UTQ0x/T/9M/VSBsEwKkAshVIFAjyx/L/8s/ye1U2zHgAgEgCwwAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgNDgAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
+    const __code = 'te6ccgECEAEAAfYAART/APSkE/S88sgLAQIBYgIDAgLPBAUCASAKCwT3O37MXAh10nCH5UwINcLH94gghBt5Y3Nuo6+MO1E0NMf0//TP1UgbBMD0x8BghBt5Y3NuvLgZNQB0AHTH9MH+kABAfoAbQHSAAGS1DHeVUAQVjYQeBBnVQTgIMAAItdJwSGw4wLAAOMA7UTQ0x/T/9M/VSBsE1UCMAKkAoAYHCAkACQgbvJOgAPRUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzDIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wDIVSBQI8sfy//LP8ntVAA+W+1E0NMf0//TP1UgbBMCpALIVSBQI8sfy//LP8ntVACUIPkBgvAOI1cmEItXANA2ndcWf2r/uAan4EBZN13Q4Psklx5ysrqOITDtRNDTH9P/0z9VIGwTAqQCyFUgUCPLH8v/yz/J7VTbMeAAHMhVIFAjyx/L/8s/ye1UAgEgDA0AI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgODwAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
@@ -77,10 +77,13 @@ export class Wallet {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | null | 'notify') {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | Slice | null | 'notify') {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && message.$$type === 'TransferMessage') {
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
+        }
+        if (message && typeof message === 'object' && message instanceof Slice) {
+            body = message.toCell();
         }
         if (message === null) {
             body = new Cell();

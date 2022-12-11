@@ -58,6 +58,8 @@ export type ContractReceiver = {
 } | {
     kind: 'internal-comment',
     comment: string
+} | {
+    kind: 'internal-fallback'
 }
 
 export type ContractABI = {

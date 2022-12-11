@@ -226,6 +226,28 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
             ctx.append(`}`);
         });
     }
+
+    // Fallback
+    if (selector.kind === 'internal-fallback') {
+        ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
+            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
+            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_fallback((${(tensorToString(selfTensor, 'types').join(', '))}) self, slice ${selector.name}) ${modifier} {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+
+                for (let s of f.ast.statements) {
+                    writeStatement(s, selfRes, ctx);
+                }
+
+                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                    ctx.append(`return (${selfRes}, ());`);
+                }
+            });
+            ctx.append(`}`);
+        });
+    }
 }
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
@@ -462,8 +484,31 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`}`);
             }
 
-            ctx.append();
-            ctx.append(`throw(100);`);
+            // Fallback
+            let fallbackReceiver = type.receivers.find((v) => v.selector.kind === 'internal-fallback');
+            if (fallbackReceiver) {
+
+                ctx.append();
+                ctx.append(`;; Fallback receiver`);
+                // Resolve tensors
+                let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+
+                // Load storage
+                ctx.used(`__gen_load_${type.name}`);
+                ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+
+                // Execute function
+                ctx.used(`__gen_${type.name}_receive_fallback`);
+                ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_fallback(in_msg);`);
+
+                // Persist
+                ctx.used(`__gen_store_${type.name}`);
+                ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+
+            } else {
+                ctx.append();
+                ctx.append(`throw(100);`);
+            }
         });
         ctx.append('}');
 
