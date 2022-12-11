@@ -359,18 +359,27 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
     ctx.fun('$main', () => {
 
         // Render body
-        ctx.append(`() recv_internal(cell in_msg_cell, slice in_msg) impure {`);
+        ctx.append(``)
+        ctx.append(`() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`);
         ctx.inIndent(() => {
+
+            // Require context function
+            ctx.used('__tact_context');
 
             // Load operation
             ctx.append();
             ctx.append(`;; Parse incoming message`);
-            ctx.append(`int op = 0;`)
+            ctx.append(`int op = 0;`);
             ctx.append(`if (slice_bits(in_msg) >= 32) {`);
             ctx.inIndent(() => {
                 ctx.append(`op = in_msg.preload_uint(32);`);
             });
             ctx.append(`}`);
+            ctx.append(`var cs = in_msg_cell.begin_parse();`);
+            ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+            ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
+            ctx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
+            ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value);`);
             ctx.append();
 
             // Non-empty receivers

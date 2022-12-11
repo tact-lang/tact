@@ -1,3 +1,5 @@
+global (int, slice, int) __tact_context;
+
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
@@ -61,13 +63,19 @@ _ __gen_get_counters() method_id(95239) {
     return ((self'counters), ());
 }
 
-() recv_internal(cell in_msg_cell, slice in_msg) impure {
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
     ;; Receivers
     if (op == 3615081709) {

@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC __gen_Wallet_receive_TransferMessage
   DECLPROC recv_internal
   80403 DECLMETHOD init_Wallet
+  DECLGLOBVAR __tact_context
   __gen_read_TransferMessage PROCINLINE:<{
     32 LDU
     SWAP
@@ -102,7 +103,6 @@ PROGRAM{
     SENDRAWMSG
   }>
   recv_internal PROC:<{
-    NIP
     0 PUSHINT
     OVER
     SBITS
@@ -112,6 +112,24 @@ PROGRAM{
       DUP
       32 PLDU
     }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 XCHG3
+    TRIPLE
+    __tact_context SETGLOB
     1843760589 PUSHINT
     EQUAL
     IFJMP:<{

@@ -27,6 +27,21 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BigInt;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export type TransferMessage = {
     $$type: 'TransferMessage';
     signature: Slice;
@@ -42,7 +57,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgEBCgEA2wABFP8A9KQT9LzyyAsBAgFiAgMA1NAxcCHXScIflTAg1wsf3oIQbeWNzbqOTe1E0NMf0//TP1UgbBMD0x8BghBt5Y3NuvLgZIMI1xhmMhA0QwAg+QFUECT5EPKq0h/SB9QwUSW68qsEpAT7AMhVIFAjyx/L/8s/ye1U4DDywGQCASAEBQIBIAYHACO+AldqJoaY/p/+mfqpA2CbYQwAIbuhNwWchVIFAjyx/L/8s/yYAgFICAkAIbMl+1E0NMf0//TP1UgbBNbgACOwfjtRNDTH9P/0z9VIGwTMDGA=';
+    const __code = 'te6ccgEBCwEA9QABFP8A9KQT9LzyyAsBAgFiAgMB+NBwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwQQRvA/hhghBt5Y3Nuo5N7UTQ0x/T/9M/VSBsEwPTHwGCEG3ljc268uBkgwjXGGYyEDRDACD5AVQQJPkQ8qrSH9IH1DBRJbryqwSkBPsAyFUgUCPLH8v/yz/J7VQEAgEgBQYACuAw8sBkAgEgBwgAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgJCgAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

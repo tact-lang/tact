@@ -1,5 +1,9 @@
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
+global (int, slice, int) __tact_context;
+
+(int, slice) __tact_context_get() inline { return __tact_context; }
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -63,6 +67,10 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     var key = sc~load_uint(256);
     var walletId = sc~load_uint(64);
     return (sc, (seqno, key, walletId));
+}
+
+_ __gen_Context_get_bounced(int v'bounced, slice v'sender, int v'value) inline {
+    return v'bounced;
 }
 
 (int, int, int) __gen_load_Wallet() inline {
@@ -148,29 +156,41 @@ _ __gen_get_seqno() method_id(85143) {
 
 ((int, int, int), ()) __gen_Wallet_receive_fallback((int, int, int) self, slice Slice) impure inline {
     var (self'seqno, self'key, self'walletId) = self;
-    self'seqno = (self'seqno + 1);
+    if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
+        self'seqno = (self'seqno + 1);
+    }
     return ((self'seqno, self'key, self'walletId), ());
 }
 
 ((int, int, int), ()) __gen_Wallet_receive((int, int, int) self) impure inline {
     var (self'seqno, self'key, self'walletId) = self;
-    self'seqno = (self'seqno + 1);
+    if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
+        self'seqno = (self'seqno + 1);
+    }
     return ((self'seqno, self'key, self'walletId), ());
 }
 
 ((int, int, int), ()) __gen_Wallet_receive_comment_notify((int, int, int) self) impure inline {
     var (self'seqno, self'key, self'walletId) = self;
-    self'seqno = (self'seqno + 1);
+    if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
+        self'seqno = (self'seqno + 1);
+    }
     return ((self'seqno, self'key, self'walletId), ());
 }
 
-() recv_internal(cell in_msg_cell, slice in_msg) impure {
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
     ;; Receivers
     if (op == 1843760589) {

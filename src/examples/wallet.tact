@@ -37,15 +37,21 @@ contract Wallet {
     }
 
     receive(msg: Slice) {
-        self.seqno = self.seqno + 1;
+        if (!context().bounced) {
+            self.seqno = self.seqno + 1;
+        }
     }
 
     receive() {
-        self.seqno = self.seqno + 1;
+        if (!context().bounced) {
+            self.seqno = self.seqno + 1;
+        }
     }
 
     receive("notify") {
-        self.seqno = self.seqno + 1;
+        if (!context().bounced) {
+            self.seqno = self.seqno + 1;
+        }
     }
 
     get fun publicKey(): Int {

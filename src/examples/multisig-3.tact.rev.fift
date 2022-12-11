@@ -1,7 +1,6 @@
 SETCP0
 (:methods
   recv_internal: 
-    s1 POP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -12,6 +11,26 @@ SETCP0
       32 PLDU
     }> PUSHCONT
     IF
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    1 EQINT
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 POP
+    s1 s0 s4 XCHG3
+    TRIPLE
+    1 SETGLOBVAR
     819865922 PUSHINT
     EQUAL
     <{

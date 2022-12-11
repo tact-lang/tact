@@ -1,5 +1,6 @@
 PROGRAM{
   DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __gen_write_Transfer
@@ -9,6 +10,7 @@ PROGRAM{
   DECLPROC __gen_write_Wallet
   DECLPROC __gen_writecell_Wallet
   DECLPROC __gen_read_Wallet
+  DECLPROC __gen_Context_get_bounced
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
   DECLPROC send
@@ -25,10 +27,15 @@ PROGRAM{
   DECLPROC __gen_Wallet_receive_comment_notify
   DECLPROC recv_internal
   80403 DECLMETHOD init_Wallet
+  DECLGLOBVAR __tact_context
   __tact_not_null PROC:<{
     DUP
     ISNULL
     14 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    UNPAIR
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -111,6 +118,9 @@ PROGRAM{
     256 LDU
     64 LDU
     3 -ROLL
+  }>
+  __gen_Context_get_bounced PROCINLINE:<{
+    DROP
   }>
   __gen_load_Wallet PROCINLINE:<{
     c4 PUSH
@@ -213,23 +223,37 @@ PROGRAM{
   }>
   __gen_Wallet_receive_fallback PROCINLINE:<{
     DROP
-    s0 s2 XCHG
-    INC
-    s0 s2 XCHG
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_bounced INLINECALLDICT
+    NOT
+    IF:<{
+      s0 s2 XCHG
+      INC
+      s0 s2 XCHG
+    }>
   }>
   __gen_Wallet_receive PROCINLINE:<{
-    s0 s2 XCHG
-    INC
-    s0 s2 XCHG
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_bounced INLINECALLDICT
+    NOT
+    IF:<{
+      s0 s2 XCHG
+      INC
+      s0 s2 XCHG
+    }>
   }>
   __gen_Wallet_receive_comment_notify PROCINLINE:<{
-    s0 s2 XCHG
-    INC
-    s0 s2 XCHG
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_bounced INLINECALLDICT
+    NOT
+    IF:<{
+      s0 s2 XCHG
+      INC
+      s0 s2 XCHG
+    }>
   }>
   recv_internal PROC:<{
     SAMEALTSAVE
-    NIP
     0 PUSHINT
     OVER
     SBITS
@@ -239,11 +263,28 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    DUP
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    PAIR
+    __tact_context SETGLOB
+    OVER
     1843760589 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
+      NIP
       __gen_load_Wallet INLINECALLDICT
       s0 s3 XCHG
       __gen_read_TransferMessage INLINECALLDICT
@@ -254,9 +295,9 @@ PROGRAM{
       __gen_Wallet_receive_TransferMessage INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
-    DUP
+    OVER
     0 EQINT
-    s2 PUSH
+    OVER
     SBITS
     33 LESSINT
     AND
@@ -266,6 +307,7 @@ PROGRAM{
       __gen_Wallet_receive INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
+    SWAP
     0 EQINT
     IF:<{
       DUP

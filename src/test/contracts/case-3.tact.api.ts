@@ -27,6 +27,21 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BigInt;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export type Source = {
     $$type: 'Source';
     a: BigInt;

@@ -175,3 +175,16 @@ native abs(x: Int): Int;
 
 @name(now)
 native now(): Int;
+
+//
+// Message Context
+//
+
+struct Context {
+    bounced: Bool;
+    sender: Address;
+    value: Int;
+}
+
+@name(__tact_context_get)
+native context(): Context;

@@ -71,28 +71,28 @@ Field b already exists"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-8 1`] = `
-"Line 9, col 11:
+"Line 9, col 3:
    8 | contract Pair {
 >  9 |   receive(src: B?) {
-                 ^~~~~~~
+         ^~~~~~~~~~~~~~~~~~
   10 |     
 Receive function cannot have optional argument"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-9 1`] = `
-"Line 9, col 11:
+"Line 9, col 3:
    8 | contract Pair {
 >  9 |   receive(src: B) {
-                 ^~~~~~
+         ^~~~~~~~~~~~~~~~~
   10 |     
 Receive function can only accept message"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-10 1`] = `
-"Line 9, col 11:
+"Line 9, col 3:
    8 | contract Pair {
 >  9 |   receive(src: Int) {
-                 ^~~~~~~~
+         ^~~~~~~~~~~~~~~~~~~
   10 |     
 Receive function can only accept message"
 `;

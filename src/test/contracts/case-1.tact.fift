@@ -1,13 +1,30 @@
 PROGRAM{
   DECLPROC recv_internal
+  DECLGLOBVAR __tact_context
   recv_internal PROC:<{
-    NIP
     DUP
     SBITS
     NIP
     31 GTINT
     IF:<{
     }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    ROT
+    TRIPLE
+    __tact_context SETGLOB
     100 THROW
   }>
 }END>c

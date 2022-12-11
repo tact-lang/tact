@@ -1,3 +1,5 @@
+global (int, slice, int) __tact_context;
+
 builder __gen_write_StdlibTest(builder build_0, int v'v) inline {
     build_0 = store_int(build_0, v'v, 257);
     return build_0;
@@ -55,13 +57,19 @@ _ __gen_get_sliceRefs(slice sc) method_id(77445) {
     return res;
 }
 
-() recv_internal(cell in_msg_cell, slice in_msg) impure {
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
     ;; Receivers
     

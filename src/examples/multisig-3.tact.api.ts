@@ -27,6 +27,21 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BigInt;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export type Operation = {
     $$type: 'Operation';
     seqno: BigInt;
@@ -73,7 +88,7 @@ export function packExecuted(src: Executed): Cell {
 }
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECDwEAAXgAART/APSkE/S88sgLAQIBYgIDAgLPBAUCASAHCAG1DFwIddJwh+VMCDXCx/eghAw3ilCuo6+7UTQ0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTgMPLAZIAYACQgbvJOgAOpUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQU1m68ooCsAGw8op/MwFwbchxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AMhVMFA0yx/L/8v/y//J7VQAJ75kv2omhpj+n/6f/p/6qYNgovgcAgEgCQoCASALDAAnuKx3BVIMhVMFA0yx/L/8v/y//JgCASANDgArtHy9qJoaY/p/+n/6f+qmDYKCBGvgcAAnsOn7UTQ0x/T/9P/0/9VMGwUbDGAAKbDhu1E0NMf0//T/9P/VTBsFBNfA4A==';
+    const __code = 'te6ccgECDwEAAY8AART/APSkE/S88sgLAQIBYgIDAgLPBAUCASAHCAHjHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBBBG8D+GGCEDDeKUK6jr7tRNDTH9P/0//T/1UwbBQE0x8BghAw3ilCuvLgZNMf+gD6QAFDMAPUAdAB1AHQAdQB0BZDMDYQiRB4EGdVBOAw8sBkgBgAJCBu8k6AA6lR1Q8hVIFAjyx8B+gIBzxbJ+QBSBCr5EFIzKfkQVBM3+RBTWbryigKwAbDyin8zAXBtyHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAyFUwUDTLH8v/y//L/8ntVAAnvmS/aiaGmP6f/p/+n/qpg2Ci+BwCASAJCgIBIAsMACe4rHcFUgyFUwUDTLH8v/y//L/8mAIBIA0OACu0fL2omhpj+n/6f/p/6qYNgoIEa+BwACew6ftRNDTH9P/0//T/1UwbBRsMYAApsOG7UTQ0x/T/9P/0/9VMGwUE18Dg';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});

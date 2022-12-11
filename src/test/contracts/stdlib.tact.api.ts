@@ -27,8 +27,23 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BigInt;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export function StdlibTest_init() {
-    const __code = 'te6ccgEBCgEAdQABFP8A9KQT9LzyyAsBAgFiAgMAGNAxINdJMcIfMPLAZAIBIAQFAgJyBgcAGb0+w4ZACAwICA54BkwCASAICQAhr0L2omhAgIDrgACYgJjrpUAAIKkL7UTQgQEB1wABMQExxwAAIKlS7UTQgQEB1wABMQEx10k=';
+    const __code = 'te6ccgEBCgEAigABFP8A9KQT9LzyyAsBAgFiAgMAQtAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QDBYbwP4YfLAZAIBIAQFAgJyBgcAGb0+w4ZACAwICA54BkwCASAICQAhr0L2omhAgIDrgACYgJjrpUAAIKkL7UTQgQEB1wABMQExxwAAIKlS7UTQgQEB1wABMQEx10k=';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_StdlibTest', __stack);
 }

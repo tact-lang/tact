@@ -1,12 +1,30 @@
 SETCP0
 (:methods
   recv_internal: 
-    s1 POP
     s0 PUSH
     SBITS
     s1 POP
     31 GTINT
     s0 POP
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    1 EQINT
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 POP
+    ROT
+    TRIPLE
+    1 SETGLOBVAR
     100 THROW
 
   80984: 

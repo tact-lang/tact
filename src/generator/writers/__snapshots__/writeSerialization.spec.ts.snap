@@ -7,6 +7,10 @@ exports[`writeSerialization should write serializer for A 1`] = `
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
+global (int, slice, int) __tact_context;
+
+(int, slice) __tact_context_get() inline { return __tact_context; }
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -112,6 +116,10 @@ exports[`writeSerialization should write serializer for B 1`] = `
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
+global (int, slice, int) __tact_context;
+
+(int, slice) __tact_context_get() inline { return __tact_context; }
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -216,6 +224,10 @@ exports[`writeSerialization should write serializer for C 1`] = `
 () __tact_nop() impure asm "NOP";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+
+global (int, slice, int) __tact_context;
+
+(int, slice) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
