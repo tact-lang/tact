@@ -170,7 +170,15 @@ _ __gen_get_seqno() method_id(85143) {
     return ((self'seqno, self'key, self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_notify((int, int, int) self) impure inline {
+((int, int, int), ()) __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) self) impure inline {
+    var (self'seqno, self'key, self'walletId) = self;
+    if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
+        self'seqno = (self'seqno + 1);
+    }
+    return ((self'seqno, self'key, self'walletId), ());
+}
+
+((int, int, int), ()) __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) self) impure inline {
     var (self'seqno, self'key, self'walletId) = self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         self'seqno = (self'seqno + 1);
@@ -229,7 +237,15 @@ _ __gen_get_seqno() method_id(85143) {
         ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
             var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
-            (self'seqno, self'key, self'walletId)~__gen_Wallet_receive_comment_notify();
+            (self'seqno, self'key, self'walletId)~__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
+            __gen_store_Wallet(self'seqno, self'key, self'walletId);
+            return ();
+        }
+        
+        ;; Receive "слава україни" message
+        if (text_op == 0x6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2) {
+            var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
+            (self'seqno, self'key, self'walletId)~__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2();
             __gen_store_Wallet(self'seqno, self'key, self'walletId);
             return ();
         }

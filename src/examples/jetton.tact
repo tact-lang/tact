@@ -1,6 +1,9 @@
-contract JettonMinter {
-    totalSupply: Int as coins;
+import "@stdlib/ownable";
+
+contract JettonMinter with OwnableTransferable {
     owner: Address;
+    
+    totalSupply: Int as coins;
     content: Cell;
     jettonWalletCode: Cell;
 

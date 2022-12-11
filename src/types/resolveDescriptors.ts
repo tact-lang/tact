@@ -368,10 +368,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             });
                         }
                     } else if (d.selector.kind === 'comment') {
-                        if (d.selector.comment.length > 120 || d.selector.comment === '') {
-                            throwError('Comment length should be positive and less or equals to 120', d.ref);
+                        if (Buffer.from(d.selector.comment.value).length > 120 || d.selector.comment.value === '') {
+                            throwError('Comment length should be positive and less or equals to 120 bytes', d.ref);
                         }
-                        let c = d.selector.comment;
+                        let c = d.selector.comment.value;
                         if (s.receivers.find((v) => v.selector.kind === 'internal-comment' && v.selector.comment === c)) {
                             throwError(`Receive function for "${c}" already exists`, d.ref);
                         }

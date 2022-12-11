@@ -81,7 +81,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECEwEAAkwAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASANDgIBzgYHAAWkGEAE9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4gMO1E0NMf0//TP1UgbBNVAvAYyFUgUCPLH8v/yz/J7VTgIMB74wIgwAAi10nBIbDjAsAA4wDtRNDTH9P/0z9VIGwTVQIw+EFvI1uzkwKkAt6AICQoLAAkIG7yToAFyMO1E0NMf0//TP1UgbBMD0x8BwHvy4GTUAdAB0x/TB/pAAQH6AG0B0gABktQx3lVAEFY2EHgQZ1UEDABOW+1E0NMf0//TP1UgbBP4QW8jW7OTAqQC3shVIFAjyx/L/8s/ye1UAKQg+QGC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4pMO1E0NMf0//TP1UgbBP4QW8jW7OTAqQC3shVIFAjyx/L/8s/ye1U2zHgABzIVSBQI8sfy//LP8ntVAD0VHQyU0PIVUBQRcsfEssHAc8WAfoCIW6UcDLKAJV/AcoAzOLJ+QBUEGj5EPKqUTe68qsGpH9QdEMwyHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAyFUgUCPLH8v/yz/J7VQCASAPEAAjvgJXaiaGmP6f/pn6qQNgm2EMACG7oTcFnIVSBQI8sfy//LP8mAIBSBESACGzJftRNDTH9P/0z9VIGwTW4AAjsH47UTQ0x/T/9M/VSBsEzAxg';
+    const __code = 'te6ccgECFAEAAp4AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAODwIBzgYHAAWkmEAE9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4gMO1E0NMf0//TP1UgbBNVAvAZyFUgUCPLH8v/yz/J7VTgIMB74wIgwAAi10nBIbDjAsAA4wDtRNDTH9P/0z9VIGwTVQIw+EFvI1uzkwKkAt6AICQoLAAkIG7yToAFyMO1E0NMf0//TP1UgbBMD0x8BwHvy4GTUAdAB0x/TB/pAAQH6AG0B0gABktQx3lVAEFY2EHgQZ1UEDABOW+1E0NMf0//TP1UgbBP4QW8jW7OTAqQC3shVIFAjyx/L/8s/ye1UAfAg+QEggvAOI1cmEItXANA2ndcWf2r/uAan4EBZN13Q4Psklx5ysrqOKVvtRNDTH9P/0z9VIGwT+EFvI1uzkwKkAt7IVSBQI8sfy//LP8ntVNsx4ILwZyfWl2X48ix1xYHjVlRDl/WgC7kb0yxNDZbUySaEvMK64wINABzIVSBQI8sfy//LP8ntVAD0VHQyU0PIVUBQRcsfEssHAc8WAfoCIW6UcDLKAJV/AcoAzOLJ+QBUEGj5EPKqUTe68qsGpH9QdEMwyHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAyFUgUCPLH8v/yz/J7VQAUjDtRNDTH9P/0z9VIGwT+EFvI1uzkwKkAt7IVSBQI8sfy//LP8ntVNsxAgEgEBEAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgSEwAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
@@ -92,7 +92,7 @@ export class Wallet {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | Slice | null | 'notify') {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | Slice | null | 'notify' | 'слава україни') {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
@@ -104,6 +104,9 @@ export class Wallet {
             body = new Cell();
         }
         if (message === 'notify') {
+            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
+        }
+        if (message === 'слава україни') {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }

@@ -373,6 +373,10 @@
     {
       "kind": "internal-comment",
       "comment": "notify"
+    },
+    {
+      "kind": "internal-comment",
+      "comment": "слава україни"
     }
   ],
   "getters": [

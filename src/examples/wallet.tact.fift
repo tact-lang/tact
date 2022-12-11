@@ -24,7 +24,8 @@ PROGRAM{
   DECLPROC __gen_Wallet_receive_TransferMessage
   DECLPROC __gen_Wallet_receive_fallback
   DECLPROC __gen_Wallet_receive
-  DECLPROC __gen_Wallet_receive_comment_notify
+  DECLPROC __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
+  DECLPROC __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2
   DECLPROC __gen_Wallet_receive_bounced
   DECLPROC recv_internal
   80403 DECLMETHOD init_Wallet
@@ -242,7 +243,17 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive_comment_notify PROCINLINE:<{
+  __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_bounced INLINECALLDICT
+    NOT
+    IF:<{
+      s0 s2 XCHG
+      INC
+      s0 s2 XCHG
+    }>
+  }>
+  __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -322,12 +333,22 @@ PROGRAM{
     IF:<{
       DUP
       HASHSU
+      DUP
       6394821005585434778314826493057958727299638479680279508357575356610368139954 PUSHINT
+      EQUAL
+      IFJMP:<{
+        2DROP
+        __gen_load_Wallet INLINECALLDICT
+        __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
+        __gen_store_Wallet INLINECALLDICT
+        RETALT
+      }>
+      46658611495011906810868383899087668766225883541312498391907908162497651457218 PUSHINT
       EQUAL
       IFJMP:<{
         DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_notify INLINECALLDICT
+        __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 INLINECALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>

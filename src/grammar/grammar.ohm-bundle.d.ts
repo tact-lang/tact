@@ -14,6 +14,7 @@ import {
 export interface TactActionDict<T> extends ActionDict<T> {
   Program?: (this: NonterminalNode, arg0: IterationNode) => T;
   ProgramItem?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  ProgramImport?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   Primitive?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode) => T;
   StaticFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   NativeFunction_withVoid?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: NonterminalNode, arg6: NonterminalNode, arg7: TerminalNode, arg8: NonterminalNode, arg9: TerminalNode, arg10: TerminalNode) => T;
@@ -36,6 +37,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Contract?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
   ContractInit?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ContractBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  Trait?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  TraitBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_public?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_getter?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_mutates?: (this: NonterminalNode, arg0: NonterminalNode) => T;
@@ -47,7 +50,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   FunctionArg?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode) => T;
   ReceiveFunction_simple?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ReceiveFunction_empty?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: TerminalNode, arg3: TerminalNode, arg4: IterationNode, arg5: TerminalNode) => T;
-  ReceiveFunction_comment?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode, arg5: TerminalNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;
+  ReceiveFunction_comment?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ReceiveFunction_bounced?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ReceiveFunction?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Statement?: (this: NonterminalNode, arg0: NonterminalNode) => T;
@@ -112,6 +115,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   funcLetter?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;
   funcId?: (this: NonterminalNode, arg0: NonterminalNode, arg1: IterationNode) => T;
   boolLiteral?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  stringLiteralCharacter?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  stringLiteral?: (this: NonterminalNode, arg0: TerminalNode, arg1: IterationNode, arg2: TerminalNode) => T;
   keyword?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   struct?: (this: NonterminalNode, arg0: TerminalNode) => T;
   contract?: (this: NonterminalNode, arg0: TerminalNode) => T;
@@ -137,6 +142,9 @@ export interface TactActionDict<T> extends ActionDict<T> {
   mutates?: (this: NonterminalNode, arg0: TerminalNode) => T;
   extends?: (this: NonterminalNode, arg0: TerminalNode) => T;
   receiveBounced?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  import?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  with?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  trait?: (this: NonterminalNode, arg0: TerminalNode) => T;
   nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   space?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;

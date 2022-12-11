@@ -60,6 +60,13 @@ export type ASTBoolean = {
     ref: ASTRef
 }
 
+export type ASTString = {
+    kind: 'string',
+    id: number,
+    value: string,
+    ref: ASTRef
+}
+
 export type ASTNull = {
     kind: 'null',
     id: number,
@@ -164,7 +171,13 @@ export type ASTNewParameter = {
 export type ASTProgram = {
     kind: 'program',
     id: number,
-    entries: (ASTStruct | ASTContract | ASTPrimitive | ASTFunction | ASTNativeFunction)[]
+    entries: (ASTStruct | ASTContract | ASTPrimitive | ASTFunction | ASTNativeFunction | ASTProgramImport)[]
+}
+
+export type ASTProgramImport = {
+    kind: 'program_import',
+    id: number,
+    path: ASTString,
 }
 
 export type ASTStruct = {
@@ -219,7 +232,7 @@ export type ASTFunction = {
 export type ASTReceive = {
     kind: 'def_receive',
     id: number,
-    selector: { kind: 'simple', arg: ASTArgument } | { kind: 'fallback' } | { kind: 'comment', comment: string } | { kind: 'bounce', arg: ASTArgument },
+    selector: { kind: 'simple', arg: ASTArgument } | { kind: 'fallback' } | { kind: 'comment', comment: ASTString } | { kind: 'bounce', arg: ASTArgument },
     statements: ASTStatement[],
     ref: ASTRef
 }
@@ -319,7 +332,7 @@ export type ASTStatementRepeat = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTProgramImport;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
 
 export function isStatement(src: ASTNode): src is ASTStatement {

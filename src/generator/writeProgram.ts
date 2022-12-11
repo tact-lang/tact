@@ -207,11 +207,17 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
 
     // Comment receiver
     if (selector.kind === 'internal-comment') {
-        ctx.fun(`__gen_${self.name}_receive_comment_${selector.comment}`, () => {
+        let hash = beginCell()
+            .storeUint(0, 32)
+            .storeBuffer(Buffer.from(selector.comment, 'utf8'))
+            .endCell()
+            .hash()
+            .toString('hex', 0, 64);
+        ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
             let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
             let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
             let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
-            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_comment_${selector.comment}((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
+            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_comment_${hash}((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
 
@@ -512,7 +518,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                     for (const r of type.receivers) {
                         const selector = r.selector;
                         if (selector.kind === 'internal-comment') {
-                            let hash = '0x' + beginCell()
+                            let hash = beginCell()
                                 .storeUint(0, 32)
                                 .storeBuffer(Buffer.from(selector.comment, 'utf8'))
                                 .endCell()
@@ -520,7 +526,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                                 .toString('hex', 0, 64);
                             ctx.append();
                             ctx.append(`;; Receive "${selector.comment}" message`);
-                            ctx.append(`if (text_op == ${hash}) {`);
+                            ctx.append(`if (text_op == 0x${hash}) {`);
                             ctx.inIndent(() => {
 
                                 // Resolve tensors
@@ -531,8 +537,8 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                                 ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
 
                                 // Execute function
-                                ctx.used(`__gen_${type.name}_receive_comment_${selector.comment}`);
-                                ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_comment_${selector.comment}();`);
+                                ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
+                                ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_comment_${hash}();`);
 
                                 // Persist
                                 ctx.used(`__gen_store_${type.name}`);

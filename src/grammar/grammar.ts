@@ -218,11 +218,11 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    ReceiveFunction_comment(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+    ReceiveFunction_comment(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
             kind: 'def_receive',
-            selector: { kind: 'comment', comment: arg3.sourceString },
-            statements: arg7.children.map((v: any) => v.resolve_statement()),
+            selector: { kind: 'comment', comment: arg2.resolve_expression() },
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
     },
@@ -363,6 +363,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     },
     null(arg0) {
         return createNode({ kind: 'null', ref: createRef(this) });
+    },
+    stringLiteral(arg0, arg1, arg2) {
+        return createNode({ kind: 'string', value: arg1.sourceString, ref: createRef(this) });
     },
 
     // TypeRefs

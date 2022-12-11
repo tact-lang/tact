@@ -43,7 +43,7 @@ SETCP0
       3 1 BLKSWAP
       1 3 BLKDROP2
       1 3 BLKSWAP
-      24 CALLDICT
+      25 CALLDICT
       NEWC
       3 1 BLKSWAP
       s2 s3 XCHG2
@@ -222,7 +222,40 @@ SETCP0
     <{
       s0 PUSH
       HASHSU
+      s0 PUSH
       6394821005585434778314826493057958727299638479680279508357575356610368139954 PUSHINT
+      EQUAL
+      <{
+        2DROP
+        c4 PUSH
+        CTOS
+        32 LDU
+        256 LDU
+        64 LDU
+        3 1 BLKSWAP
+        1 3 BLKDROP2
+        1 GETGLOBVAR
+        3 UNTUPLE
+        2DROP
+        NOT
+        <{
+          s0 s2 XCHG
+          INC
+          s0 s2 XCHG
+        }> PUSHCONT
+        IF
+        NEWC
+        3 1 BLKSWAP
+        s2 s3 XCHG2
+        32 STU
+        256 STU
+        64 STU
+        ENDC
+        c4 POP
+        RETALT
+      }> PUSHCONT
+      IFJMP
+      46658611495011906810868383899087668766225883541312498391907908162497651457218 PUSHINT
       EQUAL
       <{
         s0 POP
@@ -252,8 +285,7 @@ SETCP0
         ENDC
         c4 POP
         RETALT
-      }> PUSHCONT
-      IFJMP
+      }> IFJMPREF
     }> IFREF
     c4 PUSH
     CTOS
@@ -288,7 +320,7 @@ SETCP0
     ISNULL
     14 THROWIF
 
-  24: 
+  25: 
     s0 POP
 
   80403: 

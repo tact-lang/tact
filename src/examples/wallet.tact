@@ -54,6 +54,12 @@ contract Wallet {
         }
     }
 
+    receive("слава україни") {
+        if (!context().bounced) {
+            self.seqno = self.seqno + 1;
+        }
+    }
+
     receiveBounced(msg: Slice) {
         // TODO: Handle
     } 

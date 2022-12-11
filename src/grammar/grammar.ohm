@@ -7,6 +7,8 @@ Tact {
                 | Primitive
                 | StaticFunction
                 | NativeFunction
+                | ProgramImport
+    ProgramImport = import stringLiteral ";"
 
     // Built-in declarations
     Primitive = primitive Type ";"
@@ -38,6 +40,12 @@ Tact {
                  | ContractInit
                  | ReceiveFunction
                  | Function
+    
+    // Traint
+    Trait = trait id "{" TraitBody* "}"
+    TraitBody = Field
+              | ReceiveFunction
+              | Function
 
     // Function
     FunctionAttribute = public --public
@@ -49,7 +57,7 @@ Tact {
     FunctionArg = id ":" Type
     ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}" --simple
                     | receive  "(" ")" "{" Statement* "}" --empty
-                    | receive "(" "\"" #(letterComment+)  #"\"" ")" "{" Statement* "}" --comment
+                    | receive "(" stringLiteral ")" "{" Statement* "}" --comment
                     | receiveBounced "(" FunctionArg ")" "{" Statement* "}" --bounced
 
     // Statements
@@ -152,6 +160,10 @@ Tact {
     // Bool Literal
     boolLiteral = ("true" | "false") ~idPart
 
+    // String literal
+    stringLiteralCharacter = ~("\"" | "\\" | lineTerminator) any
+    stringLiteral = "\"" stringLiteralCharacter* "\""
+
     // Keywords
     // NOTE Order is important
     keyword = struct 
@@ -178,6 +190,9 @@ Tact {
             | mutates
             | extends
             | receiveBounced
+            | import
+            | with
+            | trait
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -202,6 +217,9 @@ Tact {
     mutates = "mutates" ~idPart
     extends = "extends" ~idPart
     receiveBounced = "receiveBounced" ~idPart
+    import = "import" ~idPart
+    with = "with" ~idPart
+    trait = "trait" ~idPart
 
     // Attributes
     nameAttribute = "@name"
