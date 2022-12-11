@@ -36,6 +36,10 @@ contract Wallet {
         send(SendParameters{value: msg.transfer.amount, to: msg.transfer.to, mode: msg.transfer.mode, body: msg.transfer.body});
     }
 
+    receive() {
+        // Ignore empty internal messages
+    }
+
     get fun publicKey(): Int {
         return self.key;
     }

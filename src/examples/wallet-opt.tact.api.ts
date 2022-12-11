@@ -42,7 +42,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgEBDAEA3AABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAKnRiQa4WPwQg28sbm3Ucg9qJoaY/p/+mfqpA2CYHpj4DBCDbyxubdeXAyQYRrjDMZCBohgBB8gKoIEnyIeVVpD+kD6hgokt15VYJSAn2AeANwGHlgMkAB1rIVSBQI8sfy//LP8ntVICASAICQAjvgJXaiaGmP6f/pn6qQNgm2EMACG7oTcFnIVSBQI8sfy//LP8mAIBSAoLACGzJftRNDTH9P/0z9VIGwTW4AAjsH47UTQ0x/T/9M/VSBsEzAxg';
+    const __code = 'te6ccgEBCgEA2wABFP8A9KQT9LzyyAsBAgFiAgMA1NAxcCHXScIflTAg1wsf3oIQbeWNzbqOTe1E0NMf0//TP1UgbBMD0x8BghBt5Y3NuvLgZIMI1xhmMhA0QwAg+QFUECT5EPKq0h/SB9QwUSW68qsEpAT7AMhVIFAjyx/L/8s/ye1U4DDywGQCASAEBQIBIAYHACO+AldqJoaY/p/+mfqpA2CbYQwAIbuhNwWchVIFAjyx/L/8s/yYAgFICAkAIbMl+1E0NMf0//TP1UgbBNbgACOwfjtRNDTH9P/0z9VIGwTMDGA=';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

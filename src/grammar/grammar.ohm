@@ -46,7 +46,8 @@ Tact {
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
-    ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}"
+    ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}" --simple
+                    | receive  "(" ")" "{" Statement* "}" --empty
 
     // Statements
     Statement = StatementLet

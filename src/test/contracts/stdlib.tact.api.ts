@@ -28,7 +28,7 @@ export function packSendParameters(src: SendParameters): Cell {
 }
 
 export function StdlibTest_init() {
-    const __code = 'te6ccgEBCgEAbgABFP8A9KQT9LzyyAsBAgFiAgMACtBb8sBkAgEgBAUCAnIGBwAZvT7DhkAIDAgIDngGTAIBIAgJACGvQvaiaECAgOuAAJiAmOulQAAgqQvtRNCBAQHXAAExATHHAAAgqVLtRNCBAQHXAAExATHXSQ==';
+    const __code = 'te6ccgEBCgEAdQABFP8A9KQT9LzyyAsBAgFiAgMAGNAxINdJMcIfMPLAZAIBIAQFAgJyBgcAGb0+w4ZACAwICA54BkwCASAICQAhr0L2omhAgIDrgACYgJjrpUAAIKkL7UTQgQEB1wABMQExxwAAIKlS7UTQgQEB1wABMQEx10k=';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_StdlibTest', __stack);
 }

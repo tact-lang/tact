@@ -292,7 +292,13 @@
     ]
   },
   "receivers": [
-    "TransferMessage"
+    {
+      "kind": "internal-binary",
+      "type": "TransferMessage"
+    },
+    {
+      "kind": "internal-empty"
+    }
   ],
   "getters": [
     {

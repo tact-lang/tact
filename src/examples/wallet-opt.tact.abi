@@ -184,7 +184,10 @@
     ]
   },
   "receivers": [
-    "TransferMessage"
+    {
+      "kind": "internal-binary",
+      "type": "TransferMessage"
+    }
   ],
   "getters": [
     {

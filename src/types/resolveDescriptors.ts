@@ -74,7 +74,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 name: a.name,
                 fields: [],
                 functions: {},
-                receivers: {},
+                receivers: [],
                 init: null,
                 ast: a
             };
@@ -84,7 +84,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 name: a.name,
                 fields: [],
                 functions: {},
-                receivers: {},
+                receivers: [],
                 init: null,
                 ast: a
             };
@@ -94,7 +94,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 name: a.name,
                 fields: [],
                 functions: {},
-                receivers: {},
+                receivers: [],
                 init: null,
                 ast: a
             };
@@ -309,37 +309,53 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 if (d.kind === 'def_receive') {
 
-                    // Check argument type
-                    if (d.arg.type.kind !== 'type_ref_simple') {
-                        throwError('Receive function can only accept message', d.arg.ref);
-                    }
-                    if (d.arg.type.optional) {
-                        throwError('Receive function cannot have optional argument', d.arg.ref);
-                    }
+                    if (d.arg) {
 
-                    // Check resolved argument type
-                    let t = types[d.arg.type.name];
-                    if (t.kind !== 'struct') {
-                        throwError('Receive function can only accept message', d.arg.ref);
-                    }
-                    if (t.ast.kind !== 'def_struct') {
-                        throwError('Receive function can only accept message', d.arg.ref);
-                    }
-                    if (!t.ast.message) {
-                        throwError('Receive function can only accept message', d.arg.ref);
-                    }
+                        // Check argument type
+                        if (d.arg.type.kind !== 'type_ref_simple') {
+                            throwError('Receive function can only accept message', d.arg.ref);
+                        }
+                        if (d.arg.type.optional) {
+                            throwError('Receive function cannot have optional argument', d.arg.ref);
+                        }
 
-                    // Check for duplicate
-                    if (s.receivers[d.arg.type.name]) {
-                        throwError(`Receive function for ${d.arg.type.name} already exists`, d.arg.ref);
-                    }
+                        // Check resolved argument type
+                        let t = types[d.arg.type.name];
+                        if (t.kind !== 'struct') {
+                            throwError('Receive function can only accept message', d.arg.ref);
+                        }
+                        if (t.ast.kind !== 'def_struct') {
+                            throwError('Receive function can only accept message', d.arg.ref);
+                        }
+                        if (!t.ast.message) {
+                            throwError('Receive function can only accept message', d.arg.ref);
+                        }
 
-                    // Persist receiver
-                    s.receivers[d.arg.type.name] = {
-                        name: d.arg.name,
-                        type: d.arg.type.name,
-                        ast: d
-                    };
+                        // Check for duplicate
+                        const n = d.arg.type.name;
+                        if (s.receivers.find((v) => v.selector.kind === 'internal-binary' && v.selector.name === n)) {
+                            throwError(`Receive function for ${d.arg.type.name} already exists`, d.arg.ref);
+                        }
+
+                        // Persist receiver
+                        s.receivers.push({
+                            selector: {
+                                kind: 'internal-binary', name: d.arg.name,
+                                type: d.arg.type.name,
+                            },
+                            ast: d
+                        });
+                    } else {
+
+                        // Handle empty
+                        if (s.receivers.find((v) => v.selector.kind === 'internal-empty')) {
+                            throwError('Empty receive function already exists', d.ref);
+                        }
+                        s.receivers.push({
+                            selector: { kind: 'internal-empty' },
+                            ast: d
+                        });
+                    }
                 }
             }
         }

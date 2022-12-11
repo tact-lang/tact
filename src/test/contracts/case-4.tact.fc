@@ -18,7 +18,7 @@
     return sc~__gen_read_SampleContract();
 }
 
-int __gen_SampleContract_stake((int, int, int, int, cell) self) inline {
+int __gen_SampleContract_stake((int, int, int, int, cell) self) impure inline {
     var (int self'a, int self'b, int self'c'a, int self'c'b, cell self'd) = self;
     return self'a;
 }
@@ -30,8 +30,14 @@ _ __gen_get_stake() method_id(80984) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg.preload_uint(32);
     
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Receivers
     
     throw(100);
 }

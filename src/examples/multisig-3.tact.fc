@@ -62,13 +62,13 @@ cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_ke
     return sc~__gen_read_MultisigContract();
 }
 
-() __gen_store_MultisigContract(int v'seqno, int v'user1_key, int v'user2_key, int v'user3_key) impure {
+() __gen_store_MultisigContract(int v'seqno, int v'user1_key, int v'user2_key, int v'user3_key) impure inline {
     builder b = begin_cell();
     b = __gen_write_MultisigContract(b, v'seqno,v'user1_key,v'user2_key,v'user3_key);
     set_data(b.end_cell());
 }
 
-() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) inline {
+() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) impure inline {
     builder b = begin_cell();
     b = store_int(b, 1, 2);
     b = store_int(b, params'bounce, 1);
@@ -96,13 +96,13 @@ cell __gen_MultisigContract_init(int key1, int key2, int key3) inline {
     return __gen_writecell_MultisigContract(self'seqno, self'user1_key, self'user2_key, self'user3_key);
 }
 
-((int, int, int, int), ()) __gen_MultisigContract_execute((int, int, int, int) self, int op'seqno, int op'amount, slice op'target) inline {
+((int, int, int, int), ()) __gen_MultisigContract_execute((int, int, int, int) self, int op'seqno, int op'amount, slice op'target) impure inline {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = self;
     send((true, op'target, op'amount, 0, null()));
     return ((self'seqno, self'user1_key, self'user2_key, self'user3_key), ());
 }
 
-int __gen_MultisigContract_key1((int, int, int, int) self) inline {
+int __gen_MultisigContract_key1((int, int, int, int) self) impure inline {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = self;
     return self'user1_key;
 }
@@ -113,7 +113,7 @@ _ __gen_get_key1() method_id(107493) {
     return res;
 }
 
-int __gen_MultisigContract_key2((int, int, int, int) self) inline {
+int __gen_MultisigContract_key2((int, int, int, int) self) impure inline {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = self;
     return self'user2_key;
 }
@@ -124,7 +124,7 @@ _ __gen_get_key2() method_id(103302) {
     return res;
 }
 
-int __gen_MultisigContract_key3((int, int, int, int) self) inline {
+int __gen_MultisigContract_key3((int, int, int, int) self) impure inline {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = self;
     return self'user3_key;
 }
@@ -135,7 +135,7 @@ _ __gen_get_key3() method_id(99239) {
     return res;
 }
 
-int __gen_MultisigContract_seqno((int, int, int, int) self) inline {
+int __gen_MultisigContract_seqno((int, int, int, int) self) impure inline {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = self;
     return self'seqno;
 }
@@ -146,7 +146,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-((int, int, int, int), ()) __gen_MultisigContract_receive_Execute((int, int, int, int) self, int msg'operation'seqno, int msg'operation'amount, slice msg'operation'target, slice msg'signature1, slice msg'signature2, slice msg'signature3) inline {
+((int, int, int, int), ()) __gen_MultisigContract_receive_Execute((int, int, int, int) self, int msg'operation'seqno, int msg'operation'amount, slice msg'operation'target, slice msg'signature1, slice msg'signature2, slice msg'signature3) impure inline {
     var (self'seqno, self'user1_key, self'user2_key, self'user3_key) = self;
     int op_hash = cell_hash(__gen_writecell_Operation((msg'operation'seqno, msg'operation'amount, msg'operation'target)));
     int ok1 = check_signature(op_hash, msg'signature1, self'user1_key);
@@ -159,8 +159,14 @@ _ __gen_get_seqno() method_id(85143) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg.preload_uint(32);
     
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Receivers
     if (op == 819865922) {
         var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
         var (int msg'operation'seqno, int msg'operation'amount, slice msg'operation'target, slice msg'signature1, slice msg'signature2, slice msg'signature3) = in_msg~__gen_read_Execute();

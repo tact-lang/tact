@@ -218,7 +218,7 @@ export type ASTFunction = {
 export type ASTReceive = {
     kind: 'def_receive',
     id: number,
-    arg: ASTArgument,
+    arg: ASTArgument | null,
     statements: ASTStatement[],
     ref: ASTRef
 }

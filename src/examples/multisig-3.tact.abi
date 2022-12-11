@@ -326,7 +326,10 @@
     ]
   },
   "receivers": [
-    "Execute"
+    {
+      "kind": "internal-binary",
+      "type": "Execute"
+    }
   ],
   "getters": [
     {

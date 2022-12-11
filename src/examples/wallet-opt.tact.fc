@@ -28,7 +28,7 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     return sc~__gen_read_Wallet();
 }
 
-() __gen_store_Wallet(int v'seqno, int v'key, int v'walletId) impure {
+() __gen_store_Wallet(int v'seqno, int v'key, int v'walletId) impure inline {
     builder b = begin_cell();
     b = __gen_write_Wallet(b, v'seqno,v'key,v'walletId);
     set_data(b.end_cell());
@@ -41,7 +41,7 @@ cell __gen_Wallet_init(int key, int walletId) inline {
     return __gen_writecell_Wallet(self'seqno, self'key, self'walletId);
 }
 
-int __gen_Wallet_publicKey((int, int, int) self) inline {
+int __gen_Wallet_publicKey((int, int, int) self) impure inline {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'key;
 }
@@ -52,7 +52,7 @@ _ __gen_get_publicKey() method_id(86520) {
     return res;
 }
 
-int __gen_Wallet_walletId((int, int, int) self) inline {
+int __gen_Wallet_walletId((int, int, int) self) impure inline {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'walletId;
 }
@@ -63,7 +63,7 @@ _ __gen_get_walletId() method_id(114762) {
     return res;
 }
 
-int __gen_Wallet_seqno((int, int, int) self) inline {
+int __gen_Wallet_seqno((int, int, int) self) impure inline {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'seqno;
 }
@@ -74,7 +74,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, slice msg'transfer) inline {
+((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, slice msg'transfer) impure inline {
     var (self'seqno, self'key, self'walletId) = self;
     int op_hash = slice_hash(msg'transfer);
     throw_unless(42, check_signature(op_hash, msg'signature, self'key));
@@ -89,8 +89,14 @@ _ __gen_get_seqno() method_id(85143) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg.preload_uint(32);
     
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Receivers
     if (op == 1843760589) {
         var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
         var (slice msg'signature, slice msg'transfer) = in_msg~__gen_read_TransferMessage();

@@ -50,11 +50,18 @@ export type CotnractFunction = {
     returns: TypeRef | null;
 }
 
+export type ContractReceiver = {
+    kind: 'internal-binary',
+    type: string
+} | {
+    kind: 'internal-empty'
+}
+
 export type ContractABI = {
     name: string;
     structs: ContractStruct[];
     init: ContractInit | null;
-    receivers: string[];
+    receivers: ContractReceiver[];
     getters: CotnractFunction[];
 }
 

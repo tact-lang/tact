@@ -1,7 +1,12 @@
 SETCP0
 (:methods
   recv_internal: 
-    2DROP
+    s1 POP
+    s0 PUSH
+    SBITS
+    s1 POP
+    31 GTINT
+    s0 POP
     100 THROW
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ

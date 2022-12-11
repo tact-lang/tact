@@ -210,12 +210,16 @@ export function resolveStatements(ctx: CompilerContext) {
         }
 
         // Process receivers
-        for (let f of Object.values(t.receivers)) {
+        for (const f of Object.values(t.receivers)) {
 
             // Build statement context
             let sctx = emptyContext({ kind: 'void' });
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
-            sctx = addVariable(f.name, { kind: 'ref', name: f.type, optional: false }, sctx);
+            if (f.selector.kind === 'internal-binary') {
+                sctx = addVariable(f.selector.name, { kind: 'ref', name: f.selector.type, optional: false }, sctx);
+            } else if (f.selector.kind === 'internal-empty') {
+                // Nothing to add to context
+            }
 
             // Process
             ctx = processStatements(f.ast.statements, sctx, ctx);

@@ -52,4 +52,27 @@ import { Cell } from 'ton';
             }
         }
     }
+
+    for (let p of [{ path: __dirname + "/../func/" }]) {
+        let recs = fs.readdirSync(p.path);
+        for (let r of recs) {
+            if (!r.endsWith('.fc')) {
+                continue;
+            }
+
+            // Precompile
+            console.log('Processing ' + p.path + r);
+            let c = await compileContract({ files: [p.path + r] });
+            if (!c.ok) {
+                console.warn(c.log);
+                continue;
+            }
+            fs.writeFileSync(p.path + r + ".fift", c.fift!);
+            fs.writeFileSync(p.path + r + ".cell", c.output!);
+
+            // Cell -> Fift decpmpiler
+            let source = fromCode(Cell.fromBoc(c.output!)[0]);
+            fs.writeFileSync(p.path + r + ".rev.fift", source);
+        }
+    }
 })();

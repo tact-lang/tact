@@ -5,7 +5,7 @@ export type TypeDescription = {
     name: string;
     fields: FieldDescription[];
     functions: { [name: string]: FunctionDescription };
-    receivers: { [name: string]: ReceiverDescription };
+    receivers: ReceiverDescription[];
     init: InitDescription | null;
     ast: ASTType
 }
@@ -58,9 +58,16 @@ export type StatementDescription = {
     kind: 'intrinsic'
 }
 
-export type ReceiverDescription = {
+export type ReceiverSelector = {
+    kind: 'internal-binary',
     type: string,
     name: string,
+} | {
+    kind: 'internal-empty'
+};
+
+export type ReceiverDescription = {
+    selector: ReceiverSelector,
     ast: ASTReceive
 }
 

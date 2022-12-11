@@ -105,7 +105,7 @@ PROGRAM{
     __gen_read_MultisigContract INLINECALLDICT
     1 4 BLKDROP2
   }>
-  __gen_store_MultisigContract PROC:<{
+  __gen_store_MultisigContract PROCINLINE:<{
     NEWC
     4 -ROLL
     __gen_write_MultisigContract INLINECALLDICT
@@ -159,7 +159,12 @@ PROGRAM{
     __gen_writecell_MultisigContract INLINECALLDICT
   }>
   __gen_MultisigContract_execute PROCINLINE:<{
-    3 BLKDROP
+    TRUE
+    s3 POP
+    SWAP
+    0 PUSHINT
+    PUSHNULL
+    send INLINECALLDICT
   }>
   __gen_MultisigContract_key1 PROCINLINE:<{
     s2 s3 XCHG
@@ -215,8 +220,15 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     NIP
-    DUP
-    32 PLDU
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
     819865922 PUSHINT
     EQUAL
     IFJMP:<{
@@ -229,7 +241,7 @@ PROGRAM{
       s6 s7 XCHG
       5 ROLL
       __gen_MultisigContract_receive_Execute INLINECALLDICT
-      __gen_store_MultisigContract CALLDICT
+      __gen_store_MultisigContract INLINECALLDICT
     }>
     DROP
     100 THROW

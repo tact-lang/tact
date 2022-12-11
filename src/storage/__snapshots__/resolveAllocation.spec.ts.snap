@@ -135,7 +135,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 783,
-        "refs": 2,
+        "refs": 1,
       },
     },
     "type": {
@@ -289,7 +289,7 @@ exports[`resolveAllocation should write program 1`] = `
       "init": null,
       "kind": "struct",
       "name": "SendParameters",
-      "receivers": {},
+      "receivers": [],
     },
   },
   {
@@ -352,7 +352,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 514,
-        "refs": 1,
+        "refs": 0,
       },
     },
     "type": {
@@ -425,7 +425,7 @@ exports[`resolveAllocation should write program 1`] = `
       "init": null,
       "kind": "struct",
       "name": "Point",
-      "receivers": {},
+      "receivers": [],
     },
   },
   {
@@ -453,7 +453,7 @@ exports[`resolveAllocation should write program 1`] = `
             "name": "z",
             "size": {
               "bits": 514,
-              "refs": 1,
+              "refs": 0,
             },
             "type": {
               "ast": {
@@ -525,19 +525,19 @@ exports[`resolveAllocation should write program 1`] = `
               "init": null,
               "kind": "struct",
               "name": "Point",
-              "receivers": {},
+              "receivers": [],
             },
           },
         ],
         "next": null,
         "size": {
           "bits": 514,
-          "refs": 1,
+          "refs": 0,
         },
       },
       "size": {
         "bits": 514,
-        "refs": 2,
+        "refs": 0,
       },
     },
     "type": {
@@ -583,7 +583,7 @@ exports[`resolveAllocation should write program 1`] = `
       "init": null,
       "kind": "struct",
       "name": "Point2",
-      "receivers": {},
+      "receivers": [],
     },
   },
   {
@@ -623,7 +623,7 @@ exports[`resolveAllocation should write program 1`] = `
             "name": "a",
             "size": {
               "bits": 514,
-              "refs": 1,
+              "refs": 0,
             },
             "type": {
               "ast": {
@@ -695,7 +695,7 @@ exports[`resolveAllocation should write program 1`] = `
               "init": null,
               "kind": "struct",
               "name": "Point",
-              "receivers": {},
+              "receivers": [],
             },
           },
         ],
@@ -707,7 +707,7 @@ exports[`resolveAllocation should write program 1`] = `
               "name": "b",
               "size": {
                 "bits": 514,
-                "refs": 2,
+                "refs": 0,
               },
               "type": {
                 "ast": {
@@ -752,24 +752,24 @@ exports[`resolveAllocation should write program 1`] = `
                 "init": null,
                 "kind": "struct",
                 "name": "Point2",
-                "receivers": {},
+                "receivers": [],
               },
             },
           ],
           "next": null,
           "size": {
             "bits": 514,
-            "refs": 2,
+            "refs": 0,
           },
         },
         "size": {
           "bits": 514,
-          "refs": 2,
+          "refs": 1,
         },
       },
       "size": {
         "bits": 514,
-        "refs": 3,
+        "refs": 1,
       },
     },
     "type": {
@@ -842,7 +842,7 @@ exports[`resolveAllocation should write program 1`] = `
       "init": null,
       "kind": "struct",
       "name": "Point3",
-      "receivers": {},
+      "receivers": [],
     },
   },
   {
@@ -859,7 +859,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 0,
-        "refs": 2,
+        "refs": 0,
       },
     },
     "type": {
@@ -993,7 +993,7 @@ exports[`resolveAllocation should write program 1`] = `
       "init": null,
       "kind": "contract",
       "name": "Sample",
-      "receivers": {},
+      "receivers": [],
     },
   },
 ]

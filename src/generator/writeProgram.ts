@@ -128,10 +128,11 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     // Resolve function name
     let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
     let selfStr = selfTensor ? `(${tensorToString(selfTensor, 'names').join(', ')})` : null;
+    let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.append(`${returns} ${name}(${[...(selfTensor ? ['(' + tensorToString(selfTensor, 'types').join(', ') + ') self'] : []), ...tensorToString(argsTensor, 'full')].join(', ')}) inline {`);
+        ctx.append(`${returns} ${name}(${[...(selfTensor ? ['(' + tensorToString(selfTensor, 'types').join(', ') + ') self'] : []), ...tensorToString(argsTensor, 'full')].join(', ')}) ${modifier} {`);
         ctx.inIndent(() => {
 
             // Unpack self
@@ -153,26 +154,55 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 }
 
 function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
-    ctx.fun(`__gen_${self.name}_receive_${f.type}`, () => {
-        let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
-        let argsTensor = resolveFuncTensor([
-            { name: f.name, type: { kind: 'ref', name: f.type, optional: false } }
-        ], ctx);
-        let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-        ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${f.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), ...tensorToString(argsTensor, 'full')].join(', ')}) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+    const selector = f.selector;
 
-            for (let s of f.ast.statements) {
-                writeStatement(s, selfRes, ctx);
-            }
+    // Binary receiver
+    if (selector.kind === 'internal-binary') {
+        ctx.fun(`__gen_${self.name}_receive_${selector.type}`, () => {
+            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
+            let argsTensor = resolveFuncTensor([
+                { name: selector.name, type: { kind: 'ref', name: selector.type, optional: false } }
+            ], ctx);
+            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${selector.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), ...tensorToString(argsTensor, 'full')].join(', ')}) ${modifier} {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
 
-            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                ctx.append(`return (${selfRes}, ());`);
-            }
+                for (let s of f.ast.statements) {
+                    writeStatement(s, selfRes, ctx);
+                }
+
+                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                    ctx.append(`return (${selfRes}, ());`);
+                }
+            });
+            ctx.append(`}`);
         });
-        ctx.append(`}`);
-    });
+        return;
+    }
+
+    // Empty receiver
+    if (selector.kind === 'internal-empty') {
+        ctx.fun(`__gen_${self.name}_receive`, () => {
+            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
+            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+
+                for (let s of f.ast.statements) {
+                    writeStatement(s, selfRes, ctx);
+                }
+
+                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                    ctx.append(`return (${selfRes}, ());`);
+                }
+            });
+            ctx.append(`}`);
+        });
+    }
 }
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
@@ -227,7 +257,7 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure {`); // NOTE: Impure function
+        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure inline {`); // NOTE: Impure function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
             ctx.used(`__gen_write_${type.name}`);
@@ -287,44 +317,80 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`() recv_internal(cell in_msg_cell, slice in_msg) impure {`);
         ctx.inIndent(() => {
 
-            // Begin parsing
-            ctx.append(`int op = in_msg.preload_uint(32);`);
+            // Load operation
+            ctx.append();
+            ctx.append(`;; Parse incoming message`);
+            ctx.append(`int op = 0;`)
+            ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+            ctx.inIndent(() => {
+                ctx.append(`op = in_msg.preload_uint(32);`);
+            });
+            ctx.append(`}`);
             ctx.append();
 
-            // Routing
-            for (let f of Object.values(type.receivers)) {
+            // Non-empty receivers
+            ctx.append(`;; Receivers`);
+            for (const f of type.receivers) {
+                const selector = f.selector;
 
-                let allocation = getAllocation(ctx.ctx, f.type);
-                if (!allocation.prefix) {
-                    throw Error('Invalid allocation');
+                // Generic receiver
+                if (selector.kind === 'internal-binary') {
+                    let allocation = getAllocation(ctx.ctx, selector.type);
+                    if (!allocation.prefix) {
+                        throw Error('Invalid allocation');
+                    }
+                    ctx.append(`if (op == ${allocation.prefix}) {`);
+                    ctx.inIndent(() => {
+
+                        // Resolve tensors
+                        let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+                        let msgTensor = resolveFuncTensor(allocation.fields, ctx, `msg'`);
+
+                        // Load storage
+                        ctx.used(`__gen_load_${type.name}`);
+                        ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+
+                        // Read message
+                        ctx.used(`__gen_read_${selector.type}`);
+                        ctx.append(`var (${tensorToString(msgTensor, 'full').join(', ')}) = in_msg~__gen_read_${selector.type}();`);
+
+                        // Execute function
+                        ctx.used(`__gen_${type.name}_receive_${selector.type}`);
+                        ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_${selector.type}(${tensorToString(msgTensor, 'names').join(', ')});`);
+
+                        // Persist
+                        ctx.used(`__gen_store_${type.name}`);
+                        ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+
+                        // Exit
+                        ctx.append(`return ();`);
+                    })
+                    ctx.append(`}`);
                 }
-                ctx.append(`if (op == ${allocation.prefix}) {`);
-                ctx.inIndent(() => {
 
-                    // Resolve tensors
-                    let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
-                    let msgTensor = resolveFuncTensor(allocation.fields, ctx, `msg'`);
+                if (selector.kind === 'internal-empty') {
+                    ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
+                    ctx.inIndent(() => {
 
-                    // Load storage
-                    ctx.used(`__gen_load_${type.name}`);
-                    ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+                        // Resolve tensors
+                        let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+                        // Load storage
+                        ctx.used(`__gen_load_${type.name}`);
+                        ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
 
-                    // Read message
-                    ctx.used(`__gen_read_${f.type}`);
-                    ctx.append(`var (${tensorToString(msgTensor, 'full').join(', ')}) = in_msg~__gen_read_${f.type}();`);
+                        // Execute function
+                        ctx.used(`__gen_${type.name}_receive`);
+                        ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive();`);
 
-                    // Execute function
-                    ctx.used(`__gen_${type.name}_receive_${f.type}`);
-                    ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_${f.type}(${tensorToString(msgTensor, 'names').join(', ')});`);
+                        // Persist
+                        ctx.used(`__gen_store_${type.name}`);
+                        ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
 
-                    // Persist
-                    ctx.used(`__gen_store_${type.name}`);
-                    ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
-
-                    // Exit
-                    ctx.append(`return ();`);
-                })
-                ctx.append(`}`);
+                        // Exit
+                        ctx.append(`return ();`);
+                    })
+                    ctx.append(`}`);
+                }
             }
 
             ctx.append();

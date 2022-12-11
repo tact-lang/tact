@@ -1,6 +1,12 @@
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg.preload_uint(32);
     
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Receivers
     
     throw(100);
 }

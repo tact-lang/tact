@@ -1,4 +1,4 @@
-import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractStruct, CotnractFunction } from "../abi/ContractABI";
+import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractReceiver, ContractStruct, CotnractFunction } from "../abi/ContractABI";
 import { CompilerContext } from "../context";
 import { getAllocation } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
@@ -90,9 +90,18 @@ export function createABI(ctx: CompilerContext): ContractABI {
     }
 
     // Receivers
-    let receivers: string[] = [];
+    let receivers: ContractReceiver[] = [];
     for (let r of Object.values(contract.receivers)) {
-        receivers.push(r.type);
+        if (r.selector.kind === 'internal-binary') {
+            receivers.push({
+                kind: 'internal-binary',
+                type: r.selector.type
+            });
+        } else if (r.selector.kind === 'internal-empty') {
+            receivers.push({
+                kind: 'internal-empty'
+            });
+        }
     }
 
     // Getters

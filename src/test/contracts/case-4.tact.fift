@@ -41,7 +41,13 @@ PROGRAM{
     __gen_SampleContract_stake INLINECALLDICT
   }>
   recv_internal PROC:<{
-    2DROP
+    NIP
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
     100 THROW
   }>
 }END>c

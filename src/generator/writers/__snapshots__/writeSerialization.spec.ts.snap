@@ -3,6 +3,8 @@
 exports[`writeSerialization should write serializer for A 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
+() __tact_nop() impure asm "NOP";
+
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -106,6 +108,8 @@ slice __gen_writeslice_A(int v'a,int v'b,int v'c,int v'd,int v'e,int v'f,int v'g
 exports[`writeSerialization should write serializer for B 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
+() __tact_nop() impure asm "NOP";
+
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -208,6 +212,8 @@ slice __gen_writeslice_B(int v'a,int v'b,int v'c,int v'd,int v'e,int v'f,int v'g
 
 exports[`writeSerialization should write serializer for C 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
+
+() __tact_nop() impure asm "NOP";
 
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 

@@ -183,15 +183,31 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
 
         // Receivers
         if (abi.receivers.length > 0) {
-            w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${abi.receivers.join(' | ')}) {`);
+            let receivers: string[] = [];
+            for (const r of abi.receivers) {
+                if (r.kind === 'internal-empty') {
+                    receivers.push(`null`);
+                } else if (r.kind === 'internal-binary') {
+                    receivers.push(`${r.type}`);
+                }
+            }
+            w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${receivers.join(' | ')}) {`);
             w.inIndent(() => {
                 w.append(`let body: Cell | null = null;`);
-                for (let r of abi.receivers) {
-                    w.append(`if (message.$$type === '${r}') {`);
-                    w.inIndent(() => {
-                        w.append(`body = pack${r}(message);`);
-                    });
-                    w.append(`}`);
+                for (const r of abi.receivers) {
+                    if (r.kind === 'internal-binary') {
+                        w.append(`if (message && message.$$type === '${r.type}') {`);
+                        w.inIndent(() => {
+                            w.append(`body = pack${r.type}(message);`);
+                        });
+                        w.append(`}`);
+                    } else if (r.kind === 'internal-empty') {
+                        w.append(`if (message === null) {`);
+                        w.inIndent(() => {
+                            w.append(`body = new Cell();`);
+                        });
+                        w.append(`}`);
+                    }
                 }
                 w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
                 w.append(`await this.executor.internal(new InternalMessage({`);

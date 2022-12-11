@@ -2,8 +2,16 @@ SETCP0
 (:methods
   recv_internal: 
     s1 POP
-    s0 PUSH
-    32 PLDU
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
     819865922 PUSHINT
     EQUAL
     <{
@@ -72,9 +80,63 @@ SETCP0
       s0 s1 XCHG
       AND
       10 THROWIFNOT
-      3 BLKDROP
-      12 CALLDICT
-    }> IFJMPREF
+      -1 PUSHINT
+      s3 POP
+      s0 s1 XCHG
+      0 PUSHINT
+      PUSHNULL
+      NEWC
+      1 PUSHINT
+      s0 s1 XCHG
+      2 STI
+      s1 s5 XCHG
+      1 STI
+      0 PUSHINT
+      s0 s1 XCHG
+      3 STI
+      s0 s3 XCHG2
+      STSLICER
+      s0 s1 XCHG
+      STGRAMS
+      0 PUSHINT
+      s0 s1 XCHG
+      105 STI
+      0 PUSHINT
+      s0 s1 XCHG
+      1 STI
+      s2 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s0 s2 XCHG
+        1 CALLDICT
+        ROT
+        STREF
+      }> PUSHCONT
+      <{
+        s2 POP
+        0 PUSHINT
+        ROT
+        1 STI
+      }> PUSHCONT
+      IFELSE
+      ENDC
+      s0 s1 XCHG
+      SENDRAWMSG
+      NEWC
+      4 1 BLKSWAP
+      s3 s4 XCHG2
+      32 STU
+      256 STU
+      256 STU
+      256 STU
+      ENDC
+      c4 POP
+    }> PUSHCONT
+    IFJMP
     s0 POP
     100 THROW
 
@@ -82,17 +144,6 @@ SETCP0
     s0 PUSH
     ISNULL
     14 THROWIF
-
-  12: 
-    NEWC
-    4 1 BLKSWAP
-    s3 s4 XCHG2
-    32 STU
-    256 STU
-    256 STU
-    256 STU
-    ENDC
-    c4 POP
 
   seqno: 
     c4 PUSH

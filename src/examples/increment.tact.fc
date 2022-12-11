@@ -33,7 +33,7 @@ cell __gen_writecell_IncrementContract(cell v'counters) inline {
     return sc~__gen_read_IncrementContract();
 }
 
-() __gen_store_IncrementContract(cell v'counters) impure {
+() __gen_store_IncrementContract(cell v'counters) impure inline {
     builder b = begin_cell();
     b = __gen_write_IncrementContract(b, v'counters);
     set_data(b.end_cell());
@@ -44,7 +44,7 @@ cell __gen_IncrementContract_init() inline {
     return __gen_writecell_IncrementContract(self'counters);
 }
 
-cell __gen_IncrementContract_counters((cell) self) inline {
+cell __gen_IncrementContract_counters((cell) self) impure inline {
     var (cell self'counters) = self;
     return self'counters;
 }
@@ -55,15 +55,21 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) inline {
+((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) impure inline {
     var (self'counters) = self;
     self'counters~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
     return ((self'counters), ());
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg.preload_uint(32);
     
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Receivers
     if (op == 3615081709) {
         var (cell self'counters) = __gen_load_IncrementContract();
         var (int msg'key, int msg'value) = in_msg~__gen_read_Increment();

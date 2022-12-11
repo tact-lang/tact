@@ -66,7 +66,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECDwEAAR4AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAJCgIB1AYHAB25kKpAoEeWP5f/ln+T2qkBJQxINcLH4IQbeWNzbrjAjDywGSAIAAkIG7yToADq7UTQ0x/T/9M/VSBsEwPTHwGCEG3ljc268uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBFR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyWxB+QBUECT5EPKqI7ryqwKkAvAMAgEgCwwAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgNDgAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
+    const __code = 'te6ccgECEAEAAYgAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAKCwIBzgYHAAOhwALJDFwIddJwh+VMCDXCx/eIIIQbeWNzbqOvjDtRNDTH9P/0z9VIGwTA9MfAYIQbeWNzbry4GTUAdAB0x/TB/pAAQH6AG0B0gABktQx3lVAEFY2EHgQZ1UE4MAAAddJwSGw4wLywGSAICQAJCBu8k6AA9FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AMhVIFAjyx/L/8s/ye1UADrtRNDTH9P/0z9VIGwT8BPIVSBQI8sfy//LP8ntVAIBIAwNACO+AldqJoaY/p/+mfqpA2CbYQwAIbuhNwWchVIFAjyx/L/8s/yYAgFIDg8AIbMl+1E0NMf0//TP1UgbBNbgACOwfjtRNDTH9P/0z9VIGwTMDGA=';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
@@ -77,10 +77,13 @@ export class Wallet {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | null) {
         let body: Cell | null = null;
-        if (message.$$type === 'TransferMessage') {
+        if (message && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
+        }
+        if (message === null) {
+            body = new Cell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({
