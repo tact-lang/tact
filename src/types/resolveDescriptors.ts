@@ -309,32 +309,32 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 if (d.kind === 'def_receive') {
 
-                    if (d.arg) {
+                    if (d.arg && typeof d.arg === 'object') {
 
                         // Check argument type
                         if (d.arg.type.kind !== 'type_ref_simple') {
-                            throwError('Receive function can only accept message', d.arg.ref);
+                            throwError('Receive function can only accept message', d.ref);
                         }
                         if (d.arg.type.optional) {
-                            throwError('Receive function cannot have optional argument', d.arg.ref);
+                            throwError('Receive function cannot have optional argument', d.ref);
                         }
 
                         // Check resolved argument type
                         let t = types[d.arg.type.name];
                         if (t.kind !== 'struct') {
-                            throwError('Receive function can only accept message', d.arg.ref);
+                            throwError('Receive function can only accept message', d.ref);
                         }
                         if (t.ast.kind !== 'def_struct') {
-                            throwError('Receive function can only accept message', d.arg.ref);
+                            throwError('Receive function can only accept message', d.ref);
                         }
                         if (!t.ast.message) {
-                            throwError('Receive function can only accept message', d.arg.ref);
+                            throwError('Receive function can only accept message', d.ref);
                         }
 
                         // Check for duplicate
                         const n = d.arg.type.name;
                         if (s.receivers.find((v) => v.selector.kind === 'internal-binary' && v.selector.name === n)) {
-                            throwError(`Receive function for ${d.arg.type.name} already exists`, d.arg.ref);
+                            throwError(`Receive function for ${d.arg.type.name} already exists`, d.ref);
                         }
 
                         // Persist receiver
@@ -343,6 +343,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                 kind: 'internal-binary', name: d.arg.name,
                                 type: d.arg.type.name,
                             },
+                            ast: d
+                        });
+                    } else if (d.arg && typeof d.arg === 'string') {
+                        if (d.arg.length > 120 || d.arg === '') {
+                            throwError('Comment length should be positive and less or equals to 120', d.ref);
+                        }
+                        let c = d.arg;
+                        if (s.receivers.find((v) => v.selector.kind === 'internal-comment' && v.selector.comment === c)) {
+                            throwError(`Receive function for "${c}" already exists`, d.ref);
+                        }
+                        s.receivers.push({
+                            selector: { kind: 'internal-comment', comment: c },
                             ast: d
                         });
                     } else {

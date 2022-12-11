@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -87,7 +87,7 @@ export class MultisigContract {
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Execute) {
         let body: Cell | null = null;
-        if (message.$$type === 'Execute') {
+        if (message && typeof message === 'object' && message.$$type === 'Execute') {
             body = packExecute(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }

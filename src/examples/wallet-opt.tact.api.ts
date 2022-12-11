@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -55,7 +55,7 @@ export class Wallet {
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage) {
         let body: Cell | null = null;
-        if (message.$$type === 'TransferMessage') {
+        if (message && typeof message === 'object' && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }

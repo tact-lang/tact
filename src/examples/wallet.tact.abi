@@ -298,6 +298,10 @@
     },
     {
       "kind": "internal-empty"
+    },
+    {
+      "kind": "internal-comment",
+      "comment": "notify"
     }
   ],
   "getters": [

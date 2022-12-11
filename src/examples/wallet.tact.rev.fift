@@ -1,6 +1,7 @@
 SETCP0
 (:methods
   recv_internal: 
+    SAMEALTSAVE
     s1 POP
     0 PUSHINT
     s1 PUSH
@@ -145,12 +146,14 @@ SETCP0
       c4 POP
     }> PUSHCONT
     IFJMP
+    s0 PUSH
     0 EQINT
-    s0 s1 XCHG
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
     <{
+      2DROP
       c4 PUSH
       CTOS
       32 LDU
@@ -158,7 +161,9 @@ SETCP0
       64 LDU
       3 1 BLKSWAP
       1 3 BLKDROP2
-      19 CALLDICT
+      s0 s2 XCHG
+      INC
+      s0 s2 XCHG
       NEWC
       3 1 BLKSWAP
       s2 s3 XCHG2
@@ -168,14 +173,43 @@ SETCP0
       ENDC
       c4 POP
     }> IFJMPREF
+    0 EQINT
+    <{
+      s0 POP
+    }> PUSHCONT
+    <{
+      HASHSU
+      6394821005585434778314826493057958727299638479680279508357575356610368139954 PUSHINT
+      EQUAL
+      <{
+        c4 PUSH
+        CTOS
+        32 LDU
+        256 LDU
+        64 LDU
+        3 1 BLKSWAP
+        1 3 BLKDROP2
+        s0 s2 XCHG
+        INC
+        s0 s2 XCHG
+        NEWC
+        3 1 BLKSWAP
+        s2 s3 XCHG2
+        32 STU
+        256 STU
+        64 STU
+        ENDC
+        c4 POP
+        RETALT
+      }> PUSHCONT
+      IFJMP
+    }> IFREFELSE
     100 THROW
 
   1: 
     s0 PUSH
     ISNULL
     14 THROWIF
-
-  19: 
 
   80403: 
     0 PUSHINT

@@ -64,6 +64,9 @@ export type ReceiverSelector = {
     name: string,
 } | {
     kind: 'internal-empty'
+} | {
+    kind: 'internal-comment',
+    comment: string
 };
 
 export type ReceiverDescription = {

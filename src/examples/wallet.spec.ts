@@ -1,7 +1,8 @@
-import { packTransfer, packTransferMessage, Transfer, Wallet_init } from "./wallet.tact.api";
+import { packTransfer, packTransferMessage, Transfer, Wallet, Wallet_init } from "./wallet.tact.api";
 import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
 import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
+import { BN } from "bn.js";
 
 describe('wallet', () => {
     it('should deploy', async () => {
@@ -53,5 +54,17 @@ describe('wallet', () => {
             }
             throw e;
         }
+
+        // Check seqno
+        let wallet = new Wallet(executor);
+        expect((await wallet.getSeqno()).toString(10)).toBe('1');
+
+        // Send empty message
+        await wallet.send({ amount: new BN(0) }, null);
+        expect((await wallet.getSeqno()).toString(10)).toBe('2');
+
+        // Send comment message
+        await wallet.send({ amount: new BN(0) }, 'notify');
+        expect((await wallet.getSeqno()).toString(10)).toBe('3');
     });
 });

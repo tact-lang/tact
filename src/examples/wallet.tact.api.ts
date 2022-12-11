@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -66,7 +66,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECEAEAAYgAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAKCwIBzgYHAAOhwALJDFwIddJwh+VMCDXCx/eIIIQbeWNzbqOvjDtRNDTH9P/0z9VIGwTA9MfAYIQbeWNzbry4GTUAdAB0x/TB/pAAQH6AG0B0gABktQx3lVAEFY2EHgQZ1UE4MAAAddJwSGw4wLywGSAICQAJCBu8k6AA9FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AMhVIFAjyx/L/8s/ye1UADrtRNDTH9P/0z9VIGwT8BPIVSBQI8sfy//LP8ntVAIBIAwNACO+AldqJoaY/p/+mfqpA2CbYQwAIbuhNwWchVIFAjyx/L/8s/yYAgFIDg8AIbMl+1E0NMf0//TP1UgbBNbgACOwfjtRNDTH9P/0z9VIGwTMDGA=';
+    const __code = 'te6ccgECDwEAAdUAART/APSkE/S88sgLAQIBYgIDAgLPBAUCASAJCgPbO37MXAh10nCH5UwINcLH94gghBt5Y3Nuo6+MO1E0NMf0//TP1UgbBMD0x8BghBt5Y3NuvLgZNQB0AHTH9MH+kABAfoAbQHSAAGS1DHeVUAQVjYQeBBnVQTgIMAAItdJwSGw4wLAAJEw4w3ywGSAGBwgACQgbvJOgAPRUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzDIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wDIVSBQI8sfy//LP8ntVAA+W+1E0NMf0//TP1UgbBMCpALIVSBQI8sfy//LP8ntVACQ+QGC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4g7UTQ0x/T/9M/VSBsEwKkAshVIFAjyx/L/8s/ye1U2zHgAgEgCwwAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgNDgAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
@@ -77,13 +77,16 @@ export class Wallet {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | null) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | null | 'notify') {
         let body: Cell | null = null;
-        if (message && message.$$type === 'TransferMessage') {
+        if (message && typeof message === 'object' && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
         }
         if (message === null) {
             body = new Cell();
+        }
+        if (message === 'notify') {
+            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({

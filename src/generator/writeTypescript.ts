@@ -77,7 +77,7 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
 
 export function writeTypescript(abi: ContractABI, code: string, importPath: string) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';`);
+    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';`);
     w.append(`import { ContractExecutor } from 'ton-nodejs';`);
     w.append(`import BN from 'bn.js';`);
     w.append(`import { deploy } from '${importPath}';`);
@@ -189,6 +189,8 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                     receivers.push(`null`);
                 } else if (r.kind === 'internal-binary') {
                     receivers.push(`${r.type}`);
+                } else if (r.kind === 'internal-comment') {
+                    receivers.push(`'${r.comment}'`);
                 }
             }
             w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${receivers.join(' | ')}) {`);
@@ -196,7 +198,7 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                 w.append(`let body: Cell | null = null;`);
                 for (const r of abi.receivers) {
                     if (r.kind === 'internal-binary') {
-                        w.append(`if (message && message.$$type === '${r.type}') {`);
+                        w.append(`if (message && typeof message === 'object' && message.$$type === '${r.type}') {`);
                         w.inIndent(() => {
                             w.append(`body = pack${r.type}(message);`);
                         });
@@ -205,6 +207,12 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                         w.append(`if (message === null) {`);
                         w.inIndent(() => {
                             w.append(`body = new Cell();`);
+                        });
+                        w.append(`}`);
+                    } else if (r.kind === 'internal-comment') {
+                        w.append(`if (message === '${r.comment}') {`);
+                        w.inIndent(() => {
+                            w.append(`body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();`);
                         });
                         w.append(`}`);
                     }

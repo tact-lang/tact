@@ -101,6 +101,11 @@ export function createABI(ctx: CompilerContext): ContractABI {
             receivers.push({
                 kind: 'internal-empty'
             });
+        } else if (r.selector.kind === 'internal-comment') {
+            receivers.push({
+                kind: 'internal-comment',
+                comment: r.selector.comment
+            });
         }
     }
 

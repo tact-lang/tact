@@ -48,6 +48,7 @@ Tact {
     FunctionArg = id ":" Type
     ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}" --simple
                     | receive  "(" ")" "{" Statement* "}" --empty
+                    | receive "(" "\"" #(letterComment+)  #"\"" ")" "{" Statement* "}" --comment
 
     // Statements
     Statement = StatementLet
@@ -135,6 +136,7 @@ Tact {
     letterAsciiLC = "a".."z"
     letterAsciiUC = "A".."Z"
     letterAscii = letterAsciiLC | letterAsciiUC
+    letterComment = letterAsciiLC | letterAsciiUC | digit | "_"
 
     // ID Literal
     idStart = letterAscii | "_"

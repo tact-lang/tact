@@ -55,6 +55,9 @@ export type ContractReceiver = {
     type: string
 } | {
     kind: 'internal-empty'
+} | {
+    kind: 'internal-comment',
+    comment: string
 }
 
 export type ContractABI = {

@@ -12,6 +12,7 @@ import { writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { resolveFuncTensor, TensorDef, tensorToString } from "./writers/resolveFuncTensor";
 import { writeAccessors } from "./writers/writeAccessors";
+import { beginCell } from "ton";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -203,6 +204,28 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
             ctx.append(`}`);
         });
     }
+
+    // Comment receiver
+    if (selector.kind === 'internal-comment') {
+        ctx.fun(`__gen_${self.name}_receive_comment_${selector.comment}`, () => {
+            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
+            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_comment_${selector.comment}((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+
+                for (let s of f.ast.statements) {
+                    writeStatement(s, selfRes, ctx);
+                }
+
+                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                    ctx.append(`return (${selfRes}, ());`);
+                }
+            });
+            ctx.append(`}`);
+        });
+    }
 }
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
@@ -374,6 +397,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
 
                         // Resolve tensors
                         let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+
                         // Load storage
                         ctx.used(`__gen_load_${type.name}`);
                         ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
@@ -391,6 +415,51 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                     })
                     ctx.append(`}`);
                 }
+            }
+
+            // Text resolvers
+            let hasComments = !!type.receivers.find((v) => v.selector.kind === 'internal-comment');
+            if (hasComments) {
+                ctx.append();
+                ctx.append(`;; Text resolvers`);
+                ctx.append(`if (op == 0) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`var text_op = slice_hash(in_msg);`);
+                    for (const r of type.receivers) {
+                        const selector = r.selector;
+                        if (selector.kind === 'internal-comment') {
+                            let hash = '0x' + beginCell()
+                                .storeUint(0, 32)
+                                .storeBuffer(Buffer.from(selector.comment, 'utf8'))
+                                .endCell()
+                                .hash()
+                                .toString('hex', 0, 64);
+                            ctx.append(`if (text_op == ${hash}) {`);
+                            ctx.inIndent(() => {
+
+                                // Resolve tensors
+                                let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+
+                                // Load storage
+                                ctx.used(`__gen_load_${type.name}`);
+                                ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+
+                                // Execute function
+                                ctx.used(`__gen_${type.name}_receive_comment_${selector.comment}`);
+                                ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_comment_${selector.comment}();`);
+
+                                // Persist
+                                ctx.used(`__gen_store_${type.name}`);
+                                ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+
+                                // Exit
+                                ctx.append(`return ();`);
+                            })
+                            ctx.append(`}`);
+                        }
+                    }
+                });
+                ctx.append(`}`);
             }
 
             ctx.append();

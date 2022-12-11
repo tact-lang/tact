@@ -37,7 +37,11 @@ contract Wallet {
     }
 
     receive() {
-        // Ignore empty internal messages
+        self.seqno = self.seqno + 1;
+    }
+
+    receive("notify") {
+        self.seqno = self.seqno + 1;
     }
 
     get fun publicKey(): Int {
