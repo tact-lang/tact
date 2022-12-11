@@ -1,0 +1,61 @@
+PROGRAM{
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_JettonMinter
+  DECLPROC __gen_writecell_JettonMinter
+  DECLPROC __gen_JettonMinter_init
+  DECLPROC recv_internal
+  65844 DECLMETHOD init_JettonMinter
+  DECLGLOBVAR __tact_context
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_JettonMinter PROCINLINE:<{
+    s4 s3 XCHG2
+    STGRAMS
+    SWAP
+    __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
+    STREF
+    STREF
+  }>
+  __gen_writecell_JettonMinter PROCINLINE:<{
+    NEWC
+    4 -ROLL
+    __gen_write_JettonMinter INLINECALLDICT
+    ENDC
+  }>
+  __gen_JettonMinter_init PROCINLINE:<{
+    __gen_writecell_JettonMinter INLINECALLDICT
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    100 THROW
+  }>
+  init_JettonMinter PROC:<{
+    __gen_JettonMinter_init INLINECALLDICT
+  }>
+}END>c

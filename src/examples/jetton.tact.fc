@@ -1,0 +1,53 @@
+global (int, slice, int) __tact_context;
+
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
+    return b;
+}
+
+builder __gen_write_JettonMinter(builder build_0, int v'totalSupply, slice v'owner, cell v'content, cell v'jettonWalletCode) inline {
+    build_0 = store_coins(build_0, v'totalSupply);
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_ref(build_0, v'content);
+    build_0 = store_ref(build_0, v'jettonWalletCode);
+    return build_0;
+}
+
+cell __gen_writecell_JettonMinter(int v'totalSupply,slice v'owner,cell v'content,cell v'jettonWalletCode) inline {
+    return __gen_write_JettonMinter(begin_cell(), v'totalSupply, v'owner, v'content, v'jettonWalletCode).end_cell();
+}
+
+cell __gen_JettonMinter_init(int supply, slice owner, cell content, cell jettonWalletCode) inline {
+    var (int self'totalSupply, slice self'owner, cell self'content, cell self'jettonWalletCode) = (null(), null(), null(), null());
+    self'totalSupply = supply;
+    self'owner = owner;
+    self'content = content;
+    self'jettonWalletCode = jettonWalletCode;
+    return __gen_writecell_JettonMinter(self'totalSupply, self'owner, self'content, self'jettonWalletCode);
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(100);
+}
+
+cell init_JettonMinter(int supply, slice owner, cell content, cell jettonWalletCode) method_id {
+    return __gen_JettonMinter_init(supply, owner, content, jettonWalletCode);
+}

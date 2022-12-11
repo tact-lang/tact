@@ -1,0 +1,59 @@
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
+import { ContractExecutor } from 'ton-nodejs';
+import BN from 'bn.js';
+import { deploy } from '../abi/deploy';
+
+export type SendParameters = {
+    $$type: 'SendParameters';
+    bounce: boolean;
+    to: Address;
+    value: BigInt;
+    mode: BigInt;
+    body: Cell | null;
+}
+
+export function packSendParameters(src: SendParameters): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounce);
+    b_0 = b_0.storeAddress(src.to);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    b_0 = b_0.storeInt(new BN(src.mode.toString(10), 10), 257);
+    if (src.body !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BigInt;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
+export function JettonMinter_init(supply: BigInt, owner: Address, content: Cell, jettonWalletCode: Cell) {
+    const __code = 'te6ccgEBBAEASwABFP8A9KQT9LzyyAsBAgFiAgMASNAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QDBUQRNvA/hh3PLAZAAhoAJpkKpgoIf0BAOeLCWZmZM=';
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: new BN(supply.toString(), 10)});
+    __stack.push({ type: 'slice', cell: owner});
+    __stack.push({ type: 'cell', value: content});
+    __stack.push({ type: 'cell', value: jettonWalletCode});
+    return deploy(__code, 'init_JettonMinter', __stack);
+}
+
+export class JettonMinter {
+    readonly executor: ContractExecutor;
+    constructor(executor: ContractExecutor) { this.executor = executor; }
+    
+}
