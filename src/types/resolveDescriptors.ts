@@ -309,18 +309,19 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 if (d.kind === 'def_receive') {
 
-                    if (d.arg && typeof d.arg === 'object') {
+                    if (d.selector.kind === 'simple') {
+                        const arg = d.selector.arg;
 
                         // Check argument type
-                        if (d.arg.type.kind !== 'type_ref_simple') {
+                        if (arg.type.kind !== 'type_ref_simple') {
                             throwError('Receive function can only accept message', d.ref);
                         }
-                        if (d.arg.type.optional) {
+                        if (arg.type.optional) {
                             throwError('Receive function cannot have optional argument', d.ref);
                         }
 
                         // Check resolved argument type
-                        let t = types[d.arg.type.name];
+                        let t = types[arg.type.name];
 
                         // Raw receiver
                         if (t.kind === 'primitive' && t.name === 'Slice') {
@@ -334,7 +335,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             s.receivers.push({
                                 selector: {
                                     kind: 'internal-fallback',
-                                    name: d.arg.type.name
+                                    name: arg.type.name
                                 },
                                 ast: d
                             });
@@ -352,25 +353,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             }
 
                             // Check for duplicate
-                            const n = d.arg.type.name;
+                            const n = arg.type.name;
                             if (s.receivers.find((v) => v.selector.kind === 'internal-binary' && v.selector.name === n)) {
-                                throwError(`Receive function for ${d.arg.type.name} already exists`, d.ref);
+                                throwError(`Receive function for ${arg.type.name} already exists`, d.ref);
                             }
 
                             // Persist receiver
                             s.receivers.push({
                                 selector: {
-                                    kind: 'internal-binary', name: d.arg.name,
-                                    type: d.arg.type.name,
+                                    kind: 'internal-binary', name: arg.name,
+                                    type: arg.type.name,
                                 },
                                 ast: d
                             });
                         }
-                    } else if (d.arg && typeof d.arg === 'string') {
-                        if (d.arg.length > 120 || d.arg === '') {
+                    } else if (d.selector.kind === 'comment') {
+                        if (d.selector.comment.length > 120 || d.selector.comment === '') {
                             throwError('Comment length should be positive and less or equals to 120', d.ref);
                         }
-                        let c = d.arg;
+                        let c = d.selector.comment;
                         if (s.receivers.find((v) => v.selector.kind === 'internal-comment' && v.selector.comment === c)) {
                             throwError(`Receive function for "${c}" already exists`, d.ref);
                         }
@@ -378,14 +379,36 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             selector: { kind: 'internal-comment', comment: c },
                             ast: d
                         });
-                    } else {
-
+                    } else if (d.selector.kind === 'fallback') {
                         // Handle empty
                         if (s.receivers.find((v) => v.selector.kind === 'internal-empty')) {
                             throwError('Empty receive function already exists', d.ref);
                         }
                         s.receivers.push({
                             selector: { kind: 'internal-empty' },
+                            ast: d
+                        });
+                    } else if (d.selector.kind === 'bounce') {
+                        const arg = d.selector.arg;
+
+                        if (arg.type.kind !== 'type_ref_simple') {
+                            throwError('Receive function can only accept message', d.ref);
+                        }
+                        if (arg.type.optional) {
+                            throwError('Receive function cannot have optional argument', d.ref);
+                        }
+
+                        // Check resolved argument type
+                        let t = types[arg.type.name];
+                        if (t.kind !== 'primitive' || t.name !== 'Slice') {
+                            throwError('Bounce receive function can only accept message', d.ref);
+                        }
+
+                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce')) {
+                            throwError('Bounce receive function already exists', d.ref);
+                        }
+                        s.receivers.push({
+                            selector: { kind: 'internal-bounce', name: arg.name },
                             ast: d
                         });
                     }

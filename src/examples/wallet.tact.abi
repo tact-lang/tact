@@ -129,6 +129,14 @@
             "name": "Address",
             "optional": false
           }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
         }
       ],
       "allocation": {
@@ -151,11 +159,20 @@
                 "refs": 0
               },
               "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
             }
           ],
           "next": null,
           "size": {
-            "bits": 268,
+            "bits": 525,
             "refs": 0
           }
         }

@@ -174,7 +174,12 @@ _ __gen_get_seqno() method_id(85143) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
-    ;; Receivers
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Execute message
     if (op == 819865922) {
         var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();
         var (int msg'operation'seqno, int msg'operation'amount, slice msg'operation'target, slice msg'signature1, slice msg'signature2, slice msg'signature3) = in_msg~__gen_read_Execute();

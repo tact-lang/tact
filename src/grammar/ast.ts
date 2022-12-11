@@ -218,7 +218,7 @@ export type ASTFunction = {
 export type ASTReceive = {
     kind: 'def_receive',
     id: number,
-    arg: ASTArgument | null | string,
+    selector: { kind: 'simple', arg: ASTArgument } | { kind: 'fallback' } | { kind: 'comment', comment: string } | { kind: 'bounce', arg: ASTArgument },
     statements: ASTStatement[],
     ref: ASTRef
 }

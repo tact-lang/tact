@@ -57,7 +57,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgEBCwEA9QABFP8A9KQT9LzyyAsBAgFiAgMB+NBwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwQQRvA/hhghBt5Y3Nuo5N7UTQ0x/T/9M/VSBsEwPTHwGCEG3ljc268uBkgwjXGGYyEDRDACD5AVQQJPkQ8qrSH9IH1DBRJbryqwSkBPsAyFUgUCPLH8v/yz/J7VQEAgEgBQYACuAw8sBkAgEgBwgAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgJCgAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
+    const __code = 'te6ccgEBCwEA+QABFP8A9KQT9LzyyAsBAgFiAgMBcNBwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+CCEG3ljc264wIw8sBkBAIBIAUGAJrtRNDTH9P/0z9VIGwTA9MfAYIQbeWNzbry4GSDCNcYZjIQNEMAIPkBVBAk+RDyqtIf0gfUMFEluvKrBKQE+wDIVSBQI8sfy//LP8ntVAIBIAcIACO+AldqJoaY/p/+mfqpA2CbYQwAIbuhNwWchVIFAjyx/L/8s/yYAgFICQoAIbMl+1E0NMf0//TP1UgbBNbgACOwfjtRNDTH9P/0z9VIGwTMDGA=';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

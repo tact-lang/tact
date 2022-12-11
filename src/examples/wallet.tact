@@ -54,6 +54,10 @@ contract Wallet {
         }
     }
 
+    receiveBounced(msg: Slice) {
+        // TODO: Handle
+    } 
+
     get fun publicKey(): Int {
         return self.key;
     }

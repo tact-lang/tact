@@ -192,7 +192,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
     ReceiveFunction_simple(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
             kind: 'def_receive',
-            arg: arg2.resolve_declaration(),
+            selector: { kind: 'simple', arg: arg2.resolve_declaration() },
             statements: arg5.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
@@ -200,7 +200,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
     ReceiveFunction_empty(arg0, arg1, arg2, arg3, arg4, arg5) {
         return createNode({
             kind: 'def_receive',
-            arg: null,
+            selector: { kind: 'fallback' },
             statements: arg4.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
@@ -208,11 +208,19 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
     ReceiveFunction_comment(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
         return createNode({
             kind: 'def_receive',
-            arg: arg3.sourceString,
+            selector: { kind: 'comment', comment: arg3.sourceString },
             statements: arg7.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
-    }
+    },
+    ReceiveFunction_bounced(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_receive',
+            selector: { kind: 'bounce', arg: arg2.resolve_declaration() },
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
 });
 
 // Statements

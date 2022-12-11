@@ -9,7 +9,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 
-(int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -118,7 +118,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 
-(int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -227,7 +227,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 
-(int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();

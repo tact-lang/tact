@@ -62,9 +62,11 @@ PROGRAM{
     SWAP
     LDMSGADDR
     DROP
-    ROT
+    s1 s0 s2 PUXC2
     TRIPLE
     __tact_context SETGLOB
+    IFJMP:<{
+    }>
     100 THROW
   }>
 }END>c

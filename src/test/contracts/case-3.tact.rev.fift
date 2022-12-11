@@ -22,9 +22,10 @@ SETCP0
     s0 s1 XCHG
     LDMSGADDR
     s0 POP
-    ROT
+    1 0 2 PUXC2
     TRIPLE
     1 SETGLOBVAR
+    IFRET
     100 THROW
 
   80984: 

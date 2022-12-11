@@ -2,7 +2,7 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 
-(int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -178,6 +178,11 @@ _ __gen_get_seqno() method_id(85143) {
     return ((self'seqno, self'key, self'walletId), ());
 }
 
+((int, int, int), ()) __gen_Wallet_receive_bounced((int, int, int) self, slice msg) impure {
+    var (self'seqno, self'key, self'walletId) = self;
+    return ((self'seqno, self'key, self'walletId), ());
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -192,7 +197,15 @@ _ __gen_get_seqno() method_id(85143) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
-    ;; Receivers
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
+        (self'seqno, self'key, self'walletId)~__gen_Wallet_receive_bounced(in_msg);
+        __gen_store_Wallet(self'seqno, self'key, self'walletId);
+        return ();
+    }
+    
+    ;; Receive TransferMessage message
     if (op == 1843760589) {
         var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
         var (slice msg'signature, int msg'transfer'seqno, int msg'transfer'mode, slice msg'transfer'to, int msg'transfer'amount, cell msg'transfer'body) = in_msg~__gen_read_TransferMessage();
@@ -200,6 +213,8 @@ _ __gen_get_seqno() method_id(85143) {
         __gen_store_Wallet(self'seqno, self'key, self'walletId);
         return ();
     }
+    
+    ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
         (self'seqno, self'key, self'walletId)~__gen_Wallet_receive();
@@ -207,9 +222,11 @@ _ __gen_get_seqno() method_id(85143) {
         return ();
     }
     
-    ;; Text resolvers
+    ;; Text Receivers
     if (op == 0) {
         var text_op = slice_hash(in_msg);
+        
+        ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
             var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
             (self'seqno, self'key, self'walletId)~__gen_Wallet_receive_comment_notify();
@@ -218,7 +235,7 @@ _ __gen_get_seqno() method_id(85143) {
         }
     }
     
-    ;; Fallback receiver
+    ;; Receiver fallback
     var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();
     (self'seqno, self'key, self'walletId)~__gen_Wallet_receive_fallback(in_msg);
     __gen_store_Wallet(self'seqno, self'key, self'walletId);

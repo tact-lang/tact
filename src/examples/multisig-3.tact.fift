@@ -244,9 +244,13 @@ PROGRAM{
     SWAP
     LDMSGADDR
     DROP
-    s1 s0 s4 XCHG3
+    s1 s0 s4 PUXC2
     TRIPLE
     __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
     819865922 PUSHINT
     EQUAL
     IFJMP:<{

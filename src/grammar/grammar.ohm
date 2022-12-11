@@ -49,6 +49,7 @@ Tact {
     ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}" --simple
                     | receive  "(" ")" "{" Statement* "}" --empty
                     | receive "(" "\"" #(letterComment+)  #"\"" ")" "{" Statement* "}" --comment
+                    | receiveBounced "(" FunctionArg ")" "{" Statement* "}" --bounced
 
     // Statements
     Statement = StatementLet
@@ -175,6 +176,7 @@ Tact {
             | receive 
             | mutates
             | extends
+            | receiveBounced
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -198,6 +200,7 @@ Tact {
     receive = "receive" ~idPart
     mutates = "mutates" ~idPart
     extends = "extends" ~idPart
+    receiveBounced = "receiveBounced" ~idPart
 
     // Attributes
     nameAttribute = "@name"

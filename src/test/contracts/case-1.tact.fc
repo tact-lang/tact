@@ -14,7 +14,10 @@ global (int, slice, int) __tact_context;
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
-    ;; Receivers
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
     
     throw(100);
 }

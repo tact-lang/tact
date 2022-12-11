@@ -77,7 +77,12 @@ _ __gen_get_counters() method_id(95239) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value);
     
-    ;; Receivers
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Increment message
     if (op == 3615081709) {
         var (cell self'counters) = __gen_load_IncrementContract();
         var (int msg'key, int msg'value) = in_msg~__gen_read_Increment();

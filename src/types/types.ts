@@ -70,6 +70,9 @@ export type ReceiverSelector = {
 } | {
     kind: 'internal-fallback',
     name: string
+} | {
+    kind: 'internal-bounce',
+    name: string
 };
 
 export type ReceiverDescription = {

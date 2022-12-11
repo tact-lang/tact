@@ -248,6 +248,28 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
             ctx.append(`}`);
         });
     }
+
+    // Bounced
+    if (selector.kind === 'internal-bounce') {
+        ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
+            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
+            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_bounced((${(tensorToString(selfTensor, 'types').join(', '))}) self, slice ${selector.name}) ${modifier} {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+
+                for (let s of f.ast.statements) {
+                    writeStatement(s, selfRes, ctx);
+                }
+
+                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                    ctx.append(`return (${selfRes}, ());`);
+                }
+            });
+            ctx.append(`}`);
+        });
+    }
 }
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
@@ -382,8 +404,35 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value);`);
             ctx.append();
 
+            // Handle bounced
+            ctx.append(`;; Handle bounced messages`);
+            ctx.append(`if (msg_bounced) {`);
+            ctx.inIndent(() => {
+                let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
+                if (bouncedHandler) {
+
+                    // Resolve tensors
+                    let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
+
+                    // Load storage
+                    ctx.used(`__gen_load_${type.name}`);
+                    ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+
+                    // Execute function
+                    ctx.used(`__gen_${type.name}_receive_bounced`);
+                    ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_bounced(in_msg);`);
+
+                    // Persist
+                    ctx.used(`__gen_store_${type.name}`);
+                    ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+                    ctx.append(`return ();`);
+                } else {
+                    ctx.append(`return ();`);
+                }
+            });
+            ctx.append(`}`);
+
             // Non-empty receivers
-            ctx.append(`;; Receivers`);
             for (const f of type.receivers) {
                 const selector = f.selector;
 
@@ -393,6 +442,8 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                     if (!allocation.prefix) {
                         throw Error('Invalid allocation');
                     }
+                    ctx.append();
+                    ctx.append(`;; Receive ${selector.type} message`);
                     ctx.append(`if (op == ${allocation.prefix}) {`);
                     ctx.inIndent(() => {
 
@@ -423,6 +474,8 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                 }
 
                 if (selector.kind === 'internal-empty') {
+                    ctx.append();
+                    ctx.append(`;; Receive empty message`);
                     ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
                     ctx.inIndent(() => {
 
@@ -452,7 +505,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             let hasComments = !!type.receivers.find((v) => v.selector.kind === 'internal-comment');
             if (hasComments) {
                 ctx.append();
-                ctx.append(`;; Text resolvers`);
+                ctx.append(`;; Text Receivers`);
                 ctx.append(`if (op == 0) {`);
                 ctx.inIndent(() => {
                     ctx.append(`var text_op = slice_hash(in_msg);`);
@@ -465,6 +518,8 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                                 .endCell()
                                 .hash()
                                 .toString('hex', 0, 64);
+                            ctx.append();
+                            ctx.append(`;; Receive "${selector.comment}" message`);
                             ctx.append(`if (text_op == ${hash}) {`);
                             ctx.inIndent(() => {
 
@@ -498,7 +553,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             if (fallbackReceiver) {
 
                 ctx.append();
-                ctx.append(`;; Fallback receiver`);
+                ctx.append(`;; Receiver fallback`);
                 // Resolve tensors
                 let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
 

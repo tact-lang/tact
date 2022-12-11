@@ -15,7 +15,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
     ctx.fun('__tact_context_get', () => {
         ctx.used('__tact_context');
-        ctx.append(`(int, slice) __tact_context_get() inline { return __tact_context; }`);
+        ctx.append(`(int, slice, int) __tact_context_get() inline { return __tact_context; }`);
     })
     ctx.fun('__tact_load_address', () => {
         ctx.append(`(slice, slice) __tact_load_address(slice cs) inline {`);
