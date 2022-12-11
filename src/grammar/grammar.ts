@@ -33,6 +33,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             kind: 'def_struct',
             name: arg1.sourceString,
             fields: arg3.children.map((v) => v.resolve_declaration()),
+            prefix: null,
             message: false,
             ref: createRef(this)
         })
@@ -43,6 +44,18 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             kind: 'def_struct',
             name: arg1.sourceString,
             fields: arg3.children.map((v) => v.resolve_declaration()),
+            prefix: null,
+            message: true,
+            ref: createRef(this)
+        })
+    },
+    Struct_messageWithId(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
+        return createNode({
+            kind: 'def_struct',
+            name: arg4.sourceString,
+            fields: arg6.children.map((v) => v.resolve_declaration()),
+            prefix: parseInt(arg2.sourceString),
             message: true,
             ref: createRef(this)
         })

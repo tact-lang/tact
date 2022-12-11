@@ -221,6 +221,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "def_struct",
         "message": false,
         "name": "SendParameters",
+        "prefix": null,
         "ref": ASTRef {},
       },
       "fields": [
@@ -429,6 +430,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "def_struct",
         "message": false,
         "name": "Context",
+        "prefix": null,
         "ref": ASTRef {},
       },
       "fields": [
@@ -577,6 +579,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "def_struct",
         "message": false,
         "name": "Point",
+        "prefix": null,
         "ref": ASTRef {},
       },
       "fields": [
@@ -677,6 +680,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "kind": "def_struct",
                 "message": false,
                 "name": "Point",
+                "prefix": null,
                 "ref": ASTRef {},
               },
               "fields": [
@@ -747,6 +751,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "def_struct",
         "message": false,
         "name": "Point2",
+        "prefix": null,
         "ref": ASTRef {},
       },
       "fields": [
@@ -847,6 +852,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "kind": "def_struct",
                 "message": false,
                 "name": "Point",
+                "prefix": null,
                 "ref": ASTRef {},
               },
               "fields": [
@@ -916,6 +922,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "kind": "def_struct",
                   "message": false,
                   "name": "Point2",
+                  "prefix": null,
                   "ref": ASTRef {},
                 },
                 "fields": [
@@ -994,6 +1001,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "def_struct",
         "message": false,
         "name": "Point3",
+        "prefix": null,
         "ref": ASTRef {},
       },
       "fields": [

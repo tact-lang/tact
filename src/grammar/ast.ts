@@ -172,6 +172,7 @@ export type ASTStruct = {
     id: number,
     name: string,
     message: boolean,
+    prefix: number | null,
     fields: ASTField[],
     ref: ASTRef
 }

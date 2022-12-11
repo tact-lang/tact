@@ -6,7 +6,7 @@ struct Transfer {
     body: Cell?;
 }
 
-message TransferMessage {
+message(123) TransferMessage {
     signature: Slice;
     transfer: Transfer;
 }

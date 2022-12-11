@@ -290,6 +290,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Struct1",
+      "prefix": null,
       "ref": struct Struct1 {
     a: Int;
     b: Bool;
@@ -350,6 +351,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Struct2",
+      "prefix": null,
       "ref": struct Struct2 {
     a: Struct1;
 },
@@ -1429,6 +1431,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Point",
+      "prefix": null,
       "ref": struct Point {
     
 },

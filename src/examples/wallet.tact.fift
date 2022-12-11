@@ -92,8 +92,7 @@ PROGRAM{
   __gen_read_TransferMessage PROCINLINE:<{
     32 LDU
     SWAP
-    1843760589 PUSHINT
-    EQUAL
+    123 EQINT
     100 THROWIFNOT
     LDREF
     SWAP
@@ -294,8 +293,7 @@ PROGRAM{
       __gen_store_Wallet INLINECALLDICT
     }>
     DUP
-    1843760589 PUSHINT
-    EQUAL
+    123 EQINT
     IFJMP:<{
       DROP
       __gen_load_Wallet INLINECALLDICT

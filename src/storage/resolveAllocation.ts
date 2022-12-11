@@ -181,9 +181,14 @@ export function resolveAllocations(ctx: CompilerContext) {
     // Generate allocations
     for (let s of types) {
 
+        // Resolve prefix
         let prefix: number | null = null;
         if (s.ast.kind === 'def_struct' && s.ast.message) {
-            prefix = crc32(Buffer.from(s.name)); // TODO: Better allocation
+            if (s.ast.prefix !== null) {
+                prefix = s.ast.prefix;
+            } else {
+                prefix = crc32(Buffer.from(s.name)); // TODO: Better allocation
+            }
         }
 
         // Reserve bits

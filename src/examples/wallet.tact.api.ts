@@ -74,14 +74,14 @@ export type TransferMessage = {
 
 export function packTransferMessage(src: TransferMessage): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(1843760589, 32);
+    b_0 = b_0.storeUint(123, 32);
     b_0 = b_0.storeRef(src.signature.toCell());
     b_0 = b_0.storeCellCopy(packTransfer(src.transfer));
     return b_0.endCell();
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECEwEAAlYAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASANDgIBzgYHAAWkGEAE6Tt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4gMO1E0NMf0//TP1UgbBNVAvAYyFUgUCPLH8v/yz/J7VTgIIIQbeWNzbrjAiDAACLXScEhsOMCwADjAO1E0NMf0//TP1UgbBNVAoAgJCgsACQgbvJOgAXww7UTQ0x/T/9M/VSBsEwPTHwGCEG3ljc268uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBAwATlvtRNDTH9P/0z9VIGwT+EFvI1uzkwKkAt7IVSBQI8sfy//LP8ntVACkIPkBgvAOI1cmEItXANA2ndcWf2r/uAan4EBZN13Q4Psklx5ysrqOKTDtRNDTH9P/0z9VIGwT+EFvI1uzkwKkAt7IVSBQI8sfy//LP8ntVNsx4AA0MPhBbyNbs5MCpALeyFUgUCPLH8v/yz/J7VQA9FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AMhVIFAjyx/L/8s/ye1UAgEgDxAAI74CV2omhpj+n/6Z+qkDYJthDAAhu6E3BZyFUgUCPLH8v/yz/JgCAUgREgAhsyX7UTQ0x/T/9M/VSBsE1uAAI7B+O1E0NMf0//TP1UgbBMwMYA==';
+    const __code = 'te6ccgECEwEAAkwAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASANDgIBzgYHAAWkGEAE9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4gMO1E0NMf0//TP1UgbBNVAvAYyFUgUCPLH8v/yz/J7VTgIMB74wIgwAAi10nBIbDjAsAA4wDtRNDTH9P/0z9VIGwTVQIw+EFvI1uzkwKkAt6AICQoLAAkIG7yToAFyMO1E0NMf0//TP1UgbBMD0x8BwHvy4GTUAdAB0x/TB/pAAQH6AG0B0gABktQx3lVAEFY2EHgQZ1UEDABOW+1E0NMf0//TP1UgbBP4QW8jW7OTAqQC3shVIFAjyx/L/8s/ye1UAKQg+QGC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4pMO1E0NMf0//TP1UgbBP4QW8jW7OTAqQC3shVIFAjyx/L/8s/ye1U2zHgABzIVSBQI8sfy//LP8ntVAD0VHQyU0PIVUBQRcsfEssHAc8WAfoCIW6UcDLKAJV/AcoAzOLJ+QBUEGj5EPKqUTe68qsGpH9QdEMwyHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAyFUgUCPLH8v/yz/J7VQCASAPEAAjvgJXaiaGmP6f/pn6qQNgm2EMACG7oTcFnIVSBQI8sfy//LP8mAIBSBESACGzJftRNDTH9P/0z9VIGwTW4AAjsH47UTQ0x/T/9M/VSBsEzAxg';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

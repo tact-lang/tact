@@ -1965,6 +1965,7 @@ exports[`grammar should parse case-17 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "prefix": null,
       "ref": struct A {
     x: Int;
 },
@@ -1991,6 +1992,7 @@ exports[`grammar should parse case-17 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "prefix": null,
       "ref": message B {
     x: Int;
 },
@@ -2026,6 +2028,7 @@ exports[`grammar should parse case-18 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "prefix": null,
       "ref": struct A {
     x: Int;
 },
@@ -2052,6 +2055,7 @@ exports[`grammar should parse case-18 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "prefix": null,
       "ref": message B {
     x: Int as coin;
 },
@@ -2087,6 +2091,7 @@ exports[`grammar should parse case-19 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "prefix": null,
       "ref": struct A {
     x: Int = 1000;
 },
@@ -2128,6 +2133,7 @@ exports[`grammar should parse case-19 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "prefix": null,
       "ref": message B {
     x: Int as coins = 1000;
     y: Bool = true;
@@ -2164,6 +2170,7 @@ exports[`grammar should parse case-20 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "prefix": null,
       "ref": struct A {
     y: map[Int]Int;
 },
@@ -2190,6 +2197,7 @@ exports[`grammar should parse case-20 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "prefix": null,
       "ref": message B {
     x: map[Int]Int;
 },

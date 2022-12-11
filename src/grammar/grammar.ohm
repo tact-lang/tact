@@ -28,6 +28,7 @@ Tact {
     // Struct
     Struct = struct id "{" StructBody* "}" --originary
            | message id "{" StructBody* "}" --message
+           | message "(" integerLiteral ")" id "{" StructBody* "}" --messageWithId
     StructBody = Field
 
     // Contract
