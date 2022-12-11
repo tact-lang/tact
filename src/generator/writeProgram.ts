@@ -288,7 +288,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
         ctx.inIndent(() => {
 
             // Begin parsing
-            ctx.append(`int op = in_msg~load_uint(32);`);
+            ctx.append(`int op = in_msg.preload_uint(32);`);
             ctx.append();
 
             // Routing

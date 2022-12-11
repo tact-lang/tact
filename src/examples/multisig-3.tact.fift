@@ -58,6 +58,11 @@ PROGRAM{
     s3 s3 s0 XCHG3
   }>
   __gen_read_Execute PROCINLINE:<{
+    32 LDU
+    SWAP
+    819865922 PUSHINT
+    EQUAL
+    100 THROWIFNOT
     __gen_read_Operation INLINECALLDICT
     s0 s3 XCHG
     LDREF
@@ -210,8 +215,8 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     NIP
-    32 LDU
-    SWAP
+    DUP
+    32 PLDU
     819865922 PUSHINT
     EQUAL
     IFJMP:<{

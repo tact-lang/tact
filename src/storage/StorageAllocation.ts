@@ -3,6 +3,7 @@ import { TypeDescription, TypeRef } from "../types/types";
 export type StorageAllocation = {
     prefix: number | null;
     root: StorageCell;
+    size: { bits: number, refs: number };
     fields: { name: string, type: TypeRef, index: number }[];
 };
 

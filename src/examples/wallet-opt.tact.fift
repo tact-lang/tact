@@ -16,6 +16,11 @@ PROGRAM{
   DECLPROC recv_internal
   80403 DECLMETHOD init_Wallet
   __gen_read_TransferMessage PROCINLINE:<{
+    32 LDU
+    SWAP
+    1843760589 PUSHINT
+    EQUAL
+    100 THROWIFNOT
     9 PUSHPOW2
     LDSLICEX
     TUCK
@@ -98,8 +103,8 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     NIP
-    32 LDU
-    SWAP
+    DUP
+    32 PLDU
     1843760589 PUSHINT
     EQUAL
     IFJMP:<{

@@ -1,4 +1,5 @@
 (slice, (slice, slice)) __gen_read_TransferMessage(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 1843760589);
     var signature = sc~load_bits(512);
     var transfer = sc;
     return (sc, (signature, transfer));
@@ -88,7 +89,7 @@ _ __gen_get_seqno() method_id(85143) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg~load_uint(32);
+    int op = in_msg.preload_uint(32);
     
     if (op == 1843760589) {
         var (int self'seqno, int self'key, int self'walletId) = __gen_load_Wallet();

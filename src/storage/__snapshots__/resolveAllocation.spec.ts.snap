@@ -133,6 +133,10 @@ exports[`resolveAllocation should write program 1`] = `
           "refs": 1,
         },
       },
+      "size": {
+        "bits": 783,
+        "refs": 2,
+      },
     },
     "type": {
       "ast": {
@@ -346,6 +350,10 @@ exports[`resolveAllocation should write program 1`] = `
           "refs": 0,
         },
       },
+      "size": {
+        "bits": 514,
+        "refs": 1,
+      },
     },
     "type": {
       "ast": {
@@ -445,7 +453,7 @@ exports[`resolveAllocation should write program 1`] = `
             "name": "z",
             "size": {
               "bits": 514,
-              "refs": 0,
+              "refs": 1,
             },
             "type": {
               "ast": {
@@ -524,8 +532,12 @@ exports[`resolveAllocation should write program 1`] = `
         "next": null,
         "size": {
           "bits": 514,
-          "refs": 0,
+          "refs": 1,
         },
+      },
+      "size": {
+        "bits": 514,
+        "refs": 2,
       },
     },
     "type": {
@@ -611,7 +623,7 @@ exports[`resolveAllocation should write program 1`] = `
             "name": "a",
             "size": {
               "bits": 514,
-              "refs": 0,
+              "refs": 1,
             },
             "type": {
               "ast": {
@@ -695,7 +707,7 @@ exports[`resolveAllocation should write program 1`] = `
               "name": "b",
               "size": {
                 "bits": 514,
-                "refs": 0,
+                "refs": 2,
               },
               "type": {
                 "ast": {
@@ -747,13 +759,17 @@ exports[`resolveAllocation should write program 1`] = `
           "next": null,
           "size": {
             "bits": 514,
-            "refs": 0,
+            "refs": 2,
           },
         },
         "size": {
           "bits": 514,
-          "refs": 1,
+          "refs": 2,
         },
+      },
+      "size": {
+        "bits": 514,
+        "refs": 3,
       },
     },
     "type": {
@@ -840,6 +856,10 @@ exports[`resolveAllocation should write program 1`] = `
           "bits": 0,
           "refs": 0,
         },
+      },
+      "size": {
+        "bits": 0,
+        "refs": 2,
       },
     },
     "type": {

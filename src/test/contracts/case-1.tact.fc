@@ -1,5 +1,5 @@
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg~load_uint(32);
+    int op = in_msg.preload_uint(32);
     
     
     throw(100);

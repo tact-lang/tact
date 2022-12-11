@@ -1,59 +1,62 @@
-builder __gen_write_StdlibTest(builder build_0) inline {
+builder __gen_write_StdlibTest(builder build_0, int v'v) inline {
+    build_0 = store_int(build_0, v'v, 257);
     return build_0;
 }
 
-cell __gen_writecell_StdlibTest() inline {
-    return __gen_write_StdlibTest(begin_cell(), ).end_cell();
+cell __gen_writecell_StdlibTest(int v'v) inline {
+    return __gen_write_StdlibTest(begin_cell(), v'v).end_cell();
 }
 
-(slice, ()) __gen_read_StdlibTest(slice sc) inline {
-    return (sc, ());
+(slice, (int)) __gen_read_StdlibTest(slice sc) inline {
+    var v = sc~load_int(257);
+    return (sc, (v));
 }
 
-() __gen_load_StdlibTest() inline {
+(int) __gen_load_StdlibTest() inline {
     slice sc = get_data().begin_parse();
     return sc~__gen_read_StdlibTest();
 }
 
 cell __gen_StdlibTest_init() inline {
-    return __gen_writecell_StdlibTest();
+    var (int self'v) = (0);
+    return __gen_writecell_StdlibTest(self'v);
 }
 
-int __gen_StdlibTest_sliceEmpty(() self, slice sc) inline {
-    var () = self;
+int __gen_StdlibTest_sliceEmpty((int) self, slice sc) inline {
+    var (int self'v) = self;
     return slice_empty?(sc);
 }
 
 _ __gen_get_sliceEmpty(slice sc) method_id(73995) {
-    var () = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceEmpty(sc);
+    var (int self'v) = __gen_load_StdlibTest();
+    var res = __gen_StdlibTest_sliceEmpty(self'v, sc);
     return res;
 }
 
-int __gen_StdlibTest_sliceBits(() self, slice sc) inline {
-    var () = self;
+int __gen_StdlibTest_sliceBits((int) self, slice sc) inline {
+    var (int self'v) = self;
     return slice_bits(sc);
 }
 
 _ __gen_get_sliceBits(slice sc) method_id(75090) {
-    var () = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceBits(sc);
+    var (int self'v) = __gen_load_StdlibTest();
+    var res = __gen_StdlibTest_sliceBits(self'v, sc);
     return res;
 }
 
-int __gen_StdlibTest_sliceRefs(() self, slice sc) inline {
-    var () = self;
+int __gen_StdlibTest_sliceRefs((int) self, slice sc) inline {
+    var (int self'v) = self;
     return slice_refs(sc);
 }
 
 _ __gen_get_sliceRefs(slice sc) method_id(77445) {
-    var () = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceRefs(sc);
+    var (int self'v) = __gen_load_StdlibTest();
+    var res = __gen_StdlibTest_sliceRefs(self'v, sc);
     return res;
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg~load_uint(32);
+    int op = in_msg.preload_uint(32);
     
     
     throw(100);

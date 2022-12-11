@@ -109,6 +109,9 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
     ctx.fun(`__gen_write_${name}`, () => {
         ctx.append(`builder __gen_write_${name}(${['builder build_0', ...args].join(', ')}) inline {`);
         ctx.inIndent(() => {
+            if (allocation.prefix) {
+                ctx.append(`build_0 = store_uint(build_0, ${allocation.prefix}, 32);`);
+            }
             if (allocation.fields.length > 0) {
                 writeSerializerCell(allocation.root, 0, ctx);
             }
@@ -236,6 +239,11 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
         let returns = tensorToString(tensor, 'types');
         ctx.append(`(slice, (${returns.join(', ')})) __gen_read_${name}(slice sc) inline {`);
         ctx.inIndent(() => {
+
+            // Check prefix
+            if (allocation.prefix) {
+                ctx.append(`throw_unless(100, sc~load_uint(32) == ${allocation.prefix});`);
+            }
 
             // Write cell parser
             writeCellParser(allocation.root, ctx);

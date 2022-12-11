@@ -8,6 +8,7 @@
 }
 
 (slice, (int, int)) __gen_read_Increment(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 3615081709);
     var key = sc~load_int(257);
     var value = sc~load_int(257);
     return (sc, (key, value));
@@ -61,7 +62,7 @@ _ __gen_get_counters() method_id(95239) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg~load_uint(32);
+    int op = in_msg.preload_uint(32);
     
     if (op == 3615081709) {
         var (cell self'counters) = __gen_load_IncrementContract();

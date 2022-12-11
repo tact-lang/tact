@@ -1,4 +1,7 @@
 contract StdlibTest {
+
+    v: Int = 0;
+
     init() {
         // Nothing to do
     }

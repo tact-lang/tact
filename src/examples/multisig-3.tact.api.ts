@@ -73,7 +73,7 @@ export function packExecuted(src: Executed): Cell {
 }
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECEAEAATIAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAICQIB1AYHACG5kKpgoGmWP5f/l/+X/5PaqQDpDHTHwGCEDDeKUK6jmLtRNDTH9P/0//T/1UwbBQE0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UEVHVDyFUgUCPLHwH6AgHPFsn5AFIEKvkQUjMp+RBUEzf5EFNZuvKKArABsPKKXwPwDOAw8sBkgAAkIG7yToAAnvmS/aiaGmP6f/p/+n/qpg2Ci+BwCASAKCwIBIAwNACe4rHcFUgyFUwUDTLH8v/y//L/8mAIBIA4PACu0fL2omhpj+n/6f/p/6qYNgoIEa+BwACew6ftRNDTH9P/0//T/1UwbBRsMYAApsOG7UTQ0x/T/9P/0/9VMGwUE18Dg';
+    const __code = 'te6ccgECEQEAAUIAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAJCgIB1AYHACG5kKpgoGmWP5f/l/+X/5PaqQElDEg1wsfghAw3ilCuuMCMPLAZIAgACQgbvJOgAN7tRNDTH9P/0//T/1UwbBQE0x8BghAw3ilCuvLgZNMf+gD6QAFDMAPUAdAB1AHQAdQB0BZDMDYQiRB4EGdVBFR1Q8hVIFAjyx8B+gIBzxbJ+QBSBCr5EFIzKfkQVBM3+RBTWbryigKwAbDyil8D8AwAJ75kv2omhpj+n/6f/p/6qYNgovgcAgEgCwwCASANDgAnuKx3BVIMhVMFA0yx/L/8v/y//JgCASAPEAArtHy9qJoaY/p/+n/6f+qmDYKCBGvgcAAnsOn7UTQ0x/T/9P/0/9VMGwUbDGAAKbDhu1E0NMf0//T/9P/VTBsFBNfA4A==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});

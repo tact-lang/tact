@@ -2,8 +2,8 @@ SETCP0
 (:methods
   recv_internal: 
     s1 POP
-    32 LDU
-    s0 s1 XCHG
+    s0 PUSH
+    32 PLDU
     1843760589 PUSHINT
     EQUAL
     <{
@@ -15,6 +15,11 @@ SETCP0
       3 1 BLKSWAP
       1 3 BLKDROP2
       s0 s3 XCHG
+      32 LDU
+      s0 s1 XCHG
+      1843760589 PUSHINT
+      EQUAL
+      100 THROWIFNOT
       9 PUSHPOW2
       LDSLICEX
       TUCK

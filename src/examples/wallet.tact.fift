@@ -79,6 +79,11 @@ PROGRAM{
     5 -ROLL
   }>
   __gen_read_TransferMessage PROCINLINE:<{
+    32 LDU
+    SWAP
+    1843760589 PUSHINT
+    EQUAL
+    100 THROWIFNOT
     LDREF
     SWAP
     CTOS
@@ -203,8 +208,8 @@ PROGRAM{
   }>
   recv_internal PROC:<{
     NIP
-    32 LDU
-    SWAP
+    DUP
+    32 PLDU
     1843760589 PUSHINT
     EQUAL
     IFJMP:<{

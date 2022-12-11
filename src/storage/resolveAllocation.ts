@@ -122,7 +122,7 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
                 throwError('Unknown serialization type ' + src.as, src.ref);
             }
             let allocation = getAllocation(ctx, type.name);
-            return { index: src.index, size: allocation.root.size, name: src.name, kind: 'struct', type: td };
+            return { index: src.index, size: allocation.size, name: src.name, kind: 'struct', type: td };
         }
 
         // Contract types
@@ -180,12 +180,33 @@ export function resolveAllocations(ctx: CompilerContext) {
 
     // Generate allocations
     for (let s of types) {
-        let root = allocateFields(ctx, [...s.fields], 1023, 3);
+
         let prefix: number | null = null;
         if (s.ast.kind === 'def_struct' && s.ast.message) {
             prefix = crc32(Buffer.from(s.name)); // TODO: Better allocation
         }
-        let allocation: StorageAllocation = { prefix, root, fields: s.fields };
+
+        // Reserve bits
+        let reserveBits = 0;
+        if (prefix !== null) {
+            reserveBits += 32; // Header size
+        }
+
+        // Reserver refs
+        let reserveRefs = 1; // Next cell
+        if (s.kind === 'contract') {
+            reserveRefs += 1; // Internal state
+        }
+
+        let root = allocateFields(ctx, [...s.fields], 1023 - reserveBits, 4 - reserveRefs);
+        let allocation: StorageAllocation = {
+            prefix, root,
+            fields: s.fields,
+            size: {
+                bits: root.size.bits + reserveBits, // Bits are part of serialization
+                refs: root.size.refs
+            }
+        };
         ctx = store.set(ctx, s.name, allocation);
     }
 

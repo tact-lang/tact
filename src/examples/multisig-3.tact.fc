@@ -29,6 +29,7 @@ cell __gen_writecell_Operation(int v'seqno,int v'amount,slice v'target) inline {
 }
 
 (slice, (int, int, slice, slice, slice, slice)) __gen_read_Execute(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 819865922);
     var (int operation'seqno, int operation'amount, slice operation'target) = sc~__gen_read_Operation();
     var signature1 = sc~load_ref().begin_parse();
     var signature2 = sc~load_ref().begin_parse();
@@ -158,7 +159,7 @@ _ __gen_get_seqno() method_id(85143) {
 }
 
 () recv_internal(cell in_msg_cell, slice in_msg) impure {
-    int op = in_msg~load_uint(32);
+    int op = in_msg.preload_uint(32);
     
     if (op == 819865922) {
         var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = __gen_load_MultisigContract();

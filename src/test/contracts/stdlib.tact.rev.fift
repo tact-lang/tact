@@ -1,0 +1,50 @@
+SETCP0
+(:methods
+  recv_internal: 
+    2DROP
+    100 THROW
+
+  73995: 
+    c4 PUSH
+    CTOS
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s1 XCHG
+    s1 POP
+    SEMPTY
+
+  75090: 
+    c4 PUSH
+    CTOS
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s1 XCHG
+    s1 POP
+    SBITS
+
+  77445: 
+    c4 PUSH
+    CTOS
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s1 XCHG
+    s1 POP
+    SREFS
+
+  108504: 
+    0 PUSHINT
+    NEWC
+    s0 s1 XCHG
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

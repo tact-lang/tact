@@ -12,60 +12,64 @@ PROGRAM{
   77445 DECLMETHOD __gen_get_sliceRefs
   DECLPROC recv_internal
   108504 DECLMETHOD init_StdlibTest
-  __gen_write_StdlibTest PROC:<{
-    DROP
+  __gen_write_StdlibTest PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
   }>
-  __gen_writecell_StdlibTest PROC:<{
+  __gen_writecell_StdlibTest PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_StdlibTest CALLDICT
+    __gen_write_StdlibTest INLINECALLDICT
     ENDC
   }>
-  __gen_read_StdlibTest PROC:<{
-    0 TUPLE
+  __gen_read_StdlibTest PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
   }>
   __gen_load_StdlibTest PROCINLINE:<{
     c4 PUSH
     CTOS
-    __gen_read_StdlibTest CALLDICT
+    __gen_read_StdlibTest INLINECALLDICT
     NIP
   }>
-  __gen_StdlibTest_init PROC:<{
-    0 TUPLE
-    __gen_writecell_StdlibTest CALLDICT
+  __gen_StdlibTest_init PROCINLINE:<{
+    0 PUSHINT
+    __gen_writecell_StdlibTest INLINECALLDICT
   }>
-  __gen_StdlibTest_sliceEmpty PROC:<{
+  __gen_StdlibTest_sliceEmpty PROCINLINE:<{
+    NIP
     SEMPTY
   }>
   __gen_get_sliceEmpty PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceEmpty CALLDICT
-    NIP
+    __gen_StdlibTest_sliceEmpty INLINECALLDICT
   }>
-  __gen_StdlibTest_sliceBits PROC:<{
+  __gen_StdlibTest_sliceBits PROCINLINE:<{
+    NIP
     SBITS
   }>
   __gen_get_sliceBits PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceBits CALLDICT
-    NIP
+    __gen_StdlibTest_sliceBits INLINECALLDICT
   }>
-  __gen_StdlibTest_sliceRefs PROC:<{
+  __gen_StdlibTest_sliceRefs PROCINLINE:<{
+    NIP
     SREFS
   }>
   __gen_get_sliceRefs PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceRefs CALLDICT
-    NIP
+    __gen_StdlibTest_sliceRefs INLINECALLDICT
   }>
   recv_internal PROC:<{
     2DROP
     100 THROW
   }>
   init_StdlibTest PROC:<{
-    __gen_StdlibTest_init CALLDICT
+    __gen_StdlibTest_init INLINECALLDICT
   }>
 }END>c
