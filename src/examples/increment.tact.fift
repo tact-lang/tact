@@ -69,8 +69,12 @@ PROGRAM{
     c4 POP
   }>
   __gen_IncrementContract_init PROC:<{
+    PUSHNULL
+    SWAP
     NEWC
     STREF
+    SWAP
+    __gen_write_IncrementContract INLINECALLDICT
     ENDC
   }>
   __gen_IncrementContract_counters PROC:<{

@@ -29,8 +29,14 @@ SETCP0
     100 THROW
 
   4: 
+    0 PUSHINT
+    s0 s1 XCHG
     NEWC
     STREF
+    s0 s1 XCHG
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
     ENDC
 
   5: 

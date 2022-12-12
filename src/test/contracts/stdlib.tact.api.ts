@@ -56,7 +56,7 @@ export function packStateInit(src: StateInit): Cell {
 }
 
 export function StdlibTest_init() {
-    const __code = 'te6ccgEBEgEAugABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWAyQCASAGBwIBIAgJAgEgCgsABzIzMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
+    const __code = 'te6ccgEBEgEAwwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWAyQCASAGBwIBIAgJAgEgCgsAGRwAcjMAQGBAQHPAMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_StdlibTest', __stack);
 }

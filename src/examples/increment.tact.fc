@@ -44,7 +44,7 @@ cell __gen_IncrementContract_init(cell sys') {
     var (cell self'counters) = (null());
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    __gen_write_IncrementContract(b', self'counters);
+    b' = __gen_write_IncrementContract(b', self'counters);
     return b'.end_cell();
 }
 

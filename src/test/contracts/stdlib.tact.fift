@@ -33,8 +33,12 @@ PROGRAM{
     NIP
   }>
   __gen_StdlibTest_init PROC:<{
+    0 PUSHINT
+    SWAP
     NEWC
     STREF
+    SWAP
+    __gen_write_StdlibTest INLINECALLDICT
     ENDC
   }>
   __gen_StdlibTest_sliceEmpty PROC:<{

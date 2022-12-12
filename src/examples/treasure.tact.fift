@@ -132,9 +132,11 @@ PROGRAM{
     SENDRAWMSG
   }>
   __gen_Treasure_init PROC:<{
-    DROP
+    SWAP
     NEWC
     STREF
+    SWAP
+    __gen_write_Treasure INLINECALLDICT
     ENDC
   }>
   __gen_Treasure_requireOwner PROC:<{

@@ -58,9 +58,12 @@ PROGRAM{
     c4 POP
   }>
   __gen_Wallet_init PROC:<{
-    2DROP
+    0 PUSHINT
+    s0 s3 XCHG
     NEWC
     STREF
+    3 -ROLL
+    __gen_write_Wallet INLINECALLDICT
     ENDC
   }>
   __gen_Wallet_publicKey PROC:<{

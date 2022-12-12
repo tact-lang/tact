@@ -312,7 +312,7 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
             ctx.used(`__gen_write_${t.name}`);
             ctx.append(`var b' = begin_cell();`)
             ctx.append(`b' = b'.store_ref(sys');`)
-            ctx.append(`__gen_write_${t.name}(${[`b'`, ...tensorToString(selfTensor, 'names')].join(', ')});`);
+            ctx.append(`b' = __gen_write_${t.name}(${[`b'`, ...tensorToString(selfTensor, 'names')].join(', ')});`);
             ctx.append(`return b'.end_cell();`);
         });
         ctx.append(`}`);

@@ -184,9 +184,11 @@ SETCP0
     SENDRAWMSG
 
   14: 
-    s0 POP
+    s0 s1 XCHG
     NEWC
     STREF
+    s0 s1 XCHG
+    STSLICER
     ENDC
 
   15: 

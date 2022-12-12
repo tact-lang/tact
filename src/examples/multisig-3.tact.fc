@@ -96,7 +96,7 @@ cell __gen_MultisigContract_init(cell sys', int key1, int key2, int key3) {
     self'user3_key = key3;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    __gen_write_MultisigContract(b', self'seqno, self'user1_key, self'user2_key, self'user3_key);
+    b' = __gen_write_MultisigContract(b', self'seqno, self'user1_key, self'user2_key, self'user3_key);
     return b'.end_cell();
 }
 

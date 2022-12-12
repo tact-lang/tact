@@ -78,7 +78,7 @@ cell __gen_SampleJetton_init(cell sys', int totalSupply, int mintable, slice own
     self'walletCode = walletCode;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    __gen_write_SampleJetton(b', self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+    b' = __gen_write_SampleJetton(b', self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
     return b'.end_cell();
 }
 

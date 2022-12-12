@@ -155,9 +155,12 @@ PROGRAM{
     SENDRAWMSG
   }>
   __gen_MultisigContract_init PROC:<{
-    3 BLKDROP
+    0 PUSHINT
+    s0 s4 XCHG
     NEWC
     STREF
+    4 -ROLL
+    __gen_write_MultisigContract INLINECALLDICT
     ENDC
   }>
   __gen_MultisigContract_execute PROC:<{

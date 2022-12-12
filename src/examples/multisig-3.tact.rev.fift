@@ -146,9 +146,16 @@ SETCP0
     SENDRAWMSG
 
   13: 
-    3 BLKDROP
+    0 PUSHINT
+    s0 s4 XCHG
     NEWC
     STREF
+    4 1 BLKSWAP
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
     ENDC
 
   14: 

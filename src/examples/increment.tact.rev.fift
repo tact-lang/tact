@@ -92,8 +92,13 @@ SETCP0
     DICTISETREF
 
   7: 
+    PUSHNULL
+    s0 s1 XCHG
     NEWC
     STREF
+    s0 s1 XCHG
+    s0 s1 XCHG
+    STDICT
     ENDC
 
   8: 
