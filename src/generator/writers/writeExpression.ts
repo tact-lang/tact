@@ -319,6 +319,16 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     }
 
     //
+    // Init of
+    //
+
+    if (f.kind === 'init_of') {
+        ctx.used(`__gen_${f.name}_init_child`);
+        ctx.used(`__tact_context`);
+        return `__gen_${f.name}_init_child(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+    }
+
+    //
     // Unreachable
     //
 

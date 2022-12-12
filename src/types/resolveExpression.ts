@@ -1,5 +1,5 @@
 import { ABIFunctions, MapFunctions } from "../abi/AbiFunction";
-import { ASTBoolean, ASTExpression, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, throwError } from "../grammar/ast";
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
@@ -254,6 +254,26 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
     throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);
 }
 
+export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+
+    // Resolve type
+    let type = getType(ctx, ast.name);
+    if (type.kind !== 'contract') {
+        throwError(`Type "${ast.name}" is not a contract`, ast.ref);
+    }
+    if (!type.init) {
+        throwError(`Contract "${ast.name}" does not have an init function`, ast.ref);
+    }
+
+    // Resolve args
+    for (let e of ast.args) {
+        ctx = resolveExpression(e, sctx, ctx);
+    }
+
+    // Register return type
+    return registerExpType(ctx, ast, { kind: 'ref', name: 'StateInit', optional: false });
+}
+
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     let paths: ASTLvalueRef[] = path;
     let t = sctx.vars[paths[0].name];
@@ -345,6 +365,10 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
 
     if (exp.kind === 'op_call') {
         return resolveCall(exp, sctx, ctx);
+    }
+
+    if (exp.kind === 'init_of') {
+        return resolveInitOf(exp, sctx, ctx);
     }
 
     throw Error('Unknown expression'); // Unreachable

@@ -126,12 +126,14 @@ Tact {
                     | boolLiteral
                     | id
                     | null
+                    | ExpressionInitOf
                     
     ExpressionField = ExpressionValue "." id ~"("
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
     ExpressionNew = id "{" ListOf<NewParameter, ","> "}"
     NewParameter = id ":" Expression
     ExpressionStaticCall = id "(" ListOf<Expression, ","> ")"
+    ExpressionInitOf = initOf id "(" ListOf<Expression, ","> ")"
 
     // Type Literal
     typeLiteral = letterAsciiUC typeLiteralPart*
@@ -196,6 +198,7 @@ Tact {
             | import
             | with
             | trait
+            | initOf
     struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -223,6 +226,7 @@ Tact {
     import = "import" ~idPart
     with = "with" ~idPart
     trait = "trait" ~idPart
+    initOf = "initOf" ~idPart
 
     // Attributes
     nameAttribute = "@name"

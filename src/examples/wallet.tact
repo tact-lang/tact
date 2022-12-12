@@ -60,6 +60,11 @@ contract Wallet {
         }
     }
 
+    receive("duplicate") {
+        // Create new wallet
+        let walletInit: StateInit = initOf Wallet(self.key, self.walletId + 1);
+    }
+
     receiveBounced(msg: Slice) {
         // TODO: Handle
     } 

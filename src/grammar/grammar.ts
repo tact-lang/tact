@@ -488,6 +488,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     NewParameter(arg0, arg1, arg2) {
         return createNode({ kind: 'new_parameter', name: arg0.sourceString, exp: arg2.resolve_expression(), ref: createRef(this) });
     },
+    ExpressionInitOf(arg0, arg1, arg2, arg3, arg4) {
+        return createNode({ kind: 'init_of', name: arg1.sourceString, args: arg3.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
+    },
 });
 
 export function parse(src: string): ASTProgram {
