@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../../abi/deploy';
@@ -69,7 +69,8 @@ export function packSource(src: Source): Cell {
 }
 
 export class Empty {
-    readonly executor: ContractExecutor;
-    constructor(executor: ContractExecutor) { this.executor = executor; }
+            
+    readonly executor: ContractExecutor; 
+    constructor(executor: ContractExecutor) { this.executor = executor; } 
     
 }

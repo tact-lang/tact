@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -102,16 +102,20 @@ export function packExecuted(src: Executed): Cell {
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
     const __code = 'te6ccgECHwEAAfsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAXGAIBIAYHAgFiERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwE8j4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEABnMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AIAAjHAEyMxVMFA0yx/L/8v/y//JgAA8fzMBcG3wDIAAJBAjXwOACASATFAIBIBUWAAcE18DgAAUbDGAABRfA4ABfFR1Q8hVIFAjyx8B+gIBzxbJ+QBSBCr5EFIzKfkQVBM3+RBTWbryigKwAbDyivAOgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJQCASAZGgIBIBscAAm4rH8A2AIBIB0eAC+0fL2omhqAPwxaY/p/+n/6f+qmDYKeAfAAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEYAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPAQg';
+    const depends = new Map<string, Cell>();
+    let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: systemCell });
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key3.toString(), 10)});
-    return deploy(__code, 'init_MultisigContract', __stack);
+    return deploy(__code, 'init_MultisigContract', __stack); 
 }
 
 export class MultisigContract {
-    readonly executor: ContractExecutor;
-    constructor(executor: ContractExecutor) { this.executor = executor; }
+            
+    readonly executor: ContractExecutor; 
+    constructor(executor: ContractExecutor) { this.executor = executor; } 
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Execute) {
         let body: Cell | null = null;

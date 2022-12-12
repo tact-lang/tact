@@ -75,9 +75,9 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
     throw Error(`Unsupported type`);
 }
 
-export function writeTypescript(abi: ContractABI, code: string, importPath: string) {
+export function writeTypescript(abi: ContractABI, code: string, importPath: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';`);
+    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';`);
     w.append(`import { ContractExecutor } from 'ton-nodejs';`);
     w.append(`import BN from 'bn.js';`);
     w.append(`import { deploy } from '${importPath}';`);
@@ -163,22 +163,43 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
     if (abi.init) {
         w.append(`export function ${abi.name}_init(${writeArguments(abi.init.args)}) {`);
         w.inIndent(() => {
+
+            // Code references
             w.append(`const __code = '${code}';`);
+            w.append(`const depends = new Map<string, Cell>();`);
+            for (let s in abi.dependsOn) {
+                let cd = depends[s];
+                if (!cd) {
+                    throw Error(`Cannot find code for ${s}`);
+                }
+                w.append(`depends.set('${abi.dependsOn[s].uid}', Cell.fromBoc(Buffer.from('${cd.code}', 'base64'))[0]);`);
+            }
+            if (Object.values(abi.dependsOn).length > 0) {
+                w.append(`let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();`);
+            } else {
+                w.append(`let systemCell = beginCell().storeDict(null).endCell();`);
+            }
+
+            // Stack
             w.append('let __stack: StackItem[] = [];');
+            w.append(`__stack.push({ type: 'cell', cell: systemCell });`);
             for (let a of abi.init!.args) {
                 writeStackItem(a.name, a.type, w);
             }
-            w.append(`return deploy(__code, '${abi.init!.name}', __stack);`);
+
+            // Deploy
+            w.append(`return deploy(__code, '${abi.init!.name}', __stack); `);
         });
         w.append(`}`);
         w.append();
     }
 
     // Wrapper
-    w.append(`export class ${abi.name} {`);
+    w.append(`export class ${abi.name} {
+            `);
     w.inIndent(() => {
-        w.append(`readonly executor: ContractExecutor;`);
-        w.append(`constructor(executor: ContractExecutor) { this.executor = executor; }`);
+        w.append(`readonly executor: ContractExecutor; `);
+        w.append(`constructor(executor: ContractExecutor) { this.executor = executor; } `);
         w.append();
 
         // Receivers

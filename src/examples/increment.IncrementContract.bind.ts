@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -71,13 +71,17 @@ export function packIncrement(src: Increment): Cell {
 
 export function IncrementContract_init() {
     const __code = 'te6ccgEBDgEA4gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAwNAgEgBgcCAdQKCwIBSAgJABPzaA5GYAgPoAZMANkcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghDXecTtuo407UTQ1AH4YvQEATEB0x8BghDXecTtuvLgZIEBAdcAgQEB1wBZbBLwCcj4QgHMAQH0AMntVOAw8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgAAEgABEgQEBVBIi8AGAACbgffwB4AB+7QH7UTQ1AH4YvQEATHwCI';
+    const depends = new Map<string, Cell>();
+    let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
-    return deploy(__code, 'init_IncrementContract', __stack);
+    __stack.push({ type: 'cell', cell: systemCell });
+    return deploy(__code, 'init_IncrementContract', __stack); 
 }
 
 export class IncrementContract {
-    readonly executor: ContractExecutor;
-    constructor(executor: ContractExecutor) { this.executor = executor; }
+            
+    readonly executor: ContractExecutor; 
+    constructor(executor: ContractExecutor) { this.executor = executor; } 
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment) {
         let body: Cell | null = null;

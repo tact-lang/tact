@@ -5,6 +5,7 @@ import { createABI } from './generator/createABI';
 import { writeTypescript } from './generator/writeTypescript';
 import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton';
+import { ContractABI } from './abi/ContractABI';
 
 // Read cases
 (async () => {
@@ -24,6 +25,7 @@ import { Cell } from 'ton';
                 let contracts = getContracts(ctx);
 
                 // Process all contracts
+                let built: { [key: string]: { code: string, abi: ContractABI } } = {};
                 for (let contract of contracts) {
                     console.log('Contract: ' + contract);
                     let prefix = (p.path + r).slice(0, (p.path + r).length - 5) + '.' + contract;
@@ -49,8 +51,15 @@ import { Cell } from 'ton';
                     let abi = createABI(res.ctx);
                     fs.writeFileSync(prefix + ".abi", JSON.stringify(abi, null, 2));
 
-                    // ABI -> Typescript
-                    let ts = writeTypescript(abi, c.output.toString('base64'), p.importPath);
+                    // Store code
+                    built[contract] = { code: c.output!.toString('base64'), abi };
+                }
+
+                // ABI -> Typescript
+                for (let contract in built) {
+                    let v = built[contract];
+                    let prefix = (p.path + r).slice(0, (p.path + r).length - 5) + '.' + contract;
+                    let ts = writeTypescript(v.abi, v.code, p.importPath, built);
                     fs.writeFileSync(prefix + ".bind.ts", ts);
                 }
             } catch (e) {

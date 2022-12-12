@@ -462,5 +462,9 @@
       }
     }
   ],
-  "dependsOn": {}
+  "dependsOn": {
+    "Wallet": {
+      "uid": 14718
+    }
+  }
 }

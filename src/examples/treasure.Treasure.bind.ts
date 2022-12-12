@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -83,14 +83,18 @@ export function packWithdraw(src: Withdraw): Cell {
 
 export function Treasure_init(owner: Address) {
     const __code = 'te6ccgECGgEAAckAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAYGQIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BLI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFMj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfATyPhCAcwBzxbJ7VTbMeAAZ1yHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAgCASAODwAPAHIzAHPFsmAAGT4QW8jMDEhxwXy4GSACASASEwAJ0A+AeYQCASAUFQIBIBYXABsAvAPf8jJVBMCUFXwDYAABIAAFPAQgAA0cIEAoPAQgAB++KO9qJoagD8MX0gAJj4CMAAm++XeAdA==';
+    const depends = new Map<string, Cell>();
+    let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: systemCell });
     __stack.push({ type: 'slice', cell: owner});
-    return deploy(__code, 'init_Treasure', __stack);
+    return deploy(__code, 'init_Treasure', __stack); 
 }
 
 export class Treasure {
-    readonly executor: ContractExecutor;
-    constructor(executor: ContractExecutor) { this.executor = executor; }
+            
+    readonly executor: ContractExecutor; 
+    constructor(executor: ContractExecutor) { this.executor = executor; } 
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | 'Destroy' | ChangeOwner) {
         let body: Cell | null = null;

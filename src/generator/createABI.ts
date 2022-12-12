@@ -126,8 +126,10 @@ export function createABI(ctx: CompilerContext): ContractABI {
     }
 
     // Dependencies
-    let dependsOn: { [key: string]: { uid: number, code: string } } = {};
-    // TODO: Implement
+    let dependsOn: { [key: string]: { uid: number } } = {};
+    for (let d of contract.dependsOn) {
+        dependsOn[d.name] = { uid: d.uid };
+    }
 
     return {
         name: contract.name,

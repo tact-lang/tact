@@ -120,7 +120,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     let argsTensor = resolveFuncTensor(f.args, ctx);
     let returns: string = resolveFuncType(f.returns, ctx);
     if (selfTensor && f.isMutating) {
-        if (f.returns) {
+        if (f.returns.kind !== 'void') {
             returns = `((${tensorToString(selfTensor, 'types').join(', ')}), ${returns})`;
         } else {
             returns = `((${tensorToString(selfTensor, 'types').join(', ')}), ())`;
