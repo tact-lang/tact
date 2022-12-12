@@ -113,7 +113,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  send PROCINLINE:<{
+  send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -154,50 +154,50 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_MultisigContract_init PROCINLINE:<{
+  __gen_MultisigContract_init PROC:<{
     0 PUSHINT
     3 -ROLL
     __gen_writecell_MultisigContract INLINECALLDICT
   }>
-  __gen_MultisigContract_execute PROCINLINE:<{
+  __gen_MultisigContract_execute PROC:<{
     TRUE
     s3 POP
     SWAP
     0 PUSHINT
     PUSHNULL
-    send INLINECALLDICT
+    send CALLDICT
   }>
-  __gen_MultisigContract_key1 PROCINLINE:<{
+  __gen_MultisigContract_key1 PROC:<{
     s2 s3 XCHG
     3 BLKDROP
   }>
   __gen_get_key1 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_key1 INLINECALLDICT
+    __gen_MultisigContract_key1 CALLDICT
   }>
-  __gen_MultisigContract_key2 PROCINLINE:<{
+  __gen_MultisigContract_key2 PROC:<{
     s1 s3 XCHG
     3 BLKDROP
   }>
   __gen_get_key2 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_key2 INLINECALLDICT
+    __gen_MultisigContract_key2 CALLDICT
   }>
-  __gen_MultisigContract_key3 PROCINLINE:<{
+  __gen_MultisigContract_key3 PROC:<{
     3 1 BLKDROP2
   }>
   __gen_get_key3 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_key3 INLINECALLDICT
+    __gen_MultisigContract_key3 CALLDICT
   }>
-  __gen_MultisigContract_seqno PROCINLINE:<{
+  __gen_MultisigContract_seqno PROC:<{
     3 BLKDROP
   }>
   __gen_get_seqno PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_seqno INLINECALLDICT
+    __gen_MultisigContract_seqno CALLDICT
   }>
-  __gen_MultisigContract_receive_Execute PROCINLINE:<{
+  __gen_MultisigContract_receive_Execute PROC:<{
     s5 s4 s3 PUSH3
     __gen_writecell_Operation INLINECALLDICT
     HASHCU
@@ -217,7 +217,7 @@ PROGRAM{
     SWAP
     AND
     10 THROWIFNOT
-    __gen_MultisigContract_execute INLINECALLDICT
+    __gen_MultisigContract_execute CALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -262,13 +262,13 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      __gen_MultisigContract_receive_Execute INLINECALLDICT
+      __gen_MultisigContract_receive_Execute CALLDICT
       __gen_store_MultisigContract INLINECALLDICT
     }>
     DROP
     100 THROW
   }>
   init_MultisigContract PROC:<{
-    __gen_MultisigContract_init INLINECALLDICT
+    __gen_MultisigContract_init CALLDICT
   }>
 }END>c

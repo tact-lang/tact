@@ -283,10 +283,6 @@
       "type": "Withdraw"
     },
     {
-      "kind": "internal-binary",
-      "type": "ChangeOnwer"
-    },
-    {
       "kind": "internal-comment",
       "comment": "Destroy"
     }

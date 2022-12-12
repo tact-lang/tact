@@ -213,6 +213,7 @@ export type ASTContract = {
     kind: 'def_contract',
     id: number,
     name: string,
+    traits: string[],
     declarations: (ASTField | ASTFunction | ASTInitFunction | ASTReceive)[],
     ref: ASTRef
 }

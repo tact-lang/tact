@@ -57,34 +57,34 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  __gen_Wallet_init PROCINLINE:<{
+  __gen_Wallet_init PROC:<{
     0 PUSHINT
     -ROT
     __gen_writecell_Wallet INLINECALLDICT
   }>
-  __gen_Wallet_publicKey PROCINLINE:<{
+  __gen_Wallet_publicKey PROC:<{
     DROP
     NIP
   }>
   __gen_get_publicKey PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_publicKey INLINECALLDICT
+    __gen_Wallet_publicKey CALLDICT
   }>
-  __gen_Wallet_walletId PROCINLINE:<{
+  __gen_Wallet_walletId PROC:<{
     2 1 BLKDROP2
   }>
   __gen_get_walletId PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_walletId INLINECALLDICT
+    __gen_Wallet_walletId CALLDICT
   }>
-  __gen_Wallet_seqno PROCINLINE:<{
+  __gen_Wallet_seqno PROC:<{
     2DROP
   }>
   __gen_get_seqno PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_seqno INLINECALLDICT
+    __gen_Wallet_seqno CALLDICT
   }>
-  __gen_Wallet_receive_TransferMessage PROCINLINE:<{
+  __gen_Wallet_receive_TransferMessage PROC:<{
     DUP
     HASHSU
     s0 s2 s4 XC2PU
@@ -143,13 +143,13 @@ PROGRAM{
       s2 POP
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      __gen_Wallet_receive_TransferMessage INLINECALLDICT
+      __gen_Wallet_receive_TransferMessage CALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     DROP
     100 THROW
   }>
   init_Wallet PROC:<{
-    __gen_Wallet_init INLINECALLDICT
+    __gen_Wallet_init CALLDICT
   }>
 }END>c

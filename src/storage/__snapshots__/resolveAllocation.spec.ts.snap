@@ -1104,6 +1104,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "def_contract",
         "name": "Sample",
         "ref": ASTRef {},
+        "traits": [],
       },
       "fields": [],
       "functions": {

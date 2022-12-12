@@ -20,7 +20,7 @@ global (int, slice, int) __tact_context;
     return sc~__gen_read_SampleContract();
 }
 
-int __gen_SampleContract_stake((int, int, int, int, cell) self) impure inline {
+int __gen_SampleContract_stake((int, int, int, int, cell) self) impure {
     var (int self'a, int self'b, int self'c'a, int self'c'b, cell self'd) = self;
     return self'a;
 }

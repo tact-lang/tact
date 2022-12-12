@@ -84,7 +84,7 @@ _ __gen_Context_get_bounced(int v'bounced, slice v'sender, int v'value) inline {
     set_data(b.end_cell());
 }
 
-() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) impure inline {
+() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) impure {
     builder b = begin_cell();
     b = store_int(b, 1, 2);
     b = store_int(b, params'bounce, 1);
@@ -104,14 +104,14 @@ _ __gen_Context_get_bounced(int v'bounced, slice v'sender, int v'value) inline {
     send_raw_message(c, params'mode);
 }
 
-cell __gen_Wallet_init(int key, int walletId) inline {
+cell __gen_Wallet_init(int key, int walletId) {
     var (int self'seqno, int self'key, int self'walletId) = (0, null(), null());
     self'key = key;
     self'walletId = walletId;
     return __gen_writecell_Wallet(self'seqno, self'key, self'walletId);
 }
 
-int __gen_Wallet_publicKey((int, int, int) self) impure inline {
+int __gen_Wallet_publicKey((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'key;
 }
@@ -122,7 +122,7 @@ _ __gen_get_publicKey() method_id(86520) {
     return res;
 }
 
-int __gen_Wallet_walletId((int, int, int) self) impure inline {
+int __gen_Wallet_walletId((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'walletId;
 }
@@ -133,7 +133,7 @@ _ __gen_get_walletId() method_id(114762) {
     return res;
 }
 
-int __gen_Wallet_seqno((int, int, int) self) impure inline {
+int __gen_Wallet_seqno((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'seqno;
 }
@@ -144,7 +144,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, int msg'transfer'seqno, int msg'transfer'mode, slice msg'transfer'to, int msg'transfer'amount, cell msg'transfer'body) impure inline {
+((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, int msg'transfer'seqno, int msg'transfer'mode, slice msg'transfer'to, int msg'transfer'amount, cell msg'transfer'body) impure {
     var (self'seqno, self'key, self'walletId) = self;
     int op_hash = cell_hash(__gen_writecell_Transfer((msg'transfer'seqno, msg'transfer'mode, msg'transfer'to, msg'transfer'amount, msg'transfer'body)));
     throw_unless(42, check_signature(op_hash, msg'signature, self'key));
@@ -154,7 +154,7 @@ _ __gen_get_seqno() method_id(85143) {
     return ((self'seqno, self'key, self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_fallback((int, int, int) self, slice Slice) impure inline {
+((int, int, int), ()) __gen_Wallet_receive_fallback((int, int, int) self, slice Slice) impure {
     var (self'seqno, self'key, self'walletId) = self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         self'seqno = (self'seqno + 1);
@@ -162,7 +162,7 @@ _ __gen_get_seqno() method_id(85143) {
     return ((self'seqno, self'key, self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive((int, int, int) self) impure inline {
+((int, int, int), ()) __gen_Wallet_receive((int, int, int) self) impure {
     var (self'seqno, self'key, self'walletId) = self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         self'seqno = (self'seqno + 1);
@@ -170,7 +170,7 @@ _ __gen_get_seqno() method_id(85143) {
     return ((self'seqno, self'key, self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) self) impure inline {
+((int, int, int), ()) __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) self) impure {
     var (self'seqno, self'key, self'walletId) = self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         self'seqno = (self'seqno + 1);
@@ -178,7 +178,7 @@ _ __gen_get_seqno() method_id(85143) {
     return ((self'seqno, self'key, self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) self) impure inline {
+((int, int, int), ()) __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) self) impure {
     var (self'seqno, self'key, self'walletId) = self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         self'seqno = (self'seqno + 1);

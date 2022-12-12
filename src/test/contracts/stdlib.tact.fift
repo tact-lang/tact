@@ -35,36 +35,36 @@ PROGRAM{
     __gen_read_StdlibTest INLINECALLDICT
     NIP
   }>
-  __gen_StdlibTest_init PROCINLINE:<{
+  __gen_StdlibTest_init PROC:<{
     0 PUSHINT
     __gen_writecell_StdlibTest INLINECALLDICT
   }>
-  __gen_StdlibTest_sliceEmpty PROCINLINE:<{
+  __gen_StdlibTest_sliceEmpty PROC:<{
     NIP
     SEMPTY
   }>
   __gen_get_sliceEmpty PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceEmpty INLINECALLDICT
+    __gen_StdlibTest_sliceEmpty CALLDICT
   }>
-  __gen_StdlibTest_sliceBits PROCINLINE:<{
+  __gen_StdlibTest_sliceBits PROC:<{
     NIP
     SBITS
   }>
   __gen_get_sliceBits PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceBits INLINECALLDICT
+    __gen_StdlibTest_sliceBits CALLDICT
   }>
-  __gen_StdlibTest_sliceRefs PROCINLINE:<{
+  __gen_StdlibTest_sliceRefs PROC:<{
     NIP
     SREFS
   }>
   __gen_get_sliceRefs PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceRefs INLINECALLDICT
+    __gen_StdlibTest_sliceRefs CALLDICT
   }>
   recv_internal PROC:<{
     DUP
@@ -95,6 +95,6 @@ PROGRAM{
     100 THROW
   }>
   init_StdlibTest PROC:<{
-    __gen_StdlibTest_init INLINECALLDICT
+    __gen_StdlibTest_init CALLDICT
   }>
 }END>c

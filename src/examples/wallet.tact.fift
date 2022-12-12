@@ -136,7 +136,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  send PROCINLINE:<{
+  send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -177,34 +177,34 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_Wallet_init PROCINLINE:<{
+  __gen_Wallet_init PROC:<{
     0 PUSHINT
     -ROT
     __gen_writecell_Wallet INLINECALLDICT
   }>
-  __gen_Wallet_publicKey PROCINLINE:<{
+  __gen_Wallet_publicKey PROC:<{
     DROP
     NIP
   }>
   __gen_get_publicKey PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_publicKey INLINECALLDICT
+    __gen_Wallet_publicKey CALLDICT
   }>
-  __gen_Wallet_walletId PROCINLINE:<{
+  __gen_Wallet_walletId PROC:<{
     2 1 BLKDROP2
   }>
   __gen_get_walletId PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_walletId INLINECALLDICT
+    __gen_Wallet_walletId CALLDICT
   }>
-  __gen_Wallet_seqno PROCINLINE:<{
+  __gen_Wallet_seqno PROC:<{
     2DROP
   }>
   __gen_get_seqno PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_seqno INLINECALLDICT
+    __gen_Wallet_seqno CALLDICT
   }>
-  __gen_Wallet_receive_TransferMessage PROCINLINE:<{
+  __gen_Wallet_receive_TransferMessage PROC:<{
     s4 s3 s2 PUSH3
     s4 s3 PUSH2
     __gen_writecell_Transfer INLINECALLDICT
@@ -220,9 +220,9 @@ PROGRAM{
     TRUE
     s7 s4 XCHG2
     s3 s3 s0 XCHG3
-    send INLINECALLDICT
+    send CALLDICT
   }>
-  __gen_Wallet_receive_fallback PROCINLINE:<{
+  __gen_Wallet_receive_fallback PROC:<{
     DROP
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
@@ -233,7 +233,7 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive PROCINLINE:<{
+  __gen_Wallet_receive PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -243,7 +243,7 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
+  __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -253,7 +253,7 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 PROCINLINE:<{
+  __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -314,7 +314,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      __gen_Wallet_receive_TransferMessage INLINECALLDICT
+      __gen_Wallet_receive_TransferMessage CALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     DUP
@@ -326,7 +326,7 @@ PROGRAM{
     IFJMP:<{
       2DROP
       __gen_load_Wallet INLINECALLDICT
-      __gen_Wallet_receive INLINECALLDICT
+      __gen_Wallet_receive CALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     0 EQINT
@@ -339,7 +339,7 @@ PROGRAM{
       IFJMP:<{
         2DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
+        __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 CALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
@@ -348,17 +348,17 @@ PROGRAM{
       IFJMP:<{
         DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 INLINECALLDICT
+        __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 CALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
     }>
     __gen_load_Wallet INLINECALLDICT
     3 ROLL
-    __gen_Wallet_receive_fallback INLINECALLDICT
+    __gen_Wallet_receive_fallback CALLDICT
     __gen_store_Wallet INLINECALLDICT
   }>
   init_Wallet PROC:<{
-    __gen_Wallet_init INLINECALLDICT
+    __gen_Wallet_init CALLDICT
   }>
 }END>c

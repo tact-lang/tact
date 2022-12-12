@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC __gen_IncrementContract_receive_Increment
   DECLPROC recv_internal
   66039 DECLMETHOD init_IncrementContract
+  DECLGLOBVAR __tact_context
   __tact_dict_set_int_int PROC:<{
     OVER
     ISNULL
@@ -29,6 +30,11 @@ PROGRAM{
     DICTISETREF
   }>
   __gen_read_Increment PROCINLINE:<{
+    32 LDU
+    SWAP
+    3615081709 PUSHINT
+    EQUAL
+    100 THROWIFNOT
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -55,7 +61,7 @@ PROGRAM{
     __gen_read_IncrementContract INLINECALLDICT
     NIP
   }>
-  __gen_store_IncrementContract PROC:<{
+  __gen_store_IncrementContract PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_IncrementContract INLINECALLDICT
@@ -78,9 +84,37 @@ PROGRAM{
     __tact_dict_set_int_int CALLDICT
   }>
   recv_internal PROC:<{
-    NIP
-    32 LDU
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
     SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
     3615081709 PUSHINT
     EQUAL
     IFJMP:<{
@@ -89,7 +123,7 @@ PROGRAM{
       __gen_read_Increment INLINECALLDICT
       1 2 BLKDROP2
       __gen_IncrementContract_receive_Increment CALLDICT
-      __gen_store_IncrementContract CALLDICT
+      __gen_store_IncrementContract INLINECALLDICT
     }>
     DROP
     100 THROW

@@ -13,6 +13,7 @@ import { writeStdlib } from "./writers/writeStdlib";
 import { resolveFuncTensor, TensorDef, tensorToString } from "./writers/resolveFuncTensor";
 import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell } from "ton";
+import { config } from "../config";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -129,7 +130,7 @@ function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     // Resolve function name
     let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
     let selfStr = selfTensor ? `(${tensorToString(selfTensor, 'names').join(', ')})` : null;
-    let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+    let modifier = config.enableInline ? 'impure inline' : 'impure';
 
     // Write function body
     ctx.fun(name, () => {
@@ -165,7 +166,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
                 { name: selector.name, type: { kind: 'ref', name: selector.type, optional: false } }
             ], ctx);
             let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            let modifier = config.enableInline ? 'impure inline' : 'impure';
             ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_${selector.type}((${[(tensorToString(selfTensor, 'types').join(', ') + ') self'), ...tensorToString(argsTensor, 'full')].join(', ')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
@@ -188,7 +189,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
         ctx.fun(`__gen_${self.name}_receive`, () => {
             let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
             let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            let modifier = config.enableInline ? 'impure inline' : 'impure';
             ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
@@ -216,7 +217,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
         ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
             let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
             let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            let modifier = config.enableInline ? 'impure inline' : 'impure';
             ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_comment_${hash}((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
@@ -238,7 +239,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
             let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
             let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            let modifier = config.enableInline ? 'impure inline' : 'impure';
             ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_fallback((${(tensorToString(selfTensor, 'types').join(', '))}) self, slice ${selector.name}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
@@ -260,7 +261,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
         ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
             let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
             let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-            let modifier = f.ast.statements.length > 0 ? 'impure inline' : 'impure';
+            let modifier = config.enableInline ? 'impure inline' : 'impure';
             ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_bounced((${(tensorToString(selfTensor, 'types').join(', '))}) self, slice ${selector.name}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
@@ -283,7 +284,8 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
         let argsTensor = resolveFuncTensor(init.args, ctx);
         let selfTensor = resolveFuncTensor(t.fields, ctx, `self'`);
         let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
-        ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')}) inline {`);
+        let modifier = config.enableInline ? ' inline ' : ' ';
+        ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')})${modifier}{`);
         ctx.inIndent(() => {
 
             // Generate self initial tensor

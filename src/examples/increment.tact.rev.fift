@@ -1,0 +1,115 @@
+SETCP0
+(:methods
+  recv_internal: 
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    1 EQINT
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 POP
+    1 0 4 PUXC2
+    TRIPLE
+    1 SETGLOBVAR
+    s0 s2 XCHG
+    <{
+      2DROP
+    }> PUSHCONT
+    IFJMP
+    3615081709 PUSHINT
+    EQUAL
+    <{
+      c4 PUSH
+      CTOS
+      LDDICT
+      s0 s1 XCHG
+      s1 POP
+      s0 s1 XCHG
+      32 LDU
+      s0 s1 XCHG
+      3615081709 PUSHINT
+      EQUAL
+      100 THROWIFNOT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      ROTREV
+      1 2 BLKDROP2
+      10 CALLDICT
+      NEWC
+      s0 s1 XCHG
+      s0 s1 XCHG
+      STDICT
+      ENDC
+      c4 POP
+    }> PUSHCONT
+    IFJMP
+    s0 POP
+    100 THROW
+
+  1: 
+    s1 PUSH
+    ISNULL
+    <{
+      2DROP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    IFJMP
+    NEWC
+    s0 s1 XCHG
+    STIX
+    ENDC
+    s1 s3 s3 XCHG3
+    DICTISETREF
+
+  8: 
+    PUSHNULL
+    NEWC
+    s0 s1 XCHG
+    s0 s1 XCHG
+    STDICT
+    ENDC
+
+  9: 
+
+  10: 
+    257 PUSHINT
+    2 2 2 XC2PU
+    1 CALLDICT
+
+  66039: 
+    8 CALLDICT
+
+  95239: 
+    c4 PUSH
+    CTOS
+    LDDICT
+    s0 s1 XCHG
+    s1 POP
+    9 CALLDICT
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

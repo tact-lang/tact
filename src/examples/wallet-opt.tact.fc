@@ -36,14 +36,14 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
     set_data(b.end_cell());
 }
 
-cell __gen_Wallet_init(int key, int walletId) inline {
+cell __gen_Wallet_init(int key, int walletId) {
     var (int self'seqno, int self'key, int self'walletId) = (0, null(), null());
     self'key = key;
     self'walletId = walletId;
     return __gen_writecell_Wallet(self'seqno, self'key, self'walletId);
 }
 
-int __gen_Wallet_publicKey((int, int, int) self) impure inline {
+int __gen_Wallet_publicKey((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'key;
 }
@@ -54,7 +54,7 @@ _ __gen_get_publicKey() method_id(86520) {
     return res;
 }
 
-int __gen_Wallet_walletId((int, int, int) self) impure inline {
+int __gen_Wallet_walletId((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'walletId;
 }
@@ -65,7 +65,7 @@ _ __gen_get_walletId() method_id(114762) {
     return res;
 }
 
-int __gen_Wallet_seqno((int, int, int) self) impure inline {
+int __gen_Wallet_seqno((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'seqno;
 }
@@ -76,7 +76,7 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, slice msg'transfer) impure inline {
+((int, int, int), ()) __gen_Wallet_receive_TransferMessage((int, int, int) self, slice msg'signature, slice msg'transfer) impure {
     var (self'seqno, self'key, self'walletId) = self;
     int op_hash = slice_hash(msg'transfer);
     throw_unless(42, check_signature(op_hash, msg'signature, self'key));

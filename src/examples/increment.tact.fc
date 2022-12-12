@@ -41,12 +41,12 @@ cell __gen_writecell_IncrementContract(cell v'counters) inline {
     set_data(b.end_cell());
 }
 
-cell __gen_IncrementContract_init() inline {
+cell __gen_IncrementContract_init() {
     var (cell self'counters) = (null());
     return __gen_writecell_IncrementContract(self'counters);
 }
 
-cell __gen_IncrementContract_counters((cell) self) impure inline {
+cell __gen_IncrementContract_counters((cell) self) impure {
     var (cell self'counters) = self;
     return self'counters;
 }
@@ -57,7 +57,7 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) impure inline {
+((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) impure {
     var (self'counters) = self;
     self'counters~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
     return ((self'counters), ());

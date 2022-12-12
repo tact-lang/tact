@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
 import { deploy } from '../abi/deploy';
@@ -27,6 +27,21 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BigInt;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export type Increment = {
     $$type: 'Increment';
     key: BigInt;
@@ -42,7 +57,7 @@ export function packIncrement(src: Increment): Cell {
 }
 
 export function IncrementContract_init() {
-    const __code = 'te6ccgEBEAEAqwABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSA4PAgEgBgcCAUgKCwIBSAgJABH2QAgPoAZPaqQAVwx0x8BghDXecTtuo4Z7UTQ9AQBMQGBAQHXAIEBAdcAWWwS8ArwB+Aw8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgAgEgDA0AEUgQEBVBIi8AGAAPG3IAQH0AMmAAASAACbgffwCIABe7QH7UTQ9AQBMfAJg=';
+    const __code = 'te6ccgEBDgEA1AABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAwNAgHUBgcCAUgICQDJHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4IIQ13nE7bqOLO1E0PQEATEB0x8BghDXecTtuvLgZIEBAdcAgQEB1wBZbBLwCsgBAfQAye1U4DDywGSAAJQhbpVbWfRaMODIAc8AyUEz9BWACASAKCwARSBAQFUEiLwAYAA8bcgBAfQAyYAABIAAJuB9/AIgAF7tAftRND0BAEx8AmA==';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_IncrementContract', __stack);
 }
@@ -53,7 +68,7 @@ export class IncrementContract {
     
     async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment) {
         let body: Cell | null = null;
-        if (message.$$type === 'Increment') {
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
             body = packIncrement(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }

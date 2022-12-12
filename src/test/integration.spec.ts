@@ -9,7 +9,7 @@ describe('integration', () => {
     });
     for (let r of loadCases(__dirname + "/contracts/")) {
         it('should resolve expressions for ' + r.name, () => {
-            let ctx = precompile(r.code);
+            let ctx = precompile(__dirname + "/contracts/" + r.name + '.tact');
             let res = compile(ctx);
             expect(res.output).toEqual(fs.readFileSync(__dirname + "/contracts/" + r.name + '.tact.fc', 'utf8'));
         });

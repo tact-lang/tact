@@ -69,7 +69,7 @@ export function packWithdraw(src: Withdraw): Cell {
 }
 
 export function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECCAEAAXEAART/APSkE/S88sgLAQIBYgIDAgLPBAUAD6G+XZADni2TAtk7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3IuuMCIIIQiCn/5bqOIjDtRND6QAExAdMfAYIQiCn/5bry4GT6QAExMcgBzxbJ7VTgwACRMOMN8sBkgBgcACQgbvJOgAL4w7UTQ+kABMQHTHwGCEEyoPci68uBk+gDTB1lsEn/IyVQTBFAzyHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAyAHPFsntVADq+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo5N7UTQ+kABMXAgf8jJVBMEUDPIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wDIAc8Wye1U2zHg';
+    const __code = 'te6ccgECEQEAATsAART/APSkE/S88sgLAQIBYgIDAgLMBAUACaG+XeAXAgHUBgcCASAJCgHNO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQTKg9yLqOJjDtRND6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8A3IAc8Wye1U4MAAkTDjDfLAZIAgACQgbvJOgAHT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhLtRND6QAEx8A7IAc8Wye1U2zHgAgFYCwwCASANDgBnMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AIAALMgBzxbJgAgEgDxAACUcCDwDIABUf8jJVBMEUDPwCoAAFPAMg';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'slice', cell: owner});
     return deploy(__code, 'init_Treasure', __stack);
@@ -79,13 +79,10 @@ export class Treasure {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | ChangeOnwer | 'Destroy') {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | 'Destroy') {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Withdraw') {
             body = packWithdraw(message);
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ChangeOnwer') {
-            body = packChangeOnwer(message);
         }
         if (message === 'Destroy') {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();

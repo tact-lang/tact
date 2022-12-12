@@ -2,7 +2,6 @@ message ChangeOnwer {
     newOwner: Address;
 }
 
-/*
 trait Ownable {
     owner: Address;
 
@@ -10,6 +9,8 @@ trait Ownable {
         require(100, ctx.address != self.owner);
     }
 }
+
+/*
 
 trait OwnableTransferable with Ownable {
 

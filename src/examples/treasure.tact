@@ -5,7 +5,7 @@ message Withdraw {
     mode: Int as uint8;
 }
 
-contract Treasure {
+contract Treasure with Ownable {
     owner: Address;
     
     init(owner: Address) {
@@ -18,10 +18,6 @@ contract Treasure {
 
     receive(msg: Withdraw) {
         self.doWithdraw(msg.amount, msg.mode);
-    }
-
-    receive(msg: ChangeOnwer) {
-        self.owner = msg.newOwner;
     }
 
     receive("Destroy") {

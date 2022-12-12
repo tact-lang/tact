@@ -43,7 +43,7 @@ export function packContext(src: Context): Cell {
 }
 
 export function StdlibTest_init() {
-    const __code = 'te6ccgEBCgEAjQABFP8A9KQT9LzyyAsBAgFiAgMASNAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QDBUQRNvA/hh3PLAZAIBIAQFAgJyBgcAGb0+w4ZACAwICA54BkwCASAICQAhr0L2omhAgIDrgACYgJjrpUAAIKkL7UTQgQEB1wABMQExxwAAIKlS7UTQgQEB1wABMQEx10k=';
+    const __code = 'te6ccgEBEgEAtQABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBIAwNAgEgBgcAB9mOulQAR9EGukmOEPmGhpgYC42GAAyL/IuHEA/SAYKiCJt4H8MO55YDJAIBIAgJABVXDIAQGBAQHPAMmAIBIAoLAAcMccAgAAcMddJgAgJyDg8ACb0+x4AsAgEgEBEAH69C9qJoQICA64AAmID4BEAAHqkL7UTQgQEB1wABMQHwBgAeqVLtRNCBAQHXAAExAfAH';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_StdlibTest', __stack);
 }

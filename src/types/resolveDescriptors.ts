@@ -1,4 +1,4 @@
-import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../grammar/ast";
+import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTrait, ASTTypeRef, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef } from "./types";
 import { getRawAST } from "../grammar/store";
@@ -58,6 +58,7 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
 export function resolveDescriptors(ctx: CompilerContext) {
     let types: { [key: string]: TypeDescription } = {};
     let staticFunctions: { [key: string]: FunctionDescription } = {};
+    let traits: { [key: string]: ASTTrait[] } = {};
     let ast = getRawAST(ctx);
 
     //
@@ -65,7 +66,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (let a of ast.types) {
-        if (types[a.name]) {
+        if (types[a.name] || traits[a.name]) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
         if (a.kind === 'primitive') {
