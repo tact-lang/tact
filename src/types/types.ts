@@ -3,12 +3,14 @@ import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTRef, AS
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract' | 'trait';
     name: string;
+    uid: number;
     fields: FieldDescription[];
     traits: TypeDescription[];
     functions: { [name: string]: FunctionDescription };
     receivers: ReceiverDescription[];
     init: InitDescription | null;
-    ast: ASTType
+    ast: ASTType;
+    dependsOn: TypeDescription[];
 }
 
 export type TypeRef = {

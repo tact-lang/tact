@@ -109,4 +109,20 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append(`}`);
     });
+    ctx.fun(`__tact_dict_set_code`, () => {
+        ctx.append(`cell __tact_dict_set_code(cell dict, int id, cell code) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`return udict_set_ref(dict, 16, id, code);`);
+        });
+        ctx.append(`}`);
+    });
+    ctx.fun(`__tact_dict_get_code`, () => {
+        ctx.append(`cell __tact_dict_get_code(cell dict, int id) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`var (data, ok) = udict_get_ref?(dict, 16, id);`);
+            ctx.append(`throw_unless(100, ok);`);
+            ctx.append(`return data;`);
+        });
+        ctx.append(`}`);
+    });
 }

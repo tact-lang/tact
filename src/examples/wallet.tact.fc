@@ -15,6 +15,16 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
+cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+    return udict_set_ref(dict, 16, id, code);
+}
+
+cell __tact_dict_get_code(cell dict, int id) inline {
+    var (data, ok) = udict_get_ref?(dict, 16, id);
+    throw_unless(100, ok);
+    return data;
+}
+
 builder __gen_write_Transfer(builder build_0, int v'seqno, int v'mode, slice v'to, int v'amount, cell v'body) inline {
     build_0 = store_uint(build_0, v'seqno, 32);
     build_0 = store_uint(build_0, v'mode, 8);
@@ -113,6 +123,17 @@ cell __gen_Wallet_init(cell sys', int key, int walletId) {
     return b'.end_cell();
 }
 
+(cell, cell) __gen_Wallet_init_child(cell sys', int key, int walletId) {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell mine = __tact_dict_get_code(source, 14718);
+    cell contracts = new_dict();
+    cell code_14718 = __tact_dict_get_code(source, 14718);
+    contracts = __tact_dict_set_code(contracts, 14718, code_14718);
+    cell sys = begin_cell().store_dict(contracts).end_cell();
+    return (mine, __gen_Wallet_init(sys, key, walletId));
+}
+
 int __gen_Wallet_publicKey((int, int, int) self) impure {
     var (int self'seqno, int self'key, int self'walletId) = self;
     return self'key;
@@ -190,7 +211,7 @@ _ __gen_get_seqno() method_id(85143) {
 
 ((int, int, int), ()) __gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) self) impure {
     var (self'seqno, self'key, self'walletId) = self;
-    var (cell walletInit'code, cell walletInit'data) = __gen_Wallet_init(__tact_context_sys, self'key, (self'walletId + 1));
+    var (cell walletInit'code, cell walletInit'data) = __gen_Wallet_init_child(__tact_context_sys, self'key, (self'walletId + 1));
     return ((self'seqno, self'key, self'walletId), ());
 }
 

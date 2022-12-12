@@ -317,6 +317,35 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
         });
         ctx.append(`}`);
     });
+
+    ctx.fun(`__gen_${t.name}_init_child`, () => {
+        let argsTensor = resolveFuncTensor([{ name: `sys'`, type: { kind: 'ref', name: 'Cell', optional: false } }, ...init.args], ctx);
+        let argsTensorChild = resolveFuncTensor([{ name: `sys`, type: { kind: 'ref', name: 'Cell', optional: false } }, ...init.args], ctx);
+        let modifier = config.enableInline ? ' inline ' : ' ';
+        ctx.append(`(cell, cell) __gen_${t.name}_init_child(${tensorToString(argsTensor, 'full').join(', ')})${modifier}{`);
+        ctx.inIndent(() => {
+            ctx.used(`__tact_dict_get_code`);
+
+            // Parsing sys
+            ctx.append(`slice sc' = sys'.begin_parse();`);
+            ctx.append(`cell source = sc'~load_dict();`);
+            ctx.append(`cell mine = __tact_dict_get_code(source, ${t.uid});`);
+
+            // Copy contracts code
+            ctx.append(`cell contracts = new_dict();`);
+            for (let c of t.dependsOn) {
+                ctx.used(`__tact_dict_set_code`);
+                ctx.append(`cell code_${t.uid} = __tact_dict_get_code(source, ${t.uid});`);
+                ctx.append(`contracts = __tact_dict_set_code(contracts, ${t.uid}, code_${t.uid});`);
+            }
+
+            // Build cell
+            ctx.append(`cell sys = begin_cell().store_dict(contracts).end_cell();`);
+            ctx.used(`__gen_${t.name}_init`);
+            ctx.append(`return (mine, __gen_${t.name}_init(${tensorToString(argsTensorChild, 'names').join(', ')}));`);
+        });
+        ctx.append(`}`);
+    });
 }
 
 function writeStorageOps(type: TypeDescription, ctx: WriterContext) {

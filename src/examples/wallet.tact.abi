@@ -427,6 +427,10 @@
     {
       "kind": "internal-comment",
       "comment": "слава україни"
+    },
+    {
+      "kind": "internal-comment",
+      "comment": "duplicate"
     }
   ],
   "getters": [

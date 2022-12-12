@@ -94,7 +94,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECJQEAAx8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAfIAIBIAYHAgEgERICAdQICQIB9A8QBPc7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKOKDDtRNDUAfhi0x/T/9M/VSBsE1UC8BjI+EIBzFUgUCPLH8v/yz/J7VTgIMB74wIgwAAi10nBIbDjAsAA4wDtRNDUAfhi0x/T/9M/VSBsE1UCgCgsMDQAJCBu8k6AAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LgZNQB0AHTH9MH+kABAfoAbQHSAAGS1DHeVUAQVjYQeBBnVQTwE8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BXI+EIBzFUgUCPLH8v/yz/J7VQB7iD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BbI+EIBzFUgUCPLH8v/yz/J7VTbMeCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDgAo8BTI+EIBzFUgUCPLH8v/yz/J7VQAUDDtRNDUAfhi0x/T/9M/VSBsE/AXyPhCAcxVIFAjyx/L/8s/ye1U2zEAZzIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wCAAHxwA8jMVSBQI8sfy//LP8mACASATFAAD2YQCASAVFgIBIBscAgEgFxgCASAZGgAFDAxgAAUbCGAAAxbgAHcVHQyU0PIVUBQRcsfEssHAc8WAfoCIW6UcDLKAJV/AcoAzOLJ+QBUEGj5EPKqUTe68qsGpH9QdEMw8A6ACASAdHgIBIB4eABkMPhBbyNbs5MCpALegABc+EFvI1uzkwKkAt6ACASAhIgArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+AjAAJu6E/APgCAUgjJAArsyX7UTQ1AH4YtMf0//TP1UgbBPwEoAArsH47UTQ1AH4YtMf0//TP1UgbBPwEIA==';
+    const __code = 'te6ccgECKAEAA3kAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAiIwIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHMj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBPAWyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGMj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAXyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAAVTAxgAZzIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wCAAHxwA8jMVSBQI8sfy//LP8mACASAYGQIBIBobAAUbCGAAAxbgAHcVHQyU0PIVUBQRcsfEssHAc8WAfoCIW6UcDLKAJV/AcoAzOLJ+QBUEGj5EPKqUTe68qsGpH9QdEMw8BCAAGQw+EFvI1uzkwKkAt6ACASAeHwAD0YQCASAgIAIBICAhABc+EFvI1uzkwKkAt6AAASACASAkJQArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ApAAJu6E/ARgCAUgmJwArsyX7UTQ1AH4YtMf0//TP1UgbBPwFYAArsH47UTQ1AH4YtMf0//TP1UgbBPwE4A==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
@@ -105,7 +105,7 @@ export class Wallet {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | Slice | null | 'notify' | 'слава україни') {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage | Slice | null | 'notify' | 'слава україни' | 'duplicate') {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TransferMessage') {
             body = packTransferMessage(message);
@@ -120,6 +120,9 @@ export class Wallet {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
         if (message === 'слава україни') {
+            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
+        }
+        if (message === 'duplicate') {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }

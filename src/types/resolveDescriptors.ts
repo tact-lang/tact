@@ -1,8 +1,9 @@
-import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../grammar/ast";
+import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTTypeRef, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
+import { crc16 } from "../utils/crc16";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -69,14 +70,23 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (types[a.name]) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
+
+        // Resolve unique typeid from crc16
+        let uid = crc16(a.name);
+        while (Object.values(types).find((v) => v.uid === uid)) {
+            uid = (uid + 1) % 65536;
+        }
+
         if (a.kind === 'primitive') {
             types[a.name] = {
                 kind: 'primitive',
                 name: a.name,
+                uid,
                 fields: [],
                 traits: [],
                 functions: {},
                 receivers: [],
+                dependsOn: [],
                 init: null,
                 ast: a
             };
@@ -84,10 +94,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             types[a.name] = {
                 kind: 'contract',
                 name: a.name,
+                uid,
                 fields: [],
                 traits: [],
                 functions: {},
                 receivers: [],
+                dependsOn: [],
                 init: null,
                 ast: a
             };
@@ -95,10 +107,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             types[a.name] = {
                 kind: 'struct',
                 name: a.name,
+                uid,
                 fields: [],
                 traits: [],
                 functions: {},
                 receivers: [],
+                dependsOn: [],
                 init: null,
                 ast: a
             };
@@ -106,10 +120,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             types[a.name] = {
                 kind: 'trait',
                 name: a.name,
+                uid,
                 fields: [],
                 traits: [],
                 functions: {},
                 receivers: [],
+                dependsOn: [],
                 init: null,
                 ast: a
             };
@@ -591,6 +607,36 @@ export function resolveDescriptors(ctx: CompilerContext) {
             continue;
         }
         copyTraits(t);
+    }
+
+    //
+    // Register dependencies
+    //
+
+    for (let k in types) {
+        let t = types[k];
+        let dependsOn = new Set<string>();
+        let handler = (src: ASTNode) => {
+            if (src.kind === 'init_of') {
+                dependsOn.add(src.name);
+            }
+        }
+
+        // Traverse functions
+        for (let f of Object.values(t.functions)) {
+            traverse(f.ast, handler);
+        }
+        for (let f of t.receivers) {
+            traverse(f.ast, handler);
+        }
+
+        // Add dependencies
+        for (let s of dependsOn) {
+            if (!types[s]) {
+                throwError(`Type ${s} not found`, t.ast.ref);
+            }
+            t.dependsOn.push(types[s]);
+        }
     }
 
     //

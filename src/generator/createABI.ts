@@ -125,11 +125,16 @@ export function createABI(ctx: CompilerContext): ContractABI {
         }
     }
 
+    // Dependencies
+    let dependsOn: { [key: string]: { uid: number, code: string } } = {};
+    // TODO: Implement
+
     return {
         name: contract.name,
         structs,
         init,
         receivers,
-        getters
+        getters,
+        dependsOn
     };
 }
