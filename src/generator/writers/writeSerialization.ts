@@ -1,5 +1,6 @@
 import { StorageAllocation, StorageCell, StorageField } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
+import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
 
@@ -252,6 +253,53 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
             ctx.append(`return (sc, (${tensorToString(tensor, 'names').join(', ')}));`);
         });
         ctx.append("}");
+    });
+}
+
+//
+// Storage
+//
+
+export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
+
+    // Load function
+    let tensor = resolveFuncTensor(type.fields, ctx, `v'`);
+    ctx.fun(`__gen_load_${type.name}`, () => {
+        ctx.append(`(${tensorToString(tensor, 'types').join(', ')}) __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.inIndent(() => {
+
+            // Load data slice
+            ctx.append(`slice sc = get_data().begin_parse();`);
+
+            // Load context
+            ctx.used(`__tact_context`);
+            ctx.append(`__tact_context_sys = sc~load_ref();`);
+
+            // Load data
+            ctx.used(`__gen_read_${type.name}`);
+            ctx.append(`return sc~__gen_read_${type.name}();`);
+        });
+        ctx.append(`}`);
+    });
+
+    // Store function
+    ctx.fun(`__gen_store_${type.name}`, () => {
+        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure inline {`); // NOTE: Impure function
+        ctx.inIndent(() => {
+            ctx.append(`builder b = begin_cell();`);
+
+            // Persist system cell
+            ctx.used(`__tact_context`);
+            ctx.append(`b = b.store_ref(__tact_context_sys);`);
+
+            // Build data
+            ctx.used(`__gen_write_${type.name}`);
+            ctx.append(`b = __gen_write_${type.name}(${['b', tensorToString(tensor, 'names')].join(', ')});`);
+
+            // Persist data
+            ctx.append(`set_data(b.end_cell());`);
+        });
+        ctx.append(`}`);
     });
 }
 

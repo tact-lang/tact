@@ -164,6 +164,7 @@ _ __gen_get_owner() method_id(83229) {
 
 ((int, slice, cell, int, cell), ()) __gen_SampleJetton_receive_Burned((int, slice, cell, int, cell) self, int msg'amount, slice msg'owner, slice msg'cashback) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode) = self;
+    var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
 

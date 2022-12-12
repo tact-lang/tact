@@ -11,7 +11,7 @@ trait SomeTrait {
 contract Main with SomeTrait {
     b: Int;
 
-    overwrite fun a(): Int {
+    overwrites fun a(): Int {
         return b;
     }
 }

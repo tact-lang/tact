@@ -33,9 +33,9 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription, ctx: Writ
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        return 'tuple';
+        return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
     } else if (descriptor.kind === 'contract') {
-        return 'tuple';
+        return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
     }
 
     // Unreachable

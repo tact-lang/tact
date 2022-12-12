@@ -12,19 +12,22 @@ primitive Cell;
 primitive Slice;
 
 struct Struct1 {
-
+    a1: Int;
+    a2: Int;
 }
 
 struct Struct2 {
-
+    b1: Int;
 }
 
 contract Contract1 {
-
+    c: Int;
+    c2: Int;
 }
 
 contract Contract2 {
-
+    d: Int;
+    e: Struct1;
 }
 `;
 
@@ -54,13 +57,13 @@ describe('resolveFuncType', () => {
         let ctx = openContext([primitiveCode]);
         ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
-        expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: false }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Struct2', optional: false }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Contract1', optional: false }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Contract2', optional: false }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: true }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Struct2', optional: true }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Contract1', optional: true }, wctx)).toBe('tuple');
-        expect(resolveFuncType({ kind: 'ref', name: 'Contract2', optional: true }, wctx)).toBe('tuple');
+        expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: false }, wctx)).toBe('(int, int)');
+        expect(resolveFuncType({ kind: 'ref', name: 'Struct2', optional: false }, wctx)).toBe('(int)');
+        expect(resolveFuncType({ kind: 'ref', name: 'Contract1', optional: false }, wctx)).toBe('(int, int)');
+        expect(resolveFuncType({ kind: 'ref', name: 'Contract2', optional: false }, wctx)).toBe('(int, (int, int))');
+        expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: true }, wctx)).toBe('(int, int)');
+        expect(resolveFuncType({ kind: 'ref', name: 'Struct2', optional: true }, wctx)).toBe('(int)');
+        expect(resolveFuncType({ kind: 'ref', name: 'Contract1', optional: true }, wctx)).toBe('(int, int)');
+        expect(resolveFuncType({ kind: 'ref', name: 'Contract2', optional: true }, wctx)).toBe('(int, (int, int))');
     });
 });

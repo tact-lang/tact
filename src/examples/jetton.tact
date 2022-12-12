@@ -53,9 +53,8 @@ contract SampleJetton with Jetton {
     }
 
     receive(msg: Burned) {
-        let ctx = context();
-        let init: Address = contractAddress(0, self.getJettonWalletInit(msg.owner));
-        require(100, )
+        let ctx: Context = context();
+        // let addr: Address = contractAddress(0, self.getJettonWalletInit(msg.owner));
     }
 
     overwrites fun getJettonWalletInit(address: Address): StateInit {
