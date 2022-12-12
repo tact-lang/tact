@@ -343,7 +343,7 @@ export type ASTStatementRepeat = {
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef;
 export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport;
-export type ASTType = ASTPrimitive | ASTStruct | ASTContract;
+export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
     return src.kind === 'statement_let' || src.kind === 'statement_return' || src.kind === 'statement_expression' || src.kind === 'statement_assign' || src.kind === 'statement_condition' || src.kind === 'statement_while' || src.kind === 'statement_until' || src.kind === 'statement_repeat';

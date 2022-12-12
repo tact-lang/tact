@@ -99,6 +99,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a
             };
+        } else if (a.kind === 'def_trait') {
+            types[a.name] = {
+                kind: 'trait',
+                name: a.name,
+                fields: [],
+                functions: {},
+                receivers: [],
+                init: null,
+                ast: a
+            };
         }
     }
 
@@ -289,7 +299,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const a of ast.types) {
 
-        if (a.kind === 'def_contract') {
+        if (a.kind === 'def_contract' || a.kind === 'def_trait') {
             const s = types[a.name];
             for (const d of a.declarations) {
                 if (d.kind === 'def_function') {

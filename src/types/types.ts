@@ -1,7 +1,7 @@
 import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeDescription = {
-    kind: 'struct' | 'primitive' | 'contract';
+    kind: 'struct' | 'primitive' | 'contract' | 'trait';
     name: string;
     fields: FieldDescription[];
     functions: { [name: string]: FunctionDescription };
