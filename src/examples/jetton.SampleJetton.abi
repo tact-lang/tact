@@ -456,7 +456,39 @@
       "header": 0,
       "fields": [
         {
+          "name": "queryId",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
           "name": "amount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "responseAddress",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "forwardTonAmount",
           "type": {
             "kind": "ref",
             "name": "Int",
@@ -465,23 +497,179 @@
         }
       ],
       "allocation": {
-        "prefix": 421783706,
+        "prefix": 395134233,
         "root": {
           "fields": [
             {
               "index": 0,
+              "size": {
+                "bits": 64,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 64
+            },
+            {
+              "index": 1,
               "size": {
                 "bits": 257,
                 "refs": 0
               },
               "kind": "int",
               "bits": 257
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
             }
           ],
           "next": null,
           "size": {
-            "bits": 257,
+            "bits": 979,
             "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "TokenTransfer",
+      "header": 0,
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "destination",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "responseDestination",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "customPayload",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        },
+        {
+          "name": "forwardTonAmount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 260734629,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 64,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 64
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 4,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            },
+            {
+              "index": 5,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 847,
+            "refs": 1
           }
         }
       }
@@ -672,8 +860,8 @@
     }
   ],
   "dependsOn": {
-    "SampleJettonWallet": {
-      "uid": 52819
+    "JettonDefaultContract": {
+      "uid": 55198
     }
   }
 }
