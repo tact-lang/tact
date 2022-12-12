@@ -135,7 +135,7 @@ cell __gen_Wallet_init(cell sys', int key, int walletId) {
     cell code_14718 = __tact_dict_get_code(source, 14718);
     contracts = __tact_dict_set_code(contracts, 14718, code_14718);
     cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, __gen_Wallet_init(sys, key, walletId));
+    return (mine, __gen_Wallet_init(sys, key,walletId));
 }
 
 int __gen_Wallet_publicKey((int, int, int) self) impure {
@@ -216,7 +216,7 @@ _ __gen_get_seqno() method_id(85143) {
 
 ((int, int, int), ()) __gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) self) impure {
     var (self'seqno, self'key, self'walletId) = self;
-    var (cell walletInit'code, cell walletInit'data) = __gen_Wallet_init_child(__tact_context_sys, self'key, (self'walletId + 1));
+    var (walletInit'code, walletInit'data) = __gen_Wallet_init_child(__tact_context_sys, self'key, (self'walletId + 1));
     return ((self'seqno, self'key, self'walletId), ());
 }
 

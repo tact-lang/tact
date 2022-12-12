@@ -6,7 +6,6 @@ import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescript
 import { getMethodId } from "../../utils";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
-import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeExpression } from "./writeExpression";
@@ -25,8 +24,7 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                let tensor = resolveFuncTensor(tt.fields, ctx, `${f.name}'`);
-                ctx.append(`var (${tensorToString(tensor, 'full').join(', ')}) = ${writeExpression(f.expression, ctx)};`);
+                ctx.append(`var ${resolveFuncTypeUnpack(tt, f.name, ctx)} = ${writeExpression(f.expression, ctx)};`);
                 return;
             }
         }
@@ -308,11 +306,9 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
 export function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
-        let argsTensor = resolveFuncTensor([{ name: `sys'`, type: { kind: 'ref', name: 'Cell', optional: false } }, ...init.args], ctx);
-        let selfTensor = resolveFuncTensor(t.fields, ctx, `self'`);
-        let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+
         let modifier = config.enableInline ? ' inline ' : ' ';
-        ctx.append(`cell __gen_${t.name}_init(${tensorToString(argsTensor, 'full').join(', ')})${modifier}{`);
+        ctx.append(`cell __gen_${t.name}_init(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
 
             // Generate self initial tensor
@@ -331,8 +327,9 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             }
 
             // Generate statements
+            let returns = resolveFuncTypeUnpack(t, 'self', ctx);
             for (let s of init.ast.statements) {
-                writeStatement(s, selfRes, ctx);
+                writeStatement(s, returns, ctx);
             }
 
             // Assemble result cell
@@ -346,10 +343,8 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
     });
 
     ctx.fun(`__gen_${t.name}_init_child`, () => {
-        let argsTensor = resolveFuncTensor([{ name: `sys'`, type: { kind: 'ref', name: 'Cell', optional: false } }, ...init.args], ctx);
-        let argsTensorChild = resolveFuncTensor([{ name: `sys`, type: { kind: 'ref', name: 'Cell', optional: false } }, ...init.args], ctx);
         let modifier = config.enableInline ? ' inline ' : ' ';
-        ctx.append(`(cell, cell) __gen_${t.name}_init_child(${tensorToString(argsTensor, 'full').join(', ')})${modifier}{`);
+        ctx.append(`(cell, cell) __gen_${t.name}_init_child(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
             ctx.used(`__tact_dict_get_code`);
 
@@ -369,7 +364,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             // Build cell
             ctx.append(`cell sys = begin_cell().store_dict(contracts).end_cell();`);
             ctx.used(`__gen_${t.name}_init`);
-            ctx.append(`return (mine, __gen_${t.name}_init(${tensorToString(argsTensorChild, 'names').join(', ')}));`);
+            ctx.append(`return (mine, __gen_${t.name}_init(${['sys', ...init.args.map((v) => v.name)].join(', ')}));`);
         });
         ctx.append(`}`);
     });

@@ -119,7 +119,7 @@ cell __gen_SampleJettonWallet_init(cell sys', slice master, slice owner) {
     cell mine = __tact_dict_get_code(source, 52819);
     cell contracts = new_dict();
     cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, __gen_SampleJettonWallet_init(sys, master, owner));
+    return (mine, __gen_SampleJettonWallet_init(sys, master,owner));
 }
 
 cell __gen_SampleJetton_init(cell sys', int totalSupply, int mintable, slice owner, cell content, cell walletCode) {
@@ -162,7 +162,7 @@ _ __gen_get_owner() method_id(83229) {
 (((int, slice, cell, int, cell)), ()) __gen_SampleJetton_receive_Mint((int, slice, cell, int, cell) self, (int) msg) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode) = self;
     var (msg'amount) = msg;
-    var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)~__gen_SampleJetton_mint(ctx'sender, msg'amount, __gen_SampleJettonWallet_init_child(__tact_context_sys, my_address(), ctx'sender));
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
@@ -170,7 +170,7 @@ _ __gen_get_owner() method_id(83229) {
 (((int, slice, cell, int, cell)), ()) __gen_SampleJetton_receive_Burned((int, slice, cell, int, cell) self, (int, slice, slice) msg) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode) = self;
     var (msg'amount, msg'owner, msg'cashback) = msg;
-    var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
 

@@ -76,7 +76,7 @@ _ __gen_get_owner() method_id(83229) {
 (((slice, slice, int)), ()) __gen_SampleJettonWallet_receive_TokenReceived((slice, slice, int) self, (int) msg) impure {
     var (self'master, self'owner, self'balance) = self;
     var (msg'amount) = msg;
-    var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     throw_unless(100, __tact_address_eq(ctx'sender, self'master));
     return ((self'master, self'owner, self'balance), ());
 }
