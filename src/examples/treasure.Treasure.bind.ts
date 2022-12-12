@@ -101,7 +101,7 @@ export function Treasure_init(owner: Address) {
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: owner});
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
     return deploy(__code, 'init_Treasure', __stack); 
 }
 
@@ -135,5 +135,6 @@ export class Treasure {
     async getOwner() {
         let __stack: StackItem[] = [];
         let result = await this.executor.get('owner', __stack);
+        return result.stack.readAddress()!;
     }
 }

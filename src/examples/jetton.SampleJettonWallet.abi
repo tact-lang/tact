@@ -1,5 +1,5 @@
 {
-  "name": "JettonDefaultContract",
+  "name": "SampleJettonWallet",
   "structs": [
     {
       "name": "SendParameters",
@@ -599,7 +599,7 @@
     }
   ],
   "init": {
-    "name": "init_JettonDefaultContract",
+    "name": "init_SampleJettonWallet",
     "args": [
       {
         "name": "master",
@@ -619,7 +619,22 @@
       }
     ]
   },
-  "receivers": [],
-  "getters": [],
+  "receivers": [
+    {
+      "kind": "internal-binary",
+      "type": "TokenReceived"
+    }
+  ],
+  "getters": [
+    {
+      "name": "owner",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Address",
+        "optional": false
+      }
+    }
+  ],
   "dependsOn": {}
 }

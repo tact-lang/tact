@@ -162,20 +162,62 @@ export function packMint(src: Mint): Cell {
     return b_0.endCell();
 }
 
-export function JettonDefaultContract_init(master: Address, owner: Address) {
-    const __code = 'te6ccgECKwEAA94AART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAnKAIBIAYHABPVVQPAcMhA0QwCAgFICAkCASAPEAIBSAoLAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0IDlxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghCjKlxfuuMCIIIQe92X3rrjAoIQ06i4XrrjAjDywGSAMDQ4ACQgbvJOgALww7UTQ1AH4YvoA+kABbQLSAAGS1DHe0gDUBUREbBUF0x8BghCjKlxfuvLgZIEBAdcAATEQRRA0QTDwHsj4QgHMVUBQVPoCWM8WIW6UcDLKAJV/AcoAzOISygDMye1UAOAw7UTQ1AH4YvoA+kABbQLSAAGS1DHe0gDUBUREbBUF0x8BghB73ZfeuvLgZIEBAdcA+kABbQLSAAGU+kABMN5DEzMQZxBWEEUQNFjwH8j4QgHMVUBQVPoCWM8WIW6UcDLKAJV/AcoAzOISygDMye1UAMLtRNDUAfhi+gD6QAFtAtIAAZLUMd7SANQFRERsFQXTHwGCENOouF668uBkbQHSAAGS1DHeATEQRRA0QTDwIMj4QgHMVUBQVPoCWM8WIW6UcDLKAJV/AcoAzOISygDMye1UAgEgERICASAZGgAV9KP4DlAHA4AOUAQCASATFAIBIBUWAgEgFxgA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BPIcPATcPATJG6zlX/wExTMlTQDcPAT4iRus5V/8BMUzJU0A3DwE+Jw8BMCf/ATAslYzJYzMwFw8BPiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwA8jMA1rPFljPFoEBAc8AyYAA5ALQ9AQwggDOUwGAEPQPb6Hy4GRtyPQAyUAD8BWAAPwFyMxBNVBU+gJYzxYhbpRwMsoAlX8BygDM4hLKAMzJgAgEgGxwCASAhIgIBIB0eAgEgHyAADz4QvgoWPAWgAFkUWagVUDwGHBTIfAFcHBSC8gBghAZI+iaWMsfgQEBzwDJXjIUEDtAu/AUVQOAALz4QW8jMDFVUPAYcFnwBVAGxwXy4GRVA4AAFEMwgAgEgIyQCASAlJgAZPhBbyMwMSTHBfLgZIAAJBA0XwSAAEz4QW8jMDEB8BmAAGwwFhUUQzDwGlBFoUE0gAEO+KO9qJoagD8MX0AfSAAtoFpAADJahjvaQBqAqIiNgr4DsAgEgKSoAQ7ni3tRNDUAfhi+gD6QAFtAtIAAZLUMd7SANQFRERsFfAbgACbncPwF4';
+export function SampleJetton_init(owner: Address, content: Cell | null) {
+    const __code = 'te6ccgECLwEABBMAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASApKgIBIAYHAgHOJSYCAUgICQIBIA8QAgFICgsAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgOXHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCEKMqXF+64wIgghDTqLheuuMCghB73ZfeuuMCMPLAZIAwNDgAJCBu8k6AAtjDtRNDUAfhi+gD6QAFtAtIAAZLUMd7SAARQM2wUBNMfAYIQoypcX7ry4GSBAQHXAAExEDRBMPAgyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQAvjDtRNDUAfhi+gD6QAFtAtIAAZLUMd7SAARQM2wUBNMfAYIQ06i4Xrry4GRtAdIAAZLUMd4BMRA0QTDwIcj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UANjtRNDUAfhi+gD6QAFtAtIAAZLUMd7SAARQM2wUBNMfAYIQe92X3rry4GSBAQHXAPpAAW0C0gABlPpAATDeQxMzEFYQRRA0WPAiyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQCAVgREgIBIBcYAgEgExQCASAVFgAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BTIcPAUcPAUJG6zlX/wFBTMlTQDcPAU4iRus5V/8BQUzJU0A3DwFOJw8BQCf/AUAslYzJYzMwFw8BTiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwA8jMA1rPFljPFoEBAc8AyYAA5ALQ9AQwggDOUwGAEPQPb6Hy4GRtyPQAyUAD8BaACASAZGgIBIB8gAgEgGxwCASAdHgBDHB/BMjMQzRQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAyYAAPPhC+ChY8BeAAWRRVaBVMPAZcFMh8AVwcFIKyAGCEBkj6JpYyx+BAQHPAMleMhQQOkCq8BVVAoAAvPhBbyMwMVVA8BlwWfAFUAXHBfLgZFUCgAgEgISICASAjJAAVPAZbCIycDMB8AWAADz4KPAZMEMwgABk+EFvIzAxI8cF8uBkgAAkECNfA4AIBICcoABlDAVFEMw8BtQNKFQI4ABM+EFvIzAxAfAagAA8VTDwHjFBMIABBvijvaiaGoA/DF9AH0gALaBaQAAyWoY72kAAigZtgp4D8AgEgKywCAWYtLgAJudw/AYgARa289qJoagD8MX0AfSAAtoFpAADJahjvaQACKBm2CiqB+A5AAEGvFvaiaGoA/DF9AH0gALaBaQAAyWoY72kAAigZtgp4DsA=';
     const depends = new Map<string, Cell>();
-    let systemCell = beginCell().storeDict(null).endCell();
+    depends.set('52819', Cell.fromBoc(Buffer.from('te6ccgEBDQEA+QABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAsMAffbgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8EEIDJH0TV1HI3aiaGoA/DF9IACA/SAAgMCAgOuAKpA2CYHpj4DBCAyR9E1deXAyQICA64AAmKCYeAZkfCEA5iqQLWeLLGeLQICA54Bk9qpwGEBgIBIAcIAAbywGQCAVgJCgAb0YfCC3kZgYkeOC+XAyQAIxwA8jMA1rPFljPFoEBAc8AyYAAFDAxgAAm47j8AqAA5uFHe1E0NQB+GL6QAEB+kABAYEBAdcAVSBsE/ALg=', 'base64'))[0]);
+    let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: master});
-    __stack.push({ type: 'slice', cell: owner});
-    return deploy(__code, 'init_JettonDefaultContract', __stack); 
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+    if (content !== null) {
+        __stack.push({ type: 'cell', cell: content });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return deploy(__code, 'init_SampleJetton', __stack); 
 }
 
-export class JettonDefaultContract {
+export class SampleJetton {
             
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Mint | JettonUpdateContent | Burned) {
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Mint') {
+            body = packMint(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'JettonUpdateContent') {
+            body = packJettonUpdateContent(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Burned') {
+            body = packBurned(message);
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        return await this.executor.internal(new InternalMessage({
+            to: this.executor.address,
+            from: args.from || this.executor.address,
+            bounce: false,
+            value: args.amount,
+            body: new CommonMessageInfo({
+                body: new CellMessage(body!)
+            })
+        }), { debug: args.debug });
+    }
+    async getGetWalletAddress(owner: Address) {
+        let __stack: StackItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+        let result = await this.executor.get('get_wallet_address', __stack);
+        return result.stack.readAddress()!;
+    }
+    async getGetJettonData() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('get_jetton_data', __stack);
+    }
+    async getOwner() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('owner', __stack);
+        return result.stack.readAddress()!;
+    }
 }

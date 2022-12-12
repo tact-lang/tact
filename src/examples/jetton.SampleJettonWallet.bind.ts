@@ -162,20 +162,41 @@ export function packMint(src: Mint): Cell {
     return b_0.endCell();
 }
 
-export function JettonDefaultContract_init(master: Address, owner: Address) {
+export function SampleJettonWallet_init(master: Address, owner: Address) {
     const __code = 'te6ccgEBDQEA+QABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAsMAffbgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8EEIDJH0TV1HI3aiaGoA/DF9IACA/SAAgMCAgOuAKpA2CYHpj4DBCAyR9E1deXAyQICA64AAmKCYeAZkfCEA5iqQLWeLLGeLQICA54Bk9qpwGEBgIBIAcIAAbywGQCAVgJCgAb0YfCC3kZgYkeOC+XAyQAIxwA8jMA1rPFljPFoEBAc8AyYAAFDAxgAAm47j8AqAA5uFHe1E0NQB+GL6QAEB+kABAYEBAdcAVSBsE/ALg=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: master});
-    __stack.push({ type: 'slice', cell: owner});
-    return deploy(__code, 'init_JettonDefaultContract', __stack); 
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+    return deploy(__code, 'init_SampleJettonWallet', __stack); 
 }
 
-export class JettonDefaultContract {
+export class SampleJettonWallet {
             
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TokenReceived) {
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenReceived') {
+            body = packTokenReceived(message);
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        await this.executor.internal(new InternalMessage({
+            to: this.executor.address,
+            from: args.from || this.executor.address,
+            bounce: false,
+            value: args.amount,
+            body: new CommonMessageInfo({
+                body: new CellMessage(body!)
+            })
+        }), { debug: args.debug });
+    }
+    async getOwner() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('owner', __stack);
+        return result.stack.readAddress()!;
+    }
 }

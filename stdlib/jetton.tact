@@ -14,8 +14,33 @@ message(0x7bdd97de) Burned {
     cashback: Address?;
 }
 
-message TokenReceived {
+//
+// transfer query_id:uint64 amount:(VarUInteger 16) destination:MsgAddress
+//           response_destination:MsgAddress custom_payload:(Maybe ^Cell)
+//           forward_ton_amount:(VarUInteger 16) forward_payload:(Either Cell ^Cell)
+//           = InternalMsgBody;
+//  internal_transfer  query_id:uint64 amount:(VarUInteger 16) from:MsgAddress
+//                     response_address:MsgAddress
+//                     forward_ton_amount:(VarUInteger 16)
+//                     forward_payload:(Either Cell ^Cell) 
+//                     = InternalMsgBody;
+//
+
+message(0x178d4519) TokenReceived {
+    queryId: Int as uint64;
     amount: Int;
+    from: Address;
+    responseAddress: Address;
+    forwardTonAmount: Int as coins;
+}
+
+message(0xf8a7ea5) TokenTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address;
+    customPayload: Cell?;
+    forwardTonAmount: Int as coins;
 }
 
 message JettonUpdateContent {
@@ -39,7 +64,6 @@ trait Jetton with Ownable {
     mintable: Bool;
     owner: Address;
     content: Cell?;
-    walletCode: Cell;
 
     receive(msg: JettonUpdateContent) {
 
@@ -68,6 +92,15 @@ trait Jetton with Ownable {
         });
     }
 
+    receive(msg: Burned) {
+        
+        // Check wallet
+        self.requireWallet(msg.owner);
+
+        // Update supply
+        self.totalSupply = self.totalSupply - msg.amount;
+    }
+
     fun requireWallet(owner: Address) {
         let ctx: Context = context();
         let winit: StateInit = self.getJettonWalletInit(owner);
@@ -78,12 +111,34 @@ trait Jetton with Ownable {
         return initOf JettonDefaultContract(myAddress(), address);
     }
 
+    get fun get_wallet_address(owner: Address): Address {
+        let winit: StateInit = self.getJettonWalletInit(owner);
+        return contractAddress(0, winit.code, winit.data);
+    }
+
     get fun get_jetton_data(): JettonData {
-        return JettonData{ totalSupply: self.totalSupply, mintable: self.mintable, owner: self.owner, content: self.content, walletCode: self.walletCode };
+        return JettonData{ 
+            totalSupply: self.totalSupply, 
+            mintable: self.mintable, 
+            owner: self.owner, 
+            content: self.content, 
+            walletCode: self.getJettonWalletInit(myAddress()).code 
+        };
     }
 }
 
 trait JettonWallet with Ownable {
     master: Address;
     owner: Address;
+    balance: Int;
+
+    receive(msg: TokenReceived) {
+
+        // Check message
+        let ctx: Context = context();
+        require(100, (ctx.sender == self.master));
+
+        // Update state
+        self.balance = self.balance + msg.amount;
+    }
 }

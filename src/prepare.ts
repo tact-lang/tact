@@ -48,7 +48,7 @@ import { ContractABI } from './abi/ContractABI';
                     fs.writeFileSync(prefix + ".rev.fift", source);
 
                     // Tact -> ABI
-                    let abi = createABI(res.ctx);
+                    let abi = createABI(res.ctx, contract);
                     fs.writeFileSync(prefix + ".abi", JSON.stringify(abi, null, 2));
 
                     // Store code

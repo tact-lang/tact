@@ -51,19 +51,19 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
         }
 
         if (ref.name === 'Int') {
-            w.append(`__stack.push({ type: 'int', value: new BN(${name}.toString(), 10)});`);
+            w.append(`__stack.push({ type: 'int', value: new BN(${name}.toString(), 10) });`);
             return;
         } else if (ref.name === 'Cell') {
-            w.append(`__stack.push({ type: 'cell', value: ${name}});`);
+            w.append(`__stack.push({ type: 'cell', cell: ${name} });`);
             return;
         } else if (ref.name === 'Slice') {
-            w.append(`__stack.push({ type: 'slice', cell: ${name}.toCell()});`);
+            w.append(`__stack.push({ type: 'slice', cell: ${name}.toCell() });`);
             return;
         } else if (ref.name === 'Address') {
-            w.append(`__stack.push({ type: 'slice', cell: ${name}});`);
+            w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
             return;
         } else if (ref.name === 'Bool') {
-            w.append(`__stack.push({ type: 'int', value: new BN(${name} ? -1 : 0)});`);
+            w.append(`__stack.push({ type: 'int', value: new BN(${name} ? -1 : 0) });`);
             return;
         } else {
             throw Error(`Unsupported type: ${ref.name}`);
@@ -71,7 +71,7 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
     }
 
     if (ref.kind === 'map') {
-        w.append(`__stack.push({ type: 'cell', value: ${name}});`);
+        w.append(`__stack.push({ type: 'cell', cell: ${name}});`);
         return;
     }
 
@@ -284,9 +284,9 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
                         } else if (g.returns.name === 'Int') {
                             w.append(`return result.stack.readBigNumber();`);
                         } else if (g.returns.name === 'Address') {
-                            // TODO: Implement
+                            w.append(`return result.stack.readAddress()!;`);
                         } else {
-                            throw new Error(`Unsupported getter return type: ${g.returns.name}`);
+                            // throw new Error(`Unsupported getter return type: ${g.returns.name}`);
                         }
                     } else {
                         w.append(`return result.stack.readCell();`);

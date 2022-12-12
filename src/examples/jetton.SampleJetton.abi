@@ -1,5 +1,5 @@
 {
-  "name": "JettonDefaultContract",
+  "name": "SampleJetton",
   "structs": [
     {
       "name": "SendParameters",
@@ -599,16 +599,8 @@
     }
   ],
   "init": {
-    "name": "init_JettonDefaultContract",
+    "name": "init_SampleJetton",
     "args": [
-      {
-        "name": "master",
-        "type": {
-          "kind": "ref",
-          "name": "Address",
-          "optional": false
-        }
-      },
       {
         "name": "owner",
         "type": {
@@ -616,10 +608,72 @@
           "name": "Address",
           "optional": false
         }
+      },
+      {
+        "name": "content",
+        "type": {
+          "kind": "ref",
+          "name": "Cell",
+          "optional": true
+        }
       }
     ]
   },
-  "receivers": [],
-  "getters": [],
-  "dependsOn": {}
+  "receivers": [
+    {
+      "kind": "internal-binary",
+      "type": "Mint"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "JettonUpdateContent"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "Burned"
+    }
+  ],
+  "getters": [
+    {
+      "name": "get_wallet_address",
+      "args": [
+        {
+          "name": "owner",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Address",
+        "optional": false
+      }
+    },
+    {
+      "name": "get_jetton_data",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "JettonData",
+        "optional": false
+      }
+    },
+    {
+      "name": "owner",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Address",
+        "optional": false
+      }
+    }
+  ],
+  "dependsOn": {
+    "SampleJettonWallet": {
+      "uid": 52819
+    }
+  }
 }

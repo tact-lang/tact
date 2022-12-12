@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC __gen_write_SampleJetton
   DECLPROC __gen_read_SampleJetton
   DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_StateInit_get_code
   DECLPROC __gen_load_SampleJetton
   DECLPROC __gen_store_SampleJetton
   DECLPROC storeBool
@@ -25,14 +26,16 @@ PROGRAM{
   DECLPROC __gen_SampleJetton_getJettonWalletInit
   DECLPROC __gen_SampleJetton_mint
   DECLPROC __gen_SampleJetton_requireWallet
+  DECLPROC __gen_SampleJetton_get_wallet_address
+  103289 DECLMETHOD __gen_get_get_wallet_address
   DECLPROC __gen_SampleJetton_get_jetton_data
   106029 DECLMETHOD __gen_get_get_jetton_data
   DECLPROC __gen_SampleJetton_requireOwner
   DECLPROC __gen_SampleJetton_owner
   83229 DECLMETHOD __gen_get_owner
   DECLPROC __gen_SampleJetton_receive_Mint
-  DECLPROC __gen_SampleJetton_receive_Burned
   DECLPROC __gen_SampleJetton_receive_JettonUpdateContent
+  DECLPROC __gen_SampleJetton_receive_Burned
   DECLPROC recv_internal
   122307 DECLMETHOD init_SampleJetton
   DECLGLOBVAR __tact_context
@@ -159,25 +162,25 @@ PROGRAM{
     STIX
   }>
   __gen_write_SampleJetton PROCINLINE:<{
-    s5 s4 XCHG2
+    s4 s3 XCHG2
     STGRAMS
-    ROT
+    SWAP
     __tact_store_address INLINECALLDICT
-    OVER
+    s2 PUSH
     ISNULL
     IF:<{
-      FALSE
       s2 POP
+      FALSE
+      ROT
       1 STI
     }>ELSE<{
       TRUE
       SWAP
       1 STI
+      s1 s2 XCHG
       STREF
     }>
-    s1 s2 XCHG
     1 STI
-    STREF
   }>
   __gen_read_SampleJetton PROCINLINE:<{
     LDGRAMS
@@ -191,13 +194,15 @@ PROGRAM{
       NIP
     }>
     1 LDI
-    LDREF
-    s0 s5 XCHG
-    s4 s4 s4 XCHG3
+    s0 s4 XCHG
+    s3 s3 XCHG2
   }>
   __gen_Context_get_sender PROCINLINE:<{
     DROP
     NIP
+  }>
+  __gen_StateInit_get_code PROCINLINE:<{
+    DROP
   }>
   __gen_load_SampleJetton PROCINLINE:<{
     c4 PUSH
@@ -206,14 +211,14 @@ PROGRAM{
     SWAP
     __tact_context_sys SETGLOB
     __gen_read_SampleJetton INLINECALLDICT
-    1 5 BLKDROP2
+    1 4 BLKDROP2
   }>
   __gen_store_SampleJetton PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
-    5 -ROLL
+    4 -ROLL
     __gen_write_SampleJetton INLINECALLDICT
     ENDC
     c4 POP
@@ -348,10 +353,12 @@ PROGRAM{
     __gen_SampleJettonWallet_init CALLDICT
   }>
   __gen_SampleJetton_init PROC:<{
-    s0 s5 XCHG
+    0 PUSHINT
+    TRUE
+    s0 s4 XCHG
     NEWC
     STREF
-    s1 s3 s5 XCHG3
+    s3 s3 s4 XCHG3
     __gen_write_SampleJetton INLINECALLDICT
     ENDC
   }>
@@ -362,39 +369,56 @@ PROGRAM{
     __gen_SampleJettonWallet_init_child CALLDICT
   }>
   __gen_SampleJetton_mint PROC:<{
-    s6 s6 XCPU
+    s5 s5 XCPU
     ADD
-    5 -ROLL
+    4 -ROLL
     __gen_SampleJetton_getJettonWalletInit CALLDICT
     0 PUSHINT
     s2 s1 PUSH2
     __tact_compute_contract_address CALLDICT
     FALSE
     0 PUSHINT
-    s0 s10 PUXC
+    s0 s9 PUXC
     __gen_writecell_TokenReceived INLINECALLDICT
     5 2 REVERSE
     s1 s4 XCHG
-    s3 s11 XCHG
-    s0 s11 s11 XCHG3
+    s3 s10 XCHG
+    s0 s10 s10 XCHG3
     send CALLDICT
-    4 ROLL
+    3 ROLL
   }>
   __gen_SampleJetton_requireWallet PROC:<{
     __tact_context_get INLINECALLDICT
     DROP
     NIP
-    6 -ROLL
+    5 -ROLL
     __gen_SampleJetton_getJettonWalletInit CALLDICT
     0 PUSHINT
     -ROT
     __tact_compute_contract_address CALLDICT
-    s0 s6 XCHG2
+    s0 s5 XCHG2
     __tact_address_eq INLINECALLDICT
     100 THROWIFNOT
+    3 ROLL
+  }>
+  __gen_SampleJetton_get_wallet_address PROC:<{
+    __gen_SampleJetton_getJettonWalletInit CALLDICT
+    2 2 BLKDROP2
+    s2 POP
+    0 PUSHINT
+    s3 POP
+    SWAP
+    __tact_compute_contract_address CALLDICT
+  }>
+  __gen_get_get_wallet_address PROC:<{
+    __gen_load_SampleJetton INLINECALLDICT
     4 ROLL
+    __gen_SampleJetton_get_wallet_address CALLDICT
   }>
   __gen_SampleJetton_get_jetton_data PROC:<{
+    MYADDR
+    __gen_SampleJetton_getJettonWalletInit CALLDICT
+    __gen_StateInit_get_code INLINECALLDICT
     s3 s3 s0 XCHG3
   }>
   __gen_get_get_jetton_data PROC:<{
@@ -404,13 +428,13 @@ PROGRAM{
   __gen_SampleJetton_requireOwner PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_sender INLINECALLDICT
-    s4 PUSH
+    s3 PUSH
     __tact_address_eq INLINECALLDICT
     100 THROWIFNOT
   }>
   __gen_SampleJetton_owner PROC:<{
-    s3 s4 XCHG
-    4 BLKDROP
+    s2 s3 XCHG
+    3 BLKDROP
   }>
   __gen_get_owner PROC:<{
     __gen_load_SampleJetton INLINECALLDICT
@@ -423,23 +447,21 @@ PROGRAM{
     SWAP
     __gen_SampleJetton_mint CALLDICT
   }>
+  __gen_SampleJetton_receive_JettonUpdateContent PROC:<{
+    4 -ROLL
+    __gen_SampleJetton_requireOwner CALLDICT
+    NIP
+    s1 s3 s0 XCHG3
+  }>
   __gen_SampleJetton_receive_Burned PROC:<{
     DROP
-    s1 s6 XCHG
     s1 s5 XCHG
     s1 s4 XCHG
     s3 s3 s0 XCHG3
     __gen_SampleJetton_requireWallet CALLDICT
-    s4 s5 XCHG2
+    s3 s4 XCHG2
     SUB
-    s1 s3 s4 XCHG3
-  }>
-  __gen_SampleJetton_receive_JettonUpdateContent PROC:<{
-    5 -ROLL
-    __gen_SampleJetton_requireOwner CALLDICT
-    s2 POP
-    s3 s4 XCHG
-    s3 s0 s0 XCHG3
+    s2 s3 XCHG2
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -479,43 +501,40 @@ PROGRAM{
     IFJMP:<{
       DROP
       __gen_load_SampleJetton INLINECALLDICT
-      s0 s5 XCHG
+      s0 s4 XCHG
       __gen_read_Mint INLINECALLDICT
       NIP
-      s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
       __gen_SampleJetton_receive_Mint CALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DUP
-    2078119902 PUSHINT
+    3551049822 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
       __gen_load_SampleJetton INLINECALLDICT
-      s0 s5 XCHG
+      s0 s4 XCHG
+      __gen_read_JettonUpdateContent INLINECALLDICT
+      NIP
+      s3 s4 XCHG
+      s1 s3 s0 XCHG3
+      __gen_SampleJetton_receive_JettonUpdateContent CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
+    }>
+    2078119902 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s4 XCHG
       __gen_read_Burned INLINECALLDICT
       s3 POP
-      s6 s7 XCHG
       s5 s6 XCHG
       s4 s5 XCHG
       s3 s4 XCHG
       ROT
       __gen_SampleJetton_receive_Burned CALLDICT
-      __gen_store_SampleJetton INLINECALLDICT
-    }>
-    3551049822 PUSHINT
-    EQUAL
-    IFJMP:<{
-      __gen_load_SampleJetton INLINECALLDICT
-      s0 s5 XCHG
-      __gen_read_JettonUpdateContent INLINECALLDICT
-      NIP
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
-      __gen_SampleJetton_receive_JettonUpdateContent CALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DROP

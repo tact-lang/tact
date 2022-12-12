@@ -168,8 +168,8 @@ export function JettonDefaultContract_init(master: Address, owner: Address) {
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: master});
-    __stack.push({ type: 'slice', cell: owner});
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
     return deploy(__code, 'init_JettonDefaultContract', __stack); 
 }
 

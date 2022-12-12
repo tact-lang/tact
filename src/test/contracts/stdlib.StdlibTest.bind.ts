@@ -85,19 +85,19 @@ export class StdlibTest {
     
     async getSliceEmpty(sc: Slice) {
         let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: sc.toCell()});
+        __stack.push({ type: 'slice', cell: sc.toCell() });
         let result = await this.executor.get('sliceEmpty', __stack);
         return result.stack.readBoolean();
     }
     async getSliceBits(sc: Slice) {
         let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: sc.toCell()});
+        __stack.push({ type: 'slice', cell: sc.toCell() });
         let result = await this.executor.get('sliceBits', __stack);
         return result.stack.readBigNumber();
     }
     async getSliceRefs(sc: Slice) {
         let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: sc.toCell()});
+        __stack.push({ type: 'slice', cell: sc.toCell() });
         let result = await this.executor.get('sliceRefs', __stack);
         return result.stack.readBigNumber();
     }

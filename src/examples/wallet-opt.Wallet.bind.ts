@@ -89,8 +89,8 @@ export function Wallet_init(key: BigInt, walletId: BigInt) {
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
-    __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});
+    __stack.push({ type: 'int', value: new BN(key.toString(), 10) });
+    __stack.push({ type: 'int', value: new BN(walletId.toString(), 10) });
     return deploy(__code, 'init_Wallet', __stack); 
 }
 

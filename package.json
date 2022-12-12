@@ -13,6 +13,7 @@
     "bn.js": "^5.2.1",
     "change-case": "^4.1.2",
     "ohm-js": "^16.4.0",
+    "prando": "^6.0.1",
     "ton": "^12.1.5",
     "ton-compiler": "^2.0.0",
     "ton-contract-executor": "^0.6.0",

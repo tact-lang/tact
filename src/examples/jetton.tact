@@ -14,11 +14,6 @@ contract SampleJettonWallet with JettonWallet {
         self.master = master;
         self.owner = owner;
     }
-
-    receive(msg: TokenReceived) {
-        let ctx: Context = context();
-        require(100, ctx.sender == self.master);
-    }
 }
 
 contract SampleJetton with Jetton {
@@ -27,28 +22,17 @@ contract SampleJetton with Jetton {
     owner: Address;
     content: Cell?;
     mintable: Bool;
-    walletCode: Cell;
 
-    init(totalSupply: Int, mintable: Bool, owner: Address, content: Cell?, walletCode: Cell) {
-        self.totalSupply = totalSupply;
+    init(owner: Address, content: Cell?) {
+        self.totalSupply = 0;
         self.owner = owner;
-        self.mintable = mintable;
+        self.mintable = true;
         self.content = content;
-        self.walletCode = walletCode;
     }
 
     receive(msg: Mint) {
         let ctx: Context = context();
         self.mint(ctx.sender, msg.amount);
-    }
-
-    receive(msg: Burned) {
-        
-        // Check wallet
-        self.requireWallet(msg.owner);
-
-        // Update supply
-        self.totalSupply = self.totalSupply - msg.amount;
     }
 
     overwrites fun getJettonWalletInit(address: Address): StateInit {

@@ -66,7 +66,7 @@ export function getContracts(ctx: CompilerContext) {
 }
 
 export function compile(ctx: CompilerContext, name: string | null) {
-    let abi = createABI(ctx);
+    let abi = createABI(ctx, name);
     let output = writeProgram(ctx, abi, name);
     let cOutput = output;
     return { output: cOutput, ctx };
