@@ -8,6 +8,16 @@ struct JettonData {
     walletCode: Cell;
 }
 
+message(0x7bdd97de) Burned {
+    amount: Int;
+    owner: Address;
+    cashback: Address?;
+}
+
+message TokenReceived {
+    amount: Int;
+}
+
 message JettonUpdateContent {
     content: Cell?;
 }
@@ -40,21 +50,37 @@ trait Jetton with Ownable {
         self.content = msg.content;
     }
 
-    fun mint(to: Address, amount: Int, stateInit: StateInit) {
+    fun mint(to: Address, amount: Int) {
 
         // Update total supply
         self.totalSupply = self.totalSupply + amount;
 
-        // TODO: Send message to wallet
+        // Create message
+        let winit: StateInit = self.getJettonWalletInit(to);
+        let walletAddress: Address = contractAddress(0, winit.code, winit.data);
+        send(SendParameters{
+            to: walletAddress, 
+            value: 0, 
+            bounce: false,
+            body: abi.pack_cell(TokenReceived{ amount: amount }),
+            code: winit.code,
+            data: winit.data
+        });
+    }
+
+    fun requireWallet(owner: Address) {
+        let ctx: Context = context();
+        let winit: StateInit = self.getJettonWalletInit(owner);
+        require(100, contractAddress(0, winit.code, winit.data) == ctx.sender);
     }
 
     virtual fun getJettonWalletInit(address: Address): StateInit {
         return initOf JettonDefaultContract(myAddress(), address);
     }
 
-    // get fun get_jetton_data(): JettonData {
-    //    return JettonData{ totalSupply: self.totalSupply, mintable: self.mintable, owner: self.owner, content: self.content, walletCode: self.walletCode };
-    // }
+    get fun get_jetton_data(): JettonData {
+        return JettonData{ totalSupply: self.totalSupply, mintable: self.mintable, owner: self.owner, content: self.content, walletCode: self.walletCode };
+    }
 }
 
 trait JettonWallet with Ownable {

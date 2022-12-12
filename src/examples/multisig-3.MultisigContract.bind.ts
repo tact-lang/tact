@@ -10,6 +10,8 @@ export type SendParameters = {
     value: BigInt;
     mode: BigInt;
     body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
 }
 
 export function packSendParameters(src: SendParameters): Cell {
@@ -21,6 +23,18 @@ export function packSendParameters(src: SendParameters): Cell {
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.code !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.code);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.data !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.data);
     } else {
         b_0 = b_0.storeBit(false);
     }
@@ -101,7 +115,7 @@ export function packExecuted(src: Executed): Cell {
 }
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECHwEAAfsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAXGAIBIAYHAgFiERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwE8j4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEABnMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AIAAjHAEyMxVMFA0yx/L/8v/y//JgAA8fzMBcG3wDIAAJBAjXwOACASATFAIBIBUWAAcE18DgAAUbDGAABRfA4ABfFR1Q8hVIFAjyx8B+gIBzxbJ+QBSBCr5EFIzKfkQVBM3+RBTWbryigKwAbDyivAOgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJQCASAZGgIBIBscAAm4rH8A2AIBIB0eAC+0fL2omhqAPwxaY/p/+n/6f+qmDYKeAfAAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEYAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPAQg';
+    const __code = 'te6ccgECIQEAAlEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwFMj4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8AzIcPAMcPAMJG6zlX/wDBTMlTQDcPAM4iRus5V/8AwUzJU0A3DwDOJw8AwCf/AMAslYzJYzMwFw8AziIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwBMjMVTBQNMsfy//L/8v/yYAATH8zAXBtbW3wDYAIBIBMUAF/So6oeQqkCgR5Y+A/QEA54tk/IApAhV8iCkZlPyIKgmb/IgprN15RQFYANh5RXgHwCASAVFgIBIBcYAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAL75kv2omhqAPwxaY/p/+n/6f+qmDYKeAnAIBIBscAgEgHR4ACbisfwDoAgEgHyAAL7R8vaiaGoA/DFpj+n/6f/p/6qYNgp4CEAAvsOn7UTQ1AH4YtMf0//T/9P/VTBsFPASgAC+w4btRNDUAfhi0x/T/9P/0/9VMGwU8BGA=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

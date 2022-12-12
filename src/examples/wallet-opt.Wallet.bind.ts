@@ -10,6 +10,8 @@ export type SendParameters = {
     value: BigInt;
     mode: BigInt;
     body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
 }
 
 export function packSendParameters(src: SendParameters): Cell {
@@ -21,6 +23,18 @@ export function packSendParameters(src: SendParameters): Cell {
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.code !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.code);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.data !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.data);
     } else {
         b_0 = b_0.storeBit(false);
     }

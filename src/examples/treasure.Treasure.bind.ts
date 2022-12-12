@@ -10,6 +10,8 @@ export type SendParameters = {
     value: BigInt;
     mode: BigInt;
     body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
 }
 
 export function packSendParameters(src: SendParameters): Cell {
@@ -21,6 +23,18 @@ export function packSendParameters(src: SendParameters): Cell {
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.code !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.code);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.data !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.data);
     } else {
         b_0 = b_0.storeBit(false);
     }
@@ -82,7 +96,7 @@ export function packWithdraw(src: Withdraw): Cell {
 }
 
 export function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECGgEAAckAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAYGQIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BLI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFMj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfATyPhCAcwBzxbJ7VTbMeAAZ1yHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAgCASAODwAPAHIzAHPFsmAAGT4QW8jMDEhxwXy4GSACASASEwAJ0A+AeYQCASAUFQIBIBYXABsAvAPf8jJVBMCUFXwDYAABIAAFPAQgAA0cIEAoPAQgAB++KO9qJoagD8MX0gAJj4CMAAm++XeAdA==';
+    const __code = 'te6ccgECHAEAAh8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFcj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAUyPhCAcwBzxbJ7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8A6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A3IcPANcPANJG6zlX/wDRTMlTQDcPAN4iRus5V/8A0UzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAADwByMwBzxbJgAgEgEhMCAUgYGQIBIBQVAgEgFhcAGT4QW8jMDEhxwXy4GSAAHwC8BB/yMlUEwJQVW1t8A6AAASAABTwEYAANHCBAKDwEYAAJAHwEDCAAH74o72omhqAPwxfSAAmPgJQACb75d4B8';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

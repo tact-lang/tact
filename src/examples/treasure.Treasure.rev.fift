@@ -60,7 +60,7 @@ SETCP0
       8 LDU
       ROTREV
       1 2 BLKDROP2
-      18 CALLDICT
+      19 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -93,7 +93,7 @@ SETCP0
       LDMSGADDR
       s0 s1 XCHG
       s1 POP
-      20 CALLDICT
+      21 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -120,7 +120,7 @@ SETCP0
         LDMSGADDR
         s0 s1 XCHG
         s1 POP
-        19 CALLDICT
+        20 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -141,41 +141,113 @@ SETCP0
     14 THROWIF
 
   13: 
+    <{
+      -1 PUSHINT
+      s0 s1 XCHG
+      1 STI
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
+
+  14: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
     2 STI
-    s1 s5 XCHG
+    s1 s7 XCHG
     1 STI
     0 PUSHINT
     s0 s1 XCHG
     3 STI
-    s0 s3 XCHG2
+    s0 s5 XCHG2
     STSLICER
-    s0 s1 XCHG
+    s0 s3 XCHG2
     STGRAMS
     0 PUSHINT
     s0 s1 XCHG
     105 STI
-    0 PUSHINT
-    s0 s1 XCHG
-    1 STI
-    s2 PUSH
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    <{
+      -1 PUSHINT
+      13 CALLDICT
+      NEWC
+      0 PUSHINT
+      13 CALLDICT
+      0 PUSHINT
+      13 CALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        13 CALLDICT
+        s1 s4 XCHG
+        STREF
+      }> PUSHCONT
+      <{
+        s4 POP
+        s0 s3 XCHG
+        0 PUSHINT
+        13 CALLDICT
+      }> PUSHCONT
+      IFELSE
+      s4 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        13 CALLDICT
+        s1 s4 XCHG
+        STREF
+      }> PUSHCONT
+      <{
+        s4 POP
+        s0 s3 XCHG
+        0 PUSHINT
+        13 CALLDICT
+      }> PUSHCONT
+      IFELSE
+      0 PUSHINT
+      13 CALLDICT
+      s0 s2 XCHG
+      -1 PUSHINT
+      13 CALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }> PUSHCONT
+    <{
+      s3 POP
+      s3 POP
+      s0 s1 XCHG
+      0 PUSHINT
+      13 CALLDICT
+    }> PUSHCONT
+    IFELSE
+    s1 PUSH
     ISNULL
     NOT
     <{
       -1 PUSHINT
       s0 s1 XCHG
       1 STI
-      s0 s2 XCHG
+      s0 s1 XCHG
       1 CALLDICT
-      ROT
+      s0 s1 XCHG
       STREF
     }> PUSHCONT
     <{
-      s2 POP
       0 PUSHINT
-      ROT
+      s2 POP
       1 STI
     }> PUSHCONT
     IFELSE
@@ -183,7 +255,7 @@ SETCP0
     s0 s1 XCHG
     SENDRAWMSG
 
-  14: 
+  15: 
     s0 s1 XCHG
     NEWC
     STREF
@@ -191,7 +263,7 @@ SETCP0
     STSLICER
     ENDC
 
-  15: 
+  16: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -200,29 +272,31 @@ SETCP0
     SDEQ
     100 THROWIFNOT
 
-  16: 
+  17: 
     s0 s2 XCHG
-    15 CALLDICT
+    16 CALLDICT
     -1 PUSHINT
     NEWC
     ENDC
     3 0 2 XC2PU
     s5 s5 XCHG2
-    13 CALLDICT
-
-  17: 
+    PUSHNULL
+    PUSHNULL
+    14 CALLDICT
 
   18: 
-    16 CALLDICT
 
   19: 
-    0 PUSHINT
-    160 PUSHINT
-    16 CALLDICT
+    17 CALLDICT
 
   20: 
+    0 PUSHINT
+    160 PUSHINT
+    17 CALLDICT
+
+  21: 
     s0 s1 XCHG
-    15 CALLDICT
+    16 CALLDICT
     s0 POP
 
   owner: 
@@ -234,10 +308,10 @@ SETCP0
     LDMSGADDR
     s0 s1 XCHG
     s1 POP
-    17 CALLDICT
+    18 CALLDICT
 
   122670: 
-    14 CALLDICT
+    15 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

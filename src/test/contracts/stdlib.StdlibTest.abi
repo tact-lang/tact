@@ -44,6 +44,22 @@
             "name": "Cell",
             "optional": true
           }
+        },
+        {
+          "name": "code",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
         }
       ],
       "allocation": {
@@ -100,12 +116,44 @@
                 },
                 "kind": "cell"
               }
+            },
+            {
+              "index": 5,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 5,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            },
+            {
+              "index": 6,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 6,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
             }
           ],
           "next": null,
           "size": {
-            "bits": 783,
-            "refs": 1
+            "bits": 785,
+            "refs": 3
           }
         }
       }

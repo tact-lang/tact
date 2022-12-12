@@ -61,8 +61,16 @@ _ __gen_Context_get_sender((int, slice, int) v) inline {
     set_data(b.end_cell());
 }
 
-() send((int, slice, int, int, cell) params) impure {
-    var ((params'bounce, params'to, params'value, params'mode, params'body)) = params;
+builder storeBool(builder s, int value) impure {
+    if (value) {
+        return store_int(s, (- 1), 1);
+    } else {
+        return store_int(s, 0, 1);
+    }
+}
+
+() send((int, slice, int, int, cell, cell, cell) params) impure {
+    var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
     builder b = begin_cell();
     b = store_int(b, 1, 2);
     b = store_int(b, params'bounce, 1);
@@ -70,7 +78,29 @@ _ __gen_Context_get_sender((int, slice, int) v) inline {
     b = __tact_store_address(b, params'to);
     b = store_coins(b, params'value);
     b = store_int(b, 0, ((((1 + 4) + 4) + 64) + 32));
-    b = store_int(b, false, 1);
+    if (((~ null?(params'code)) | (~ null?(params'data)))) {
+        b = storeBool(b, true);
+        builder bc = begin_cell();
+        bc = storeBool(bc, false);
+        bc = storeBool(bc, false);
+        if ((~ null?(params'code))) {
+            bc = storeBool(bc, true);
+            bc = store_ref(bc, params'code);
+        } else {
+            bc = storeBool(bc, false);
+        }
+        if ((~ null?(params'data))) {
+            bc = storeBool(bc, true);
+            bc = store_ref(bc, params'data);
+        } else {
+            bc = storeBool(bc, false);
+        }
+        bc = storeBool(bc, false);
+        b = storeBool(b, true);
+        b = store_ref(b, end_cell(bc));
+    } else {
+        b = storeBool(b, false);
+    }
     cell body = params'body;
     if ((~ null?(body))) {
         b = store_int(b, true, 1);
@@ -100,7 +130,7 @@ cell __gen_Treasure_init(cell sys', slice owner) {
 ((slice), ()) __gen_Treasure_doWithdraw((slice) self, int amount, int mode) impure {
     var ((self'owner)) = self;
     (self'owner)~__gen_Treasure_requireOwner();
-    send((true, self'owner, amount, mode, end_cell(begin_cell())));
+    send((true, self'owner, amount, mode, end_cell(begin_cell()), null(), null()));
     return ((self'owner), ());
 }
 

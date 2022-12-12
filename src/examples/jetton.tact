@@ -4,16 +4,6 @@ message Mint {
     amount: Int;
 }
 
-message(0x7bdd97de) Burned {
-    amount: Int;
-    owner: Address;
-    cashback: Address?;
-}
-
-message TokenReceived {
-    amount: Int;
-}
-
 contract SampleJettonWallet with JettonWallet {
     master: Address;
     owner: Address;
@@ -49,12 +39,16 @@ contract SampleJetton with Jetton {
 
     receive(msg: Mint) {
         let ctx: Context = context();
-        self.mint(ctx.sender, msg.amount, initOf SampleJettonWallet(myAddress(), ctx.sender));
+        self.mint(ctx.sender, msg.amount);
     }
 
     receive(msg: Burned) {
-        let ctx: Context = context();
-        // let addr: Address = contractAddress(0, self.getJettonWalletInit(msg.owner));
+        
+        // Check wallet
+        self.requireWallet(msg.owner);
+
+        // Update supply
+        self.totalSupply = self.totalSupply - msg.amount;
     }
 
     overwrites fun getJettonWalletInit(address: Address): StateInit {

@@ -10,6 +10,8 @@ export type SendParameters = {
     value: BigInt;
     mode: BigInt;
     body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
 }
 
 export function packSendParameters(src: SendParameters): Cell {
@@ -21,6 +23,18 @@ export function packSendParameters(src: SendParameters): Cell {
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.code !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.code);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.data !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.data);
     } else {
         b_0 = b_0.storeBit(false);
     }
@@ -74,6 +88,39 @@ export function packJettonData(src: JettonData): Cell {
     return b_0.endCell();
 }
 
+export type Burned = {
+    $$type: 'Burned';
+    amount: BigInt;
+    owner: Address;
+    cashback: Address | null;
+}
+
+export function packBurned(src: Burned): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(2078119902, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    b_0 = b_0.storeAddress(src.owner);
+    if (src.cashback !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeAddress(src.cashback);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export type TokenReceived = {
+    $$type: 'TokenReceived';
+    amount: BigInt;
+}
+
+export function packTokenReceived(src: TokenReceived): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(421783706, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export type JettonUpdateContent = {
     $$type: 'JettonUpdateContent';
     content: Cell | null;
@@ -111,39 +158,6 @@ export type Mint = {
 export function packMint(src: Mint): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(2737462367, 32);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
-    return b_0.endCell();
-}
-
-export type Burned = {
-    $$type: 'Burned';
-    amount: BigInt;
-    owner: Address;
-    cashback: Address | null;
-}
-
-export function packBurned(src: Burned): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(2078119902, 32);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
-    b_0 = b_0.storeAddress(src.owner);
-    if (src.cashback !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeAddress(src.cashback);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
-}
-
-export type TokenReceived = {
-    $$type: 'TokenReceived';
-    amount: BigInt;
-}
-
-export function packTokenReceived(src: TokenReceived): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(421783706, 32);
     b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
     return b_0.endCell();
 }

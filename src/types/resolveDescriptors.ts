@@ -10,10 +10,10 @@ let staticFunctionsStore = createContextStore<FunctionDescription>();
 
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
-        let n = getType(ctx, src.name).name; // TODO: Check
+        let t = getType(ctx, src.name);
         return {
             kind: 'ref',
-            name: n,
+            name: t.name,
             optional: src.optional
         };
     }
@@ -137,7 +137,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
-        return { name: src.name, type: buildTypeRef(src.type, types), index, as: src.as, default: src.init, ref: src.ref };
+        let tr = buildTypeRef(src.type, types);
+
+        if (tr.kind === 'ref' && tr.optional) {
+            let tt = types[tr.name];
+            if (tt.kind !== 'primitive') {
+                throwError('Optional type can be only primitive', src.ref);
+            }
+        }
+
+        return { name: src.name, type: tr, index, as: src.as, default: src.init, ref: src.ref };
     }
     for (let a of ast.types) {
 

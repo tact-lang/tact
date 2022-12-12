@@ -18,6 +18,16 @@ native storeInt(s: Builder, value: Int, bits: Int): Builder;
 @name(store_uint)
 native storeUint(s: Builder, value: Int, bits: Int): Builder;
 
+fun storeBool(s: Builder, value: Bool): Builder {
+
+    // TODO: Make it optimal
+    if (value) {
+        return storeInt(s, -1, 1);
+    } else {
+        return storeInt(s, 0, 1);
+    }
+}
+
 @name(store_coins)
 native storeCoins(s: Builder, value: Int): Builder;
 
@@ -109,7 +119,7 @@ native require(code: Int, condition: Bool);
 native nativeThrowUnless(code: Int, condition: Bool);
 
 @name(__tact_compute_contract_address)
-native computeAddress(chain: Int, code: Cell, data: Cell): Address;
+native contractAddress(chain: Int, code: Cell, data: Cell): Address;
 
 @name(__tact_store_address)
 native storeAddress(s: Builder, address: Address): Builder;
@@ -123,6 +133,8 @@ struct SendParameters {
     value: Int;
     mode: Int = 0;
     body: Cell? = null;
+    code: Cell? = null;
+    data: Cell? = null;
 }
 
 fun send(params: SendParameters) {
@@ -135,7 +147,32 @@ fun send(params: SendParameters) {
     b = storeInt(b, 0, 1 + 4 + 4 + 64 + 32); // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
 
     // Stateinit
-    b = storeInt(b, false, 1); // No state init
+    if (params.code != null || params.data != null) {
+        b = storeBool(b, true); // State init
+
+        // Assemble state init cell
+        let bc: Builder = beginCell();
+        bc = storeBool(bc, false); // SplitDepth
+        bc = storeBool(bc, false); // TickTock
+        if (params.code != null) {
+            bc = storeBool(bc, true); // Code presence
+            bc = storeRef(bc, params.code);
+        } else {
+            bc = storeBool(bc, false); // Code presence
+        }
+        if (params.data != null) {
+            bc = storeBool(bc, true); // Data presence
+            bc = storeRef(bc, params.data);
+        } else {
+            bc = storeBool(bc, false); // Data presence
+        }
+        bc = storeBool(bc, false); // Library
+
+        b = storeBool(b, true); // Store as ref
+        b = storeRef(b, endCell(bc));
+    } else {
+        b = storeBool(b, false); // No state init
+    }
 
     // Body
     let body: Cell? = params.body;

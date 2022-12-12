@@ -10,6 +10,8 @@ export type SendParameters = {
     value: BigInt;
     mode: BigInt;
     body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
 }
 
 export function packSendParameters(src: SendParameters): Cell {
@@ -21,6 +23,18 @@ export function packSendParameters(src: SendParameters): Cell {
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.code !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.code);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    if (src.data !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.data);
     } else {
         b_0 = b_0.storeBit(false);
     }
@@ -74,6 +88,39 @@ export function packJettonData(src: JettonData): Cell {
     return b_0.endCell();
 }
 
+export type Burned = {
+    $$type: 'Burned';
+    amount: BigInt;
+    owner: Address;
+    cashback: Address | null;
+}
+
+export function packBurned(src: Burned): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(2078119902, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    b_0 = b_0.storeAddress(src.owner);
+    if (src.cashback !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeAddress(src.cashback);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export type TokenReceived = {
+    $$type: 'TokenReceived';
+    amount: BigInt;
+}
+
+export function packTokenReceived(src: TokenReceived): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(421783706, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
 export type JettonUpdateContent = {
     $$type: 'JettonUpdateContent';
     content: Cell | null;
@@ -115,41 +162,8 @@ export function packMint(src: Mint): Cell {
     return b_0.endCell();
 }
 
-export type Burned = {
-    $$type: 'Burned';
-    amount: BigInt;
-    owner: Address;
-    cashback: Address | null;
-}
-
-export function packBurned(src: Burned): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(2078119902, 32);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
-    b_0 = b_0.storeAddress(src.owner);
-    if (src.cashback !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeAddress(src.cashback);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
-}
-
-export type TokenReceived = {
-    $$type: 'TokenReceived';
-    amount: BigInt;
-}
-
-export function packTokenReceived(src: TokenReceived): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(421783706, 32);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
-    return b_0.endCell();
-}
-
 export function JettonDefaultContract_init(master: Address, owner: Address) {
-    const __code = 'te6ccgECGwEAAo8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFICwwDl9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wEEEIUZUuL91xgRBBCD3uy+9dcYFBCGnUXC9dcYEYeWAyQICQoAI/uAHkZgGtZ4ssZ4tAgIDngGTAC8MO1E0NQB+GL6APpAAW0C0gABktQx3tIA1AVERGwVBdMfAYIQoypcX7ry4GSBAQHXAAExEEUQNEEw8BXI+EIBzFVAUFT6AljPFiFulHAyygCVfwHKAMziEsoAzMntVADgMO1E0NQB+GL6APpAAW0C0gABktQx3tIA1AVERGwVBdMfAYIQe92X3rry4GSBAQHXAPpAAW0C0gABlPpAATDeQxMzEGcQVhBFEDRY8BbI+EIBzFVAUFT6AljPFiFulHAyygCVfwHKAMziEsoAzMntVADC7UTQ1AH4YvoA+kABbQLSAAGS1DHe0gDUBUREbBUF0x8BghDTqLheuvLgZG0B0gABktQx3gExEEUQNEEw8BfI+EIBzFVAUFT6AljPFiFulHAyygCVfwHKAMziEsoAzMntVAIBIA0OAgEgExQCASAPEAIBIBESADkAtD0BDCCAM5TAYAQ9A9vofLgZG3I9ADJQAPwD4AA/AXIzEE1UFT6AljPFiFulHAyygCVfwHKAMziEsoAzMmAADwQI18DFaAEgABk+EFvIzAxJMcF8uBkgAgEgFRYCASAXGAAJBA0XwSAAIz4QW8jMDH4QvgoIvAQECPwEoAAFF8DgABMVUDwEzIQNEMAgAEO+KO9qJoagD8MX0AfSAAtoFpAADJahjvaQBqAqIiNgr4CkAAm+7h+AjA==';
+    const __code = 'te6ccgECKwEAA94AART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAnKAIBIAYHABPVVQPAcMhA0QwCAgFICAkCASAPEAIBSAoLAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0IDlxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghCjKlxfuuMCIIIQe92X3rrjAoIQ06i4XrrjAjDywGSAMDQ4ACQgbvJOgALww7UTQ1AH4YvoA+kABbQLSAAGS1DHe0gDUBUREbBUF0x8BghCjKlxfuvLgZIEBAdcAATEQRRA0QTDwHsj4QgHMVUBQVPoCWM8WIW6UcDLKAJV/AcoAzOISygDMye1UAOAw7UTQ1AH4YvoA+kABbQLSAAGS1DHe0gDUBUREbBUF0x8BghB73ZfeuvLgZIEBAdcA+kABbQLSAAGU+kABMN5DEzMQZxBWEEUQNFjwH8j4QgHMVUBQVPoCWM8WIW6UcDLKAJV/AcoAzOISygDMye1UAMLtRNDUAfhi+gD6QAFtAtIAAZLUMd7SANQFRERsFQXTHwGCENOouF668uBkbQHSAAGS1DHeATEQRRA0QTDwIMj4QgHMVUBQVPoCWM8WIW6UcDLKAJV/AcoAzOISygDMye1UAgEgERICASAZGgAV9KP4DlAHA4AOUAQCASATFAIBIBUWAgEgFxgA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BPIcPATcPATJG6zlX/wExTMlTQDcPAT4iRus5V/8BMUzJU0A3DwE+Jw8BMCf/ATAslYzJYzMwFw8BPiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwA8jMA1rPFljPFoEBAc8AyYAA5ALQ9AQwggDOUwGAEPQPb6Hy4GRtyPQAyUAD8BWAAPwFyMxBNVBU+gJYzxYhbpRwMsoAlX8BygDM4hLKAMzJgAgEgGxwCASAhIgIBIB0eAgEgHyAADz4QvgoWPAWgAFkUWagVUDwGHBTIfAFcHBSC8gBghAZI+iaWMsfgQEBzwDJXjIUEDtAu/AUVQOAALz4QW8jMDFVUPAYcFnwBVAGxwXy4GRVA4AAFEMwgAgEgIyQCASAlJgAZPhBbyMwMSTHBfLgZIAAJBA0XwSAAEz4QW8jMDEB8BmAAGwwFhUUQzDwGlBFoUE0gAEO+KO9qJoagD8MX0AfSAAtoFpAADJahjvaQBqAqIiNgr4DsAgEgKSoAQ7ni3tRNDUAfhi+gD6QAFtAtIAAZLUMd7SANQFRERsFfAbgACbncPwF4';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
