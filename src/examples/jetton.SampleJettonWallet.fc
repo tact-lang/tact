@@ -1,6 +1,8 @@
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -11,43 +13,70 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_SampleJettonWallet(builder build_0, slice v'master, slice v'owner) inline {
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+(slice, (int)) __gen_read_TokenReceived(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 421783706);
+    var amount = sc~load_int(257);
+    return (sc, (amount));
+}
+
+builder __gen_write_SampleJettonWallet(builder build_0, slice v'master, slice v'owner, int v'balance) inline {
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_int(build_0, v'balance, 257);
     return build_0;
 }
 
-(slice, (slice, slice)) __gen_read_SampleJettonWallet(slice sc) inline {
+(slice, (slice, slice, int)) __gen_read_SampleJettonWallet(slice sc) inline {
     var master = sc~__tact_load_address();
     var owner = sc~__tact_load_address();
-    return (sc, (master, owner));
+    var balance = sc~load_int(257);
+    return (sc, (master, owner, balance));
 }
 
-(slice, slice) __gen_load_SampleJettonWallet() inline {
+(slice, slice, int) __gen_load_SampleJettonWallet() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleJettonWallet();
 }
 
+() __gen_store_SampleJettonWallet(slice v'master, slice v'owner, int v'balance) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_SampleJettonWallet(b, v'master,v'owner,v'balance);
+    set_data(b.end_cell());
+}
+
 cell __gen_SampleJettonWallet_init(cell sys', slice master, slice owner) {
-    var (slice self'master, slice self'owner) = (null(), null());
+    var (slice self'master, slice self'owner, int self'balance) = (null(), null(), null());
+    self'balance = 0;
     self'master = master;
     self'owner = owner;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_SampleJettonWallet(b', self'master, self'owner);
+    b' = __gen_write_SampleJettonWallet(b', self'master, self'owner, self'balance);
     return b'.end_cell();
 }
 
-slice __gen_SampleJettonWallet_owner((slice, slice) self) impure {
-    var (slice self'master, slice self'owner) = self;
+slice __gen_SampleJettonWallet_owner((slice, slice, int) self) impure {
+    var (slice self'master, slice self'owner, int self'balance) = self;
     return self'owner;
 }
 
 _ __gen_get_owner() method_id(83229) {
-    var (slice self'master, slice self'owner) = __gen_load_SampleJettonWallet();
-    var res = __gen_SampleJettonWallet_owner(self'master, self'owner);
+    var (slice self'master, slice self'owner, int self'balance) = __gen_load_SampleJettonWallet();
+    var res = __gen_SampleJettonWallet_owner(self'master, self'owner, self'balance);
     return res;
+}
+
+((slice, slice, int), ()) __gen_SampleJettonWallet_receive_TokenReceived((slice, slice, int) self, int msg'amount) impure {
+    var (self'master, self'owner, self'balance) = self;
+    var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
+    throw_unless(100, __tact_address_eq(ctx'sender, self'master));
+    return ((self'master, self'owner, self'balance), ());
 }
 
 
@@ -66,6 +95,15 @@ _ __gen_get_owner() method_id(83229) {
     
     ;; Handle bounced messages
     if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive TokenReceived message
+    if (op == 421783706) {
+        var (slice self'master, slice self'owner, int self'balance) = __gen_load_SampleJettonWallet();
+        var (int msg'amount) = in_msg~__gen_read_TokenReceived();
+        (self'master, self'owner, self'balance)~__gen_SampleJettonWallet_receive_TokenReceived(msg'amount);
+        __gen_store_SampleJettonWallet(self'master, self'owner, self'balance);
         return ();
     }
     

@@ -149,7 +149,7 @@ export function packTokenReceived(src: TokenReceived): Cell {
 }
 
 export function JettonDefaultContract_init(master: Address, owner: Address) {
-    const __code = 'te6ccgEBDQEA+QABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAsMAffbgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8EEIDJH0TV1HI3aiaGoA/DF9IACA/SAAgMCAgOuAKpA2CYHpj4DBCAyR9E1deXAyQICA64AAmKCYeAZkfCEA5iqQLWeLLGeLQICA54Bk9qpwGEBgIBIAcIAAbywGQCAVgJCgAb0YfCC3kZgYkeOC+XAyQAIxwA8jMA1rPFljPFoEBAc8AyYAAFDAxgAAm47j8AqAA5uFHe1E0NQB+GL6QAEB+kABAYEBAdcAVSBsE/ALg=';
+    const __code = 'te6ccgEBBgEAWwABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJod7J4AcAR0INdJMcIfMNDTAwFxsMABkX+RcOIB+kAwVEETbwP4YdzywGSAApVwA8jMQxNQI4EBAc8AAc8WAc8WyY';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

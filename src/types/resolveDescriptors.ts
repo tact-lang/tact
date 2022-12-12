@@ -207,6 +207,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let isGetter = a.attributes.find(a => a.type === 'get');
         let isMutating = a.attributes.find(a => a.type === 'mutates');
         let isExtends = a.attributes.find(a => a.type === 'extends');
+        let isVirtual = a.attributes.find(a => a.type === 'virtual');
+        let isOverwrites = a.attributes.find(a => a.type === 'overwrites');
 
         // Check for native
         if (a.kind === 'def_native_function') {
@@ -218,6 +220,42 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             if (self) {
                 throwError('Native functions cannot be delated within a contract', a.ref);
+            }
+            if (isVirtual) {
+                throwError('Native functions cannot be virtual', isVirtual.ref);
+            }
+            if (isOverwrites) {
+                throwError('Native functions cannot be overwrites', isOverwrites.ref);
+            }
+        }
+
+        // Check virtual and overwrites
+        if (isVirtual && isExtends) {
+            throwError('Extend functions cannot be virtual', isVirtual.ref);
+        }
+        if (isOverwrites && isExtends) {
+            throwError('Extend functions cannot be overwrites', isOverwrites.ref);
+        }
+        if (!self && isVirtual) {
+            throwError('Virtual functions must be defined within a contract or a trait', isVirtual.ref);
+        }
+        if (!self && isOverwrites) {
+            throwError('Overwrites functions must be defined within a contract or a trait', isOverwrites.ref);
+        }
+
+        // Check virtual
+        if (isVirtual) {
+            let t = types[self!]!;
+            if (t.kind !== 'trait') {
+                throwError('Virtual functions must be defined within a trait', isVirtual.ref);
+            }
+        }
+
+        // Check overwrites
+        if (isOverwrites) {
+            let t = types[self!]!;
+            if (t.kind !== 'contract') {
+                throwError('Overwrites functions must be defined within a contract', isOverwrites.ref);
             }
         }
 
@@ -290,7 +328,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
             ast: a,
             isMutating: !!isMutating || (!!sself && !isGetter), // Mark all contract functions as mutating
             isPublic: !!isPublic,
-            isGetter: !!isGetter
+            isGetter: !!isGetter,
+            isVirtual: !!isVirtual,
+            isOverwrites: !!isOverwrites,
         };
     }
 
@@ -550,9 +590,38 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
             // Copy functions
             for (let f of Object.values(tr.functions)) {
-                if (t.functions[f.name]) {
+                let ex = t.functions[f.name];
+
+                // Check overwrites
+                if (ex && ex.isOverwrites) {
+                    if (f.isGetter) {
+                        throwError(`Overwritten function ${f.name} can not be a getter`, ex.ast.ref);
+                    }
+                    if (f.isMutating !== ex.isMutating) {
+                        throwError(`Overwritten function ${f.name} should have same mutability`, ex.ast.ref);
+                    }
+                    if (!typeRefEquals(f.returns, ex.returns)) {
+                        throwError(`Overwritten function ${f.name} should have same return type`, ex.ast.ref);
+                    }
+                    if (f.args.length !== ex.args.length) {
+                        throwError(`Overwritten function ${f.name} should have same number of arguments`, ex.ast.ref);
+                    }
+                    for (let i = 0; i < f.args.length; i++) {
+                        let a = ex.args[i];
+                        let b = f.args[i];
+                        if (!typeRefEquals(a.type, b.type)) {
+                            throwError(`Overwritten function ${f.name} should have same argument types`, ex.ast.ref);
+                        }
+                    }
+                    continue; // Ignore overwritten functions
+                }
+
+                // Check duplicates
+                if (ex) {
                     throwError(`Function ${f.name} already exist in ${t.name}`, t.ast.ref);
                 }
+
+                // Register function
                 t.functions[f.name] = {
                     ...f,
                     self: t.name,

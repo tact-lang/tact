@@ -1,11 +1,17 @@
 SETCP0
 (:methods
   recv_internal: 
-    s0 PUSH
+    0 PUSHINT
+    s1 PUSH
     SBITS
-    s1 POP
     31 GTINT
-    s0 POP
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    s0 s2 XCHG
     CTOS
     4 LDU
     s0 s1 XCHG
@@ -22,28 +28,92 @@ SETCP0
     s0 s1 XCHG
     LDMSGADDR
     s0 POP
-    1 0 2 PUXC2
+    1 0 4 PUXC2
     TRIPLE
     1 SETGLOBVAR
-    IFRET
+    s0 s2 XCHG
+    <{
+      2DROP
+    }> PUSHCONT
+    IFJMP
+    421783706 PUSHINT
+    EQUAL
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+      s0 s3 XCHG
+      32 LDU
+      s0 s1 XCHG
+      421783706 PUSHINT
+      EQUAL
+      100 THROWIFNOT
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
+      s1 s3 s0 XCHG3
+      12 CALLDICT
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      3 1 BLKSWAP
+      2SWAP
+      STSLICER
+      ROT
+      STSLICER
+      257 PUSHINT
+      STIX
+      ENDC
+      c4 POP
+    }> PUSHCONT
+    IFJMP
+    s0 POP
     100 THROW
 
-  6: 
-    s0 s2 XCHG
+  10: 
+    0 PUSHINT
+    s0 s3 XCHG
     NEWC
     STREF
-    s0 s2 XCHG
-    ROTREV
+    s0 s3 XCHG
+    2SWAP
     STSLICER
-    s0 s1 XCHG
+    ROT
     STSLICER
+    257 PUSHINT
+    STIX
     ENDC
 
-  7: 
+  11: 
+    s0 POP
     s1 POP
 
+  12: 
+    s0 POP
+    1 GETGLOBVAR
+    3 UNTUPLE
+    s0 POP
+    s1 POP
+    s3 PUSH
+    SDEQ
+    100 THROWIFNOT
+
   69347: 
-    6 CALLDICT
+    10 CALLDICT
 
   owner: 
     c4 PUSH
@@ -56,9 +126,12 @@ SETCP0
     s0 s1 XCHG
     LDMSGADDR
     s0 s1 XCHG
-    s1 s2 XCHG
-    1 2 BLKDROP2
-    7 CALLDICT
+    s0 s1 XCHG
+    257 PUSHINT
+    LDI
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    11 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

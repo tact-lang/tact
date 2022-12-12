@@ -12,6 +12,18 @@ message JettonUpdateContent {
     content: Cell?;
 }
 
+contract JettonDefaultContract {
+    balance: Int;
+    owner: Address;
+    master: Address;
+
+    init(master: Address, owner: Address) {
+        self.balance = 0;
+        self.owner = owner;
+        self.master = master;
+    }
+}
+
 trait Jetton with Ownable {
     totalSupply: Int;
     mintable: Bool;
@@ -29,7 +41,15 @@ trait Jetton with Ownable {
     }
 
     fun mint(to: Address, amount: Int, stateInit: StateInit) {
-        
+
+        // Update total supply
+        self.totalSupply = self.totalSupply + amount;
+
+        // TODO: Send message to wallet
+    }
+
+    virtual fun getJettonWalletInit(address: Address): StateInit {
+        return initOf JettonDefaultContract(myAddress(), address);
     }
 
     // get fun get_jetton_data(): JettonData {

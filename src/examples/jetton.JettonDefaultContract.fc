@@ -1,0 +1,51 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
+    return b;
+}
+
+builder __gen_write_JettonDefaultContract(builder build_0, int v'balance, slice v'owner, slice v'master) inline {
+    build_0 = store_int(build_0, v'balance, 257);
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = __tact_store_address(build_0, v'master);
+    return build_0;
+}
+
+cell __gen_JettonDefaultContract_init(cell sys', slice master, slice owner) {
+    var (int self'balance, slice self'owner, slice self'master) = (null(), null(), null());
+    self'balance = 0;
+    self'owner = owner;
+    self'master = master;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_JettonDefaultContract(b', self'balance, self'owner, self'master);
+    return b'.end_cell();
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(100);
+}
+
+cell init_JettonDefaultContract(cell sys', slice master, slice owner) method_id {
+    return __gen_JettonDefaultContract_init(sys', master, owner);
+}

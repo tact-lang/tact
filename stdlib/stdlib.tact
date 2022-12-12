@@ -114,6 +114,9 @@ native computeAddress(chain: Int, code: Cell, data: Cell): Address;
 @name(__tact_store_address)
 native storeAddress(s: Builder, address: Address): Builder;
 
+@name(my_address)
+native myAddress(): Address;
+
 struct SendParameters {
     bounce: Bool = true;
     to: Address;

@@ -47,6 +47,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   FunctionAttribute_getter?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_mutates?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_extends?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  FunctionAttribute_virtual?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  FunctionAttribute_overwrites?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   Function_withVoid?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: TerminalNode, arg7: IterationNode, arg8: TerminalNode) => T;
   Function_withType?: (this: NonterminalNode, arg0: IterationNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: NonterminalNode, arg5: TerminalNode, arg6: TerminalNode, arg7: NonterminalNode, arg8: TerminalNode, arg9: IterationNode, arg10: TerminalNode) => T;
@@ -151,6 +153,8 @@ export interface TactActionDict<T> extends ActionDict<T> {
   with?: (this: NonterminalNode, arg0: TerminalNode) => T;
   trait?: (this: NonterminalNode, arg0: TerminalNode) => T;
   initOf?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  virtual?: (this: NonterminalNode, arg0: TerminalNode) => T;
+  overwrites?: (this: NonterminalNode, arg0: TerminalNode) => T;
   nameAttribute?: (this: NonterminalNode, arg0: TerminalNode) => T;
   reservedWord?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   space?: (this: NonterminalNode, arg0: NonterminalNode | TerminalNode) => T;

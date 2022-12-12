@@ -1,0 +1,61 @@
+PROGRAM{
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_JettonDefaultContract
+  DECLPROC __gen_JettonDefaultContract_init
+  DECLPROC recv_internal
+  126820 DECLMETHOD init_JettonDefaultContract
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_JettonDefaultContract PROCINLINE:<{
+    s2 s3 XCHG2
+    257 PUSHINT
+    STIX
+    SWAP
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_JettonDefaultContract_init PROC:<{
+    0 PUSHINT
+    s0 s3 XCHG
+    NEWC
+    STREF
+    s3 s1 s3 XCHG3
+    __gen_write_JettonDefaultContract INLINECALLDICT
+    ENDC
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    100 THROW
+  }>
+  init_JettonDefaultContract PROC:<{
+    __gen_JettonDefaultContract_init CALLDICT
+  }>
+}END>c
