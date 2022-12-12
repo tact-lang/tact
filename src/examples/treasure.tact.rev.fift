@@ -44,6 +44,9 @@ SETCP0
       s0 POP
       c4 PUSH
       CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
       LDMSGADDR
       s0 s1 XCHG
       s1 POP
@@ -57,8 +60,11 @@ SETCP0
       8 LDU
       ROTREV
       1 2 BLKDROP2
-      19 CALLDICT
+      18 CALLDICT
       NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
       s0 s1 XCHG
       STSLICER
       ENDC
@@ -72,6 +78,9 @@ SETCP0
       s0 POP
       c4 PUSH
       CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
       LDMSGADDR
       s0 s1 XCHG
       s1 POP
@@ -84,8 +93,11 @@ SETCP0
       LDMSGADDR
       s0 s1 XCHG
       s1 POP
-      21 CALLDICT
+      20 CALLDICT
       NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
       s0 s1 XCHG
       STSLICER
       ENDC
@@ -102,11 +114,17 @@ SETCP0
       <{
         c4 PUSH
         CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
         LDMSGADDR
         s0 s1 XCHG
         s1 POP
-        20 CALLDICT
+        19 CALLDICT
         NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
         s0 s1 XCHG
         STSLICER
         ENDC
@@ -122,7 +140,7 @@ SETCP0
     ISNULL
     14 THROWIF
 
-  14: 
+  13: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -165,13 +183,13 @@ SETCP0
     s0 s1 XCHG
     SENDRAWMSG
 
-  15: 
+  14: 
+    s0 POP
     NEWC
-    s0 s1 XCHG
-    STSLICER
+    STREF
     ENDC
 
-  16: 
+  15: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -180,41 +198,44 @@ SETCP0
     SDEQ
     100 THROWIFNOT
 
-  17: 
+  16: 
     s0 s2 XCHG
-    16 CALLDICT
+    15 CALLDICT
     -1 PUSHINT
     NEWC
     ENDC
     3 0 2 XC2PU
     s5 s5 XCHG2
-    14 CALLDICT
+    13 CALLDICT
+
+  17: 
 
   18: 
+    16 CALLDICT
 
   19: 
-    17 CALLDICT
-
-  20: 
     0 PUSHINT
     160 PUSHINT
-    17 CALLDICT
-
-  21: 
-    s0 s1 XCHG
     16 CALLDICT
+
+  20: 
+    s0 s1 XCHG
+    15 CALLDICT
     s0 POP
 
   owner: 
     c4 PUSH
     CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
     LDMSGADDR
     s0 s1 XCHG
     s1 POP
-    18 CALLDICT
+    17 CALLDICT
 
   122670: 
-    15 CALLDICT
+    14 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

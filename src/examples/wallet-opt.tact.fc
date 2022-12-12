@@ -1,4 +1,5 @@
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (slice, (slice, slice)) __gen_read_TransferMessage(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 1843760589);
@@ -14,10 +15,6 @@ builder __gen_write_Wallet(builder build_0, int v'seqno, int v'key, int v'wallet
     return build_0;
 }
 
-cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
-    return __gen_write_Wallet(begin_cell(), v'seqno, v'key, v'walletId).end_cell();
-}
-
 (slice, (int, int, int)) __gen_read_Wallet(slice sc) inline {
     var seqno = sc~load_uint(32);
     var key = sc~load_uint(256);
@@ -27,20 +24,25 @@ cell __gen_writecell_Wallet(int v'seqno,int v'key,int v'walletId) inline {
 
 (int, int, int) __gen_load_Wallet() inline {
     slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Wallet();
 }
 
 () __gen_store_Wallet(int v'seqno, int v'key, int v'walletId) impure inline {
     builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
     b = __gen_write_Wallet(b, v'seqno,v'key,v'walletId);
     set_data(b.end_cell());
 }
 
-cell __gen_Wallet_init(int key, int walletId) {
+cell __gen_Wallet_init(cell sys', int key, int walletId) {
     var (int self'seqno, int self'key, int self'walletId) = (0, null(), null());
     self'key = key;
     self'walletId = walletId;
-    return __gen_writecell_Wallet(self'seqno, self'key, self'walletId);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    __gen_write_Wallet(b', self'seqno, self'key, self'walletId);
+    return b'.end_cell();
 }
 
 int __gen_Wallet_publicKey((int, int, int) self) impure {
@@ -121,6 +123,6 @@ _ __gen_get_seqno() method_id(85143) {
     throw(100);
 }
 
-cell init_Wallet(int key, int walletId) method_id {
-    return __gen_Wallet_init(key, walletId);
+cell init_Wallet(cell sys', int key, int walletId) method_id {
+    return __gen_Wallet_init(sys', key, walletId);
 }

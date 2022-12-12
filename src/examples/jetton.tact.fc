@@ -1,4 +1,5 @@
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (int, slice, int) __tact_context_get() inline { return __tact_context; }
 
@@ -39,10 +40,6 @@ builder __gen_write_SampleJetton(builder build_0, int v'totalSupply, slice v'own
     return build_0;
 }
 
-cell __gen_writecell_SampleJetton(int v'totalSupply,slice v'owner,cell v'content,int v'mintable,cell v'walletCode) inline {
-    return __gen_write_SampleJetton(begin_cell(), v'totalSupply, v'owner, v'content, v'mintable, v'walletCode).end_cell();
-}
-
 (slice, (int, slice, cell, int, cell)) __gen_read_SampleJetton(slice sc) inline {
     var totalSupply = sc~load_coins();
     var owner = sc~__tact_load_address();
@@ -61,23 +58,28 @@ _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
 
 (int, slice, cell, int, cell) __gen_load_SampleJetton() inline {
     slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleJetton();
 }
 
 () __gen_store_SampleJetton(int v'totalSupply, slice v'owner, cell v'content, int v'mintable, cell v'walletCode) impure inline {
     builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
     b = __gen_write_SampleJetton(b, v'totalSupply,v'owner,v'content,v'mintable,v'walletCode);
     set_data(b.end_cell());
 }
 
-cell __gen_SampleJetton_init(int totalSupply, int mintable, slice owner, cell content, cell walletCode) {
+cell __gen_SampleJetton_init(cell sys', int totalSupply, int mintable, slice owner, cell content, cell walletCode) {
     var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = (null(), null(), null(), null(), null());
     self'totalSupply = totalSupply;
     self'owner = owner;
     self'mintable = mintable;
     self'content = content;
     self'walletCode = walletCode;
-    return __gen_writecell_SampleJetton(self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    __gen_write_SampleJetton(b', self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+    return b'.end_cell();
 }
 
 tuple __gen_SampleJetton_get_jetton_data((int, slice, cell, int, cell) self) impure {
@@ -146,6 +148,6 @@ _ __gen_get_owner() method_id(83229) {
     throw(100);
 }
 
-cell init_SampleJetton(int totalSupply, int mintable, slice owner, cell content, cell walletCode) method_id {
-    return __gen_SampleJetton_init(totalSupply, mintable, owner, content, walletCode);
+cell init_SampleJetton(cell sys', int totalSupply, int mintable, slice owner, cell content, cell walletCode) method_id {
+    return __gen_SampleJetton_init(sys', totalSupply, mintable, owner, content, walletCode);
 }

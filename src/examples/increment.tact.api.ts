@@ -42,6 +42,19 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export type Increment = {
     $$type: 'Increment';
     key: BigInt;
@@ -57,7 +70,7 @@ export function packIncrement(src: Increment): Cell {
 }
 
 export function IncrementContract_init() {
-    const __code = 'te6ccgEBDgEA1AABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAwNAgHUBgcCAUgICQDJHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4IIQ13nE7bqOLO1E0PQEATEB0x8BghDXecTtuvLgZIEBAdcAgQEB1wBZbBLwCsgBAfQAye1U4DDywGSAAJQhbpVbWfRaMODIAc8AyUEz9BWACASAKCwARSBAQFUEiLwAYAA8bcgBAfQAyYAABIAAJuB9/AIgAF7tAftRND0BAEx8AmA==';
+    const __code = 'te6ccgEBDgEA3AABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAwNAgEgBgcCAdQKCwIBSAgJAAf2RmZMANkcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghDXecTtuo407UTQ1AH4YvQEATEB0x8BghDXecTtuvLgZIEBAdcAgQEB1wBZbBLwCcj4QgHMAQH0AMntVOAw8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgAAEgABEgQEBVBIi8AGAACbgffwB4AB+7QH7UTQ1AH4YvQEATHwCI';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_IncrementContract', __stack);
 }

@@ -281,7 +281,7 @@ function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: Write
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
-        let argsTensor = resolveFuncTensor(init.args, ctx);
+        let argsTensor = resolveFuncTensor([{ name: `sys'`, type: { kind: 'ref', name: 'Cell', optional: false } }, ...init.args], ctx);
         let selfTensor = resolveFuncTensor(t.fields, ctx, `self'`);
         let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
         let modifier = config.enableInline ? ' inline ' : ' ';
@@ -309,8 +309,11 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
             }
 
             // Assemble result cell
-            ctx.used(`__gen_writecell_${t.name}`);
-            ctx.append(`return __gen_writecell_${t.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+            ctx.used(`__gen_write_${t.name}`);
+            ctx.append(`var b' = begin_cell();`)
+            ctx.append(`b' = b'.store_ref(sys');`)
+            ctx.append(`__gen_write_${t.name}(${[`b'`, ...tensorToString(selfTensor, 'names')].join(', ')});`);
+            ctx.append(`return b'.end_cell();`);
         });
         ctx.append(`}`);
     });
@@ -323,7 +326,15 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
     ctx.fun(`__gen_load_${type.name}`, () => {
         ctx.append(`(${tensorToString(tensor, 'types').join(', ')}) __gen_load_${type.name}() inline {`); // NOTE: Inline function
         ctx.inIndent(() => {
+
+            // Load data slice
             ctx.append(`slice sc = get_data().begin_parse();`);
+
+            // Load context
+            ctx.used(`__tact_context`);
+            ctx.append(`__tact_context_sys = sc~load_ref();`);
+
+            // Load data
             ctx.used(`__gen_read_${type.name}`);
             ctx.append(`return sc~__gen_read_${type.name}();`);
         });
@@ -335,8 +346,16 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure inline {`); // NOTE: Impure function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
+
+            // Persist system cell
+            ctx.used(`__tact_context`);
+            ctx.append(`b = b.store_ref(__tact_context_sys);`);
+
+            // Build data
             ctx.used(`__gen_write_${type.name}`);
             ctx.append(`b = __gen_write_${type.name}(${['b', tensorToString(tensor, 'names')].join(', ')});`);
+
+            // Persist data
             ctx.append(`set_data(b.end_cell());`);
         });
         ctx.append(`}`);
@@ -587,10 +606,10 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
         // Init method
         if (type.init) {
             ctx.append();
-            ctx.append(`cell init_${type.name}(${type.init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name).join(', ')}) method_id {`);
+            ctx.append(`cell init_${type.name}(${[`cell sys'`, ...type.init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name)].join(', ')}) method_id {`);
             ctx.inIndent(() => {
                 ctx.used(`__gen_${type.name}_init`);
-                ctx.append(`return __gen_${type.name}_init(${type.init!.args.map((a) => a.name).join(', ')});`);
+                ctx.append(`return __gen_${type.name}_init(${[`sys'`, ...type.init!.args.map((a) => a.name)].join(', ')});`);
             });
             ctx.append(`}`);
         }

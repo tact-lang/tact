@@ -1,4 +1,5 @@
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {

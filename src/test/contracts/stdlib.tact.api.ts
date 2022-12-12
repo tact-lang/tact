@@ -42,8 +42,21 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export function StdlibTest_init() {
-    const __code = 'te6ccgEBEgEAtQABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBIAwNAgEgBgcAB9mOulQAR9EGukmOEPmGhpgYC42GAAyL/IuHEA/SAYKiCJt4H8MO55YDJAIBIAgJABVXDIAQGBAQHPAMmAIBIAoLAAcMccAgAAcMddJgAgJyDg8ACb0+x4AsAgEgEBEAH69C9qJoQICA64AAmID4BEAAHqkL7UTQgQEB1wABMQHwBgAeqVLtRNCBAQHXAAExAfAH';
+    const __code = 'te6ccgEBEgEAugABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWAyQCASAGBwIBIAgJAgEgCgsABzIzMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
     let __stack: StackItem[] = [];
     return deploy(__code, 'init_StdlibTest', __stack);
 }

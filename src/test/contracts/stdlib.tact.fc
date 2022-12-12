@@ -1,12 +1,9 @@
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 builder __gen_write_StdlibTest(builder build_0, int v'v) inline {
     build_0 = store_int(build_0, v'v, 257);
     return build_0;
-}
-
-cell __gen_writecell_StdlibTest(int v'v) inline {
-    return __gen_write_StdlibTest(begin_cell(), v'v).end_cell();
 }
 
 (slice, (int)) __gen_read_StdlibTest(slice sc) inline {
@@ -16,12 +13,16 @@ cell __gen_writecell_StdlibTest(int v'v) inline {
 
 (int) __gen_load_StdlibTest() inline {
     slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
     return sc~__gen_read_StdlibTest();
 }
 
-cell __gen_StdlibTest_init() {
+cell __gen_StdlibTest_init(cell sys') {
     var (int self'v) = (0);
-    return __gen_writecell_StdlibTest(self'v);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    __gen_write_StdlibTest(b', self'v);
+    return b'.end_cell();
 }
 
 int __gen_StdlibTest_sliceEmpty((int) self, slice sc) impure {
@@ -79,6 +80,6 @@ _ __gen_get_sliceRefs(slice sc) method_id(77445) {
     throw(100);
 }
 
-cell init_StdlibTest() method_id {
-    return __gen_StdlibTest_init();
+cell init_StdlibTest(cell sys') method_id {
+    return __gen_StdlibTest_init(sys');
 }

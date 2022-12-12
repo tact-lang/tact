@@ -28,30 +28,42 @@ SETCP0
     IFRET
     100 THROW
 
-  5: 
-    0 PUSHINT
+  4: 
     NEWC
-    s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    STIX
+    STREF
     ENDC
 
-  6: 
+  5: 
     s1 POP
     SEMPTY
 
-  7: 
+  6: 
     s1 POP
     SBITS
 
-  8: 
+  7: 
     s1 POP
     SREFS
 
   73995: 
     c4 PUSH
     CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s1 XCHG
+    5 CALLDICT
+
+  75090: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
     257 PUSHINT
     LDI
     s0 s1 XCHG
@@ -59,9 +71,12 @@ SETCP0
     s0 s1 XCHG
     6 CALLDICT
 
-  75090: 
+  77445: 
     c4 PUSH
     CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
     257 PUSHINT
     LDI
     s0 s1 XCHG
@@ -69,18 +84,8 @@ SETCP0
     s0 s1 XCHG
     7 CALLDICT
 
-  77445: 
-    c4 PUSH
-    CTOS
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
-    s0 s1 XCHG
-    8 CALLDICT
-
   108504: 
-    5 CALLDICT
+    4 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

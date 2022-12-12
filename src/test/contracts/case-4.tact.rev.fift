@@ -34,6 +34,9 @@ SETCP0
   80984: 
     c4 PUSH
     CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
     257 PUSHINT
     LDI
     257 PUSHINT

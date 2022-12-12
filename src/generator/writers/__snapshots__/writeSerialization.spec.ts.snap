@@ -8,6 +8,7 @@ exports[`writeSerialization should write serializer for A 1`] = `
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (int, slice, int) __tact_context_get() inline { return __tact_context; }
 
@@ -59,6 +60,14 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
     }
 }
 
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+int __tact_address_neq(slice a, slice b) inline {
+    return ~ equal_slice_bits(a, b);
+}
+
 builder __gen_write_A(builder build_0, int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     build_0 = store_int(build_0, v'a, 257);
     build_0 = store_int(build_0, v'b, 257);
@@ -82,11 +91,11 @@ builder __gen_write_A(builder build_0, int v'a, int v'b, int v'c, int v'd, int v
     return build_0;
 }
 
-cell __gen_writecell_A(int v'a,int v'b,int v'c,int v'd,int v'e,int v'f,int v'g) inline {
+cell __gen_writecell_A(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     return __gen_write_A(begin_cell(), v'a, v'b, v'c, v'd, v'e, v'f, v'g).end_cell();
 }
 
-slice __gen_writeslice_A(int v'a,int v'b,int v'c,int v'd,int v'e,int v'f,int v'g) inline {
+slice __gen_writeslice_A(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     return __gen_writecell_A(v'a, v'b, v'c, v'd, v'e, v'f, v'g).begin_parse();
 }
 
@@ -117,6 +126,7 @@ exports[`writeSerialization should write serializer for B 1`] = `
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (int, slice, int) __tact_context_get() inline { return __tact_context; }
 
@@ -168,6 +178,14 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
     }
 }
 
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+int __tact_address_neq(slice a, slice b) inline {
+    return ~ equal_slice_bits(a, b);
+}
+
 builder __gen_write_B(builder build_0, int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     build_0 = store_int(build_0, v'a, 257);
     build_0 = store_int(build_0, v'b, 257);
@@ -191,11 +209,11 @@ builder __gen_write_B(builder build_0, int v'a, int v'b, int v'c, int v'd, int v
     return build_0;
 }
 
-cell __gen_writecell_B(int v'a,int v'b,int v'c,int v'd,int v'e,int v'f,int v'g) inline {
+cell __gen_writecell_B(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     return __gen_write_B(begin_cell(), v'a, v'b, v'c, v'd, v'e, v'f, v'g).end_cell();
 }
 
-slice __gen_writeslice_B(int v'a,int v'b,int v'c,int v'd,int v'e,int v'f,int v'g) inline {
+slice __gen_writeslice_B(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     return __gen_writecell_B(v'a, v'b, v'c, v'd, v'e, v'f, v'g).begin_parse();
 }
 
@@ -226,6 +244,7 @@ exports[`writeSerialization should write serializer for C 1`] = `
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (int, slice, int) __tact_context_get() inline { return __tact_context; }
 
@@ -275,6 +294,14 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
     } else {
         return (idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell()), ());
     }
+}
+
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+int __tact_address_neq(slice a, slice b) inline {
+    return ~ equal_slice_bits(a, b);
 }
 
 builder __gen_write_C(builder build_0, cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {
@@ -306,11 +333,11 @@ builder __gen_write_C(builder build_0, cell v'a, cell v'b, slice v'c, slice v'd,
     return build_0;
 }
 
-cell __gen_writecell_C(cell v'a,cell v'b,slice v'c,slice v'd,int v'e,int v'f,int v'g,slice v'h) inline {
+cell __gen_writecell_C(cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {
     return __gen_write_C(begin_cell(), v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h).end_cell();
 }
 
-slice __gen_writeslice_C(cell v'a,cell v'b,slice v'c,slice v'd,int v'e,int v'f,int v'g,slice v'h) inline {
+slice __gen_writeslice_C(cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {
     return __gen_writecell_C(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h).begin_parse();
 }
 

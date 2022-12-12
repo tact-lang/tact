@@ -42,6 +42,19 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export type Transfer = {
     $$type: 'Transfer';
     seqno: BigInt;
@@ -81,7 +94,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECJAEAAuEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAeHwIBIAYHAgEgDg8CAdQICQBn/kOIDlAIrlADgA5QEoAeeLAP0BOADlNDgA5QARN1nMv4DlAAF4AKxmSpk4LGUAcWSA/YBAL3O37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECjiAw7UTQ0x/T/9M/VSBsE1UC8BnIVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsI4eW+1E0NMf0//TP1UgbBPwFshVIFAjyx/L/8s/ye1U4IAoLAAkIG7yToACSMO1E0NMf0//TP1UgbBMD0x8BwHvy4GTUAdAB0x/TB/pAAQH6AG0B0gABktQx3lVAEFY2EHgQZ1UE8BTIVSBQI8sfy//LP8ntVALowACO7yD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4gW+1E0NMf0//TP1UgbBPwF8hVIFAjyx/L/8s/ye1U2zHggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAt4MDQBAMO1E0NMf0//TP1UgbBPwGMhVIFAjyx/L/8s/ye1U2zEAPu1E0NMf0//TP1UgbBNVAvAVyFUgUCPLH8v/yz/J7VQCASAQEQIB1BwdAgEgEhMCASAYGQIBIBQVAgEgFhcAHRwWchVIFAjyx/L/8s/yYAAFDAxgAAUbCGAAAxbgAgEgGhsCASAcHAB3FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMPAPgABkMPhBbyNbs5MCpALegABc+EFvI1uzkwKkAt6AAAwwgAgEgICEAI74CV2omhpj+n/6Z+qkDYJ+AlAAJu6E/AQgCAUgiIwAjsyX7UTQ0x/T/9M/VSBsE/ATgACOwfjtRNDTH9P/0z9VIGwT8BGA=';
+    const __code = 'te6ccgECJQEAAxQAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAfIAIBIAYHAgEgERICAdQICQIB9A8QBPc7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKOKDDtRNDUAfhi0x/T/9M/VSBsE1UC8BjI+EIBzFUgUCPLH8v/yz/J7VTgIMB74wIgwAAi10nBIbDjAsAA4wDtRNDUAfhi0x/T/9M/VSBsE1UCgCgsMDQAJCBu8k6AAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LgZNQB0AHTH9MH+kABAfoAbQHSAAGS1DHeVUAQVjYQeBBnVQTwE8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BXI+EIBzFUgUCPLH8v/yz/J7VQB7iD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BbI+EIBzFUgUCPLH8v/yz/J7VTbMeCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDgAo8BTI+EIBzFUgUCPLH8v/yz/J7VQAUDDtRNDUAfhi0x/T/9M/VSBsE/AXyPhCAcxVIFAjyx/L/8s/ye1U2zEAZzIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wCAACRbyMzJgAgEgExQAA9mEAgEgFRYCASAbHAIBIBcYAgEgGRoABQwMYAAFGwhgAAMW4AB3FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMPAOgAgEgHR4CASAeHgAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAgEgISIAK74CV2omhqAPwxaY/p/+mfqpA2CfgIwACbuhPwD4AgFIIyQAK7Ml+1E0NQB+GLTH9P/0z9VIGwT8BKAAK7B+O1E0NQB+GLTH9P/0z9VIGwT8BCA=';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

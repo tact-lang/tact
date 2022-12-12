@@ -1,14 +1,23 @@
 import { createExecutorFromCode, ExecuteError } from 'ton-nodejs';
-import { Cell, StackItem } from 'ton';
+import { beginCell, Cell, serializeDict, StackItem } from 'ton';
 
 export async function deploy(code: string, name: string, args: StackItem[]) {
 
-    // Create executor
+    // System data
     let codeCell = Cell.fromBoc(Buffer.from(code, 'base64'))[0];
+    let systemData = new Map<string, Cell>();
+    systemData.set('0', codeCell);
+
+    // Create system cell
+    let systemCell = beginCell()
+        .storeDict(serializeDict(systemData, 32, (src, v) => v.refs.push(src)));
+
+    // Create executor
     let executor = await createExecutorFromCode({
         code: codeCell,
         data: new Cell()
     });
+    args = [{ type: 'cell', cell: systemCell.endCell() }, ...args];
 
     // Execute
     try {

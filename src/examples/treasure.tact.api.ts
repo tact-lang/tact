@@ -42,6 +42,19 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -69,7 +82,7 @@ export function packWithdraw(src: Withdraw): Cell {
 }
 
 export function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECGgEAAasAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAYGQIBIAYHAgFIDg8CAdQICQIB9AwNAuE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4mMO1E0PpAATEB0x8BghBMqD3IuvLgZPoA0wdZbBLwE8gBzxbJ7VTgIIIQts9/D7rjAsAAkTDjDfLAZIAoLAAkIG7yToABGMO1E0PpAATEB0x8BghC2z38PuvLgZPpAATHwFcgBzxbJ7VQAdPkBgvCYbCuhJLuSh+tKC9jTEE4cAGejyTlS2InHTQgYW9MNTbqOEu1E0PpAATHwFMgBzxbJ7VTbMeAAZzIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wCAACzIAc8WyYAIBIBARAgFIFhcCASASEwIBIBQVABk+EFvIzAxIccF8uBkgABsAvAQf8jJVBMCUFXwDoAABIAAFPARgAA0cIEAoPARgAAkAfAQMIAAXvijvaiaH0gAJj4CUAAm++XeAfA==';
+    const __code = 'te6ccgECGgEAAcYAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAYGQIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BLI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFMj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfATyPhCAcwBzxbJ7VTbMeAAZ1yHEBygEVygBwAcoCUAPPFgH6AnABymhwAcoAIm6zmX8BygAC8AFYzJUycFjKAOLJAfsAgCASAODwAJDDIzMmAAGT4QW8jMDEhxwXy4GSACASASEwAJ0A+AeYQCASAUFQIBIBYXABsAvAPf8jJVBMCUFXwDYAABIAAFPAQgAA0cIEAoPAQgAB++KO9qJoagD8MX0gAJj4CMAAm++XeAdA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'slice', cell: owner});
     return deploy(__code, 'init_Treasure', __stack);

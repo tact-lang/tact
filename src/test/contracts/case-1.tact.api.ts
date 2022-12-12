@@ -42,6 +42,19 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export type Source = {
     $$type: 'Source';
     a: BigInt;

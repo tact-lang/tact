@@ -1,6 +1,7 @@
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (int, slice, int) __tact_context_get() inline { return __tact_context; }
 
@@ -36,10 +37,6 @@ builder __gen_write_Treasure(builder build_0, slice v'owner) inline {
     return build_0;
 }
 
-cell __gen_writecell_Treasure(slice v'owner) inline {
-    return __gen_write_Treasure(begin_cell(), v'owner).end_cell();
-}
-
 (slice, (slice)) __gen_read_Treasure(slice sc) inline {
     var owner = sc~__tact_load_address();
     return (sc, (owner));
@@ -51,11 +48,13 @@ _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
 
 (slice) __gen_load_Treasure() inline {
     slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Treasure();
 }
 
 () __gen_store_Treasure(slice v'owner) impure inline {
     builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
     b = __gen_write_Treasure(b, v'owner);
     set_data(b.end_cell());
 }
@@ -80,10 +79,13 @@ _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
     send_raw_message(c, params'mode);
 }
 
-cell __gen_Treasure_init(slice owner) {
+cell __gen_Treasure_init(cell sys', slice owner) {
     var (slice self'owner) = (null());
     self'owner = owner;
-    return __gen_writecell_Treasure(self'owner);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    __gen_write_Treasure(b', self'owner);
+    return b'.end_cell();
 }
 
 ((slice), ()) __gen_Treasure_requireOwner((slice) self) impure {
@@ -182,6 +184,6 @@ _ __gen_get_owner() method_id(83229) {
     throw(100);
 }
 
-cell init_Treasure(slice owner) method_id {
-    return __gen_Treasure_init(owner);
+cell init_Treasure(cell sys', slice owner) method_id {
+    return __gen_Treasure_init(sys', owner);
 }

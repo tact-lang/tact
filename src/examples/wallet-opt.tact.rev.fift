@@ -41,6 +41,9 @@ SETCP0
     <{
       c4 PUSH
       CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
       32 LDU
       256 LDU
       64 LDU
@@ -58,8 +61,11 @@ SETCP0
       s2 POP
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      11 CALLDICT
+      10 CALLDICT
       NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
       3 1 BLKSWAP
       s2 s3 XCHG2
       32 STU
@@ -72,28 +78,23 @@ SETCP0
     s0 POP
     100 THROW
 
-  7: 
-    0 PUSHINT
-    ROTREV
+  6: 
+    2DROP
     NEWC
-    3 1 BLKSWAP
-    s2 s3 XCHG2
-    32 STU
-    256 STU
-    64 STU
+    STREF
     ENDC
 
-  8: 
+  7: 
     s0 POP
     s1 POP
 
-  9: 
+  8: 
     2 1 BLKDROP2
 
-  10: 
+  9: 
     2DROP
 
-  11: 
+  10: 
     s0 PUSH
     HASHSU
     0 2 4 XC2PU
@@ -112,37 +113,46 @@ SETCP0
     SENDRAWMSG
 
   80403: 
-    7 CALLDICT
+    6 CALLDICT
 
   seqno: 
     c4 PUSH
     CTOS
-    32 LDU
-    256 LDU
-    64 LDU
-    3 1 BLKSWAP
-    1 3 BLKDROP2
-    10 CALLDICT
-
-  86520: 
-    c4 PUSH
-    CTOS
-    32 LDU
-    256 LDU
-    64 LDU
-    3 1 BLKSWAP
-    1 3 BLKDROP2
-    8 CALLDICT
-
-  114762: 
-    c4 PUSH
-    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
     32 LDU
     256 LDU
     64 LDU
     3 1 BLKSWAP
     1 3 BLKDROP2
     9 CALLDICT
+
+  86520: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    32 LDU
+    256 LDU
+    64 LDU
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    7 CALLDICT
+
+  114762: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    32 LDU
+    256 LDU
+    64 LDU
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    8 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

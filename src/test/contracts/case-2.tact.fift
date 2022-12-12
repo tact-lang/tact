@@ -1,6 +1,7 @@
 PROGRAM{
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
   recv_internal PROC:<{
     DUP
     SBITS

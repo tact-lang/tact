@@ -1,6 +1,7 @@
 forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -19,7 +20,7 @@ builder __gen_write_Operation(builder build_0, int v'seqno, int v'amount, slice 
     return build_0;
 }
 
-cell __gen_writecell_Operation(int v'seqno,int v'amount,slice v'target) inline {
+cell __gen_writecell_Operation(int v'seqno, int v'amount, slice v'target) inline {
     return __gen_write_Operation(begin_cell(), v'seqno, v'amount, v'target).end_cell();
 }
 
@@ -47,10 +48,6 @@ builder __gen_write_MultisigContract(builder build_0, int v'seqno, int v'user1_k
     return build_0;
 }
 
-cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_key,int v'user3_key) inline {
-    return __gen_write_MultisigContract(begin_cell(), v'seqno, v'user1_key, v'user2_key, v'user3_key).end_cell();
-}
-
 (slice, (int, int, int, int)) __gen_read_MultisigContract(slice sc) inline {
     var seqno = sc~load_uint(32);
     var user1_key = sc~load_uint(256);
@@ -61,11 +58,13 @@ cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_ke
 
 (int, int, int, int) __gen_load_MultisigContract() inline {
     slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MultisigContract();
 }
 
 () __gen_store_MultisigContract(int v'seqno, int v'user1_key, int v'user2_key, int v'user3_key) impure inline {
     builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
     b = __gen_write_MultisigContract(b, v'seqno,v'user1_key,v'user2_key,v'user3_key);
     set_data(b.end_cell());
 }
@@ -90,12 +89,15 @@ cell __gen_writecell_MultisigContract(int v'seqno,int v'user1_key,int v'user2_ke
     send_raw_message(c, params'mode);
 }
 
-cell __gen_MultisigContract_init(int key1, int key2, int key3) {
+cell __gen_MultisigContract_init(cell sys', int key1, int key2, int key3) {
     var (int self'seqno, int self'user1_key, int self'user2_key, int self'user3_key) = (0, null(), null(), null());
     self'user1_key = key1;
     self'user2_key = key2;
     self'user3_key = key3;
-    return __gen_writecell_MultisigContract(self'seqno, self'user1_key, self'user2_key, self'user3_key);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    __gen_write_MultisigContract(b', self'seqno, self'user1_key, self'user2_key, self'user3_key);
+    return b'.end_cell();
 }
 
 ((int, int, int, int), ()) __gen_MultisigContract_execute((int, int, int, int) self, int op'seqno, int op'amount, slice op'target) impure {
@@ -191,6 +193,6 @@ _ __gen_get_seqno() method_id(85143) {
     throw(100);
 }
 
-cell init_MultisigContract(int key1, int key2, int key3) method_id {
-    return __gen_MultisigContract_init(key1, key2, key3);
+cell init_MultisigContract(cell sys', int key1, int key2, int key3) method_id {
+    return __gen_MultisigContract_init(sys', key1, key2, key3);
 }

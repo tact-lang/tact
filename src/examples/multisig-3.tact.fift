@@ -7,7 +7,6 @@ PROGRAM{
   DECLPROC __gen_read_Operation
   DECLPROC __gen_read_Execute
   DECLPROC __gen_write_MultisigContract
-  DECLPROC __gen_writecell_MultisigContract
   DECLPROC __gen_read_MultisigContract
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
@@ -26,6 +25,7 @@ PROGRAM{
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
   __tact_not_null PROC:<{
     DUP
     ISNULL
@@ -87,12 +87,6 @@ PROGRAM{
     256 STU
     256 STU
   }>
-  __gen_writecell_MultisigContract PROCINLINE:<{
-    NEWC
-    4 -ROLL
-    __gen_write_MultisigContract INLINECALLDICT
-    ENDC
-  }>
   __gen_read_MultisigContract PROCINLINE:<{
     32 LDU
     256 LDU
@@ -103,11 +97,17 @@ PROGRAM{
   __gen_load_MultisigContract PROCINLINE:<{
     c4 PUSH
     CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
     __gen_read_MultisigContract INLINECALLDICT
     1 4 BLKDROP2
   }>
   __gen_store_MultisigContract PROCINLINE:<{
     NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
     4 -ROLL
     __gen_write_MultisigContract INLINECALLDICT
     ENDC
@@ -155,9 +155,10 @@ PROGRAM{
     SENDRAWMSG
   }>
   __gen_MultisigContract_init PROC:<{
-    0 PUSHINT
-    3 -ROLL
-    __gen_writecell_MultisigContract INLINECALLDICT
+    3 BLKDROP
+    NEWC
+    STREF
+    ENDC
   }>
   __gen_MultisigContract_execute PROC:<{
     TRUE

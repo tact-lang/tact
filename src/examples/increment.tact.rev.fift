@@ -41,6 +41,9 @@ SETCP0
     <{
       c4 PUSH
       CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
       LDDICT
       s0 s1 XCHG
       s1 POP
@@ -56,8 +59,11 @@ SETCP0
       LDI
       ROTREV
       1 2 BLKDROP2
-      10 CALLDICT
+      9 CALLDICT
       NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
       s0 s1 XCHG
       s0 s1 XCHG
       STDICT
@@ -85,31 +91,31 @@ SETCP0
     s1 s3 s3 XCHG3
     DICTISETREF
 
-  8: 
-    PUSHNULL
+  7: 
     NEWC
-    s0 s1 XCHG
-    s0 s1 XCHG
-    STDICT
+    STREF
     ENDC
 
-  9: 
+  8: 
 
-  10: 
+  9: 
     257 PUSHINT
     2 2 2 XC2PU
     1 CALLDICT
 
   66039: 
-    8 CALLDICT
+    7 CALLDICT
 
   95239: 
     c4 PUSH
     CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
     LDDICT
     s0 s1 XCHG
     s1 POP
-    9 CALLDICT
+    8 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

@@ -11,7 +11,8 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.append(`forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }`);
     });
     ctx.fun('__tact_context', () => {
-        ctx.append(`global (int, slice, int) __tact_context;`)
+        ctx.append(`global (int, slice, int) __tact_context;`);
+        ctx.append(`global cell __tact_context_sys;`);
     });
     ctx.fun('__tact_context_get', () => {
         ctx.used('__tact_context');

@@ -2,7 +2,6 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_int
   DECLPROC __gen_read_Increment
   DECLPROC __gen_write_IncrementContract
-  DECLPROC __gen_writecell_IncrementContract
   DECLPROC __gen_read_IncrementContract
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
@@ -13,6 +12,7 @@ PROGRAM{
   DECLPROC recv_internal
   66039 DECLMETHOD init_IncrementContract
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
   __tact_dict_set_int_int PROC:<{
     OVER
     ISNULL
@@ -45,12 +45,6 @@ PROGRAM{
     SWAP
     STDICT
   }>
-  __gen_writecell_IncrementContract PROCINLINE:<{
-    NEWC
-    SWAP
-    __gen_write_IncrementContract INLINECALLDICT
-    ENDC
-  }>
   __gen_read_IncrementContract PROCINLINE:<{
     LDDICT
     SWAP
@@ -58,19 +52,26 @@ PROGRAM{
   __gen_load_IncrementContract PROCINLINE:<{
     c4 PUSH
     CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
     __gen_read_IncrementContract INLINECALLDICT
     NIP
   }>
   __gen_store_IncrementContract PROCINLINE:<{
     NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
     SWAP
     __gen_write_IncrementContract INLINECALLDICT
     ENDC
     c4 POP
   }>
   __gen_IncrementContract_init PROC:<{
-    PUSHNULL
-    __gen_writecell_IncrementContract INLINECALLDICT
+    NEWC
+    STREF
+    ENDC
   }>
   __gen_IncrementContract_counters PROC:<{
   }>

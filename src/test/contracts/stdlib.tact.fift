@@ -1,6 +1,5 @@
 PROGRAM{
   DECLPROC __gen_write_StdlibTest
-  DECLPROC __gen_writecell_StdlibTest
   DECLPROC __gen_read_StdlibTest
   DECLPROC __gen_load_StdlibTest
   DECLPROC __gen_StdlibTest_init
@@ -13,16 +12,11 @@ PROGRAM{
   DECLPROC recv_internal
   108504 DECLMETHOD init_StdlibTest
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
   __gen_write_StdlibTest PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
-  }>
-  __gen_writecell_StdlibTest PROCINLINE:<{
-    NEWC
-    SWAP
-    __gen_write_StdlibTest INLINECALLDICT
-    ENDC
   }>
   __gen_read_StdlibTest PROCINLINE:<{
     257 PUSHINT
@@ -32,12 +26,16 @@ PROGRAM{
   __gen_load_StdlibTest PROCINLINE:<{
     c4 PUSH
     CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
     __gen_read_StdlibTest INLINECALLDICT
     NIP
   }>
   __gen_StdlibTest_init PROC:<{
-    0 PUSHINT
-    __gen_writecell_StdlibTest INLINECALLDICT
+    NEWC
+    STREF
+    ENDC
   }>
   __gen_StdlibTest_sliceEmpty PROC:<{
     NIP

@@ -6,6 +6,7 @@ PROGRAM{
   80984 DECLMETHOD __gen_get_stake
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
   __gen_read_Source PROCINLINE:<{
     257 PUSHINT
     LDIX
@@ -28,6 +29,9 @@ PROGRAM{
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH
     CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
     __gen_read_SampleContract INLINECALLDICT
     1 4 BLKDROP2
   }>

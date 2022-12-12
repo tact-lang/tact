@@ -179,6 +179,56 @@
       }
     },
     {
+      "name": "StateInit",
+      "header": 0,
+      "fields": [
+        {
+          "name": "code",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 0,
+            "refs": 2
+          }
+        }
+      }
+    },
+    {
       "name": "Source",
       "header": 0,
       "fields": [

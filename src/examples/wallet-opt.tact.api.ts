@@ -42,6 +42,19 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export type TransferMessage = {
     $$type: 'TransferMessage';
     signature: Slice;
@@ -57,7 +70,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
 }
 
 export function Wallet_init(key: BigInt, walletId: BigInt) {
-    const __code = 'te6ccgECFAEAASkAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgFICAkA29OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQg28sbm3Uca9qJoaY/p/+mfqpA2CYHpj4DBCDbyxubdeXAyQYRrjDMZCBohgHgF5CqQKBHlj+X/5Z/k9qpwGHlgMkAB3zgs5CqQKBHlj+X/5Z/kwCASAKCwIBIAwNAAUMDGAABRsIYAADFuAANQg+QFUECT5EPKq0h/SB9QwUSW68qsEpAT7AIAIBIBARACO+AldqJoaY/p/+mfqpA2CfgEwACbuhPwB4AgFIEhMAI7Ml+1E0NMf0//TP1UgbBPwCoAAjsH47UTQ0x/T/9M/VSBsE/AIg';
+    const __code = 'te6ccgECFAEAATMAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgFICgsA69OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQg28sbm3Uce9qJoagD8MWmP6f/pn6qQNgmB6Y+AwQg28sbm3XlwMkGEa4wzGQgaIYB4BWR8IQDmKpAoEeWP5f/ln+T2qnAYeWAyQCAVgICQAJFvIzMmAABQwMYAIBIAwNADVCD5AVQQJPkQ8qrSH9IH1DBRJbryqwSkBPsAgABRsIYAADFuACASAQEQArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ARAAJu6E/AGgCAUgSEwArsyX7UTQ1AH4YtMf0//TP1UgbBPwCYAArsH47UTQ1AH4YtMf0//TP1UgbBPwB4A==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10)});

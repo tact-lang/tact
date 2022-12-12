@@ -42,6 +42,19 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
 export type Operation = {
     $$type: 'Operation';
     seqno: BigInt;
@@ -88,7 +101,7 @@ export function packExecuted(src: Executed): Cell {
 }
 
 export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
-    const __code = 'te6ccgECHwEAAeMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAXGAIBIAYHAgFIDxACAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgAKDtRNDTH9P/0//T/1UwbBQE0x8BghAw3ilCuvLgZNMf+gD6QAFDMAPUAdAB1AHQAdQB0BZDMDYQiRB4EGdVBPAUyFUwUDTLH8v/y//L/8ntVABnXIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wCAIBIA0OACMcFUgyFUwUDTLH8v/y//L/8mAADx/MwFwbfANgAgEgERIAX9Kjqh5CqQKBHlj4D9AQDni2T8gCkCFXyIKRmU/IgqCZv8iCms3XlFAVgA2HlFeAfAIBIBMUAgEgFRYACQQI18DgAAcE18DgAAUbDGAABRfA4AAnvmS/aiaGmP6f/p/+n/qpg2CngJwCASAZGgIBIBscAAm4rH8A6AIBIB0eACe0fL2omhpj+n/6f/p/6qYNgp4CEAAnsOn7UTQ0x/T/9P/0/9VMGwU8BKAAJ7Dhu1E0NMf0//T/9P/VTBsFPARg';
+    const __code = 'te6ccgECHwEAAe8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAXGAIBIAYHAgFiERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwE8j4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEABnMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AIAALF8DyMzJgAA8fzMBcG3wDIAAJBAjXwOACASATFAIBIBUWAAcE18DgAAUbDGAABRfA4ABfFR1Q8hVIFAjyx8B+gIBzxbJ+QBSBCr5EFIzKfkQVBM3+RBTWbryigKwAbDyivAOgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJQCASAZGgIBIBscAAm4rH8A2AIBIB0eAC+0fL2omhqAPwxaY/p/+n/6f+qmDYKeAfAAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEYAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPAQg';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10)});
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10)});

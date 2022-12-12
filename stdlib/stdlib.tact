@@ -188,3 +188,12 @@ struct Context {
 
 @name(__tact_context_get)
 native context(): Context;
+
+//
+// State init
+//
+
+struct StateInit {
+    code: Cell;
+    data: Cell;
+}

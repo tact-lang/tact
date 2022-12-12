@@ -122,7 +122,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to cell
     ctx.fun(`__gen_writecell_${name}`, () => {
-        ctx.append(`cell __gen_writecell_${name}(${args}) inline {`);
+        ctx.append(`cell __gen_writecell_${name}(${args.join(', ')}) inline {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_write_${name}`);
             ctx.append(`return __gen_write_${name}(begin_cell(), ${vvss.join(', ')}).end_cell();`);
@@ -132,7 +132,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to slice
     ctx.fun(` __gen_writeslice_${name}`, () => {
-        ctx.append(`slice __gen_writeslice_${name}(${args}) inline {`);
+        ctx.append(`slice __gen_writeslice_${name}(${args.join(', ')}) inline {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_writecell_${name}`);
             ctx.append(`return __gen_writecell_${name}(${vvss.join(', ')}).begin_parse();`);
