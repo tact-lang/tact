@@ -83,16 +83,27 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             kind: 'def_contract',
             name: arg1.sourceString,
             declarations: arg5.children.map((v) => v.resolve_declaration()),
-            traits: arg5.children.map((v) => v.sourceString),
+            traits: arg3.asIteration().children.map((v: any) => v.resolve_expression()),
             ref: createRef(this)
         })
     },
-    Trait(arg0, arg1, arg2, arg3, arg4) {
+    Trait_originary(arg0, arg1, arg2, arg3, arg4) {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_trait',
             name: arg1.sourceString,
             declarations: arg3.children.map((v) => v.resolve_declaration()),
+            traits: [],
+            ref: createRef(this)
+        })
+    },
+    Trait_withTraits(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        checkVariableName(arg1.sourceString, createRef(arg1));
+        return createNode({
+            kind: 'def_trait',
+            name: arg1.sourceString,
+            declarations: arg5.children.map((v) => v.resolve_declaration()),
+            traits: arg3.asIteration().children.map((v: any) => v.resolve_expression()),
             ref: createRef(this)
         })
     },

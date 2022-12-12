@@ -2281,6 +2281,7 @@ exports[`grammar should parse case-22 1`] = `
       "ref": trait SomeTrait {
     a: Int;
 },
+      "traits": [],
     },
     {
       "declarations": [
@@ -2300,18 +2301,23 @@ exports[`grammar should parse case-22 1`] = `
           },
         },
       ],
-      "id": 7,
+      "id": 8,
       "kind": "def_contract",
       "name": "Main",
       "ref": contract Main with SomeTrait {
     b: Int;
 },
       "traits": [
-        "b: Int;",
+        {
+          "id": 7,
+          "kind": "id",
+          "ref": SomeTrait,
+          "value": "SomeTrait",
+        },
       ],
     },
   ],
-  "id": 8,
+  "id": 9,
   "kind": "program",
 }
 `;

@@ -1,0 +1,121 @@
+import { ASTNode, cloneASTNode, createNode } from "./ast";
+
+export function cloneNode<T extends ASTNode>(src: T): T {
+    if (src.kind === 'boolean') {
+        return cloneASTNode(src);
+    } else if (src.kind === 'id') {
+        return cloneASTNode(src);
+    } else if (src.kind === 'null') {
+        return cloneASTNode(src);
+    } else if (src.kind === 'number') {
+        return cloneASTNode(src);
+    } else if (src.kind === 'string') {
+        return cloneASTNode(src);
+    } else if (src.kind === 'lvalue_ref') {
+        return cloneASTNode(src);
+    } else if (src.kind === 'statement_assign') {
+        return cloneASTNode({
+            ...src,
+            path: src.path.map(cloneNode),
+            expression: cloneNode(src.expression),
+        });
+    } else if (src.kind === 'statement_let') {
+        return cloneASTNode({
+            ...src,
+            type: cloneASTNode(src.type),
+            expression: cloneNode(src.expression),
+        });
+    } else if (src.kind === 'statement_condition') {
+        return cloneASTNode({
+            ...src,
+            expression: cloneNode(src.expression),
+            trueStatements: src.trueStatements.map(cloneNode),
+            falseStatements: src.falseStatements.map(cloneNode),
+            elseif: src.elseif ? cloneNode(src.elseif) : null,
+        });
+    } else if (src.kind === 'new_parameter') {
+        return cloneASTNode({
+            ...src,
+            exp: cloneNode(src.exp),
+        });
+    } else if (src.kind === 'statement_expression') {
+        return cloneASTNode({
+            ...src,
+            expression: cloneNode(src.expression),
+        });
+    } else if (src.kind === 'op_binary') {
+        return cloneASTNode({
+            ...src,
+            left: cloneNode(src.left),
+            right: cloneNode(src.right),
+        });
+    } else if (src.kind === 'op_unary') {
+        return cloneASTNode({
+            ...src,
+            right: cloneNode(src.right),
+        });
+    } else if (src.kind === 'op_new') {
+        return cloneASTNode({
+            ...src,
+            args: src.args.map(cloneNode),
+        });
+    } else if (src.kind === 'op_call') {
+        return cloneASTNode({
+            ...src,
+            src: cloneNode(src.src),
+            args: src.args.map(cloneNode),
+        });
+    } else if (src.kind === 'op_field') {
+        return cloneASTNode({
+            ...src,
+            src: cloneNode(src.src),
+        });
+    } else if (src.kind === 'op_static_call') {
+        return cloneASTNode({
+            ...src,
+            args: src.args.map(cloneNode),
+        });
+    } else if (src.kind === 'statement_return') {
+        return cloneASTNode({
+            ...src,
+            expression: cloneNode(src.expression),
+
+        });
+    } else if (src.kind === 'statement_repeat') {
+        return cloneASTNode({
+            ...src,
+            condition: cloneNode(src.condition),
+            statements: src.statements.map(cloneNode),
+        });
+    } else if (src.kind === 'statement_until') {
+        return cloneASTNode({
+            ...src,
+            condition: cloneNode(src.condition),
+            statements: src.statements.map(cloneNode),
+        });
+    } else if (src.kind === 'statement_while') {
+        return cloneASTNode({
+            ...src,
+            condition: cloneNode(src.condition),
+            statements: src.statements.map(cloneNode),
+        });
+    } else if (src.kind === 'def_function') {
+        return cloneASTNode({
+            ...src,
+            statements: src.statements.map(cloneNode),
+            args: src.args.map(cloneNode)
+        });
+    } else if (src.kind === 'def_native_function') {
+        return cloneASTNode({
+            ...src,
+            args: src.args.map(cloneNode)
+        });
+    } else if (src.kind === 'def_receive') {
+        return cloneASTNode({
+            ...src,
+            statements: src.statements.map(cloneNode),
+        });
+    }
+
+    throw Error('Not implemented for ' + src.kind);
+}

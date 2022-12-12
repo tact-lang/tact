@@ -20,7 +20,7 @@ export function openContext(sources: string[]) {
     let functions: (ASTNativeFunction | ASTFunction)[] = [];
     for (let a of asts) {
         for (let e of a.entries) {
-            if (e.kind === 'def_struct' || e.kind === 'def_contract' || e.kind === 'primitive') {
+            if (e.kind === 'def_struct' || e.kind === 'def_contract' || e.kind === 'def_trait' || e.kind === 'primitive') {
                 types.push(e);
             } else if (e.kind === 'def_function' || e.kind === 'def_native_function') {
                 functions.push(e);

@@ -94,4 +94,18 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append('}')
     });
+    ctx.fun(`__tact_address_eq`, () => {
+        ctx.append(`int __tact_address_eq(slice a, slice b) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`return equal_slice_bits(a, b);`);
+        });
+        ctx.append(`}`);
+    });
+    ctx.fun(`__tact_address_neq`, () => {
+        ctx.append(`int __tact_address_neq(slice a, slice b) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`return ~ equal_slice_bits(a, b);`);
+        });
+        ctx.append(`}`);
+    });
 }

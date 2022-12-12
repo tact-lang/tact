@@ -76,7 +76,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     if (f.kind === 'op_binary') {
 
-        // Special case for non-integer types
+        // Special case for non-integer types and nullable
         if (f.op === '==' || f.op === '!=') {
             if (isNull(f.left) && isNull(f.right)) {
                 if (f.op === '==') {
@@ -96,6 +96,21 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 } else {
                     return `(~ null?(${writeExpression(f.left, ctx)}))`;
                 }
+            }
+        }
+
+        // Special case for address
+        let lt = getExpType(ctx.ctx, f.left);
+        let rt = getExpType(ctx.ctx, f.right);
+        if (lt.kind === 'ref' && rt.kind === 'ref' && lt.name === 'Address' && rt.name === 'Address') {
+            if (f.op === '==') {
+                ctx.used(`__tact_address_eq`);
+                return (`__tact_address_eq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
+            } else if (f.op === '!=') {
+                ctx.used(`__tact_address_neq`);
+                return (`__tact_address_neq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
+            } else {
+                throwError('Cannot use ' + f.op + ' on addresses', f.ref);
             }
         }
 

@@ -1,7 +1,8 @@
-import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTrait, ASTTypeRef, throwError } from "../grammar/ast";
+import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTTypeRef, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, TypeDescription, TypeRef } from "./types";
+import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
+import { cloneNode } from "../grammar/clone";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -58,7 +59,6 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
 export function resolveDescriptors(ctx: CompilerContext) {
     let types: { [key: string]: TypeDescription } = {};
     let staticFunctions: { [key: string]: FunctionDescription } = {};
-    let traits: { [key: string]: ASTTrait[] } = {};
     let ast = getRawAST(ctx);
 
     //
@@ -66,7 +66,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (let a of ast.types) {
-        if (types[a.name] || traits[a.name]) {
+        if (types[a.name]) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
         if (a.kind === 'primitive') {
@@ -74,6 +74,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'primitive',
                 name: a.name,
                 fields: [],
+                traits: [],
                 functions: {},
                 receivers: [],
                 init: null,
@@ -84,6 +85,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'contract',
                 name: a.name,
                 fields: [],
+                traits: [],
                 functions: {},
                 receivers: [],
                 init: null,
@@ -94,6 +96,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'struct',
                 name: a.name,
                 fields: [],
+                traits: [],
                 functions: {},
                 receivers: [],
                 init: null,
@@ -104,6 +107,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'trait',
                 name: a.name,
                 fields: [],
+                traits: [],
                 functions: {},
                 receivers: [],
                 init: null,
@@ -136,9 +140,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Struct
         if (a.kind === 'def_struct') {
-            for (let f of a.fields) {
+            for (const f of a.fields) {
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throwError(`Field ${f.name} already exists`, f.ref);
+                }
+                types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+            }
+        }
+
+        // Trait
+        if (a.kind === 'def_trait') {
+            for (const f of a.declarations) {
+                if (f.kind !== 'def_field') {
+                    continue;
+                }
+                if (types[a.name].fields.find((v) => v.name === f.name)) {
+                    throwError(`Field ${f.name} already exists`, f.ref);
+                }
+                if (f.as) {
+                    throwError(`Trait field cannot have serialization specifier`, f.ref);
                 }
                 types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
             }
@@ -429,6 +449,148 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
             }
         }
+    }
+
+    //
+    // Flatten and resolve traits
+    //
+
+    for (let k in types) {
+        let t = types[k];
+        if (t.ast.kind === 'def_trait' || t.ast.kind === 'def_contract') {
+
+            // Flatten traits
+            let traits: TypeDescription[] = [];
+            let visited = new Set<string>();
+            visited.add(t.name);
+            function visit(name: string) {
+                if (visited.has(name)) {
+                    return;
+                }
+                let tt = types[name];
+                visited.add(name);
+                traits.push(tt);
+                if (tt.ast.kind === 'def_trait') {
+                    for (let s of tt.ast.traits) {
+                        visit(s.value);
+                    }
+                    for (let f of tt.traits) {
+                        visit(f.name);
+                    }
+                } else {
+                    throw Error('Unexpected type: ' + tt.ast.kind);
+                }
+            }
+            for (let s of t.ast.traits) {
+                visit(s.value);
+            }
+
+            // Assign traits
+            t.traits = traits;
+        }
+    }
+
+    //
+    // Verify trait fields
+    //
+
+    for (let k in types) {
+        let t = types[k];
+
+        for (let tr of t.traits) {
+
+            // Check that trait is valid
+            if (!types[tr.name]) {
+                throwError('Trait ' + tr.name + ' not found', t.ast.ref);
+            }
+            if (types[tr.name].kind !== 'trait') {
+                throwError('Type ' + tr.name + ' is not a trait', t.ast.ref);
+            }
+
+            // Check that trait has all required fields
+            let ttr = types[tr.name];
+            for (let f of ttr.fields) {
+
+                // Check if field exists
+                let ex = t.fields.find((v) => v.name === f.name);
+                if (!ex) {
+                    throwError(`Trait ${tr.name} requires field ${f.name}`, t.ast.ref);
+                }
+
+                // Check type
+                if (!typeRefEquals(f.type, ex.type)) {
+                    throwError(`Trait ${tr.name} requires field ${f.name} of type ${printTypeRef(f.type)}`, t.ast.ref);
+                }
+            }
+        }
+    }
+
+    //
+    // Copy Trait functions
+    //
+
+    function copyTraits(t: TypeDescription) {
+        for (let tr of t.traits) {
+
+            // Copy functions
+            for (let f of Object.values(tr.functions)) {
+                if (t.functions[f.name]) {
+                    throwError(`Function ${f.name} already exist in ${t.name}`, t.ast.ref);
+                }
+                t.functions[f.name] = {
+                    ...f,
+                    self: t.name,
+                    ast: cloneNode(f.ast)
+                };
+            }
+
+            // Copy receivers
+            for (let f of tr.receivers) {
+                function sameReceiver(a: ReceiverSelector, b: ReceiverSelector) {
+                    if (a.kind === 'internal-comment' && b.kind === 'internal-comment') {
+                        return a.comment === b.comment;
+                    }
+                    if (a.kind === 'internal-binary' && b.kind === 'internal-binary') {
+                        return a.type === b.type;
+                    }
+                    if (a.kind === 'internal-bounce' && b.kind === 'internal-bounce') {
+                        return true;
+                    }
+                    if (a.kind === 'internal-empty' && b.kind === 'internal-empty') {
+                        return true;
+                    }
+                    if (a.kind === 'internal-fallback' && b.kind === 'internal-fallback') {
+                        return true;
+                    }
+                    return false;
+                }
+                if (t.receivers.find((v) => sameReceiver(v.selector, f.selector))) {
+                    throwError(`Receive function for "${f.selector}" already exists`, t.ast.ref);
+                }
+                t.receivers.push({
+                    selector: f.selector,
+                    ast: cloneNode(f.ast)
+                });
+            }
+        }
+    }
+
+    // Copy to non-traits to avoid duplicates
+    for (let k in types) {
+        let t = types[k];
+        if (t.kind === 'trait') {
+            continue;
+        }
+        copyTraits(t);
+    }
+
+    // Copy to traits to traits
+    for (let k in types) {
+        let t = types[k];
+        if (t.kind !== 'trait') {
+            continue;
+        }
+        copyTraits(t);
     }
 
     //

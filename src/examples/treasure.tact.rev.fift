@@ -57,7 +57,7 @@ SETCP0
       8 LDU
       ROTREV
       1 2 BLKDROP2
-      13 CALLDICT
+      19 CALLDICT
       NEWC
       s0 s1 XCHG
       STSLICER
@@ -65,6 +65,32 @@ SETCP0
       c4 POP
     }> PUSHCONT
     IFJMP
+    s0 PUSH
+    3067051791 PUSHINT
+    EQUAL
+    <{
+      s0 POP
+      c4 PUSH
+      CTOS
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+      s0 s1 XCHG
+      32 LDU
+      s0 s1 XCHG
+      3067051791 PUSHINT
+      EQUAL
+      100 THROWIFNOT
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+      21 CALLDICT
+      NEWC
+      s0 s1 XCHG
+      STSLICER
+      ENDC
+      c4 POP
+    }> IFJMPREF
     0 EQINT
     <{
       s0 POP
@@ -79,7 +105,7 @@ SETCP0
         LDMSGADDR
         s0 s1 XCHG
         s1 POP
-        14 CALLDICT
+        20 CALLDICT
         NEWC
         s0 s1 XCHG
         STSLICER
@@ -96,7 +122,7 @@ SETCP0
     ISNULL
     14 THROWIF
 
-  10: 
+  14: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -139,30 +165,56 @@ SETCP0
     s0 s1 XCHG
     SENDRAWMSG
 
-  11: 
+  15: 
     NEWC
     s0 s1 XCHG
     STSLICER
     ENDC
 
-  12: 
+  16: 
+    1 GETGLOBVAR
+    3 UNTUPLE
+    s0 POP
+    s1 POP
+    s1 PUSH
+    SDEQ
+    100 THROWIFNOT
+
+  17: 
+    s0 s2 XCHG
+    16 CALLDICT
     -1 PUSHINT
     NEWC
     ENDC
-    3 0 4 XC2PU
-    s3 s3 XCHG2
-    10 CALLDICT
+    3 0 2 XC2PU
+    s5 s5 XCHG2
+    14 CALLDICT
 
-  13: 
-    12 CALLDICT
+  18: 
 
-  14: 
+  19: 
+    17 CALLDICT
+
+  20: 
     0 PUSHINT
-    s0 PUSH
-    12 CALLDICT
+    160 PUSHINT
+    17 CALLDICT
+
+  21: 
+    s0 s1 XCHG
+    16 CALLDICT
+    s0 POP
+
+  owner: 
+    c4 PUSH
+    CTOS
+    LDMSGADDR
+    s0 s1 XCHG
+    s1 POP
+    18 CALLDICT
 
   122670: 
-    11 CALLDICT
+    15 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

@@ -179,7 +179,7 @@
       }
     },
     {
-      "name": "ChangeOnwer",
+      "name": "ChangeOwner",
       "header": 0,
       "fields": [
         {
@@ -192,7 +192,7 @@
         }
       ],
       "allocation": {
-        "prefix": 2284453861,
+        "prefix": 3067051791,
         "root": {
           "fields": [
             {
@@ -285,7 +285,21 @@
     {
       "kind": "internal-comment",
       "comment": "Destroy"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "ChangeOwner"
     }
   ],
-  "getters": []
+  "getters": [
+    {
+      "name": "owner",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Address",
+        "optional": false
+      }
+    }
+  ]
 }

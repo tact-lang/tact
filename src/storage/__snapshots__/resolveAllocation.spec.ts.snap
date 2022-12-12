@@ -291,6 +291,7 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "SendParameters",
       "receivers": [],
+      "traits": [],
     },
   },
   {
@@ -476,6 +477,7 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Context",
       "receivers": [],
+      "traits": [],
     },
   },
   {
@@ -613,6 +615,7 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Point",
       "receivers": [],
+      "traits": [],
     },
   },
   {
@@ -714,6 +717,7 @@ exports[`resolveAllocation should write program 1`] = `
               "kind": "struct",
               "name": "Point",
               "receivers": [],
+              "traits": [],
             },
           },
         ],
@@ -773,6 +777,7 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Point2",
       "receivers": [],
+      "traits": [],
     },
   },
   {
@@ -886,6 +891,7 @@ exports[`resolveAllocation should write program 1`] = `
               "kind": "struct",
               "name": "Point",
               "receivers": [],
+              "traits": [],
             },
           },
         ],
@@ -944,6 +950,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "kind": "struct",
                 "name": "Point2",
                 "receivers": [],
+                "traits": [],
               },
             },
           ],
@@ -1035,6 +1042,7 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Point3",
       "receivers": [],
+      "traits": [],
     },
   },
   {
@@ -1187,6 +1195,7 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "contract",
       "name": "Sample",
       "receivers": [],
+      "traits": [],
     },
   },
 ]

@@ -44,7 +44,8 @@ Tact {
                  | Function
     
     // Traint
-    Trait = trait id "{" TraitBody* "}"
+    Trait = trait id "{" TraitBody* "}" --originary
+          | trait id with ListOf<id,","> "{" TraitBody* "}" --withTraits
     TraitBody = Field
               | ReceiveFunction
               | Function

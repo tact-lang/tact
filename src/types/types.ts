@@ -4,6 +4,7 @@ export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract' | 'trait';
     name: string;
     fields: FieldDescription[];
+    traits: TypeDescription[];
     functions: { [name: string]: FunctionDescription };
     receivers: ReceiverDescription[];
     init: InitDescription | null;

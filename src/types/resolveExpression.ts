@@ -2,7 +2,7 @@ import { ABIFunctions, MapFunctions } from "../abi/AbiFunction";
 import { ASTBoolean, ASTExpression, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescriptors";
-import { printTypeRef, TypeRef } from "./types";
+import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
@@ -16,7 +16,11 @@ export function getExpType(ctx: CompilerContext, exp: ASTExpression) {
 }
 
 function registerExpType(ctx: CompilerContext, exp: ASTExpression, description: TypeRef): CompilerContext {
-    if (store.get(ctx, exp.id)) {
+    let ex = store.get(ctx, exp.id);
+    if (ex) {
+        if (typeRefEquals(ex.description, description)) {
+            return ctx;
+        }
         throw Error('Expression ' + exp.id + ' already has a type');
     }
     return store.set(ctx, exp.id, { ast: exp, description });

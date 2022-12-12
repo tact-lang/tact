@@ -202,6 +202,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -216,6 +217,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -237,6 +239,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -251,6 +254,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
   "Struct1": {
     "ast": {
@@ -327,6 +331,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "struct",
     "name": "Struct1",
     "receivers": [],
+    "traits": [],
   },
   "Struct2": {
     "ast": {
@@ -375,6 +380,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "kind": "struct",
     "name": "Struct2",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -396,6 +402,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -410,6 +417,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -595,6 +603,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "HelloWorld": {
     "ast": {
@@ -749,6 +758,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "contract",
     "name": "HelloWorld",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -763,6 +773,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -784,6 +795,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -798,6 +810,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -877,6 +890,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -945,6 +959,7 @@ mutates extends native inc(self: Int): Int;,
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -966,6 +981,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -1055,6 +1071,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
 }
 `;
@@ -1076,6 +1093,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "primitive",
     "name": "Bool",
     "receivers": [],
+    "traits": [],
   },
   "Int": {
     "ast": {
@@ -1090,6 +1108,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "primitive",
     "name": "Int",
     "receivers": [],
+    "traits": [],
   },
   "Main": {
     "ast": {
@@ -1425,6 +1444,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "contract",
     "name": "Main",
     "receivers": [],
+    "traits": [],
   },
   "Point": {
     "ast": {
@@ -1444,6 +1464,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "kind": "struct",
     "name": "Point",
     "receivers": [],
+    "traits": [],
   },
 }
 `;

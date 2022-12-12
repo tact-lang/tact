@@ -5,7 +5,7 @@ message Withdraw {
     mode: Int as uint8;
 }
 
-contract Treasure with Ownable {
+contract Treasure with OwnableTransferable {
     owner: Address;
     
     init(owner: Address) {
@@ -13,6 +13,11 @@ contract Treasure with Ownable {
     }
 
     fun doWithdraw(amount: Int, mode: Int) {
+        
+        // Only owner can withdraw
+        self.requireOwner();
+
+        // Perform withdraw
         send(SendParameters{value: amount, to: self.owner, mode: mode, body: endCell(beginCell())});
     }
 
@@ -21,6 +26,6 @@ contract Treasure with Ownable {
     }
 
     receive("Destroy") {
-        self.doWithdraw(0, 0); // TODO: Update flags
+        self.doWithdraw(0, 32 + 128);
     }
 }

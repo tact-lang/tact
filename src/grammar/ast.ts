@@ -195,6 +195,7 @@ export type ASTTrait = {
     kind: 'def_trait',
     id: number,
     name: string,
+    traits: ASTString[],
     declarations: (ASTField | ASTFunction | ASTReceive)[],
     ref: ASTRef
 }
@@ -213,7 +214,7 @@ export type ASTContract = {
     kind: 'def_contract',
     id: number,
     name: string,
-    traits: string[],
+    traits: ASTString[],
     declarations: (ASTField | ASTFunction | ASTInitFunction | ASTReceive)[],
     ref: ASTRef
 }
@@ -342,7 +343,7 @@ export type ASTStatementRepeat = {
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
 export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 
 export function isStatement(src: ASTNode): src is ASTStatement {
@@ -360,6 +361,9 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
 let nextId = 1;
 export function createNode(src: DistributiveOmit<ASTNode, 'id'>): ASTNode {
     return Object.freeze(Object.assign({ id: nextId++ }, src));
+}
+export function cloneASTNode<T extends ASTNode>(src: T): T {
+    return { ...src, id: nextId++ };
 }
 
 export function __DANGER_resetNodeId() {

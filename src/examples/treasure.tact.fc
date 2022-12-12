@@ -2,6 +2,8 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -10,6 +12,16 @@ global (int, slice, int) __tact_context;
 builder __tact_store_address(builder b, slice address) inline {
     b = b.store_slice(address);
     return b;
+}
+
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+(slice, (slice)) __gen_read_ChangeOwner(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 3067051791);
+    var newOwner = sc~__tact_load_address();
+    return (sc, (newOwner));
 }
 
 (slice, (int, int)) __gen_read_Withdraw(slice sc) inline {
@@ -31,6 +43,10 @@ cell __gen_writecell_Treasure(slice v'owner) inline {
 (slice, (slice)) __gen_read_Treasure(slice sc) inline {
     var owner = sc~__tact_load_address();
     return (sc, (owner));
+}
+
+_ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
+    return v'sender;
 }
 
 (slice) __gen_load_Treasure() inline {
@@ -70,10 +86,28 @@ cell __gen_Treasure_init(slice owner) {
     return __gen_writecell_Treasure(self'owner);
 }
 
+((slice), ()) __gen_Treasure_requireOwner((slice) self) impure {
+    var (slice self'owner) = self;
+    throw_unless(100, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
+    return ((self'owner), ());
+}
+
 ((slice), ()) __gen_Treasure_doWithdraw((slice) self, int amount, int mode) impure {
     var (slice self'owner) = self;
+    (self'owner)~__gen_Treasure_requireOwner();
     send((true, self'owner, amount, mode, end_cell(begin_cell())));
     return ((self'owner), ());
+}
+
+slice __gen_Treasure_owner((slice) self) impure {
+    var (slice self'owner) = self;
+    return self'owner;
+}
+
+_ __gen_get_owner() method_id(83229) {
+    var (slice self'owner) = __gen_load_Treasure();
+    var res = __gen_Treasure_owner(self'owner);
+    return res;
 }
 
 ((slice), ()) __gen_Treasure_receive_Withdraw((slice) self, int msg'amount, int msg'mode) impure {
@@ -84,7 +118,14 @@ cell __gen_Treasure_init(slice owner) {
 
 ((slice), ()) __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) self) impure {
     var (self'owner) = self;
-    (self'owner)~__gen_Treasure_doWithdraw(0, 0);
+    (self'owner)~__gen_Treasure_doWithdraw(0, (32 + 128));
+    return ((self'owner), ());
+}
+
+((slice), ()) __gen_Treasure_receive_ChangeOwner((slice) self, slice msg'newOwner) impure {
+    var (self'owner) = self;
+    (self'owner)~__gen_Treasure_requireOwner();
+    self'owner = msg'newOwner;
     return ((self'owner), ());
 }
 
@@ -112,6 +153,15 @@ cell __gen_Treasure_init(slice owner) {
         var (slice self'owner) = __gen_load_Treasure();
         var (int msg'amount, int msg'mode) = in_msg~__gen_read_Withdraw();
         (self'owner)~__gen_Treasure_receive_Withdraw(msg'amount, msg'mode);
+        __gen_store_Treasure(self'owner);
+        return ();
+    }
+    
+    ;; Receive ChangeOwner message
+    if (op == 3067051791) {
+        var (slice self'owner) = __gen_load_Treasure();
+        var (slice msg'newOwner) = in_msg~__gen_read_ChangeOwner();
+        (self'owner)~__gen_Treasure_receive_ChangeOwner(msg'newOwner);
         __gen_store_Treasure(self'owner);
         return ();
     }

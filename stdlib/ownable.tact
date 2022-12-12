@@ -1,4 +1,4 @@
-message ChangeOnwer {
+message ChangeOwner {
     newOwner: Address;
 }
 
@@ -6,15 +6,19 @@ trait Ownable {
     owner: Address;
 
     fun requireOwner() {
-        require(100, ctx.address != self.owner);
+        require(100, context().sender == self.owner);
+    }
+
+    get fun owner(): Address {
+        return self.owner;
     }
 }
 
-/*
-
 trait OwnableTransferable with Ownable {
 
-    receive(msg: ChangeOnwer) {
+    owner: Address;
+
+    receive(msg: ChangeOwner) {
         
         // Check if the sender is the owner
         self.requireOwner();
@@ -23,4 +27,3 @@ trait OwnableTransferable with Ownable {
         self.owner = msg.newOwner;
     }
 }
-*/

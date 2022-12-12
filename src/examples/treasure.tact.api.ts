@@ -42,14 +42,14 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
-export type ChangeOnwer = {
-    $$type: 'ChangeOnwer';
+export type ChangeOwner = {
+    $$type: 'ChangeOwner';
     newOwner: Address;
 }
 
-export function packChangeOnwer(src: ChangeOnwer): Cell {
+export function packChangeOwner(src: ChangeOwner): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(2284453861, 32);
+    b_0 = b_0.storeUint(3067051791, 32);
     b_0 = b_0.storeAddress(src.newOwner);
     return b_0.endCell();
 }
@@ -69,7 +69,7 @@ export function packWithdraw(src: Withdraw): Cell {
 }
 
 export function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECEQEAATsAART/APSkE/S88sgLAQIBYgIDAgLMBAUACaG+XeAXAgHUBgcCASAJCgHNO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQTKg9yLqOJjDtRND6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8A3IAc8Wye1U4MAAkTDjDfLAZIAgACQgbvJOgAHT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhLtRND6QAEx8A7IAc8Wye1U2zHgAgFYCwwCASANDgBnMhxAcoBFcoAcAHKAlADzxYB+gJwAcpocAHKACJus5l/AcoAAvABWMyVMnBYygDiyQH7AIAALMgBzxbJgAgEgDxAACUcCDwDIABUf8jJVBMEUDPwCoAAFPAMg';
+    const __code = 'te6ccgECGgEAAasAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAYGQIBIAYHAgFIDg8CAdQICQIB9AwNAuE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4mMO1E0PpAATEB0x8BghBMqD3IuvLgZPoA0wdZbBLwE8gBzxbJ7VTgIIIQts9/D7rjAsAAkTDjDfLAZIAoLAAkIG7yToABGMO1E0PpAATEB0x8BghC2z38PuvLgZPpAATHwFcgBzxbJ7VQAdPkBgvCYbCuhJLuSh+tKC9jTEE4cAGejyTlS2InHTQgYW9MNTbqOEu1E0PpAATHwFMgBzxbJ7VTbMeAAZzIcQHKARXKAHABygJQA88WAfoCcAHKaHABygAibrOZfwHKAALwAVjMlTJwWMoA4skB+wCAACzIAc8WyYAIBIBARAgFIFhcCASASEwIBIBQVABk+EFvIzAxIccF8uBkgABsAvAQf8jJVBMCUFXwDoAABIAAFPARgAA0cIEAoPARgAAkAfAQMIAAXvijvaiaH0gAJj4CUAAm++XeAfA==';
     let __stack: StackItem[] = [];
     __stack.push({ type: 'slice', cell: owner});
     return deploy(__code, 'init_Treasure', __stack);
@@ -79,13 +79,16 @@ export class Treasure {
     readonly executor: ContractExecutor;
     constructor(executor: ContractExecutor) { this.executor = executor; }
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | 'Destroy') {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | 'Destroy' | ChangeOwner) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Withdraw') {
             body = packWithdraw(message);
         }
         if (message === 'Destroy') {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ChangeOwner') {
+            body = packChangeOwner(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({
@@ -97,5 +100,9 @@ export class Treasure {
                 body: new CellMessage(body!)
             })
         }), { debug: args.debug });
+    }
+    async getOwner() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('owner', __stack);
     }
 }

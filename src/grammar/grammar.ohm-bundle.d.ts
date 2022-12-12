@@ -39,7 +39,9 @@ export interface TactActionDict<T> extends ActionDict<T> {
   Contract?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   ContractInit?: (this: NonterminalNode, arg0: NonterminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
   ContractBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  Trait?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Trait_originary?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: TerminalNode, arg3: IterationNode, arg4: TerminalNode) => T;
+  Trait_withTraits?: (this: NonterminalNode, arg0: NonterminalNode, arg1: NonterminalNode, arg2: NonterminalNode, arg3: NonterminalNode, arg4: TerminalNode, arg5: IterationNode, arg6: TerminalNode) => T;
+  Trait?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   TraitBody?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_public?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_getter?: (this: NonterminalNode, arg0: NonterminalNode) => T;
