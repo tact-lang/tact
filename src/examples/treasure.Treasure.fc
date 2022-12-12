@@ -19,27 +19,28 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-(slice, (slice)) __gen_read_ChangeOwner(slice sc) inline {
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 3067051791);
-    var newOwner = sc~__tact_load_address();
-    return (sc, (newOwner));
+    var v'newOwner = sc~__tact_load_address();
+    return (sc, (v'newOwner));
 }
 
-(slice, (int, int)) __gen_read_Withdraw(slice sc) inline {
+(slice, ((int, int))) __gen_read_Withdraw(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 1286094280);
-    var amount = sc~load_coins();
-    var mode = sc~load_uint(8);
-    return (sc, (amount, mode));
+    var v'amount = sc~load_coins();
+    var v'mode = sc~load_uint(8);
+    return (sc, (v'amount, v'mode));
 }
 
-builder __gen_write_Treasure(builder build_0, slice v'owner) inline {
+builder __gen_write_Treasure(builder build_0, (slice) v) inline {
+    var (v'owner) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     return build_0;
 }
 
-(slice, (slice)) __gen_read_Treasure(slice sc) inline {
-    var owner = sc~__tact_load_address();
-    return (sc, (owner));
+(slice, ((slice))) __gen_read_Treasure(slice sc) inline {
+    var v'owner = sc~__tact_load_address();
+    return (sc, (v'owner));
 }
 
 _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
@@ -52,14 +53,15 @@ _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
     return sc~__gen_read_Treasure();
 }
 
-() __gen_store_Treasure(slice v'owner) impure inline {
+() __gen_store_Treasure((slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_Treasure(b, v'owner);
+    b = __gen_write_Treasure(b, v);
     set_data(b.end_cell());
 }
 
-() send(int params'bounce, slice params'to, int params'value, int params'mode, cell params'body) impure {
+() send((int, slice, int, int, cell) params) impure {
+    var ((params'bounce, params'to, params'value, params'mode, params'body)) = params;
     builder b = begin_cell();
     b = store_int(b, 1, 2);
     b = store_int(b, params'bounce, 1);
@@ -80,40 +82,41 @@ _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
 }
 
 cell __gen_Treasure_init(cell sys', slice owner) {
-    var (slice self'owner) = (null());
+    var ((self'owner)) = (null());
     self'owner = owner;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_Treasure(b', self'owner);
+    b' = __gen_write_Treasure(b', (self'owner));
     return b'.end_cell();
 }
 
 ((slice), ()) __gen_Treasure_requireOwner((slice) self) impure {
-    var (slice self'owner) = self;
+    var ((self'owner)) = self;
     throw_unless(100, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
     return ((self'owner), ());
 }
 
 ((slice), ()) __gen_Treasure_doWithdraw((slice) self, int amount, int mode) impure {
-    var (slice self'owner) = self;
+    var ((self'owner)) = self;
     (self'owner)~__gen_Treasure_requireOwner();
     send((true, self'owner, amount, mode, end_cell(begin_cell())));
     return ((self'owner), ());
 }
 
 slice __gen_Treasure_owner((slice) self) impure {
-    var (slice self'owner) = self;
+    var ((self'owner)) = self;
     return self'owner;
 }
 
 _ __gen_get_owner() method_id(83229) {
-    var (slice self'owner) = __gen_load_Treasure();
-    var res = __gen_Treasure_owner(self'owner);
+    var self = __gen_load_Treasure();
+    var res = __gen_Treasure_owner(self);
     return res;
 }
 
-((slice), ()) __gen_Treasure_receive_Withdraw((slice) self, int msg'amount, int msg'mode) impure {
+(((slice)), ()) __gen_Treasure_receive_Withdraw((slice) self, (int, int) msg) impure {
     var (self'owner) = self;
+    var (msg'amount, msg'mode) = msg;
     (self'owner)~__gen_Treasure_doWithdraw(msg'amount, msg'mode);
     return ((self'owner), ());
 }
@@ -124,8 +127,9 @@ _ __gen_get_owner() method_id(83229) {
     return ((self'owner), ());
 }
 
-((slice), ()) __gen_Treasure_receive_ChangeOwner((slice) self, slice msg'newOwner) impure {
+(((slice)), ()) __gen_Treasure_receive_ChangeOwner((slice) self, (slice) msg) impure {
     var (self'owner) = self;
+    var (msg'newOwner) = msg;
     (self'owner)~__gen_Treasure_requireOwner();
     self'owner = msg'newOwner;
     return ((self'owner), ());
@@ -152,19 +156,19 @@ _ __gen_get_owner() method_id(83229) {
     
     ;; Receive Withdraw message
     if (op == 1286094280) {
-        var (slice self'owner) = __gen_load_Treasure();
-        var (int msg'amount, int msg'mode) = in_msg~__gen_read_Withdraw();
-        (self'owner)~__gen_Treasure_receive_Withdraw(msg'amount, msg'mode);
-        __gen_store_Treasure(self'owner);
+        var self = __gen_load_Treasure();
+        var msg = in_msg~__gen_read_Withdraw();
+        self~__gen_Treasure_receive_Withdraw(msg);
+        __gen_store_Treasure(self);
         return ();
     }
     
     ;; Receive ChangeOwner message
     if (op == 3067051791) {
-        var (slice self'owner) = __gen_load_Treasure();
-        var (slice msg'newOwner) = in_msg~__gen_read_ChangeOwner();
-        (self'owner)~__gen_Treasure_receive_ChangeOwner(msg'newOwner);
-        __gen_store_Treasure(self'owner);
+        var self = __gen_load_Treasure();
+        var msg = in_msg~__gen_read_ChangeOwner();
+        self~__gen_Treasure_receive_ChangeOwner(msg);
+        __gen_store_Treasure(self);
         return ();
     }
     
@@ -174,9 +178,9 @@ _ __gen_get_owner() method_id(83229) {
         
         ;; Receive "Destroy" message
         if (text_op == 0x986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d) {
-            var (slice self'owner) = __gen_load_Treasure();
-            (self'owner)~__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
-            __gen_store_Treasure(self'owner);
+            var self = __gen_load_Treasure();
+            self~__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
+            __gen_store_Treasure(self);
             return ();
         }
     }

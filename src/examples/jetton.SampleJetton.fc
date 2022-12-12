@@ -23,40 +23,42 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-(slice, (cell)) __gen_read_JettonUpdateContent(slice sc) inline {
+(slice, ((cell))) __gen_read_JettonUpdateContent(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 3551049822);
-    var content = null();
+    var v'content = null();
     if (sc~load_int(1)) {
-        var content = sc~load_ref();
+        var v'content = sc~load_ref();
     }
-    return (sc, (content));
+    return (sc, (v'content));
 }
 
-(slice, (int)) __gen_read_Mint(slice sc) inline {
+(slice, ((int))) __gen_read_Mint(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 2737462367);
-    var amount = sc~load_int(257);
-    return (sc, (amount));
+    var v'amount = sc~load_int(257);
+    return (sc, (v'amount));
 }
 
-(slice, (int, slice, slice)) __gen_read_Burned(slice sc) inline {
+(slice, ((int, slice, slice))) __gen_read_Burned(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 2078119902);
-    var amount = sc~load_int(257);
-    var owner = sc~__tact_load_address();
-    var cashback = null();
+    var v'amount = sc~load_int(257);
+    var v'owner = sc~__tact_load_address();
+    var v'cashback = null();
     if (sc~load_int(1)) {
-        var cashback = sc~__tact_load_address();
+        var v'cashback = sc~__tact_load_address();
     }
-    return (sc, (amount, owner, cashback));
+    return (sc, (v'amount, v'owner, v'cashback));
 }
 
-builder __gen_write_SampleJettonWallet(builder build_0, slice v'master, slice v'owner, int v'balance) inline {
+builder __gen_write_SampleJettonWallet(builder build_0, (slice, slice, int) v) inline {
+    var (v'master, v'owner, v'balance) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = store_int(build_0, v'balance, 257);
     return build_0;
 }
 
-builder __gen_write_SampleJetton(builder build_0, int v'totalSupply, slice v'owner, cell v'content, int v'mintable, cell v'walletCode) inline {
+builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int, cell) v) inline {
+    var (v'totalSupply, v'owner, v'content, v'mintable, v'walletCode) = v;
     build_0 = store_coins(build_0, v'totalSupply);
     build_0 = __tact_store_address(build_0, v'owner);
     if (null?(v'content)) {
@@ -70,16 +72,16 @@ builder __gen_write_SampleJetton(builder build_0, int v'totalSupply, slice v'own
     return build_0;
 }
 
-(slice, (int, slice, cell, int, cell)) __gen_read_SampleJetton(slice sc) inline {
-    var totalSupply = sc~load_coins();
-    var owner = sc~__tact_load_address();
-    var content = null();
+(slice, ((int, slice, cell, int, cell))) __gen_read_SampleJetton(slice sc) inline {
+    var v'totalSupply = sc~load_coins();
+    var v'owner = sc~__tact_load_address();
+    var v'content = null();
     if (sc~load_int(1)) {
-        var content = sc~load_ref();
+        var v'content = sc~load_ref();
     }
-    var mintable = sc~load_int(1);
-    var walletCode = sc~load_ref();
-    return (sc, (totalSupply, owner, content, mintable, walletCode));
+    var v'mintable = sc~load_int(1);
+    var v'walletCode = sc~load_ref();
+    return (sc, (v'totalSupply, v'owner, v'content, v'mintable, v'walletCode));
 }
 
 _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
@@ -92,21 +94,21 @@ _ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
     return sc~__gen_read_SampleJetton();
 }
 
-() __gen_store_SampleJetton(int v'totalSupply, slice v'owner, cell v'content, int v'mintable, cell v'walletCode) impure inline {
+() __gen_store_SampleJetton((int, slice, cell, int, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_SampleJetton(b, v'totalSupply,v'owner,v'content,v'mintable,v'walletCode);
+    b = __gen_write_SampleJetton(b, v);
     set_data(b.end_cell());
 }
 
 cell __gen_SampleJettonWallet_init(cell sys', slice master, slice owner) {
-    var (slice self'master, slice self'owner, int self'balance) = (null(), null(), null());
+    var ((self'master, self'owner, self'balance)) = (null(), null(), null());
     self'balance = 0;
     self'master = master;
     self'owner = owner;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_SampleJettonWallet(b', self'master, self'owner, self'balance);
+    b' = __gen_write_SampleJettonWallet(b', (self'master, self'owner, self'balance));
     return b'.end_cell();
 }
 
@@ -120,7 +122,7 @@ cell __gen_SampleJettonWallet_init(cell sys', slice master, slice owner) {
 }
 
 cell __gen_SampleJetton_init(cell sys', int totalSupply, int mintable, slice owner, cell content, cell walletCode) {
-    var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = (null(), null(), null(), null(), null());
+    var ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)) = (null(), null(), null(), null(), null());
     self'totalSupply = totalSupply;
     self'owner = owner;
     self'mintable = mintable;
@@ -128,48 +130,52 @@ cell __gen_SampleJetton_init(cell sys', int totalSupply, int mintable, slice own
     self'walletCode = walletCode;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_SampleJetton(b', self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+    b' = __gen_write_SampleJetton(b', (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode));
     return b'.end_cell();
 }
 
-((int, slice, cell, int, cell), ()) __gen_SampleJetton_mint((int, slice, cell, int, cell) self, slice to, int amount, cell stateInit'code, cell stateInit'data) impure {
-    var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = self;
+((int, slice, cell, int, cell), ()) __gen_SampleJetton_mint((int, slice, cell, int, cell) self, slice to, int amount, (cell, cell) stateInit) impure {
+    var ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)) = self;
+    var ((stateInit'code, stateInit'data)) = stateInit;
     self'totalSupply = (self'totalSupply + amount);
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
 
 ((int, slice, cell, int, cell), ()) __gen_SampleJetton_requireOwner((int, slice, cell, int, cell) self) impure {
-    var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = self;
+    var ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)) = self;
     throw_unless(100, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
 
 slice __gen_SampleJetton_owner((int, slice, cell, int, cell) self) impure {
-    var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = self;
+    var ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)) = self;
     return self'owner;
 }
 
 _ __gen_get_owner() method_id(83229) {
-    var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = __gen_load_SampleJetton();
-    var res = __gen_SampleJetton_owner(self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+    var self = __gen_load_SampleJetton();
+    var res = __gen_SampleJetton_owner(self);
     return res;
 }
 
-((int, slice, cell, int, cell), ()) __gen_SampleJetton_receive_Mint((int, slice, cell, int, cell) self, int msg'amount) impure {
+(((int, slice, cell, int, cell)), ()) __gen_SampleJetton_receive_Mint((int, slice, cell, int, cell) self, (int) msg) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode) = self;
+    var (msg'amount) = msg;
     var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
     (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)~__gen_SampleJetton_mint(ctx'sender, msg'amount, __gen_SampleJettonWallet_init_child(__tact_context_sys, my_address(), ctx'sender));
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
 
-((int, slice, cell, int, cell), ()) __gen_SampleJetton_receive_Burned((int, slice, cell, int, cell) self, int msg'amount, slice msg'owner, slice msg'cashback) impure {
+(((int, slice, cell, int, cell)), ()) __gen_SampleJetton_receive_Burned((int, slice, cell, int, cell) self, (int, slice, slice) msg) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode) = self;
+    var (msg'amount, msg'owner, msg'cashback) = msg;
     var (int ctx'bounced, slice ctx'sender, int ctx'value) = __tact_context_get();
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
 }
 
-((int, slice, cell, int, cell), ()) __gen_SampleJetton_receive_JettonUpdateContent((int, slice, cell, int, cell) self, cell msg'content) impure {
+(((int, slice, cell, int, cell)), ()) __gen_SampleJetton_receive_JettonUpdateContent((int, slice, cell, int, cell) self, (cell) msg) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode) = self;
+    var (msg'content) = msg;
     (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)~__gen_SampleJetton_requireOwner();
     self'content = msg'content;
     return ((self'totalSupply, self'owner, self'content, self'mintable, self'walletCode), ());
@@ -196,28 +202,28 @@ _ __gen_get_owner() method_id(83229) {
     
     ;; Receive Mint message
     if (op == 2737462367) {
-        var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = __gen_load_SampleJetton();
-        var (int msg'amount) = in_msg~__gen_read_Mint();
-        (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)~__gen_SampleJetton_receive_Mint(msg'amount);
-        __gen_store_SampleJetton(self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+        var self = __gen_load_SampleJetton();
+        var msg = in_msg~__gen_read_Mint();
+        self~__gen_SampleJetton_receive_Mint(msg);
+        __gen_store_SampleJetton(self);
         return ();
     }
     
     ;; Receive Burned message
     if (op == 2078119902) {
-        var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = __gen_load_SampleJetton();
-        var (int msg'amount, slice msg'owner, slice msg'cashback) = in_msg~__gen_read_Burned();
-        (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)~__gen_SampleJetton_receive_Burned(msg'amount, msg'owner, msg'cashback);
-        __gen_store_SampleJetton(self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+        var self = __gen_load_SampleJetton();
+        var msg = in_msg~__gen_read_Burned();
+        self~__gen_SampleJetton_receive_Burned(msg);
+        __gen_store_SampleJetton(self);
         return ();
     }
     
     ;; Receive JettonUpdateContent message
     if (op == 3551049822) {
-        var (int self'totalSupply, slice self'owner, cell self'content, int self'mintable, cell self'walletCode) = __gen_load_SampleJetton();
-        var (cell msg'content) = in_msg~__gen_read_JettonUpdateContent();
-        (self'totalSupply, self'owner, self'content, self'mintable, self'walletCode)~__gen_SampleJetton_receive_JettonUpdateContent(msg'content);
-        __gen_store_SampleJetton(self'totalSupply, self'owner, self'content, self'mintable, self'walletCode);
+        var self = __gen_load_SampleJetton();
+        var msg = in_msg~__gen_read_JettonUpdateContent();
+        self~__gen_SampleJetton_receive_JettonUpdateContent(msg);
+        __gen_store_SampleJetton(self);
         return ();
     }
     

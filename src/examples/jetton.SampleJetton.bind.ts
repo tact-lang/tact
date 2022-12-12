@@ -103,13 +103,65 @@ export function packChangeOwner(src: ChangeOwner): Cell {
     return b_0.endCell();
 }
 
-export class SampleJettonWallet {
+export type Mint = {
+    $$type: 'Mint';
+    amount: BigInt;
+}
+
+export function packMint(src: Mint): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(2737462367, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
+export type Burned = {
+    $$type: 'Burned';
+    amount: BigInt;
+    owner: Address;
+    cashback: Address | null;
+}
+
+export function packBurned(src: Burned): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(2078119902, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    b_0 = b_0.storeAddress(src.owner);
+    if (src.cashback !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeAddress(src.cashback);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export type TokenReceived = {
+    $$type: 'TokenReceived';
+    amount: BigInt;
+}
+
+export function packTokenReceived(src: TokenReceived): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(421783706, 32);
+    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    return b_0.endCell();
+}
+
+export function JettonDefaultContract_init(master: Address, owner: Address) {
+    const __code = 'te6ccgECGwEAAo8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFICwwDl9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wEEEIUZUuL91xgRBBCD3uy+9dcYFBCGnUXC9dcYEYeWAyQICQoAI/uAHkZgGtZ4ssZ4tAgIDngGTAC8MO1E0NQB+GL6APpAAW0C0gABktQx3tIA1AVERGwVBdMfAYIQoypcX7ry4GSBAQHXAAExEEUQNEEw8BXI+EIBzFVAUFT6AljPFiFulHAyygCVfwHKAMziEsoAzMntVADgMO1E0NQB+GL6APpAAW0C0gABktQx3tIA1AVERGwVBdMfAYIQe92X3rry4GSBAQHXAPpAAW0C0gABlPpAATDeQxMzEGcQVhBFEDRY8BbI+EIBzFVAUFT6AljPFiFulHAyygCVfwHKAMziEsoAzMntVADC7UTQ1AH4YvoA+kABbQLSAAGS1DHe0gDUBUREbBUF0x8BghDTqLheuvLgZG0B0gABktQx3gExEEUQNEEw8BfI+EIBzFVAUFT6AljPFiFulHAyygCVfwHKAMziEsoAzMntVAIBIA0OAgEgExQCASAPEAIBIBESADkAtD0BDCCAM5TAYAQ9A9vofLgZG3I9ADJQAPwD4AA/AXIzEE1UFT6AljPFiFulHAyygCVfwHKAMziEsoAzMmAADwQI18DFaAEgABk+EFvIzAxJMcF8uBkgAgEgFRYCASAXGAAJBA0XwSAAIz4QW8jMDH4QvgoIvAQECPwEoAAFF8DgABMVUDwEzIQNEMAgAEO+KO9qJoagD8MX0AfSAAtoFpAADJahjvaQBqAqIiNgr4CkAAm+7h+AjA==';
+    const depends = new Map<string, Cell>();
+    let systemCell = beginCell().storeDict(null).endCell();
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: systemCell });
+    __stack.push({ type: 'slice', cell: master});
+    __stack.push({ type: 'slice', cell: owner});
+    return deploy(__code, 'init_JettonDefaultContract', __stack); 
+}
+
+export class JettonDefaultContract {
             
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async getOwner() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('owner', __stack);
-    }
 }

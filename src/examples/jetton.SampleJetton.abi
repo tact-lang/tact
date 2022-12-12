@@ -1,5 +1,5 @@
 {
-  "name": "SampleJettonWallet",
+  "name": "JettonDefaultContract",
   "structs": [
     {
       "name": "SendParameters",
@@ -403,20 +403,175 @@
           }
         }
       }
-    }
-  ],
-  "init": null,
-  "receivers": [],
-  "getters": [
+    },
     {
-      "name": "owner",
-      "args": [],
-      "returns": {
-        "kind": "ref",
-        "name": "Address",
-        "optional": false
+      "name": "Mint",
+      "header": 0,
+      "fields": [
+        {
+          "name": "amount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 2737462367,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 257,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "Burned",
+      "header": 0,
+      "fields": [
+        {
+          "name": "amount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "owner",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "cashback",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 2078119902,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 268,
+                "refs": 0
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 2,
+                "size": {
+                  "bits": 267,
+                  "refs": 0
+                },
+                "kind": "address"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 792,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "TokenReceived",
+      "header": 0,
+      "fields": [
+        {
+          "name": "amount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 421783706,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 257,
+            "refs": 0
+          }
+        }
       }
     }
   ],
+  "init": {
+    "name": "init_JettonDefaultContract",
+    "args": [
+      {
+        "name": "master",
+        "type": {
+          "kind": "ref",
+          "name": "Address",
+          "optional": false
+        }
+      },
+      {
+        "name": "owner",
+        "type": {
+          "kind": "ref",
+          "name": "Address",
+          "optional": false
+        }
+      }
+    ]
+  },
+  "receivers": [],
+  "getters": [],
   "dependsOn": {}
 }

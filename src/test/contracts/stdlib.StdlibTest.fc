@@ -1,14 +1,15 @@
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
-builder __gen_write_StdlibTest(builder build_0, int v'v) inline {
+builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
+    var (v'v) = v;
     build_0 = store_int(build_0, v'v, 257);
     return build_0;
 }
 
-(slice, (int)) __gen_read_StdlibTest(slice sc) inline {
-    var v = sc~load_int(257);
-    return (sc, (v));
+(slice, ((int))) __gen_read_StdlibTest(slice sc) inline {
+    var v'v = sc~load_int(257);
+    return (sc, (v'v));
 }
 
 (int) __gen_load_StdlibTest() inline {
@@ -18,43 +19,43 @@ builder __gen_write_StdlibTest(builder build_0, int v'v) inline {
 }
 
 cell __gen_StdlibTest_init(cell sys') {
-    var (int self'v) = (0);
+    var ((self'v)) = (0);
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_StdlibTest(b', self'v);
+    b' = __gen_write_StdlibTest(b', (self'v));
     return b'.end_cell();
 }
 
 int __gen_StdlibTest_sliceEmpty((int) self, slice sc) impure {
-    var (int self'v) = self;
+    var ((self'v)) = self;
     return slice_empty?(sc);
 }
 
 _ __gen_get_sliceEmpty(slice sc) method_id(73995) {
-    var (int self'v) = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceEmpty(self'v, sc);
+    var self = __gen_load_StdlibTest();
+    var res = __gen_StdlibTest_sliceEmpty(self, sc);
     return res;
 }
 
 int __gen_StdlibTest_sliceBits((int) self, slice sc) impure {
-    var (int self'v) = self;
+    var ((self'v)) = self;
     return slice_bits(sc);
 }
 
 _ __gen_get_sliceBits(slice sc) method_id(75090) {
-    var (int self'v) = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceBits(self'v, sc);
+    var self = __gen_load_StdlibTest();
+    var res = __gen_StdlibTest_sliceBits(self, sc);
     return res;
 }
 
 int __gen_StdlibTest_sliceRefs((int) self, slice sc) impure {
-    var (int self'v) = self;
+    var ((self'v)) = self;
     return slice_refs(sc);
 }
 
 _ __gen_get_sliceRefs(slice sc) method_id(77445) {
-    var (int self'v) = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceRefs(self'v, sc);
+    var self = __gen_load_StdlibTest();
+    var res = __gen_StdlibTest_sliceRefs(self, sc);
     return res;
 }
 

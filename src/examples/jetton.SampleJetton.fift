@@ -3,16 +3,25 @@ PROGRAM{
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_address_eq
+  DECLPROC __tact_dict_get_code
   DECLPROC __gen_read_JettonUpdateContent
+  DECLPROC __gen_read_Mint
+  DECLPROC __gen_read_Burned
+  DECLPROC __gen_write_SampleJettonWallet
   DECLPROC __gen_write_SampleJetton
   DECLPROC __gen_read_SampleJetton
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_SampleJetton
   DECLPROC __gen_store_SampleJetton
+  DECLPROC __gen_SampleJettonWallet_init
+  DECLPROC __gen_SampleJettonWallet_init_child
   DECLPROC __gen_SampleJetton_init
+  DECLPROC __gen_SampleJetton_mint
   DECLPROC __gen_SampleJetton_requireOwner
   DECLPROC __gen_SampleJetton_owner
   83229 DECLMETHOD __gen_get_owner
+  DECLPROC __gen_SampleJetton_receive_Mint
+  DECLPROC __gen_SampleJetton_receive_Burned
   DECLPROC __gen_SampleJetton_receive_JettonUpdateContent
   DECLPROC recv_internal
   122307 DECLMETHOD init_SampleJetton
@@ -32,6 +41,13 @@ PROGRAM{
   __tact_address_eq PROCINLINE:<{
     SDEQ
   }>
+  __tact_dict_get_code PROCINLINE:<{
+    SWAP
+    16 PUSHINT
+    DICTUGETREF
+    NULLSWAPIFNOT
+    100 THROWIFNOT
+  }>
   __gen_read_JettonUpdateContent PROCINLINE:<{
     32 LDU
     SWAP
@@ -47,6 +63,43 @@ PROGRAM{
       NIP
     }>
     SWAP
+  }>
+  __gen_read_Mint PROCINLINE:<{
+    32 LDU
+    SWAP
+    2737462367 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_read_Burned PROCINLINE:<{
+    32 LDU
+    SWAP
+    2078119902 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    __tact_load_address INLINECALLDICT
+    PUSHNULL
+    s0 s2 XCHG
+    1 LDI
+    SWAP
+    IF:<{
+      __tact_load_address INLINECALLDICT
+      DROP
+    }>
+    s3 s1 s3 XCHG3
+  }>
+  __gen_write_SampleJettonWallet PROCINLINE:<{
+    2SWAP
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    257 PUSHINT
+    STIX
   }>
   __gen_write_SampleJetton PROCINLINE:<{
     s5 s4 XCHG2
@@ -108,6 +161,29 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  __gen_SampleJettonWallet_init PROC:<{
+    0 PUSHINT
+    s0 s3 XCHG
+    NEWC
+    STREF
+    s0 s3 XCHG
+    __gen_write_SampleJettonWallet INLINECALLDICT
+    ENDC
+  }>
+  __gen_SampleJettonWallet_init_child PROC:<{
+    s0 s2 XCHG
+    CTOS
+    LDDICT
+    DROP
+    52819 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    NEWDICT
+    NEWC
+    STDICT
+    ENDC
+    s0 s0 s3 XCHG3
+    __gen_SampleJettonWallet_init CALLDICT
+  }>
   __gen_SampleJetton_init PROC:<{
     s0 s5 XCHG
     NEWC
@@ -115,6 +191,13 @@ PROGRAM{
     s1 s3 s5 XCHG3
     __gen_write_SampleJetton INLINECALLDICT
     ENDC
+  }>
+  __gen_SampleJetton_mint PROC:<{
+    s2 s3 XCHG
+    3 BLKDROP
+    s1 s5 XCHG
+    ADD
+    s0 s4 XCHG
   }>
   __gen_SampleJetton_requireOwner PROC:<{
     __tact_context_get INLINECALLDICT
@@ -130,6 +213,20 @@ PROGRAM{
   __gen_get_owner PROC:<{
     __gen_load_SampleJetton INLINECALLDICT
     __gen_SampleJetton_owner CALLDICT
+  }>
+  __gen_SampleJetton_receive_Mint PROC:<{
+    __tact_context_get INLINECALLDICT
+    DROP
+    NIP
+    __tact_context_sys GETGLOB
+    MYADDR
+    s2 PUSH
+    __gen_SampleJettonWallet_init_child CALLDICT
+    s2 s3 XCHG
+    __gen_SampleJetton_mint CALLDICT
+  }>
+  __gen_SampleJetton_receive_Burned PROC:<{
+    3 BLKDROP
   }>
   __gen_SampleJetton_receive_JettonUpdateContent PROC:<{
     5 -ROLL
@@ -169,6 +266,38 @@ PROGRAM{
     s0 s2 XCHG
     IFJMP:<{
       2DROP
+    }>
+    DUP
+    2737462367 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s5 XCHG
+      __gen_read_Mint INLINECALLDICT
+      NIP
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s1 s3 s0 XCHG3
+      __gen_SampleJetton_receive_Mint CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
+    }>
+    DUP
+    2078119902 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s5 XCHG
+      __gen_read_Burned INLINECALLDICT
+      s3 POP
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      ROT
+      __gen_SampleJetton_receive_Burned CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
     }>
     3551049822 PUSHINT
     EQUAL

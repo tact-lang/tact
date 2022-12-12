@@ -1,34 +1,34 @@
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
-(slice, (int, int)) __gen_read_Source(slice sc) inline {
-    var a = sc~load_int(257);
-    var b = sc~load_int(257);
-    return (sc, (a, b));
+(slice, ((int, int))) __gen_read_Source(slice sc) inline {
+    var v'a = sc~load_int(257);
+    var v'b = sc~load_int(257);
+    return (sc, (v'a, v'b));
 }
 
-(slice, (int, int, int, int)) __gen_read_SampleContract(slice sc) inline {
-    var a = sc~load_int(257);
-    var b = sc~load_int(257);
+(slice, ((int, int, (int, int)))) __gen_read_SampleContract(slice sc) inline {
+    var v'a = sc~load_int(257);
+    var v'b = sc~load_int(257);
     sc = (sc~load_ref()).begin_parse();
-    var (int c'a, int c'b) = sc~__gen_read_Source();
-    return (sc, (a, b, c'a, c'b));
+    var v'c = sc~__gen_read_Source();
+    return (sc, (v'a, v'b, v'c));
 }
 
-(int, int, int, int) __gen_load_SampleContract() inline {
+(int, int, (int, int)) __gen_load_SampleContract() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleContract();
 }
 
-int __gen_SampleContract_stake((int, int, int, int) self) impure {
-    var (int self'a, int self'b, int self'c'a, int self'c'b) = self;
+int __gen_SampleContract_stake((int, int, (int, int)) self) impure {
+    var ((self'a, self'b, (self'c'a, self'c'b))) = self;
     return self'a;
 }
 
 _ __gen_get_stake() method_id(80984) {
-    var (int self'a, int self'b, int self'c'a, int self'c'b) = __gen_load_SampleContract();
-    var res = __gen_SampleContract_stake(self'a, self'b, self'c'a, self'c'b);
+    var self = __gen_load_SampleContract();
+    var res = __gen_SampleContract_stake(self);
     return res;
 }
 

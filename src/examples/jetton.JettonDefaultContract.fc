@@ -6,7 +6,8 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_JettonDefaultContract(builder build_0, int v'balance, slice v'owner, slice v'master) inline {
+builder __gen_write_JettonDefaultContract(builder build_0, (int, slice, slice) v) inline {
+    var (v'balance, v'owner, v'master) = v;
     build_0 = store_int(build_0, v'balance, 257);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = __tact_store_address(build_0, v'master);
@@ -14,13 +15,13 @@ builder __gen_write_JettonDefaultContract(builder build_0, int v'balance, slice 
 }
 
 cell __gen_JettonDefaultContract_init(cell sys', slice master, slice owner) {
-    var (int self'balance, slice self'owner, slice self'master) = (null(), null(), null());
+    var ((self'balance, self'owner, self'master)) = (null(), null(), null());
     self'balance = 0;
     self'owner = owner;
     self'master = master;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_JettonDefaultContract(b', self'balance, self'owner, self'master);
+    b' = __gen_write_JettonDefaultContract(b', (self'balance, self'owner, self'master));
     return b'.end_cell();
 }
 

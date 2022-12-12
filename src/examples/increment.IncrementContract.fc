@@ -10,21 +10,22 @@ global cell __tact_context_sys;
     }
 }
 
-(slice, (int, int)) __gen_read_Increment(slice sc) inline {
+(slice, ((int, int))) __gen_read_Increment(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 3615081709);
-    var key = sc~load_int(257);
-    var value = sc~load_int(257);
-    return (sc, (key, value));
+    var v'key = sc~load_int(257);
+    var v'value = sc~load_int(257);
+    return (sc, (v'key, v'value));
 }
 
-builder __gen_write_IncrementContract(builder build_0, cell v'counters) inline {
+builder __gen_write_IncrementContract(builder build_0, (cell) v) inline {
+    var (v'counters) = v;
     build_0 = store_dict(build_0, v'counters);
     return build_0;
 }
 
-(slice, (cell)) __gen_read_IncrementContract(slice sc) inline {
-    var counters = sc~load_dict();
-    return (sc, (counters));
+(slice, ((cell))) __gen_read_IncrementContract(slice sc) inline {
+    var v'counters = sc~load_dict();
+    return (sc, (v'counters));
 }
 
 (cell) __gen_load_IncrementContract() inline {
@@ -33,34 +34,35 @@ builder __gen_write_IncrementContract(builder build_0, cell v'counters) inline {
     return sc~__gen_read_IncrementContract();
 }
 
-() __gen_store_IncrementContract(cell v'counters) impure inline {
+() __gen_store_IncrementContract((cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_IncrementContract(b, v'counters);
+    b = __gen_write_IncrementContract(b, v);
     set_data(b.end_cell());
 }
 
 cell __gen_IncrementContract_init(cell sys') {
-    var (cell self'counters) = (null());
+    var ((self'counters)) = (null());
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_IncrementContract(b', self'counters);
+    b' = __gen_write_IncrementContract(b', (self'counters));
     return b'.end_cell();
 }
 
 cell __gen_IncrementContract_counters((cell) self) impure {
-    var (cell self'counters) = self;
+    var ((self'counters)) = self;
     return self'counters;
 }
 
 _ __gen_get_counters() method_id(95239) {
-    var (cell self'counters) = __gen_load_IncrementContract();
-    var res = __gen_IncrementContract_counters(self'counters);
+    var self = __gen_load_IncrementContract();
+    var res = __gen_IncrementContract_counters(self);
     return res;
 }
 
-((cell), ()) __gen_IncrementContract_receive_Increment((cell) self, int msg'key, int msg'value) impure {
+(((cell)), ()) __gen_IncrementContract_receive_Increment((cell) self, (int, int) msg) impure {
     var (self'counters) = self;
+    var (msg'key, msg'value) = msg;
     self'counters~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
     return ((self'counters), ());
 }
@@ -86,10 +88,10 @@ _ __gen_get_counters() method_id(95239) {
     
     ;; Receive Increment message
     if (op == 3615081709) {
-        var (cell self'counters) = __gen_load_IncrementContract();
-        var (int msg'key, int msg'value) = in_msg~__gen_read_Increment();
-        (self'counters)~__gen_IncrementContract_receive_Increment(msg'key, msg'value);
-        __gen_store_IncrementContract(self'counters);
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Increment();
+        self~__gen_IncrementContract_receive_Increment(msg);
+        __gen_store_IncrementContract(self);
         return ();
     }
     

@@ -1,8 +1,8 @@
 import { StorageAllocation, StorageCell, StorageField } from "../../storage/StorageAllocation";
-import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
+import { resolveFuncType } from "./resolveFuncType";
+import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
 //
 // Serializer
@@ -102,14 +102,11 @@ function writeSerializerCell(cell: StorageCell, index: number, ctx: WriterContex
 
 export function writeSerializer(name: string, allocation: StorageAllocation, ctx: WriterContext) {
 
-    let tensor = resolveFuncTensor(allocation.fields, ctx, `v'`);
-    let args = tensorToString(tensor, 'full');
-    let vvss = tensorToString(tensor, 'names');
-
     // Write to builder
     ctx.fun(`__gen_write_${name}`, () => {
-        ctx.append(`builder __gen_write_${name}(${['builder build_0', ...args].join(', ')}) inline {`);
+        ctx.append(`builder __gen_write_${name}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) inline {`);
         ctx.inIndent(() => {
+            ctx.append(`var ${resolveFuncTypeUnpack(allocation.type, `v`, ctx)} = v;`)
             if (allocation.prefix) {
                 ctx.append(`build_0 = store_uint(build_0, ${allocation.prefix}, 32);`);
             }
@@ -123,20 +120,20 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to cell
     ctx.fun(`__gen_writecell_${name}`, () => {
-        ctx.append(`cell __gen_writecell_${name}(${args.join(', ')}) inline {`);
+        ctx.append(`cell __gen_writecell_${name}(${resolveFuncType(allocation.type, ctx)} v) inline {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_write_${name}`);
-            ctx.append(`return __gen_write_${name}(begin_cell(), ${vvss.join(', ')}).end_cell();`);
+            ctx.append(`return __gen_write_${name}(begin_cell(), v).end_cell();`);
         });
         ctx.append(`}`);
     });
 
     // Write to slice
     ctx.fun(` __gen_writeslice_${name}`, () => {
-        ctx.append(`slice __gen_writeslice_${name}(${args.join(', ')}) inline {`);
+        ctx.append(`slice __gen_writeslice_${name}(${resolveFuncType(allocation.type, ctx)} v}) inline {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_writecell_${name}`);
-            ctx.append(`return __gen_writecell_${name}(${vvss.join(', ')}).begin_parse();`);
+            ctx.append(`return __gen_writecell_${name}(v).begin_parse();`);
         });
         ctx.append(`}`);
     });
@@ -151,7 +148,7 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle optional
 
     if (f.kind === 'optional') {
-        ctx.append(`var ${f.name} = null();`);
+        ctx.append(`var v'${f.name} = null();`);
         ctx.append('if (sc~load_int(1)) {');
         ctx.inIndent(() => {
             writeFieldParser(f.inner, ctx);
@@ -163,57 +160,56 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle primitive values
 
     if (f.kind === 'int') {
-        ctx.append(`var ${f.name} = sc~load_int(${f.bits});`);
+        ctx.append(`var v'${f.name} = sc~load_int(${f.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        ctx.append(`var ${f.name} = sc~load_uint(${f.bits});`);
+        ctx.append(`var v'${f.name} = sc~load_uint(${f.bits});`);
         return;
     }
 
     if (f.kind === 'coins') {
-        ctx.append(`var ${f.name} = sc~load_coins();`);
+        ctx.append(`var v'${f.name} = sc~load_coins();`);
         return;
     }
 
     if (f.kind === 'slice') {
-        ctx.append(`var ${f.name} = sc~load_ref().begin_parse();`);
+        ctx.append(`var v'${f.name} = sc~load_ref().begin_parse();`);
         return;
     }
 
     if (f.kind === 'cell') {
-        ctx.append(`var ${f.name} = sc~load_ref();`);
+        ctx.append(`var v'${f.name} = sc~load_ref();`);
         return;
     }
 
     if (f.kind === 'address') {
         ctx.used(`__tact_load_address`);
-        ctx.append(`var ${f.name} = sc~__tact_load_address();`);
+        ctx.append(`var v'${f.name} = sc~__tact_load_address();`);
         return;
     }
 
     if (f.kind === 'map') {
-        ctx.append(`var ${f.name} = sc~load_dict();`);
+        ctx.append(`var v'${f.name} = sc~load_dict();`);
         return;
     }
 
     if (f.kind === 'remaining') {
-        ctx.append(`var ${f.name} = sc;`);
+        ctx.append(`var v'${f.name} = sc;`);
         return;
     }
 
     if (f.kind === 'bytes') {
-        ctx.append(`var ${f.name} = sc~load_bits(${f.bytes * 8});`);
+        ctx.append(`var v'${f.name} = sc~load_bits(${f.bytes * 8});`);
         return;
     }
 
     // Handle structs
 
     if (f.kind === 'struct') {
-        let ft = resolveFuncTensor(f.type.fields, ctx, `${f.name}'`);
         ctx.used(`__gen_read_${f.type.name}`);
-        ctx.append(`var (${tensorToString(ft, 'full').join(', ')}) = sc~__gen_read_${f.type.name}();`);
+        ctx.append(`var v'${f.name} = sc~__gen_read_${f.type.name}();`);
         return;
     }
 
@@ -236,9 +232,7 @@ function writeCellParser(cell: StorageCell, ctx: WriterContext) {
 
 export function writeParser(name: string, allocation: StorageAllocation, ctx: WriterContext) {
     ctx.fun(`__gen_read_${name}`, () => {
-        let tensor = resolveFuncTensor(allocation.fields, ctx);
-        let returns = tensorToString(tensor, 'types');
-        ctx.append(`(slice, (${returns.join(', ')})) __gen_read_${name}(slice sc) inline {`);
+        ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${name}(slice sc) inline {`);
         ctx.inIndent(() => {
 
             // Check prefix
@@ -250,7 +244,7 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
             writeCellParser(allocation.root, ctx);
 
             // Compile tuple
-            ctx.append(`return (sc, (${tensorToString(tensor, 'names').join(', ')}));`);
+            ctx.append(`return (sc, (${allocation.fields.map((v) => `v'${v.name}`).join(', ')}));`);
         });
         ctx.append("}");
     });
@@ -263,9 +257,8 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
 export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
-    let tensor = resolveFuncTensor(type.fields, ctx, `v'`);
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`(${tensorToString(tensor, 'types').join(', ')}) __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline {`); // NOTE: Inline function
         ctx.inIndent(() => {
 
             // Load data slice
@@ -284,7 +277,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${tensorToString(tensor, 'full').join(', ')}) impure inline {`); // NOTE: Impure function
+        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline {`); // NOTE: Impure function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
 
@@ -294,24 +287,11 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
             // Build data
             ctx.used(`__gen_write_${type.name}`);
-            ctx.append(`b = __gen_write_${type.name}(${['b', tensorToString(tensor, 'names')].join(', ')});`);
+            ctx.append(`b = __gen_write_${type.name}(b, v);`);
 
             // Persist data
             ctx.append(`set_data(b.end_cell());`);
         });
         ctx.append(`}`);
     });
-}
-
-//
-// Resolve
-//
-
-export function resolveReadVariableName(name: string, type: string, ctx: WriterContext) {
-    let t = getType(ctx.ctx, type);
-    if (t.kind === 'contract' || t.kind === 'struct') {
-        let tz = resolveFuncTensor(t.fields, ctx, `${name}'`);
-        return '(' + tensorToString(tz, 'names').join(', ') + ')';
-    }
-    return `${name}`;
 }

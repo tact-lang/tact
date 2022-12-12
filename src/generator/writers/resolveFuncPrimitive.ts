@@ -2,45 +2,44 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
-export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext): string {
-
+export function resolveFuncPrimitive(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext): boolean {
     // String
     if (typeof descriptor === 'string') {
-        return resolveFuncType(getType(ctx.ctx, descriptor), ctx);
+        return resolveFuncPrimitive(getType(ctx.ctx, descriptor), ctx);
     }
 
     // TypeRef
     if (descriptor.kind === 'ref') {
-        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx);
+        return resolveFuncPrimitive(getType(ctx.ctx, descriptor.name), ctx);
     }
     if (descriptor.kind === 'map') {
-        return 'cell';
+        return true;
     }
     if (descriptor.kind === 'void') {
-        return '()';
+        return true;
     }
 
     // TypeDescription
     if (descriptor.kind === 'primitive') {
         if (descriptor.name === 'Int') {
-            return 'int';
+            return true;
         } else if (descriptor.name === 'Bool') {
-            return 'int';
+            return true;
         } else if (descriptor.name === 'Slice') {
-            return 'slice';
+            return true;
         } else if (descriptor.name === 'Cell') {
-            return 'cell';
+            return true;
         } else if (descriptor.name === 'Builder') {
-            return 'builder';
+            return true;
         } else if (descriptor.name === 'Address') {
-            return 'slice';
+            return true;
         } else {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+        return false;
     } else if (descriptor.kind === 'contract') {
-        return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+        return false;
     }
 
     // Unreachable

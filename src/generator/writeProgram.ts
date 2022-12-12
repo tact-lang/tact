@@ -7,7 +7,6 @@ import { WriterContext } from "./Writer";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
-import { resolveFuncTensor, tensorToString } from "./writers/resolveFuncTensor";
 import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell } from "ton";
 import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
@@ -58,20 +57,17 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                 let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
                 if (bouncedHandler) {
 
-                    // Resolve tensors
-                    let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
-
                     // Load storage
                     ctx.used(`__gen_load_${type.name}`);
-                    ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+                    ctx.append(`var self = __gen_load_${type.name}();`);
 
                     // Execute function
                     ctx.used(`__gen_${type.name}_receive_bounced`);
-                    ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_bounced(in_msg);`);
+                    ctx.append(`self~__gen_${type.name}_receive_bounced(in_msg);`);
 
                     // Persist
                     ctx.used(`__gen_store_${type.name}`);
-                    ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+                    ctx.append(`__gen_store_${type.name}(self);`);
                     ctx.append(`return ();`);
                 } else {
                     ctx.append(`return ();`);
@@ -94,25 +90,21 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                     ctx.append(`if (op == ${allocation.prefix}) {`);
                     ctx.inIndent(() => {
 
-                        // Resolve tensors
-                        let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
-                        let msgTensor = resolveFuncTensor(allocation.fields, ctx, `msg'`);
-
                         // Load storage
                         ctx.used(`__gen_load_${type.name}`);
-                        ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+                        ctx.append(`var self = __gen_load_${type.name}();`);
 
                         // Read message
                         ctx.used(`__gen_read_${selector.type}`);
-                        ctx.append(`var (${tensorToString(msgTensor, 'full').join(', ')}) = in_msg~__gen_read_${selector.type}();`);
+                        ctx.append(`var msg = in_msg~__gen_read_${selector.type}();`);
 
                         // Execute function
                         ctx.used(`__gen_${type.name}_receive_${selector.type}`);
-                        ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_${selector.type}(${tensorToString(msgTensor, 'names').join(', ')});`);
+                        ctx.append(`self~__gen_${type.name}_receive_${selector.type}(msg);`);
 
                         // Persist
                         ctx.used(`__gen_store_${type.name}`);
-                        ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+                        ctx.append(`__gen_store_${type.name}(self);`);
 
                         // Exit
                         ctx.append(`return ();`);
@@ -126,20 +118,17 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                     ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
                     ctx.inIndent(() => {
 
-                        // Resolve tensors
-                        let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
-
                         // Load storage
                         ctx.used(`__gen_load_${type.name}`);
-                        ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+                        ctx.append(`var self = __gen_load_${type.name}();`);
 
                         // Execute function
                         ctx.used(`__gen_${type.name}_receive`);
-                        ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive();`);
+                        ctx.append(`self~__gen_${type.name}_receive();`);
 
                         // Persist
                         ctx.used(`__gen_store_${type.name}`);
-                        ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+                        ctx.append(`__gen_store_${type.name}(self);`);
 
                         // Exit
                         ctx.append(`return ();`);
@@ -170,20 +159,17 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                             ctx.append(`if (text_op == 0x${hash}) {`);
                             ctx.inIndent(() => {
 
-                                // Resolve tensors
-                                let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
-
                                 // Load storage
                                 ctx.used(`__gen_load_${type.name}`);
-                                ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+                                ctx.append(`var self = __gen_load_${type.name}();`);
 
                                 // Execute function
                                 ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
-                                ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_comment_${hash}();`);
+                                ctx.append(`self~__gen_${type.name}_receive_comment_${hash}();`);
 
                                 // Persist
                                 ctx.used(`__gen_store_${type.name}`);
-                                ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+                                ctx.append(`__gen_store_${type.name}(self);`);
 
                                 // Exit
                                 ctx.append(`return ();`);
@@ -201,20 +187,18 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
 
                 ctx.append();
                 ctx.append(`;; Receiver fallback`);
-                // Resolve tensors
-                let selfTensor = resolveFuncTensor(type.fields, ctx, `self'`);
 
                 // Load storage
                 ctx.used(`__gen_load_${type.name}`);
-                ctx.append(`var (${tensorToString(selfTensor, 'full').join(', ')}) = __gen_load_${type.name}();`);
+                ctx.append(`var self = __gen_load_${type.name}();`);
 
                 // Execute function
                 ctx.used(`__gen_${type.name}_receive_fallback`);
-                ctx.append(`(${tensorToString(selfTensor, 'names').join(', ')})~__gen_${type.name}_receive_fallback(in_msg);`);
+                ctx.append(`self~__gen_${type.name}_receive_fallback(in_msg);`);
 
                 // Persist
                 ctx.used(`__gen_store_${type.name}`);
-                ctx.append(`__gen_store_${type.name}(${tensorToString(selfTensor, 'names').join(', ')});`);
+                ctx.append(`__gen_store_${type.name}(self);`);
 
             } else {
                 ctx.append();
@@ -281,7 +265,7 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, name: strin
 
     // Extensions
     for (let c of allTypes) {
-        if (c.kind !== 'contract') { // We are rendering contract functions separately
+        if (c.kind !== 'contract' && c.kind !== 'trait') { // We are rendering contract functions separately
             for (let f of Object.values(c.functions)) {
                 writeFunction(f, wctx);
             }

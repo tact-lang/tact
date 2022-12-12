@@ -205,7 +205,7 @@ export function resolveAllocations(ctx: CompilerContext) {
 
         let root = allocateFields(ctx, [...s.fields], 1023 - reserveBits, 4 - reserveRefs);
         let allocation: StorageAllocation = {
-            isContract: (s.kind === 'contract'),
+            type: s,
             prefix, root,
             fields: s.fields,
             size: {

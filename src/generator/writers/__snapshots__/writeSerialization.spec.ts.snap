@@ -78,7 +78,8 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-builder __gen_write_A(builder build_0, int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
+builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     build_0 = store_int(build_0, v'a, 257);
     build_0 = store_int(build_0, v'b, 257);
     if (null?(v'c)) {
@@ -101,30 +102,30 @@ builder __gen_write_A(builder build_0, int v'a, int v'b, int v'c, int v'd, int v
     return build_0;
 }
 
-cell __gen_writecell_A(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
-    return __gen_write_A(begin_cell(), v'a, v'b, v'c, v'd, v'e, v'f, v'g).end_cell();
+cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline {
+    return __gen_write_A(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_A(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
-    return __gen_writecell_A(v'a, v'b, v'c, v'd, v'e, v'f, v'g).begin_parse();
+slice __gen_writeslice_A((int, int, int, int, int, int, int) v}) inline {
+    return __gen_writecell_A(v).begin_parse();
 }
 
-(slice, (int, int, int, int, int, int, int)) __gen_read_A(slice sc) inline {
-    var a = sc~load_int(257);
-    var b = sc~load_int(257);
-    var c = null();
+(slice, ((int, int, int, int, int, int, int))) __gen_read_A(slice sc) inline {
+    var v'a = sc~load_int(257);
+    var v'b = sc~load_int(257);
+    var v'c = null();
     if (sc~load_int(1)) {
-        var c = sc~load_int(257);
+        var v'c = sc~load_int(257);
     }
-    var d = sc~load_int(1);
-    var e = null();
+    var v'd = sc~load_int(1);
+    var v'e = null();
     if (sc~load_int(1)) {
-        var e = sc~load_int(1);
+        var v'e = sc~load_int(1);
     }
     sc = (sc~load_ref()).begin_parse();
-    var f = sc~load_int(257);
-    var g = sc~load_int(257);
-    return (sc, (a, b, c, d, e, f, g));
+    var v'f = sc~load_int(257);
+    var v'g = sc~load_int(257);
+    return (sc, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }"
 `;
 
@@ -206,7 +207,8 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-builder __gen_write_B(builder build_0, int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
+builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     build_0 = store_int(build_0, v'a, 257);
     build_0 = store_int(build_0, v'b, 257);
     if (null?(v'c)) {
@@ -229,30 +231,30 @@ builder __gen_write_B(builder build_0, int v'a, int v'b, int v'c, int v'd, int v
     return build_0;
 }
 
-cell __gen_writecell_B(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
-    return __gen_write_B(begin_cell(), v'a, v'b, v'c, v'd, v'e, v'f, v'g).end_cell();
+cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline {
+    return __gen_write_B(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_B(int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
-    return __gen_writecell_B(v'a, v'b, v'c, v'd, v'e, v'f, v'g).begin_parse();
+slice __gen_writeslice_B((int, int, int, int, int, int, int) v}) inline {
+    return __gen_writecell_B(v).begin_parse();
 }
 
-(slice, (int, int, int, int, int, int, int)) __gen_read_B(slice sc) inline {
-    var a = sc~load_int(257);
-    var b = sc~load_int(257);
-    var c = null();
+(slice, ((int, int, int, int, int, int, int))) __gen_read_B(slice sc) inline {
+    var v'a = sc~load_int(257);
+    var v'b = sc~load_int(257);
+    var v'c = null();
     if (sc~load_int(1)) {
-        var c = sc~load_int(257);
+        var v'c = sc~load_int(257);
     }
-    var d = sc~load_int(1);
-    var e = null();
+    var v'd = sc~load_int(1);
+    var v'e = null();
     if (sc~load_int(1)) {
-        var e = sc~load_int(1);
+        var v'e = sc~load_int(1);
     }
     sc = (sc~load_ref()).begin_parse();
-    var f = sc~load_int(257);
-    var g = sc~load_int(257);
-    return (sc, (a, b, c, d, e, f, g));
+    var v'f = sc~load_int(257);
+    var v'g = sc~load_int(257);
+    return (sc, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }"
 `;
 
@@ -334,7 +336,8 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-builder __gen_write_C(builder build_0, cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {
+builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
     build_0 = store_ref(build_0, v'a);
     if (null?(v'b)) {
         build_0 = store_int(build_0, false, 1);
@@ -363,33 +366,33 @@ builder __gen_write_C(builder build_0, cell v'a, cell v'b, slice v'c, slice v'd,
     return build_0;
 }
 
-cell __gen_writecell_C(cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {
-    return __gen_write_C(begin_cell(), v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h).end_cell();
+cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    return __gen_write_C(begin_cell(), v).end_cell();
 }
 
-slice __gen_writeslice_C(cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {
-    return __gen_writecell_C(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h).begin_parse();
+slice __gen_writeslice_C((cell, cell, slice, slice, int, int, int, slice) v}) inline {
+    return __gen_writecell_C(v).begin_parse();
 }
 
-(slice, (cell, cell, slice, slice, int, int, int, slice)) __gen_read_C(slice sc) inline {
-    var a = sc~load_ref();
-    var b = null();
+(slice, ((cell, cell, slice, slice, int, int, int, slice))) __gen_read_C(slice sc) inline {
+    var v'a = sc~load_ref();
+    var v'b = null();
     if (sc~load_int(1)) {
-        var b = sc~load_ref();
+        var v'b = sc~load_ref();
     }
-    var c = null();
+    var v'c = null();
     if (sc~load_int(1)) {
-        var c = sc~load_ref().begin_parse();
+        var v'c = sc~load_ref().begin_parse();
     }
     sc = (sc~load_ref()).begin_parse();
-    var d = null();
+    var v'd = null();
     if (sc~load_int(1)) {
-        var d = sc~load_ref().begin_parse();
+        var v'd = sc~load_ref().begin_parse();
     }
-    var e = sc~load_int(1);
-    var f = sc~load_int(257);
-    var g = sc~load_int(257);
-    var h = sc~__tact_load_address();
-    return (sc, (a, b, c, d, e, f, g, h));
+    var v'e = sc~load_int(1);
+    var v'f = sc~load_int(257);
+    var v'g = sc~load_int(257);
+    var v'h = sc~__tact_load_address();
+    return (sc, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
 }"
 `;

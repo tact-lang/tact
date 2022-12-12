@@ -1,7 +1,7 @@
 import { TypeDescription, TypeRef } from "../types/types";
 
 export type StorageAllocation = {
-    isContract: boolean;
+    type: TypeDescription;
     prefix: number | null;
     root: StorageCell;
     size: { bits: number, refs: number };
