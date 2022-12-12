@@ -709,8 +709,11 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, name: strin
         for (let f of Object.values(c.functions)) {
             writeFunction(f, wctx);
 
-            if (f.isGetter) {
-                writeGetter(f, wctx);
+            // Render only needed getter
+            if (!name || c.name === name) {
+                if (f.isGetter) {
+                    writeGetter(f, wctx);
+                }
             }
         }
 

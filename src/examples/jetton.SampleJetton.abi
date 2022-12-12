@@ -1,0 +1,422 @@
+{
+  "name": "SampleJettonWallet",
+  "structs": [
+    {
+      "name": "SendParameters",
+      "header": 0,
+      "fields": [
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
+          }
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "mode",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 4,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 783,
+            "refs": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "Context",
+      "header": 0,
+      "fields": [
+        {
+          "name": "bounced",
+          "type": {
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
+          }
+        },
+        {
+          "name": "sender",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 525,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "StateInit",
+      "header": 0,
+      "fields": [
+        {
+          "name": "code",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 0,
+            "refs": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "JettonData",
+      "header": 0,
+      "fields": [
+        {
+          "name": "totalSupply",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "mintable",
+          "type": {
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
+          }
+        },
+        {
+          "name": "owner",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "content",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        },
+        {
+          "name": "walletCode",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 525,
+            "refs": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "JettonUpdateContent",
+      "header": 0,
+      "fields": [
+        {
+          "name": "content",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 3551049822,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 0,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 1,
+            "refs": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "ChangeOwner",
+      "header": 0,
+      "fields": [
+        {
+          "name": "newOwner",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 3067051791,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 267,
+            "refs": 0
+          }
+        }
+      }
+    }
+  ],
+  "init": null,
+  "receivers": [],
+  "getters": [
+    {
+      "name": "owner",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Address",
+        "optional": false
+      }
+    }
+  ],
+  "dependsOn": {}
+}

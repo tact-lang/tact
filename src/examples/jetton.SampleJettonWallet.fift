@@ -1,0 +1,88 @@
+PROGRAM{
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_SampleJettonWallet
+  DECLPROC __gen_read_SampleJettonWallet
+  DECLPROC __gen_load_SampleJettonWallet
+  DECLPROC __gen_SampleJettonWallet_init
+  DECLPROC __gen_SampleJettonWallet_owner
+  83229 DECLMETHOD __gen_get_owner
+  DECLPROC recv_internal
+  69347 DECLMETHOD init_SampleJettonWallet
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_SampleJettonWallet PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_SampleJettonWallet PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  __gen_load_SampleJettonWallet PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_SampleJettonWallet INLINECALLDICT
+    1 2 BLKDROP2
+  }>
+  __gen_SampleJettonWallet_init PROC:<{
+    s0 s2 XCHG
+    NEWC
+    STREF
+    s0 s2 XCHG
+    __gen_write_SampleJettonWallet INLINECALLDICT
+    ENDC
+  }>
+  __gen_SampleJettonWallet_owner PROC:<{
+    NIP
+  }>
+  __gen_get_owner PROC:<{
+    __gen_load_SampleJettonWallet INLINECALLDICT
+    __gen_SampleJettonWallet_owner CALLDICT
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    100 THROW
+  }>
+  init_SampleJettonWallet PROC:<{
+    __gen_SampleJettonWallet_init CALLDICT
+  }>
+}END>c

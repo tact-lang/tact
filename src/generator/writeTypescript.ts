@@ -62,6 +62,9 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
         } else if (ref.name === 'Address') {
             w.append(`__stack.push({ type: 'slice', cell: ${name}});`);
             return;
+        } else if (ref.name === 'Bool') {
+            w.append(`__stack.push({ type: 'int', value: new BN(${name} ? -1 : 0)});`);
+            return;
         } else {
             throw Error(`Unsupported type: ${ref.name}`);
         }

@@ -115,6 +115,11 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             ...src,
             statements: src.statements.map(cloneNode),
         });
+    } else if (src.kind === 'def_argument') {
+        return cloneASTNode({
+            ...src,
+            type: cloneASTNode(src.type),
+        });
     }
 
     throw Error('Not implemented for ' + src.kind);

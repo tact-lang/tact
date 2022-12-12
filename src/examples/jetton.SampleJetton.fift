@@ -1,0 +1,192 @@
+PROGRAM{
+  DECLPROC __tact_context_get
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_address_eq
+  DECLPROC __gen_read_JettonUpdateContent
+  DECLPROC __gen_write_SampleJetton
+  DECLPROC __gen_read_SampleJetton
+  DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_load_SampleJetton
+  DECLPROC __gen_store_SampleJetton
+  DECLPROC __gen_SampleJetton_init
+  DECLPROC __gen_SampleJetton_requireOwner
+  DECLPROC __gen_SampleJetton_owner
+  83229 DECLMETHOD __gen_get_owner
+  DECLPROC __gen_SampleJetton_receive_JettonUpdateContent
+  DECLPROC recv_internal
+  122307 DECLMETHOD init_SampleJetton
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    UNTRIPLE
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
+  }>
+  __gen_read_JettonUpdateContent PROCINLINE:<{
+    32 LDU
+    SWAP
+    3551049822 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      LDREF
+      NIP
+    }>
+    SWAP
+  }>
+  __gen_write_SampleJetton PROCINLINE:<{
+    s5 s4 XCHG2
+    STGRAMS
+    ROT
+    __tact_store_address INLINECALLDICT
+    OVER
+    ISNULL
+    IF:<{
+      FALSE
+      s2 POP
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>
+    s1 s2 XCHG
+    1 STI
+    STREF
+  }>
+  __gen_read_SampleJetton PROCINLINE:<{
+    LDGRAMS
+    __tact_load_address INLINECALLDICT
+    PUSHNULL
+    s0 s2 XCHG
+    1 LDI
+    SWAP
+    IF:<{
+      LDREF
+      NIP
+    }>
+    1 LDI
+    LDREF
+    s0 s5 XCHG
+    s4 s4 s4 XCHG3
+  }>
+  __gen_Context_get_sender PROCINLINE:<{
+    DROP
+    NIP
+  }>
+  __gen_load_SampleJetton PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_SampleJetton INLINECALLDICT
+    1 5 BLKDROP2
+  }>
+  __gen_store_SampleJetton PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    5 -ROLL
+    __gen_write_SampleJetton INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_SampleJetton_init PROC:<{
+    s0 s5 XCHG
+    NEWC
+    STREF
+    s1 s3 s5 XCHG3
+    __gen_write_SampleJetton INLINECALLDICT
+    ENDC
+  }>
+  __gen_SampleJetton_requireOwner PROC:<{
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_sender INLINECALLDICT
+    s4 PUSH
+    __tact_address_eq INLINECALLDICT
+    100 THROWIFNOT
+  }>
+  __gen_SampleJetton_owner PROC:<{
+    s3 s4 XCHG
+    4 BLKDROP
+  }>
+  __gen_get_owner PROC:<{
+    __gen_load_SampleJetton INLINECALLDICT
+    __gen_SampleJetton_owner CALLDICT
+  }>
+  __gen_SampleJetton_receive_JettonUpdateContent PROC:<{
+    5 -ROLL
+    __gen_SampleJetton_requireOwner CALLDICT
+    s2 POP
+    s3 s4 XCHG
+    s3 s0 s0 XCHG3
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    3551049822 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s5 XCHG
+      __gen_read_JettonUpdateContent INLINECALLDICT
+      NIP
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s1 s3 s0 XCHG3
+      __gen_SampleJetton_receive_JettonUpdateContent CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
+    }>
+    DROP
+    100 THROW
+  }>
+  init_SampleJetton PROC:<{
+    __gen_SampleJetton_init CALLDICT
+  }>
+}END>c

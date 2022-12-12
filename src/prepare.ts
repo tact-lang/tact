@@ -31,7 +31,7 @@ import { ContractABI } from './abi/ContractABI';
                     let prefix = (p.path + r).slice(0, (p.path + r).length - 5) + '.' + contract;
 
                     // Tact -> FunC
-                    let res = compile(ctx, '');
+                    let res = compile(ctx, contract);
                     fs.writeFileSync(prefix + ".fc", res.output);
 
                     // FunC -> Fift/Cell

@@ -1,0 +1,64 @@
+SETCP0
+(:methods
+  recv_internal: 
+    s0 PUSH
+    SBITS
+    s1 POP
+    31 GTINT
+    s0 POP
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    1 EQINT
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 POP
+    1 0 2 PUXC2
+    TRIPLE
+    1 SETGLOBVAR
+    IFRET
+    100 THROW
+
+  6: 
+    s0 s2 XCHG
+    NEWC
+    STREF
+    s0 s2 XCHG
+    ROTREV
+    STSLICER
+    s0 s1 XCHG
+    STSLICER
+    ENDC
+
+  7: 
+    s1 POP
+
+  69347: 
+    6 CALLDICT
+
+  owner: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 s1 XCHG
+    s1 s2 XCHG
+    1 2 BLKDROP2
+    7 CALLDICT
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG
