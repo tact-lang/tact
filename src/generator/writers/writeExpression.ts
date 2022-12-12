@@ -4,7 +4,7 @@ import { getExpType } from "../../types/resolveExpression";
 import { getStaticFunction, getType } from "../../types/resolveDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
+import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -63,7 +63,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                return '(' + tensorToString(resolveFuncTensor(tt.fields, ctx, `${f.value}'`), 'names').join(', ') + ')';
+                return resolveFuncTypeUnpack(tt, f.value, ctx);
             }
         }
         return f.value;
@@ -202,8 +202,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (field.type.kind === 'ref') {
                 let ft = getType(ctx.ctx, field.type.name);
                 if (ft.kind === 'struct' || ft.kind === 'contract') {
-                    let tensor = resolveFuncTensor(ft.fields, ctx, `${path.join("'")}'`);
-                    return '(' + tensorToString(tensor, 'names').join(', ') + ')';
+                    return resolveFuncTypeUnpack(ft, path.join("'"), ctx);
                 }
             }
 

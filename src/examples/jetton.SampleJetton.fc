@@ -84,7 +84,8 @@ builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int, cell) 
     return (sc, (v'totalSupply, v'owner, v'content, v'mintable, v'walletCode));
 }
 
-_ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
+_ __gen_Context_get_sender((int, slice, int) v) inline {
+    var (v'bounced, v'sender, v'value) = v;
     return v'sender;
 }
 

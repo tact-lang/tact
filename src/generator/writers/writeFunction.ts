@@ -6,7 +6,7 @@ import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescript
 import { getMethodId } from "../../utils";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
-import { resolveFuncTensor, TensorDef, tensorToString } from "./resolveFuncTensor";
+import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeExpression } from "./writeExpression";
@@ -218,12 +218,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
             .hash()
             .toString('hex', 0, 64);
         ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
-            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
-            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
             let modifier = config.enableInline ? 'impure inline' : 'impure';
-            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_comment_${hash}((${(tensorToString(selfTensor, 'types').join(', ') + ') self')}) ${modifier} {`);
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_comment_${hash}(${(resolveFuncType(self, ctx) + ' self')}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -240,12 +239,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     // Fallback
     if (selector.kind === 'internal-fallback') {
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
-            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
-            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
             let modifier = config.enableInline ? 'impure inline' : 'impure';
-            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_fallback((${(tensorToString(selfTensor, 'types').join(', '))}) self, slice ${selector.name}) ${modifier} {`);
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_fallback(${resolveFuncType(self, ctx)} self, slice ${selector.name}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -262,12 +260,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     // Bounced
     if (selector.kind === 'internal-bounce') {
         ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
-            let selfTensor = resolveFuncTensor(self.fields, ctx, `self'`);
-            let selfRes = `(${tensorToString(selfTensor, 'names').join(', ')})`;
+            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
             let modifier = config.enableInline ? 'impure inline' : 'impure';
-            ctx.append(`((${tensorToString(selfTensor, 'types').join(', ')}), ()) __gen_${self.name}_receive_bounced((${(tensorToString(selfTensor, 'types').join(', '))}) self, slice ${selector.name}) ${modifier} {`);
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_bounced(${resolveFuncType(self, ctx)} self, slice ${selector.name}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var (${tensorToString(selfTensor, 'names').join(', ')}) = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);

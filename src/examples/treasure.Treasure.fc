@@ -43,7 +43,8 @@ builder __gen_write_Treasure(builder build_0, (slice) v) inline {
     return (sc, (v'owner));
 }
 
-_ __gen_Context_get_sender(int v'bounced, slice v'sender, int v'value) inline {
+_ __gen_Context_get_sender((int, slice, int) v) inline {
+    var (v'bounced, v'sender, v'value) = v;
     return v'sender;
 }
 

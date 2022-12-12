@@ -1,29 +1,23 @@
-import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { resolveFuncTensor, tensorToString } from "./resolveFuncTensor";
+import { resolveFuncType } from "./resolveFuncType";
 
 export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
-    let sourceTensor = resolveFuncTensor(type.fields, ctx, `v'`);
 
+    // Getters
     for (let f of type.fields) {
         ctx.fun(`__gen_${type.name}_get_${f.name}`, () => {
-            ctx.append(`_ __gen_${type.name}_get_${f.name}(${tensorToString(sourceTensor, 'full').join(', ')}) inline {`);
+            ctx.append(`_ __gen_${type.name}_get_${f.name}(${resolveFuncType(type, ctx)} v) inline {`);
             ctx.inIndent(() => {
-                if (f.type.kind === 'ref') {
-                    let tt = getType(ctx.ctx, f.type.name);
-                    if (tt.kind === 'struct' || tt.kind === 'contract') {
-                        ctx.append(`return (${tensorToString(resolveFuncTensor(tt.fields, ctx, `v'${f.name}'`), 'names').join(', ')});`);
-                        return;
-                    }
-                }
+                ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
                 ctx.append(`return v'${f.name};`);
             });
             ctx.append(`}`);
         });;
     }
 
+    // Unpack
     ctx.fun(`__gen_${type.name}_unpack`, () => {
-        ctx.append(`(${tensorToString(sourceTensor, 'types').join(', ')}) __gen_${type.name}_unpack(${tensorToString(sourceTensor, 'full').join(', ')}) asm "NOP";`);
+        ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v) asm "NOP";`);
     });;
 }

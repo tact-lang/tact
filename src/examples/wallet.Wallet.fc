@@ -78,7 +78,8 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     return (sc, (v'seqno, v'key, v'walletId));
 }
 
-_ __gen_Context_get_bounced(int v'bounced, slice v'sender, int v'value) inline {
+_ __gen_Context_get_bounced((int, slice, int) v) inline {
+    var (v'bounced, v'sender, v'value) = v;
     return v'bounced;
 }
 
