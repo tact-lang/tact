@@ -1,10 +1,11 @@
 import { ABIFunctions, MapFunctions } from "../../abi/AbiFunction";
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
-import { getStaticFunction, getType } from "../../types/resolveDescriptors";
+import { getStaticFunction, getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
+import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -298,6 +299,16 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             // Render
             if (ff.isMutating) {
                 let s = writeExpression(f.src, ctx);
+                if (f.args.length === 1) {
+                    let t = getExpType(ctx.ctx, f.args[0]);
+                    if (t.kind === 'ref') {
+                        let tt = getType(ctx.ctx, t.name);
+                        if (tt.kind === 'contract' || tt.kind === 'struct') {
+                            ctx.used(`__gen_${tt.name}_unpack`);
+                            return `${s}~${name}(__gen_${tt.name}_unpack(${writeExpression(f.args[0], ctx)}))`;
+                        }
+                    }
+                }
                 return `${s}~${name}(${[...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
             } else {
                 let s = writeExpression(f.src, ctx);
