@@ -1,5 +1,5 @@
 {
-  "name": "Wallet",
+  "name": "SampleContract",
   "structs": [
     {
       "name": "SendParameters",
@@ -229,105 +229,63 @@
       }
     },
     {
-      "name": "TransferMessage",
+      "name": "Source",
       "header": 0,
       "fields": [
         {
-          "name": "signature",
+          "name": "a",
           "type": {
             "kind": "ref",
-            "name": "Slice",
+            "name": "Int",
             "optional": false
           }
         },
         {
-          "name": "transfer",
+          "name": "b",
           "type": {
             "kind": "ref",
-            "name": "Slice",
+            "name": "Int",
             "optional": false
           }
         }
       ],
       "allocation": {
-        "prefix": 1843760589,
+        "prefix": null,
         "root": {
           "fields": [
             {
               "index": 0,
               "size": {
-                "bits": 512,
+                "bits": 257,
                 "refs": 0
               },
-              "kind": "bytes",
-              "bytes": 64
+              "kind": "int",
+              "bits": 257
             },
             {
               "index": 1,
               "size": {
-                "bits": 0,
+                "bits": 257,
                 "refs": 0
               },
-              "kind": "remaining"
+              "kind": "int",
+              "bits": 257
             }
           ],
           "next": null,
           "size": {
-            "bits": 512,
+            "bits": 514,
             "refs": 0
           }
         }
       }
     }
   ],
-  "init": {
-    "name": "init_Wallet",
-    "args": [
-      {
-        "name": "key",
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false
-        }
-      },
-      {
-        "name": "walletId",
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false
-        }
-      }
-    ]
-  },
-  "receivers": [
-    {
-      "kind": "internal-binary",
-      "type": "TransferMessage"
-    }
-  ],
+  "init": null,
+  "receivers": [],
   "getters": [
     {
-      "name": "publicKey",
-      "args": [],
-      "returns": {
-        "kind": "ref",
-        "name": "Int",
-        "optional": false
-      }
-    },
-    {
-      "name": "walletId",
-      "args": [],
-      "returns": {
-        "kind": "ref",
-        "name": "Int",
-        "optional": false
-      }
-    },
-    {
-      "name": "seqno",
+      "name": "stake",
       "args": [],
       "returns": {
         "kind": "ref",
@@ -335,5 +293,6 @@
         "optional": false
       }
     }
-  ]
+  ],
+  "dependsOn": {}
 }

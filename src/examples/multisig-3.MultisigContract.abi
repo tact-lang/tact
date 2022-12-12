@@ -1,5 +1,5 @@
 {
-  "name": "StdlibTest",
+  "name": "MultisigContract",
   "structs": [
     {
       "name": "SendParameters",
@@ -227,44 +227,232 @@
           }
         }
       }
+    },
+    {
+      "name": "Operation",
+      "header": 0,
+      "fields": [
+        {
+          "name": "seqno",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "target",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 32,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 32
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 423,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "Execute",
+      "header": 0,
+      "fields": [
+        {
+          "name": "operation",
+          "type": {
+            "kind": "ref",
+            "name": "Operation",
+            "optional": false
+          }
+        },
+        {
+          "name": "signature1",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
+        },
+        {
+          "name": "signature2",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
+        },
+        {
+          "name": "signature3",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 819865922,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 423,
+                "refs": 0
+              },
+              "kind": "struct",
+              "type": "Operation"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 423,
+            "refs": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "Executed",
+      "header": 0,
+      "fields": [
+        {
+          "name": "seqno",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 4174937,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 32,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 32
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 32,
+            "refs": 0
+          }
+        }
+      }
     }
   ],
   "init": {
-    "name": "init_StdlibTest",
-    "args": []
+    "name": "init_MultisigContract",
+    "args": [
+      {
+        "name": "key1",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false
+        }
+      },
+      {
+        "name": "key2",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false
+        }
+      },
+      {
+        "name": "key3",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false
+        }
+      }
+    ]
   },
-  "receivers": [],
+  "receivers": [
+    {
+      "kind": "internal-binary",
+      "type": "Execute"
+    }
+  ],
   "getters": [
     {
-      "name": "sliceEmpty",
-      "args": [
-        {
-          "name": "sc",
-          "type": {
-            "kind": "ref",
-            "name": "Slice",
-            "optional": false
-          }
-        }
-      ],
-      "returns": {
-        "kind": "ref",
-        "name": "Bool",
-        "optional": false
-      }
-    },
-    {
-      "name": "sliceBits",
-      "args": [
-        {
-          "name": "sc",
-          "type": {
-            "kind": "ref",
-            "name": "Slice",
-            "optional": false
-          }
-        }
-      ],
+      "name": "key1",
+      "args": [],
       "returns": {
         "kind": "ref",
         "name": "Int",
@@ -272,22 +460,32 @@
       }
     },
     {
-      "name": "sliceRefs",
-      "args": [
-        {
-          "name": "sc",
-          "type": {
-            "kind": "ref",
-            "name": "Slice",
-            "optional": false
-          }
-        }
-      ],
+      "name": "key2",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "key3",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    },
+    {
+      "name": "seqno",
+      "args": [],
       "returns": {
         "kind": "ref",
         "name": "Int",
         "optional": false
       }
     }
-  ]
+  ],
+  "dependsOn": {}
 }

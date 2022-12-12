@@ -1,5 +1,5 @@
 {
-  "name": "Empty",
+  "name": "SampleContract",
   "structs": [
     {
       "name": "SendParameters",
@@ -283,5 +283,16 @@
   ],
   "init": null,
   "receivers": [],
-  "getters": []
+  "getters": [
+    {
+      "name": "stake",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
+    }
+  ],
+  "dependsOn": {}
 }

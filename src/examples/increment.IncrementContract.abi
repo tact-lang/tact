@@ -1,5 +1,5 @@
 {
-  "name": "Empty",
+  "name": "IncrementContract",
   "structs": [
     {
       "name": "SendParameters",
@@ -229,11 +229,11 @@
       }
     },
     {
-      "name": "Source",
+      "name": "Increment",
       "header": 0,
       "fields": [
         {
-          "name": "a",
+          "name": "key",
           "type": {
             "kind": "ref",
             "name": "Int",
@@ -241,23 +241,7 @@
           }
         },
         {
-          "name": "b",
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false
-          }
-        },
-        {
-          "name": "c",
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false
-          }
-        },
-        {
-          "name": "d",
+          "name": "value",
           "type": {
             "kind": "ref",
             "name": "Int",
@@ -266,7 +250,7 @@
         }
       ],
       "allocation": {
-        "prefix": null,
+        "prefix": 3615081709,
         "root": {
           "fields": [
             {
@@ -286,44 +270,37 @@
               },
               "kind": "int",
               "bits": 257
-            },
-            {
-              "index": 2,
-              "size": {
-                "bits": 257,
-                "refs": 0
-              },
-              "kind": "int",
-              "bits": 257
             }
           ],
-          "next": {
-            "fields": [
-              {
-                "index": 3,
-                "size": {
-                  "bits": 257,
-                  "refs": 0
-                },
-                "kind": "int",
-                "bits": 257
-              }
-            ],
-            "next": null,
-            "size": {
-              "bits": 257,
-              "refs": 0
-            }
-          },
+          "next": null,
           "size": {
-            "bits": 771,
-            "refs": 1
+            "bits": 514,
+            "refs": 0
           }
         }
       }
     }
   ],
-  "init": null,
-  "receivers": [],
-  "getters": []
+  "init": {
+    "name": "init_IncrementContract",
+    "args": []
+  },
+  "receivers": [
+    {
+      "kind": "internal-binary",
+      "type": "Increment"
+    }
+  ],
+  "getters": [
+    {
+      "name": "counters",
+      "args": [],
+      "returns": {
+        "kind": "map",
+        "key": "Int",
+        "value": "Int"
+      }
+    }
+  ],
+  "dependsOn": {}
 }

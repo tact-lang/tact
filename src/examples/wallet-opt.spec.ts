@@ -1,4 +1,4 @@
-import { packTransferMessage, Wallet_init } from "./wallet-opt.tact.api";
+import { packTransferMessage, Wallet_init } from "./wallet-opt.Wallet.bind";
 import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
 import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";

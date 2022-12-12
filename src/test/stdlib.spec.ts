@@ -1,6 +1,6 @@
 import { beginCell } from "ton";
 import { createExecutorFromCode } from "ton-nodejs";
-import { StdlibTest, StdlibTest_init } from "./contracts/stdlib.tact.api";
+import { StdlibTest, StdlibTest_init } from "./contracts/stdlib.StdlibTest.bind";
 
 describe('stdlib', () => {
     it('should execute slice methods correctly', async () => {

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { compile, precompile } from './main';
+import { compile, getContracts, precompile } from './main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from './generator/createABI';
 import { writeTypescript } from './generator/writeTypescript';
@@ -21,31 +21,38 @@ import { Cell } from 'ton';
                 // Precompile
                 console.log('Processing ' + p.path + r);
                 let ctx = precompile(p.path + r);
+                let contracts = getContracts(ctx);
 
-                // Tact -> FunC
-                let res = compile(ctx);
-                fs.writeFileSync(p.path + r + ".fc", res.output);
+                // Process all contracts
+                for (let contract of contracts) {
+                    console.log('Contract: ' + contract);
+                    let prefix = (p.path + r).slice(0, (p.path + r).length - 5) + '.' + contract;
 
-                // FunC -> Fift/Cell
-                let c = await compileContract({ files: [p.path + r + ".fc"] });
-                if (!c.ok) {
-                    console.warn(c.log);
-                    continue;
+                    // Tact -> FunC
+                    let res = compile(ctx, '');
+                    fs.writeFileSync(prefix + ".fc", res.output);
+
+                    // FunC -> Fift/Cell
+                    let c = await compileContract({ files: [prefix + ".fc"] });
+                    if (!c.ok) {
+                        console.warn(c.log);
+                        continue;
+                    }
+                    fs.writeFileSync(prefix + ".fift", c.fift!);
+                    fs.writeFileSync(prefix + ".cell", c.output!);
+
+                    // Cell -> Fift decpmpiler
+                    let source = fromCode(Cell.fromBoc(c.output!)[0]);
+                    fs.writeFileSync(prefix + ".rev.fift", source);
+
+                    // Tact -> ABI
+                    let abi = createABI(res.ctx);
+                    fs.writeFileSync(prefix + ".abi", JSON.stringify(abi, null, 2));
+
+                    // ABI -> Typescript
+                    let ts = writeTypescript(abi, c.output.toString('base64'), p.importPath);
+                    fs.writeFileSync(prefix + ".bind.ts", ts);
                 }
-                fs.writeFileSync(p.path + r + ".fift", c.fift!);
-                fs.writeFileSync(p.path + r + ".cell", c.output!);
-
-                // Cell -> Fift decpmpiler
-                let source = fromCode(Cell.fromBoc(c.output!)[0]);
-                fs.writeFileSync(p.path + r + ".rev.fift", source);
-
-                // Tact -> ABI
-                let abi = createABI(res.ctx);
-                fs.writeFileSync(p.path + r + ".abi", JSON.stringify(abi, null, 2));
-
-                // ABI -> Typescript
-                let ts = writeTypescript(abi, c.output.toString('base64'), p.importPath);
-                fs.writeFileSync(p.path + r + ".api.ts", ts);
             } catch (e) {
                 console.warn(e);
             }

@@ -69,7 +69,7 @@ export type ContractABI = {
     receivers: ContractReceiver[];
     getters: CotnractFunction[];
     dependsOn: {
-        [name: string]: { uid: number, code: string }
+        [name: string]: { uid: number }
     }
 }
 

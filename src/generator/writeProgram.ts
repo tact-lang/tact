@@ -652,7 +652,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
     });
 }
 
-export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: boolean = false) {
+export function writeProgram(ctx: CompilerContext, abi: ContractABI, name: string | null, debug: boolean = false) {
     const wctx = new WriterContext(ctx);
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');
@@ -720,19 +720,29 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: bool
         }
     }
 
-    // Contract
-    if (contracts.length > 1) {
-        throw Error('Too many contracts');
-    }
+    // Find contract
+    if (name) {
+        let c = contracts.find((v) => v.name === name);
+        if (!c) {
+            throw Error(`Contract ${name} not found`);
+        }
+        writeMainContract(c, wctx);
+    } else {
 
-    // Empty contract
-    if (contracts.length === 0) {
-        writeMainEmpty(wctx);
-    }
+        // Contract
+        if (contracts.length > 1) {
+            throw Error('Too many contracts');
+        }
 
-    // Entry Point
-    if (contracts.length === 1) {
-        writeMainContract(contracts[0], wctx);
+        // Empty contract
+        if (contracts.length === 0) {
+            writeMainEmpty(wctx);
+        }
+
+        // Entry Point
+        if (contracts.length === 1) {
+            writeMainContract(contracts[0], wctx);
+        }
     }
 
     // Render output

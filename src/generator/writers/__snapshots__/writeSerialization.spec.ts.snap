@@ -68,6 +68,16 @@ int __tact_address_neq(slice a, slice b) inline {
     return ~ equal_slice_bits(a, b);
 }
 
+cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+    return udict_set_ref(dict, 16, id, code);
+}
+
+cell __tact_dict_get_code(cell dict, int id) inline {
+    var (data, ok) = udict_get_ref?(dict, 16, id);
+    throw_unless(100, ok);
+    return data;
+}
+
 builder __gen_write_A(builder build_0, int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     build_0 = store_int(build_0, v'a, 257);
     build_0 = store_int(build_0, v'b, 257);
@@ -186,6 +196,16 @@ int __tact_address_neq(slice a, slice b) inline {
     return ~ equal_slice_bits(a, b);
 }
 
+cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+    return udict_set_ref(dict, 16, id, code);
+}
+
+cell __tact_dict_get_code(cell dict, int id) inline {
+    var (data, ok) = udict_get_ref?(dict, 16, id);
+    throw_unless(100, ok);
+    return data;
+}
+
 builder __gen_write_B(builder build_0, int v'a, int v'b, int v'c, int v'd, int v'e, int v'f, int v'g) inline {
     build_0 = store_int(build_0, v'a, 257);
     build_0 = store_int(build_0, v'b, 257);
@@ -302,6 +322,16 @@ int __tact_address_eq(slice a, slice b) inline {
 
 int __tact_address_neq(slice a, slice b) inline {
     return ~ equal_slice_bits(a, b);
+}
+
+cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+    return udict_set_ref(dict, 16, id, code);
+}
+
+cell __tact_dict_get_code(cell dict, int id) inline {
+    var (data, ok) = udict_get_ref?(dict, 16, id);
+    throw_unless(100, ok);
+    return data;
 }
 
 builder __gen_write_C(builder build_0, cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) inline {

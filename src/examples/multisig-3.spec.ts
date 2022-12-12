@@ -1,4 +1,4 @@
-import { MultisigContract_init } from "./multisig-3.tact.api";
+import { MultisigContract_init } from "./multisig-3.MultisigContract.bind";
 import { createExecutorFromCode } from 'ton-nodejs';
 import { Address, Cell, contractAddress } from "ton";
 

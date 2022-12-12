@@ -225,6 +225,7 @@ exports[`resolveAllocation should write program 1`] = `
         "prefix": null,
         "ref": ASTRef {},
       },
+      "dependsOn": [],
       "fields": [
         {
           "as": null,
@@ -293,6 +294,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "SendParameters",
       "receivers": [],
       "traits": [],
+      "uid": 31064,
     },
   },
   {
@@ -436,6 +438,7 @@ exports[`resolveAllocation should write program 1`] = `
         "prefix": null,
         "ref": ASTRef {},
       },
+      "dependsOn": [],
       "fields": [
         {
           "as": null,
@@ -480,6 +483,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "Context",
       "receivers": [],
       "traits": [],
+      "uid": 3837,
     },
   },
   {
@@ -585,6 +589,7 @@ exports[`resolveAllocation should write program 1`] = `
         "prefix": null,
         "ref": ASTRef {},
       },
+      "dependsOn": [],
       "fields": [
         {
           "as": null,
@@ -617,6 +622,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "StateInit",
       "receivers": [],
       "traits": [],
+      "uid": 32495,
     },
   },
   {
@@ -724,6 +730,7 @@ exports[`resolveAllocation should write program 1`] = `
         "prefix": null,
         "ref": ASTRef {},
       },
+      "dependsOn": [],
       "fields": [
         {
           "as": null,
@@ -756,6 +763,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "Point",
       "receivers": [],
       "traits": [],
+      "uid": 35778,
     },
   },
   {
@@ -827,6 +835,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "prefix": null,
                 "ref": ASTRef {},
               },
+              "dependsOn": [],
               "fields": [
                 {
                   "as": null,
@@ -859,6 +868,7 @@ exports[`resolveAllocation should write program 1`] = `
               "name": "Point",
               "receivers": [],
               "traits": [],
+              "uid": 35778,
             },
           },
         ],
@@ -899,6 +909,7 @@ exports[`resolveAllocation should write program 1`] = `
         "prefix": null,
         "ref": ASTRef {},
       },
+      "dependsOn": [],
       "fields": [
         {
           "as": null,
@@ -919,6 +930,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "Point2",
       "receivers": [],
       "traits": [],
+      "uid": 62706,
     },
   },
   {
@@ -1002,6 +1014,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "prefix": null,
                 "ref": ASTRef {},
               },
+              "dependsOn": [],
               "fields": [
                 {
                   "as": null,
@@ -1034,6 +1047,7 @@ exports[`resolveAllocation should write program 1`] = `
               "name": "Point",
               "receivers": [],
               "traits": [],
+              "uid": 35778,
             },
           },
         ],
@@ -1073,6 +1087,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "prefix": null,
                   "ref": ASTRef {},
                 },
+                "dependsOn": [],
                 "fields": [
                   {
                     "as": null,
@@ -1093,6 +1108,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "name": "Point2",
                 "receivers": [],
                 "traits": [],
+                "uid": 62706,
               },
             },
           ],
@@ -1153,6 +1169,7 @@ exports[`resolveAllocation should write program 1`] = `
         "prefix": null,
         "ref": ASTRef {},
       },
+      "dependsOn": [],
       "fields": [
         {
           "as": null,
@@ -1185,6 +1202,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "Point3",
       "receivers": [],
       "traits": [],
+      "uid": 58579,
     },
   },
   {
@@ -1257,6 +1275,7 @@ exports[`resolveAllocation should write program 1`] = `
         "ref": ASTRef {},
         "traits": [],
       },
+      "dependsOn": [],
       "fields": [],
       "functions": {
         "main": {
@@ -1339,6 +1358,7 @@ exports[`resolveAllocation should write program 1`] = `
       "name": "Sample",
       "receivers": [],
       "traits": [],
+      "uid": 51169,
     },
   },
 ]

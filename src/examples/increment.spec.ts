@@ -1,4 +1,4 @@
-import { IncrementContract_init, packIncrement } from "./increment.tact.api";
+import { IncrementContract_init, packIncrement } from "./increment.IncrementContract.bind";
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
 import { CellMessage, CommonMessageInfo, InternalMessage, parseDict, toNano } from "ton";
 

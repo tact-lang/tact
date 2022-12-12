@@ -1,6 +1,6 @@
 import { CompilerContext } from "./context";
 import fs from 'fs';
-import { resolveDescriptors } from "./types/resolveDescriptors";
+import { getAllTypes, resolveDescriptors } from "./types/resolveDescriptors";
 import { writeProgram } from "./generator/writeProgram";
 import { resolveAllocations } from "./storage/resolveAllocation";
 import { createABI } from "./generator/createABI";
@@ -61,9 +61,13 @@ export function precompile(path: string) {
     return ctx;
 }
 
-export function compile(ctx: CompilerContext) {
+export function getContracts(ctx: CompilerContext) {
+    return Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract').map((v) => v.name);
+}
+
+export function compile(ctx: CompilerContext, name: string | null) {
     let abi = createABI(ctx);
-    let output = writeProgram(ctx, abi);
+    let output = writeProgram(ctx, abi, name);
     let cOutput = output;
     return { output: cOutput, ctx };
 }

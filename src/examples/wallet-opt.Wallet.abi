@@ -1,5 +1,5 @@
 {
-  "name": "MultisigContract",
+  "name": "Wallet",
   "structs": [
     {
       "name": "SendParameters",
@@ -229,86 +229,11 @@
       }
     },
     {
-      "name": "Operation",
+      "name": "TransferMessage",
       "header": 0,
       "fields": [
         {
-          "name": "seqno",
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false
-          }
-        },
-        {
-          "name": "amount",
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false
-          }
-        },
-        {
-          "name": "target",
-          "type": {
-            "kind": "ref",
-            "name": "Address",
-            "optional": false
-          }
-        }
-      ],
-      "allocation": {
-        "prefix": null,
-        "root": {
-          "fields": [
-            {
-              "index": 0,
-              "size": {
-                "bits": 32,
-                "refs": 0
-              },
-              "kind": "uint",
-              "bits": 32
-            },
-            {
-              "index": 1,
-              "size": {
-                "bits": 124,
-                "refs": 0
-              },
-              "kind": "coins"
-            },
-            {
-              "index": 2,
-              "size": {
-                "bits": 267,
-                "refs": 0
-              },
-              "kind": "address"
-            }
-          ],
-          "next": null,
-          "size": {
-            "bits": 423,
-            "refs": 0
-          }
-        }
-      }
-    },
-    {
-      "name": "Execute",
-      "header": 0,
-      "fields": [
-        {
-          "name": "operation",
-          "type": {
-            "kind": "ref",
-            "name": "Operation",
-            "optional": false
-          }
-        },
-        {
-          "name": "signature1",
+          "name": "signature",
           "type": {
             "kind": "ref",
             "name": "Slice",
@@ -316,15 +241,7 @@
           }
         },
         {
-          "name": "signature2",
-          "type": {
-            "kind": "ref",
-            "name": "Slice",
-            "optional": false
-          }
-        },
-        {
-          "name": "signature3",
+          "name": "transfer",
           "type": {
             "kind": "ref",
             "name": "Slice",
@@ -333,81 +250,30 @@
         }
       ],
       "allocation": {
-        "prefix": 819865922,
+        "prefix": 1843760589,
         "root": {
           "fields": [
             {
               "index": 0,
               "size": {
-                "bits": 423,
+                "bits": 512,
                 "refs": 0
               },
-              "kind": "struct",
-              "type": "Operation"
+              "kind": "bytes",
+              "bytes": 64
             },
             {
               "index": 1,
               "size": {
                 "bits": 0,
-                "refs": 1
-              },
-              "kind": "slice"
-            },
-            {
-              "index": 2,
-              "size": {
-                "bits": 0,
-                "refs": 1
-              },
-              "kind": "slice"
-            },
-            {
-              "index": 3,
-              "size": {
-                "bits": 0,
-                "refs": 1
-              },
-              "kind": "slice"
-            }
-          ],
-          "next": null,
-          "size": {
-            "bits": 423,
-            "refs": 3
-          }
-        }
-      }
-    },
-    {
-      "name": "Executed",
-      "header": 0,
-      "fields": [
-        {
-          "name": "seqno",
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false
-          }
-        }
-      ],
-      "allocation": {
-        "prefix": 4174937,
-        "root": {
-          "fields": [
-            {
-              "index": 0,
-              "size": {
-                "bits": 32,
                 "refs": 0
               },
-              "kind": "uint",
-              "bits": 32
+              "kind": "remaining"
             }
           ],
           "next": null,
           "size": {
-            "bits": 32,
+            "bits": 512,
             "refs": 0
           }
         }
@@ -415,10 +281,10 @@
     }
   ],
   "init": {
-    "name": "init_MultisigContract",
+    "name": "init_Wallet",
     "args": [
       {
-        "name": "key1",
+        "name": "key",
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -426,15 +292,7 @@
         }
       },
       {
-        "name": "key2",
-        "type": {
-          "kind": "ref",
-          "name": "Int",
-          "optional": false
-        }
-      },
-      {
-        "name": "key3",
+        "name": "walletId",
         "type": {
           "kind": "ref",
           "name": "Int",
@@ -446,12 +304,12 @@
   "receivers": [
     {
       "kind": "internal-binary",
-      "type": "Execute"
+      "type": "TransferMessage"
     }
   ],
   "getters": [
     {
-      "name": "key1",
+      "name": "publicKey",
       "args": [],
       "returns": {
         "kind": "ref",
@@ -460,16 +318,7 @@
       }
     },
     {
-      "name": "key2",
-      "args": [],
-      "returns": {
-        "kind": "ref",
-        "name": "Int",
-        "optional": false
-      }
-    },
-    {
-      "name": "key3",
+      "name": "walletId",
       "args": [],
       "returns": {
         "kind": "ref",
@@ -486,5 +335,6 @@
         "optional": false
       }
     }
-  ]
+  ],
+  "dependsOn": {}
 }
