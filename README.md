@@ -2,9 +2,15 @@
 
 This is an experimental implementation of a TACT language in typescript. This implementation aims to become production ready soon, but all developers must test their contracts before rolling out them in production.
 
-## Types
+## Installation
 
-There are two 
+TACT is distributed via NPM, to install tact into your project, you need:
+
+```bash
+yarn install ton-tact
+```
+
+TACT doesn't have environment dependencies and have everything built in. TACT's stdlib also distributed together with a compiler.
 
 ## Compilation pipeline
 
