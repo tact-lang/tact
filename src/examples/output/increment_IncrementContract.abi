@@ -327,6 +327,41 @@
           }
         }
       }
+    },
+    {
+      "name": "Toggle",
+      "header": 0,
+      "fields": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 575056061,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 257,
+            "refs": 0
+          }
+        }
+      }
     }
   ],
   "init": {
@@ -337,6 +372,10 @@
     {
       "kind": "internal-binary",
       "type": "Increment"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "Toggle"
     }
   ],
   "getters": [

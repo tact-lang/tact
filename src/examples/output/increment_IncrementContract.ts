@@ -146,8 +146,28 @@ export function unpackStackIncrement(slice: TupleSlice4): Increment {
     const value = slice.readBigNumber();
     return { $$type: 'Increment', key: key, value: value };
 }
+export type Toggle = {
+    $$type: 'Toggle';
+    key: BN;
+}
+
+export function packToggle(src: Toggle): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(575056061, 32);
+    b_0 = b_0.storeInt(src.key, 257);
+    return b_0.endCell();
+}
+
+export function packStackToggle(src: Toggle, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.key });
+}
+
+export function unpackStackToggle(slice: TupleSlice4): Toggle {
+    const key = slice.readBigNumber();
+    return { $$type: 'Toggle', key: key };
+}
 export async function IncrementContract_init() {
-    const __code = 'te6ccgEBDgEA4gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQIBSAwNAgEgBgcCAdQKCwIBSAgJABPzaA5GYAgPoAZMANkcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghDXecTtuo407UTQ1AH4YvQEATEB0x8BghDXecTtuvLgZIEBAdcAgQEB1wBZbBLwCcj4QgHMAQH0AMntVOAw8sBkgACUIW6VW1n0WjDgyAHPAMlBM/QVgAAEgABEgQEBVBIi8AGAACbgffwB4AB+7QH7UTQ1AH4YvQEATHwCI';
+    const __code = 'te6ccgECFgEAAYEAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAUgUFQIBSAYHAgEgDg8CASAICQIBIAwNAvUcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQ13nE7bqOOzDtRNDUAfhi9AT0BFlsEgLTHwGCENd5xO268uBkgQEB1wCBAQHXAFkyQwDwDMj4QgHMWQL0APQAye1U4IIQIkaovbrjAjCAKCwAJCBu8k6AAaO1E0NQB+GL0BPQEWWwSAtMfAYIQIkaovbry4GSBAQHXAAExEvANyPhCAcxZAvQA9ADJ7VQABvLAZAAjCFulVtZ9Fow4MgBzwBBM/RCgAB0QTP0DG+hlAHXADDgW22ACAVgQEQIBSBITABkbW0CyMwCAvQA9ADJgAAMMIAAXIEBASAQRUMw8AIBgAEMIYEBASJx8AMgbpkwgQEBAX9x8AKbgQEBAfABsxJx8ALigAAm4H38AqAAlu0B+1E0NQB+GL0BPQEWWwS8AuA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -163,10 +183,13 @@ export class IncrementContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment | Toggle) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
             body = packIncrement(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Toggle') {
+            body = packToggle(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({

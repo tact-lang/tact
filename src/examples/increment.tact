@@ -3,24 +3,29 @@ message Increment {
     value: Int;
 }
 
-extends mutates fun add(self: Int, value: Int) {
-    self = self + value;
-}
-
-extends fun mul(self: Int, value: Int): Int {
-    return self * value;
+message Toggle {
+    key: Int;
 }
 
 contract IncrementContract {
     counters: map[Int]Int;
+    counters2: map[Int]Bool;
 
     init() {
         // Nothing to do
     }
 
     receive(msg: Increment) {
-        // msg.key.add(msg.value.mul(10));
         self.counters.set(msg.key, msg.value);
+    }
+
+    receive(msg: Toggle) {
+        let ex: Bool? = self.counters2.get2(msg.key);
+        if (ex == null) {
+            self.counters2.set(msg.key, true);
+        } else {
+            self.counters2.set(msg.key, !(ex!!));
+        }
     }
 
     get fun counters(): map[Int]Int {

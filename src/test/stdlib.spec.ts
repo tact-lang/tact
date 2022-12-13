@@ -11,8 +11,7 @@ describe('stdlib', () => {
             .storeBit(1)
             .storeBit(1)
             .storeRef(beginCell().storeBit(1).endCell())
-            .endCell()
-            .beginParse();
+            .endCell();
         let bits = (await stdlibtest.getSliceBits(slice)).toNumber();
         let refs = (await stdlibtest.getSliceRefs(slice)).toNumber();
         let empty = (await stdlibtest.getSliceEmpty(slice));

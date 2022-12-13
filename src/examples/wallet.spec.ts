@@ -43,7 +43,7 @@ describe('wallet', () => {
                     body: new CellMessage(packTransferMessage({
                         $$type: 'TransferMessage',
                         transfer,
-                        signature: beginCell().storeBuffer(signed).endCell().beginParse()
+                        signature: beginCell().storeBuffer(signed).endCell()
                     }))
                 })
             }));

@@ -1,9 +1,10 @@
-import { ABIFunctions, MapFunctions } from "../abi/AbiFunction";
+import { ABIFunctions } from "../abi/AbiFunction";
 import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
+import { MapFunctions } from "../abi/map";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 

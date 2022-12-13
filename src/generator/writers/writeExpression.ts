@@ -1,11 +1,11 @@
-import { ABIFunctions, MapFunctions } from "../../abi/AbiFunction";
+import { ABIFunctions } from "../../abi/AbiFunction";
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
-import { getStaticFunction, getType, resolveTypeRef } from "../../types/resolveDescriptors";
+import { getStaticFunction, getType } from "../../types/resolveDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
+import { MapFunctions } from "../../abi/map";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {

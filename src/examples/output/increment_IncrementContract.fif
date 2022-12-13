@@ -1,6 +1,9 @@
 PROGRAM{
+  DECLPROC __tact_not_null
   DECLPROC __tact_dict_set_int_int
+  DECLPROC __tact_dict_get_int_int
   DECLPROC __gen_read_Increment
+  DECLPROC __gen_read_Toggle
   DECLPROC __gen_write_IncrementContract
   DECLPROC __gen_read_IncrementContract
   DECLPROC __gen_load_IncrementContract
@@ -9,10 +12,16 @@ PROGRAM{
   DECLPROC __gen_IncrementContract_counters
   95239 DECLMETHOD __gen_get_counters
   DECLPROC __gen_IncrementContract_receive_Increment
+  DECLPROC __gen_IncrementContract_receive_Toggle
   DECLPROC recv_internal
   66039 DECLMETHOD init_IncrementContract
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
   __tact_dict_set_int_int PROC:<{
     OVER
     ISNULL
@@ -25,9 +34,20 @@ PROGRAM{
     NEWC
     SWAP
     STIX
-    ENDC
     s1 s3 s3 XCHG3
-    DICTISETREF
+    DICTISETB
+  }>
+  __tact_dict_get_int_int PROC:<{
+    s1 s3 s3 XCHG3
+    DICTIGET
+    NULLSWAPIFNOT
+    IFJMP:<{
+      SWAP
+      LDIX
+      DROP
+    }>
+    2DROP
+    PUSHNULL
   }>
   __gen_read_Increment PROCINLINE:<{
     32 LDU
@@ -41,13 +61,25 @@ PROGRAM{
     LDIX
     -ROT
   }>
-  __gen_write_IncrementContract PROCINLINE:<{
+  __gen_read_Toggle PROCINLINE:<{
+    32 LDU
     SWAP
+    575056061 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_write_IncrementContract PROCINLINE:<{
+    s0 s2 XCHG
+    STDICT
     STDICT
   }>
   __gen_read_IncrementContract PROCINLINE:<{
     LDDICT
-    SWAP
+    LDDICT
+    -ROT
   }>
   __gen_load_IncrementContract PROCINLINE:<{
     c4 PUSH
@@ -56,28 +88,30 @@ PROGRAM{
     SWAP
     __tact_context_sys SETGLOB
     __gen_read_IncrementContract INLINECALLDICT
-    NIP
+    1 2 BLKDROP2
   }>
   __gen_store_IncrementContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
-    SWAP
+    -ROT
     __gen_write_IncrementContract INLINECALLDICT
     ENDC
     c4 POP
   }>
   __gen_IncrementContract_init PROC:<{
     PUSHNULL
-    SWAP
+    PUSHNULL
+    s0 s2 XCHG
     NEWC
     STREF
-    SWAP
+    s0 s2 XCHG
     __gen_write_IncrementContract INLINECALLDICT
     ENDC
   }>
   __gen_IncrementContract_counters PROC:<{
+    DROP
   }>
   __gen_get_counters PROC:<{
     __gen_load_IncrementContract INLINECALLDICT
@@ -85,8 +119,36 @@ PROGRAM{
   }>
   __gen_IncrementContract_receive_Increment PROC:<{
     257 PUSHINT
-    s2 s2 s2 XC2PU
+    DUP
+    s4 s5 XCHG
+    s3 s3 s0 XCHG3
     __tact_dict_set_int_int CALLDICT
+    SWAP
+  }>
+  __gen_IncrementContract_receive_Toggle PROC:<{
+    OVER
+    257 PUSHINT
+    s2 PUSH
+    1 PUSHINT
+    __tact_dict_get_int_int CALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      257 PUSHINT
+      SWAP
+      TRUE
+      1 PUSHINT
+      __tact_dict_set_int_int CALLDICT
+    }>ELSE<{
+      257 PUSHINT
+      SWAP
+      __tact_not_null CALLDICT
+      NOT
+      s1 s2 XCHG
+      1 PUSHINT
+      __tact_dict_set_int_int CALLDICT
+    }>
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -120,14 +182,28 @@ PROGRAM{
     IFJMP:<{
       2DROP
     }>
+    DUP
     3615081709 PUSHINT
     EQUAL
     IFJMP:<{
+      DROP
       __gen_load_IncrementContract INLINECALLDICT
-      SWAP
+      s0 s2 XCHG
       __gen_read_Increment INLINECALLDICT
-      1 2 BLKDROP2
+      s2 POP
+      s3 s0 s0 XCHG3
       __gen_IncrementContract_receive_Increment CALLDICT
+      __gen_store_IncrementContract INLINECALLDICT
+    }>
+    575056061 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_IncrementContract INLINECALLDICT
+      s0 s2 XCHG
+      __gen_read_Toggle INLINECALLDICT
+      NIP
+      s1 s2 XCHG
+      __gen_IncrementContract_receive_Toggle CALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DROP

@@ -39,8 +39,8 @@ describe('wallet-opt', () => {
                 body: new CommonMessageInfo({
                     body: new CellMessage(packTransferMessage({
                         $$type: 'TransferMessage',
-                        signature: beginCell().storeBuffer(signed).endCell().beginParse(),
-                        transfer: pgk.beginParse(),
+                        signature: beginCell().storeBuffer(signed).endCell(),
+                        transfer: pgk,
                     }))
                 })
             }));

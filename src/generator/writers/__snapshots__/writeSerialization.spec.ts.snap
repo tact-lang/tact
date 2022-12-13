@@ -56,7 +56,16 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
     } else {
-        return (idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell()), ());
+        return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
     }
 }
 
@@ -185,7 +194,16 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
     } else {
-        return (idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell()), ());
+        return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
     }
 }
 
@@ -314,7 +332,16 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
     } else {
-        return (idict_set_ref(d, kl, k, begin_cell().store_int(v, vl).end_cell()), ());
+        return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
     }
 }
 
