@@ -8,7 +8,7 @@
   "scripts": {
     "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/prepare.ts",
     "clean": "rm -fr dist",
-    "build": "tsc",
+    "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/",
     "test": "jest",
     "release": "yarn clean && yarn build && yarn test && yarn publish --access public"
   },
