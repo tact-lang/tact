@@ -29,6 +29,6 @@ struct JettonData {
     totalSupply: Int;
     mintable: Bool;
     owner: Address;
-    content: Cell;
+    content: Cell?;
     walletCode: Cell;
 }

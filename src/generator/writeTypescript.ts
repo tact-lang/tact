@@ -3,6 +3,7 @@ import { TypeRef } from "../types/types";
 import { Writer } from "./Writer";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
+import { readFromStack } from "./typescript/readFromStack";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -10,10 +11,8 @@ function printFieldType(ref: TypeRef): string {
             return 'BN' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Bool') {
             return 'boolean' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Cell') {
+        } else if (ref.name === 'Cell' || ref.name === 'Slice' || ref.name === 'Builder') {
             return 'Cell' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Slice') {
-            return 'Slice' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Address') {
             return 'Address' + (ref.optional ? ' | null' : '');
         } else {
@@ -37,7 +36,7 @@ function writeField(field: ContractField, w: Writer) {
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';`);
+    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';`);
     w.append(`import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';`);
     w.append(`import BN from 'bn.js';`);
     w.append();
@@ -75,7 +74,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 } else if (f.kind === 'cell') {
                     w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'slice') {
-                    w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name}.toCell());`);
+                    w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'optional') {
                     w.append(`if (src.${s.fields[f.index].name} !== null) {`);
                     w.inIndent(() => {
@@ -92,9 +91,9 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 } else if (f.kind === 'address') {
                     w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'remaining') {
-                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name}.toCell());`);
+                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'bytes') {
-                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name}.toCell());`);
+                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
                 } else {
                     throw Error('Unsupported field type');
                 }
@@ -128,6 +127,14 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         w.append();
 
         // Unpack from stack
+        w.append(`export function unpackStack${s.name}(slice: TupleSlice4): ${s.name} {`)
+        w.inIndent(() => {
+            for (const f of s.fields) {
+                readFromStack(f.name, f.type, w);
+            }
+            w.append(`return { $$type: '${s.name}', ${s.fields.map(f => `${f.name}: ${f.name}`).join(', ')} };`);
+        });
+        w.append(`}`);
     }
 
     // Init
@@ -251,20 +258,55 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 if (g.returns) {
                     if (g.returns.kind === 'ref') {
                         if (g.returns.name === 'Bool') {
-                            w.append(`return result.stack.readBoolean();`);
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readBooleanOpt();`);
+                            } else {
+                                w.append(`return result.stack.readBoolean();`);
+                            }
                         } else if (g.returns.name === 'Int') {
-                            w.append(`return result.stack.readBigNumber();`);
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readBigNumberOpt();`);
+                            } else {
+                                w.append(`return result.stack.readBigNumber();`);
+                            }
                         } else if (g.returns.name === 'Address') {
-                            w.append(`return result.stack.readAddress()!;`);
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readAddressOpt();`);
+                            } else {
+                                w.append(`return result.stack.readAddress();`);
+                            }
                         } else if (g.returns.name === 'Cell') {
-                            w.append(`return result.stack.readCell();`);
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readCellOpt();`);
+                            } else {
+                                w.append(`return result.stack.readCell();`);
+                            }
                         } else if (g.returns.name === 'Slice') {
-                            w.append(`return result.stack.readCell();`);
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readCellOpt();`);
+                            } else {
+                                w.append(`return result.stack.readCell();`);
+                            }
                         } else if (g.returns.name === 'Builder') {
-                            w.append(`return result.stack.readCell();`);
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readCellOpt();`);
+                            } else {
+                                w.append(`return result.stack.readCell();`);
+                            }
+                        } else {
+                            if (g.returns.optional) {
+                                throw Error('Impossible');
+                            }
+                            w.append(`return unpackStack${g.returns.name}(result.stack);`);
                         }
+                    } else if (g.returns.kind === 'map') {
+                        w.append(`return result.stack.readCellOpt();`);
+                    } else if (g.returns.kind === 'null') {
+                        throw Error('Impossible');
+                    } else if (g.returns.kind === 'void') {
+                        throw Error('Impossible');
                     } else {
-                        w.append(`return result.stack.readCell();`);
+                        throw Error('Not implemented');
                     }
                 }
             });

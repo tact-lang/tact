@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
 import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
 
@@ -62,6 +62,16 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -83,6 +93,12 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
 export type StateInit = {
     $$type: 'StateInit';
     code: Cell;
@@ -101,6 +117,11 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
 export type Operation = {
     $$type: 'Operation';
     seqno: BN;
@@ -122,31 +143,44 @@ export function packStackOperation(src: Operation, __stack: StackItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
 }
 
+export function unpackStackOperation(slice: TupleSlice4): Operation {
+    const seqno = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const target = slice.readAddress();
+    return { $$type: 'Operation', seqno: seqno, amount: amount, target: target };
+}
 export type Execute = {
     $$type: 'Execute';
     operation: Operation;
-    signature1: Slice;
-    signature2: Slice;
-    signature3: Slice;
+    signature1: Cell;
+    signature2: Cell;
+    signature3: Cell;
 }
 
 export function packExecute(src: Execute): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(819865922, 32);
     b_0 = b_0.storeCellCopy(packOperation(src.operation));
-    b_0 = b_0.storeRef(src.signature1.toCell());
-    b_0 = b_0.storeRef(src.signature2.toCell());
-    b_0 = b_0.storeRef(src.signature3.toCell());
+    b_0 = b_0.storeRef(src.signature1);
+    b_0 = b_0.storeRef(src.signature2);
+    b_0 = b_0.storeRef(src.signature3);
     return b_0.endCell();
 }
 
 export function packStackExecute(src: Execute, __stack: StackItem[]) {
     packStackOperation(src.operation, __stack);
-    __stack.push({ type: 'slice', cell: src.signature1.toCell() });
-    __stack.push({ type: 'slice', cell: src.signature2.toCell() });
-    __stack.push({ type: 'slice', cell: src.signature3.toCell() });
+    __stack.push({ type: 'slice', cell: src.signature1 });
+    __stack.push({ type: 'slice', cell: src.signature2 });
+    __stack.push({ type: 'slice', cell: src.signature3 });
 }
 
+export function unpackStackExecute(slice: TupleSlice4): Execute {
+    const operation = unpackStackOperation(slice);
+    const signature1 = slice.readCell();
+    const signature2 = slice.readCell();
+    const signature3 = slice.readCell();
+    return { $$type: 'Execute', operation: operation, signature1: signature1, signature2: signature2, signature3: signature3 };
+}
 export type Executed = {
     $$type: 'Executed';
     seqno: BN;
@@ -163,6 +197,10 @@ export function packStackExecuted(src: Executed, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.seqno });
 }
 
+export function unpackStackExecuted(slice: TupleSlice4): Executed {
+    const seqno = slice.readBigNumber();
+    return { $$type: 'Executed', seqno: seqno };
+}
 export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {
     const __code = 'te6ccgECIQEAAlEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwFMj4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8AzIcPAMcPAMJG6zlX/wDBTMlTQDcPAM4iRus5V/8AwUzJU0A3DwDOJw8AwCf/AMAslYzJYzMwFw8AziIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwBMjMVTBQNMsfy//L/8v/yYAATH8zAXBtbW3wDYAIBIBMUAF/So6oeQqkCgR5Y+A/QEA54tk/IApAhV8iCkZlPyIKgmb/IgprN15RQFYANh5RXgHwCASAVFgIBIBcYAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAL75kv2omhqAPwxaY/p/+n/6f+qmDYKeAnAIBIBscAgEgHR4ACbisfwDoAgEgHyAAL7R8vaiaGoA/DFpj+n/6f/p/6qYNgp4CEAAvsOn7UTQ1AH4YtMf0//T/9P/VTBsFPASgAC+w4btRNDUAfhi0x/T/9P/0/9VMGwU8BGA=';
     const depends = new Map<string, Cell>();

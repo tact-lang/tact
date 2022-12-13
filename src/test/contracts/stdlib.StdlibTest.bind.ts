@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
 import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
 
@@ -62,6 +62,16 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -83,6 +93,12 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
 export type StateInit = {
     $$type: 'StateInit';
     code: Cell;
@@ -101,6 +117,11 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
 export async function StdlibTest_init() {
     const __code = 'te6ccgEBEgEAwwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWAyQCASAGBwIBIAgJAgEgCgsAGRwAcjMAQGBAQHPAMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
     const depends = new Map<string, Cell>();
@@ -118,21 +139,21 @@ export class StdlibTest {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async getSliceEmpty(sc: Slice) {
+    async getSliceEmpty(sc: Cell) {
         let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: sc.toCell() });
+        __stack.push({ type: 'slice', cell: sc });
         let result = await this.executor.get('sliceEmpty', __stack);
         return result.stack.readBoolean();
     }
-    async getSliceBits(sc: Slice) {
+    async getSliceBits(sc: Cell) {
         let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: sc.toCell() });
+        __stack.push({ type: 'slice', cell: sc });
         let result = await this.executor.get('sliceBits', __stack);
         return result.stack.readBigNumber();
     }
-    async getSliceRefs(sc: Slice) {
+    async getSliceRefs(sc: Cell) {
         let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: sc.toCell() });
+        __stack.push({ type: 'slice', cell: sc });
         let result = await this.executor.get('sliceRefs', __stack);
         return result.stack.readBigNumber();
     }

@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
 import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
 
@@ -62,6 +62,16 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -83,6 +93,12 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
 export type StateInit = {
     $$type: 'StateInit';
     code: Cell;
@@ -101,25 +117,35 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
 export type TransferMessage = {
     $$type: 'TransferMessage';
-    signature: Slice;
-    transfer: Slice;
+    signature: Cell;
+    transfer: Cell;
 }
 
 export function packTransferMessage(src: TransferMessage): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(1843760589, 32);
-    b_0 = b_0.storeCellCopy(src.signature.toCell());
-    b_0 = b_0.storeCellCopy(src.transfer.toCell());
+    b_0 = b_0.storeCellCopy(src.signature);
+    b_0 = b_0.storeCellCopy(src.transfer);
     return b_0.endCell();
 }
 
 export function packStackTransferMessage(src: TransferMessage, __stack: StackItem[]) {
-    __stack.push({ type: 'slice', cell: src.signature.toCell() });
-    __stack.push({ type: 'slice', cell: src.transfer.toCell() });
+    __stack.push({ type: 'slice', cell: src.signature });
+    __stack.push({ type: 'slice', cell: src.transfer });
 }
 
+export function unpackStackTransferMessage(slice: TupleSlice4): TransferMessage {
+    const signature = slice.readCell();
+    const transfer = slice.readCell();
+    return { $$type: 'TransferMessage', signature: signature, transfer: transfer };
+}
 export async function Wallet_init(key: BN, walletId: BN) {
     const __code = 'te6ccgECFAEAAT4AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgFICgsA69OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQg28sbm3Uce9qJoagD8MWmP6f/pn6qQNgmB6Y+AwQg28sbm3XlwMkGEa4wzGQgaIYB4BWR8IQDmKpAoEeWP5f/ln+T2qnAYeWAyQCAVgICQAfHADyMxVIFAjyx/L/8s/yYAAFDAxgAgEgDA0ANUIPkBVBAk+RDyqtIf0gfUMFEluvKrBKQE+wCAAFGwhgAAMW4AIBIBARACu+AldqJoagD8MWmP6f/pn6qQNgn4BEAAm7oT8AaAIBSBITACuzJftRNDUAfhi0x/T/9M/VSBsE/AJgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AHg';
     const depends = new Map<string, Cell>();

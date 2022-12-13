@@ -683,7 +683,7 @@
           "type": {
             "kind": "ref",
             "name": "Cell",
-            "optional": false
+            "optional": true
           }
         },
         {
@@ -728,10 +728,18 @@
             {
               "index": 3,
               "size": {
-                "bits": 0,
+                "bits": 1,
                 "refs": 1
               },
-              "kind": "cell"
+              "kind": "optional",
+              "inner": {
+                "index": 3,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
             },
             {
               "index": 4,
@@ -744,7 +752,7 @@
           ],
           "next": null,
           "size": {
-            "bits": 525,
+            "bits": 526,
             "refs": 2
           }
         }

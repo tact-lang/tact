@@ -19,5 +19,9 @@ describe('jetton', () => {
         // Mint
         let res = await contract.send({ amount: toNano(1) }, { $$type: 'Mint', amount: new BN(1000000) });
         console.warn(res);
+
+        // Data
+        let data = await contract.getGetJettonData();
+        console.warn(data);
     });
 });

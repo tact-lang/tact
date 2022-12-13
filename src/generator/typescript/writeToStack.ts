@@ -24,17 +24,20 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer) {
         if (ref.name === 'Int') {
             w.append(`__stack.push({ type: 'int', value: ${name} });`);
             return;
+        } else if (ref.name === 'Bool') {
+            w.append(`__stack.push({ type: 'int', value: ${name} ? new BN(-1) : new BN(0) });`);
+            return;
         } else if (ref.name === 'Cell') {
             w.append(`__stack.push({ type: 'cell', cell: ${name} });`);
             return;
         } else if (ref.name === 'Slice') {
-            w.append(`__stack.push({ type: 'slice', cell: ${name}.toCell() });`);
+            w.append(`__stack.push({ type: 'slice', cell: ${name} });`);
+            return;
+        } else if (ref.name === 'Builder') {
+            w.append(`__stack.push({ type: 'builder', cell: ${name} });`);
             return;
         } else if (ref.name === 'Address') {
             w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
-            return;
-        } else if (ref.name === 'Bool') {
-            w.append(`__stack.push({ type: 'int', value: ${name} ? new BN(-1) : new BN(0) });`);
             return;
         } else {
             w.append(`packStack${ref.name}(${name}, __stack);`);

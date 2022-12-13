@@ -1,4 +1,4 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
+import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
 import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
 
@@ -62,6 +62,16 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -83,6 +93,12 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
 export type StateInit = {
     $$type: 'StateInit';
     code: Cell;
@@ -101,6 +117,11 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -117,6 +138,10 @@ export function packStackChangeOwner(src: ChangeOwner, __stack: StackItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
 }
 
+export function unpackStackChangeOwner(slice: TupleSlice4): ChangeOwner {
+    const newOwner = slice.readAddress();
+    return { $$type: 'ChangeOwner', newOwner: newOwner };
+}
 export type Withdraw = {
     $$type: 'Withdraw';
     amount: BN;
@@ -136,6 +161,11 @@ export function packStackWithdraw(src: Withdraw, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.mode });
 }
 
+export function unpackStackWithdraw(slice: TupleSlice4): Withdraw {
+    const amount = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    return { $$type: 'Withdraw', amount: amount, mode: mode };
+}
 export async function Treasure_init(owner: Address) {
     const __code = 'te6ccgECHAEAAh8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFcj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAUyPhCAcwBzxbJ7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8A6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A3IcPANcPANJG6zlX/wDRTMlTQDcPAN4iRus5V/8A0UzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAADwByMwBzxbJgAgEgEhMCAUgYGQIBIBQVAgEgFhcAGT4QW8jMDEhxwXy4GSAAHwC8BB/yMlUEwJQVW1t8A6AAASAABTwEYAANHCBAKDwEYAAJAHwEDCAAH74o72omhqAPwxfSAAmPgJQACb75d4B8';
     const depends = new Map<string, Cell>();
@@ -179,6 +209,6 @@ export class Treasure {
     async getOwner() {
         let __stack: StackItem[] = [];
         let result = await this.executor.get('owner', __stack);
-        return result.stack.readAddress()!;
+        return result.stack.readAddress();
     }
 }
