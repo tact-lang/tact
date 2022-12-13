@@ -533,6 +533,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     return;
                 }
                 let tt = types[name];
+                if (!tt) {
+                    throwError('Trait ' + name + ' not found', t.ast.ref)
+                }
                 visited.add(name);
                 traits.push(tt);
                 if (tt.ast.kind === 'def_trait') {

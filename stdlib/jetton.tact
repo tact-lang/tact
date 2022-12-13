@@ -1,4 +1,5 @@
 import "@stdlib/ownable";
+import "./jetton/messages";
 
 struct JettonData {
     totalSupply: Int;
@@ -6,12 +7,6 @@ struct JettonData {
     owner: Address;
     content: Cell;
     walletCode: Cell;
-}
-
-message(0x7bdd97de) Burned {
-    amount: Int;
-    owner: Address;
-    cashback: Address?;
 }
 
 //
@@ -25,23 +20,6 @@ message(0x7bdd97de) Burned {
 //                     forward_payload:(Either Cell ^Cell) 
 //                     = InternalMsgBody;
 //
-
-message(0x178d4519) TokenReceived {
-    queryId: Int as uint64;
-    amount: Int;
-    from: Address;
-    responseAddress: Address;
-    forwardTonAmount: Int as coins;
-}
-
-message(0xf8a7ea5) TokenTransfer {
-    queryId: Int as uint64;
-    amount: Int as coins;
-    destination: Address;
-    responseDestination: Address;
-    customPayload: Cell?;
-    forwardTonAmount: Int as coins;
-}
 
 message JettonUpdateContent {
     content: Cell?;
@@ -58,7 +36,7 @@ contract JettonDefaultContract {
         self.master = master;
     }
 
-    receive(msg: TokenReceived) {
+    receive(msg: TokenTransferInternal) {
 
         // Check sender
         let ctx: Context = context();
@@ -129,7 +107,7 @@ trait Jetton with Ownable {
             to: walletAddress, 
             value: 0, 
             bounce: false,
-            body: abi.pack_cell(TokenReceived{ 
+            body: abi.pack_cell(TokenTransferInternal{ 
                 amount: amount,
                 queryId: 0,
                 from: myAddress(),
@@ -181,7 +159,7 @@ trait JettonWallet with Ownable {
     owner: Address;
     balance: Int;
 
-    receive(msg: TokenReceived) {
+    receive(msg: TokenTransferInternal) {
 
         // Check message
         let ctx: Context = context();

@@ -16,45 +16,57 @@ import { Cell } from "ton";
 import { ContractABI } from "./abi/ContractABI";
 import { writeTypescript } from "./generator/writeTypescript";
 
-function loadLibrary(path: string, name: string) {
+function resolveLibraryPath(filePath: string, name: string) {
 
     // Check stdlib
     if (name.startsWith('@stdlib/')) {
         let p = name.substring('@stdlib/'.length);
         if (fs.existsSync(__dirname + '/../stdlib/' + p + '.tact')) {
-            return fs.readFileSync(__dirname + '/../stdlib/' + p + '.tact', 'utf-8');
+            return __dirname + '/../stdlib/' + p + '.tact';
         } else {
-            console.warn(__dirname + '/../stdlib/' + p + '.tact');
-            throw new Error('Cannot find stdlib module ' + name);
+            return null;
         }
     }
 
-    throw new Error('Cannot find module ' + name);
+    let targetPath = path.resolve(filePath, name + '.tact');
+    if (fs.existsSync(targetPath)) {
+        return targetPath;
+    }
+
+    return null;
 }
 
-export function precompile(path: string) {
+export function precompile(sourceFile: string) {
 
     // Load stdlib
     const stdlib = fs.readFileSync(__dirname + '/../stdlib/stdlib.tact', 'utf-8');
-    const code = fs.readFileSync(path, 'utf8');
+    const code = fs.readFileSync(sourceFile, 'utf8');
+
+    //
+    // Process imports
+    // 
     const imported: string[] = [];
     let processed = new Set<string>();
-    let pending: string[] = parseImports(code);
-    while (pending.length > 0) {
-
-        // Pick next
-        let p = pending.shift()!;
-        if (processed.has(p)) {
-            continue;
+    let pending: string[] = [];
+    function processImports(path: string, source: string) {
+        let imp = parseImports(source);
+        for (let i of imp) {
+            let resolved = resolveLibraryPath(path, i);
+            if (!resolved) {
+                throw Error('Unable to import file ' + i + ' from ' + path);
+            }
+            if (!processed.has(resolved)) {
+                processed.add(resolved);
+                pending.push(resolved);
+            }
         }
-
-        // Load library
-        let loaded = loadLibrary(path, p);
-        imported.push(loaded);
-        processed.add(p);
-
-        // Add imports
-        pending = [...pending, ...parseImports(loaded)];
+    }
+    processImports(path.resolve(__dirname, '/../stdlib/stdlib.tact'), stdlib);
+    processImports(sourceFile, code);
+    while (pending.length > 0) {
+        let p = pending.shift()!;
+        let librarySource = fs.readFileSync(p, 'utf8');
+        processImports(p, librarySource)
     }
 
     // Perform initial compiler steps
