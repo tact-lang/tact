@@ -123,7 +123,14 @@ export async function compileProjects(configPath: string, projectNames: string[]
         // Start compilation
         console.log('💼 Compiling project ' + project.name + '...');
         let outputPath = path.resolve(rootPath, project.output);
-        let ctx = precompile(project.path);
+        let ctx: CompilerContext;
+        try {
+            ctx = precompile(project.path);
+        } catch (e) {
+            console.warn('Tact compilation failed');
+            console.log(e);
+            continue;
+        }
         if (!fs.existsSync(outputPath)) {
             fs.mkdirSync(outputPath);
         }
