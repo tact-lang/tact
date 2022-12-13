@@ -45,7 +45,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-(slice, ((int, slice, slice))) __gen_read_Burned(slice sc) inline {
+(slice, ((int, slice, slice))) __gen_read_TokenBurned(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 2078119902);
     var v'amount = sc~load_int(257);
     var v'owner = sc~__tact_load_address();
@@ -56,7 +56,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return (sc, (v'amount, v'owner, v'cashback));
 }
 
-builder __gen_write_TokenReceived(builder build_0, (int, int, slice, slice, int) v) inline {
+builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int) v) inline {
     var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount) = v;
     build_0 = store_uint(build_0, 395134233, 32);
     build_0 = store_uint(build_0, v'queryId, 64);
@@ -67,8 +67,8 @@ builder __gen_write_TokenReceived(builder build_0, (int, int, slice, slice, int)
     return build_0;
 }
 
-cell __gen_writecell_TokenReceived((int, int, slice, slice, int) v) inline {
-    return __gen_write_TokenReceived(begin_cell(), v).end_cell();
+cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int) v) inline {
+    return __gen_write_TokenTransferInternal(begin_cell(), v).end_cell();
 }
 
 (slice, ((cell))) __gen_read_JettonUpdateContent(slice sc) inline {
@@ -86,7 +86,7 @@ cell __gen_writecell_TokenReceived((int, int, slice, slice, int) v) inline {
     return (sc, (v'amount));
 }
 
-builder __gen_write_JettonDefaultContract(builder build_0, (int, slice, slice) v) inline {
+builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
     var (v'balance, v'owner, v'master) = v;
     build_0 = store_int(build_0, v'balance, 257);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -193,26 +193,26 @@ builder storeBool(builder s, int value) impure {
     send_raw_message(c, params'mode);
 }
 
-cell __gen_JettonDefaultContract_init(cell sys', slice master, slice owner) {
+cell __gen_JettonDefaultWallet_init(cell sys', slice master, slice owner) {
     var ((self'balance, self'owner, self'master)) = (null(), null(), null());
     self'balance = 0;
     self'owner = owner;
     self'master = master;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_JettonDefaultContract(b', (self'balance, self'owner, self'master));
+    b' = __gen_write_JettonDefaultWallet(b', (self'balance, self'owner, self'master));
     return b'.end_cell();
 }
 
-(cell, cell) __gen_JettonDefaultContract_init_child(cell sys', slice master, slice owner) {
+(cell, cell) __gen_JettonDefaultWallet_init_child(cell sys', slice master, slice owner) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
-    cell mine = __tact_dict_get_code(source, 55198);
+    cell mine = __tact_dict_get_code(source, 55471);
     cell contracts = new_dict();
-    cell code_55198 = __tact_dict_get_code(source, 55198);
-    contracts = __tact_dict_set_code(contracts, 55198, code_55198);
+    cell code_55471 = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, code_55471);
     cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, __gen_JettonDefaultContract_init(sys, master, owner));
+    return (mine, __gen_JettonDefaultWallet_init(sys, master, owner));
 }
 
 cell __gen_SampleJetton_init(cell sys', slice owner, cell content) {
@@ -229,24 +229,7 @@ cell __gen_SampleJetton_init(cell sys', slice owner, cell content) {
 
 ((int, slice, cell, int), (cell, cell)) __gen_SampleJetton_getJettonWalletInit((int, slice, cell, int) self, slice address) impure {
     var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
-    return ((self'totalSupply, self'owner, self'content, self'mintable), __gen_JettonDefaultContract_init_child(__tact_context_sys, my_address(), address));
-}
-
-((int, slice, cell, int), ()) __gen_SampleJetton_mint((int, slice, cell, int) self, slice to, int amount) impure {
-    var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
-    self'totalSupply = (self'totalSupply + amount);
-    var (winit'code, winit'data) = (self'totalSupply, self'owner, self'content, self'mintable)~__gen_SampleJetton_getJettonWalletInit(to);
-    slice walletAddress = __tact_compute_contract_address(0, winit'code, winit'data);
-    send((false, walletAddress, 0, 0, __gen_writecell_TokenReceived((0, amount, my_address(), my_address(), 0)), winit'code, winit'data));
-    return ((self'totalSupply, self'owner, self'content, self'mintable), ());
-}
-
-((int, slice, cell, int), ()) __gen_SampleJetton_requireWallet((int, slice, cell, int) self, slice owner) impure {
-    var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
-    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
-    var (winit'code, winit'data) = (self'totalSupply, self'owner, self'content, self'mintable)~__gen_SampleJetton_getJettonWalletInit(owner);
-    throw_unless(100, __tact_address_eq(__tact_compute_contract_address(0, winit'code, winit'data), ctx'sender));
-    return ((self'totalSupply, self'owner, self'content, self'mintable), ());
+    return ((self'totalSupply, self'owner, self'content, self'mintable), __gen_JettonDefaultWallet_init_child(__tact_context_sys, my_address(), address));
 }
 
 slice __gen_SampleJetton_get_wallet_address((int, slice, cell, int) self, slice owner) impure {
@@ -270,6 +253,23 @@ _ __gen_get_get_jetton_data() method_id(106029) {
     var self = __gen_load_SampleJetton();
     var res = __gen_SampleJetton_get_jetton_data(self);
     return res;
+}
+
+((int, slice, cell, int), ()) __gen_SampleJetton_mint((int, slice, cell, int) self, slice to, int amount) impure {
+    var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
+    self'totalSupply = (self'totalSupply + amount);
+    var (winit'code, winit'data) = (self'totalSupply, self'owner, self'content, self'mintable)~__gen_SampleJetton_getJettonWalletInit(to);
+    slice walletAddress = __tact_compute_contract_address(0, winit'code, winit'data);
+    send((false, walletAddress, 0, 0, __gen_writecell_TokenTransferInternal((0, amount, my_address(), my_address(), 0)), winit'code, winit'data));
+    return ((self'totalSupply, self'owner, self'content, self'mintable), ());
+}
+
+((int, slice, cell, int), ()) __gen_SampleJetton_requireWallet((int, slice, cell, int) self, slice owner) impure {
+    var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
+    var (winit'code, winit'data) = (self'totalSupply, self'owner, self'content, self'mintable)~__gen_SampleJetton_getJettonWalletInit(owner);
+    throw_unless(100, __tact_address_eq(__tact_compute_contract_address(0, winit'code, winit'data), ctx'sender));
+    return ((self'totalSupply, self'owner, self'content, self'mintable), ());
 }
 
 ((int, slice, cell, int), ()) __gen_SampleJetton_requireOwner((int, slice, cell, int) self) impure {
@@ -305,7 +305,7 @@ _ __gen_get_owner() method_id(83229) {
     return ((self'totalSupply, self'owner, self'content, self'mintable), ());
 }
 
-(((int, slice, cell, int)), ()) __gen_SampleJetton_receive_Burned((int, slice, cell, int) self, (int, slice, slice) msg) impure {
+(((int, slice, cell, int)), ()) __gen_SampleJetton_receive_TokenBurned((int, slice, cell, int) self, (int, slice, slice) msg) impure {
     var (self'totalSupply, self'owner, self'content, self'mintable) = self;
     var (msg'amount, msg'owner, msg'cashback) = msg;
     (self'totalSupply, self'owner, self'content, self'mintable)~__gen_SampleJetton_requireWallet(msg'owner);
@@ -350,11 +350,11 @@ _ __gen_get_owner() method_id(83229) {
         return ();
     }
     
-    ;; Receive Burned message
+    ;; Receive TokenBurned message
     if (op == 2078119902) {
         var self = __gen_load_SampleJetton();
-        var msg = in_msg~__gen_read_Burned();
-        self~__gen_SampleJetton_receive_Burned(msg);
+        var msg = in_msg~__gen_read_TokenBurned();
+        self~__gen_SampleJetton_receive_TokenBurned(msg);
         __gen_store_SampleJetton(self);
         return ();
     }

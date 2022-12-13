@@ -699,6 +699,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let dependsOn = new Set<string>();
         let handler = (src: ASTNode) => {
             if (src.kind === 'init_of') {
+                if (!types[src.name]) {
+                    throwError(`Type ${src.name} not found`, src.ref);
+                }
                 dependsOn.add(src.name);
             }
         }
@@ -713,10 +716,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Add dependencies
         for (let s of dependsOn) {
-            if (!types[s]) {
-                throwError(`Type ${s} not found`, t.ast.ref);
-            }
-            t.dependsOn.push(types[s]);
+            t.dependsOn.push(types[s]!);
         }
     }
 

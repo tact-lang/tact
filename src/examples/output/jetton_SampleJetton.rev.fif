@@ -432,7 +432,7 @@ SETCP0
     LDDICT
     s0 POP
     s0 PUSH
-    55198 PUSHINT
+    55471 PUSHINT
     s0 s1 XCHG
     16 PUSHINT
     DICTUGETREF
@@ -440,14 +440,14 @@ SETCP0
     100 THROWIFNOT
     PUSHNULL
     s0 s2 XCHG
-    55198 PUSHINT
+    55471 PUSHINT
     s0 s1 XCHG
     16 PUSHINT
     DICTUGETREF
     NULLSWAPIFNOT
     100 THROWIFNOT
     s1 s2 XCHG
-    55198 PUSHINT
+    55471 PUSHINT
     s0 s1 XCHG
     s0 s2 XCHG
     16 PUSHINT
@@ -495,6 +495,21 @@ SETCP0
     24 CALLDICT
 
   27: 
+    26 CALLDICT
+    2 2 BLKDROP2
+    s2 POP
+    0 PUSHINT
+    s3 POP
+    s0 s1 XCHG
+    5 CALLDICT
+
+  28: 
+    MYADDR
+    26 CALLDICT
+    s0 POP
+    s3 s3 s0 XCHG3
+
+  29: 
     s5 s5 XCPU
     ADD
     4 1 BLKSWAP
@@ -534,7 +549,7 @@ SETCP0
     22 CALLDICT
     1 3 BLKSWAP
 
-  28: 
+  30: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -548,21 +563,6 @@ SETCP0
     SDEQ
     100 THROWIFNOT
     1 3 BLKSWAP
-
-  29: 
-    26 CALLDICT
-    2 2 BLKDROP2
-    s2 POP
-    0 PUSHINT
-    s3 POP
-    s0 s1 XCHG
-    5 CALLDICT
-
-  30: 
-    MYADDR
-    26 CALLDICT
-    s0 POP
-    s3 s3 s0 XCHG3
 
   31: 
     1 GETGLOBVAR
@@ -583,7 +583,7 @@ SETCP0
     s0 POP
     s1 POP
     s0 s1 XCHG
-    27 CALLDICT
+    29 CALLDICT
 
   34: 
     4 1 BLKSWAP
@@ -596,7 +596,7 @@ SETCP0
     s1 s5 XCHG
     s1 s4 XCHG
     s3 s3 s0 XCHG3
-    28 CALLDICT
+    30 CALLDICT
     s3 s4 XCHG2
     SUB
     s2 s3 XCHG2
@@ -648,7 +648,7 @@ SETCP0
     s3 s3 XCHG2
     1 4 BLKDROP2
     1 4 BLKSWAP
-    29 CALLDICT
+    27 CALLDICT
 
   get_jetton_data: 
     c4 PUSH
@@ -672,7 +672,7 @@ SETCP0
     s0 s4 XCHG
     s3 s3 XCHG2
     1 4 BLKDROP2
-    30 CALLDICT
+    28 CALLDICT
 
   122307: 
     25 CALLDICT

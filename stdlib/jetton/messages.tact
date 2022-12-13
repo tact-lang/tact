@@ -20,3 +20,15 @@ message(0xf8a7ea5) TokenTransfer {
     customPayload: Cell?;
     forwardTonAmount: Int as coins;
 }
+
+message JettonUpdateContent {
+    content: Cell?;
+}
+
+struct JettonData {
+    totalSupply: Int;
+    mintable: Bool;
+    owner: Address;
+    content: Cell;
+    walletCode: Cell;
+}

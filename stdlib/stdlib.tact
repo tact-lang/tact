@@ -115,6 +115,9 @@ native nativeThrowWhen(code: Int, condition: Bool);
 @name(throw_unless)
 native require(code: Int, condition: Bool);
 
+@name(throw)
+native throw(code: Int);
+
 @name(throw_unless)
 native nativeThrowUnless(code: Int, condition: Bool);
 
