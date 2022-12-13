@@ -199,8 +199,47 @@ export function unpackStackPersist(slice: TupleSlice4): Persist {
     const content = slice.readCellOpt();
     return { $$type: 'Persist', key: key, content: content };
 }
+export type Reset = {
+    $$type: 'Reset';
+    key: BN;
+}
+
+export function packReset(src: Reset): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(2438762569, 32);
+    b_0 = b_0.storeInt(src.key, 257);
+    return b_0.endCell();
+}
+
+export function packStackReset(src: Reset, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.key });
+}
+
+export function unpackStackReset(slice: TupleSlice4): Reset {
+    const key = slice.readBigNumber();
+    return { $$type: 'Reset', key: key };
+}
+export type Something = {
+    $$type: 'Something';
+    value: BN;
+}
+
+export function packSomething(src: Something): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeInt(src.value, 257);
+    return b_0.endCell();
+}
+
+export function packStackSomething(src: Something, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.value });
+}
+
+export function unpackStackSomething(slice: TupleSlice4): Something {
+    const value = slice.readBigNumber();
+    return { $$type: 'Something', value: value };
+}
 export async function IncrementContract_init() {
-    const __code = 'te6ccgECGwEAAjQAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAUgZGgIBIAYHAA3SBAQFZ8AKAgEgCAkCAVgTFAIBIAoLAB3SCZ+gY30MoA64AYcC22wCASAMDQIBIBESA5ccCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQ13nE7brjAiCCECJGqL264wKCEAhke0K64wIw8sBkgDg8QAAkIG7yToACYMO1E0NQB+GL0BPQE1DDQ9ARVIGwTA9MfAYIQ13nE7bry4GSBAQHXAIEBAdcAWTIQNEMA8A7I+EIBzFUgUCP0APQAAcj0AMkBzMntVACKMO1E0NQB+GL0BPQE1DDQ9ARVIGwTA9MfAYIQIkaovbry4GSBAQHXAAExQTDwD8j4QgHMVSBQI/QA9AAByPQAyQHMye1UAJ7tRNDUAfhi9AT0BNQw0PQEVSBsEwPTHwGCEAhke0K68uBkgQEB1wBtAdIAAZLUMd5ZMhA0QwDwEMj4QgHMVSBQI/QA9AAByPQAyQHMye1UABsIG6VMFn0WjDgQTP0FYAAjCFulVtZ9Fow4MgBzwBBM/RCgAgEgFRYCASAXGAArG1tbQPIzANQI/QA9AAByPQAyQHMyYAADFuAAFyBAQEgEEZDMPADAoABLCKBAQEicfAEIG6aMBKBAQEBf3HwA52BAQEB8AGzEDQScfAD4gGAACbgffwDIADG7QH7UTQ1AH4YvQE9ATUMND0BFUgbBPwDY';
+    const __code = 'te6ccgECJgEAA5wAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAUgiIwIBSAYHAgEgFhcCASAICQIBIBARAgEgCgsAI1IW6VW1n0WjDgyAHPAEEz9EKASfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCENd5xO264wIgghAiRqi9uuMCIIIQCGR7QrrjAoIQkVyQSbqAMDQ4PAAkIG7yToAC2MO1E0NQB+GL0BPQE1DDQ9AT0BPQEVUBsFQXTHwGCENd5xO268uBkgQEB1wCBAQHXAFkyEFYQRRA0QwDwF8j4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVACoMO1E0NQB+GL0BPQE1DDQ9AT0BPQEVUBsFQXTHwGCECJGqL268uBkgQEB1wABMRBFEDRBMPAYyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAL4w7UTQ1AH4YvQE9ATUMND0BPQE9ARVQGwVBdMfAYIQCGR7Qrry4GSBAQHXAG0B0gABktQx3lkyEFYQRRA0QwDwGcj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVAC0jlPtRNDUAfhi9AT0BNQw0PQE9AT0BFVAbBUF0x8BghCRXJBJuvLgZIEBAdcAATEQRRA0QTDwGsj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOAw8sBkAgEgEhMCASAUFQAdEEz9AxvoZQB1wAw4FttgABsIG6VMFn0WjDgQTP0FYAARFn0DW+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGACAVgYGQIBSB4fAgEgGhsCASAcHQA9G1tbW1tBcjMBVBF9AAS9AAByPQAEvQAEvQAyQHMyYAAFF8EgAAcFF8EgAD8+EFvIzAxgQEBIBA5QUBSkPADECOBAQtAB4EBAfAHAYAIBICAhAJNIEBAW1TEhBJWfADBIEBASZtcfADA4EBASZt8AWBAQv4QW8jMDEQJG2BAQHwB4EBAW0gbpIwbZnIAQGBAQHPAMniQXDwBRA0QTCABLCSBAQEicfAEIG6aMBSBAQEBf3HwA52BAQEB8AGzEDYScfAD4gOAAKQkgQEBI/AGbvLgZBAkgQEBWfAFAoAIBICQlADm7QH7UTQ1AH4YvQE9ATUMND0BPQE9ARVQGwV8BWAAJtD7+ApAAObXgXaiaGoA/DF6AnoCahhoegJ6AnoCKqA2CvgLQ';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -216,7 +255,7 @@ export class IncrementContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment | Toggle | Persist) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment | Toggle | Persist | Reset) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
             body = packIncrement(message);
@@ -226,6 +265,9 @@ export class IncrementContract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Persist') {
             body = packPersist(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Reset') {
+            body = packReset(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({
@@ -241,6 +283,11 @@ export class IncrementContract {
     async getCounters() {
         let __stack: StackItem[] = [];
         let result = await this.executor.get('counters', __stack);
+        return result.stack.readCellOpt();
+    }
+    async getCounters2() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('counters2', __stack);
         return result.stack.readCellOpt();
     }
 }

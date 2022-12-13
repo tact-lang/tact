@@ -421,6 +421,76 @@
           }
         }
       }
+    },
+    {
+      "name": "Reset",
+      "header": 0,
+      "fields": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 2438762569,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 257,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "Something",
+      "header": 0,
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 257,
+            "refs": 0
+          }
+        }
+      }
     }
   ],
   "init": {
@@ -439,6 +509,10 @@
     {
       "kind": "internal-binary",
       "type": "Persist"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "Reset"
     }
   ],
   "getters": [
@@ -448,6 +522,15 @@
       "returns": {
         "kind": "map",
         "key": "Int",
+        "value": "Int"
+      }
+    },
+    {
+      "name": "counters2",
+      "args": [],
+      "returns": {
+        "kind": "map",
+        "key": "Address",
         "value": "Int"
       }
     }

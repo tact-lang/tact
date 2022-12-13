@@ -65,25 +65,9 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     //
-    // Dict
+    // Dict Int -> Int
     //
 
-    ctx.fun('__tact_dict_set_int_cell', () => {
-        ctx.append(`(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
-                ctx.append(`return (r, ());`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return (idict_set_ref(d, kl, k, v), ());`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
-    });
     ctx.fun('__tact_dict_set_int_int', () => {
         ctx.append(`(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {`);
         ctx.inIndent(() => {
@@ -116,13 +100,72 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append('}')
     });
+
+    //
+    // Dict Int -> Cell
+    //
+
+    ctx.fun('__tact_dict_set_int_cell', () => {
+        ctx.append(`(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
+                ctx.append(`return (r, ());`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return (idict_set_ref(d, kl, k, v), ());`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
     ctx.fun('__tact_dict_get_int_cell', () => {
-        ctx.append(`cell __tact_dict_get_int_cell(cell d, int kl, int k, int vl) {`);
+        ctx.append(`cell __tact_dict_get_int_cell(cell d, int kl, int k) {`);
         ctx.inIndent(() => {
             ctx.append(`var (r, ok) = idict_get_ref?(d, kl, k);`);
             ctx.append(`if (ok) {`);
             ctx.inIndent(() => {
                 ctx.append(`return r;`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return null();`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
+
+    //
+    // Dict Slice -> Int
+    //
+
+    ctx.fun('__tact_dict_set_slice_int', () => {
+        ctx.append(`(cell, int) __tact_idict_delete?(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";`)
+        ctx.append(`(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (r, ok) = __tact_idict_delete?(d, kl, k);`);
+                ctx.append(`return (r, ());`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
+    ctx.fun('__tact_dict_get_slice_int', () => {
+        ctx.append(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {`);
+        ctx.inIndent(() => {
+            ctx.append(`var (r, ok) = dict_get?(d, kl, k);`);
+            ctx.append(`if (ok) {`);
+            ctx.inIndent(() => {
+                ctx.append(`return r~load_int(vl);`);
             });
             ctx.append(`} else {`);
             ctx.inIndent(() => {

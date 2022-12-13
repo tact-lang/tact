@@ -137,6 +137,25 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
         });
         ctx.append(`}`);
     });
+
+    // Write to opt cell
+    ctx.fun(`__gen_writecellopt_${name}`, () => {
+        ctx.append(`cell __gen_writecellopt_${name}(${resolveFuncType(allocation.type, ctx)} v) inline {`);
+        ctx.inIndent(() => {
+
+            // If null
+            ctx.append(`if (null?(v)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`return null();`);
+            });
+            ctx.append(`}`);
+
+            // If not null
+            ctx.used(`__gen_writecell_${name}`);
+            ctx.append(`return __gen_writecell_${name}(v);`);
+        });
+        ctx.append(`}`);
+    });
 }
 
 //
