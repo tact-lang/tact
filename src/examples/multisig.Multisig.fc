@@ -1,0 +1,103 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, raw);
+}
+
+(slice, ((slice, int, cell))) __gen_read_Request(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 4096439811);
+    var v'to = sc~__tact_load_address();
+    var v'amount = sc~load_int(257);
+    var v'body = null();
+    if (sc~load_int(1)) {
+        var v'body = sc~load_ref();
+    }
+    return (sc, (v'to, v'amount, v'body));
+}
+
+builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
+    var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;
+    build_0 = store_int(build_0, v'seqno, 257);
+    build_0 = store_dict(build_0, v'members);
+    build_0 = store_int(build_0, v'totalWeight, 257);
+    build_0 = store_int(build_0, v'requiredWeight, 257);
+    return build_0;
+}
+
+(slice, ((int, cell, int, int))) __gen_read_Multisig(slice sc) inline {
+    var v'seqno = sc~load_int(257);
+    var v'members = sc~load_dict();
+    var v'totalWeight = sc~load_int(257);
+    var v'requiredWeight = sc~load_int(257);
+    return (sc, (v'seqno, v'members, v'totalWeight, v'requiredWeight));
+}
+
+(int, cell, int, int) __gen_load_Multisig() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_Multisig();
+}
+
+() __gen_store_Multisig((int, cell, int, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_Multisig(b, v);
+    set_data(b.end_cell());
+}
+
+cell __gen_Multisig_init(cell sys', cell members, int requiredWeight) {
+    var ((self'seqno, self'members, self'totalWeight, self'requiredWeight)) = (null(), null(), null(), null());
+    self'members = members;
+    self'requiredWeight = requiredWeight;
+    self'totalWeight = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_Multisig(b', (self'seqno, self'members, self'totalWeight, self'requiredWeight));
+    return b'.end_cell();
+}
+
+(((int, cell, int, int)), ()) __gen_Multisig_receive_Request((int, cell, int, int) self, (slice, int, cell) msg) impure {
+    var (self'seqno, self'members, self'totalWeight, self'requiredWeight) = self;
+    var (msg'to, msg'amount, msg'body) = msg;
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
+    return ((self'seqno, self'members, self'totalWeight, self'requiredWeight), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Request message
+    if (op == 4096439811) {
+        var self = __gen_load_Multisig();
+        var msg = in_msg~__gen_read_Request();
+        self~__gen_Multisig_receive_Request(msg);
+        __gen_store_Multisig(self);
+        return ();
+    }
+    
+    throw(100);
+}
+
+cell init_Multisig(cell sys', cell members, int requiredWeight) method_id {
+    return __gen_Multisig_init(sys', members, requiredWeight);
+}

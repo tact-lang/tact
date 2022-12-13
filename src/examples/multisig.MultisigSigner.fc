@@ -1,0 +1,66 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
+    return b;
+}
+
+builder __gen_write_MultisigSigner(builder build_0, (slice, int, int, cell, slice, int, cell) v) inline {
+    var (v'master, v'weight, v'requiredWeight, v'members, v'to, v'amount, v'body) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = store_int(build_0, v'weight, 257);
+    build_0 = store_int(build_0, v'requiredWeight, 257);
+    build_0 = store_dict(build_0, v'members);
+    var build_1 = begin_cell();
+    build_1 = __tact_store_address(build_1, v'to);
+    build_1 = store_int(build_1, v'amount, 257);
+    if (null?(v'body)) {
+        build_1 = store_int(build_1, false, 1);
+    } else {
+        build_1 = store_int(build_1, true, 1);
+        build_1 = store_ref(build_1, v'body);
+    }
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell __gen_MultisigSigner_init(cell sys', slice master, cell members, int requiredWeight, (slice, int, cell) request) {
+    var ((self'master, self'weight, self'requiredWeight, self'members, self'to, self'amount, self'body)) = (null(), 0, null(), null(), null(), null(), null());
+    self'members = members;
+    self'to = request'to;
+    self'amount = request'amount;
+    self'body = request'body;
+    self'master = master;
+    self'requiredWeight = requiredWeight;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_MultisigSigner(b', (self'master, self'weight, self'requiredWeight, self'members, self'to, self'amount, self'body));
+    return b'.end_cell();
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(100);
+}
+
+cell init_MultisigSigner(cell sys', slice master, cell members, int requiredWeight, (slice, int, cell) request) method_id {
+    return __gen_MultisigSigner_init(sys', master, members, requiredWeight, request);
+}

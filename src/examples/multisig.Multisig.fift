@@ -1,0 +1,148 @@
+PROGRAM{
+  DECLPROC __tact_context_get
+  DECLPROC __tact_load_address
+  DECLPROC __gen_read_Request
+  DECLPROC __gen_write_Multisig
+  DECLPROC __gen_read_Multisig
+  DECLPROC __gen_load_Multisig
+  DECLPROC __gen_store_Multisig
+  DECLPROC __gen_Multisig_init
+  DECLPROC __gen_Multisig_receive_Request
+  DECLPROC recv_internal
+  127839 DECLMETHOD init_Multisig
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    UNTRIPLE
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __gen_read_Request PROCINLINE:<{
+    32 LDU
+    SWAP
+    4096439811 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    257 PUSHINT
+    LDIX
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      LDREF
+      NIP
+    }>
+    3 -ROLL
+  }>
+  __gen_write_Multisig PROCINLINE:<{
+    s3 s4 XCHG2
+    257 PUSHINT
+    STIX
+    STDICT
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
+  __gen_read_Multisig PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    LDDICT
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    4 -ROLL
+  }>
+  __gen_load_Multisig PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_Multisig INLINECALLDICT
+    1 4 BLKDROP2
+  }>
+  __gen_store_Multisig PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    4 -ROLL
+    __gen_write_Multisig INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_Multisig_init PROC:<{
+    PUSHNULL
+    0 PUSHINT
+    s0 s4 XCHG
+    NEWC
+    STREF
+    s4 s4 XCHG2
+    s3 s1 s3 XCHG3
+    __gen_write_Multisig INLINECALLDICT
+    ENDC
+  }>
+  __gen_Multisig_receive_Request PROC:<{
+    3 BLKDROP
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    4096439811 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_Multisig INLINECALLDICT
+      s0 s4 XCHG
+      __gen_read_Request INLINECALLDICT
+      s3 POP
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      ROT
+      __gen_Multisig_receive_Request CALLDICT
+      __gen_store_Multisig INLINECALLDICT
+    }>
+    DROP
+    100 THROW
+  }>
+  init_Multisig PROC:<{
+    __gen_Multisig_init CALLDICT
+  }>
+}END>c
