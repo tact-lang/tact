@@ -21,14 +21,15 @@ function resolveLibraryPath(filePath: string, name: string) {
     // Check stdlib
     if (name.startsWith('@stdlib/')) {
         let p = name.substring('@stdlib/'.length);
-        if (fs.existsSync(__dirname + '/../stdlib/' + p + '.tact')) {
-            return __dirname + '/../stdlib/' + p + '.tact';
+        let pp = path.resolve(__dirname, '..', 'stdlib', p + '.tact')
+        if (fs.existsSync(pp)) {
+            return pp;
         } else {
             return null;
         }
     }
 
-    let targetPath = path.resolve(filePath, name + '.tact');
+    let targetPath = path.resolve(filePath, '..', name + '.tact');
     if (fs.existsSync(targetPath)) {
         return targetPath;
     }
@@ -66,7 +67,8 @@ export function precompile(sourceFile: string) {
     while (pending.length > 0) {
         let p = pending.shift()!;
         let librarySource = fs.readFileSync(p, 'utf8');
-        processImports(p, librarySource)
+        imported.push(librarySource);
+        processImports(p, librarySource);
     }
 
     // Perform initial compiler steps
