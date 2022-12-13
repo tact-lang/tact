@@ -40,25 +40,25 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
-export function packStackSendParameters(src: SendParameters, to: StackItem[]) {
-    to.push({ type: 'int', value: src.bounce ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    to.push({ type: 'int', value: src.value });
-    to.push({ type: 'int', value: src.mode });
-    if (src.body === null) {
-        to.push({ type: 'null' });
+export function packStackSendParameters(src: SendParameters, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.mode });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
     } else {
-        to.push({ type: 'cell', cell: src.body });
+        __stack.push({ type: 'null' });
     }
-    if (src.code === null) {
-        to.push({ type: 'null' });
+    if (src.code !== null) {
+        __stack.push({ type: 'cell', cell: src.code });
     } else {
-        to.push({ type: 'cell', cell: src.code });
+        __stack.push({ type: 'null' });
     }
-    if (src.data === null) {
-        to.push({ type: 'null' });
+    if (src.data !== null) {
+        __stack.push({ type: 'cell', cell: src.data });
     } else {
-        to.push({ type: 'cell', cell: src.data });
+        __stack.push({ type: 'null' });
     }
 }
 
@@ -77,10 +77,10 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
-export function packStackContext(src: Context, to: StackItem[]) {
-    to.push({ type: 'int', value: src.bounced ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    to.push({ type: 'int', value: src.value });
+export function packStackContext(src: Context, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
 }
 
 export type StateInit = {
@@ -96,9 +96,9 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
-export function packStackStateInit(src: StateInit, to: StackItem[]) {
-    to.push({ type: 'cell', cell: src.code });
-    to.push({ type: 'cell', cell: src.data });
+export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
 }
 
 export type Operation = {
@@ -116,10 +116,10 @@ export function packOperation(src: Operation): Cell {
     return b_0.endCell();
 }
 
-export function packStackOperation(src: Operation, to: StackItem[]) {
-    to.push({ type: 'int', value: src.seqno });
-    to.push({ type: 'int', value: src.amount });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
+export function packStackOperation(src: Operation, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.seqno });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
 }
 
 export type Execute = {
@@ -140,11 +140,11 @@ export function packExecute(src: Execute): Cell {
     return b_0.endCell();
 }
 
-export function packStackExecute(src: Execute, to: StackItem[]) {
-    packStackOperation(src.operation, to);
-    to.push({ type: 'slice', cell: src.signature1.toCell() });
-    to.push({ type: 'slice', cell: src.signature2.toCell() });
-    to.push({ type: 'slice', cell: src.signature3.toCell() });
+export function packStackExecute(src: Execute, __stack: StackItem[]) {
+    packStackOperation(src.operation, __stack);
+    __stack.push({ type: 'slice', cell: src.signature1.toCell() });
+    __stack.push({ type: 'slice', cell: src.signature2.toCell() });
+    __stack.push({ type: 'slice', cell: src.signature3.toCell() });
 }
 
 export type Executed = {
@@ -159,8 +159,8 @@ export function packExecuted(src: Executed): Cell {
     return b_0.endCell();
 }
 
-export function packStackExecuted(src: Executed, to: StackItem[]) {
-    to.push({ type: 'int', value: src.seqno });
+export function packStackExecuted(src: Executed, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.seqno });
 }
 
 export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {

@@ -40,25 +40,25 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
-export function packStackSendParameters(src: SendParameters, to: StackItem[]) {
-    to.push({ type: 'int', value: src.bounce ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    to.push({ type: 'int', value: src.value });
-    to.push({ type: 'int', value: src.mode });
-    if (src.body === null) {
-        to.push({ type: 'null' });
+export function packStackSendParameters(src: SendParameters, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.mode });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
     } else {
-        to.push({ type: 'cell', cell: src.body });
+        __stack.push({ type: 'null' });
     }
-    if (src.code === null) {
-        to.push({ type: 'null' });
+    if (src.code !== null) {
+        __stack.push({ type: 'cell', cell: src.code });
     } else {
-        to.push({ type: 'cell', cell: src.code });
+        __stack.push({ type: 'null' });
     }
-    if (src.data === null) {
-        to.push({ type: 'null' });
+    if (src.data !== null) {
+        __stack.push({ type: 'cell', cell: src.data });
     } else {
-        to.push({ type: 'cell', cell: src.data });
+        __stack.push({ type: 'null' });
     }
 }
 
@@ -77,10 +77,10 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
-export function packStackContext(src: Context, to: StackItem[]) {
-    to.push({ type: 'int', value: src.bounced ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    to.push({ type: 'int', value: src.value });
+export function packStackContext(src: Context, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
 }
 
 export type StateInit = {
@@ -96,9 +96,9 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
-export function packStackStateInit(src: StateInit, to: StackItem[]) {
-    to.push({ type: 'cell', cell: src.code });
-    to.push({ type: 'cell', cell: src.data });
+export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
 }
 
 export type ChangeOwner = {
@@ -113,8 +113,8 @@ export function packChangeOwner(src: ChangeOwner): Cell {
     return b_0.endCell();
 }
 
-export function packStackChangeOwner(src: ChangeOwner, to: StackItem[]) {
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
+export function packStackChangeOwner(src: ChangeOwner, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
 }
 
 export type TokenBurned = {
@@ -138,13 +138,13 @@ export function packTokenBurned(src: TokenBurned): Cell {
     return b_0.endCell();
 }
 
-export function packStackTokenBurned(src: TokenBurned, to: StackItem[]) {
-    to.push({ type: 'int', value: src.amount });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.cashback === null) {
-        to.push({ type: 'null' });
+export function packStackTokenBurned(src: TokenBurned, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    if (src.cashback !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.cashback).endCell() });
     } else {
-        to.push({ type: 'slice', cell: beginCell().storeAddress(src.cashback).endCell() });
+        __stack.push({ type: 'null' });
     }
 }
 
@@ -168,12 +168,12 @@ export function packTokenTransferInternal(src: TokenTransferInternal): Cell {
     return b_0.endCell();
 }
 
-export function packStackTokenTransferInternal(src: TokenTransferInternal, to: StackItem[]) {
-    to.push({ type: 'int', value: src.queryId });
-    to.push({ type: 'int', value: src.amount });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
-    to.push({ type: 'int', value: src.forwardTonAmount });
+export function packStackTokenTransferInternal(src: TokenTransferInternal, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    __stack.push({ type: 'int', value: src.forwardTonAmount });
 }
 
 export type TokenTransfer = {
@@ -203,17 +203,17 @@ export function packTokenTransfer(src: TokenTransfer): Cell {
     return b_0.endCell();
 }
 
-export function packStackTokenTransfer(src: TokenTransfer, to: StackItem[]) {
-    to.push({ type: 'int', value: src.queryId });
-    to.push({ type: 'int', value: src.amount });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
-    if (src.customPayload === null) {
-        to.push({ type: 'null' });
+export function packStackTokenTransfer(src: TokenTransfer, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+    if (src.customPayload !== null) {
+        __stack.push({ type: 'cell', cell: src.customPayload });
     } else {
-        to.push({ type: 'cell', cell: src.customPayload });
+        __stack.push({ type: 'null' });
     }
-    to.push({ type: 'int', value: src.forwardTonAmount });
+    __stack.push({ type: 'int', value: src.forwardTonAmount });
 }
 
 export type JettonUpdateContent = {
@@ -233,11 +233,11 @@ export function packJettonUpdateContent(src: JettonUpdateContent): Cell {
     return b_0.endCell();
 }
 
-export function packStackJettonUpdateContent(src: JettonUpdateContent, to: StackItem[]) {
-    if (src.content === null) {
-        to.push({ type: 'null' });
+export function packStackJettonUpdateContent(src: JettonUpdateContent, __stack: StackItem[]) {
+    if (src.content !== null) {
+        __stack.push({ type: 'cell', cell: src.content });
     } else {
-        to.push({ type: 'cell', cell: src.content });
+        __stack.push({ type: 'null' });
     }
 }
 
@@ -260,12 +260,12 @@ export function packJettonData(src: JettonData): Cell {
     return b_0.endCell();
 }
 
-export function packStackJettonData(src: JettonData, to: StackItem[]) {
-    to.push({ type: 'int', value: src.totalSupply });
-    to.push({ type: 'int', value: src.mintable ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    to.push({ type: 'cell', cell: src.content });
-    to.push({ type: 'cell', cell: src.walletCode });
+export function packStackJettonData(src: JettonData, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.totalSupply });
+    __stack.push({ type: 'int', value: src.mintable ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    __stack.push({ type: 'cell', cell: src.content });
+    __stack.push({ type: 'cell', cell: src.walletCode });
 }
 
 export type Mint = {
@@ -280,8 +280,8 @@ export function packMint(src: Mint): Cell {
     return b_0.endCell();
 }
 
-export function packStackMint(src: Mint, to: StackItem[]) {
-    to.push({ type: 'int', value: src.amount });
+export function packStackMint(src: Mint, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.amount });
 }
 
 export async function JettonDefaultWallet_init(master: Address, owner: Address) {

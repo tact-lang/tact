@@ -40,25 +40,25 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
-export function packStackSendParameters(src: SendParameters, to: StackItem[]) {
-    to.push({ type: 'int', value: src.bounce ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    to.push({ type: 'int', value: src.value });
-    to.push({ type: 'int', value: src.mode });
-    if (src.body === null) {
-        to.push({ type: 'null' });
+export function packStackSendParameters(src: SendParameters, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.mode });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
     } else {
-        to.push({ type: 'cell', cell: src.body });
+        __stack.push({ type: 'null' });
     }
-    if (src.code === null) {
-        to.push({ type: 'null' });
+    if (src.code !== null) {
+        __stack.push({ type: 'cell', cell: src.code });
     } else {
-        to.push({ type: 'cell', cell: src.code });
+        __stack.push({ type: 'null' });
     }
-    if (src.data === null) {
-        to.push({ type: 'null' });
+    if (src.data !== null) {
+        __stack.push({ type: 'cell', cell: src.data });
     } else {
-        to.push({ type: 'cell', cell: src.data });
+        __stack.push({ type: 'null' });
     }
 }
 
@@ -77,10 +77,10 @@ export function packContext(src: Context): Cell {
     return b_0.endCell();
 }
 
-export function packStackContext(src: Context, to: StackItem[]) {
-    to.push({ type: 'int', value: src.bounced ? new BN(-1): new BN(0) });
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    to.push({ type: 'int', value: src.value });
+export function packStackContext(src: Context, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
 }
 
 export type StateInit = {
@@ -96,9 +96,9 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
-export function packStackStateInit(src: StateInit, to: StackItem[]) {
-    to.push({ type: 'cell', cell: src.code });
-    to.push({ type: 'cell', cell: src.data });
+export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
 }
 
 export type Request = {
@@ -122,13 +122,13 @@ export function packRequest(src: Request): Cell {
     return b_0.endCell();
 }
 
-export function packStackRequest(src: Request, to: StackItem[]) {
-    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    to.push({ type: 'int', value: src.amount });
-    if (src.body === null) {
-        to.push({ type: 'null' });
+export function packStackRequest(src: Request, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.amount });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
     } else {
-        to.push({ type: 'cell', cell: src.body });
+        __stack.push({ type: 'null' });
     }
 }
 
@@ -141,6 +141,7 @@ export async function MultisigSigner_init(master: Address, members: Cell, requir
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });
     __stack.push({ type: 'cell', cell: members});
     __stack.push({ type: 'int', value: requiredWeight });
+    packStackRequest(request, __stack);
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_MultisigSigner', __stack, { debug: true });

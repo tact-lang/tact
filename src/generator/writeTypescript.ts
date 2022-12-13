@@ -2,6 +2,7 @@ import { AllocationCell, AllocationField, ContractABI, ContractField, ContractFu
 import { TypeRef } from "../types/types";
 import { Writer } from "./Writer";
 import * as changeCase from "change-case";
+import { writeToStack } from "./typescript/writeToStack";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -32,50 +33,6 @@ function writeArguments(args: ContractFunctionArg[]) {
 
 function writeField(field: ContractField, w: Writer) {
     w.append(`${field.name}: ${printFieldType(field.type)};`);
-}
-
-function writeStackItem(name: string, ref: TypeRef, w: Writer) {
-    if (ref.kind === 'ref') {
-
-        if (ref.optional) {
-            w.append(`if (${name} !== null) {`);
-            w.inIndent(() => {
-                writeStackItem(name, { ...ref, optional: false }, w);
-            });
-            w.append('} else {');
-            w.inIndent(() => {
-                w.append(`__stack.push({ type: 'null' });`);
-            });
-            w.append('}');
-            return;
-        }
-
-        if (ref.name === 'Int') {
-            w.append(`__stack.push({ type: 'int', value: ${name} });`);
-            return;
-        } else if (ref.name === 'Cell') {
-            w.append(`__stack.push({ type: 'cell', cell: ${name} });`);
-            return;
-        } else if (ref.name === 'Slice') {
-            w.append(`__stack.push({ type: 'slice', cell: ${name}.toCell() });`);
-            return;
-        } else if (ref.name === 'Address') {
-            w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
-            return;
-        } else if (ref.name === 'Bool') {
-            w.append(`__stack.push({ type: 'int', value: ${name} ? new BN(-1) : new BN(0) });`);
-            return;
-        } else {
-            // throw Error(`Unsupported type: ${ref.name}`);
-        }
-    }
-
-    if (ref.kind === 'map') {
-        w.append(`__stack.push({ type: 'cell', cell: ${name}});`);
-        return;
-    }
-
-    // throw Error(`Unsupported type`);
 }
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
@@ -160,52 +117,17 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         w.append(`}`);
         w.append();
 
-        w.append(`export function packStack${s.name}(src: ${s.name}, to: StackItem[]) {`);
+        // Pack to stack
+        w.append(`export function packStack${s.name}(src: ${s.name}, __stack: StackItem[]) {`);
         w.inIndent(() => {
             for (const f of s.fields) {
-                if (f.type.kind === 'map') {
-                    w.append(`to.push({ type: 'cell', cell: src.${f.name} });`);
-                } else if (f.type.kind === 'null') {
-                    w.append(`to.push({ type: 'null' });`);
-                } else if (f.type.kind === 'void') {
-                    throw Error('Impossible');
-                } else if (f.type.kind === 'ref') {
-                    function writeType(name: string, type: string) {
-                        if (type === 'Cell') {
-                            w.append(`to.push({ type: 'cell', cell: src.${name} });`);
-                        } else if (type === 'Builder') {
-                            w.append(`to.push({ type: 'builder', cell: src.${name} });`);
-                        } else if (type === 'Slice') {
-                            w.append(`to.push({ type: 'slice', cell: src.${name}.toCell() });`);
-                        } else if (type === 'Int') {
-                            w.append(`to.push({ type: 'int', value: src.${name} });`);
-                        } else if (type === 'Bool') {
-                            w.append(`to.push({ type: 'int', value: src.${name} ? new BN(-1): new BN(0) });`);
-                        } else if (type === 'Address') {
-                            w.append(`to.push({ type: 'slice', cell: beginCell().storeAddress(src.${name}).endCell() });`);
-                        } else {
-                            w.append(`packStack${type}(src.${name}, to);`);
-                        }
-                    }
-                    let name = f.type.name;
-                    if (f.type.optional) {
-                        w.append(`if (src.${f.name} === null) {`);
-                        w.inIndent(() => {
-                            w.append(`to.push({ type: 'null' });`);
-                        });
-                        w.append(`} else {`);
-                        w.inIndent(() => {
-                            writeType(f.name, name);
-                        });
-                        w.append(`}`);
-                    } else {
-                        writeType(f.name, name);
-                    }
-                }
+                writeToStack(`src.${f.name}`, f.type, w);
             }
         });
         w.append(`}`);
         w.append();
+
+        // Unpack from stack
     }
 
     // Init
@@ -233,7 +155,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
             w.append('let __stack: StackItem[] = [];');
             w.append(`__stack.push({ type: 'cell', cell: systemCell });`);
             for (let a of abi.init!.args) {
-                writeStackItem(a.name, a.type, w);
+                writeToStack(a.name, a.type, w);
             }
 
             // Deploy
@@ -322,7 +244,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
             w.inIndent(() => {
                 w.append(`let __stack: StackItem[] = [];`);
                 for (let a of g.args) {
-                    writeStackItem(a.name, a.type, w);
+                    writeToStack(a.name, a.type, w);
                 }
                 w.append(`let result = await this.executor.get('${g.name}', __stack);`);
 
@@ -334,8 +256,12 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                             w.append(`return result.stack.readBigNumber();`);
                         } else if (g.returns.name === 'Address') {
                             w.append(`return result.stack.readAddress()!;`);
-                        } else {
-                            // throw new Error(`Unsupported getter return type: ${g.returns.name}`);
+                        } else if (g.returns.name === 'Cell') {
+                            w.append(`return result.stack.readCell();`);
+                        } else if (g.returns.name === 'Slice') {
+                            w.append(`return result.stack.readCell();`);
+                        } else if (g.returns.name === 'Builder') {
+                            w.append(`return result.stack.readCell();`);
                         }
                     } else {
                         w.append(`return result.stack.readCell();`);
