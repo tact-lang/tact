@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-const fs = require('fs');
 const main = require('../dist/main');
 const arg = require('arg');
 
@@ -16,7 +15,7 @@ if (!args['--config']) {
 // Perform compilation
 (async () => {
     try {
-        await compileProjects(args['--config'], args['--project'] ? args['--project'] : null);
+        await main.compileProjects(args['--config'], args['--project'] ? args['--project'] : []);
     } catch (e) {
         console.warn('Internal compiler error. Please, report it to https://github.com/ton-community/tact/issues.');
         console.log(e);
