@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { compile, getContracts, precompile } from './main';
+import { compile, compileProjects, getContracts, precompile } from './main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from './generator/createABI';
 import { writeTypescript } from './generator/writeTypescript';
@@ -10,12 +10,17 @@ import { ContractABI } from './abi/ContractABI';
 // Read cases
 (async () => {
 
-    for (let p of [{ path: __dirname + "/test/contracts/", importPath: '../../abi/deploy' }, { path: __dirname + "/examples/", importPath: '../abi/deploy' }]) {
+    // Compile projects
+    await compileProjects(__dirname + '/../tact.config.json');
+
+    // Compile test contracts
+    for (let p of [{ path: __dirname + "/test/contracts/", importPath: '../../abi/deploy' }]) {
         let recs = fs.readdirSync(p.path);
         for (let r of recs) {
             if (!r.endsWith('.tact')) {
                 continue;
             }
+
 
             try {
 
@@ -48,7 +53,7 @@ import { ContractABI } from './abi/ContractABI';
                     fs.writeFileSync(prefix + ".rev.fift", source);
 
                     // Tact -> ABI
-                    let abi = createABI(res.ctx, contract);
+                    let abi = createABI(ctx, contract);
                     fs.writeFileSync(prefix + ".abi", JSON.stringify(abi, null, 2));
 
                     // Store code

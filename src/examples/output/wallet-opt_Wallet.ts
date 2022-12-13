@@ -1,7 +1,7 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
 import { ContractExecutor } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../abi/deploy';
+import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -69,57 +69,40 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
-export type ChangeOwner = {
-    $$type: 'ChangeOwner';
-    newOwner: Address;
+export type TransferMessage = {
+    $$type: 'TransferMessage';
+    signature: Slice;
+    transfer: Slice;
 }
 
-export function packChangeOwner(src: ChangeOwner): Cell {
+export function packTransferMessage(src: TransferMessage): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(3067051791, 32);
-    b_0 = b_0.storeAddress(src.newOwner);
+    b_0 = b_0.storeUint(1843760589, 32);
+    b_0 = b_0.storeCellCopy(src.signature.toCell());
+    b_0 = b_0.storeCellCopy(src.transfer.toCell());
     return b_0.endCell();
 }
 
-export type Withdraw = {
-    $$type: 'Withdraw';
-    amount: BigInt;
-    mode: BigInt;
-}
-
-export function packWithdraw(src: Withdraw): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(1286094280, 32);
-    b_0 = b_0.storeCoins(new BN(src.amount.toString(10), 10));
-    b_0 = b_0.storeUint(new BN(src.mode.toString(10), 10), 8);
-    return b_0.endCell();
-}
-
-export function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECHAEAAh8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFcj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAUyPhCAcwBzxbJ7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8A6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A3IcPANcPANJG6zlX/wDRTMlTQDcPAN4iRus5V/8A0UzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAADwByMwBzxbJgAgEgEhMCAUgYGQIBIBQVAgEgFhcAGT4QW8jMDEhxwXy4GSAAHwC8BB/yMlUEwJQVW1t8A6AAASAABTwEYAANHCBAKDwEYAAJAHwEDCAAH74o72omhqAPwxfSAAmPgJQACb75d4B8';
+export function Wallet_init(key: BigInt, walletId: BigInt) {
+    const __code = 'te6ccgECFAEAAT4AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgFICgsA69OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQg28sbm3Uce9qJoagD8MWmP6f/pn6qQNgmB6Y+AwQg28sbm3XlwMkGEa4wzGQgaIYB4BWR8IQDmKpAoEeWP5f/ln+T2qnAYeWAyQCAVgICQAfHADyMxVIFAjyx/L/8s/yYAAFDAxgAgEgDA0ANUIPkBVBAk+RDyqtIf0gfUMFEluvKrBKQE+wCAAFGwhgAAMW4AIBIBARACu+AldqJoagD8MWmP6f/pn6qQNgn4BEAAm7oT8AaAIBSBITACuzJftRNDUAfhi0x/T/9M/VSBsE/AJgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AHg';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
-    return deploy(__code, 'init_Treasure', __stack); 
+    __stack.push({ type: 'int', value: new BN(key.toString(), 10) });
+    __stack.push({ type: 'int', value: new BN(walletId.toString(), 10) });
+    return deploy(__code, 'init_Wallet', __stack); 
 }
 
-export class Treasure {
+export class Wallet {
             
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | 'Destroy' | ChangeOwner) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TransferMessage) {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Withdraw') {
-            body = packWithdraw(message);
-        }
-        if (message === 'Destroy') {
-            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ChangeOwner') {
-            body = packChangeOwner(message);
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TransferMessage') {
+            body = packTransferMessage(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({
@@ -132,9 +115,19 @@ export class Treasure {
             })
         }), { debug: args.debug });
     }
-    async getOwner() {
+    async getPublicKey() {
         let __stack: StackItem[] = [];
-        let result = await this.executor.get('owner', __stack);
-        return result.stack.readAddress()!;
+        let result = await this.executor.get('publicKey', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getWalletId() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('walletId', __stack);
+        return result.stack.readBigNumber();
+    }
+    async getSeqno() {
+        let __stack: StackItem[] = [];
+        let result = await this.executor.get('seqno', __stack);
+        return result.stack.readBigNumber();
     }
 }

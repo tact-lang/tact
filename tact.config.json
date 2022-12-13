@@ -1,0 +1,42 @@
+{
+  "projects": [
+    {
+      "name": "wallet",
+      "path": "./src/examples/wallet.tact",
+      "output": "./src/examples/output"
+    },
+    {
+      "name": "wallet-opt",
+      "path": "./src/examples/wallet-opt.tact",
+      "output": "./src/examples/output",
+      "experimental": {
+        "inline": true
+      }
+    },
+    {
+      "name": "treasure",
+      "path": "./src/examples/treasure.tact",
+      "output": "./src/examples/output"
+    },
+    {
+      "name": "multisig",
+      "path": "./src/examples/multisig.tact",
+      "output": "./src/examples/output"
+    },
+    {
+      "name": "multisig-3",
+      "path": "./src/examples/multisig-3.tact",
+      "output": "./src/examples/output"
+    },
+    {
+      "name": "increment",
+      "path": "./src/examples/increment.tact",
+      "output": "./src/examples/output"
+    },
+    {
+      "name": "jetton",
+      "path": "./src/examples/jetton.tact",
+      "output": "./src/examples/output"
+    }
+  ]
+}

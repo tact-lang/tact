@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const main = require('../dist/main');
+const arg = require('arg');
+
+// Resolve arguments
+const args = arg({
+    '--config': String,
+    '--project': String
+});
+if (!args['--config']) {
+    console.log('USAGE: tact --config <config_path> [--project <project_name]');
+    return;
+}
+
+// Perform compilation
+(async () => {
+    try {
+        await compileProjects(args['--config'], args['--project'] ? args['--project'] : null);
+    } catch (e) {
+        console.warn('Internal compiler error. Please, report it to https://github.com/ton-community/tact/issues.');
+        console.log(e);
+    }
+})();

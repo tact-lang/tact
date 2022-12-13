@@ -18,18 +18,24 @@
     "bin/**/*",
     "stdlib/**/*"
   ],
+  "bin": {
+    "tact": "./bin/tact"
+  },
   "dependencies": {
     "@types/bn.js": "^5.1.1",
+    "arg": "^5.0.2",
     "bn.js": "^5.2.1",
     "change-case": "^4.1.2",
     "ohm-js": "^16.4.0",
+    "ora": "^6.1.2",
     "prando": "^6.0.1",
     "ton": "^12.1.5",
     "ton-compiler": "^2.0.0",
     "ton-contract-executor": "^0.6.0",
     "ton-crypto": "^3.2.0",
     "ton-nodejs": "^1.4.2",
-    "tvm-disassembler": "^1.2.1"
+    "tvm-disassembler": "^1.2.1",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@ohm-js/cli": "^1.1.0",
