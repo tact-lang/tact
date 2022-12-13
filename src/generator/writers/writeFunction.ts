@@ -311,6 +311,13 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         ctx.append(`cell __gen_${t.name}_init(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
 
+            // Unpack args
+            for (let a of init.args) {
+                if (!resolveFuncPrimitive(a.type, ctx)) {
+                    ctx.append(`var (${resolveFuncTypeUnpack(a.type, a.name, ctx)}) = ${a.name};`);
+                }
+            }
+
             // Generate self initial tensor
             let initValues: string[] = [];
             for (let i = 0; i < t.fields.length; i++) {

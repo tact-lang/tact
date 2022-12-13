@@ -1,7 +1,7 @@
 import { packTransfer, packTransferMessage, Transfer, Wallet, Wallet_init } from "./output/wallet_Wallet";
 import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
-import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
+import { beginCell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
 import { BN } from "bn.js";
 
 describe('wallet', () => {
@@ -10,8 +10,8 @@ describe('wallet', () => {
         // Create wallet
         let mnemonic = await mnemonicNew(24);
         let key = await mnemonicToWalletKey(mnemonic);
-        let pk = BigInt('0x' + key.publicKey.toString('hex'))
-        let init = await Wallet_init(pk, 0n);
+        let pk = new BN(key.publicKey.toString('hex'), 'hex');
+        let init = await Wallet_init(pk, new BN(0));
 
         // Create executor
         let executor = await createExecutorFromCode(init);
@@ -23,9 +23,9 @@ describe('wallet', () => {
 
         let transfer: Transfer = {
             $$type: 'Transfer',
-            seqno: 0n,
-            mode: 1n,
-            amount: BigInt(toNano(10).toString(10)),
+            seqno: new BN(0),
+            mode: new BN(1),
+            amount: toNano(10),
             to: executor.address,
             body: null
         };

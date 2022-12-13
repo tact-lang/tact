@@ -101,34 +101,70 @@ export function packStackStateInit(src: StateInit, to: StackItem[]) {
     to.push({ type: 'cell', cell: src.data });
 }
 
-export type Source = {
-    $$type: 'Source';
-    a: BN;
-    b: BN;
-    c: BN;
-    d: BN;
+export type Request = {
+    $$type: 'Request';
+    to: Address;
+    amount: BN;
+    body: Cell | null;
 }
 
-export function packSource(src: Source): Cell {
+export function packRequest(src: Request): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeInt(src.a, 257);
-    b_0 = b_0.storeInt(src.b, 257);
-    b_0 = b_0.storeInt(src.c, 257);
-    let b_1 = new Builder();
-    b_1 = b_1.storeInt(src.d, 257);
-    b_0 = b_0.storeRef(b_1.endCell());
+    b_0 = b_0.storeUint(4096439811, 32);
+    b_0 = b_0.storeAddress(src.to);
+    b_0 = b_0.storeInt(src.amount, 257);
+    if (src.body !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
     return b_0.endCell();
 }
 
-export function packStackSource(src: Source, to: StackItem[]) {
-    to.push({ type: 'int', value: src.a });
-    to.push({ type: 'int', value: src.b });
-    to.push({ type: 'int', value: src.c });
-    to.push({ type: 'int', value: src.d });
+export function packStackRequest(src: Request, to: StackItem[]) {
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    to.push({ type: 'int', value: src.amount });
+    if (src.body === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.body });
+    }
 }
 
-export class Empty {
+export async function Multisig_init(members: Cell, requiredWeight: BN) {
+    const __code = 'te6ccgEBCQEA6gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQAJoea/4BEBb9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQh6FVsB3XGBGHlgMkBgIB1AcIAMrtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQ9Cq2A7ry4GT6QAEBgQEB1wBtAdIAAZLUMd5VIDMQVhBFEDRY8AnI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVAA7G1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJgAAUXwOA=';
+    const depends = new Map<string, Cell>();
+    let systemCell = beginCell().storeDict(null).endCell();
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: systemCell });
+    __stack.push({ type: 'cell', cell: members});
+    __stack.push({ type: 'int', value: requiredWeight });
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_Multisig', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
+}
+
+export class Multisig {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Request) {
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Request') {
+            body = packRequest(message);
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        await this.executor.internal(new InternalMessage({
+            to: this.executor.address,
+            from: args.from || this.executor.address,
+            bounce: false,
+            value: args.amount,
+            body: new CommonMessageInfo({
+                body: new CellMessage(body!)
+            })
+        }), { debug: args.debug });
+    }
 }

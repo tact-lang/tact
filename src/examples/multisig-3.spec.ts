@@ -1,13 +1,14 @@
 import { MultisigContract_init } from "./output/multisig-3_MultisigContract";
 import { createExecutorFromCode } from 'ton-nodejs';
 import { Address, Cell, contractAddress } from "ton";
+import BN from "bn.js";
 
 describe('muiltisig-3', () => {
     it('should deploy', async () => {
 
-        let key1 = 1n;
-        let key2 = 2n;
-        let key3 = 3n;
+        let key1 = new BN(1);
+        let key2 = new BN(2);
+        let key3 = new BN(3);
         let res = await MultisigContract_init(key1, key2, key3);
         expect(res.data.toDebugString()).toMatchSnapshot();
 

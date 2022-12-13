@@ -101,33 +101,54 @@ export function packStackStateInit(src: StateInit, to: StackItem[]) {
     to.push({ type: 'cell', cell: src.data });
 }
 
-export type Source = {
-    $$type: 'Source';
-    a: BN;
-    b: BN;
-    c: BN;
-    d: BN;
+export type Request = {
+    $$type: 'Request';
+    to: Address;
+    amount: BN;
+    body: Cell | null;
 }
 
-export function packSource(src: Source): Cell {
+export function packRequest(src: Request): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeInt(src.a, 257);
-    b_0 = b_0.storeInt(src.b, 257);
-    b_0 = b_0.storeInt(src.c, 257);
-    let b_1 = new Builder();
-    b_1 = b_1.storeInt(src.d, 257);
-    b_0 = b_0.storeRef(b_1.endCell());
+    b_0 = b_0.storeUint(4096439811, 32);
+    b_0 = b_0.storeAddress(src.to);
+    b_0 = b_0.storeInt(src.amount, 257);
+    if (src.body !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.body);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
     return b_0.endCell();
 }
 
-export function packStackSource(src: Source, to: StackItem[]) {
-    to.push({ type: 'int', value: src.a });
-    to.push({ type: 'int', value: src.b });
-    to.push({ type: 'int', value: src.c });
-    to.push({ type: 'int', value: src.d });
+export function packStackRequest(src: Request, to: StackItem[]) {
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    to.push({ type: 'int', value: src.amount });
+    if (src.body === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.body });
+    }
 }
 
-export class Empty {
+export async function MultisigSigner_init(master: Address, members: Cell, requiredWeight: BN, request: Request) {
+    const __code = 'te6ccgEBBgEAfQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoAW54AcAR0INdJMcIfMNDTAwFxsMABkX+RcOIB+kAwVEETbwP4YdzywGSABtVwB8jMBwVVIFB2zxYUgQEBzwASgQEBzwD0AMhYzxYTgQEBzwAhbpRwMsoAlX8BygDM4skBzMmA==';
+    const depends = new Map<string, Cell>();
+    let systemCell = beginCell().storeDict(null).endCell();
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: systemCell });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });
+    __stack.push({ type: 'cell', cell: members});
+    __stack.push({ type: 'int', value: requiredWeight });
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_MultisigSigner', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
+}
+
+export class MultisigSigner {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     

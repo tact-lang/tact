@@ -1,0 +1,86 @@
+PROGRAM{
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_MultisigSigner
+  DECLPROC __gen_MultisigSigner_init
+  DECLPROC recv_internal
+  66268 DECLMETHOD init_MultisigSigner
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_MultisigSigner PROCINLINE:<{
+    s7 s6 XCHG2
+    __tact_store_address INLINECALLDICT
+    s1 s4 XCHG
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    STDICT
+    NEWC
+    ROT
+    __tact_store_address INLINECALLDICT
+    s1 s3 XCHG
+    257 PUSHINT
+    STIX
+    OVER
+    ISNULL
+    IF:<{
+      FALSE
+      s2 POP
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_MultisigSigner_init PROC:<{
+    0 PUSHINT
+    s0 s7 XCHG
+    NEWC
+    STREF
+    s0 s7 XCHG
+    s0 s5 XCHG
+    3 -ROLL
+    __gen_write_MultisigSigner INLINECALLDICT
+    ENDC
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    100 THROW
+  }>
+  init_MultisigSigner PROC:<{
+    __gen_MultisigSigner_init CALLDICT
+  }>
+}END>c

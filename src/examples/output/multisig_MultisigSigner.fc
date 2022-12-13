@@ -26,6 +26,7 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, int, int, cell, slic
 }
 
 cell __gen_MultisigSigner_init(cell sys', slice master, cell members, int requiredWeight, (slice, int, cell) request) {
+    var ((request'to, request'amount, request'body)) = request;
     var ((self'master, self'weight, self'requiredWeight, self'members, self'to, self'amount, self'body)) = (null(), 0, null(), null(), null(), null(), null());
     self'members = members;
     self'to = request'to;

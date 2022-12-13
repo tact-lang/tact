@@ -2,6 +2,7 @@ import { SampleJetton, SampleJetton_init } from "./output/jetton_SampleJetton";
 import { createExecutorFromCode } from "ton-nodejs";
 import { randomAddress } from "./utils/randomAddress";
 import { toNano } from "ton";
+import BN from "bn.js";
 
 describe('jetton', () => {
     it('should deploy', async () => {
@@ -16,7 +17,7 @@ describe('jetton', () => {
         expect((await contract.getOwner()).toFriendly()).toEqual(owner.toFriendly());
 
         // Mint
-        let res = await contract.send({ amount: toNano(1) }, { $$type: 'Mint', amount: 1000000n });
+        let res = await contract.send({ amount: toNano(1) }, { $$type: 'Mint', amount: new BN(1000000) });
         console.warn(res);
     });
 });

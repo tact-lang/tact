@@ -1,6 +1,7 @@
 import { IncrementContract_init, packIncrement } from "./output/increment_IncrementContract";
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
 import { CellMessage, CommonMessageInfo, InternalMessage, parseDict, toNano } from "ton";
+import BN from "bn.js";
 
 describe('increment', () => {
     it('should deploy', async () => {
@@ -20,8 +21,8 @@ describe('increment', () => {
                 body: new CommonMessageInfo({
                     body: new CellMessage(packIncrement({
                         $$type: 'Increment',
-                        key: 0n,
-                        value: -1232n
+                        key: new BN(0),
+                        value: new BN(-1232)
                     }))
                 })
             }), { debug: true });

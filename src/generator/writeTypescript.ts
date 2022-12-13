@@ -6,7 +6,7 @@ import * as changeCase from "change-case";
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
         if (ref.name === 'Int') {
-            return 'BigInt' + (ref.optional ? ' | null' : '');
+            return 'BN' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Bool') {
             return 'boolean' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Cell') {
@@ -51,7 +51,7 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
         }
 
         if (ref.name === 'Int') {
-            w.append(`__stack.push({ type: 'int', value: new BN(${name}.toString(), 10) });`);
+            w.append(`__stack.push({ type: 'int', value: ${name} });`);
             return;
         } else if (ref.name === 'Cell') {
             w.append(`__stack.push({ type: 'cell', cell: ${name} });`);
@@ -63,10 +63,10 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
             w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
             return;
         } else if (ref.name === 'Bool') {
-            w.append(`__stack.push({ type: 'int', value: new BN(${name} ? -1 : 0) });`);
+            w.append(`__stack.push({ type: 'int', value: ${name} ? new BN(-1) : new BN(0) });`);
             return;
         } else {
-            throw Error(`Unsupported type: ${ref.name}`);
+            // throw Error(`Unsupported type: ${ref.name}`);
         }
     }
 
@@ -75,7 +75,7 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
         return;
     }
 
-    throw Error(`Unsupported type`);
+    // throw Error(`Unsupported type`);
 }
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
@@ -109,12 +109,12 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     if (f.bits === 1) {
                         w.append(`b_${index} = b_${index}.storeBit(src.${s.fields[f.index].name});`);
                     } else {
-                        w.append(`b_${index} = b_${index}.storeInt(new BN(src.${s.fields[f.index].name}.toString(10), 10), ${f.bits});`);
+                        w.append(`b_${index} = b_${index}.storeInt(src.${s.fields[f.index].name}, ${f.bits});`);
                     }
                 } else if (f.kind === 'uint') {
-                    w.append(`b_${index} = b_${index}.storeUint(new BN(src.${s.fields[f.index].name}.toString(10), 10), ${f.bits});`);
+                    w.append(`b_${index} = b_${index}.storeUint(src.${s.fields[f.index].name}, ${f.bits});`);
                 } else if (f.kind === 'coins') {
-                    w.append(`b_${index} = b_${index}.storeCoins(new BN(src.${s.fields[f.index].name}.toString(10), 10));`);
+                    w.append(`b_${index} = b_${index}.storeCoins(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'cell') {
                     w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'slice') {
@@ -156,6 +156,53 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
             processCell(0, s.allocation.root);
 
             w.append(`return b_0.endCell();`);
+        });
+        w.append(`}`);
+        w.append();
+
+        w.append(`export function packStack${s.name}(src: ${s.name}, to: StackItem[]) {`);
+        w.inIndent(() => {
+            for (const f of s.fields) {
+                if (f.type.kind === 'map') {
+                    w.append(`to.push({ type: 'cell', cell: src.${f.name} });`);
+                } else if (f.type.kind === 'null') {
+                    w.append(`to.push({ type: 'null' });`);
+                } else if (f.type.kind === 'void') {
+                    throw Error('Impossible');
+                } else if (f.type.kind === 'ref') {
+                    function writeType(name: string, type: string) {
+                        if (type === 'Cell') {
+                            w.append(`to.push({ type: 'cell', cell: src.${name} });`);
+                        } else if (type === 'Builder') {
+                            w.append(`to.push({ type: 'builder', cell: src.${name} });`);
+                        } else if (type === 'Slice') {
+                            w.append(`to.push({ type: 'slice', cell: src.${name}.toCell() });`);
+                        } else if (type === 'Int') {
+                            w.append(`to.push({ type: 'int', value: src.${name} });`);
+                        } else if (type === 'Bool') {
+                            w.append(`to.push({ type: 'int', value: src.${name} ? new BN(-1): new BN(0) });`);
+                        } else if (type === 'Address') {
+                            w.append(`to.push({ type: 'slice', cell: beginCell().storeAddress(src.${name}).endCell() });`);
+                        } else {
+                            w.append(`packStack${type}(src.${name}, to);`);
+                        }
+                    }
+                    let name = f.type.name;
+                    if (f.type.optional) {
+                        w.append(`if (src.${f.name} === null) {`);
+                        w.inIndent(() => {
+                            w.append(`to.push({ type: 'null' });`);
+                        });
+                        w.append(`} else {`);
+                        w.inIndent(() => {
+                            writeType(f.name, name);
+                        });
+                        w.append(`}`);
+                    } else {
+                        writeType(f.name, name);
+                    }
+                }
+            }
         });
         w.append(`}`);
         w.append();
@@ -201,8 +248,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
     }
 
     // Wrapper
-    w.append(`export class ${abi.name} {
-            `);
+    w.append(`export class ${abi.name} {`);
     w.inIndent(() => {
         w.append(`readonly executor: ContractExecutor; `);
         w.append(`constructor(executor: ContractExecutor) { this.executor = executor; } `);

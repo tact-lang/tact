@@ -6,8 +6,8 @@ export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
     to: Address;
-    value: BigInt;
-    mode: BigInt;
+    value: BN;
+    mode: BN;
     body: Cell | null;
     code: Cell | null;
     data: Cell | null;
@@ -17,8 +17,8 @@ export function packSendParameters(src: SendParameters): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeBit(src.bounce);
     b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
-    b_0 = b_0.storeInt(new BN(src.mode.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeInt(src.mode, 257);
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
@@ -40,19 +40,47 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export function packStackSendParameters(src: SendParameters, to: StackItem[]) {
+    to.push({ type: 'int', value: src.bounce ? new BN(-1): new BN(0) });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    to.push({ type: 'int', value: src.value });
+    to.push({ type: 'int', value: src.mode });
+    if (src.body === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.body });
+    }
+    if (src.code === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.code });
+    }
+    if (src.data === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.data });
+    }
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
     sender: Address;
-    value: BigInt;
+    value: BN;
 }
 
 export function packContext(src: Context): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
-    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.value, 257);
     return b_0.endCell();
+}
+
+export function packStackContext(src: Context, to: StackItem[]) {
+    to.push({ type: 'int', value: src.bounced ? new BN(-1): new BN(0) });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    to.push({ type: 'int', value: src.value });
 }
 
 export type StateInit = {
@@ -68,6 +96,11 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
+export function packStackStateInit(src: StateInit, to: StackItem[]) {
+    to.push({ type: 'cell', cell: src.code });
+    to.push({ type: 'cell', cell: src.data });
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -80,9 +113,13 @@ export function packChangeOwner(src: ChangeOwner): Cell {
     return b_0.endCell();
 }
 
+export function packStackChangeOwner(src: ChangeOwner, to: StackItem[]) {
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
+}
+
 export type TokenBurned = {
     $$type: 'TokenBurned';
-    amount: BigInt;
+    amount: BN;
     owner: Address;
     cashback: Address | null;
 }
@@ -90,7 +127,7 @@ export type TokenBurned = {
 export function packTokenBurned(src: TokenBurned): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(2078119902, 32);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.amount, 257);
     b_0 = b_0.storeAddress(src.owner);
     if (src.cashback !== null) {
         b_0 = b_0.storeBit(true);
@@ -101,41 +138,59 @@ export function packTokenBurned(src: TokenBurned): Cell {
     return b_0.endCell();
 }
 
+export function packStackTokenBurned(src: TokenBurned, to: StackItem[]) {
+    to.push({ type: 'int', value: src.amount });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    if (src.cashback === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'slice', cell: beginCell().storeAddress(src.cashback).endCell() });
+    }
+}
+
 export type TokenTransferInternal = {
     $$type: 'TokenTransferInternal';
-    queryId: BigInt;
-    amount: BigInt;
+    queryId: BN;
+    amount: BN;
     from: Address;
     responseAddress: Address;
-    forwardTonAmount: BigInt;
+    forwardTonAmount: BN;
 }
 
 export function packTokenTransferInternal(src: TokenTransferInternal): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(395134233, 32);
-    b_0 = b_0.storeUint(new BN(src.queryId.toString(10), 10), 64);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    b_0 = b_0.storeUint(src.queryId, 64);
+    b_0 = b_0.storeInt(src.amount, 257);
     b_0 = b_0.storeAddress(src.from);
     b_0 = b_0.storeAddress(src.responseAddress);
-    b_0 = b_0.storeCoins(new BN(src.forwardTonAmount.toString(10), 10));
+    b_0 = b_0.storeCoins(src.forwardTonAmount);
     return b_0.endCell();
+}
+
+export function packStackTokenTransferInternal(src: TokenTransferInternal, to: StackItem[]) {
+    to.push({ type: 'int', value: src.queryId });
+    to.push({ type: 'int', value: src.amount });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    to.push({ type: 'int', value: src.forwardTonAmount });
 }
 
 export type TokenTransfer = {
     $$type: 'TokenTransfer';
-    queryId: BigInt;
-    amount: BigInt;
+    queryId: BN;
+    amount: BN;
     destination: Address;
     responseDestination: Address;
     customPayload: Cell | null;
-    forwardTonAmount: BigInt;
+    forwardTonAmount: BN;
 }
 
 export function packTokenTransfer(src: TokenTransfer): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(260734629, 32);
-    b_0 = b_0.storeUint(new BN(src.queryId.toString(10), 10), 64);
-    b_0 = b_0.storeCoins(new BN(src.amount.toString(10), 10));
+    b_0 = b_0.storeUint(src.queryId, 64);
+    b_0 = b_0.storeCoins(src.amount);
     b_0 = b_0.storeAddress(src.destination);
     b_0 = b_0.storeAddress(src.responseDestination);
     if (src.customPayload !== null) {
@@ -144,8 +199,21 @@ export function packTokenTransfer(src: TokenTransfer): Cell {
     } else {
         b_0 = b_0.storeBit(false);
     }
-    b_0 = b_0.storeCoins(new BN(src.forwardTonAmount.toString(10), 10));
+    b_0 = b_0.storeCoins(src.forwardTonAmount);
     return b_0.endCell();
+}
+
+export function packStackTokenTransfer(src: TokenTransfer, to: StackItem[]) {
+    to.push({ type: 'int', value: src.queryId });
+    to.push({ type: 'int', value: src.amount });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+    if (src.customPayload === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.customPayload });
+    }
+    to.push({ type: 'int', value: src.forwardTonAmount });
 }
 
 export type JettonUpdateContent = {
@@ -165,9 +233,17 @@ export function packJettonUpdateContent(src: JettonUpdateContent): Cell {
     return b_0.endCell();
 }
 
+export function packStackJettonUpdateContent(src: JettonUpdateContent, to: StackItem[]) {
+    if (src.content === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.content });
+    }
+}
+
 export type JettonData = {
     $$type: 'JettonData';
-    totalSupply: BigInt;
+    totalSupply: BN;
     mintable: boolean;
     owner: Address;
     content: Cell;
@@ -176,7 +252,7 @@ export type JettonData = {
 
 export function packJettonData(src: JettonData): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeInt(new BN(src.totalSupply.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.totalSupply, 257);
     b_0 = b_0.storeBit(src.mintable);
     b_0 = b_0.storeAddress(src.owner);
     b_0 = b_0.storeRef(src.content);
@@ -184,16 +260,28 @@ export function packJettonData(src: JettonData): Cell {
     return b_0.endCell();
 }
 
+export function packStackJettonData(src: JettonData, to: StackItem[]) {
+    to.push({ type: 'int', value: src.totalSupply });
+    to.push({ type: 'int', value: src.mintable ? new BN(-1): new BN(0) });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    to.push({ type: 'cell', cell: src.content });
+    to.push({ type: 'cell', cell: src.walletCode });
+}
+
 export type Mint = {
     $$type: 'Mint';
-    amount: BigInt;
+    amount: BN;
 }
 
 export function packMint(src: Mint): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(2737462367, 32);
-    b_0 = b_0.storeInt(new BN(src.amount.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.amount, 257);
     return b_0.endCell();
+}
+
+export function packStackMint(src: Mint, to: StackItem[]) {
+    to.push({ type: 'int', value: src.amount });
 }
 
 export async function JettonDefaultWallet_init(master: Address, owner: Address) {
@@ -213,7 +301,6 @@ export async function JettonDefaultWallet_init(master: Address, owner: Address) 
 }
 
 export class JettonDefaultWallet {
-            
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     

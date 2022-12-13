@@ -6,8 +6,8 @@ export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
     to: Address;
-    value: BigInt;
-    mode: BigInt;
+    value: BN;
+    mode: BN;
     body: Cell | null;
     code: Cell | null;
     data: Cell | null;
@@ -17,8 +17,8 @@ export function packSendParameters(src: SendParameters): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeBit(src.bounce);
     b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
-    b_0 = b_0.storeInt(new BN(src.mode.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeInt(src.mode, 257);
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
@@ -40,19 +40,47 @@ export function packSendParameters(src: SendParameters): Cell {
     return b_0.endCell();
 }
 
+export function packStackSendParameters(src: SendParameters, to: StackItem[]) {
+    to.push({ type: 'int', value: src.bounce ? new BN(-1): new BN(0) });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    to.push({ type: 'int', value: src.value });
+    to.push({ type: 'int', value: src.mode });
+    if (src.body === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.body });
+    }
+    if (src.code === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.code });
+    }
+    if (src.data === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.data });
+    }
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
     sender: Address;
-    value: BigInt;
+    value: BN;
 }
 
 export function packContext(src: Context): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
-    b_0 = b_0.storeInt(new BN(src.value.toString(10), 10), 257);
+    b_0 = b_0.storeInt(src.value, 257);
     return b_0.endCell();
+}
+
+export function packStackContext(src: Context, to: StackItem[]) {
+    to.push({ type: 'int', value: src.bounced ? new BN(-1): new BN(0) });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    to.push({ type: 'int', value: src.value });
 }
 
 export type StateInit = {
@@ -68,21 +96,26 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
+export function packStackStateInit(src: StateInit, to: StackItem[]) {
+    to.push({ type: 'cell', cell: src.code });
+    to.push({ type: 'cell', cell: src.data });
+}
+
 export type Transfer = {
     $$type: 'Transfer';
-    seqno: BigInt;
-    mode: BigInt;
+    seqno: BN;
+    mode: BN;
     to: Address;
-    amount: BigInt;
+    amount: BN;
     body: Cell | null;
 }
 
 export function packTransfer(src: Transfer): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(new BN(src.seqno.toString(10), 10), 32);
-    b_0 = b_0.storeUint(new BN(src.mode.toString(10), 10), 8);
+    b_0 = b_0.storeUint(src.seqno, 32);
+    b_0 = b_0.storeUint(src.mode, 8);
     b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeCoins(new BN(src.amount.toString(10), 10));
+    b_0 = b_0.storeCoins(src.amount);
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
@@ -90,6 +123,18 @@ export function packTransfer(src: Transfer): Cell {
         b_0 = b_0.storeBit(false);
     }
     return b_0.endCell();
+}
+
+export function packStackTransfer(src: Transfer, to: StackItem[]) {
+    to.push({ type: 'int', value: src.seqno });
+    to.push({ type: 'int', value: src.mode });
+    to.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    to.push({ type: 'int', value: src.amount });
+    if (src.body === null) {
+        to.push({ type: 'null' });
+    } else {
+        to.push({ type: 'cell', cell: src.body });
+    }
 }
 
 export type TransferMessage = {
@@ -106,15 +151,20 @@ export function packTransferMessage(src: TransferMessage): Cell {
     return b_0.endCell();
 }
 
-export async function Wallet_init(key: BigInt, walletId: BigInt) {
+export function packStackTransferMessage(src: TransferMessage, to: StackItem[]) {
+    to.push({ type: 'slice', cell: src.signature.toCell() });
+    packStackTransfer(src.transfer, to);
+}
+
+export async function Wallet_init(key: BN, walletId: BN) {
     const __code = 'te6ccgECKgEAA88AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBPAXyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAYyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwG8j4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BzI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAB9HADyMxVIFAjyx/L/8s/yYABUlH8BygDgcAHKAIADrMhxAcoBF8oAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GONX/wEMhw8BBw8BAkbrOVf/AQFMyVNANw8BDiJG6zlX/wEBTMlTQDcPAQ4nDwEAJ/8BACyVjMljMzAXDwEOIhbrOZfwHKAAHwAQHMlHAyygDiyQH7AIAIBIBgZAgEgGhsABQwMYAAFGwhgAAMW4AB7FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMG1t8BGACASAeHwIBSCIjAgEgICECASAhIQAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAAEgAAMMIAIBICYnACu+AldqJoagD8MWmP6f/pn6qQNgn4CsAAm7oT8BKAIBSCgpACuzJftRNDUAfhi0x/T/9M/VSBsE/AWgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AUg';
     const depends = new Map<string, Cell>();
     depends.set('14718', Cell.fromBoc(Buffer.from('te6ccgECKgEAA88AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBPAXyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAYyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwG8j4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BzI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAB9HADyMxVIFAjyx/L/8s/yYABUlH8BygDgcAHKAIADrMhxAcoBF8oAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GONX/wEMhw8BBw8BAkbrOVf/AQFMyVNANw8BDiJG6zlX/wEBTMlTQDcPAQ4nDwEAJ/8BACyVjMljMzAXDwEOIhbrOZfwHKAAHwAQHMlHAyygDiyQH7AIAIBIBgZAgEgGhsABQwMYAAFGwhgAAMW4AB7FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMG1t8BGACASAeHwIBSCIjAgEgICECASAhIQAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAAEgAAMMIAIBICYnACu+AldqJoagD8MWmP6f/pn6qQNgn4CsAAm7oT8BKAIBSCgpACuzJftRNDUAfhi0x/T/9M/VSBsE/AWgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AUg', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'int', value: new BN(key.toString(), 10) });
-    __stack.push({ type: 'int', value: new BN(walletId.toString(), 10) });
+    __stack.push({ type: 'int', value: key });
+    __stack.push({ type: 'int', value: walletId });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_Wallet', __stack, { debug: true });
@@ -123,7 +173,6 @@ export async function Wallet_init(key: BigInt, walletId: BigInt) {
 }
 
 export class Wallet {
-            
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     

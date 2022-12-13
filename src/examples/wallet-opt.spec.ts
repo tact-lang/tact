@@ -1,7 +1,8 @@
 import { packTransferMessage, Wallet_init } from "./output/wallet-opt_Wallet";
 import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
 import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
-import { Address, beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
+import { beginCell, Cell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
+import BN from "bn.js";
 
 describe('wallet-opt', () => {
     it('should deploy', async () => {
@@ -9,8 +10,8 @@ describe('wallet-opt', () => {
         // Create wallet
         let mnemonic = await mnemonicNew(24);
         let key = await mnemonicToWalletKey(mnemonic);
-        let pk = BigInt('0x' + key.publicKey.toString('hex'))
-        let init = await Wallet_init(pk, 0n);
+        let pk = new BN(key.publicKey.toString('hex'), 'hex');
+        let init = await Wallet_init(pk, new BN(0));
 
         // Create executor
         let executor = await createExecutorFromCode(init);
