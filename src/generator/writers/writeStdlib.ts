@@ -116,6 +116,22 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append('}')
     });
+    ctx.fun('__tact_dict_get_int_cell', () => {
+        ctx.append(`cell __tact_dict_get_int_cell(cell d, int kl, int k, int vl) {`);
+        ctx.inIndent(() => {
+            ctx.append(`var (r, ok) = idict_get_ref?(d, kl, k);`);
+            ctx.append(`if (ok) {`);
+            ctx.inIndent(() => {
+                ctx.append(`return r;`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return null();`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
 
     //
     // Address

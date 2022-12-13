@@ -362,6 +362,65 @@
           }
         }
       }
+    },
+    {
+      "name": "Persist",
+      "header": 0,
+      "fields": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "content",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 140802882,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 1,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 258,
+            "refs": 1
+          }
+        }
+      }
     }
   ],
   "init": {
@@ -376,6 +435,10 @@
     {
       "kind": "internal-binary",
       "type": "Toggle"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "Persist"
     }
   ],
   "getters": [

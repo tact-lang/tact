@@ -166,8 +166,41 @@ export function unpackStackToggle(slice: TupleSlice4): Toggle {
     const key = slice.readBigNumber();
     return { $$type: 'Toggle', key: key };
 }
+export type Persist = {
+    $$type: 'Persist';
+    key: BN;
+    content: Cell | null;
+}
+
+export function packPersist(src: Persist): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(140802882, 32);
+    b_0 = b_0.storeInt(src.key, 257);
+    if (src.content !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.content);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export function packStackPersist(src: Persist, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.key });
+    if (src.content !== null) {
+        __stack.push({ type: 'cell', cell: src.content });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function unpackStackPersist(slice: TupleSlice4): Persist {
+    const key = slice.readBigNumber();
+    const content = slice.readCellOpt();
+    return { $$type: 'Persist', key: key, content: content };
+}
 export async function IncrementContract_init() {
-    const __code = 'te6ccgECFgEAAYEAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAUgUFQIBSAYHAgEgDg8CASAICQIBIAwNAvUcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQ13nE7bqOOzDtRNDUAfhi9AT0BFlsEgLTHwGCENd5xO268uBkgQEB1wCBAQHXAFkyQwDwDMj4QgHMWQL0APQAye1U4IIQIkaovbrjAjCAKCwAJCBu8k6AAaO1E0NQB+GL0BPQEWWwSAtMfAYIQIkaovbry4GSBAQHXAAExEvANyPhCAcxZAvQA9ADJ7VQABvLAZAAjCFulVtZ9Fow4MgBzwBBM/RCgAB0QTP0DG+hlAHXADDgW22ACAVgQEQIBSBITABkbW0CyMwCAvQA9ADJgAAMMIAAXIEBASAQRUMw8AIBgAEMIYEBASJx8AMgbpkwgQEBAX9x8AKbgQEBAfABsxJx8ALigAAm4H38AqAAlu0B+1E0NQB+GL0BPQEWWwS8AuA==';
+    const __code = 'te6ccgECGwEAAjQAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAUgZGgIBIAYHAA3SBAQFZ8AKAgEgCAkCAVgTFAIBIAoLAB3SCZ+gY30MoA64AYcC22wCASAMDQIBIBESA5ccCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQ13nE7brjAiCCECJGqL264wKCEAhke0K64wIw8sBkgDg8QAAkIG7yToACYMO1E0NQB+GL0BPQE1DDQ9ARVIGwTA9MfAYIQ13nE7bry4GSBAQHXAIEBAdcAWTIQNEMA8A7I+EIBzFUgUCP0APQAAcj0AMkBzMntVACKMO1E0NQB+GL0BPQE1DDQ9ARVIGwTA9MfAYIQIkaovbry4GSBAQHXAAExQTDwD8j4QgHMVSBQI/QA9AAByPQAyQHMye1UAJ7tRNDUAfhi9AT0BNQw0PQEVSBsEwPTHwGCEAhke0K68uBkgQEB1wBtAdIAAZLUMd5ZMhA0QwDwEMj4QgHMVSBQI/QA9AAByPQAyQHMye1UABsIG6VMFn0WjDgQTP0FYAAjCFulVtZ9Fow4MgBzwBBM/RCgAgEgFRYCASAXGAArG1tbQPIzANQI/QA9AAByPQAyQHMyYAADFuAAFyBAQEgEEZDMPADAoABLCKBAQEicfAEIG6aMBKBAQEBf3HwA52BAQEB8AGzEDQScfAD4gGAACbgffwDIADG7QH7UTQ1AH4YvQE9ATUMND0BFUgbBPwDY';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -183,13 +216,16 @@ export class IncrementContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment | Toggle) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment | Toggle | Persist) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
             body = packIncrement(message);
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Toggle') {
             body = packToggle(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Persist') {
+            body = packPersist(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         await this.executor.internal(new InternalMessage({

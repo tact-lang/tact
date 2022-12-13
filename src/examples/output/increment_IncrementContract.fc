@@ -3,6 +3,15 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_ref(d, kl, k, v), ());
+    }
+}
+
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
@@ -21,6 +30,15 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
     }
 }
 
+cell __tact_dict_get_int_cell(cell d, int kl, int k, int vl) {
+    var (r, ok) = idict_get_ref?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
 (slice, ((int, int))) __gen_read_Increment(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 3615081709);
     var v'key = sc~load_int(257);
@@ -34,26 +52,41 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
     return (sc, (v'key));
 }
 
-builder __gen_write_IncrementContract(builder build_0, (cell, cell) v) inline {
-    var (v'counters, v'counters2) = v;
+(slice, ((int, cell))) __gen_read_Persist(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 140802882);
+    var v'key = sc~load_int(257);
+    var v'content = null();
+    if (sc~load_int(1)) {
+        var v'content = sc~load_ref();
+    }
+    return (sc, (v'key, v'content));
+}
+
+builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell) v) inline {
+    var (v'counters, v'counters2, v'counters3) = v;
     build_0 = store_dict(build_0, v'counters);
     build_0 = store_dict(build_0, v'counters2);
+    var build_1 = begin_cell();
+    build_1 = store_dict(build_1, v'counters3);
+    build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, ((cell, cell))) __gen_read_IncrementContract(slice sc) inline {
+(slice, ((cell, cell, cell))) __gen_read_IncrementContract(slice sc) inline {
     var v'counters = sc~load_dict();
     var v'counters2 = sc~load_dict();
-    return (sc, (v'counters, v'counters2));
+    sc = (sc~load_ref()).begin_parse();
+    var v'counters3 = sc~load_dict();
+    return (sc, (v'counters, v'counters2, v'counters3));
 }
 
-(cell, cell) __gen_load_IncrementContract() inline {
+(cell, cell, cell) __gen_load_IncrementContract() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_IncrementContract();
 }
 
-() __gen_store_IncrementContract((cell, cell) v) impure inline {
+() __gen_store_IncrementContract((cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_IncrementContract(b, v);
@@ -61,15 +94,15 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell) v) inline {
 }
 
 cell __gen_IncrementContract_init(cell sys') {
-    var ((self'counters, self'counters2)) = (null(), null());
+    var ((self'counters, self'counters2, self'counters3)) = (null(), null(), null());
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_IncrementContract(b', (self'counters, self'counters2));
+    b' = __gen_write_IncrementContract(b', (self'counters, self'counters2, self'counters3));
     return b'.end_cell();
 }
 
-cell __gen_IncrementContract_counters((cell, cell) self) impure {
-    var ((self'counters, self'counters2)) = self;
+cell __gen_IncrementContract_counters((cell, cell, cell) self) impure {
+    var ((self'counters, self'counters2, self'counters3)) = self;
     return self'counters;
 }
 
@@ -79,15 +112,15 @@ _ __gen_get_counters() method_id(95239) {
     return res;
 }
 
-(((cell, cell)), ()) __gen_IncrementContract_receive_Increment((cell, cell) self, (int, int) msg) impure {
-    var (self'counters, self'counters2) = self;
+(((cell, cell, cell)), ()) __gen_IncrementContract_receive_Increment((cell, cell, cell) self, (int, int) msg) impure {
+    var (self'counters, self'counters2, self'counters3) = self;
     var (msg'key, msg'value) = msg;
     self'counters~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
-    return ((self'counters, self'counters2), ());
+    return ((self'counters, self'counters2, self'counters3), ());
 }
 
-(((cell, cell)), ()) __gen_IncrementContract_receive_Toggle((cell, cell) self, (int) msg) impure {
-    var (self'counters, self'counters2) = self;
+(((cell, cell, cell)), ()) __gen_IncrementContract_receive_Toggle((cell, cell, cell) self, (int) msg) impure {
+    var (self'counters, self'counters2, self'counters3) = self;
     var (msg'key) = msg;
     int ex = __tact_dict_get_int_int(self'counters2, 257, msg'key, 1);
     if (null?(ex)) {
@@ -95,7 +128,15 @@ _ __gen_get_counters() method_id(95239) {
     } else {
         self'counters2~__tact_dict_set_int_int(257, msg'key, (~ __tact_not_null(ex)), 1);
     }
-    return ((self'counters, self'counters2), ());
+    return ((self'counters, self'counters2, self'counters3), ());
+}
+
+(((cell, cell, cell)), ()) __gen_IncrementContract_receive_Persist((cell, cell, cell) self, (int, cell) msg) impure {
+    var (self'counters, self'counters2, self'counters3) = self;
+    var (msg'key, msg'content) = msg;
+    throw_unless(100, null?(__tact_dict_get_int_cell(self'counters3, 257, msg'key)));
+    self'counters3~__tact_dict_set_int_cell(257, msg'key, msg'content);
+    return ((self'counters, self'counters2, self'counters3), ());
 }
 
 
@@ -131,6 +172,15 @@ _ __gen_get_counters() method_id(95239) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Toggle();
         self~__gen_IncrementContract_receive_Toggle(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    ;; Receive Persist message
+    if (op == 140802882) {
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Persist();
+        self~__gen_IncrementContract_receive_Persist(msg);
         __gen_store_IncrementContract(self);
         return ();
     }

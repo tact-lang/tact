@@ -102,6 +102,9 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 } else if (self.value === 'Bool') {
                     ctx.used(`__tact_dict_get_int_int`);
                     return `__tact_dict_get_int_int(${resolved[0]}, 257, ${resolved[1]}, 1)`;
+                } else if (self.value === 'Cell') {
+                    ctx.used(`__tact_dict_get_int_cell`);
+                    return `__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]})`;
                 } else {
                     throwError(`set expects a map with Int, Bool or Cell values`, ref);
                 }

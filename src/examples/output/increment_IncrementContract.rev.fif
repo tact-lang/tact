@@ -48,9 +48,13 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      ROTREV
-      1 2 BLKDROP2
-      s0 s2 XCHG
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+      s0 s3 XCHG
       32 LDU
       s0 s1 XCHG
       3615081709 PUSHINT
@@ -62,23 +66,31 @@ SETCP0
       LDI
       ROTREV
       s2 POP
+      s3 s4 XCHG
       s3 s0 s0 XCHG3
-      12 CALLDICT
+      14 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
       STREF
-      ROTREV
-      s0 s2 XCHG
+      3 1 BLKSWAP
+      s2 s3 XCHG2
       STDICT
+      STDICT
+      s0 s1 XCHG
+      NEWC
       STDICT
       ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
       c4 POP
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
+    s0 PUSH
     575056061 PUSHINT
     EQUAL
     <{
+      s0 POP
       c4 PUSH
       CTOS
       LDREF
@@ -86,9 +98,13 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      ROTREV
-      1 2 BLKDROP2
-      s0 s2 XCHG
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+      s0 s3 XCHG
       32 LDU
       s0 s1 XCHG
       575056061 PUSHINT
@@ -98,16 +114,77 @@ SETCP0
       LDI
       s0 s1 XCHG
       s1 POP
-      s1 s2 XCHG
-      13 CALLDICT
+      s1 s3 s0 XCHG3
+      15 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
       STREF
+      3 1 BLKSWAP
+      s2 s3 XCHG2
+      STDICT
+      STDICT
+      s0 s1 XCHG
+      NEWC
+      STDICT
+      ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
+      c4 POP
+    }> IFJMPREF
+    140802882 PUSHINT
+    EQUAL
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+      s0 s3 XCHG
+      32 LDU
+      s0 s1 XCHG
+      140802882 PUSHINT
+      EQUAL
+      100 THROWIFNOT
+      257 PUSHINT
+      LDI
+      PUSHNULL
+      s0 s1 XCHG
+      1 LDI
+      s0 s1 XCHG
+      <{
+        LDREF
+        s1 POP
+      }> PUSHCONT
+      IF
       ROTREV
-      s0 s2 XCHG
+      s2 POP
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      16 CALLDICT
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      3 1 BLKSWAP
+      s2 s3 XCHG2
       STDICT
       STDICT
+      s0 s1 XCHG
+      NEWC
+      STDICT
+      ENDC
+      s0 s1 XCHG
+      STREF
       ENDC
       c4 POP
     }> IFJMPREF
@@ -120,6 +197,19 @@ SETCP0
     14 THROWIF
 
   2: 
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    IFJMP
+    s1 s3 s3 XCHG3
+    DICTISETREF
+
+  3: 
     s1 PUSH
     ISNULL
     <{
@@ -135,7 +225,7 @@ SETCP0
     s1 s3 s3 XCHG3
     DICTISETB
 
-  3: 
+  4: 
     s1 s3 s3 XCHG3
     DICTIGET
     NULLSWAPIFNOT
@@ -148,58 +238,73 @@ SETCP0
     2DROP
     PUSHNULL
 
-  10: 
+  12: 
     PUSHNULL
     PUSHNULL
-    s0 s2 XCHG
+    PUSHNULL
+    s0 s3 XCHG
     NEWC
     STREF
-    s0 s2 XCHG
-    s0 s2 XCHG
+    s0 s3 XCHG
+    s2 s3 XCHG2
     STDICT
+    STDICT
+    s0 s1 XCHG
+    NEWC
     STDICT
     ENDC
-
-  11: 
-    s0 POP
-
-  12: 
-    257 PUSHINT
-    s0 PUSH
-    s4 s5 XCHG
-    s3 s3 s0 XCHG3
-    2 CALLDICT
     s0 s1 XCHG
+    STREF
+    ENDC
 
   13: 
-    s1 PUSH
+    2DROP
+
+  14: 
+    257 PUSHINT
+    s0 PUSH
+    s4 s6 XCHG
+    s3 s3 s0 XCHG3
+    3 CALLDICT
+    s0 s2 XCHG
+
+  15: 
+    s2 PUSH
     257 PUSHINT
     s2 PUSH
     1 PUSHINT
-    3 CALLDICT
+    4 CALLDICT
     s0 PUSH
     ISNULL
     <{
       s0 POP
+      s1 s2 XCHG
       257 PUSHINT
       s0 s1 XCHG
       -1 PUSHINT
       1 PUSHINT
-      2 CALLDICT
+      3 CALLDICT
     }> PUSHCONT
     <{
       257 PUSHINT
       s0 s1 XCHG
       1 CALLDICT
       NOT
+      s3 s4 XCHG
       s1 s2 XCHG
       1 PUSHINT
-      2 CALLDICT
+      3 CALLDICT
     }> PUSHCONT
     IFELSE
+    s0 s1 XCHG
+
+  16: 
+    257 PUSHINT
+    ROTREV
+    2 CALLDICT
 
   66039: 
-    10 CALLDICT
+    12 CALLDICT
 
   95239: 
     c4 PUSH
@@ -209,9 +314,13 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    ROTREV
-    1 2 BLKDROP2
-    11 CALLDICT
+    LDREF
+    s0 POP
+    CTOS
+    LDDICT
+    3 1 BLKSWAP
+    1 3 BLKDROP2
+    13 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG
