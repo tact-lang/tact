@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -83,7 +82,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
     return b_0.endCell();
 }
 
-export function Wallet_init(key: BigInt, walletId: BigInt) {
+export async function Wallet_init(key: BigInt, walletId: BigInt) {
     const __code = 'te6ccgECFAEAAT4AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgFICgsA69OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQg28sbm3Uce9qJoagD8MWmP6f/pn6qQNgmB6Y+AwQg28sbm3XlwMkGEa4wzGQgaIYB4BWR8IQDmKpAoEeWP5f/ln+T2qnAYeWAyQCAVgICQAfHADyMxVIFAjyx/L/8s/yYAAFDAxgAgEgDA0ANUIPkBVBAk+RDyqtIf0gfUMFEluvKrBKQE+wCAAFGwhgAAMW4AIBIBARACu+AldqJoagD8MWmP6f/pn6qQNgn4BEAAm7oT8AaAIBSBITACuzJftRNDUAfhi0x/T/9M/VSBsE/AJgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AHg';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
@@ -91,7 +90,11 @@ export function Wallet_init(key: BigInt, walletId: BigInt) {
     __stack.push({ type: 'cell', cell: systemCell });
     __stack.push({ type: 'int', value: new BN(key.toString(), 10) });
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10) });
-    return deploy(__code, 'init_Wallet', __stack); 
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_Wallet', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
 }
 
 export class Wallet {

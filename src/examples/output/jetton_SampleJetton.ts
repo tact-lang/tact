@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -197,7 +196,7 @@ export function packMint(src: Mint): Cell {
     return b_0.endCell();
 }
 
-export function SampleJetton_init(owner: Address, content: Cell | null) {
+export async function SampleJetton_init(owner: Address, content: Cell | null) {
     const __code = 'te6ccgECLwEABEkAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASApKgIBIAYHAgHOIyQCAUgICQIBIA8QAgFICgsAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgOXHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCEKMqXF+64wIgghDTqLheuuMCghB73ZfeuuMCMPLAZIAwNDgAJCBu8k6AAtjDtRNDUAfhi+gD6QAFtAtIAAZLUMd7SAARQM2wUBNMfAYIQoypcX7ry4GSBAQHXAAExEDRBMPAhyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQAvjDtRNDUAfhi+gD6QAFtAtIAAZLUMd7SAARQM2wUBNMfAYIQ06i4Xrry4GRtAdIAAZLUMd4BMRA0QTDwIsj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UANjtRNDUAfhi+gD6QAFtAtIAAZLUMd7SAARQM2wUBNMfAYIQe92X3rry4GSBAQHXAPpAAW0C0gABlPpAATDeQxMzEFYQRRA0WPAjyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQCAVgREgIBIBUWABVZR/AcoA4HABygCAIBIBMUAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/AVyHDwFXDwFSRus5V/8BUUzJU0A3DwFeIkbrOVf/AVFMyVNANw8BXicPAVAn/wFQLJWMyWMzMBcPAV4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgACkcAPIzEMTUCOBAQHPAAHPFgHPFsmACASAXGAIBIB0eAgEgGRoCASAbHABvALQ9AQwIIIA154BgBD0D2+h8uBkbQKCANeeAYAQ9A9vofLgZBKCANeeAQKAEPQXyPQAyUAD8BeAAQxwfwTIzEM0UEP6AgHPFiJulTJwWMoAln8BygASzOLKAMmAADz4QvgoWPAYgAIkUVWgVTDwGnBTIfAFcHBTAPgo+CgiEDQQPshVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJXjIUEDpAqvAWVQKACASAfIAIBICEiAC8+EFvIzAxVUDwGnBZ8AVQBccF8uBkVQKAAFTwGmwiMnAzAfAFgAA8+CjwGjBDMIAAZPhBbyMwMSPHBfLgZIAIBICUmAgEgJygACQQI18DgABM+EFvIzAxAfAbgAA8VTDwHzFBMIAAZDAVFEMw8BxQNKFQI4ABBvijvaiaGoA/DF9AH0gALaBaQAAyWoY72kAAigZtgp4EEAgEgKywCAWYtLgAJudw/AZgARa289qJoagD8MX0AfSAAtoFpAADJahjvaQACKBm2CiqB+A7AAEGvFvaiaGoA/DF9AH0gALaBaQAAyWoY72kAAigZtgp4D0A=';
     const depends = new Map<string, Cell>();
     depends.set('55198', Cell.fromBoc(Buffer.from('te6ccgECFgEAAs4AART/APSkE/S88sgLAQIBYgIDAgLLBAUACaHeyeApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAkIG7yToACyMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQF41FGbry4GTTP4EBAdcA+kABAfpAAQH6AFVANRBnEFZVA/AWyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAwO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQD4p+pbry4GTTP/oA+kABAfpAAW0C0gABktQx3voABgUEUDM2EHgQZ1UE8BfI+EIBzFUgUCOBAQHPAAHPFgHPFsntVAIBWA4PAgEgEBEAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ASyHDwEnDwEiRus5V/8BIUzJU0A3DwEuIkbrOVf/ASFMyVNANw8BLicPASAn/wEgLJWMyWMzMBcPAS4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAgEgEhMCASAUFQApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDXngGAEPQPb6Hy4GRtAoIA154BgBD0D2+h8uBkEoIA154BAoAQ9BfI9ADJQAPwFIABbFsy+EFvIzAxUwPHBbOOEfhCVCBE8BVwWfAFWMcF8uBkkjAx4hOgIML/8uBkAoACpF8D+EFvIzAxJccF8uBkUVGhIML/8uBk+EJUIEfwFXBTIfAFcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwE4A==', 'base64'))[0]);
@@ -210,7 +209,11 @@ export function SampleJetton_init(owner: Address, content: Cell | null) {
     } else {
         __stack.push({ type: 'null' });
     }
-    return deploy(__code, 'init_SampleJetton', __stack); 
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_SampleJetton', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
 }
 
 export class SampleJetton {

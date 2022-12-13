@@ -79,10 +79,6 @@ export function compile(ctx: CompilerContext, name: string | null) {
     return { output: cOutput, ctx };
 }
 
-async function buildProject(ctx: CompilerContext) {
-
-}
-
 export async function compileProjects(configPath: string, projectNames: string[] = []) {
 
     // Load config
@@ -215,7 +211,7 @@ export async function compileProjects(configPath: string, projectNames: string[]
             console.log('   > ' + contract + ': bindings');
             let pathBindings = path.resolve(outputPath, project.name + '_' + contract + ".ts");
             let v = built[contract];
-            let ts = writeTypescript(v.abi, v.code, '../../abi/deploy', built);
+            let ts = writeTypescript(v.abi, v.code, built);
             fs.writeFileSync(pathBindings, ts);
         }
     }

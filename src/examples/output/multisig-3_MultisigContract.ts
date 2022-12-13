@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -114,7 +113,7 @@ export function packExecuted(src: Executed): Cell {
     return b_0.endCell();
 }
 
-export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
+export async function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) {
     const __code = 'te6ccgECIQEAAlEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwFMj4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8AzIcPAMcPAMJG6zlX/wDBTMlTQDcPAM4iRus5V/8AwUzJU0A3DwDOJw8AwCf/AMAslYzJYzMwFw8AziIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwBMjMVTBQNMsfy//L/8v/yYAATH8zAXBtbW3wDYAIBIBMUAF/So6oeQqkCgR5Y+A/QEA54tk/IApAhV8iCkZlPyIKgmb/IgprN15RQFYANh5RXgHwCASAVFgIBIBcYAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAL75kv2omhqAPwxaY/p/+n/6f+qmDYKeAnAIBIBscAgEgHR4ACbisfwDoAgEgHyAAL7R8vaiaGoA/DFpj+n/6f/p/6qYNgp4CEAAvsOn7UTQ1AH4YtMf0//T/9P/VTBsFPASgAC+w4btRNDUAfhi0x/T/9P/0/9VMGwU8BGA=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
@@ -123,7 +122,11 @@ export function MultisigContract_init(key1: BigInt, key2: BigInt, key3: BigInt) 
     __stack.push({ type: 'int', value: new BN(key1.toString(), 10) });
     __stack.push({ type: 'int', value: new BN(key2.toString(), 10) });
     __stack.push({ type: 'int', value: new BN(key3.toString(), 10) });
-    return deploy(__code, 'init_MultisigContract', __stack); 
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_MultisigContract', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
 }
 
 export class MultisigContract {

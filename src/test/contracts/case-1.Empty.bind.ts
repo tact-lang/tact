@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';

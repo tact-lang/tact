@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -107,7 +106,7 @@ export function packTransferMessage(src: TransferMessage): Cell {
     return b_0.endCell();
 }
 
-export function Wallet_init(key: BigInt, walletId: BigInt) {
+export async function Wallet_init(key: BigInt, walletId: BigInt) {
     const __code = 'te6ccgECKgEAA88AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBPAXyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAYyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwG8j4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BzI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAB9HADyMxVIFAjyx/L/8s/yYABUlH8BygDgcAHKAIADrMhxAcoBF8oAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GONX/wEMhw8BBw8BAkbrOVf/AQFMyVNANw8BDiJG6zlX/wEBTMlTQDcPAQ4nDwEAJ/8BACyVjMljMzAXDwEOIhbrOZfwHKAAHwAQHMlHAyygDiyQH7AIAIBIBgZAgEgGhsABQwMYAAFGwhgAAMW4AB7FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMG1t8BGACASAeHwIBSCIjAgEgICECASAhIQAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAAEgAAMMIAIBICYnACu+AldqJoagD8MWmP6f/pn6qQNgn4CsAAm7oT8BKAIBSCgpACuzJftRNDUAfhi0x/T/9M/VSBsE/AWgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AUg';
     const depends = new Map<string, Cell>();
     depends.set('14718', Cell.fromBoc(Buffer.from('te6ccgECKgEAA88AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZLUMd5VQBBWNhB4EGdVBPAXyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAYyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwG8j4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BzI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAB9HADyMxVIFAjyx/L/8s/yYABUlH8BygDgcAHKAIADrMhxAcoBF8oAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GONX/wEMhw8BBw8BAkbrOVf/AQFMyVNANw8BDiJG6zlX/wEBTMlTQDcPAQ4nDwEAJ/8BACyVjMljMzAXDwEOIhbrOZfwHKAAHwAQHMlHAyygDiyQH7AIAIBIBgZAgEgGhsABQwMYAAFGwhgAAMW4AB7FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMG1t8BGACASAeHwIBSCIjAgEgICECASAhIQAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAAEgAAMMIAIBICYnACu+AldqJoagD8MWmP6f/pn6qQNgn4CsAAm7oT8BKAIBSCgpACuzJftRNDUAfhi0x/T/9M/VSBsE/AWgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AUg', 'base64'))[0]);
@@ -116,7 +115,11 @@ export function Wallet_init(key: BigInt, walletId: BigInt) {
     __stack.push({ type: 'cell', cell: systemCell });
     __stack.push({ type: 'int', value: new BN(key.toString(), 10) });
     __stack.push({ type: 'int', value: new BN(walletId.toString(), 10) });
-    return deploy(__code, 'init_Wallet', __stack); 
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_Wallet', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
 }
 
 export class Wallet {

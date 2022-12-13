@@ -1,4 +1,4 @@
-import { SampleJetton, SampleJetton_init } from "./jetton.SampleJetton.bind";
+import { SampleJetton, SampleJetton_init } from "./output/jetton_SampleJetton";
 import { createExecutorFromCode } from "ton-nodejs";
 import { randomAddress } from "./utils/randomAddress";
 import { toNano } from "ton";

@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -95,14 +94,18 @@ export function packWithdraw(src: Withdraw): Cell {
     return b_0.endCell();
 }
 
-export function Treasure_init(owner: Address) {
+export async function Treasure_init(owner: Address) {
     const __code = 'te6ccgECHAEAAh8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFcj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAUyPhCAcwBzxbJ7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8A6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A3IcPANcPANJG6zlX/wDRTMlTQDcPAN4iRus5V/8A0UzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAADwByMwBzxbJgAgEgEhMCAUgYGQIBIBQVAgEgFhcAGT4QW8jMDEhxwXy4GSAAHwC8BB/yMlUEwJQVW1t8A6AAASAABTwEYAANHCBAKDwEYAAJAHwEDCAAH74o72omhqAPwxfSAAmPgJQACb75d4B8';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
-    return deploy(__code, 'init_Treasure', __stack); 
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_Treasure', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
 }
 
 export class Treasure {

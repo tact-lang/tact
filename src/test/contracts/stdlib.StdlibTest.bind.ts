@@ -1,7 +1,6 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';
-import { ContractExecutor } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
 import BN from 'bn.js';
-import { deploy } from '../../abi/deploy';
 
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -69,13 +68,17 @@ export function packStateInit(src: StateInit): Cell {
     return b_0.endCell();
 }
 
-export function StdlibTest_init() {
+export async function StdlibTest_init() {
     const __code = 'te6ccgEBEgEAwwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWAyQCASAGBwIBIAgJAgEgCgsAGRwAcjMAQGBAQHPAMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    return deploy(__code, 'init_StdlibTest', __stack); 
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
+    let res = await executor.get('init_StdlibTest', __stack, { debug: true });
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
 }
 
 export class StdlibTest {

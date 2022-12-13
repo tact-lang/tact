@@ -78,12 +78,11 @@ function writeStackItem(name: string, ref: TypeRef, w: Writer) {
     throw Error(`Unsupported type`);
 }
 
-export function writeTypescript(abi: ContractABI, code: string, importPath: string, depends: { [key: string]: { code: string } }) {
+export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
     w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict } from 'ton';`);
-    w.append(`import { ContractExecutor } from 'ton-nodejs';`);
+    w.append(`import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';`);
     w.append(`import BN from 'bn.js';`);
-    w.append(`import { deploy } from '${importPath}';`);
     w.append();
 
     // Structs
@@ -164,7 +163,7 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
 
     // Init
     if (abi.init) {
-        w.append(`export function ${abi.name}_init(${writeArguments(abi.init.args)}) {`);
+        w.append(`export async function ${abi.name}_init(${writeArguments(abi.init.args)}) {`);
         w.inIndent(() => {
 
             // Code references
@@ -191,7 +190,11 @@ export function writeTypescript(abi: ContractABI, code: string, importPath: stri
             }
 
             // Deploy
-            w.append(`return deploy(__code, '${abi.init!.name}', __stack); `);
+            w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
+            w.append(`let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });`);
+            w.append(`let res = await executor.get('${abi.init!.name}', __stack, { debug: true });`);
+            w.append(`let data = res.stack.readCell();`);
+            w.append(`return { code: codeCell, data };`);
         });
         w.append(`}`);
         w.append();

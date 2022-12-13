@@ -64,7 +64,7 @@ import { ContractABI } from './abi/ContractABI';
                 for (let contract in built) {
                     let v = built[contract];
                     let prefix = (p.path + r).slice(0, (p.path + r).length - 5) + '.' + contract;
-                    let ts = writeTypescript(v.abi, v.code, p.importPath, built);
+                    let ts = writeTypescript(v.abi, v.code, built);
                     fs.writeFileSync(prefix + ".bind.ts", ts);
                 }
             } catch (e) {
