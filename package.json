@@ -1,13 +1,23 @@
 {
   "name": "ton-tact",
-  "version": "0.5.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "main": "./dist/main.js",
   "repository": "https://github.com/ex3ndr/tact-v2.git",
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/prepare.ts"
+    "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/prepare.ts",
+    "clean": "rm -fr dist",
+    "build": "tsc",
+    "test": "jest",
+    "release": "yarn clean && yarn build && yarn test && yarn publish --access public"
   },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "bin/**/*",
+    "stdlib/**/*"
+  ],
   "dependencies": {
     "@types/bn.js": "^5.1.1",
     "bn.js": "^5.2.1",
