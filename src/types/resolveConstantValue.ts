@@ -33,6 +33,8 @@ function reduceInt(ast: ASTExpression): bigint {
             return l * r;
         } else if (ast.op === '/') {
             return l / r;
+        } else if (ast.op === '%') {
+            return l % r;
         }
     } else if (ast.kind === 'op_unary') {
         if (ast.op === '-') {

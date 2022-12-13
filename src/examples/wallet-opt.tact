@@ -28,7 +28,7 @@ contract Wallet {
         require(43, seqno == self.seqno);
 
         // Increment seqno
-        self.seqno = self.seqno + 1;
+        self.seqno = (self.seqno + 1) % 65536;
 
         // Send message
         nativeSendMessage(body, mode);

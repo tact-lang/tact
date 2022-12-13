@@ -103,6 +103,7 @@ PROGRAM{
     43 THROWIFNOT
     s0 s4 XCHG
     INC
+    16 MODPOW2#
     s0 s4 XCHG
     SENDRAWMSG
   }>

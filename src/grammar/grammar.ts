@@ -436,6 +436,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     ExpressionMul_mul(arg0, arg1, arg2) {
         return createNode({ kind: 'op_binary', op: '*', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
+    ExpressionMul_rem(arg0, arg1, arg2) {
+        return createNode({ kind: 'op_binary', op: '%', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+    },
     ExpressionCompare_eq(arg0, arg1, arg2) {
         return createNode({ kind: 'op_binary', op: '==', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },

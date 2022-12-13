@@ -115,6 +115,7 @@ SETCP0
     43 THROWIFNOT
     s0 s4 XCHG
     INC
+    RSHIFT 16 REM
     s0 s4 XCHG
     SENDRAWMSG
 

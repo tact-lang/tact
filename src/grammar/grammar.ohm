@@ -109,6 +109,7 @@ Tact {
                   | ExpressionMul
     ExpressionMul = ExpressionMul "*" ExpressionUnary --mul
                   | ExpressionMul "/" ExpressionUnary --div
+                  | ExpressionMul "%" ExpressionUnary --rem
                   | ExpressionUnary
     ExpressionUnary = "-" ExpressionUnarySuffix --neg
                     | "+" ExpressionUnarySuffix --add
