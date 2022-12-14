@@ -15,6 +15,15 @@ struct StructWithOptionals {
     e: SomeGenericStruct?;
 }
 
+message Update {
+    a: Int?;
+    b: Bool?;
+    c: Cell?;
+    d: Address?;
+    e: SomeGenericStruct?;
+    f: StructWithOptionals?;
+}
+
 contract ContractWithOptionals {
 
     a: Int?;
@@ -22,9 +31,24 @@ contract ContractWithOptionals {
     c: Cell?;
     d: Address?;
     e: SomeGenericStruct?;
+    f: StructWithOptionals?;
 
-    init() {
-        // Nothing to do
+    init(a: Int?, b: Bool?, c: Cell?, d: Address?, e: SomeGenericStruct?, f: StructWithOptionals?) {
+        self.a = a;
+        self.b = b;
+        self.c = c;
+        self.d = d;
+        self.e = e;
+        self.f = f;
+    }
+
+    receive(msg: Update) {
+        self.a = msg.a;
+        self.b = msg.b;
+        self.c = msg.c;
+        self.d = msg.d;
+        self.e = msg.e;
+        self.f = msg.f;
     }
 
     get fun isNotNullA(): Bool {
@@ -41,6 +65,33 @@ contract ContractWithOptionals {
     }
     get fun isNotNullE(): Bool {
         return self.e != null;
+    }
+    get fun isNotNullF(): Bool {
+        return self.f != null;
+    }
+
+    get fun nullA(): Int? {
+        return self.a;
+    }
+
+    get fun nullB(): Bool? {
+        return self.b;
+    }
+
+    get fun nullC(): Cell? {
+        return self.c;
+    }
+
+    get fun nullD(): Address? {
+        return self.d;
+    }
+
+    get fun nullE(): SomeGenericStruct? {
+        return self.e;
+    }
+
+    get fun nullF(): StructWithOptionals? {
+        return self.f;
     }
 
     get fun notNullA(): Int {
@@ -61,5 +112,9 @@ contract ContractWithOptionals {
 
     get fun notNullE(): SomeGenericStruct {
         return self.e!!;
+    }
+
+    get fun notNullF(): StructWithOptionals {
+        return self.f!!;
     }
 }

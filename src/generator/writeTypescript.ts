@@ -4,6 +4,7 @@ import { Writer } from "./Writer";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
 import { readFromStack } from "./typescript/readFromStack";
+import { Slice } from "ton";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -125,12 +126,33 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         });
         w.append(`}`);
         w.append();
+        w.append(`export function packTuple${s.name}(src: ${s.name}): StackItem[] {`);
+        w.inIndent(() => {
+            w.append(`let __stack: StackItem[] = [];`)
+            for (const f of s.fields) {
+                writeToStack(`src.${f.name}`, f.type, w, false, true);
+            }
+            w.append(`return __stack;`);
+        });
+        w.append(`}`);
+        w.append();
 
         // Unpack from stack
         w.append(`export function unpackStack${s.name}(slice: TupleSlice4): ${s.name} {`)
         w.inIndent(() => {
             for (const f of s.fields) {
                 readFromStack(f.name, f.type, w);
+            }
+            w.append(`return { $$type: '${s.name}', ${s.fields.map(f => `${f.name}: ${f.name}`).join(', ')} };`);
+        });
+        w.append(`}`);
+        w.append(`export function unpackTuple${s.name}(slice: TupleSlice4): ${s.name} {`)
+        w.inIndent(() => {
+            // w.append(`let p = slice.pop();`);
+            // w.append(`if (p.type !== 'tuple') { return null; }`);
+            // w.append(`slice = new TupleSlice4(p.items);`);
+            for (const f of s.fields) {
+                readFromStack(f.name, f.type, w, true);
             }
             w.append(`return { $$type: '${s.name}', ${s.fields.map(f => `${f.name}: ${f.name}`).join(', ')} };`);
         });
@@ -296,9 +318,12 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                             }
                         } else {
                             if (g.returns.optional) {
-                                w.append(`if (result.stackRaw[0].type === 'null') { return null; }`); // This probabbly not a correct way to check for null
+                                w.append(`let pp = result.stack.pop();`);
+                                w.append(`if (pp.type !== 'tuple') { return null; }`);
+                                w.append(`return unpackTuple${g.returns.name}(new TupleSlice4(pp.items));`);
+                            } else {
+                                w.append(`return unpackStack${g.returns.name}(result.stack);`);
                             }
-                            w.append(`return unpackStack${g.returns.name}(result.stack);`);
                         }
                     } else if (g.returns.kind === 'map') {
                         w.append(`return result.stack.readCellOpt();`);

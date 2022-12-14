@@ -11,6 +11,8 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
 
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
@@ -92,7 +94,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = dict_get?(d, kl, k);
+    var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
     } else {
@@ -110,7 +112,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = dict_get?(d, kl, k);
+    var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
     } else {
@@ -135,6 +137,68 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     throw_unless(100, ok);
     return data;
 }
+
+tuple __tact_tuple_create_0() asm "NIL";
+
+() __tact_tuple_destroy_0() {
+    return ();
+}
+
+forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
+
+forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
+
+forall X0, X1 -> tuple __tact_tuple_create_2((X0, X1) v) asm "2 TUPLE";
+
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
+forall X0, X1, X2 -> tuple __tact_tuple_create_3((X0, X1, X2) v) asm "3 TUPLE";
+
+forall X0, X1, X2 -> (X0, X1, X2) __tact_tuple_destroy_3(tuple v) asm "3 UNTUPLE";
+
+forall X0, X1, X2, X3 -> tuple __tact_tuple_create_4((X0, X1, X2, X3) v) asm "4 TUPLE";
+
+forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4 UNTUPLE";
+
+forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
+
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5 -> tuple __tact_tuple_create_6((X0, X1, X2, X3, X4, X5) v) asm "6 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5 -> (X0, X1, X2, X3, X4, X5) __tact_tuple_destroy_6(tuple v) asm "6 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> tuple __tact_tuple_create_7((X0, X1, X2, X3, X4, X5, X6) v) asm "7 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm "7 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7 -> tuple __tact_tuple_create_8((X0, X1, X2, X3, X4, X5, X6, X7) v) asm "8 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7 -> (X0, X1, X2, X3, X4, X5, X6, X7) __tact_tuple_destroy_8(tuple v) asm "8 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8 -> tuple __tact_tuple_create_9((X0, X1, X2, X3, X4, X5, X6, X7, X8) v) asm "9 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8) __tact_tuple_destroy_9(tuple v) asm "9 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> tuple __tact_tuple_create_10((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) v) asm "10 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) __tact_tuple_destroy_10(tuple v) asm "10 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10 -> tuple __tact_tuple_create_11((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10) v) asm "11 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10) __tact_tuple_destroy_11(tuple v) asm "11 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11 -> tuple __tact_tuple_create_12((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11) v) asm "12 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11) __tact_tuple_destroy_12(tuple v) asm "12 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> tuple __tact_tuple_create_13((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12) v) asm "13 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12) __tact_tuple_destroy_13(tuple v) asm "13 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> tuple __tact_tuple_create_14((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) v) asm "14 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) __tact_tuple_destroy_14(tuple v) asm "14 UNTUPLE";
 
 builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
@@ -168,7 +232,7 @@ slice __gen_writeslice_A((int, int, int, int, int, int, int) v}) inline {
     return __gen_writecell_A(v).begin_parse();
 }
 
-cell __gen_writecellopt_A((int, int, int, int, int, int, int) v) inline {
+cell __gen_writecellopt_A(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -193,7 +257,7 @@ cell __gen_writecellopt_A((int, int, int, int, int, int, int) v) inline {
     return (sc, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
-(int, int, int, int, int, int, int) __gen_readopt_A(cell cl) inline {
+tuple __gen_readopt_A(cell cl) inline {
     if (null?(cl)) {
         return null();
     }
@@ -212,7 +276,7 @@ cell __gen_writecellopt_A((int, int, int, int, int, int, int) v) inline {
     sc = (sc~load_ref()).begin_parse();
     var v'f = sc~load_int(257);
     var v'g = sc~load_int(257);
-    return v'a, v'b, v'c, v'd, v'e, v'f, v'g;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }"
 `;
 
@@ -226,6 +290,8 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
@@ -308,7 +374,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = dict_get?(d, kl, k);
+    var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
     } else {
@@ -326,7 +392,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = dict_get?(d, kl, k);
+    var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
     } else {
@@ -351,6 +417,68 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     throw_unless(100, ok);
     return data;
 }
+
+tuple __tact_tuple_create_0() asm "NIL";
+
+() __tact_tuple_destroy_0() {
+    return ();
+}
+
+forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
+
+forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
+
+forall X0, X1 -> tuple __tact_tuple_create_2((X0, X1) v) asm "2 TUPLE";
+
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
+forall X0, X1, X2 -> tuple __tact_tuple_create_3((X0, X1, X2) v) asm "3 TUPLE";
+
+forall X0, X1, X2 -> (X0, X1, X2) __tact_tuple_destroy_3(tuple v) asm "3 UNTUPLE";
+
+forall X0, X1, X2, X3 -> tuple __tact_tuple_create_4((X0, X1, X2, X3) v) asm "4 TUPLE";
+
+forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4 UNTUPLE";
+
+forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
+
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5 -> tuple __tact_tuple_create_6((X0, X1, X2, X3, X4, X5) v) asm "6 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5 -> (X0, X1, X2, X3, X4, X5) __tact_tuple_destroy_6(tuple v) asm "6 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> tuple __tact_tuple_create_7((X0, X1, X2, X3, X4, X5, X6) v) asm "7 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm "7 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7 -> tuple __tact_tuple_create_8((X0, X1, X2, X3, X4, X5, X6, X7) v) asm "8 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7 -> (X0, X1, X2, X3, X4, X5, X6, X7) __tact_tuple_destroy_8(tuple v) asm "8 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8 -> tuple __tact_tuple_create_9((X0, X1, X2, X3, X4, X5, X6, X7, X8) v) asm "9 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8) __tact_tuple_destroy_9(tuple v) asm "9 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> tuple __tact_tuple_create_10((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) v) asm "10 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) __tact_tuple_destroy_10(tuple v) asm "10 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10 -> tuple __tact_tuple_create_11((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10) v) asm "11 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10) __tact_tuple_destroy_11(tuple v) asm "11 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11 -> tuple __tact_tuple_create_12((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11) v) asm "12 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11) __tact_tuple_destroy_12(tuple v) asm "12 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> tuple __tact_tuple_create_13((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12) v) asm "13 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12) __tact_tuple_destroy_13(tuple v) asm "13 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> tuple __tact_tuple_create_14((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) v) asm "14 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) __tact_tuple_destroy_14(tuple v) asm "14 UNTUPLE";
 
 builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
@@ -384,7 +512,7 @@ slice __gen_writeslice_B((int, int, int, int, int, int, int) v}) inline {
     return __gen_writecell_B(v).begin_parse();
 }
 
-cell __gen_writecellopt_B((int, int, int, int, int, int, int) v) inline {
+cell __gen_writecellopt_B(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -409,7 +537,7 @@ cell __gen_writecellopt_B((int, int, int, int, int, int, int) v) inline {
     return (sc, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
-(int, int, int, int, int, int, int) __gen_readopt_B(cell cl) inline {
+tuple __gen_readopt_B(cell cl) inline {
     if (null?(cl)) {
         return null();
     }
@@ -428,7 +556,7 @@ cell __gen_writecellopt_B((int, int, int, int, int, int, int) v) inline {
     sc = (sc~load_ref()).begin_parse();
     var v'f = sc~load_int(257);
     var v'g = sc~load_int(257);
-    return v'a, v'b, v'c, v'd, v'e, v'f, v'g;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }"
 `;
 
@@ -442,6 +570,8 @@ forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
@@ -524,7 +654,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = dict_get?(d, kl, k);
+    var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
     } else {
@@ -542,7 +672,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = dict_get?(d, kl, k);
+    var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
     } else {
@@ -567,6 +697,68 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     throw_unless(100, ok);
     return data;
 }
+
+tuple __tact_tuple_create_0() asm "NIL";
+
+() __tact_tuple_destroy_0() {
+    return ();
+}
+
+forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
+
+forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
+
+forall X0, X1 -> tuple __tact_tuple_create_2((X0, X1) v) asm "2 TUPLE";
+
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
+forall X0, X1, X2 -> tuple __tact_tuple_create_3((X0, X1, X2) v) asm "3 TUPLE";
+
+forall X0, X1, X2 -> (X0, X1, X2) __tact_tuple_destroy_3(tuple v) asm "3 UNTUPLE";
+
+forall X0, X1, X2, X3 -> tuple __tact_tuple_create_4((X0, X1, X2, X3) v) asm "4 TUPLE";
+
+forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4 UNTUPLE";
+
+forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
+
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5 -> tuple __tact_tuple_create_6((X0, X1, X2, X3, X4, X5) v) asm "6 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5 -> (X0, X1, X2, X3, X4, X5) __tact_tuple_destroy_6(tuple v) asm "6 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> tuple __tact_tuple_create_7((X0, X1, X2, X3, X4, X5, X6) v) asm "7 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm "7 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7 -> tuple __tact_tuple_create_8((X0, X1, X2, X3, X4, X5, X6, X7) v) asm "8 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7 -> (X0, X1, X2, X3, X4, X5, X6, X7) __tact_tuple_destroy_8(tuple v) asm "8 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8 -> tuple __tact_tuple_create_9((X0, X1, X2, X3, X4, X5, X6, X7, X8) v) asm "9 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8) __tact_tuple_destroy_9(tuple v) asm "9 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> tuple __tact_tuple_create_10((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) v) asm "10 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) __tact_tuple_destroy_10(tuple v) asm "10 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10 -> tuple __tact_tuple_create_11((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10) v) asm "11 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10) __tact_tuple_destroy_11(tuple v) asm "11 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11 -> tuple __tact_tuple_create_12((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11) v) asm "12 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11) __tact_tuple_destroy_12(tuple v) asm "12 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> tuple __tact_tuple_create_13((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12) v) asm "13 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12) __tact_tuple_destroy_13(tuple v) asm "13 UNTUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> tuple __tact_tuple_create_14((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) v) asm "14 TUPLE";
+
+forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) __tact_tuple_destroy_14(tuple v) asm "14 UNTUPLE";
 
 builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
@@ -606,7 +798,7 @@ slice __gen_writeslice_C((cell, cell, slice, slice, int, int, int, slice) v}) in
     return __gen_writecell_C(v).begin_parse();
 }
 
-cell __gen_writecellopt_C((cell, cell, slice, slice, int, int, int, slice) v) inline {
+cell __gen_writecellopt_C(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -635,7 +827,7 @@ cell __gen_writecellopt_C((cell, cell, slice, slice, int, int, int, slice) v) in
     return (sc, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
 }
 
-(cell, cell, slice, slice, int, int, int, slice) __gen_readopt_C(cell cl) inline {
+tuple __gen_readopt_C(cell cl) inline {
     if (null?(cl)) {
         return null();
     }
@@ -658,6 +850,6 @@ cell __gen_writecellopt_C((cell, cell, slice, slice, int, int, int, slice) v) in
     var v'f = sc~load_int(257);
     var v'g = sc~load_int(257);
     var v'h = sc~__tact_load_address();
-    return v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h;
+    return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }"
 `;

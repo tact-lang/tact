@@ -62,7 +62,41 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function packTupleSendParameters(src: SendParameters): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.mode });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    if (src.code !== null) {
+        __stack.push({ type: 'cell', cell: src.code });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    if (src.data !== null) {
+        __stack.push({ type: 'cell', cell: src.data });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
+export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -93,7 +127,21 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function packTupleContext(src: Context): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
 export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
+export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
@@ -117,7 +165,19 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function packTupleStateInit(src: StateInit): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+    return __stack;
+}
+
 export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
@@ -143,7 +203,21 @@ export function packStackOperation(src: Operation, __stack: StackItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
 }
 
+export function packTupleOperation(src: Operation): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.seqno });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
+    return __stack;
+}
+
 export function unpackStackOperation(slice: TupleSlice4): Operation {
+    const seqno = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const target = slice.readAddress();
+    return { $$type: 'Operation', seqno: seqno, amount: amount, target: target };
+}
+export function unpackTupleOperation(slice: TupleSlice4): Operation {
     const seqno = slice.readBigNumber();
     const amount = slice.readBigNumber();
     const target = slice.readAddress();
@@ -174,8 +248,24 @@ export function packStackExecute(src: Execute, __stack: StackItem[]) {
     __stack.push({ type: 'slice', cell: src.signature3 });
 }
 
+export function packTupleExecute(src: Execute): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'tuple', items: packTupleOperation(src.operation) });
+    __stack.push({ type: 'slice', cell: src.signature1 });
+    __stack.push({ type: 'slice', cell: src.signature2 });
+    __stack.push({ type: 'slice', cell: src.signature3 });
+    return __stack;
+}
+
 export function unpackStackExecute(slice: TupleSlice4): Execute {
     const operation = unpackStackOperation(slice);
+    const signature1 = slice.readCell();
+    const signature2 = slice.readCell();
+    const signature3 = slice.readCell();
+    return { $$type: 'Execute', operation: operation, signature1: signature1, signature2: signature2, signature3: signature3 };
+}
+export function unpackTupleExecute(slice: TupleSlice4): Execute {
+    const operation = unpackTupleOperation(slice);
     const signature1 = slice.readCell();
     const signature2 = slice.readCell();
     const signature3 = slice.readCell();
@@ -197,7 +287,17 @@ export function packStackExecuted(src: Executed, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.seqno });
 }
 
+export function packTupleExecuted(src: Executed): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.seqno });
+    return __stack;
+}
+
 export function unpackStackExecuted(slice: TupleSlice4): Executed {
+    const seqno = slice.readBigNumber();
+    return { $$type: 'Executed', seqno: seqno };
+}
+export function unpackTupleExecuted(slice: TupleSlice4): Executed {
     const seqno = slice.readBigNumber();
     return { $$type: 'Executed', seqno: seqno };
 }

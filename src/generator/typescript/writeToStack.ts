@@ -1,7 +1,7 @@
 import { TypeRef } from "../../types/types";
 import { Writer } from "../Writer";
 
-export function writeToStack(name: string, ref: TypeRef, w: Writer) {
+export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: boolean = false, forceTuple: boolean = false) {
 
     //
     // Reference
@@ -11,7 +11,7 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer) {
         if (ref.optional) {
             w.append(`if (${name} !== null) {`);
             w.inIndent(() => {
-                writeToStack(name, { ...ref, optional: false }, w);
+                writeToStack(name, { ...ref, optional: false }, w, true, forceTuple);
             });
             w.append('} else {');
             w.inIndent(() => {
@@ -40,7 +40,11 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer) {
             w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
             return;
         } else {
-            w.append(`packStack${ref.name}(${name}, __stack);`);
+            if (optional || forceTuple) {
+                w.append(`__stack.push({ type: 'tuple', items: packTuple${ref.name}(${name}) });`);
+            } else {
+                w.append(`packStack${ref.name}(${name}, __stack);`);
+            }
             return;
         }
     }

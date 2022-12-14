@@ -1,7 +1,7 @@
 import { TypeRef } from "../../types/types";
 import { Writer } from "../Writer";
 
-export function readFromStack(name: string, ref: TypeRef, w: Writer) {
+export function readFromStack(name: string, ref: TypeRef, w: Writer, forceTuple: boolean = false) {
 
     if (ref.kind === 'ref') {
         if (ref.name === 'Int') {
@@ -33,7 +33,14 @@ export function readFromStack(name: string, ref: TypeRef, w: Writer) {
             }
             return;
         } else {
-            w.append(`const ${name} = unpackStack${ref.name}(slice);`);
+            if (ref.optional) {
+                w.append(`const ${name}_p = slice.pop();`);
+                w.append(`const ${name} = ${name}_p.type !== 'tuple' ? null : unpackTuple${ref.name}(new TupleSlice4(${name}_p.items));`);
+            } else if (forceTuple) {
+                w.append(`const ${name} = unpackTuple${ref.name}(slice);`);
+            } else {
+                w.append(`const ${name} = unpackStack${ref.name}(slice);`);
+            }
             return;
         }
     }

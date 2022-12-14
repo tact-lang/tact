@@ -62,7 +62,41 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function packTupleSendParameters(src: SendParameters): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.mode });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    if (src.code !== null) {
+        __stack.push({ type: 'cell', cell: src.code });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    if (src.data !== null) {
+        __stack.push({ type: 'cell', cell: src.data });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
+export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -93,7 +127,21 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function packTupleContext(src: Context): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
 export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
+export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
@@ -117,7 +165,19 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function packTupleStateInit(src: StateInit): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+    return __stack;
+}
+
 export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
@@ -150,7 +210,23 @@ export function packStackSetIntMap1(src: SetIntMap1, __stack: StackItem[]) {
     }
 }
 
+export function packTupleSetIntMap1(src: SetIntMap1): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    if (src.value !== null) {
+        __stack.push({ type: 'int', value: src.value });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSetIntMap1(slice: TupleSlice4): SetIntMap1 {
+    const key = slice.readBigNumber();
+    const value = slice.readBigNumberOpt();
+    return { $$type: 'SetIntMap1', key: key, value: value };
+}
+export function unpackTupleSetIntMap1(slice: TupleSlice4): SetIntMap1 {
     const key = slice.readBigNumber();
     const value = slice.readBigNumberOpt();
     return { $$type: 'SetIntMap1', key: key, value: value };
@@ -183,7 +259,23 @@ export function packStackSetIntMap2(src: SetIntMap2, __stack: StackItem[]) {
     }
 }
 
+export function packTupleSetIntMap2(src: SetIntMap2): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    if (src.value !== null) {
+        __stack.push({ type: 'int', value: src.value ? new BN(-1) : new BN(0) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSetIntMap2(slice: TupleSlice4): SetIntMap2 {
+    const key = slice.readBigNumber();
+    const value = slice.readBooleanOpt();
+    return { $$type: 'SetIntMap2', key: key, value: value };
+}
+export function unpackTupleSetIntMap2(slice: TupleSlice4): SetIntMap2 {
     const key = slice.readBigNumber();
     const value = slice.readBooleanOpt();
     return { $$type: 'SetIntMap2', key: key, value: value };
@@ -216,7 +308,23 @@ export function packStackSetIntMap3(src: SetIntMap3, __stack: StackItem[]) {
     }
 }
 
+export function packTupleSetIntMap3(src: SetIntMap3): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    if (src.value !== null) {
+        __stack.push({ type: 'cell', cell: src.value });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSetIntMap3(slice: TupleSlice4): SetIntMap3 {
+    const key = slice.readBigNumber();
+    const value = slice.readCellOpt();
+    return { $$type: 'SetIntMap3', key: key, value: value };
+}
+export function unpackTupleSetIntMap3(slice: TupleSlice4): SetIntMap3 {
     const key = slice.readBigNumber();
     const value = slice.readCellOpt();
     return { $$type: 'SetIntMap3', key: key, value: value };
@@ -249,7 +357,23 @@ export function packStackSetAddrMap1(src: SetAddrMap1, __stack: StackItem[]) {
     }
 }
 
+export function packTupleSetAddrMap1(src: SetAddrMap1): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'int', value: src.value });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSetAddrMap1(slice: TupleSlice4): SetAddrMap1 {
+    const key = slice.readAddress();
+    const value = slice.readBigNumberOpt();
+    return { $$type: 'SetAddrMap1', key: key, value: value };
+}
+export function unpackTupleSetAddrMap1(slice: TupleSlice4): SetAddrMap1 {
     const key = slice.readAddress();
     const value = slice.readBigNumberOpt();
     return { $$type: 'SetAddrMap1', key: key, value: value };
@@ -282,7 +406,23 @@ export function packStackSetAddrMap2(src: SetAddrMap2, __stack: StackItem[]) {
     }
 }
 
+export function packTupleSetAddrMap2(src: SetAddrMap2): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'int', value: src.value ? new BN(-1) : new BN(0) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSetAddrMap2(slice: TupleSlice4): SetAddrMap2 {
+    const key = slice.readAddress();
+    const value = slice.readBooleanOpt();
+    return { $$type: 'SetAddrMap2', key: key, value: value };
+}
+export function unpackTupleSetAddrMap2(slice: TupleSlice4): SetAddrMap2 {
     const key = slice.readAddress();
     const value = slice.readBooleanOpt();
     return { $$type: 'SetAddrMap2', key: key, value: value };
@@ -302,7 +442,17 @@ export function packStackSomeStruct(src: SomeStruct, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function packTupleSomeStruct(src: SomeStruct): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
 export function unpackStackSomeStruct(slice: TupleSlice4): SomeStruct {
+    const value = slice.readBigNumber();
+    return { $$type: 'SomeStruct', value: value };
+}
+export function unpackTupleSomeStruct(slice: TupleSlice4): SomeStruct {
     const value = slice.readBigNumber();
     return { $$type: 'SomeStruct', value: value };
 }
@@ -394,8 +544,9 @@ export class MapTestContract {
         let __stack: StackItem[] = [];
         __stack.push({ type: 'int', value: key });
         let result = await this.executor.get('intMap4Value', __stack);
-        if (result.stackRaw[0].type === 'null') { return null; }
-        return unpackStackSomeStruct(result.stack);
+        let pp = result.stack.pop();
+        if (pp.type !== 'tuple') { return null; }
+        return unpackTupleSomeStruct(new TupleSlice4(pp.items));
     }
     async getAddrMap1() {
         let __stack: StackItem[] = [];
