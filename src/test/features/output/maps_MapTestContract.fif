@@ -1,0 +1,472 @@
+PROGRAM{
+  DECLPROC __tact_dict_set_int_int
+  DECLPROC __tact_dict_get_int_int
+  DECLPROC __tact_dict_set_int_cell
+  DECLPROC __tact_dict_get_int_cell
+  DECLPROC __gen_read_SetIntMap1
+  DECLPROC __gen_read_SetIntMap2
+  DECLPROC __gen_read_SetIntMap3
+  DECLPROC __gen_readopt_SomeStruct
+  DECLPROC __gen_write_MapTestContract
+  DECLPROC __gen_read_MapTestContract
+  DECLPROC __gen_load_MapTestContract
+  DECLPROC __gen_store_MapTestContract
+  DECLPROC __gen_MapTestContract_init
+  DECLPROC __gen_MapTestContract_intMap1
+  67207 DECLMETHOD __gen_get_intMap1
+  DECLPROC __gen_MapTestContract_intMap1Value
+  103396 DECLMETHOD __gen_get_intMap1Value
+  DECLPROC __gen_MapTestContract_intMap2
+  79588 DECLMETHOD __gen_get_intMap2
+  DECLPROC __gen_MapTestContract_intMap2Value
+  89348 DECLMETHOD __gen_get_intMap2Value
+  DECLPROC __gen_MapTestContract_intMap3
+  75461 DECLMETHOD __gen_get_intMap3
+  DECLPROC __gen_MapTestContract_intMap3Value
+  71844 DECLMETHOD __gen_get_intMap3Value
+  DECLPROC __gen_MapTestContract_intMap4
+  87586 DECLMETHOD __gen_get_intMap4
+  DECLPROC __gen_MapTestContract_intMap4Value
+  119013 DECLMETHOD __gen_get_intMap4Value
+  DECLPROC __gen_MapTestContract_addrMap1
+  93537 DECLMETHOD __gen_get_addrMap1
+  DECLPROC __gen_MapTestContract_addrMap2
+  89346 DECLMETHOD __gen_get_addrMap2
+  DECLPROC __gen_MapTestContract_addrMap3
+  85283 DECLMETHOD __gen_get_addrMap3
+  DECLPROC __gen_MapTestContract_addrMap4
+  81348 DECLMETHOD __gen_get_addrMap4
+  DECLPROC __gen_MapTestContract_receive_SetIntMap1
+  DECLPROC __gen_MapTestContract_receive_SetIntMap2
+  DECLPROC __gen_MapTestContract_receive_SetIntMap3
+  DECLPROC recv_internal
+  103641 DECLMETHOD init_MapTestContract
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_dict_set_int_int PROC:<{
+    OVER
+    ISNULL
+    IFJMP:<{
+      2DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>
+    NEWC
+    SWAP
+    STIX
+    s1 s3 s3 XCHG3
+    DICTISETB
+  }>
+  __tact_dict_get_int_int PROC:<{
+    s1 s3 s3 XCHG3
+    DICTIGET
+    NULLSWAPIFNOT
+    IFJMP:<{
+      SWAP
+      LDIX
+      DROP
+    }>
+    2DROP
+    PUSHNULL
+  }>
+  __tact_dict_set_int_cell PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>
+    s1 s3 s3 XCHG3
+    DICTISETREF
+  }>
+  __tact_dict_get_int_cell PROC:<{
+    -ROT
+    DICTIGETREF
+    NULLSWAPIFNOT
+    IFJMP:<{
+    }>
+    DROP
+    PUSHNULL
+  }>
+  __gen_read_SetIntMap1 PROCINLINE:<{
+    32 LDU
+    SWAP
+    1056067080 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      257 PUSHINT
+      LDIX
+    }>
+    -ROT
+  }>
+  __gen_read_SetIntMap2 PROCINLINE:<{
+    32 LDU
+    SWAP
+    2818252722 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      1 LDI
+    }>
+    -ROT
+  }>
+  __gen_read_SetIntMap3 PROCINLINE:<{
+    32 LDU
+    SWAP
+    3506188068 PUSHINT
+    EQUAL
+    100 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      LDREF
+    }>
+    -ROT
+  }>
+  __gen_readopt_SomeStruct PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      CTOS
+      257 PUSHINT
+      LDIX
+      DROP
+    }>
+  }>
+  __gen_write_MapTestContract PROCINLINE:<{
+    s7 s8 XCHG2
+    STDICT
+    s1 s5 XCHG
+    STDICT
+    s0 s3 XCHG
+    NEWC
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    STDICT
+    s0 s2 XCHG
+    NEWC
+    STDICT
+    s1 s3 XCHG
+    STDICT
+    s1 s3 XCHG
+    STDICT
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_MapTestContract PROCINLINE:<{
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    8 -ROLL
+  }>
+  __gen_load_MapTestContract PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_MapTestContract INLINECALLDICT
+    1 8 BLKDROP2
+  }>
+  __gen_store_MapTestContract PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    8 -ROLL
+    __gen_write_MapTestContract INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_MapTestContract_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s8 XCHG
+    NEWC
+    STREF
+    s0 s8 XCHG
+    __gen_write_MapTestContract INLINECALLDICT
+    ENDC
+  }>
+  __gen_MapTestContract_intMap1 PROC:<{
+    7 BLKDROP
+  }>
+  __gen_get_intMap1 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_intMap1 CALLDICT
+  }>
+  __gen_MapTestContract_intMap1Value PROC:<{
+    7 1 BLKDROP2
+    257 PUSHINT
+    TUCK
+    __tact_dict_get_int_int CALLDICT
+  }>
+  __gen_get_intMap1Value PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    8 ROLL
+    __gen_MapTestContract_intMap1Value CALLDICT
+  }>
+  __gen_MapTestContract_intMap2 PROC:<{
+    s6 s7 XCHG
+    7 BLKDROP
+  }>
+  __gen_get_intMap2 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_intMap2 CALLDICT
+  }>
+  __gen_MapTestContract_intMap2Value PROC:<{
+    s8 POP
+    6 BLKDROP
+    257 PUSHINT
+    ROT
+    1 PUSHINT
+    __tact_dict_get_int_int CALLDICT
+  }>
+  __gen_get_intMap2Value PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    8 ROLL
+    __gen_MapTestContract_intMap2Value CALLDICT
+  }>
+  __gen_MapTestContract_intMap3 PROC:<{
+    s5 s7 XCHG
+    7 BLKDROP
+  }>
+  __gen_get_intMap3 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_intMap3 CALLDICT
+  }>
+  __gen_MapTestContract_intMap3Value PROC:<{
+    s7 POP
+    5 BLKDROP
+    s2 POP
+    257 PUSHINT
+    SWAP
+    __tact_dict_get_int_cell CALLDICT
+  }>
+  __gen_get_intMap3Value PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    8 ROLL
+    __gen_MapTestContract_intMap3Value CALLDICT
+  }>
+  __gen_MapTestContract_intMap4 PROC:<{
+    s4 s7 XCHG
+    7 BLKDROP
+  }>
+  __gen_get_intMap4 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_intMap4 CALLDICT
+  }>
+  __gen_MapTestContract_intMap4Value PROC:<{
+    s6 POP
+    4 BLKDROP
+    s3 POP
+    257 PUSHINT
+    s2 POP
+    __tact_dict_get_int_cell CALLDICT
+    __gen_readopt_SomeStruct INLINECALLDICT
+  }>
+  __gen_get_intMap4Value PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    8 ROLL
+    __gen_MapTestContract_intMap4Value CALLDICT
+  }>
+  __gen_MapTestContract_addrMap1 PROC:<{
+    s3 s7 XCHG
+    7 BLKDROP
+  }>
+  __gen_get_addrMap1 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_addrMap1 CALLDICT
+  }>
+  __gen_MapTestContract_addrMap2 PROC:<{
+    s2 s7 XCHG
+    7 BLKDROP
+  }>
+  __gen_get_addrMap2 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_addrMap2 CALLDICT
+  }>
+  __gen_MapTestContract_addrMap3 PROC:<{
+    s1 s7 XCHG
+    7 BLKDROP
+  }>
+  __gen_get_addrMap3 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_addrMap3 CALLDICT
+  }>
+  __gen_MapTestContract_addrMap4 PROC:<{
+    7 1 BLKDROP2
+  }>
+  __gen_get_addrMap4 PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    __gen_MapTestContract_addrMap4 CALLDICT
+  }>
+  __gen_MapTestContract_receive_SetIntMap1 PROC:<{
+    257 PUSHINT
+    DUP
+    s4 s11 XCHG
+    s3 s3 s0 XCHG3
+    __tact_dict_set_int_int CALLDICT
+    s0 s7 XCHG
+  }>
+  __gen_MapTestContract_receive_SetIntMap2 PROC:<{
+    SWAP
+    s0 DUMP
+    SWAP
+    s0 DUMP
+    s2 s8 XCHG
+    257 PUSHINT
+    -ROT
+    1 PUSHINT
+    __tact_dict_set_int_int CALLDICT
+    s0 s6 XCHG
+  }>
+  __gen_MapTestContract_receive_SetIntMap3 PROC:<{
+    s2 s7 XCHG
+    257 PUSHINT
+    -ROT
+    __tact_dict_set_int_cell CALLDICT
+    s0 s5 XCHG
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    DUP
+    1056067080 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetIntMap1 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MapTestContract_receive_SetIntMap1 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    DUP
+    2818252722 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetIntMap2 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MapTestContract_receive_SetIntMap2 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    3506188068 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetIntMap3 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MapTestContract_receive_SetIntMap3 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    DROP
+    100 THROW
+  }>
+  init_MapTestContract PROC:<{
+    __gen_MapTestContract_init CALLDICT
+  }>
+}END>c

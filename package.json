@@ -33,7 +33,7 @@
     "ton-compiler": "^2.0.0",
     "ton-contract-executor": "^0.6.0",
     "ton-crypto": "^3.2.0",
-    "ton-nodejs": "^1.4.2",
+    "ton-nodejs": "^1.4.3",
     "tvm-disassembler": "^1.2.1",
     "zod": "^3.20.2"
   },

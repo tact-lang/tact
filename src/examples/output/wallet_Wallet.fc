@@ -51,7 +51,7 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
     var v'amount = sc~load_coins();
     var v'body = null();
     if (sc~load_int(1)) {
-        var v'body = sc~load_ref();
+        v'body = sc~load_ref();
     }
     return (sc, (v'seqno, v'mode, v'to, v'amount, v'body));
 }

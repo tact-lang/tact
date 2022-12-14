@@ -54,8 +54,9 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
+        1 2 BLKDROP2
         LDREF
-        s1 POP
+        s1 s2 XCHG
       }> PUSHCONT
       IF
       1 LDI
@@ -122,8 +123,9 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
+        1 2 BLKDROP2
         LDREF
-        s1 POP
+        s1 s2 XCHG
       }> PUSHCONT
       IF
       1 LDI
@@ -141,8 +143,8 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
-        LDREF
         s1 POP
+        LDREF
       }> PUSHCONT
       IF
       s0 s1 XCHG
@@ -195,8 +197,9 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
+        1 2 BLKDROP2
         LDREF
-        s1 POP
+        s1 s2 XCHG
       }> PUSHCONT
       IF
       1 LDI
@@ -218,9 +221,10 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
+        1 2 BLKDROP2
         LDMSGADDR
         s0 s1 XCHG
-        s0 POP
+        ROTREV
       }> PUSHCONT
       IF
       s3 s1 s3 XCHG3
@@ -615,8 +619,9 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
+      1 2 BLKDROP2
       LDREF
-      s1 POP
+      s1 s2 XCHG
     }> PUSHCONT
     IF
     1 LDI
@@ -639,8 +644,9 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
+      1 2 BLKDROP2
       LDREF
-      s1 POP
+      s1 s2 XCHG
     }> PUSHCONT
     IF
     1 LDI
@@ -664,8 +670,9 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
+      1 2 BLKDROP2
       LDREF
-      s1 POP
+      s1 s2 XCHG
     }> PUSHCONT
     IF
     1 LDI

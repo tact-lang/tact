@@ -37,6 +37,16 @@
       "name": "jetton",
       "path": "./src/examples/jetton.tact",
       "output": "./src/examples/output"
+    },
+    {
+      "name": "rugpull",
+      "path": "./src/examples/rugpull.tact",
+      "output": "./src/examples/output"
+    },
+    {
+      "name": "maps",
+      "path": "./src/test/features/maps.tact",
+      "output": "./src/test/features/output"
     }
   ]
 }

@@ -228,7 +228,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     }
                 }
                 w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
-                w.append(`await this.executor.internal(new InternalMessage({`);
+                w.append(`let r = await this.executor.internal(new InternalMessage({`);
                 w.inIndent(() => {
                     w.append(`to: this.executor.address,`);
                     w.append(`from: args.from || this.executor.address,`);
@@ -241,6 +241,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     w.append(`})`);
                 });
                 w.append(`}), { debug: args.debug });`);
+                w.append(`if (args.debug) { console.warn(r.debugLogs); }`);
             });
             w.append(`}`);
         }
@@ -295,7 +296,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                             }
                         } else {
                             if (g.returns.optional) {
-                                throw Error('Impossible');
+                                w.append(`if (result.stackRaw[0].type === 'null') { return null; }`); // This probabbly not a correct way to check for null
                             }
                             w.append(`return unpackStack${g.returns.name}(result.stack);`);
                         }

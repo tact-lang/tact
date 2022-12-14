@@ -162,15 +162,16 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 // Parser
 //
 
-function writeFieldParser(f: StorageField, ctx: WriterContext) {
+function writeFieldParser(f: StorageField, ctx: WriterContext, inner: boolean = false) {
+    let varName = inner ? `v'${f.name}` : `var v'${f.name}`;
 
     // Handle optional
 
     if (f.kind === 'optional') {
-        ctx.append(`var v'${f.name} = null();`);
+        ctx.append(`${varName} = null();`);
         ctx.append('if (sc~load_int(1)) {');
         ctx.inIndent(() => {
-            writeFieldParser(f.inner, ctx);
+            writeFieldParser(f.inner, ctx, true);
         });
         ctx.append('}');
         return;
@@ -179,48 +180,48 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
     // Handle primitive values
 
     if (f.kind === 'int') {
-        ctx.append(`var v'${f.name} = sc~load_int(${f.bits});`);
+        ctx.append(`${varName} = sc~load_int(${f.bits});`);
         return;
     }
 
     if (f.kind === 'uint') {
-        ctx.append(`var v'${f.name} = sc~load_uint(${f.bits});`);
+        ctx.append(`${varName} = sc~load_uint(${f.bits});`);
         return;
     }
 
     if (f.kind === 'coins') {
-        ctx.append(`var v'${f.name} = sc~load_coins();`);
+        ctx.append(`${varName} = sc~load_coins();`);
         return;
     }
 
     if (f.kind === 'slice') {
-        ctx.append(`var v'${f.name} = sc~load_ref().begin_parse();`);
+        ctx.append(`${varName} = sc~load_ref().begin_parse();`);
         return;
     }
 
     if (f.kind === 'cell') {
-        ctx.append(`var v'${f.name} = sc~load_ref();`);
+        ctx.append(`${varName} = sc~load_ref();`);
         return;
     }
 
     if (f.kind === 'address') {
         ctx.used(`__tact_load_address`);
-        ctx.append(`var v'${f.name} = sc~__tact_load_address();`);
+        ctx.append(`${varName} = sc~__tact_load_address();`);
         return;
     }
 
     if (f.kind === 'map') {
-        ctx.append(`var v'${f.name} = sc~load_dict();`);
+        ctx.append(`${varName} = sc~load_dict();`);
         return;
     }
 
     if (f.kind === 'remaining') {
-        ctx.append(`var v'${f.name} = sc;`);
+        ctx.append(`${varName} = sc;`);
         return;
     }
 
     if (f.kind === 'bytes') {
-        ctx.append(`var v'${f.name} = sc~load_bits(${f.bytes * 8});`);
+        ctx.append(`${varName} = sc~load_bits(${f.bytes * 8});`);
         return;
     }
 
@@ -228,7 +229,7 @@ function writeFieldParser(f: StorageField, ctx: WriterContext) {
 
     if (f.kind === 'struct') {
         ctx.used(`__gen_read_${f.type.name}`);
-        ctx.append(`var v'${f.name} = sc~__gen_read_${f.type.name}();`);
+        ctx.append(`${varName} = sc~__gen_read_${f.type.name}();`);
         return;
     }
 
@@ -264,6 +265,32 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
 
             // Compile tuple
             ctx.append(`return (sc, (${allocation.fields.map((v) => `v'${v.name}`).join(', ')}));`);
+        });
+        ctx.append("}");
+    });
+
+    ctx.fun(`__gen_readopt_${name}`, () => {
+        ctx.append(`${resolveFuncType(allocation.type, ctx)} __gen_readopt_${name}(cell cl) inline {`);
+        ctx.inIndent(() => {
+
+            // Handle null
+            ctx.append(`if (null?(cl)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`return null();`);
+            });
+            ctx.append(`}`);
+            ctx.append(`var sc = cl.begin_parse();`);
+
+            // Check prefix
+            if (allocation.prefix) {
+                ctx.append(`throw_unless(100, sc~load_uint(32) == ${allocation.prefix});`);
+            }
+
+            // Write cell parser
+            writeCellParser(allocation.root, ctx);
+
+            // Compile tuple
+            ctx.append(`return ${allocation.fields.map((v) => `v'${v.name}`).join(', ')};`);
         });
         ctx.append("}");
     });

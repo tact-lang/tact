@@ -115,8 +115,9 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
+      1 2 BLKDROP2
       __tact_load_address INLINECALLDICT
-      DROP
+      -ROT
     }>
     s3 s1 s3 XCHG3
   }>
@@ -153,8 +154,8 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      LDREF
       NIP
+      LDREF
     }>
     SWAP
   }>
@@ -206,8 +207,9 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
+      1 2 BLKDROP2
       LDREF
-      NIP
+      s1 s2 XCHG
     }>
     1 LDI
     s0 s4 XCHG

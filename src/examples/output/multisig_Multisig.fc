@@ -14,7 +14,7 @@ global cell __tact_context_sys;
     var v'amount = sc~load_int(257);
     var v'body = null();
     if (sc~load_int(1)) {
-        var v'body = sc~load_ref();
+        v'body = sc~load_ref();
     }
     return (sc, (v'to, v'amount, v'body));
 }

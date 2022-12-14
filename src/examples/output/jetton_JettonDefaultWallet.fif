@@ -144,8 +144,9 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
+      1 2 BLKDROP2
       LDREF
-      NIP
+      s1 s2 XCHG
     }>
     LDGRAMS
     s0 s6 XCHG

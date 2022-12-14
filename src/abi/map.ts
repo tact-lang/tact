@@ -80,6 +80,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 }
             }
 
+            // Handle address key
             if (self.key === 'Address') {
                 if (self.value === 'Int') {
                     ctx.used(`__tact_dict_set_slice_int`);
@@ -87,8 +88,24 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 } else if (self.value === 'Bool') {
                     ctx.used(`__tact_dict_set_slice_int`);
                     return `${resolved[0]}~__tact_dict_set_slice_int(267, ${resolved[1]}, ${resolved[2]}, 1)`;
+                } else if (self.value === 'Cell') {
+                    ctx.used(`__tact_dict_set_slice_cell`);
+                    return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${resolved[2]})`;
                 } else {
-                    throwError(`set expects a map with Int, Bool or Cell values`, ref);
+                    let t = getType(ctx.ctx, self.value);
+                    if (t.kind === 'contract') {
+                        throwError(`Contract can't be value of a map`, ref);
+                    }
+                    if (t.kind === 'trait') {
+                        throwError(`Trait can't be value of a map`, ref);
+                    }
+                    if (t.kind === 'struct') {
+                        ctx.used(`__tact_dict_set_slice_cell`);
+                        ctx.used(`__gen_writecellopt_${t.name}`)
+                        return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, __gen_writecellopt_${t.name}(${resolved[2]}))`;
+                    } else {
+                        throwError(`${t.name} can't be value of a map`, ref);
+                    }
                 }
             }
 
@@ -140,7 +157,49 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     ctx.used(`__tact_dict_get_int_cell`);
                     return `__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]})`;
                 } else {
-                    throwError(`set expects a map with Int, Bool or Cell values`, ref);
+                    let t = getType(ctx.ctx, self.value);
+                    if (t.kind === 'contract') {
+                        throwError(`Contract can't be value of a map`, ref);
+                    }
+                    if (t.kind === 'trait') {
+                        throwError(`Trait can't be value of a map`, ref);
+                    }
+                    if (t.kind === 'struct') {
+                        ctx.used(`__tact_dict_get_int_cell`);
+                        ctx.used(`__gen_readopt_${t.name}`)
+                        return `__gen_readopt_${t.name}(__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]}))`;
+                    } else {
+                        throwError(`${t.name} can't be value of a map`, ref);
+                    }
+                }
+            }
+
+            // Handle Address key
+            if (self.key === 'Address') {
+                if (self.value === 'Int') {
+                    ctx.used(`__tact_dict_get_slice_int`);
+                    return `__tact_dict_get_slice_int(${resolved[0]}, 267, ${resolved[1]}, 257)`;
+                } else if (self.value === 'Bool') {
+                    ctx.used(`__tact_dict_get_slice_int`);
+                    return `__tact_dict_get_slice_int(${resolved[0]}, 267, ${resolved[1]}, 1)`;
+                } else if (self.value === 'Cell') {
+                    ctx.used(`__tact_dict_get_slice_cell`);
+                    return `__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]})`;
+                } else {
+                    let t = getType(ctx.ctx, self.value);
+                    if (t.kind === 'contract') {
+                        throwError(`Contract can't be value of a map`, ref);
+                    }
+                    if (t.kind === 'trait') {
+                        throwError(`Trait can't be value of a map`, ref);
+                    }
+                    if (t.kind === 'struct') {
+                        ctx.used(`__tact_dict_get_slice_cell`);
+                        ctx.used(`__gen_readopt_${t.name}`)
+                        return `__gen_readopt_${t.name}(__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]}))`;
+                    } else {
+                        throwError(`${t.name} can't be value of a map`, ref);
+                    }
                 }
             }
 

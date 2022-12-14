@@ -51,7 +51,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     var v'owner = sc~__tact_load_address();
     var v'cashback = null();
     if (sc~load_int(1)) {
-        var v'cashback = sc~__tact_load_address();
+        v'cashback = sc~__tact_load_address();
     }
     return (sc, (v'amount, v'owner, v'cashback));
 }
@@ -75,7 +75,7 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int) v) inli
     throw_unless(100, sc~load_uint(32) == 3551049822);
     var v'content = null();
     if (sc~load_int(1)) {
-        var v'content = sc~load_ref();
+        v'content = sc~load_ref();
     }
     return (sc, (v'content));
 }
@@ -113,7 +113,7 @@ builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inl
     var v'owner = sc~__tact_load_address();
     var v'content = null();
     if (sc~load_int(1)) {
-        var v'content = sc~load_ref();
+        v'content = sc~load_ref();
     }
     var v'mintable = sc~load_int(1);
     return (sc, (v'totalSupply, v'owner, v'content, v'mintable));

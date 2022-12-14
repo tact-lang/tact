@@ -82,7 +82,7 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int) v) inli
     var v'responseDestination = sc~__tact_load_address();
     var v'customPayload = null();
     if (sc~load_int(1)) {
-        var v'customPayload = sc~load_ref();
+        v'customPayload = sc~load_ref();
     }
     var v'forwardTonAmount = sc~load_coins();
     return (sc, (v'queryId, v'amount, v'destination, v'responseDestination, v'customPayload, v'forwardTonAmount));

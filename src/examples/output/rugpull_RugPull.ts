@@ -122,66 +122,31 @@ export function unpackStackStateInit(slice: TupleSlice4): StateInit {
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
 }
-export type Request = {
-    $$type: 'Request';
-    to: Address;
-    amount: BN;
-    body: Cell | null;
-}
-
-export function packRequest(src: Request): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(4096439811, 32);
-    b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(src.amount, 257);
-    if (src.body !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.body);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
-}
-
-export function packStackRequest(src: Request, __stack: StackItem[]) {
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.amount });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-}
-
-export function unpackStackRequest(slice: TupleSlice4): Request {
-    const to = slice.readAddress();
-    const amount = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    return { $$type: 'Request', to: to, amount: amount, body: body };
-}
-export async function Multisig_init(members: Cell, requiredWeight: BN) {
-    const __code = 'te6ccgEBCQEA6gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQAJoea/4BEBb9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQh6FVsB3XGBGHlgMkBgIB1AcIAMrtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQ9Cq2A7ry4GT6QAEBgQEB1wBtAdIAAZIx1N5VIDMQVhBFEDRY8AnI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVAA7G1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJgAAUXwOA=';
+export async function RugPull_init(scammer: Address) {
+    const __code = 'te6ccgECCwEAAT8AART/APSkE/S88sgLAQIBYgIDAgLMBAUACaAUWeAPAgEgBgcCAdQJCgHx12/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8BBgABFrpOCQ2EcfLfaiaGoA/DF9IACA6QBAgIDrgECAgOuAegIqoDYK+ARkfCEA5iqgKCpniwllAECAgOeACUCAgOeAegBk9qpwYABAgAP/Nrg4KQLkZiCqgagqZ4sJZQBAgIDngAlAgIDngHoAZMAN6OZ/kBgvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rqOP+1E0NQB+GL6QAEB0gCBAQHXAIEBAdcA9ARVQGwV8AnI+EIBzFVAUFTPFhLKAIEBAc8AEoEBAc8A9ADJ7VTbMeCRMOLywGQAASAABR/NIA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'cell', cell: members});
-    __stack.push({ type: 'int', value: requiredWeight });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(scammer).endCell() });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
-    let res = await executor.get('init_Multisig', __stack, { debug: true });
+    let res = await executor.get('init_RugPull', __stack, { debug: true });
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
 
-export class Multisig {
+export class RugPull {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Request) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: null | 'rugpull') {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Request') {
-            body = packRequest(message);
+        if (message === null) {
+            body = new Cell();
+        }
+        if (message === 'rugpull') {
+            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
         let r = await this.executor.internal(new InternalMessage({

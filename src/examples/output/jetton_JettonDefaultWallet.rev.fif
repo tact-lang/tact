@@ -127,8 +127,9 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
+        1 2 BLKDROP2
         LDREF
-        s1 POP
+        s1 s2 XCHG
       }> PUSHCONT
       IF
       LDGRAMS

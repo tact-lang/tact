@@ -35,8 +35,8 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      LDREF
       NIP
+      LDREF
     }>
     3 -ROLL
   }>

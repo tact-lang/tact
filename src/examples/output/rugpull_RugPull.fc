@@ -1,0 +1,116 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, raw);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
+    return b;
+}
+
+builder __gen_write_RugPull(builder build_0, (slice, int, int, int, cell) v) inline {
+    var (v'scammer, v'rugpulled, v'queueStart, v'queueEnd, v'queue) = v;
+    build_0 = __tact_store_address(build_0, v'scammer);
+    build_0 = store_int(build_0, v'rugpulled, 1);
+    build_0 = store_int(build_0, v'queueStart, 257);
+    build_0 = store_int(build_0, v'queueEnd, 257);
+    build_0 = store_dict(build_0, v'queue);
+    return build_0;
+}
+
+(slice, ((slice, int, int, int, cell))) __gen_read_RugPull(slice sc) inline {
+    var v'scammer = sc~__tact_load_address();
+    var v'rugpulled = sc~load_int(1);
+    var v'queueStart = sc~load_int(257);
+    var v'queueEnd = sc~load_int(257);
+    var v'queue = sc~load_dict();
+    return (sc, (v'scammer, v'rugpulled, v'queueStart, v'queueEnd, v'queue));
+}
+
+(slice, int, int, int, cell) __gen_load_RugPull() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_RugPull();
+}
+
+() __gen_store_RugPull((slice, int, int, int, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_RugPull(b, v);
+    set_data(b.end_cell());
+}
+
+cell __gen_RugPull_init(cell sys', slice scammer) {
+    var ((self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue)) = (null(), null(), null(), null(), null());
+    self'scammer = scammer;
+    self'rugpulled = false;
+    self'queueStart = 0;
+    self'queueEnd = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_RugPull(b', (self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue));
+    return b'.end_cell();
+}
+
+(((slice, int, int, int, cell)), ()) __gen_RugPull_receive((slice, int, int, int, cell) self) impure {
+    var (self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue) = self;
+    if (self'rugpulled) {
+    }
+    return ((self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+((slice, int, int, int, cell), ()) __gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, cell) self) impure {
+    var (self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue) = self;
+    self'rugpulled = true;
+    return ((self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_RugPull();
+        self~__gen_RugPull_receive();
+        __gen_store_RugPull(self);
+        return ();
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "rugpull" message
+        if (text_op == 0xcde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea) {
+            var self = __gen_load_RugPull();
+            self~__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea();
+            __gen_store_RugPull(self);
+            return ();
+        }
+    }
+    
+    throw(100);
+}
+
+cell init_RugPull(cell sys', slice scammer) method_id {
+    return __gen_RugPull_init(sys', scammer);
+}

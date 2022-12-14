@@ -184,8 +184,8 @@ SETCP0
       1 LDI
       s0 s1 XCHG
       <{
-        LDREF
         s1 POP
+        LDREF
       }> PUSHCONT
       IF
       ROTREV

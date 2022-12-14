@@ -227,7 +227,7 @@ export class MultisigContract {
             body = packExecute(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        await this.executor.internal(new InternalMessage({
+        let r = await this.executor.internal(new InternalMessage({
             to: this.executor.address,
             from: args.from || this.executor.address,
             bounce: false,
@@ -236,6 +236,7 @@ export class MultisigContract {
                 body: new CellMessage(body!)
             })
         }), { debug: args.debug });
+        if (args.debug) { console.warn(r.debugLogs); }
     }
     async getKey1() {
         let __stack: StackItem[] = [];
