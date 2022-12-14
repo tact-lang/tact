@@ -402,7 +402,7 @@ export class SampleJetton {
                 body: new CellMessage(body!)
             })
         }), { debug: args.debug });
-        if (args.debug) { console.warn(r.debugLogs); }
+        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
     }
     async getGetWalletAddress(owner: Address) {
         let __stack: StackItem[] = [];

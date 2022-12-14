@@ -241,7 +241,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     w.append(`})`);
                 });
                 w.append(`}), { debug: args.debug });`);
-                w.append(`if (args.debug) { console.warn(r.debugLogs); }`);
+                w.append(`if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }`);
             });
             w.append(`}`);
         }

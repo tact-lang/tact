@@ -38,8 +38,6 @@ contract MapTestContract {
     }
 
     receive(msg: SetIntMap2) {
-        abi.dump(msg.key);
-        abi.dump(msg.value);
         self.intMap2.set(msg.key, msg.value);
     }
 

@@ -2625,10 +2625,10 @@ ton-nodejs@^1.4.3:
   resolved "https://registry.yarnpkg.com/ton-nodejs/-/ton-nodejs-1.4.3.tgz#10c4f993fbd717a925007f63e744f6a9e3868555"
   integrity sha512-Thwl2lmYuaaciFs0CTybb0ZPwscl0ANUriv3QUP494ttRWKT2rxoyydnepVw1hWDzXeDh3Rxn0XA7vN1hySVyg==
 
-ton@12.2.6, ton@^9.3.1:
-  version "12.2.6"
-  resolved "https://registry.yarnpkg.com/ton/-/ton-12.2.6.tgz#a1e418bac87b153a525bde0cd49597aa707da4c6"
-  integrity sha512-KinR1mh/f6gRayCAR565Rw4ZcoQtV8PF8UdUuzM68TzwHOCVcP6688ZeH75db7Kcm0cKvfLzUxeD/VC1PGPDCA==
+ton@12.2.8, ton@^9.3.1:
+  version "12.2.8"
+  resolved "https://registry.yarnpkg.com/ton/-/ton-12.2.8.tgz#2ddacf075abad0fbe947b62f5f368949df03b891"
+  integrity sha512-fCuKkNYjjIpW6+oZ40a6+HZYCoXr6pYgWgxKW0VgYwqJA62ydHy2Kjful4NFOPwyDA1zLfQWxhhad2eJ3U+MnA==
   dependencies:
     axios "^0.25.0"
     bn.js "5.2.0"

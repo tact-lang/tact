@@ -460,10 +460,6 @@ SETCP0
     s0 s7 XCHG
 
   27: 
-    s0 s1 XCHG
-    32 DEBUG
-    s0 s1 XCHG
-    32 DEBUG
     s2 s8 XCHG
     257 PUSHINT
     ROTREV

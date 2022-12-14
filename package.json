@@ -29,7 +29,7 @@
     "ohm-js": "^16.4.0",
     "ora": "^6.1.2",
     "prando": "^6.0.1",
-    "ton": "12.2.6",
+    "ton": "12.2.8",
     "ton-compiler": "^2.0.0",
     "ton-contract-executor": "^0.6.0",
     "ton-crypto": "^3.2.0",
@@ -47,6 +47,6 @@
     "typescript": "^4.9.3"
   },
   "resolutions": {
-    "ton": "12.2.6"
+    "ton": "12.2.8"
   }
 }

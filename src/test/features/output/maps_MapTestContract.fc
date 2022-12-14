@@ -270,8 +270,6 @@ _ __gen_get_addrMap4() method_id(81348) {
 (((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap2((cell, cell, cell, cell, cell, cell, cell, cell) self, (int, int) msg) impure {
     var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
     var (msg'key, msg'value) = msg;
-    msg'key~dump();
-    msg'value~dump();
     self'intMap2~__tact_dict_set_int_int(257, msg'key, msg'value, 1);
     return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
 }

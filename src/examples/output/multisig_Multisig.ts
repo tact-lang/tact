@@ -193,6 +193,6 @@ export class Multisig {
                 body: new CellMessage(body!)
             })
         }), { debug: args.debug });
-        if (args.debug) { console.warn(r.debugLogs); }
+        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
     }
 }

@@ -1,5 +1,6 @@
 import BN from 'bn.js';
-import { beginCell } from 'ton';
+import { beginCell, parseDict } from 'ton';
+import { compileContract } from 'ton-compiler';
 import { createExecutorFromCode } from 'ton-nodejs';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MapTestContract, MapTestContract_init, SomeStruct } from './features/output/maps_MapTestContract';
@@ -50,10 +51,12 @@ describe('features', () => {
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap3', key: k, value: valueCell });
 
             // Check value set
-            console.warn(valueBool);
+            // console.warn(valueBool);
+            // let parsed = parseDict((await contract.getIntMap2())!.beginParse(), 257, (s) => s.readBit());
+            // console.warn(parsed);
             expect((await contract.getIntMap1Value(k))!.eq(valueInt)).toBe(true);
             expect((await contract.getIntMap2Value(k))!).toBe(valueBool);
-            // expect((await contract.getIntMap3Value(k))!.equals(valueCell)).toBe(true);
+            expect((await contract.getIntMap3Value(k))!.equals(valueCell)).toBe(true);
             // expect(await contract.getIntMap4Value(k)).toBeNull();
         }
     });

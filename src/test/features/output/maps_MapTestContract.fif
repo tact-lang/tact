@@ -358,10 +358,6 @@ PROGRAM{
     s0 s7 XCHG
   }>
   __gen_MapTestContract_receive_SetIntMap2 PROC:<{
-    SWAP
-    s0 DUMP
-    SWAP
-    s0 DUMP
     s2 s8 XCHG
     257 PUSHINT
     -ROT
