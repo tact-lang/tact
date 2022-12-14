@@ -2,16 +2,16 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
-export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext): string {
+export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext, optional: boolean = false): string {
 
     // String
     if (typeof descriptor === 'string') {
-        return resolveFuncType(getType(ctx.ctx, descriptor), ctx);
+        return resolveFuncType(getType(ctx.ctx, descriptor), ctx, false);
     }
 
     // TypeRef
     if (descriptor.kind === 'ref') {
-        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx);
+        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx, descriptor.optional);
     }
     if (descriptor.kind === 'map') {
         return 'cell';
@@ -38,9 +38,17 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+        if (optional) {
+            return 'tuple';
+        } else {
+            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+        }
     } else if (descriptor.kind === 'contract') {
-        return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+        if (optional) {
+            return 'tuple';
+        } else {
+            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+        }
     }
 
     // Unreachable

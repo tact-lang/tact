@@ -266,4 +266,36 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append(`}`);
     });
+
+    //
+    // Tuples
+    //
+
+    ctx.fun(`__tact_tuple_create_0`, () => {
+        ctx.append(`tuple __tact_tuple_create_0() asm "NIL";`);
+    });
+    ctx.fun(`__tact_tuple_destroy_0`, () => {
+        ctx.append(`() __tact_tuple_destroy_0() {`);
+        ctx.inIndent(() => {
+            ctx.append(`return ();`)
+        });
+        ctx.append(`}`);
+    });
+
+    for (let i = 1; i < 15; i++) {
+        ctx.fun(`__tact_tuple_create_${i}`, () => {
+            let args: string[] = [];
+            for (let j = 0; j < i; j++) {
+                args.push(`X${j}`);
+            }
+            ctx.append(`forall ${args.join(', ')} -> tuple __tact_tuple_create_${i}((${args.join(', ')}) v) asm "${i} TUPLE";`);
+        });
+        ctx.fun(`__tact_tuple_destroy_${i}`, () => {
+            let args: string[] = [];
+            for (let j = 0; j < i; j++) {
+                args.push(`X${j}`);
+            }
+            ctx.append(`forall ${args.join(', ')} -> (${args.join(', ')}) __tact_tuple_destroy_${i}(tuple v) asm "${i} UNTUPLE";`);
+        });
+    }
 }

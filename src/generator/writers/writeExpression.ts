@@ -64,7 +64,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                return resolveFuncTypeUnpack(tt, f.value, ctx);
+                return resolveFuncTypeUnpack(t, f.value, ctx);
             }
         }
         return f.value;
@@ -170,6 +170,15 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // NOTE: Assert function that ensures that the value is not null
         if (f.op === '!!') {
+            let t = getExpType(ctx.ctx, f.right);
+            if (t.kind === 'ref') {
+                let tt = getType(ctx.ctx, t.name);
+                if (tt.kind === 'struct') {
+                    ctx.used(`__gen_${tt.name}_not_null`);
+                    return `__gen_${tt.name}_not_null(${writeExpression(f.right, ctx)})`;
+                }
+            }
+
             ctx.used('__tact_not_null');
             return '__tact_not_null(' + writeExpression(f.right, ctx) + ')';
         }
@@ -205,7 +214,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (field.type.kind === 'ref') {
                 let ft = getType(ctx.ctx, field.type.name);
                 if (ft.kind === 'struct' || ft.kind === 'contract') {
-                    return resolveFuncTypeUnpack(ft, path.join("'"), ctx);
+                    return resolveFuncTypeUnpack(field.type, path.join("'"), ctx);
                 }
             }
 

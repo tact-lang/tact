@@ -633,6 +633,7 @@ SETCP0
       257 PUSHINT
       LDI
       s0 POP
+      SINGLE
     }> PUSHCONT
     IFELSE
 

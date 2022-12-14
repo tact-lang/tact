@@ -91,7 +91,7 @@ cell __gen_writecell_Something((int) v) inline {
     return __gen_write_Something(begin_cell(), v).end_cell();
 }
 
-cell __gen_writecellopt_Something((int) v) inline {
+cell __gen_writecellopt_Something(tuple v) inline {
     if (null?(v)) {
         return null();
     }

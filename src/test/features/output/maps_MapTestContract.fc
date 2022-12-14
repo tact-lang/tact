@@ -64,6 +64,8 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
+forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
+
 (slice, ((int, int))) __gen_read_SetIntMap1(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 1056067080);
     var v'key = sc~load_int(257);
@@ -114,13 +116,13 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     return (sc, (v'key, v'value));
 }
 
-(int) __gen_readopt_SomeStruct(cell cl) inline {
+tuple __gen_readopt_SomeStruct(cell cl) inline {
     if (null?(cl)) {
         return null();
     }
     var sc = cl.begin_parse();
     var v'value = sc~load_int(257);
-    return v'value;
+    return __tact_tuple_create_1(v'value);
 }
 
 builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
@@ -252,7 +254,7 @@ _ __gen_get_intMap4() method_id(87586) {
     return res;
 }
 
-(int) __gen_MapTestContract_intMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) self, int key) impure {
+tuple __gen_MapTestContract_intMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) self, int key) impure {
     var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
     return __gen_readopt_SomeStruct(__tact_dict_get_int_cell(self'intMap4, 257, key));
 }

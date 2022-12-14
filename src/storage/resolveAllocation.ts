@@ -113,7 +113,7 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
                 }
                 return { index: src.index, size: { bits: 2 + 1 + 8 + 256, refs: 0 }, name: src.name, kind: 'address' };
             }
-            throw Error('Unknown primitive type: ' + type.name);
+            throwError('Impossible to serialize type ' + type.name, src.ref);
         }
 
         // Struct types

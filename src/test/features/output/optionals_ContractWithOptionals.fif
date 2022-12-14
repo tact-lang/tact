@@ -1,0 +1,363 @@
+PROGRAM{
+  DECLPROC __tact_not_null
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_SomeGenericStruct
+  DECLPROC __gen_read_SomeGenericStruct
+  DECLPROC __gen_SomeGenericStruct_not_null
+  DECLPROC __gen_write_ContractWithOptionals
+  DECLPROC __gen_SomeGenericStruct_as_optional
+  DECLPROC __gen_read_ContractWithOptionals
+  DECLPROC __gen_load_ContractWithOptionals
+  DECLPROC __gen_ContractWithOptionals_init
+  DECLPROC __gen_ContractWithOptionals_isNotNullA
+  74449 DECLMETHOD __gen_get_isNotNullA
+  DECLPROC __gen_ContractWithOptionals_isNotNullB
+  70322 DECLMETHOD __gen_get_isNotNullB
+  DECLPROC __gen_ContractWithOptionals_isNotNullC
+  66195 DECLMETHOD __gen_get_isNotNullC
+  DECLPROC __gen_ContractWithOptionals_isNotNullD
+  94836 DECLMETHOD __gen_get_isNotNullD
+  DECLPROC __gen_ContractWithOptionals_isNotNullE
+  90709 DECLMETHOD __gen_get_isNotNullE
+  DECLPROC __gen_ContractWithOptionals_notNullA
+  110911 DECLMETHOD __gen_get_notNullA
+  DECLPROC __gen_ContractWithOptionals_notNullB
+  98652 DECLMETHOD __gen_get_notNullB
+  DECLPROC __gen_ContractWithOptionals_notNullC
+  102781 DECLMETHOD __gen_get_notNullC
+  DECLPROC __gen_ContractWithOptionals_notNullD
+  123290 DECLMETHOD __gen_get_notNullD
+  DECLPROC __gen_ContractWithOptionals_notNullE
+  127419 DECLMETHOD __gen_get_notNullE
+  DECLPROC recv_internal
+  115380 DECLMETHOD init_ContractWithOptionals
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    14 THROWIF
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_SomeGenericStruct PROCINLINE:<{
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_SomeGenericStruct PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    DROP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    5 -ROLL
+  }>
+  __gen_SomeGenericStruct_not_null PROC:<{
+    5 UNTUPLE
+  }>
+  __gen_write_ContractWithOptionals PROCINLINE:<{
+    s4 PUSH
+    ISNULL
+    IF:<{
+      s4 POP
+      FALSE
+      s0 s5 XCHG2
+      1 STI
+    }>ELSE<{
+      TRUE
+      s0 s6 XCHG2
+      1 STI
+      s1 s4 XCHG
+      257 PUSHINT
+      STIX
+      s3 s4 XCHG
+    }>
+    s2 PUSH
+    ISNULL
+    IF:<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      s1 s2 XCHG
+      1 STI
+    }>
+    OVER
+    ISNULL
+    IF:<{
+      FALSE
+      s2 POP
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>
+    s2 PUSH
+    ISNULL
+    IF:<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      ROT
+      __tact_store_address INLINECALLDICT
+    }>
+    NEWC
+    s2 PUSH
+    ISNULL
+    IF:<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      s0 s2 XCHG
+      __gen_SomeGenericStruct_not_null CALLDICT
+      s5 s6 XCHG
+      __gen_write_SomeGenericStruct INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_SomeGenericStruct_as_optional PROC:<{
+    5 TUPLE
+  }>
+  __gen_read_ContractWithOptionals PROCINLINE:<{
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      257 PUSHINT
+      LDIX
+    }>
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      1 LDI
+    }>
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      LDREF
+    }>
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      __tact_load_address INLINECALLDICT
+      SWAP
+    }>
+    LDREF
+    DROP
+    CTOS
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      __gen_read_SomeGenericStruct INLINECALLDICT
+      __gen_SomeGenericStruct_as_optional CALLDICT
+      SWAP
+    }>
+    5 -ROLL
+  }>
+  __gen_load_ContractWithOptionals PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_ContractWithOptionals INLINECALLDICT
+    1 5 BLKDROP2
+  }>
+  __gen_ContractWithOptionals_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s5 XCHG
+    NEWC
+    STREF
+    s0 s5 XCHG
+    __gen_write_ContractWithOptionals INLINECALLDICT
+    ENDC
+  }>
+  __gen_ContractWithOptionals_isNotNullA PROC:<{
+    4 BLKDROP
+    ISNULL
+    NOT
+  }>
+  __gen_get_isNotNullA PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_isNotNullA CALLDICT
+  }>
+  __gen_ContractWithOptionals_isNotNullB PROC:<{
+    s3 s4 XCHG
+    4 BLKDROP
+    ISNULL
+    NOT
+  }>
+  __gen_get_isNotNullB PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_isNotNullB CALLDICT
+  }>
+  __gen_ContractWithOptionals_isNotNullC PROC:<{
+    s2 s4 XCHG
+    4 BLKDROP
+    ISNULL
+    NOT
+  }>
+  __gen_get_isNotNullC PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_isNotNullC CALLDICT
+  }>
+  __gen_ContractWithOptionals_isNotNullD PROC:<{
+    s1 s4 XCHG
+    4 BLKDROP
+    ISNULL
+    NOT
+  }>
+  __gen_get_isNotNullD PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_isNotNullD CALLDICT
+  }>
+  __gen_ContractWithOptionals_isNotNullE PROC:<{
+    4 1 BLKDROP2
+    ISNULL
+    NOT
+  }>
+  __gen_get_isNotNullE PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_isNotNullE CALLDICT
+  }>
+  __gen_ContractWithOptionals_notNullA PROC:<{
+    4 BLKDROP
+    __tact_not_null CALLDICT
+  }>
+  __gen_get_notNullA PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_notNullA CALLDICT
+  }>
+  __gen_ContractWithOptionals_notNullB PROC:<{
+    s3 s4 XCHG
+    4 BLKDROP
+    __tact_not_null CALLDICT
+  }>
+  __gen_get_notNullB PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_notNullB CALLDICT
+  }>
+  __gen_ContractWithOptionals_notNullC PROC:<{
+    s2 s4 XCHG
+    4 BLKDROP
+    __tact_not_null CALLDICT
+  }>
+  __gen_get_notNullC PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_notNullC CALLDICT
+  }>
+  __gen_ContractWithOptionals_notNullD PROC:<{
+    s1 s4 XCHG
+    4 BLKDROP
+    __tact_not_null CALLDICT
+  }>
+  __gen_get_notNullD PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_notNullD CALLDICT
+  }>
+  __gen_ContractWithOptionals_notNullE PROC:<{
+    4 1 BLKDROP2
+    __gen_SomeGenericStruct_not_null CALLDICT
+  }>
+  __gen_get_notNullE PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    __gen_ContractWithOptionals_notNullE CALLDICT
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    100 THROW
+  }>
+  init_ContractWithOptionals PROC:<{
+    __gen_ContractWithOptionals_init CALLDICT
+  }>
+}END>c

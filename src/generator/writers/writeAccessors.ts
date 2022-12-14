@@ -20,4 +20,23 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${type.name}_unpack`, () => {
         ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v) asm "NOP";`);
     });;
+
+    // Not null
+    ctx.fun(`__gen_${type.name}_not_null`, () => {
+        ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v) {`);
+        ctx.inIndent(() => {
+            ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
+            ctx.append(`return __tact_tuple_destroy_${type.fields.length}(v);`);
+        });
+        ctx.append(`}`);
+    });;
+
+    ctx.fun(`__gen_${type.name}_as_optional`, () => {
+        ctx.append(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v) {`);
+        ctx.inIndent(() => {
+            ctx.used(`__tact_tuple_create_${type.fields.length}`);
+            ctx.append(`return __tact_tuple_create_${type.fields.length}(v);`);
+        });
+        ctx.append(`}`);
+    });;
 }

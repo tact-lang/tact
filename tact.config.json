@@ -47,6 +47,11 @@
       "name": "maps",
       "path": "./src/test/features/maps.tact",
       "output": "./src/test/features/output"
+    },
+    {
+      "name": "optionals",
+      "path": "./src/test/features/optionals.tact",
+      "output": "./src/test/features/output"
     }
   ]
 }

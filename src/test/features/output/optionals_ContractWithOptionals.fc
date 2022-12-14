@@ -1,0 +1,260 @@
+forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, raw);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    b = b.store_slice(address);
+    return b;
+}
+
+forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
+
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
+
+builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int) v) inline {
+    var (v'value1, v'value2, v'value3, v'value4, v'value5) = v;
+    build_0 = store_int(build_0, v'value1, 257);
+    build_0 = store_int(build_0, v'value2, 257);
+    build_0 = store_int(build_0, v'value3, 257);
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, v'value4, 257);
+    build_1 = store_int(build_1, v'value5, 257);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((int, int, int, int, int))) __gen_read_SomeGenericStruct(slice sc) inline {
+    var v'value1 = sc~load_int(257);
+    var v'value2 = sc~load_int(257);
+    var v'value3 = sc~load_int(257);
+    sc = (sc~load_ref()).begin_parse();
+    var v'value4 = sc~load_int(257);
+    var v'value5 = sc~load_int(257);
+    return (sc, (v'value1, v'value2, v'value3, v'value4, v'value5));
+}
+
+((int, int, int, int, int)) __gen_SomeGenericStruct_not_null(tuple v) {
+    return __tact_tuple_destroy_5(v);
+}
+
+builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slice, tuple) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e) = v;
+    if (null?(v'a)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, v'a, 257);
+    }
+    if (null?(v'b)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_int(build_0, v'b, 1);
+    }
+    if (null?(v'c)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v'c);
+    }
+    if (null?(v'd)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = __tact_store_address(build_0, v'd);
+    }
+    var build_1 = begin_cell();
+    if (null?(v'e)) {
+        build_1 = store_int(build_1, false, 1);
+    } else {
+        build_1 = store_int(build_1, true, 1);
+        build_1 = __gen_write_SomeGenericStruct(build_1, __gen_SomeGenericStruct_not_null(v'e));
+    }
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) {
+    return __tact_tuple_create_5(v);
+}
+
+(slice, ((int, int, cell, slice, tuple))) __gen_read_ContractWithOptionals(slice sc) inline {
+    var v'a = null();
+    if (sc~load_int(1)) {
+        v'a = sc~load_int(257);
+    }
+    var v'b = null();
+    if (sc~load_int(1)) {
+        v'b = sc~load_int(1);
+    }
+    var v'c = null();
+    if (sc~load_int(1)) {
+        v'c = sc~load_ref();
+    }
+    var v'd = null();
+    if (sc~load_int(1)) {
+        v'd = sc~__tact_load_address();
+    }
+    sc = (sc~load_ref()).begin_parse();
+    var v'e = null();
+    if (sc~load_int(1)) {
+        v'e = __gen_SomeGenericStruct_as_optional(sc~__gen_read_SomeGenericStruct());
+    }
+    return (sc, (v'a, v'b, v'c, v'd, v'e));
+}
+
+(int, int, cell, slice, tuple) __gen_load_ContractWithOptionals() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_ContractWithOptionals();
+}
+
+cell __gen_ContractWithOptionals_init(cell sys') {
+    var ((self'a, self'b, self'c, self'd, self'e)) = (null(), null(), null(), null(), null());
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_ContractWithOptionals(b', (self'a, self'b, self'c, self'd, self'e));
+    return b'.end_cell();
+}
+
+int __gen_ContractWithOptionals_isNotNullA((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return (~ null?(self'a));
+}
+
+_ __gen_get_isNotNullA() method_id(74449) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_isNotNullA(self);
+    return res;
+}
+
+int __gen_ContractWithOptionals_isNotNullB((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return (~ null?(self'b));
+}
+
+_ __gen_get_isNotNullB() method_id(70322) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_isNotNullB(self);
+    return res;
+}
+
+int __gen_ContractWithOptionals_isNotNullC((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return (~ null?(self'c));
+}
+
+_ __gen_get_isNotNullC() method_id(66195) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_isNotNullC(self);
+    return res;
+}
+
+int __gen_ContractWithOptionals_isNotNullD((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return (~ null?(self'd));
+}
+
+_ __gen_get_isNotNullD() method_id(94836) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_isNotNullD(self);
+    return res;
+}
+
+int __gen_ContractWithOptionals_isNotNullE((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return (~ null?(self'e));
+}
+
+_ __gen_get_isNotNullE() method_id(90709) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_isNotNullE(self);
+    return res;
+}
+
+int __gen_ContractWithOptionals_notNullA((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return __tact_not_null(self'a);
+}
+
+_ __gen_get_notNullA() method_id(110911) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_notNullA(self);
+    return res;
+}
+
+int __gen_ContractWithOptionals_notNullB((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return __tact_not_null(self'b);
+}
+
+_ __gen_get_notNullB() method_id(98652) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_notNullB(self);
+    return res;
+}
+
+cell __gen_ContractWithOptionals_notNullC((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return __tact_not_null(self'c);
+}
+
+_ __gen_get_notNullC() method_id(102781) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_notNullC(self);
+    return res;
+}
+
+slice __gen_ContractWithOptionals_notNullD((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return __tact_not_null(self'd);
+}
+
+_ __gen_get_notNullD() method_id(123290) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_notNullD(self);
+    return res;
+}
+
+(int, int, int, int, int) __gen_ContractWithOptionals_notNullE((int, int, cell, slice, tuple) self) impure {
+    var ((self'a, self'b, self'c, self'd, self'e)) = self;
+    return __gen_SomeGenericStruct_not_null(self'e);
+}
+
+_ __gen_get_notNullE() method_id(127419) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = __gen_ContractWithOptionals_notNullE(self);
+    return res;
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(100);
+}
+
+cell init_ContractWithOptionals(cell sys') method_id {
+    return __gen_ContractWithOptionals_init(sys');
+}

@@ -8,7 +8,7 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 // Serializer
 //
 
-function writeSerializerField(f: StorageField, index: number, ctx: WriterContext) {
+function writeSerializerField(f: StorageField, index: number, ctx: WriterContext, optional: boolean = false) {
 
     // Handle optional
 
@@ -20,7 +20,7 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
         ctx.append(`} else {`);
         ctx.inIndent(() => {
             ctx.append(`build_${index} = store_int(build_${index}, true, 1);`);
-            writeSerializerField(f.inner, index, ctx);
+            writeSerializerField(f.inner, index, ctx, true);
         });
         ctx.append(`}`);
         return;
@@ -77,8 +77,14 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
     // Handle structs
 
     if (f.kind === 'struct') {
-        ctx.used(`__gen_write_${f.type.name}`);
-        ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v'${f.name});`);
+        if (optional) {
+            ctx.used(`__gen_write_${f.type.name}`);
+            ctx.used(`__gen_${f.type.name}_not_null`);
+            ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, __gen_${f.type.name}_not_null(v'${f.name}));`);
+        } else {
+            ctx.used(`__gen_write_${f.type.name}`);
+            ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v'${f.name});`);
+        }
         return;
     }
 
@@ -140,7 +146,7 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
     // Write to opt cell
     ctx.fun(`__gen_writecellopt_${name}`, () => {
-        ctx.append(`cell __gen_writecellopt_${name}(${resolveFuncType(allocation.type, ctx)} v) inline {`);
+        ctx.append(`cell __gen_writecellopt_${name}(tuple v) inline {`);
         ctx.inIndent(() => {
 
             // If null
@@ -162,8 +168,8 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 // Parser
 //
 
-function writeFieldParser(f: StorageField, ctx: WriterContext, inner: boolean = false) {
-    let varName = inner ? `v'${f.name}` : `var v'${f.name}`;
+function writeFieldParser(f: StorageField, ctx: WriterContext, optional: boolean = false) {
+    let varName = optional ? `v'${f.name}` : `var v'${f.name}`;
 
     // Handle optional
 
@@ -228,8 +234,14 @@ function writeFieldParser(f: StorageField, ctx: WriterContext, inner: boolean = 
     // Handle structs
 
     if (f.kind === 'struct') {
-        ctx.used(`__gen_read_${f.type.name}`);
-        ctx.append(`${varName} = sc~__gen_read_${f.type.name}();`);
+        if (optional) {
+            ctx.used(`__gen_read_${f.type.name}`);
+            ctx.used(`__gen_${f.type.name}_as_optional`);
+            ctx.append(`${varName} = __gen_${f.type.name}_as_optional(sc~__gen_read_${f.type.name}());`);
+        } else {
+            ctx.used(`__gen_read_${f.type.name}`);
+            ctx.append(`${varName} = sc~__gen_read_${f.type.name}();`);
+        }
         return;
     }
 
@@ -270,7 +282,7 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
     });
 
     ctx.fun(`__gen_readopt_${name}`, () => {
-        ctx.append(`${resolveFuncType(allocation.type, ctx)} __gen_readopt_${name}(cell cl) inline {`);
+        ctx.append(`tuple __gen_readopt_${name}(cell cl) inline {`);
         ctx.inIndent(() => {
 
             // Handle null
@@ -290,7 +302,8 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
             writeCellParser(allocation.root, ctx);
 
             // Compile tuple
-            ctx.append(`return ${allocation.fields.map((v) => `v'${v.name}`).join(', ')};`);
+            ctx.used(`__tact_tuple_create_${allocation.fields.length}`);
+            ctx.append(`return __tact_tuple_create_${allocation.fields.length}(${allocation.fields.map((v) => `v'${v.name}`).join(', ')});`);
         });
         ctx.append("}");
     });

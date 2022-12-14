@@ -139,12 +139,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
         let tr = buildTypeRef(src.type, types);
 
-        if (tr.kind === 'ref' && tr.optional) {
-            let tt = types[tr.name];
-            if (tt.kind !== 'primitive') {
-                throwError('Optional type can be only primitive', src.ref);
-            }
-        }
+        // if (tr.kind === 'ref' && tr.optional) {
+        //     let tt = types[tr.name];
+        //     if (tt.kind !== 'primitive') {
+        //         throwError('Optional type can be only primitive', src.ref);
+        //     }
+        // }
 
         return { name: src.name, type: tr, index, as: src.as, default: src.init, ref: src.ref };
     }

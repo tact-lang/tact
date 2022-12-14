@@ -236,6 +236,7 @@ PROGRAM{
       257 PUSHINT
       LDIX
       DROP
+      1 TUPLE
     }>
   }>
   __gen_write_MapTestContract PROCINLINE:<{
