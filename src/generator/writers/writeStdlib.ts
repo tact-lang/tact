@@ -16,6 +16,10 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_dict_set_ref', () => {
         ctx.append(`((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";`)
     });
+    ctx.fun('__tact_dict_get', () => {
+        ctx.append(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`);
+    });
+
     ctx.fun('__tact_context', () => {
         ctx.append(`global (int, slice, int) __tact_context;`);
         ctx.append(`global cell __tact_context_sys;`);
@@ -168,7 +172,8 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_dict_get_slice_int', () => {
         ctx.append(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {`);
         ctx.inIndent(() => {
-            ctx.append(`var (r, ok) = dict_get?(d, kl, k);`);
+            ctx.used(`__tact_dict_get`);
+            ctx.append(`var (r, ok) = __tact_dict_get(d, kl, k);`);
             ctx.append(`if (ok) {`);
             ctx.inIndent(() => {
                 ctx.append(`return r~load_int(vl);`);
@@ -207,7 +212,8 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun(`__tact_dict_get_slice_cell`, () => {
         ctx.append(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {`);
         ctx.inIndent(() => {
-            ctx.append(`var (r, ok) = dict_get?(d, kl, k);`);
+            ctx.used(`__tact_dict_get`);
+            ctx.append(`var (r, ok) = __tact_dict_get(d, kl, k);`);
             ctx.append(`if (ok) {`);
             ctx.inIndent(() => {
                 ctx.append(`return r~load_int(vl);`);

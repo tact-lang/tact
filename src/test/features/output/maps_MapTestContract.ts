@@ -221,6 +221,72 @@ export function unpackStackSetIntMap3(slice: TupleSlice4): SetIntMap3 {
     const value = slice.readCellOpt();
     return { $$type: 'SetIntMap3', key: key, value: value };
 }
+export type SetAddrMap1 = {
+    $$type: 'SetAddrMap1';
+    key: Address;
+    value: BN | null;
+}
+
+export function packSetAddrMap1(src: SetAddrMap1): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(3295239033, 32);
+    b_0 = b_0.storeAddress(src.key);
+    if (src.value !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeInt(src.value, 257);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export function packStackSetAddrMap1(src: SetAddrMap1, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'int', value: src.value });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function unpackStackSetAddrMap1(slice: TupleSlice4): SetAddrMap1 {
+    const key = slice.readAddress();
+    const value = slice.readBigNumberOpt();
+    return { $$type: 'SetAddrMap1', key: key, value: value };
+}
+export type SetAddrMap2 = {
+    $$type: 'SetAddrMap2';
+    key: Address;
+    value: boolean | null;
+}
+
+export function packSetAddrMap2(src: SetAddrMap2): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(1566575299, 32);
+    b_0 = b_0.storeAddress(src.key);
+    if (src.value !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeBit(src.value);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export function packStackSetAddrMap2(src: SetAddrMap2, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'int', value: src.value ? new BN(-1) : new BN(0) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function unpackStackSetAddrMap2(slice: TupleSlice4): SetAddrMap2 {
+    const key = slice.readAddress();
+    const value = slice.readBooleanOpt();
+    return { $$type: 'SetAddrMap2', key: key, value: value };
+}
 export type SomeStruct = {
     $$type: 'SomeStruct';
     value: BN;
@@ -241,7 +307,7 @@ export function unpackStackSomeStruct(slice: TupleSlice4): SomeStruct {
     return { $$type: 'SomeStruct', value: value };
 }
 export async function MapTestContract_init() {
-    const __code = 'te6ccgECRwEABW8AART/APSkE/S88sgLAQIBYgIDAgLLHB0CASAEBQIBIAYHAgEgGBkCASAICQIBIBARAgEgCgsCASAMDQBLsaH7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwY8A6AAT7IpO1E0NQB+GL0BPQE1DDQ9AT0BPQE1DDQ9AT0BPQEVXBsGFUH8BOAAS7Gxe1E0NQB+GL0BPQE1DDQ9AT0BPQE1DDQ9AT0BPQEVXBsGPASgAgEgDg8AS69ydqJoagD8MXoCegJqGGh6AnoCegJqGGh6AnoCegIquDYMeAhAAEuu4naiaGoA/DF6AnoCahhoegJ6AnoCahhoegJ6AnoCKrg2DHgMwAIBIBITAEu1rD2omhqAPwxegJ6AmoYaHoCegJ6AmoYaHoCegJ6Aiq4Ngx4C0ABLs0j7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwY8BiACASAUFQBLrxF2omhqAPwxegJ6AmoYaHoCegJ6AmoYaHoCegJ6Aiq4Ngx4CkACA6KCFhcAR2u1E0NQB+GL0BPQE1DDQ9AT0BPQE1DDQ9AT0BPQEVXBsGPAXgBL12omhqAPwxegJ6AmoYaHoCegJ6AmoYaHoCegJ6Aiq4Ngwqg/gIwCAnIaGwBPuQ5e1E0NQB+GL0BPQE1DDQ9AT0BPQE1DDQ9AT0BPQEVXBsGFUH8BWABOq+TtRNDUAfhi9AT0BNQw0PQE9AT0BNQw0PQE9AT0BFVwbBhVB/APAAio2fANAgEgHh8CASAvMAIBICAhAgFYKywCASAiIwAR0s+ga30O4YNsAgEgJCUCASApKgOXHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCED7yTgi64wIgghCn+x+yuuMCghDQ/C8kuuMCMPLAZICYnKAAjCFulVtZ9Fow4MgBzwBBM/RCgAPww7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYCNMfAYIQPvJOCLry4GSBAQHXAG0B0gABljGBAQHXAN5ZMhCJEHgQZxBWEEUQNEMA8BrI+EIBzFVwUHj0ABX0AAPI9AAS9AD0AALI9AAT9AAT9ADJWMzJAczJ7VQA9jDtRNDUAfhi9AT0BNQw0PQE9AT0BNQw0PQE9AT0BFVwbBgI0x8BghCn+x+yuvLgZIEBAdcAbQHSAAGTMdIA3lkyEIkQeBBnEFYQRRA0QwDwG8j4QgHMVXBQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzMntVADy7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYCNMfAYIQ0PwvJLry4GSBAQHXAG0B0gABkjHU3lkyEIkQeBBnEFYQRRA0QwDwHMj4QgHMVXBQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzMntVAAdEEz9AxvoZQB1wAw4FttgABsIG6VMFn0WjDgQTP0FYABbVtbW1tbW1tbQjIzAhQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzMmAIBIC0uAAUXweAAERscYEBAWbwAoAIBIDEyAgEgP0ACASAzNAIBIDk6AgEgNTYCASA3OAAJBBnXweAAFQ4XwaBAQFYcfACgAAkEFdfB4AAVDdfBTKBAQEB8ASACASA7PAIBID0+AAkEEdfB4AAxDZfBDOBAQEy8AQgbpIwbZfQgQEB1wAw4oAAJBA3XweAACQQJ18HgAgEgQUIAE9CBPAgICs+AGCwCASBDRAIBIEVGAAcF18HgAAUbHGAAFyBAQEgEEtDMPABB4AAVBAogQEBWXHwAQaA=';
+    const __code = 'te6ccgECWgEAB2IAART/APSkE/S88sgLAQIBYgIDAgLKICECASAEBQIBIAYHAgEgGhsCASAICQIBIBITAgEgCgsCASAODwIBIAwNAE+yKTtRNDUAfhi9AT0BNQw0PQE9AT0BNQw0PQE9AT0BFVwbBhVB/AYgAEuvQ/aiaGoA/DF6AnoCahhoegJ6AnoCahhoegJ6AnoCKrg2DHgJwABPrap2omhqAPwxegJ6AmoYaHoCegJ6AmoYaHoCegJ6Aiq4Ngwqg/gPQABLsbF7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwY8BeACASAQEQBLr3J2omhqAPwxegJ6AmoYaHoCegJ6AmoYaHoCegJ6Aiq4Ngx4CsAAS67idqJoagD8MXoCegJqGGh6AnoCegJqGGh6AnoCegIquDYMeBBAAgEgFBUAS7WsPaiaGoA/DF6AnoCahhoegJ6AnoCahhoegJ6AnoCKrg2DHgNwAEuzSPtRNDUAfhi9AT0BNQw0PQE9AT0BNQw0PQE9AT0BFVwbBjwH4AIBIBYXAEuvEXaiaGoA/DF6AnoCahhoegJ6AnoCahhoegJ6AnoCKrg2DHgMwAIDooIYGQBHa7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwY8B2AEvXaiaGoA/DF6AnoCahhoegJ6AnoCahhoegJ6AnoCKrg2DCqD+AtAICchwdAgFIHh8ATqvk7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYVQfwFAAIqNnwEgBPsW07UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYVQfwHIABPsDl7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYVQfwGoAIBICIjAgFiUFECAUgkJQIBIDY3AgEgJicCASAwMQShRwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghA+8k4IuuMCIIIQp/sfsrrjAiCCEND8LyS64wIgghDEaVt5uoKCkqKwIBIC4vAPww7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYCNMfAYIQPvJOCLry4GSBAQHXAG0B0gABljGBAQHXAN5ZMhCJEHgQZxBWEEUQNEMA8CHI+EIBzFVwUHj0ABX0AAPI9AAS9AD0AALI9AAT9AAT9ADJWMzJAczJ7VQA9jDtRNDUAfhi9AT0BNQw0PQE9AT0BNQw0PQE9AT0BFVwbBgI0x8BghCn+x+yuvLgZIEBAdcAbQHSAAGTMdIA3lkyEIkQeBBnEFYQRRA0QwDwIsj4QgHMVXBQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzMntVAD0MO1E0NQB+GL0BPQE1DDQ9AT0BPQE1DDQ9AT0BPQEVXBsGAjTHwGCEND8LyS68uBkgQEB1wBtAdIAAZIx1N5ZMhCJEHgQZxBWEEUQNEMA8CPI+EIBzFVwUHj0ABX0AAPI9AAS9AD0AALI9AAT9AAT9ADJWMzJAczJ7VQCHuMCghBdYArDuuMCMPLAZCwtAPww7UTQ1AH4YvQE9ATUMND0BPQE9ATUMND0BPQE9ARVcGwYCNMfAYIQxGlbebry4GT6QAFtAtIAAZhsEoEBAdcAEt4CMhCJEHgQZxBWEEUQNEMA8CTI+EIBzFVwUHj0ABX0AAPI9AAS9AD0AALI9AAT9AAT9ADJWMzJAczJ7VQA9O1E0NQB+GL0BPQE1DDQ9AT0BPQE1DDQ9AT0BPQEVXBsGAjTHwGCEF1gCsO68uBk+kABbQLSAAGVbBLSABLeAjIQiRB4EGcQVhBFEDRDAPAlyPhCAcxVcFB49AAV9AADyPQAEvQA9AACyPQAE/QAE/QAyVjMyQHMye1UACMIW6VW1n0WjDgyAHPAEEz9EKAAHRBM/QMb6GUAdcAMOBbbYAIBIDIzAgEgNDUAGwgbpUwWfRaMOBBM/QVgABEWfQNb6HcMG2AAIwhbpVbWfRZMODIAc8AQTP0QYAAdEEz9ApvoZQB1wAw4FttgAgEgODkCASBCQwIBWDo7AgEgPD0AWxtbW1tbW1tbQjIzAhQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzMmAABRfB4AIBID4/AgEgQEEAERscYEBAWbwA4AAJBBnXweAAFQ4XwaBAQFYcfADgAAkEFdfB4AIBIERFAgEgSksCASBGRwIBIEhJABUN18FMoEBAQHwBYAAJBBHXweAAMQ2XwQzgQEBMvAFIG6SMG2X0IEBAdcAMOKAACQQN18HgAgEgTE0CASBOTwAfDVfA2wiMoEBCwGBAQHwB4AAJBAnXweAAFw0W2xCgQELWHHwB4AAHBdfB4AIBIFJTAgFIWFkCASBUVQIBIFZXAAUbHGAAFyBAQEgEEtDMPACB4AAVBAogQEBWXHwAgaAAEwQJ4EBAVnwBAWAAGQQJYEBC1mBAQHwBgOAAFQQJIEBC1lx8AYCg';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -257,7 +323,7 @@ export class MapTestContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: SetIntMap1 | SetIntMap2 | SetIntMap3) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: SetIntMap1 | SetIntMap2 | SetIntMap3 | SetAddrMap1 | SetAddrMap2) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap1') {
             body = packSetIntMap1(message);
@@ -267,6 +333,12 @@ export class MapTestContract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap3') {
             body = packSetIntMap3(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap1') {
+            body = packSetAddrMap1(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap2') {
+            body = packSetAddrMap2(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         let r = await this.executor.internal(new InternalMessage({
@@ -330,10 +402,22 @@ export class MapTestContract {
         let result = await this.executor.get('addrMap1', __stack);
         return result.stack.readCellOpt();
     }
+    async getAddrMap1Value(key: Address) {
+        let __stack: StackItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+        let result = await this.executor.get('addrMap1Value', __stack);
+        return result.stack.readBigNumberOpt();
+    }
     async getAddrMap2() {
         let __stack: StackItem[] = [];
         let result = await this.executor.get('addrMap2', __stack);
         return result.stack.readCellOpt();
+    }
+    async getAddrMap2Value(key: Address) {
+        let __stack: StackItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+        let result = await this.executor.get('addrMap2Value', __stack);
+        return result.stack.readBooleanOpt();
     }
     async getAddrMap3() {
         let __stack: StackItem[] = [];

@@ -2,13 +2,25 @@ message SetIntMap1 {
     key: Int;
     value: Int?;
 }
+
 message SetIntMap2 {
     key: Int;
     value: Bool?;
 }
+
 message SetIntMap3 {
     key: Int;
     value: Cell?;
+}
+
+message SetAddrMap1 {
+    key: Address;
+    value: Int?;
+}
+
+message SetAddrMap2 {
+    key: Address;
+    value: Bool?;
 }
 
 struct SomeStruct {
@@ -17,21 +29,18 @@ struct SomeStruct {
 
 contract MapTestContract {
 
-    // Int Keys
+    init() {
+        // Nothing to do
+    }
+
+    //
+    // Int Maps
+    //
+
     intMap1: map[Int]Int;
     intMap2: map[Int]Bool;
     intMap3: map[Int]Cell;
     intMap4: map[Int]SomeStruct;
-
-    // Address Keys
-    addrMap1: map[Address]Int;
-    addrMap2: map[Address]Bool;
-    addrMap3: map[Address]Cell;
-    addrMap4: map[Address]SomeStruct;
-
-    init() {
-        // Nothing to do
-    }
 
     receive(msg: SetIntMap1) {
         self.intMap1.set(msg.key, msg.value);
@@ -77,12 +86,37 @@ contract MapTestContract {
         return self.intMap4.get2(key);
     }
 
+    //
+    // Address Keys
+    //
+
+    addrMap1: map[Address]Int;
+    addrMap2: map[Address]Bool;
+    addrMap3: map[Address]Cell;
+    addrMap4: map[Address]SomeStruct;
+
+    receive(msg: SetAddrMap1) {
+        self.addrMap1.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetAddrMap2) {
+        self.addrMap2.set(msg.key, msg.value);
+    }
+
     get fun addrMap1(): map[Address]Int {
         return self.addrMap1;
+    }
+    
+    get fun addrMap1Value(key: Address): Int? {
+        return self.addrMap1.get2(key);
     }
 
     get fun addrMap2(): map[Address]Bool {
         return self.addrMap2;
+    }
+
+    get fun addrMap2Value(key: Address): Bool? {
+        return self.addrMap2.get2(key);
     }
 
     get fun addrMap3(): map[Address]Cell {

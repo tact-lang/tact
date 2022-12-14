@@ -1,5 +1,14 @@
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, raw);
+}
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
@@ -37,6 +46,24 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
 (slice, ((int, int))) __gen_read_SetIntMap1(slice sc) inline {
     throw_unless(100, sc~load_uint(32) == 1056067080);
     var v'key = sc~load_int(257);
@@ -63,6 +90,26 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     var v'value = null();
     if (sc~load_int(1)) {
         v'value = sc~load_ref();
+    }
+    return (sc, (v'key, v'value));
+}
+
+(slice, ((slice, int))) __gen_read_SetAddrMap1(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 3295239033);
+    var v'key = sc~__tact_load_address();
+    var v'value = null();
+    if (sc~load_int(1)) {
+        v'value = sc~load_int(257);
+    }
+    return (sc, (v'key, v'value));
+}
+
+(slice, ((slice, int))) __gen_read_SetAddrMap2(slice sc) inline {
+    throw_unless(100, sc~load_uint(32) == 1566575299);
+    var v'key = sc~__tact_load_address();
+    var v'value = null();
+    if (sc~load_int(1)) {
+        v'value = sc~load_int(1);
     }
     return (sc, (v'key, v'value));
 }
@@ -227,6 +274,17 @@ _ __gen_get_addrMap1() method_id(93537) {
     return res;
 }
 
+int __gen_MapTestContract_addrMap1Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
+    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
+    return __tact_dict_get_slice_int(self'addrMap1, 267, key, 257);
+}
+
+_ __gen_get_addrMap1Value(slice key) method_id(116148) {
+    var self = __gen_load_MapTestContract();
+    var res = __gen_MapTestContract_addrMap1Value(self, key);
+    return res;
+}
+
 cell __gen_MapTestContract_addrMap2((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
     var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
     return self'addrMap2;
@@ -235,6 +293,17 @@ cell __gen_MapTestContract_addrMap2((cell, cell, cell, cell, cell, cell, cell, c
 _ __gen_get_addrMap2() method_id(89346) {
     var self = __gen_load_MapTestContract();
     var res = __gen_MapTestContract_addrMap2(self);
+    return res;
+}
+
+int __gen_MapTestContract_addrMap2Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
+    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
+    return __tact_dict_get_slice_int(self'addrMap2, 267, key, 1);
+}
+
+_ __gen_get_addrMap2Value(slice key) method_id(68436) {
+    var self = __gen_load_MapTestContract();
+    var res = __gen_MapTestContract_addrMap2Value(self, key);
     return res;
 }
 
@@ -281,6 +350,20 @@ _ __gen_get_addrMap4() method_id(81348) {
     return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
 }
 
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap1((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, int) msg) impure {
+    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
+    var (msg'key, msg'value) = msg;
+    self'addrMap1~__tact_dict_set_slice_int(267, msg'key, msg'value, 257);
+    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+}
+
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap2((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, int) msg) impure {
+    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
+    var (msg'key, msg'value) = msg;
+    self'addrMap2~__tact_dict_set_slice_int(267, msg'key, msg'value, 1);
+    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -323,6 +406,24 @@ _ __gen_get_addrMap4() method_id(81348) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetIntMap3();
         self~__gen_MapTestContract_receive_SetIntMap3(msg);
+        __gen_store_MapTestContract(self);
+        return ();
+    }
+    
+    ;; Receive SetAddrMap1 message
+    if (op == 3295239033) {
+        var self = __gen_load_MapTestContract();
+        var msg = in_msg~__gen_read_SetAddrMap1();
+        self~__gen_MapTestContract_receive_SetAddrMap1(msg);
+        __gen_store_MapTestContract(self);
+        return ();
+    }
+    
+    ;; Receive SetAddrMap2 message
+    if (op == 1566575299) {
+        var self = __gen_load_MapTestContract();
+        var msg = in_msg~__gen_read_SetAddrMap2();
+        self~__gen_MapTestContract_receive_SetAddrMap2(msg);
         __gen_store_MapTestContract(self);
         return ();
     }
