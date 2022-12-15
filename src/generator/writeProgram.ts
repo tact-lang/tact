@@ -12,6 +12,8 @@ import { beginCell } from "ton";
 import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
+import { CID } from 'multiformats/cid';
+import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
@@ -309,7 +311,7 @@ export async function writeProgram(ctx: CompilerContext, abi: ContractABI, debug
 
     // Prepare ABI
     let abiStr = JSON.stringify(abi);
-    let abiLink = 'ipfs://123123123123/';
+    let abiLink = await calculateIPFSlink(Buffer.from(abiStr));
 
     // Write contract
     writeMainContract(c, abiLink, wctx);

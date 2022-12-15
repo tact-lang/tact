@@ -15,4 +15,5 @@ export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`);`);
     });
     ctx.append(`}`);
+    ctx.append();
 }

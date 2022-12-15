@@ -271,6 +271,7 @@ _ supported_interfaces() method_id {
         "org.ton.abi.ipfs.v0"H >> 128
     );
 }
+
 _ get_abi_ipfs() {
-    return "ipfs://123123123123/";
+    return "ipfs://bagaaiera62fz25fk3yarp7jzlqnvg2emoe2zwo7jkmz3ydooolfyot7td6nq";
 }
