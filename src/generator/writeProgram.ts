@@ -11,18 +11,9 @@ import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell } from "ton";
 import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
+import { writeInterfaces } from "./writers/writeInterfaces";
 
-function writeMainEmpty(ctx: WriterContext) {
-    ctx.fun('$main', () => {
-        ctx.append(`() recv_internal(cell in_msg_cell, slice in_msg) impure {`);
-        ctx.inIndent(() => {
-            ctx.append(`throw(${contractErrors.invalidMessage.id});`);
-        });
-        ctx.append(`}`);
-    });
-}
-
-function writeMainContract(type: TypeDescription, ctx: WriterContext) {
+function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
     // Main field
     ctx.fun('$main', () => {
@@ -207,16 +198,17 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
             }
         });
         ctx.append('}');
+        ctx.append();
 
         // Init method
         if (type.init) {
-            ctx.append();
             ctx.append(`cell init_${type.name}(${[`cell sys'`, ...type.init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name)].join(', ')}) method_id {`);
             ctx.inIndent(() => {
                 ctx.used(`__gen_${type.name}_init`);
                 ctx.append(`return __gen_${type.name}_init(${[`sys'`, ...type.init!.args.map((a) => a.name)].join(', ')});`);
             });
             ctx.append(`}`);
+            ctx.append();
         }
 
         // Implicit dependencies
@@ -225,10 +217,20 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
                 ctx.used(`__gen_get_${f.name}`);
             }
         }
+
+        // Interfaces
+        writeInterfaces(type, ctx);
+
+        // ABI
+        ctx.append(`_ get_abi_ipfs() {`);
+        ctx.inIndent(() => {
+            ctx.append(`return "${abiLink}";`);
+        });
+        ctx.append(`}`);
     });
 }
 
-export function writeProgram(ctx: CompilerContext, abi: ContractABI, name: string | null, debug: boolean = false) {
+export async function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: boolean = false) {
     const wctx = new WriterContext(ctx);
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');
@@ -286,7 +288,7 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, name: strin
             writeFunction(f, wctx);
 
             // Render only needed getter
-            if (!name || c.name === name) {
+            if (c.name === abi.name) {
                 if (f.isGetter) {
                     writeGetter(f, wctx);
                 }
@@ -300,30 +302,19 @@ export function writeProgram(ctx: CompilerContext, abi: ContractABI, name: strin
     }
 
     // Find contract
-    if (name) {
-        let c = contracts.find((v) => v.name === name);
-        if (!c) {
-            throw Error(`Contract ${name} not found`);
-        }
-        writeMainContract(c, wctx);
-    } else {
-
-        // Contract
-        if (contracts.length > 1) {
-            throw Error('Too many contracts');
-        }
-
-        // Empty contract
-        if (contracts.length === 0) {
-            writeMainEmpty(wctx);
-        }
-
-        // Entry Point
-        if (contracts.length === 1) {
-            writeMainContract(contracts[0], wctx);
-        }
+    let c = contracts.find((v) => v.name === abi.name);
+    if (!c) {
+        throw Error(`Contract ${abi.name} not found`);
     }
 
+    // Prepare ABI
+    let abiStr = JSON.stringify(abi);
+    let abiLink = 'ipfs://123123123123/';
+
+    // Write contract
+    writeMainContract(c, abiLink, wctx);
+
     // Render output
-    return wctx.render(debug);
+    let output = wctx.render(debug);
+    return { output, abit: abiStr };
 }

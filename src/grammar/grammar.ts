@@ -67,43 +67,43 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
             ref: createRef(this)
         })
     },
-    Contract_simple(arg0, arg1, arg2, arg3, arg4) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    Contract_simple(arg0, arg1, arg2, arg3, arg4, arg5) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_contract',
-            name: arg1.sourceString,
-            declarations: arg3.children.map((v) => v.resolve_declaration()),
+            name: arg2.sourceString,
+            declarations: arg4.children.map((v) => v.resolve_declaration()),
             traits: [],
             ref: createRef(this)
         })
     },
-    Contract_withTraits(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    Contract_withTraits(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_contract',
-            name: arg1.sourceString,
-            declarations: arg5.children.map((v) => v.resolve_declaration()),
-            traits: arg3.asIteration().children.map((v: any) => v.resolve_expression()),
+            name: arg2.sourceString,
+            declarations: arg6.children.map((v) => v.resolve_declaration()),
+            traits: arg4.asIteration().children.map((v: any) => v.resolve_expression()),
             ref: createRef(this)
         })
     },
-    Trait_originary(arg0, arg1, arg2, arg3, arg4) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    Trait_originary(arg0, arg1, arg2, arg3, arg4, arg5) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_trait',
-            name: arg1.sourceString,
-            declarations: arg3.children.map((v) => v.resolve_declaration()),
+            name: arg2.sourceString,
+            declarations: arg4.children.map((v) => v.resolve_declaration()),
             traits: [],
             ref: createRef(this)
         })
     },
-    Trait_withTraits(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
-        checkVariableName(arg1.sourceString, createRef(arg1));
+    Trait_withTraits(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_trait',
-            name: arg1.sourceString,
-            declarations: arg5.children.map((v) => v.resolve_declaration()),
-            traits: arg3.asIteration().children.map((v: any) => v.resolve_expression()),
+            name: arg2.sourceString,
+            declarations: arg6.children.map((v) => v.resolve_declaration()),
+            traits: arg4.asIteration().children.map((v: any) => v.resolve_expression()),
             ref: createRef(this)
         })
     },

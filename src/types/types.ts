@@ -11,6 +11,7 @@ export type TypeDescription = {
     init: InitDescription | null;
     ast: ASTType;
     dependsOn: TypeDescription[];
+    interfaces: string[];
 }
 
 export type TypeRef = {

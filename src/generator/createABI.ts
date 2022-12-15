@@ -184,6 +184,7 @@ export function createABI(ctx: CompilerContext, name: string | null): ContractAB
     }
 
     return {
+        version: '0.0.1',
         name: contract.name,
         structs,
         init,

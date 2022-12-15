@@ -38,8 +38,8 @@ import { CompilerContext } from './context';
                     let prefix = (p.path + r).slice(0, (p.path + r).length - 5) + '.' + contract;
 
                     // Tact -> FunC
-                    let res = compile(ctx, contract);
-                    fs.writeFileSync(prefix + ".fc", res.output);
+                    let res = await compile(ctx, contract);
+                    fs.writeFileSync(prefix + ".fc", res.output.output);
 
                     // FunC -> Fift/Cell
                     let c = await compileContract({ files: [prefix + ".fc"] });
@@ -57,6 +57,7 @@ import { CompilerContext } from './context';
                     // Tact -> ABI
                     let abi = createABI(ctx, contract);
                     fs.writeFileSync(prefix + ".abi", JSON.stringify(abi, null, 2));
+                    fs.writeFileSync(prefix + ".abi.ipfs", res.output.abit);
 
                     // Store code
                     built[contract] = { code: c.output!.toString('base64'), abi };

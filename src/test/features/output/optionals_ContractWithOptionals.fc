@@ -516,3 +516,13 @@ _ __gen_get_notNullF() method_id(115160) {
 cell init_ContractWithOptionals(cell sys', int a, int b, cell c, slice d, tuple e, tuple f) method_id {
     return __gen_ContractWithOptionals_init(sys', a, b, c, d, e, f);
 }
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+_ get_abi_ipfs() {
+    return "ipfs://123123123123/";
+}

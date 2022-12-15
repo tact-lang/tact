@@ -1,5 +1,7 @@
 PROGRAM{
   DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
   recv_internal PROC:<{
@@ -29,5 +31,12 @@ PROGRAM{
     IFJMP:<{
     }>
     130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f3132333132333132333132332f} PUSHSLICE
   }>
 }END>c

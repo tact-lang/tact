@@ -332,3 +332,13 @@ _ __gen_get_owner() method_id(83229) {
 cell init_RugPull(cell sys', slice owner, int investment, int returns, int fee) method_id {
     return __gen_RugPull_init(sys', owner, investment, returns, fee);
 }
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+_ get_abi_ipfs() {
+    return "ipfs://123123123123/";
+}

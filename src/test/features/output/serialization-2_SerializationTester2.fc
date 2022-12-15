@@ -156,3 +156,13 @@ _ __gen_get_getB() method_id(119935) {
 cell init_SerializationTester2(cell sys', (int, int, int, int, int) a, (int, int, int, int, int) b) method_id {
     return __gen_SerializationTester2_init(sys', a, b);
 }
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+_ get_abi_ipfs() {
+    return "ipfs://123123123123/";
+}

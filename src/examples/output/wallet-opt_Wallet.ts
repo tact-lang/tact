@@ -219,7 +219,7 @@ export function unpackTupleTransferMessage(slice: TupleSlice4): TransferMessage 
     return { $$type: 'TransferMessage', signature: signature, transfer: transfer };
 }
 export async function Wallet_init(key: BN, walletId: BN) {
-    const __code = 'te6ccgECCwEAARMAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghBt5Y3NuuMCMPLAggQCASAFBgC07UTQ1AH4YtMf0//TP1UgbBMD0x8BghBt5Y3NuvLggYMI1xhmMhA0QwAg+QFUECT5EPLgg9If0gfUMFEluvLggwSkqTgPBPsAyPhCAcxVIFAjyx/L/8s/ye1UAgEgBwgAK74CV2omhqAPwxaY/p/+mfqpA2CbYQwAI7uhNwA8jMVSBQI8sfy//LP8mAIBSAkKACmzJftRNDUAfhi0x/T/9M/VSBsE1uAAK7B+O1E0NQB+GLTH9P/0z9VIGwTMDGA=';
+    const __code = 'te6ccgECDQEAAUEAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghBt5Y3NuuMCMPLAggQCASAFBgC07UTQ1AH4YtMf0//TP1UgbBMD0x8BghBt5Y3NuvLggYMI1xhmMhA0QwAg+QFUECT5EPLgg9If0gfUMFEluvLggwSkqTgPBPsAyPhCAcxVIFAjyx/L/8s/ye1UAgEgBwgCASALDAAju6E3ADyMxVIFAjyx/L/8s/yYAgFICQoAKbMl+1E0NQB+GLTH9P/0z9VIGwTW4AArsH47UTQ1AH4YtMf0//TP1UgbBMwMYABNu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYACu4BK7UTQ1AH4YtMf0//TP1UgbBNsIY';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

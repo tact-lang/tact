@@ -591,3 +591,13 @@ _ __gen_get_addrMap4Value(slice key) method_id(100021) {
 cell init_MapTestContract(cell sys') method_id {
     return __gen_MapTestContract_init(sys');
 }
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+_ get_abi_ipfs() {
+    return "ipfs://123123123123/";
+}

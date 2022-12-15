@@ -86,9 +86,9 @@ export function getContracts(ctx: CompilerContext) {
     return Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract').map((v) => v.name);
 }
 
-export function compile(ctx: CompilerContext, name: string | null) {
+export async function compile(ctx: CompilerContext, name: string | null) {
     let abi = createABI(ctx, name);
-    let output = writeProgram(ctx, abi, name);
+    let output = await writeProgram(ctx, abi);
     let cOutput = output;
     return { output: cOutput, ctx };
 }
@@ -170,12 +170,15 @@ export async function compileProjects(configPath: string, projectNames: string[]
             let pathFif = path.resolve(outputPath, project.name + '_' + contract + ".fif");
             let pathFifDec = path.resolve(outputPath, project.name + '_' + contract + ".rev.fif");
             let pathAbi = path.resolve(outputPath, project.name + '_' + contract + ".abi");
+            let pathAbiIpfs = path.resolve(outputPath, project.name + '_' + contract + ".abi.ipfs");
 
             // Compiling contract to func
             console.log('   > ' + contract + ': tact compiler');
+            let abiStr: string;
             try {
-                let res = compile(ctx, contract);
-                fs.writeFileSync(pathFc, res.output);
+                let res = await compile(ctx, contract);
+                fs.writeFileSync(pathFc, res.output.output);
+                abiStr = res.output.abit;
             } catch (e) {
                 console.warn('Tact compilation failed');
                 console.warn(e);
@@ -220,6 +223,7 @@ export async function compileProjects(configPath: string, projectNames: string[]
                 console.log('   > ' + contract + ': abi generator');
                 abi = createABI(ctx, contract);
                 fs.writeFileSync(pathAbi, JSON.stringify(abi, null, 2));
+                fs.writeFileSync(pathAbiIpfs, abiStr);
             } catch (e) {
                 console.warn('ABI generation crashed');
                 console.warn(e);

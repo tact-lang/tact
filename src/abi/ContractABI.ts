@@ -64,6 +64,7 @@ export type ContractReceiver = {
 }
 
 export type ContractABI = {
+    version: '0.0.1';
     name: string;
     structs: ContractStruct[];
     init: ContractInit | null;

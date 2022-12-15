@@ -369,3 +369,13 @@ _ __gen_get_owner() method_id(83229) {
 cell init_SampleJetton(cell sys', slice owner, cell content) method_id {
     return __gen_SampleJetton_init(sys', owner, content);
 }
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+_ get_abi_ipfs() {
+    return "ipfs://123123123123/";
+}

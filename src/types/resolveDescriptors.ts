@@ -88,7 +88,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 receivers: [],
                 dependsOn: [],
                 init: null,
-                ast: a
+                ast: a,
+                interfaces: []
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -101,7 +102,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 receivers: [],
                 dependsOn: [],
                 init: null,
-                ast: a
+                ast: a,
+                interfaces: []
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -114,7 +116,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 receivers: [],
                 dependsOn: [],
                 init: null,
-                ast: a
+                ast: a,
+                interfaces: []
             };
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
@@ -127,7 +130,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 receivers: [],
                 dependsOn: [],
                 init: null,
-                ast: a
+                ast: a,
+                interfaces: []
             };
         }
     }

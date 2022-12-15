@@ -35,20 +35,23 @@ Tact {
     StructBody = Field
 
     // Contract
-    Contract = contract id "{" ContractBody* "}" --simple
-             | contract id with ListOf<id,","> "{" ContractBody* "}" --withTraits
+    Contract = ContractAttribute* contract id "{" ContractBody* "}" --simple
+             | ContractAttribute* contract id with ListOf<id,","> "{" ContractBody* "}" --withTraits
     ContractInit = init "(" ListOf<FunctionArg,","> ")" "{" Statement* "}"
     ContractBody = Field
                  | ContractInit
                  | ReceiveFunction
                  | Function
     
-    // Traint
-    Trait = trait id "{" TraitBody* "}" --originary
-          | trait id with ListOf<id,","> "{" TraitBody* "}" --withTraits
+    // Trait
+    Trait = ContractAttribute* trait id "{" TraitBody* "}" --originary
+          | ContractAttribute* trait id with ListOf<id,","> "{" TraitBody* "}" --withTraits
     TraitBody = Field
               | ReceiveFunction
               | Function
+
+    // Contract attributes
+    ContractAttribute = "@interface" "(" stringLiteral ")" --interface
 
     // Function
     FunctionAttribute = public --public
