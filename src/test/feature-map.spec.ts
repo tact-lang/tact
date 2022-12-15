@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import { beginCell } from 'ton';
 import { createExecutorFromCode } from 'ton-nodejs';
+import { randomAddress } from '../examples/utils/randomAddress';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MapTestContract, MapTestContract_init, SomeStruct } from './features/output/maps_MapTestContract';
 
@@ -50,12 +51,17 @@ describe('feature-map', () => {
             // Set keys
             let valueInt = k.muln(10);
             let valueBool = k.isNeg();
+            let addr = randomAddress(0, 'addr-' + k.toString(10));
             let valueCell = beginCell().storeUint(123123, 128).endCell();
             let valueStruct: SomeStruct = { $$type: 'SomeStruct', value: new BN(10012312) };
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap1', key: k, value: valueInt });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap2', key: k, value: valueBool });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap3', key: k, value: valueCell });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap4', key: k, value: valueStruct });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap1', key: addr, value: valueInt });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap2', key: addr, value: valueBool });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap3', key: addr, value: valueCell });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap4', key: addr, value: valueStruct });
 
             // Check value set
             expect((await contract.getIntMap1Value(k))!.eq(valueInt)).toBe(true);
@@ -63,17 +69,31 @@ describe('feature-map', () => {
             expect((await contract.getIntMap3Value(k))!.equals(valueCell)).toBe(true);
             expect(strEq((await contract.getIntMap4Value(k))!, valueStruct)).toBe(true);
 
+            expect((await contract.getAddrMap1Value(addr))!.eq(valueInt)).toBe(true);
+            expect((await contract.getAddrMap2Value(addr))!).toBe(valueBool);
+            expect((await contract.getAddrMap3Value(addr))!.equals(valueCell)).toBe(true);
+            expect(strEq((await contract.getAddrMap4Value(addr))!, valueStruct)).toBe(true);
+
             // Clear keys
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap1', key: k, value: null });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap2', key: k, value: null });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap3', key: k, value: null });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap4', key: k, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap1', key: addr, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap2', key: addr, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap3', key: addr, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetAddrMap4', key: addr, value: null });
+
 
             // Check value cleared
             expect((await contract.getIntMap1Value(k))).toBeNull();
             expect((await contract.getIntMap2Value(k))).toBeNull();
             expect((await contract.getIntMap3Value(k))).toBeNull();
             expect((await contract.getIntMap4Value(k))).toBeNull();
+            expect((await contract.getAddrMap1Value(addr))).toBeNull();
+            expect((await contract.getAddrMap2Value(addr))).toBeNull();
+            expect((await contract.getAddrMap3Value(addr))).toBeNull();
+            expect((await contract.getAddrMap4Value(addr))).toBeNull();
         }
     });
 });

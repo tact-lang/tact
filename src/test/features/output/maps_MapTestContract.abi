@@ -634,6 +634,123 @@
       }
     },
     {
+      "name": "SetAddrMap3",
+      "header": 0,
+      "fields": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 711408213,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 1,
+                "refs": 1
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 1,
+                "size": {
+                  "bits": 0,
+                  "refs": 1
+                },
+                "kind": "cell"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 268,
+            "refs": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "SetAddrMap4",
+      "header": 0,
+      "fields": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "SomeStruct",
+            "optional": true
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 3020140534,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 258,
+                "refs": 0
+              },
+              "kind": "optional",
+              "inner": {
+                "index": 1,
+                "size": {
+                  "bits": 257,
+                  "refs": 0
+                },
+                "kind": "struct",
+                "type": "SomeStruct"
+              }
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 525,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
       "name": "SomeStruct",
       "header": 0,
       "fields": [
@@ -697,6 +814,14 @@
     {
       "kind": "internal-binary",
       "type": "SetAddrMap2"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "SetAddrMap3"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "SetAddrMap4"
     }
   ],
   "getters": [
@@ -872,12 +997,48 @@
       }
     },
     {
+      "name": "addrMap3Value",
+      "args": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Cell",
+        "optional": true
+      }
+    },
+    {
       "name": "addrMap4",
       "args": [],
       "returns": {
         "kind": "map",
         "key": "Address",
         "value": "SomeStruct"
+      }
+    },
+    {
+      "name": "addrMap4Value",
+      "args": [
+        {
+          "name": "key",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "SomeStruct",
+        "optional": true
       }
     }
   ],

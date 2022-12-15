@@ -20,6 +20,9 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_dict_get', () => {
         ctx.append(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`);
     });
+    ctx.fun('__tact_dict_get_ref', () => {
+        ctx.append(`(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";`);
+    });
     ctx.fun('__tact_debug', () => {
         ctx.append(`() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }`);
     });
@@ -210,20 +213,20 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.append(`} else {`);
             ctx.inIndent(() => {
                 ctx.used('__tact_dict_set_ref');
-                ctx.append(`return (__tact_dict_set_ref(d, kl, k, v), ());`);
+                ctx.append(`return __tact_dict_set_ref(d, kl, k, v);`);
             });
             ctx.append(`}`);
         });
         ctx.append('}')
     });
     ctx.fun(`__tact_dict_get_slice_cell`, () => {
-        ctx.append(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {`);
+        ctx.append(`cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {`);
         ctx.inIndent(() => {
-            ctx.used(`__tact_dict_get`);
-            ctx.append(`var (r, ok) = __tact_dict_get(d, kl, k);`);
+            ctx.used(`__tact_dict_get_ref`);
+            ctx.append(`var (r, ok) = __tact_dict_get_ref(d, kl, k);`);
             ctx.append(`if (ok) {`);
             ctx.inIndent(() => {
-                ctx.append(`return r~load_int(vl);`);
+                ctx.append(`return r;`);
             });
             ctx.append(`} else {`);
             ctx.inIndent(() => {

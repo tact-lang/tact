@@ -28,6 +28,16 @@ message SetAddrMap2 {
     value: Bool?;
 }
 
+message SetAddrMap3 {
+    key: Address;
+    value: Cell?;
+}
+
+message SetAddrMap4 {
+    key: Address;
+    value: SomeStruct?;
+}
+
 struct SomeStruct {
     value: Int;
 }
@@ -112,6 +122,14 @@ contract MapTestContract {
         self.addrMap2.set(msg.key, msg.value);
     }
 
+    receive(msg: SetAddrMap3) {
+        self.addrMap3.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetAddrMap4) {
+        self.addrMap4.set(msg.key, msg.value);
+    }
+
     get fun addrMap1(): map[Address]Int {
         return self.addrMap1;
     }
@@ -132,7 +150,15 @@ contract MapTestContract {
         return self.addrMap3;
     }
 
+    get fun addrMap3Value(key: Address): Cell? {
+        return self.addrMap3.get2(key);
+    }
+
     get fun addrMap4(): map[Address]SomeStruct {
         return self.addrMap4;
+    }
+
+    get fun addrMap4Value(key: Address): SomeStruct? {
+        return self.addrMap4.get2(key);
     }
 }

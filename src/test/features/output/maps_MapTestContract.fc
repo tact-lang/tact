@@ -1,6 +1,10 @@
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
+((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
@@ -59,6 +63,24 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return __tact_dict_set_ref(d, kl, k, v);
+    }
+}
+
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+    var (r, ok) = __tact_dict_get_ref(d, kl, k);
+    if (ok) {
+        return r;
     } else {
         return null();
     }
@@ -164,6 +186,26 @@ tuple __gen_SomeStruct_as_optional(((int)) v) {
     var v'value = null();
     if (sc_0~load_int(1)) {
         v'value = sc_0~load_int(1);
+    }
+    return (sc_0, (v'key, v'value));
+}
+
+(slice, ((slice, cell))) __gen_read_SetAddrMap3(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 711408213);
+    var v'key = sc_0~__tact_load_address();
+    var v'value = null();
+    if (sc_0~load_int(1)) {
+        v'value = sc_0~load_ref();
+    }
+    return (sc_0, (v'key, v'value));
+}
+
+(slice, ((slice, tuple))) __gen_read_SetAddrMap4(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3020140534);
+    var v'key = sc_0~__tact_load_address();
+    var v'value = null();
+    if (sc_0~load_int(1)) {
+        v'value = __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct());
     }
     return (sc_0, (v'key, v'value));
 }
@@ -363,6 +405,17 @@ _ __gen_get_addrMap3() method_id(85283) {
     return res;
 }
 
+cell __gen_MapTestContract_addrMap3Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
+    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
+    return __tact_dict_get_slice_cell(self'addrMap3, 267, key);
+}
+
+_ __gen_get_addrMap3Value(slice key) method_id(85748) {
+    var self = __gen_load_MapTestContract();
+    var res = __gen_MapTestContract_addrMap3Value(self, key);
+    return res;
+}
+
 cell __gen_MapTestContract_addrMap4((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
     var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
     return self'addrMap4;
@@ -371,6 +424,17 @@ cell __gen_MapTestContract_addrMap4((cell, cell, cell, cell, cell, cell, cell, c
 _ __gen_get_addrMap4() method_id(81348) {
     var self = __gen_load_MapTestContract();
     var res = __gen_MapTestContract_addrMap4(self);
+    return res;
+}
+
+tuple __gen_MapTestContract_addrMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
+    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
+    return __gen_readopt_SomeStruct(__tact_dict_get_slice_cell(self'addrMap4, 267, key));
+}
+
+_ __gen_get_addrMap4Value(slice key) method_id(100021) {
+    var self = __gen_load_MapTestContract();
+    var res = __gen_MapTestContract_addrMap4Value(self, key);
     return res;
 }
 
@@ -413,6 +477,20 @@ _ __gen_get_addrMap4() method_id(81348) {
     var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
     var (msg'key, msg'value) = msg;
     self'addrMap2~__tact_dict_set_slice_int(267, msg'key, msg'value, 1);
+    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+}
+
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap3((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, cell) msg) impure {
+    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
+    var (msg'key, msg'value) = msg;
+    self'addrMap3~__tact_dict_set_slice_cell(267, msg'key, msg'value);
+    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+}
+
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap4((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, tuple) msg) impure {
+    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
+    var (msg'key, msg'value) = msg;
+    self'addrMap4~__tact_dict_set_slice_cell(267, msg'key, __gen_writecellopt_SomeStruct(msg'value));
     return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
 }
 
@@ -485,6 +563,24 @@ _ __gen_get_addrMap4() method_id(81348) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetAddrMap2();
         self~__gen_MapTestContract_receive_SetAddrMap2(msg);
+        __gen_store_MapTestContract(self);
+        return ();
+    }
+    
+    ;; Receive SetAddrMap3 message
+    if (op == 711408213) {
+        var self = __gen_load_MapTestContract();
+        var msg = in_msg~__gen_read_SetAddrMap3();
+        self~__gen_MapTestContract_receive_SetAddrMap3(msg);
+        __gen_store_MapTestContract(self);
+        return ();
+    }
+    
+    ;; Receive SetAddrMap4 message
+    if (op == 3020140534) {
+        var self = __gen_load_MapTestContract();
+        var msg = in_msg~__gen_read_SetAddrMap4();
+        self~__gen_MapTestContract_receive_SetAddrMap4(msg);
         __gen_store_MapTestContract(self);
         return ();
     }

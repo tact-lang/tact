@@ -6,6 +6,8 @@ PROGRAM{
   DECLPROC __tact_dict_get_int_cell
   DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_dict_get_slice_int
+  DECLPROC __tact_dict_set_slice_cell
+  DECLPROC __tact_dict_get_slice_cell
   DECLPROC __gen_read_SetIntMap1
   DECLPROC __gen_read_SetIntMap2
   DECLPROC __gen_read_SetIntMap3
@@ -19,6 +21,8 @@ PROGRAM{
   DECLPROC __gen_read_SetIntMap4
   DECLPROC __gen_read_SetAddrMap1
   DECLPROC __gen_read_SetAddrMap2
+  DECLPROC __gen_read_SetAddrMap3
+  DECLPROC __gen_read_SetAddrMap4
   DECLPROC __gen_write_MapTestContract
   DECLPROC __gen_read_MapTestContract
   DECLPROC __gen_load_MapTestContract
@@ -50,14 +54,20 @@ PROGRAM{
   68436 DECLMETHOD __gen_get_addrMap2Value
   DECLPROC __gen_MapTestContract_addrMap3
   85283 DECLMETHOD __gen_get_addrMap3
+  DECLPROC __gen_MapTestContract_addrMap3Value
+  85748 DECLMETHOD __gen_get_addrMap3Value
   DECLPROC __gen_MapTestContract_addrMap4
   81348 DECLMETHOD __gen_get_addrMap4
+  DECLPROC __gen_MapTestContract_addrMap4Value
+  100021 DECLMETHOD __gen_get_addrMap4Value
   DECLPROC __gen_MapTestContract_receive_SetIntMap1
   DECLPROC __gen_MapTestContract_receive_SetIntMap2
   DECLPROC __gen_MapTestContract_receive_SetIntMap3
   DECLPROC __gen_MapTestContract_receive_SetIntMap4
   DECLPROC __gen_MapTestContract_receive_SetAddrMap1
   DECLPROC __gen_MapTestContract_receive_SetAddrMap2
+  DECLPROC __gen_MapTestContract_receive_SetAddrMap3
+  DECLPROC __gen_MapTestContract_receive_SetAddrMap4
   DECLPROC recv_internal
   103641 DECLMETHOD init_MapTestContract
   DECLGLOBVAR __tact_context
@@ -139,6 +149,27 @@ PROGRAM{
       DROP
     }>
     2DROP
+    PUSHNULL
+  }>
+  __tact_dict_set_slice_cell PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      -ROT
+      DICTDEL
+      DROP
+    }>
+    s1 s3 s3 XCHG3
+    DICTSETREF
+  }>
+  __tact_dict_get_slice_cell PROC:<{
+    -ROT
+    DICTGETREF
+    NULLSWAPIFNOT
+    IFJMP:<{
+    }>
+    DROP
     PUSHNULL
   }>
   __gen_read_SetIntMap1 PROCINLINE:<{
@@ -300,6 +331,43 @@ PROGRAM{
       1 2 BLKDROP2
       1 LDI
       s1 s2 XCHG
+    }>
+    s0 s2 XCHG
+  }>
+  __gen_read_SetAddrMap3 PROCINLINE:<{
+    32 LDU
+    SWAP
+    711408213 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    PUSHNULL
+    s0 s2 XCHG
+    1 LDI
+    SWAP
+    IF:<{
+      1 2 BLKDROP2
+      LDREF
+      s1 s2 XCHG
+    }>
+    s0 s2 XCHG
+  }>
+  __gen_read_SetAddrMap4 PROCINLINE:<{
+    32 LDU
+    SWAP
+    3020140534 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    PUSHNULL
+    s0 s2 XCHG
+    1 LDI
+    SWAP
+    IF:<{
+      1 2 BLKDROP2
+      __gen_read_SomeStruct INLINECALLDICT
+      __gen_SomeStruct_as_optional CALLDICT
+      -ROT
     }>
     s0 s2 XCHG
   }>
@@ -517,12 +585,37 @@ PROGRAM{
     __gen_load_MapTestContract INLINECALLDICT
     __gen_MapTestContract_addrMap3 CALLDICT
   }>
+  __gen_MapTestContract_addrMap3Value PROC:<{
+    NIP
+    6 2 BLKDROP2
+    267 PUSHINT
+    SWAP
+    __tact_dict_get_slice_cell CALLDICT
+  }>
+  __gen_get_addrMap3Value PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    8 ROLL
+    __gen_MapTestContract_addrMap3Value CALLDICT
+  }>
   __gen_MapTestContract_addrMap4 PROC:<{
     7 1 BLKDROP2
   }>
   __gen_get_addrMap4 PROC:<{
     __gen_load_MapTestContract INLINECALLDICT
     __gen_MapTestContract_addrMap4 CALLDICT
+  }>
+  __gen_MapTestContract_addrMap4Value PROC:<{
+    s8 s6 XCHG2
+    6 BLKDROP
+    267 PUSHINT
+    s2 POP
+    __tact_dict_get_slice_cell CALLDICT
+    __gen_readopt_SomeStruct INLINECALLDICT
+  }>
+  __gen_get_addrMap4Value PROC:<{
+    __gen_load_MapTestContract INLINECALLDICT
+    8 ROLL
+    __gen_MapTestContract_addrMap4Value CALLDICT
   }>
   __gen_MapTestContract_receive_SetIntMap1 PROC:<{
     257 PUSHINT
@@ -571,6 +664,20 @@ PROGRAM{
     1 PUSHINT
     __tact_dict_set_slice_int CALLDICT
     s0 s2 XCHG
+  }>
+  __gen_MapTestContract_receive_SetAddrMap3 PROC:<{
+    s2 s3 XCHG
+    267 PUSHINT
+    -ROT
+    __tact_dict_set_slice_cell CALLDICT
+    SWAP
+  }>
+  __gen_MapTestContract_receive_SetAddrMap4 PROC:<{
+    267 PUSHINT
+    SWAP
+    __gen_writecellopt_SomeStruct INLINECALLDICT
+    s1 s2 XCHG
+    __tact_dict_set_slice_cell CALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -699,9 +806,11 @@ PROGRAM{
       __gen_MapTestContract_receive_SetAddrMap1 CALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
+    DUP
     1566575299 PUSHINT
     EQUAL
     IFJMP:<{
+      DROP
       __gen_load_MapTestContract INLINECALLDICT
       s0 s8 XCHG
       __gen_read_SetAddrMap2 INLINECALLDICT
@@ -714,6 +823,42 @@ PROGRAM{
       s3 s4 XCHG
       s3 s0 s0 XCHG3
       __gen_MapTestContract_receive_SetAddrMap2 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    DUP
+    711408213 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetAddrMap3 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MapTestContract_receive_SetAddrMap3 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    3020140534 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetAddrMap4 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MapTestContract_receive_SetAddrMap4 CALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
     DROP

@@ -478,6 +478,106 @@ export function unpackTupleSetAddrMap2(slice: TupleSlice4): SetAddrMap2 {
     const value = slice.readBooleanOpt();
     return { $$type: 'SetAddrMap2', key: key, value: value };
 }
+export type SetAddrMap3 = {
+    $$type: 'SetAddrMap3';
+    key: Address;
+    value: Cell | null;
+}
+
+export function packSetAddrMap3(src: SetAddrMap3): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(711408213, 32);
+    b_0 = b_0.storeAddress(src.key);
+    if (src.value !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeRef(src.value);
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export function packStackSetAddrMap3(src: SetAddrMap3, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'cell', cell: src.value });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function packTupleSetAddrMap3(src: SetAddrMap3): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'cell', cell: src.value });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
+export function unpackStackSetAddrMap3(slice: TupleSlice4): SetAddrMap3 {
+    const key = slice.readAddress();
+    const value = slice.readCellOpt();
+    return { $$type: 'SetAddrMap3', key: key, value: value };
+}
+export function unpackTupleSetAddrMap3(slice: TupleSlice4): SetAddrMap3 {
+    const key = slice.readAddress();
+    const value = slice.readCellOpt();
+    return { $$type: 'SetAddrMap3', key: key, value: value };
+}
+export type SetAddrMap4 = {
+    $$type: 'SetAddrMap4';
+    key: Address;
+    value: SomeStruct | null;
+}
+
+export function packSetAddrMap4(src: SetAddrMap4): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(3020140534, 32);
+    b_0 = b_0.storeAddress(src.key);
+    if (src.value !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeCellCopy(packSomeStruct(src.value));
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export function packStackSetAddrMap4(src: SetAddrMap4, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'tuple', items: packTupleSomeStruct(src.value) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function packTupleSetAddrMap4(src: SetAddrMap4): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
+    if (src.value !== null) {
+        __stack.push({ type: 'tuple', items: packTupleSomeStruct(src.value) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
+export function unpackStackSetAddrMap4(slice: TupleSlice4): SetAddrMap4 {
+    const key = slice.readAddress();
+    const value_p = slice.pop();
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    return { $$type: 'SetAddrMap4', key: key, value: value };
+}
+export function unpackTupleSetAddrMap4(slice: TupleSlice4): SetAddrMap4 {
+    const key = slice.readAddress();
+    const value_p = slice.pop();
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    return { $$type: 'SetAddrMap4', key: key, value: value };
+}
 export type SomeStruct = {
     $$type: 'SomeStruct';
     value: BN;
@@ -508,7 +608,7 @@ export function unpackTupleSomeStruct(slice: TupleSlice4): SomeStruct {
     return { $$type: 'SomeStruct', value: value };
 }
 export async function MapTestContract_init() {
-    const __code = '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';
+    const __code = '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';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -545,7 +645,7 @@ export class MapTestContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: SetIntMap1 | SetIntMap2 | SetIntMap3 | SetIntMap4 | SetAddrMap1 | SetAddrMap2) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: SetIntMap1 | SetIntMap2 | SetIntMap3 | SetIntMap4 | SetAddrMap1 | SetAddrMap2 | SetAddrMap3 | SetAddrMap4) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap1') {
             body = packSetIntMap1(message);
@@ -564,6 +664,12 @@ export class MapTestContract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap2') {
             body = packSetAddrMap2(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap3') {
+            body = packSetAddrMap3(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap4') {
+            body = packSetAddrMap4(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         try {
@@ -803,12 +909,48 @@ export class MapTestContract {
             throw e;
         }
     }
+    async getAddrMap3Value(key: Address) {
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+            let result = await this.executor.get('addrMap3Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
     async getAddrMap4() {
         try {
             let __stack: StackItem[] = [];
             let result = await this.executor.get('addrMap4', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getAddrMap4Value(key: Address) {
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+            let result = await this.executor.get('addrMap4Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            let pp = result.stack.pop();
+            if (pp.type !== 'tuple') { return null; }
+            return unpackTupleSomeStruct(new TupleSlice4(pp.items));
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
