@@ -219,7 +219,7 @@ export function unpackTupleTransferMessage(slice: TupleSlice4): TransferMessage 
     return { $$type: 'TransferMessage', signature: signature, transfer: transfer };
 }
 export async function Wallet_init(key: BN, walletId: BN) {
-    const __code = 'te6ccgECCwEAAREAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghBt5Y3NuuMCMPLAggQCASAFBgCw7UTQ1AH4YtMf0//TP1UgbBMD0x8BghBt5Y3NuvLggYMI1xhmMhA0QwAg+QFUECT5EPKq0h/SB9QwUSW68qsEpKk4DwT7AMj4QgHMVSBQI8sfy//LP8ntVAIBIAcIACu+AldqJoagD8MWmP6f/pn6qQNgm2EMACO7oTcAPIzFUgUCPLH8v/yz/JgCAUgJCgApsyX7UTQ1AH4YtMf0//TP1UgbBNbgACuwfjtRNDUAfhi0x/T/9M/VSBsEzAxg';
+    const __code = 'te6ccgECCwEAARMAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghBt5Y3NuuMCMPLAggQCASAFBgC07UTQ1AH4YtMf0//TP1UgbBMD0x8BghBt5Y3NuvLggYMI1xhmMhA0QwAg+QFUECT5EPLgg9If0gfUMFEluvLggwSkqTgPBPsAyPhCAcxVIFAjyx/L/8s/ye1UAgEgBwgAK74CV2omhqAPwxaY/p/+mfqpA2CbYQwAI7uhNwA8jMVSBQI8sfy//LP8mAIBSAkKACmzJftRNDUAfhi0x/T/9M/VSBsE1uAAK7B+O1E0NQB+GLTH9P/0z9VIGwTMDGA=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -252,6 +252,9 @@ export const Wallet_errors: { [key: string]: string } = {
     '128': `Null reference exception`,
     '129': `Invalid serialization prefix`,
     '130': `Invalid incoming message`,
+    '131': `Constraints error`,
+    '132': `Access denied`,
+    '133': `Contract stopped`,
 }
 
 export class Wallet {

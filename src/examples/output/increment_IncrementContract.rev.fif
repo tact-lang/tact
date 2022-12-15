@@ -74,7 +74,7 @@ SETCP0
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      24 CALLDICT
+      25 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -132,7 +132,7 @@ SETCP0
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      25 CALLDICT
+      26 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -200,7 +200,7 @@ SETCP0
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      26 CALLDICT
+      27 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -256,7 +256,7 @@ SETCP0
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      27 CALLDICT
+      28 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -361,6 +361,9 @@ SETCP0
     1 UNTUPLE
 
   21: 
+    131 THROWIFNOT
+
+  22: 
     PUSHNULL
     PUSHNULL
     PUSHNULL
@@ -386,14 +389,14 @@ SETCP0
     STREF
     ENDC
 
-  22: 
-    4 BLKDROP
-
   23: 
-    s1 s4 XCHG
     4 BLKDROP
 
   24: 
+    s1 s4 XCHG
+    4 BLKDROP
+
+  25: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -411,7 +414,7 @@ SETCP0
     7 CALLDICT
     s0 s1 XCHG
 
-  25: 
+  26: 
     s4 PUSH
     257 PUSHINT
     s2 PUSH
@@ -441,20 +444,20 @@ SETCP0
     IFELSE
     s0 s3 XCHG
 
-  26: 
+  27: 
     s4 PUSH
     257 PUSHINT
     s3 PUSH
     6 CALLDICT
     ISNULL
-    100 THROWIFNOT
+    21 CALLDICT
     s2 s4 XCHG
     257 PUSHINT
     ROTREV
     5 CALLDICT
     s0 s2 XCHG
 
-  27: 
+  28: 
     257 PUSHINT
     PUSHNULL
     s1 s2 PUSH2
@@ -505,7 +508,7 @@ SETCP0
     s1 s3 s0 XCHG3
 
   66039: 
-    21 CALLDICT
+    22 CALLDICT
 
   77570: 
     c4 PUSH
@@ -525,7 +528,7 @@ SETCP0
     s3 s5 XCHG
     s3 s4 XCHG
     1 5 BLKDROP2
-    23 CALLDICT
+    24 CALLDICT
 
   95239: 
     c4 PUSH
@@ -545,7 +548,7 @@ SETCP0
     s3 s5 XCHG
     s3 s4 XCHG
     1 5 BLKDROP2
-    22 CALLDICT
+    23 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

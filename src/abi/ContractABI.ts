@@ -27,6 +27,7 @@ export type AllocationField = { index: number, size: { bits: number, refs: numbe
     | { kind: 'optional', inner: AllocationField }
     | { kind: 'remaining' }
     | { kind: 'bytes', bytes: number }
+    | { kind: 'map' }
 )
 
 export type ContractField = {

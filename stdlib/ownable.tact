@@ -6,7 +6,7 @@ trait Ownable {
     owner: Address;
 
     fun requireOwner() {
-        require(100, context().sender == self.owner);
+        nativeThrowUnless(132, context().sender == self.owner);
     }
 
     get fun owner(): Address {

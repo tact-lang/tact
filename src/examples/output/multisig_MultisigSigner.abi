@@ -281,6 +281,14 @@
       "header": 0,
       "fields": [
         {
+          "name": "requested",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
           "name": "to",
           "type": {
             "kind": "ref",
@@ -289,7 +297,31 @@
           }
         },
         {
-          "name": "amount",
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
+          }
+        },
+        {
+          "name": "mode",
           "type": {
             "kind": "ref",
             "name": "Int",
@@ -320,21 +352,55 @@
             {
               "index": 1,
               "size": {
-                "bits": 257,
+                "bits": 267,
                 "refs": 0
               },
-              "kind": "int",
-              "bits": 257
+              "kind": "address"
             },
             {
               "index": 2,
+              "size": {
+                "bits": 124,
+                "refs": 0
+              },
+              "kind": "coins"
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 32,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 32
+            },
+            {
+              "index": 4,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 5,
+              "size": {
+                "bits": 8,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 8
+            },
+            {
+              "index": 6,
               "size": {
                 "bits": 1,
                 "refs": 1
               },
               "kind": "optional",
               "inner": {
-                "index": 2,
+                "index": 6,
                 "size": {
                   "bits": 0,
                   "refs": 1
@@ -345,7 +411,42 @@
           ],
           "next": null,
           "size": {
-            "bits": 525,
+            "bits": 700,
+            "refs": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "Signed",
+      "header": 0,
+      "fields": [
+        {
+          "name": "request",
+          "type": {
+            "kind": "ref",
+            "name": "Request",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 420994549,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 732,
+                "refs": 1
+              },
+              "kind": "struct",
+              "type": "Request"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 732,
             "refs": 1
           }
         }
@@ -389,8 +490,26 @@
       }
     ]
   },
-  "receivers": [],
-  "getters": [],
+  "receivers": [
+    {
+      "kind": "internal-empty"
+    },
+    {
+      "kind": "internal-comment",
+      "comment": "YES"
+    }
+  ],
+  "getters": [
+    {
+      "name": "request",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Request",
+        "optional": false
+      }
+    }
+  ],
   "dependsOn": {},
   "errors": {
     "2": {
@@ -443,6 +562,15 @@
     },
     "130": {
       "message": "Invalid incoming message"
+    },
+    "131": {
+      "message": "Constraints error"
+    },
+    "132": {
+      "message": "Access denied"
+    },
+    "133": {
+      "message": "Contract stopped"
     }
   }
 }

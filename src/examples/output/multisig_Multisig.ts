@@ -184,16 +184,24 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
 }
 export type Request = {
     $$type: 'Request';
+    requested: Address;
     to: Address;
-    amount: BN;
+    value: BN;
+    timeout: BN;
+    bounce: boolean;
+    mode: BN;
     body: Cell | null;
 }
 
 export function packRequest(src: Request): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(4096439811, 32);
+    b_0 = b_0.storeAddress(src.requested);
     b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(src.amount, 257);
+    b_0 = b_0.storeCoins(src.value);
+    b_0 = b_0.storeUint(src.timeout, 32);
+    b_0 = b_0.storeBit(src.bounce);
+    b_0 = b_0.storeUint(src.mode, 8);
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
@@ -204,8 +212,12 @@ export function packRequest(src: Request): Cell {
 }
 
 export function packStackRequest(src: Request, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.requested).endCell() });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.timeout });
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'int', value: src.mode });
     if (src.body !== null) {
         __stack.push({ type: 'cell', cell: src.body });
     } else {
@@ -215,8 +227,12 @@ export function packStackRequest(src: Request, __stack: StackItem[]) {
 
 export function packTupleRequest(src: Request): StackItem[] {
     let __stack: StackItem[] = [];
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.requested).endCell() });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.timeout });
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'int', value: src.mode });
     if (src.body !== null) {
         __stack.push({ type: 'cell', cell: src.body });
     } else {
@@ -226,24 +242,64 @@ export function packTupleRequest(src: Request): StackItem[] {
 }
 
 export function unpackStackRequest(slice: TupleSlice4): Request {
+    const requested = slice.readAddress();
     const to = slice.readAddress();
-    const amount = slice.readBigNumber();
+    const value = slice.readBigNumber();
+    const timeout = slice.readBigNumber();
+    const bounce = slice.readBoolean();
+    const mode = slice.readBigNumber();
     const body = slice.readCellOpt();
-    return { $$type: 'Request', to: to, amount: amount, body: body };
+    return { $$type: 'Request', requested: requested, to: to, value: value, timeout: timeout, bounce: bounce, mode: mode, body: body };
 }
 export function unpackTupleRequest(slice: TupleSlice4): Request {
+    const requested = slice.readAddress();
     const to = slice.readAddress();
-    const amount = slice.readBigNumber();
+    const value = slice.readBigNumber();
+    const timeout = slice.readBigNumber();
+    const bounce = slice.readBoolean();
+    const mode = slice.readBigNumber();
     const body = slice.readCellOpt();
-    return { $$type: 'Request', to: to, amount: amount, body: body };
+    return { $$type: 'Request', requested: requested, to: to, value: value, timeout: timeout, bounce: bounce, mode: mode, body: body };
 }
-export async function Multisig_init(members: Cell, requiredWeight: BN) {
-    const __code = 'te6ccgEBCQEA6gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQAJoea/4BEBb9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQh6FVsB3XGBGHlgQUBgIB1AcIAMrtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQ9Cq2A7ry4IH6QAEBgQEB1wBtAdIAAZIx1N5VIDMQVhBFEDRY8AnI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVAA7G1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJgAAUXwOA=';
+export type Signed = {
+    $$type: 'Signed';
+    request: Request;
+}
+
+export function packSigned(src: Signed): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(420994549, 32);
+    b_0 = b_0.storeCellCopy(packRequest(src.request));
+    return b_0.endCell();
+}
+
+export function packStackSigned(src: Signed, __stack: StackItem[]) {
+    packStackRequest(src.request, __stack);
+}
+
+export function packTupleSigned(src: Signed): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'tuple', items: packTupleRequest(src.request) });
+    return __stack;
+}
+
+export function unpackStackSigned(slice: TupleSlice4): Signed {
+    const request = unpackStackRequest(slice);
+    return { $$type: 'Signed', request: request };
+}
+export function unpackTupleSigned(slice: TupleSlice4): Signed {
+    const request = unpackTupleRequest(slice);
+    return { $$type: 'Signed', request: request };
+}
+export async function Multisig_init(members: Cell, totalWeight: BN, requiredWeight: BN) {
+    const __code = 'te6ccgECJAEAA8AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAgIQIBSAYHAgEgDg8CAUgICQIBIAwNAoMcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgIIIQ9Cq2A7rjAoIQGRfd9brjAjDywIKAKCwALCBu8tCAgANww7UTQ1AH4YoEBAdcA9ASBAQHXAIEBAdcAVTBsFATTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB20B0gABkjHU3lVgNxCaEIkQeFUF8BnI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVAD07UTQ1AH4YoEBAdcA9ASBAQHXAIEBAdcAVTBsFATTHwGCEBkX3fW68uCB0x8BghD0KrYDuvLggfpAAQH6QAEB+gDTH9IA0wdtAdIAAZIx1N5VYDcQmhCJEHhVBfAayPhCAcxVMFA0gQEBzwD0AIEBAc8AgQEBzwDJ7VQAR1yHABywFzAcsBcAHLABLMzMn5AMhyAcsBcAHLABLKB8v/ydCAAdRBM/QKb6GUAdcAMOBbbYAgEgEBECAUgcHQIBIBITAgEgFhcAFVlH8BygDgcAHKAIAgEgFBUABzy4IOAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BHIcPARcPARJG6zlX/wERTMlTQDcPAR4iRus5V/8BEUzJU0A3DwEeJw8BECf/ARAslYzJYzMwFw8BHiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobALEcHAMyMwMBwVQk1AIBkQUUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMyYAA7ArQ9AQwggCTuQGAEPQPb6Hy4GRtyPQAyVWQC/AUgAD0MW1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJgABcNFuBAQtYgQEB8AaACASAeHwBZT4QW8jMDH4QvgoVCDDVFu6VHqYU6nwFXBZ8AVQB8cF8BIC+CO88BIEbW3wE4AAkECNfA4ABrPhBbyMwMYEBCysCgQEB8AbwAcIA8BL4QvgoVBh7UXoHVSPwFXBTIfAFf3BQQoBCUEJtAvATgAEW8pC9qJoagD8MUCAgOuAegJAgIDrgECAgOuAKpg2CiqB+AvAIBICIjAEG5lB7UTQ1AH4YoEBAdcA9ASBAQHXAIEBAdcAVTBsFPAYgACbs1/wFo';
     const depends = new Map<string, Cell>();
-    let systemCell = beginCell().storeDict(null).endCell();
+    depends.set('37817', Cell.fromBoc(Buffer.from('te6ccgECHwEABBMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIEhMCASAICQAV/KP4DlAHA4AOUAQCAUgKCwIBIBARAoE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgwAAi10nBIbDjAsAAkTDjDfLAgoAwNAAsIG7y0ICABrFvtRNDUAfhi+kABAfQEgQEB1wCBAQHXANIA1AHQ0x8BghD0KrYDuvLggfpAAQH6QAEB+gDTH9IA0wdtAdIAAZIx1N5VYDcQfBB7EHoQeRB4VQVsHPAUDgH6+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uo7V7UTQ1AH4YvpAAQH0BIEBAdcAgQEB1wDSANQB0NMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMHbQHSAAGSMdTeVWA3EHwQexB6EHkQeFUFbBzwFeAPAKTI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMye1UAKjI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMye1U2zEAI1IW6VW1n0WTDgyAHPAEEz9EGAAdRBM/QKb6GUAdcAMOBbbYAgEgFBUCAUgaGwIBIBYXAgEgGBkABzy4IOAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A/IcPAPcPAPJG6zlX/wDxTMlTQDcPAP4iRus5V/8A8UzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAsRwcAzIzAwHBVCTUAgGRBRQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6UcDLKAJV/AcoAzOLJAczJgAAUbFeAAASABYwj+CO88BAns/AQ+EFvIzAxK4EBCyKBAQHwBvABHIEBC1ANbYEBAfAFUKugUwi+4wAJgHACeN39wcIEAglR5h1R5h1YSyFVgghAZF931UAjLHweCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbpRwMsoAlX8BygDM4skvVSBtbfARBwAJvBbngJQAr70X92omhqAPwxfSAAgPoCQICA64BAgIDrgGkAagDoaY+AwQh6FVsB3XlwQP0gAID9IACA/QBpj+kAaYO2gOkAAMkY6m8qsBuIPgg9iD0IPIg8KoK2DngJw=', 'base64'))[0]);
+    let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
     __stack.push({ type: 'cell', cell: members});
+    __stack.push({ type: 'int', value: totalWeight });
     __stack.push({ type: 'int', value: requiredWeight });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
@@ -271,16 +327,22 @@ export const Multisig_errors: { [key: string]: string } = {
     '128': `Null reference exception`,
     '129': `Invalid serialization prefix`,
     '130': `Invalid incoming message`,
+    '131': `Constraints error`,
+    '132': `Access denied`,
+    '133': `Contract stopped`,
 }
 
 export class Multisig {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Request) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Request | Signed) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Request') {
             body = packRequest(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Signed') {
+            body = packSigned(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         try {
@@ -294,6 +356,39 @@ export class Multisig {
                 })
             }), { debug: args.debug });
             if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (Multisig_errors[e.exitCode.toString()]) {
+                    throw new Error(Multisig_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getMember(address: Address) {
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: beginCell().storeAddress(address).endCell() });
+            let result = await this.executor.get('member', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumberOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (Multisig_errors[e.exitCode.toString()]) {
+                    throw new Error(Multisig_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getMembers() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('members', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }

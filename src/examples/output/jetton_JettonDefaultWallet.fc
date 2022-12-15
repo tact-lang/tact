@@ -124,6 +124,10 @@ builder storeBool(builder s, int value) impure {
     }
 }
 
+() require(int condition) impure {
+    throw_unless(131, condition);
+}
+
 () send((int, slice, int, int, cell, cell, cell) params) impure {
     var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
     builder b = begin_cell();
@@ -195,10 +199,10 @@ cell __gen_JettonDefaultWallet_init(cell sys', slice master, slice owner) {
     var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     if (__tact_address_neq(ctx'sender, self'master)) {
         var (sinit'code, sinit'data) = __gen_JettonDefaultWallet_init_child(__tact_context_sys, self'master, msg'from);
-        throw_unless(100, __tact_address_eq(__tact_compute_contract_address(0, sinit'code, sinit'data), ctx'sender));
+        require(__tact_address_eq(__tact_compute_contract_address(0, sinit'code, sinit'data), ctx'sender));
     }
     self'balance = (self'balance + msg'amount);
-    throw_unless(100, (self'balance >= 0));
+    require((self'balance >= 0));
     return ((self'balance, self'owner, self'master), ());
 }
 
@@ -206,9 +210,9 @@ cell __gen_JettonDefaultWallet_init(cell sys', slice master, slice owner) {
     var (self'balance, self'owner, self'master) = self;
     var (msg'queryId, msg'amount, msg'destination, msg'responseDestination, msg'customPayload, msg'forwardTonAmount) = msg;
     var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
-    throw_unless(100, __tact_address_eq(ctx'sender, self'owner));
+    require(__tact_address_eq(ctx'sender, self'owner));
     self'balance = (self'balance - msg'amount);
-    throw_unless(100, (self'balance >= 0));
+    require((self'balance >= 0));
     var (winit'code, winit'data) = __gen_JettonDefaultWallet_init_child(__tact_context_sys, self'master, msg'destination);
     slice walletAddress = __tact_compute_contract_address(0, winit'code, winit'data);
     send((false, walletAddress, 0, 0, __gen_writecell_TokenTransferInternal((msg'queryId, msg'amount, self'owner, self'owner, 0)), winit'code, winit'data));

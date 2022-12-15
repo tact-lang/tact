@@ -184,16 +184,24 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
 }
 export type Request = {
     $$type: 'Request';
+    requested: Address;
     to: Address;
-    amount: BN;
+    value: BN;
+    timeout: BN;
+    bounce: boolean;
+    mode: BN;
     body: Cell | null;
 }
 
 export function packRequest(src: Request): Cell {
     let b_0 = new Builder();
     b_0 = b_0.storeUint(4096439811, 32);
+    b_0 = b_0.storeAddress(src.requested);
     b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(src.amount, 257);
+    b_0 = b_0.storeCoins(src.value);
+    b_0 = b_0.storeUint(src.timeout, 32);
+    b_0 = b_0.storeBit(src.bounce);
+    b_0 = b_0.storeUint(src.mode, 8);
     if (src.body !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.body);
@@ -204,8 +212,12 @@ export function packRequest(src: Request): Cell {
 }
 
 export function packStackRequest(src: Request, __stack: StackItem[]) {
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.requested).endCell() });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.timeout });
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'int', value: src.mode });
     if (src.body !== null) {
         __stack.push({ type: 'cell', cell: src.body });
     } else {
@@ -215,8 +227,12 @@ export function packStackRequest(src: Request, __stack: StackItem[]) {
 
 export function packTupleRequest(src: Request): StackItem[] {
     let __stack: StackItem[] = [];
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.requested).endCell() });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.timeout });
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'int', value: src.mode });
     if (src.body !== null) {
         __stack.push({ type: 'cell', cell: src.body });
     } else {
@@ -226,19 +242,57 @@ export function packTupleRequest(src: Request): StackItem[] {
 }
 
 export function unpackStackRequest(slice: TupleSlice4): Request {
+    const requested = slice.readAddress();
     const to = slice.readAddress();
-    const amount = slice.readBigNumber();
+    const value = slice.readBigNumber();
+    const timeout = slice.readBigNumber();
+    const bounce = slice.readBoolean();
+    const mode = slice.readBigNumber();
     const body = slice.readCellOpt();
-    return { $$type: 'Request', to: to, amount: amount, body: body };
+    return { $$type: 'Request', requested: requested, to: to, value: value, timeout: timeout, bounce: bounce, mode: mode, body: body };
 }
 export function unpackTupleRequest(slice: TupleSlice4): Request {
+    const requested = slice.readAddress();
     const to = slice.readAddress();
-    const amount = slice.readBigNumber();
+    const value = slice.readBigNumber();
+    const timeout = slice.readBigNumber();
+    const bounce = slice.readBoolean();
+    const mode = slice.readBigNumber();
     const body = slice.readCellOpt();
-    return { $$type: 'Request', to: to, amount: amount, body: body };
+    return { $$type: 'Request', requested: requested, to: to, value: value, timeout: timeout, bounce: bounce, mode: mode, body: body };
+}
+export type Signed = {
+    $$type: 'Signed';
+    request: Request;
+}
+
+export function packSigned(src: Signed): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(420994549, 32);
+    b_0 = b_0.storeCellCopy(packRequest(src.request));
+    return b_0.endCell();
+}
+
+export function packStackSigned(src: Signed, __stack: StackItem[]) {
+    packStackRequest(src.request, __stack);
+}
+
+export function packTupleSigned(src: Signed): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'tuple', items: packTupleRequest(src.request) });
+    return __stack;
+}
+
+export function unpackStackSigned(slice: TupleSlice4): Signed {
+    const request = unpackStackRequest(slice);
+    return { $$type: 'Signed', request: request };
+}
+export function unpackTupleSigned(slice: TupleSlice4): Signed {
+    const request = unpackTupleRequest(slice);
+    return { $$type: 'Signed', request: request };
 }
 export async function MultisigSigner_init(master: Address, members: Cell, requiredWeight: BN, request: Request) {
-    const __code = 'te6ccgEBBgEAfQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoAW54AcAR0INdJMcIfMNDTAwFxsMABkX+RcOIB+kAwVEETbwP4YdzywIKABtVwB8jMBwVVIFB2zxYUgQEBzwASgQEBzwD0AMhYzxYTgQEBzwAhbpRwMsoAlX8BygDM4skBzMmA==';
+    const __code = 'te6ccgECHwEABBMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIEhMCASAICQAV/KP4DlAHA4AOUAQCAUgKCwIBIBARAoE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgwAAi10nBIbDjAsAAkTDjDfLAgoAwNAAsIG7y0ICABrFvtRNDUAfhi+kABAfQEgQEB1wCBAQHXANIA1AHQ0x8BghD0KrYDuvLggfpAAQH6QAEB+gDTH9IA0wdtAdIAAZIx1N5VYDcQfBB7EHoQeRB4VQVsHPAUDgH6+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uo7V7UTQ1AH4YvpAAQH0BIEBAdcAgQEB1wDSANQB0NMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMHbQHSAAGSMdTeVWA3EHwQexB6EHkQeFUFbBzwFeAPAKTI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMye1UAKjI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMye1U2zEAI1IW6VW1n0WTDgyAHPAEEz9EGAAdRBM/QKb6GUAdcAMOBbbYAgEgFBUCAUgaGwIBIBYXAgEgGBkABzy4IOAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A/IcPAPcPAPJG6zlX/wDxTMlTQDcPAP4iRus5V/8A8UzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAsRwcAzIzAwHBVCTUAgGRBRQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6UcDLKAJV/AcoAzOLJAczJgAAUbFeAAASABYwj+CO88BAns/AQ+EFvIzAxK4EBCyKBAQHwBvABHIEBC1ANbYEBAfAFUKugUwi+4wAJgHACeN39wcIEAglR5h1R5h1YSyFVgghAZF931UAjLHweCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbpRwMsoAlX8BygDM4skvVSBtbfARBwAJvBbngJQAr70X92omhqAPwxfSAAgPoCQICA64BAgIDrgGkAagDoaY+AwQh6FVsB3XlwQP0gAID9IACA/QBpj+kAaYO2gOkAAMkY6m8qsBuIPgg9iD0IPIg8KoK2DngJw=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -273,10 +327,59 @@ export const MultisigSigner_errors: { [key: string]: string } = {
     '128': `Null reference exception`,
     '129': `Invalid serialization prefix`,
     '130': `Invalid incoming message`,
+    '131': `Constraints error`,
+    '132': `Access denied`,
+    '133': `Contract stopped`,
 }
 
 export class MultisigSigner {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: null | 'YES') {
+        let body: Cell | null = null;
+        if (message === null) {
+            body = new Cell();
+        }
+        if (message === 'YES') {
+            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (MultisigSigner_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigSigner_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getRequest() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('request', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return unpackStackRequest(result.stack);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (MultisigSigner_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigSigner_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
 }

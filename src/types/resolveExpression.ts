@@ -103,14 +103,24 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
         if (le.kind !== 'null' && re.kind !== 'null') {
             let l = le;
             let r = re;
-            if (l.kind !== 'ref' || r.kind !== 'ref') {
-                throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
-            }
-            if (r.name !== r.name) {
-                throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
-            }
-            if (r.name !== 'Int' && r.name !== 'Bool' && r.name !== 'Address') {
-                throwError(`Invalid type "${r.name}" for binary operator "${exp.op}"`, exp.ref);
+
+            if (l.kind === 'map' && r.kind === 'map') {
+                if (l.key !== r.key) {
+                    throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
+                }
+                if (l.value !== r.value) {
+                    throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
+                }
+            } else {
+                if (l.kind !== 'ref' || r.kind !== 'ref') {
+                    throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
+                }
+                if (r.name !== r.name) {
+                    throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
+                }
+                if (r.name !== 'Int' && r.name !== 'Bool' && r.name !== 'Address') {
+                    throwError(`Invalid type "${r.name}" for binary operator "${exp.op}"`, exp.ref);
+                }
             }
         }
 
@@ -288,7 +298,7 @@ export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, c
         let srcT = getType(ctx, t.name);
         let ex = srcT.fields.find((v) => v.name === paths[i].name);
         if (!ex) {
-            throw Error('Field ' + paths[i] + ' not found');
+            throwError('Field ' + paths[i].name + ' not found in type ' + srcT.name, path[i].ref);
         }
         ctx = registerExpType(ctx, paths[i], ex.type);
         t = ex.type;

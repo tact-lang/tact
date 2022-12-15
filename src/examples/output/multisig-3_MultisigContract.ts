@@ -302,7 +302,7 @@ export function unpackTupleExecuted(slice: TupleSlice4): Executed {
     return { $$type: 'Executed', seqno: seqno };
 }
 export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {
-    const __code = 'te6ccgECIQEAAlIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAgoAoACwgbvLQgIACw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BTI+EIBzFUwUDTLH8v/y//L/8ntVAIBIA0OAgEgDxAAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/AMyHDwDHDwDCRus5V/8AwUzJU0A3DwDOIkbrOVf/AMFMyVNANw8AzicPAMAn/wDALJWMyWMzMBcPAM4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgACMcATIzFUwUDTLH8v/y//L/8mAAEx/MwFwbW1t8A2ACASATFABf0qOqHkKpAoEeWPgP0BAOeLZPyAKQIVfIgpGZT8iCoJm/yIKazdeUUBWADYeUV4B8AgEgFRYCASAXGAAJBAjXwOAABwTXwOAABRsMYAAFF8DgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJwCASAbHAIBIB0eAAm4rH8A6AIBIB8gAC+0fL2omhqAPwxaY/p/+n/6f+qmDYKeAhAAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPARg';
+    const __code = 'te6ccgECIwEAAl0AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAbHAIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAgoAoACwgbvLQgIACw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BXI+EIBzFUwUDTLH8v/y//L/8ntVAIBIA0OAgEgDxAAFSUfwHKAOBwAcoAgAAc8uCDgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/AMyHDwDHDwDCRus5V/8AwUzJU0A3DwDOIkbrOVf/AMFMyVNANw8AzicPAMAn/wDALJWMyWMzMBcPAM4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgACMcATIzFUwUDTLH8v/y//L/8mACASATFAIBSBkaAgEgFRYCASAXGAATH8zAXBtbW3wDoAAJBAjXwOAABwTXwOAABRsMYAAFF8DgAF8VHVDyFUgUCPLHwH6AgHPFsn5AFIEKvkQUjMp+RBUEzf5EFNZuvANArABsPAN8BCAAL75kv2omhqAPwxaY/p/+n/6f+qmDYKeApAIBIB0eAgEgHyAACbisfwD4AgEgISIAL7R8vaiaGoA/DFpj+n/6f/p/6qYNgp4CMAAvsOn7UTQ1AH4YtMf0//T/9P/VTBsFPATgAC+w4btRNDUAfhi0x/T/9P/0/9VMGwU8BKA=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -336,6 +336,9 @@ export const MultisigContract_errors: { [key: string]: string } = {
     '128': `Null reference exception`,
     '129': `Invalid serialization prefix`,
     '130': `Invalid incoming message`,
+    '131': `Constraints error`,
+    '132': `Access denied`,
+    '133': `Contract stopped`,
 }
 
 export class MultisigContract {

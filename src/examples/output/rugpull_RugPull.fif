@@ -13,6 +13,7 @@ PROGRAM{
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
   DECLPROC storeBool
+  DECLPROC require
   DECLPROC send
   DECLPROC __gen_RugPull_init
   DECLPROC __gen_RugPull_sendPayout
@@ -176,6 +177,9 @@ PROGRAM{
     SWAP
     1 STI
   }>
+  require PROC:<{
+    131 THROWIFNOT
+  }>
   send PROC:<{
     NEWC
     1 PUSHINT
@@ -309,7 +313,7 @@ PROGRAM{
     __gen_Context_get_sender INLINECALLDICT
     s10 PUSH
     __tact_address_eq INLINECALLDICT
-    100 THROWIFNOT
+    132 THROWIFNOT
   }>
   __gen_RugPull_owner PROC:<{
     9 BLKDROP
@@ -321,7 +325,7 @@ PROGRAM{
   __gen_RugPull_requireNotStopped PROC:<{
     s3 PUSH
     NOT
-    200 THROWIFNOT
+    require CALLDICT
   }>
   __gen_RugPull_receive PROC:<{
     __gen_RugPull_requireNotStopped CALLDICT
@@ -342,7 +346,7 @@ PROGRAM{
     ADD
     s1 s2 XCHG
     GEQ
-    100 THROWIFNOT
+    require CALLDICT
     257 PUSHINT
     s3 s1 PUXC
     __tact_dict_set_int_slice CALLDICT

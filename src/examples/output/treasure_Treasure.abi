@@ -452,6 +452,15 @@
     },
     "130": {
       "message": "Invalid incoming message"
+    },
+    "131": {
+      "message": "Constraints error"
+    },
+    "132": {
+      "message": "Access denied"
+    },
+    "133": {
+      "message": "Contract stopped"
     }
   }
 }

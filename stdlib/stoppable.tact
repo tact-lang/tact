@@ -3,7 +3,7 @@ trait Stoppable with Ownable {
     owner: Address;
 
     fun requireNotStopped() {
-        require(200, !self.stopped);
+        require(!self.stopped);
     }
 
     receive("stop") {

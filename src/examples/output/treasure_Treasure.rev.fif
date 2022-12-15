@@ -270,7 +270,7 @@ SETCP0
     s1 POP
     s1 PUSH
     SDEQ
-    100 THROWIFNOT
+    132 THROWIFNOT
 
   17: 
     s0 s2 XCHG

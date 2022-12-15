@@ -47,7 +47,7 @@ contract RugPull with OwnableTransferable, Stoppable {
 
         // Check if value ok
         let ctx: Context = context();
-        require(100, ctx.value >= (self.investment + self.fee));
+        require(ctx.value >= (self.investment + self.fee));
 
         // Add to queue
         self.queue.set(self.queueEnd, ctx.sender);

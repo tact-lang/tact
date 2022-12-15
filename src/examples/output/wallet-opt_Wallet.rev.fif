@@ -65,14 +65,14 @@ SETCP0
       HASHSU
       0 2 4 XC2PU
       CHKSIGNU
-      42 THROWIFNOT
+      131 THROWIFNOT
       32 LDI
       8 LDI
       LDREF
       s0 POP
       s2 s5 XCPU
       EQUAL
-      43 THROWIFNOT
+      131 THROWIFNOT
       s0 s4 XCHG
       INC
       RSHIFT 16 REM

@@ -639,6 +639,9 @@ export const MapTestContract_errors: { [key: string]: string } = {
     '128': `Null reference exception`,
     '129': `Invalid serialization prefix`,
     '130': `Invalid incoming message`,
+    '131': `Constraints error`,
+    '132': `Access denied`,
+    '133': `Contract stopped`,
 }
 
 export class MapTestContract {

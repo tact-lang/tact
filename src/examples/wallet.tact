@@ -26,8 +26,8 @@ contract Wallet {
 
         // Check Signature
         let op_hash: Int = hashCell(abi.pack_cell(msg.transfer));
-        require(42, checkSignature(op_hash, msg.signature, self.key));
-        require(43, msg.transfer.seqno == self.seqno);
+        require(checkSignature(op_hash, msg.signature, self.key));
+        require(msg.transfer.seqno == self.seqno);
 
         // Increment seqno
         self.seqno = self.seqno + 1;

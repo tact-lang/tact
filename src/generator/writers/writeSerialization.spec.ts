@@ -1,11 +1,12 @@
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { CompilerContext } from "../../context";
 import { getAllocation, resolveAllocations } from "../../storage/resolveAllocation";
-import { resolveDescriptors } from "../../types/resolveDescriptors";
+import { getAllTypes, resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
 import { openContext } from "../../grammar/store";
+import { writeAccessors } from "./writeAccessors";
 
 const code = `
 primitive Int;
@@ -59,6 +60,11 @@ describe('writeSerialization', () => {
             let wctx = new WriterContext(ctx);
             writeStdlib(wctx);
             writeSerializer(s, getAllocation(ctx, s), wctx);
+            for (let t of Object.values(getAllTypes(ctx))) {
+                if (t.kind === 'contract' || t.kind === 'struct') {
+                    writeAccessors(t, wctx);
+                }
+            }
             writeParser(s, getAllocation(ctx, s), wctx);
             expect(wctx.render(true)).toMatchSnapshot();
         });

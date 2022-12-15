@@ -112,8 +112,9 @@ native nativeThrow(code: Int);
 @name(throw_when)
 native nativeThrowWhen(code: Int, condition: Bool);
 
-@name(throw_unless)
-native require(code: Int, condition: Bool);
+fun require(condition: Bool) {
+    nativeThrowUnless(131, condition);
+}
 
 @name(throw)
 native throw(code: Int);

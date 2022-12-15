@@ -210,7 +210,7 @@ PROGRAM{
     __gen_Context_get_sender INLINECALLDICT
     OVER
     __tact_address_eq INLINECALLDICT
-    100 THROWIFNOT
+    132 THROWIFNOT
   }>
   __gen_Treasure_doWithdraw PROC:<{
     s0 s2 XCHG

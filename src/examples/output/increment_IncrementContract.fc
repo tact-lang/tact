@@ -145,6 +145,10 @@ _ __gen_Context_get_sender((int, slice, int) v) inline {
     set_data(b.end_cell());
 }
 
+() require(int condition) impure {
+    throw_unless(131, condition);
+}
+
 cell __gen_IncrementContract_init(cell sys') {
     var ((self'counters, self'counters2, self'counters3, self'counters4, self'counters5)) = (null(), null(), null(), null(), null());
     var b' = begin_cell();
@@ -199,7 +203,7 @@ _ __gen_get_counters2() method_id(77570) {
 (((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) self, (int, cell) msg) impure {
     var (self'counters, self'counters2, self'counters3, self'counters4, self'counters5) = self;
     var (msg'key, msg'content) = msg;
-    throw_unless(100, null?(__tact_dict_get_int_cell(self'counters3, 257, msg'key)));
+    require(null?(__tact_dict_get_int_cell(self'counters3, 257, msg'key)));
     self'counters3~__tact_dict_set_int_cell(257, msg'key, msg'content);
     return ((self'counters, self'counters2, self'counters3, self'counters4, self'counters5), ());
 }

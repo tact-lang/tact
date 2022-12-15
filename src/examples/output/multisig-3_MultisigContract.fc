@@ -81,6 +81,10 @@ builder storeBool(builder s, int value) impure {
     }
 }
 
+() require(int condition) impure {
+    throw_unless(131, condition);
+}
+
 () send((int, slice, int, int, cell, cell, cell) params) impure {
     var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
     builder b = begin_cell();
@@ -193,8 +197,8 @@ _ __gen_get_seqno() method_id(85143) {
     int ok1 = check_signature(op_hash, msg'signature1, self'user1_key);
     int ok2 = check_signature(op_hash, msg'signature2, self'user2_key);
     int ok3 = check_signature(op_hash, msg'signature3, self'user3_key);
-    throw_unless(10, (msg'operation'seqno == self'seqno));
-    throw_unless(10, ((ok1 & ok2) & ok3));
+    require((msg'operation'seqno == self'seqno));
+    require(((ok1 & ok2) & ok3));
     (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_execute(__gen_Operation_unpack((msg'operation'seqno, msg'operation'amount, msg'operation'target)));
     return ((self'seqno, self'user1_key, self'user2_key, self'user3_key), ());
 }

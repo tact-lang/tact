@@ -294,6 +294,25 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     //
+    // Cell Eq
+    // 
+
+    ctx.fun(`__tact_cell_eq`, () => {
+        ctx.append(`int __tact_cell_eq(cell a, cell b) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`return (a.cell_hash() ==  b.cell_hash());`);
+        });
+        ctx.append(`}`);
+    });
+    ctx.fun(`__tact_cell_neq`, () => {
+        ctx.append(`int __tact_cell_neq(slice a, slice b) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`return (a.cell_hash() !=  b.cell_hash());`);
+        });
+        ctx.append(`}`);
+    });
+
+    //
     // Sys Dict
     //
 

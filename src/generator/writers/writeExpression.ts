@@ -114,6 +114,17 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 throwError('Cannot use ' + f.op + ' on addresses', f.ref);
             }
         }
+        if (lt.kind === 'map' && rt.kind === 'map') {
+            if (f.op === '==') {
+                ctx.used(`__tact_cell_eq`);
+                return (`__tact_cell_eq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
+            } else if (f.op === '!=') {
+                ctx.used(`__tact_cell_eq`);
+                return (`__tact_cell_neq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
+            } else {
+                throwError('Cannot use ' + f.op + ' on maps', f.ref);
+            }
+        }
 
         let op: string;
         if (f.op === '*') {

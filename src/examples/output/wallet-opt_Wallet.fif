@@ -4,6 +4,7 @@ PROGRAM{
   DECLPROC __gen_read_Wallet
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
+  DECLPROC require
   DECLPROC __gen_Wallet_init
   DECLPROC __gen_Wallet_publicKey
   86520 DECLMETHOD __gen_get_publicKey
@@ -57,6 +58,9 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  require PROCINLINE:<{
+    131 THROWIFNOT
+  }>
   __gen_Wallet_init PROCINLINE:<{
     0 PUSHINT
     s0 s3 XCHG
@@ -93,14 +97,14 @@ PROGRAM{
     HASHSU
     s0 s2 s4 XC2PU
     CHKSIGNU
-    42 THROWIFNOT
+    require INLINECALLDICT
     32 LDI
     8 LDI
     LDREF
     DROP
     s2 s5 XCPU
     EQUAL
-    43 THROWIFNOT
+    require INLINECALLDICT
     s0 s4 XCHG
     INC
     16 MODPOW2#

@@ -150,6 +150,10 @@ builder storeBool(builder s, int value) impure {
     }
 }
 
+() require(int condition) impure {
+    throw_unless(131, condition);
+}
+
 () send((int, slice, int, int, cell, cell, cell) params) impure {
     var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
     builder b = begin_cell();
@@ -268,13 +272,13 @@ _ __gen_get_get_jetton_data() method_id(106029) {
     var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
     var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     var (winit'code, winit'data) = (self'totalSupply, self'owner, self'content, self'mintable)~__gen_SampleJetton_getJettonWalletInit(owner);
-    throw_unless(100, __tact_address_eq(__tact_compute_contract_address(0, winit'code, winit'data), ctx'sender));
+    require(__tact_address_eq(__tact_compute_contract_address(0, winit'code, winit'data), ctx'sender));
     return ((self'totalSupply, self'owner, self'content, self'mintable), ());
 }
 
 ((int, slice, cell, int), ()) __gen_SampleJetton_requireOwner((int, slice, cell, int) self) impure {
     var ((self'totalSupply, self'owner, self'content, self'mintable)) = self;
-    throw_unless(100, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
+    throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
     return ((self'totalSupply, self'owner, self'content, self'mintable), ());
 }
 

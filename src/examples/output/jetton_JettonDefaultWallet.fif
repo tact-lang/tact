@@ -17,6 +17,7 @@ PROGRAM{
   DECLPROC __gen_load_JettonDefaultWallet
   DECLPROC __gen_store_JettonDefaultWallet
   DECLPROC storeBool
+  DECLPROC require
   DECLPROC send
   DECLPROC __gen_JettonDefaultWallet_init
   DECLPROC __gen_JettonDefaultWallet_init_child
@@ -200,6 +201,9 @@ PROGRAM{
     SWAP
     1 STI
   }>
+  require PROC:<{
+    131 THROWIFNOT
+  }>
   send PROC:<{
     NEWC
     1 PUSHINT
@@ -344,7 +348,7 @@ PROGRAM{
       __tact_compute_contract_address CALLDICT
       ROT
       __tact_address_eq INLINECALLDICT
-      100 THROWIFNOT
+      require CALLDICT
     }>ELSE<{
       DROP
       NIP
@@ -353,7 +357,7 @@ PROGRAM{
     ADD
     DUP
     -1 GTINT
-    100 THROWIFNOT
+    require CALLDICT
     s0 s2 XCHG
   }>
   __gen_JettonDefaultWallet_receive_TokenTransfer PROC:<{
@@ -363,12 +367,12 @@ PROGRAM{
     NIP
     s5 PUSH
     __tact_address_eq INLINECALLDICT
-    100 THROWIFNOT
+    require CALLDICT
     s5 s1 XCPU
     SUB
     DUP
     -1 GTINT
-    100 THROWIFNOT
+    require CALLDICT
     __tact_context_sys GETGLOB
     s0 s4 s6 XCPUXC
     __gen_JettonDefaultWallet_init_child CALLDICT

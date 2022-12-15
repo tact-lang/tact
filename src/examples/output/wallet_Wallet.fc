@@ -104,6 +104,10 @@ builder storeBool(builder s, int value) impure {
     }
 }
 
+() require(int condition) impure {
+    throw_unless(131, condition);
+}
+
 () send((int, slice, int, int, cell, cell, cell) params) impure {
     var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
     builder b = begin_cell();
@@ -205,8 +209,8 @@ _ __gen_get_seqno() method_id(85143) {
     var (self'seqno, self'key, self'walletId) = self;
     var (msg'signature, (msg'transfer'seqno, msg'transfer'mode, msg'transfer'to, msg'transfer'amount, msg'transfer'body)) = msg;
     int op_hash = cell_hash(__gen_writecell_Transfer((msg'transfer'seqno, msg'transfer'mode, msg'transfer'to, msg'transfer'amount, msg'transfer'body)));
-    throw_unless(42, check_signature(op_hash, msg'signature, self'key));
-    throw_unless(43, (msg'transfer'seqno == self'seqno));
+    require(check_signature(op_hash, msg'signature, self'key));
+    require((msg'transfer'seqno == self'seqno));
     self'seqno = (self'seqno + 1);
     send((true, msg'transfer'to, msg'transfer'amount, msg'transfer'mode, msg'transfer'body, null(), null()));
     return ((self'seqno, self'key, self'walletId), ());

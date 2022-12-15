@@ -123,7 +123,7 @@ cell __gen_Treasure_init(cell sys', slice owner) {
 
 ((slice), ()) __gen_Treasure_requireOwner((slice) self) impure {
     var ((self'owner)) = self;
-    throw_unless(100, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
+    throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
     return ((self'owner), ());
 }
 

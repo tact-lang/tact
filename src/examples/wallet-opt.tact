@@ -18,14 +18,14 @@ contract Wallet {
 
         // Check Signature
         let op_hash: Int = hashSlice(msg.transfer);
-        require(42, checkSignature(op_hash, msg.signature, self.key));
+        require(checkSignature(op_hash, msg.signature, self.key));
 
         // Check parameters
         let pkg: Slice = msg.transfer;
         let seqno: Int = pkg.loadInt(32);
         let mode: Int = pkg.loadInt(8);
         let body: Cell = pkg.loadRef();
-        require(43, seqno == self.seqno);
+        require(seqno == self.seqno);
 
         // Increment seqno
         self.seqno = (self.seqno + 1) % 65536;

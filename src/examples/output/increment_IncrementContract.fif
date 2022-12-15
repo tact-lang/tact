@@ -19,6 +19,7 @@ PROGRAM{
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
+  DECLPROC require
   DECLPROC __gen_IncrementContract_init
   DECLPROC __gen_IncrementContract_counters
   95239 DECLMETHOD __gen_get_counters
@@ -234,6 +235,9 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  require PROC:<{
+    131 THROWIFNOT
+  }>
   __gen_IncrementContract_init PROC:<{
     PUSHNULL
     PUSHNULL
@@ -313,7 +317,7 @@ PROGRAM{
     s3 PUSH
     __tact_dict_get_int_cell CALLDICT
     ISNULL
-    100 THROWIFNOT
+    require CALLDICT
     s2 s4 XCHG
     257 PUSHINT
     -ROT

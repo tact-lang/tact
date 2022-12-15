@@ -95,6 +95,8 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'bytes') {
                     w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
+                } else if (f.kind === 'map') {
+                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
                 } else {
                     throw Error('Unsupported field type');
                 }
