@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -534,9 +534,9 @@ export function unpackTupleMint(slice: TupleSlice4): Mint {
     return { $$type: 'Mint', amount: amount };
 }
 export async function SampleJetton_init(owner: Address, content: Cell | null) {
-    const __code = 'te6ccgECLwEABFcAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASApKgIBIAYHAgHOIyQCAUgICQIBIA8QAgFICgsAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgOXHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCEKMqXF+64wIgghDTqLheuuMCghB73ZfeuuMCMPLAZIAwNDgAJCBu8k6AAujDtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBQE0x8BghCjKlxfuvLgZIEBAdcAATEQNEEw8CHI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADCMO1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCENOouF668uBkbQHSAAGSMdTeATEQNEEw8CLI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADg7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQe92X3rry4GSBAQHXAPpAAW0C0gABlmwS+kABWd5DEzMQVhBFEDRY8CPI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVAIBWBESAgEgFRYAFVlH8BygDgcAHKAIAgEgExQA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BXIcPAVcPAVJG6zlX/wFRTMlTQDcPAV4iRus5V/8BUUzJU0A3DwFeJw8BUCf/AVAslYzJYzMwFw8BXiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAKRwA8jMQxNQI4EBAc8AAc8WAc8WyYAIBIBcYAgEgHR4CASAZGgIBIBscAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwF4ABDHB/BMjMQzRQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAyYAAPPhC+ChY8BiAAFTwGmwiMnAzAfAFgAgEgHyACASAhIgAPPgo8BowQzCAAiRRVaBVMPAacFMh8AVwcFMA+Cj4KCIQNBA+yFVAghAXjUUZUAbLHxTLPxKBAQHPAAHPFgHPFgH6AsleMhQQOkCq8BZVAoAAvPhBbyMwMVVA8BpwWfAFUAXHBfLgZFUCgABk+EFvIzAxI8cF8uBkgAgEgJSYCASAnKAAJBAjXwOAAEz4QW8jMDEB8B2AADxVMPAfMUEwgABkMBUUQzDwHlA0oVAjgAEW+KO9qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKeBBAIBICssAgFmLS4ACbncPwGYAEmtvPaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CiqB+A3AAEWvFvaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CngOQA==';
+    const __code = 'te6ccgECLwEABFgAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASApKgIBIAYHAgHOIyQCAUgICQIBIA8QAgFICgsAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgOXHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCEKMqXF+64wIgghDTqLheuuMCghB73ZfeuuMCMPLAZIAwNDgALCBu8tCAgALow7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQoypcX7ry4GSBAQHXAAExEDRBMPAhyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQAwjDtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBQE0x8BghDTqLheuvLgZG0B0gABkjHU3gExEDRBMPAiyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQA4O1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCEHvdl9668uBkgQEB1wD6QAFtAtIAAZZsEvpAAVneQxMzEFYQRRA0WPAjyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQCAVgREgIBIBUWABVZR/AcoA4HABygCAIBIBMUAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/AVyHDwFXDwFSRus5V/8BUUzJU0A3DwFeIkbrOVf/AVFMyVNANw8BXicPAVAn/wFQLJWMyWMzMBcPAV4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgACkcAPIzEMTUCOBAQHPAAHPFgHPFsmACASAXGAIBIB0eAgEgGRoCASAbHABvALQ9AQwIIIA2K8BgBD0D2+h8uBkbQKCANivAYAQ9A9vofLgZBKCANivAQKAEPQXyPQAyUAD8BeAAQxwfwTIzEM0UEP6AgHPFiJulTJwWMoAln8BygASzOLKAMmAADz4QvgoWPAYgABU8BpsIjJwMwHwBYAIBIB8gAgEgISIADz4KPAaMEMwgAIkUVWgVTDwGnBTIfAFcHBTAPgo+CgiEDQQPshVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJXjIUEDpAqvAWVQKAALz4QW8jMDFVQPAacFnwBVAFxwXy4GRVAoAAZPhBbyMwMSPHBfLgZIAIBICUmAgEgJygACQQI18DgABM+EFvIzAxAfAdgAA8VTDwHzFBMIAAZDAVFEMw8B5QNKFQI4ABFvijvaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CngQQCASArLAIBZi0uAAm53D8BmABJrbz2omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgoqgfgNwABFrxb2omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgp4DkA=';
     const depends = new Map<string, Cell>();
-    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECFgEAAtAAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaFjx+ApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAkIG7yToACyMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQF41FGbry4GTTP4EBAdcA+kABAfpAAQH6AFVANRBnEFZVA/AWyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAxO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQD4p+pbry4GTTP/oA+kABAfpAAW0C0gABlGwS1BLe+gAGBQRQMzYQeBBnVQTwF8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAgFYDg8CASAQEQAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BLIcPAScPASJG6zlX/wEhTMlTQDcPAS4iRus5V/8BIUzJU0A3DwEuJw8BICf/ASAslYzJYzMwFw8BLiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASASEwIBIBQVACkcAPIzEMTUCOBAQHPAAHPFgHPFsmAAbwC0PQEMCCCANivAYAQ9A9vofLgZG0CggDYrwGAEPQPb6Hy4GQSggDYrwECgBD0F8j0AMlAA/AUgAFsWzL4QW8jMDFTA8cFs44R+EJUIETwFXBZ8AVYxwXy4GSSMDHiE6Agwv/y4GQCgAKkXwP4QW8jMDElxwXy4GRRUaEgwv/y4GT4QlQgR/AVcFMh8AVwcFQ2ZlQnoFKwyFVAghAXjUUZUAbLHxTLPxKBAQHPAAHPFgHPFgH6AslAFVBjFPATg', 'base64'))[0]);
+    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECFgEAAtEAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaFjx+ApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAsIG7y0ICAAsjDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uBk0z+BAQHXAPpAAQH6QAEB+gBVQDUQZxBWVQPwFsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAMTtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEA+KfqW68uBk0z/6APpAAQH6QAFtAtIAAZRsEtQS3voABgUEUDM2EHgQZ1UE8BfI+EIBzFUgUCOBAQHPAAHPFgHPFsntVAIBWA4PAgEgEBEAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ASyHDwEnDwEiRus5V/8BIUzJU0A3DwEuIkbrOVf/ASFMyVNANw8BLicPASAn/wEgLJWMyWMzMBcPAS4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAgEgEhMCASAUFQApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwFIABbFsy+EFvIzAxUwPHBbOOEfhCVCBE8BVwWfAFWMcF8uBkkjAx4hOgIML/8uBkAoACpF8D+EFvIzAxJccF8uBkUVGhIML/8uBk+EJUIEfwFXBTIfAFcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwE4A==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
@@ -551,6 +551,24 @@ export async function SampleJetton_init(owner: Address, content: Cell | null) {
     let res = await executor.get('init_SampleJetton', __stack, { debug: true });
     let data = res.stack.readCell();
     return { code: codeCell, data };
+}
+
+export const SampleJetton_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
 }
 
 export class SampleJetton {
@@ -569,31 +587,67 @@ export class SampleJetton {
             body = packTokenBurned(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (SampleJetton_errors[e.exitCode.toString()]) {
+                    throw new Error(SampleJetton_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getGetWalletAddress(owner: Address) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
-        let result = await this.executor.get('get_wallet_address', __stack);
-        return result.stack.readAddress();
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+            let result = await this.executor.get('get_wallet_address', __stack);
+            return result.stack.readAddress();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (SampleJetton_errors[e.exitCode.toString()]) {
+                    throw new Error(SampleJetton_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getGetJettonData() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('get_jetton_data', __stack);
-        return unpackStackJettonData(result.stack);
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('get_jetton_data', __stack);
+            return unpackStackJettonData(result.stack);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (SampleJetton_errors[e.exitCode.toString()]) {
+                    throw new Error(SampleJetton_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getOwner() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('owner', __stack);
-        return result.stack.readAddress();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('owner', __stack);
+            return result.stack.readAddress();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (SampleJetton_errors[e.exitCode.toString()]) {
+                    throw new Error(SampleJetton_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

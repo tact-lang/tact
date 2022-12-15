@@ -68,6 +68,9 @@ export type ContractABI = {
     init: ContractInit | null;
     receivers: ContractReceiver[];
     getters: CotnractFunction[];
+    errors: {
+        [id: string]: { message: string }
+    },
     dependsOn: {
         [name: string]: { uid: number }
     }

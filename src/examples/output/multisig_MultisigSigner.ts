@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -252,6 +252,24 @@ export async function MultisigSigner_init(master: Address, members: Cell, requir
     let res = await executor.get('init_MultisigSigner', __stack, { debug: true });
     let data = res.stack.readCell();
     return { code: codeCell, data };
+}
+
+export const MultisigSigner_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
 }
 
 export class MultisigSigner {

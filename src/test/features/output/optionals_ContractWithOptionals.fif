@@ -60,7 +60,7 @@ PROGRAM{
   __tact_not_null PROC:<{
     DUP
     ISNULL
-    14 THROWIF
+    128 THROWIF
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -106,6 +106,9 @@ PROGRAM{
     5 -ROLL
   }>
   __gen_SomeGenericStruct_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
     5 UNTUPLE
   }>
   __gen_write_StructWithOptionals PROCINLINE:<{
@@ -311,6 +314,9 @@ PROGRAM{
     6 -ROLL
   }>
   __gen_StructWithOptionals_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
     5 UNTUPLE
   }>
   __gen_write_ContractWithOptionals PROCINLINE:<{

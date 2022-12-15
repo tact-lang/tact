@@ -1,4 +1,4 @@
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;

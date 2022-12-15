@@ -593,9 +593,12 @@ SETCP0
   1: 
     s0 PUSH
     ISNULL
-    14 THROWIF
+    128 THROWIF
 
   6: 
+    s0 PUSH
+    ISNULL
+    128 THROWIF
     5 UNTUPLE
 
   8: 
@@ -605,6 +608,9 @@ SETCP0
     5 TUPLE
 
   12: 
+    s0 PUSH
+    ISNULL
+    128 THROWIF
     5 UNTUPLE
 
   17: 

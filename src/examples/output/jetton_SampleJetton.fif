@@ -44,7 +44,7 @@ PROGRAM{
   __tact_not_null PROC:<{
     DUP
     ISNULL
-    14 THROWIF
+    128 THROWIF
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB

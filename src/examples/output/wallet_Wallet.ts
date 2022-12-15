@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -285,9 +285,9 @@ export function unpackTupleTransferMessage(slice: TupleSlice4): TransferMessage 
     return { $$type: 'TransferMessage', signature: signature, transfer: transfer };
 }
 export async function Wallet_init(key: BN, walletId: BN) {
-    const __code = 'te6ccgECKgEAA88AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZIx1N5VQBBWNhB4EGdVBPAXyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAYyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwG8j4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BzI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAB9HADyMxVIFAjyx/L/8s/yYABUlH8BygDgcAHKAIADrMhxAcoBF8oAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GONX/wEMhw8BBw8BAkbrOVf/AQFMyVNANw8BDiJG6zlX/wEBTMlTQDcPAQ4nDwEAJ/8BACyVjMljMzAXDwEOIhbrOZfwHKAAHwAQHMlHAyygDiyQH7AIAIBIBgZAgEgGhsABQwMYAAFGwhgAAMW4AB7FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMG1t8BGACASAeHwIBSCIjAgEgICECASAhIQAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAAEgAAMMIAIBICYnACu+AldqJoagD8MWmP6f/pn6qQNgn4CsAAm7oT8BKAIBSCgpACuzJftRNDUAfhi0x/T/9M/VSBsE/AWgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AUg';
+    const __code = 'te6ccgECKgEAA9AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAsIG7y0ICAAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LgZNQB0AHTH9MH+kABAfoAbQHSAAGSMdTeVUAQVjYQeBBnVQTwF8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BnI+EIBzFUgUCPLH8v/yz/J7VQC8CD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BrI+EIBzFUgUCPLH8v/yz/J7VTbMeAggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAgwNACjwGMj4QgHMVSBQI8sfy//LP8ntVABQW+1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMQCcgvCcoPGFUXTjLo/TeN9WpuT2xA5N/LYJDkmBL3seJiFL+bqOKDDtRNDUAfhi0x/T/9M/VSBsE/AcyPhCAcxVIFAjyx/L/8s/ye1U2zHgAgEgEBECASAcHQIBIBITAgEgFhcCASAUFQAfRwA8jMVSBQI8sfy//LP8mAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobAAUMDGAABRsIYAADFuAAexUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzBtbfARgAgEgHh8CAUgiIwIBICAhAgEgISEAGQw+EFvI1uzkwKkAt6AAFz4QW8jW7OTAqQC3oAABIAADDCACASAmJwArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ArAAJu6E/ASgCAUgoKQArsyX7UTQ1AH4YtMf0//TP1UgbBPwFoAArsH47UTQ1AH4YtMf0//TP1UgbBPwFIA==';
     const depends = new Map<string, Cell>();
-    depends.set('14718', Cell.fromBoc(Buffer.from('te6ccgECKgEAA88AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAkIG7yToACiMO1E0NQB+GLTH9P/0z9VIGwTA9MfAcB78uBk1AHQAdMf0wf6QAEB+gBtAdIAAZIx1N5VQBBWNhB4EGdVBPAXyPhCAcxVIFAjyx/L/8s/ye1UAExb7UTQ1AH4YtMf0//TP1UgbBPwGcj4QgHMVSBQI8sfy//LP8ntVALwIPkBIILwDiNXJhCLVwDQNp3XFn9q/7gGp+BAWTdd0OD7JJcecrK6jihb7UTQ1AH4YtMf0//TP1UgbBPwGsj4QgHMVSBQI8sfy//LP8ntVNsx4CCC8Gcn1pdl+PIsdcWB41ZUQ5f1oAu5G9MsTQ2W1MkmhLzCuuMCDA0AKPAYyPhCAcxVIFAjyx/L/8s/ye1UAFBb7UTQ1AH4YtMf0//TP1UgbBPwG8j4QgHMVSBQI8sfy//LP8ntVNsxAJyC8Jyg8YVRdOMuj9N431am5PbEDk38tgkOSYEvex4mIUv5uo4oMO1E0NQB+GLTH9P/0z9VIGwT8BzI+EIBzFUgUCPLH8v/yz/J7VTbMeACASAQEQIBIBwdAgEgEhMCASAWFwIBIBQVAB9HADyMxVIFAjyx/L/8s/yYABUlH8BygDgcAHKAIADrMhxAcoBF8oAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GONX/wEMhw8BBw8BAkbrOVf/AQFMyVNANw8BDiJG6zlX/wEBTMlTQDcPAQ4nDwEAJ/8BACyVjMljMzAXDwEOIhbrOZfwHKAAHwAQHMlHAyygDiyQH7AIAIBIBgZAgEgGhsABQwMYAAFGwhgAAMW4AB7FR0MlNDyFVAUEXLHxLLBwHPFgH6AiFulHAyygCVfwHKAMziyfkAVBBo+RDyqlE3uvKrBqR/UHRDMG1t8BGACASAeHwIBSCIjAgEgICECASAhIQAZDD4QW8jW7OTAqQC3oAAXPhBbyNbs5MCpALegAAEgAAMMIAIBICYnACu+AldqJoagD8MWmP6f/pn6qQNgn4CsAAm7oT8BKAIBSCgpACuzJftRNDUAfhi0x/T/9M/VSBsE/AWgACuwfjtRNDUAfhi0x/T/9M/VSBsE/AUg', 'base64'))[0]);
+    depends.set('14718', Cell.fromBoc(Buffer.from('te6ccgECKgEAA9AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAsIG7y0ICAAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LgZNQB0AHTH9MH+kABAfoAbQHSAAGSMdTeVUAQVjYQeBBnVQTwF8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BnI+EIBzFUgUCPLH8v/yz/J7VQC8CD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BrI+EIBzFUgUCPLH8v/yz/J7VTbMeAggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAgwNACjwGMj4QgHMVSBQI8sfy//LP8ntVABQW+1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMQCcgvCcoPGFUXTjLo/TeN9WpuT2xA5N/LYJDkmBL3seJiFL+bqOKDDtRNDUAfhi0x/T/9M/VSBsE/AcyPhCAcxVIFAjyx/L/8s/ye1U2zHgAgEgEBECASAcHQIBIBITAgEgFhcCASAUFQAfRwA8jMVSBQI8sfy//LP8mAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobAAUMDGAABRsIYAADFuAAexUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzBtbfARgAgEgHh8CAUgiIwIBICAhAgEgISEAGQw+EFvI1uzkwKkAt6AAFz4QW8jW7OTAqQC3oAABIAADDCACASAmJwArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ArAAJu6E/ASgCAUgoKQArsyX7UTQ1AH4YtMf0//TP1UgbBPwFoAArsH47UTQ1AH4YtMf0//TP1UgbBPwFIA==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
@@ -298,6 +298,24 @@ export async function Wallet_init(key: BN, walletId: BN) {
     let res = await executor.get('init_Wallet', __stack, { debug: true });
     let data = res.stack.readCell();
     return { code: codeCell, data };
+}
+
+export const Wallet_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
 }
 
 export class Wallet {
@@ -325,30 +343,66 @@ export class Wallet {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (Wallet_errors[e.exitCode.toString()]) {
+                    throw new Error(Wallet_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getPublicKey() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('publicKey', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('publicKey', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (Wallet_errors[e.exitCode.toString()]) {
+                    throw new Error(Wallet_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getWalletId() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('walletId', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('walletId', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (Wallet_errors[e.exitCode.toString()]) {
+                    throw new Error(Wallet_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getSeqno() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('seqno', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('seqno', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (Wallet_errors[e.exitCode.toString()]) {
+                    throw new Error(Wallet_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

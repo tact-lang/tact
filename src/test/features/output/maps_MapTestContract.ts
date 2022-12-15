@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -469,6 +469,24 @@ export async function MapTestContract_init() {
     return { code: codeCell, data };
 }
 
+export const MapTestContract_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
+}
+
 export class MapTestContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
@@ -491,93 +509,228 @@ export class MapTestContract {
             body = packSetAddrMap2(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap1() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('intMap1', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('intMap1', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap1Value(key: BN) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'int', value: key });
-        let result = await this.executor.get('intMap1Value', __stack);
-        return result.stack.readBigNumberOpt();
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'int', value: key });
+            let result = await this.executor.get('intMap1Value', __stack);
+            return result.stack.readBigNumberOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap2() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('intMap2', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('intMap2', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap2Value(key: BN) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'int', value: key });
-        let result = await this.executor.get('intMap2Value', __stack);
-        return result.stack.readBooleanOpt();
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'int', value: key });
+            let result = await this.executor.get('intMap2Value', __stack);
+            return result.stack.readBooleanOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap3() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('intMap3', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('intMap3', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap3Value(key: BN) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'int', value: key });
-        let result = await this.executor.get('intMap3Value', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'int', value: key });
+            let result = await this.executor.get('intMap3Value', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap4() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('intMap4', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('intMap4', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIntMap4Value(key: BN) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'int', value: key });
-        let result = await this.executor.get('intMap4Value', __stack);
-        let pp = result.stack.pop();
-        if (pp.type !== 'tuple') { return null; }
-        return unpackTupleSomeStruct(new TupleSlice4(pp.items));
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'int', value: key });
+            let result = await this.executor.get('intMap4Value', __stack);
+            let pp = result.stack.pop();
+            if (pp.type !== 'tuple') { return null; }
+            return unpackTupleSomeStruct(new TupleSlice4(pp.items));
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getAddrMap1() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('addrMap1', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('addrMap1', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getAddrMap1Value(key: Address) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-        let result = await this.executor.get('addrMap1Value', __stack);
-        return result.stack.readBigNumberOpt();
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+            let result = await this.executor.get('addrMap1Value', __stack);
+            return result.stack.readBigNumberOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getAddrMap2() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('addrMap2', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('addrMap2', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getAddrMap2Value(key: Address) {
-        let __stack: StackItem[] = [];
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-        let result = await this.executor.get('addrMap2Value', __stack);
-        return result.stack.readBooleanOpt();
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+            let result = await this.executor.get('addrMap2Value', __stack);
+            return result.stack.readBooleanOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getAddrMap3() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('addrMap3', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('addrMap3', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getAddrMap4() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('addrMap4', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('addrMap4', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MapTestContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

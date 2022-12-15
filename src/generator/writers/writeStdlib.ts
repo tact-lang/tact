@@ -1,3 +1,4 @@
+import { contractErrors } from "../../abi/errors";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
@@ -8,7 +9,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.append(`() __tact_nop() impure asm "NOP";`);
     });
     ctx.fun('__tact_not_null', () => {
-        ctx.append(`forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }`);
+        ctx.append(`forall X -> X __tact_not_null(X x) { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
     });
     ctx.fun('__tact_dict_delete', () => {
         ctx.append(`(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";`)

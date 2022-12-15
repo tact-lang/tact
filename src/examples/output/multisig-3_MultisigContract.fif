@@ -30,7 +30,7 @@ PROGRAM{
   __tact_not_null PROC:<{
     DUP
     ISNULL
-    14 THROWIF
+    128 THROWIF
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR

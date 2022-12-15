@@ -1,4 +1,5 @@
 import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractReceiver, ContractStruct, CotnractFunction } from "../abi/ContractABI";
+import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
 import { getAllocation } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
@@ -156,12 +157,33 @@ export function createABI(ctx: CompilerContext, name: string | null): ContractAB
         dependsOn[d.name] = { uid: d.uid };
     }
 
+    // Errors
+    let errors: { [key: string]: { message: string } } = {};
+    errors['2'] = { message: 'Stack undeflow' };
+    errors['3'] = { message: 'Stack overflow' };
+    errors['4'] = { message: 'Integer overflow' };
+    errors['5'] = { message: 'Integer out of expected range' };
+    errors['6'] = { message: 'Invalid opcode' };
+    errors['7'] = { message: 'Type check error' };
+    errors['8'] = { message: 'Cell overflow' };
+    errors['9'] = { message: 'Cell underflow' };
+    errors['10'] = { message: 'Dictionary error' };
+    errors['13'] = { message: 'Out of gas error' };
+    errors['32'] = { message: 'Method ID not found' };
+    errors['34'] = { message: 'Action is invalid or not supported' };
+    errors['37'] = { message: 'Not enough TON' };
+    errors['38'] = { message: 'Not enough extra-currencies' };
+    for (let e of Object.values(contractErrors)) {
+        errors[e.id] = { message: e.message };
+    }
+
     return {
         name: contract.name,
         structs,
         init,
         receivers,
         getters,
-        dependsOn
+        dependsOn,
+        errors
     };
 }

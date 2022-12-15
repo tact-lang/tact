@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -534,9 +534,9 @@ export function unpackTupleMint(slice: TupleSlice4): Mint {
     return { $$type: 'Mint', amount: amount };
 }
 export async function JettonDefaultWallet_init(master: Address, owner: Address) {
-    const __code = 'te6ccgECFgEAAtAAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaFjx+ApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAkIG7yToACyMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQF41FGbry4GTTP4EBAdcA+kABAfpAAQH6AFVANRBnEFZVA/AWyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAxO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQD4p+pbry4GTTP/oA+kABAfpAAW0C0gABlGwS1BLe+gAGBQRQMzYQeBBnVQTwF8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAgFYDg8CASAQEQAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BLIcPAScPASJG6zlX/wEhTMlTQDcPAS4iRus5V/8BIUzJU0A3DwEuJw8BICf/ASAslYzJYzMwFw8BLiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASASEwIBIBQVACkcAPIzEMTUCOBAQHPAAHPFgHPFsmAAbwC0PQEMCCCANivAYAQ9A9vofLgZG0CggDYrwGAEPQPb6Hy4GQSggDYrwECgBD0F8j0AMlAA/AUgAFsWzL4QW8jMDFTA8cFs44R+EJUIETwFXBZ8AVYxwXy4GSSMDHiE6Agwv/y4GQCgAKkXwP4QW8jMDElxwXy4GRRUaEgwv/y4GT4QlQgR/AVcFMh8AVwcFQ2ZlQnoFKwyFVAghAXjUUZUAbLHxTLPxKBAQHPAAHPFgHPFgH6AslAFVBjFPATg';
+    const __code = 'te6ccgECFgEAAtEAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaFjx+ApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAsIG7y0ICAAsjDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uBk0z+BAQHXAPpAAQH6QAEB+gBVQDUQZxBWVQPwFsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAMTtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEA+KfqW68uBk0z/6APpAAQH6QAFtAtIAAZRsEtQS3voABgUEUDM2EHgQZ1UE8BfI+EIBzFUgUCOBAQHPAAHPFgHPFsntVAIBWA4PAgEgEBEAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ASyHDwEnDwEiRus5V/8BIUzJU0A3DwEuIkbrOVf/ASFMyVNANw8BLicPASAn/wEgLJWMyWMzMBcPAS4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAgEgEhMCASAUFQApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwFIABbFsy+EFvIzAxUwPHBbOOEfhCVCBE8BVwWfAFWMcF8uBkkjAx4hOgIML/8uBkAoACpF8D+EFvIzAxJccF8uBkUVGhIML/8uBk+EJUIEfwFXBTIfAFcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwE4A==';
     const depends = new Map<string, Cell>();
-    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECFgEAAtAAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaFjx+ApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAkIG7yToACyMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQF41FGbry4GTTP4EBAdcA+kABAfpAAQH6AFVANRBnEFZVA/AWyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAxO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQD4p+pbry4GTTP/oA+kABAfpAAW0C0gABlGwS1BLe+gAGBQRQMzYQeBBnVQTwF8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAgFYDg8CASAQEQAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BLIcPAScPASJG6zlX/wEhTMlTQDcPAS4iRus5V/8BIUzJU0A3DwEuJw8BICf/ASAslYzJYzMwFw8BLiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASASEwIBIBQVACkcAPIzEMTUCOBAQHPAAHPFgHPFsmAAbwC0PQEMCCCANivAYAQ9A9vofLgZG0CggDYrwGAEPQPb6Hy4GQSggDYrwECgBD0F8j0AMlAA/AUgAFsWzL4QW8jMDFTA8cFs44R+EJUIETwFXBZ8AVYxwXy4GSSMDHiE6Agwv/y4GQCgAKkXwP4QW8jMDElxwXy4GRRUaEgwv/y4GT4QlQgR/AVcFMh8AVwcFQ2ZlQnoFKwyFVAghAXjUUZUAbLHxTLPxKBAQHPAAHPFgHPFgH6AslAFVBjFPATg', 'base64'))[0]);
+    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECFgEAAtEAART/APSkE/S88sgLAQIBYgIDAgLLBAUACaFjx+ApAgFIBgcCAUgMDQIBSAgJAEdnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0ICgxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghAXjUUZuuMCghAPin6luuMCMPLAZIAoLAAsIG7y0ICAAsjDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uBk0z+BAQHXAPpAAQH6QAEB+gBVQDUQZxBWVQPwFsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAMTtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEA+KfqW68uBk0z/6APpAAQH6QAFtAtIAAZRsEtQS3voABgUEUDM2EHgQZ1UE8BfI+EIBzFUgUCOBAQHPAAHPFgHPFsntVAIBWA4PAgEgEBEAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ASyHDwEnDwEiRus5V/8BIUzJU0A3DwEuIkbrOVf/ASFMyVNANw8BLicPASAn/wEgLJWMyWMzMBcPAS4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAgEgEhMCASAUFQApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwFIABbFsy+EFvIzAxUwPHBbOOEfhCVCBE8BVwWfAFWMcF8uBkkjAx4hOgIML/8uBkAoACpF8D+EFvIzAxJccF8uBkUVGhIML/8uBk+EJUIEfwFXBTIfAFcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwE4A==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
@@ -547,6 +547,24 @@ export async function JettonDefaultWallet_init(master: Address, owner: Address) 
     let res = await executor.get('init_JettonDefaultWallet', __stack, { debug: true });
     let data = res.stack.readCell();
     return { code: codeCell, data };
+}
+
+export const JettonDefaultWallet_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
 }
 
 export class JettonDefaultWallet {
@@ -562,15 +580,24 @@ export class JettonDefaultWallet {
             body = packTokenTransfer(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (JettonDefaultWallet_errors[e.exitCode.toString()]) {
+                    throw new Error(JettonDefaultWallet_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

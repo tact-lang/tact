@@ -4,7 +4,6 @@ import { Writer } from "./Writer";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
 import { readFromStack } from "./typescript/readFromStack";
-import { Slice } from "ton";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -38,7 +37,7 @@ function writeField(field: ContractField, w: Writer) {
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
     w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';`);
-    w.append(`import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';`);
+    w.append(`import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';`);
     w.append(`import BN from 'bn.js';`);
     w.append();
 
@@ -198,6 +197,16 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         w.append();
     }
 
+    // Errors
+    w.append(`export const ${abi.name}_errors: { [key: string]: string } = {`);
+    w.inIndent(() => {
+        for (let k in abi.errors) {
+            w.append(`'${k}': \`${abi.errors[k].message}\`,`);
+        }
+    });
+    w.append(`}`);
+    w.append();
+
     // Wrapper
     w.append(`export class ${abi.name} {`);
     w.inIndent(() => {
@@ -250,20 +259,38 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     }
                 }
                 w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
-                w.append(`let r = await this.executor.internal(new InternalMessage({`);
+
+                w.append('try {')
                 w.inIndent(() => {
-                    w.append(`to: this.executor.address,`);
-                    w.append(`from: args.from || this.executor.address,`);
-                    w.append(`bounce: false,`);
-                    w.append(`value: args.amount,`);
-                    w.append(`body: new CommonMessageInfo({`);
+                    w.append(`let r = await this.executor.internal(new InternalMessage({`);
                     w.inIndent(() => {
-                        w.append(`body: new CellMessage(body!)`);
+                        w.append(`to: this.executor.address,`);
+                        w.append(`from: args.from || this.executor.address,`);
+                        w.append(`bounce: false,`);
+                        w.append(`value: args.amount,`);
+                        w.append(`body: new CommonMessageInfo({`);
+                        w.inIndent(() => {
+                            w.append(`body: new CellMessage(body!)`);
+                        });
+                        w.append(`})`);
                     });
-                    w.append(`})`);
+                    w.append(`}), { debug: args.debug });`);
+                    w.append(`if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }`);
                 });
-                w.append(`}), { debug: args.debug });`);
-                w.append(`if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }`);
+                w.append(`} catch (e) {`);
+                w.inIndent(() => {
+                    w.append(`if (e instanceof ExecuteError) {`)
+                    w.inIndent(() => {
+                        w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
+                        w.inIndent(() => {
+                            w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);
+                        });
+                        w.append(`}`);
+                    });
+                    w.append(`}`);
+                    w.append(`throw e;`);
+                });
+                w.append(`}`);
             });
             w.append(`}`);
         }
@@ -272,69 +299,86 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         for (let g of abi.getters) {
             w.append(`async get${changeCase.pascalCase(g.name)}(${writeArguments(g.args)}) {`);
             w.inIndent(() => {
-                w.append(`let __stack: StackItem[] = [];`);
-                for (let a of g.args) {
-                    writeToStack(a.name, a.type, w);
-                }
-                w.append(`let result = await this.executor.get('${g.name}', __stack);`);
-
-                if (g.returns) {
-                    if (g.returns.kind === 'ref') {
-                        if (g.returns.name === 'Bool') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readBooleanOpt();`);
-                            } else {
-                                w.append(`return result.stack.readBoolean();`);
-                            }
-                        } else if (g.returns.name === 'Int') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readBigNumberOpt();`);
-                            } else {
-                                w.append(`return result.stack.readBigNumber();`);
-                            }
-                        } else if (g.returns.name === 'Address') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readAddressOpt();`);
-                            } else {
-                                w.append(`return result.stack.readAddress();`);
-                            }
-                        } else if (g.returns.name === 'Cell') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readCellOpt();`);
-                            } else {
-                                w.append(`return result.stack.readCell();`);
-                            }
-                        } else if (g.returns.name === 'Slice') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readCellOpt();`);
-                            } else {
-                                w.append(`return result.stack.readCell();`);
-                            }
-                        } else if (g.returns.name === 'Builder') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readCellOpt();`);
-                            } else {
-                                w.append(`return result.stack.readCell();`);
-                            }
-                        } else {
-                            if (g.returns.optional) {
-                                w.append(`let pp = result.stack.pop();`);
-                                w.append(`if (pp.type !== 'tuple') { return null; }`);
-                                w.append(`return unpackTuple${g.returns.name}(new TupleSlice4(pp.items));`);
-                            } else {
-                                w.append(`return unpackStack${g.returns.name}(result.stack);`);
-                            }
-                        }
-                    } else if (g.returns.kind === 'map') {
-                        w.append(`return result.stack.readCellOpt();`);
-                    } else if (g.returns.kind === 'null') {
-                        throw Error('Impossible');
-                    } else if (g.returns.kind === 'void') {
-                        throw Error('Impossible');
-                    } else {
-                        throw Error('Not implemented');
+                w.append('try {')
+                w.inIndent(() => {
+                    w.append(`let __stack: StackItem[] = [];`);
+                    for (let a of g.args) {
+                        writeToStack(a.name, a.type, w);
                     }
-                }
+                    w.append(`let result = await this.executor.get('${g.name}', __stack);`);
+
+                    if (g.returns) {
+                        if (g.returns.kind === 'ref') {
+                            if (g.returns.name === 'Bool') {
+                                if (g.returns.optional) {
+                                    w.append(`return result.stack.readBooleanOpt();`);
+                                } else {
+                                    w.append(`return result.stack.readBoolean();`);
+                                }
+                            } else if (g.returns.name === 'Int') {
+                                if (g.returns.optional) {
+                                    w.append(`return result.stack.readBigNumberOpt();`);
+                                } else {
+                                    w.append(`return result.stack.readBigNumber();`);
+                                }
+                            } else if (g.returns.name === 'Address') {
+                                if (g.returns.optional) {
+                                    w.append(`return result.stack.readAddressOpt();`);
+                                } else {
+                                    w.append(`return result.stack.readAddress();`);
+                                }
+                            } else if (g.returns.name === 'Cell') {
+                                if (g.returns.optional) {
+                                    w.append(`return result.stack.readCellOpt();`);
+                                } else {
+                                    w.append(`return result.stack.readCell();`);
+                                }
+                            } else if (g.returns.name === 'Slice') {
+                                if (g.returns.optional) {
+                                    w.append(`return result.stack.readCellOpt();`);
+                                } else {
+                                    w.append(`return result.stack.readCell();`);
+                                }
+                            } else if (g.returns.name === 'Builder') {
+                                if (g.returns.optional) {
+                                    w.append(`return result.stack.readCellOpt();`);
+                                } else {
+                                    w.append(`return result.stack.readCell();`);
+                                }
+                            } else {
+                                if (g.returns.optional) {
+                                    w.append(`let pp = result.stack.pop();`);
+                                    w.append(`if (pp.type !== 'tuple') { return null; }`);
+                                    w.append(`return unpackTuple${g.returns.name}(new TupleSlice4(pp.items));`);
+                                } else {
+                                    w.append(`return unpackStack${g.returns.name}(result.stack);`);
+                                }
+                            }
+                        } else if (g.returns.kind === 'map') {
+                            w.append(`return result.stack.readCellOpt();`);
+                        } else if (g.returns.kind === 'null') {
+                            throw Error('Impossible');
+                        } else if (g.returns.kind === 'void') {
+                            throw Error('Impossible');
+                        } else {
+                            throw Error('Not implemented');
+                        }
+                    }
+                });
+                w.append(`} catch (e) {`);
+                w.inIndent(() => {
+                    w.append(`if (e instanceof ExecuteError) {`)
+                    w.inIndent(() => {
+                        w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
+                        w.inIndent(() => {
+                            w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);
+                        });
+                        w.append(`}`);
+                    });
+                    w.append(`}`);
+                    w.append(`throw e;`);
+                });
+                w.append(`}`);
             });
             w.append(`}`);
         }

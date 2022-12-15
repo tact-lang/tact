@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -506,7 +506,7 @@ export function unpackTupleUpdate(slice: TupleSlice4): Update {
     return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f };
 }
 export async function ContractWithOptionals_init(a: BN | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-    const __code = 'te6ccgECYwEADLIAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASA+PwIBIA4PAgFiBgcCASAICQAF02M0AgEgCgsCASAMDQANBA1XwXwAYAANBAlXwXwAYAALBVfBfAGgAAkbFHwDIAIBIBARAgEgHB0CASASEwIBIBkaAgFIFBUABWm8lgFvHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4IIQn4kwTrrjAjDywGSAWAAkIG7yToALe7UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBYGYhcC/tMfAYIQn4kwTrry4GRtAdIAAZYxgQEB1wDebQHSAAGTMdIA3m0B0gABkjHU3m0B0gABlTH6QAEB3tQw0G0B0gABjiIxgQEB1wCBAQHXAIEBAdcA1DDQgQEB1wCBAQHXAFVA8AgB3tQw0G0B0gAB4wBVUDYQqxCaEIkQeBBnVQRiGAEc8CTI+EIBzFVQ2zzJ7VQiAgEgGxsABdN5LAAFRvBYAgEgHh8CASAwMQIBICAhAgEgKisBD1BsjMBts8yYIgIBICgpAvYlbpY1cFAGygCdf1AHygAVgQEBzwAQReIjbpYzcFADygCXfwHKABPKAOIhbpRwMsoAlX8BygDM4iFulHAyygCXfwHKAAHPFuLII26OK38BygAD8AYQV1BFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczjDcgjJAAMM3BQA8oAATgibpUycFjKAI6LfwHKAALwDBBW2zziyQHMyQHMJQL2JG6WNHBQBcoAnX9QBsoAFIEBAc8AEDTiIm6VMnBYygCXfwHKABLKAOIhbpRwMsoAlX8BygDM4iJulTJwWMoAl38BygBYzxbiyCJujit/AcoAAvAGEFZQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHM4w3JJicACjJwWMoAAAQBzAAJF8FbrOAADQQRV8FbrOACASAsLQIBIC4vAA0EDVfBW6zgAA0ECVfBW6zgAAsFV8FbrOAACRsUW6zgAgEgMjMCASA4OQIBIDQ1AgEgNjcABRfBYAAJBBFXwWAACQQNV8FgAAkECVfBYAIBIDo7AgEgPD0ABwVXwWAABRsUYAAJF8F8AGAADQQRV8F8AGACASBAQQIBIEpLAgEgQkMCASBGRwIBIERFAeW0Wj2omhqAPwxNoDpAADLGMCAgOuAbzaA6QAAyZjpAG82gOkAAMkY6m82gOkAAMqY/SAAgO9qGGg2gOkAAMcRGMCAgOuAQICA64BAgIDrgGoYaECAgOuAQICA64AqoHgEAO9qGGg2gOkAAPGAKqg2C3gJQYgHlsKT7UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwFIGIB5bCsu1E0NQB+GJtAdIAAZYxgQEB1wDebQHSAAGTMdIA3m0B0gABkjHU3m0B0gABlTH6QAEB3tQw0G0B0gABjiIxgQEB1wCBAQHXAIEBAdcA1DDQgQEB1wCBAQHXAFVA8AgB3tQw0G0B0gAB4wBVUGwW8BOBiAeW2Rt2omhqAPwxNoDpAADLGMCAgOuAbzaA6QAAyZjpAG82gOkAAMkY6m82gOkAAMqY/SAAgO9qGGg2gOkAAMcRGMCAgOuAQICA64BAgIDrgGoYaECAgOuAQICA64AqoHgEAO9qGGg2gOkAAPGAKqg2C3gLwYgIBIEhJAeWwlXtRNDUAfhibQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd7UMNBtAdIAAeMAVVBsFvAWgYgHlsJ07UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwFYGICASBMTQIBIFZXAgEgTk8CASBUVQIBx1BRAgHHUlMB46EntRNDUAfhibQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd7UMNBtAdIAAeMAVVBsFvAbmIB46FztRNDUAfhibQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd7UMNBtAdIAAeMAVVBsFvAfmIB46GjtRNDUAfhibQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd7UMNBtAdIAAeMAVVBsFvAcmIB46H3tRNDUAfhibQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd7UMNBtAdIAAeMAVVBsFvAgmIB5bAC+1E0NQB+GJtAdIAAZYxgQEB1wDebQHSAAGTMdIA3m0B0gABkjHU3m0B0gABlTH6QAEB3tQw0G0B0gABjiIxgQEB1wCBAQHXAIEBAdcA1DDQgQEB1wCBAQHXAFVA8AgB3tQw0G0B0gAB4wBVUGwW8B2BiAeWwT/tRNDUAfhibQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd7UMNBtAdIAAeMAVVBsFvAegYgIBIFhZAgEgXF0CAWJaWwHlsDs7UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwGIGIB46ex2omhqAPwxNoDpAADLGMCAgOuAbzaA6QAAyZjpAG82gOkAAMkY6m82gOkAAMqY/SAAgO9qGGg2gOkAAMcRGMCAgOuAQICA64BAgIDrgGoYaECAgOuAQICA64AqoHgEAO9qGGg2gOkAAPGAKqg2C3gR2IAB6Vp4CMCAcdeXwIBx2BhAeOiP7UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwGZiAeOia7UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwIZiAeOiu7UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwGpiAeOi77UTQ1AH4Ym0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTebQHSAAGVMfpAAQHe1DDQbQHSAAGOIjGBAQHXAIEBAdcAgQEB1wDUMNCBAQHXAIEBAdcAVUDwCAHe1DDQbQHSAAHjAFVQbBbwIpiAL4xbQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd7UMNBtAdIAAY4iMYEBAdcAgQEB1wCBAQHXANQw0IEBAdcAgQEB1wBVQPAIAd5VQPAKAQ==';
+    const __code = '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';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -548,6 +548,24 @@ export async function ContractWithOptionals_init(a: BN | null, b: boolean | null
     return { code: codeCell, data };
 }
 
+export const ContractWithOptionals_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
+}
+
 export class ContractWithOptionals {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
@@ -558,109 +576,280 @@ export class ContractWithOptionals {
             body = packUpdate(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIsNotNullA() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('isNotNullA', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('isNotNullA', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIsNotNullB() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('isNotNullB', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('isNotNullB', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIsNotNullC() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('isNotNullC', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('isNotNullC', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIsNotNullD() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('isNotNullD', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('isNotNullD', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIsNotNullE() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('isNotNullE', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('isNotNullE', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getIsNotNullF() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('isNotNullF', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('isNotNullF', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNullA() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('nullA', __stack);
-        return result.stack.readBigNumberOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('nullA', __stack);
+            return result.stack.readBigNumberOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNullB() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('nullB', __stack);
-        return result.stack.readBooleanOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('nullB', __stack);
+            return result.stack.readBooleanOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNullC() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('nullC', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('nullC', __stack);
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNullD() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('nullD', __stack);
-        return result.stack.readAddressOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('nullD', __stack);
+            return result.stack.readAddressOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNullE() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('nullE', __stack);
-        let pp = result.stack.pop();
-        if (pp.type !== 'tuple') { return null; }
-        return unpackTupleSomeGenericStruct(new TupleSlice4(pp.items));
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('nullE', __stack);
+            let pp = result.stack.pop();
+            if (pp.type !== 'tuple') { return null; }
+            return unpackTupleSomeGenericStruct(new TupleSlice4(pp.items));
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNullF() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('nullF', __stack);
-        let pp = result.stack.pop();
-        if (pp.type !== 'tuple') { return null; }
-        return unpackTupleStructWithOptionals(new TupleSlice4(pp.items));
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('nullF', __stack);
+            let pp = result.stack.pop();
+            if (pp.type !== 'tuple') { return null; }
+            return unpackTupleStructWithOptionals(new TupleSlice4(pp.items));
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNotNullA() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('notNullA', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('notNullA', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNotNullB() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('notNullB', __stack);
-        return result.stack.readBoolean();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('notNullB', __stack);
+            return result.stack.readBoolean();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNotNullC() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('notNullC', __stack);
-        return result.stack.readCell();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('notNullC', __stack);
+            return result.stack.readCell();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNotNullD() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('notNullD', __stack);
-        return result.stack.readAddress();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('notNullD', __stack);
+            return result.stack.readAddress();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNotNullE() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('notNullE', __stack);
-        return unpackStackSomeGenericStruct(result.stack);
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('notNullE', __stack);
+            return unpackStackSomeGenericStruct(result.stack);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getNotNullF() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('notNullF', __stack);
-        return unpackStackStructWithOptionals(result.stack);
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('notNullF', __stack);
+            return unpackStackStructWithOptionals(result.stack);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
+                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

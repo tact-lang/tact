@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -217,13 +217,40 @@ export function unpackTupleSource(slice: TupleSlice4): Source {
     const b = slice.readBigNumber();
     return { $$type: 'Source', a: a, b: b };
 }
+export const SampleContract_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
+}
+
 export class SampleContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
     async getStake() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('stake', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('stake', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (SampleContract_errors[e.exitCode.toString()]) {
+                    throw new Error(SampleContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

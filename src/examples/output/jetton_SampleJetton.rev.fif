@@ -269,7 +269,7 @@ SETCP0
   1: 
     s0 PUSH
     ISNULL
-    14 THROWIF
+    128 THROWIF
 
   5: 
     NEWC

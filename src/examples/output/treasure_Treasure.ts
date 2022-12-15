@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -249,7 +249,7 @@ export function unpackTupleWithdraw(slice: TupleSlice4): Withdraw {
     return { $$type: 'Withdraw', amount: amount, mode: mode };
 }
 export async function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECHAEAAh8AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACQgbvJOgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLgZPpAATHwFcj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAUyPhCAcwBzxbJ7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8A6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A3IcPANcPANJG6zlX/wDRTMlTQDcPAN4iRus5V/8A0UzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAADwByMwBzxbJgAgEgEhMCAUgYGQIBIBQVAgEgFhcAGT4QW8jMDEhxwXy4GSAAHwC8BB/yMlUEwJQVW1t8A6AAASAABTwEYAANHCBAKDwEYAAJAHwEDCAAH74o72omhqAPwxfSAAmPgJQACb75d4B8';
+    const __code = 'te6ccgECHAEAAiAAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACwgbvLQgIABWMO1E0NQB+GL6QAExAdMfAYIQts9/D7ry4GT6QAEx8BXI+EIBzAHPFsntVACE+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo4a7UTQ1AH4YvpAATHwFMj4QgHMAc8Wye1U2zHgABVZR/AcoA4HABygCAIBIA4PAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ANyHDwDXDwDSRus5V/8A0UzJU0A3DwDeIkbrOVf/ANFMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAA8AcjMAc8WyYAIBIBITAgFIGBkCASAUFQIBIBYXABk+EFvIzAxIccF8uBkgAB8AvAQf8jJVBMCUFVtbfAOgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAB++KO9qJoagD8MX0gAJj4CUAAm++XeAfA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -260,6 +260,24 @@ export async function Treasure_init(owner: Address) {
     let res = await executor.get('init_Treasure', __stack, { debug: true });
     let data = res.stack.readCell();
     return { code: codeCell, data };
+}
+
+export const Treasure_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
 }
 
 export class Treasure {
@@ -278,20 +296,38 @@ export class Treasure {
             body = packChangeOwner(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (Treasure_errors[e.exitCode.toString()]) {
+                    throw new Error(Treasure_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getOwner() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('owner', __stack);
-        return result.stack.readAddress();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('owner', __stack);
+            return result.stack.readAddress();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (Treasure_errors[e.exitCode.toString()]) {
+                    throw new Error(Treasure_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

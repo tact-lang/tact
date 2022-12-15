@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -302,7 +302,7 @@ export function unpackTupleExecuted(slice: TupleSlice4): Executed {
     return { $$type: 'Executed', seqno: seqno };
 }
 export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {
-    const __code = 'te6ccgECIQEAAlEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACQgbvJOgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4GTTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwFMj4QgHMVTBQNMsfy//L/8v/ye1UAgEgDQ4CASAPEAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8AzIcPAMcPAMJG6zlX/wDBTMlTQDcPAM4iRus5V/8AwUzJU0A3DwDOJw8AwCf/AMAslYzJYzMwFw8AziIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAIxwBMjMVTBQNMsfy//L/8v/yYAATH8zAXBtbW3wDYAIBIBMUAF/So6oeQqkCgR5Y+A/QEA54tk/IApAhV8iCkZlPyIKgmb/IgprN15RQFYANh5RXgHwCASAVFgIBIBcYAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAL75kv2omhqAPwxaY/p/+n/6f+qmDYKeAnAIBIBscAgEgHR4ACbisfwDoAgEgHyAAL7R8vaiaGoA/DFpj+n/6f/p/6qYNgp4CEAAvsOn7UTQ1AH4YtMf0//T/9P/VTBsFPASgAC+w4btRNDUAfhi0x/T/9P/0/9VMGwU8BGA=';
+    const __code = 'te6ccgECIQEAAlIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAZIAoACwgbvLQgIACw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uBk0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BTI+EIBzFUwUDTLH8v/y//L/8ntVAIBIA0OAgEgDxAAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/AMyHDwDHDwDCRus5V/8AwUzJU0A3DwDOIkbrOVf/AMFMyVNANw8AzicPAMAn/wDALJWMyWMzMBcPAM4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgACMcATIzFUwUDTLH8v/y//L/8mAAEx/MwFwbW1t8A2ACASATFABf0qOqHkKpAoEeWPgP0BAOeLZPyAKQIVfIgpGZT8iCoJm/yIKazdeUUBWADYeUV4B8AgEgFRYCASAXGAAJBAjXwOAABwTXwOAABRsMYAAFF8DgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJwCASAbHAIBIB0eAAm4rH8A6AIBIB8gAC+0fL2omhqAPwxaY/p/+n/6f+qmDYKeAhAAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPARg';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -317,6 +317,24 @@ export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {
     return { code: codeCell, data };
 }
 
+export const MultisigContract_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
+}
+
 export class MultisigContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
@@ -327,35 +345,80 @@ export class MultisigContract {
             body = packExecute(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MultisigContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getKey1() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('key1', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('key1', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MultisigContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getKey2() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('key2', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('key2', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MultisigContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getKey3() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('key3', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('key3', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MultisigContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getSeqno() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('seqno', __stack);
-        return result.stack.readBigNumber();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('seqno', __stack);
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (MultisigContract_errors[e.exitCode.toString()]) {
+                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

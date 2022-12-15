@@ -1,4 +1,4 @@
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
@@ -40,6 +40,7 @@ builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int)
 }
 
 ((int, int, int, int, int)) __gen_SomeGenericStruct_not_null(tuple v) {
+    throw_if(128, null?(v));
     return __tact_tuple_destroy_5(v);
 }
 
@@ -145,6 +146,7 @@ tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) 
 }
 
 ((int, int, cell, slice, tuple)) __gen_StructWithOptionals_not_null(tuple v) {
+    throw_if(128, null?(v));
     return __tact_tuple_destroy_5(v);
 }
 

@@ -5,7 +5,7 @@ exports[`writeSerialization should write serializer for A 1`] = `
 
 () __tact_nop() impure asm "NOP";
 
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -285,7 +285,7 @@ exports[`writeSerialization should write serializer for B 1`] = `
 
 () __tact_nop() impure asm "NOP";
 
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -565,7 +565,7 @@ exports[`writeSerialization should write serializer for C 1`] = `
 
 () __tact_nop() impure asm "NOP";
 
-forall X -> X __tact_not_null(X x) { throw_if(14, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
