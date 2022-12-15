@@ -2,6 +2,7 @@ message ChangeOwner {
     newOwner: Address;
 }
 
+@interface("org.ton.ownable")
 trait Ownable {
     owner: Address;
 
@@ -14,6 +15,7 @@ trait Ownable {
     }
 }
 
+@interface("org.ton.ownable.transferable")
 trait OwnableTransferable with Ownable {
 
     owner: Address;

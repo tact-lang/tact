@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from './ast';
+import { ASTContractAttribute, ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 
@@ -72,6 +72,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         return createNode({
             kind: 'def_contract',
             name: arg2.sourceString,
+            attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg4.children.map((v) => v.resolve_declaration()),
             traits: [],
             ref: createRef(this)
@@ -82,6 +83,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         return createNode({
             kind: 'def_contract',
             name: arg2.sourceString,
+            attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg6.children.map((v) => v.resolve_declaration()),
             traits: arg4.asIteration().children.map((v: any) => v.resolve_expression()),
             ref: createRef(this)
@@ -92,6 +94,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         return createNode({
             kind: 'def_trait',
             name: arg2.sourceString,
+            attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg4.children.map((v) => v.resolve_declaration()),
             traits: [],
             ref: createRef(this)
@@ -102,6 +105,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         return createNode({
             kind: 'def_trait',
             name: arg2.sourceString,
+            attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg6.children.map((v) => v.resolve_declaration()),
             traits: arg4.asIteration().children.map((v: any) => v.resolve_expression()),
             ref: createRef(this)
@@ -135,6 +139,13 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
     FunctionAttribute_virtual(arg0) {
         return { type: 'virtual', ref: createRef(this) };
     },
+});
+
+// Resolve contract
+semantics.addOperation<ASTContractAttribute>('resolve_contract_attributes', {
+    ContractAttribute_interface(arg0, arg1, arg2, arg3) {
+        return { type: 'interface', name: arg2.resolve_expression(), ref: createRef(this) };
+    }
 });
 
 // Struct and class declarations

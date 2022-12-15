@@ -207,6 +207,17 @@ _ __gen_get_owner() method_id(83229) {
     return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
 }
 
+int __gen_RugPull_stopped((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = self;
+    return self'stopped;
+}
+
+_ __gen_get_stopped() method_id(74107) {
+    var self = __gen_load_RugPull();
+    var res = __gen_RugPull_stopped(self);
+    return res;
+}
+
 (((slice, int, int, int, int, int, int, int, int, cell)), ()) __gen_RugPull_receive((slice, int, int, int, int, int, int, int, int, cell) self) impure {
     var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
     (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireNotStopped();
@@ -336,10 +347,13 @@ cell init_RugPull(cell sys', slice owner, int investment, int returns, int fee) 
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.ownable.transferable"H >> 128,
+        "org.ton.ownable"H >> 128,
+        "org.ton.stoppable"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmNMN2ebjzbX1LocN6VVnEeWmYy65x8dV4jPTdtWRaFc8a";
+    return "ipfs://QmQCgGcCh3hgTisZZGLnJNPRtehavYPGebLJKisWv4Ziuz";
 }

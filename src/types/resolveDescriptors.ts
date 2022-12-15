@@ -103,7 +103,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 dependsOn: [],
                 init: null,
                 ast: a,
-                interfaces: []
+                interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value)
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -131,7 +131,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 dependsOn: [],
                 init: null,
                 ast: a,
-                interfaces: []
+                interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value)
             };
         }
     }
@@ -672,6 +672,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     selector: f.selector,
                     ast: cloneNode(f.ast)
                 });
+            }
+
+            // Copy intefaces
+            for (let i of tr.interfaces) {
+                if (!t.interfaces.find((v) => v === i)) {
+                    t.interfaces.push(i);
+                }
             }
         }
     }

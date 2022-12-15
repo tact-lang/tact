@@ -79,7 +79,7 @@ SETCP0
       s7 s9 XCHG
       s7 s8 XCHG
       1 10 BLKDROP2
-      23 CALLDICT
+      24 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -178,7 +178,7 @@ SETCP0
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      26 CALLDICT
+      27 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -266,7 +266,7 @@ SETCP0
         s7 s9 XCHG
         s7 s8 XCHG
         1 10 BLKDROP2
-        24 CALLDICT
+        25 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -349,7 +349,7 @@ SETCP0
         s7 s9 XCHG
         s7 s8 XCHG
         1 10 BLKDROP2
-        25 CALLDICT
+        26 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -430,7 +430,7 @@ SETCP0
         s7 s9 XCHG
         s7 s8 XCHG
         1 10 BLKDROP2
-        27 CALLDICT
+        28 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -699,6 +699,10 @@ SETCP0
     15 CALLDICT
 
   23: 
+    s3 s9 XCHG
+    9 BLKDROP
+
+  24: 
     22 CALLDICT
     s4 PUSH
     <{
@@ -754,7 +758,7 @@ SETCP0
     WHILE
     s5 s5 XCHG2
 
-  24: 
+  25: 
     20 CALLDICT
     s4 PUSH
     NOT
@@ -773,7 +777,7 @@ SETCP0
     PUSHNULL
     16 CALLDICT
 
-  25: 
+  26: 
     s4 POP
     -1 PUSHINT
     -1 PUSHINT
@@ -786,12 +790,12 @@ SETCP0
     16 CALLDICT
     s0 s4 XCHG
 
-  26: 
+  27: 
     10 1 BLKSWAP
     20 CALLDICT
     1 9 BLKDROP2
 
-  27: 
+  28: 
     20 CALLDICT
     22 CALLDICT
     -1 PUSHINT
@@ -799,6 +803,43 @@ SETCP0
 
   68140: 
     17 CALLDICT
+
+  74107: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 s1 XCHG
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    1 LDI
+    1 LDI
+    257 PUSHINT
+    LDI
+    LDREF
+    s0 POP
+    CTOS
+    257 PUSHINT
+    LDI
+    LDDICT
+    s0 POP
+    s7 s10 XCHG
+    s7 s9 XCHG
+    s7 s8 XCHG
+    1 10 BLKDROP2
+    23 CALLDICT
 
   owner: 
     c4 PUSH
@@ -840,6 +881,9 @@ SETCP0
   113617: 
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    212791963610352222038671851416501365766 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+    192989407141549587419771644724066226057 PUSHINT
 
   116437: 
     c4 PUSH

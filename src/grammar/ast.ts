@@ -204,6 +204,7 @@ export type ASTTrait = {
     id: number,
     name: string,
     traits: ASTString[],
+    attributes: ASTContractAttribute[],
     declarations: (ASTField | ASTFunction | ASTReceive)[],
     ref: ASTRef
 }
@@ -218,11 +219,14 @@ export type ASTField = {
     ref: ASTRef
 }
 
+export type ASTContractAttribute = { type: 'interface', name: ASTString, ref: ASTRef };
+
 export type ASTContract = {
     kind: 'def_contract',
     id: number,
     name: string,
     traits: ASTString[],
+    attributes: ASTContractAttribute[],
     declarations: (ASTField | ASTFunction | ASTInitFunction | ASTReceive)[],
     ref: ASTRef
 }

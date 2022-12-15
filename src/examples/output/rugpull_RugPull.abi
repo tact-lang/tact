@@ -457,6 +457,15 @@
         "name": "Address",
         "optional": false
       }
+    },
+    {
+      "name": "stopped",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Bool",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},
