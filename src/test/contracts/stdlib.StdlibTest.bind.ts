@@ -191,6 +191,7 @@ export async function StdlibTest_init() {
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_StdlibTest', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -223,7 +224,8 @@ export class StdlibTest {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'slice', cell: sc });
-            let result = await this.executor.get('sliceEmpty', __stack);
+            let result = await this.executor.get('sliceEmpty', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -239,7 +241,8 @@ export class StdlibTest {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'slice', cell: sc });
-            let result = await this.executor.get('sliceBits', __stack);
+            let result = await this.executor.get('sliceBits', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -255,7 +258,8 @@ export class StdlibTest {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'slice', cell: sc });
-            let result = await this.executor.get('sliceRefs', __stack);
+            let result = await this.executor.get('sliceRefs', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {

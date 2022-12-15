@@ -182,88 +182,116 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
 }
-export type ChangeOwner = {
-    $$type: 'ChangeOwner';
-    newOwner: Address;
+export type Vars = {
+    $$type: 'Vars';
+    a: BN;
+    b: BN;
+    c: BN;
+    d: BN;
+    e: BN;
 }
 
-export function packChangeOwner(src: ChangeOwner): Cell {
+export function packVars(src: Vars): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(3067051791, 32);
-    b_0 = b_0.storeAddress(src.newOwner);
+    b_0 = b_0.storeInt(src.a, 257);
+    b_0 = b_0.storeInt(src.b, 257);
+    b_0 = b_0.storeInt(src.c, 257);
+    let b_1 = new Builder();
+    b_1 = b_1.storeInt(src.d, 257);
+    b_1 = b_1.storeInt(src.e, 257);
+    b_0 = b_0.storeRef(b_1.endCell());
     return b_0.endCell();
 }
 
-export function packStackChangeOwner(src: ChangeOwner, __stack: StackItem[]) {
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
+export function packStackVars(src: Vars, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.a });
+    __stack.push({ type: 'int', value: src.b });
+    __stack.push({ type: 'int', value: src.c });
+    __stack.push({ type: 'int', value: src.d });
+    __stack.push({ type: 'int', value: src.e });
 }
 
-export function packTupleChangeOwner(src: ChangeOwner): StackItem[] {
+export function packTupleVars(src: Vars): StackItem[] {
     let __stack: StackItem[] = [];
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
+    __stack.push({ type: 'int', value: src.a });
+    __stack.push({ type: 'int', value: src.b });
+    __stack.push({ type: 'int', value: src.c });
+    __stack.push({ type: 'int', value: src.d });
+    __stack.push({ type: 'int', value: src.e });
     return __stack;
 }
 
-export function unpackStackChangeOwner(slice: TupleSlice4): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
+export function unpackStackVars(slice: TupleSlice4): Vars {
+    const a = slice.readBigNumber();
+    const b = slice.readBigNumber();
+    const c = slice.readBigNumber();
+    const d = slice.readBigNumber();
+    const e = slice.readBigNumber();
+    return { $$type: 'Vars', a: a, b: b, c: c, d: d, e: e };
 }
-export function unpackTupleChangeOwner(slice: TupleSlice4): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
+export function unpackTupleVars(slice: TupleSlice4): Vars {
+    const a = slice.readBigNumber();
+    const b = slice.readBigNumber();
+    const c = slice.readBigNumber();
+    const d = slice.readBigNumber();
+    const e = slice.readBigNumber();
+    return { $$type: 'Vars', a: a, b: b, c: c, d: d, e: e };
 }
-export type Withdraw = {
-    $$type: 'Withdraw';
-    amount: BN;
-    mode: BN;
+export type Update = {
+    $$type: 'Update';
+    a: Vars;
+    b: Vars;
 }
 
-export function packWithdraw(src: Withdraw): Cell {
+export function packUpdate(src: Update): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(1286094280, 32);
-    b_0 = b_0.storeCoins(src.amount);
-    b_0 = b_0.storeUint(src.mode, 8);
+    b_0 = b_0.storeUint(2676568142, 32);
+    b_0 = b_0.storeCellCopy(packVars(src.a));
+    let b_1 = new Builder();
+    b_1 = b_1.storeCellCopy(packVars(src.b));
+    b_0 = b_0.storeRef(b_1.endCell());
     return b_0.endCell();
 }
 
-export function packStackWithdraw(src: Withdraw, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'int', value: src.mode });
+export function packStackUpdate(src: Update, __stack: StackItem[]) {
+    packStackVars(src.a, __stack);
+    packStackVars(src.b, __stack);
 }
 
-export function packTupleWithdraw(src: Withdraw): StackItem[] {
+export function packTupleUpdate(src: Update): StackItem[] {
     let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'int', value: src.mode });
+    __stack.push({ type: 'tuple', items: packTupleVars(src.a) });
+    __stack.push({ type: 'tuple', items: packTupleVars(src.b) });
     return __stack;
 }
 
-export function unpackStackWithdraw(slice: TupleSlice4): Withdraw {
-    const amount = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    return { $$type: 'Withdraw', amount: amount, mode: mode };
+export function unpackStackUpdate(slice: TupleSlice4): Update {
+    const a = unpackStackVars(slice);
+    const b = unpackStackVars(slice);
+    return { $$type: 'Update', a: a, b: b };
 }
-export function unpackTupleWithdraw(slice: TupleSlice4): Withdraw {
-    const amount = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    return { $$type: 'Withdraw', amount: amount, mode: mode };
+export function unpackTupleUpdate(slice: TupleSlice4): Update {
+    const a = unpackTupleVars(slice);
+    const b = unpackTupleVars(slice);
+    return { $$type: 'Update', a: a, b: b };
 }
-export async function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECHAEAAiAAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4IH6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sCCgCgsACwgbvLQgIABWMO1E0NQB+GL6QAExAdMfAYIQts9/D7ry4IH6QAEx8BXI+EIBzAHPFsntVACE+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo4a7UTQ1AH4YvpAATHwFMj4QgHMAc8Wye1U2zHgABVZR/AcoA4HABygCAIBIA4PAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ANyHDwDXDwDSRus5V/8A0UzJU0A3DwDeIkbrOVf/ANFMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAA8AcjMAc8WyYAIBIBITAgFIGBkCASAUFQIBIBYXABk+EFvIzAxIccF8uBkgAB8AvAQf8jJVBMCUFVtbfAOgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAB++KO9qJoagD8MX0gAJj4CUAAm++XeAfA==';
+export async function SerializationTester2_init(a: Vars, b: Vars) {
+    const __code = 'te6ccgECDgEAAuAAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghCfiTBOuuMCMPLAggQCASAICQGY7UTQ1AH4YoEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wBVQAXXTNCBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAVUAQWmwaCgUB5NMfAYIQn4kwTrry4IGBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAVUAF10zQgQEB1wCBAQHXAIEBAdcA10zQgQEB1wCBAQHXAFVAEFo6ERIRExESEREREhERERAREREQDxEQDxDvEN4QzRC8EKtVCAYBXGyqCf4gCP4gB/4gBv4gBf4gBP4gA/4gAv4gAf4gCf4gEIkQeBBnEFYQRRA0QTAHALrI+EIBzFWQEFoQSRA4R2pQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHMyFVABlBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczJAczJ7VQBCb/oltnkCgIBWAwNAWAJ/iAI/iAH/iAG/iAF/iAE/iAD/iAC/iAB/iAJ/iAKyMwKEIkQeBBnEFYQRRA0QTALAKgQWhBJEDhHalBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczIVUAGUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzMkBzMkAn7aP/aiaGoA/DFAgIDrgECAgOuAQICA64BrpmhAgIDrgECAgOuAKqAC66ZoQICA64BAgIDrgECAgOuAa6ZoQICA64BAgIDrgCqgCC02DTYqwAJ+0g52omhqAPwxQICA64BAgIDrgECAgOuAa6ZoQICA64BAgIDrgCqgAuumaECAgOuAQICA64BAgIDrgGumaECAgOuAQICA64AqoAgtNg0vgsA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+    packStackVars(a, __stack);
+    packStackVars(b, __stack);
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
-    let res = await executor.get('init_Treasure', __stack, { debug: true });
+    let res = await executor.get('init_SerializationTester2', __stack, { debug: true });
     if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
 
-export const Treasure_errors: { [key: string]: string } = {
+export const SerializationTester2_errors: { [key: string]: string } = {
     '2': `Stack undeflow`,
     '3': `Stack overflow`,
     '4': `Integer overflow`,
@@ -283,20 +311,14 @@ export const Treasure_errors: { [key: string]: string } = {
     '130': `Invalid incoming message`,
 }
 
-export class Treasure {
+export class SerializationTester2 {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Withdraw | 'Destroy' | ChangeOwner) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Update) {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Withdraw') {
-            body = packWithdraw(message);
-        }
-        if (message === 'Destroy') {
-            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ChangeOwner') {
-            body = packChangeOwner(message);
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Update') {
+            body = packUpdate(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         try {
@@ -313,24 +335,40 @@ export class Treasure {
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Treasure_errors[e.exitCode.toString()]) {
-                    throw new Error(Treasure_errors[e.exitCode.toString()]);
+                if (SerializationTester2_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester2_errors[e.exitCode.toString()]);
                 }
             }
             throw e;
         }
     }
-    async getOwner() {
+    async getGetA() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('owner', __stack, { debug: true });
+            let result = await this.executor.get('getA', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
-            return result.stack.readAddress();
+            return unpackStackVars(result.stack);
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Treasure_errors[e.exitCode.toString()]) {
-                    throw new Error(Treasure_errors[e.exitCode.toString()]);
+                if (SerializationTester2_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester2_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetB() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('getB', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return unpackStackVars(result.stack);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (SerializationTester2_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester2_errors[e.exitCode.toString()]);
                 }
             }
             throw e;

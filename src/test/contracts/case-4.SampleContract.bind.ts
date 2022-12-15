@@ -244,7 +244,8 @@ export class SampleContract {
     async getStake() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('stake', __stack);
+            let result = await this.executor.get('stake', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {

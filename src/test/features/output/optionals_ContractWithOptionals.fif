@@ -90,26 +90,19 @@ PROGRAM{
     STREF
   }>
   __gen_read_SomeGenericStruct PROCINLINE:<{
-    x{496e766f6b65205f5f67656e5f726561645f536f6d6547656e65726963537472756374} PUSHSLICE
-    STRDUMP
-    DROP
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
-    DUP
     PLDREF
     CTOS
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
-    DROP
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
+    5 -ROLL
   }>
   __gen_SomeGenericStruct_not_null PROC:<{
     DUP
@@ -199,9 +192,6 @@ PROGRAM{
     5 TUPLE
   }>
   __gen_read_StructWithOptionals PROCINLINE:<{
-    x{496e766f6b65205f5f67656e5f726561645f537472756374576974684f7074696f6e616c73} PUSHSLICE
-    STRDUMP
-    DROP
     PUSHNULL
     SWAP
     1 LDI
@@ -236,7 +226,6 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    DUP
     PLDREF
     CTOS
     PUSHNULL
@@ -246,22 +235,15 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
-      1 5 BLKDROP2
       __gen_SomeGenericStruct_as_optional CALLDICT
-    }>ELSE<{
-      DROP
+      SWAP
     }>
-    s1 s5 XCHG
-    s1 s4 XCHG
-    s3 s3 s0 XCHG3
+    5 -ROLL
   }>
   __gen_StructWithOptionals_as_optional PROC:<{
     5 TUPLE
   }>
   __gen_read_Update PROCINLINE:<{
-    x{496e766f6b65205f5f67656e5f726561645f557064617465} PUSHSLICE
-    STRDUMP
-    DROP
     32 LDU
     SWAP
     2676568142 PUSHINT
@@ -301,7 +283,6 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    DUP
     PLDREF
     CTOS
     PUSHNULL
@@ -323,15 +304,10 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
-      1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional CALLDICT
-    }>ELSE<{
-      DROP
+      SWAP
     }>
-    s2 s6 XCHG
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
+    6 -ROLL
   }>
   __gen_StructWithOptionals_not_null PROC:<{
     DUP
@@ -437,9 +413,6 @@ PROGRAM{
     STREF
   }>
   __gen_read_ContractWithOptionals PROCINLINE:<{
-    x{496e766f6b65205f5f67656e5f726561645f436f6e7472616374576974684f7074696f6e616c73} PUSHSLICE
-    STRDUMP
-    DROP
     PUSHNULL
     SWAP
     1 LDI
@@ -474,7 +447,6 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    DUP
     PLDREF
     CTOS
     PUSHNULL
@@ -496,15 +468,10 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
-      1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional CALLDICT
-    }>ELSE<{
-      DROP
+      SWAP
     }>
-    s2 s6 XCHG
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
+    6 -ROLL
   }>
   __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH
@@ -526,10 +493,25 @@ PROGRAM{
     c4 POP
   }>
   __gen_ContractWithOptionals_init PROCINLINE:<{
+    s0 s5 XCHG
+    s0 DUMP
+    s0 s4 XCHG
+    s0 DUMP
+    s0 s3 XCHG
+    s0 DUMP
+    s0 s2 XCHG
+    s0 DUMP
+    SWAP
+    s0 DUMP
+    s0 s5 XCHG
+    s0 DUMP
     s0 s6 XCHG
     NEWC
     STREF
     s0 s6 XCHG
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
     __gen_write_ContractWithOptionals INLINECALLDICT
     ENDC
   }>
@@ -682,7 +664,20 @@ PROGRAM{
     __gen_ContractWithOptionals_notNullE INLINECALLDICT
   }>
   __gen_ContractWithOptionals_notNullF PROCINLINE:<{
-    5 1 BLKDROP2
+    s0 s5 XCHG
+    s0 DUMP
+    DROP
+    s0 s3 XCHG
+    s0 DUMP
+    DROP
+    SWAP
+    s0 DUMP
+    DROP
+    s0 DUMP
+    DROP
+    s0 DUMP
+    DROP
+    s0 DUMP
     __gen_StructWithOptionals_not_null CALLDICT
   }>
   __gen_get_notNullF PROC:<{
@@ -691,6 +686,21 @@ PROGRAM{
   }>
   __gen_ContractWithOptionals_receive_Update PROCINLINE:<{
     6 6 BLKDROP2
+    s0 s5 XCHG
+    s0 DUMP
+    s0 s4 XCHG
+    s0 DUMP
+    s0 s3 XCHG
+    s0 DUMP
+    s0 s2 XCHG
+    s0 DUMP
+    SWAP
+    s0 DUMP
+    s0 s5 XCHG
+    s0 DUMP
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
   }>
   recv_internal PROC:<{
     0 PUSHINT

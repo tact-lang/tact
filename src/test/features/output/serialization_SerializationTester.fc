@@ -1,0 +1,247 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_Update(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2676568142);
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    var v'c = sc_0~load_int(257);
+    slice sc_1 = preload_ref(sc_0).begin_parse();
+    var v'd = sc_1~load_int(257);
+    var v'e = sc_1~load_int(257);
+    var v'f = sc_1~load_int(257);
+    slice sc_2 = preload_ref(sc_1).begin_parse();
+    var v'g = sc_2~load_int(257);
+    var v'h = sc_2~load_int(257);
+    var v'i = sc_2~load_int(257);
+    return (sc_2, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
+}
+
+builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    build_0 = store_int(build_0, v'c, 257);
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, v'd, 257);
+    build_1 = store_int(build_1, v'e, 257);
+    build_1 = store_int(build_1, v'f, 257);
+    var build_2 = begin_cell();
+    build_2 = store_int(build_2, v'g, 257);
+    build_2 = store_int(build_2, v'h, 257);
+    build_2 = store_int(build_2, v'i, 257);
+    build_1 = store_ref(build_1, build_2.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_SerializationTester(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    var v'c = sc_0~load_int(257);
+    slice sc_1 = preload_ref(sc_0).begin_parse();
+    var v'd = sc_1~load_int(257);
+    var v'e = sc_1~load_int(257);
+    var v'f = sc_1~load_int(257);
+    slice sc_2 = preload_ref(sc_1).begin_parse();
+    var v'g = sc_2~load_int(257);
+    var v'h = sc_2~load_int(257);
+    var v'i = sc_2~load_int(257);
+    return (sc_2, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
+}
+
+(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_SerializationTester();
+}
+
+() __gen_store_SerializationTester((int, int, int, int, int, int, int, int, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_SerializationTester(b, v);
+    set_data(b.end_cell());
+}
+
+cell __gen_SerializationTester_init(cell sys', int a, int b, int c, int d, int e, int f, int g, int h, int i) inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = (null(), null(), null(), null(), null(), null(), null(), null(), null());
+    self'a = a;
+    self'b = b;
+    self'c = c;
+    self'd = d;
+    self'e = e;
+    self'f = f;
+    self'g = g;
+    self'h = h;
+    self'i = i;
+    self'a~dump();
+    self'b~dump();
+    self'c~dump();
+    self'd~dump();
+    self'e~dump();
+    self'f~dump();
+    self'g~dump();
+    self'h~dump();
+    self'i~dump();
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SerializationTester(b', (self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i));
+    return b'.end_cell();
+}
+
+int __gen_SerializationTester_getA((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'a;
+}
+
+_ __gen_get_getA() method_id(123932) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getA(self);
+    return res;
+}
+
+int __gen_SerializationTester_getB((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'b;
+}
+
+_ __gen_get_getB() method_id(119935) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getB(self);
+    return res;
+}
+
+int __gen_SerializationTester_getC((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'c;
+}
+
+_ __gen_get_getC() method_id(115806) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getC(self);
+    return res;
+}
+
+int __gen_SerializationTester_getD((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'd;
+}
+
+_ __gen_get_getD() method_id(111801) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getD(self);
+    return res;
+}
+
+int __gen_SerializationTester_getE((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'e;
+}
+
+_ __gen_get_getE() method_id(107672) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getE(self);
+    return res;
+}
+
+int __gen_SerializationTester_getF((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'f;
+}
+
+_ __gen_get_getF() method_id(103675) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getF(self);
+    return res;
+}
+
+int __gen_SerializationTester_getG((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'g;
+}
+
+_ __gen_get_getG() method_id(99546) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getG(self);
+    return res;
+}
+
+int __gen_SerializationTester_getH((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'h;
+}
+
+_ __gen_get_getH() method_id(95541) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getH(self);
+    return res;
+}
+
+int __gen_SerializationTester_getI((int, int, int, int, int, int, int, int, int) self) impure inline {
+    var ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i)) = self;
+    return self'i;
+}
+
+_ __gen_get_getI() method_id(91412) {
+    var self = __gen_load_SerializationTester();
+    var res = __gen_SerializationTester_getI(self);
+    return res;
+}
+
+(((int, int, int, int, int, int, int, int, int)), ()) __gen_SerializationTester_receive_Update((int, int, int, int, int, int, int, int, int) self, (int, int, int, int, int, int, int, int, int) msg) impure inline {
+    var (self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i) = self;
+    var (msg'a, msg'b, msg'c, msg'd, msg'e, msg'f, msg'g, msg'h, msg'i) = msg;
+    self'a = msg'a;
+    self'b = msg'b;
+    self'c = msg'c;
+    self'd = msg'd;
+    self'e = msg'e;
+    self'f = msg'f;
+    self'h = msg'h;
+    self'i = msg'i;
+    self'a~dump();
+    self'b~dump();
+    self'c~dump();
+    self'd~dump();
+    self'e~dump();
+    self'f~dump();
+    self'g~dump();
+    self'h~dump();
+    self'i~dump();
+    return ((self'a, self'b, self'c, self'd, self'e, self'f, self'g, self'h, self'i), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Update message
+    if (op == 2676568142) {
+        var self = __gen_load_SerializationTester();
+        var msg = in_msg~__gen_read_Update();
+        self~__gen_SerializationTester_receive_Update(msg);
+        __gen_store_SerializationTester(self);
+        return ();
+    }
+    
+    throw(130);
+}
+
+cell init_SerializationTester(cell sys', int a, int b, int c, int d, int e, int f, int g, int h, int i) method_id {
+    return __gen_SerializationTester_init(sys', a, b, c, d, e, f, g, h, i);
+}

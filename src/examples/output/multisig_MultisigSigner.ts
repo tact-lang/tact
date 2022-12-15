@@ -250,6 +250,7 @@ export async function MultisigSigner_init(master: Address, members: Cell, requir
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_MultisigSigner', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }

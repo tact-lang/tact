@@ -188,6 +188,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
             w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
             w.append(`let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });`);
             w.append(`let res = await executor.get('${abi.init!.name}', __stack, { debug: true });`);
+            w.append(`if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }`);
             w.append(`let data = res.stack.readCell();`);
             w.append(`return { code: codeCell, data };`);
         });
@@ -273,7 +274,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                         w.append(`})`);
                     });
                     w.append(`}), { debug: args.debug });`);
-                    w.append(`if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }`);
+                    w.append(`if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }`);
                 });
                 w.append(`} catch (e) {`);
                 w.inIndent(() => {
@@ -304,7 +305,8 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     for (let a of g.args) {
                         writeToStack(a.name, a.type, w);
                     }
-                    w.append(`let result = await this.executor.get('${g.name}', __stack);`);
+                    w.append(`let result = await this.executor.get('${g.name}', __stack, { debug: true });`);
+                    w.append(`if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }`);
 
                     if (g.returns) {
                         if (g.returns.kind === 'ref') {

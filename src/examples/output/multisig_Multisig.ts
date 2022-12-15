@@ -248,6 +248,7 @@ export async function Multisig_init(members: Cell, requiredWeight: BN) {
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_Multisig', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -292,7 +293,7 @@ export class Multisig {
                     body: new CellMessage(body!)
                 })
             }), { debug: args.debug });
-            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }

@@ -267,7 +267,6 @@ PROGRAM{
   __gen_read_MapTestContract PROCINLINE:<{
     LDDICT
     LDDICT
-    DUP
     PLDREF
     CTOS
     LDDICT
@@ -278,9 +277,7 @@ PROGRAM{
     LDDICT
     LDDICT
     LDDICT
-    DROP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 -ROLL
   }>
   __gen_load_MapTestContract PROCINLINE:<{
     c4 PUSH

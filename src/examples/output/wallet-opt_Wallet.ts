@@ -229,6 +229,7 @@ export async function Wallet_init(key: BN, walletId: BN) {
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_Wallet', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -273,7 +274,7 @@ export class Wallet {
                     body: new CellMessage(body!)
                 })
             }), { debug: args.debug });
-            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
@@ -287,7 +288,8 @@ export class Wallet {
     async getPublicKey() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('publicKey', __stack);
+            let result = await this.executor.get('publicKey', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -302,7 +304,8 @@ export class Wallet {
     async getWalletId() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('walletId', __stack);
+            let result = await this.executor.get('walletId', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -317,7 +320,8 @@ export class Wallet {
     async getSeqno() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('seqno', __stack);
+            let result = await this.executor.get('seqno', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {

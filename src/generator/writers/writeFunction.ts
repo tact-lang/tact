@@ -2,6 +2,7 @@ import { beginCell } from "ton";
 import { enabledInline } from "../../config";
 import { ASTCondition, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
+import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../../types/types";
 import { getMethodId } from "../../utils";
 import { WriterContext } from "../Writer";
@@ -20,11 +21,13 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         }
         return;
     } else if (f.kind === 'statement_let') {
+
+        // Contract/struct case
         let t = resolveTypeRef(ctx.ctx, f.type);
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                ctx.append(`var ${resolveFuncTypeUnpack(tt, f.name, ctx)} = ${writeExpression(f.expression, ctx)};`);
+                ctx.append(`var ${resolveFuncTypeUnpack(t, f.name, ctx)} = ${writeExpression(f.expression, ctx)};`);
                 return;
             }
         }
@@ -32,6 +35,17 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${f.name} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_assign') {
+
+        // Contract/struct case
+        let t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
+        if (t.kind === 'ref') {
+            let tt = getType(ctx.ctx, t.name);
+            if (tt.kind === 'contract' || tt.kind === 'struct') {
+                ctx.append(`${resolveFuncTypeUnpack(t, `${f.path.map((v) => v.name).join(`'`)}`, ctx)} = ${writeExpression(f.expression, ctx)};`);
+                return;
+            }
+        }
+
         ctx.append(`${f.path.map((v) => v.name).join(`'`)} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_condition') {

@@ -56,6 +56,24 @@
         "inline": true,
         "debug": true
       }
+    },
+    {
+      "name": "serialization",
+      "path": "./src/test/features/serialization.tact",
+      "output": "./src/test/features/output",
+      "experimental": {
+        "inline": true,
+        "debug": true
+      }
+    },
+    {
+      "name": "serialization-2",
+      "path": "./src/test/features/serialization-2.tact",
+      "output": "./src/test/features/output",
+      "experimental": {
+        "inline": true,
+        "debug": true
+      }
     }
   ]
 }

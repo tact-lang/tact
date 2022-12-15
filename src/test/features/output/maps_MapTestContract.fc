@@ -153,7 +153,7 @@ builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, ce
     var v'addrMap2 = sc_2~load_dict();
     var v'addrMap3 = sc_2~load_dict();
     var v'addrMap4 = sc_2~load_dict();
-    return (sc_0, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
+    return (sc_2, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
 }
 
 (cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline {

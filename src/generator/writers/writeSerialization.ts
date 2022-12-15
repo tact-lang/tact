@@ -84,7 +84,7 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
             ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, __gen_${f.type.name}_not_null(v'${f.name}));`);
         } else {
             ctx.used(`__gen_write_${f.type.name}`);
-            ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, v'${f.name});`);
+            ctx.append(`build_${index} = __gen_write_${f.type.name}(build_${index}, ${resolveFuncTypeUnpack(f.type, `v'${f.name}`, ctx)});`);
         }
         return;
     }
@@ -269,7 +269,6 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
     ctx.fun(`__gen_read_${name}`, () => {
         ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${name}(slice sc_0) inline {`);
         ctx.inIndent(() => {
-            ctx.debug(`Invoke __gen_read_${name}`);
 
             // Check prefix
             if (allocation.prefix) {
@@ -277,10 +276,10 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
             }
 
             // Write cell parser
-            writeCellParser(allocation.root, 0, ctx);
+            let out = writeCellParser(allocation.root, 0, ctx);
 
             // Compile tuple
-            ctx.append(`return (sc_0, (${allocation.fields.map((v) => `v'${v.name}`).join(', ')}));`);
+            ctx.append(`return (sc_${out}, (${allocation.fields.map((v) => `v'${v.name}`).join(', ')}));`);
         });
         ctx.append("}");
     });

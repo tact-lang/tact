@@ -549,6 +549,7 @@ export async function SampleJetton_init(owner: Address, content: Cell | null) {
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_SampleJetton', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -599,7 +600,7 @@ export class SampleJetton {
                     body: new CellMessage(body!)
                 })
             }), { debug: args.debug });
-            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
@@ -614,7 +615,8 @@ export class SampleJetton {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
-            let result = await this.executor.get('get_wallet_address', __stack);
+            let result = await this.executor.get('get_wallet_address', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readAddress();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -629,7 +631,8 @@ export class SampleJetton {
     async getGetJettonData() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('get_jetton_data', __stack);
+            let result = await this.executor.get('get_jetton_data', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return unpackStackJettonData(result.stack);
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -644,7 +647,8 @@ export class SampleJetton {
     async getOwner() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('owner', __stack);
+            let result = await this.executor.get('owner', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readAddress();
         } catch (e) {
             if (e instanceof ExecuteError) {

@@ -19,13 +19,11 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    DUP
     PLDREF
     CTOS
     __gen_read_Source INLINECALLDICT
-    s2 POP
     s2 s4 XCHG
-    s3 s0 s0 XCHG3
+    s2 s3 XCHG
   }>
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH

@@ -15,6 +15,8 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 () __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
 
+forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
@@ -256,7 +258,7 @@ cell __gen_writecellopt_A(tuple v) inline {
     slice sc_1 = preload_ref(sc_0).begin_parse();
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
-    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
+    return (sc_1, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
 tuple __gen_readopt_A(cell cl) inline {
@@ -296,6 +298,8 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
 () __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
+
+forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
@@ -538,7 +542,7 @@ cell __gen_writecellopt_B(tuple v) inline {
     slice sc_1 = preload_ref(sc_0).begin_parse();
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
-    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
+    return (sc_1, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
 tuple __gen_readopt_B(cell cl) inline {
@@ -578,6 +582,8 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
 () __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
+
+forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
 
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
@@ -830,7 +836,7 @@ cell __gen_writecellopt_C(tuple v) inline {
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
     var v'h = sc_1~__tact_load_address();
-    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
+    return (sc_1, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
 }
 
 tuple __gen_readopt_C(cell cl) inline {

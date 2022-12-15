@@ -40,6 +40,13 @@ contract ContractWithOptionals {
         self.d = d;
         self.e = e;
         self.f = f;
+
+        abi.dump(self.a);
+        abi.dump(self.b);
+        abi.dump(self.c);
+        abi.dump(self.d);
+        abi.dump(self.e);
+        abi.dump(self.f);
     }
 
     receive(msg: Update) {
@@ -49,6 +56,13 @@ contract ContractWithOptionals {
         self.d = msg.d;
         self.e = msg.e;
         self.f = msg.f;
+
+        abi.dump(self.a);
+        abi.dump(self.b);
+        abi.dump(self.c);
+        abi.dump(self.d);
+        abi.dump(self.e);
+        abi.dump(self.f);
     }
 
     get fun isNotNullA(): Bool {
@@ -115,6 +129,12 @@ contract ContractWithOptionals {
     }
 
     get fun notNullF(): StructWithOptionals {
+        abi.dump(self.a);
+        abi.dump(self.b);
+        abi.dump(self.c);
+        abi.dump(self.d);
+        abi.dump(self.e);
+        abi.dump(self.f);
         return self.f!!;
     }
 }

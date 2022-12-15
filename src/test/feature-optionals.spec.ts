@@ -118,10 +118,10 @@ describe('features', () => {
     let eV = {
         $$type: 'SomeGenericStruct' as const,
         value1: new BN(1),
-        value2: new BN(1),
-        value3: new BN(1),
-        value4: new BN(1),
-        value5: new BN(1)
+        value2: new BN(2),
+        value3: new BN(3),
+        value4: new BN(4),
+        value5: new BN(5)
     };
     let ev2: StructWithOptionals = {
         $$type: 'StructWithOptionals' as const,

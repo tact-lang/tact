@@ -5,6 +5,7 @@ import { getAllocations, resolveAllocations } from './resolveAllocation';
 import { openContext } from '../grammar/store';
 import { resolveStatements } from '../types/resolveStatements';
 import { CompilerContext } from '../context';
+import { createABI } from '../generator/createABI';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
 const src = `
@@ -21,6 +22,26 @@ struct Point {
 
 struct Point2 {
     z: Point;
+}
+
+struct Deep {
+    a: Int;
+    b: Int;
+    c: Int;
+    d: Int;
+    e: Int;
+    f: Int;
+    g: Int;
+    h: Int;
+    i: Int;
+    j: Int;
+    k: Int;
+}
+
+struct Deep2 {
+    a: Deep;
+    b: Deep;
+    c: Deep;
 }
 
 contract Sample {

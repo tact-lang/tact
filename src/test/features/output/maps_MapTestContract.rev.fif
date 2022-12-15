@@ -48,7 +48,6 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      s0 PUSH
       0 PLDREFIDX
       CTOS
       LDDICT
@@ -59,9 +58,7 @@ SETCP0
       LDDICT
       LDDICT
       LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      8 1 BLKSWAP
       1 8 BLKDROP2
       s0 s8 XCHG
       32 LDU
@@ -134,7 +131,6 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      s0 PUSH
       0 PLDREFIDX
       CTOS
       LDDICT
@@ -145,9 +141,7 @@ SETCP0
       LDDICT
       LDDICT
       LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      8 1 BLKSWAP
       1 8 BLKDROP2
       s0 s8 XCHG
       32 LDU
@@ -219,7 +213,6 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      s0 PUSH
       0 PLDREFIDX
       CTOS
       LDDICT
@@ -230,9 +223,7 @@ SETCP0
       LDDICT
       LDDICT
       LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      8 1 BLKSWAP
       1 8 BLKDROP2
       s0 s8 XCHG
       32 LDU
@@ -304,7 +295,6 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      s0 PUSH
       0 PLDREFIDX
       CTOS
       LDDICT
@@ -315,9 +305,7 @@ SETCP0
       LDDICT
       LDDICT
       LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      8 1 BLKSWAP
       1 8 BLKDROP2
       s0 s8 XCHG
       32 LDU
@@ -378,8 +366,7 @@ SETCP0
       STREF
       ENDC
       c4 POP
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     1566575299 PUSHINT
     EQUAL
     <{
@@ -390,7 +377,6 @@ SETCP0
       2 SETGLOBVAR
       LDDICT
       LDDICT
-      s0 PUSH
       0 PLDREFIDX
       CTOS
       LDDICT
@@ -401,9 +387,7 @@ SETCP0
       LDDICT
       LDDICT
       LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      8 1 BLKSWAP
       1 8 BLKDROP2
       s0 s8 XCHG
       32 LDU
@@ -724,7 +708,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -735,9 +718,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     19 CALLDICT
 
@@ -749,7 +730,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -760,9 +740,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     1 8 BLKSWAP
     30 CALLDICT
@@ -775,7 +753,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -786,9 +763,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     1 8 BLKSWAP
     24 CALLDICT
@@ -801,7 +776,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -812,9 +786,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     23 CALLDICT
 
@@ -826,7 +798,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -837,9 +808,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     21 CALLDICT
 
@@ -851,7 +820,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -862,9 +830,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     32 CALLDICT
 
@@ -876,7 +842,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -887,9 +852,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     31 CALLDICT
 
@@ -901,7 +864,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -912,9 +874,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     25 CALLDICT
 
@@ -926,7 +886,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -937,9 +896,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     29 CALLDICT
 
@@ -951,7 +908,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -962,9 +918,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     1 8 BLKSWAP
     22 CALLDICT
@@ -977,7 +931,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -988,9 +941,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     27 CALLDICT
 
@@ -1002,7 +953,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -1013,9 +963,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     1 8 BLKSWAP
     20 CALLDICT
@@ -1031,7 +979,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -1042,9 +989,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     1 8 BLKSWAP
     28 CALLDICT
@@ -1057,7 +1002,6 @@ SETCP0
     2 SETGLOBVAR
     LDDICT
     LDDICT
-    s0 PUSH
     0 PLDREFIDX
     CTOS
     LDDICT
@@ -1068,9 +1012,7 @@ SETCP0
     LDDICT
     LDDICT
     LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    8 1 BLKSWAP
     1 8 BLKDROP2
     1 8 BLKSWAP
     26 CALLDICT

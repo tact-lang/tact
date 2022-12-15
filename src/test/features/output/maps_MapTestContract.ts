@@ -457,7 +457,7 @@ export function unpackTupleSomeStruct(slice: TupleSlice4): SomeStruct {
     return { $$type: 'SomeStruct', value: value };
 }
 export async function MapTestContract_init() {
-    const __code = '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';
+    const __code = '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';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -465,6 +465,7 @@ export async function MapTestContract_init() {
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_MapTestContract', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -521,7 +522,7 @@ export class MapTestContract {
                     body: new CellMessage(body!)
                 })
             }), { debug: args.debug });
-            if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
@@ -535,7 +536,8 @@ export class MapTestContract {
     async getIntMap1() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('intMap1', __stack);
+            let result = await this.executor.get('intMap1', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -551,7 +553,8 @@ export class MapTestContract {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'int', value: key });
-            let result = await this.executor.get('intMap1Value', __stack);
+            let result = await this.executor.get('intMap1Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumberOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -566,7 +569,8 @@ export class MapTestContract {
     async getIntMap2() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('intMap2', __stack);
+            let result = await this.executor.get('intMap2', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -582,7 +586,8 @@ export class MapTestContract {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'int', value: key });
-            let result = await this.executor.get('intMap2Value', __stack);
+            let result = await this.executor.get('intMap2Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBooleanOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -597,7 +602,8 @@ export class MapTestContract {
     async getIntMap3() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('intMap3', __stack);
+            let result = await this.executor.get('intMap3', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -613,7 +619,8 @@ export class MapTestContract {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'int', value: key });
-            let result = await this.executor.get('intMap3Value', __stack);
+            let result = await this.executor.get('intMap3Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -628,7 +635,8 @@ export class MapTestContract {
     async getIntMap4() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('intMap4', __stack);
+            let result = await this.executor.get('intMap4', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -644,7 +652,8 @@ export class MapTestContract {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'int', value: key });
-            let result = await this.executor.get('intMap4Value', __stack);
+            let result = await this.executor.get('intMap4Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             let pp = result.stack.pop();
             if (pp.type !== 'tuple') { return null; }
             return unpackTupleSomeStruct(new TupleSlice4(pp.items));
@@ -661,7 +670,8 @@ export class MapTestContract {
     async getAddrMap1() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('addrMap1', __stack);
+            let result = await this.executor.get('addrMap1', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -677,7 +687,8 @@ export class MapTestContract {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-            let result = await this.executor.get('addrMap1Value', __stack);
+            let result = await this.executor.get('addrMap1Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumberOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -692,7 +703,8 @@ export class MapTestContract {
     async getAddrMap2() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('addrMap2', __stack);
+            let result = await this.executor.get('addrMap2', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -708,7 +720,8 @@ export class MapTestContract {
         try {
             let __stack: StackItem[] = [];
             __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-            let result = await this.executor.get('addrMap2Value', __stack);
+            let result = await this.executor.get('addrMap2Value', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBooleanOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -723,7 +736,8 @@ export class MapTestContract {
     async getAddrMap3() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('addrMap3', __stack);
+            let result = await this.executor.get('addrMap3', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
@@ -738,7 +752,8 @@ export class MapTestContract {
     async getAddrMap4() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('addrMap4', __stack);
+            let result = await this.executor.get('addrMap4', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {

@@ -1,0 +1,554 @@
+SETCP0
+(:methods
+  recv_internal: 
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    1 EQINT
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 POP
+    1 0 4 PUXC2
+    TRIPLE
+    1 SETGLOBVAR
+    s0 s2 XCHG
+    <{
+      2DROP
+    }> PUSHCONT
+    IFJMP
+    2676568142 PUSHINT
+    EQUAL
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      0 PLDREFIDX
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      0 PLDREFIDX
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      9 1 BLKSWAP
+      1 9 BLKDROP2
+      s0 s9 XCHG
+      32 LDU
+      s0 s1 XCHG
+      2676568142 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      0 PLDREFIDX
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      0 PLDREFIDX
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      9 1 BLKSWAP
+      s9 POP
+      s0 s16 XCHG
+      s0 s17 XCHG
+      s0 s16 XCHG
+      s0 s15 XCHG
+      s0 s16 XCHG
+      s0 s15 XCHG
+      s14 s15 XCHG
+      s13 s14 XCHG
+      s12 s13 XCHG
+      s11 s12 XCHG
+      s10 s11 XCHG
+      s9 s10 XCHG
+      1 8 BLKSWAP
+      s2 POP
+      s8 POP
+      s8 POP
+      s9 POP
+      s9 POP
+      s9 POP
+      s9 POP
+      s9 POP
+      s9 POP
+      s0 s8 XCHG
+      32 DEBUG
+      s0 s7 XCHG
+      32 DEBUG
+      s0 s6 XCHG
+      32 DEBUG
+      s0 s5 XCHG
+      32 DEBUG
+      s0 s4 XCHG
+      32 DEBUG
+      s0 s3 XCHG
+      32 DEBUG
+      s0 s2 XCHG
+      32 DEBUG
+      s0 s8 XCHG
+      32 DEBUG
+      s0 s1 XCHG
+      32 DEBUG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s2 s3 XCHG
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      9 1 BLKSWAP
+      s8 s9 XCHG2
+      257 PUSHINT
+      STIX
+      s1 s6 XCHG
+      257 PUSHINT
+      STIX
+      s1 s4 XCHG
+      257 PUSHINT
+      STIX
+      s0 s2 XCHG
+      NEWC
+      257 PUSHINT
+      STIX
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      s0 s2 XCHG
+      NEWC
+      257 PUSHINT
+      STIX
+      s1 s3 XCHG
+      257 PUSHINT
+      STIX
+      s1 s3 XCHG
+      257 PUSHINT
+      STIX
+      ENDC
+      ROT
+      STREF
+      ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
+      c4 POP
+    }> PUSHCONT
+    IFJMP
+    s0 POP
+    130 THROW
+
+  91412: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    8 1 BLKDROP2
+
+  91479: 
+    s0 s8 XCHG
+    32 DEBUG
+    s0 s7 XCHG
+    32 DEBUG
+    s0 s6 XCHG
+    32 DEBUG
+    s0 s5 XCHG
+    32 DEBUG
+    s0 s4 XCHG
+    32 DEBUG
+    s0 s3 XCHG
+    32 DEBUG
+    s0 s2 XCHG
+    32 DEBUG
+    s0 s1 XCHG
+    32 DEBUG
+    s0 s8 XCHG
+    32 DEBUG
+    s0 s9 XCHG
+    NEWC
+    STREF
+    s0 s9 XCHG
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+    s8 s9 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s6 XCHG
+    257 PUSHINT
+    STIX
+    s1 s4 XCHG
+    257 PUSHINT
+    STIX
+    s0 s2 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    s0 s2 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s3 XCHG
+    257 PUSHINT
+    STIX
+    s1 s3 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    ROT
+    STREF
+    ENDC
+    s0 s1 XCHG
+    STREF
+    ENDC
+
+  95541: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s1 s8 XCHG
+    8 BLKDROP
+
+  99546: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s2 s8 XCHG
+    8 BLKDROP
+
+  103675: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s3 s8 XCHG
+    8 BLKDROP
+
+  107672: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s4 s8 XCHG
+    8 BLKDROP
+
+  111801: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s5 s8 XCHG
+    8 BLKDROP
+
+  115806: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s6 s8 XCHG
+    8 BLKDROP
+
+  119935: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    s7 s8 XCHG
+    8 BLKDROP
+
+  123932: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    0 PLDREFIDX
+    CTOS
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    9 1 BLKSWAP
+    1 9 BLKDROP2
+    8 BLKDROP
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

@@ -182,143 +182,112 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
 }
-export type Operation = {
-    $$type: 'Operation';
-    seqno: BN;
-    amount: BN;
-    target: Address;
+export type Update = {
+    $$type: 'Update';
+    a: BN;
+    b: BN;
+    c: BN;
+    d: BN;
+    e: BN;
+    f: BN;
+    g: BN;
+    h: BN;
+    i: BN;
 }
 
-export function packOperation(src: Operation): Cell {
+export function packUpdate(src: Update): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(src.seqno, 32);
-    b_0 = b_0.storeCoins(src.amount);
-    b_0 = b_0.storeAddress(src.target);
+    b_0 = b_0.storeUint(2676568142, 32);
+    b_0 = b_0.storeInt(src.a, 257);
+    b_0 = b_0.storeInt(src.b, 257);
+    b_0 = b_0.storeInt(src.c, 257);
+    let b_1 = new Builder();
+    b_1 = b_1.storeInt(src.d, 257);
+    b_1 = b_1.storeInt(src.e, 257);
+    b_1 = b_1.storeInt(src.f, 257);
+    let b_2 = new Builder();
+    b_2 = b_2.storeInt(src.g, 257);
+    b_2 = b_2.storeInt(src.h, 257);
+    b_2 = b_2.storeInt(src.i, 257);
+    b_1 = b_1.storeRef(b_2.endCell());
+    b_0 = b_0.storeRef(b_1.endCell());
     return b_0.endCell();
 }
 
-export function packStackOperation(src: Operation, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.seqno });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
+export function packStackUpdate(src: Update, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.a });
+    __stack.push({ type: 'int', value: src.b });
+    __stack.push({ type: 'int', value: src.c });
+    __stack.push({ type: 'int', value: src.d });
+    __stack.push({ type: 'int', value: src.e });
+    __stack.push({ type: 'int', value: src.f });
+    __stack.push({ type: 'int', value: src.g });
+    __stack.push({ type: 'int', value: src.h });
+    __stack.push({ type: 'int', value: src.i });
 }
 
-export function packTupleOperation(src: Operation): StackItem[] {
+export function packTupleUpdate(src: Update): StackItem[] {
     let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.seqno });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
+    __stack.push({ type: 'int', value: src.a });
+    __stack.push({ type: 'int', value: src.b });
+    __stack.push({ type: 'int', value: src.c });
+    __stack.push({ type: 'int', value: src.d });
+    __stack.push({ type: 'int', value: src.e });
+    __stack.push({ type: 'int', value: src.f });
+    __stack.push({ type: 'int', value: src.g });
+    __stack.push({ type: 'int', value: src.h });
+    __stack.push({ type: 'int', value: src.i });
     return __stack;
 }
 
-export function unpackStackOperation(slice: TupleSlice4): Operation {
-    const seqno = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const target = slice.readAddress();
-    return { $$type: 'Operation', seqno: seqno, amount: amount, target: target };
+export function unpackStackUpdate(slice: TupleSlice4): Update {
+    const a = slice.readBigNumber();
+    const b = slice.readBigNumber();
+    const c = slice.readBigNumber();
+    const d = slice.readBigNumber();
+    const e = slice.readBigNumber();
+    const f = slice.readBigNumber();
+    const g = slice.readBigNumber();
+    const h = slice.readBigNumber();
+    const i = slice.readBigNumber();
+    return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f, g: g, h: h, i: i };
 }
-export function unpackTupleOperation(slice: TupleSlice4): Operation {
-    const seqno = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const target = slice.readAddress();
-    return { $$type: 'Operation', seqno: seqno, amount: amount, target: target };
+export function unpackTupleUpdate(slice: TupleSlice4): Update {
+    const a = slice.readBigNumber();
+    const b = slice.readBigNumber();
+    const c = slice.readBigNumber();
+    const d = slice.readBigNumber();
+    const e = slice.readBigNumber();
+    const f = slice.readBigNumber();
+    const g = slice.readBigNumber();
+    const h = slice.readBigNumber();
+    const i = slice.readBigNumber();
+    return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f, g: g, h: h, i: i };
 }
-export type Execute = {
-    $$type: 'Execute';
-    operation: Operation;
-    signature1: Cell;
-    signature2: Cell;
-    signature3: Cell;
-}
-
-export function packExecute(src: Execute): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(819865922, 32);
-    b_0 = b_0.storeCellCopy(packOperation(src.operation));
-    b_0 = b_0.storeRef(src.signature1);
-    b_0 = b_0.storeRef(src.signature2);
-    b_0 = b_0.storeRef(src.signature3);
-    return b_0.endCell();
-}
-
-export function packStackExecute(src: Execute, __stack: StackItem[]) {
-    packStackOperation(src.operation, __stack);
-    __stack.push({ type: 'slice', cell: src.signature1 });
-    __stack.push({ type: 'slice', cell: src.signature2 });
-    __stack.push({ type: 'slice', cell: src.signature3 });
-}
-
-export function packTupleExecute(src: Execute): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'tuple', items: packTupleOperation(src.operation) });
-    __stack.push({ type: 'slice', cell: src.signature1 });
-    __stack.push({ type: 'slice', cell: src.signature2 });
-    __stack.push({ type: 'slice', cell: src.signature3 });
-    return __stack;
-}
-
-export function unpackStackExecute(slice: TupleSlice4): Execute {
-    const operation = unpackStackOperation(slice);
-    const signature1 = slice.readCell();
-    const signature2 = slice.readCell();
-    const signature3 = slice.readCell();
-    return { $$type: 'Execute', operation: operation, signature1: signature1, signature2: signature2, signature3: signature3 };
-}
-export function unpackTupleExecute(slice: TupleSlice4): Execute {
-    const operation = unpackTupleOperation(slice);
-    const signature1 = slice.readCell();
-    const signature2 = slice.readCell();
-    const signature3 = slice.readCell();
-    return { $$type: 'Execute', operation: operation, signature1: signature1, signature2: signature2, signature3: signature3 };
-}
-export type Executed = {
-    $$type: 'Executed';
-    seqno: BN;
-}
-
-export function packExecuted(src: Executed): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(4174937, 32);
-    b_0 = b_0.storeUint(src.seqno, 32);
-    return b_0.endCell();
-}
-
-export function packStackExecuted(src: Executed, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.seqno });
-}
-
-export function packTupleExecuted(src: Executed): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.seqno });
-    return __stack;
-}
-
-export function unpackStackExecuted(slice: TupleSlice4): Executed {
-    const seqno = slice.readBigNumber();
-    return { $$type: 'Executed', seqno: seqno };
-}
-export function unpackTupleExecuted(slice: TupleSlice4): Executed {
-    const seqno = slice.readBigNumber();
-    return { $$type: 'Executed', seqno: seqno };
-}
-export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {
-    const __code = 'te6ccgECIQEAAlIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIERICAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAgoAoACwgbvLQgIACw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BTI+EIBzFUwUDTLH8v/y//L/8ntVAIBIA0OAgEgDxAAFSUfwHKAOBwAcoAgAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/AMyHDwDHDwDCRus5V/8AwUzJU0A3DwDOIkbrOVf/AMFMyVNANw8AzicPAMAn/wDALJWMyWMzMBcPAM4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgACMcATIzFUwUDTLH8v/y//L/8mAAEx/MwFwbW1t8A2ACASATFABf0qOqHkKpAoEeWPgP0BAOeLZPyAKQIVfIgpGZT8iCoJm/yIKazdeUUBWADYeUV4B8AgEgFRYCASAXGAAJBAjXwOAABwTXwOAABRsMYAAFF8DgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJwCASAbHAIBIB0eAAm4rH8A6AIBIB8gAC+0fL2omhqAPwxaY/p/+n/6f+qmDYKeAhAAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPARg';
+export async function SerializationTester_init(a: BN, b: BN, c: BN, d: BN, e: BN, f: BN, g: BN, h: BN, i: BN) {
+    const __code = 'te6ccgECGAEABHoAART/APSkE/S88sgLAQIBYgIDAfDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghCfiTBOuo6/7UTQ1AH4YoEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXAFWAbBkJ4DDywIIEAgEgBgcBttMfAYIQn4kwTrry4IGBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAgQEB1wBVgDkREBERERAPERAPEO8Q3hDNELwQqxCaVQcFAPAyODg5OTk5OTkI/iAH/iAG/iAF/iAE/iAD/iAC/iAI/iAB/iAQeBBnEFYQRRA0ECPI+EIBzFWAUImBAQHPABaBAQHPABSBAQHPAALIgQEBzwCBAQHPABKBAQHPAALIgQEBzwATgQEBzwATgQEBzwDJWMzJAczJ7VQCAW4ICQIBIAwNAgOVUAoLAIexTXtRNDUAfhigQEB1wCBAQHXAIEBAdcA10zQgQEB1wCBAQHXAIEBAdcA10zQgQEB1wCBAQHXAIEBAdcAVYBsGRhfCIACDsp2omhqAPwxQICA64BAgIDrgECAgOuAa6ZoQICA64BAgIDrgECAgOuAa6ZoQICA64BAgIDrgECAgOuAKsA2DLZAwANey4R/EAP/EAN/EAL/EAJ/EAH/EAF/EAD/EAR/EATkZgSIPAgziCsIIogaIJgoRMCAgOeAC0CAgOeACkCAgOeAAWRAgIDngECAgOeACUCAgOeAAWRAgIDngAnAgIDngAnAgIDngGSsZmSA5mTACASAODwIBIBQVAgEgEBECASASEwCJsTa7UTQ1AH4YoEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXAFWAbBkQKF8IgAImxPvtRNDUAfhigQEB1wCBAQHXAIEBAdcA10zQgQEB1wCBAQHXAIEBAdcA10zQgQEB1wCBAQHXAIEBAdcAVYBsGRA4XwiAAibEmO1E0NQB+GKBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAgQEB1wBVgGwZEEhfCIACJsS57UTQ1AH4YoEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXAFWAbBkQWF8IgAgEgFhcAhbSDnaiaGoA/DFAgIDrgECAgOuAQICA64BrpmhAgIDrgECAgOuAQICA64BrpmhAgIDrgECAgOuAQICA64AqwDYMr4RAAibEXu1E0NQB+GKBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAgQEB1wDXTNCBAQHXAIEBAdcAgQEB1wBVgGwZEGhfCIACJsR/7UTQ1AH4YoEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXANdM0IEBAdcAgQEB1wCBAQHXAFWAbBkQeF8Ig';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'int', value: key1 });
-    __stack.push({ type: 'int', value: key2 });
-    __stack.push({ type: 'int', value: key3 });
+    __stack.push({ type: 'int', value: a });
+    __stack.push({ type: 'int', value: b });
+    __stack.push({ type: 'int', value: c });
+    __stack.push({ type: 'int', value: d });
+    __stack.push({ type: 'int', value: e });
+    __stack.push({ type: 'int', value: f });
+    __stack.push({ type: 'int', value: g });
+    __stack.push({ type: 'int', value: h });
+    __stack.push({ type: 'int', value: i });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
-    let res = await executor.get('init_MultisigContract', __stack, { debug: true });
+    let res = await executor.get('init_SerializationTester', __stack, { debug: true });
     if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
 
-export const MultisigContract_errors: { [key: string]: string } = {
+export const SerializationTester_errors: { [key: string]: string } = {
     '2': `Stack undeflow`,
     '3': `Stack overflow`,
     '4': `Integer overflow`,
@@ -338,14 +307,14 @@ export const MultisigContract_errors: { [key: string]: string } = {
     '130': `Invalid incoming message`,
 }
 
-export class MultisigContract {
+export class SerializationTester {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Execute) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Update) {
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Execute') {
-            body = packExecute(message);
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Update') {
+            body = packUpdate(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         try {
@@ -362,72 +331,152 @@ export class MultisigContract {
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MultisigContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
                 }
             }
             throw e;
         }
     }
-    async getKey1() {
+    async getGetA() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('key1', __stack, { debug: true });
+            let result = await this.executor.get('getA', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MultisigContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
                 }
             }
             throw e;
         }
     }
-    async getKey2() {
+    async getGetB() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('key2', __stack, { debug: true });
+            let result = await this.executor.get('getB', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MultisigContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
                 }
             }
             throw e;
         }
     }
-    async getKey3() {
+    async getGetC() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('key3', __stack, { debug: true });
+            let result = await this.executor.get('getC', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MultisigContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
                 }
             }
             throw e;
         }
     }
-    async getSeqno() {
+    async getGetD() {
         try {
             let __stack: StackItem[] = [];
-            let result = await this.executor.get('seqno', __stack, { debug: true });
+            let result = await this.executor.get('getD', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MultisigContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MultisigContract_errors[e.exitCode.toString()]);
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetE() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('getE', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetF() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('getF', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetG() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('getG', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetH() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('getH', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetI() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('getI', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (SerializationTester_errors[e.exitCode.toString()]) {
+                    throw new Error(SerializationTester_errors[e.exitCode.toString()]);
                 }
             }
             throw e;

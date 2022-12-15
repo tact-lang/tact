@@ -117,7 +117,7 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
     var v'counters3 = sc_1~load_dict();
     var v'counters4 = sc_1~load_dict();
     var v'counters5 = sc_1~load_dict();
-    return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
+    return (sc_1, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
 }
 
 _ __gen_Context_get_sender((int, slice, int) v) inline {

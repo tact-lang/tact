@@ -12,7 +12,7 @@ global cell __tact_context_sys;
     var v'b = sc_0~load_int(257);
     slice sc_1 = preload_ref(sc_0).begin_parse();
     var v'c = sc_1~__gen_read_Source();
-    return (sc_0, (v'a, v'b, v'c));
+    return (sc_1, (v'a, v'b, v'c));
 }
 
 (int, int, (int, int)) __gen_load_SampleContract() inline {

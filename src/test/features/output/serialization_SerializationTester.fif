@@ -1,0 +1,335 @@
+PROGRAM{
+  DECLPROC __gen_read_Update
+  DECLPROC __gen_write_SerializationTester
+  DECLPROC __gen_read_SerializationTester
+  DECLPROC __gen_load_SerializationTester
+  DECLPROC __gen_store_SerializationTester
+  DECLPROC __gen_SerializationTester_init
+  DECLPROC __gen_SerializationTester_getA
+  123932 DECLMETHOD __gen_get_getA
+  DECLPROC __gen_SerializationTester_getB
+  119935 DECLMETHOD __gen_get_getB
+  DECLPROC __gen_SerializationTester_getC
+  115806 DECLMETHOD __gen_get_getC
+  DECLPROC __gen_SerializationTester_getD
+  111801 DECLMETHOD __gen_get_getD
+  DECLPROC __gen_SerializationTester_getE
+  107672 DECLMETHOD __gen_get_getE
+  DECLPROC __gen_SerializationTester_getF
+  103675 DECLMETHOD __gen_get_getF
+  DECLPROC __gen_SerializationTester_getG
+  99546 DECLMETHOD __gen_get_getG
+  DECLPROC __gen_SerializationTester_getH
+  95541 DECLMETHOD __gen_get_getH
+  DECLPROC __gen_SerializationTester_getI
+  91412 DECLMETHOD __gen_get_getI
+  DECLPROC __gen_SerializationTester_receive_Update
+  DECLPROC recv_internal
+  91479 DECLMETHOD init_SerializationTester
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __gen_read_Update PROCINLINE:<{
+    32 LDU
+    SWAP
+    2676568142 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    PLDREF
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    PLDREF
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    9 -ROLL
+  }>
+  __gen_write_SerializationTester PROCINLINE:<{
+    s8 s9 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s6 XCHG
+    257 PUSHINT
+    STIX
+    s1 s4 XCHG
+    257 PUSHINT
+    STIX
+    s0 s2 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    s0 s2 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s3 XCHG
+    257 PUSHINT
+    STIX
+    s1 s3 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_SerializationTester PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    PLDREF
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    PLDREF
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    9 -ROLL
+  }>
+  __gen_load_SerializationTester PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_SerializationTester INLINECALLDICT
+    1 9 BLKDROP2
+  }>
+  __gen_store_SerializationTester PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    9 -ROLL
+    __gen_write_SerializationTester INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  __gen_SerializationTester_init PROCINLINE:<{
+    s0 s8 XCHG
+    s0 DUMP
+    s0 s7 XCHG
+    s0 DUMP
+    s0 s6 XCHG
+    s0 DUMP
+    s0 s5 XCHG
+    s0 DUMP
+    s0 s4 XCHG
+    s0 DUMP
+    s0 s3 XCHG
+    s0 DUMP
+    s0 s2 XCHG
+    s0 DUMP
+    SWAP
+    s0 DUMP
+    s0 s8 XCHG
+    s0 DUMP
+    s0 s9 XCHG
+    NEWC
+    STREF
+    s0 s9 XCHG
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+    __gen_write_SerializationTester INLINECALLDICT
+    ENDC
+  }>
+  __gen_SerializationTester_getA PROCINLINE:<{
+    8 BLKDROP
+  }>
+  __gen_get_getA PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getA INLINECALLDICT
+  }>
+  __gen_SerializationTester_getB PROCINLINE:<{
+    s7 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getB PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getB INLINECALLDICT
+  }>
+  __gen_SerializationTester_getC PROCINLINE:<{
+    s6 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getC PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getC INLINECALLDICT
+  }>
+  __gen_SerializationTester_getD PROCINLINE:<{
+    s5 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getD PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getD INLINECALLDICT
+  }>
+  __gen_SerializationTester_getE PROCINLINE:<{
+    s4 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getE PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getE INLINECALLDICT
+  }>
+  __gen_SerializationTester_getF PROCINLINE:<{
+    s3 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getF PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getF INLINECALLDICT
+  }>
+  __gen_SerializationTester_getG PROCINLINE:<{
+    s2 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getG PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getG INLINECALLDICT
+  }>
+  __gen_SerializationTester_getH PROCINLINE:<{
+    s1 s8 XCHG
+    8 BLKDROP
+  }>
+  __gen_get_getH PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getH INLINECALLDICT
+  }>
+  __gen_SerializationTester_getI PROCINLINE:<{
+    8 1 BLKDROP2
+  }>
+  __gen_get_getI PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    __gen_SerializationTester_getI INLINECALLDICT
+  }>
+  __gen_SerializationTester_receive_Update PROCINLINE:<{
+    s2 POP
+    s8 POP
+    s8 POP
+    s9 POP
+    s9 POP
+    s9 POP
+    s9 POP
+    s9 POP
+    s9 POP
+    s0 s8 XCHG
+    s0 DUMP
+    s0 s7 XCHG
+    s0 DUMP
+    s0 s6 XCHG
+    s0 DUMP
+    s0 s5 XCHG
+    s0 DUMP
+    s0 s4 XCHG
+    s0 DUMP
+    s0 s3 XCHG
+    s0 DUMP
+    s0 s2 XCHG
+    s0 DUMP
+    s0 s8 XCHG
+    s0 DUMP
+    SWAP
+    s0 DUMP
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s2 s3 XCHG
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s4 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    2676568142 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_SerializationTester INLINECALLDICT
+      s0 s9 XCHG
+      __gen_read_Update INLINECALLDICT
+      s9 POP
+      16 s() 17 s() XCHG
+      s15 16 s() XCHG
+      s14 s15 XCHG
+      s13 s14 XCHG
+      s12 s13 XCHG
+      s11 s12 XCHG
+      s10 s11 XCHG
+      s9 s10 XCHG
+      8 ROLL
+      __gen_SerializationTester_receive_Update INLINECALLDICT
+      __gen_store_SerializationTester INLINECALLDICT
+    }>
+    DROP
+    130 THROW
+  }>
+  init_SerializationTester PROC:<{
+    __gen_SerializationTester_init INLINECALLDICT
+  }>
+}END>c
