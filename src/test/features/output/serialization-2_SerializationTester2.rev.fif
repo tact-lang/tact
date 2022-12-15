@@ -50,15 +50,20 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       s0 s5 XCHG
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
@@ -66,14 +71,20 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
       s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
       s0 s10 XCHG
       32 LDU
@@ -87,15 +98,20 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       s0 s5 XCHG
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
@@ -103,14 +119,20 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
       s5 s10 XCHG
+      1 4 BLKSWAP
       s10 POP
       s0 s18 XCHG
       s0 s19 XCHG
@@ -309,15 +331,20 @@ SETCP0
     LDI
     257 PUSHINT
     LDI
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
     257 PUSHINT
     LDI
-    5 1 BLKSWAP
+    s0 POP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     s0 s5 XCHG
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
@@ -325,14 +352,20 @@ SETCP0
     LDI
     257 PUSHINT
     LDI
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
     257 PUSHINT
     LDI
-    5 1 BLKSWAP
+    s0 POP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
+    s5 POP
     s5 s10 XCHG
+    1 4 BLKSWAP
     1 10 BLKDROP2
     5 5 BLKDROP2
 
@@ -348,15 +381,20 @@ SETCP0
     LDI
     257 PUSHINT
     LDI
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
     257 PUSHINT
     LDI
-    5 1 BLKSWAP
+    s0 POP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     s0 s5 XCHG
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
@@ -364,14 +402,20 @@ SETCP0
     LDI
     257 PUSHINT
     LDI
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
     257 PUSHINT
     LDI
-    5 1 BLKSWAP
+    s0 POP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
+    s5 POP
     s5 s10 XCHG
+    1 4 BLKSWAP
     1 10 BLKDROP2
     5 BLKDROP
 ) 19 DICTPUSHCONST

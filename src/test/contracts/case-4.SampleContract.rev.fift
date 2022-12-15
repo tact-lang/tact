@@ -41,7 +41,8 @@ SETCP0
     LDI
     257 PUSHINT
     LDI
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     257 PUSHINT
     LDI
@@ -50,9 +51,10 @@ SETCP0
     ROTREV
     s0 s2 XCHG
     LDDICT
-    s0 s5 XCHG
-    s0 s4 XCHG
-    s3 s3 XCHG2
+    s0 POP
+    s3 s5 XCHG
+    s3 s4 XCHG
+    s1 s2 XCHG
     1 5 BLKDROP2
     4 CALLDICT
 ) 19 DICTPUSHCONST

@@ -40,7 +40,8 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     257 PUSHINT
     LDIX
@@ -48,7 +49,8 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    PLDREF
+    LDREF
+    DROP
     CTOS
     257 PUSHINT
     LDIX
@@ -56,7 +58,10 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    9 -ROLL
+    DROP
+    s6 s9 XCHG
+    s6 s8 XCHG
+    s6 s7 XCHG
   }>
   __gen_write_SerializationTester PROCINLINE:<{
     s8 s9 XCHG2
@@ -101,7 +106,8 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     257 PUSHINT
     LDIX
@@ -109,7 +115,8 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    PLDREF
+    LDREF
+    DROP
     CTOS
     257 PUSHINT
     LDIX
@@ -117,7 +124,10 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    9 -ROLL
+    DROP
+    s6 s9 XCHG
+    s6 s8 XCHG
+    s6 s7 XCHG
   }>
   __gen_load_SerializationTester PROCINLINE:<{
     c4 PUSH

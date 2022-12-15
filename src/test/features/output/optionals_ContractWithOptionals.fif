@@ -96,13 +96,17 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
-    5 -ROLL
+    DROP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_SomeGenericStruct_not_null PROC:<{
     DUP
@@ -226,7 +230,8 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     PUSHNULL
     SWAP
@@ -235,10 +240,14 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
+      1 5 BLKDROP2
       __gen_SomeGenericStruct_as_optional CALLDICT
-      SWAP
+    }>ELSE<{
+      DROP
     }>
-    5 -ROLL
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
   }>
   __gen_StructWithOptionals_as_optional PROC:<{
     5 TUPLE
@@ -283,7 +292,8 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     PUSHNULL
     SWAP
@@ -295,7 +305,8 @@ PROGRAM{
       __gen_SomeGenericStruct_as_optional CALLDICT
       SWAP
     }>
-    PLDREF
+    LDREF
+    DROP
     CTOS
     PUSHNULL
     SWAP
@@ -304,10 +315,15 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
+      1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional CALLDICT
-      SWAP
+    }>ELSE<{
+      DROP
     }>
-    6 -ROLL
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_StructWithOptionals_not_null PROC:<{
     DUP
@@ -447,7 +463,8 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     PUSHNULL
     SWAP
@@ -459,7 +476,8 @@ PROGRAM{
       __gen_SomeGenericStruct_as_optional CALLDICT
       SWAP
     }>
-    PLDREF
+    LDREF
+    DROP
     CTOS
     PUSHNULL
     SWAP
@@ -468,10 +486,15 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
+      1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional CALLDICT
-      SWAP
+    }>ELSE<{
+      DROP
     }>
-    6 -ROLL
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH

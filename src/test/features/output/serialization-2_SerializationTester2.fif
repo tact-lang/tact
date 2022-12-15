@@ -43,13 +43,17 @@ PROGRAM{
     LDIX
     257 PUSHINT
     LDIX
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
-    5 -ROLL
+    DROP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_read_Update PROCINLINE:<{
     32 LDU
@@ -59,10 +63,13 @@ PROGRAM{
     129 THROWIFNOT
     __gen_read_Vars INLINECALLDICT
     s0 s5 XCHG
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     __gen_read_Vars INLINECALLDICT
+    s5 POP
     s5 s10 XCHG
+    4 ROLL
   }>
   __gen_write_SerializationTester2 PROCINLINE:<{
     s5 s10 XCHG
@@ -81,10 +88,13 @@ PROGRAM{
   __gen_read_SerializationTester2 PROCINLINE:<{
     __gen_read_Vars INLINECALLDICT
     s0 s5 XCHG
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     __gen_read_Vars INLINECALLDICT
+    s5 POP
     s5 s10 XCHG
+    4 ROLL
   }>
   __gen_load_SerializationTester2 PROCINLINE:<{
     c4 PUSH

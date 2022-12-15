@@ -258,7 +258,7 @@ function writeCellParser(cell: StorageCell, index: number, ctx: WriterContext): 
 
     // Handle next cell
     if (cell.next) {
-        ctx.append(`slice sc_${index + 1} = preload_ref(sc_${index}).begin_parse();`);
+        ctx.append(`slice sc_${index + 1} = sc_${index}~load_ref().begin_parse();`);
         return writeCellParser(cell.next, index + 1, ctx);
     } else {
         return index;
@@ -279,7 +279,7 @@ export function writeParser(name: string, allocation: StorageAllocation, ctx: Wr
             let out = writeCellParser(allocation.root, 0, ctx);
 
             // Compile tuple
-            ctx.append(`return (sc_${out}, (${allocation.fields.map((v) => `v'${v.name}`).join(', ')}));`);
+            ctx.append(`return (sc_0, (${allocation.fields.map((v) => `v'${v.name}`).join(', ')}));`);
         });
         ctx.append("}");
     });

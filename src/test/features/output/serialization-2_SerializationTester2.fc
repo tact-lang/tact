@@ -17,18 +17,18 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'd = sc_1~load_int(257);
     var v'e = sc_1~load_int(257);
-    return (sc_1, (v'a, v'b, v'c, v'd, v'e));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e));
 }
 
 (slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_Update(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2676568142);
     var v'a = sc_0~__gen_read_Vars();
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'b = sc_1~__gen_read_Vars();
-    return (sc_1, (v'a, v'b));
+    return (sc_0, (v'a, v'b));
 }
 
 builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline {
@@ -42,9 +42,9 @@ builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, 
 
 (slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_SerializationTester2(slice sc_0) inline {
     var v'a = sc_0~__gen_read_Vars();
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'b = sc_1~__gen_read_Vars();
-    return (sc_1, (v'a, v'b));
+    return (sc_0, (v'a, v'b));
 }
 
 ((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() inline {

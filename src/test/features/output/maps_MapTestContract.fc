@@ -145,15 +145,15 @@ builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, ce
 (slice, ((cell, cell, cell, cell, cell, cell, cell, cell))) __gen_read_MapTestContract(slice sc_0) inline {
     var v'intMap1 = sc_0~load_dict();
     var v'intMap2 = sc_0~load_dict();
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'intMap3 = sc_1~load_dict();
     var v'intMap4 = sc_1~load_dict();
     var v'addrMap1 = sc_1~load_dict();
-    slice sc_2 = preload_ref(sc_1).begin_parse();
+    slice sc_2 = sc_1~load_ref().begin_parse();
     var v'addrMap2 = sc_2~load_dict();
     var v'addrMap3 = sc_2~load_dict();
     var v'addrMap4 = sc_2~load_dict();
-    return (sc_2, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
+    return (sc_0, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
 }
 
 (cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline {

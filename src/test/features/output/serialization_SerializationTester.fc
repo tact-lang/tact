@@ -6,15 +6,15 @@ global cell __tact_context_sys;
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'd = sc_1~load_int(257);
     var v'e = sc_1~load_int(257);
     var v'f = sc_1~load_int(257);
-    slice sc_2 = preload_ref(sc_1).begin_parse();
+    slice sc_2 = sc_1~load_ref().begin_parse();
     var v'g = sc_2~load_int(257);
     var v'h = sc_2~load_int(257);
     var v'i = sc_2~load_int(257);
-    return (sc_2, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
 builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
@@ -39,15 +39,15 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'd = sc_1~load_int(257);
     var v'e = sc_1~load_int(257);
     var v'f = sc_1~load_int(257);
-    slice sc_2 = preload_ref(sc_1).begin_parse();
+    slice sc_2 = sc_1~load_ref().begin_parse();
     var v'g = sc_2~load_int(257);
     var v'h = sc_2~load_int(257);
     var v'i = sc_2~load_int(257);
-    return (sc_2, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
 (int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline {

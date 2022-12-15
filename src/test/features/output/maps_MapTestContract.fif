@@ -267,17 +267,21 @@ PROGRAM{
   __gen_read_MapTestContract PROCINLINE:<{
     LDDICT
     LDDICT
-    PLDREF
+    LDREF
+    SWAP
     CTOS
     LDDICT
     LDDICT
     LDDICT
-    PLDREF
+    LDREF
+    DROP
     CTOS
     LDDICT
     LDDICT
     LDDICT
-    8 -ROLL
+    DROP
+    s6 s8 XCHG
+    s6 s7 XCHG
   }>
   __gen_load_MapTestContract PROCINLINE:<{
     c4 PUSH

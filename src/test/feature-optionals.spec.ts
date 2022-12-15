@@ -6,79 +6,73 @@ import { __DANGER_resetNodeId } from '../grammar/ast';
 import { ContractWithOptionals, ContractWithOptionals_init, SomeGenericStruct, StructWithOptionals } from './features/output/optionals_ContractWithOptionals';
 
 function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {
-    console.warn(a, b);
+
+    // Null checks
     if (a === null && b === null) {
-        console.warn('1');
         return true;
     }
     if (a !== null && b === null) {
-        console.warn('2');
         return false;
     }
     if (a === null && b !== null) {
-        console.warn('3');
+        return false;
+    }
+
+    // a: BN | null;
+    if (a!.a === null && b!.a !== null) {
+        return false;
+    }
+    if (a!.a !== null && b!.a === null) {
+        return false;
+    }
+    if (a!.a !== null && b!.a !== null && !a!.a.eq(b!.a)) {
+        return false;
+    }
+
+    // b: boolean | null;
+    if (a!.b === null && b!.b !== null) {
+        return false;
+    }
+    if (a!.b !== null && b!.b === null) {
+        return false;
+    }
+    if (a!.b !== null && b!.b !== null && a!.b !== b!.b) {
+        return false;
+    }
+
+    // c: Cell | null;
+    if (a!.c === null && b!.c !== null) {
+        return false;
+    }
+    if (a!.c !== null && b!.c === null) {
+        return false;
+    }
+    if (a!.c !== null && b!.c !== null && !a!.c.equals(b!.c)) {
         return false;
     }
 
     // d: Address | null;
+    if (a!.d === null && b!.d !== null) {
+        return false;
+    }
+    if (a!.d !== null && b!.d === null) {
+        return false;
+    }
+    if (a!.d !== null && b!.d !== null && !a!.d.equals(b!.d)) {
+        return false;
+    }
+
     // e: SomeGenericStruct | null;
+    if (a!.e === null && b!.e !== null) {
+        return false;
+    }
+    if (a!.e !== null && b!.e === null) {
+        return false;
+    }
+    if (a!.e !== null && b!.e !== null && !strEq(a!.e, b!.e)) {
+        return false;
+    }
 
-    // a: BN | null;
-    // if (a!.a === null && b!.a !== null) {
-    //     return false;
-    // }
-    // if (a!.a !== null && b!.a === null) {
-    //     return false;
-    // }
-    // if (a!.a !== null && b!.a !== null && !a!.a.eq(b!.a)) {
-    //     return false;
-    // }
-
-    // // b: boolean | null;
-    // if (a!.b === null && b!.b !== null) {
-    //     return false;
-    // }
-    // if (a!.b !== null && b!.b === null) {
-    //     return false;
-    // }
-    // if (a!.b !== null && b!.b !== null && !a!.b !== b!.b) {
-    //     return false;
-    // }
-
-    // // c: Cell | null;
-    // if (a!.c === null && b!.c !== null) {
-    //     return false;
-    // }
-    // if (a!.c !== null && b!.c === null) {
-    //     return false;
-    // }
-    // if (a!.c !== null && b!.c !== null && !a!.c.equals(b!.c)) {
-    //     return false;
-    // }
-
-    // // d: Address | null;
-    // if (a!.d === null && b!.d !== null) {
-    //     return false;
-    // }
-    // if (a!.d !== null && b!.d === null) {
-    //     return false;
-    // }
-    // if (a!.d !== null && b!.d !== null && !a!.d.equals(b!.d)) {
-    //     return false;
-    // }
-
-    // // e: SomeGenericStruct | null;
-    // if (a!.e === null && b!.e !== null) {
-    //     return false;
-    // }
-    // if (a!.e !== null && b!.e === null) {
-    //     return false;
-    // }
-    // if (a!.e !== null && b!.e !== null && !strEq(a!.e, b!.e)) {
-    //     return false;
-    // }
-
-    console.warn('4');
     return true;
 }
 
@@ -140,10 +134,10 @@ describe('features', () => {
         e: null,
     };
     let cases: { a: BN | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null }[] = [];
-    // cases.push({ a: null, b: null, c: null, d: null, e: null, f: null });
+    cases.push({ a: null, b: null, c: null, d: null, e: null, f: null });
     cases.push({ a: new BN(10), b: true, c: null, d: randomAddress(0, 'address1'), e: eV, f: ev2 });
-    // cases.push({ a: new BN(-10), b: false, c: null, d: randomAddress(-1, 'address2'), e: null, f: ev2 });
-    // cases.push({ a: new BN(-10), b: false, c: beginCell().storeAddress(randomAddress(0, 'asdasd')).endCell(), d: randomAddress(-1, 'address2'), e: null, f: ev3 });
+    cases.push({ a: new BN(-10), b: false, c: null, d: randomAddress(-1, 'address2'), e: null, f: ev2 });
+    cases.push({ a: new BN(-10), b: false, c: beginCell().storeAddress(randomAddress(0, 'asdasd')).endCell(), d: randomAddress(-1, 'address2'), e: null, f: ev3 });
 
     for (let i = 0; i < cases.length; i++) {
 

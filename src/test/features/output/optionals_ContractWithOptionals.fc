@@ -33,10 +33,10 @@ builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int)
     var v'value1 = sc_0~load_int(257);
     var v'value2 = sc_0~load_int(257);
     var v'value3 = sc_0~load_int(257);
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'value4 = sc_1~load_int(257);
     var v'value5 = sc_1~load_int(257);
-    return (sc_1, (v'value1, v'value2, v'value3, v'value4, v'value5));
+    return (sc_0, (v'value1, v'value2, v'value3, v'value4, v'value5));
 }
 
 ((int, int, int, int, int)) __gen_SomeGenericStruct_not_null(tuple v) {
@@ -102,12 +102,12 @@ tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) {
     if (sc_0~load_int(1)) {
         v'd = sc_0~__tact_load_address();
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'e = null();
     if (sc_1~load_int(1)) {
         v'e = __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct());
     }
-    return (sc_1, (v'a, v'b, v'c, v'd, v'e));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e));
 }
 
 tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) {
@@ -132,17 +132,17 @@ tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) 
     if (sc_0~load_int(1)) {
         v'd = sc_0~__tact_load_address();
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'e = null();
     if (sc_1~load_int(1)) {
         v'e = __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct());
     }
-    slice sc_2 = preload_ref(sc_1).begin_parse();
+    slice sc_2 = sc_1~load_ref().begin_parse();
     var v'f = null();
     if (sc_2~load_int(1)) {
         v'f = __gen_StructWithOptionals_as_optional(sc_2~__gen_read_StructWithOptionals());
     }
-    return (sc_2, (v'a, v'b, v'c, v'd, v'e, v'f));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
 }
 
 ((int, int, cell, slice, tuple)) __gen_StructWithOptionals_not_null(tuple v) {
@@ -212,17 +212,17 @@ builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slic
     if (sc_0~load_int(1)) {
         v'd = sc_0~__tact_load_address();
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'e = null();
     if (sc_1~load_int(1)) {
         v'e = __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct());
     }
-    slice sc_2 = preload_ref(sc_1).begin_parse();
+    slice sc_2 = sc_1~load_ref().begin_parse();
     var v'f = null();
     if (sc_2~load_int(1)) {
         v'f = __gen_StructWithOptionals_as_optional(sc_2~__gen_read_StructWithOptionals());
     }
-    return (sc_2, (v'a, v'b, v'c, v'd, v'e, v'f));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
 }
 
 (int, int, cell, slice, tuple, tuple) __gen_load_ContractWithOptionals() inline {

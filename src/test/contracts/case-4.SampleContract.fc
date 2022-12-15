@@ -10,10 +10,10 @@ global cell __tact_context_sys;
 (slice, ((int, int, (int, int), cell))) __gen_read_SampleContract(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'c = sc_1~__gen_read_Source();
     var v'd = sc_1~load_dict();
-    return (sc_1, (v'a, v'b, v'c, v'd));
+    return (sc_0, (v'a, v'b, v'c, v'd));
 }
 
 (int, int, (int, int), cell) __gen_load_SampleContract() inline {

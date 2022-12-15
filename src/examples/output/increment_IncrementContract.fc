@@ -113,11 +113,11 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
 (slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc_0) inline {
     var v'counters = sc_0~load_dict();
     var v'counters2 = sc_0~load_dict();
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'counters3 = sc_1~load_dict();
     var v'counters4 = sc_1~load_dict();
     var v'counters5 = sc_1~load_dict();
-    return (sc_1, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
+    return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
 }
 
 _ __gen_Context_get_sender((int, slice, int) v) inline {

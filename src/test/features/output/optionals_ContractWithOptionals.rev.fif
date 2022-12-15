@@ -83,7 +83,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -97,23 +98,31 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
         8 CALLDICT
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 POP
       CTOS
       PUSHNULL
       s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
+      <{
+        s0 POP
+      }> PUSHCONT
       <{
         s1 POP
         PUSHNULL
@@ -155,7 +164,8 @@ SETCP0
           s0 s1 XCHG
         }> PUSHCONT
         IF
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         PUSHNULL
         s0 s1 XCHG
@@ -169,101 +179,42 @@ SETCP0
           LDI
           257 PUSHINT
           LDI
-          0 PLDREFIDX
+          LDREF
+          s0 s1 XCHG
           CTOS
           257 PUSHINT
           LDI
           257 PUSHINT
           LDI
-          5 1 BLKSWAP
+          s0 POP
+          s2 s5 XCHG
+          s2 s4 XCHG
+          s2 s3 XCHG
+          1 5 BLKDROP2
           8 CALLDICT
-          s0 s1 XCHG
         }> PUSHCONT
-        IF
-        5 1 BLKSWAP
+        <{
+          s0 POP
+        }> PUSHCONT
+        IFELSE
+        s1 s5 XCHG
+        s1 s4 XCHG
+        s3 s3 s0 XCHG3
+        1 5 BLKDROP2
         10 CALLDICT
-        s0 s1 XCHG
-      }> IFREF
-      6 1 BLKSWAP
+      }> IFREFELSE
+      s2 s6 XCHG
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       1 6 BLKDROP2
       s0 s6 XCHG
-      32 LDU
-      s0 s1 XCHG
-      2676568142 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      PUSHNULL
-      s0 s1 XCHG
-      1 LDI
-      s0 s1 XCHG
       <{
-        s1 POP
-        257 PUSHINT
-        LDI
-      }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
-      1 LDI
-      s0 s1 XCHG
-      <{
-        s1 POP
-        1 LDI
-      }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
-      1 LDI
-      s0 s1 XCHG
-      <{
-        s1 POP
-        LDREF
-      }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
-      1 LDI
-      s0 s1 XCHG
-      <{
-        s1 POP
-        LDMSGADDR
+        32 LDU
         s0 s1 XCHG
-        s0 s1 XCHG
-      }> PUSHCONT
-      IF
-      0 PLDREFIDX
-      CTOS
-      PUSHNULL
-      s0 s1 XCHG
-      1 LDI
-      s0 s1 XCHG
-      <{
-        s1 POP
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        0 PLDREFIDX
-        CTOS
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        5 1 BLKSWAP
-        8 CALLDICT
-        s0 s1 XCHG
-      }> PUSHCONT
-      IF
-      0 PLDREFIDX
-      CTOS
-      PUSHNULL
-      s0 s1 XCHG
-      1 LDI
-      s0 s1 XCHG
-      <{
-        s1 POP
+        2676568142 PUSHINT
+        EQUAL
+        129 THROWIFNOT
         PUSHNULL
         s0 s1 XCHG
         1 LDI
@@ -303,7 +254,8 @@ SETCP0
           s0 s1 XCHG
         }> PUSHCONT
         IF
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         PUSHNULL
         s0 s1 XCHG
@@ -317,22 +269,116 @@ SETCP0
           LDI
           257 PUSHINT
           LDI
-          0 PLDREFIDX
+          LDREF
+          s0 s1 XCHG
           CTOS
           257 PUSHINT
           LDI
           257 PUSHINT
           LDI
-          5 1 BLKSWAP
+          s0 POP
+          s2 s5 XCHG
+          s2 s4 XCHG
+          s2 s3 XCHG
           8 CALLDICT
           s0 s1 XCHG
         }> PUSHCONT
         IF
-        5 1 BLKSWAP
-        10 CALLDICT
+        LDREF
+        s0 POP
+        CTOS
+        PUSHNULL
         s0 s1 XCHG
-      }> IFREF
-      6 1 BLKSWAP
+        1 LDI
+        s0 s1 XCHG
+        <{
+          s0 POP
+        }> PUSHCONT
+        <{
+          s1 POP
+          PUSHNULL
+          s0 s1 XCHG
+          1 LDI
+          s0 s1 XCHG
+          <{
+            s1 POP
+            257 PUSHINT
+            LDI
+          }> PUSHCONT
+          IF
+          PUSHNULL
+          s0 s1 XCHG
+          1 LDI
+          s0 s1 XCHG
+          <{
+            s1 POP
+            1 LDI
+          }> PUSHCONT
+          IF
+          PUSHNULL
+          s0 s1 XCHG
+          1 LDI
+          s0 s1 XCHG
+          <{
+            s1 POP
+            LDREF
+          }> PUSHCONT
+          IF
+          PUSHNULL
+          s0 s1 XCHG
+          1 LDI
+          s0 s1 XCHG
+          <{
+            s1 POP
+            LDMSGADDR
+            s0 s1 XCHG
+            s0 s1 XCHG
+          }> PUSHCONT
+          IF
+          LDREF
+          s0 s1 XCHG
+          CTOS
+          PUSHNULL
+          s0 s1 XCHG
+          1 LDI
+          s0 s1 XCHG
+          <{
+            s1 POP
+            257 PUSHINT
+            LDI
+            257 PUSHINT
+            LDI
+            257 PUSHINT
+            LDI
+            LDREF
+            s0 s1 XCHG
+            CTOS
+            257 PUSHINT
+            LDI
+            257 PUSHINT
+            LDI
+            s0 POP
+            s2 s5 XCHG
+            s2 s4 XCHG
+            s2 s3 XCHG
+            1 5 BLKDROP2
+            8 CALLDICT
+          }> PUSHCONT
+          <{
+            s0 POP
+          }> PUSHCONT
+          IFELSE
+          s1 s5 XCHG
+          s1 s4 XCHG
+          s3 s3 s0 XCHG3
+          1 5 BLKDROP2
+          10 CALLDICT
+        }> IFREFELSE
+        s2 s6 XCHG
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+      }> CALLREF
       s6 POP
       s10 s11 XCHG
       s9 s10 XCHG
@@ -663,7 +709,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -677,23 +724,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -735,7 +790,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -749,22 +805,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s3 s5 XCHG
     5 BLKDROP
@@ -816,7 +884,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -830,23 +899,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -888,7 +965,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -902,22 +980,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s4 s5 XCHG
     5 BLKDROP
@@ -969,7 +1059,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -983,23 +1074,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1041,7 +1140,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1055,22 +1155,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     5 BLKDROP
     ISNULL
@@ -1121,7 +1233,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -1135,23 +1248,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1193,7 +1314,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1207,22 +1329,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     5 1 BLKDROP2
     ISNULL
@@ -1273,7 +1407,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -1287,23 +1422,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1345,7 +1488,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1359,22 +1503,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s1 s5 XCHG
     5 BLKDROP
@@ -1426,7 +1582,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -1440,23 +1597,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1498,7 +1663,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1512,22 +1678,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s2 s5 XCHG
     5 BLKDROP
@@ -1579,7 +1757,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -1593,23 +1772,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1651,7 +1838,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1665,22 +1853,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s2 s5 XCHG
     5 BLKDROP
@@ -1730,7 +1930,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -1744,23 +1945,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1802,7 +2011,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1816,22 +2026,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s4 s5 XCHG
     5 BLKDROP
@@ -1882,7 +2104,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -1896,23 +2119,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -1954,7 +2185,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -1968,22 +2200,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s1 s5 XCHG
     5 BLKDROP
@@ -2033,7 +2277,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -2047,23 +2292,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -2105,7 +2358,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -2119,22 +2373,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s3 s5 XCHG
     5 BLKDROP
@@ -2185,7 +2451,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -2199,23 +2466,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -2257,7 +2532,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -2271,22 +2547,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     5 1 BLKDROP2
 
@@ -2335,7 +2623,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -2349,23 +2638,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -2407,7 +2704,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -2421,22 +2719,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     5 BLKDROP
     1 CALLDICT
@@ -2486,7 +2796,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -2500,23 +2811,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -2558,7 +2877,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -2572,22 +2892,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s0 s5 XCHG
     32 DEBUG
@@ -2900,7 +3232,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -2914,23 +3247,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -2972,7 +3313,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -2986,22 +3328,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     5 BLKDROP
 
@@ -3050,7 +3404,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -3064,23 +3419,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -3122,7 +3485,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -3136,22 +3500,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s4 s5 XCHG
     5 BLKDROP
@@ -3201,7 +3577,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -3215,23 +3592,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -3273,7 +3658,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -3287,22 +3673,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s2 s5 XCHG
     5 BLKDROP
@@ -3353,7 +3751,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -3367,23 +3766,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -3425,7 +3832,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -3439,22 +3847,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s3 s5 XCHG
     5 BLKDROP
@@ -3504,7 +3924,8 @@ SETCP0
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 s1 XCHG
     CTOS
     PUSHNULL
     s0 s1 XCHG
@@ -3518,23 +3939,31 @@ SETCP0
       LDI
       257 PUSHINT
       LDI
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       257 PUSHINT
       LDI
       257 PUSHINT
       LDI
-      5 1 BLKSWAP
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
       8 CALLDICT
       s0 s1 XCHG
     }> PUSHCONT
     IF
-    0 PLDREFIDX
+    LDREF
+    s0 POP
     CTOS
     PUSHNULL
     s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       s1 POP
       PUSHNULL
@@ -3576,7 +4005,8 @@ SETCP0
         s0 s1 XCHG
       }> PUSHCONT
       IF
-      0 PLDREFIDX
+      LDREF
+      s0 s1 XCHG
       CTOS
       PUSHNULL
       s0 s1 XCHG
@@ -3590,22 +4020,34 @@ SETCP0
         LDI
         257 PUSHINT
         LDI
-        0 PLDREFIDX
+        LDREF
+        s0 s1 XCHG
         CTOS
         257 PUSHINT
         LDI
         257 PUSHINT
         LDI
-        5 1 BLKSWAP
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        1 5 BLKDROP2
         8 CALLDICT
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      5 1 BLKSWAP
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      s1 s5 XCHG
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
+      1 5 BLKDROP2
       10 CALLDICT
-      s0 s1 XCHG
-    }> IFREF
-    6 1 BLKSWAP
+    }> IFREFELSE
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
     1 6 BLKDROP2
     s1 s5 XCHG
     5 BLKDROP
