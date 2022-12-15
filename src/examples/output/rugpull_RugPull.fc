@@ -227,7 +227,7 @@ _ __gen_get_owner() method_id(83229) {
 ((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) self) impure {
     var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
     (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireOwner();
-    if (self'rugpulled) {
+    if ((~ self'rugpulled)) {
         raw_reserve(self'balance, 0);
     }
     send((true, self'owner, 0, 128, null(), null(), null()));

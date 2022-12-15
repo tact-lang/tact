@@ -754,6 +754,7 @@ SETCP0
   23: 
     19 CALLDICT
     s4 PUSH
+    NOT
     <{
       s5 PUSH
       0 PUSHINT

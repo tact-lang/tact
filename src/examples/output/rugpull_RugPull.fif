@@ -378,6 +378,7 @@ PROGRAM{
   __gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROC:<{
     __gen_RugPull_requireOwner CALLDICT
     s4 PUSH
+    NOT
     IF:<{
       s5 PUSH
       0 PUSHINT
