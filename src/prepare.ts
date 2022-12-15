@@ -57,7 +57,7 @@ import { CompilerContext } from './context';
                     // Tact -> ABI
                     let abi = createABI(ctx, contract);
                     fs.writeFileSync(prefix + ".abi", JSON.stringify(abi, null, 2));
-                    fs.writeFileSync(prefix + ".abi.ipfs", res.output.abit);
+                    fs.writeFileSync(prefix + ".abi.ipfs", res.output.abi);
 
                     // Store code
                     built[contract] = { code: c.output!.toString('base64'), abi };

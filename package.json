@@ -22,10 +22,13 @@
     "tact": "./bin/tact"
   },
   "dependencies": {
+    "@ipld/dag-pb": "2.1.18",
     "@types/bn.js": "^5.1.1",
     "arg": "^5.0.2",
+    "blockstore-core": "1.0.5",
     "bn.js": "^5.2.1",
     "change-case": "^4.1.2",
+    "ipfs-unixfs-importer": "9.0.10",
     "multiformats": "9.9.0",
     "ohm-js": "^16.4.0",
     "ora": "^6.1.2",

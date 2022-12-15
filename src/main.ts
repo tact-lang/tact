@@ -174,11 +174,11 @@ export async function compileProjects(configPath: string, projectNames: string[]
 
             // Compiling contract to func
             console.log('   > ' + contract + ': tact compiler');
-            let abiStr: string;
+            let abiStr: Buffer;
             try {
                 let res = await compile(ctx, contract);
                 fs.writeFileSync(pathFc, res.output.output);
-                abiStr = res.output.abit;
+                abiStr = res.output.abi;
             } catch (e) {
                 console.warn('Tact compilation failed');
                 console.warn(e);

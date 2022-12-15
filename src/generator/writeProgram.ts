@@ -232,7 +232,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
     });
 }
 
-export async function writeProgram(ctx: CompilerContext, abi: ContractABI, debug: boolean = false) {
+export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, debug: boolean = false) {
     const wctx = new WriterContext(ctx);
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');
@@ -290,7 +290,7 @@ export async function writeProgram(ctx: CompilerContext, abi: ContractABI, debug
             writeFunction(f, wctx);
 
             // Render only needed getter
-            if (c.name === abi.name) {
+            if (c.name === abiSrc.name) {
                 if (f.isGetter) {
                     writeGetter(f, wctx);
                 }
@@ -304,19 +304,19 @@ export async function writeProgram(ctx: CompilerContext, abi: ContractABI, debug
     }
 
     // Find contract
-    let c = contracts.find((v) => v.name === abi.name);
+    let c = contracts.find((v) => v.name === abiSrc.name);
     if (!c) {
-        throw Error(`Contract ${abi.name} not found`);
+        throw Error(`Contract ${abiSrc.name} not found`);
     }
 
     // Prepare ABI
-    let abiStr = JSON.stringify(abi);
-    let abiLink = await calculateIPFSlink(Buffer.from(abiStr));
+    let abi = Buffer.from(JSON.stringify(abiSrc));
+    let abiLink = await calculateIPFSlink(abi);
 
     // Write contract
     writeMainContract(c, abiLink, wctx);
 
     // Render output
     let output = wctx.render(debug);
-    return { output, abit: abiStr };
+    return { output, abi };
 }

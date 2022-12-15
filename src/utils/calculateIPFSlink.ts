@@ -1,9 +1,18 @@
-import { CID } from 'multiformats/cid';
-import * as json from 'multiformats/codecs/json';
-import { sha256 } from 'multiformats/hashes/sha2';
+import { importer } from 'ipfs-unixfs-importer';
+import { MemoryBlockstore } from 'blockstore-core/memory';
 
 export async function calculateIPFSlink(data: Buffer) {
-    const hash = await sha256.digest(data)
-    const cid = CID.create(1, json.code, hash)
-    return 'ipfs://' + cid.toString();
+    const blockstore = new MemoryBlockstore();
+    let cid = await new Promise<string>((resolve, reject) => {
+        (async () => {
+            try {
+                for await (const entry of importer({ content: data }, blockstore)) {
+                    resolve(entry.cid.toString());
+                }
+            } catch (e) {
+                reject(e);
+            }
+        })()
+    });
+    return 'ipfs://' + cid;
 }
