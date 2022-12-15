@@ -4130,6 +4130,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "type": {
         "ast": {
+          "attributes": [],
           "declarations": [
             {
               "args": [
@@ -4271,6 +4272,7 @@ exports[`resolveAllocation should write program 1`] = `
     },
     "type": {
       "ast": {
+        "attributes": [],
         "declarations": [
           {
             "args": [

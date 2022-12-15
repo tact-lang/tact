@@ -1487,6 +1487,7 @@ exports[`grammar should parse case-14 1`] = `
 {
   "entries": [
     {
+      "attributes": [],
       "declarations": [
         {
           "as": null,
@@ -2258,6 +2259,7 @@ exports[`grammar should parse case-22 1`] = `
       "ref": primitive Int;,
     },
     {
+      "attributes": [],
       "declarations": [
         {
           "as": null,
@@ -2284,6 +2286,7 @@ exports[`grammar should parse case-22 1`] = `
       "traits": [],
     },
     {
+      "attributes": [],
       "declarations": [
         {
           "as": null,
@@ -2332,6 +2335,7 @@ exports[`grammar should parse case-23 1`] = `
       "ref": primitive Int;,
     },
     {
+      "attributes": [],
       "declarations": [
         {
           "as": null,
@@ -2397,6 +2401,7 @@ exports[`grammar should parse case-23 1`] = `
       "traits": [],
     },
     {
+      "attributes": [],
       "declarations": [
         {
           "as": null,
