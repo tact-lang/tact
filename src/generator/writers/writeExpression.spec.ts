@@ -4,6 +4,7 @@ import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
 import { openContext } from "../../grammar/store";
 import { resolveStatements } from "../../types/resolveStatements";
+import { CompilerContext } from "../../context";
 
 const code = `
 
@@ -68,7 +69,7 @@ describe('writeExpression', () => {
         __DANGER_resetNodeId();
     });
     it('should write expression', () => {
-        let ctx = openContext([code]);
+        let ctx = openContext(new CompilerContext(), [code]);
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);
         let main = getStaticFunction(ctx, 'main');

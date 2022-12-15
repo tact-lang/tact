@@ -56,7 +56,6 @@ describe('features', () => {
 
             // Init contract
             let init = await ContractWithOptionals_init(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f);
-            console.warn(init.data.toDebugString());
             let executor = await createExecutorFromCode(init);
             let contract = new ContractWithOptionals(executor);
 

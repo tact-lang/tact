@@ -4,6 +4,7 @@ import { resolveDescriptors } from '../types/resolveDescriptors';
 import { getAllocations, resolveAllocations } from './resolveAllocation';
 import { openContext } from '../grammar/store';
 import { resolveStatements } from '../types/resolveStatements';
+import { CompilerContext } from '../context';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
 const src = `
@@ -33,7 +34,7 @@ describe('resolveAllocation', () => {
         __DANGER_resetNodeId();
     });
     it('should write program', () => {
-        let ctx = openContext([stdlib, src]);
+        let ctx = openContext(new CompilerContext(), [stdlib, src]);
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);
         ctx = resolveAllocations(ctx);

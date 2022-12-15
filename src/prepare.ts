@@ -6,6 +6,7 @@ import { writeTypescript } from './generator/writeTypescript';
 import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton';
 import { ContractABI } from './abi/ContractABI';
+import { CompilerContext } from './context';
 
 // Read cases
 (async () => {
@@ -26,7 +27,8 @@ import { ContractABI } from './abi/ContractABI';
 
                 // Precompile
                 console.log('Processing ' + p.path + r);
-                let ctx = precompile(p.path + r);
+                let ctx = new CompilerContext({ shared: {} });
+                ctx = precompile(ctx, p.path + r);
                 let contracts = getContracts(ctx);
 
                 // Process all contracts

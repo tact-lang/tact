@@ -51,7 +51,10 @@
     {
       "name": "optionals",
       "path": "./src/test/features/optionals.tact",
-      "output": "./src/test/features/output"
+      "output": "./src/test/features/output",
+      "experimental": {
+        "inline": true
+      }
     }
   ]
 }

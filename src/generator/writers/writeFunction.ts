@@ -1,5 +1,5 @@
 import { beginCell } from "ton";
-import { config } from "../../config";
+import { enabledInline } from "../../config";
 import { ASTCondition, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../../types/types";
@@ -120,7 +120,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Resolve function descriptor
     let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
-    let modifier = config.enableInline ? 'impure inline' : 'impure';
+    let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
     let args: string[] = [];
     if (self) {
         args.push(resolveFuncType(self, ctx) + ' self');
@@ -167,7 +167,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-binary') {
         ctx.fun(`__gen_${self.name}_receive_${selector.type}`, () => {
             let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
-            let modifier = config.enableInline ? 'impure inline' : 'impure';
+            let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
             ctx.append(`((${resolveFuncType(self, ctx)}), ()) __gen_${self.name}_receive_${selector.type}(${[resolveFuncType(self, ctx) + ' self', resolveFuncType(selector.type, ctx) + ' ' + selector.name].join(', ')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
@@ -190,7 +190,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-empty') {
         ctx.fun(`__gen_${self.name}_receive`, () => {
             let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
-            let modifier = config.enableInline ? 'impure inline' : 'impure';
+            let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
             ctx.append(`((${resolveFuncType(self, ctx)}), ()) __gen_${self.name}_receive(${(resolveFuncType(self, ctx) + ' self')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
@@ -217,7 +217,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
             .toString('hex', 0, 64);
         ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
             let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
-            let modifier = config.enableInline ? 'impure inline' : 'impure';
+            let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_comment_${hash}(${(resolveFuncType(self, ctx) + ' self')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
@@ -238,7 +238,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-fallback') {
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
             let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
-            let modifier = config.enableInline ? 'impure inline' : 'impure';
+            let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_fallback(${resolveFuncType(self, ctx)} self, slice ${selector.name}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
@@ -259,7 +259,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-bounce') {
         ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
             let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
-            let modifier = config.enableInline ? 'impure inline' : 'impure';
+            let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_bounced(${resolveFuncType(self, ctx)} self, slice ${selector.name}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
@@ -307,7 +307,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 export function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
 
-        let modifier = config.enableInline ? ' inline ' : ' ';
+        let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
         ctx.append(`cell __gen_${t.name}_init(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
 
@@ -350,7 +350,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
     });
 
     ctx.fun(`__gen_${t.name}_init_child`, () => {
-        let modifier = config.enableInline ? ' inline ' : ' ';
+        let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
         ctx.append(`(cell, cell) __gen_${t.name}_init_child(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
             ctx.used(`__tact_dict_get_code`);

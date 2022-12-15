@@ -1,4 +1,4 @@
-import { CompilerContext } from "./context";
+import { CompilerContext, enable } from "./context";
 import fs from 'fs';
 import path from 'path';
 import { getAllTypes, resolveDescriptors } from "./types/resolveDescriptors";
@@ -37,7 +37,7 @@ function resolveLibraryPath(filePath: string, name: string) {
     return null;
 }
 
-export function precompile(sourceFile: string) {
+export function precompile(ctx: CompilerContext, sourceFile: string) {
 
     // Load stdlib
     const stdlib = fs.readFileSync(__dirname + '/../stdlib/stdlib.tact', 'utf-8');
@@ -72,7 +72,7 @@ export function precompile(sourceFile: string) {
     }
 
     // Perform initial compiler steps
-    let ctx = openContext([stdlib, ...imported, code]);
+    ctx = openContext(ctx, [stdlib, ...imported, code]);
     ctx = resolveDescriptors(ctx);
     ctx = resolveAllocations(ctx);
     ctx = resolveStatements(ctx);
@@ -136,10 +136,18 @@ export async function compileProjects(configPath: string, projectNames: string[]
 
         // Start compilation
         console.log('💼 Compiling project ' + project.name + '...');
+
+        // Configure compiler
+        let ctx: CompilerContext = new CompilerContext({ shared: {} });
+        if (project.experimental && project.experimental.inline) {
+            console.warn('   > 🚀 Enabling inline');
+            ctx = enable(ctx, 'inline');
+        }
+
+        // Resovle output path
         let outputPath = path.resolve(rootPath, project.output);
-        let ctx: CompilerContext;
         try {
-            ctx = precompile(project.path);
+            ctx = precompile(ctx, project.path);
         } catch (e) {
             console.warn('Tact compilation failed');
             console.log(e);

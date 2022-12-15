@@ -3,6 +3,7 @@ import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 import { openContext } from "../../grammar/store";
+import { CompilerContext } from "../../context";
 
 const primitiveCode = `
 primitive Int;
@@ -38,7 +39,7 @@ describe('resolveFuncType', () => {
     });
 
     it('should process primitive types', () => {
-        let ctx = openContext([primitiveCode]);
+        let ctx = openContext(new CompilerContext(), [primitiveCode]);
         ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
         expect(resolveFuncType({ kind: 'ref', name: 'Int', optional: false }, wctx)).toBe('int');
@@ -54,7 +55,7 @@ describe('resolveFuncType', () => {
     });
 
     it('should process contract and struct types', () => {
-        let ctx = openContext([primitiveCode]);
+        let ctx = openContext(new CompilerContext(), [primitiveCode]);
         ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
         expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: false }, wctx)).toBe('(int, int)');

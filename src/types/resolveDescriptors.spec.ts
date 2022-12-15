@@ -15,7 +15,7 @@ describe('resolveDescriptors', () => {
     });
     for (let r of loadCases(__dirname + "/test/")) {
         it('should resolve descriptors for ' + r.name, () => {
-            let ctx = openContext([r.code]);
+            let ctx = openContext(new CompilerContext(), [r.code]);
             ctx = resolveDescriptors(ctx);
             expect(getAllTypes(ctx)).toMatchSnapshot();
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
@@ -23,7 +23,7 @@ describe('resolveDescriptors', () => {
     }
     for (let r of loadCases(__dirname + "/test-failed/")) {
         it('should fail descriptors for ' + r.name, () => {
-            let ctx = openContext([r.code]);
+            let ctx = openContext(new CompilerContext(), [r.code]);
             expect(() => resolveDescriptors(ctx)).toThrowErrorMatchingSnapshot();
         });
     }

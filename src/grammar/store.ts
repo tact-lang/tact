@@ -14,7 +14,7 @@ export function getRawAST(ctx: CompilerContext) {
     return r;
 }
 
-export function openContext(sources: string[]) {
+export function openContext(ctx: CompilerContext, sources: string[]) {
     let asts = sources.map(source => parse(source));
     let types: ASTType[] = [];
     let functions: (ASTNativeFunction | ASTFunction)[] = [];
@@ -27,7 +27,6 @@ export function openContext(sources: string[]) {
             }
         }
     }
-    let ctx = new CompilerContext({ shared: {} });
     ctx = store.set(ctx, 'types', { functions, types });
     return ctx;
 }
