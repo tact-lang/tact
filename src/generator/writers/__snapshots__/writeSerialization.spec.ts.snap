@@ -13,6 +13,8 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
+
 () __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
 
 forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
@@ -88,6 +90,24 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
 (cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -111,14 +131,14 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
     } else {
-        return (__tact_dict_set_ref(d, kl, k, v), ());
+        return __tact_dict_set_ref(d, kl, k, v);
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = __tact_dict_get(d, kl, k);
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+    var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
-        return r~load_int(vl);
+        return r;
     } else {
         return null();
     }
@@ -130,6 +150,14 @@ int __tact_address_eq(slice a, slice b) inline {
 
 int __tact_address_neq(slice a, slice b) inline {
     return ~ equal_slice_bits(a, b);
+}
+
+int __tact_cell_eq(cell a, cell b) inline {
+    return (a.cell_hash() ==  b.cell_hash());
+}
+
+int __tact_cell_neq(slice a, slice b) inline {
+    return (a.cell_hash() !=  b.cell_hash());
 }
 
 cell __tact_dict_set_code(cell dict, int id, cell code) inline {
@@ -236,11 +264,154 @@ slice __gen_writeslice_A((int, int, int, int, int, int, int) v}) inline {
     return __gen_writecell_A(v).begin_parse();
 }
 
+((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_7(v);
+}
+
 cell __gen_writecellopt_A(tuple v) inline {
     if (null?(v)) {
         return null();
     }
-    return __gen_writecell_A(v);
+    return __gen_writecell_A(__gen_A_not_null(v));
+}
+
+_ __gen_A_get_a((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'a;
+}
+
+_ __gen_A_get_b((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'b;
+}
+
+_ __gen_A_get_c((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'c;
+}
+
+_ __gen_A_get_d((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'd;
+}
+
+_ __gen_A_get_e((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'e;
+}
+
+_ __gen_A_get_f((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'f;
+}
+
+_ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'g;
+}
+
+((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) {
+    return __tact_tuple_create_7(v);
+}
+
+_ __gen_B_get_a((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'a;
+}
+
+_ __gen_B_get_b((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'b;
+}
+
+_ __gen_B_get_c((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'c;
+}
+
+_ __gen_B_get_d((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'd;
+}
+
+_ __gen_B_get_e((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'e;
+}
+
+_ __gen_B_get_f((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'f;
+}
+
+_ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'g;
+}
+
+((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_7(v);
+}
+
+tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) {
+    return __tact_tuple_create_7(v);
+}
+
+_ __gen_C_get_a((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'a;
+}
+
+_ __gen_C_get_b((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'b;
+}
+
+_ __gen_C_get_c((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'c;
+}
+
+_ __gen_C_get_d((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'd;
+}
+
+_ __gen_C_get_e((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'e;
+}
+
+_ __gen_C_get_f((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'f;
+}
+
+_ __gen_C_get_g((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'g;
+}
+
+_ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'h;
+}
+
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v) asm "NOP";
+
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_8(v);
+}
+
+tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) {
+    return __tact_tuple_create_8(v);
 }
 
 (slice, ((int, int, int, int, int, int, int))) __gen_read_A(slice sc_0) inline {
@@ -255,10 +426,10 @@ cell __gen_writecellopt_A(tuple v) inline {
     if (sc_0~load_int(1)) {
         v'e = sc_0~load_int(1);
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
-    return (sc_1, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
 tuple __gen_readopt_A(cell cl) inline {
@@ -277,7 +448,7 @@ tuple __gen_readopt_A(cell cl) inline {
     if (sc_0~load_int(1)) {
         v'e = sc_0~load_int(1);
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
     return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
@@ -296,6 +467,8 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
 
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
 () __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
 
@@ -372,6 +545,24 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
 (cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -395,14 +586,14 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
     } else {
-        return (__tact_dict_set_ref(d, kl, k, v), ());
+        return __tact_dict_set_ref(d, kl, k, v);
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = __tact_dict_get(d, kl, k);
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+    var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
-        return r~load_int(vl);
+        return r;
     } else {
         return null();
     }
@@ -414,6 +605,14 @@ int __tact_address_eq(slice a, slice b) inline {
 
 int __tact_address_neq(slice a, slice b) inline {
     return ~ equal_slice_bits(a, b);
+}
+
+int __tact_cell_eq(cell a, cell b) inline {
+    return (a.cell_hash() ==  b.cell_hash());
+}
+
+int __tact_cell_neq(slice a, slice b) inline {
+    return (a.cell_hash() !=  b.cell_hash());
 }
 
 cell __tact_dict_set_code(cell dict, int id, cell code) inline {
@@ -520,11 +719,154 @@ slice __gen_writeslice_B((int, int, int, int, int, int, int) v}) inline {
     return __gen_writecell_B(v).begin_parse();
 }
 
+((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_7(v);
+}
+
 cell __gen_writecellopt_B(tuple v) inline {
     if (null?(v)) {
         return null();
     }
-    return __gen_writecell_B(v);
+    return __gen_writecell_B(__gen_B_not_null(v));
+}
+
+_ __gen_A_get_a((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'a;
+}
+
+_ __gen_A_get_b((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'b;
+}
+
+_ __gen_A_get_c((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'c;
+}
+
+_ __gen_A_get_d((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'd;
+}
+
+_ __gen_A_get_e((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'e;
+}
+
+_ __gen_A_get_f((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'f;
+}
+
+_ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'g;
+}
+
+((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_7(v);
+}
+
+tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) {
+    return __tact_tuple_create_7(v);
+}
+
+_ __gen_B_get_a((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'a;
+}
+
+_ __gen_B_get_b((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'b;
+}
+
+_ __gen_B_get_c((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'c;
+}
+
+_ __gen_B_get_d((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'd;
+}
+
+_ __gen_B_get_e((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'e;
+}
+
+_ __gen_B_get_f((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'f;
+}
+
+_ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'g;
+}
+
+((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) {
+    return __tact_tuple_create_7(v);
+}
+
+_ __gen_C_get_a((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'a;
+}
+
+_ __gen_C_get_b((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'b;
+}
+
+_ __gen_C_get_c((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'c;
+}
+
+_ __gen_C_get_d((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'd;
+}
+
+_ __gen_C_get_e((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'e;
+}
+
+_ __gen_C_get_f((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'f;
+}
+
+_ __gen_C_get_g((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'g;
+}
+
+_ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'h;
+}
+
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v) asm "NOP";
+
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_8(v);
+}
+
+tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) {
+    return __tact_tuple_create_8(v);
 }
 
 (slice, ((int, int, int, int, int, int, int))) __gen_read_B(slice sc_0) inline {
@@ -539,10 +881,10 @@ cell __gen_writecellopt_B(tuple v) inline {
     if (sc_0~load_int(1)) {
         v'e = sc_0~load_int(1);
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
-    return (sc_1, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
 tuple __gen_readopt_B(cell cl) inline {
@@ -561,7 +903,7 @@ tuple __gen_readopt_B(cell cl) inline {
     if (sc_0~load_int(1)) {
         v'e = sc_0~load_int(1);
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
     return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
@@ -580,6 +922,8 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
 
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
 () __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
 
@@ -656,6 +1000,24 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
 (cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
@@ -679,14 +1041,14 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
     } else {
-        return (__tact_dict_set_ref(d, kl, k, v), ());
+        return __tact_dict_set_ref(d, kl, k, v);
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
-    var (r, ok) = __tact_dict_get(d, kl, k);
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+    var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
-        return r~load_int(vl);
+        return r;
     } else {
         return null();
     }
@@ -698,6 +1060,14 @@ int __tact_address_eq(slice a, slice b) inline {
 
 int __tact_address_neq(slice a, slice b) inline {
     return ~ equal_slice_bits(a, b);
+}
+
+int __tact_cell_eq(cell a, cell b) inline {
+    return (a.cell_hash() ==  b.cell_hash());
+}
+
+int __tact_cell_neq(slice a, slice b) inline {
+    return (a.cell_hash() !=  b.cell_hash());
 }
 
 cell __tact_dict_set_code(cell dict, int id, cell code) inline {
@@ -810,11 +1180,154 @@ slice __gen_writeslice_C((cell, cell, slice, slice, int, int, int, slice) v}) in
     return __gen_writecell_C(v).begin_parse();
 }
 
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_8(v);
+}
+
 cell __gen_writecellopt_C(tuple v) inline {
     if (null?(v)) {
         return null();
     }
-    return __gen_writecell_C(v);
+    return __gen_writecell_C(__gen_C_not_null(v));
+}
+
+_ __gen_A_get_a((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'a;
+}
+
+_ __gen_A_get_b((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'b;
+}
+
+_ __gen_A_get_c((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'c;
+}
+
+_ __gen_A_get_d((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'd;
+}
+
+_ __gen_A_get_e((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'e;
+}
+
+_ __gen_A_get_f((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'f;
+}
+
+_ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'g;
+}
+
+((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_7(v);
+}
+
+tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) {
+    return __tact_tuple_create_7(v);
+}
+
+_ __gen_B_get_a((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'a;
+}
+
+_ __gen_B_get_b((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'b;
+}
+
+_ __gen_B_get_c((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'c;
+}
+
+_ __gen_B_get_d((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'd;
+}
+
+_ __gen_B_get_e((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'e;
+}
+
+_ __gen_B_get_f((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'f;
+}
+
+_ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return v'g;
+}
+
+((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_7(v);
+}
+
+tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) {
+    return __tact_tuple_create_7(v);
+}
+
+_ __gen_C_get_a((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'a;
+}
+
+_ __gen_C_get_b((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'b;
+}
+
+_ __gen_C_get_c((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'c;
+}
+
+_ __gen_C_get_d((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'd;
+}
+
+_ __gen_C_get_e((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'e;
+}
+
+_ __gen_C_get_f((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'f;
+}
+
+_ __gen_C_get_g((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'g;
+}
+
+_ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return v'h;
+}
+
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v) asm "NOP";
+
+tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) {
+    return __tact_tuple_create_8(v);
 }
 
 (slice, ((cell, cell, slice, slice, int, int, int, slice))) __gen_read_C(slice sc_0) inline {
@@ -827,7 +1340,7 @@ cell __gen_writecellopt_C(tuple v) inline {
     if (sc_0~load_int(1)) {
         v'c = sc_0~load_ref().begin_parse();
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'd = null();
     if (sc_1~load_int(1)) {
         v'd = sc_1~load_ref().begin_parse();
@@ -836,7 +1349,7 @@ cell __gen_writecellopt_C(tuple v) inline {
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
     var v'h = sc_1~__tact_load_address();
-    return (sc_1, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
 }
 
 tuple __gen_readopt_C(cell cl) inline {
@@ -853,7 +1366,7 @@ tuple __gen_readopt_C(cell cl) inline {
     if (sc_0~load_int(1)) {
         v'c = sc_0~load_ref().begin_parse();
     }
-    slice sc_1 = preload_ref(sc_0).begin_parse();
+    slice sc_1 = sc_0~load_ref().begin_parse();
     var v'd = null();
     if (sc_1~load_int(1)) {
         v'd = sc_1~load_ref().begin_parse();
