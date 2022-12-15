@@ -58,7 +58,7 @@ SETCP0
       s0 s1 XCHG
       4096439811 PUSHINT
       EQUAL
-      100 THROWIFNOT
+      129 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
       s0 s1 XCHG
@@ -97,7 +97,7 @@ SETCP0
       c4 POP
     }> IFJMPREF
     s0 POP
-    100 THROW
+    130 THROW
 
   8: 
     PUSHNULL

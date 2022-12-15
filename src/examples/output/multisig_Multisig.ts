@@ -238,7 +238,7 @@ export function unpackTupleRequest(slice: TupleSlice4): Request {
     return { $$type: 'Request', to: to, amount: amount, body: body };
 }
 export async function Multisig_init(members: Cell, requiredWeight: BN) {
-    const __code = 'te6ccgEBCQEA6gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQAJoea/4BEBb9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQh6FVsB3XGBGHlgMkBgIB1AcIAMrtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQ9Cq2A7ry4GT6QAEBgQEB1wBtAdIAAZIx1N5VIDMQVhBFEDRY8AnI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVAA7G1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJgAAUXwOA=';
+    const __code = 'te6ccgEBCQEA6gABFP8A9KQT9LzyyAsBAgFiAgMCAswEBQAJoea/4BEBb9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gGCogireB/DCBSK3wQQh6FVsB3XGBGHlgQUBgIB1AcIAMrtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQ9Cq2A7ry4IH6QAEBgQEB1wBtAdIAAZIx1N5VIDMQVhBFEDRY8AnI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVAA7G1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJgAAUXwOA=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -268,6 +268,8 @@ export const Multisig_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class Multisig {
@@ -293,6 +295,7 @@ export class Multisig {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Multisig_errors[e.exitCode.toString()]) {
                     throw new Error(Multisig_errors[e.exitCode.toString()]);
                 }

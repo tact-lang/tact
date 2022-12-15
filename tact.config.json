@@ -53,7 +53,8 @@
       "path": "./src/test/features/optionals.tact",
       "output": "./src/test/features/output",
       "experimental": {
-        "inline": true
+        "inline": true,
+        "debug": true
       }
     }
   ]

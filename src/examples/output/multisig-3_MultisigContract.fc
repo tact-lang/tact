@@ -25,20 +25,20 @@ cell __gen_writecell_Operation((int, int, slice) v) inline {
     return __gen_write_Operation(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice))) __gen_read_Operation(slice sc) inline {
-    var v'seqno = sc~load_uint(32);
-    var v'amount = sc~load_coins();
-    var v'target = sc~__tact_load_address();
-    return (sc, (v'seqno, v'amount, v'target));
+(slice, ((int, int, slice))) __gen_read_Operation(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'amount = sc_0~load_coins();
+    var v'target = sc_0~__tact_load_address();
+    return (sc_0, (v'seqno, v'amount, v'target));
 }
 
-(slice, (((int, int, slice), slice, slice, slice))) __gen_read_Execute(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 819865922);
-    var v'operation = sc~__gen_read_Operation();
-    var v'signature1 = sc~load_ref().begin_parse();
-    var v'signature2 = sc~load_ref().begin_parse();
-    var v'signature3 = sc~load_ref().begin_parse();
-    return (sc, (v'operation, v'signature1, v'signature2, v'signature3));
+(slice, (((int, int, slice), slice, slice, slice))) __gen_read_Execute(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 819865922);
+    var v'operation = sc_0~__gen_read_Operation();
+    var v'signature1 = sc_0~load_ref().begin_parse();
+    var v'signature2 = sc_0~load_ref().begin_parse();
+    var v'signature3 = sc_0~load_ref().begin_parse();
+    return (sc_0, (v'operation, v'signature1, v'signature2, v'signature3));
 }
 
 builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline {
@@ -50,12 +50,12 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
     return build_0;
 }
 
-(slice, ((int, int, int, int))) __gen_read_MultisigContract(slice sc) inline {
-    var v'seqno = sc~load_uint(32);
-    var v'user1_key = sc~load_uint(256);
-    var v'user2_key = sc~load_uint(256);
-    var v'user3_key = sc~load_uint(256);
-    return (sc, (v'seqno, v'user1_key, v'user2_key, v'user3_key));
+(slice, ((int, int, int, int))) __gen_read_MultisigContract(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'user1_key = sc_0~load_uint(256);
+    var v'user2_key = sc_0~load_uint(256);
+    var v'user3_key = sc_0~load_uint(256);
+    return (sc_0, (v'seqno, v'user1_key, v'user2_key, v'user3_key));
 }
 
 ((int, int, slice)) __gen_Operation_unpack((int, int, slice) v) asm "NOP";
@@ -227,7 +227,7 @@ _ __gen_get_seqno() method_id(85143) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_MultisigContract(cell sys', int key1, int key2, int key3) method_id {

@@ -25,7 +25,7 @@ PROGRAM{
     SWAP
     4096439811 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
@@ -140,7 +140,7 @@ PROGRAM{
       __gen_store_Multisig INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_Multisig PROC:<{
     __gen_Multisig_init CALLDICT

@@ -59,7 +59,7 @@ cell __gen_MultisigSigner_init(cell sys', slice master, cell members, int requir
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_MultisigSigner(cell sys', slice master, cell members, int requiredWeight, (slice, int, cell) request) method_id {

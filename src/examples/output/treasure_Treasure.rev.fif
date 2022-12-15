@@ -55,7 +55,7 @@ SETCP0
       s0 s1 XCHG
       1286094280 PUSHINT
       EQUAL
-      100 THROWIFNOT
+      129 THROWIFNOT
       LDGRAMS
       8 LDU
       ROTREV
@@ -89,7 +89,7 @@ SETCP0
       s0 s1 XCHG
       3067051791 PUSHINT
       EQUAL
-      100 THROWIFNOT
+      129 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
       s1 POP
@@ -133,7 +133,7 @@ SETCP0
       }> PUSHCONT
       IFJMP
     }> IFREFELSE
-    100 THROW
+    130 THROW
 
   1: 
     s0 PUSH

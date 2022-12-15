@@ -183,7 +183,7 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     return { $$type: 'StateInit', code: code, data: data };
 }
 export async function RugPull_init(scammer: Address) {
-    const __code = 'te6ccgECCwEAAT8AART/APSkE/S88sgLAQIBYgIDAgLMBAUACaAUWeAPAgEgBgcCAdQJCgHx12/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8BBgABFrpOCQ2EcfLfaiaGoA/DF9IACA6QBAgIDrgECAgOuAegIqoDYK+ARkfCEA5iqgKCpniwllAECAgOeACUCAgOeAegBk9qpwYABAgAP/Nrg4KQLkZiCqgagqZ4sJZQBAgIDngAlAgIDngHoAZMAN6OZ/kBgvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rqOP+1E0NQB+GL6QAEB0gCBAQHXAIEBAdcA9ARVQGwV8AnI+EIBzFVAUFTPFhLKAIEBAc8AEoEBAc8A9ADJ7VTbMeCRMOLywGQAASAABR/NIA==';
+    const __code = 'te6ccgECCwEAAT8AART/APSkE/S88sgLAQIBYgIDAgLMBAUACaAUWeAPAgEgBgcCAdQJCgHx12/bgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBgqIIq3gfwwgUit8BBgABFrpOCQ2EcfLfaiaGoA/DF9IACA6QBAgIDrgECAgOuAegIqoDYK+ARkfCEA5iqgKCpniwllAECAgOeACUCAgOeAegBk9qpwYABAgAP/Nrg4KQLkZiCqgagqZ4sJZQBAgIDngAlAgIDngHoAZMAN6OZ/kBgvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rqOP+1E0NQB+GL6QAEB0gCBAQHXAIEBAdcA9ARVQGwV8AnI+EIBzFVAUFTPFhLKAIEBAc8AEoEBAc8A9ADJ7VTbMeCRMOLywIIAASAABR/NIA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -212,6 +212,8 @@ export const RugPull_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class RugPull {
@@ -240,6 +242,7 @@ export class RugPull {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (RugPull_errors[e.exitCode.toString()]) {
                     throw new Error(RugPull_errors[e.exitCode.toString()]);
                 }

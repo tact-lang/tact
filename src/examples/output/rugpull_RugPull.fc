@@ -21,13 +21,13 @@ builder __gen_write_RugPull(builder build_0, (slice, int, int, int, cell) v) inl
     return build_0;
 }
 
-(slice, ((slice, int, int, int, cell))) __gen_read_RugPull(slice sc) inline {
-    var v'scammer = sc~__tact_load_address();
-    var v'rugpulled = sc~load_int(1);
-    var v'queueStart = sc~load_int(257);
-    var v'queueEnd = sc~load_int(257);
-    var v'queue = sc~load_dict();
-    return (sc, (v'scammer, v'rugpulled, v'queueStart, v'queueEnd, v'queue));
+(slice, ((slice, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline {
+    var v'scammer = sc_0~__tact_load_address();
+    var v'rugpulled = sc_0~load_int(1);
+    var v'queueStart = sc_0~load_int(257);
+    var v'queueEnd = sc_0~load_int(257);
+    var v'queue = sc_0~load_dict();
+    return (sc_0, (v'scammer, v'rugpulled, v'queueStart, v'queueEnd, v'queue));
 }
 
 (slice, int, int, int, cell) __gen_load_RugPull() inline {
@@ -108,7 +108,7 @@ cell __gen_RugPull_init(cell sys', slice scammer) {
         }
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_RugPull(cell sys', slice scammer) method_id {

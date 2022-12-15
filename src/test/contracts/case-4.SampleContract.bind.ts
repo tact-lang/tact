@@ -233,6 +233,8 @@ export const SampleContract_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class SampleContract {
@@ -246,6 +248,7 @@ export class SampleContract {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (SampleContract_errors[e.exitCode.toString()]) {
                     throw new Error(SampleContract_errors[e.exitCode.toString()]);
                 }

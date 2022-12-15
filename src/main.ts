@@ -140,8 +140,12 @@ export async function compileProjects(configPath: string, projectNames: string[]
         // Configure compiler
         let ctx: CompilerContext = new CompilerContext({ shared: {} });
         if (project.experimental && project.experimental.inline) {
-            console.warn('   > 🚀 Enabling inline');
+            console.warn('   > 👀 Enabling inline');
             ctx = enable(ctx, 'inline');
+        }
+        if (project.experimental && project.experimental.debug) {
+            console.warn('   > 👀 Enabling debug');
+            ctx = enable(ctx, 'debug');
         }
 
         // Resovle output path

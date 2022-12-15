@@ -6,7 +6,8 @@ const projectSchema = z.object({
     output: z.string(),
     contracts: z.array(z.string()).optional(),
     experimental: z.object({
-        inline: z.boolean().optional()
+        inline: z.boolean().optional(),
+        debug: z.boolean().optional()
     }).optional()
 });
 

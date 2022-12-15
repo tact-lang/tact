@@ -4,6 +4,7 @@ import { Writer } from "./Writer";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
 import { readFromStack } from "./typescript/readFromStack";
+import { enabledDebug } from "../config";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -147,9 +148,6 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         w.append(`}`);
         w.append(`export function unpackTuple${s.name}(slice: TupleSlice4): ${s.name} {`)
         w.inIndent(() => {
-            // w.append(`let p = slice.pop();`);
-            // w.append(`if (p.type !== 'tuple') { return null; }`);
-            // w.append(`slice = new TupleSlice4(p.items);`);
             for (const f of s.fields) {
                 readFromStack(f.name, f.type, w, true);
             }
@@ -281,6 +279,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 w.inIndent(() => {
                     w.append(`if (e instanceof ExecuteError) {`)
                     w.inIndent(() => {
+                        w.append(`if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }`);
                         w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
                         w.inIndent(() => {
                             w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);
@@ -369,6 +368,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 w.inIndent(() => {
                     w.append(`if (e instanceof ExecuteError) {`)
                     w.inIndent(() => {
+                        w.append(`if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }`);
                         w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
                         w.inIndent(() => {
                             w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);

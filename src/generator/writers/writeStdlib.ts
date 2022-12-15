@@ -20,6 +20,12 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_dict_get', () => {
         ctx.append(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`);
     });
+    ctx.fun('__tact_debug', () => {
+        ctx.append(`() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }`);
+    });
+    ctx.fun('__tact_debug_str', () => {
+        ctx.append(`forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";`);
+    });
 
     ctx.fun('__tact_context', () => {
         ctx.append(`global (int, slice, int) __tact_context;`);

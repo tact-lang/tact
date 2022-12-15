@@ -183,7 +183,7 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     return { $$type: 'StateInit', code: code, data: data };
 }
 export async function StdlibTest_init() {
-    const __code = 'te6ccgEBEgEAwwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWAyQCASAGBwIBIAgJAgEgCgsAGRwAcjMAQGBAQHPAMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
+    const __code = 'te6ccgEBEgEAwwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEfRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gGCogibeB/DDueWBBQCASAGBwIBIAgJAgEgCgsAGRwAcjMAQGBAQHPAMmAABwxxwCAABwx10mAABwx10qACAnIODwAJvT7HgCQCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AY=';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -211,6 +211,8 @@ export const StdlibTest_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class StdlibTest {
@@ -225,6 +227,7 @@ export class StdlibTest {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (StdlibTest_errors[e.exitCode.toString()]) {
                     throw new Error(StdlibTest_errors[e.exitCode.toString()]);
                 }
@@ -240,6 +243,7 @@ export class StdlibTest {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (StdlibTest_errors[e.exitCode.toString()]) {
                     throw new Error(StdlibTest_errors[e.exitCode.toString()]);
                 }
@@ -255,6 +259,7 @@ export class StdlibTest {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (StdlibTest_errors[e.exitCode.toString()]) {
                     throw new Error(StdlibTest_errors[e.exitCode.toString()]);
                 }

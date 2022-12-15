@@ -219,7 +219,7 @@ export function unpackTupleTransferMessage(slice: TupleSlice4): TransferMessage 
     return { $$type: 'TransferMessage', signature: signature, transfer: transfer };
 }
 export async function Wallet_init(key: BN, walletId: BN) {
-    const __code = 'te6ccgECCwEAAREAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghBt5Y3NuuMCMPLAZAQCASAFBgCw7UTQ1AH4YtMf0//TP1UgbBMD0x8BghBt5Y3NuvLgZIMI1xhmMhA0QwAg+QFUECT5EPKq0h/SB9QwUSW68qsEpKk4DwT7AMj4QgHMVSBQI8sfy//LP8ntVAIBIAcIACu+AldqJoagD8MWmP6f/pn6qQNgm2EMACO7oTcAPIzFUgUCPLH8v/yz/JgCAUgJCgApsyX7UTQ1AH4YtMf0//TP1UgbBNbgACuwfjtRNDUAfhi0x/T/9M/VSBsEzAxg';
+    const __code = 'te6ccgECCwEAAREAART/APSkE/S88sgLAQIBYgIDAXDQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghBt5Y3NuuMCMPLAggQCASAFBgCw7UTQ1AH4YtMf0//TP1UgbBMD0x8BghBt5Y3NuvLggYMI1xhmMhA0QwAg+QFUECT5EPKq0h/SB9QwUSW68qsEpKk4DwT7AMj4QgHMVSBQI8sfy//LP8ntVAIBIAcIACu+AldqJoagD8MWmP6f/pn6qQNgm2EMACO7oTcAPIzFUgUCPLH8v/yz/JgCAUgJCgApsyX7UTQ1AH4YtMf0//TP1UgbBNbgACuwfjtRNDUAfhi0x/T/9M/VSBsEzAxg';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -249,6 +249,8 @@ export const Wallet_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class Wallet {
@@ -274,6 +276,7 @@ export class Wallet {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }
@@ -288,6 +291,7 @@ export class Wallet {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }
@@ -302,6 +306,7 @@ export class Wallet {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }
@@ -316,6 +321,7 @@ export class Wallet {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }

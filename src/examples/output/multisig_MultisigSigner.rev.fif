@@ -26,7 +26,7 @@ SETCP0
     TRIPLE
     1 SETGLOBVAR
     IFRET
-    100 THROW
+    130 THROW
 
   3: 
     0 PUSHINT

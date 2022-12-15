@@ -138,7 +138,7 @@ PROGRAM{
     }>ELSE<{
       DROP
     }>
-    100 THROW
+    130 THROW
   }>
   init_RugPull PROC:<{
     __gen_RugPull_init CALLDICT

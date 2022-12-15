@@ -285,9 +285,9 @@ export function unpackTupleTransferMessage(slice: TupleSlice4): TransferMessage 
     return { $$type: 'TransferMessage', signature: signature, transfer: transfer };
 }
 export async function Wallet_init(key: BN, walletId: BN) {
-    const __code = 'te6ccgECKgEAA9AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAsIG7y0ICAAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LgZNQB0AHTH9MH+kABAfoAbQHSAAGSMdTeVUAQVjYQeBBnVQTwF8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BnI+EIBzFUgUCPLH8v/yz/J7VQC8CD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BrI+EIBzFUgUCPLH8v/yz/J7VTbMeAggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAgwNACjwGMj4QgHMVSBQI8sfy//LP8ntVABQW+1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMQCcgvCcoPGFUXTjLo/TeN9WpuT2xA5N/LYJDkmBL3seJiFL+bqOKDDtRNDUAfhi0x/T/9M/VSBsE/AcyPhCAcxVIFAjyx/L/8s/ye1U2zHgAgEgEBECASAcHQIBIBITAgEgFhcCASAUFQAfRwA8jMVSBQI8sfy//LP8mAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobAAUMDGAABRsIYAADFuAAexUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzBtbfARgAgEgHh8CAUgiIwIBICAhAgEgISEAGQw+EFvI1uzkwKkAt6AAFz4QW8jW7OTAqQC3oAABIAADDCACASAmJwArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ArAAJu6E/ASgCAUgoKQArsyX7UTQ1AH4YtMf0//TP1UgbBPwFoAArsH47UTQ1AH4YtMf0//TP1UgbBPwFIA==';
+    const __code = 'te6ccgECKgEAA9AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAsIG7y0ICAAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LggdQB0AHTH9MH+kABAfoAbQHSAAGSMdTeVUAQVjYQeBBnVQTwF8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BnI+EIBzFUgUCPLH8v/yz/J7VQC8CD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BrI+EIBzFUgUCPLH8v/yz/J7VTbMeAggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAgwNACjwGMj4QgHMVSBQI8sfy//LP8ntVABQW+1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMQCcgvCcoPGFUXTjLo/TeN9WpuT2xA5N/LYJDkmBL3seJiFL+bqOKDDtRNDUAfhi0x/T/9M/VSBsE/AcyPhCAcxVIFAjyx/L/8s/ye1U2zHgAgEgEBECASAcHQIBIBITAgEgFhcCASAUFQAfRwA8jMVSBQI8sfy//LP8mAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobAAUMDGAABRsIYAADFuAAexUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzBtbfARgAgEgHh8CAUgiIwIBICAhAgEgISEAGQw+EFvI1uzkwKkAt6AAFz4QW8jW7OTAqQC3oAABIAADDCACASAmJwArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ArAAJu6E/ASgCAUgoKQArsyX7UTQ1AH4YtMf0//TP1UgbBPwFoAArsH47UTQ1AH4YtMf0//TP1UgbBPwFIA==';
     const depends = new Map<string, Cell>();
-    depends.set('14718', Cell.fromBoc(Buffer.from('te6ccgECKgEAA9AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAsIG7y0ICAAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LgZNQB0AHTH9MH+kABAfoAbQHSAAGSMdTeVUAQVjYQeBBnVQTwF8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BnI+EIBzFUgUCPLH8v/yz/J7VQC8CD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BrI+EIBzFUgUCPLH8v/yz/J7VTbMeAggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAgwNACjwGMj4QgHMVSBQI8sfy//LP8ntVABQW+1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMQCcgvCcoPGFUXTjLo/TeN9WpuT2xA5N/LYJDkmBL3seJiFL+bqOKDDtRNDUAfhi0x/T/9M/VSBsE/AcyPhCAcxVIFAjyx/L/8s/ye1U2zHgAgEgEBECASAcHQIBIBITAgEgFhcCASAUFQAfRwA8jMVSBQI8sfy//LP8mAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobAAUMDGAABRsIYAADFuAAexUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzBtbfARgAgEgHh8CAUgiIwIBICAhAgEgISEAGQw+EFvI1uzkwKkAt6AAFz4QW8jW7OTAqQC3oAABIAADDCACASAmJwArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ArAAJu6E/ASgCAUgoKQArsyX7UTQ1AH4YtMf0//TP1UgbBPwFoAArsH47UTQ1AH4YtMf0//TP1UgbBPwFIA==', 'base64'))[0]);
+    depends.set('14718', Cell.fromBoc(Buffer.from('te6ccgECKgEAA9AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBzgYHAgEgDg8E9zt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhAo4oMO1E0NQB+GLTH9P/0z9VIGwTVQLwHcj4QgHMVSBQI8sfy//LP8ntVOAgwHvjAiDAACLXScEhsOMCwADjAO1E0NQB+GLTH9P/0z9VIGwTVQKAICQoLAAsIG7y0ICAAojDtRNDUAfhi0x/T/9M/VSBsEwPTHwHAe/LggdQB0AHTH9MH+kABAfoAbQHSAAGSMdTeVUAQVjYQeBBnVQTwF8j4QgHMVSBQI8sfy//LP8ntVABMW+1E0NQB+GLTH9P/0z9VIGwT8BnI+EIBzFUgUCPLH8v/yz/J7VQC8CD5ASCC8A4jVyYQi1cA0Dad1xZ/av+4BqfgQFk3XdDg+ySXHnKyuo4oW+1E0NQB+GLTH9P/0z9VIGwT8BrI+EIBzFUgUCPLH8v/yz/J7VTbMeAggvBnJ9aXZfjyLHXFgeNWVEOX9aALuRvTLE0NltTJJoS8wrrjAgwNACjwGMj4QgHMVSBQI8sfy//LP8ntVABQW+1E0NQB+GLTH9P/0z9VIGwT8BvI+EIBzFUgUCPLH8v/yz/J7VTbMQCcgvCcoPGFUXTjLo/TeN9WpuT2xA5N/LYJDkmBL3seJiFL+bqOKDDtRNDUAfhi0x/T/9M/VSBsE/AcyPhCAcxVIFAjyx/L/8s/ye1U2zHgAgEgEBECASAcHQIBIBITAgEgFhcCASAUFQAfRwA8jMVSBQI8sfy//LP8mAAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCACASAYGQIBIBobAAUMDGAABRsIYAADFuAAexUdDJTQ8hVQFBFyx8SywcBzxYB+gIhbpRwMsoAlX8BygDM4sn5AFQQaPkQ8qpRN7ryqwakf1B0QzBtbfARgAgEgHh8CAUgiIwIBICAhAgEgISEAGQw+EFvI1uzkwKkAt6AAFz4QW8jW7OTAqQC3oAABIAADDCACASAmJwArvgJXaiaGoA/DFpj+n/6Z+qkDYJ+ArAAJu6E/ASgCAUgoKQArsyX7UTQ1AH4YtMf0//TP1UgbBPwFoAArsH47UTQ1AH4YtMf0//TP1UgbBPwFIA==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
@@ -316,6 +316,8 @@ export const Wallet_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class Wallet {
@@ -356,6 +358,7 @@ export class Wallet {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }
@@ -370,6 +373,7 @@ export class Wallet {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }
@@ -384,6 +388,7 @@ export class Wallet {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }
@@ -398,6 +403,7 @@ export class Wallet {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Wallet_errors[e.exitCode.toString()]) {
                     throw new Error(Wallet_errors[e.exitCode.toString()]);
                 }

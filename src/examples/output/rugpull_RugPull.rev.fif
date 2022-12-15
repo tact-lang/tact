@@ -129,7 +129,7 @@ SETCP0
       s0 POP
     }> PUSHCONT
     IFELSE
-    100 THROW
+    130 THROW
 
   7: 
     PUSHNULL

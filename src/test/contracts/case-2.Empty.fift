@@ -28,6 +28,6 @@ PROGRAM{
     __tact_context SETGLOB
     IFJMP:<{
     }>
-    100 THROW
+    130 THROW
   }>
 }END>c

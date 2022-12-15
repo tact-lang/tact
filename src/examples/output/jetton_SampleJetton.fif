@@ -106,7 +106,7 @@ PROGRAM{
     SWAP
     2078119902 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     __tact_load_address INLINECALLDICT
@@ -148,7 +148,7 @@ PROGRAM{
     SWAP
     3551049822 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     PUSHNULL
     SWAP
     1 LDI
@@ -164,7 +164,7 @@ PROGRAM{
     SWAP
     2737462367 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     SWAP
@@ -569,7 +569,7 @@ PROGRAM{
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_SampleJetton PROC:<{
     __gen_SampleJetton_init CALLDICT

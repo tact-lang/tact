@@ -437,6 +437,12 @@
     },
     "128": {
       "message": "Null reference exception"
+    },
+    "129": {
+      "message": "Invalid serialization prefix"
+    },
+    "130": {
+      "message": "Invalid incoming message"
     }
   }
 }

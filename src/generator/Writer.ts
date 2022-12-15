@@ -1,3 +1,4 @@
+import { enabledDebug } from "../config";
 import { CompilerContext } from "../context";
 import { topologicalSort } from "../utils";
 
@@ -131,5 +132,18 @@ export class WriterContext {
 
     append(src: string = '') {
         this.#pendingWriter!.append(src);
+    }
+
+    debug(id?: number | undefined | null | string) {
+        if (enabledDebug(this.ctx)) {
+            if (typeof id === 'string') {
+                this.used('__tact_debug_str');
+                this.append(`__tact_debug_str("${id}");`);
+            } else {
+                this.used('__tact_debug');
+                let v = (id === undefined || id === null) ? (this.#nextId++) : id;
+                this.append(`__tact_debug(${v});`);
+            }
+        }
     }
 }

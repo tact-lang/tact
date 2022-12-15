@@ -49,7 +49,7 @@ PROGRAM{
     SWAP
     3067051791 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
   __gen_read_Withdraw PROCINLINE:<{
@@ -57,7 +57,7 @@ PROGRAM{
     SWAP
     1286094280 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     LDGRAMS
     8 LDU
     -ROT
@@ -314,7 +314,7 @@ PROGRAM{
     }>ELSE<{
       DROP
     }>
-    100 THROW
+    130 THROW
   }>
   init_Treasure PROC:<{
     __gen_Treasure_init CALLDICT

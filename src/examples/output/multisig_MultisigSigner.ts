@@ -238,7 +238,7 @@ export function unpackTupleRequest(slice: TupleSlice4): Request {
     return { $$type: 'Request', to: to, amount: amount, body: body };
 }
 export async function MultisigSigner_init(master: Address, members: Cell, requiredWeight: BN, request: Request) {
-    const __code = 'te6ccgEBBgEAfQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoAW54AcAR0INdJMcIfMNDTAwFxsMABkX+RcOIB+kAwVEETbwP4YdzywGSABtVwB8jMBwVVIFB2zxYUgQEBzwASgQEBzwD0AMhYzxYTgQEBzwAhbpRwMsoAlX8BygDM4skBzMmA==';
+    const __code = 'te6ccgEBBgEAfQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoAW54AcAR0INdJMcIfMNDTAwFxsMABkX+RcOIB+kAwVEETbwP4YdzywIKABtVwB8jMBwVVIFB2zxYUgQEBzwASgQEBzwD0AMhYzxYTgQEBzwAhbpRwMsoAlX8BygDM4skBzMmA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -270,6 +270,8 @@ export const MultisigSigner_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class MultisigSigner {

@@ -7,9 +7,9 @@ builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     return build_0;
 }
 
-(slice, ((int))) __gen_read_StdlibTest(slice sc) inline {
-    var v'v = sc~load_int(257);
-    return (sc, (v'v));
+(slice, ((int))) __gen_read_StdlibTest(slice sc_0) inline {
+    var v'v = sc_0~load_int(257);
+    return (sc_0, (v'v));
 }
 
 (int) __gen_load_StdlibTest() inline {
@@ -78,7 +78,7 @@ _ __gen_get_sliceRefs(slice sc) method_id(77445) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_StdlibTest(cell sys') method_id {

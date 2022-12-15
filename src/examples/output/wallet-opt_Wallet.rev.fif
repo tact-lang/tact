@@ -54,7 +54,7 @@ SETCP0
       s0 s1 XCHG
       1843760589 PUSHINT
       EQUAL
-      100 THROWIFNOT
+      129 THROWIFNOT
       9 PUSHPOW2
       LDSLICEX
       TUCK
@@ -91,7 +91,7 @@ SETCP0
       c4 POP
     }> IFJMPREF
     s0 POP
-    100 THROW
+    130 THROW
 
   80403: 
     0 PUSHINT

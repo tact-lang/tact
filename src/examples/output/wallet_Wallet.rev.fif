@@ -78,7 +78,7 @@ SETCP0
       32 LDU
       s0 s1 XCHG
       123 EQINT
-      100 THROWIFNOT
+      129 THROWIFNOT
       LDREF
       s0 s1 XCHG
       CTOS

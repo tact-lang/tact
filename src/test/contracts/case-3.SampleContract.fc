@@ -1,18 +1,18 @@
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
-(slice, ((int, int))) __gen_read_Source(slice sc) inline {
-    var v'a = sc~load_int(257);
-    var v'b = sc~load_int(257);
-    return (sc, (v'a, v'b));
+(slice, ((int, int))) __gen_read_Source(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    return (sc_0, (v'a, v'b));
 }
 
-(slice, ((int, int, (int, int)))) __gen_read_SampleContract(slice sc) inline {
-    var v'a = sc~load_int(257);
-    var v'b = sc~load_int(257);
-    sc = (sc~load_ref()).begin_parse();
-    var v'c = sc~__gen_read_Source();
-    return (sc, (v'a, v'b, v'c));
+(slice, ((int, int, (int, int)))) __gen_read_SampleContract(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    slice sc_1 = preload_ref(sc_0).begin_parse();
+    var v'c = sc_1~__gen_read_Source();
+    return (sc_0, (v'a, v'b, v'c));
 }
 
 (int, int, (int, int)) __gen_load_SampleContract() inline {
@@ -51,5 +51,5 @@ _ __gen_get_stake() method_id(80984) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }

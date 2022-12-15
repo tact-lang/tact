@@ -94,7 +94,7 @@ PROGRAM{
     __tact_context SETGLOB
     IFJMP:<{
     }>
-    100 THROW
+    130 THROW
   }>
   init_StdlibTest PROC:<{
     __gen_StdlibTest_init CALLDICT

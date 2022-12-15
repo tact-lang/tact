@@ -138,7 +138,7 @@ PROGRAM{
     SWAP
     1056067080 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     PUSHNULL
@@ -157,7 +157,7 @@ PROGRAM{
     SWAP
     2818252722 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     PUSHNULL
@@ -175,7 +175,7 @@ PROGRAM{
     SWAP
     3506188068 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     PUSHNULL
@@ -193,7 +193,7 @@ PROGRAM{
     SWAP
     3295239033 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     __tact_load_address INLINECALLDICT
     PUSHNULL
     s0 s2 XCHG
@@ -212,7 +212,7 @@ PROGRAM{
     SWAP
     1566575299 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     __tact_load_address INLINECALLDICT
     PUSHNULL
     s0 s2 XCHG
@@ -267,19 +267,20 @@ PROGRAM{
   __gen_read_MapTestContract PROCINLINE:<{
     LDDICT
     LDDICT
-    LDREF
-    DROP
+    DUP
+    PLDREF
     CTOS
     LDDICT
     LDDICT
     LDDICT
-    LDREF
-    DROP
+    PLDREF
     CTOS
     LDDICT
     LDDICT
     LDDICT
-    8 -ROLL
+    DROP
+    s6 s8 XCHG
+    s6 s7 XCHG
   }>
   __gen_load_MapTestContract PROCINLINE:<{
     c4 PUSH
@@ -623,7 +624,7 @@ PROGRAM{
       __gen_store_MapTestContract INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_MapTestContract PROC:<{
     __gen_MapTestContract_init CALLDICT

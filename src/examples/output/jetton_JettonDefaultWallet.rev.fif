@@ -60,7 +60,7 @@ SETCP0
       s0 s1 XCHG
       395134233 PUSHINT
       EQUAL
-      100 THROWIFNOT
+      129 THROWIFNOT
       64 LDU
       257 PUSHINT
       LDI
@@ -114,7 +114,7 @@ SETCP0
       s0 s1 XCHG
       260734629 PUSHINT
       EQUAL
-      100 THROWIFNOT
+      129 THROWIFNOT
       64 LDU
       LDGRAMS
       LDMSGADDR
@@ -158,7 +158,7 @@ SETCP0
       c4 POP
     }> IFJMPREF
     s0 POP
-    100 THROW
+    130 THROW
 
   1: 
     s0 PUSH

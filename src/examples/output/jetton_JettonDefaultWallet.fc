@@ -64,28 +64,28 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int) v) inli
     return __gen_write_TokenTransferInternal(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice, slice, int))) __gen_read_TokenTransferInternal(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 395134233);
-    var v'queryId = sc~load_uint(64);
-    var v'amount = sc~load_int(257);
-    var v'from = sc~__tact_load_address();
-    var v'responseAddress = sc~__tact_load_address();
-    var v'forwardTonAmount = sc~load_coins();
-    return (sc, (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount));
+(slice, ((int, int, slice, slice, int))) __gen_read_TokenTransferInternal(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 395134233);
+    var v'queryId = sc_0~load_uint(64);
+    var v'amount = sc_0~load_int(257);
+    var v'from = sc_0~__tact_load_address();
+    var v'responseAddress = sc_0~__tact_load_address();
+    var v'forwardTonAmount = sc_0~load_coins();
+    return (sc_0, (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount));
 }
 
-(slice, ((int, int, slice, slice, cell, int))) __gen_read_TokenTransfer(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 260734629);
-    var v'queryId = sc~load_uint(64);
-    var v'amount = sc~load_coins();
-    var v'destination = sc~__tact_load_address();
-    var v'responseDestination = sc~__tact_load_address();
+(slice, ((int, int, slice, slice, cell, int))) __gen_read_TokenTransfer(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 260734629);
+    var v'queryId = sc_0~load_uint(64);
+    var v'amount = sc_0~load_coins();
+    var v'destination = sc_0~__tact_load_address();
+    var v'responseDestination = sc_0~__tact_load_address();
     var v'customPayload = null();
-    if (sc~load_int(1)) {
-        v'customPayload = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'customPayload = sc_0~load_ref();
     }
-    var v'forwardTonAmount = sc~load_coins();
-    return (sc, (v'queryId, v'amount, v'destination, v'responseDestination, v'customPayload, v'forwardTonAmount));
+    var v'forwardTonAmount = sc_0~load_coins();
+    return (sc_0, (v'queryId, v'amount, v'destination, v'responseDestination, v'customPayload, v'forwardTonAmount));
 }
 
 builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
@@ -96,11 +96,11 @@ builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) 
     return build_0;
 }
 
-(slice, ((int, slice, slice))) __gen_read_JettonDefaultWallet(slice sc) inline {
-    var v'balance = sc~load_int(257);
-    var v'owner = sc~__tact_load_address();
-    var v'master = sc~__tact_load_address();
-    return (sc, (v'balance, v'owner, v'master));
+(slice, ((int, slice, slice))) __gen_read_JettonDefaultWallet(slice sc_0) inline {
+    var v'balance = sc_0~load_int(257);
+    var v'owner = sc_0~__tact_load_address();
+    var v'master = sc_0~__tact_load_address();
+    return (sc_0, (v'balance, v'owner, v'master));
 }
 
 (int, slice, slice) __gen_load_JettonDefaultWallet() inline {
@@ -252,7 +252,7 @@ cell __gen_JettonDefaultWallet_init(cell sys', slice master, slice owner) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_JettonDefaultWallet(cell sys', slice master, slice owner) method_id {

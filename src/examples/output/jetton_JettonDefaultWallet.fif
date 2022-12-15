@@ -117,7 +117,7 @@ PROGRAM{
     SWAP
     395134233 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     64 LDU
     257 PUSHINT
     LDIX
@@ -133,7 +133,7 @@ PROGRAM{
     SWAP
     260734629 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     64 LDU
     LDGRAMS
     __tact_load_address INLINECALLDICT
@@ -447,7 +447,7 @@ PROGRAM{
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_JettonDefaultWallet PROC:<{
     __gen_JettonDefaultWallet_init CALLDICT

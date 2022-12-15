@@ -52,33 +52,33 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-(slice, ((int, int))) __gen_read_Increment(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 3615081709);
-    var v'key = sc~load_int(257);
-    var v'value = sc~load_int(257);
-    return (sc, (v'key, v'value));
+(slice, ((int, int))) __gen_read_Increment(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3615081709);
+    var v'key = sc_0~load_int(257);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'key, v'value));
 }
 
-(slice, ((int))) __gen_read_Toggle(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 575056061);
-    var v'key = sc~load_int(257);
-    return (sc, (v'key));
+(slice, ((int))) __gen_read_Toggle(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 575056061);
+    var v'key = sc_0~load_int(257);
+    return (sc_0, (v'key));
 }
 
-(slice, ((int, cell))) __gen_read_Persist(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 140802882);
-    var v'key = sc~load_int(257);
+(slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 140802882);
+    var v'key = sc_0~load_int(257);
     var v'content = null();
-    if (sc~load_int(1)) {
-        v'content = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'content = sc_0~load_ref();
     }
-    return (sc, (v'key, v'content));
+    return (sc_0, (v'key, v'content));
 }
 
-(slice, ((int))) __gen_read_Reset(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 2438762569);
-    var v'key = sc~load_int(257);
-    return (sc, (v'key));
+(slice, ((int))) __gen_read_Reset(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2438762569);
+    var v'key = sc_0~load_int(257);
+    return (sc_0, (v'key));
 }
 
 builder __gen_write_Something(builder build_0, (int) v) inline {
@@ -110,14 +110,14 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
     return build_0;
 }
 
-(slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc) inline {
-    var v'counters = sc~load_dict();
-    var v'counters2 = sc~load_dict();
-    sc = (sc~load_ref()).begin_parse();
-    var v'counters3 = sc~load_dict();
-    var v'counters4 = sc~load_dict();
-    var v'counters5 = sc~load_dict();
-    return (sc, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
+(slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc_0) inline {
+    var v'counters = sc_0~load_dict();
+    var v'counters2 = sc_0~load_dict();
+    slice sc_1 = preload_ref(sc_0).begin_parse();
+    var v'counters3 = sc_1~load_dict();
+    var v'counters4 = sc_1~load_dict();
+    var v'counters5 = sc_1~load_dict();
+    return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
 }
 
 _ __gen_Context_get_sender((int, slice, int) v) inline {
@@ -263,7 +263,7 @@ _ __gen_get_counters2() method_id(77570) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_IncrementContract(cell sys') method_id {

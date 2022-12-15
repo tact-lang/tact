@@ -1,5 +1,7 @@
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
+forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
@@ -29,14 +31,15 @@ builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int)
     return build_0;
 }
 
-(slice, ((int, int, int, int, int))) __gen_read_SomeGenericStruct(slice sc) inline {
-    var v'value1 = sc~load_int(257);
-    var v'value2 = sc~load_int(257);
-    var v'value3 = sc~load_int(257);
-    sc = (sc~load_ref()).begin_parse();
-    var v'value4 = sc~load_int(257);
-    var v'value5 = sc~load_int(257);
-    return (sc, (v'value1, v'value2, v'value3, v'value4, v'value5));
+(slice, ((int, int, int, int, int))) __gen_read_SomeGenericStruct(slice sc_0) inline {
+    __tact_debug_str("Invoke __gen_read_SomeGenericStruct");
+    var v'value1 = sc_0~load_int(257);
+    var v'value2 = sc_0~load_int(257);
+    var v'value3 = sc_0~load_int(257);
+    slice sc_1 = preload_ref(sc_0).begin_parse();
+    var v'value4 = sc_1~load_int(257);
+    var v'value5 = sc_1~load_int(257);
+    return (sc_0, (v'value1, v'value2, v'value3, v'value4, v'value5));
 }
 
 ((int, int, int, int, int)) __gen_SomeGenericStruct_not_null(tuple v) {
@@ -85,64 +88,66 @@ tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) {
     return __tact_tuple_create_5(v);
 }
 
-(slice, ((int, int, cell, slice, tuple))) __gen_read_StructWithOptionals(slice sc) inline {
+(slice, ((int, int, cell, slice, tuple))) __gen_read_StructWithOptionals(slice sc_0) inline {
+    __tact_debug_str("Invoke __gen_read_StructWithOptionals");
     var v'a = null();
-    if (sc~load_int(1)) {
-        v'a = sc~load_int(257);
+    if (sc_0~load_int(1)) {
+        v'a = sc_0~load_int(257);
     }
     var v'b = null();
-    if (sc~load_int(1)) {
-        v'b = sc~load_int(1);
+    if (sc_0~load_int(1)) {
+        v'b = sc_0~load_int(1);
     }
     var v'c = null();
-    if (sc~load_int(1)) {
-        v'c = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'c = sc_0~load_ref();
     }
     var v'd = null();
-    if (sc~load_int(1)) {
-        v'd = sc~__tact_load_address();
+    if (sc_0~load_int(1)) {
+        v'd = sc_0~__tact_load_address();
     }
-    sc = (sc~load_ref()).begin_parse();
+    slice sc_1 = preload_ref(sc_0).begin_parse();
     var v'e = null();
-    if (sc~load_int(1)) {
-        v'e = __gen_SomeGenericStruct_as_optional(sc~__gen_read_SomeGenericStruct());
+    if (sc_1~load_int(1)) {
+        v'e = __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct());
     }
-    return (sc, (v'a, v'b, v'c, v'd, v'e));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e));
 }
 
 tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) {
     return __tact_tuple_create_5(v);
 }
 
-(slice, ((int, int, cell, slice, tuple, tuple))) __gen_read_Update(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 2676568142);
+(slice, ((int, int, cell, slice, tuple, tuple))) __gen_read_Update(slice sc_0) inline {
+    __tact_debug_str("Invoke __gen_read_Update");
+    throw_unless(129, sc_0~load_uint(32) == 2676568142);
     var v'a = null();
-    if (sc~load_int(1)) {
-        v'a = sc~load_int(257);
+    if (sc_0~load_int(1)) {
+        v'a = sc_0~load_int(257);
     }
     var v'b = null();
-    if (sc~load_int(1)) {
-        v'b = sc~load_int(1);
+    if (sc_0~load_int(1)) {
+        v'b = sc_0~load_int(1);
     }
     var v'c = null();
-    if (sc~load_int(1)) {
-        v'c = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'c = sc_0~load_ref();
     }
     var v'd = null();
-    if (sc~load_int(1)) {
-        v'd = sc~__tact_load_address();
+    if (sc_0~load_int(1)) {
+        v'd = sc_0~__tact_load_address();
     }
-    sc = (sc~load_ref()).begin_parse();
+    slice sc_1 = preload_ref(sc_0).begin_parse();
     var v'e = null();
-    if (sc~load_int(1)) {
-        v'e = __gen_SomeGenericStruct_as_optional(sc~__gen_read_SomeGenericStruct());
+    if (sc_1~load_int(1)) {
+        v'e = __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct());
     }
-    sc = (sc~load_ref()).begin_parse();
+    slice sc_2 = preload_ref(sc_1).begin_parse();
     var v'f = null();
-    if (sc~load_int(1)) {
-        v'f = __gen_StructWithOptionals_as_optional(sc~__gen_read_StructWithOptionals());
+    if (sc_2~load_int(1)) {
+        v'f = __gen_StructWithOptionals_as_optional(sc_2~__gen_read_StructWithOptionals());
     }
-    return (sc, (v'a, v'b, v'c, v'd, v'e, v'f));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
 }
 
 ((int, int, cell, slice, tuple)) __gen_StructWithOptionals_not_null(tuple v) {
@@ -195,34 +200,35 @@ builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slic
     return build_0;
 }
 
-(slice, ((int, int, cell, slice, tuple, tuple))) __gen_read_ContractWithOptionals(slice sc) inline {
+(slice, ((int, int, cell, slice, tuple, tuple))) __gen_read_ContractWithOptionals(slice sc_0) inline {
+    __tact_debug_str("Invoke __gen_read_ContractWithOptionals");
     var v'a = null();
-    if (sc~load_int(1)) {
-        v'a = sc~load_int(257);
+    if (sc_0~load_int(1)) {
+        v'a = sc_0~load_int(257);
     }
     var v'b = null();
-    if (sc~load_int(1)) {
-        v'b = sc~load_int(1);
+    if (sc_0~load_int(1)) {
+        v'b = sc_0~load_int(1);
     }
     var v'c = null();
-    if (sc~load_int(1)) {
-        v'c = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'c = sc_0~load_ref();
     }
     var v'd = null();
-    if (sc~load_int(1)) {
-        v'd = sc~__tact_load_address();
+    if (sc_0~load_int(1)) {
+        v'd = sc_0~__tact_load_address();
     }
-    sc = (sc~load_ref()).begin_parse();
+    slice sc_1 = preload_ref(sc_0).begin_parse();
     var v'e = null();
-    if (sc~load_int(1)) {
-        v'e = __gen_SomeGenericStruct_as_optional(sc~__gen_read_SomeGenericStruct());
+    if (sc_1~load_int(1)) {
+        v'e = __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct());
     }
-    sc = (sc~load_ref()).begin_parse();
+    slice sc_2 = preload_ref(sc_1).begin_parse();
     var v'f = null();
-    if (sc~load_int(1)) {
-        v'f = __gen_StructWithOptionals_as_optional(sc~__gen_read_StructWithOptionals());
+    if (sc_2~load_int(1)) {
+        v'f = __gen_StructWithOptionals_as_optional(sc_2~__gen_read_StructWithOptionals());
     }
-    return (sc, (v'a, v'b, v'c, v'd, v'e, v'f));
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
 }
 
 (int, int, cell, slice, tuple, tuple) __gen_load_ContractWithOptionals() inline {
@@ -492,7 +498,7 @@ _ __gen_get_notNullF() method_id(115160) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_ContractWithOptionals(cell sys', int a, int b, cell c, slice d, tuple e, tuple f) method_id {

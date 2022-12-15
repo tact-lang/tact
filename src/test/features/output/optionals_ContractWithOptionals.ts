@@ -506,7 +506,7 @@ export function unpackTupleUpdate(slice: TupleSlice4): Update {
     return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f };
 }
 export async function ContractWithOptionals_init(a: BN | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-    const __code = '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';
+    const __code = 'te6ccgECPgEABTEAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAPEAIBIAYHAgEgDA0CAUgICQAPaIG7y0IBvJYBbxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+CCEJ+JME664wIw8sCCgCgALCBu8tCAgBPzbPAaNBhJbnZva2UgX19nZW5fcmVhZF9VcGRhdGWD+FDDTHwGCEJ+JME668uCBbQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd4g10zQbQHSAAHjANdM0G0B0gABkTDjDRAmECUQJBAjNhCrEJo5OzwLASwQiRB4EGdVBGxmyPhCAcxVUNs8ye1ULQIBIA4OAA/RA3eWhAN5LAAFRvBYAgEgExQCASAREgIBIB0eAgEgJygCASAVFgIBIBkaAgEgFxgBEbRaO2eL4K3WcDkBFbCk9s8EDVfBW6zgOQEVsKy2zwQRV8FbrOA5ARG2RttnjYot1nA5AgEgGxwBE7CVds8FV8FbrOA5ARWwnTbPBAlXwVus4DkCASAfIAIBICUmAgHHISICAccjJAEPoSds8ECVfBY5AROhc2zwQRV8F8AGOQENoaNs8FV8FjkBE6H3bPBA1XwXwAY5AQ2wAvbPGxRgOQERsE/2zxfBfABgOQIBICkqAgEgMzQCAWIrLAENsDs2zxfBYDkBD6extnjYo+AZOQERpWgNkZgNtnmTLQL2JW6WNXBQBsoAnX9QB8oAFYEBAc8AEEXiI26WM3BQA8oAl38BygATygDiIW6UcDLKAJV/AcoAzOIhbpRwMsoAl38BygABzxbiyCNujit/AcoAA/AGEFdQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHM4w3ILi8ADDNwUAPKAAE4Im6VMnBYygCOi38BygAC8AwQVts84skBzMkBzDAC9iRuljRwUAXKAJ1/UAbKABSBAQHPABA04iJulTJwWMoAl38BygASygDiIW6UcDLKAJV/AcoAzOIibpUycFjKAJd/AcoAWM8W4sgibo4rfwHKAALwBhBWUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzOMNyTEyAAoycFjKAAAEAcwCAcc1NgIBxzc4AQ+iP2zwQRV8FjkBE6JrbPBAlXwXwAY5AQ+iu2zwQNV8FjkBEaLvbPBVfBfAGjkBDu1E0NQB+GI6AvSNCdJbnZva2UgX19nZW5fcmVhZF9Db250cmFjdFdpdGhPcHRpb25hbHOD+FDBtAdIAAZYxgQEB1wDebQHSAAGTMdIA3m0B0gABkjHU3m0B0gABlTH6QAEB3iDXTNBtAdIAAeMA10zQbQHSAAGRMOMNECYQJRAkECNsFjs8AKIxjQjSW52b2tlIF9fZ2VuX3JlYWRfU29tZUdlbmVyaWNTdHJ1Y3SD+FDCBAQHXAIEBAdcAgQEB1wAg10zQgQEB1wCBAQHXADAQJRAkECPwCAEB2jGNCVJbnZva2UgX19nZW5fcmVhZF9TdHJ1Y3RXaXRoT3B0aW9uYWxzg/hQwbQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N5tAdIAAZUx+kABAd4g10zQbQHSAAGRMOMNFRRDMGwV8Ao9AKQxjQjSW52b2tlIF9fZ2VuX3JlYWRfU29tZUdlbmVyaWNTdHJ1Y3SD+FDCBAQHXAIEBAdcAgQEB1wAg10zQgQEB1wCBAQHXADAQJRAkECNsFfAI';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -564,6 +564,8 @@ export const ContractWithOptionals_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class ContractWithOptionals {
@@ -589,6 +591,7 @@ export class ContractWithOptionals {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -603,6 +606,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -617,6 +621,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -631,6 +636,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -645,6 +651,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -659,6 +666,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -673,6 +681,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -687,6 +696,7 @@ export class ContractWithOptionals {
             return result.stack.readBigNumberOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -701,6 +711,7 @@ export class ContractWithOptionals {
             return result.stack.readBooleanOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -715,6 +726,7 @@ export class ContractWithOptionals {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -729,6 +741,7 @@ export class ContractWithOptionals {
             return result.stack.readAddressOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -745,6 +758,7 @@ export class ContractWithOptionals {
             return unpackTupleSomeGenericStruct(new TupleSlice4(pp.items));
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -761,6 +775,7 @@ export class ContractWithOptionals {
             return unpackTupleStructWithOptionals(new TupleSlice4(pp.items));
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -775,6 +790,7 @@ export class ContractWithOptionals {
             return result.stack.readBigNumber();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -789,6 +805,7 @@ export class ContractWithOptionals {
             return result.stack.readBoolean();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -803,6 +820,7 @@ export class ContractWithOptionals {
             return result.stack.readCell();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -817,6 +835,7 @@ export class ContractWithOptionals {
             return result.stack.readAddress();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -831,6 +850,7 @@ export class ContractWithOptionals {
             return unpackStackSomeGenericStruct(result.stack);
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }
@@ -845,6 +865,7 @@ export class ContractWithOptionals {
             return unpackStackStructWithOptionals(result.stack);
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (ContractWithOptionals_errors[e.exitCode.toString()]) {
                     throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
                 }

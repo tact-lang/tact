@@ -44,23 +44,23 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
     return __gen_write_Transfer(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice, int, cell))) __gen_read_Transfer(slice sc) inline {
-    var v'seqno = sc~load_uint(32);
-    var v'mode = sc~load_uint(8);
-    var v'to = sc~__tact_load_address();
-    var v'amount = sc~load_coins();
+(slice, ((int, int, slice, int, cell))) __gen_read_Transfer(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'mode = sc_0~load_uint(8);
+    var v'to = sc_0~__tact_load_address();
+    var v'amount = sc_0~load_coins();
     var v'body = null();
-    if (sc~load_int(1)) {
-        v'body = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'body = sc_0~load_ref();
     }
-    return (sc, (v'seqno, v'mode, v'to, v'amount, v'body));
+    return (sc_0, (v'seqno, v'mode, v'to, v'amount, v'body));
 }
 
-(slice, ((slice, (int, int, slice, int, cell)))) __gen_read_TransferMessage(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 123);
-    var v'signature = sc~load_ref().begin_parse();
-    var v'transfer = sc~__gen_read_Transfer();
-    return (sc, (v'signature, v'transfer));
+(slice, ((slice, (int, int, slice, int, cell)))) __gen_read_TransferMessage(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 123);
+    var v'signature = sc_0~load_ref().begin_parse();
+    var v'transfer = sc_0~__gen_read_Transfer();
+    return (sc_0, (v'signature, v'transfer));
 }
 
 builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
@@ -71,11 +71,11 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     return build_0;
 }
 
-(slice, ((int, int, int))) __gen_read_Wallet(slice sc) inline {
-    var v'seqno = sc~load_uint(32);
-    var v'key = sc~load_uint(256);
-    var v'walletId = sc~load_uint(64);
-    return (sc, (v'seqno, v'key, v'walletId));
+(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'key = sc_0~load_uint(256);
+    var v'walletId = sc_0~load_uint(64);
+    return (sc_0, (v'seqno, v'key, v'walletId));
 }
 
 _ __gen_Context_get_bounced((int, slice, int) v) inline {

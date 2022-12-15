@@ -3,4 +3,6 @@
 // Errors 128-255 are reserved for contract errors
 export const contractErrors = {
     null: { id: 128, message: 'Null reference exception' },
+    invalidPrefix: { id: 129, message: 'Invalid serialization prefix' },
+    invalidMessage: { id: 130, message: 'Invalid incoming message' },
 }

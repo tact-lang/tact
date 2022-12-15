@@ -90,20 +90,26 @@ PROGRAM{
     STREF
   }>
   __gen_read_SomeGenericStruct PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
+    x{496e766f6b65205f5f67656e5f726561645f536f6d6547656e65726963537472756374} PUSHSLICE
+    STRDUMP
     DROP
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    DUP
+    PLDREF
     CTOS
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
-    5 -ROLL
+    DROP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_SomeGenericStruct_not_null PROC:<{
     DUP
@@ -193,6 +199,9 @@ PROGRAM{
     5 TUPLE
   }>
   __gen_read_StructWithOptionals PROCINLINE:<{
+    x{496e766f6b65205f5f67656e5f726561645f537472756374576974684f7074696f6e616c73} PUSHSLICE
+    STRDUMP
+    DROP
     PUSHNULL
     SWAP
     1 LDI
@@ -227,8 +236,8 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    LDREF
-    DROP
+    DUP
+    PLDREF
     CTOS
     PUSHNULL
     SWAP
@@ -237,20 +246,27 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
+      1 5 BLKDROP2
       __gen_SomeGenericStruct_as_optional CALLDICT
-      SWAP
+    }>ELSE<{
+      DROP
     }>
-    5 -ROLL
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
   }>
   __gen_StructWithOptionals_as_optional PROC:<{
     5 TUPLE
   }>
   __gen_read_Update PROCINLINE:<{
+    x{496e766f6b65205f5f67656e5f726561645f557064617465} PUSHSLICE
+    STRDUMP
+    DROP
     32 LDU
     SWAP
     2676568142 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     PUSHNULL
     SWAP
     1 LDI
@@ -285,8 +301,8 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    LDREF
-    DROP
+    DUP
+    PLDREF
     CTOS
     PUSHNULL
     SWAP
@@ -298,8 +314,7 @@ PROGRAM{
       __gen_SomeGenericStruct_as_optional CALLDICT
       SWAP
     }>
-    LDREF
-    DROP
+    PLDREF
     CTOS
     PUSHNULL
     SWAP
@@ -308,10 +323,15 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
+      1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional CALLDICT
-      SWAP
+    }>ELSE<{
+      DROP
     }>
-    6 -ROLL
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_StructWithOptionals_not_null PROC:<{
     DUP
@@ -417,6 +437,9 @@ PROGRAM{
     STREF
   }>
   __gen_read_ContractWithOptionals PROCINLINE:<{
+    x{496e766f6b65205f5f67656e5f726561645f436f6e7472616374576974684f7074696f6e616c73} PUSHSLICE
+    STRDUMP
+    DROP
     PUSHNULL
     SWAP
     1 LDI
@@ -451,8 +474,8 @@ PROGRAM{
       __tact_load_address INLINECALLDICT
       SWAP
     }>
-    LDREF
-    DROP
+    DUP
+    PLDREF
     CTOS
     PUSHNULL
     SWAP
@@ -464,8 +487,7 @@ PROGRAM{
       __gen_SomeGenericStruct_as_optional CALLDICT
       SWAP
     }>
-    LDREF
-    DROP
+    PLDREF
     CTOS
     PUSHNULL
     SWAP
@@ -474,10 +496,15 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
+      1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional CALLDICT
-      SWAP
+    }>ELSE<{
+      DROP
     }>
-    6 -ROLL
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH
@@ -714,7 +741,7 @@ PROGRAM{
       __gen_store_ContractWithOptionals INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_ContractWithOptionals PROC:<{
     __gen_ContractWithOptionals_init INLINECALLDICT

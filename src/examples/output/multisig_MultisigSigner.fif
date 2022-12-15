@@ -78,7 +78,7 @@ PROGRAM{
     __tact_context SETGLOB
     IFJMP:<{
     }>
-    100 THROW
+    130 THROW
   }>
   init_MultisigSigner PROC:<{
     __gen_MultisigSigner_init CALLDICT

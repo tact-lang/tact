@@ -64,7 +64,7 @@ PROGRAM{
     SWAP
     819865922 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     __gen_read_Operation INLINECALLDICT
     s0 s3 XCHG
     LDREF
@@ -338,7 +338,7 @@ PROGRAM{
       __gen_store_MultisigContract INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_MultisigContract PROC:<{
     __gen_MultisigContract_init CALLDICT

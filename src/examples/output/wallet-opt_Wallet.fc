@@ -1,11 +1,11 @@
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
-(slice, ((slice, slice))) __gen_read_TransferMessage(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 1843760589);
-    var v'signature = sc~load_bits(512);
-    var v'transfer = sc;
-    return (sc, (v'signature, v'transfer));
+(slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1843760589);
+    var v'signature = sc_0~load_bits(512);
+    var v'transfer = sc_0;
+    return (sc_0, (v'signature, v'transfer));
 }
 
 builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
@@ -16,11 +16,11 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     return build_0;
 }
 
-(slice, ((int, int, int))) __gen_read_Wallet(slice sc) inline {
-    var v'seqno = sc~load_uint(32);
-    var v'key = sc~load_uint(256);
-    var v'walletId = sc~load_uint(64);
-    return (sc, (v'seqno, v'key, v'walletId));
+(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'key = sc_0~load_uint(256);
+    var v'walletId = sc_0~load_uint(64);
+    return (sc_0, (v'seqno, v'key, v'walletId));
 }
 
 (int, int, int) __gen_load_Wallet() inline {
@@ -122,7 +122,7 @@ _ __gen_get_seqno() method_id(85143) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_Wallet(cell sys', int key, int walletId) method_id {

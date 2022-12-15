@@ -8,15 +8,15 @@ global cell __tact_context_sys;
     return (cs, raw);
 }
 
-(slice, ((slice, int, cell))) __gen_read_Request(slice sc) inline {
-    throw_unless(100, sc~load_uint(32) == 4096439811);
-    var v'to = sc~__tact_load_address();
-    var v'amount = sc~load_int(257);
+(slice, ((slice, int, cell))) __gen_read_Request(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 4096439811);
+    var v'to = sc_0~__tact_load_address();
+    var v'amount = sc_0~load_int(257);
     var v'body = null();
-    if (sc~load_int(1)) {
-        v'body = sc~load_ref();
+    if (sc_0~load_int(1)) {
+        v'body = sc_0~load_ref();
     }
-    return (sc, (v'to, v'amount, v'body));
+    return (sc_0, (v'to, v'amount, v'body));
 }
 
 builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
@@ -28,12 +28,12 @@ builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     return build_0;
 }
 
-(slice, ((int, cell, int, int))) __gen_read_Multisig(slice sc) inline {
-    var v'seqno = sc~load_int(257);
-    var v'members = sc~load_dict();
-    var v'totalWeight = sc~load_int(257);
-    var v'requiredWeight = sc~load_int(257);
-    return (sc, (v'seqno, v'members, v'totalWeight, v'requiredWeight));
+(slice, ((int, cell, int, int))) __gen_read_Multisig(slice sc_0) inline {
+    var v'seqno = sc_0~load_int(257);
+    var v'members = sc_0~load_dict();
+    var v'totalWeight = sc_0~load_int(257);
+    var v'requiredWeight = sc_0~load_int(257);
+    return (sc_0, (v'seqno, v'members, v'totalWeight, v'requiredWeight));
 }
 
 (int, cell, int, int) __gen_load_Multisig() inline {
@@ -95,7 +95,7 @@ cell __gen_Multisig_init(cell sys', cell members, int requiredWeight) {
         return ();
     }
     
-    throw(100);
+    throw(130);
 }
 
 cell init_Multisig(cell sys', cell members, int requiredWeight) method_id {

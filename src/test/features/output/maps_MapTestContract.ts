@@ -457,7 +457,7 @@ export function unpackTupleSomeStruct(slice: TupleSlice4): SomeStruct {
     return { $$type: 'SomeStruct', value: value };
 }
 export async function MapTestContract_init() {
-    const __code = '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';
+    const __code = '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';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -485,6 +485,8 @@ export const MapTestContract_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class MapTestContract {
@@ -522,6 +524,7 @@ export class MapTestContract {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -536,6 +539,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -551,6 +555,7 @@ export class MapTestContract {
             return result.stack.readBigNumberOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -565,6 +570,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -580,6 +586,7 @@ export class MapTestContract {
             return result.stack.readBooleanOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -594,6 +601,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -609,6 +617,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -623,6 +632,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -640,6 +650,7 @@ export class MapTestContract {
             return unpackTupleSomeStruct(new TupleSlice4(pp.items));
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -654,6 +665,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -669,6 +681,7 @@ export class MapTestContract {
             return result.stack.readBigNumberOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -683,6 +696,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -698,6 +712,7 @@ export class MapTestContract {
             return result.stack.readBooleanOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -712,6 +727,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }
@@ -726,6 +742,7 @@ export class MapTestContract {
             return result.stack.readCellOpt();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (MapTestContract_errors[e.exitCode.toString()]) {
                     throw new Error(MapTestContract_errors[e.exitCode.toString()]);
                 }

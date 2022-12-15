@@ -249,7 +249,7 @@ export function unpackTupleWithdraw(slice: TupleSlice4): Withdraw {
     return { $$type: 'Withdraw', amount: amount, mode: mode };
 }
 export async function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECHAEAAiAAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4GT6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sBkgCgsACwgbvLQgIABWMO1E0NQB+GL6QAExAdMfAYIQts9/D7ry4GT6QAEx8BXI+EIBzAHPFsntVACE+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo4a7UTQ1AH4YvpAATHwFMj4QgHMAc8Wye1U2zHgABVZR/AcoA4HABygCAIBIA4PAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ANyHDwDXDwDSRus5V/8A0UzJU0A3DwDeIkbrOVf/ANFMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAA8AcjMAc8WyYAIBIBITAgFIGBkCASAUFQIBIBYXABk+EFvIzAxIccF8uBkgAB8AvAQf8jJVBMCUFVtbfAOgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAB++KO9qJoagD8MX0gAJj4CUAAm++XeAfA==';
+    const __code = 'te6ccgECHAEAAiAAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAwNAvE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBMqD3Iuo4uMO1E0NQB+GL6QAExAdMfAYIQTKg9yLry4IH6ANMHWWwS8BPI+EIBzAHPFsntVOAgghC2z38PuuMCwACRMOMN8sCCgCgsACwgbvLQgIABWMO1E0NQB+GL6QAExAdMfAYIQts9/D7ry4IH6QAEx8BXI+EIBzAHPFsntVACE+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo4a7UTQ1AH4YvpAATHwFMj4QgHMAc8Wye1U2zHgABVZR/AcoA4HABygCAIBIA4PAOsyHEBygEXygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY41f/ANyHDwDXDwDSRus5V/8A0UzJU0A3DwDeIkbrOVf/ANFMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5l/AcoAAfABAcyUcDLKAOLJAfsAgAA8AcjMAc8WyYAIBIBITAgFIGBkCASAUFQIBIBYXABk+EFvIzAxIccF8uBkgAB8AvAQf8jJVBMCUFVtbfAOgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAB++KO9qJoagD8MX0gAJj4CUAAm++XeAfA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -278,6 +278,8 @@ export const Treasure_errors: { [key: string]: string } = {
     '37': `Not enough TON`,
     '38': `Not enough extra-currencies`,
     '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class Treasure {
@@ -309,6 +311,7 @@ export class Treasure {
             if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Treasure_errors[e.exitCode.toString()]) {
                     throw new Error(Treasure_errors[e.exitCode.toString()]);
                 }
@@ -323,6 +326,7 @@ export class Treasure {
             return result.stack.readAddress();
         } catch (e) {
             if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (Treasure_errors[e.exitCode.toString()]) {
                     throw new Error(Treasure_errors[e.exitCode.toString()]);
                 }

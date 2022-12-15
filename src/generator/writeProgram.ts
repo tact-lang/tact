@@ -10,12 +10,13 @@ import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell } from "ton";
 import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
+import { contractErrors } from "../abi/errors";
 
 function writeMainEmpty(ctx: WriterContext) {
     ctx.fun('$main', () => {
         ctx.append(`() recv_internal(cell in_msg_cell, slice in_msg) impure {`);
         ctx.inIndent(() => {
-            ctx.append(`throw(100);`);
+            ctx.append(`throw(${contractErrors.invalidMessage.id});`);
         });
         ctx.append(`}`);
     });
@@ -202,7 +203,7 @@ function writeMainContract(type: TypeDescription, ctx: WriterContext) {
 
             } else {
                 ctx.append();
-                ctx.append(`throw(100);`);
+                ctx.append(`throw(${contractErrors.invalidMessage.id});`);
             }
         });
         ctx.append('}');
