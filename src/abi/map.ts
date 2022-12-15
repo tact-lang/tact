@@ -62,6 +62,9 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 } else if (self.value === 'Cell') {
                     ctx.used(`__tact_dict_set_int_cell`);
                     return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${resolved[2]})`;
+                } else if (self.value === 'Address') {
+                    ctx.used(`__tact_dict_set_int_slice`);
+                    return `${resolved[0]}~__tact_dict_set_int_slice(257, ${resolved[1]}, ${resolved[2]})`;
                 } else {
                     let t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
@@ -91,6 +94,9 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 } else if (self.value === 'Cell') {
                     ctx.used(`__tact_dict_set_slice_cell`);
                     return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${resolved[2]})`;
+                } else if (self.value === 'Address') {
+                    ctx.used(`__tact_dict_set_slice_slice`);
+                    return `${resolved[0]}~__tact_dict_set_slice_slice(267, ${resolved[1]}, ${resolved[2]})`;
                 } else {
                     let t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
@@ -156,6 +162,9 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                 } else if (self.value === 'Cell') {
                     ctx.used(`__tact_dict_get_int_cell`);
                     return `__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]})`;
+                } else if (self.value === 'Address') {
+                    ctx.used(`__tact_dict_get_int_slice`);
+                    return `__tact_dict_get_int_slice(${resolved[0]}, 257, ${resolved[1]})`;
                 } else {
                     let t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {

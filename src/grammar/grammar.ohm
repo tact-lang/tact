@@ -77,7 +77,8 @@ Tact {
               | StatementUntil
     StatementBlock = "{" Statement* "}"
     StatementLet = let id ":" Type "=" Expression ";"
-    StatementReturn = return Expression ";"
+    StatementReturn = return Expression ";" --withExpression
+                    | return ";" --withoutExpression    
     StatementExpression = Expression ";"
     StatementAssign = LValue "=" Expression ";"
     StatementCondition = if Expression "{" Statement* "}" ~else --simple

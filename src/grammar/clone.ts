@@ -78,7 +78,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === 'statement_return') {
         return cloneASTNode({
             ...src,
-            expression: cloneNode(src.expression),
+            expression: src.expression ? cloneNode(src.expression) : null,
 
         });
     } else if (src.kind === 'statement_repeat') {

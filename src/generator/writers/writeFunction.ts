@@ -13,11 +13,19 @@ import { writeExpression } from "./writeExpression";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
-        let exp = writeExpression(f.expression, ctx);
-        if (self) {
-            ctx.append(`return (${self}, ${exp});`);
+        if (f.expression) {
+            let exp = writeExpression(f.expression, ctx);
+            if (self) {
+                ctx.append(`return (${self}, ${exp});`);
+            } else {
+                ctx.append(`return ${exp};`);
+            }
         } else {
-            ctx.append(`return ${exp};`);
+            if (self) {
+                ctx.append(`return (${self}, ());`);
+            } else {
+                ctx.append(`return;`);
+            }
         }
         return;
     } else if (f.kind === 'statement_let') {

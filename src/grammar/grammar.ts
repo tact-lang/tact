@@ -293,10 +293,17 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             ref: createRef(this)
         })
     },
-    StatementReturn(arg0, arg1, arg2) {
+    StatementReturn_withExpression(arg0, arg1, arg2) {
         return createNode({
             kind: 'statement_return',
             expression: arg1.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    StatementReturn_withoutExpression(arg0, arg1) {
+        return createNode({
+            kind: 'statement_return',
+            expression: null,
             ref: createRef(this)
         })
     },

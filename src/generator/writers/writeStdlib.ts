@@ -159,6 +159,43 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     //
+    // Dict Int -> Slice
+    //
+
+    ctx.fun('__tact_dict_set_int_slice', () => {
+        ctx.append(`(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
+                ctx.append(`return (r, ());`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return (idict_set(d, kl, k, v), ());`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
+    ctx.fun('__tact_dict_get_int_slice', () => {
+        ctx.append(`slice __tact_dict_get_int_slice(cell d, int kl, int k) {`);
+        ctx.inIndent(() => {
+            ctx.append(`var (r, ok) = idict_get?(d, kl, k);`);
+            ctx.append(`if (ok) {`);
+            ctx.inIndent(() => {
+                ctx.append(`return r;`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return null();`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append('}')
+    });
+
+    //
     // Dict Slice -> Int
     //
 

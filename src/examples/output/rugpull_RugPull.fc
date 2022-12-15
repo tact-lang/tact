@@ -1,5 +1,9 @@
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
+
+(int, slice, int) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -11,61 +15,246 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_RugPull(builder build_0, (slice, int, int, int, cell) v) inline {
-    var (v'scammer, v'rugpulled, v'queueStart, v'queueEnd, v'queue) = v;
-    build_0 = __tact_store_address(build_0, v'scammer);
-    build_0 = store_int(build_0, v'rugpulled, 1);
-    build_0 = store_int(build_0, v'queueStart, 257);
-    build_0 = store_int(build_0, v'queueEnd, 257);
-    build_0 = store_dict(build_0, v'queue);
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3067051791);
+    var v'newOwner = sc_0~__tact_load_address();
+    return (sc_0, (v'newOwner));
+}
+
+builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
+    var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_int(build_0, v'investment, 257);
+    build_0 = store_int(build_0, v'returns, 257);
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, v'fee, 257);
+    build_1 = store_int(build_1, v'balance, 257);
+    build_1 = store_int(build_1, v'rugpulled, 1);
+    build_1 = store_int(build_1, v'stopped, 1);
+    build_1 = store_int(build_1, v'queueStart, 257);
+    var build_2 = begin_cell();
+    build_2 = store_int(build_2, v'queueEnd, 257);
+    build_2 = store_dict(build_2, v'queue);
+    build_1 = store_ref(build_1, build_2.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, ((slice, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline {
-    var v'scammer = sc_0~__tact_load_address();
-    var v'rugpulled = sc_0~load_int(1);
-    var v'queueStart = sc_0~load_int(257);
-    var v'queueEnd = sc_0~load_int(257);
-    var v'queue = sc_0~load_dict();
-    return (sc_0, (v'scammer, v'rugpulled, v'queueStart, v'queueEnd, v'queue));
+(slice, ((slice, int, int, int, int, int, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'investment = sc_0~load_int(257);
+    var v'returns = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'fee = sc_1~load_int(257);
+    var v'balance = sc_1~load_int(257);
+    var v'rugpulled = sc_1~load_int(1);
+    var v'stopped = sc_1~load_int(1);
+    var v'queueStart = sc_1~load_int(257);
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'queueEnd = sc_2~load_int(257);
+    var v'queue = sc_2~load_dict();
+    return (sc_0, (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue));
 }
 
-(slice, int, int, int, cell) __gen_load_RugPull() inline {
+_ __gen_Context_get_sender((int, slice, int) v) inline {
+    var (v'bounced, v'sender, v'value) = v;
+    return v'sender;
+}
+
+(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_RugPull();
 }
 
-() __gen_store_RugPull((slice, int, int, int, cell) v) impure inline {
+() __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_RugPull(b, v);
     set_data(b.end_cell());
 }
 
-cell __gen_RugPull_init(cell sys', slice scammer) {
-    var ((self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue)) = (null(), null(), null(), null(), null());
-    self'scammer = scammer;
+builder storeBool(builder s, int value) impure {
+    if (value) {
+        return store_int(s, (- 1), 1);
+    } else {
+        return store_int(s, 0, 1);
+    }
+}
+
+() send((int, slice, int, int, cell, cell, cell) params) impure {
+    var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
+    builder b = begin_cell();
+    b = store_int(b, 1, 2);
+    b = store_int(b, params'bounce, 1);
+    b = store_int(b, 0, 3);
+    b = __tact_store_address(b, params'to);
+    b = store_coins(b, params'value);
+    b = store_int(b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?(params'code)) | (~ null?(params'data)))) {
+        b = storeBool(b, true);
+        builder bc = begin_cell();
+        bc = storeBool(bc, false);
+        bc = storeBool(bc, false);
+        if ((~ null?(params'code))) {
+            bc = storeBool(bc, true);
+            bc = store_ref(bc, params'code);
+        } else {
+            bc = storeBool(bc, false);
+        }
+        if ((~ null?(params'data))) {
+            bc = storeBool(bc, true);
+            bc = store_ref(bc, params'data);
+        } else {
+            bc = storeBool(bc, false);
+        }
+        bc = storeBool(bc, false);
+        b = storeBool(b, true);
+        b = store_ref(b, end_cell(bc));
+    } else {
+        b = storeBool(b, false);
+    }
+    cell body = params'body;
+    if ((~ null?(body))) {
+        b = store_int(b, true, 1);
+        b = store_ref(b, __tact_not_null(body));
+    } else {
+        b = store_int(b, false, 1);
+    }
+    cell c = end_cell(b);
+    send_raw_message(c, params'mode);
+}
+
+cell __gen_RugPull_init(cell sys', slice owner, int investment, int returns, int fee) {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+    self'owner = owner;
     self'rugpulled = false;
     self'queueStart = 0;
     self'queueEnd = 0;
+    self'balance = 0;
+    self'investment = investment;
+    self'returns = returns;
+    self'fee = fee;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_RugPull(b', (self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue));
+    b' = __gen_write_RugPull(b', (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue));
     return b'.end_cell();
 }
 
-(((slice, int, int, int, cell)), ()) __gen_RugPull_receive((slice, int, int, int, cell) self) impure {
-    var (self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue) = self;
-    if (self'rugpulled) {
-    }
-    return ((self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue), ());
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_sendPayout((slice, int, int, int, int, int, int, int, int, cell) self, slice to, int value) impure {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = self;
+    send((true, to, value, 2, null(), null(), null()));
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
 }
 
-((slice, int, int, int, cell), ()) __gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, cell) self) impure {
-    var (self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue) = self;
+(int, int, int) __gen_RugPull_params((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = self;
+    return (self'investment, self'returns, self'fee);
+}
+
+_ __gen_get_params() method_id(116437) {
+    var self = __gen_load_RugPull();
+    var res = __gen_RugPull_params(self);
+    return res;
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = self;
+    throw_unless(100, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), self'owner));
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+slice __gen_RugPull_owner((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = self;
+    return self'owner;
+}
+
+_ __gen_get_owner() method_id(83229) {
+    var self = __gen_load_RugPull();
+    var res = __gen_RugPull_owner(self);
+    return res;
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)) = self;
+    throw_unless(200, (~ self'stopped));
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) __gen_RugPull_receive((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
+    (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireNotStopped();
+    if (self'rugpulled) {
+        send((true, self'owner, 0, 128, null(), null(), null()));
+        return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+    }
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
+    throw_unless(100, (ctx'value >= (self'investment + self'fee)));
+    self'queue~__tact_dict_set_int_slice(257, self'queueEnd, ctx'sender);
+    self'queueEnd = (self'queueEnd + 1);
+    self'balance = (self'balance + self'investment);
+    while (((self'balance > self'returns) & ((self'queueEnd - self'queueStart) > 0))) {
+        slice investor = __tact_not_null(__tact_dict_get_int_slice(self'queue, 257, self'queueStart));
+        self'balance = (self'balance - self'returns);
+        self'queueStart = (self'queueStart + 1);
+        (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_sendPayout(investor, self'returns);
+    }
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
+    (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireOwner();
+    if (self'rugpulled) {
+        raw_reserve(self'balance, 0);
+    }
+    send((true, self'owner, 0, 128, null(), null(), null()));
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
     self'rugpulled = true;
-    return ((self'scammer, self'rugpulled, self'queueStart, self'queueEnd, self'queue), ());
+    send((true, self'owner, 0, 128, null(), null(), null()));
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) __gen_RugPull_receive_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) self, (slice) msg) impure {
+    var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
+    var (msg'newOwner) = msg;
+    (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireOwner();
+    self'owner = msg'newOwner;
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+    var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
+    (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireOwner();
+    (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireNotStopped();
+    self'stopped = true;
+    return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
 }
 
 
@@ -95,9 +284,26 @@ cell __gen_RugPull_init(cell sys', slice scammer) {
         return ();
     }
     
+    ;; Receive ChangeOwner message
+    if (op == 3067051791) {
+        var self = __gen_load_RugPull();
+        var msg = in_msg~__gen_read_ChangeOwner();
+        self~__gen_RugPull_receive_ChangeOwner(msg);
+        __gen_store_RugPull(self);
+        return ();
+    }
+    
     ;; Text Receivers
     if (op == 0) {
         var text_op = slice_hash(in_msg);
+        
+        ;; Receive "withdraw" message
+        if (text_op == 0x095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4) {
+            var self = __gen_load_RugPull();
+            self~__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4();
+            __gen_store_RugPull(self);
+            return ();
+        }
         
         ;; Receive "rugpull" message
         if (text_op == 0xcde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea) {
@@ -106,11 +312,19 @@ cell __gen_RugPull_init(cell sys', slice scammer) {
             __gen_store_RugPull(self);
             return ();
         }
+        
+        ;; Receive "stop" message
+        if (text_op == 0x6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f) {
+            var self = __gen_load_RugPull();
+            self~__gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f();
+            __gen_store_RugPull(self);
+            return ();
+        }
     }
     
     throw(130);
 }
 
-cell init_RugPull(cell sys', slice scammer) method_id {
-    return __gen_RugPull_init(sys', scammer);
+cell init_RugPull(cell sys', slice owner, int investment, int returns, int fee) method_id {
+    return __gen_RugPull_init(sys', owner, investment, returns, fee);
 }

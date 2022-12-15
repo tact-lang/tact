@@ -113,13 +113,20 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
 
         } else if (s.kind === 'statement_return') {
 
-            // Process expression
-            ctx = resolveExpression(s.expression, sctx, ctx);
+            if (s.expression) {
 
-            // Check type
-            let expressionType = getExpType(ctx, s.expression);
-            if (!isAssignable(expressionType, sctx.returns)) {
-                throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(sctx.returns)}`, s.ref);
+                // Process expression
+                ctx = resolveExpression(s.expression, sctx, ctx);
+
+                // Check type
+                let expressionType = getExpType(ctx, s.expression);
+                if (!isAssignable(expressionType, sctx.returns)) {
+                    throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(sctx.returns)}`, s.ref);
+                }
+            } else {
+                if (sctx.returns.kind !== 'void') {
+                    throwError(`Type mismatch: void is not assignable to ${printTypeRef(sctx.returns)}`, s.ref);
+                }
             }
 
             // Mark as ended

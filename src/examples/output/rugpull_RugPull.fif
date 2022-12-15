@@ -1,17 +1,45 @@
 PROGRAM{
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_dict_set_int_slice
+  DECLPROC __tact_dict_get_int_slice
+  DECLPROC __tact_address_eq
+  DECLPROC __gen_read_ChangeOwner
   DECLPROC __gen_write_RugPull
   DECLPROC __gen_read_RugPull
+  DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
+  DECLPROC storeBool
+  DECLPROC send
   DECLPROC __gen_RugPull_init
+  DECLPROC __gen_RugPull_sendPayout
+  DECLPROC __gen_RugPull_params
+  116437 DECLMETHOD __gen_get_params
+  DECLPROC __gen_RugPull_requireOwner
+  DECLPROC __gen_RugPull_owner
+  83229 DECLMETHOD __gen_get_owner
+  DECLPROC __gen_RugPull_requireNotStopped
   DECLPROC __gen_RugPull_receive
+  DECLPROC __gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4
   DECLPROC __gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea
+  DECLPROC __gen_RugPull_receive_ChangeOwner
+  DECLPROC __gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f
   DECLPROC recv_internal
   68140 DECLMETHOD init_RugPull
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    UNTRIPLE
+  }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
     SWAP
@@ -19,28 +47,105 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
+  __tact_dict_set_int_slice PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>
+    s1 s3 s3 XCHG3
+    DICTISET
+  }>
+  __tact_dict_get_int_slice PROC:<{
+    -ROT
+    DICTIGET
+    NULLSWAPIFNOT
+    IFJMP:<{
+    }>
+    DROP
+    PUSHNULL
+  }>
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
+  }>
+  __gen_read_ChangeOwner PROCINLINE:<{
+    32 LDU
+    SWAP
+    3067051791 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+  }>
   __gen_write_RugPull PROCINLINE:<{
-    s5 s4 XCHG2
+    s10 s9 XCHG2
     __tact_store_address INLINECALLDICT
+    s1 s7 XCHG
+    257 PUSHINT
+    STIX
+    s1 s5 XCHG
+    257 PUSHINT
+    STIX
+    s0 s3 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    1 STI
     s1 s2 XCHG
     1 STI
-    257 PUSHINT
-    STIX
     s1 s2 XCHG
     257 PUSHINT
     STIX
+    s0 s3 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
     STDICT
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
   }>
   __gen_read_RugPull PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    1 LDI
     1 LDI
     257 PUSHINT
     LDIX
+    LDREF
+    DROP
+    CTOS
     257 PUSHINT
     LDIX
     LDDICT
-    5 -ROLL
+    DROP
+    s7 s10 XCHG
+    s7 s9 XCHG
+    s7 s8 XCHG
+  }>
+  __gen_Context_get_sender PROCINLINE:<{
+    DROP
+    NIP
   }>
   __gen_load_RugPull PROCINLINE:<{
     c4 PUSH
@@ -49,33 +154,265 @@ PROGRAM{
     SWAP
     __tact_context_sys SETGLOB
     __gen_read_RugPull INLINECALLDICT
-    1 5 BLKDROP2
+    1 10 BLKDROP2
   }>
   __gen_store_RugPull PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
-    5 -ROLL
+    10 -ROLL
     __gen_write_RugPull INLINECALLDICT
     ENDC
     c4 POP
   }>
+  storeBool PROC:<{
+    IFJMP:<{
+      -1 PUSHINT
+      SWAP
+      1 STI
+    }>
+    0 PUSHINT
+    SWAP
+    1 STI
+  }>
+  send PROC:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s1 s7 XCHG
+    1 STI
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      storeBool CALLDICT
+      NEWC
+      FALSE
+      storeBool CALLDICT
+      FALSE
+      storeBool CALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        storeBool CALLDICT
+        s1 s4 XCHG
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        storeBool CALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        storeBool CALLDICT
+        s1 s4 XCHG
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        storeBool CALLDICT
+      }>
+      FALSE
+      storeBool CALLDICT
+      s0 s2 XCHG
+      TRUE
+      storeBool CALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      storeBool CALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      SWAP
+      __tact_not_null CALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
   __gen_RugPull_init PROC:<{
+    PUSHNULL
     PUSHNULL
     FALSE
     0 PUSHINT
-    s0 s4 PUXC
+    s0 s(-1) s8 PU2XC
     NEWC
     STREF
-    s1 s5 s5 XCHG3
+    s0 s10 XCHG
+    s0 s5 XCHG
     s0 s3 XCHG
+    s0 s4 XCHG
     __gen_write_RugPull INLINECALLDICT
     ENDC
   }>
+  __gen_RugPull_sendPayout PROC:<{
+    TRUE
+    -ROT
+    2 PUSHINT
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    send CALLDICT
+  }>
+  __gen_RugPull_params PROC:<{
+    6 BLKDROP
+    1 3 BLKDROP2
+  }>
+  __gen_get_params PROC:<{
+    __gen_load_RugPull INLINECALLDICT
+    __gen_RugPull_params CALLDICT
+  }>
+  __gen_RugPull_requireOwner PROC:<{
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_sender INLINECALLDICT
+    s10 PUSH
+    __tact_address_eq INLINECALLDICT
+    100 THROWIFNOT
+  }>
+  __gen_RugPull_owner PROC:<{
+    9 BLKDROP
+  }>
+  __gen_get_owner PROC:<{
+    __gen_load_RugPull INLINECALLDICT
+    __gen_RugPull_owner CALLDICT
+  }>
+  __gen_RugPull_requireNotStopped PROC:<{
+    s3 PUSH
+    NOT
+    200 THROWIFNOT
+  }>
   __gen_RugPull_receive PROC:<{
+    __gen_RugPull_requireNotStopped CALLDICT
+    s4 PUSH
+    IFJMP:<{
+      TRUE
+      s10 PUSH
+      0 PUSHINT
+      7 PUSHPOW2
+      PUSHNULL
+      PUSHNULL
+      PUSHNULL
+      send CALLDICT
+    }>
+    __tact_context_get INLINECALLDICT
+    s2 POP
+    s10 s8 PUSH2
+    ADD
+    s1 s2 XCHG
+    GEQ
+    100 THROWIFNOT
+    257 PUSHINT
+    s3 s1 PUXC
+    __tact_dict_set_int_slice CALLDICT
+    SWAP
+    INC
+    s5 s8 XCPU
+    ADD
+    WHILE:<{
+      s0 s7 PUSH2
+      GREATER
+      s6 s3 PUSH2
+      SUB
+      0 GTINT
+      AND
+    }>DO<{
+      OVER
+      257 PUSHINT
+      s4 PUSH
+      __tact_dict_get_int_slice CALLDICT
+      __tact_not_null CALLDICT
+      s1 s8 XCPU
+      SUB
+      s0 s3 XCHG
+      INC
+      s3 s8 XCPU
+      s1 s7 XCHG
+      s3 s3 s0 XCHG3
+      __gen_RugPull_sendPayout CALLDICT
+      s0 s5 XCHG2
+    }>
+    s5 s5 XCHG2
+  }>
+  __gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROC:<{
+    __gen_RugPull_requireOwner CALLDICT
+    s4 PUSH
+    IF:<{
+      s5 PUSH
+      0 PUSHINT
+      RAWRESERVE
+    }>
+    TRUE
+    s10 PUSH
+    0 PUSHINT
+    7 PUSHPOW2
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    send CALLDICT
   }>
   __gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROC:<{
+    s4 POP
+    TRUE
+    TRUE
+    s10 PUSH
+    0 PUSHINT
+    7 PUSHPOW2
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    send CALLDICT
+    s0 s4 XCHG
+  }>
+  __gen_RugPull_receive_ChangeOwner PROC:<{
+    10 -ROLL
+    __gen_RugPull_requireOwner CALLDICT
+    1 9 BLKDROP2
+  }>
+  __gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f PROC:<{
+    __gen_RugPull_requireOwner CALLDICT
+    __gen_RugPull_requireNotStopped CALLDICT
     TRUE
     s4 POP
   }>
@@ -124,14 +461,54 @@ PROGRAM{
       __gen_RugPull_receive CALLDICT
       __gen_store_RugPull INLINECALLDICT
     }>
+    DUP
+    3067051791 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_RugPull INLINECALLDICT
+      s0 s10 XCHG
+      __gen_read_ChangeOwner INLINECALLDICT
+      NIP
+      s9 s10 XCHG
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s1 s3 s0 XCHG3
+      __gen_RugPull_receive_ChangeOwner CALLDICT
+      __gen_store_RugPull INLINECALLDICT
+    }>
     0 EQINT
     IF:<{
       HASHSU
+      DUP
+      4214924782860224305093503934954653493962198591343413308822612294567774196964 PUSHINT
+      EQUAL
+      IFJMP:<{
+        DROP
+        __gen_load_RugPull INLINECALLDICT
+        __gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 CALLDICT
+        __gen_store_RugPull INLINECALLDICT
+        RETALT
+      }>
+      DUP
       93123902270892132095354917739784821433563747504193043765606083110690163107050 PUSHINT
       EQUAL
       IFJMP:<{
+        DROP
         __gen_load_RugPull INLINECALLDICT
         __gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea CALLDICT
+        __gen_store_RugPull INLINECALLDICT
+        RETALT
+      }>
+      50301181231975312852205072765826299685175800908058469675892098276949494209951 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_RugPull INLINECALLDICT
+        __gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f CALLDICT
         __gen_store_RugPull INLINECALLDICT
         RETALT
       }>
