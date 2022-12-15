@@ -1,5 +1,5 @@
 import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';
-import { ContractExecutor, createExecutorFromCode } from 'ton-nodejs';
+import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
 export type SendParameters = {
@@ -62,7 +62,41 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
+export function packTupleSendParameters(src: SendParameters): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'int', value: src.mode });
+    if (src.body !== null) {
+        __stack.push({ type: 'cell', cell: src.body });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    if (src.code !== null) {
+        __stack.push({ type: 'cell', cell: src.code });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    if (src.data !== null) {
+        __stack.push({ type: 'cell', cell: src.data });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+    const bounce = slice.readBoolean();
+    const to = slice.readAddress();
+    const value = slice.readBigNumber();
+    const mode = slice.readBigNumber();
+    const body = slice.readCellOpt();
+    const code = slice.readCellOpt();
+    const data = slice.readCellOpt();
+    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
+}
+export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -93,7 +127,21 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function packTupleContext(src: Context): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
 export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
+export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
@@ -117,7 +165,19 @@ export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
     __stack.push({ type: 'cell', cell: src.data });
 }
 
+export function packTupleStateInit(src: StateInit): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+    return __stack;
+}
+
 export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
@@ -141,7 +201,19 @@ export function packStackIncrement(src: Increment, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function packTupleIncrement(src: Increment): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
 export function unpackStackIncrement(slice: TupleSlice4): Increment {
+    const key = slice.readBigNumber();
+    const value = slice.readBigNumber();
+    return { $$type: 'Increment', key: key, value: value };
+}
+export function unpackTupleIncrement(slice: TupleSlice4): Increment {
     const key = slice.readBigNumber();
     const value = slice.readBigNumber();
     return { $$type: 'Increment', key: key, value: value };
@@ -162,7 +234,17 @@ export function packStackToggle(src: Toggle, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.key });
 }
 
+export function packTupleToggle(src: Toggle): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    return __stack;
+}
+
 export function unpackStackToggle(slice: TupleSlice4): Toggle {
+    const key = slice.readBigNumber();
+    return { $$type: 'Toggle', key: key };
+}
+export function unpackTupleToggle(slice: TupleSlice4): Toggle {
     const key = slice.readBigNumber();
     return { $$type: 'Toggle', key: key };
 }
@@ -194,7 +276,23 @@ export function packStackPersist(src: Persist, __stack: StackItem[]) {
     }
 }
 
+export function packTuplePersist(src: Persist): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    if (src.content !== null) {
+        __stack.push({ type: 'cell', cell: src.content });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
 export function unpackStackPersist(slice: TupleSlice4): Persist {
+    const key = slice.readBigNumber();
+    const content = slice.readCellOpt();
+    return { $$type: 'Persist', key: key, content: content };
+}
+export function unpackTuplePersist(slice: TupleSlice4): Persist {
     const key = slice.readBigNumber();
     const content = slice.readCellOpt();
     return { $$type: 'Persist', key: key, content: content };
@@ -215,7 +313,17 @@ export function packStackReset(src: Reset, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.key });
 }
 
+export function packTupleReset(src: Reset): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    return __stack;
+}
+
 export function unpackStackReset(slice: TupleSlice4): Reset {
+    const key = slice.readBigNumber();
+    return { $$type: 'Reset', key: key };
+}
+export function unpackTupleReset(slice: TupleSlice4): Reset {
     const key = slice.readBigNumber();
     return { $$type: 'Reset', key: key };
 }
@@ -234,12 +342,22 @@ export function packStackSomething(src: Something, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
+export function packTupleSomething(src: Something): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
 export function unpackStackSomething(slice: TupleSlice4): Something {
     const value = slice.readBigNumber();
     return { $$type: 'Something', value: value };
 }
+export function unpackTupleSomething(slice: TupleSlice4): Something {
+    const value = slice.readBigNumber();
+    return { $$type: 'Something', value: value };
+}
 export async function IncrementContract_init() {
-    const __code = 'te6ccgECJgEAA5wAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAUgiIwIBSAYHAgEgFhcCASAICQIBIBARAgEgCgsAI1IW6VW1n0WjDgyAHPAEEz9EKASfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCENd5xO264wIgghAiRqi9uuMCIIIQCGR7QrrjAoIQkVyQSbqAMDQ4PAAkIG7yToAC2MO1E0NQB+GL0BPQE1DDQ9AT0BPQEVUBsFQXTHwGCENd5xO268uBkgQEB1wCBAQHXAFkyEFYQRRA0QwDwF8j4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVACoMO1E0NQB+GL0BPQE1DDQ9AT0BPQEVUBsFQXTHwGCECJGqL268uBkgQEB1wABMRBFEDRBMPAYyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAL4w7UTQ1AH4YvQE9ATUMND0BPQE9ARVQGwVBdMfAYIQCGR7Qrry4GSBAQHXAG0B0gABkjHU3lkyEFYQRRA0QwDwGcj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVAC0jlPtRNDUAfhi9AT0BNQw0PQE9AT0BFVAbBUF0x8BghCRXJBJuvLgZIEBAdcAATEQRRA0QTDwGsj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOAw8sBkAgEgEhMCASAUFQAdEEz9AxvoZQB1wAw4FttgABsIG6VMFn0WjDgQTP0FYAARFn0DW+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGACAVgYGQIBSB4fAgEgGhsCASAcHQA9G1tbW1tBcjMBVBF9AAS9AAByPQAEvQAEvQAyQHMyYAAFF8EgAAcFF8EgAD8+EFvIzAxgQEBIBA5QUBSkPADECOBAQtAB4EBAfAHAYAIBICAhAJNIEBAW1TEhBJWfADBIEBASZtcfADA4EBASZt8AWBAQv4QW8jMDEQJG2BAQHwB4EBAW0gbpIwbZnIAQGBAQHPAMniQXDwBRA0QTCABLCSBAQEicfAEIG6aMBSBAQEBf3HwA52BAQEB8AGzEDYScfAD4gOAAKQkgQEBI/AGbvLgZBAkgQEBWfAFAoAIBICQlADm7QH7UTQ1AH4YvQE9ATUMND0BPQE9ARVQGwV8BWAAJtD7+ApAAObXgXaiaGoA/DF6AnoCahhoegJ6AnoCKqA2CvgLQ';
+    const __code = 'te6ccgECKAEAA8AAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAUgkJQIBIAYHAgEgGBkCASAICQAPvEDd5aEA3kMCASAKCwIBIBITAgEgDA0AI1IW6VW1n0WjDgyAHPAEEz9EKASfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCENd5xO264wIgghAiRqi9uuMCIIIQCGR7QrrjAoIQkVyQSbqAODxARAAsIG7y0ICAAvDDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghDXecTtuvLggYEBAdcAgQEB1wBZMhBWEEUQNEMA8BjI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQArjDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghAiRqi9uvLggYEBAdcAATEQRRA0QTDwGcj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVADEMO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCEAhke0K68uCBgQEB1wBtAdIAAZIx1N5ZMhBWEEUQNEMA8BrI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQAuo5W7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQkVyQSbry4IGBAQHXAAExEEUQNEEw8BvI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VTgMPLAggIBIBQVAgEgFhcAHRBM/QMb6GUAdcAMOBbbYAAbCBulTBZ9Fow4EEz9BWAAERZ9A1vodwwbYAAjCFulVtZ9Fkw4MgBzwBBM/RBgAgFYGhsCAUgeHwA9VtbW1tbQXIzAVQRfQAEvQAAcj0ABL0ABL0AMkBzMmAIBIBwdAAUXwSAABwUXwSACASAgIQIBICIjAD8+EFvIzAxgQEBIBA5QUBSkPADECOBAQtAB4EBAfAHAYABLCSBAQEicfAEIG6aMBSBAQEBf3HwA52BAQEB8AGzEDYScfAD4gOAAKQkgQEBI/AGbvLgZBAkgQEBWfAFAoACXIEBAW1TEhBJWfADBIEBASZtcfADA4EBASZt8AWBAQv4QW8jMDEQJG2BAQHwB4EBAW0gbpIwbZvwDsgBAYEBAc8AyeJBcPAFEDRBMIAIBICYnAD+7QH7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwV8BaAAJtD7+ArAAP7XgXaiaGoA/DF6AnoCagDoegJ6AnoCGAgaiBo2CvgLw';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -247,8 +365,29 @@ export async function IncrementContract_init() {
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
     let res = await executor.get('init_IncrementContract', __stack, { debug: true });
+    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
+}
+
+export const IncrementContract_errors: { [key: string]: string } = {
+    '2': `Stack undeflow`,
+    '3': `Stack overflow`,
+    '4': `Integer overflow`,
+    '5': `Integer out of expected range`,
+    '6': `Invalid opcode`,
+    '7': `Type check error`,
+    '8': `Cell overflow`,
+    '9': `Cell underflow`,
+    '10': `Dictionary error`,
+    '13': `Out of gas error`,
+    '32': `Method ID not found`,
+    '34': `Action is invalid or not supported`,
+    '37': `Not enough TON`,
+    '38': `Not enough extra-currencies`,
+    '128': `Null reference exception`,
+    '129': `Invalid serialization prefix`,
+    '130': `Invalid incoming message`,
 }
 
 export class IncrementContract {
@@ -270,25 +409,57 @@ export class IncrementContract {
             body = packReset(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        let r = await this.executor.internal(new InternalMessage({
-            to: this.executor.address,
-            from: args.from || this.executor.address,
-            bounce: false,
-            value: args.amount,
-            body: new CommonMessageInfo({
-                body: new CellMessage(body!)
-            })
-        }), { debug: args.debug });
-        if (args.debug && r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        try {
+            let r = await this.executor.internal(new InternalMessage({
+                to: this.executor.address,
+                from: args.from || this.executor.address,
+                bounce: false,
+                value: args.amount,
+                body: new CommonMessageInfo({
+                    body: new CellMessage(body!)
+                })
+            }), { debug: args.debug });
+            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (IncrementContract_errors[e.exitCode.toString()]) {
+                    throw new Error(IncrementContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getCounters() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('counters', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('counters', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (IncrementContract_errors[e.exitCode.toString()]) {
+                    throw new Error(IncrementContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
     async getCounters2() {
-        let __stack: StackItem[] = [];
-        let result = await this.executor.get('counters2', __stack);
-        return result.stack.readCellOpt();
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('counters2', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCellOpt();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (IncrementContract_errors[e.exitCode.toString()]) {
+                    throw new Error(IncrementContract_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
     }
 }

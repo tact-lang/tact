@@ -159,7 +159,8 @@ export function writeSerializer(name: string, allocation: StorageAllocation, ctx
 
             // If not null
             ctx.used(`__gen_writecell_${name}`);
-            ctx.append(`return __gen_writecell_${name}(v);`);
+            ctx.used(`__gen_${name}_not_null`);
+            ctx.append(`return __gen_writecell_${name}(__gen_${name}_not_null(v));`);
         });
         ctx.append(`}`);
     });

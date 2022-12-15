@@ -13,6 +13,11 @@ message SetIntMap3 {
     value: Cell?;
 }
 
+message SetIntMap4 {
+    key: Int;
+    value: SomeStruct?;
+}
+
 message SetAddrMap1 {
     key: Address;
     value: Int?;
@@ -52,6 +57,10 @@ contract MapTestContract {
 
     receive(msg: SetIntMap3) {
         self.intMap3.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetIntMap4) {
+        self.intMap4.set(msg.key, msg.value);
     }
 
     get fun intMap1(): map[Int]Int {

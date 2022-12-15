@@ -9,9 +9,16 @@ PROGRAM{
   DECLPROC __gen_read_SetIntMap1
   DECLPROC __gen_read_SetIntMap2
   DECLPROC __gen_read_SetIntMap3
+  DECLPROC __gen_write_SomeStruct
+  DECLPROC __gen_writecell_SomeStruct
+  DECLPROC __gen_SomeStruct_not_null
+  DECLPROC __gen_writecellopt_SomeStruct
+  DECLPROC __gen_read_SomeStruct
+  DECLPROC __gen_readopt_SomeStruct
+  DECLPROC __gen_SomeStruct_as_optional
+  DECLPROC __gen_read_SetIntMap4
   DECLPROC __gen_read_SetAddrMap1
   DECLPROC __gen_read_SetAddrMap2
-  DECLPROC __gen_readopt_SomeStruct
   DECLPROC __gen_write_MapTestContract
   DECLPROC __gen_read_MapTestContract
   DECLPROC __gen_load_MapTestContract
@@ -48,6 +55,7 @@ PROGRAM{
   DECLPROC __gen_MapTestContract_receive_SetIntMap1
   DECLPROC __gen_MapTestContract_receive_SetIntMap2
   DECLPROC __gen_MapTestContract_receive_SetIntMap3
+  DECLPROC __gen_MapTestContract_receive_SetIntMap4
   DECLPROC __gen_MapTestContract_receive_SetAddrMap1
   DECLPROC __gen_MapTestContract_receive_SetAddrMap2
   DECLPROC recv_internal
@@ -188,6 +196,76 @@ PROGRAM{
     }>
     -ROT
   }>
+  __gen_write_SomeStruct PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  __gen_writecell_SomeStruct PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_SomeStruct INLINECALLDICT
+    ENDC
+  }>
+  __gen_SomeStruct_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    1 UNTUPLE
+  }>
+  __gen_writecellopt_SomeStruct PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_SomeStruct_not_null CALLDICT
+      __gen_writecell_SomeStruct INLINECALLDICT
+    }>
+  }>
+  __gen_read_SomeStruct PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_readopt_SomeStruct PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      CTOS
+      257 PUSHINT
+      LDIX
+      DROP
+      1 TUPLE
+    }>
+  }>
+  __gen_SomeStruct_as_optional PROC:<{
+    1 TUPLE
+  }>
+  __gen_read_SetIntMap4 PROCINLINE:<{
+    32 LDU
+    SWAP
+    1318632071 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      __gen_read_SomeStruct INLINECALLDICT
+      __gen_SomeStruct_as_optional CALLDICT
+      SWAP
+    }>
+    -ROT
+  }>
   __gen_read_SetAddrMap1 PROCINLINE:<{
     32 LDU
     SWAP
@@ -224,20 +302,6 @@ PROGRAM{
       s1 s2 XCHG
     }>
     s0 s2 XCHG
-  }>
-  __gen_readopt_SomeStruct PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-      CTOS
-      257 PUSHINT
-      LDIX
-      DROP
-      1 TUPLE
-    }>
   }>
   __gen_write_MapTestContract PROCINLINE:<{
     s7 s8 XCHG2
@@ -483,6 +547,15 @@ PROGRAM{
     __tact_dict_set_int_cell CALLDICT
     s0 s5 XCHG
   }>
+  __gen_MapTestContract_receive_SetIntMap4 PROC:<{
+    257 PUSHINT
+    SWAP
+    __gen_writecellopt_SomeStruct INLINECALLDICT
+    s3 s7 XCHG
+    s1 s2 XCHG
+    __tact_dict_set_int_cell CALLDICT
+    s0 s4 XCHG
+  }>
   __gen_MapTestContract_receive_SetAddrMap1 PROC:<{
     s2 s5 XCHG
     267 PUSHINT
@@ -586,6 +659,25 @@ PROGRAM{
       s3 s4 XCHG
       s3 s0 s0 XCHG3
       __gen_MapTestContract_receive_SetIntMap3 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    DUP
+    1318632071 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetIntMap4 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      __gen_MapTestContract_receive_SetIntMap4 CALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
     DUP

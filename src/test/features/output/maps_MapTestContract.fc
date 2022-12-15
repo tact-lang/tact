@@ -66,6 +66,8 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
 
 forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
 
+forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
+
 (slice, ((int, int))) __gen_read_SetIntMap1(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1056067080);
     var v'key = sc_0~load_int(257);
@@ -96,6 +98,56 @@ forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
     return (sc_0, (v'key, v'value));
 }
 
+builder __gen_write_SomeStruct(builder build_0, (int) v) inline {
+    var (v'value) = v;
+    build_0 = store_int(build_0, v'value, 257);
+    return build_0;
+}
+
+cell __gen_writecell_SomeStruct((int) v) inline {
+    return __gen_write_SomeStruct(begin_cell(), v).end_cell();
+}
+
+((int)) __gen_SomeStruct_not_null(tuple v) {
+    throw_if(128, null?(v));
+    return __tact_tuple_destroy_1(v);
+}
+
+cell __gen_writecellopt_SomeStruct(tuple v) inline {
+    if (null?(v)) {
+        return null();
+    }
+    return __gen_writecell_SomeStruct(__gen_SomeStruct_not_null(v));
+}
+
+(slice, ((int))) __gen_read_SomeStruct(slice sc_0) inline {
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+tuple __gen_readopt_SomeStruct(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc_0 = cl.begin_parse();
+    var v'value = sc_0~load_int(257);
+    return __tact_tuple_create_1(v'value);
+}
+
+tuple __gen_SomeStruct_as_optional(((int)) v) {
+    return __tact_tuple_create_1(v);
+}
+
+(slice, ((int, tuple))) __gen_read_SetIntMap4(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1318632071);
+    var v'key = sc_0~load_int(257);
+    var v'value = null();
+    if (sc_0~load_int(1)) {
+        v'value = __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct());
+    }
+    return (sc_0, (v'key, v'value));
+}
+
 (slice, ((slice, int))) __gen_read_SetAddrMap1(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3295239033);
     var v'key = sc_0~__tact_load_address();
@@ -114,15 +166,6 @@ forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
         v'value = sc_0~load_int(1);
     }
     return (sc_0, (v'key, v'value));
-}
-
-tuple __gen_readopt_SomeStruct(cell cl) inline {
-    if (null?(cl)) {
-        return null();
-    }
-    var sc_0 = cl.begin_parse();
-    var v'value = sc_0~load_int(257);
-    return __tact_tuple_create_1(v'value);
 }
 
 builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
@@ -352,6 +395,13 @@ _ __gen_get_addrMap4() method_id(81348) {
     return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
 }
 
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap4((cell, cell, cell, cell, cell, cell, cell, cell) self, (int, tuple) msg) impure {
+    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
+    var (msg'key, msg'value) = msg;
+    self'intMap4~__tact_dict_set_int_cell(257, msg'key, __gen_writecellopt_SomeStruct(msg'value));
+    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+}
+
 (((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap1((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, int) msg) impure {
     var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
     var (msg'key, msg'value) = msg;
@@ -408,6 +458,15 @@ _ __gen_get_addrMap4() method_id(81348) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetIntMap3();
         self~__gen_MapTestContract_receive_SetIntMap3(msg);
+        __gen_store_MapTestContract(self);
+        return ();
+    }
+    
+    ;; Receive SetIntMap4 message
+    if (op == 1318632071) {
+        var self = __gen_load_MapTestContract();
+        var msg = in_msg~__gen_read_SetIntMap4();
+        self~__gen_MapTestContract_receive_SetIntMap4(msg);
         __gen_store_MapTestContract(self);
         return ();
     }

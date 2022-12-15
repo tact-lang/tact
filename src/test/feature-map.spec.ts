@@ -4,7 +4,14 @@ import { createExecutorFromCode } from 'ton-nodejs';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MapTestContract, MapTestContract_init, SomeStruct } from './features/output/maps_MapTestContract';
 
-describe('features', () => {
+function strEq(a: SomeStruct | null, b: SomeStruct | null) {
+    if (a === null || b === null) {
+        return a === b;
+    }
+    return a.value.eq(b.value);
+}
+
+describe('feature-map', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
@@ -48,15 +55,25 @@ describe('features', () => {
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap1', key: k, value: valueInt });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap2', key: k, value: valueBool });
             await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap3', key: k, value: valueCell });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap4', key: k, value: valueStruct });
 
             // Check value set
-            // console.warn(valueBool);
-            // let parsed = parseDict((await contract.getIntMap2())!.beginParse(), 257, (s) => s.readBit());
-            // console.warn(parsed);
             expect((await contract.getIntMap1Value(k))!.eq(valueInt)).toBe(true);
             expect((await contract.getIntMap2Value(k))!).toBe(valueBool);
             expect((await contract.getIntMap3Value(k))!.equals(valueCell)).toBe(true);
-            // expect(await contract.getIntMap4Value(k)).toBeNull();
+            expect(strEq((await contract.getIntMap4Value(k))!, valueStruct)).toBe(true);
+
+            // Clear keys
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap1', key: k, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap2', key: k, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap3', key: k, value: null });
+            await contract.send({ amount: new BN(0), debug: true }, { $$type: 'SetIntMap4', key: k, value: null });
+
+            // Check value cleared
+            expect((await contract.getIntMap1Value(k))).toBeNull();
+            expect((await contract.getIntMap2Value(k))).toBeNull();
+            expect((await contract.getIntMap3Value(k))).toBeNull();
+            expect((await contract.getIntMap4Value(k))).toBeNull();
         }
     });
 });

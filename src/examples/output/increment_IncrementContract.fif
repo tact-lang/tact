@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC __gen_read_Reset
   DECLPROC __gen_write_Something
   DECLPROC __gen_writecell_Something
+  DECLPROC __gen_Something_not_null
   DECLPROC __gen_writecellopt_Something
   DECLPROC __gen_write_IncrementContract
   DECLPROC __gen_read_IncrementContract
@@ -34,7 +35,7 @@ PROGRAM{
   __tact_not_null PROC:<{
     DUP
     ISNULL
-    14 THROWIF
+    128 THROWIF
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
@@ -108,7 +109,7 @@ PROGRAM{
     SWAP
     3615081709 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -120,7 +121,7 @@ PROGRAM{
     SWAP
     575056061 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     SWAP
@@ -130,7 +131,7 @@ PROGRAM{
     SWAP
     140802882 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     PUSHNULL
@@ -148,7 +149,7 @@ PROGRAM{
     SWAP
     2438762569 PUSHINT
     EQUAL
-    100 THROWIFNOT
+    129 THROWIFNOT
     257 PUSHINT
     LDIX
     SWAP
@@ -164,6 +165,12 @@ PROGRAM{
     __gen_write_Something INLINECALLDICT
     ENDC
   }>
+  __gen_Something_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    1 UNTUPLE
+  }>
   __gen_writecellopt_Something PROCINLINE:<{
     DUP
     ISNULL
@@ -171,6 +178,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
+      __gen_Something_not_null CALLDICT
       __gen_writecell_Something INLINECALLDICT
     }>
   }>
@@ -194,12 +202,14 @@ PROGRAM{
     LDDICT
     LDDICT
     LDREF
-    DROP
+    SWAP
     CTOS
     LDDICT
     LDDICT
     LDDICT
-    5 -ROLL
+    DROP
+    s3 s5 XCHG
+    s3 s4 XCHG
   }>
   __gen_Context_get_sender PROCINLINE:<{
     DROP
@@ -436,7 +446,7 @@ PROGRAM{
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DROP
-    100 THROW
+    130 THROW
   }>
   init_IncrementContract PROC:<{
     __gen_IncrementContract_init CALLDICT

@@ -329,6 +329,57 @@ export function unpackTupleSetIntMap3(slice: TupleSlice4): SetIntMap3 {
     const value = slice.readCellOpt();
     return { $$type: 'SetIntMap3', key: key, value: value };
 }
+export type SetIntMap4 = {
+    $$type: 'SetIntMap4';
+    key: BN;
+    value: SomeStruct | null;
+}
+
+export function packSetIntMap4(src: SetIntMap4): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(1318632071, 32);
+    b_0 = b_0.storeInt(src.key, 257);
+    if (src.value !== null) {
+        b_0 = b_0.storeBit(true);
+        b_0 = b_0.storeCellCopy(packSomeStruct(src.value));
+    } else {
+        b_0 = b_0.storeBit(false);
+    }
+    return b_0.endCell();
+}
+
+export function packStackSetIntMap4(src: SetIntMap4, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.key });
+    if (src.value !== null) {
+        __stack.push({ type: 'tuple', items: packTupleSomeStruct(src.value) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function packTupleSetIntMap4(src: SetIntMap4): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.key });
+    if (src.value !== null) {
+        __stack.push({ type: 'tuple', items: packTupleSomeStruct(src.value) });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
+export function unpackStackSetIntMap4(slice: TupleSlice4): SetIntMap4 {
+    const key = slice.readBigNumber();
+    const value_p = slice.pop();
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    return { $$type: 'SetIntMap4', key: key, value: value };
+}
+export function unpackTupleSetIntMap4(slice: TupleSlice4): SetIntMap4 {
+    const key = slice.readBigNumber();
+    const value_p = slice.pop();
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    return { $$type: 'SetIntMap4', key: key, value: value };
+}
 export type SetAddrMap1 = {
     $$type: 'SetAddrMap1';
     key: Address;
@@ -457,7 +508,7 @@ export function unpackTupleSomeStruct(slice: TupleSlice4): SomeStruct {
     return { $$type: 'SomeStruct', value: value };
 }
 export async function MapTestContract_init() {
-    const __code = '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';
+    const __code = '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';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -494,7 +545,7 @@ export class MapTestContract {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: SetIntMap1 | SetIntMap2 | SetIntMap3 | SetAddrMap1 | SetAddrMap2) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: SetIntMap1 | SetIntMap2 | SetIntMap3 | SetIntMap4 | SetAddrMap1 | SetAddrMap2) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap1') {
             body = packSetIntMap1(message);
@@ -504,6 +555,9 @@ export class MapTestContract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap3') {
             body = packSetIntMap3(message);
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap4') {
+            body = packSetIntMap4(message);
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap1') {
             body = packSetAddrMap1(message);
