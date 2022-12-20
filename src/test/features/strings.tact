@@ -42,4 +42,26 @@ contract StringsTester {
         b.append("привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀");
         return b.toString();
     }
+
+    get fun stringWithNumber(): String {
+        let b: StringBuilder = beginString();
+        b.append("Hello, your balance: ");
+        b.append(123.toString());
+        return b.toString();
+    }
+
+    get fun stringWithNegativeNumber(): String {
+        let b: StringBuilder = beginString();
+        b.append("Hello, your balance: ");
+        b.append((-123).toString());
+        return b.toString();
+    }
+
+
+    get fun stringWithLargeNumber(): String {
+        let b: StringBuilder = beginString();
+        b.append("Hello, your balance: ");
+        b.append(1000000000000000000000000000000000000000000000000000000000000.toString());
+        return b.toString();
+    }
 }

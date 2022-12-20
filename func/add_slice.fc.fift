@@ -3,6 +3,7 @@ PROGRAM{
   DECLPROC ~add_slice
   DECLPROC ~add_slice_fast
   DECLPROC __unwrap
+  DECLPROC formatNumber
   DECLPROC main
   begin_string_builder PROC:<{
     IF:<{
@@ -148,6 +149,52 @@ PROGRAM{
       ENDC
     }>
     NIP
+  }>
+  formatNumber PROC:<{
+    NEWC
+    OVER
+    0 LESSINT
+    IF:<{
+      45 PUSHINT
+      SWAP
+      8 STU
+      SWAP
+      NEGATE
+      SWAP
+    }>
+    NIL
+    0 PUSHINT
+    WHILE:<{
+      s3 PUSH
+      0 GTINT
+    }>DO<{
+      s3 PUSH
+      10 PUSHINT
+      MOD
+      s1 s2 XCHG
+      TPUSH
+      SWAP
+      INC
+      s0 s3 XCHG
+      10 PUSHINT
+      DIV
+      s0 s3 XCHG
+    }>
+    0 PUSHINT
+    s4 POP
+    REPEAT:<{
+      s0 s2 PUSH2
+      INDEXVAR
+      ROT
+      8 STU
+      s0 s2 XCHG
+      INC
+      -ROT
+    }>
+    DROP
+    NIP
+    ENDC
+    CTOS
   }>
   main PROC:<{
   }>

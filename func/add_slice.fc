@@ -89,5 +89,31 @@ cell __unwrap(tuple builders) {
     return c;
 }
 
+slice formatNumber(int src) {
+    builder b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;   
+    }
+
+    tuple t = empty_tuple();
+    int len = 0;
+    while(src > 0) {
+        int digit = src % 10;
+        t~tpush(digit);
+        len = len + 1;
+        src = src / 10;
+    }
+
+    int c = 0;
+    repeat(len) {
+        int v = t.at(c);
+        b = b.store_uint(v, 8);
+        c = c + 1;
+    }
+
+    return b.end_cell().begin_parse();
+}
+
 _ main() impure {
 }

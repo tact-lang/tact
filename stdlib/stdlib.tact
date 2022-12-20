@@ -265,3 +265,10 @@ extends native toString(self: StringBuilder): String;
 
 @name(__tact_string_builder_end_slice)
 extends native toSlice(self: StringBuilder): Slice;
+
+//
+// String conversion
+//
+
+@name(__tact_int_to_string)
+extends native toString(self: Int): String;

@@ -124,6 +124,125 @@ SETCP0
     WHILE
     3 BLKDROP
 
+  7: 
+    NEWC
+    s1 PUSH
+    0 LESSINT
+    <{
+      45 PUSHINT
+      s0 s1 XCHG
+      8 STU
+      s0 s1 XCHG
+      NEGATE
+      s0 s1 XCHG
+    }> PUSHCONT
+    IF
+    s1 PUSH
+    931322574615478515625 PUSHINT
+    30 LSHIFT
+    LESS
+    <{
+      0 PUSHINT
+      s0 PUSH
+      1 PUSHINT
+      <{
+        s0 s4 XCHG
+        -6 PUSHINT
+        DIV BOTH
+        48 ADDCONST
+        s5 PUSH
+        MUL
+        s1 s2 XCHG
+        ADD
+        s0 s4 XCHG
+        8 LSHIFT
+        s0 s2 XCHG
+        INC
+        s1 PUSH
+        0 EQINT
+        s5 s3 s0 XCHG3
+      }> PUSHCONT
+      UNTIL
+      s0 POP
+      s3 POP
+      3 LSHIFT
+      STUX
+    }> PUSHCONT
+    <{
+      NIL
+      0 PUSHINT
+      <{
+        s3 PUSH
+        0 GTINT
+      }> PUSHCONT
+      <{
+        s3 PUSH
+        -6 PUSHINT
+        DIV REM
+        s1 s2 XCHG
+        TPUSH
+        s0 s1 XCHG
+        INC
+        s0 s3 XCHG
+        -6 PUSHINT
+        DIV QOUT
+        s0 s3 XCHG
+      }> PUSHCONT
+      WHILE
+      s3 POP
+      s2 PUSH
+      DEC
+      s0 s3 XCHG
+      <{
+        s0 s2 PUSH2
+        INDEXVAR
+        48 ADDCONST
+        ROT
+        8 STU
+        s0 s2 XCHG
+        DEC
+        ROTREV
+      }> PUSHCONT
+      REPEAT
+      s0 POP
+      s1 POP
+    }> PUSHCONT
+    IFELSE
+    ENDC
+    CTOS
+
+  68752: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 POP
+    0 PUSHINT
+    NEWC
+    s0 s1 XCHG
+    <{
+      0 PUSHINT
+      s0 s1 XCHG
+      32 STU
+    }> PUSHCONT
+    IF
+    NIL
+    s0 s1 XCHG
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHSLICE
+    6 CALLDICT
+    123 PUSHINT
+    7 CALLDICT
+    6 CALLDICT
+    5 CALLDICT
+
   69760: 
     1200000000 PUSHINT
     s0 s1 XCHG
@@ -153,6 +272,38 @@ SETCP0
          x{80D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5}
           x{D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F9180}
 
+  82914: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 POP
+    0 PUSHINT
+    NEWC
+    s0 s1 XCHG
+    <{
+      0 PUSHINT
+      s0 s1 XCHG
+      32 STU
+    }> PUSHCONT
+    IF
+    NIL
+    s0 s1 XCHG
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHSLICE
+    6 CALLDICT
+    -123 PUSHINT
+    7 CALLDICT
+    6 CALLDICT
+    5 CALLDICT
+
   93932: 
     c4 PUSH
     CTOS
@@ -165,6 +316,39 @@ SETCP0
     s1 POP
     s0 POP
     PUSHSLICE
+
+  94811: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 POP
+    0 PUSHINT
+    NEWC
+    s0 s1 XCHG
+    <{
+      0 PUSHINT
+      s0 s1 XCHG
+      32 STU
+    }> PUSHCONT
+    IF
+    NIL
+    s0 s1 XCHG
+    TPUSH
+    PUSHNULL
+    TPUSH
+    PUSHSLICE
+    6 CALLDICT
+    867361737988403547205962240695953369140625 PUSHINT
+    60 LSHIFT
+    7 CALLDICT
+    6 CALLDICT
+    5 CALLDICT
 
   94939: 
     c4 PUSH

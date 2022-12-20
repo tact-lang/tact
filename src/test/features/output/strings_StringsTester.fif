@@ -5,6 +5,7 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
+  DECLPROC __tact_int_to_string
   DECLPROC __gen_write_StringsTester
   DECLPROC __gen_read_StringsTester
   DECLPROC __gen_load_StringsTester
@@ -23,6 +24,12 @@ PROGRAM{
   74771 DECLMETHOD __gen_get_dynamicCommentCellLarge
   DECLPROC __gen_StringsTester_dynamicCommentStringLarge
   74191 DECLMETHOD __gen_get_dynamicCommentStringLarge
+  DECLPROC __gen_StringsTester_stringWithNumber
+  68752 DECLMETHOD __gen_get_stringWithNumber
+  DECLPROC __gen_StringsTester_stringWithNegativeNumber
+  82914 DECLMETHOD __gen_get_stringWithNegativeNumber
+  DECLPROC __gen_StringsTester_stringWithLargeNumber
+  94811 DECLMETHOD __gen_get_stringWithLargeNumber
   DECLPROC recv_internal
   69760 DECLMETHOD init_StringsTester
   113617 DECLMETHOD supported_interfaces
@@ -138,6 +145,85 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
+  __tact_int_to_string PROC:<{
+    NEWC
+    OVER
+    0 LESSINT
+    IF:<{
+      45 PUSHINT
+      SWAP
+      8 STU
+      SWAP
+      NEGATE
+      SWAP
+    }>
+    OVER
+    1000000000000000000000000000000 PUSHINTX
+    LESS
+    IF:<{
+      0 PUSHINT
+      DUP
+      1 PUSHINT
+      UNTIL:<{
+        s0 s4 XCHG
+        10 PUSHINT
+        DIVMOD
+        48 ADDCONST
+        s5 PUSH
+        MUL
+        s1 s2 XCHG
+        ADD
+        s0 s4 XCHG
+        8 LSHIFT#
+        s0 s2 XCHG
+        INC
+        OVER
+        0 EQINT
+        s5 s3 s0 XCHG3
+      }>
+      DROP
+      s3 POP
+      3 LSHIFT#
+      STUX
+    }>ELSE<{
+      NIL
+      0 PUSHINT
+      WHILE:<{
+        s3 PUSH
+        0 GTINT
+      }>DO<{
+        s3 PUSH
+        10 PUSHINT
+        MOD
+        s1 s2 XCHG
+        TPUSH
+        SWAP
+        INC
+        s0 s3 XCHG
+        10 PUSHINT
+        DIV
+        s0 s3 XCHG
+      }>
+      s3 POP
+      s2 PUSH
+      DEC
+      s0 s3 XCHG
+      REPEAT:<{
+        s0 s2 PUSH2
+        INDEXVAR
+        48 ADDCONST
+        ROT
+        8 STU
+        s0 s2 XCHG
+        DEC
+        -ROT
+      }>
+      DROP
+      NIP
+    }>
+    ENDC
+    CTOS
+  }>
   __gen_write_StringsTester PROCINLINE:<{
     SWAP
     257 PUSHINT
@@ -238,6 +324,48 @@ PROGRAM{
     __gen_load_StringsTester INLINECALLDICT
     __gen_StringsTester_dynamicCommentStringLarge INLINECALLDICT
   }>
+  __gen_StringsTester_stringWithNumber PROCINLINE:<{
+    DROP
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
+    123 PUSHINT
+    __tact_int_to_string CALLDICT
+    __tact_string_builder_append CALLDICT
+    __tact_string_builder_end_slice CALLDICT
+  }>
+  __gen_get_stringWithNumber PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_stringWithNumber INLINECALLDICT
+  }>
+  __gen_StringsTester_stringWithNegativeNumber PROCINLINE:<{
+    DROP
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
+    -123 PUSHINT
+    __tact_int_to_string CALLDICT
+    __tact_string_builder_append CALLDICT
+    __tact_string_builder_end_slice CALLDICT
+  }>
+  __gen_get_stringWithNegativeNumber PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_stringWithNegativeNumber INLINECALLDICT
+  }>
+  __gen_StringsTester_stringWithLargeNumber PROCINLINE:<{
+    DROP
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
+    1000000000000000000000000000000000000000000000000000000000000 PUSHINTX
+    __tact_int_to_string CALLDICT
+    __tact_string_builder_append CALLDICT
+    __tact_string_builder_end_slice CALLDICT
+  }>
+  __gen_get_stringWithLargeNumber PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_stringWithLargeNumber INLINECALLDICT
+  }>
   recv_internal PROC:<{
     DUP
     SBITS
@@ -274,6 +402,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d63577967655537614866774761655069435855706a5270566375333444516d54344d6b5453366f4363634a55} PUSHSLICE
+    x{697066733a2f2f516d616170393334437235714a466a53354d33416855437033593948564c6f444a44794576566e5552474544516e} PUSHSLICE
   }>
 }END>c

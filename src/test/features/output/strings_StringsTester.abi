@@ -346,6 +346,33 @@
         "name": "String",
         "optional": false
       }
+    },
+    {
+      "name": "stringWithNumber",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
+    },
+    {
+      "name": "stringWithNegativeNumber",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
+    },
+    {
+      "name": "stringWithLargeNumber",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},

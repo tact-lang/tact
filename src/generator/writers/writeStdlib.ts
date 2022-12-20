@@ -1,3 +1,4 @@
+import { BN } from "bn.js";
 import { contractErrors } from "../../abi/errors";
 import { WriterContext } from "../Writer";
 
@@ -416,7 +417,7 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append(`}`);
     });
-    
+
     ctx.fun(`__tact_string_builder_end_slice`, () => {
         ctx.append(`slice __tact_string_builder_end_slice(tuple builders) {`);
         ctx.inIndent(() => {
@@ -475,6 +476,62 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.append(`}`);
             ctx.append();
             ctx.append(`return ((builders), ());`)
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__tact_int_to_string`, () => {
+        ctx.append(`slice __tact_int_to_string(int src) {`);
+        ctx.inIndent(() => {
+            ctx.append(`var b = begin_cell();`);
+            ctx.append(`if (src < 0) {`);
+            ctx.inIndent(() => {
+                ctx.append(`b = b.store_uint(45, 8);`);
+                ctx.append(`src = - src;`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+            ctx.append(`if (src < ${new BN(10).pow(new BN(30)).toString(10)}) {`); // Better cut-off?
+            ctx.inIndent(() => {
+                ctx.append(`int len = 0;`);
+                ctx.append(`int value = 0;`);
+                ctx.append(`int mult = 1;`);
+                ctx.append(`do {`);
+                ctx.inIndent(() => {
+                    ctx.append(`(src, int res) = src.divmod(10);`);
+                    ctx.append(`value = value + (res + 48) * mult;`);
+                    ctx.append(`mult = mult * 256;`);
+                    ctx.append(`len = len + 1;`);
+                });
+                ctx.append(`} until (src == 0);`)
+                ctx.append();
+                ctx.append(`b = b.store_uint(value, len * 8);`);
+            });
+            ctx.append(`} else {`)
+            ctx.inIndent(() => {
+                ctx.append(`tuple t = empty_tuple();`);
+                ctx.append(`int len = 0;`);
+                ctx.append(`while (src > 0) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`int digit = src % 10;`);
+                    ctx.append(`t~tpush(digit);`);
+                    ctx.append(`len = len + 1;`);
+                    ctx.append(`src = src / 10;`);
+                });
+                ctx.append(`}`);
+                ctx.append();
+                ctx.append(`int c = len - 1;`);
+                ctx.append(`repeat(len) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`int v = t.at(c);`);
+                    ctx.append(`b = b.store_uint(v + 48, 8);`);
+                    ctx.append(`c = c - 1;`);
+                });
+                ctx.append(`}`);
+            });
+            ctx.append(`}`);
+
+            ctx.append(`return b.end_cell().begin_parse();`);
         });
         ctx.append(`}`);
     });

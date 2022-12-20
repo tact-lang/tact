@@ -70,6 +70,45 @@ slice __tact_string_builder_end_slice(tuple builders) {
     return ((builders), ());
 }
 
+slice __tact_int_to_string(int src) {
+    var b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    if (src < 1000000000000000000000000000000) {
+        int len = 0;
+        int value = 0;
+        int mult = 1;
+        do {
+            (src, int res) = src.divmod(10);
+            value = value + (res + 48) * mult;
+            mult = mult * 256;
+            len = len + 1;
+        } until (src == 0);
+        
+        b = b.store_uint(value, len * 8);
+    } else {
+        tuple t = empty_tuple();
+        int len = 0;
+        while (src > 0) {
+            int digit = src % 10;
+            t~tpush(digit);
+            len = len + 1;
+            src = src / 10;
+        }
+        
+        int c = len - 1;
+        repeat(len) {
+            int v = t.at(c);
+            b = b.store_uint(v + 48, 8);
+            c = c - 1;
+        }
+    }
+    return b.end_cell().begin_parse();
+}
+
 builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     var (v'fee) = v;
     build_0 = store_int(build_0, v'fee, 257);
@@ -88,19 +127,22 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
 }
 
 ;; String "test string"
-slice __gen_str_17608() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
+slice __gen_str_17764() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
 
 ;; String "привет мир 👀"
-slice __gen_str_17612() asm "B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE";
+slice __gen_str_17768() asm "B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE";
 
 ;; String "привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀"
-slice __gen_str_17616() asm "B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE";
+slice __gen_str_17772() asm "B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE";
 
 ;; String "Hello!"
-slice __gen_str_17624() asm "B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE";
+slice __gen_str_17780() asm "B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE";
 
 ;; String "Something something world!"
-slice __gen_str_17636() asm "B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE";
+slice __gen_str_17792() asm "B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE";
+
+;; String "Hello, your balance: "
+slice __gen_str_17836() asm "B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE";
 
 cell __gen_StringsTester_init(cell sys') inline {
     var ((self'fee)) = (0);
@@ -113,7 +155,7 @@ cell __gen_StringsTester_init(cell sys') inline {
 
 slice __gen_StringsTester_constantString((int) self) impure inline {
     var ((self'fee)) = self;
-    return __gen_str_17608();
+    return __gen_str_17764();
 }
 
 _ __gen_get_constantString() method_id(93932) {
@@ -124,7 +166,7 @@ _ __gen_get_constantString() method_id(93932) {
 
 slice __gen_StringsTester_constantStringUnicode((int) self) impure inline {
     var ((self'fee)) = self;
-    return __gen_str_17612();
+    return __gen_str_17768();
 }
 
 _ __gen_get_constantStringUnicode() method_id(94939) {
@@ -135,7 +177,7 @@ _ __gen_get_constantStringUnicode() method_id(94939) {
 
 slice __gen_StringsTester_constantStringUnicodeLong((int) self) impure inline {
     var ((self'fee)) = self;
-    return __gen_str_17616();
+    return __gen_str_17772();
 }
 
 _ __gen_get_constantStringUnicodeLong() method_id(104680) {
@@ -147,7 +189,7 @@ _ __gen_get_constantStringUnicodeLong() method_id(104680) {
 cell __gen_StringsTester_dynamicStringCell((int) self) impure inline {
     var ((self'fee)) = self;
     tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_17624());
+    b~__tact_string_builder_append(__gen_str_17780());
     return __tact_string_builder_end(b);
 }
 
@@ -160,7 +202,7 @@ _ __gen_get_dynamicStringCell() method_id(122225) {
 cell __gen_StringsTester_dynamicCommentCell((int) self) impure inline {
     var ((self'fee)) = self;
     tuple b = __tact_string_builder_start_comment();
-    b~__tact_string_builder_append(__gen_str_17636());
+    b~__tact_string_builder_append(__gen_str_17792());
     return __tact_string_builder_end(b);
 }
 
@@ -173,8 +215,8 @@ _ __gen_get_dynamicCommentCell() method_id(122531) {
 cell __gen_StringsTester_dynamicCommentCellLarge((int) self) impure inline {
     var ((self'fee)) = self;
     tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_17624());
-    b~__tact_string_builder_append(__gen_str_17616());
+    b~__tact_string_builder_append(__gen_str_17780());
+    b~__tact_string_builder_append(__gen_str_17772());
     return __tact_string_builder_end(b);
 }
 
@@ -187,14 +229,56 @@ _ __gen_get_dynamicCommentCellLarge() method_id(74771) {
 slice __gen_StringsTester_dynamicCommentStringLarge((int) self) impure inline {
     var ((self'fee)) = self;
     tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_17624());
-    b~__tact_string_builder_append(__gen_str_17616());
+    b~__tact_string_builder_append(__gen_str_17780());
+    b~__tact_string_builder_append(__gen_str_17772());
     return __tact_string_builder_end_slice(b);
 }
 
 _ __gen_get_dynamicCommentStringLarge() method_id(74191) {
     var self = __gen_load_StringsTester();
     var res = __gen_StringsTester_dynamicCommentStringLarge(self);
+    return res;
+}
+
+slice __gen_StringsTester_stringWithNumber((int) self) impure inline {
+    var ((self'fee)) = self;
+    tuple b = __tact_string_builder_start_string();
+    b~__tact_string_builder_append(__gen_str_17836());
+    b~__tact_string_builder_append(__tact_int_to_string(123));
+    return __tact_string_builder_end_slice(b);
+}
+
+_ __gen_get_stringWithNumber() method_id(68752) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_stringWithNumber(self);
+    return res;
+}
+
+slice __gen_StringsTester_stringWithNegativeNumber((int) self) impure inline {
+    var ((self'fee)) = self;
+    tuple b = __tact_string_builder_start_string();
+    b~__tact_string_builder_append(__gen_str_17836());
+    b~__tact_string_builder_append(__tact_int_to_string((- 123)));
+    return __tact_string_builder_end_slice(b);
+}
+
+_ __gen_get_stringWithNegativeNumber() method_id(82914) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_stringWithNegativeNumber(self);
+    return res;
+}
+
+slice __gen_StringsTester_stringWithLargeNumber((int) self) impure inline {
+    var ((self'fee)) = self;
+    tuple b = __tact_string_builder_start_string();
+    b~__tact_string_builder_append(__gen_str_17836());
+    b~__tact_string_builder_append(__tact_int_to_string(1000000000000000000000000000000000000000000000000000000000000));
+    return __tact_string_builder_end_slice(b);
+}
+
+_ __gen_get_stringWithLargeNumber() method_id(94811) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_stringWithLargeNumber(self);
     return res;
 }
 
@@ -232,5 +316,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmcWygeU7aHfwGaePiCXUpjRpVcu34DQmT4MkTS6oCccJU";
+    return "ipfs://Qmaap934Cr5qJFjS5M3AhUCp3Y9HVLoDJDyEvVnURGEDQn";
 }
