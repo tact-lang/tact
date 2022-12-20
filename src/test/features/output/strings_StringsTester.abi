@@ -294,7 +294,25 @@
       }
     },
     {
+      "name": "constantStringUnicode",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
+    },
+    {
       "name": "dynamicStringCell",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Cell",
+        "optional": false
+      }
+    },
+    {
+      "name": "dynamicCommentCell",
       "args": [],
       "returns": {
         "kind": "ref",

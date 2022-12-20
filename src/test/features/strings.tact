@@ -9,8 +9,17 @@ contract StringsTester {
         return "test string";
     }
 
+    get fun constantStringUnicode(): String {
+        return "привет мир 👀";
+    }
+
     get fun dynamicStringCell(): Cell {
         let b: StringBuilder = beginString();
+        return b.toCell();
+    }
+
+    get fun dynamicCommentCell(): Cell {
+        let b: StringBuilder = beginComment();
         return b.toCell();
     }
 }

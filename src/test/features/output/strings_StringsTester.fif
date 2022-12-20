@@ -1,5 +1,6 @@
 PROGRAM{
   DECLPROC __tact_string_builder_start
+  DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_start_string
   DECLPROC __tact_string_builder_end
   DECLPROC __gen_write_StringsTester
@@ -8,8 +9,12 @@ PROGRAM{
   DECLPROC __gen_StringsTester_init
   DECLPROC __gen_StringsTester_constantString
   93932 DECLMETHOD __gen_get_constantString
+  DECLPROC __gen_StringsTester_constantStringUnicode
+  94939 DECLMETHOD __gen_get_constantStringUnicode
   DECLPROC __gen_StringsTester_dynamicStringCell
   122225 DECLMETHOD __gen_get_dynamicStringCell
+  DECLPROC __gen_StringsTester_dynamicCommentCell
+  122531 DECLMETHOD __gen_get_dynamicCommentCell
   DECLPROC recv_internal
   69760 DECLMETHOD init_StringsTester
   113617 DECLMETHOD supported_interfaces
@@ -24,6 +29,10 @@ PROGRAM{
     TPUSH
     PUSHNULL
     TPUSH
+  }>
+  __tact_string_builder_start_comment PROC:<{
+    TRUE
+    __tact_string_builder_start CALLDICT
   }>
   __tact_string_builder_start_string PROC:<{
     FALSE
@@ -82,6 +91,14 @@ PROGRAM{
     __gen_load_StringsTester INLINECALLDICT
     __gen_StringsTester_constantString INLINECALLDICT
   }>
+  __gen_StringsTester_constantStringUnicode PROCINLINE:<{
+    DROP
+    B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE
+  }>
+  __gen_get_constantStringUnicode PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_constantStringUnicode INLINECALLDICT
+  }>
   __gen_StringsTester_dynamicStringCell PROCINLINE:<{
     DROP
     __tact_string_builder_start_string CALLDICT
@@ -90,6 +107,15 @@ PROGRAM{
   __gen_get_dynamicStringCell PROC:<{
     __gen_load_StringsTester INLINECALLDICT
     __gen_StringsTester_dynamicStringCell INLINECALLDICT
+  }>
+  __gen_StringsTester_dynamicCommentCell PROCINLINE:<{
+    DROP
+    __tact_string_builder_start_comment CALLDICT
+    __tact_string_builder_end CALLDICT
+  }>
+  __gen_get_dynamicCommentCell PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_dynamicCommentCell INLINECALLDICT
   }>
   recv_internal PROC:<{
     DUP
@@ -127,6 +153,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5557344150376f347a79686a6463344c377a787057793243414d75677a46457a4e624a4a6433726341747944} PUSHSLICE
+    x{697066733a2f2f516d62336969764464344b505a7879714c6179776d68374e4d654c57416e7667346f48466d6846626d5756744648} PUSHSLICE
   }>
 }END>c

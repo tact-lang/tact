@@ -9,6 +9,10 @@ tuple __tact_string_builder_start(int comment) {
     return tpush(tpush(empty_tuple(), begin_cell()), null());
 }
 
+tuple __tact_string_builder_start_comment() {
+    return __tact_string_builder_start(true);
+}
+
 tuple __tact_string_builder_start_string() {
     return __tact_string_builder_start(false);
 }
@@ -41,7 +45,10 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
 }
 
 ;; String "test string"
-slice __gen_str_17214() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
+slice __gen_str_17226() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
+
+;; String "привет мир 👀"
+slice __gen_str_17230() asm "B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE";
 
 cell __gen_StringsTester_init(cell sys') inline {
     var ((self'fee)) = (0);
@@ -54,12 +61,23 @@ cell __gen_StringsTester_init(cell sys') inline {
 
 slice __gen_StringsTester_constantString((int) self) impure inline {
     var ((self'fee)) = self;
-    return __gen_str_17214();
+    return __gen_str_17226();
 }
 
 _ __gen_get_constantString() method_id(93932) {
     var self = __gen_load_StringsTester();
     var res = __gen_StringsTester_constantString(self);
+    return res;
+}
+
+slice __gen_StringsTester_constantStringUnicode((int) self) impure inline {
+    var ((self'fee)) = self;
+    return __gen_str_17230();
+}
+
+_ __gen_get_constantStringUnicode() method_id(94939) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_constantStringUnicode(self);
     return res;
 }
 
@@ -72,6 +90,18 @@ cell __gen_StringsTester_dynamicStringCell((int) self) impure inline {
 _ __gen_get_dynamicStringCell() method_id(122225) {
     var self = __gen_load_StringsTester();
     var res = __gen_StringsTester_dynamicStringCell(self);
+    return res;
+}
+
+cell __gen_StringsTester_dynamicCommentCell((int) self) impure inline {
+    var ((self'fee)) = self;
+    tuple b = __tact_string_builder_start_comment();
+    return __tact_string_builder_end(b);
+}
+
+_ __gen_get_dynamicCommentCell() method_id(122531) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_dynamicCommentCell(self);
     return res;
 }
 
@@ -109,5 +139,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmUW4AP7o4zyhjdc4L7zxpWy2CAMugzFEzNbJJd3rcAtyD";
+    return "ipfs://Qmb3iivDd4KPZxyqLaywmh7NMeLWAnvg4oHFmhFbmWVtFH";
 }
