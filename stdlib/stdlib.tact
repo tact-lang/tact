@@ -254,5 +254,8 @@ native beginString(): StringBuilder;
 @name(__tact_string_builder_start_comment)
 native beginComment(): StringBuilder;
 
+@name(__tact_string_builder_append)
+extends mutates native append(self: StringBuilder, s: String);
+
 @name(__tact_string_builder_end)
 extends native toCell(self: StringBuilder): Cell;

@@ -1,4 +1,4 @@
-import { Cell, CommentMessage, stringToCell } from 'ton';
+import { Cell, CommentMessage, readString, stringToCell } from 'ton';
 import { createExecutorFromCode } from 'ton-nodejs';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { StringsTester, StringsTester_init } from './features/output/strings_StringsTester';
@@ -23,7 +23,11 @@ describe('feature-strings', () => {
         // Check methods
         expect(await contract.getConstantString()).toBe('test string');
         expect(await contract.getConstantStringUnicode()).toBe('привет мир 👀');
-        expect((await contract.getDynamicStringCell()).equals(stringToCell(''))).toBe(true);
-        expect((await contract.getDynamicCommentCell()).equals(stringToCommentCell(''))).toBe(true);
+        const l = 'привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀';
+        expect(await contract.getConstantStringUnicodeLong()).toBe(l);
+        expect((await contract.getDynamicStringCell()).equals(stringToCell('Hello!'))).toBe(true);
+        expect((await contract.getDynamicCommentCell()).equals(stringToCommentCell('Something something world!'))).toBe(true);
+        const l2 = 'Hello!привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀';
+        expect((await contract.getDynamicCommentCellLarge()).equals(stringToCell(l2))).toBe(true);
     });
 });

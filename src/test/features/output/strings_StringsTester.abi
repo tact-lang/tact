@@ -303,6 +303,15 @@
       }
     },
     {
+      "name": "constantStringUnicodeLong",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
+    },
+    {
       "name": "dynamicStringCell",
       "args": [],
       "returns": {
@@ -313,6 +322,15 @@
     },
     {
       "name": "dynamicCommentCell",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Cell",
+        "optional": false
+      }
+    },
+    {
+      "name": "dynamicCommentCellLarge",
       "args": [],
       "returns": {
         "kind": "ref",

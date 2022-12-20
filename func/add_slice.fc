@@ -14,7 +14,7 @@ tuple begin_string_builder(int comment) {
     ;; Append bits
     int amount = min(remBytes, exBytes);
     if (amount > 0) {
-        slice read = sc~read_bits(amount * 8);
+        slice read = sc~load_bits(amount * 8);
         b = b.store_slice(read);
     }
 
@@ -31,7 +31,7 @@ tuple begin_string_builder(int comment) {
 
     ;; Check if we have refs
     int refs = slice_refs(sc);
-    throw_if(1000, refs != 0 & refs != 1);
+    throw_if(1000, (refs != 0) & (refs != 1));
     if (refs == 0) {
         return ((builders),());
     } else {
@@ -40,7 +40,46 @@ tuple begin_string_builder(int comment) {
     }
 }
 
-cell unwrap(tuple builders) {
+(tuple, ()) ~add_slice_fast(tuple builders, slice sc) {
+
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+
+        ;; Update builders
+        builders = cons(b, tail);
+
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    return ((builders),());
+}
+
+cell __unwrap(tuple builders) {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -48,4 +87,7 @@ cell unwrap(tuple builders) {
         c = b.store_ref(c).end_cell();
     }
     return c;
+}
+
+_ main() impure {
 }

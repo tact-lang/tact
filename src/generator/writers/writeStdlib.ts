@@ -371,7 +371,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_string_builder_start_comment`, () => {
         ctx.used(`__tact_string_builder_start`);
-        ctx.append(`tuple __tact_string_builder_start_comment() {`);
+        ctx.append(`tuple __tact_string_builder_start_comment() inline {`);
         ctx.inIndent(() => {
             ctx.append(`return __tact_string_builder_start(true);`);
         });
@@ -380,7 +380,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_string_builder_start_string`, () => {
         ctx.used(`__tact_string_builder_start`);
-        ctx.append(`tuple __tact_string_builder_start_string() {`);
+        ctx.append(`tuple __tact_string_builder_start_string() inline {`);
         ctx.inIndent(() => {
             ctx.append(`return __tact_string_builder_start(false);`);
         });
@@ -388,7 +388,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_start`, () => {
-        ctx.append(`tuple __tact_string_builder_start(int comment) {`);
+        ctx.append(`tuple __tact_string_builder_start(int comment) inline {`);
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
             ctx.append(`if (comment) {`);
@@ -396,7 +396,7 @@ export function writeStdlib(ctx: WriterContext) {
                 ctx.append(`b = store_uint(b, 0, 32);`);
             });
             ctx.append(`}`);
-            ctx.append(`return tpush(tpush(empty_tuple(), begin_cell()), null());`);
+            ctx.append(`return tpush(tpush(empty_tuple(), b), null());`);
         });
         ctx.append(`}`);
     });
@@ -413,6 +413,59 @@ export function writeStdlib(ctx: WriterContext) {
             });
             ctx.append(`}`);
             ctx.append(`return c;`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__tact_string_builder_append`, () => {
+        ctx.append(`((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {`);
+        ctx.inIndent(() => {
+            ctx.append(`int sliceRefs = slice_refs(sc);`);
+            ctx.append(`int sliceBits = slice_bits(sc);`);
+            ctx.append();
+            ctx.append(`while((sliceBits > 0) | (sliceRefs > 0)) {`);
+            ctx.inIndent(() => {
+                ctx.append();
+                ctx.append(`;; Load the current builder`);
+                ctx.append(`(builder b, tuple tail) = uncons(builders);`);
+                ctx.append(`int remBytes = 127 - (builder_bits(b) / 8);`);
+                ctx.append(`int exBytes = sliceBits / 8;`);
+                ctx.append();
+                ctx.append(`;; Append bits`);
+                ctx.append(`int amount = min(remBytes, exBytes);`);
+                ctx.append(`if (amount > 0) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`slice read = sc~load_bits(amount * 8);`);
+                    ctx.append(`b = b.store_slice(read);`);
+                });
+                ctx.append(`}`);
+                ctx.append();
+                ctx.append(`;; Update builders`);
+                ctx.append(`builders = cons(b, tail);`);
+                ctx.append();
+                ctx.append(`;; Check if we need to add a new cell and continue`);
+                ctx.append(`if (exBytes - amount > 0) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`var bb = begin_cell();`);
+                    ctx.append(`builders = cons(bb, builders);`);
+                    ctx.append(`sliceBits = (exBytes - amount) * 8;`);
+                });
+                ctx.append(`} elseif (sliceRefs > 0) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`sc = sc~load_ref().begin_parse();`);
+                    ctx.append(`sliceRefs = slice_refs(sc);`);
+                    ctx.append(`sliceBits = slice_bits(sc);`);
+                });
+                ctx.append(`} else {`);
+                ctx.inIndent(() => {
+                    ctx.append(`sliceBits = 0;`);
+                    ctx.append(`sliceRefs = 0;`);
+                });
+                ctx.append(`}`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+            ctx.append(`return ((builders), ());`)
         });
         ctx.append(`}`);
     });

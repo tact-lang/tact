@@ -183,7 +183,7 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     return { $$type: 'StateInit', code: code, data: data };
 }
 export async function StringsTester_init() {
-    const __code = 'te6ccgECFgEAAU8AART/APSkE/S88sgLAQIBYgIDAgLNBAUCASAMDQIBIAYHACPTeRAOTJkLdZyxC3kRhmZPQYwCASAICQIBIAoLAEcINdJMcIfMNDTAwFxsMABkX+RcOIB+kAwVEETbwP4YdzywIKAAEwwbwDIb4xtb4yAABx/8AGAABxw8AGACASAODwIBIBITACe5CAghBHhowAAcjMAQGBAQHPAMmAIBWBARAD2zuztRNDUAfhigQEB1wABMTCLt0ZXN0IHN0cmluZ4gAFmwtvtRNDUAfhigQEB1wABMTCNBjQv9GA0LjQstC10YIg0LzQuNGAIPCfkYCCAATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAIDeeAUFQAppuPaiaGoA/DFAgIDrgACYmHgB+AJACmlR9qJoagD8MUCAgOuAAJiYeAF4Ak=';
+    const __code = 'te6ccgECHAEABSMAART/APSkE/S88sgLAQIBYgIDAgLNBAUCASAICQBH0Qa6SY4Q+YaGmBgLjYYADIv8i4cQD9IBgqIIm3gfww7nlgQUAgFIBgcAIxvIgHJkyFus5YhbyIwzMnoMYAC7CDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfA4AIBIAoLAgEgEBECASAMDQIBWA4PACe2EBBCCPDRgAA5GYAgMCAgOeAZMAFjtIJ9qJoagD8MUCAgOuAAJiYOGQAyjgA5Y/vN4AAt8Y2t8ZFskMrY2N5DHgCxPgC+AJAUAD2zuztRNDUAfhigQEB1wABMTCLt0ZXN0IHN0cmluZ4gAFmwtvtRNDUAfhigQEB1wABMTCNBjQv9GA0LjQstC10YIg0LzQuNGAIPCfkYCCACASASEwIDeeAaGwEltx0dqJoagD8MUCAgOuAAJiYRMBQATbd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMAH+0L/RgNC40LLQtdGCINC80LjRgCDwn5GAINC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuBUB/tCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiAWAf7QvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAgFwH+8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0RgB/oDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LUZANzRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgABbpuPaiaGoA/DFAgIDrgACYmDhkAMo4AOWP7zeAALfGNrfGRbJDK2NjeQx4AvgCQCFpUfaiaGoA/DFAgIDrgACYmD/kAMo4AOWP7zeAALfGNrfGRoNKbe2sro0NLczkDm3trK6NDS3M5A7t7k2MhDB4AvgCQ==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -255,6 +255,22 @@ export class StringsTester {
             throw e;
         }
     }
+    async getConstantStringUnicodeLong() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('constantStringUnicodeLong', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return readString(result.stack.readCell().beginParse());
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (StringsTester_errors[e.exitCode.toString()]) {
+                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
     async getDynamicStringCell() {
         try {
             let __stack: StackItem[] = [];
@@ -275,6 +291,22 @@ export class StringsTester {
         try {
             let __stack: StackItem[] = [];
             let result = await this.executor.get('dynamicCommentCell', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCell();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (StringsTester_errors[e.exitCode.toString()]) {
+                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getDynamicCommentCellLarge() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('dynamicCommentCellLarge', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return result.stack.readCell();
         } catch (e) {

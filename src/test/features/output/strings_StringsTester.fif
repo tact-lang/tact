@@ -3,6 +3,7 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_start_string
   DECLPROC __tact_string_builder_end
+  DECLPROC __tact_string_builder_append
   DECLPROC __gen_write_StringsTester
   DECLPROC __gen_read_StringsTester
   DECLPROC __gen_load_StringsTester
@@ -11,32 +12,41 @@ PROGRAM{
   93932 DECLMETHOD __gen_get_constantString
   DECLPROC __gen_StringsTester_constantStringUnicode
   94939 DECLMETHOD __gen_get_constantStringUnicode
+  DECLPROC __gen_StringsTester_constantStringUnicodeLong
+  104680 DECLMETHOD __gen_get_constantStringUnicodeLong
   DECLPROC __gen_StringsTester_dynamicStringCell
   122225 DECLMETHOD __gen_get_dynamicStringCell
   DECLPROC __gen_StringsTester_dynamicCommentCell
   122531 DECLMETHOD __gen_get_dynamicCommentCell
+  DECLPROC __gen_StringsTester_dynamicCommentCellLarge
+  74771 DECLMETHOD __gen_get_dynamicCommentCellLarge
   DECLPROC recv_internal
   69760 DECLMETHOD init_StringsTester
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __tact_string_builder_start PROC:<{
+  __tact_string_builder_start PROCINLINE:<{
+    NEWC
+    SWAP
     IF:<{
+      0 PUSHINT
+      SWAP
+      32 STU
     }>
     NIL
-    NEWC
+    SWAP
     TPUSH
     PUSHNULL
     TPUSH
   }>
-  __tact_string_builder_start_comment PROC:<{
+  __tact_string_builder_start_comment PROCINLINE:<{
     TRUE
-    __tact_string_builder_start CALLDICT
+    __tact_string_builder_start INLINECALLDICT
   }>
-  __tact_string_builder_start_string PROC:<{
+  __tact_string_builder_start_string PROCINLINE:<{
     FALSE
-    __tact_string_builder_start CALLDICT
+    __tact_string_builder_start INLINECALLDICT
   }>
   __tact_string_builder_end PROC:<{
     UNCONS
@@ -54,6 +64,72 @@ PROGRAM{
       ENDC
     }>
     NIP
+  }>
+  __tact_string_builder_append PROC:<{
+    DUP
+    SREFS
+    OVER
+    SBITS
+    WHILE:<{
+      DUP
+      0 GTINT
+      s2 PUSH
+      0 GTINT
+      OR
+    }>DO<{
+      s0 s3 XCHG
+      UNCONS
+      127 PUSHINT
+      s2 PUSH
+      BBITS
+      3 RSHIFT#
+      SUB
+      s0 s5 XCHG
+      3 RSHIFT#
+      s5 s5 XCPU
+      MIN
+      DUP
+      0 GTINT
+      IF:<{
+        DUP
+        3 LSHIFT#
+        s1 s5 XCHG
+        LDSLICEX
+        s3 s3 XCHG2
+        STSLICER
+        s0 s1 s4 XCHG3
+      }>
+      -ROT
+      CONS
+      s4 s1 PUSH2
+      SUB
+      0 GTINT
+      IF:<{
+        NEWC
+        SWAP
+        CONS
+        s4 s4 XCHG2
+        SUB
+        3 LSHIFT#
+      }>ELSE<{
+        NIP
+        s3 POP
+        0 GTINT
+        IF:<{
+          LDREF
+          DROP
+          CTOS
+          DUP
+          SREFS
+          OVER
+          SBITS
+        }>ELSE<{
+          0 PUSHINT
+          DUP
+        }>
+      }>
+    }>
+    3 BLKDROP
   }>
   __gen_write_StringsTester PROCINLINE:<{
     SWAP
@@ -99,9 +175,19 @@ PROGRAM{
     __gen_load_StringsTester INLINECALLDICT
     __gen_StringsTester_constantStringUnicode INLINECALLDICT
   }>
+  __gen_StringsTester_constantStringUnicodeLong PROCINLINE:<{
+    DROP
+    B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE
+  }>
+  __gen_get_constantStringUnicodeLong PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_constantStringUnicodeLong INLINECALLDICT
+  }>
   __gen_StringsTester_dynamicStringCell PROCINLINE:<{
     DROP
-    __tact_string_builder_start_string CALLDICT
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
     __tact_string_builder_end CALLDICT
   }>
   __gen_get_dynamicStringCell PROC:<{
@@ -110,12 +196,27 @@ PROGRAM{
   }>
   __gen_StringsTester_dynamicCommentCell PROCINLINE:<{
     DROP
-    __tact_string_builder_start_comment CALLDICT
+    __tact_string_builder_start_comment INLINECALLDICT
+    B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
     __tact_string_builder_end CALLDICT
   }>
   __gen_get_dynamicCommentCell PROC:<{
     __gen_load_StringsTester INLINECALLDICT
     __gen_StringsTester_dynamicCommentCell INLINECALLDICT
+  }>
+  __gen_StringsTester_dynamicCommentCellLarge PROCINLINE:<{
+    DROP
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
+    B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
+    __tact_string_builder_end CALLDICT
+  }>
+  __gen_get_dynamicCommentCellLarge PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_dynamicCommentCellLarge INLINECALLDICT
   }>
   recv_internal PROC:<{
     DUP
@@ -153,6 +254,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d62336969764464344b505a7879714c6179776d68374e4d654c57416e7667346f48466d6846626d5756744648} PUSHSLICE
+    x{697066733a2f2f516d5347794c4c4779444b375a57484d337467393256716a6e4236475339387353536837714267444d634261684e} PUSHSLICE
   }>
 }END>c

@@ -33,6 +33,10 @@ export function resolveFuncPrimitive(descriptor: TypeRef | TypeDescription | str
             return true;
         } else if (descriptor.name === 'Address') {
             return true;
+        } else if (descriptor.name === 'String') {
+            return true;
+        } else if (descriptor.name === 'StringBuilder') {
+            return true;
         } else {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
