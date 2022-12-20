@@ -7,6 +7,7 @@ import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
+import { getStringId } from "../../types/resolveStrings";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -52,8 +53,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     // String literal
     //
 
-    if (f.kind === 'string_literal') {
-        return `"${f.value.value}"`;
+    if (f.kind === 'string') {
+        let id = getStringId(f.value, ctx.ctx);
+        ctx.used(`__gen_str_${id}`);
+        return `__gen_str_${id}()`;
     }
 
     //

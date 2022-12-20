@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTContractAttribute, ASTFunctionAttribute, ASTLvalueRef, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from './ast';
+import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 
@@ -428,9 +428,6 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     },
     stringLiteral(arg0, arg1, arg2) {
         return createNode({ kind: 'string', value: arg1.sourceString, ref: createRef(this) });
-    },
-    ExpressionString(arg0) {
-        return createNode({ kind: 'string_literal', value: arg0.resolve_expression(), ref: createRef(this) });
     },
 
     // TypeRefs

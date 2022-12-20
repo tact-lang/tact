@@ -7,6 +7,9 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     return build_0;
 }
 
+;; String "1.2"
+slice __gen_str_16937() asm """<b "1.2" $, b> <s PUSHSLICE """;
+
 cell __gen_StringsTester_init(cell sys') inline {
     var ((self'fee)) = (0);
     self'fee = 1200000000;

@@ -1,5 +1,5 @@
 import { abi } from "../abi/abi";
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTStringLiteral, throwError } from "../grammar/ast";
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
@@ -40,8 +40,8 @@ function resolveNullLiteral(exp: ASTNull, sctx: StatementContext, ctx: CompilerC
     return registerExpType(ctx, exp, { kind: 'null' });
 }
 
-function resolveStringLiteral(exp: ASTStringLiteral, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
-    return registerExpType(ctx, exp, { kind: 'string', value: exp.value.value });
+function resolveStringLiteral(exp: ASTString, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+    return registerExpType(ctx, exp, { kind: 'string', value: exp.value });
 }
 
 function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
@@ -346,7 +346,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     if (exp.kind === 'null') {
         return resolveNullLiteral(exp, sctx, ctx);
     }
-    if (exp.kind === 'string_literal') {
+    if (exp.kind === 'string') {
         return resolveStringLiteral(exp, sctx, ctx);
     }
 

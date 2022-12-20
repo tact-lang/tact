@@ -12,8 +12,9 @@ import { beginCell } from "ton";
 import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
-import { CID } from 'multiformats/cid';
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
+import { getAllStrings } from "../types/resolveStrings";
+import { writeString } from './writers/writeString';
 
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
@@ -259,6 +260,11 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
         if (k.type.kind === 'contract') {
             writeStorageOps(k.type, wctx);
         }
+    }
+
+    // Strings
+    for (let k of getAllStrings(ctx)) {
+        writeString(k.value, wctx);
     }
 
     // Static functions

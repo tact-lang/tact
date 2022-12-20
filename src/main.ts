@@ -15,6 +15,7 @@ import { fromCode } from "tvm-disassembler";
 import { Cell } from "ton";
 import { ContractABI } from "./abi/ContractABI";
 import { writeTypescript } from "./generator/writeTypescript";
+import { resolveStrings } from "./types/resolveStrings";
 
 function resolveLibraryPath(filePath: string, name: string) {
 
@@ -75,6 +76,7 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
     ctx = openContext(ctx, [stdlib, ...imported, code]);
     ctx = resolveDescriptors(ctx);
     ctx = resolveAllocations(ctx);
+    ctx = resolveStrings(ctx);
     ctx = resolveStatements(ctx);
     ctx = resolvePackaging(ctx);
 

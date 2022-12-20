@@ -172,13 +172,6 @@ export type ASTInitOf = {
     ref: ASTRef
 }
 
-export type ASTStringLiteral = {
-    kind: 'string_literal'
-    id: number,
-    value: ASTString,
-    ref: ASTRef
-}
-
 //
 // Program
 //
@@ -361,8 +354,8 @@ export type ASTStatementRepeat = {
 //
 
 export type ASTStatement = ASTStatementLet | ASTStatementReturn | ASTStatementExpression | ASTSTatementAssign | ASTCondition | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat;
-export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTStringLiteral;
-export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction | ASTInitOf | ASTStringLiteral;
+export type ASTExpression = ASTOpBinary | ASTOpUnary | ASTOpField | ASTNumber | ASTID | ASTBoolean | ASTOpCall | ASTOpCallStatic | ASTOpNew | ASTNull | ASTLvalueRef | ASTInitOf | ASTString;
+export type ASTNode = ASTExpression | ASTProgram | ASTStruct | ASTField | ASTContract | ASTArgument | ASTFunction | ASTOpCall | ASTStatementLet | ASTStatementReturn | ASTProgram | ASTPrimitive | ASTOpCallStatic | ASTStatementExpression | ASTNativeFunction | ASTSTatementAssign | ASTOpNew | ASTNewParameter | ASTTypeRef | ASTNull | ASTCondition | ASTInitFunction | ASTStatementWhile | ASTStatementUntil | ASTStatementRepeat | ASTReceive | ASTLvalueRef | ASTString | ASTTrait | ASTProgramImport | ASTFunction | ASTNativeFunction | ASTInitOf | ASTString;
 export type ASTType = ASTPrimitive | ASTStruct | ASTContract | ASTTrait;
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
