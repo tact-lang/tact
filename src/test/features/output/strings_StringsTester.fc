@@ -7,6 +7,20 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     return build_0;
 }
 
+(slice, ((int))) __gen_read_StringsTester(slice sc_0) inline {
+    var v'fee = sc_0~load_int(257);
+    return (sc_0, (v'fee));
+}
+
+(int) __gen_load_StringsTester() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_StringsTester();
+}
+
+;; String "test string"
+slice __gen_str_16972() asm "B{b5ee9c724101010100020000004cacb9cd} B>boc <s PUSHSLICE";
+
 cell __gen_StringsTester_init(cell sys') inline {
     var ((self'fee)) = (0);
     self'fee = 1200000000;
@@ -14,6 +28,17 @@ cell __gen_StringsTester_init(cell sys') inline {
     b' = b'.store_ref(sys');
     b' = __gen_write_StringsTester(b', (self'fee));
     return b'.end_cell();
+}
+
+slice __gen_StringsTester_selector((int) self) impure inline {
+    var ((self'fee)) = self;
+    return __gen_str_16972();
+}
+
+_ __gen_get_selector() method_id(90035) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_selector(self);
+    return res;
 }
 
 
@@ -50,5 +75,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmStsZYLP4gzuRain6cK1d3uXy9SxEytjDHMoMZiWQ1tHq";
+    return "ipfs://QmfUsw4Mg9Hm3LeDjc6LUb2LZbca6TXuwbb3XdiYdgSjiX";
 }

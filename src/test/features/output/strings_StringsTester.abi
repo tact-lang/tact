@@ -283,7 +283,17 @@
     "args": []
   },
   "receivers": [],
-  "getters": [],
+  "getters": [
+    {
+      "name": "selector",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
+    }
+  ],
   "dependsOn": {},
   "errors": {
     "2": {

@@ -1,6 +1,10 @@
 PROGRAM{
   DECLPROC __gen_write_StringsTester
+  DECLPROC __gen_read_StringsTester
+  DECLPROC __gen_load_StringsTester
   DECLPROC __gen_StringsTester_init
+  DECLPROC __gen_StringsTester_selector
+  90035 DECLMETHOD __gen_get_selector
   DECLPROC recv_internal
   69760 DECLMETHOD init_StringsTester
   113617 DECLMETHOD supported_interfaces
@@ -12,6 +16,20 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
+  __gen_read_StringsTester PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_load_StringsTester PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_StringsTester INLINECALLDICT
+    NIP
+  }>
   __gen_StringsTester_init PROCINLINE:<{
     1200000000 PUSHINT
     SWAP
@@ -20,6 +38,14 @@ PROGRAM{
     SWAP
     __gen_write_StringsTester INLINECALLDICT
     ENDC
+  }>
+  __gen_StringsTester_selector PROCINLINE:<{
+    DROP
+    B{b5ee9c724101010100020000004cacb9cd} B>boc <s PUSHSLICE
+  }>
+  __gen_get_selector PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_selector INLINECALLDICT
   }>
   recv_internal PROC:<{
     DUP
@@ -57,6 +83,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5374735a594c5034677a755261696e36634b3164337558793953784579746a44484d6f4d5a69575131744871} PUSHSLICE
+    x{697066733a2f2f516d66557377344d6739486d334c65446a63364c5562324c5a6263613654587577626233586469596467536a6958} PUSHSLICE
   }>
 }END>c

@@ -183,7 +183,7 @@ export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
     return { $$type: 'StateInit', code: code, data: data };
 }
 export async function StringsTester_init() {
-    const __code = 'te6ccgEBBgEAfAABFP8A9KQT9LzyyAsBAgFiAgMASNAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QDBUQRNvA/hh3PLAggIBIAQFACe8hAQQgjw0YAAORmAIDAgIDngGTABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHM';
+    const __code = 'te6ccgEBCAEAlwABFP8A9KQT9LzyyAsBAgFiAgMASNAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QDBUQRNvA/hh3PLAggIBIAQFAgEgBgcATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAAnuQgIIQR4aMAAHIzAEBgQEBzwDJgAJ7n7PtRNDUAfhigQEB1wABMTCLCI';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -223,4 +223,20 @@ export class StringsTester {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
+    async getSelector() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('selector', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return unpackStackString(result.stack);
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (StringsTester_errors[e.exitCode.toString()]) {
+                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
 }
