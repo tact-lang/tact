@@ -38,9 +38,9 @@ SETCP0
       NOT
     }> PUSHCONT
     <{
-      s1 PUSH
+      s0 s1 XCHG
       2 UNTUPLE
-      s0 POP
+      ROTREV
       STREF
       ENDC
     }> PUSHCONT

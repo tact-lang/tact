@@ -57,9 +57,9 @@ PROGRAM{
       ISNULL
       NOT
     }>DO<{
-      OVER
+      SWAP
       UNCONS
-      DROP
+      -ROT
       STREF
       ENDC
     }>

@@ -21,7 +21,7 @@ cell __tact_string_builder_end(tuple builders) {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
-        (builder b, tuple tail) = uncons(tail);
+        (b, tail) = uncons(tail);
         c = b.store_ref(c).end_cell();
     }
     return c;

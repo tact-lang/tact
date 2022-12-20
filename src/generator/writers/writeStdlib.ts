@@ -408,7 +408,7 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.append(`cell c = b.end_cell();`);
             ctx.append(`while(~ null?(tail)) {`);
             ctx.inIndent(() => {
-                ctx.append(`(builder b, tuple tail) = uncons(tail);`);
+                ctx.append(`(b, tail) = uncons(tail);`);
                 ctx.append(`c = b.store_ref(c).end_cell();`);
             });
             ctx.append(`}`);
