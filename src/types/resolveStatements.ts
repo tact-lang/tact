@@ -233,7 +233,7 @@ export function resolveStatements(ctx: CompilerContext) {
         }
 
         // Process functions
-        for (let f of Object.values(t.functions)) {
+        for (let f of t.functions.values()) {
             if (f.ast.kind !== 'def_native_function') {
 
                 // Build statement context

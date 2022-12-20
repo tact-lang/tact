@@ -259,3 +259,9 @@ extends mutates native append(self: StringBuilder, s: String);
 
 @name(__tact_string_builder_end)
 extends native toCell(self: StringBuilder): Cell;
+
+@name(__tact_string_builder_end_slice)
+extends native toString(self: StringBuilder): String;
+
+@name(__tact_string_builder_end_slice)
+extends native toSlice(self: StringBuilder): Slice;

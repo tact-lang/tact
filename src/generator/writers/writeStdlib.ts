@@ -416,6 +416,15 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append(`}`);
     });
+    
+    ctx.fun(`__tact_string_builder_end_slice`, () => {
+        ctx.append(`slice __tact_string_builder_end_slice(tuple builders) {`);
+        ctx.inIndent(() => {
+            ctx.used(`__tact_string_builder_end`);
+            ctx.append(`return __tact_string_builder_end(builders).begin_parse();`)
+        });
+        ctx.append(`}`);
+    });
 
     ctx.fun(`__tact_string_builder_append`, () => {
         ctx.append(`((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {`);

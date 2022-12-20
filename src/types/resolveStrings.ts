@@ -36,7 +36,7 @@ export function resolveStrings(ctx: CompilerContext) {
         }
 
         // Process functions
-        for (let f of Object.values(t.functions)) {
+        for (let f of t.functions.values()) {
             ctx = resolveStringsInAST(f.ast, ctx);
         }
     }

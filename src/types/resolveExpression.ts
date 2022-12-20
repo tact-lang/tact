@@ -266,7 +266,7 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         // Register return type
         let srcT = getType(ctx, src.name);
-        let f = srcT.functions[exp.name]!;
+        let f = srcT.functions.get(exp.name)!;
         if (!f) {
             throwError(`Type "${src.name}" does not have a function named "${exp.name}"`, exp.ref);
         }

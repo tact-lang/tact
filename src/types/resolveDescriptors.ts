@@ -112,7 +112,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 fields: [],
                 traits: [],
-                functions: {},
+                functions: new Map(),
                 receivers: [],
                 dependsOn: [],
                 init: null,
@@ -126,7 +126,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 fields: [],
                 traits: [],
-                functions: {},
+                functions: new Map(),
                 receivers: [],
                 dependsOn: [],
                 init: null,
@@ -140,7 +140,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 fields: [],
                 traits: [],
-                functions: {},
+                functions: new Map(),
                 receivers: [],
                 dependsOn: [],
                 init: null,
@@ -154,7 +154,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 fields: [],
                 traits: [],
-                functions: {},
+                functions: new Map(),
                 receivers: [],
                 dependsOn: [],
                 init: null,
@@ -400,10 +400,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     for (let a of ast.functions) {
         let r = resolveFunctionDescriptor(null, a);
         if (r.self) {
-            if (types[r.self].functions[r.name]) {
+            if (types[r.self].functions.has(r.name)) {
                 throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);
             }
-            types[r.self].functions[r.name] = r;
+            types[r.self].functions.set(r.name, r);
         } else {
             if (staticFunctions[r.name]) {
                 throwError(`Static function ${r.name} already exists`, r.ast.ref);
@@ -426,10 +426,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (f.self !== s.name) {
                         throw Error('Function self must be ' + s.name); // Impossible
                     }
-                    if (s.functions[f.name]) {
-                        throwError(`Static function ${f.name} already exists in type ${s.name}`, s.ast.ref);
+                    if (s.functions.has(f.name)) {
+                        throwError(`Function ${f.name} already exists in type ${s.name}`, s.ast.ref);
                     }
-                    s.functions[f.name] = f;
+                    s.functions.set(f.name, f);
                 }
                 if (d.kind === 'def_init_function') {
                     if (s.init) {
@@ -635,8 +635,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
         for (let tr of t.traits) {
 
             // Copy functions
-            for (let f of Object.values(tr.functions)) {
-                let ex = t.functions[f.name];
+            for (let f of tr.functions.values()) {
+                let ex = t.functions.get(f.name);
 
                 // Check overwrites
                 if (ex && ex.isOverwrites) {
@@ -668,11 +668,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
 
                 // Register function
-                t.functions[f.name] = {
+                t.functions.set(f.name, {
                     ...f,
                     self: t.name,
                     ast: cloneNode(f.ast)
-                };
+                });
             }
 
             // Copy receivers
@@ -748,7 +748,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Traverse functions
-        for (let f of Object.values(t.functions)) {
+        for (let f of t.functions.values()) {
             traverse(f.ast, handler);
         }
         for (let f of t.receivers) {

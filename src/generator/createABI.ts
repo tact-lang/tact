@@ -147,7 +147,7 @@ export function createABI(ctx: CompilerContext, name: string | null): ContractAB
 
     // Getters
     let getters: CotnractFunction[] = [];
-    for (let f of Object.values(contract.functions)) {
+    for (let f of contract.functions.values()) {
         if (f.isGetter) {
             getters.push({
                 name: f.name,

@@ -215,7 +215,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
         }
 
         // Implicit dependencies
-        for (let f of Object.values(type.functions)) {
+        for (let f of type.functions.values()) {
             if (f.isGetter) {
                 ctx.used(`__gen_get_${f.name}`);
             }
@@ -277,7 +277,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     // Extensions
     for (let c of allTypes) {
         if (c.kind !== 'contract' && c.kind !== 'trait') { // We are rendering contract functions separately
-            for (let f of Object.values(c.functions)) {
+            for (let f of c.functions.values()) {
                 writeFunction(f, wctx);
             }
         }
@@ -292,7 +292,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
         }
 
         // Functions
-        for (let f of Object.values(c.functions)) {
+        for (let f of c.functions.values()) {
             writeFunction(f, wctx);
 
             // Render only needed getter

@@ -6,7 +6,7 @@ export type TypeDescription = {
     uid: number;
     fields: FieldDescription[];
     traits: TypeDescription[];
-    functions: { [name: string]: FunctionDescription };
+    functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
     init: InitDescription | null;
     ast: ASTType;

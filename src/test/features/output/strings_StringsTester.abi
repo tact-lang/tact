@@ -337,6 +337,15 @@
         "name": "Cell",
         "optional": false
       }
+    },
+    {
+      "name": "dynamicCommentStringLarge",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},
