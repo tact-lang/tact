@@ -1,3 +1,4 @@
+import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
@@ -12,7 +13,7 @@ export const abi: { [key: string]: AbiFunction } = {
             return { kind: 'void' };
         },
         generate: (ctx, args, resolved, ref) => {
-            return `${resolved[0]}~dump()`;
+            return `${writeExpression(resolved[0], ctx)}~dump()`;
         }
     },
     pack_cell: {
@@ -42,7 +43,7 @@ export const abi: { [key: string]: AbiFunction } = {
                 throwError('pack_cell expects a struct type', ref);
             }
             ctx.used(`__gen_writecell_${args[0].name}`);
-            return `__gen_writecell_${args[0].name}(${resolved.join(', ')})`;
+            return `__gen_writecell_${args[0].name}(${resolved.map((v) => writeExpression(v, ctx)).join(', ')})`;
         }
     },
     pack_slice: {
@@ -72,7 +73,7 @@ export const abi: { [key: string]: AbiFunction } = {
                 throwError('pack_slice expects a struct type', ref);
             }
             ctx.used(`__gen_writeslice_${args[0].name}`);
-            return `__gen_writeslice_${args[0].name}(${resolved.join(', ')})`;
+            return `__gen_writeslice_${args[0].name}(${resolved.map((v) => writeExpression(v, ctx)).join(', ')})`;
         }
     }
 };

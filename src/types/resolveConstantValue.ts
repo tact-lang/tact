@@ -49,6 +49,13 @@ function reduceBool(ast: ASTExpression): boolean {
     throwError('Cannot reduce expression to boolean', ast.ref);
 }
 
+function reduceString(ast: ASTExpression): string {
+    if (ast.kind === 'string') {
+        return ast.value;
+    }
+    throwError('Cannot reduce expression to string', ast.ref);
+}
+
 export function resolveConstantValue(type: TypeRef, ast: ASTExpression) {
 
     if (type.kind !== 'ref') {
@@ -70,6 +77,11 @@ export function resolveConstantValue(type: TypeRef, ast: ASTExpression) {
     // Handle bool
     if (type.name === 'Bool') {
         return reduceBool(ast);
+    }
+
+    // Handle string
+    if (type.name === 'String') {
+        return reduceString(ast);
     }
 
     throwError(`Expected constant value, got ${printTypeRef(type)}`, ast.ref);

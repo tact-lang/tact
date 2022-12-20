@@ -41,7 +41,7 @@ function resolveNullLiteral(exp: ASTNull, sctx: StatementContext, ctx: CompilerC
 }
 
 function resolveStringLiteral(exp: ASTString, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
-    return registerExpType(ctx, exp, { kind: 'string', value: exp.value });
+    return registerExpType(ctx, exp, { kind: 'ref', name: 'String', optional: false });
 }
 
 function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerContext): CompilerContext {

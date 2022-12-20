@@ -214,7 +214,7 @@ export type ASTField = {
     id: number,
     name: string,
     type: ASTTypeRef,
-    init: bigint | boolean | null | undefined,
+    init: bigint | boolean | string | null | undefined,
     as: string | null,
     ref: ASTRef
 }

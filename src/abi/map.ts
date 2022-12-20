@@ -1,3 +1,4 @@
+import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
@@ -40,7 +41,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             // Returns nothing
             return { kind: 'void' };
         },
-        generate: (ctx, args, resolved, ref) => {
+        generate: (ctx, args, exprs, ref) => {
 
             // Check arguments
             if (args.length !== 3) {
@@ -50,6 +51,9 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (!self || self.kind !== 'map') {
                 throwError('set expects a map as self argument', ref); // Should not happen
             }
+
+            // Render expressions
+            let resolved = exprs.map((v) => writeExpression(v, ctx));
 
             // Handle Int key
             if (self.key === 'Int') {
@@ -141,7 +145,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             return { kind: 'ref', name: self.value, optional: true };
         },
-        generate: (ctx, args, resolved, ref) => {
+        generate: (ctx, args, exprs, ref) => {
 
             if (args.length !== 2) {
                 throwError('set expects one argument', ref); // Ignore self argument
@@ -150,6 +154,9 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             if (!self || self.kind !== 'map') {
                 throwError('set expects a map as self argument', ref); // Should not happen
             }
+
+            // Render expressions
+            let resolved = exprs.map((v) => writeExpression(v, ctx));
 
             // Handle Int key
             if (self.key === 'Int') {

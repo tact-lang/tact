@@ -7,6 +7,16 @@ import { crc16 } from "../utils/crc16";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
+let allowedPrimitiveFields: { [key: string]: boolean } = {
+    ['Int']: true,
+    ['Bool']: true,
+    ['Cell']: true,
+    ['Slice']: true,
+    ['Address']: true,
+
+    ['String']: false,
+    ['Builder']: false,
+}
 
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
@@ -161,12 +171,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
         let tr = buildTypeRef(src.type, types);
 
-        // if (tr.kind === 'ref' && tr.optional) {
-        //     let tt = types[tr.name];
-        //     if (tt.kind !== 'primitive') {
-        //         throwError('Optional type can be only primitive', src.ref);
-        //     }
-        // }
+        if (tr.kind === 'ref') {
+            let tt = types[tr.name];
+            if (tt.kind === 'primitive') {
+                if (!allowedPrimitiveFields[tt.name]) {
+                    throwError(`${tt.name} is not allowed to be used as field`, src.ref);
+                }
+            }
+        }
 
         return { name: src.name, type: tr, index, as: src.as, default: src.init, ref: src.ref };
     }

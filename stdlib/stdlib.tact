@@ -4,6 +4,7 @@ primitive Builder;
 primitive Slice;
 primitive Cell;
 primitive Address;
+primitive String;
 
 //
 // Builder

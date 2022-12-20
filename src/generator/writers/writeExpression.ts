@@ -259,7 +259,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         if (GlobalFunctions[f.name]) {
             return GlobalFunctions[f.name].generate(ctx,
                 f.args.map((v) => getExpType(ctx.ctx, v)),
-                f.args.map((a) => writeExpression(a, ctx)),
+                f.args,
                 f.ref);
         }
 
@@ -324,7 +324,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 if (!abf) {
                     throwError(`ABI function "${f.name}" not found`, f.ref);
                 }
-                return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), [...f.args.map((a) => writeExpression(a, ctx))], f.ref);
+                return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), f.args, f.ref);
             }
 
             // Render function call
@@ -365,7 +365,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (!abf) {
                 throwError(`Map function "${f.name}" not found`, f.ref);
             }
-            return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [writeExpression(f.src, ctx), ...f.args.map((a) => writeExpression(a, ctx))], f.ref);
+            return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
         }
 
         throwError(`Cannot call function of non - direct type: ${printTypeRef(src)} `, f.ref);
