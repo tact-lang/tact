@@ -39,6 +39,8 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: bo
         } else if (ref.name === 'Address') {
             w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
             return;
+        } else if (ref.name === 'String') {
+            w.append(`__stack.push({ type: 'slice', cell: stringToCell(${name}) });`);
         } else {
             if (optional || forceTuple) {
                 w.append(`__stack.push({ type: 'tuple', items: packTuple${ref.name}(${name}) });`);

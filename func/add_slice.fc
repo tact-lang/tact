@@ -1,11 +1,15 @@
-tuple begin_string_builder() {
+tuple begin_string_builder(int comment) {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
     return tpush(tpush(empty_tuple(), begin_cell()), null());
 }
 
 (tuple, ()) ~add_slice(tuple builders, slice sc) {
-    (b, tail) = uncons(builders);
-    int remBytes = 127 - (builder_bits/8);
-    int exBytes = slice_bits(sc)/8;
+    (builder b, tuple tail) = uncons(builders);
+    int remBytes = 127 - (builder_bits(b) / 8);
+    int exBytes = slice_bits(sc) / 8;
     
     ;; Append bits
     int amount = min(remBytes, exBytes);
@@ -41,7 +45,7 @@ cell unwrap(tuple builders) {
     cell c = b.end_cell();
     while(~ null?(tail)) {
         (builder b, tuple tail) = uncons(tail);
-        c = b.store_ref(c).end_cell(c);
+        c = b.store_ref(c).end_cell();
     }
     return c;
 }

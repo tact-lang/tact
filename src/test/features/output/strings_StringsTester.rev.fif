@@ -28,6 +28,37 @@ SETCP0
     IFRET
     130 THROW
 
+  1: 
+    s0 POP
+    NIL
+    NEWC
+    TPUSH
+    PUSHNULL
+    TPUSH
+
+  2: 
+    0 PUSHINT
+    1 CALLDICT
+
+  3: 
+    2 UNTUPLE
+    s0 s1 XCHG
+    ENDC
+    <{
+      s1 PUSH
+      ISNULL
+      NOT
+    }> PUSHCONT
+    <{
+      s1 PUSH
+      2 UNTUPLE
+      s0 POP
+      STREF
+      ENDC
+    }> PUSHCONT
+    WHILE
+    s1 POP
+
   69760: 
     1200000000 PUSHINT
     s0 s1 XCHG
@@ -39,7 +70,7 @@ SETCP0
     STIX
     ENDC
 
-  90035: 
+  93932: 
     c4 PUSH
     CTOS
     LDREF
@@ -55,6 +86,20 @@ SETCP0
   113617: 
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+
+  122225: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 POP
+    2 CALLDICT
+    3 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

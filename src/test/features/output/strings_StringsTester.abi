@@ -285,11 +285,20 @@
   "receivers": [],
   "getters": [
     {
-      "name": "selector",
+      "name": "constantString",
       "args": [],
       "returns": {
         "kind": "ref",
         "name": "String",
+        "optional": false
+      }
+    },
+    {
+      "name": "dynamicStringCell",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Cell",
         "optional": false
       }
     }

@@ -36,6 +36,8 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
             return 'slice';
         } else if (descriptor.name === 'String') {
             return 'slice';
+        } else if (descriptor.name === 'StringBuilder') {
+            return 'tuple';
         } else {
             throw Error('Unknown primitive type: ' + descriptor.name);
         }

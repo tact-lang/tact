@@ -1,6 +1,28 @@
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
+tuple __tact_string_builder_start(int comment) {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), begin_cell()), null());
+}
+
+tuple __tact_string_builder_start_string() {
+    return __tact_string_builder_start(false);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (builder b, tuple tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
 builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     var (v'fee) = v;
     build_0 = store_int(build_0, v'fee, 257);
@@ -19,7 +41,7 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
 }
 
 ;; String "test string"
-slice __gen_str_16972() asm "B{b5ee9c724101010100020000004cacb9cd} B>boc <s PUSHSLICE";
+slice __gen_str_17214() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
 
 cell __gen_StringsTester_init(cell sys') inline {
     var ((self'fee)) = (0);
@@ -30,14 +52,26 @@ cell __gen_StringsTester_init(cell sys') inline {
     return b'.end_cell();
 }
 
-slice __gen_StringsTester_selector((int) self) impure inline {
+slice __gen_StringsTester_constantString((int) self) impure inline {
     var ((self'fee)) = self;
-    return __gen_str_16972();
+    return __gen_str_17214();
 }
 
-_ __gen_get_selector() method_id(90035) {
+_ __gen_get_constantString() method_id(93932) {
     var self = __gen_load_StringsTester();
-    var res = __gen_StringsTester_selector(self);
+    var res = __gen_StringsTester_constantString(self);
+    return res;
+}
+
+cell __gen_StringsTester_dynamicStringCell((int) self) impure inline {
+    var ((self'fee)) = self;
+    tuple b = __tact_string_builder_start_string();
+    return __tact_string_builder_end(b);
+}
+
+_ __gen_get_dynamicStringCell() method_id(122225) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_dynamicStringCell(self);
     return res;
 }
 
@@ -75,5 +109,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmfUsw4Mg9Hm3LeDjc6LUb2LZbca6TXuwbb3XdiYdgSjiX";
+    return "ipfs://QmUW4AP7o4zyhjdc4L7zxpWy2CAMugzFEzNbJJd3rcAtyD";
 }

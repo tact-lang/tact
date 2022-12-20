@@ -337,6 +337,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 ctx.used(name);
             } else {
                 name = ff.ast.nativeName;
+                if (name.startsWith('__tact')) {
+                    ctx.used(name);
+                }
             }
 
             // Render

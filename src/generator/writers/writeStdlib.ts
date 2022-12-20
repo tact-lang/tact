@@ -364,4 +364,56 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.append(`forall ${args.join(', ')} -> (${args.join(', ')}) __tact_tuple_destroy_${i}(tuple v) asm "${i} UNTUPLE";`);
         });
     }
+
+    //
+    // Strings
+    //
+
+    ctx.fun(`__tact_string_builder_start_comment`, () => {
+        ctx.used(`__tact_string_builder_start`);
+        ctx.append(`tuple __tact_string_builder_start_comment() {`);
+        ctx.inIndent(() => {
+            ctx.append(`return __tact_string_builder_start(true);`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__tact_string_builder_start_string`, () => {
+        ctx.used(`__tact_string_builder_start`);
+        ctx.append(`tuple __tact_string_builder_start_string() {`);
+        ctx.inIndent(() => {
+            ctx.append(`return __tact_string_builder_start(false);`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__tact_string_builder_start`, () => {
+        ctx.append(`tuple __tact_string_builder_start(int comment) {`);
+        ctx.inIndent(() => {
+            ctx.append(`builder b = begin_cell();`);
+            ctx.append(`if (comment) {`);
+            ctx.inIndent(() => {
+                ctx.append(`b = store_uint(b, 0, 32);`);
+            });
+            ctx.append(`}`);
+            ctx.append(`return tpush(tpush(empty_tuple(), begin_cell()), null());`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__tact_string_builder_end`, () => {
+        ctx.append(`cell __tact_string_builder_end(tuple builders) {`);
+        ctx.inIndent(() => {
+            ctx.append(`(builder b, tuple tail) = uncons(builders);`);
+            ctx.append(`cell c = b.end_cell();`);
+            ctx.append(`while(~ null?(tail)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`(builder b, tuple tail) = uncons(tail);`);
+                ctx.append(`c = b.store_ref(c).end_cell();`);
+            });
+            ctx.append(`}`);
+            ctx.append(`return c;`);
+        });
+        ctx.append(`}`);
+    });
 }

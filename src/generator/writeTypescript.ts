@@ -4,7 +4,6 @@ import { Writer } from "./Writer";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
 import { readFromStack } from "./typescript/readFromStack";
-import { enabledDebug } from "../config";
 
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
@@ -16,6 +15,8 @@ function printFieldType(ref: TypeRef): string {
             return 'Cell' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Address') {
             return 'Address' + (ref.optional ? ' | null' : '');
+        } else if (ref.name === 'String') {
+            return 'string' + (ref.optional ? ' | null' : '');
         } else {
             return ref.name + (ref.optional ? ' | null' : '');
         }
@@ -37,7 +38,7 @@ function writeField(field: ContractField, w: Writer) {
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4 } from 'ton';`);
+    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4, readString, stringToCell } from 'ton';`);
     w.append(`import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';`);
     w.append(`import BN from 'bn.js';`);
     w.append();
@@ -347,6 +348,14 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                                     w.append(`return result.stack.readCellOpt();`);
                                 } else {
                                     w.append(`return result.stack.readCell();`);
+                                }
+                            } else if (g.returns.name === 'String') {
+                                if (g.returns.optional) {
+                                    w.append(`let c = result.stack.readCellOpt();`);
+                                    w.append(`if (c === null) { return null; }`);
+                                    w.append(`return readString(c.beginParse());`);
+                                } else {
+                                    w.append(`return readString(result.stack.readCell().beginParse());`);
                                 }
                             } else {
                                 if (g.returns.optional) {

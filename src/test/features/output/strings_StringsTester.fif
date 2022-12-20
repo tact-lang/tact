@@ -1,16 +1,51 @@
 PROGRAM{
+  DECLPROC __tact_string_builder_start
+  DECLPROC __tact_string_builder_start_string
+  DECLPROC __tact_string_builder_end
   DECLPROC __gen_write_StringsTester
   DECLPROC __gen_read_StringsTester
   DECLPROC __gen_load_StringsTester
   DECLPROC __gen_StringsTester_init
-  DECLPROC __gen_StringsTester_selector
-  90035 DECLMETHOD __gen_get_selector
+  DECLPROC __gen_StringsTester_constantString
+  93932 DECLMETHOD __gen_get_constantString
+  DECLPROC __gen_StringsTester_dynamicStringCell
+  122225 DECLMETHOD __gen_get_dynamicStringCell
   DECLPROC recv_internal
   69760 DECLMETHOD init_StringsTester
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_string_builder_start PROC:<{
+    IF:<{
+    }>
+    NIL
+    NEWC
+    TPUSH
+    PUSHNULL
+    TPUSH
+  }>
+  __tact_string_builder_start_string PROC:<{
+    FALSE
+    __tact_string_builder_start CALLDICT
+  }>
+  __tact_string_builder_end PROC:<{
+    UNCONS
+    SWAP
+    ENDC
+    WHILE:<{
+      OVER
+      ISNULL
+      NOT
+    }>DO<{
+      OVER
+      UNCONS
+      DROP
+      STREF
+      ENDC
+    }>
+    NIP
+  }>
   __gen_write_StringsTester PROCINLINE:<{
     SWAP
     257 PUSHINT
@@ -39,13 +74,22 @@ PROGRAM{
     __gen_write_StringsTester INLINECALLDICT
     ENDC
   }>
-  __gen_StringsTester_selector PROCINLINE:<{
+  __gen_StringsTester_constantString PROCINLINE:<{
     DROP
-    B{b5ee9c724101010100020000004cacb9cd} B>boc <s PUSHSLICE
+    B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE
   }>
-  __gen_get_selector PROC:<{
+  __gen_get_constantString PROC:<{
     __gen_load_StringsTester INLINECALLDICT
-    __gen_StringsTester_selector INLINECALLDICT
+    __gen_StringsTester_constantString INLINECALLDICT
+  }>
+  __gen_StringsTester_dynamicStringCell PROCINLINE:<{
+    DROP
+    __tact_string_builder_start_string CALLDICT
+    __tact_string_builder_end CALLDICT
+  }>
+  __gen_get_dynamicStringCell PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    __gen_StringsTester_dynamicStringCell INLINECALLDICT
   }>
   recv_internal PROC:<{
     DUP
@@ -83,6 +127,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d66557377344d6739486d334c65446a63364c5562324c5a6263613654587577626233586469596467536a6958} PUSHSLICE
+    x{697066733a2f2f516d5557344150376f347a79686a6463344c377a787057793243414d75677a46457a4e624a4a6433726341747944} PUSHSLICE
   }>
 }END>c

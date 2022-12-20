@@ -5,6 +5,7 @@ primitive Slice;
 primitive Cell;
 primitive Address;
 primitive String;
+primitive StringBuilder;
 
 //
 // Builder
@@ -242,3 +243,16 @@ struct StateInit {
     code: Cell;
     data: Cell;
 }
+
+//
+// String builder
+//
+
+@name(__tact_string_builder_start_string)
+native beginString(): StringBuilder;
+
+@name(__tact_string_builder_start_comment)
+native beginComment(): StringBuilder;
+
+@name(__tact_string_builder_end)
+extends native toCell(self: StringBuilder): Cell;

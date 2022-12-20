@@ -32,6 +32,12 @@ export function readFromStack(name: string, ref: TypeRef, w: Writer, forceTuple:
                 w.append(`const ${name} = slice.readCell();`);
             }
             return;
+        } else if (ref.name === 'String') {
+            if (ref.optional) {
+                w.append(`const ${name} = readString(slice.readCell());`);
+            } else {
+                w.append(`const ${name} = readString(slice.readCell());`);
+            }
         } else {
             if (ref.optional) {
                 w.append(`const ${name}_p = slice.pop();`);
