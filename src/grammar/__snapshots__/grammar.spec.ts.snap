@@ -2580,7 +2580,7 @@ exports[`grammar should parse case-24 1`] = `
               "type": "overwrites",
             },
           ],
-          "id": 15,
+          "id": 14,
           "kind": "def_function",
           "name": "a",
           "ref": overwrites fun a(): Int {
@@ -2596,24 +2596,19 @@ exports[`grammar should parse case-24 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 13,
-                "kind": "string_literal",
+                "id": 12,
+                "kind": "string",
                 "ref": "hello world!",
-                "value": {
-                  "id": 12,
-                  "kind": "string",
-                  "ref": "hello world!",
-                  "value": "hello world!",
-                },
+                "value": "hello world!",
               },
-              "id": 14,
+              "id": 13,
               "kind": "statement_return",
               "ref": return "hello world!";,
             },
           ],
         },
       ],
-      "id": 17,
+      "id": 16,
       "kind": "def_contract",
       "name": "Main",
       "ref": contract Main with SomeTrait {
@@ -2625,7 +2620,7 @@ exports[`grammar should parse case-24 1`] = `
 },
       "traits": [
         {
-          "id": 16,
+          "id": 15,
           "kind": "id",
           "ref": SomeTrait,
           "value": "SomeTrait",
@@ -2633,7 +2628,7 @@ exports[`grammar should parse case-24 1`] = `
       ],
     },
   ],
-  "id": 18,
+  "id": 17,
   "kind": "program",
 }
 `;

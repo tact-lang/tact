@@ -29,6 +29,24 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     throw Error('Invalid type ref');
 }
 
+export function resolveTypeRefUnsafe(src: ASTTypeRef): TypeRef {
+    if (src.kind === 'type_ref_simple') {
+        return {
+            kind: 'ref',
+            name: src.name,
+            optional: src.optional
+        };
+    }
+    if (src.kind === 'type_ref_map') {
+        return {
+            kind: 'map',
+            key: src.key,
+            value: src.value
+        };
+    }
+    throw Error('Invalid type ref');
+}
+
 function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }): TypeRef {
     if (src.kind === 'type_ref_simple') {
         if (!types[src.name]) {
