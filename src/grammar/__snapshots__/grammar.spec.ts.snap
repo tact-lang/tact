@@ -2478,3 +2478,162 @@ exports[`grammar should parse case-23 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-24 1`] = `
+{
+  "entries": [
+    {
+      "id": 1,
+      "kind": "primitive",
+      "name": "Int",
+      "ref": primitive Int;,
+    },
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 3,
+          "init": undefined,
+          "kind": "def_field",
+          "name": "a",
+          "ref": a: Int;,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 7,
+          "kind": "def_function",
+          "name": "a",
+          "ref": virtual fun a(): Int {
+        return a;
+    },
+          "return": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 5,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "id": 6,
+              "kind": "statement_return",
+              "ref": return a;,
+            },
+          ],
+        },
+      ],
+      "id": 8,
+      "kind": "def_trait",
+      "name": "SomeTrait",
+      "ref": trait SomeTrait {
+    a: Int;
+
+    virtual fun a(): Int {
+        return a;
+    }
+},
+      "traits": [],
+    },
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 10,
+          "init": undefined,
+          "kind": "def_field",
+          "name": "b",
+          "ref": b: Int;,
+          "type": {
+            "id": 9,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "args": [],
+          "attributes": [
+            {
+              "ref": overwrites,
+              "type": "overwrites",
+            },
+          ],
+          "id": 15,
+          "kind": "def_function",
+          "name": "a",
+          "ref": overwrites fun a(): Int {
+        return "hello world!";
+    },
+          "return": {
+            "id": 11,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 13,
+                "kind": "string_literal",
+                "ref": "hello world!",
+                "value": {
+                  "id": 12,
+                  "kind": "string",
+                  "ref": "hello world!",
+                  "value": "hello world!",
+                },
+              },
+              "id": 14,
+              "kind": "statement_return",
+              "ref": return "hello world!";,
+            },
+          ],
+        },
+      ],
+      "id": 17,
+      "kind": "def_contract",
+      "name": "Main",
+      "ref": contract Main with SomeTrait {
+    b: Int;
+
+    overwrites fun a(): Int {
+        return "hello world!";
+    }
+},
+      "traits": [
+        {
+          "id": 16,
+          "kind": "id",
+          "ref": SomeTrait,
+          "value": "SomeTrait",
+        },
+      ],
+    },
+  ],
+  "id": 18,
+  "kind": "program",
+}
+`;

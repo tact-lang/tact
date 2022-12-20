@@ -26,6 +26,9 @@ export type TypeRef = {
     kind: 'void'
 } | {
     kind: 'null'
+} | {
+    kind: 'string',
+    value: string
 };
 
 export type FieldDescription = {
@@ -100,6 +103,8 @@ export function printTypeRef(src: TypeRef): string {
         return '<void>';
     } else if (src.kind === 'null') {
         return '<null>';
+    } else if (src.kind === 'string') {
+        return 'string("' + src.value + '")';
     } else {
         throw Error('Invalid type ref');
     }

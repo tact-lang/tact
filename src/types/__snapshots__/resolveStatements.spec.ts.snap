@@ -45,6 +45,15 @@ exports[`resolveStatements should fail statements for case-4 1`] = `
 Type mismatch: Int is not assignable to Bool"
 `;
 
+exports[`resolveStatements should fail statements for case-5 1`] = `
+"Line 5, col 5:
+  4 | fun isZero(x: Int): Bool {
+> 5 |     x = "hello world";
+          ^~~~~~~~~~~~~~~~~~
+  6 |     return true;
+Type mismatch: string("hello world") is not assignable to Int"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

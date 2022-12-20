@@ -1,0 +1,54 @@
+global (int, slice, int) __tact_context;
+global cell __tact_context_sys;
+
+builder __gen_write_StringsTester(builder build_0, (int) v) inline {
+    var (v'fee) = v;
+    build_0 = store_int(build_0, v'fee, 257);
+    return build_0;
+}
+
+cell __gen_StringsTester_init(cell sys') inline {
+    var ((self'fee)) = (0);
+    self'fee = 1200000000;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_StringsTester(b', (self'fee));
+    return b'.end_cell();
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(130);
+}
+
+cell init_StringsTester(cell sys') method_id {
+    return __gen_StringsTester_init(sys');
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmStsZYLP4gzuRain6cK1d3uXy9SxEytjDHMoMZiWQ1tHq";
+}

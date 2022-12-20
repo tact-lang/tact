@@ -1,0 +1,62 @@
+PROGRAM{
+  DECLPROC __gen_write_StringsTester
+  DECLPROC __gen_StringsTester_init
+  DECLPROC recv_internal
+  69760 DECLMETHOD init_StringsTester
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __gen_write_StringsTester PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  __gen_StringsTester_init PROCINLINE:<{
+    1200000000 PUSHINT
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_StringsTester INLINECALLDICT
+    ENDC
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    130 THROW
+  }>
+  init_StringsTester PROC:<{
+    __gen_StringsTester_init INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5374735a594c5034677a755261696e36634b3164337558793953784579746a44484d6f4d5a69575131744871} PUSHSLICE
+  }>
+}END>c

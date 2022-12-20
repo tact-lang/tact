@@ -1,10 +1,11 @@
-import { ABIFunctions } from "../abi/AbiFunction";
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, throwError } from "../grammar/ast";
+import { abi } from "../abi/abi";
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTStringLiteral, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
+import { GlobalFunctions } from "../abi/global";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 
@@ -37,6 +38,10 @@ function resolveIntLiteral(exp: ASTNumber, sctx: StatementContext, ctx: Compiler
 
 function resolveNullLiteral(exp: ASTNull, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     return registerExpType(ctx, exp, { kind: 'null' });
+}
+
+function resolveStringLiteral(exp: ASTStringLiteral, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+    return registerExpType(ctx, exp, { kind: 'string', value: exp.value.value });
 }
 
 function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
@@ -193,7 +198,23 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 
 function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
 
-    // CHeck if function exists
+    // Check if abi global function
+    if (GlobalFunctions[exp.name]) {
+        let f = GlobalFunctions[exp.name];
+
+        // Resolve arguments
+        for (let e of exp.args) {
+            ctx = resolveExpression(e, sctx, ctx);
+        }
+
+        // Resolve return type
+        let resolved = f.resolve(ctx, exp.args.map((v) => getExpType(ctx, v)), exp.ref);
+
+        // Register return type
+        return registerExpType(ctx, exp, resolved);
+    }
+
+    // Check if function exists
     if (!hasStaticFunction(ctx, exp.name)) {
         throwError(`Static function "${exp.name}" does not exist`, exp.ref);
     }
@@ -235,7 +256,7 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         // Check ABI type
         if (src.name === '$ABI') {
-            let abf = ABIFunctions[exp.name];
+            let abf = abi[exp.name];
             if (!abf) {
                 throwError(`ABI function "${exp.name}" not found`, exp.ref);
             }
@@ -288,6 +309,9 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
 export function resolveLValueRef(path: ASTLvalueRef[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
     let paths: ASTLvalueRef[] = path;
     let t = sctx.vars[paths[0].name];
+    if (!t) {
+        throwError(`Variable "${paths[0].name}" not found`, paths[0].ref);
+    }
     ctx = registerExpType(ctx, paths[0], t);
 
     // Paths
@@ -321,6 +345,9 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     }
     if (exp.kind === 'null') {
         return resolveNullLiteral(exp, sctx, ctx);
+    }
+    if (exp.kind === 'string_literal') {
+        return resolveStringLiteral(exp, sctx, ctx);
     }
 
     //

@@ -1,4 +1,4 @@
-import { ABIFunctions } from "../../abi/AbiFunction";
+import { abi } from "../../abi/abi";
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
 import { getStaticFunction, getType } from "../../types/resolveDescriptors";
@@ -6,6 +6,7 @@ import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
+import { GlobalFunctions } from "../../abi/global";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -45,6 +46,14 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     if (f.kind === 'number') {
         return f.value.toString(10);
+    }
+
+    //
+    // String literal
+    //
+
+    if (f.kind === 'string_literal') {
+        return `"${f.value.value}"`;
     }
 
     //
@@ -242,6 +251,15 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'op_static_call') {
+
+        // Check global functions
+        if (GlobalFunctions[f.name]) {
+            return GlobalFunctions[f.name].generate(ctx,
+                f.args.map((v) => getExpType(ctx.ctx, v)),
+                f.args.map((a) => writeExpression(a, ctx)),
+                f.ref);
+        }
+
         let sf = getStaticFunction(ctx.ctx, f.name);
         let n = f.name;
         if (sf.ast.kind === 'def_native_function') {
@@ -299,7 +317,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Check ABI
             if (src.name === '$ABI') {
-                let abf = ABIFunctions[f.name];
+                let abf = abi[f.name];
                 if (!abf) {
                     throwError(`ABI function "${f.name}" not found`, f.ref);
                 }

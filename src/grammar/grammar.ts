@@ -429,6 +429,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     stringLiteral(arg0, arg1, arg2) {
         return createNode({ kind: 'string', value: arg1.sourceString, ref: createRef(this) });
     },
+    ExpressionString(arg0) {
+        return createNode({ kind: 'string_literal', value: arg0.resolve_expression(), ref: createRef(this) });
+    },
 
     // TypeRefs
     Type_optional(arg0, arg1) {

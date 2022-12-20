@@ -74,6 +74,15 @@
         "inline": true,
         "debug": true
       }
+    },
+    {
+      "name": "strings",
+      "path": "./src/test/features/strings.tact",
+      "output": "./src/test/features/output",
+      "experimental": {
+        "inline": true,
+        "debug": true
+      }
     }
   ]
 }

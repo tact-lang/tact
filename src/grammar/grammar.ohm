@@ -134,7 +134,8 @@ Tact {
                     | id
                     | null
                     | ExpressionInitOf
-                    
+                    | ExpressionString
+    ExpressionString = stringLiteral
     ExpressionField = ExpressionValue "." id ~"("
     ExpressionCall = ExpressionValue "." id "(" ListOf<Expression, ","> ")"
     ExpressionNew = id "{" ListOf<NewParameter, ","> "}"
