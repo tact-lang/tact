@@ -24,3 +24,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixing importing tact with providing extension, now `import "./lib";` and `import "./lib.tact";` are equivalent.
 - Fixing extension function generation
+- Fixing clashing of variable names with func primitives and global functions
