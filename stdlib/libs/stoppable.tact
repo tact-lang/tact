@@ -8,6 +8,10 @@ trait Stoppable with Ownable {
         require(!self.stopped);
     }
 
+    fun requireStopped() {
+        require(self.stopped);    
+    }
+
     receive("Stop") {
         self.requireOwner();
         self.requireNotStopped();
@@ -17,5 +21,18 @@ trait Stoppable with Ownable {
 
     get fun stopped(): Bool {
         return self.stopped;
+    }
+}
+
+@interface("org.ton.resumable")
+trait Resumable with Stoppable {
+    stopped: Bool;
+    owner: Address;
+
+    receive("Resume") {
+        self.requireOwner();
+        self.requireStopped();
+        self.stopped = false;
+        reply("Resumed".asComment());
     }
 }

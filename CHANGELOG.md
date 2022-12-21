@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Global compile-time `ton` function that conversts string to Int during compile time.
 - `checkDataSignature` similar to func `check_data_signature`
 - `String.asComment` for conversion text to a comment payload
+- `Resumable` trait, allows to resume contract operations once it was stopped
 
 ### Changed
 - `contractAddress` now accepts single argument of type `StateInit` and always produces address for workchain. Old method is renamed to `contractAddressExt`.
