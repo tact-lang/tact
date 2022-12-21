@@ -16,7 +16,7 @@ Anywhere in the function body a static functions can be called:
 let expiration: Int = now() + 1000; // now() is stdlib static function
 ```
 
-## Type function call
+## Extension function call
 
 Some functions are defined only for specific types, they can be called this way:
 
@@ -35,3 +35,64 @@ TACT supports operations:
 * `!=`, `==` - equality operations
 * `>`, `<`, `>=`, `<=` - compare operations, defined only for `Int` type
 * `&&`, `||` - logical `AND` and `OR`
+
+## Loops
+
+Repeat loop:
+
+> **Note**
+> Repeat number must be 32 bit int or out of range exception is thrown. Negative values are ignored.
+
+```
+let a: Int = 1;
+repeat(10) {
+  a = a * a;
+}
+```
+
+While loop:
+
+```
+let x: Int = 10;
+while(x > 0) {
+  x = x - 1;
+}
+```
+
+Until loop:
+
+```
+let x: Int = 10;
+do {
+  x = x - 1;
+} until (x <= 0);
+```
+
+## If Statements
+
+> **Warn**
+> Curly brackets are required
+
+```
+if (condition) {
+  doSomething();
+}
+```
+
+```
+if (condition) {
+  doSomething();
+} else {
+  doSomething2();
+}
+```
+
+```
+if (condition) {
+  doSomething();
+} else if (condition2) {
+  doSomething2();
+} else {
+  doSomething3();
+}
+```
