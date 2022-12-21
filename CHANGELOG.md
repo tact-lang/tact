@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `contractAddress` now accepts single argument of type `StateInit` and always produces address for workchain. Old method is renamed to `contractAddressExt`.
 - `hashCell` and `hashSlice` are now extension function `hash` on `Slice` and `Cell`
 - Removed some keywords such as `message`, `contract`, `init` to allow use this names as variable names
+- Renamed `receiveBounced` to `bounced`
 
 ### Fixed
 

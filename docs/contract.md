@@ -32,6 +32,7 @@ They could be defined for multiple types of messages.
 * Comment receiver
 * Message receiver
 * Fallback receiver
+* Bounced receiver
 
 ### Empty receiver
 
@@ -97,3 +98,17 @@ contract Sample {
   }
 }
 ```
+
+## Bounced receiver
+
+This receiver is for messages that was bounced. This is for very advanced users: contract receives only 256 bits from bounced message
+
+```
+contract Sample {
+
+  // ..
+
+  bounced(msg: Slice) {
+    // This receiver called for any bounced message
+  }
+}

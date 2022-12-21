@@ -63,10 +63,10 @@ Tact {
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
-    ReceiveFunction = receive "(" FunctionArg ")" "{" Statement* "}" --simple
-                    | receive  "(" ")" "{" Statement* "}" --empty
-                    | receive "(" stringLiteral ")" "{" Statement* "}" --comment
-                    | receiveBounced "(" FunctionArg ")" "{" Statement* "}" --bounced
+    ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
+                    | "receive" "(" ")" "{" Statement* "}" --empty
+                    | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
+                    | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bounced
 
     // Statements
     Statement = StatementLet
@@ -193,11 +193,9 @@ Tact {
             | repeat 
             | do 
             | until 
-            | as 
-            | receive 
+            | as  
             | mutates
             | extends
-            | receiveBounced
             | import
             | with
             | trait
@@ -220,10 +218,8 @@ Tact {
     do = "do" ~idPart
     until = "until" ~idPart
     as = "as" ~idPart
-    receive = "receive" ~idPart
     mutates = "mutates" ~idPart
     extends = "extends" ~idPart
-    receiveBounced = "receiveBounced" ~idPart
     import = "import" ~idPart
     with = "with" ~idPart
     trait = "trait" ~idPart

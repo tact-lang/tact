@@ -65,7 +65,7 @@ contract Wallet {
         let walletInit: StateInit = initOf Wallet(self.key, self.walletId + 1);
     }
 
-    receiveBounced(msg: Slice) {
+    bounced(msg: Slice) {
         // TODO: Handle
     } 
 
