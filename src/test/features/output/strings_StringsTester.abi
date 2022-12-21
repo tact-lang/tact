@@ -373,6 +373,15 @@
         "name": "String",
         "optional": false
       }
+    },
+    {
+      "name": "stringWithFloat",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},
@@ -436,6 +445,9 @@
     },
     "133": {
       "message": "Contract stopped"
+    },
+    "134": {
+      "message": "Invalid argument"
     }
   }
 }

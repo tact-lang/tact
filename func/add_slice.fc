@@ -115,5 +115,46 @@ slice formatNumber(int src) {
     return b.end_cell().begin_parse();
 }
 
+slice formatFloat(int src, int digits) {
+    throw_if(134, (digits <= 0) | (digits > 77));
+
+    builder b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;   
+    }
+
+    ;; Process rem part
+    int skip = true;
+    int len = 0;
+    int rem = 0;
+    tuple t = empty_tuple();
+    repeat(digits) {
+        (src, rem) = src.divmod(10);
+        if (~(skip & (rem == 0))) {
+            skip = false;
+            t~tpush(digit + 48);
+            len = len + 1;
+        }
+    }
+
+    ;; Process dot
+    if (~ skip) {
+        t~tpush(46);
+        len = len + 1;
+    }
+
+    ;; Assemble
+    int c = 0;
+    repeat(len) {
+        int v = t.at(c);
+        b = b.store_uint(v, 8);
+        c = c + 1;
+    }
+
+    ;; Result
+    return b.end_cell().begin_parse();
+}
+
 _ main() impure {
 }

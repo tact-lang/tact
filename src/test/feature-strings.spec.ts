@@ -33,5 +33,7 @@ describe('feature-strings', () => {
         expect((await contract.getStringWithNumber())).toEqual('Hello, your balance: 123');
         expect((await contract.getStringWithLargeNumber())).toEqual('Hello, your balance: 1000000000000000000000000000000000000000000000000000000000000');
         expect((await contract.getStringWithNegativeNumber())).toEqual('Hello, your balance: -123');
+
+        expect((await contract.getStringWithFloat())).toEqual('9.5');
     });
 });

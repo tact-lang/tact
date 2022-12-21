@@ -64,4 +64,8 @@ contract StringsTester {
         b.append(1000000000000000000000000000000000000000000000000000000000000.toString());
         return b.toString();
     }
+
+    get fun stringWithFloat(): String {
+        return 95.toFloatString(1);
+    }
 }

@@ -252,6 +252,7 @@ export const Empty_errors: { [key: string]: string } = {
     '131': `Constraints error`,
     '132': `Access denied`,
     '133': `Contract stopped`,
+    '134': `Invalid argument`,
 }
 
 export class Empty {

@@ -8,4 +8,5 @@ export const contractErrors = {
     constraintsError: { id: 131, message: 'Constraints error' },
     accessDenied: { id: 132, message: 'Access denied' },
     contractStopped: { id: 133, message: 'Contract stopped' },
+    invalidArgument: { id: 134, message: 'Invalid argument' },
 }

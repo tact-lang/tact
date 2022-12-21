@@ -272,3 +272,10 @@ extends native toSlice(self: StringBuilder): Slice;
 
 @name(__tact_int_to_string)
 extends native toString(self: Int): String;
+
+@name(__tact_float_to_string)
+extends native toFloatString(self: Int, digits: Int): String;
+
+extends fun toCoinsString(self: Int): String {
+    return self.toFloatString(self, 9);
+}

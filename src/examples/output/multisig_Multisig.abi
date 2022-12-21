@@ -587,6 +587,9 @@
     },
     "133": {
       "message": "Contract stopped"
+    },
+    "134": {
+      "message": "Invalid argument"
     }
   }
 }
