@@ -60,31 +60,31 @@ builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, 
     set_data(b.end_cell());
 }
 
-cell __gen_SerializationTester2_init(cell sys', (int, int, int, int, int) a, (int, int, int, int, int) b) inline {
-    var ((a'a, a'b, a'c, a'd, a'e)) = a;
-    var ((b'a, b'b, b'c, b'd, b'e)) = b;
-    var (((self'a'a, self'a'b, self'a'c, self'a'd, self'a'e), (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e))) = (null(), null());
-    (self'a'a, self'a'b, self'a'c, self'a'd, self'a'e) = (a'a, a'b, a'c, a'd, a'e);
-    (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e) = (b'a, b'b, b'c, b'd, b'e);
-    self'a'a~dump();
-    self'a'b~dump();
-    self'a'c~dump();
-    self'a'd~dump();
-    self'a'e~dump();
-    self'b'a~dump();
-    self'b'b~dump();
-    self'b'c~dump();
-    self'b'd~dump();
-    self'b'e~dump();
+cell __gen_SerializationTester2_init(cell sys', (int, int, int, int, int) $a, (int, int, int, int, int) $b) inline {
+    var (($a'a, $a'b, $a'c, $a'd, $a'e)) = $a;
+    var (($b'a, $b'b, $b'c, $b'd, $b'e)) = $b;
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = (null(), null());
+    ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($a'a, $a'b, $a'c, $a'd, $a'e);
+    ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e) = ($b'a, $b'b, $b'c, $b'd, $b'e);
+    $self'a'a~dump();
+    $self'a'b~dump();
+    $self'a'c~dump();
+    $self'a'd~dump();
+    $self'a'e~dump();
+    $self'b'a~dump();
+    $self'b'b~dump();
+    $self'b'c~dump();
+    $self'b'd~dump();
+    $self'b'e~dump();
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_SerializationTester2(b', ((self'a'a, self'a'b, self'a'c, self'a'd, self'a'e), (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e)));
+    b' = __gen_write_SerializationTester2(b', (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
     return b'.end_cell();
 }
 
-(int, int, int, int, int) __gen_SerializationTester2_getA(((int, int, int, int, int), (int, int, int, int, int)) self) impure inline {
-    var (((self'a'a, self'a'b, self'a'c, self'a'd, self'a'e), (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e))) = self;
-    return (self'a'a, self'a'b, self'a'c, self'a'd, self'a'e);
+(int, int, int, int, int) __gen_SerializationTester2_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    return ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e);
 }
 
 _ __gen_get_getA() method_id(123932) {
@@ -93,9 +93,9 @@ _ __gen_get_getA() method_id(123932) {
     return res;
 }
 
-(int, int, int, int, int) __gen_SerializationTester2_getB(((int, int, int, int, int), (int, int, int, int, int)) self) impure inline {
-    var (((self'a'a, self'a'b, self'a'c, self'a'd, self'a'e), (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e))) = self;
-    return (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e);
+(int, int, int, int, int) __gen_SerializationTester2_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    return ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e);
 }
 
 _ __gen_get_getB() method_id(119935) {
@@ -104,22 +104,22 @@ _ __gen_get_getB() method_id(119935) {
     return res;
 }
 
-((((int, int, int, int, int), (int, int, int, int, int))), ()) __gen_SerializationTester2_receive_Update(((int, int, int, int, int), (int, int, int, int, int)) self, ((int, int, int, int, int), (int, int, int, int, int)) msg) impure inline {
-    var ((self'a'a, self'a'b, self'a'c, self'a'd, self'a'e), (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e)) = self;
-    var ((msg'a'a, msg'a'b, msg'a'c, msg'a'd, msg'a'e), (msg'b'a, msg'b'b, msg'b'c, msg'b'd, msg'b'e)) = msg;
-    (self'a'a, self'a'b, self'a'c, self'a'd, self'a'e) = (msg'a'a, msg'a'b, msg'a'c, msg'a'd, msg'a'e);
-    (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e) = (msg'b'a, msg'b'b, msg'b'c, msg'b'd, msg'b'e);
-    self'a'a~dump();
-    self'a'b~dump();
-    self'a'c~dump();
-    self'a'd~dump();
-    self'a'e~dump();
-    self'b'a~dump();
-    self'b'b~dump();
-    self'b'c~dump();
-    self'b'd~dump();
-    self'b'e~dump();
-    return (((self'a'a, self'a'b, self'a'c, self'a'd, self'a'e), (self'b'a, self'b'b, self'b'c, self'b'd, self'b'e)), ());
+((((int, int, int, int, int), (int, int, int, int, int))), ()) __gen_SerializationTester2_receive_Update(((int, int, int, int, int), (int, int, int, int, int)) $self, ((int, int, int, int, int), (int, int, int, int, int)) $msg) impure inline {
+    var (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)) = $self;
+    var (($msg'a'a, $msg'a'b, $msg'a'c, $msg'a'd, $msg'a'e), ($msg'b'a, $msg'b'b, $msg'b'c, $msg'b'd, $msg'b'e)) = $msg;
+    ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($msg'a'a, $msg'a'b, $msg'a'c, $msg'a'd, $msg'a'e);
+    ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e) = ($msg'b'a, $msg'b'b, $msg'b'c, $msg'b'd, $msg'b'e);
+    $self'a'a~dump();
+    $self'a'b~dump();
+    $self'a'c~dump();
+    $self'a'd~dump();
+    $self'a'e~dump();
+    $self'b'a~dump();
+    $self'b'b~dump();
+    $self'b'c~dump();
+    $self'b'd~dump();
+    $self'b'e~dump();
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), ());
 }
 
 

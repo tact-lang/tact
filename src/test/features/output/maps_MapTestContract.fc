@@ -255,16 +255,16 @@ builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, ce
 }
 
 cell __gen_MapTestContract_init(cell sys') {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = (null(), null(), null(), null(), null(), null(), null(), null());
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = (null(), null(), null(), null(), null(), null(), null(), null());
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_MapTestContract(b', (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4));
+    b' = __gen_write_MapTestContract(b', ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4));
     return b'.end_cell();
 }
 
-cell __gen_MapTestContract_intMap1((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'intMap1;
+cell __gen_MapTestContract_intMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'intMap1;
 }
 
 _ __gen_get_intMap1() method_id(67207) {
@@ -273,20 +273,20 @@ _ __gen_get_intMap1() method_id(67207) {
     return res;
 }
 
-int __gen_MapTestContract_intMap1Value((cell, cell, cell, cell, cell, cell, cell, cell) self, int key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __tact_dict_get_int_int(self'intMap1, 257, key, 257);
+int __gen_MapTestContract_intMap1Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __tact_dict_get_int_int($self'intMap1, 257, $key, 257);
 }
 
-_ __gen_get_intMap1Value(int key) method_id(103396) {
+_ __gen_get_intMap1Value(int $key) method_id(103396) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_intMap1Value(self, key);
+    var res = __gen_MapTestContract_intMap1Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_intMap2((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'intMap2;
+cell __gen_MapTestContract_intMap2((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'intMap2;
 }
 
 _ __gen_get_intMap2() method_id(79588) {
@@ -295,20 +295,20 @@ _ __gen_get_intMap2() method_id(79588) {
     return res;
 }
 
-int __gen_MapTestContract_intMap2Value((cell, cell, cell, cell, cell, cell, cell, cell) self, int key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __tact_dict_get_int_int(self'intMap2, 257, key, 1);
+int __gen_MapTestContract_intMap2Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __tact_dict_get_int_int($self'intMap2, 257, $key, 1);
 }
 
-_ __gen_get_intMap2Value(int key) method_id(89348) {
+_ __gen_get_intMap2Value(int $key) method_id(89348) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_intMap2Value(self, key);
+    var res = __gen_MapTestContract_intMap2Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_intMap3((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'intMap3;
+cell __gen_MapTestContract_intMap3((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'intMap3;
 }
 
 _ __gen_get_intMap3() method_id(75461) {
@@ -317,20 +317,20 @@ _ __gen_get_intMap3() method_id(75461) {
     return res;
 }
 
-cell __gen_MapTestContract_intMap3Value((cell, cell, cell, cell, cell, cell, cell, cell) self, int key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __tact_dict_get_int_cell(self'intMap3, 257, key);
+cell __gen_MapTestContract_intMap3Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __tact_dict_get_int_cell($self'intMap3, 257, $key);
 }
 
-_ __gen_get_intMap3Value(int key) method_id(71844) {
+_ __gen_get_intMap3Value(int $key) method_id(71844) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_intMap3Value(self, key);
+    var res = __gen_MapTestContract_intMap3Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_intMap4((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'intMap4;
+cell __gen_MapTestContract_intMap4((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'intMap4;
 }
 
 _ __gen_get_intMap4() method_id(87586) {
@@ -339,20 +339,20 @@ _ __gen_get_intMap4() method_id(87586) {
     return res;
 }
 
-tuple __gen_MapTestContract_intMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) self, int key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __gen_readopt_SomeStruct(__tact_dict_get_int_cell(self'intMap4, 257, key));
+tuple __gen_MapTestContract_intMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __gen_readopt_SomeStruct(__tact_dict_get_int_cell($self'intMap4, 257, $key));
 }
 
-_ __gen_get_intMap4Value(int key) method_id(119013) {
+_ __gen_get_intMap4Value(int $key) method_id(119013) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_intMap4Value(self, key);
+    var res = __gen_MapTestContract_intMap4Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_addrMap1((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'addrMap1;
+cell __gen_MapTestContract_addrMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'addrMap1;
 }
 
 _ __gen_get_addrMap1() method_id(93537) {
@@ -361,20 +361,20 @@ _ __gen_get_addrMap1() method_id(93537) {
     return res;
 }
 
-int __gen_MapTestContract_addrMap1Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __tact_dict_get_slice_int(self'addrMap1, 267, key, 257);
+int __gen_MapTestContract_addrMap1Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __tact_dict_get_slice_int($self'addrMap1, 267, $key, 257);
 }
 
-_ __gen_get_addrMap1Value(slice key) method_id(116148) {
+_ __gen_get_addrMap1Value(slice $key) method_id(116148) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_addrMap1Value(self, key);
+    var res = __gen_MapTestContract_addrMap1Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_addrMap2((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'addrMap2;
+cell __gen_MapTestContract_addrMap2((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'addrMap2;
 }
 
 _ __gen_get_addrMap2() method_id(89346) {
@@ -383,20 +383,20 @@ _ __gen_get_addrMap2() method_id(89346) {
     return res;
 }
 
-int __gen_MapTestContract_addrMap2Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __tact_dict_get_slice_int(self'addrMap2, 267, key, 1);
+int __gen_MapTestContract_addrMap2Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __tact_dict_get_slice_int($self'addrMap2, 267, $key, 1);
 }
 
-_ __gen_get_addrMap2Value(slice key) method_id(68436) {
+_ __gen_get_addrMap2Value(slice $key) method_id(68436) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_addrMap2Value(self, key);
+    var res = __gen_MapTestContract_addrMap2Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_addrMap3((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'addrMap3;
+cell __gen_MapTestContract_addrMap3((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'addrMap3;
 }
 
 _ __gen_get_addrMap3() method_id(85283) {
@@ -405,20 +405,20 @@ _ __gen_get_addrMap3() method_id(85283) {
     return res;
 }
 
-cell __gen_MapTestContract_addrMap3Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __tact_dict_get_slice_cell(self'addrMap3, 267, key);
+cell __gen_MapTestContract_addrMap3Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __tact_dict_get_slice_cell($self'addrMap3, 267, $key);
 }
 
-_ __gen_get_addrMap3Value(slice key) method_id(85748) {
+_ __gen_get_addrMap3Value(slice $key) method_id(85748) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_addrMap3Value(self, key);
+    var res = __gen_MapTestContract_addrMap3Value(self, $key);
     return res;
 }
 
-cell __gen_MapTestContract_addrMap4((cell, cell, cell, cell, cell, cell, cell, cell) self) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return self'addrMap4;
+cell __gen_MapTestContract_addrMap4((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return $self'addrMap4;
 }
 
 _ __gen_get_addrMap4() method_id(81348) {
@@ -427,71 +427,71 @@ _ __gen_get_addrMap4() method_id(81348) {
     return res;
 }
 
-tuple __gen_MapTestContract_addrMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) self, slice key) impure {
-    var ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4)) = self;
-    return __gen_readopt_SomeStruct(__tact_dict_get_slice_cell(self'addrMap4, 267, key));
+tuple __gen_MapTestContract_addrMap4Value((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = $self;
+    return __gen_readopt_SomeStruct(__tact_dict_get_slice_cell($self'addrMap4, 267, $key));
 }
 
-_ __gen_get_addrMap4Value(slice key) method_id(100021) {
+_ __gen_get_addrMap4Value(slice $key) method_id(100021) {
     var self = __gen_load_MapTestContract();
-    var res = __gen_MapTestContract_addrMap4Value(self, key);
+    var res = __gen_MapTestContract_addrMap4Value(self, $key);
     return res;
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap1((cell, cell, cell, cell, cell, cell, cell, cell) self, (int, int) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'intMap1~__tact_dict_set_int_int(257, msg'key, msg'value, 257);
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'intMap1~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap2((cell, cell, cell, cell, cell, cell, cell, cell) self, (int, int) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'intMap2~__tact_dict_set_int_int(257, msg'key, msg'value, 1);
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap2((cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'intMap2~__tact_dict_set_int_int(257, $msg'key, $msg'value, 1);
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap3((cell, cell, cell, cell, cell, cell, cell, cell) self, (int, cell) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'intMap3~__tact_dict_set_int_cell(257, msg'key, msg'value);
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap3((cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'intMap3~__tact_dict_set_int_cell(257, $msg'key, $msg'value);
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap4((cell, cell, cell, cell, cell, cell, cell, cell) self, (int, tuple) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'intMap4~__tact_dict_set_int_cell(257, msg'key, __gen_writecellopt_SomeStruct(msg'value));
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap4((cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, tuple) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'intMap4~__tact_dict_set_int_cell(257, $msg'key, __gen_writecellopt_SomeStruct($msg'value));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap1((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, int) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'addrMap1~__tact_dict_set_slice_int(267, msg'key, msg'value, 257);
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, int) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'addrMap1~__tact_dict_set_slice_int(267, $msg'key, $msg'value, 257);
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap2((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, int) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'addrMap2~__tact_dict_set_slice_int(267, msg'key, msg'value, 1);
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap2((cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, int) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'addrMap2~__tact_dict_set_slice_int(267, $msg'key, $msg'value, 1);
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap3((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, cell) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'addrMap3~__tact_dict_set_slice_cell(267, msg'key, msg'value);
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap3((cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, cell) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'addrMap3~__tact_dict_set_slice_cell(267, $msg'key, $msg'value);
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap4((cell, cell, cell, cell, cell, cell, cell, cell) self, (slice, tuple) msg) impure {
-    var (self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4) = self;
-    var (msg'key, msg'value) = msg;
-    self'addrMap4~__tact_dict_set_slice_cell(267, msg'key, __gen_writecellopt_SomeStruct(msg'value));
-    return ((self'intMap1, self'intMap2, self'intMap3, self'intMap4, self'addrMap1, self'addrMap2, self'addrMap3, self'addrMap4), ());
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetAddrMap4((cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, tuple) $msg) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    $self'addrMap4~__tact_dict_set_slice_cell(267, $msg'key, __gen_writecellopt_SomeStruct($msg'value));
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
 

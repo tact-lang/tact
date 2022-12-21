@@ -73,82 +73,82 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
     set_data(b.end_cell());
 }
 
-builder storeBool(builder s, int value) impure {
-    if (value) {
-        return store_int(s, (- 1), 1);
+builder storeBool(builder $s, int $value) impure {
+    if ($value) {
+        return store_int($s, (- 1), 1);
     } else {
-        return store_int(s, 0, 1);
+        return store_int($s, 0, 1);
     }
 }
 
-() require(int condition) impure {
-    throw_unless(131, condition);
+() require(int $condition) impure {
+    throw_unless(131, $condition);
 }
 
-() send((int, slice, int, int, cell, cell, cell) params) impure {
-    var ((params'bounce, params'to, params'value, params'mode, params'body, params'code, params'data)) = params;
-    builder b = begin_cell();
-    b = store_int(b, 1, 2);
-    b = store_int(b, params'bounce, 1);
-    b = store_int(b, 0, 3);
-    b = __tact_store_address(b, params'to);
-    b = store_coins(b, params'value);
-    b = store_int(b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?(params'code)) | (~ null?(params'data)))) {
-        b = storeBool(b, true);
-        builder bc = begin_cell();
-        bc = storeBool(bc, false);
-        bc = storeBool(bc, false);
-        if ((~ null?(params'code))) {
-            bc = storeBool(bc, true);
-            bc = store_ref(bc, params'code);
+() send((int, slice, int, int, cell, cell, cell) $params) impure {
+    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
+    builder $b = begin_cell();
+    $b = store_int($b, 1, 2);
+    $b = store_int($b, $params'bounce, 1);
+    $b = store_int($b, 0, 3);
+    $b = __tact_store_address($b, $params'to);
+    $b = store_coins($b, $params'value);
+    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+        $b = storeBool($b, true);
+        builder $bc = begin_cell();
+        $bc = storeBool($bc, false);
+        $bc = storeBool($bc, false);
+        if ((~ null?($params'code))) {
+            $bc = storeBool($bc, true);
+            $bc = store_ref($bc, $params'code);
         } else {
-            bc = storeBool(bc, false);
+            $bc = storeBool($bc, false);
         }
-        if ((~ null?(params'data))) {
-            bc = storeBool(bc, true);
-            bc = store_ref(bc, params'data);
+        if ((~ null?($params'data))) {
+            $bc = storeBool($bc, true);
+            $bc = store_ref($bc, $params'data);
         } else {
-            bc = storeBool(bc, false);
+            $bc = storeBool($bc, false);
         }
-        bc = storeBool(bc, false);
-        b = storeBool(b, true);
-        b = store_ref(b, end_cell(bc));
+        $bc = storeBool($bc, false);
+        $b = storeBool($b, true);
+        $b = store_ref($b, end_cell($bc));
     } else {
-        b = storeBool(b, false);
+        $b = storeBool($b, false);
     }
-    cell body = params'body;
-    if ((~ null?(body))) {
-        b = store_int(b, true, 1);
-        b = store_ref(b, __tact_not_null(body));
+    cell $body = $params'body;
+    if ((~ null?($body))) {
+        $b = store_int($b, true, 1);
+        $b = store_ref($b, __tact_not_null($body));
     } else {
-        b = store_int(b, false, 1);
+        $b = store_int($b, false, 1);
     }
-    cell c = end_cell(b);
-    send_raw_message(c, params'mode);
+    cell $c = end_cell($b);
+    send_raw_message($c, $params'mode);
 }
 
-cell __gen_MultisigContract_init(cell sys', int key1, int key2, int key3) {
-    var ((self'seqno, self'user1_key, self'user2_key, self'user3_key)) = (0, null(), null(), null());
-    self'user1_key = key1;
-    self'user2_key = key2;
-    self'user3_key = key3;
+cell __gen_MultisigContract_init(cell sys', int $key1, int $key2, int $key3) {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = (0, null(), null(), null());
+    $self'user1_key = $key1;
+    $self'user2_key = $key2;
+    $self'user3_key = $key3;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_MultisigContract(b', (self'seqno, self'user1_key, self'user2_key, self'user3_key));
+    b' = __gen_write_MultisigContract(b', ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key));
     return b'.end_cell();
 }
 
-((int, int, int, int), ()) __gen_MultisigContract_execute((int, int, int, int) self, (int, int, slice) op) impure {
-    var ((self'seqno, self'user1_key, self'user2_key, self'user3_key)) = self;
-    var ((op'seqno, op'amount, op'target)) = op;
-    send((true, op'target, op'amount, 0, null(), null(), null()));
-    return ((self'seqno, self'user1_key, self'user2_key, self'user3_key), ());
+((int, int, int, int), ()) __gen_MultisigContract_execute((int, int, int, int) $self, (int, int, slice) $op) impure {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
+    var (($op'seqno, $op'amount, $op'target)) = $op;
+    send((true, $op'target, $op'amount, 0, null(), null(), null()));
+    return (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key), ());
 }
 
-int __gen_MultisigContract_key1((int, int, int, int) self) impure {
-    var ((self'seqno, self'user1_key, self'user2_key, self'user3_key)) = self;
-    return self'user1_key;
+int __gen_MultisigContract_key1((int, int, int, int) $self) impure {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
+    return $self'user1_key;
 }
 
 _ __gen_get_key1() method_id(107493) {
@@ -157,9 +157,9 @@ _ __gen_get_key1() method_id(107493) {
     return res;
 }
 
-int __gen_MultisigContract_key2((int, int, int, int) self) impure {
-    var ((self'seqno, self'user1_key, self'user2_key, self'user3_key)) = self;
-    return self'user2_key;
+int __gen_MultisigContract_key2((int, int, int, int) $self) impure {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
+    return $self'user2_key;
 }
 
 _ __gen_get_key2() method_id(103302) {
@@ -168,9 +168,9 @@ _ __gen_get_key2() method_id(103302) {
     return res;
 }
 
-int __gen_MultisigContract_key3((int, int, int, int) self) impure {
-    var ((self'seqno, self'user1_key, self'user2_key, self'user3_key)) = self;
-    return self'user3_key;
+int __gen_MultisigContract_key3((int, int, int, int) $self) impure {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
+    return $self'user3_key;
 }
 
 _ __gen_get_key3() method_id(99239) {
@@ -179,9 +179,9 @@ _ __gen_get_key3() method_id(99239) {
     return res;
 }
 
-int __gen_MultisigContract_seqno((int, int, int, int) self) impure {
-    var ((self'seqno, self'user1_key, self'user2_key, self'user3_key)) = self;
-    return self'seqno;
+int __gen_MultisigContract_seqno((int, int, int, int) $self) impure {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
+    return $self'seqno;
 }
 
 _ __gen_get_seqno() method_id(85143) {
@@ -190,17 +190,17 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
-(((int, int, int, int)), ()) __gen_MultisigContract_receive_Execute((int, int, int, int) self, ((int, int, slice), slice, slice, slice) msg) impure {
-    var (self'seqno, self'user1_key, self'user2_key, self'user3_key) = self;
-    var ((msg'operation'seqno, msg'operation'amount, msg'operation'target), msg'signature1, msg'signature2, msg'signature3) = msg;
-    int op_hash = cell_hash(__gen_writecell_Operation((msg'operation'seqno, msg'operation'amount, msg'operation'target)));
-    int ok1 = check_signature(op_hash, msg'signature1, self'user1_key);
-    int ok2 = check_signature(op_hash, msg'signature2, self'user2_key);
-    int ok3 = check_signature(op_hash, msg'signature3, self'user3_key);
-    require((msg'operation'seqno == self'seqno));
-    require(((ok1 & ok2) & ok3));
-    (self'seqno, self'user1_key, self'user2_key, self'user3_key)~__gen_MultisigContract_execute(__gen_Operation_unpack((msg'operation'seqno, msg'operation'amount, msg'operation'target)));
-    return ((self'seqno, self'user1_key, self'user2_key, self'user3_key), ());
+(((int, int, int, int)), ()) __gen_MultisigContract_receive_Execute((int, int, int, int) $self, ((int, int, slice), slice, slice, slice) $msg) impure {
+    var ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key) = $self;
+    var (($msg'operation'seqno, $msg'operation'amount, $msg'operation'target), $msg'signature1, $msg'signature2, $msg'signature3) = $msg;
+    int $op_hash = cell_hash(__gen_writecell_Operation(($msg'operation'seqno, $msg'operation'amount, $msg'operation'target)));
+    int $ok1 = check_signature($op_hash, $msg'signature1, $self'user1_key);
+    int $ok2 = check_signature($op_hash, $msg'signature2, $self'user2_key);
+    int $ok3 = check_signature($op_hash, $msg'signature3, $self'user3_key);
+    require(($msg'operation'seqno == $self'seqno));
+    require((($ok1 & $ok2) & $ok3));
+    ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)~__gen_MultisigContract_execute(__gen_Operation_unpack(($msg'operation'seqno, $msg'operation'amount, $msg'operation'target)));
+    return (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key), ());
 }
 
 

@@ -190,16 +190,16 @@ slice __gen_str_20550() asm "B{b5ee9c7241010101001c000034536f6d657468696e6720736
 slice __gen_str_20594() asm "B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE";
 
 cell __gen_StringsTester_init(cell sys') inline {
-    var ((self'fee)) = (0);
-    self'fee = 1200000000;
+    var (($self'fee)) = (0);
+    $self'fee = 1200000000;
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_StringsTester(b', (self'fee));
+    b' = __gen_write_StringsTester(b', ($self'fee));
     return b'.end_cell();
 }
 
-slice __gen_StringsTester_constantString((int) self) impure inline {
-    var ((self'fee)) = self;
+slice __gen_StringsTester_constantString((int) $self) impure inline {
+    var (($self'fee)) = $self;
     return __gen_str_20522();
 }
 
@@ -209,8 +209,8 @@ _ __gen_get_constantString() method_id(93932) {
     return res;
 }
 
-slice __gen_StringsTester_constantStringUnicode((int) self) impure inline {
-    var ((self'fee)) = self;
+slice __gen_StringsTester_constantStringUnicode((int) $self) impure inline {
+    var (($self'fee)) = $self;
     return __gen_str_20526();
 }
 
@@ -220,8 +220,8 @@ _ __gen_get_constantStringUnicode() method_id(94939) {
     return res;
 }
 
-slice __gen_StringsTester_constantStringUnicodeLong((int) self) impure inline {
-    var ((self'fee)) = self;
+slice __gen_StringsTester_constantStringUnicodeLong((int) $self) impure inline {
+    var (($self'fee)) = $self;
     return __gen_str_20530();
 }
 
@@ -231,11 +231,11 @@ _ __gen_get_constantStringUnicodeLong() method_id(104680) {
     return res;
 }
 
-cell __gen_StringsTester_dynamicStringCell((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_20538());
-    return __tact_string_builder_end(b);
+cell __gen_StringsTester_dynamicStringCell((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_string();
+    $b~__tact_string_builder_append(__gen_str_20538());
+    return __tact_string_builder_end($b);
 }
 
 _ __gen_get_dynamicStringCell() method_id(122225) {
@@ -244,11 +244,11 @@ _ __gen_get_dynamicStringCell() method_id(122225) {
     return res;
 }
 
-cell __gen_StringsTester_dynamicCommentCell((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_comment();
-    b~__tact_string_builder_append(__gen_str_20550());
-    return __tact_string_builder_end(b);
+cell __gen_StringsTester_dynamicCommentCell((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_comment();
+    $b~__tact_string_builder_append(__gen_str_20550());
+    return __tact_string_builder_end($b);
 }
 
 _ __gen_get_dynamicCommentCell() method_id(122531) {
@@ -257,12 +257,12 @@ _ __gen_get_dynamicCommentCell() method_id(122531) {
     return res;
 }
 
-cell __gen_StringsTester_dynamicCommentCellLarge((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_20538());
-    b~__tact_string_builder_append(__gen_str_20530());
-    return __tact_string_builder_end(b);
+cell __gen_StringsTester_dynamicCommentCellLarge((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_string();
+    $b~__tact_string_builder_append(__gen_str_20538());
+    $b~__tact_string_builder_append(__gen_str_20530());
+    return __tact_string_builder_end($b);
 }
 
 _ __gen_get_dynamicCommentCellLarge() method_id(74771) {
@@ -271,12 +271,12 @@ _ __gen_get_dynamicCommentCellLarge() method_id(74771) {
     return res;
 }
 
-slice __gen_StringsTester_dynamicCommentStringLarge((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_20538());
-    b~__tact_string_builder_append(__gen_str_20530());
-    return __tact_string_builder_end_slice(b);
+slice __gen_StringsTester_dynamicCommentStringLarge((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_string();
+    $b~__tact_string_builder_append(__gen_str_20538());
+    $b~__tact_string_builder_append(__gen_str_20530());
+    return __tact_string_builder_end_slice($b);
 }
 
 _ __gen_get_dynamicCommentStringLarge() method_id(74191) {
@@ -285,12 +285,12 @@ _ __gen_get_dynamicCommentStringLarge() method_id(74191) {
     return res;
 }
 
-slice __gen_StringsTester_stringWithNumber((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_20594());
-    b~__tact_string_builder_append(__tact_int_to_string(123));
-    return __tact_string_builder_end_slice(b);
+slice __gen_StringsTester_stringWithNumber((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_string();
+    $b~__tact_string_builder_append(__gen_str_20594());
+    $b~__tact_string_builder_append(__tact_int_to_string(123));
+    return __tact_string_builder_end_slice($b);
 }
 
 _ __gen_get_stringWithNumber() method_id(68752) {
@@ -299,12 +299,12 @@ _ __gen_get_stringWithNumber() method_id(68752) {
     return res;
 }
 
-slice __gen_StringsTester_stringWithNegativeNumber((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_20594());
-    b~__tact_string_builder_append(__tact_int_to_string((- 123)));
-    return __tact_string_builder_end_slice(b);
+slice __gen_StringsTester_stringWithNegativeNumber((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_string();
+    $b~__tact_string_builder_append(__gen_str_20594());
+    $b~__tact_string_builder_append(__tact_int_to_string((- 123)));
+    return __tact_string_builder_end_slice($b);
 }
 
 _ __gen_get_stringWithNegativeNumber() method_id(82914) {
@@ -313,12 +313,12 @@ _ __gen_get_stringWithNegativeNumber() method_id(82914) {
     return res;
 }
 
-slice __gen_StringsTester_stringWithLargeNumber((int) self) impure inline {
-    var ((self'fee)) = self;
-    tuple b = __tact_string_builder_start_string();
-    b~__tact_string_builder_append(__gen_str_20594());
-    b~__tact_string_builder_append(__tact_int_to_string(1000000000000000000000000000000000000000000000000000000000000));
-    return __tact_string_builder_end_slice(b);
+slice __gen_StringsTester_stringWithLargeNumber((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    tuple $b = __tact_string_builder_start_string();
+    $b~__tact_string_builder_append(__gen_str_20594());
+    $b~__tact_string_builder_append(__tact_int_to_string(1000000000000000000000000000000000000000000000000000000000000));
+    return __tact_string_builder_end_slice($b);
 }
 
 _ __gen_get_stringWithLargeNumber() method_id(94811) {
@@ -327,8 +327,8 @@ _ __gen_get_stringWithLargeNumber() method_id(94811) {
     return res;
 }
 
-slice __gen_StringsTester_stringWithFloat((int) self) impure inline {
-    var ((self'fee)) = self;
+slice __gen_StringsTester_stringWithFloat((int) $self) impure inline {
+    var (($self'fee)) = $self;
     return __tact_float_to_string(95, 1);
 }
 

@@ -8,6 +8,7 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
 import { getStringId } from "../../types/resolveStrings";
+import { id } from "./id";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -76,10 +77,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                return resolveFuncTypeUnpack(t, f.value, ctx);
+                return resolveFuncTypeUnpack(t, id(f.value), ctx);
             }
         }
-        return f.value;
+        return id(f.value);
     }
 
     //
@@ -233,15 +234,21 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         let path = tryExtractPath(f);
         if (path) {
 
+            // Prepare path
+            let convertedPath: string[] = [];
+            convertedPath.push(id(path[0]));
+            convertedPath.push(...path.slice(1));
+            let idd = convertedPath.join(`'`);
+
             // Special case for structs
             if (field.type.kind === 'ref') {
                 let ft = getType(ctx.ctx, field.type.name);
                 if (ft.kind === 'struct' || ft.kind === 'contract') {
-                    return resolveFuncTypeUnpack(field.type, path.join("'"), ctx);
+                    return resolveFuncTypeUnpack(field.type, idd, ctx);
                 }
             }
 
-            return path.join("'");
+            return idd;
         }
 
         // Getter instead of direct field access

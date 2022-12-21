@@ -21,9 +21,9 @@ global cell __tact_context_sys;
     return sc~__gen_read_SampleContract();
 }
 
-int __gen_SampleContract_stake((int, int, (int, int)) self) impure {
-    var ((self'a, self'b, (self'c'a, self'c'b))) = self;
-    return self'a;
+int __gen_SampleContract_stake((int, int, (int, int)) $self) impure {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b))) = $self;
+    return $self'a;
 }
 
 _ __gen_get_stake() method_id(80984) {

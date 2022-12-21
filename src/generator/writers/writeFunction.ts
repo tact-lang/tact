@@ -9,6 +9,7 @@ import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
+import { id } from "./id";
 import { writeExpression } from "./writeExpression";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
@@ -35,26 +36,29 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                ctx.append(`var ${resolveFuncTypeUnpack(t, f.name, ctx)} = ${writeExpression(f.expression, ctx)};`);
+                ctx.append(`var ${resolveFuncTypeUnpack(t, id(f.name), ctx)} = ${writeExpression(f.expression, ctx)};`);
                 return;
             }
         }
 
-        ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${f.name} = ${writeExpression(f.expression, ctx)};`);
+        ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${id(f.name)} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_assign') {
+
+        // Prepare lvalue
+        let path = f.path.map((v, i) => (i === 0) ? id(v.name) : v.name).join(`'`);
 
         // Contract/struct case
         let t = getExpType(ctx.ctx, f.path[f.path.length - 1]);
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                ctx.append(`${resolveFuncTypeUnpack(t, `${f.path.map((v) => v.name).join(`'`)}`, ctx)} = ${writeExpression(f.expression, ctx)};`);
+                ctx.append(`${resolveFuncTypeUnpack(t, `${path}`, ctx)} = ${writeExpression(f.expression, ctx)};`);
                 return;
             }
         }
 
-        ctx.append(`${f.path.map((v) => v.name).join(`'`)} = ${writeExpression(f.expression, ctx)};`);
+        ctx.append(`${path} = ${writeExpression(f.expression, ctx)};`);
         return;
     } else if (f.kind === 'statement_condition') {
         writeCondition(f, self, false, ctx);
@@ -137,7 +141,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         } else {
             returns = `(${resolveFuncType(self, ctx)}, ())`;
         }
-        returnsStr = resolveFuncTypeUnpack(self, 'self', ctx);
+        returnsStr = resolveFuncTypeUnpack(self, id('self'), ctx);
     }
 
     // Resolve function descriptor
@@ -145,10 +149,10 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
     let args: string[] = [];
     if (self) {
-        args.push(resolveFuncType(self, ctx) + ' self');
+        args.push(resolveFuncType(self, ctx) + ' ' + id('self'));
     }
     for (let a of f.args) {
-        args.push(resolveFuncType(a.type, ctx) + ' ' + a.name);
+        args.push(resolveFuncType(a.type, ctx) + ' ' + id(a.name));
     }
 
     // Write function body
@@ -158,11 +162,11 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
             // Unpack self
             if (self) {
-                ctx.append(`var (${resolveFuncTypeUnpack(self, 'self', ctx)}) = self;`);
+                ctx.append(`var (${resolveFuncTypeUnpack(self, id('self'), ctx)}) = ${id('self')};`);
             }
             for (let a of fd.args) {
                 if (!resolveFuncPrimitive(resolveTypeRef(ctx.ctx, a.type), ctx)) {
-                    ctx.append(`var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), a.name, ctx)}) = ${a.name};`);
+                    ctx.append(`var (${resolveFuncTypeUnpack(resolveTypeRef(ctx.ctx, a.type), id(a.name), ctx)}) = ${id(a.name)};`);
                 }
             }
 
@@ -188,12 +192,12 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     // Binary receiver
     if (selector.kind === 'internal-binary') {
         ctx.fun(`__gen_${self.name}_receive_${selector.type}`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
+            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
-            ctx.append(`((${resolveFuncType(self, ctx)}), ()) __gen_${self.name}_receive_${selector.type}(${[resolveFuncType(self, ctx) + ' self', resolveFuncType(selector.type, ctx) + ' ' + selector.name].join(', ')}) ${modifier} {`);
+            ctx.append(`((${resolveFuncType(self, ctx)}), ()) __gen_${self.name}_receive_${selector.type}(${[resolveFuncType(self, ctx) + ' ' + id('self'), resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)].join(', ')}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
-                ctx.append(`var ${resolveFuncTypeUnpack(selector.type, selector.name, ctx)} = ${selector.name};`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
+                ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -211,11 +215,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     // Empty receiver
     if (selector.kind === 'internal-empty') {
         ctx.fun(`__gen_${self.name}_receive`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
+            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
-            ctx.append(`((${resolveFuncType(self, ctx)}), ()) __gen_${self.name}_receive(${(resolveFuncType(self, ctx) + ' self')}) ${modifier} {`);
+            ctx.append(`((${resolveFuncType(self, ctx)}), ()) __gen_${self.name}_receive(${(resolveFuncType(self, ctx) + ' ' + id('self'))}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -238,11 +242,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
             .hash()
             .toString('hex', 0, 64);
         ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
+            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_comment_${hash}(${(resolveFuncType(self, ctx) + ' self')}) ${modifier} {`);
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_comment_${hash}(${(resolveFuncType(self, ctx) + ' ' + id('self'))}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -259,11 +263,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     // Fallback
     if (selector.kind === 'internal-fallback') {
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
+            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_fallback(${resolveFuncType(self, ctx)} self, slice ${selector.name}) ${modifier} {`);
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_fallback(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -280,11 +284,11 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     // Bounced
     if (selector.kind === 'internal-bounce') {
         ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, 'self', ctx);
+            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_bounced(${resolveFuncType(self, ctx)} self, slice ${selector.name}) ${modifier} {`);
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_bounced(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)}) ${modifier} {`);
             ctx.inIndent(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, 'self', ctx)} = self;`);
+                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
                     writeStatement(s, selfRes, ctx);
@@ -308,7 +312,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
             throw new Error(`No self type for getter ${f.name}`); // Impossible
         }
 
-        ctx.append(`_ __gen_get_${f.name}(${[f.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')}) method_id(${getMethodId(f.name)}) {`);
+        ctx.append(`_ __gen_get_${f.name}(${[f.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')}) method_id(${getMethodId(f.name)}) {`);
         ctx.inIndent(() => {
 
             // Load contract state
@@ -317,7 +321,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
             // Execute get method
             ctx.used(`__gen_${self.name}_${f.name}`);
-            ctx.append(`var res = __gen_${self.name}_${f.name}(${['self', ...f.args.map((v) => v.name)].join(', ')});`);
+            ctx.append(`var res = __gen_${self.name}_${f.name}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
 
             // Return restult
             ctx.append(`return res;`);
@@ -330,13 +334,13 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
     ctx.fun(`__gen_${t.name}_init`, () => {
 
         let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
-        ctx.append(`cell __gen_${t.name}_init(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
+        ctx.append(`cell __gen_${t.name}_init(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
 
             // Unpack args
             for (let a of init.args) {
                 if (!resolveFuncPrimitive(a.type, ctx)) {
-                    ctx.append(`var (${resolveFuncTypeUnpack(a.type, a.name, ctx)}) = ${a.name};`);
+                    ctx.append(`var (${resolveFuncTypeUnpack(a.type, id(a.name), ctx)}) = ${id(a.name)};`);
                 }
             }
 
@@ -352,11 +356,11 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
                 initValues.push(init);
             }
             if (initValues.length > 0) { // Special case for empty contracts
-                ctx.append(`var (${resolveFuncTypeUnpack(t, 'self', ctx)}) = (${initValues.join(', ')});`);
+                ctx.append(`var (${resolveFuncTypeUnpack(t, id('self'), ctx)}) = (${initValues.join(', ')});`);
             }
 
             // Generate statements
-            let returns = resolveFuncTypeUnpack(t, 'self', ctx);
+            let returns = resolveFuncTypeUnpack(t, id('self'), ctx);
             for (let s of init.ast.statements) {
                 writeStatement(s, returns, ctx);
             }
@@ -365,7 +369,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             ctx.used(`__gen_write_${t.name}`);
             ctx.append(`var b' = begin_cell();`)
             ctx.append(`b' = b'.store_ref(sys');`)
-            ctx.append(`b' = __gen_write_${t.name}(${[`b'`, resolveFuncTypeUnpack(t, 'self', ctx)].join(', ')});`);
+            ctx.append(`b' = __gen_write_${t.name}(${[`b'`, resolveFuncTypeUnpack(t, id('self'), ctx)].join(', ')});`);
             ctx.append(`return b'.end_cell();`);
         });
         ctx.append(`}`);
@@ -373,7 +377,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
 
     ctx.fun(`__gen_${t.name}_init_child`, () => {
         let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
-        ctx.append(`(cell, cell) __gen_${t.name}_init_child(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name)].join(', ')})${modifier}{`);
+        ctx.append(`(cell, cell) __gen_${t.name}_init_child(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
             ctx.used(`__tact_dict_get_code`);
 
@@ -393,7 +397,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             // Build cell
             ctx.append(`cell sys = begin_cell().store_dict(contracts).end_cell();`);
             ctx.used(`__gen_${t.name}_init`);
-            ctx.append(`return (mine, __gen_${t.name}_init(${['sys', ...init.args.map((v) => v.name)].join(', ')}));`);
+            ctx.append(`return (mine, __gen_${t.name}_init(${['sys', ...init.args.map((v) => id(v.name))].join(', ')}));`);
         });
         ctx.append(`}`);
     });
