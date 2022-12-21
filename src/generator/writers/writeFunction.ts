@@ -260,6 +260,28 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         });
     }
 
+
+    // Fallback
+    if (selector.kind === 'internal-comment-fallback') {
+        ctx.fun(`__gen_${self.name}_receive_comment`, () => {
+            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
+            ctx.append(`(${resolveFuncType(self, ctx)}, ()) __gen_${self.name}_receive_comment(${([resolveFuncType(self, ctx) + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')}) ${modifier} {`);
+            ctx.inIndent(() => {
+                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
+
+                for (let s of f.ast.statements) {
+                    writeStatement(s, selfRes, ctx);
+                }
+
+                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                    ctx.append(`return (${selfRes}, ());`);
+                }
+            });
+            ctx.append(`}`);
+        });
+    }
+
     // Fallback
     if (selector.kind === 'internal-fallback') {
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {

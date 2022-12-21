@@ -133,44 +133,72 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             }
 
             // Text resolvers
-            let hasComments = !!type.receivers.find((v) => v.selector.kind === 'internal-comment');
+            let hasComments = !!type.receivers.find((v) => v.selector.kind === 'internal-comment' || v.selector.kind === 'internal-comment-fallback');
             if (hasComments) {
                 ctx.append();
                 ctx.append(`;; Text Receivers`);
                 ctx.append(`if (op == 0) {`);
                 ctx.inIndent(() => {
-                    ctx.append(`var text_op = slice_hash(in_msg);`);
-                    for (const r of type.receivers) {
-                        const selector = r.selector;
-                        if (selector.kind === 'internal-comment') {
-                            let hash = beginCell()
-                                .storeUint(0, 32)
-                                .storeBuffer(Buffer.from(selector.comment, 'utf8'))
-                                .endCell()
-                                .hash()
-                                .toString('hex', 0, 64);
-                            ctx.append();
-                            ctx.append(`;; Receive "${selector.comment}" message`);
-                            ctx.append(`if (text_op == 0x${hash}) {`);
-                            ctx.inIndent(() => {
+                    if (!!type.receivers.find((v) => v.selector.kind === 'internal-comment')) {
+                        ctx.append(`var text_op = slice_hash(in_msg);`);
+                        for (const r of type.receivers) {
+                            const selector = r.selector;
+                            if (selector.kind === 'internal-comment') {
+                                let hash = beginCell()
+                                    .storeUint(0, 32)
+                                    .storeBuffer(Buffer.from(selector.comment, 'utf8'))
+                                    .endCell()
+                                    .hash()
+                                    .toString('hex', 0, 64);
+                                ctx.append();
+                                ctx.append(`;; Receive "${selector.comment}" message`);
+                                ctx.append(`if (text_op == 0x${hash}) {`);
+                                ctx.inIndent(() => {
 
-                                // Load storage
-                                ctx.used(`__gen_load_${type.name}`);
-                                ctx.append(`var self = __gen_load_${type.name}();`);
+                                    // Load storage
+                                    ctx.used(`__gen_load_${type.name}`);
+                                    ctx.append(`var self = __gen_load_${type.name}();`);
 
-                                // Execute function
-                                ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
-                                ctx.append(`self~__gen_${type.name}_receive_comment_${hash}();`);
+                                    // Execute function
+                                    ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
+                                    ctx.append(`self~__gen_${type.name}_receive_comment_${hash}();`);
 
-                                // Persist
-                                ctx.used(`__gen_store_${type.name}`);
-                                ctx.append(`__gen_store_${type.name}(self);`);
+                                    // Persist
+                                    ctx.used(`__gen_store_${type.name}`);
+                                    ctx.append(`__gen_store_${type.name}(self);`);
 
-                                // Exit
-                                ctx.append(`return ();`);
-                            })
-                            ctx.append(`}`);
+                                    // Exit
+                                    ctx.append(`return ();`);
+                                })
+                                ctx.append(`}`);
+                            }
                         }
+                    }
+
+                    // Comment fallback resolver
+                    let fallback = type.receivers.find((v) => v.selector.kind === 'internal-comment-fallback');
+                    if (fallback) {
+
+                        ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+                        ctx.inIndent(() => {
+
+                            // Load storage
+                            ctx.used(`__gen_load_${type.name}`);
+                            ctx.append(`var self = __gen_load_${type.name}();`);
+
+                            // Execute function
+                            ctx.used(`__gen_${type.name}_receive_comment`);
+                            ctx.append(`self~__gen_${type.name}_receive_comment(in_msg.skip_bits(32));`);
+
+                            // Persist
+                            ctx.used(`__gen_store_${type.name}`);
+                            ctx.append(`__gen_store_${type.name}(self);`);
+
+                            // Exit
+                            ctx.append(`return ();`);
+                        });
+
+                        ctx.append(`}`);
                     }
                 });
                 ctx.append(`}`);

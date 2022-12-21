@@ -226,6 +226,12 @@ export function resolveStatements(ctx: CompilerContext) {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: f.selector.type, optional: false }, sctx);
             } else if (f.selector.kind === 'internal-empty') {
                 // Nothing to add to context
+            } else if (f.selector.kind === 'internal-comment-fallback') {
+                sctx = addVariable(f.selector.name, { kind: 'ref', name: 'String', optional: false }, sctx);
+            } else if (f.selector.kind === 'internal-fallback') {
+                sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
+            } else if (f.selector.kind === 'internal-bounce') {
+                sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
             }
 
             // Process

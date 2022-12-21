@@ -216,7 +216,7 @@ _ __gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_fallback((int, int, int) $self, slice $Slice) impure {
+((int, int, int), ()) __gen_Wallet_receive_fallback((int, int, int) $self, slice $msg) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);

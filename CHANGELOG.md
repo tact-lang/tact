@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `checkDataSignature` similar to func `check_data_signature`
 - `String.asComment` for conversion text to a comment payload
 - `Resumable` trait, allows to resume contract operations once it was stopped
+- Comment receiver that allows to receive arbitrary comment
 
 ### Changed
 - `contractAddress` now accepts single argument of type `StateInit` and always produces address for workchain. Old method is renamed to `contractAddressExt`.
@@ -28,3 +29,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixing importing tact with providing extension, now `import "./lib";` and `import "./lib.tact";` are equivalent.
 - Fixing extension function generation
 - Fixing clashing of variable names with func primitives and global functions
+- Fix fallback and bounce argument type resolving

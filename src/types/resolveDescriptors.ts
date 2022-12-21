@@ -457,21 +457,42 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Raw receiver
-                        if (t.kind === 'primitive' && t.name === 'Slice') {
+                        if (t.kind === 'primitive') {
 
-                            // Check for existing receiver
-                            if (s.receivers.find((v) => v.selector.kind === 'internal-fallback')) {
-                                throwError(`Fallback receive function already exists`, d.ref);
+                            if (t.name === 'Slice') {
+
+                                // Check for existing receiver
+                                if (s.receivers.find((v) => v.selector.kind === 'internal-fallback')) {
+                                    throwError(`Fallback receive function already exists`, d.ref);
+                                }
+
+                                // Persist receiver
+                                s.receivers.push({
+                                    selector: {
+                                        kind: 'internal-fallback',
+                                        name: arg.name
+                                    },
+                                    ast: d
+                                });
+
+                            } else if (t.name === 'String') {
+
+                                // Check for existing receiver
+                                if (s.receivers.find((v) => v.selector.kind === 'internal-comment-fallback')) {
+                                    throwError('Comment fallback receive function already exists', d.ref);
+                                }
+
+                                // Persist receiver
+                                s.receivers.push({
+                                    selector: {
+                                        kind: 'internal-comment-fallback',
+                                        name: arg.name
+                                    },
+                                    ast: d
+                                });
+                            } else {
+                                throwError('Receive function can only accept message, Slice or String', d.ref);
                             }
-
-                            // Persist receiver
-                            s.receivers.push({
-                                selector: {
-                                    kind: 'internal-fallback',
-                                    name: arg.type.name
-                                },
-                                ast: d
-                            });
                         } else {
 
                             // Check type
@@ -501,8 +522,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             });
                         }
                     } else if (d.selector.kind === 'comment') {
-                        if (Buffer.from(d.selector.comment.value).length > 120 || d.selector.comment.value === '') {
-                            throwError('Comment length should be positive and less or equals to 120 bytes', d.ref);
+                        if (d.selector.comment.value === '') {
+                            throwError('To use empty comment receiver, just remove argument instead of passing empty string', d.ref);
                         }
                         let c = d.selector.comment.value;
                         if (s.receivers.find((v) => v.selector.kind === 'internal-comment' && v.selector.comment === c)) {
@@ -691,6 +712,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         return true;
                     }
                     if (a.kind === 'internal-fallback' && b.kind === 'internal-fallback') {
+                        return true;
+                    }
+                    if (a.kind === 'internal-comment-fallback' && b.kind === 'internal-comment-fallback') {
                         return true;
                     }
                     return false;

@@ -74,6 +74,9 @@ export type ReceiverSelector = {
     kind: 'internal-comment',
     comment: string
 } | {
+    kind: 'internal-comment-fallback',
+    name: string
+} | {
     kind: 'internal-fallback',
     name: string
 } | {

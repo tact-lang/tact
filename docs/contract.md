@@ -30,6 +30,7 @@ They could be defined for multiple types of messages.
 
 * Empty receiver
 * Comment receiver
+* Comment fallback receiver
 * Message receiver
 * Fallback receiver
 * Bounced receiver
@@ -63,6 +64,19 @@ contract Sample {
   }
 }
 ```
+
+## Comment fallback receiver
+
+This receiver allows to receive arbitrary comment message
+
+contract Sample {
+  
+  // ..
+
+  receive(msg: String) {
+    // This receiver called for a any text message that wasn't matched by other receivers
+  }
+}
 
 ## Message receiver
 
