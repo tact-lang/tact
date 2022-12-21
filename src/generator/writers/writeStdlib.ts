@@ -12,6 +12,13 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_str_to_slice', () => {
         ctx.append(`slice __tact_str_to_slice(slice s) asm "NOP";`);
     });
+    ctx.fun(`__tact_my_balance`, () => {
+        ctx.append(`int __tact_my_balance() inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`return pair_first(get_balance());`)
+        });
+        ctx.append(`}`);
+    });
     ctx.fun('__tact_not_null', () => {
         ctx.append(`forall X -> X __tact_not_null(X x) { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
     });

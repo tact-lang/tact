@@ -77,6 +77,9 @@ extends mutates native loadUint(self: Slice, l: Int): Int;
 @name(preload_uint)
 extends native preloadUint(self: Slice, l: Int): Int;
 
+@name(load_coins)
+extends mutates native loadCoins(self: Slice): Int;
+
 @name(end_parse)
 extends native endParse(self: Slice);
 

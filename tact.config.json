@@ -6,6 +6,11 @@
       "output": "./src/examples/output"
     },
     {
+      "name": "payouts",
+      "path": "./src/examples/payouts.tact",
+      "output": "./src/examples/output"
+    },
+    {
       "name": "wallet",
       "path": "./src/examples/wallet.tact",
       "output": "./src/examples/output"

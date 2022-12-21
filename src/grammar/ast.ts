@@ -529,5 +529,10 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         for (let e of node.args) {
             traverse(e, callback);
         }
+        return;
+    }
+    if (node.kind === 'new_parameter') {
+        traverse(node.exp, callback);
+        return;
     }
 }

@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Binary shift operators `>>` and `<<`
 - `Slice.fromBase64` that converts text slice that has base64 to binary representation (both classic and url)
 - `Slice.asCell`, `Builder.asCell`, `Cell.asSlice`, `Builder.asCell` convenience functions
+- `Slice.loadCoins` that reads coins from slice
+- `myBalance` that returns current balance of a contract before execution phase
 
 ### Changed
 - `contractAddress` now accepts single argument of type `StateInit` and always produces address for workchain. Old method is renamed to `contractAddressExt`.

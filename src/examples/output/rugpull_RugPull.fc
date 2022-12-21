@@ -158,7 +158,7 @@ _ __gen_Context_get_sender((int, slice, int) v) inline {
 }
 
 ;; String "Stopped"
-slice __gen_str_17042() asm "B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE";
+slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE";
 
 builder storeBool(builder $s, int $value) impure {
     if ($value) {
@@ -345,7 +345,7 @@ _ __gen_get_stopped() method_id(74107) {
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~__gen_RugPull_requireOwner();
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~__gen_RugPull_requireNotStopped();
     $self'stopped = true;
-    reply(__gen_String_asComment(__gen_str_17042()));
+    reply(__gen_String_asComment(__gen_str_441410314()));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 

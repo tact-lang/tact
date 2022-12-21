@@ -12,3 +12,6 @@ fun contractAddress(s: StateInit): Address {
 
 @name(my_address)
 native myAddress(): Address;
+
+@name(__tact_my_balance)
+native myBalance(): Int;

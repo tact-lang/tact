@@ -1,14 +1,23 @@
+import { sha256, sha256_sync } from "ton-crypto";
 import { CompilerContext, createContextStore } from "../context";
-import { ASTNode, traverse } from "../grammar/ast";
+import { ASTNode, ASTString, traverse } from "../grammar/ast";
 import { getAllStaticFunctions, getAllTypes } from "./resolveDescriptors";
 
 let store = createContextStore<{ value: string, id: number }>();
+
+function stringId(src: ASTString): number {
+    return sha256_sync(src.value).readUint32BE(0);
+}
 
 function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
     traverse(ast, (node) => {
         if (node.kind === 'string') {
             if (!store.get(ctx, node.value)) {
-                ctx = store.set(ctx, node.value, { value: node.value, id: node.id });
+                let id = stringId(node);
+                if (Object.values(store.all(ctx)).find((v) => v.id === id)) {
+                    throw new Error(`Duplicate string id: ${node.value}`);
+                }
+                ctx = store.set(ctx, node.value, { value: node.value, id });
             }
         }
     })
