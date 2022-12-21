@@ -96,3 +96,11 @@ if (condition) {
   doSomething3();
 }
 ```
+
+## initOf
+
+Allows to compute init state for a contract:
+
+```
+let state: StateInit = initOf Contract(123, 123);
+```
