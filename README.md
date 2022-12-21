@@ -1,5 +1,8 @@
 # TACT language compiler
 
+* [Overview](/docs/overview.md)
+* [Changelog](/CHANGELOG.md)
+
 ## Getting started
 
 Easiest way to start is to use our project template and read [language overview](/docs/overview.md).
