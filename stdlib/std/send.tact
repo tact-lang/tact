@@ -61,3 +61,14 @@ fun send(params: SendParameters) {
     let c: Cell = endCell(b);
     nativeSendMessage(c, params.mode);
 }
+
+fun reply(body: Cell?) {
+    let ctx: Context = context();
+    send(SendParameters{
+        bounce: true,
+        to: ctx.sender,
+        value: 0,
+        mode: 64 + 2, 
+        body: body
+    });
+}

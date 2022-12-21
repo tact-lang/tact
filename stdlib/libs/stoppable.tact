@@ -1,5 +1,6 @@
 @interface("org.ton.stoppable")
 trait Stoppable with Ownable {
+    
     stopped: Bool;
     owner: Address;
 
@@ -7,10 +8,11 @@ trait Stoppable with Ownable {
         require(!self.stopped);
     }
 
-    receive("stop") {
+    receive("Stop") {
         self.requireOwner();
         self.requireNotStopped();
         self.stopped = true;
+        reply("Stopped".asComment());
     }
 
     get fun stopped(): Bool {

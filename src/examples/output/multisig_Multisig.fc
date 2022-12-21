@@ -268,7 +268,7 @@ _ __gen_get_members() method_id(104769) {
     var ((msg'request'requested, msg'request'to, msg'request'value, msg'request'timeout, msg'request'bounce, msg'request'mode, msg'request'body)) = msg;
     var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     var (opInit'code, opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), self'members, self'requiredWeight, (msg'request'requested, msg'request'to, msg'request'value, msg'request'timeout, msg'request'bounce, msg'request'mode, msg'request'body));
-    slice opAddress = contractAddress(0, opInit'code, opInit'data);
+    slice opAddress = contractAddress((opInit'code, opInit'data));
     require(__tact_address_eq(opAddress, ctx'sender));
     require((msg'request'timeout > now()));
     send((msg'request'bounce, msg'request'to, msg'request'value, msg'request'mode, msg'request'body, null(), null()));

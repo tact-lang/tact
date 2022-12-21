@@ -37,6 +37,67 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+    
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+        
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+        
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+        
+        ;; Update builders
+        builders = cons(b, tail);
+        
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    
+    return ((builders), ());
+}
+
 (slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3067051791);
     var v'newOwner = sc_0~__tact_load_address();
@@ -96,6 +157,9 @@ _ __gen_Context_get_sender((int, slice, int) v) inline {
     set_data(b.end_cell());
 }
 
+;; String "Stopped"
+slice __gen_str_12351() asm "B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE";
+
 builder storeBool(builder s, int value) impure {
     if (value) {
         return store_int(s, (- 1), 1);
@@ -149,6 +213,18 @@ builder storeBool(builder s, int value) impure {
     }
     cell c = end_cell(b);
     send_raw_message(c, params'mode);
+}
+
+() reply(cell body) impure {
+    var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
+    send((true, ctx'sender, 0, (64 + 2), body, null(), null()));
+}
+
+cell __gen_String_asComment(slice self) impure {
+    var (self) = self;
+    tuple b = __tact_string_builder_start_comment();
+    b~__tact_string_builder_append(self);
+    return __tact_string_builder_end(b);
 }
 
 cell __gen_RugPull_init(cell sys', slice owner, int investment, int returns, int fee) {
@@ -269,6 +345,7 @@ _ __gen_get_stopped() method_id(74107) {
     (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireOwner();
     (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireNotStopped();
     self'stopped = true;
+    reply(__gen_String_asComment(__gen_str_12351()));
     return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
 }
 

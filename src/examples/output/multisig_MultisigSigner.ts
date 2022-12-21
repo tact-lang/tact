@@ -2,6 +2,82 @@ import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessag
 import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
+export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+}
+
+export function packTupleStateInit(src: StateInit): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+    return __stack;
+}
+
+export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BN;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(src.value, 257);
+    return b_0.endCell();
+}
+
+export function packStackContext(src: Context, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+}
+
+export function packTupleContext(src: Context): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
+export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
+export function unpackTupleContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -105,82 +181,6 @@ export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     const code = slice.readCellOpt();
     const data = slice.readCellOpt();
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export type Context = {
-    $$type: 'Context';
-    bounced: boolean;
-    sender: Address;
-    value: BN;
-}
-
-export function packContext(src: Context): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeBit(src.bounced);
-    b_0 = b_0.storeAddress(src.sender);
-    b_0 = b_0.storeInt(src.value, 257);
-    return b_0.endCell();
-}
-
-export function packStackContext(src: Context, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-}
-
-export function packTupleContext(src: Context): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    return __stack;
-}
-
-export function unpackStackContext(slice: TupleSlice4): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
-}
-export function unpackTupleContext(slice: TupleSlice4): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
-}
-export type StateInit = {
-    $$type: 'StateInit';
-    code: Cell;
-    data: Cell;
-}
-
-export function packStateInit(src: StateInit): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeRef(src.code);
-    b_0 = b_0.storeRef(src.data);
-    return b_0.endCell();
-}
-
-export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-}
-
-export function packTupleStateInit(src: StateInit): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-    return __stack;
-}
-
-export function unpackStackStateInit(slice: TupleSlice4): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
 }
 export type Request = {
     $$type: 'Request';
@@ -292,7 +292,7 @@ export function unpackTupleSigned(slice: TupleSlice4): Signed {
     return { $$type: 'Signed', request: request };
 }
 export async function MultisigSigner_init(master: Address, members: Cell, requiredWeight: BN, request: Request) {
-    const __code = 'te6ccgECIQEABEEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIEhMCASAICQAH/5cEHAIBSAoLAgEgEBECgTt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CDAACLXScEhsOMCwACRMOMN8sCCgDA0ACwgbvLQgIAGsW+1E0NQB+GL6QAEB9ASBAQHXAIEBAdcA0gDUAdDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB20B0gABkjHU3lVgNxB8EHsQehB5EHhVBWwc8BQOAfr5AYLwIq7m0KbcFGV3J33VjQauMJCjzdPYqIVhGEIIrl9usDm6jtXtRNDUAfhi+kABAfQEgQEB1wCBAQHXANIA1AHQ0x8BghD0KrYDuvLggfpAAQH6QAEB+gDTH9IA0wdtAdIAAZIx1N5VYDcQfBB7EHoQeRB4VQVsHPAV4A8ApMj4QgHMVbBQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6UcDLKAJV/AcoAzOLJAczJ7VQAqMj4QgHMVbBQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6UcDLKAJV/AcoAzOLJAczJ7VTbMQAjUhbpVbWfRZMODIAc8AQTP0QYAB1EEz9ApvoZQB1wAw4FttgCASAUFQIBSBobAgEgFhcCASAYGQAVJR/AcoA4HABygCAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8BDIcPAQcPAQJG6zlX/wEBTMlTQDcPAQ4iRus5V/8BAUzJU0A3DwEOJw8BACf/AQAslYzJYzMwFw8BDiIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAsRwcAzIzAwHBVCTUAgGRBRQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6UcDLKAJV/AcoAzOLJAczJgAAUbFeAAASABYwj+CO88A8ns/AP+EFvIzAxK4EBCyKBAQHwBvABHIEBC1ANbYEBAfAFUKugUwi+4wAJgHACeN39wcIEAglR5h1R5h1YSyFVgghAZF931UAjLHweCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbpRwMsoAlX8BygDM4skvVSBtbfARBwAJvBbngJQCAWYfIACvsL+7UTQ1AH4YvpAAQH0BIEBAdcAgQEB1wDSANQB0NMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMHbQHSAAGSMdTeVWA3EHwQexB6EHkQeFUFbBzwE4ABNsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5g';
+    const __code = 'te6ccgECIQEABEEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIEhMCASAICQAV/KP4DlAHA4AOUAQCAUgKCwIBIBARAoE7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgwAAi10nBIbDjAsAAkTDjDfLAgoAwNAAsIG7y0ICABrFvtRNDUAfhi+kABAfQEgQEB1wCBAQHXANIA1AHQ0x8BghD0KrYDuvLggfpAAQH6QAEB+gDTH9IA0wdtAdIAAZIx1N5VYDcQfBB7EHoQeRB4VQVsHPAUDgH6+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uo7V7UTQ1AH4YvpAAQH0BIEBAdcAgQEB1wDSANQB0NMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMHbQHSAAGSMdTeVWA3EHwQexB6EHkQeFUFbBzwFeAPAKTI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMye1UAKjI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFulHAyygCVfwHKAMziyQHMye1U2zEAI1IW6VW1n0WTDgyAHPAEEz9EGAAdRBM/QKb6GUAdcAMOBbbYAgEgFBUCAUgaGwIBIBYXAgEgGBkABzy4IOAA6zIcQHKARfKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjjV/8A/IcPAPcPAPJG6zlX/wDxTMlTQDcPAP4iRus5V/8A8UzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmX8BygAB8AEBzJRwMsoA4skB+wCAAsRwcAzIzAwHBVCTUAgGRBRQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6UcDLKAJV/AcoAzOLJAczJgAAUbFeAAASABYwj+CO88BAns/AQ+EFvIzAxK4EBCyKBAQHwBvABHIEBC1ANbYEBAfAFUKugUwi+4wAJgHACeN39wcIEAglR5h1R5h1YSyFVgghAZF931UAjLHweCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbpRwMsoAlX8BygDM4skvVSBtbfARBwAJvBbngJQCAWYfIACvsL+7UTQ1AH4YvpAAQH0BIEBAdcAgQEB1wDSANQB0NMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMHbQHSAAGSMdTeVWA3EHwQexB6EHkQeFUFbBzwE4ABNsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5g';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

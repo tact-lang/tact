@@ -107,7 +107,7 @@ contract Multisig {
         // NOTE: this will check members, required weight, master address
         let ctx: Context = context();
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg.request);
-        let opAddress: Address = contractAddress(0, opInit.code, opInit.data);
+        let opAddress: Address = contractAddress(opInit);
         require(opAddress == ctx.sender);
         require(msg.request.timeout > now());
 

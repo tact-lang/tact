@@ -15,8 +15,9 @@ PROGRAM{
   DECLPROC __gen_read_Multisig
   DECLPROC __gen_load_Multisig
   DECLPROC __gen_store_Multisig
-  DECLPROC require
   DECLPROC storeBool
+  DECLPROC contractAddress
+  DECLPROC require
   DECLPROC send
   DECLPROC __gen_MultisigSigner_init
   DECLPROC __gen_MultisigSigner_init_child
@@ -219,9 +220,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  require PROC:<{
-    131 THROWIFNOT
-  }>
   storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
@@ -231,6 +229,14 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
+  }>
+  contractAddress PROC:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address CALLDICT
+  }>
+  require PROC:<{
+    131 THROWIFNOT
   }>
   send PROC:<{
     NEWC
@@ -411,9 +417,8 @@ PROGRAM{
     s0 s7 XCHG
     3 4 BLKSWAP
     __gen_MultisigSigner_init_child CALLDICT
-    0 PUSHINT
-    s2 s1 PUSH2
-    __tact_compute_contract_address CALLDICT
+    2DUP
+    contractAddress CALLDICT
     TRUE
     0 PUSHINT
     s4 s2 XCHG2
@@ -434,9 +439,7 @@ PROGRAM{
     s10 s9 s8 PUSH3
     s10 s9 PUSH2
     __gen_MultisigSigner_init_child CALLDICT
-    0 PUSHINT
-    -ROT
-    __tact_compute_contract_address CALLDICT
+    contractAddress CALLDICT
     s0 s7 XCHG2
     __tact_address_eq INLINECALLDICT
     require CALLDICT
@@ -522,6 +525,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d6146464b744859656e685250364b65487676534e41664870446f746a584a4d5a6a4878377667574b657a3869} PUSHSLICE
+    x{697066733a2f2f516d656a6d337431346658765a636738417642557754665a4a373261423261797571774579653833657535786176} PUSHSLICE
   }>
 }END>c

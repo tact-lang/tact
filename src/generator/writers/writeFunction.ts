@@ -147,8 +147,8 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     if (self) {
         args.push(resolveFuncType(self, ctx) + ' self');
     }
-    for (let a of fd.args) {
-        args.push(resolveFuncType(resolveTypeRef(ctx.ctx, a.type), ctx) + ' ' + a.name);
+    for (let a of f.args) {
+        args.push(resolveFuncType(a.type, ctx) + ' ' + a.name);
     }
 
     // Write function body

@@ -342,7 +342,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
             // Update self and remove first argument
             self = args[0].type.name;
-            args.shift();
+            args = args.slice(1);
         }
 
         // Check for mutating and extends

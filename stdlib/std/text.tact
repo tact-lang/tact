@@ -33,3 +33,9 @@ extends native toFloatString(self: Int, digits: Int): String;
 extends fun toCoinsString(self: Int): String {
     return self.toFloatString(self, 9);
 }
+
+extends fun asComment(self: String): Cell {
+    let b: StringBuilder = beginComment();
+    b.append(self);
+    return b.toCell();
+}

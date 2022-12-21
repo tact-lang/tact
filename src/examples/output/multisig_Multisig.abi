@@ -3,6 +3,124 @@
   "name": "Multisig",
   "structs": [
     {
+      "name": "StateInit",
+      "header": 0,
+      "fields": [
+        {
+          "name": "code",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "cell"
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 0,
+            "refs": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "Context",
+      "header": 0,
+      "fields": [
+        {
+          "name": "bounced",
+          "type": {
+            "kind": "ref",
+            "name": "Bool",
+            "optional": false
+          }
+        },
+        {
+          "name": "sender",
+          "type": {
+            "kind": "ref",
+            "name": "Address",
+            "optional": false
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": null,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 1,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 1
+            },
+            {
+              "index": 1,
+              "size": {
+                "bits": 267,
+                "refs": 0
+              },
+              "kind": "address"
+            },
+            {
+              "index": 2,
+              "size": {
+                "bits": 257,
+                "refs": 0
+              },
+              "kind": "int",
+              "bits": 257
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 525,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
       "name": "SendParameters",
       "header": 0,
       "fields": [
@@ -155,124 +273,6 @@
           "size": {
             "bits": 785,
             "refs": 3
-          }
-        }
-      }
-    },
-    {
-      "name": "Context",
-      "header": 0,
-      "fields": [
-        {
-          "name": "bounced",
-          "type": {
-            "kind": "ref",
-            "name": "Bool",
-            "optional": false
-          }
-        },
-        {
-          "name": "sender",
-          "type": {
-            "kind": "ref",
-            "name": "Address",
-            "optional": false
-          }
-        },
-        {
-          "name": "value",
-          "type": {
-            "kind": "ref",
-            "name": "Int",
-            "optional": false
-          }
-        }
-      ],
-      "allocation": {
-        "prefix": null,
-        "root": {
-          "fields": [
-            {
-              "index": 0,
-              "size": {
-                "bits": 1,
-                "refs": 0
-              },
-              "kind": "int",
-              "bits": 1
-            },
-            {
-              "index": 1,
-              "size": {
-                "bits": 267,
-                "refs": 0
-              },
-              "kind": "address"
-            },
-            {
-              "index": 2,
-              "size": {
-                "bits": 257,
-                "refs": 0
-              },
-              "kind": "int",
-              "bits": 257
-            }
-          ],
-          "next": null,
-          "size": {
-            "bits": 525,
-            "refs": 0
-          }
-        }
-      }
-    },
-    {
-      "name": "StateInit",
-      "header": 0,
-      "fields": [
-        {
-          "name": "code",
-          "type": {
-            "kind": "ref",
-            "name": "Cell",
-            "optional": false
-          }
-        },
-        {
-          "name": "data",
-          "type": {
-            "kind": "ref",
-            "name": "Cell",
-            "optional": false
-          }
-        }
-      ],
-      "allocation": {
-        "prefix": null,
-        "root": {
-          "fields": [
-            {
-              "index": 0,
-              "size": {
-                "bits": 0,
-                "refs": 1
-              },
-              "kind": "cell"
-            },
-            {
-              "index": 1,
-              "size": {
-                "bits": 0,
-                "refs": 1
-              },
-              "kind": "cell"
-            }
-          ],
-          "next": null,
-          "size": {
-            "bits": 0,
-            "refs": 2
           }
         }
       }
