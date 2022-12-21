@@ -7,6 +7,10 @@ exports[`writeSerialization should write serializer for A 1`] = `
 
 slice __tact_str_to_slice(slice s) asm "NOP";
 
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
@@ -617,6 +621,10 @@ exports[`writeSerialization should write serializer for B 1`] = `
 
 slice __tact_str_to_slice(slice s) asm "NOP";
 
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
@@ -1226,6 +1234,10 @@ exports[`writeSerialization should write serializer for C 1`] = `
 () __tact_nop() impure asm "NOP";
 
 slice __tact_str_to_slice(slice s) asm "NOP";
+
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
 
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 

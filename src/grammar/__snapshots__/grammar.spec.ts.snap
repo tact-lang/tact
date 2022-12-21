@@ -508,7 +508,7 @@ exports[`grammar should parse case-4 1`] = `
                   "ref": some3,
                   "value": "some3",
                 },
-                "op": ">",
+                "op": "<",
                 "ref": some3 < 10,
                 "right": {
                   "id": 17,
@@ -655,7 +655,7 @@ exports[`grammar should parse case-5 1`] = `
                   "ref": some3,
                   "value": "some3",
                 },
-                "op": ">",
+                "op": "<",
                 "ref": some3 < 123.add(10),
                 "right": {
                   "args": [
@@ -816,7 +816,7 @@ exports[`grammar should parse case-6 1`] = `
                   "ref": some3,
                   "value": "some3",
                 },
-                "op": ">",
+                "op": "<",
                 "ref": some3 < abs(123.add(10)),
                 "right": {
                   "args": [
@@ -1885,7 +1885,7 @@ exports[`grammar should parse case-16 1`] = `
                 "ref": i,
                 "value": "i",
               },
-              "op": ">=",
+              "op": "<=",
               "ref": i <= 100,
               "right": {
                 "id": 8,
