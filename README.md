@@ -1,6 +1,4 @@
-# Experimental Implementation of TACT language compiler
-
-This is an experimental implementation of a TACT language in typescript. This implementation aims to become production ready soon, but all developers must test their contracts before rolling out them in production.
+# TACT language compiler
 
 ## Getting started
 
