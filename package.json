@@ -10,7 +10,7 @@
     "clean": "rm -fr dist",
     "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/",
     "test": "jest",
-    "release": "yarn clean && yarn build && yarn test && yarn release-it"
+    "release": "yarn clean && yarn build && yarn test && yarn release-it --npm.yarn1"
   },
   "files": [
     "dist/**/*",
@@ -54,6 +54,10 @@
   },
   "resolutions": {
     "ton": "12.3.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "release-it": {
     "github": {
