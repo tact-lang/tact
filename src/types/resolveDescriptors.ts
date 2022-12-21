@@ -714,21 +714,36 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     // Copy to non-traits to avoid duplicates
-    for (let k in types) {
-        let t = types[k];
-        if (t.kind === 'trait') {
-            continue;
-        }
-        copyTraits(t);
-    }
 
-    // Copy to traits to traits
-    for (let k in types) {
-        let t = types[k];
-        if (t.kind !== 'trait') {
-            continue;
+    let processed = new Set<string>();
+    let processing = new Set<string>();
+
+    function processType(name: string) {
+
+        // Check if processed
+        if (processed.has(name)) {
+            return;
         }
-        copyTraits(t);
+        if (processing.has(name)) {
+            throwError(`Circular dependency detected for type ${name}`, types[name].ast.ref);
+        }
+        processing.has(name);
+
+        // Process dependencies first
+        let dependencies = Object.values(types).filter((v) => v.traits.find((v2) => v2.name === name));
+        for (let d of dependencies) {
+            processType(d.name);
+        }
+
+        // Copy traits
+        copyTraits(types[name]);
+
+        // Mark as processed
+        processed.add(name);
+        processing.delete(name);
+    }
+    for (let k in types) {
+        processType(k);
     }
 
     //

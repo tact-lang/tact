@@ -12,7 +12,7 @@ Tact {
     ProgramImport = import stringLiteral ";"
 
     // Built-in declarations
-    Primitive = primitive Type ";"
+    Primitive = "primitive" Type ";"
 
     // Static function
     StaticFunction = Function
@@ -29,15 +29,15 @@ Tact {
           | id ":" Type as id "=" Expression ";" --withSerializationAndInit
 
     // Struct
-    Struct = struct id "{" StructBody* "}" --originary
-           | message id "{" StructBody* "}" --message
-           | message "(" integerLiteral ")" id "{" StructBody* "}" --messageWithId
+    Struct = "struct" id "{" StructBody* "}" --originary
+           | "message" id "{" StructBody* "}" --message
+           | "message" "(" integerLiteral ")" id "{" StructBody* "}" --messageWithId
     StructBody = Field
 
     // Contract
     Contract = ContractAttribute* contract id "{" ContractBody* "}" --simple
              | ContractAttribute* contract id with ListOf<id,","> "{" ContractBody* "}" --withTraits
-    ContractInit = init "(" ListOf<FunctionArg,","> ")" "{" Statement* "}"
+    ContractInit = "init" "(" ListOf<FunctionArg,","> ")" "{" Statement* "}"
     ContractBody = Field
                  | ContractInit
                  | ReceiveFunction
@@ -179,12 +179,9 @@ Tact {
 
     // Keywords
     // NOTE Order is important
-    keyword = struct 
-            | contract 
-            | fun 
+    keyword = fun 
             | let
             | return 
-            | primitive 
             | extend 
             | native 
             | public 
@@ -192,12 +189,10 @@ Tact {
             | null 
             | if 
             | else 
-            | init 
             | while 
             | repeat 
             | do 
             | until 
-            | message 
             | as 
             | receive 
             | mutates
@@ -209,12 +204,10 @@ Tact {
             | initOf
             | overwrites
             | virtual
-    struct = "struct" ~idPart
     contract = "contract" ~idPart
     let = "let" ~idPart
     fun = "fun" ~idPart
     return = "return" ~idPart
-    primitive = "primitive" ~idPart
     extend = "extend" ~idPart
     native = "native" ~idPart
     public = "public" ~idPart
@@ -222,12 +215,10 @@ Tact {
     get = "get" ~idPart
     if = "if" ~idPart
     else = "else" ~idPart
-    init = "init" ~idPart
     while = "while" ~idPart
     repeat = "repeat" ~idPart
     do = "do" ~idPart
     until = "until" ~idPart
-    message = "message" ~idPart
     as = "as" ~idPart
     receive = "receive" ~idPart
     mutates = "mutates" ~idPart
