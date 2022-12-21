@@ -47,21 +47,21 @@ fun main() {
 const golden: string[] = [
     '1',
     '2',
-    '(a + b)',
-    '(a + (b * c))',
-    '(a + (b / c))',
+    '($a + $b)',
+    '($a + ($b * $c))',
+    '($a + ($b / $c))',
     'true',
     'false',
-    '(((a > 1) | ((b > 2) & (c == 3))) | (~ (((d != 4) & true) & (~ false))))',
-    'f1(a)',
+    '((($a > 1) | (($b > 2) & ($c == 3))) | (~ ((($d != 4) & true) & (~ false))))',
+    'f1($a)',
     '(1, 2)',
-    `j'a`,
+    `$j'a`,
     '__gen_A_get_b((1, 2))',
-    `((- j'b) + a)`,
-    `(((- j'b) + a) + (+ b))`,
+    `((- $j'b) + $a)`,
+    `(((- $j'b) + $a) + (+ $b))`,
     'null()',
-    '(__tact_not_null(o) + 1)',
-    `__gen_writecell_A((j'a, j'b))`
+    '(__tact_not_null($o) + 1)',
+    `__gen_writecell_A(($j'a, $j'b))`
 ]
 
 describe('writeExpression', () => {
