@@ -151,6 +151,13 @@ builder storeBool(builder $s, int $value) impure {
     send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
+cell __gen_Slice_asCell(slice $self) impure {
+    var ($self) = $self;
+    builder $builder = begin_cell();
+    $builder = store_slice($builder, $self);
+    return end_cell($builder);
+}
+
 cell __gen_String_asComment(slice $self) impure {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
@@ -166,9 +173,7 @@ cell __gen_String_asComment(slice $self) impure {
 
 ((int), ()) __gen_Echo_receive_fallback((int) $self, slice $msg) impure {
     var ($self'v) = $self;
-    builder $builder = begin_cell();
-    $builder = store_slice($builder, $msg);
-    reply(end_cell($builder));
+    reply(__gen_Slice_asCell($msg));
     return (($self'v), ());
 }
 

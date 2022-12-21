@@ -471,10 +471,10 @@ semantics.addOperation<ASTNode>('resolve_expression', {
         return createNode({ kind: 'op_binary', op: '>=', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
     ExpressionCompare_lt(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_binary', op: '>', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+        return createNode({ kind: 'op_binary', op: '<', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
     ExpressionCompare_lte(arg0, arg1, arg2) {
-        return createNode({ kind: 'op_binary', op: '>=', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
+        return createNode({ kind: 'op_binary', op: '<=', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });
     },
     ExpressionOr_or(arg0, arg1, arg2) {
         return createNode({ kind: 'op_binary', op: '||', left: arg0.resolve_expression(), right: arg2.resolve_expression(), ref: createRef(this) });

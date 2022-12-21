@@ -5,6 +5,8 @@ exports[`writeSerialization should write serializer for A 1`] = `
 
 () __tact_nop() impure asm "NOP";
 
+slice __tact_str_to_slice(slice s) asm "NOP";
+
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
@@ -613,6 +615,8 @@ exports[`writeSerialization should write serializer for B 1`] = `
 
 () __tact_nop() impure asm "NOP";
 
+slice __tact_str_to_slice(slice s) asm "NOP";
+
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
@@ -1220,6 +1224,8 @@ exports[`writeSerialization should write serializer for C 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
 () __tact_nop() impure asm "NOP";
+
+slice __tact_str_to_slice(slice s) asm "NOP";
 
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 

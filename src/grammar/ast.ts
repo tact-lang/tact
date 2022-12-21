@@ -109,7 +109,7 @@ export type ASTTypeRef = ASTTypeRefSimple | ASTTypeRefMap;
 export type ASTOpBinary = {
     kind: 'op_binary',
     id: number,
-    op: '+' | '-' | '*' | '/' | '!=' | '>' | '<' | '>=' | '<=' | '==' | '&&' | '||' | '%',
+    op: '+' | '-' | '*' | '/' | '!=' | '>' | '<' | '>=' | '<=' | '==' | '&&' | '||' | '%' | '<<' | '>>',
     left: ASTExpression,
     right: ASTExpression,
     ref: ASTRef

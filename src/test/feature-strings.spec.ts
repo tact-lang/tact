@@ -35,5 +35,22 @@ describe('feature-strings', () => {
         expect((await contract.getStringWithNegativeNumber())).toEqual('Hello, your balance: -123');
 
         expect((await contract.getStringWithFloat())).toEqual('9.5');
+
+        let base = await contract.getBase64();
+        console.warn(base.beginParse().readRemainingBytes().toString());
+        console.warn(base.beginParse().readRemainingBytes().toString('hex'));
+        console.warn(base.beginParse().readRemainingBytes().toString('base64'));
+
+        let b64cases = [
+            'SGVsbG8gV29ybGQ=',
+            'li7dzDacuo67Jg7mtqEm2TRuOMU=',
+            'FKIhdgaG5LGKiEtF1vHy4f3y700zaD6QwDS3IrNVGzNp2rY+1LFWTK6D44AyiC1n8uWz1itkYMZF0/aKDK0Yjg==',
+            'AA=='
+        ];
+        for (let b of b64cases) {
+            let s = Buffer.from(b, 'base64');
+            let d = (await contract.getProcessBase64(b)).beginParse().readRemainingBytes();
+            expect(d.toString('hex')).toEqual(s.toString('hex'));
+        }
     });
 });

@@ -68,4 +68,12 @@ contract StringsTester {
     get fun stringWithFloat(): String {
         return 95.toFloatString(1);
     }
+
+    get fun base64(): Slice {
+        return "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".fromBase64();
+    }
+
+    get fun processBase64(src: String): Slice {
+        return src.fromBase64();
+    }
 }

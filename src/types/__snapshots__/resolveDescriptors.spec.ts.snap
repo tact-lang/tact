@@ -94,7 +94,7 @@ exports[`resolveDescriptors should fail descriptors for case-10 1`] = `
 >  9 |   receive(src: Int) {
          ^~~~~~~~~~~~~~~~~~~
   10 |     
-Receive function can only accept message"
+Receive function can only accept message, Slice or String"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-11 1`] = `

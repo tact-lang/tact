@@ -101,13 +101,16 @@ Tact {
                  | ExpressionAnd
     ExpressionAnd = ExpressionAnd "&&" ExpressionCompare --and
                   | ExpressionCompare
-    ExpressionCompare = ExpressionCompare "!=" ExpressionAdd --not
-                      | ExpressionCompare "==" ExpressionAdd --eq
-                      | ExpressionCompare ">" ExpressionAdd --gt
-                      | ExpressionCompare ">=" ExpressionAdd --gte
-                      | ExpressionCompare "<" ExpressionAdd --lt
-                      | ExpressionCompare "<=" ExpressionAdd --lte
-                      | ExpressionAdd
+    ExpressionCompare = ExpressionCompare "!=" ExpressionShift --not
+                      | ExpressionCompare "==" ExpressionShift --eq
+                      | ExpressionCompare ">" ExpressionShift --gt
+                      | ExpressionCompare ">=" ExpressionShift --gte
+                      | ExpressionCompare "<" ExpressionShift --lt
+                      | ExpressionCompare "<=" ExpressionShift --lte
+                      | ExpressionShift
+    ExpressionShift = ExpressionShift ">>" ExpressionAdd --shr
+                    | ExpressionShift "<<" ExpressionAdd --shl
+                    | ExpressionAdd
     ExpressionAdd = ExpressionAdd "+" ~"+" ExpressionMul --add
                   | ExpressionAdd "-" ~"-" ExpressionMul --sub
                   | ExpressionMul

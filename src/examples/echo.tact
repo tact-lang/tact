@@ -7,8 +7,6 @@ contract Echo {
     }
     
     receive(msg: Slice) {
-        let builder: Builder = beginCell();
-        builder = storeSlice(builder, msg);
-        reply(endCell(builder));
+        reply(msg.asCell());
     }
 }

@@ -41,6 +41,7 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: bo
             return;
         } else if (ref.name === 'String') {
             w.append(`__stack.push({ type: 'slice', cell: stringToCell(${name}) });`);
+            return;
         } else {
             if (optional || forceTuple) {
                 w.append(`__stack.push({ type: 'tuple', items: packTuple${ref.name}(${name}) });`);

@@ -55,7 +55,7 @@ SETCP0
         s0 s1 XCHG
         32 PUSHINT
         SDSKIPFIRST
-        16 CALLDICT
+        17 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -81,7 +81,7 @@ SETCP0
     s0 s1 XCHG
     s1 POP
     s0 s1 XCHG
-    17 CALLDICT
+    18 CALLDICT
     NEWC
     2 GETGLOBVAR
     s0 s1 XCHG
@@ -320,6 +320,12 @@ SETCP0
     13 CALLDICT
 
   15: 
+    NEWC
+    s0 s1 XCHG
+    STSLICER
+    ENDC
+
+  16: 
     -1 PUSHINT
     NEWC
     s0 s1 XCHG
@@ -338,15 +344,12 @@ SETCP0
     7 CALLDICT
     6 CALLDICT
 
-  16: 
-    15 CALLDICT
+  17: 
+    16 CALLDICT
     14 CALLDICT
 
-  17: 
-    NEWC
-    s0 s1 XCHG
-    STSLICER
-    ENDC
+  18: 
+    15 CALLDICT
     14 CALLDICT
 
   113617: 

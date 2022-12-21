@@ -13,6 +13,7 @@ PROGRAM{
   DECLPROC storeBool
   DECLPROC send
   DECLPROC reply
+  DECLPROC __gen_Slice_asCell
   DECLPROC __gen_String_asComment
   DECLPROC __gen_Echo_receive_comment
   DECLPROC __gen_Echo_receive_fallback
@@ -282,6 +283,12 @@ PROGRAM{
     PUSHNULL
     send CALLDICT
   }>
+  __gen_Slice_asCell PROC:<{
+    NEWC
+    SWAP
+    STSLICER
+    ENDC
+  }>
   __gen_String_asComment PROC:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
@@ -293,10 +300,7 @@ PROGRAM{
     reply CALLDICT
   }>
   __gen_Echo_receive_fallback PROC:<{
-    NEWC
-    SWAP
-    STSLICER
-    ENDC
+    __gen_Slice_asCell CALLDICT
     reply CALLDICT
   }>
   recv_internal PROC:<{

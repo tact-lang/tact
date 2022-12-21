@@ -1,3 +1,5 @@
+slice __tact_str_to_slice(slice s) asm "NOP";
+
 global (int, slice, int) __tact_context;
 global cell __tact_context_sys;
 
@@ -172,22 +174,66 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
 }
 
 ;; String "test string"
-slice __gen_str_21808() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
+slice __gen_str_27236() asm "B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE";
 
 ;; String "привет мир 👀"
-slice __gen_str_21812() asm "B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE";
+slice __gen_str_27240() asm "B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE";
 
 ;; String "привет мир 👀 привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀привет мир 👀"
-slice __gen_str_21816() asm "B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE";
+slice __gen_str_27244() asm "B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE";
 
 ;; String "Hello!"
-slice __gen_str_21824() asm "B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE";
+slice __gen_str_27252() asm "B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE";
 
 ;; String "Something something world!"
-slice __gen_str_21836() asm "B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE";
+slice __gen_str_27264() asm "B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE";
 
 ;; String "Hello, your balance: "
-slice __gen_str_21880() asm "B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE";
+slice __gen_str_27308() asm "B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE";
+
+;; String "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu"
+slice __gen_str_27362() asm "B{b5ee9c72410101010026000048545746756553426f5957356b637942745957746c494778705a32683049486476636d7375ff762436} B>boc <s PUSHSLICE";
+
+slice __gen_Builder_asSlice(builder $self) impure inline {
+    var ($self) = $self;
+    return begin_parse(end_cell($self));
+}
+
+slice __gen_Slice_fromBase64(slice $self) impure inline {
+    var ($self) = $self;
+    int $size = (slice_bits($self) / 8);
+    builder $result = begin_cell();
+    repeat ($size) {
+        int $code = $self~load_uint(8);
+        if ((($code >= 65) & ($code <= 90))) {
+            $result = store_uint($result, ($code - 65), 6);
+        } elseif ((($code >= 97) & ($code <= 122))) {
+            $result = store_uint($result, ($code - (97 - 26)), 6);
+        } elseif ((($code >= 48) & ($code <= 57))) {
+            $result = store_uint($result, ($code + (52 - 48)), 6);
+        } elseif ((($code == 45) | ($code == 43))) {
+            $result = store_uint($result, 62, 6);
+        } elseif ((($code == 95) | ($code == 47))) {
+            $result = store_uint($result, 63, 6);
+        } elseif (($code == 61)) {
+        } else {
+            throw(134);
+        }
+    }
+    int $total = builder_bits($result);
+    int $padding = ($total % 8);
+    if (($padding != 0)) {
+        slice $s = __gen_Builder_asSlice($result);
+        return $s~load_bits(($total - $padding));
+    } else {
+        return __gen_Builder_asSlice($result);
+    }
+}
+
+slice __gen_String_fromBase64(slice $self) impure inline {
+    var ($self) = $self;
+    return __gen_Slice_fromBase64(__tact_str_to_slice($self));
+}
 
 cell __gen_StringsTester_init(cell sys') inline {
     var (($self'fee)) = (0);
@@ -200,7 +246,7 @@ cell __gen_StringsTester_init(cell sys') inline {
 
 slice __gen_StringsTester_constantString((int) $self) impure inline {
     var (($self'fee)) = $self;
-    return __gen_str_21808();
+    return __gen_str_27236();
 }
 
 _ __gen_get_constantString() method_id(93932) {
@@ -211,7 +257,7 @@ _ __gen_get_constantString() method_id(93932) {
 
 slice __gen_StringsTester_constantStringUnicode((int) $self) impure inline {
     var (($self'fee)) = $self;
-    return __gen_str_21812();
+    return __gen_str_27240();
 }
 
 _ __gen_get_constantStringUnicode() method_id(94939) {
@@ -222,7 +268,7 @@ _ __gen_get_constantStringUnicode() method_id(94939) {
 
 slice __gen_StringsTester_constantStringUnicodeLong((int) $self) impure inline {
     var (($self'fee)) = $self;
-    return __gen_str_21816();
+    return __gen_str_27244();
 }
 
 _ __gen_get_constantStringUnicodeLong() method_id(104680) {
@@ -234,7 +280,7 @@ _ __gen_get_constantStringUnicodeLong() method_id(104680) {
 cell __gen_StringsTester_dynamicStringCell((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_21824());
+    $b~__tact_string_builder_append(__gen_str_27252());
     return __tact_string_builder_end($b);
 }
 
@@ -247,7 +293,7 @@ _ __gen_get_dynamicStringCell() method_id(122225) {
 cell __gen_StringsTester_dynamicCommentCell((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_comment();
-    $b~__tact_string_builder_append(__gen_str_21836());
+    $b~__tact_string_builder_append(__gen_str_27264());
     return __tact_string_builder_end($b);
 }
 
@@ -260,8 +306,8 @@ _ __gen_get_dynamicCommentCell() method_id(122531) {
 cell __gen_StringsTester_dynamicCommentCellLarge((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_21824());
-    $b~__tact_string_builder_append(__gen_str_21816());
+    $b~__tact_string_builder_append(__gen_str_27252());
+    $b~__tact_string_builder_append(__gen_str_27244());
     return __tact_string_builder_end($b);
 }
 
@@ -274,8 +320,8 @@ _ __gen_get_dynamicCommentCellLarge() method_id(74771) {
 slice __gen_StringsTester_dynamicCommentStringLarge((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_21824());
-    $b~__tact_string_builder_append(__gen_str_21816());
+    $b~__tact_string_builder_append(__gen_str_27252());
+    $b~__tact_string_builder_append(__gen_str_27244());
     return __tact_string_builder_end_slice($b);
 }
 
@@ -288,7 +334,7 @@ _ __gen_get_dynamicCommentStringLarge() method_id(74191) {
 slice __gen_StringsTester_stringWithNumber((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_21880());
+    $b~__tact_string_builder_append(__gen_str_27308());
     $b~__tact_string_builder_append(__tact_int_to_string(123));
     return __tact_string_builder_end_slice($b);
 }
@@ -302,7 +348,7 @@ _ __gen_get_stringWithNumber() method_id(68752) {
 slice __gen_StringsTester_stringWithNegativeNumber((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_21880());
+    $b~__tact_string_builder_append(__gen_str_27308());
     $b~__tact_string_builder_append(__tact_int_to_string((- 123)));
     return __tact_string_builder_end_slice($b);
 }
@@ -316,7 +362,7 @@ _ __gen_get_stringWithNegativeNumber() method_id(82914) {
 slice __gen_StringsTester_stringWithLargeNumber((int) $self) impure inline {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_21880());
+    $b~__tact_string_builder_append(__gen_str_27308());
     $b~__tact_string_builder_append(__tact_int_to_string(1000000000000000000000000000000000000000000000000000000000000));
     return __tact_string_builder_end_slice($b);
 }
@@ -335,6 +381,28 @@ slice __gen_StringsTester_stringWithFloat((int) $self) impure inline {
 _ __gen_get_stringWithFloat() method_id(80064) {
     var self = __gen_load_StringsTester();
     var res = __gen_StringsTester_stringWithFloat(self);
+    return res;
+}
+
+slice __gen_StringsTester_base64((int) $self) impure inline {
+    var (($self'fee)) = $self;
+    return __gen_String_fromBase64(__gen_str_27362());
+}
+
+_ __gen_get_base64() method_id(71427) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_base64(self);
+    return res;
+}
+
+slice __gen_StringsTester_processBase64((int) $self, slice $src) impure inline {
+    var (($self'fee)) = $self;
+    return __gen_String_fromBase64($src);
+}
+
+_ __gen_get_processBase64(slice $src) method_id(128362) {
+    var self = __gen_load_StringsTester();
+    var res = __gen_StringsTester_processBase64(self, $src);
     return res;
 }
 
@@ -372,5 +440,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmWpnh6fp6cFo3ERXjmXLRTpcmw4EpLWtgGGoZxmEcZorN";
+    return "ipfs://Qmf8P962wxwBYUiyxFDsRuACU4RiBC19yCiDUYLs2CNc3S";
 }

@@ -382,6 +382,33 @@
         "name": "String",
         "optional": false
       }
+    },
+    {
+      "name": "base64",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Slice",
+        "optional": false
+      }
+    },
+    {
+      "name": "processBase64",
+      "args": [
+        {
+          "name": "src",
+          "type": {
+            "kind": "ref",
+            "name": "String",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Slice",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},

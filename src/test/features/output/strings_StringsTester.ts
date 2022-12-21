@@ -183,7 +183,7 @@ export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
 }
 export async function StringsTester_init() {
-    const __code = 'te6ccgECLAEAB2cAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHANvZBggJDhJtj5aENkEWCATEAWgOWDgVGBbz+4N4ACRw2CPVSGEGAAKRhYWc24GdMYCjfGAlICAciYcQJyANnLgUAXN8YBUm9HCAG9VIZTGAm3xgHSEWAACBpzGZFSgc0piTfAgOWDgVKBcjYQ5OhABH0Qa6SY4Q+YaGmBgLjYYADIv8i4cQD9IBgqIIm3gfww7nlgQUAgEgCAkCASAKCwIBIAwNACMbyIByZMhbrOWAW8iWczJ6DGAABzwBNCAAuwg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOAA3zIIcEAmIAtAcsHAaMB3iGCODJ8snNBGdO3qaoduY4gcCBxjhQEeqkMpjAlqBKgBKoHAqQhwABFMOYwM6oCzwGOK28AcI4RI3qpCBJvjAGkA3qpBCDAABTmMyKlA5xTAm+BpjBYywcCpVnkMDHiydCACASAQEQIBICAhAgEgEhMCASAaGwIBIBQVAgEgFhcAibMkO1E0NQB+GKBAQHXAAExMHDIAZRwAcsf3m8AAW+MbW+MjQVSGVsbG8sIHlvdXIgYmFsYW5jZTogg8AaAe/AH8AbwBYAAnsCAghBHhowAAcjMAQGBAQHPAMmACAUgYGQAtsjA7UTQ1AH4YoEBAdcAATEwgF9x8AiABYqnP7UTQ1AH4YoEBAdcAATEwcMgBlHAByx/ebwABb4xtb4yLZIZWxsbyGPAGifAG8AUkAWKoE+1E0NQB+GKBAQHXAAExMHDIAZRwAcsf3m8AAW+MbW+Mi2SGVsbG8hjwBonwBvAEJACJtHxdqJoagD8MUCAgOuAAJiYOGQAyjgA5Y/vN4AAt8Y2t8ZGgqkMrY2N5YQPLe6uRAxMLYwtzGynRBB4A0BC+AP4A3gCwAgEgHB0APbO7O1E0NQB+GKBAQHXAAExMIu3Rlc3Qgc3RyaW5niACA3igHh8Ar72+1E0NQB+GKBAQHXAAExMHDIAZRwAcsf3m8AAW+MbW+MjQVSGVsbG8sIHlvdXIgYmFsYW5jZTogg8AaCgAn08nJheaIkUB12JCLJRlkNkao78AfwBvAFgAV72+1E0NQB+GKBAQHXAAExMI0GNC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgIIAgEgIiMCA3ngKisBJbcdHaiaGoA/DFAgIDrgACYmETAkAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAB/tC/0YDQuNCy0LXRgiDQvNC40YAg8J+RgCDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LglAf7QstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIgJgH+0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAICcB/vCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9EoAf6A0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC1KQDc0YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYDQv9GA0LjQstC10YIg0LzQuNGAIPCfkYAAW6bj2omhqAPwxQICA64AAmJg4ZADKOADlj+83gAC3xja3xkWyQytjY3kMeAN4AkAhaVH2omhqAPwxQICA64AAmJg/5ADKOADlj+83gAC3xja3xkaDSm3trK6NDS3M5A5t7ayujQ0tzOQO7e5NjIQweAN4Ak=';
+    const __code = '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';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -390,6 +390,39 @@ export class StringsTester {
             let result = await this.executor.get('stringWithFloat', __stack, { debug: true });
             if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
             return readString(result.stack.readCell().beginParse());
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (StringsTester_errors[e.exitCode.toString()]) {
+                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getBase64() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('base64', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCell();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (StringsTester_errors[e.exitCode.toString()]) {
+                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getProcessBase64(src: string) {
+        try {
+            let __stack: StackItem[] = [];
+            __stack.push({ type: 'slice', cell: stringToCell(src) });
+            let result = await this.executor.get('processBase64', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readCell();
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }

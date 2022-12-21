@@ -39,3 +39,44 @@ extends fun asComment(self: String): Cell {
     b.append(self);
     return b.toCell();
 }
+
+@name(__tact_str_to_slice)
+extends native asSlice(self: String): Slice;
+
+extends fun fromBase64(self: String): Slice {
+    return self.asSlice().fromBase64();
+}
+
+extends fun fromBase64(self: Slice): Slice {
+    let size: Int = self.bits() / 8;
+    let result: Builder = beginCell();
+
+    repeat (size) {
+        let code: Int = self.loadUint(8);
+        if (code >= 65 && code <= 90) { // A-Z
+            result = storeUint(result, code - 65, 6);
+        } else if (code >= 97 && code <= 122) { // a-z
+            result = storeUint(result, code - (97 - 26), 6);
+        } else if (code >= 48 && code <= 57) { // 0-9
+            result = storeUint(result, code + (52 - 48), 6);
+        } else if (code == 45 || code == 43) { // - or +
+            result = storeUint(result, 62, 6);
+        } else if (code == 95 || code == 47) { // _ or /
+            result = storeUint(result, 63, 6);
+        } else if (code == 61) { // =
+            // Skip
+        } else {
+            throw(134);
+        }
+    }
+
+    // Padding
+    let total: Int = result.bits();
+    let padding: Int = total % 8;
+    if (padding != 0) {
+        let s: Slice = result.asSlice();
+        return s.loadBits(total - padding);
+    } else {
+        return result.asSlice();
+    }
+}

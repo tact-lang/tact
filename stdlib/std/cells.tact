@@ -30,6 +30,9 @@ native storeRef(s: Builder, cell: Cell): Builder;
 @name(store_slice)
 native storeSlice(s: Builder, cell: Slice): Builder;
 
+@name(__tact_store_address)
+native storeAddress(s: Builder, address: Address): Builder;
+
 @name(end_cell)
 native endCell(s: Builder): Cell;
 
@@ -54,7 +57,13 @@ extends native beginParse(self: Cell): Slice;
 extends mutates native loadRef(self: Slice): Cell;
 
 @name(preload_ref)
-extends native preload_ref(self: Slice): Cell;
+extends native preloadRef(self: Slice): Cell;
+
+@name(load_bits)
+extends mutates native loadBits(self: Slice, l: Int): Slice;
+
+@name(preload_bits)
+extends mutates native preloadBits(self: Slice, l: Int): Slice;
 
 @name(load_int)
 extends mutates native loadInt(self: Slice, l: Int): Int;
@@ -62,14 +71,11 @@ extends mutates native loadInt(self: Slice, l: Int): Int;
 @name(preload_int)
 extends native preloadInt(self: Slice, l: Int): Int;
 
-@name(load_int)
+@name(load_uint)
 extends mutates native loadUint(self: Slice, l: Int): Int;
 
-@name(preload_int)
+@name(preload_uint)
 extends native preloadUint(self: Slice, l: Int): Int;
-
-@name(__tact_store_address)
-native storeAddress(s: Builder, address: Address): Builder;
 
 @name(end_parse)
 extends native endParse(self: Slice);
@@ -92,3 +98,25 @@ extends native dataEmpty(self: Slice): Bool;
 
 @name(slice_refs_empty?)
 extends native refsEmpty(self: Slice): Bool;
+
+//
+// Conversions
+//
+
+extends fun asSlice(self: Builder): Slice {
+    return endCell(self).beginParse();
+}
+
+extends fun asSlice(self: Cell): Slice {
+    return self.beginParse();
+}
+
+extends fun asCell(self: Slice): Cell {
+    let builder: Builder = beginCell();
+    builder = storeSlice(builder, self);
+    return endCell(builder);
+}
+
+extends fun asCell(self: Builder): Cell {
+    return endCell(self);
+}

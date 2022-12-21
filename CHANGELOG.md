@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `String.asComment` for conversion text to a comment payload
 - `Resumable` trait, allows to resume contract operations once it was stopped
 - Comment receiver that allows to receive arbitrary comment
+- `String.asSlice` cast string to a slice for parsing
+- Binary shift operators `>>` and `<<`
+- `Slice.fromBase64` that converts text slice that has base64 to binary representation (both classic and url)
+- `Slice.asCell`, `Builder.asCell`, `Cell.asSlice`, `Builder.asCell` convenience functions
 
 ### Changed
 - `contractAddress` now accepts single argument of type `StateInit` and always produces address for workchain. Old method is renamed to `contractAddressExt`.
@@ -30,3 +34,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixing extension function generation
 - Fixing clashing of variable names with func primitives and global functions
 - Fix fallback and bounce argument type resolving
+- Fixed `loadUint`/`preloadUint`
+- Fixed invalid generation of `>=` and `>` operators
