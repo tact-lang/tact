@@ -17,6 +17,7 @@ PROGRAM{
   DECLPROC __gen_load_JettonDefaultWallet
   DECLPROC __gen_store_JettonDefaultWallet
   DECLPROC storeBool
+  DECLPROC contractAddress
   DECLPROC require
   DECLPROC send
   DECLPROC __gen_JettonDefaultWallet_init
@@ -203,6 +204,11 @@ PROGRAM{
     SWAP
     1 STI
   }>
+  contractAddress PROC:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address CALLDICT
+  }>
   require PROC:<{
     131 THROWIFNOT
   }>
@@ -345,9 +351,7 @@ PROGRAM{
       __tact_context_sys GETGLOB
       s0 s4 s3 XCPUXC
       __gen_JettonDefaultWallet_init_child CALLDICT
-      0 PUSHINT
-      -ROT
-      __tact_compute_contract_address CALLDICT
+      contractAddress CALLDICT
       ROT
       __tact_address_eq INLINECALLDICT
       require CALLDICT
@@ -378,9 +382,8 @@ PROGRAM{
     __tact_context_sys GETGLOB
     s0 s4 s6 XCPUXC
     __gen_JettonDefaultWallet_init_child CALLDICT
-    0 PUSHINT
-    s2 s1 PUSH2
-    __tact_compute_contract_address CALLDICT
+    2DUP
+    contractAddress CALLDICT
     FALSE
     0 PUSHINT
     s6 s6 s6 XCPU2
@@ -463,6 +466,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d586f70596f5233567a51577077657954385669426852773765543462484e3874364b4e756e53784b68585562} PUSHSLICE
+    x{697066733a2f2f516d57454a524d4a5a6b367a43507669737562487531417a4241714d675862457134376758566644323874377563} PUSHSLICE
   }>
 }END>c

@@ -17,25 +17,35 @@ import { ContractABI } from "./abi/ContractABI";
 import { writeTypescript } from "./generator/writeTypescript";
 import { resolveStrings } from "./types/resolveStrings";
 
-function resolveLibraryPath(filePath: string, name: string) {
+function resolveLibraryPath(filePath: string, name: string): string {
+
+    // Checked collection
+    let checked: string[] = [];
 
     // Check stdlib
     if (name.startsWith('@stdlib/')) {
         let p = name.substring('@stdlib/'.length);
-        let pp = path.resolve(__dirname, '..', 'stdlib', p + '.tact')
+        let pp = path.resolve(__dirname, '..', 'stdlib', 'libs', p + '.tact')
+        checked.push(pp);
         if (fs.existsSync(pp)) {
             return pp;
         } else {
-            return null;
+            throw Error('Unable to process import ' + name + ' from ' + filePath + ', checked: ' + checked.join(', '));
         }
     }
 
-    let targetPath = path.resolve(filePath, '..', name + '.tact');
+    // Check relative path
+    let t = name;
+    if (!t.endsWith('.tact')) {
+        t = t + '.tact';
+    }
+    let targetPath = path.resolve(filePath, '..', t);
+    checked.push(targetPath);
     if (fs.existsSync(targetPath)) {
         return targetPath;
     }
 
-    return null;
+    throw Error('Unable to process import ' + name + ' from ' + filePath + ', checked: ' + checked.join(', '));
 }
 
 export function precompile(ctx: CompilerContext, sourceFile: string) {
@@ -54,16 +64,13 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
         let imp = parseImports(source);
         for (let i of imp) {
             let resolved = resolveLibraryPath(path, i);
-            if (!resolved) {
-                throw Error('Unable to import file ' + i + ' from ' + path);
-            }
             if (!processed.has(resolved)) {
                 processed.add(resolved);
                 pending.push(resolved);
             }
         }
     }
-    processImports(path.resolve(__dirname, '/../stdlib/stdlib.tact'), stdlib);
+    processImports(path.resolve(__dirname, '..', 'stdlib', 'stdlib.tact'), stdlib);
     processImports(sourceFile, code);
     while (pending.length > 0) {
         let p = pending.shift()!;

@@ -264,7 +264,7 @@ _ __gen_get_stopped() method_id(74107) {
     return ((self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f((slice, int, int, int, int, int, int, int, int, cell) self) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501((slice, int, int, int, int, int, int, int, int, cell) self) impure {
     var (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue) = self;
     (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireOwner();
     (self'owner, self'investment, self'returns, self'fee, self'balance, self'rugpulled, self'stopped, self'queueStart, self'queueEnd, self'queue)~__gen_RugPull_requireNotStopped();
@@ -328,10 +328,10 @@ _ __gen_get_stopped() method_id(74107) {
             return ();
         }
         
-        ;; Receive "stop" message
-        if (text_op == 0x6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f) {
+        ;; Receive "Stop" message
+        if (text_op == 0xbcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501) {
             var self = __gen_load_RugPull();
-            self~__gen_RugPull_receive_comment_6f3575ac1ff681c8cbc50a4cc1ca6f4687f9da770212d6df8cfe84c22d861d9f();
+            self~__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501();
             __gen_store_RugPull(self);
             return ();
         }
@@ -355,5 +355,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmSGNXUPFo922LaYnk4dG4yNsneJTMpJhTgG7kD1KaxU94";
+    return "ipfs://QmcN3yDRXa5cPLBqG9f4bGDsX1GQvZfepLUHi9jypZApZx";
 }

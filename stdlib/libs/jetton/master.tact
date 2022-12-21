@@ -41,7 +41,7 @@ trait Jetton with Ownable {
 
     get fun get_wallet_address(owner: Address): Address {
         let winit: StateInit = self.getJettonWalletInit(owner);
-        return contractAddress(0, winit.code, winit.data);
+        return contractAddress(winit);
     }
 
     get fun get_jetton_data(): JettonData {
@@ -65,7 +65,7 @@ trait Jetton with Ownable {
 
         // Create message
         let winit: StateInit = self.getJettonWalletInit(to);
-        let walletAddress: Address = contractAddress(0, winit.code, winit.data);
+        let walletAddress: Address = contractAddress(winit);
         send(SendParameters{
             to: walletAddress, 
             value: 0, 
@@ -85,7 +85,7 @@ trait Jetton with Ownable {
     fun requireWallet(owner: Address) {
         let ctx: Context = context();
         let winit: StateInit = self.getJettonWalletInit(owner);
-        require(contractAddress(0, winit.code, winit.data) == ctx.sender);
+        require(contractAddress(winit) == ctx.sender);
     }
 
     virtual fun getJettonWalletInit(address: Address): StateInit {

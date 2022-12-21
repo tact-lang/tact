@@ -15,8 +15,8 @@ PROGRAM{
   DECLPROC __gen_read_Multisig
   DECLPROC __gen_load_Multisig
   DECLPROC __gen_store_Multisig
-  DECLPROC storeBool
   DECLPROC require
+  DECLPROC storeBool
   DECLPROC send
   DECLPROC __gen_MultisigSigner_init
   DECLPROC __gen_MultisigSigner_init_child
@@ -219,6 +219,9 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  require PROC:<{
+    131 THROWIFNOT
+  }>
   storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
@@ -228,9 +231,6 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
-  }>
-  require PROC:<{
-    131 THROWIFNOT
   }>
   send PROC:<{
     NEWC

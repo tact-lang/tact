@@ -157,7 +157,7 @@ exports[`resolveDescriptors should fail descriptors for case-17 1`] = `
 > 4 | contract Main {
       ^~~~~~~~~~~~~~~
   5 |     fun hello(a: Main): Int {
-Static function hello already exists in type Main"
+Function hello already exists in type Main"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-18 1`] = `
@@ -198,7 +198,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -216,7 +216,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -241,7 +241,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -259,7 +259,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -339,7 +339,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         },
       },
     ],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -391,7 +391,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
         },
       },
     ],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "struct",
@@ -416,7 +416,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -434,7 +434,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -629,7 +629,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -741,8 +741,8 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         },
       },
     ],
-    "functions": {
-      "hello": {
+    "functions": Map {
+      "hello" => {
         "args": [],
         "ast": {
           "args": [],
@@ -767,7 +767,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         },
         "self": "HelloWorld",
       },
-      "hello2": {
+      "hello2" => {
         "args": [],
         "ast": {
           "args": [],
@@ -810,7 +810,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -835,7 +835,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -853,7 +853,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -938,7 +938,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -956,8 +956,8 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {
-      "inc": {
+    "functions": Map {
+      "inc" => {
         "args": [],
         "ast": {
           "args": [
@@ -1037,7 +1037,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -1055,8 +1055,8 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {
-      "inc": {
+    "functions": Map {
+      "inc" => {
         "args": [],
         "ast": {
           "args": [
@@ -1157,7 +1157,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -1175,7 +1175,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "primitive",
@@ -1356,8 +1356,8 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         },
       },
     ],
-    "functions": {
-      "hello": {
+    "functions": Map {
+      "hello" => {
         "args": [],
         "ast": {
           "args": [],
@@ -1407,7 +1407,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         },
         "self": "Main",
       },
-      "hello2": {
+      "hello2" => {
         "args": [],
         "ast": {
           "args": [],
@@ -1542,7 +1542,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     },
     "dependsOn": [],
     "fields": [],
-    "functions": {},
+    "functions": Map {},
     "init": null,
     "interfaces": [],
     "kind": "struct",

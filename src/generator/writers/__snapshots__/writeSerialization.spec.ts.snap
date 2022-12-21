@@ -232,6 +232,159 @@ forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> tuple __tac
 
 forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) __tact_tuple_destroy_14(tuple v) asm "14 UNTUPLE";
 
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(false);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) {
+    return __tact_string_builder_end(builders).begin_parse();
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+    
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+        
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+        
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+        
+        ;; Update builders
+        builders = cons(b, tail);
+        
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    
+    return ((builders), ());
+}
+
+slice __tact_int_to_string(int src) {
+    var b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    if (src < 1000000000000000000000000000000) {
+        int len = 0;
+        int value = 0;
+        int mult = 1;
+        do {
+            (src, int res) = src.divmod(10);
+            value = value + (res + 48) * mult;
+            mult = mult * 256;
+            len = len + 1;
+        } until (src == 0);
+        
+        b = b.store_uint(value, len * 8);
+    } else {
+        tuple t = empty_tuple();
+        int len = 0;
+        do {
+            int digit = src % 10;
+            t~tpush(digit);
+            len = len + 1;
+            src = src / 10;
+        } until (src == 0);
+        
+        int c = len - 1;
+        repeat(len) {
+            int v = t.at(c);
+            b = b.store_uint(v + 48, 8);
+            c = c - 1;
+        }
+    }
+    return b.end_cell().begin_parse();
+}
+
+slice __tact_float_to_string(int src, int digits) {
+    throw_if(134, (digits <= 0) | (digits > 77));
+    builder b = begin_cell();
+    
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    ;; Process rem part
+    int skip = true;
+    int len = 0;
+    int rem = 0;
+    tuple t = empty_tuple();
+    repeat(digits) {
+        (src, rem) = src.divmod(10);
+        if ( ~ ( skip & ( rem == 0 ) ) ) {
+            skip = false;
+            t~tpush(rem + 48);
+            len = len + 1;
+        }
+    }
+    
+    ;; Process dot
+    if (~ skip) {
+        t~tpush(46);
+        len = len + 1;
+    }
+    
+    do {
+        (src, rem) = src.divmod(10);
+        t~tpush(rem + 48);
+        len = len + 1;
+    } until (src == 0);
+    
+    int c = len - 1;
+    repeat(len) {
+        int v = t.at(c);
+        b = b.store_uint(v, 8);
+        c = c - 1;
+    }
+    ;; Result
+    return b.end_cell().begin_parse();
+}
+
 builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     build_0 = store_int(build_0, v'a, 257);
@@ -687,6 +840,159 @@ forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> tuple __tac
 
 forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) __tact_tuple_destroy_14(tuple v) asm "14 UNTUPLE";
 
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(false);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) {
+    return __tact_string_builder_end(builders).begin_parse();
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+    
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+        
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+        
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+        
+        ;; Update builders
+        builders = cons(b, tail);
+        
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    
+    return ((builders), ());
+}
+
+slice __tact_int_to_string(int src) {
+    var b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    if (src < 1000000000000000000000000000000) {
+        int len = 0;
+        int value = 0;
+        int mult = 1;
+        do {
+            (src, int res) = src.divmod(10);
+            value = value + (res + 48) * mult;
+            mult = mult * 256;
+            len = len + 1;
+        } until (src == 0);
+        
+        b = b.store_uint(value, len * 8);
+    } else {
+        tuple t = empty_tuple();
+        int len = 0;
+        do {
+            int digit = src % 10;
+            t~tpush(digit);
+            len = len + 1;
+            src = src / 10;
+        } until (src == 0);
+        
+        int c = len - 1;
+        repeat(len) {
+            int v = t.at(c);
+            b = b.store_uint(v + 48, 8);
+            c = c - 1;
+        }
+    }
+    return b.end_cell().begin_parse();
+}
+
+slice __tact_float_to_string(int src, int digits) {
+    throw_if(134, (digits <= 0) | (digits > 77));
+    builder b = begin_cell();
+    
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    ;; Process rem part
+    int skip = true;
+    int len = 0;
+    int rem = 0;
+    tuple t = empty_tuple();
+    repeat(digits) {
+        (src, rem) = src.divmod(10);
+        if ( ~ ( skip & ( rem == 0 ) ) ) {
+            skip = false;
+            t~tpush(rem + 48);
+            len = len + 1;
+        }
+    }
+    
+    ;; Process dot
+    if (~ skip) {
+        t~tpush(46);
+        len = len + 1;
+    }
+    
+    do {
+        (src, rem) = src.divmod(10);
+        t~tpush(rem + 48);
+        len = len + 1;
+    } until (src == 0);
+    
+    int c = len - 1;
+    repeat(len) {
+        int v = t.at(c);
+        b = b.store_uint(v, 8);
+        c = c - 1;
+    }
+    ;; Result
+    return b.end_cell().begin_parse();
+}
+
 builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     build_0 = store_int(build_0, v'a, 257);
@@ -1141,6 +1447,159 @@ forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12 -> (X0, X1, X2, X3,
 forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> tuple __tact_tuple_create_14((X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) v) asm "14 TUPLE";
 
 forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13) __tact_tuple_destroy_14(tuple v) asm "14 UNTUPLE";
+
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(false);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) {
+    return __tact_string_builder_end(builders).begin_parse();
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+    
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+        
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+        
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+        
+        ;; Update builders
+        builders = cons(b, tail);
+        
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    
+    return ((builders), ());
+}
+
+slice __tact_int_to_string(int src) {
+    var b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    if (src < 1000000000000000000000000000000) {
+        int len = 0;
+        int value = 0;
+        int mult = 1;
+        do {
+            (src, int res) = src.divmod(10);
+            value = value + (res + 48) * mult;
+            mult = mult * 256;
+            len = len + 1;
+        } until (src == 0);
+        
+        b = b.store_uint(value, len * 8);
+    } else {
+        tuple t = empty_tuple();
+        int len = 0;
+        do {
+            int digit = src % 10;
+            t~tpush(digit);
+            len = len + 1;
+            src = src / 10;
+        } until (src == 0);
+        
+        int c = len - 1;
+        repeat(len) {
+            int v = t.at(c);
+            b = b.store_uint(v + 48, 8);
+            c = c - 1;
+        }
+    }
+    return b.end_cell().begin_parse();
+}
+
+slice __tact_float_to_string(int src, int digits) {
+    throw_if(134, (digits <= 0) | (digits > 77));
+    builder b = begin_cell();
+    
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    ;; Process rem part
+    int skip = true;
+    int len = 0;
+    int rem = 0;
+    tuple t = empty_tuple();
+    repeat(digits) {
+        (src, rem) = src.divmod(10);
+        if ( ~ ( skip & ( rem == 0 ) ) ) {
+            skip = false;
+            t~tpush(rem + 48);
+            len = len + 1;
+        }
+    }
+    
+    ;; Process dot
+    if (~ skip) {
+        t~tpush(46);
+        len = len + 1;
+    }
+    
+    do {
+        (src, rem) = src.divmod(10);
+        t~tpush(rem + 48);
+        len = len + 1;
+    } until (src == 0);
+    
+    int c = len - 1;
+    repeat(len) {
+        int v = t.at(c);
+        b = b.store_uint(v, 8);
+        c = c - 1;
+    }
+    ;; Result
+    return b.end_cell().begin_parse();
+}
 
 builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;

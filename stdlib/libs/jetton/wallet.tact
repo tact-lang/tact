@@ -18,7 +18,7 @@ contract JettonDefaultWallet {
         let ctx: Context = context();
         if (ctx.sender != self.master) {
             let sinit: StateInit = initOf JettonDefaultWallet(self.master, msg.from);
-            require(contractAddress(0, sinit.code, sinit.data) == ctx.sender);
+            require(contractAddress(sinit) == ctx.sender);
         }
 
         // Update balance
@@ -38,7 +38,7 @@ contract JettonDefaultWallet {
 
         // Send notification
         let winit: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);
-        let walletAddress: Address = contractAddress(0, winit.code, winit.data);
+        let walletAddress: Address = contractAddress(winit);
         send(SendParameters{
             to: walletAddress, 
             value: 0, 

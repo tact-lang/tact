@@ -224,6 +224,9 @@ SETCP0
     PUSHNULL
 
   17: 
+    131 THROWIFNOT
+
+  18: 
     <{
       -1 PUSHINT
       s0 s1 XCHG
@@ -233,9 +236,6 @@ SETCP0
     0 PUSHINT
     s0 s1 XCHG
     1 STI
-
-  18: 
-    131 THROWIFNOT
 
   19: 
     NEWC
@@ -263,18 +263,18 @@ SETCP0
     OR
     <{
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       NEWC
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s4 PUSH
       ISNULL
       NOT
       <{
         -1 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
         s1 s4 XCHG
         STREF
       }> PUSHCONT
@@ -282,7 +282,7 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
       }> PUSHCONT
       IFELSE
       s4 PUSH
@@ -290,7 +290,7 @@ SETCP0
       NOT
       <{
         -1 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
         s1 s4 XCHG
         STREF
       }> PUSHCONT
@@ -298,14 +298,14 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
       }> PUSHCONT
       IFELSE
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s2 XCHG
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -316,7 +316,7 @@ SETCP0
       s3 POP
       s0 s1 XCHG
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -463,7 +463,7 @@ SETCP0
     6 CALLDICT
     1 CALLDICT
     0 GTINT
-    18 CALLDICT
+    17 CALLDICT
     2 GETGLOBVAR
     MYADDR
     8 7 11 XC2PU
@@ -500,11 +500,11 @@ SETCP0
     5 CALLDICT
     s0 s7 XCHG2
     SDEQ
-    18 CALLDICT
+    17 CALLDICT
     s0 s2 XCHG
     NOW
     GREATER
-    18 CALLDICT
+    17 CALLDICT
     s0 s4 XCHG
     PUSHNULL
     PUSHNULL

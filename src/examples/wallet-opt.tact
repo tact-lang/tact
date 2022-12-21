@@ -17,7 +17,7 @@ contract Wallet {
     receive(msg: TransferMessage) {
 
         // Check Signature
-        let op_hash: Int = hashSlice(msg.transfer);
+        let op_hash: Int = msg.transfer.hash();
         require(checkSignature(op_hash, msg.signature, self.key));
 
         // Check parameters

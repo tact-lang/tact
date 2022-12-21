@@ -15,11 +15,12 @@ PROGRAM{
   DECLPROC __gen_write_JettonDefaultWallet
   DECLPROC __gen_write_SampleJetton
   DECLPROC __gen_read_SampleJetton
-  DECLPROC __gen_Context_get_sender
   DECLPROC __gen_StateInit_get_code
+  DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_SampleJetton
   DECLPROC __gen_store_SampleJetton
   DECLPROC storeBool
+  DECLPROC contractAddress
   DECLPROC require
   DECLPROC send
   DECLPROC __gen_JettonDefaultWallet_init
@@ -218,12 +219,12 @@ PROGRAM{
     s0 s4 XCHG
     s3 s3 XCHG2
   }>
+  __gen_StateInit_get_code PROCINLINE:<{
+    DROP
+  }>
   __gen_Context_get_sender PROCINLINE:<{
     DROP
     NIP
-  }>
-  __gen_StateInit_get_code PROCINLINE:<{
-    DROP
   }>
   __gen_load_SampleJetton PROCINLINE:<{
     c4 PUSH
@@ -253,6 +254,11 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
+  }>
+  contractAddress PROC:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address CALLDICT
   }>
   require PROC:<{
     131 THROWIFNOT
@@ -402,12 +408,8 @@ PROGRAM{
   }>
   __gen_SampleJetton_get_wallet_address PROC:<{
     __gen_SampleJetton_getJettonWalletInit CALLDICT
-    2 2 BLKDROP2
-    s2 POP
-    0 PUSHINT
-    s3 POP
-    SWAP
-    __tact_compute_contract_address CALLDICT
+    4 2 BLKDROP2
+    contractAddress CALLDICT
   }>
   __gen_get_get_wallet_address PROC:<{
     __gen_load_SampleJetton INLINECALLDICT
@@ -429,9 +431,8 @@ PROGRAM{
     ADD
     4 -ROLL
     __gen_SampleJetton_getJettonWalletInit CALLDICT
-    0 PUSHINT
-    s2 s1 PUSH2
-    __tact_compute_contract_address CALLDICT
+    2DUP
+    contractAddress CALLDICT
     FALSE
     0 PUSHINT
     s0 s0 PUSH2
@@ -454,9 +455,7 @@ PROGRAM{
     NIP
     5 -ROLL
     __gen_SampleJetton_getJettonWalletInit CALLDICT
-    0 PUSHINT
-    -ROT
-    __tact_compute_contract_address CALLDICT
+    contractAddress CALLDICT
     s0 s5 XCHG2
     __tact_address_eq INLINECALLDICT
     require CALLDICT
@@ -586,6 +585,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d56643545646e5152787a62355a763932456646597847694576777363587432657553634b61356d5733763150} PUSHSLICE
+    x{697066733a2f2f516d637a5242793645566a7566346d425075504e654d544c396f7a775745354342477147766472516d7a6b767651} PUSHSLICE
   }>
 }END>c

@@ -7,7 +7,7 @@ import { resolveStatements } from '../types/resolveStatements';
 import { CompilerContext } from '../context';
 import { createABI } from '../generator/createABI';
 
-const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
+const stdlib = fs.readFileSync(__dirname + '/../../stdlib/std/primitives.tact', 'utf-8');
 const src = `
 
 struct Point3 {

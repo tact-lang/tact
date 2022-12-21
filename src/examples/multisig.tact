@@ -90,7 +90,7 @@ contract Multisig {
 
         // Create message
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg);
-        let opAddress: Address = contractAddress(0, opInit.code, opInit.data);
+        let opAddress: Address = contractAddress(opInit);
         send(SendParameters{
             value: 0, 
             to: opAddress, 

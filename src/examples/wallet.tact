@@ -25,7 +25,7 @@ contract Wallet {
     receive(msg: TransferMessage) {
 
         // Check Signature
-        let op_hash: Int = hashCell(abi.pack_cell(msg.transfer));
+        let op_hash: Int = abi.pack_cell(msg.transfer).hash();
         require(checkSignature(op_hash, msg.signature, self.key));
         require(msg.transfer.seqno == self.seqno);
 

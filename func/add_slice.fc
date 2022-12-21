@@ -133,7 +133,7 @@ slice formatFloat(int src, int digits) {
         (src, rem) = src.divmod(10);
         if (~(skip & (rem == 0))) {
             skip = false;
-            t~tpush(digit + 48);
+            t~tpush(rem + 48);
             len = len + 1;
         }
     }

@@ -142,6 +142,11 @@ builder storeBool(builder s, int value) impure {
     }
 }
 
+slice contractAddress((cell, cell) s) impure {
+    var ((s'code, s'data)) = s;
+    return __tact_compute_contract_address(0, s'code, s'data);
+}
+
 () require(int condition) impure {
     throw_unless(131, condition);
 }
@@ -253,7 +258,7 @@ _ __gen_get_members() method_id(104769) {
     int weight = __tact_not_null(__tact_dict_get_slice_int(self'members, 267, ctx'sender, 257));
     require((weight > 0));
     var (opInit'code, opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), self'members, self'requiredWeight, (msg'requested, msg'to, msg'value, msg'timeout, msg'bounce, msg'mode, msg'body));
-    slice opAddress = __tact_compute_contract_address(0, opInit'code, opInit'data);
+    slice opAddress = contractAddress((opInit'code, opInit'data));
     send((true, opAddress, 0, (64 + 2), null(), opInit'code, opInit'data));
     return ((self'seqno, self'members, self'totalWeight, self'requiredWeight), ());
 }
@@ -263,7 +268,7 @@ _ __gen_get_members() method_id(104769) {
     var ((msg'request'requested, msg'request'to, msg'request'value, msg'request'timeout, msg'request'bounce, msg'request'mode, msg'request'body)) = msg;
     var (ctx'bounced, ctx'sender, ctx'value) = __tact_context_get();
     var (opInit'code, opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), self'members, self'requiredWeight, (msg'request'requested, msg'request'to, msg'request'value, msg'request'timeout, msg'request'bounce, msg'request'mode, msg'request'body));
-    slice opAddress = __tact_compute_contract_address(0, opInit'code, opInit'data);
+    slice opAddress = contractAddress(0, opInit'code, opInit'data);
     require(__tact_address_eq(opAddress, ctx'sender));
     require((msg'request'timeout > now()));
     send((msg'request'bounce, msg'request'to, msg'request'value, msg'request'mode, msg'request'body, null(), null()));
@@ -322,5 +327,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmaFFKtHYenhRP6KeHvvSNAfHpDotjXJMZjHx7vgWKez8i";
+    return "ipfs://Qmejm3t14fXvZcg8AvBUwTfZJ72aB2ayuqwEye83eu5xav";
 }

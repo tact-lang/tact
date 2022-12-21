@@ -4,6 +4,7 @@ PROGRAM{
   DECLPROC ~add_slice_fast
   DECLPROC __unwrap
   DECLPROC formatNumber
+  DECLPROC formatFloat
   DECLPROC main
   begin_string_builder PROC:<{
     IF:<{
@@ -193,6 +194,77 @@ PROGRAM{
     }>
     DROP
     NIP
+    ENDC
+    CTOS
+  }>
+  formatFloat PROC:<{
+    DUP
+    1 LESSINT
+    OVER
+    77 GTINT
+    OR
+    134 THROWIF
+    NEWC
+    s2 PUSH
+    0 LESSINT
+    IF:<{
+      45 PUSHINT
+      SWAP
+      8 STU
+      s0 s2 XCHG
+      NEGATE
+      s0 s2 XCHG
+    }>
+    TRUE
+    0 PUSHINT
+    NIL
+    s0 s4 XCHG
+    REPEAT:<{
+      s0 s4 XCHG
+      10 PUSHINT
+      DIVMOD
+      DUP
+      0 EQINT
+      s3 s(-1) PUXC
+      AND
+      NOT
+      IF:<{
+        FALSE
+        s3 POP
+        48 ADDCONST
+        s1 s4 XCHG
+        TPUSH
+        s0 s4 XCHG
+        INC
+        s0 s4 XCHG
+        s0 s3 XCHG
+      }>ELSE<{
+        DROP
+      }>
+      s0 s4 XCHG
+    }>
+    s4 POP
+    NOT
+    IF:<{
+      SWAP
+      46 PUSHINT
+      TPUSH
+      s0 s2 XCHG
+      INC
+      -ROT
+    }>
+    0 PUSHINT
+    s0 s3 XCHG
+    REPEAT:<{
+      s1 s2 PUSH2
+      INDEXVAR
+      SWAP
+      8 STU
+      s0 s2 XCHG
+      INC
+      s0 s2 XCHG
+    }>
+    2 1 BLKDROP2
     ENDC
     CTOS
   }>

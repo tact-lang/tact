@@ -2,6 +2,82 @@ import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessag
 import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
 import BN from 'bn.js';
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function packStateInit(src: StateInit): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeRef(src.code);
+    b_0 = b_0.storeRef(src.data);
+    return b_0.endCell();
+}
+
+export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+}
+
+export function packTupleStateInit(src: StateInit): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'cell', cell: src.code });
+    __stack.push({ type: 'cell', cell: src.data });
+    return __stack;
+}
+
+export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
+    const code = slice.readCell();
+    const data = slice.readCell();
+    return { $$type: 'StateInit', code: code, data: data };
+}
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: BN;
+}
+
+export function packContext(src: Context): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeBit(src.bounced);
+    b_0 = b_0.storeAddress(src.sender);
+    b_0 = b_0.storeInt(src.value, 257);
+    return b_0.endCell();
+}
+
+export function packStackContext(src: Context, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+}
+
+export function packTupleContext(src: Context): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
+    __stack.push({ type: 'int', value: src.value });
+    return __stack;
+}
+
+export function unpackStackContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
+export function unpackTupleContext(slice: TupleSlice4): Context {
+    const bounced = slice.readBoolean();
+    const sender = slice.readAddress();
+    const value = slice.readBigNumber();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -105,82 +181,6 @@ export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     const code = slice.readCellOpt();
     const data = slice.readCellOpt();
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export type Context = {
-    $$type: 'Context';
-    bounced: boolean;
-    sender: Address;
-    value: BN;
-}
-
-export function packContext(src: Context): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeBit(src.bounced);
-    b_0 = b_0.storeAddress(src.sender);
-    b_0 = b_0.storeInt(src.value, 257);
-    return b_0.endCell();
-}
-
-export function packStackContext(src: Context, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-}
-
-export function packTupleContext(src: Context): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    return __stack;
-}
-
-export function unpackStackContext(slice: TupleSlice4): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
-}
-export function unpackTupleContext(slice: TupleSlice4): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
-}
-export type StateInit = {
-    $$type: 'StateInit';
-    code: Cell;
-    data: Cell;
-}
-
-export function packStateInit(src: StateInit): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeRef(src.code);
-    b_0 = b_0.storeRef(src.data);
-    return b_0.endCell();
-}
-
-export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-}
-
-export function packTupleStateInit(src: StateInit): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-    return __stack;
-}
-
-export function unpackStackStateInit(slice: TupleSlice4): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
 }
 export async function StringsTester_init() {
     const __code = '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';
