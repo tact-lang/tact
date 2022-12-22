@@ -1,6 +1,7 @@
 import "@stdlib/ownable";
 import "./messages";
 
+@interface("org.ton.jetton.wallet")
 contract JettonDefaultWallet {
 
     const minTonsForStorage: Int = ton("0.01");
@@ -14,6 +15,45 @@ contract JettonDefaultWallet {
         self.balance = 0;
         self.owner = owner;
         self.master = master;
+    }
+
+    receive(msg: TokenTransfer) {
+
+        // Check sender
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Invalid sender");
+
+        // Update balance
+        self.balance = self.balance - msg.amount;
+        require(self.balance >= 0, "Invalid balance");
+
+        // Gas checks
+        let fwdFee: Int = ctx.readForwardFee();
+        let fwdCount: Int = 1;
+        if (msg.forwardTonAmount > 0) {
+            fwdCount = 2;
+        }
+        require(ctx.value > fwdCount * fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value");
+  
+        // Send tokens
+        let init: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);
+        let walletAddress: Address = contractAddress(init);
+        send(SendParameters{
+            to: walletAddress, 
+            value: 0,
+            mode: SendRemainingValue, 
+            bounce: true,
+            body: abi.pack_cell(TokenTransferInternal{
+                amount: msg.amount,
+                queryId: msg.queryId,
+                from: self.owner,
+                responseAddress: self.owner,
+                forwardTonAmount: msg.forwardTonAmount,
+                forwardPayload: msg.forwardPayload
+            }),
+            code: init.code,
+            data: init.data
+        });
     }
 
     receive(msg: TokenTransferInternal) {
@@ -52,20 +92,20 @@ contract JettonDefaultWallet {
             });
         }
 
-        // Cachback
-        if ((response_address.preload_uint(2) != 0) & (msg_value > 0)) {
-    var msg = begin_cell()
-      .store_uint(0x10, 6) ;; nobounce - int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool src:MsgAddress -> 010000
-      .store_slice(response_address)
-      .store_coins(msg_value)
-      .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-      .store_uint(op::excesses(), 32)
-      .store_uint(query_id, 64);
-    send_raw_message(msg.end_cell(), 2);
-  }
+        // Cashback
+        if (msg.responseAddress != null && msgValue > 0) {
+            send(SendParameters{
+                to: msg.responseAddress!!,
+                value: msgValue,
+                bounce: false,
+                body: abi.pack_cell(TokenExcesses{
+                    queryId: msg.queryId
+                })
+            });
+        }
     }
 
-    receive(msg: TokenTransfer) {
+    receive(msg: TokenBurn) {
 
         // Check sender
         let ctx: Context = context();
@@ -75,22 +115,44 @@ contract JettonDefaultWallet {
         self.balance = self.balance - msg.amount;
         require(self.balance >= 0, "Invalid balance");
 
-        // Send notification
-        let winit: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);
-        let walletAddress: Address = contractAddress(winit);
+        // Gas checks
+        let fwdFee: Int = ctx.readForwardFee();
+        require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value");
+
+        // Burn tokens
         send(SendParameters{
-            to: walletAddress, 
-            value: 0, 
-            bounce: false,
-            body: abi.pack_cell(TokenTransferInternal{
-                amount: msg.amount,
+            to: self.master,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: abi.pack_cell(TokenBurnNotification{
                 queryId: msg.queryId,
-                from: self.owner,
-                responseAddress: self.owner,
-                forwardTonAmount: 0
-            }),
-            code: winit.code,
-            data: winit.data
+                amount: msg.amount,
+                owner: self.owner,
+                responseAddress: self.owner
+            })
         });
+    }
+
+    bounced(msg: Slice) {
+
+        // Parse bounced message
+        msg.skipBits(32); // 0xFFFFFFFF
+        let op: Int = msg.loadUint(32);
+        let queryId: Int = msg.loadUint(64);
+        let jettonAmount: Int = msg.loadCoins();
+        require(op == 0x178d4519 || op == 0x7bdd97de, "Invalid bounced message");
+
+        // Update balance
+        self.balance = self.balance + jettonAmount;
+    }
+
+    get fun get_wallet_data(): JettonWalletData {
+        return JettonWalletData{
+            balance: self.balance,
+            owner: self.owner,
+            master: self.master,
+            walletCode: (initOf JettonDefaultWallet(self.master, self.owner)).code
+        };
     }
 }

@@ -64,7 +64,7 @@ function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerCo
         // Check existing
         let f = tp.fields.find((v) => v.name === e.name);
         if (!f) {
-            throwError(`Unknown argument "${e.name}"`, e.ref);
+            throwError(`Unknown argument "${e.name}" in type ${tp.name}`, e.ref);
         }
 
         // Resolve expression

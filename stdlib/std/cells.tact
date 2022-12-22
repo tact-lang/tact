@@ -126,3 +126,11 @@ extends fun asCell(self: Slice): Cell {
 extends fun asCell(self: Builder): Cell {
     return endCell(self);
 }
+
+fun emptyCell(): Cell {
+    return endCell(beginCell());
+}
+
+fun emptySlice(): Slice {
+    return emptyCell().asSlice();
+}

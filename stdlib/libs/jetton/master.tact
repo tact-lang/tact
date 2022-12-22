@@ -25,13 +25,26 @@ trait Jetton with Ownable {
         self.content = msg.content;
     }
 
-    receive(msg: TokenBurned) {
+    receive(msg: TokenBurnNotification) {
         
         // Check wallet
         self.requireWallet(msg.owner);
 
         // Update supply
         self.totalSupply = self.totalSupply - msg.amount;
+
+        // Cashback
+        if (msg.responseAddress != null) {
+            send(SendParameters{
+                to: msg.responseAddress, 
+                value: 0,
+                bounce: false,
+                mode: SendRemainingValue + SendIgnoreErrors,
+                body: abi.pack_cell(TokenExcesses{
+                    queryId: msg.queryId
+                })
+            });
+        }
     }
 
 
@@ -50,7 +63,7 @@ trait Jetton with Ownable {
             mintable: self.mintable, 
             owner: self.owner, 
             content: self.content, 
-            walletCode: self.getJettonWalletInit(myAddress()).code 
+            walletCode: self.getJettonWalletInit(myAddress()).code
         };
     }
 
@@ -75,7 +88,8 @@ trait Jetton with Ownable {
                 queryId: 0,
                 from: myAddress(),
                 responseAddress: myAddress(),
-                forwardTonAmount: 0
+                forwardTonAmount: 0,
+                forwardPayload: emptyCell().asSlice()
             }),
             code: winit.code,
             data: winit.data

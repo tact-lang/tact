@@ -5,14 +5,39 @@ global cell __tact_context_sys;
 
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
     return (cs, raw);
 }
 
+(slice, slice) __tact_load_address_opt(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    if (raw.preload_uint(2) != 0) {
+        __tact_verify_address(raw);
+        return (cs, raw);
+    } else {
+        return (cs, null());
+    }
+}
+
 builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
     b = b.store_slice(address);
     return b;
+}
+
+builder __tact_store_address_opt(builder b, slice address) inline {
+    if (null?(address)) {
+        b = b.store_uint(0, 2);
+        return b;
+    } else {
+        return __tact_store_address(b, address);
+    }
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) {
@@ -45,30 +70,40 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-(slice, ((int, slice, slice))) __gen_read_TokenBurned(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 2078119902);
-    var v'amount = sc_0~load_int(257);
-    var v'owner = sc_0~__tact_load_address();
-    var v'cashback = null();
-    if (sc_0~load_int(1)) {
-        v'cashback = sc_0~__tact_load_address();
-    }
-    return (sc_0, (v'amount, v'owner, v'cashback));
-}
-
-builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int) v) inline {
-    var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount) = v;
+builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int, slice) v) inline {
+    var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
     build_0 = store_uint(build_0, v'queryId, 64);
     build_0 = store_int(build_0, v'amount, 257);
     build_0 = __tact_store_address(build_0, v'from);
-    build_0 = __tact_store_address(build_0, v'responseAddress);
+    build_0 = __tact_store_address_opt(build_0, v'responseAddress);
     build_0 = store_coins(build_0, v'forwardTonAmount);
+    build_0 = store_slice(build_0, v'forwardPayload);
     return build_0;
 }
 
-cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int) v) inline {
+cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) v) inline {
     return __gen_write_TokenTransferInternal(begin_cell(), v).end_cell();
+}
+
+(slice, ((int, int, slice, slice))) __gen_read_TokenBurnNotification(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2078119902);
+    var v'queryId = sc_0~load_uint(64);
+    var v'amount = sc_0~load_coins();
+    var v'owner = sc_0~__tact_load_address();
+    var v'responseAddress = sc_0~__tact_load_address_opt();
+    return (sc_0, (v'queryId, v'amount, v'owner, v'responseAddress));
+}
+
+builder __gen_write_TokenExcesses(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 3576854235, 32);
+    build_0 = store_uint(build_0, v'queryId, 64);
+    return build_0;
+}
+
+cell __gen_writecell_TokenExcesses((int) v) inline {
+    return __gen_write_TokenExcesses(begin_cell(), v).end_cell();
 }
 
 (slice, ((cell))) __gen_read_JettonUpdateContent(slice sc_0) inline {
@@ -150,6 +185,10 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
+cell emptyCell() impure {
+    return end_cell(begin_cell());
+}
+
 slice contractAddress((cell, cell) $s) impure {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
@@ -196,6 +235,11 @@ slice contractAddress((cell, cell) $s) impure {
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
+}
+
+slice __gen_Cell_asSlice(cell $self) impure {
+    var ($self) = $self;
+    return begin_parse($self);
 }
 
 cell __gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
@@ -265,7 +309,7 @@ _ __gen_get_get_jetton_data() method_id(106029) {
     $self'totalSupply = ($self'totalSupply + $amount);
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_getJettonWalletInit($to);
     slice $walletAddress = contractAddress(($winit'code, $winit'data));
-    send((false, $walletAddress, 0, 0, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), my_address(), 0)), $winit'code, $winit'data));
+    send((false, $walletAddress, 0, 0, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), my_address(), 0, __gen_Cell_asSlice(emptyCell()))), $winit'code, $winit'data));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -310,11 +354,14 @@ _ __gen_get_owner() method_id(83229) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-(((int, slice, cell, int)), ()) __gen_SampleJetton_receive_TokenBurned((int, slice, cell, int) $self, (int, slice, slice) $msg) impure {
+(((int, slice, cell, int)), ()) __gen_SampleJetton_receive_TokenBurnNotification((int, slice, cell, int) $self, (int, int, slice, slice) $msg) impure {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
-    var ($msg'amount, $msg'owner, $msg'cashback) = $msg;
+    var ($msg'queryId, $msg'amount, $msg'owner, $msg'responseAddress) = $msg;
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_requireWallet($msg'owner);
     $self'totalSupply = ($self'totalSupply - $msg'amount);
+    if ((~ null?($msg'responseAddress))) {
+        send((false, $msg'responseAddress, 0, (64 + 2), __gen_writecell_TokenExcesses(($msg'queryId)), null(), null()));
+    }
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -355,11 +402,11 @@ _ __gen_get_owner() method_id(83229) {
         return ();
     }
     
-    ;; Receive TokenBurned message
+    ;; Receive TokenBurnNotification message
     if (op == 2078119902) {
         var self = __gen_load_SampleJetton();
-        var msg = in_msg~__gen_read_TokenBurned();
-        self~__gen_SampleJetton_receive_TokenBurned(msg);
+        var msg = in_msg~__gen_read_TokenBurnNotification();
+        self~__gen_SampleJetton_receive_TokenBurnNotification(msg);
         __gen_store_SampleJetton(self);
         return ();
     }
@@ -380,5 +427,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmVwy3wsB1GUqZgx79jNoq6gs8CxLgu9QSBZreK2fLjoCv";
+    return "ipfs://QmfKmbTo37ZcsQWbD3Y6KkQxjdwTLNywcNyDHdT2UTsjnR";
 }

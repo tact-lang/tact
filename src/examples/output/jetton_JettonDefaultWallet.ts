@@ -218,123 +218,15 @@ export function unpackTupleChangeOwner(slice: TupleSlice4): ChangeOwner {
     const newOwner = slice.readAddress();
     return { $$type: 'ChangeOwner', newOwner: newOwner };
 }
-export type TokenBurned = {
-    $$type: 'TokenBurned';
-    amount: BN;
-    owner: Address;
-    cashback: Address | null;
-}
-
-export function packTokenBurned(src: TokenBurned): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(2078119902, 32);
-    b_0 = b_0.storeInt(src.amount, 257);
-    b_0 = b_0.storeAddress(src.owner);
-    if (src.cashback !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeAddress(src.cashback);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
-}
-
-export function packStackTokenBurned(src: TokenBurned, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.cashback !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.cashback).endCell() });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-}
-
-export function packTupleTokenBurned(src: TokenBurned): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.cashback !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.cashback).endCell() });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
-}
-
-export function unpackStackTokenBurned(slice: TupleSlice4): TokenBurned {
-    const amount = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const cashback = slice.readAddressOpt();
-    return { $$type: 'TokenBurned', amount: amount, owner: owner, cashback: cashback };
-}
-export function unpackTupleTokenBurned(slice: TupleSlice4): TokenBurned {
-    const amount = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const cashback = slice.readAddressOpt();
-    return { $$type: 'TokenBurned', amount: amount, owner: owner, cashback: cashback };
-}
-export type TokenTransferInternal = {
-    $$type: 'TokenTransferInternal';
-    queryId: BN;
-    amount: BN;
-    from: Address;
-    responseAddress: Address;
-    forwardTonAmount: BN;
-}
-
-export function packTokenTransferInternal(src: TokenTransferInternal): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(395134233, 32);
-    b_0 = b_0.storeUint(src.queryId, 64);
-    b_0 = b_0.storeInt(src.amount, 257);
-    b_0 = b_0.storeAddress(src.from);
-    b_0 = b_0.storeAddress(src.responseAddress);
-    b_0 = b_0.storeCoins(src.forwardTonAmount);
-    return b_0.endCell();
-}
-
-export function packStackTokenTransferInternal(src: TokenTransferInternal, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
-    __stack.push({ type: 'int', value: src.forwardTonAmount });
-}
-
-export function packTupleTokenTransferInternal(src: TokenTransferInternal): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
-    __stack.push({ type: 'int', value: src.forwardTonAmount });
-    return __stack;
-}
-
-export function unpackStackTokenTransferInternal(slice: TupleSlice4): TokenTransferInternal {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const from = slice.readAddress();
-    const responseAddress = slice.readAddress();
-    const forwardTonAmount = slice.readBigNumber();
-    return { $$type: 'TokenTransferInternal', queryId: queryId, amount: amount, from: from, responseAddress: responseAddress, forwardTonAmount: forwardTonAmount };
-}
-export function unpackTupleTokenTransferInternal(slice: TupleSlice4): TokenTransferInternal {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const from = slice.readAddress();
-    const responseAddress = slice.readAddress();
-    const forwardTonAmount = slice.readBigNumber();
-    return { $$type: 'TokenTransferInternal', queryId: queryId, amount: amount, from: from, responseAddress: responseAddress, forwardTonAmount: forwardTonAmount };
-}
 export type TokenTransfer = {
     $$type: 'TokenTransfer';
     queryId: BN;
     amount: BN;
     destination: Address;
-    responseDestination: Address;
+    responseDestination: Address | null;
     customPayload: Cell | null;
     forwardTonAmount: BN;
+    forwardPayload: Cell;
 }
 
 export function packTokenTransfer(src: TokenTransfer): Cell {
@@ -351,6 +243,7 @@ export function packTokenTransfer(src: TokenTransfer): Cell {
         b_0 = b_0.storeBit(false);
     }
     b_0 = b_0.storeCoins(src.forwardTonAmount);
+    b_0 = b_0.storeCellCopy(src.forwardPayload);
     return b_0.endCell();
 }
 
@@ -358,13 +251,18 @@ export function packStackTokenTransfer(src: TokenTransfer, __stack: StackItem[])
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+    if (src.responseDestination !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
     if (src.customPayload !== null) {
         __stack.push({ type: 'cell', cell: src.customPayload });
     } else {
         __stack.push({ type: 'null' });
     }
     __stack.push({ type: 'int', value: src.forwardTonAmount });
+    __stack.push({ type: 'slice', cell: src.forwardPayload });
 }
 
 export function packTupleTokenTransfer(src: TokenTransfer): StackItem[] {
@@ -372,13 +270,18 @@ export function packTupleTokenTransfer(src: TokenTransfer): StackItem[] {
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+    if (src.responseDestination !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
     if (src.customPayload !== null) {
         __stack.push({ type: 'cell', cell: src.customPayload });
     } else {
         __stack.push({ type: 'null' });
     }
     __stack.push({ type: 'int', value: src.forwardTonAmount });
+    __stack.push({ type: 'slice', cell: src.forwardPayload });
     return __stack;
 }
 
@@ -386,19 +289,279 @@ export function unpackStackTokenTransfer(slice: TupleSlice4): TokenTransfer {
     const queryId = slice.readBigNumber();
     const amount = slice.readBigNumber();
     const destination = slice.readAddress();
-    const responseDestination = slice.readAddress();
+    const responseDestination = slice.readAddressOpt();
     const customPayload = slice.readCellOpt();
     const forwardTonAmount = slice.readBigNumber();
-    return { $$type: 'TokenTransfer', queryId: queryId, amount: amount, destination: destination, responseDestination: responseDestination, customPayload: customPayload, forwardTonAmount: forwardTonAmount };
+    const forwardPayload = slice.readCell();
+    return { $$type: 'TokenTransfer', queryId: queryId, amount: amount, destination: destination, responseDestination: responseDestination, customPayload: customPayload, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
 }
 export function unpackTupleTokenTransfer(slice: TupleSlice4): TokenTransfer {
     const queryId = slice.readBigNumber();
     const amount = slice.readBigNumber();
     const destination = slice.readAddress();
-    const responseDestination = slice.readAddress();
+    const responseDestination = slice.readAddressOpt();
     const customPayload = slice.readCellOpt();
     const forwardTonAmount = slice.readBigNumber();
-    return { $$type: 'TokenTransfer', queryId: queryId, amount: amount, destination: destination, responseDestination: responseDestination, customPayload: customPayload, forwardTonAmount: forwardTonAmount };
+    const forwardPayload = slice.readCell();
+    return { $$type: 'TokenTransfer', queryId: queryId, amount: amount, destination: destination, responseDestination: responseDestination, customPayload: customPayload, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
+}
+export type TokenTransferInternal = {
+    $$type: 'TokenTransferInternal';
+    queryId: BN;
+    amount: BN;
+    from: Address;
+    responseAddress: Address | null;
+    forwardTonAmount: BN;
+    forwardPayload: Cell;
+}
+
+export function packTokenTransferInternal(src: TokenTransferInternal): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(395134233, 32);
+    b_0 = b_0.storeUint(src.queryId, 64);
+    b_0 = b_0.storeInt(src.amount, 257);
+    b_0 = b_0.storeAddress(src.from);
+    b_0 = b_0.storeAddress(src.responseAddress);
+    b_0 = b_0.storeCoins(src.forwardTonAmount);
+    b_0 = b_0.storeCellCopy(src.forwardPayload);
+    return b_0.endCell();
+}
+
+export function packStackTokenTransferInternal(src: TokenTransferInternal, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
+    if (src.responseAddress !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    __stack.push({ type: 'int', value: src.forwardTonAmount });
+    __stack.push({ type: 'slice', cell: src.forwardPayload });
+}
+
+export function packTupleTokenTransferInternal(src: TokenTransferInternal): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
+    if (src.responseAddress !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    __stack.push({ type: 'int', value: src.forwardTonAmount });
+    __stack.push({ type: 'slice', cell: src.forwardPayload });
+    return __stack;
+}
+
+export function unpackStackTokenTransferInternal(slice: TupleSlice4): TokenTransferInternal {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const from = slice.readAddress();
+    const responseAddress = slice.readAddressOpt();
+    const forwardTonAmount = slice.readBigNumber();
+    const forwardPayload = slice.readCell();
+    return { $$type: 'TokenTransferInternal', queryId: queryId, amount: amount, from: from, responseAddress: responseAddress, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
+}
+export function unpackTupleTokenTransferInternal(slice: TupleSlice4): TokenTransferInternal {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const from = slice.readAddress();
+    const responseAddress = slice.readAddressOpt();
+    const forwardTonAmount = slice.readBigNumber();
+    const forwardPayload = slice.readCell();
+    return { $$type: 'TokenTransferInternal', queryId: queryId, amount: amount, from: from, responseAddress: responseAddress, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
+}
+export type TokenNotification = {
+    $$type: 'TokenNotification';
+    queryId: BN;
+    amount: BN;
+    from: Address;
+    forwardPayload: Cell;
+}
+
+export function packTokenNotification(src: TokenNotification): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(1935855772, 32);
+    b_0 = b_0.storeUint(src.queryId, 64);
+    b_0 = b_0.storeCoins(src.amount);
+    b_0 = b_0.storeAddress(src.from);
+    b_0 = b_0.storeCellCopy(src.forwardPayload);
+    return b_0.endCell();
+}
+
+export function packStackTokenNotification(src: TokenNotification, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
+    __stack.push({ type: 'slice', cell: src.forwardPayload });
+}
+
+export function packTupleTokenNotification(src: TokenNotification): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
+    __stack.push({ type: 'slice', cell: src.forwardPayload });
+    return __stack;
+}
+
+export function unpackStackTokenNotification(slice: TupleSlice4): TokenNotification {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const from = slice.readAddress();
+    const forwardPayload = slice.readCell();
+    return { $$type: 'TokenNotification', queryId: queryId, amount: amount, from: from, forwardPayload: forwardPayload };
+}
+export function unpackTupleTokenNotification(slice: TupleSlice4): TokenNotification {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const from = slice.readAddress();
+    const forwardPayload = slice.readCell();
+    return { $$type: 'TokenNotification', queryId: queryId, amount: amount, from: from, forwardPayload: forwardPayload };
+}
+export type TokenBurn = {
+    $$type: 'TokenBurn';
+    queryId: BN;
+    amount: BN;
+    owner: Address;
+    responseAddress: Address | null;
+}
+
+export function packTokenBurn(src: TokenBurn): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(1499400124, 32);
+    b_0 = b_0.storeUint(src.queryId, 64);
+    b_0 = b_0.storeCoins(src.amount);
+    b_0 = b_0.storeAddress(src.owner);
+    b_0 = b_0.storeAddress(src.responseAddress);
+    return b_0.endCell();
+}
+
+export function packStackTokenBurn(src: TokenBurn, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    if (src.responseAddress !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function packTupleTokenBurn(src: TokenBurn): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    if (src.responseAddress !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
+export function unpackStackTokenBurn(slice: TupleSlice4): TokenBurn {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const owner = slice.readAddress();
+    const responseAddress = slice.readAddressOpt();
+    return { $$type: 'TokenBurn', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
+}
+export function unpackTupleTokenBurn(slice: TupleSlice4): TokenBurn {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const owner = slice.readAddress();
+    const responseAddress = slice.readAddressOpt();
+    return { $$type: 'TokenBurn', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
+}
+export type TokenBurnNotification = {
+    $$type: 'TokenBurnNotification';
+    queryId: BN;
+    amount: BN;
+    owner: Address;
+    responseAddress: Address | null;
+}
+
+export function packTokenBurnNotification(src: TokenBurnNotification): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(2078119902, 32);
+    b_0 = b_0.storeUint(src.queryId, 64);
+    b_0 = b_0.storeCoins(src.amount);
+    b_0 = b_0.storeAddress(src.owner);
+    b_0 = b_0.storeAddress(src.responseAddress);
+    return b_0.endCell();
+}
+
+export function packStackTokenBurnNotification(src: TokenBurnNotification, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    if (src.responseAddress !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+}
+
+export function packTupleTokenBurnNotification(src: TokenBurnNotification): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    __stack.push({ type: 'int', value: src.amount });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    if (src.responseAddress !== null) {
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+    } else {
+        __stack.push({ type: 'null' });
+    }
+    return __stack;
+}
+
+export function unpackStackTokenBurnNotification(slice: TupleSlice4): TokenBurnNotification {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const owner = slice.readAddress();
+    const responseAddress = slice.readAddressOpt();
+    return { $$type: 'TokenBurnNotification', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
+}
+export function unpackTupleTokenBurnNotification(slice: TupleSlice4): TokenBurnNotification {
+    const queryId = slice.readBigNumber();
+    const amount = slice.readBigNumber();
+    const owner = slice.readAddress();
+    const responseAddress = slice.readAddressOpt();
+    return { $$type: 'TokenBurnNotification', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
+}
+export type TokenExcesses = {
+    $$type: 'TokenExcesses';
+    queryId: BN;
+}
+
+export function packTokenExcesses(src: TokenExcesses): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeUint(3576854235, 32);
+    b_0 = b_0.storeUint(src.queryId, 64);
+    return b_0.endCell();
+}
+
+export function packStackTokenExcesses(src: TokenExcesses, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+}
+
+export function packTupleTokenExcesses(src: TokenExcesses): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    return __stack;
+}
+
+export function unpackStackTokenExcesses(slice: TupleSlice4): TokenExcesses {
+    const queryId = slice.readBigNumber();
+    return { $$type: 'TokenExcesses', queryId: queryId };
+}
+export function unpackTupleTokenExcesses(slice: TupleSlice4): TokenExcesses {
+    const queryId = slice.readBigNumber();
+    return { $$type: 'TokenExcesses', queryId: queryId };
 }
 export type JettonUpdateContent = {
     $$type: 'JettonUpdateContent';
@@ -509,6 +672,53 @@ export function unpackTupleJettonData(slice: TupleSlice4): JettonData {
     const walletCode = slice.readCell();
     return { $$type: 'JettonData', totalSupply: totalSupply, mintable: mintable, owner: owner, content: content, walletCode: walletCode };
 }
+export type JettonWalletData = {
+    $$type: 'JettonWalletData';
+    balance: BN;
+    owner: Address;
+    master: Address;
+    walletCode: Cell;
+}
+
+export function packJettonWalletData(src: JettonWalletData): Cell {
+    let b_0 = new Builder();
+    b_0 = b_0.storeInt(src.balance, 257);
+    b_0 = b_0.storeAddress(src.owner);
+    b_0 = b_0.storeAddress(src.master);
+    b_0 = b_0.storeRef(src.walletCode);
+    return b_0.endCell();
+}
+
+export function packStackJettonWalletData(src: JettonWalletData, __stack: StackItem[]) {
+    __stack.push({ type: 'int', value: src.balance });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.master).endCell() });
+    __stack.push({ type: 'cell', cell: src.walletCode });
+}
+
+export function packTupleJettonWalletData(src: JettonWalletData): StackItem[] {
+    let __stack: StackItem[] = [];
+    __stack.push({ type: 'int', value: src.balance });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
+    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.master).endCell() });
+    __stack.push({ type: 'cell', cell: src.walletCode });
+    return __stack;
+}
+
+export function unpackStackJettonWalletData(slice: TupleSlice4): JettonWalletData {
+    const balance = slice.readBigNumber();
+    const owner = slice.readAddress();
+    const master = slice.readAddress();
+    const walletCode = slice.readCell();
+    return { $$type: 'JettonWalletData', balance: balance, owner: owner, master: master, walletCode: walletCode };
+}
+export function unpackTupleJettonWalletData(slice: TupleSlice4): JettonWalletData {
+    const balance = slice.readBigNumber();
+    const owner = slice.readAddress();
+    const master = slice.readAddress();
+    const walletCode = slice.readCell();
+    return { $$type: 'JettonWalletData', balance: balance, owner: owner, master: master, walletCode: walletCode };
+}
 export type Mint = {
     $$type: 'Mint';
     amount: BN;
@@ -540,9 +750,9 @@ export function unpackTupleMint(slice: TupleSlice4): Mint {
     return { $$type: 'Mint', amount: amount };
 }
 export async function JettonDefaultWallet_init(master: Address, owner: Address) {
-    const __code = 'te6ccgECGwEAAyIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCA3rgGRoCAUgGBwIBIAwNAgEgCAkAR2shwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgKBRwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEBeNRRm64wKCEA+KfqW64wIw8sCCgKCwALQgbvLQgIALIw7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAXjUUZuvLggdM/gQEB1wD6QAEB+kABAfoAVUA1EGcQVlUD8BjI+EIBzFUgUCOBAQHPAAHPFgHPFsntVADE7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kABbQLSAAGUbBLUEt76AAYFBFAzNhB4EGdVBPAZyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQCASAODwIB1BcYABX0o/gOUAcDgA5QBAIBIBARAgEgEhMCASAVFgAJHBZ8AaAB9zIcQHKAVAH8BNwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ATyHDwE3DwEyRus5l/8BME8AJQBMyVNANw8BPiJG6zmX/wEwTwAlAEzJU0A3DwE+Jw8BMCf/ATAslYzJYzMwFw8BPiIW6zmH/wEwHwAgHMlDFw8BPiyQGAUAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwFoABtDEz+EFvJBAjXwNTBMcFs44T+EJUIFPwFwGBEU0C8BRYxwXy9JFb4hSgggD1/CHC//L0A8IAMIACvF8D+EFvJFuBEU0yJscF8vRRUaGCAPX8IcL/8vT4QlQgR/AXXPAUcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwFYAAJrPH4C0AATa3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwA==';
+    const __code = 'te6ccgECKQEABYwAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAlJgIBIAYHAgFIEhMCASAICQIB7hARAgFICgsAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQT1RwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhAo4zMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTVQLwKMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1U4CCCEA+KfqW64wIgghAXjUUZuuMCghBZXwe8uuMCMIDA0ODwALQgbvLQgIAN4w7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeJtAtIAAZRsEtQS3voAUWYWFURANxCJEHhVBfAlyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQA0DDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uCB0z+BAQHXAPpAAQH6QCHXCwHDAJEBkjFt4gH6AFFVFRRDMDYQeBBnVQTwJsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UALztRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEFlfB7y68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4hRDMDQQVhBFVQLwJ8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAAbywIIAFSUfwHKAOBwAcoAgAAkcFnwCYAIBIBQVAE/cAQa5Dpj+mfmP0AGECaqRFBCAvGoozdAcEIPe7L710J2Il5egnQAUAgEgFhcCASAdHgIBIBgZAgEgGxwB9zIcQHKAVAH8B5wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AeyHDwHnDwHiRus5l/8B4E8AJQBMyVNANw8B7iJG6zmX/wHgTwAlAEzJU0A3DwHuJw8B4Cf/AeAslYzJYzMwFw8B7iIW6zmH/wHgHwAgHMlDFw8B7iyQGAaACUbDH6ADFx1yH6ADH6ADCnA6sAgAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwIoAIBIB8gAgEgIiMADz4QlMS8CMwgAacbCL4QW8kgRFNUzvHBfL0UbehggD1/CHC//L0QzBSPPAhcSTCAJIwct6BPrsCqIIJMS0AoIIImJaAoBK88vT4QlQgZPAjXPAff1B2cIBAK1RMORiAhAGjIVVCCEBeNRRlQB8sfFcs/E4EBAc8AAc8WASBulTBwAcsBks8W4gH6AgHPFskQVhA0WfAgAe8+EFvJFMqxwWzjhL4QlO48CMBgRFNAvAfJMcF8vTeUcigggD1/CHC//L0IfgnbxAhoYIImJaAZrYIoYIImJaAoKEmwgCWEH1QiV8I4w0lbrMiwgCwjh1wBvACcATIAYIQ1TJ221jLH8s/yRBHQzAXbW3wIJI1W+KAkANMW/hBbySBEU1TOMcF8vRRhKGCAPX8IcL/8vRDMFI58CGBPrsBggkxLQCgggiYloCgErzy9H9wA4BAVDNmyFUwghB73ZfeUAXLHxPLPwH6AgHPFgEgbpUwcAHLAZLPFuLJVBMEUDNtbfAggAHJQTUMw8CFSMKAaoXBwKEgTUHTIVTCCEHNi0JxQBcsfE8s/AfoCAc8WAc8WySgQRkMTUFVtbfAgUAUAN7/YF2omhqAPwxQICA64B9IACA/SAAoZg2CfgSQCAnMnKAAJrPH4EUAAca3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwThO6PAB8tmwHk/kHVks1lEJwA==';
     const depends = new Map<string, Cell>();
-    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECGwEAAyIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCA3rgGRoCAUgGBwIBIAwNAgEgCAkAR2shwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgKBRwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEBeNRRm64wKCEA+KfqW64wIw8sCCgKCwALQgbvLQgIALIw7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAXjUUZuvLggdM/gQEB1wD6QAEB+kABAfoAVUA1EGcQVlUD8BjI+EIBzFUgUCOBAQHPAAHPFgHPFsntVADE7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kABbQLSAAGUbBLUEt76AAYFBFAzNhB4EGdVBPAZyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQCASAODwIB1BcYABX0o/gOUAcDgA5QBAIBIBARAgEgEhMCASAVFgAJHBZ8AaAB9zIcQHKAVAH8BNwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ATyHDwE3DwEyRus5l/8BME8AJQBMyVNANw8BPiJG6zmX/wEwTwAlAEzJU0A3DwE+Jw8BMCf/ATAslYzJYzMwFw8BPiIW6zmH/wEwHwAgHMlDFw8BPiyQGAUAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwFoABtDEz+EFvJBAjXwNTBMcFs44T+EJUIFPwFwGBEU0C8BRYxwXy9JFb4hSgggD1/CHC//L0A8IAMIACvF8D+EFvJFuBEU0yJscF8vRRUaGCAPX8IcL/8vT4QlQgR/AXXPAUcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwFYAAJrPH4C0AATa3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwA==', 'base64'))[0]);
+    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECKQEABYwAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAlJgIBIAYHAgFIEhMCASAICQIB7hARAgFICgsAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQT1RwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhAo4zMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTVQLwKMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1U4CCCEA+KfqW64wIgghAXjUUZuuMCghBZXwe8uuMCMIDA0ODwALQgbvLQgIAN4w7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeJtAtIAAZRsEtQS3voAUWYWFURANxCJEHhVBfAlyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQA0DDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uCB0z+BAQHXAPpAAQH6QCHXCwHDAJEBkjFt4gH6AFFVFRRDMDYQeBBnVQTwJsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UALztRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEFlfB7y68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4hRDMDQQVhBFVQLwJ8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAAbywIIAFSUfwHKAOBwAcoAgAAkcFnwCYAIBIBQVAE/cAQa5Dpj+mfmP0AGECaqRFBCAvGoozdAcEIPe7L710J2Il5egnQAUAgEgFhcCASAdHgIBIBgZAgEgGxwB9zIcQHKAVAH8B5wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AeyHDwHnDwHiRus5l/8B4E8AJQBMyVNANw8B7iJG6zmX/wHgTwAlAEzJU0A3DwHuJw8B4Cf/AeAslYzJYzMwFw8B7iIW6zmH/wHgHwAgHMlDFw8B7iyQGAaACUbDH6ADFx1yH6ADH6ADCnA6sAgAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwIoAIBIB8gAgEgIiMADz4QlMS8CMwgAacbCL4QW8kgRFNUzvHBfL0UbehggD1/CHC//L0QzBSPPAhcSTCAJIwct6BPrsCqIIJMS0AoIIImJaAoBK88vT4QlQgZPAjXPAff1B2cIBAK1RMORiAhAGjIVVCCEBeNRRlQB8sfFcs/E4EBAc8AAc8WASBulTBwAcsBks8W4gH6AgHPFskQVhA0WfAgAe8+EFvJFMqxwWzjhL4QlO48CMBgRFNAvAfJMcF8vTeUcigggD1/CHC//L0IfgnbxAhoYIImJaAZrYIoYIImJaAoKEmwgCWEH1QiV8I4w0lbrMiwgCwjh1wBvACcATIAYIQ1TJ221jLH8s/yRBHQzAXbW3wIJI1W+KAkANMW/hBbySBEU1TOMcF8vRRhKGCAPX8IcL/8vRDMFI58CGBPrsBggkxLQCgggiYloCgErzy9H9wA4BAVDNmyFUwghB73ZfeUAXLHxPLPwH6AgHPFgEgbpUwcAHLAZLPFuLJVBMEUDNtbfAggAHJQTUMw8CFSMKAaoXBwKEgTUHTIVTCCEHNi0JxQBcsfE8s/AfoCAc8WAc8WySgQRkMTUFVtbfAgUAUAN7/YF2omhqAPwxQICA64B9IACA/SAAoZg2CfgSQCAnMnKAAJrPH4EUAAca3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwThO6PAB8tmwHk/kHVks1lEJwA==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
@@ -579,6 +789,8 @@ export const JettonDefaultWallet_errors: { [key: string]: string } = {
     '133': `Contract stopped`,
     '134': `Invalid argument`,
     '4429': `Invalid sender`,
+    '13650': `Invalid bounced message`,
+    '16059': `Invalid value`,
     '62972': `Invalid balance`,
 }
 
@@ -586,13 +798,16 @@ export class JettonDefaultWallet {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TokenTransferInternal | TokenTransfer) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: TokenTransfer | TokenTransferInternal | TokenBurn) {
         let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenTransfer') {
+            body = packTokenTransfer(message);
+        }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenTransferInternal') {
             body = packTokenTransferInternal(message);
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenTransfer') {
-            body = packTokenTransfer(message);
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenBurn') {
+            body = packTokenBurn(message);
         }
         if (body === null) { throw new Error('Invalid message type'); }
         try {
@@ -606,6 +821,22 @@ export class JettonDefaultWallet {
                 })
             }), { debug: args.debug });
             if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (JettonDefaultWallet_errors[e.exitCode.toString()]) {
+                    throw new Error(JettonDefaultWallet_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
+    async getGetWalletData() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('get_wallet_data', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return unpackStackJettonWalletData(result.stack);
         } catch (e) {
             if (e instanceof ExecuteError) {
                 if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
