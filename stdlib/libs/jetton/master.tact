@@ -1,6 +1,7 @@
 import "@stdlib/ownable";
 import "./messages";
 
+@interface("org.ton.jetton.master")
 trait Jetton with Ownable {
 
     //
