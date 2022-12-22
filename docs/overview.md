@@ -26,7 +26,7 @@ contract Sample with OwnableTransferable {
     self.counter = self.counter + 1;
   }
   
-  get fun counter() {
+  get fun counter(): Int {
     return self.counter;
   }
 }
