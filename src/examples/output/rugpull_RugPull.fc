@@ -168,10 +168,6 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() require(int $condition) impure {
-    throw_unless(131, $condition);
-}
-
 () send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
@@ -279,7 +275,7 @@ _ __gen_get_owner() method_id(83229) {
 
 ((slice, int, int, int, int, int, int, int, int, cell), ()) __gen_RugPull_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
-    require((~ $self'stopped));
+    throw_unless(131, (~ $self'stopped));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
@@ -302,7 +298,7 @@ _ __gen_get_stopped() method_id(74107) {
         return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
     }
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
-    require(($ctx'value >= ($self'investment + $self'fee)));
+    throw_unless(131, ($ctx'value >= ($self'investment + $self'fee)));
     $self'queue~__tact_dict_set_int_slice(257, $self'queueEnd, $ctx'sender);
     $self'queueEnd = ($self'queueEnd + 1);
     $self'balance = ($self'balance + $self'investment);

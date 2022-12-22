@@ -11,7 +11,6 @@ PROGRAM{
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC storeBool
-  DECLPROC require
   DECLPROC send
   DECLPROC __gen_MultisigContract_init
   DECLPROC __gen_MultisigContract_execute
@@ -126,9 +125,6 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
-  }>
-  require PROC:<{
-    131 THROWIFNOT
   }>
   send PROC:<{
     NEWC
@@ -292,12 +288,12 @@ PROGRAM{
     CHKSIGNU
     s5 s9 PUSH2
     EQUAL
-    require CALLDICT
+    131 THROWIFNOT
     s0 s2 XCHG
     AND
     SWAP
     AND
-    require CALLDICT
+    131 THROWIFNOT
     __gen_MultisigContract_execute CALLDICT
   }>
   recv_internal PROC:<{

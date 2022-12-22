@@ -26,7 +26,7 @@ contract Beacon with Ownable {
 
         // Check context
         let ctx: Context = context();
-        require(ctx.sender == self.master);
+        require(ctx.sender == self.master, "Invalid sender");
 
         // Reserve funds
         nativeReserve(ton("0.1"), 0);
@@ -59,7 +59,7 @@ contract Payouts with OwnableTransferable {
 
         // Check context
         let ctx: Context = context();
-        require(ctx.value >= ton("1"));
+        require(ctx.value >= ton("1"), "Invalid value");
 
         // Parse message
         let data: Slice = msg.fromBase64();
@@ -71,7 +71,7 @@ contract Payouts with OwnableTransferable {
         dataToSign = storeAddress(dataToSign, ctx.sender);
         dataToSign = storeCoins(dataToSign, amount);
         let hash: Int = dataToSign.asCell().hash();
-        require(checkSignature(hash, signature, self.publicKey));
+        require(checkSignature(hash, signature, self.publicKey), "Invalid signature");
 
         // Request funds transfer
         let init: StateInit = initOf Beacon(myAddress(), ctx.sender);
@@ -91,12 +91,12 @@ contract Payouts with OwnableTransferable {
         let ctx: Context = context();
         let init: StateInit = initOf Beacon(myAddress(), msg.address);
         let address: Address = contractAddress(init);
-        require(ctx.sender == address);
+        require(ctx.sender == address, "Invalid sender");
 
         if (msg.ok) {
             
             // Check that we have enough funds
-            require(myBalance() - ctx.value - ton("1") - msg.amount > 0);
+            require(myBalance() - ctx.value - ton("1") - msg.amount > 0, "Invalid balance");
 
             // Send response
             send(SendParameters{

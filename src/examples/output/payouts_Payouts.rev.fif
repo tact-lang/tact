@@ -70,7 +70,7 @@ SETCP0
       s3 POP
       s3 s4 XCHG
       ROT
-      38 CALLDICT
+      37 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -110,7 +110,7 @@ SETCP0
       s0 s1 XCHG
       s1 POP
       s1 s2 XCHG
-      39 CALLDICT
+      38 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -146,7 +146,7 @@ SETCP0
         32 PUSHINT
         SDSKIPFIRST
         s1 s2 XCHG
-        37 CALLDICT
+        36 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -312,9 +312,6 @@ SETCP0
     6 CALLDICT
 
   25: 
-    131 THROWIFNOT
-
-  26: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -421,14 +418,14 @@ SETCP0
     s0 s1 XCHG
     SENDRAWMSG
 
-  27: 
+  26: 
     ENDC
     CTOS
 
-  28: 
+  27: 
     ENDC
 
-  29: 
+  28: 
     s0 PUSH
     SBITS
     3 RSHIFT
@@ -525,16 +522,16 @@ SETCP0
     0 NEQINT
     <{
       s0 s2 XCHG
-      27 CALLDICT
+      26 CALLDICT
       s0 s2 XCHG
       SUB
       LDSLICEX
       s0 POP
     }> IFJMPREF
     2DROP
-    27 CALLDICT
+    26 CALLDICT
 
-  30: 
+  29: 
     -1 PUSHINT
     NEWC
     s0 s1 XCHG
@@ -553,10 +550,10 @@ SETCP0
     12 CALLDICT
     11 CALLDICT
 
-  31: 
-    29 CALLDICT
+  30: 
+    28 CALLDICT
 
-  32: 
+  31: 
     0 PUSHINT
     s0 s3 XCHG
     NEWC
@@ -569,7 +566,7 @@ SETCP0
     1 STI
     ENDC
 
-  33: 
+  32: 
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -585,9 +582,9 @@ SETCP0
     STDICT
     ENDC
     s0 s0 s3 XCHG3
-    32 CALLDICT
+    31 CALLDICT
 
-  34: 
+  33: 
     s0 s2 XCHG
     NEWC
     STREF
@@ -598,7 +595,7 @@ SETCP0
     STIX
     ENDC
 
-  35: 
+  34: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -607,18 +604,18 @@ SETCP0
     SDEQ
     132 THROWIFNOT
 
-  36: 
+  35: 
     s0 POP
 
-  37: 
+  36: 
     1 GETGLOBVAR
     3 UNTUPLE
     1 2 BLKDROP2
     1000000000 PUSHINT
     GEQ
-    25 CALLDICT
+    131 THROWIFNOT
     s0 s1 XCHG
-    31 CALLDICT
+    30 CALLDICT
     LDGRAMS
     9 PUSHPOW2
     LDSLICEX
@@ -628,15 +625,15 @@ SETCP0
     STSLICER
     s2 PUSH
     STGRAMS
-    28 CALLDICT
+    27 CALLDICT
     HASHCU
     s1 s4 XCPU
     CHKSIGNU
-    25 CALLDICT
+    131 THROWIFNOT
     2 GETGLOBVAR
     MYADDR
     1 3 BLKSWAP
-    33 CALLDICT
+    32 CALLDICT
     24 CALLDICT
     -1 PUSHINT
     0 PUSHINT
@@ -653,19 +650,19 @@ SETCP0
     s1 s4 s0 XCHG3
     PUSHNULL
     PUSHNULL
-    26 CALLDICT
+    25 CALLDICT
 
-  38: 
+  37: 
     1 GETGLOBVAR
     3 UNTUPLE
     s2 POP
     2 GETGLOBVAR
     MYADDR
     s5 PUSH
-    33 CALLDICT
+    32 CALLDICT
     24 CALLDICT
     SDEQ
-    25 CALLDICT
+    131 THROWIFNOT
     s0 s1 XCHG
     <{
       BALANCE
@@ -677,15 +674,15 @@ SETCP0
       s2 PUSH
       SUB
       0 GTINT
-      25 CALLDICT
+      131 THROWIFNOT
       0 PUSHINT
       66 PUSHINT
       PUSHSLICE
-      30 CALLDICT
+      29 CALLDICT
       s2 s4 XCHG
       PUSHNULL
       PUSHNULL
-      26 CALLDICT
+      25 CALLDICT
     }> PUSHCONT
     <{
       s0 POP
@@ -694,21 +691,21 @@ SETCP0
       0 PUSHINT
       66 PUSHINT
       PUSHSLICE
-      30 CALLDICT
+      29 CALLDICT
       s3 s4 XCHG
       PUSHNULL
       PUSHNULL
-      26 CALLDICT
+      25 CALLDICT
     }> PUSHCONT
     IFELSE
 
-  39: 
+  38: 
     ROTREV
-    35 CALLDICT
+    34 CALLDICT
     s1 POP
 
   76827: 
-    34 CALLDICT
+    33 CALLDICT
 
   owner: 
     c4 PUSH
@@ -723,7 +720,7 @@ SETCP0
     LDI
     ROTREV
     1 2 BLKDROP2
-    36 CALLDICT
+    35 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

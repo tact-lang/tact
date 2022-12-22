@@ -95,7 +95,7 @@ SETCP0
       s7 s8 XCHG
       1 6 BLKSWAP
       1 12 BLKDROP2
-      20 CALLDICT
+      19 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -208,7 +208,7 @@ SETCP0
         s7 s8 XCHG
         1 6 BLKSWAP
         1 12 BLKDROP2
-        21 CALLDICT
+        20 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -313,9 +313,6 @@ SETCP0
     1 STI
 
   16: 
-    131 THROWIFNOT
-
-  17: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -422,7 +419,7 @@ SETCP0
     s0 s1 XCHG
     SENDRAWMSG
 
-  18: 
+  17: 
     0 PUSHINT
     0 PUSHINT
     s0 s12 XCHG
@@ -482,19 +479,19 @@ SETCP0
     STREF
     ENDC
 
-  19: 
+  18: 
     5 7 BLKDROP2
 
-  20: 
+  19: 
 
-  21: 
+  20: 
     s3 PUSH
     NOW
     GREATER
-    16 CALLDICT
+    131 THROWIFNOT
     s7 PUSH
     NOT
-    16 CALLDICT
+    131 THROWIFNOT
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -561,13 +558,13 @@ SETCP0
       3 1 BLKSWAP
       PUSHNULL
       PUSHNULL
-      17 CALLDICT
+      16 CALLDICT
       s0 s7 XCHG
     }> IFREF
     s0 s9 XCHG
 
   66268: 
-    18 CALLDICT
+    17 CALLDICT
 
   107262: 
     c4 PUSH
@@ -620,7 +617,7 @@ SETCP0
     s7 s8 XCHG
     1 6 BLKSWAP
     1 12 BLKDROP2
-    19 CALLDICT
+    18 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

@@ -17,7 +17,6 @@ PROGRAM{
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
   DECLPROC storeBool
-  DECLPROC require
   DECLPROC send
   DECLPROC reply
   DECLPROC __gen_String_asComment
@@ -288,9 +287,6 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  require PROC:<{
-    131 THROWIFNOT
-  }>
   send PROC:<{
     NEWC
     1 PUSHINT
@@ -458,7 +454,7 @@ PROGRAM{
   __gen_RugPull_requireNotStopped PROC:<{
     s3 PUSH
     NOT
-    require CALLDICT
+    131 THROWIFNOT
   }>
   __gen_RugPull_stopped PROC:<{
     s3 s9 XCHG
@@ -487,7 +483,7 @@ PROGRAM{
     ADD
     s1 s2 XCHG
     GEQ
-    require CALLDICT
+    131 THROWIFNOT
     257 PUSHINT
     s3 s1 PUXC
     __tact_dict_set_int_slice CALLDICT

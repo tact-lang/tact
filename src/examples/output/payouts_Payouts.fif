@@ -23,7 +23,6 @@ PROGRAM{
   DECLPROC __gen_store_Payouts
   DECLPROC storeBool
   DECLPROC contractAddress
-  DECLPROC require
   DECLPROC send
   DECLPROC __gen_Builder_asSlice
   DECLPROC __gen_Builder_asCell
@@ -297,9 +296,6 @@ PROGRAM{
     -ROT
     __tact_compute_contract_address CALLDICT
   }>
-  require PROC:<{
-    131 THROWIFNOT
-  }>
   send PROC:<{
     NEWC
     1 PUSHINT
@@ -559,7 +555,7 @@ PROGRAM{
     1 2 BLKDROP2
     1000000000 PUSHINT
     GEQ
-    require CALLDICT
+    131 THROWIFNOT
     SWAP
     __gen_String_fromBase64 CALLDICT
     LDGRAMS
@@ -575,7 +571,7 @@ PROGRAM{
     HASHCU
     s1 s4 XCPU
     CHKSIGNU
-    require CALLDICT
+    131 THROWIFNOT
     __tact_context_sys GETGLOB
     MYADDR
     3 ROLL
@@ -600,7 +596,7 @@ PROGRAM{
     __gen_Beacon_init_child CALLDICT
     contractAddress CALLDICT
     __tact_address_eq INLINECALLDICT
-    require CALLDICT
+    131 THROWIFNOT
     SWAP
     IF:<{
       __tact_my_balance INLINECALLDICT
@@ -611,7 +607,7 @@ PROGRAM{
       s2 PUSH
       SUB
       0 GTINT
-      require CALLDICT
+      131 THROWIFNOT
       FALSE
       66 PUSHINT
       B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE

@@ -18,23 +18,23 @@ contract JettonDefaultWallet {
         let ctx: Context = context();
         if (ctx.sender != self.master) {
             let sinit: StateInit = initOf JettonDefaultWallet(self.master, msg.from);
-            require(contractAddress(sinit) == ctx.sender);
+            require(contractAddress(sinit) == ctx.sender, "Invalid sender");
         }
 
         // Update balance
         self.balance = self.balance + msg.amount;
-        require(self.balance >= 0);
+        require(self.balance >= 0, "Invalid balance");
     }
 
     receive(msg: TokenTransfer) {
 
         // Check sender
         let ctx: Context = context();
-        require(ctx.sender == self.owner);
+        require(ctx.sender == self.owner, "Invalid sender");
 
         // Update balance
         self.balance = self.balance - msg.amount;
-        require(self.balance >= 0);
+        require(self.balance >= 0, "Invalid balance");
 
         // Send notification
         let winit: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);

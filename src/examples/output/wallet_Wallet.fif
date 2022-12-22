@@ -15,7 +15,6 @@ PROGRAM{
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
   DECLPROC storeBool
-  DECLPROC require
   DECLPROC send
   DECLPROC __gen_Wallet_init
   DECLPROC __gen_Wallet_init_child
@@ -165,9 +164,6 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
-  }>
-  require PROC:<{
-    131 THROWIFNOT
   }>
   send PROC:<{
     NEWC
@@ -328,10 +324,10 @@ PROGRAM{
     HASHCU
     s0 s6 s8 XC2PU
     CHKSIGNU
-    require CALLDICT
+    131 THROWIFNOT
     s3 s7 XCPU
     EQUAL
-    require CALLDICT
+    131 THROWIFNOT
     s0 s6 XCHG
     INC
     TRUE

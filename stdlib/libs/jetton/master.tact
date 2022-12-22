@@ -85,7 +85,7 @@ trait Jetton with Ownable {
     fun requireWallet(owner: Address) {
         let ctx: Context = context();
         let winit: StateInit = self.getJettonWalletInit(owner);
-        require(contractAddress(winit) == ctx.sender);
+        require(contractAddress(winit) == ctx.sender, "Invalid sender");
     }
 
     virtual fun getJettonWalletInit(address: Address): StateInit {

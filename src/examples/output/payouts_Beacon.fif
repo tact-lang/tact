@@ -12,7 +12,6 @@ PROGRAM{
   DECLPROC __gen_load_Beacon
   DECLPROC __gen_store_Beacon
   DECLPROC storeBool
-  DECLPROC require
   DECLPROC send
   DECLPROC reply
   DECLPROC __gen_Beacon_init
@@ -115,9 +114,6 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
-  }>
-  require PROC:<{
-    131 THROWIFNOT
   }>
   send PROC:<{
     NEWC
@@ -254,7 +250,7 @@ PROGRAM{
     NIP
     s4 PUSH
     __tact_address_eq INLINECALLDICT
-    require CALLDICT
+    131 THROWIFNOT
     100000000 PUSHINT
     0 PUSHINT
     RAWRESERVE

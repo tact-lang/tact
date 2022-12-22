@@ -21,7 +21,6 @@ PROGRAM{
   DECLPROC __gen_store_SampleJetton
   DECLPROC storeBool
   DECLPROC contractAddress
-  DECLPROC require
   DECLPROC send
   DECLPROC __gen_JettonDefaultWallet_init
   DECLPROC __gen_JettonDefaultWallet_init_child
@@ -260,9 +259,6 @@ PROGRAM{
     -ROT
     __tact_compute_contract_address CALLDICT
   }>
-  require PROC:<{
-    131 THROWIFNOT
-  }>
   send PROC:<{
     NEWC
     1 PUSHINT
@@ -461,7 +457,7 @@ PROGRAM{
     contractAddress CALLDICT
     s0 s5 XCHG2
     __tact_address_eq INLINECALLDICT
-    require CALLDICT
+    131 THROWIFNOT
     3 ROLL
   }>
   __gen_SampleJetton_requireOwner PROC:<{

@@ -47,7 +47,7 @@ contract IncrementContract {
     }
 
     receive(msg: Persist) {
-        require(self.counters3.get(msg.key) == null);
+        require(self.counters3.get(msg.key) == null, "Empty counter");
         self.counters3.set(msg.key, msg.content);
     }
 

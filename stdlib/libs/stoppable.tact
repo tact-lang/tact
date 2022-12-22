@@ -5,11 +5,11 @@ trait Stoppable with Ownable {
     owner: Address;
 
     fun requireNotStopped() {
-        require(!self.stopped);
+        require(!self.stopped, "Contract stopped");
     }
 
     fun requireStopped() {
-        require(self.stopped);    
+        require(self.stopped, "Contract not stopped");
     }
 
     receive("Stop") {

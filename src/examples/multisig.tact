@@ -40,8 +40,8 @@ contract MultisigSigner {
     receive("YES") {
 
         // Checks
-        require(self.request.timeout > now());
-        require(!self.completed);
+        require(self.request.timeout > now(), "Timeout");
+        require(!self.completed, "Completed");
 
         // Load weitght
         let ctx: Context = context();
@@ -86,7 +86,7 @@ contract Multisig {
         // Check sender
         let ctx: Context = context();
         let weight: Int = self.members.get(ctx.sender)!!;
-        require(weight > 0);
+        require(weight > 0, "Not a member");
 
         // Create message
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg);
@@ -108,8 +108,8 @@ contract Multisig {
         let ctx: Context = context();
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg.request);
         let opAddress: Address = contractAddress(opInit);
-        require(opAddress == ctx.sender);
-        require(msg.request.timeout > now());
+        require(opAddress == ctx.sender, "Invalid sender");
+        require(msg.request.timeout > now(), "Timeout");
 
         // Send operation
         send(SendParameters{

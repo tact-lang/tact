@@ -49,7 +49,7 @@ SETCP0
       3 1 BLKSWAP
       1 3 BLKDROP2
       1 3 BLKSWAP
-      20 CALLDICT
+      19 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -92,7 +92,7 @@ SETCP0
       s0 s1 XCHG
       s1 POP
       s1 s3 s0 XCHG3
-      19 CALLDICT
+      18 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -126,9 +126,6 @@ SETCP0
     1 STI
 
   14: 
-    131 THROWIFNOT
-
-  15: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -235,7 +232,7 @@ SETCP0
     s0 s1 XCHG
     SENDRAWMSG
 
-  16: 
+  15: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
@@ -247,9 +244,9 @@ SETCP0
     ROT
     PUSHNULL
     PUSHNULL
-    15 CALLDICT
+    14 CALLDICT
 
-  17: 
+  16: 
     0 PUSHINT
     s0 s3 XCHG
     NEWC
@@ -262,18 +259,18 @@ SETCP0
     1 STI
     ENDC
 
-  18: 
+  17: 
     s0 POP
     s1 POP
 
-  19: 
+  18: 
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
     s1 POP
     s4 PUSH
     SDEQ
-    14 CALLDICT
+    131 THROWIFNOT
     100000000 PUSHINT
     0 PUSHINT
     RAWRESERVE
@@ -295,7 +292,7 @@ SETCP0
       STSLICER
       1 STI
       ENDC
-      16 CALLDICT
+      15 CALLDICT
     }> PUSHCONT
     <{
       s2 PUSH
@@ -312,11 +309,11 @@ SETCP0
       STSLICER
       1 STI
       ENDC
-      16 CALLDICT
+      15 CALLDICT
     }> PUSHCONT
     IFELSE
 
-  20: 
+  19: 
     2DROP
     0 PUSHINT
 
@@ -335,10 +332,10 @@ SETCP0
     1 LDI
     3 1 BLKSWAP
     1 3 BLKDROP2
-    18 CALLDICT
+    17 CALLDICT
 
   107415: 
-    17 CALLDICT
+    16 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

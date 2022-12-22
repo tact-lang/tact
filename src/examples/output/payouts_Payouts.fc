@@ -191,10 +191,6 @@ slice contractAddress((cell, cell) $s) impure {
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() require(int $condition) impure {
-    throw_unless(131, $condition);
-}
-
 () send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
@@ -341,7 +337,7 @@ _ __gen_get_owner() method_id(83229) {
 ((slice, int), ()) __gen_Payouts_receive_comment((slice, int) $self, slice $msg) impure {
     var ($self'owner, $self'publicKey) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
-    require(($ctx'value >= 1000000000));
+    throw_unless(131, ($ctx'value >= 1000000000));
     slice $data = __gen_String_fromBase64($msg);
     int $amount = $data~load_coins();
     slice $signature = $data~load_bits(512);
@@ -349,7 +345,7 @@ _ __gen_get_owner() method_id(83229) {
     $dataToSign = __tact_store_address($dataToSign, $ctx'sender);
     $dataToSign = store_coins($dataToSign, $amount);
     int $hash = cell_hash(__gen_Builder_asCell($dataToSign));
-    require(check_signature($hash, $signature, $self'publicKey));
+    throw_unless(131, check_signature($hash, $signature, $self'publicKey));
     var ($init'code, $init'data) = __gen_Beacon_init_child(__tact_context_sys, my_address(), $ctx'sender);
     slice $address = contractAddress(($init'code, $init'data));
     send((true, $address, 0, (64 + 2), __gen_writecell_CanPayout(($amount)), null(), null()));
@@ -362,9 +358,9 @@ _ __gen_get_owner() method_id(83229) {
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
     var ($init'code, $init'data) = __gen_Beacon_init_child(__tact_context_sys, my_address(), $msg'address);
     slice $address = contractAddress(($init'code, $init'data));
-    require(__tact_address_eq($ctx'sender, $address));
+    throw_unless(131, __tact_address_eq($ctx'sender, $address));
     if ($msg'ok) {
-        require(((((__tact_my_balance() - $ctx'value) - 1000000000) - $msg'amount) > 0));
+        throw_unless(131, ((((__tact_my_balance() - $ctx'value) - 1000000000) - $msg'amount) > 0));
         send((false, $msg'address, $msg'amount, (64 + 2), __gen_String_asComment(__gen_str_3364490128()), null(), null()));
     } else {
         send((false, $msg'address, 0, (64 + 2), __gen_String_asComment(__gen_str_2620117026()), null(), null()));

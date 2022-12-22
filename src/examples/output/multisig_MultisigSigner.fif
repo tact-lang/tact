@@ -14,7 +14,6 @@ PROGRAM{
   DECLPROC __gen_load_MultisigSigner
   DECLPROC __gen_store_MultisigSigner
   DECLPROC storeBool
-  DECLPROC require
   DECLPROC send
   DECLPROC __gen_MultisigSigner_init
   DECLPROC __gen_MultisigSigner_request
@@ -205,9 +204,6 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  require PROC:<{
-    131 THROWIFNOT
-  }>
   send PROC:<{
     NEWC
     1 PUSHINT
@@ -336,10 +332,10 @@ PROGRAM{
     s3 PUSH
     NOW
     GREATER
-    require CALLDICT
+    131 THROWIFNOT
     s7 PUSH
     NOT
-    require CALLDICT
+    131 THROWIFNOT
     __tact_context_get INLINECALLDICT
     DROP
     NIP
