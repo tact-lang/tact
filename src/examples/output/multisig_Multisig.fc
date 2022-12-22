@@ -252,7 +252,7 @@ _ __gen_get_members() method_id(104769) {
     var ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
     int $weight = __tact_not_null(__tact_dict_get_slice_int($self'members, 267, $ctx'sender, 257));
-    throw_unless(131, ($weight > 0));
+    throw_unless(46307, ($weight > 0));
     var ($opInit'code, $opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body));
     slice $opAddress = contractAddress(($opInit'code, $opInit'data));
     send((true, $opAddress, 0, (64 + 2), null(), $opInit'code, $opInit'data));
@@ -265,8 +265,8 @@ _ __gen_get_members() method_id(104769) {
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
     var ($opInit'code, $opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body));
     slice $opAddress = contractAddress(($opInit'code, $opInit'data));
-    throw_unless(131, __tact_address_eq($opAddress, $ctx'sender));
-    throw_unless(131, ($msg'request'timeout > now()));
+    throw_unless(4429, __tact_address_eq($opAddress, $ctx'sender));
+    throw_unless(4755, ($msg'request'timeout > now()));
     send(($msg'request'bounce, $msg'request'to, $msg'request'value, $msg'request'mode, $msg'request'body, null(), null()));
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
@@ -323,5 +323,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://Qmejm3t14fXvZcg8AvBUwTfZJ72aB2ayuqwEye83eu5xav";
+    return "ipfs://QmdrYYuN3Gv4V1hGcPZpt7NsZEPJ97QiQMPgrFSPE2HUiv";
 }

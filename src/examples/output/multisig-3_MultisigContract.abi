@@ -600,6 +600,12 @@
     },
     "134": {
       "message": "Invalid argument"
+    },
+    "17654": {
+      "message": "Invalid seqno"
+    },
+    "48401": {
+      "message": "Invalid signature"
     }
   }
 }

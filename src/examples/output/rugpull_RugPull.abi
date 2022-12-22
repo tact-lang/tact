@@ -532,6 +532,15 @@
     },
     "134": {
       "message": "Invalid argument"
+    },
+    "16059": {
+      "message": "Invalid value"
+    },
+    "40368": {
+      "message": "Contract stopped"
+    },
+    "53296": {
+      "message": "Contract not stopped"
     }
   }
 }

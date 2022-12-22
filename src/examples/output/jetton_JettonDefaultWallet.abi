@@ -895,6 +895,12 @@
     },
     "134": {
       "message": "Invalid argument"
+    },
+    "4429": {
+      "message": "Invalid sender"
+    },
+    "62972": {
+      "message": "Invalid balance"
     }
   }
 }

@@ -378,10 +378,14 @@ SETCP0
       2 GETGLOBVAR
       0 4 3 XCPUXC
       22 CALLDICT
+      s0 s1 XCHG
+      4429 PUSHINT
+      s0 s2 XCHG
       19 CALLDICT
-      ROT
+      s0 s3 XCHG2
       SDEQ
-      131 THROWIFNOT
+      s1 s2 XCHG
+      THROWANYIFNOT
     }> PUSHCONT
     <{
       s0 POP
@@ -390,9 +394,10 @@ SETCP0
     IFELSE
     s1 s3 XCHG
     ADD
-    s0 PUSH
+    62972 PUSHINT
+    s1 PUSH
     -1 GTINT
-    131 THROWIFNOT
+    THROWANYIFNOT
     s0 s2 XCHG
 
   24: 
@@ -400,15 +405,17 @@ SETCP0
     1 GETGLOBVAR
     3 UNTUPLE
     s0 POP
-    s1 POP
-    s5 PUSH
+    4429 PUSHINT
+    s2 POP
+    s6 PUSH
     SDEQ
-    131 THROWIFNOT
+    THROWANYIFNOT
     s5 s1 XCPU
     SUB
-    s0 PUSH
+    62972 PUSHINT
+    s1 PUSH
     -1 GTINT
-    131 THROWIFNOT
+    THROWANYIFNOT
     2 GETGLOBVAR
     0 4 6 XCPUXC
     22 CALLDICT

@@ -517,6 +517,18 @@
     },
     "134": {
       "message": "Invalid argument"
+    },
+    "4429": {
+      "message": "Invalid sender"
+    },
+    "16059": {
+      "message": "Invalid value"
+    },
+    "48401": {
+      "message": "Invalid signature"
+    },
+    "62972": {
+      "message": "Invalid balance"
     }
   }
 }

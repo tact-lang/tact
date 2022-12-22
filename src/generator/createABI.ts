@@ -4,6 +4,7 @@ import { CompilerContext } from "../context";
 import { getAllocation } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
 import { getAllTypes } from "../types/resolveDescriptors";
+import { getAllErrors } from "../types/resolveStrings";
 import { TypeDescription } from "../types/types";
 
 function createAbiAllocationField(src: StorageField): AllocationField {
@@ -181,6 +182,10 @@ export function createABI(ctx: CompilerContext, name: string | null): ContractAB
     errors['38'] = { message: 'Not enough extra-currencies' };
     for (let e of Object.values(contractErrors)) {
         errors[e.id] = { message: e.message };
+    }
+    let codeErrors = getAllErrors(ctx);
+    for (let c of codeErrors) {
+        errors[c.id + ''] = { message: c.value };
     }
 
     return {

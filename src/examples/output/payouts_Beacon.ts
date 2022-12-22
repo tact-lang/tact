@@ -285,7 +285,7 @@ export function unpackTupleCanPayoutResponse(slice: TupleSlice4): CanPayoutRespo
     return { $$type: 'CanPayoutResponse', amount: amount, address: address, ok: ok };
 }
 export async function Beacon_init(master: Address, owner: Address) {
-    const __code = 'te6ccgECGgEAAmsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAWFwIBIAYHAgFiEBECAdQICQIBWAsMAcccCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECjiww7UTQ1AH4YvpAAQH6QAEB0gBVIGwTVQLwE8j4QgHMVSBazxZYzxbKAMntVOCCED6esWa64wIw8sCCgCgALCBu8tCAgAIDtRNDUAfhi+kABAfpAAQHSAFUgbBMD0x8BghA+nrFmuvLggYEBAdcAATFBMPASyPhCAcxVIFrPFljPFsoAye1UABVZR/AcoA4HABygCAIBIA0OAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgDwAhPhBbyMwMX8CcIBCWG1t8A6AABPsAAgEgEhMCASAUFQAdHADyMwDWs8WWM8WygDJgAAUMDGAArz4QW8jMDEkxwXy4IOCEAX14QBw+wIhjh9/MiJ/yFUgghBu9vVRUATLHxKBAQHPAAHPFsoAyfAPjh0icMhVIIIQbvb1UVAEyx8SgQEBzwABzxbKAMnwD+KAABRbcIAAzvijvaiaGoA/DF9IACA/SAAgOkAKpA2CfgIwCAWYYGQAJsOX8BCAAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwQM51aecV+dJQsB1hbiZHsoA==';
+    const __code = 'te6ccgECGgEAAm0AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAWFwIBIAYHAgFiEBECAdQICQIBWAsMAcccCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECjiww7UTQ1AH4YvpAAQH6QAEB0gBVIGwTVQLwE8j4QgHMVSBazxZYzxbKAMntVOCCED6esWa64wIw8sCCgCgALCBu8tCAgAIDtRNDUAfhi+kABAfpAAQHSAFUgbBMD0x8BghA+nrFmuvLggYEBAdcAATFBMPASyPhCAcxVIFrPFljPFsoAye1UABVZR/AcoA4HABygCAIBIA0OAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgDwAhPhBbyMwMX8CcIBCWG1t8A6AABPsAAgEgEhMCASAUFQAdHADyMwDWs8WWM8WygDJgAAUMDGAAsz4QW8jMIERTTIlxwXy9IIQBfXhAHD7AiGOH38yIn/IVSCCEG729VFQBMsfEoEBAc8AAc8WygDJ8A+OHSJwyFUgghBu9vVRUATLHxKBAQHPAAHPFsoAyfAP4oAAFFtwgADO+KO9qJoagD8MX0gAID9IACA6QAqkDYJ+AjAIBZhgZAAmw5fwEIABxsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnBAznVp5xX50lCwHWFuJkeyg';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];
@@ -322,6 +322,10 @@ export const Beacon_errors: { [key: string]: string } = {
     '132': `Access denied`,
     '133': `Contract stopped`,
     '134': `Invalid argument`,
+    '4429': `Invalid sender`,
+    '16059': `Invalid value`,
+    '48401': `Invalid signature`,
+    '62972': `Invalid balance`,
 }
 
 export class Beacon {

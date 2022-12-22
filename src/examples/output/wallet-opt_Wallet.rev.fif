@@ -63,16 +63,20 @@ SETCP0
       s3 s0 s0 XCHG3
       s0 PUSH
       HASHSU
-      0 2 4 XC2PU
+      48401 PUSHINT
+      s3 s5 XCPU
       CHKSIGNU
-      131 THROWIFNOT
+      s1 s2 XCHG
+      THROWANYIFNOT
       32 LDI
       8 LDI
       LDREF
       s0 POP
-      s2 s5 XCPU
+      17654 PUSHINT
+      s3 s6 XCPU
       EQUAL
-      131 THROWIFNOT
+      s1 s3 XCHG
+      THROWANYIFNOT
       s0 s4 XCHG
       INC
       RSHIFT 16 REM

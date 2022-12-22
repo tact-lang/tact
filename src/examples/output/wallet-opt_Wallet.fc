@@ -83,12 +83,12 @@ _ __gen_get_seqno() method_id(85143) {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, $msg'transfer) = $msg;
     int $op_hash = slice_hash($msg'transfer);
-    throw_unless(131, check_signature($op_hash, $msg'signature, $self'key));
+    throw_unless(48401, check_signature($op_hash, $msg'signature, $self'key));
     slice $pkg = $msg'transfer;
     int $seqno = $pkg~load_int(32);
     int $mode = $pkg~load_int(8);
     cell $body = $pkg~load_ref();
-    throw_unless(131, ($seqno == $self'seqno));
+    throw_unless(17654, ($seqno == $self'seqno));
     $self'seqno = (($self'seqno + 1) % 65536);
     send_raw_message($body, $mode);
     return (($self'seqno, $self'key, $self'walletId), ());
@@ -137,5 +137,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmZmEbVCq385TWtq5NzN7Yr3TyAm2kyxDpCAhPjweVsfgD";
+    return "ipfs://QmdL1umNPbEMa19YnsPaFKH77whuMzoM6CUtWXG3MjCzPL";
 }

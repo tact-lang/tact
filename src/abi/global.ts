@@ -2,6 +2,7 @@ import { toNano } from "ton";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
+import { getErrorId } from "../types/resolveStrings";
 import { AbiFunction } from "./AbiFunction";
 
 export const GlobalFunctions: { [key: string]: AbiFunction } = {
@@ -52,7 +53,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 throwError('require() expects two arguments', ref);
             }
             let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1]) as string;
-            return `throw_unless(131, ${writeExpression(resolved[0], ctx)})`;
+            return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
         }
     }
 }

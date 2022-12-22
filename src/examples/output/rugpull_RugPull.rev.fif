@@ -819,9 +819,10 @@ SETCP0
     9 BLKDROP
 
   27: 
-    s3 PUSH
+    40368 PUSHINT
+    s4 PUSH
     NOT
-    131 THROWIFNOT
+    THROWANYIFNOT
 
   28: 
     s3 s9 XCHG
@@ -844,11 +845,13 @@ SETCP0
     1 GETGLOBVAR
     3 UNTUPLE
     s2 POP
-    s10 s8 PUSH2
+    16059 PUSHINT
+    s11 s9 PUSH2
     ADD
-    s1 s2 XCHG
+    s1 s3 XCHG
     GEQ
-    131 THROWIFNOT
+    s1 s2 XCHG
+    THROWANYIFNOT
     257 PUSHINT
     s3 s1 PUXC
     5 CALLDICT

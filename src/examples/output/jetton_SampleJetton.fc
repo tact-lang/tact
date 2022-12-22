@@ -273,7 +273,7 @@ _ __gen_get_get_jetton_data() method_id(106029) {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_getJettonWalletInit($owner);
-    throw_unless(131, __tact_address_eq(contractAddress(($winit'code, $winit'data)), $ctx'sender));
+    throw_unless(4429, __tact_address_eq(contractAddress(($winit'code, $winit'data)), $ctx'sender));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -380,5 +380,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmczRBy6EVjuf4mBPuPNeMTL9ozwWE5CBGqGvdrQmzkvvQ";
+    return "ipfs://QmYE4snaxvWLae8QG4D2bgnxNvosLac6Cs12khiuKCizch";
 }

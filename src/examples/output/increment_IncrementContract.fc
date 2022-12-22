@@ -199,7 +199,7 @@ _ __gen_get_counters2() method_id(77570) {
 (((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'content) = $msg;
-    throw_unless(131, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
+    throw_unless(52777, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
     $self'counters3~__tact_dict_set_int_cell(257, $msg'key, $msg'content);
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
@@ -285,5 +285,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmXSTd6DNjtr5nqmkqRYhL8rzmzbrTW5hBcQ53yhxmRZ6g";
+    return "ipfs://QmUDfSGBbhr3cjRx4kkKo9Ss1EnVKeHsD7QceFxXmzGZW4";
 }

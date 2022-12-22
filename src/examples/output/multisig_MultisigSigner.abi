@@ -575,6 +575,18 @@
     },
     "134": {
       "message": "Invalid argument"
+    },
+    "4429": {
+      "message": "Invalid sender"
+    },
+    "4755": {
+      "message": "Timeout"
+    },
+    "40810": {
+      "message": "Completed"
+    },
+    "46307": {
+      "message": "Not a member"
     }
   }
 }

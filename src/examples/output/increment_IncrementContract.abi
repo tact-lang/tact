@@ -600,6 +600,9 @@
     },
     "134": {
       "message": "Invalid argument"
+    },
+    "52777": {
+      "message": "Empty counter"
     }
   }
 }

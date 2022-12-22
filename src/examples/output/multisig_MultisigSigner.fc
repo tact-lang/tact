@@ -201,8 +201,8 @@ _ __gen_get_request() method_id(107262) {
 
 ((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) __gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
-    throw_unless(131, ($self'request'timeout > now()));
-    throw_unless(131, (~ $self'completed));
+    throw_unless(4755, ($self'request'timeout > now()));
+    throw_unless(40810, (~ $self'completed));
     var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
     int $weight = __tact_not_null(__tact_dict_get_slice_int($self'members, 267, $ctx'sender, 257));
     $self'members~__tact_dict_set_slice_int(267, $ctx'sender, null(), 257);
@@ -269,5 +269,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmRHjYDvn5tx42ybKbxhYSQtYcmoAJy9EEoETxfUjPCoag";
+    return "ipfs://Qmb6MeqdNhxWPSJaQSjEDfPz9zuXnx93Phvsqq3QXqjhH6";
 }

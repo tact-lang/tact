@@ -205,8 +205,8 @@ _ __gen_get_seqno() method_id(85143) {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, ($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)) = $msg;
     int $op_hash = cell_hash(__gen_writecell_Transfer(($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)));
-    throw_unless(131, check_signature($op_hash, $msg'signature, $self'key));
-    throw_unless(131, ($msg'transfer'seqno == $self'seqno));
+    throw_unless(48401, check_signature($op_hash, $msg'signature, $self'key));
+    throw_unless(17654, ($msg'transfer'seqno == $self'seqno));
     $self'seqno = ($self'seqno + 1);
     send((true, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'mode, $msg'transfer'body, null(), null()));
     return (($self'seqno, $self'key, $self'walletId), ());
@@ -341,5 +341,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmNWQR6VtW6HL9uARzd8ZTSi8VKzaoVFkJZWsGJqkMEbNR";
+    return "ipfs://QmPmsjh72Vp9bL2yGHTvnkoHznU7hb3xEg8cT7RLJJV5mU";
 }

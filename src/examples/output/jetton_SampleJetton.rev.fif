@@ -563,10 +563,14 @@ SETCP0
     s1 POP
     5 1 BLKSWAP
     27 CALLDICT
+    s0 s1 XCHG
+    4429 PUSHINT
+    s0 s2 XCHG
     22 CALLDICT
-    s0 s5 XCHG2
+    s0 s6 XCHG2
     SDEQ
-    131 THROWIFNOT
+    s1 s5 XCHG
+    THROWANYIFNOT
     1 3 BLKSWAP
 
   32: 
