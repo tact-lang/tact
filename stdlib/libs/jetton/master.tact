@@ -71,7 +71,7 @@ trait Jetton with Ownable {
     // Private Methods
     //
 
-    fun mint(to: Address, amount: Int) {
+    fun mint(to: Address, amount: Int, responseAddress: Address?) {
 
         // Update total supply
         self.totalSupply = self.totalSupply + amount;
@@ -88,7 +88,7 @@ trait Jetton with Ownable {
                 amount: amount,
                 queryId: 0,
                 from: myAddress(),
-                responseAddress: myAddress(),
+                responseAddress: responseAddress,
                 forwardTonAmount: 0,
                 forwardPayload: emptyCell().asSlice()
             }),
