@@ -14,7 +14,7 @@ struct SendParameters {
 fun send(params: SendParameters) {
     let b: Builder = beginCell();
     b = storeInt(b, 1, 2); // internal_message + ihd_disabled
-    b = storeInt(b, params.bounce, 1); // bounce
+    b = storeBool(b, params.bounce); // bounce
     b = storeInt(b, 0, 3); // bounced + from
     b = storeAddress(b, params.to); // To
     b = storeCoins(b, params.value); // Value
@@ -30,13 +30,13 @@ fun send(params: SendParameters) {
         bc = storeBool(bc, false); // TickTock
         if (params.code != null) {
             bc = storeBool(bc, true); // Code presence
-            bc = storeRef(bc, params.code);
+            bc = storeRef(bc, params.code!!);
         } else {
             bc = storeBool(bc, false); // Code presence
         }
         if (params.data != null) {
             bc = storeBool(bc, true); // Data presence
-            bc = storeRef(bc, params.data);
+            bc = storeRef(bc, params.data!!);
         } else {
             bc = storeBool(bc, false); // Data presence
         }
@@ -51,10 +51,10 @@ fun send(params: SendParameters) {
     // Body
     let body: Cell? = params.body;
     if (body != null) {
-        b = storeInt(b, true, 1);
+        b = storeBool(b, true);
         b = storeRef(b, body!!);
     } else {
-        b = storeInt(b, false, 1); // No body
+        b = storeBool(b, false); // No body
     }
 
     // Send

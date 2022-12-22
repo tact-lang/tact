@@ -31,7 +31,7 @@ extends native toString(self: Int): String;
 extends native toFloatString(self: Int, digits: Int): String;
 
 extends fun toCoinsString(self: Int): String {
-    return self.toFloatString(self, 9);
+    return self.toFloatString(9);
 }
 
 extends fun asComment(self: String): Cell {

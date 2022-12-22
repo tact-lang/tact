@@ -6,6 +6,7 @@ import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
+import { isAssignable } from "./isAssignable";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 
@@ -227,6 +228,19 @@ function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: Co
         ctx = resolveExpression(e, sctx, ctx);
     }
 
+    // Check arguments
+    if (f.args.length !== exp.args.length) {
+        throwError(`Function "${exp.name}" expects ${f.args.length} arguments, got ${exp.args.length}`, exp.ref);
+    }
+    for (let i = 0; i < f.args.length; i++) {
+        let a = f.args[i];
+        let e = exp.args[i];
+        let t = getExpType(ctx, e);
+        if (!isAssignable(t, a.type)) {
+            throwError(`Invalid type "${printTypeRef(t)}" for argument "${a.name}"`, e.ref);
+        }
+    }
+
     // Resolve return type
     return registerExpType(ctx, exp, f.returns);
 }
@@ -270,6 +284,20 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
         if (!f) {
             throwError(`Type "${src.name}" does not have a function named "${exp.name}"`, exp.ref);
         }
+
+        // Check arguments
+        if (f.args.length !== exp.args.length) {
+            throwError(`Function "${exp.name}" expects ${f.args.length} arguments, got ${exp.args.length}`, exp.ref);
+        }
+        for (let i = 0; i < f.args.length; i++) {
+            let a = f.args[i];
+            let e = exp.args[i];
+            let t = getExpType(ctx, e);
+            if (!isAssignable(t, a.type)) {
+                throwError(`Invalid type "${printTypeRef(t)}" for argument "${a.name}"`, e.ref);
+            }
+        }
+
         return registerExpType(ctx, exp, f.returns);
     }
 

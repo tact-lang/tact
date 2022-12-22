@@ -518,25 +518,10 @@ PROGRAM{
     c4 POP
   }>
   __gen_ContractWithOptionals_init PROCINLINE:<{
-    s0 s5 XCHG
-    s0 DUMP
-    s0 s4 XCHG
-    s0 DUMP
-    s0 s3 XCHG
-    s0 DUMP
-    s0 s2 XCHG
-    s0 DUMP
-    SWAP
-    s0 DUMP
-    s0 s5 XCHG
-    s0 DUMP
     s0 s6 XCHG
     NEWC
     STREF
     s0 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
     __gen_write_ContractWithOptionals INLINECALLDICT
     ENDC
   }>
@@ -689,20 +674,7 @@ PROGRAM{
     __gen_ContractWithOptionals_notNullE INLINECALLDICT
   }>
   __gen_ContractWithOptionals_notNullF PROCINLINE:<{
-    s0 s5 XCHG
-    s0 DUMP
-    DROP
-    s0 s3 XCHG
-    s0 DUMP
-    DROP
-    SWAP
-    s0 DUMP
-    DROP
-    s0 DUMP
-    DROP
-    s0 DUMP
-    DROP
-    s0 DUMP
+    5 1 BLKDROP2
     __gen_StructWithOptionals_not_null CALLDICT
   }>
   __gen_get_notNullF PROC:<{
@@ -711,21 +683,6 @@ PROGRAM{
   }>
   __gen_ContractWithOptionals_receive_Update PROCINLINE:<{
     6 6 BLKDROP2
-    s0 s5 XCHG
-    s0 DUMP
-    s0 s4 XCHG
-    s0 DUMP
-    s0 s3 XCHG
-    s0 DUMP
-    s0 s2 XCHG
-    s0 DUMP
-    SWAP
-    s0 DUMP
-    s0 s5 XCHG
-    s0 DUMP
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
   }>
   recv_internal PROC:<{
     0 PUSHINT

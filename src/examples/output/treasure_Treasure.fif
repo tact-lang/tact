@@ -108,8 +108,8 @@ PROGRAM{
     1 PUSHINT
     SWAP
     2 STI
-    s1 s7 XCHG
-    1 STI
+    s0 s7 XCHG2
+    storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -141,7 +141,9 @@ PROGRAM{
       IF:<{
         TRUE
         storeBool CALLDICT
-        s1 s4 XCHG
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
         STREF
       }>ELSE<{
         s4 POP
@@ -155,7 +157,9 @@ PROGRAM{
       IF:<{
         TRUE
         storeBool CALLDICT
-        s1 s4 XCHG
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
         STREF
       }>ELSE<{
         s4 POP
@@ -184,16 +188,15 @@ PROGRAM{
     NOT
     IF:<{
       TRUE
-      SWAP
-      1 STI
+      storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
       STREF
     }>ELSE<{
+      NIP
       FALSE
-      s2 POP
-      1 STI
+      storeBool CALLDICT
     }>
     ENDC
     SWAP

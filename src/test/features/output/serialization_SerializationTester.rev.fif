@@ -130,30 +130,7 @@ SETCP0
       s9 POP
       s9 POP
       s9 POP
-      s0 s8 XCHG
-      32 DEBUG
-      s0 s7 XCHG
-      32 DEBUG
-      s0 s6 XCHG
-      32 DEBUG
-      s0 s5 XCHG
-      32 DEBUG
-      s0 s4 XCHG
-      32 DEBUG
-      s0 s3 XCHG
-      32 DEBUG
-      s0 s2 XCHG
-      32 DEBUG
-      s0 s8 XCHG
-      32 DEBUG
       s0 s1 XCHG
-      32 DEBUG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s2 s3 XCHG
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -238,34 +215,10 @@ SETCP0
     8 1 BLKDROP2
 
   91479: 
-    s0 s8 XCHG
-    32 DEBUG
-    s0 s7 XCHG
-    32 DEBUG
-    s0 s6 XCHG
-    32 DEBUG
-    s0 s5 XCHG
-    32 DEBUG
-    s0 s4 XCHG
-    32 DEBUG
-    s0 s3 XCHG
-    32 DEBUG
-    s0 s2 XCHG
-    32 DEBUG
-    s0 s1 XCHG
-    32 DEBUG
-    s0 s8 XCHG
-    32 DEBUG
     s0 s9 XCHG
     NEWC
     STREF
     s0 s9 XCHG
-    s7 s8 XCHG
-    s6 s7 XCHG
-    s5 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
     s8 s9 XCHG2
     257 PUSHINT
     STIX

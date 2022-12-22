@@ -37,9 +37,7 @@ describe('feature-strings', () => {
         expect((await contract.getStringWithFloat())).toEqual('9.5');
 
         let base = await contract.getBase64();
-        console.warn(base.beginParse().readRemainingBytes().toString());
-        console.warn(base.beginParse().readRemainingBytes().toString('hex'));
-        console.warn(base.beginParse().readRemainingBytes().toString('base64'));
+        expect(base.beginParse().readRemainingBytes().toString()).toEqual('Many hands make light work.');
 
         let b64cases = [
             'SGVsbG8gV29ybGQ=',

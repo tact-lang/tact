@@ -118,37 +118,10 @@ PROGRAM{
     c4 POP
   }>
   __gen_SerializationTester2_init PROCINLINE:<{
-    s0 s9 XCHG
-    s0 DUMP
-    s0 s8 XCHG
-    s0 DUMP
-    s0 s7 XCHG
-    s0 DUMP
-    s0 s6 XCHG
-    s0 DUMP
-    s0 s5 XCHG
-    s0 DUMP
-    s0 s4 XCHG
-    s0 DUMP
-    s0 s3 XCHG
-    s0 DUMP
-    s0 s2 XCHG
-    s0 DUMP
-    SWAP
-    s0 DUMP
-    s0 s9 XCHG
-    s0 DUMP
     s0 s10 XCHG
     NEWC
     STREF
     s0 s10 XCHG
-    s8 s9 XCHG
-    s7 s8 XCHG
-    s6 s7 XCHG
-    s5 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
     __gen_write_SerializationTester2 INLINECALLDICT
     ENDC
   }>
@@ -168,33 +141,6 @@ PROGRAM{
   }>
   __gen_SerializationTester2_receive_Update PROCINLINE:<{
     10 10 BLKDROP2
-    s0 s9 XCHG
-    s0 DUMP
-    s0 s8 XCHG
-    s0 DUMP
-    s0 s7 XCHG
-    s0 DUMP
-    s0 s6 XCHG
-    s0 DUMP
-    s0 s5 XCHG
-    s0 DUMP
-    s0 s4 XCHG
-    s0 DUMP
-    s0 s3 XCHG
-    s0 DUMP
-    s0 s2 XCHG
-    s0 DUMP
-    SWAP
-    s0 DUMP
-    s0 s9 XCHG
-    s0 DUMP
-    s8 s9 XCHG
-    s7 s8 XCHG
-    s6 s7 XCHG
-    s5 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
   }>
   recv_internal PROC:<{
     0 PUSHINT

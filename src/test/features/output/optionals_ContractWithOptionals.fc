@@ -248,12 +248,6 @@ cell __gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice 
     $self'd = $d;
     $self'e = $e;
     $self'f = $f;
-    $self'a~dump();
-    $self'b~dump();
-    $self'c~dump();
-    $self'd~dump();
-    $self'e~dump();
-    $self'f~dump();
     var b' = begin_cell();
     b' = b'.store_ref(sys');
     b' = __gen_write_ContractWithOptionals(b', ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f));
@@ -449,12 +443,6 @@ _ __gen_get_notNullE() method_id(127419) {
 
 (int, int, cell, slice, tuple) __gen_ContractWithOptionals_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    $self'a~dump();
-    $self'b~dump();
-    $self'c~dump();
-    $self'd~dump();
-    $self'e~dump();
-    $self'f~dump();
     return __gen_StructWithOptionals_not_null($self'f);
 }
 
@@ -473,12 +461,6 @@ _ __gen_get_notNullF() method_id(115160) {
     $self'd = $msg'd;
     $self'e = $msg'e;
     $self'f = $msg'f;
-    $self'a~dump();
-    $self'b~dump();
-    $self'c~dump();
-    $self'd~dump();
-    $self'e~dump();
-    $self'f~dump();
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), ());
 }
 

@@ -133,8 +133,8 @@ SETCP0
     1 PUSHINT
     s0 s1 XCHG
     2 STI
-    s1 s7 XCHG
-    1 STI
+    s0 s7 XCHG2
+    13 CALLDICT
     0 PUSHINT
     s0 s1 XCHG
     3 STI
@@ -166,7 +166,9 @@ SETCP0
       <{
         -1 PUSHINT
         13 CALLDICT
-        s1 s4 XCHG
+        s0 s4 XCHG
+        1 CALLDICT
+        s0 s4 XCHG2
         STREF
       }> PUSHCONT
       <{
@@ -182,7 +184,9 @@ SETCP0
       <{
         -1 PUSHINT
         13 CALLDICT
-        s1 s4 XCHG
+        s0 s4 XCHG
+        1 CALLDICT
+        s0 s4 XCHG2
         STREF
       }> PUSHCONT
       <{
@@ -215,17 +219,16 @@ SETCP0
     NOT
     <{
       -1 PUSHINT
-      s0 s1 XCHG
-      1 STI
+      13 CALLDICT
       s0 s1 XCHG
       1 CALLDICT
       s0 s1 XCHG
       STREF
     }> PUSHCONT
     <{
+      s1 POP
       0 PUSHINT
-      s2 POP
-      1 STI
+      13 CALLDICT
     }> PUSHCONT
     IFELSE
     ENDC

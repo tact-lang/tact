@@ -47,7 +47,7 @@ describe('wallet', () => {
                     }))
                 })
             }));
-            console.warn(res);
+            // console.warn(res);
         } catch (e) {
             if (e instanceof ExecuteError) {
                 console.warn(e.debugLogs);

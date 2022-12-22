@@ -387,21 +387,6 @@ SETCP0
       s6 s7 XCHG
       1 5 BLKSWAP
       6 6 BLKDROP2
-      s0 s5 XCHG
-      32 DEBUG
-      s0 s4 XCHG
-      32 DEBUG
-      s0 s3 XCHG
-      32 DEBUG
-      s0 s2 XCHG
-      32 DEBUG
-      s0 s1 XCHG
-      32 DEBUG
-      s0 s5 XCHG
-      32 DEBUG
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -2925,42 +2910,14 @@ SETCP0
     s2 s4 XCHG
     s2 s3 XCHG
     1 6 BLKDROP2
-    s0 s5 XCHG
-    32 DEBUG
-    s0 POP
-    s0 s3 XCHG
-    32 DEBUG
-    s0 POP
-    s0 s1 XCHG
-    32 DEBUG
-    s0 POP
-    32 DEBUG
-    s0 POP
-    32 DEBUG
-    s0 POP
-    32 DEBUG
+    5 1 BLKDROP2
     12 CALLDICT
 
   115380: 
-    s0 s5 XCHG
-    32 DEBUG
-    s0 s4 XCHG
-    32 DEBUG
-    s0 s3 XCHG
-    32 DEBUG
-    s0 s2 XCHG
-    32 DEBUG
-    s0 s1 XCHG
-    32 DEBUG
-    s0 s5 XCHG
-    32 DEBUG
     s0 s6 XCHG
     NEWC
     STREF
     s0 s6 XCHG
-    s4 s5 XCHG
-    s3 s4 XCHG
-    s1 s3 s0 XCHG3
     <{
       s5 PUSH
       ISNULL

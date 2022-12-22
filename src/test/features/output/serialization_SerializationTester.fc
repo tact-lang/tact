@@ -74,15 +74,6 @@ cell __gen_SerializationTester_init(cell sys', int $a, int $b, int $c, int $d, i
     $self'g = $g;
     $self'h = $h;
     $self'i = $i;
-    $self'a~dump();
-    $self'b~dump();
-    $self'c~dump();
-    $self'd~dump();
-    $self'e~dump();
-    $self'f~dump();
-    $self'g~dump();
-    $self'h~dump();
-    $self'i~dump();
     var b' = begin_cell();
     b' = b'.store_ref(sys');
     b' = __gen_write_SerializationTester(b', ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i));
@@ -199,15 +190,6 @@ _ __gen_get_getI() method_id(91412) {
     $self'f = $msg'f;
     $self'h = $msg'h;
     $self'i = $msg'i;
-    $self'a~dump();
-    $self'b~dump();
-    $self'c~dump();
-    $self'd~dump();
-    $self'e~dump();
-    $self'f~dump();
-    $self'g~dump();
-    $self'h~dump();
-    $self'i~dump();
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i), ());
 }
 

@@ -153,33 +153,6 @@ SETCP0
       s10 s11 XCHG
       1 9 BLKSWAP
       10 10 BLKDROP2
-      s0 s9 XCHG
-      32 DEBUG
-      s0 s8 XCHG
-      32 DEBUG
-      s0 s7 XCHG
-      32 DEBUG
-      s0 s6 XCHG
-      32 DEBUG
-      s0 s5 XCHG
-      32 DEBUG
-      s0 s4 XCHG
-      32 DEBUG
-      s0 s3 XCHG
-      32 DEBUG
-      s0 s2 XCHG
-      32 DEBUG
-      s0 s1 XCHG
-      32 DEBUG
-      s0 s9 XCHG
-      32 DEBUG
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -238,86 +211,57 @@ SETCP0
     130 THROW
 
   97554: 
-    <{
-      s0 s9 XCHG
-      32 DEBUG
-      s0 s8 XCHG
-      32 DEBUG
-      s0 s7 XCHG
-      32 DEBUG
-      s0 s6 XCHG
-      32 DEBUG
-      s0 s5 XCHG
-      32 DEBUG
-      s0 s4 XCHG
-      32 DEBUG
-      s0 s3 XCHG
-      32 DEBUG
-      s0 s2 XCHG
-      32 DEBUG
-      s0 s1 XCHG
-      32 DEBUG
-      s0 s9 XCHG
-      32 DEBUG
-      s0 s10 XCHG
-      NEWC
-      STREF
-      s0 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
-      s5 s10 XCHG
-      s4 s9 XCHG
-      s3 s8 XCHG
-      s7 s6 s10 XCHG3
-      s4 s5 XCHG2
-      257 PUSHINT
-      STIX
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      257 PUSHINT
-      STIX
-      s0 s1 XCHG
-      NEWC
-      257 PUSHINT
-      STIX
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      ENDC
-      s0 s1 XCHG
-      STREF
-      NEWC
-      5 1 BLKSWAP
-      s0 s6 XCHG
-      s4 s5 XCHG2
-      257 PUSHINT
-      STIX
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      257 PUSHINT
-      STIX
-      s0 s1 XCHG
-      NEWC
-      257 PUSHINT
-      STIX
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-    }> CALLREF
+    s0 s10 XCHG
+    NEWC
+    STREF
+    s0 s10 XCHG
+    s5 s10 XCHG
+    s4 s9 XCHG
+    s3 s8 XCHG
+    s7 s6 s10 XCHG3
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    s0 s1 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    s0 s1 XCHG
+    STREF
+    NEWC
+    5 1 BLKSWAP
+    s0 s6 XCHG
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    s0 s1 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    s0 s1 XCHG
+    STREF
+    ENDC
+    s0 s1 XCHG
+    STREF
+    ENDC
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

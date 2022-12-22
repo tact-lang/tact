@@ -33,15 +33,15 @@ contract SerializationTester {
         self.h = h;
         self.i = i;
 
-        abi.dump(self.a);
-        abi.dump(self.b);
-        abi.dump(self.c);
-        abi.dump(self.d);
-        abi.dump(self.e);
-        abi.dump(self.f);
-        abi.dump(self.g);
-        abi.dump(self.h);
-        abi.dump(self.i);
+        // abi.dump(self.a);
+        // abi.dump(self.b);
+        // abi.dump(self.c);
+        // abi.dump(self.d);
+        // abi.dump(self.e);
+        // abi.dump(self.f);
+        // abi.dump(self.g);
+        // abi.dump(self.h);
+        // abi.dump(self.i);
     }
 
     receive(msg: Update) {
@@ -54,15 +54,15 @@ contract SerializationTester {
         self.h = msg.h;
         self.i = msg.i;
 
-        abi.dump(self.a);
-        abi.dump(self.b);
-        abi.dump(self.c);
-        abi.dump(self.d);
-        abi.dump(self.e);
-        abi.dump(self.f);
-        abi.dump(self.g);
-        abi.dump(self.h);
-        abi.dump(self.i);
+        // abi.dump(self.a);
+        // abi.dump(self.b);
+        // abi.dump(self.c);
+        // abi.dump(self.d);
+        // abi.dump(self.e);
+        // abi.dump(self.f);
+        // abi.dump(self.g);
+        // abi.dump(self.h);
+        // abi.dump(self.i);
     }
 
     get fun getA(): Int {

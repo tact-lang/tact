@@ -54,6 +54,42 @@ exports[`resolveStatements should fail statements for case-5 1`] = `
 Type mismatch: String is not assignable to Int"
 `;
 
+exports[`resolveStatements should fail statements for case-6 1`] = `
+"Line 9, col 12:
+   8 | fun f2(a: Int): Int {
+>  9 |     return f1(a);
+                  ^~~~~
+  10 | }
+Function "f1" expects 2 arguments, got 1"
+`;
+
+exports[`resolveStatements should fail statements for case-7 1`] = `
+"Line 10, col 16:
+   9 |     fun f2(a: Int): Int {
+> 10 |         return self.f1(a);
+                      ^~~~~~~~~~
+  11 |     }
+Function "f1" expects 2 arguments, got 1"
+`;
+
+exports[`resolveStatements should fail statements for case-8 1`] = `
+"Line 9, col 18:
+   8 | fun f2(a: Int): Int {
+>  9 |     return f1(a, true);
+                        ^~~~
+  10 | }
+Invalid type "Bool" for argument "b""
+`;
+
+exports[`resolveStatements should fail statements for case-9 1`] = `
+"Line 10, col 27:
+   9 |     fun f2(a: Int): Int {
+> 10 |         return self.f1(a, true);
+                                 ^~~~
+  11 |     }
+Invalid type "Bool" for argument "b""
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

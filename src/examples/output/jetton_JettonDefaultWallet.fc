@@ -137,7 +137,7 @@ slice contractAddress((cell, cell) $s) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = store_int($b, $params'bounce, 1);
+    $b = storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
@@ -149,13 +149,13 @@ slice contractAddress((cell, cell) $s) impure {
         $bc = storeBool($bc, false);
         if ((~ null?($params'code))) {
             $bc = storeBool($bc, true);
-            $bc = store_ref($bc, $params'code);
+            $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
             $bc = storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
             $bc = storeBool($bc, true);
-            $bc = store_ref($bc, $params'data);
+            $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
             $bc = storeBool($bc, false);
         }
@@ -167,10 +167,10 @@ slice contractAddress((cell, cell) $s) impure {
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = store_int($b, true, 1);
+        $b = storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = store_int($b, false, 1);
+        $b = storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
