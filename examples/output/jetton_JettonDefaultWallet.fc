@@ -97,7 +97,7 @@ builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, sli
     var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
     build_0 = store_uint(build_0, v'queryId, 64);
-    build_0 = store_int(build_0, v'amount, 257);
+    build_0 = store_coins(build_0, v'amount);
     build_0 = __tact_store_address(build_0, v'from);
     build_0 = __tact_store_address_opt(build_0, v'responseAddress);
     build_0 = store_coins(build_0, v'forwardTonAmount);
@@ -112,7 +112,7 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) 
 (slice, ((int, int, slice, slice, int, slice))) __gen_read_TokenTransferInternal(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 395134233);
     var v'queryId = sc_0~load_uint(64);
-    var v'amount = sc_0~load_int(257);
+    var v'amount = sc_0~load_coins();
     var v'from = sc_0~__tact_load_address();
     var v'responseAddress = sc_0~__tact_load_address_opt();
     var v'forwardTonAmount = sc_0~load_coins();
@@ -433,5 +433,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmSptraJoUkjcytZ8DWacbpBHJMeQvv3CCJpcufrBtFQVg";
+    return "ipfs://QmdPUYM67SQxPhiSig4LVW3rjqcKgEce6SGvRp3oZRXEM1";
 }

@@ -74,7 +74,7 @@ builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, sli
     var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
     build_0 = store_uint(build_0, v'queryId, 64);
-    build_0 = store_int(build_0, v'amount, 257);
+    build_0 = store_coins(build_0, v'amount);
     build_0 = __tact_store_address(build_0, v'from);
     build_0 = __tact_store_address_opt(build_0, v'responseAddress);
     build_0 = store_coins(build_0, v'forwardTonAmount);
@@ -451,5 +451,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://Qma9z1CJRA3hYEoego8CGuyaMKpibndeoAC59SYzfKe4iQ";
+    return "ipfs://QmfEvDdmm4QFHZHyaeXmxoQzn6vUaLtdbVnjusevQcp7eA";
 }

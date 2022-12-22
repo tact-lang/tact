@@ -10,7 +10,7 @@ message(0xf8a7ea5) TokenTransfer {
 
 message(0x178d4519) TokenTransferInternal {
     queryId: Int as uint64;
-    amount: Int;
+    amount: Int as coins;
     from: Address;
     responseAddress: Address?;
     forwardTonAmount: Int as coins;

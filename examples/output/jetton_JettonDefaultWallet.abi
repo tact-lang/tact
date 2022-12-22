@@ -543,11 +543,10 @@
             {
               "index": 1,
               "size": {
-                "bits": 257,
+                "bits": 124,
                 "refs": 0
               },
-              "kind": "int",
-              "bits": 257
+              "kind": "coins"
             },
             {
               "index": 2,
@@ -592,7 +591,7 @@
           ],
           "next": null,
           "size": {
-            "bits": 979,
+            "bits": 846,
             "refs": 0
           }
         }

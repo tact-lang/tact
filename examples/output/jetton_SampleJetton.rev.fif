@@ -623,9 +623,8 @@ SETCP0
     32 STU
     s1 s5 XCHG
     64 STU
-    s1 s3 XCHG
-    257 PUSHINT
-    STIX
+    s0 s3 XCHG2
+    STGRAMS
     s0 s1 XCHG
     STSLICER
     s0 s1 XCHG
