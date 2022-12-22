@@ -78,7 +78,7 @@ contract MapTestContract {
     }
 
     get fun intMap1Value(key: Int): Int? {
-        return self.intMap1.get2(key);
+        return self.intMap1.get(key);
     }
 
     get fun intMap2(): map[Int]Bool {
@@ -86,7 +86,7 @@ contract MapTestContract {
     }
 
     get fun intMap2Value(key: Int): Bool? {
-        return self.intMap2.get2(key);
+        return self.intMap2.get(key);
     }
 
     get fun intMap3(): map[Int]Cell {
@@ -94,7 +94,7 @@ contract MapTestContract {
     }
 
     get fun intMap3Value(key: Int): Cell? {
-        return self.intMap3.get2(key);
+        return self.intMap3.get(key);
     }
 
     get fun intMap4(): map[Int]SomeStruct {
@@ -102,7 +102,7 @@ contract MapTestContract {
     }
 
     get fun intMap4Value(key: Int): SomeStruct? {
-        return self.intMap4.get2(key);
+        return self.intMap4.get(key);
     }
 
     //
@@ -135,7 +135,7 @@ contract MapTestContract {
     }
     
     get fun addrMap1Value(key: Address): Int? {
-        return self.addrMap1.get2(key);
+        return self.addrMap1.get(key);
     }
 
     get fun addrMap2(): map[Address]Bool {
@@ -143,7 +143,7 @@ contract MapTestContract {
     }
 
     get fun addrMap2Value(key: Address): Bool? {
-        return self.addrMap2.get2(key);
+        return self.addrMap2.get(key);
     }
 
     get fun addrMap3(): map[Address]Cell {
@@ -151,7 +151,7 @@ contract MapTestContract {
     }
 
     get fun addrMap3Value(key: Address): Cell? {
-        return self.addrMap3.get2(key);
+        return self.addrMap3.get(key);
     }
 
     get fun addrMap4(): map[Address]SomeStruct {
@@ -159,6 +159,6 @@ contract MapTestContract {
     }
 
     get fun addrMap4Value(key: Address): SomeStruct? {
-        return self.addrMap4.get2(key);
+        return self.addrMap4.get(key);
     }
 }

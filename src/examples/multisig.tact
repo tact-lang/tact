@@ -45,7 +45,7 @@ contract MultisigSigner {
 
         // Load weitght
         let ctx: Context = context();
-        let weight: Int = self.members.get2(ctx.sender)!!;
+        let weight: Int = self.members.get(ctx.sender)!!;
         self.members.set(ctx.sender, null);
 
         // Update weight
@@ -85,7 +85,7 @@ contract Multisig {
 
         // Check sender
         let ctx: Context = context();
-        let weight: Int = self.members.get2(ctx.sender)!!;
+        let weight: Int = self.members.get(ctx.sender)!!;
         require(weight > 0);
 
         // Create message
@@ -122,7 +122,7 @@ contract Multisig {
     }
 
     get fun member(address: Address): Int? {
-        return self.members.get2(address);
+        return self.members.get(address);
     }
 
     get fun members(): map[Address]Int {

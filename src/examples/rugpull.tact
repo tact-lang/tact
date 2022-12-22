@@ -56,7 +56,7 @@ contract RugPull with OwnableTransferable, Stoppable {
 
         // Perform payouts
         while((self.balance > self.returns) && (self.queueEnd - self.queueStart > 0)) {
-            let investor: Address = self.queue.get2(self.queueStart)!!;
+            let investor: Address = self.queue.get(self.queueStart)!!;
             self.balance = self.balance - self.returns;
             self.queueStart = self.queueStart + 1;
             self.sendPayout(investor, self.returns);

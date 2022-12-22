@@ -46,7 +46,7 @@ export interface TactActionDict<T> extends ActionDict<T> {
   ContractAttribute_interface?: (this: NonterminalNode, arg0: TerminalNode, arg1: TerminalNode, arg2: NonterminalNode, arg3: TerminalNode) => T;
   ContractAttribute?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_public?: (this: NonterminalNode, arg0: NonterminalNode) => T;
-  FunctionAttribute_getter?: (this: NonterminalNode, arg0: NonterminalNode) => T;
+  FunctionAttribute_getter?: (this: NonterminalNode, arg0: TerminalNode) => T;
   FunctionAttribute_mutates?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_extends?: (this: NonterminalNode, arg0: NonterminalNode) => T;
   FunctionAttribute_virtual?: (this: NonterminalNode, arg0: NonterminalNode) => T;
@@ -142,7 +142,6 @@ export interface TactActionDict<T> extends ActionDict<T> {
   native?: (this: NonterminalNode, arg0: TerminalNode) => T;
   public?: (this: NonterminalNode, arg0: TerminalNode) => T;
   null?: (this: NonterminalNode, arg0: TerminalNode) => T;
-  get?: (this: NonterminalNode, arg0: TerminalNode) => T;
   if?: (this: NonterminalNode, arg0: TerminalNode) => T;
   else?: (this: NonterminalNode, arg0: TerminalNode) => T;
   while?: (this: NonterminalNode, arg0: TerminalNode) => T;

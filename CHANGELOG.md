@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Renamed Map's `get2` to `get` and removing `get` from keywords list.
+
 ### Fixed
 - Fixed missing call arguments verification
 

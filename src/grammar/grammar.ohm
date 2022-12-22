@@ -55,7 +55,7 @@ Tact {
 
     // Function
     FunctionAttribute = public --public
-                      | get    --getter
+                      | "get"    --getter
                       | mutates --mutates
                       | extends --extends
                       | virtual --virtual
@@ -188,7 +188,6 @@ Tact {
             | extend 
             | native 
             | public 
-            | get 
             | null 
             | if 
             | else 
@@ -213,7 +212,6 @@ Tact {
     native = "native" ~idPart
     public = "public" ~idPart
     null = "null" ~idPart
-    get = "get" ~idPart
     if = "if" ~idPart
     else = "else" ~idPart
     while = "while" ~idPart

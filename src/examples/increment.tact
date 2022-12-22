@@ -38,7 +38,7 @@ contract IncrementContract {
     }
 
     receive(msg: Toggle) {
-        let ex: Bool? = self.counters2.get2(msg.key);
+        let ex: Bool? = self.counters2.get(msg.key);
         if (ex == null) {
             self.counters2.set(msg.key, true);
         } else {
@@ -47,7 +47,7 @@ contract IncrementContract {
     }
 
     receive(msg: Persist) {
-        require(self.counters3.get2(msg.key) == null);
+        require(self.counters3.get(msg.key) == null);
         self.counters3.set(msg.key, msg.content);
     }
 

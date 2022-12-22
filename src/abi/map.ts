@@ -122,8 +122,8 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
             throwError(`set expects a map with Int keys`, ref);
         }
     },
-    get2: {
-        name: 'get2',
+    get: {
+        name: 'get',
         resolve(ctx, args, ref) {
 
             // Check arguments
