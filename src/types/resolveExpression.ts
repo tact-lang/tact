@@ -1,7 +1,7 @@
 import { abi } from "../abi/abi";
 import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { getStaticFunction, getType, hasStaticFunction } from "./resolveDescriptors";
+import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
@@ -417,7 +417,12 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
         // Find variable
         let v = sctx.vars[exp.value];
         if (!v) {
-            throwError('Unabe to resolve id ' + exp.value, exp.ref);
+            if (!hasStaticConstant(ctx, exp.value)) {
+                throwError('Unabe to resolve id ' + exp.value, exp.ref);
+            } else {
+                let cc = getStaticConstant(ctx, exp.value);
+                return registerExpType(ctx, exp, cc.type);
+            }
         }
         return registerExpType(ctx, exp, v);
     }

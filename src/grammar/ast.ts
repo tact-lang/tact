@@ -179,7 +179,7 @@ export type ASTInitOf = {
 export type ASTProgram = {
     kind: 'program',
     id: number,
-    entries: (ASTStruct | ASTContract | ASTPrimitive | ASTFunction | ASTNativeFunction | ASTTrait | ASTProgramImport)[]
+    entries: (ASTStruct | ASTContract | ASTPrimitive | ASTFunction | ASTNativeFunction | ASTTrait | ASTProgramImport | ASTConstant)[]
 }
 
 export type ASTProgramImport = {

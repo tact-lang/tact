@@ -118,6 +118,15 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
     NativeFunction(arg0) {
         return arg0.resolve_declaration();
     },
+    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_constant',
+            name: arg1.sourceString,
+            type: arg3.resolve_expression(),
+            value: arg5.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
 });
 
 // Resolve attributes

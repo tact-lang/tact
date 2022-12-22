@@ -11,6 +11,8 @@ PROGRAM{
   100663 DECLMETHOD __gen_get_something4
   DECLPROC __gen_ConstantTester_something5
   104726 DECLMETHOD __gen_get_something5
+  DECLPROC __gen_ConstantTester_globalConst
+  116577 DECLMETHOD __gen_get_globalConst
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -70,6 +72,14 @@ PROGRAM{
     __gen_load_ConstantTester INLINECALLDICT
     __gen_ConstantTester_something5 INLINECALLDICT
   }>
+  __gen_ConstantTester_globalConst PROCINLINE:<{
+    DROP
+    100 PUSHINT
+  }>
+  __gen_get_globalConst PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    __gen_ConstantTester_globalConst INLINECALLDICT
+  }>
   recv_internal PROC:<{
     DUP
     SBITS
@@ -103,6 +113,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d594178576843726f37344c36773962654a4d5854615447314d4e59516b5035376d4d685a533475715a4d3770} PUSHSLICE
+    x{697066733a2f2f516d5778355437483459736a67614862614e6d3847426675714b5154516d73614d387952466f4c41596a6d436a6e} PUSHSLICE
   }>
 }END>c

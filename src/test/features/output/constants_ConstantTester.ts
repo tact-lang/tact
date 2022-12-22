@@ -290,4 +290,20 @@ export class ConstantTester {
             throw e;
         }
     }
+    async getGlobalConst() {
+        try {
+            let __stack: StackItem[] = [];
+            let result = await this.executor.get('globalConst', __stack, { debug: true });
+            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            return result.stack.readBigNumber();
+        } catch (e) {
+            if (e instanceof ExecuteError) {
+                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+                if (ConstantTester_errors[e.exitCode.toString()]) {
+                    throw new Error(ConstantTester_errors[e.exitCode.toString()]);
+                }
+            }
+            throw e;
+        }
+    }
 }

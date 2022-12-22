@@ -70,6 +70,17 @@ _ __gen_get_something5() method_id(104726) {
     return res;
 }
 
+int __gen_ConstantTester_globalConst((int) $self) impure inline {
+    var (($self'v)) = $self;
+    return 100;
+}
+
+_ __gen_get_globalConst() method_id(116577) {
+    var self = __gen_load_ConstantTester();
+    var res = __gen_ConstantTester_globalConst(self);
+    return res;
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -100,5 +111,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmYAxWhCro74L6w9beJMXTaTG1MNYQkP57mMhZS4uqZM7p";
+    return "ipfs://QmWx5T7H4YsjgaHbaNm8GBfuqKQTQmsaM8yRFoLAYjmCjn";
 }

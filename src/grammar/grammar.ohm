@@ -9,6 +9,7 @@ Tact {
                 | NativeFunction
                 | ProgramImport
                 | Trait
+                | Constant
     ProgramImport = import stringLiteral ";"
 
     // Built-in declarations

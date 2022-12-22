@@ -1,7 +1,7 @@
 import { abi } from "../../abi/abi";
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
-import { getStaticFunction, getType } from "../../types/resolveDescriptors";
+import { getStaticConstant, getStaticFunction, getType, hasStaticConstant } from "../../types/resolveDescriptors";
 import { printTypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
@@ -92,12 +92,21 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     if (f.kind === 'id') {
         let t = getExpType(ctx.ctx, f);
+
+        // Handle packed type
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
                 return resolveFuncTypeUnpack(t, id(f.value), ctx);
             }
         }
+
+        // Handle constant
+        if (hasStaticConstant(ctx.ctx, f.value)) {
+            let c = getStaticConstant(ctx.ctx, f.value);
+            return writeValue(c.value, ctx);
+        }
+
         return id(f.value);
     }
 

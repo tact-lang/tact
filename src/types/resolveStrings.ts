@@ -2,7 +2,7 @@ import { sha256_sync } from "ton-crypto";
 import { CompilerContext, createContextStore } from "../context";
 import { ASTNode, traverse } from "../grammar/ast";
 import { resolveConstantValue } from "./resolveConstantValue";
-import { getAllStaticFunctions, getAllTypes } from "./resolveDescriptors";
+import { getAllStaticConstants, getAllStaticFunctions, getAllTypes } from "./resolveDescriptors";
 
 let store = createContextStore<{ value: string, id: number }>();
 let exceptions = createContextStore<{ value: string, id: number }>();
@@ -48,6 +48,11 @@ export function resolveStrings(ctx: CompilerContext) {
 
     // Process all static functions
     for (let f of Object.values(getAllStaticFunctions(ctx))) {
+        ctx = resolveStringsInAST(f.ast, ctx);
+    }
+
+    // Process all static constants
+    for (let f of Object.values(getAllStaticConstants(ctx))) {
         ctx = resolveStringsInAST(f.ast, ctx);
     }
 

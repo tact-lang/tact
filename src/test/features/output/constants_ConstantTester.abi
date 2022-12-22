@@ -325,6 +325,15 @@
         "name": "String",
         "optional": false
       }
+    },
+    {
+      "name": "globalConst",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Int",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},

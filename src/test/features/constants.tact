@@ -1,3 +1,5 @@
+const someGlobalConst: Int = 100;
+
 contract ConstantTester {
     const something1: Int = 10;
     const something2: Int? = null;
@@ -25,5 +27,9 @@ contract ConstantTester {
 
     get fun something5(): String {
         return self.something5;
+    }
+
+    get fun globalConst(): Int {
+        return someGlobalConst;
     }
 }

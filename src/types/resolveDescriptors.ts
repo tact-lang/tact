@@ -8,6 +8,7 @@ import { resolveConstantValue } from "./resolveConstantValue";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
+let staticConstantsStore = createContextStore<ConstantDescription>();
 let allowedPrimitiveFields: { [key: string]: boolean } = {
     ['Int']: true,
     ['Bool']: true,
@@ -89,6 +90,7 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
 export function resolveDescriptors(ctx: CompilerContext) {
     let types: { [key: string]: TypeDescription } = {};
     let staticFunctions: { [key: string]: FunctionDescription } = {};
+    let staticConstants: { [key: string]: ConstantDescription } = {};
     let ast = getRawAST(ctx);
 
     //
@@ -419,25 +421,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
             args,
             ast
         };
-    }
-
-    //
-    // Resolve static functions
-    //
-
-    for (let a of ast.functions) {
-        let r = resolveFunctionDescriptor(null, a);
-        if (r.self) {
-            if (types[r.self].functions.has(r.name)) {
-                throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);
-            }
-            types[r.self].functions.set(r.name, r);
-        } else {
-            if (staticFunctions[r.name]) {
-                throwError(`Static function ${r.name} already exists`, r.ast.ref);
-            }
-            staticFunctions[r.name] = r;
-        }
     }
 
     //
@@ -828,6 +811,43 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
     }
 
+
+    //
+    // Resolve static functions
+    //
+
+    for (let a of ast.functions) {
+        let r = resolveFunctionDescriptor(null, a);
+        if (r.self) {
+            if (types[r.self].functions.has(r.name)) {
+                throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);
+            }
+            types[r.self].functions.set(r.name, r);
+        } else {
+            if (staticFunctions[r.name]) {
+                throwError(`Static function ${r.name} already exists`, r.ast.ref);
+            }
+            if (staticConstants[r.name]) {
+                throwError(`Static constant ${r.name} already exists`, a.ref);
+            }
+            staticFunctions[r.name] = r;
+        }
+    }
+
+    //
+    // Resolve static constants
+    //
+
+    for (let a of ast.constants) {
+        if (staticConstants[a.name]) {
+            throwError(`Static constant ${a.name} already exists`, a.ref);
+        }
+        if (staticFunctions[a.name]) {
+            throwError(`Static function ${a.name} already exists`, a.ref);
+        }
+        staticConstants[a.name] = buildConstantDescription(a);
+    }
+
     //
     // Register types and functions in context
     //
@@ -837,6 +857,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
     for (let t in staticFunctions) {
         ctx = staticFunctionsStore.set(ctx, t, staticFunctions[t]);
+    }
+    for (let t in staticConstants) {
+        ctx = staticConstantsStore.set(ctx, t, staticConstants[t]);
     }
 
     return ctx;
@@ -866,6 +889,22 @@ export function hasStaticFunction(ctx: CompilerContext, name: string) {
     return !!staticFunctionsStore.get(ctx, name);
 }
 
+export function getStaticConstant(ctx: CompilerContext, name: string): ConstantDescription {
+    let r = staticConstantsStore.get(ctx, name);
+    if (!r) {
+        throw Error('Static constant ' + name + ' not found');
+    }
+    return r;
+}
+
+export function hasStaticConstant(ctx: CompilerContext, name: string) {
+    return !!staticConstantsStore.get(ctx, name);
+}
+
 export function getAllStaticFunctions(ctx: CompilerContext) {
     return staticFunctionsStore.all(ctx);
+}
+
+export function getAllStaticConstants(ctx: CompilerContext) {
+    return staticConstantsStore.all(ctx);
 }
