@@ -10,7 +10,7 @@ import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { id } from "./id";
-import { writeExpression } from "./writeExpression";
+import { writeExpression, writeValue } from "./writeExpression";
 
 function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
@@ -370,10 +370,8 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             let initValues: string[] = [];
             for (let i = 0; i < t.fields.length; i++) {
                 let init = 'null()';
-                if (typeof t.fields[i].default === 'bigint') {
-                    init = t.fields[i].default!.toString();
-                } else if (typeof t.fields[i].default === 'boolean') {
-                    init = t.fields[i].default!.toString();
+                if (t.fields[i].default !== undefined) {
+                    init = writeValue(t.fields[i].default!, ctx);
                 }
                 initValues.push(init);
             }

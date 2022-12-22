@@ -157,7 +157,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg0.sourceString,
             type: arg2.resolve_expression(),
             as: null,
-            init: undefined,
+            init: null,
             ref: createRef(this)
         })
     },
@@ -168,7 +168,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg0.sourceString,
             type: tr,
             as: null,
-            init: resolveConstantValue(resolveTypeRefUnsafe(tr), arg4.resolve_expression()),
+            init: arg4.resolve_expression(),
             ref: createRef(this)
         })
     },
@@ -178,7 +178,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg0.sourceString,
             type: arg2.resolve_expression(),
             as: arg4.sourceString,
-            init: undefined,
+            init: null,
             ref: createRef(this)
         })
     },
@@ -189,7 +189,16 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             name: arg0.sourceString,
             type: tr,
             as: arg4.sourceString,
-            init: resolveConstantValue(resolveTypeRefUnsafe(tr), arg6.resolve_expression()),
+            init: arg6.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
+    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_constant',
+            name: arg1.sourceString,
+            type: arg3.resolve_expression(),
+            value: arg5.resolve_expression(),
             ref: createRef(this)
         })
     },

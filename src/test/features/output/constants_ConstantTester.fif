@@ -1,0 +1,108 @@
+PROGRAM{
+  DECLPROC __gen_read_ConstantTester
+  DECLPROC __gen_load_ConstantTester
+  DECLPROC __gen_ConstantTester_something1
+  121234 DECLMETHOD __gen_get_something1
+  DECLPROC __gen_ConstantTester_something2
+  125425 DECLMETHOD __gen_get_something2
+  DECLPROC __gen_ConstantTester_something3
+  129488 DECLMETHOD __gen_get_something3
+  DECLPROC __gen_ConstantTester_something4
+  100663 DECLMETHOD __gen_get_something4
+  DECLPROC __gen_ConstantTester_something5
+  104726 DECLMETHOD __gen_get_something5
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __gen_read_ConstantTester PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_load_ConstantTester PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_ConstantTester INLINECALLDICT
+    NIP
+  }>
+  __gen_ConstantTester_something1 PROCINLINE:<{
+    DROP
+    10 PUSHINT
+  }>
+  __gen_get_something1 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    __gen_ConstantTester_something1 INLINECALLDICT
+  }>
+  __gen_ConstantTester_something2 PROCINLINE:<{
+    DROP
+    PUSHNULL
+  }>
+  __gen_get_something2 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    __gen_ConstantTester_something2 INLINECALLDICT
+  }>
+  __gen_ConstantTester_something3 PROCINLINE:<{
+    DROP
+    123000000000 PUSHINT
+  }>
+  __gen_get_something3 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    __gen_ConstantTester_something3 INLINECALLDICT
+  }>
+  __gen_ConstantTester_something4 PROCINLINE:<{
+    DROP
+    456000000000 PUSHINT
+  }>
+  __gen_get_something4 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    __gen_ConstantTester_something4 INLINECALLDICT
+  }>
+  __gen_ConstantTester_something5 PROCINLINE:<{
+    DROP
+    B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
+  }>
+  __gen_get_something5 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    __gen_ConstantTester_something5 INLINECALLDICT
+  }>
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    DROP
+    s1 s0 s2 PUXC2
+    TRIPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d594178576843726f37344c36773962654a4d5854615447314d4e59516b5035376d4d685a533475715a4d3770} PUSHSLICE
+  }>
+}END>c

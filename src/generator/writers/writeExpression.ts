@@ -32,6 +32,24 @@ function tryExtractPath(f: ASTExpression): string[] | null {
     return null;
 }
 
+export function writeValue(s: bigint | string | boolean | null, ctx: WriterContext): string {
+    if (typeof s === 'bigint') {
+        return s.toString(10);
+    }
+    if (typeof s === 'string') {
+        let id = getStringId(s, ctx.ctx);
+        ctx.used(`__gen_str_${id}`);
+        return `__gen_str_${id}()`;
+    }
+    if (typeof s === 'boolean') {
+        return s ? 'true' : 'false';
+    }
+    if (s === null) {
+        return 'null()';
+    }
+    throw Error('Invalid value');
+}
+
 export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     //
@@ -230,34 +248,40 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve field
         let field = srcT.fields.find((v) => v.name === f.name)!;
-        if (!field) {
+        let cst = srcT.constants.find((v) => v.name === f.name)!;
+        if (!field && !cst) {
             throwError(`Cannot find field "${f.name}" in struct "${srcT.name}"`, f.ref);
         }
 
-        // Trying to resolve field as a path
-        let path = tryExtractPath(f);
-        if (path) {
+        if (field) {
 
-            // Prepare path
-            let convertedPath: string[] = [];
-            convertedPath.push(id(path[0]));
-            convertedPath.push(...path.slice(1));
-            let idd = convertedPath.join(`'`);
+            // Trying to resolve field as a path
+            let path = tryExtractPath(f);
+            if (path) {
 
-            // Special case for structs
-            if (field.type.kind === 'ref') {
-                let ft = getType(ctx.ctx, field.type.name);
-                if (ft.kind === 'struct' || ft.kind === 'contract') {
-                    return resolveFuncTypeUnpack(field.type, idd, ctx);
+                // Prepare path
+                let convertedPath: string[] = [];
+                convertedPath.push(id(path[0]));
+                convertedPath.push(...path.slice(1));
+                let idd = convertedPath.join(`'`);
+
+                // Special case for structs
+                if (field.type.kind === 'ref') {
+                    let ft = getType(ctx.ctx, field.type.name);
+                    if (ft.kind === 'struct' || ft.kind === 'contract') {
+                        return resolveFuncTypeUnpack(field.type, idd, ctx);
+                    }
                 }
+
+                return idd;
             }
 
-            return idd;
+            // Getter instead of direct field access
+            ctx.used(`__gen_${srcT.name}_get_${field.name}`);
+            return `__gen_${srcT.name}_get_${field.name}(${writeExpression(f.src, ctx)})`;
+        } else {
+            return writeValue(cst.value, ctx);
         }
-
-        // Getter instead of direct field access
-        ctx.used(`__gen_${srcT.name}_get_${field.name}`);
-        return `__gen_${srcT.name}_get_${field.name}(${writeExpression(f.src, ctx)})`;
     }
 
     //
@@ -298,11 +322,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (arg) {
                 return writeExpression(arg.exp, ctx);
             } else if (v.default !== undefined) {
-                if (v.default === null) {
-                    return 'null()';
-                } else {
-                    return v.default.toString();
-                }
+                return writeValue(v.default, ctx);
             } else {
                 throwError(`Missing argument for field "${v.name}" in struct "${src.name}"`, f.ref);
             }

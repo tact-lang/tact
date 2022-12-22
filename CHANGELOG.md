@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+
+- Constants in contracts
+
 ## Changed
+
 - `require` now accepts two arguments, second one must be a string literal that has error message. This error message then will be exported to ABI
 
 ## [0.4.0] - 2022-12-22

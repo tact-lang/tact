@@ -93,6 +93,15 @@
         "inline": true,
         "debug": true
       }
+    },
+    {
+      "name": "constants",
+      "path": "./src/test/features/constants.tact",
+      "output": "./src/test/features/output",
+      "experimental": {
+        "inline": true,
+        "debug": true
+      }
     }
   ]
 }

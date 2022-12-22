@@ -27,6 +27,7 @@ Tact {
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization
           | id ":" Type as id "=" Expression ";" --withSerializationAndInit
+    Constant = "const" id ":" Type "=" Expression ";"
 
     // Struct
     Struct = "struct" id "{" StructBody* "}" --originary
@@ -42,6 +43,7 @@ Tact {
                  | ContractInit
                  | ReceiveFunction
                  | Function
+                 | Constant
     
     // Trait
     Trait = ContractAttribute* trait id "{" TraitBody* "}" --originary

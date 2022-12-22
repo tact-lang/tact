@@ -54,6 +54,16 @@ export function resolveStrings(ctx: CompilerContext) {
     // Process all types
     for (let t of Object.values(getAllTypes(ctx))) {
 
+        // Process fields
+        for (const f of Object.values(t.fields)) {
+            ctx = resolveStringsInAST(f.ast, ctx);
+        }
+
+        // Process constants
+        for (const f of Object.values(t.constants)) {
+            ctx = resolveStringsInAST(f.ast, ctx);
+        }
+
         // Process init
         if (t.init) {
             ctx = resolveStringsInAST(t.init.ast, ctx);

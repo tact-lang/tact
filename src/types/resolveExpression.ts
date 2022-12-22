@@ -188,13 +188,18 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 
     // Find field
     let srcT = getType(ctx, src.name);
-    let field = srcT.fields.find((v) => v.name === exp.name);
-    if (!field) {
+    const field = srcT.fields.find((v) => v.name === exp.name);
+    const cst = srcT.constants.find((v) => v.name === exp.name);
+    if (!field && !cst) {
         throwError(`Type "${src.name}" does not have a field named "${exp.name}"`, exp.ref);
     }
 
     // Register result type
-    return registerExpType(ctx, exp, field.type);
+    if (field) {
+        return registerExpType(ctx, exp, field.type);
+    } else {
+        return registerExpType(ctx, exp, cst!.type);
+    }
 }
 
 function resolveStaticCall(exp: ASTOpCallStatic, sctx: StatementContext, ctx: CompilerContext): CompilerContext {

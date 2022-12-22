@@ -1,9 +1,10 @@
-import { ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTTypeRef, throwError, traverse } from "../grammar/ast";
+import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTTypeRef, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeRef, typeRefEquals } from "./types";
+import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
+import { resolveConstantValue } from "./resolveConstantValue";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -117,7 +118,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 dependsOn: [],
                 init: null,
                 ast: a,
-                interfaces: []
+                interfaces: [],
+                constants: []
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -131,7 +133,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 dependsOn: [],
                 init: null,
                 ast: a,
-                interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value)
+                interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
+                constants: []
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -145,7 +148,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 dependsOn: [],
                 init: null,
                 ast: a,
-                interfaces: []
+                interfaces: [],
+                constants: []
             };
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
@@ -159,7 +163,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 dependsOn: [],
                 init: null,
                 ast: a,
-                interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value)
+                interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
+                constants: []
             };
         }
     }
@@ -180,20 +185,43 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
         }
 
-        return { name: src.name, type: tr, index, as: src.as, default: src.init, ref: src.ref };
+        // Resolve default value
+        let d: bigint | boolean | string | null | undefined = undefined;
+        if (src.init) {
+            d = resolveConstantValue(tr, src.init);
+        }
+
+        return { name: src.name, type: tr, index, as: src.as, default: d, ref: src.ref, ast: src };
     }
+
+    function buildConstantDescription(src: ASTConstant): ConstantDescription {
+        let tr = buildTypeRef(src.type, types);
+        let d = resolveConstantValue(tr, src.value);
+        return { name: src.name, type: tr, value: d, ref: src.ref, ast: src };
+    }
+
     for (let a of ast.types) {
 
         // Contract
         if (a.kind === 'def_contract') {
             for (const f of a.declarations) {
-                if (f.kind !== 'def_field') {
-                    continue;
+                if (f.kind === 'def_field') {
+                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                        throwError(`Field ${f.name} already exists`, f.ref);
+                    }
+                    if (types[a.name].constants.find((v) => v.name === f.name)) {
+                        throwError(`Constant ${f.name} already exists`, f.ref);
+                    }
+                    types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                } else if (f.kind === 'def_constant') {
+                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                        throwError(`Field ${f.name} already exists`, f.ref);
+                    }
+                    if (types[a.name].constants.find((v) => v.name === f.name)) {
+                        throwError(`Constant ${f.name} already exists`, f.ref);
+                    }
+                    types[a.name].constants.push(buildConstantDescription(f));
                 }
-                if (types[a.name].fields.find((v) => v.name === f.name)) {
-                    throwError(`Field ${f.name} already exists`, f.ref);
-                }
-                types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
             }
         }
 

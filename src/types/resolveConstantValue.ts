@@ -1,3 +1,4 @@
+import { toNano } from "ton";
 import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
 
@@ -23,6 +24,12 @@ function reduceInt(ast: ASTExpression): bigint {
             return -reduceInt(ast.right);
         } else if (ast.op === '+') {
             return reduceInt(ast.right);
+        }
+    } else if (ast.kind === 'op_static_call') {
+        if (ast.name === 'ton') {
+            if (ast.args.length === 1) {
+                return BigInt(toNano(reduceString(ast.args[0])).toString(10));
+            }
         }
     }
     throwError('Cannot reduce expression to integer', ast.ref);

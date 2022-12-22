@@ -1,4 +1,4 @@
-import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
+import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract' | 'trait';
@@ -12,6 +12,7 @@ export type TypeDescription = {
     ast: ASTType;
     dependsOn: TypeDescription[];
     interfaces: string[];
+    constants: ConstantDescription[];
 }
 
 export type TypeRef = {
@@ -34,7 +35,16 @@ export type FieldDescription = {
     type: TypeRef,
     as: string | null,
     default: bigint | boolean | string | null | undefined,
-    ref: ASTRef
+    ref: ASTRef,
+    ast: ASTNode
+}
+
+export type ConstantDescription = {
+    name: string;
+    type: TypeRef;
+    value: bigint | boolean | string | null;
+    ref: ASTRef,
+    ast: ASTNode
 }
 
 export type FunctionArgument = {
