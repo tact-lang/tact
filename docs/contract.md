@@ -69,6 +69,8 @@ contract Sample {
 
 This receiver allows to receive arbitrary comment message
 
+```
+
 contract Sample {
   
   // ..
@@ -77,6 +79,9 @@ contract Sample {
     // This receiver called for a any text message that wasn't matched by other receivers
   }
 }
+```
+
+
 
 ## Message receiver
 
