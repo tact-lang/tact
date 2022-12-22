@@ -2,6 +2,7 @@
 
 * [Overview](/docs/overview.md)
 * [Changelog](/CHANGELOG.md)
+* [Examples](/examples/)
 
 ## Getting started
 

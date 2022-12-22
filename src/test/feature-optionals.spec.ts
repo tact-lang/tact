@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 import { Address, beginCell, Cell } from 'ton';
 import { createExecutorFromCode } from 'ton-nodejs';
-import { randomAddress } from '../examples/utils/randomAddress';
+import { randomAddress } from './utils/randomAddress';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { ContractWithOptionals, ContractWithOptionals_init, SomeGenericStruct, StructWithOptionals } from './features/output/optionals_ContractWithOptionals';
 

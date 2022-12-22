@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 import { beginCell } from 'ton';
 import { createExecutorFromCode } from 'ton-nodejs';
-import { randomAddress } from '../examples/utils/randomAddress';
+import { randomAddress } from './utils/randomAddress';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { MapTestContract, MapTestContract_init, SomeStruct } from './features/output/maps_MapTestContract';
 

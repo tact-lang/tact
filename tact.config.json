@@ -2,56 +2,56 @@
   "projects": [
     {
       "name": "echo",
-      "path": "./src/examples/echo.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/echo.tact",
+      "output": "./examples/output"
     },
     {
       "name": "payouts",
-      "path": "./src/examples/payouts.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/payouts.tact",
+      "output": "./examples/output"
     },
     {
       "name": "wallet",
-      "path": "./src/examples/wallet.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/wallet.tact",
+      "output": "./examples/output"
     },
     {
       "name": "wallet-opt",
-      "path": "./src/examples/wallet-opt.tact",
-      "output": "./src/examples/output",
+      "path": "./examples/wallet-opt.tact",
+      "output": "./examples/output",
       "experimental": {
         "inline": true
       }
     },
     {
       "name": "treasure",
-      "path": "./src/examples/treasure.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/treasure.tact",
+      "output": "./examples/output"
     },
     {
       "name": "multisig",
-      "path": "./src/examples/multisig.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/multisig.tact",
+      "output": "./examples/output"
     },
     {
       "name": "multisig-3",
-      "path": "./src/examples/multisig-3.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/multisig-3.tact",
+      "output": "./examples/output"
     },
     {
       "name": "increment",
-      "path": "./src/examples/increment.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/increment.tact",
+      "output": "./examples/output"
     },
     {
       "name": "jetton",
-      "path": "./src/examples/jetton.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/jetton.tact",
+      "output": "./examples/output"
     },
     {
       "name": "rugpull",
-      "path": "./src/examples/rugpull.tact",
-      "output": "./src/examples/output"
+      "path": "./examples/rugpull.tact",
+      "output": "./examples/output"
     },
     {
       "name": "maps",

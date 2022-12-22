@@ -1,6 +1,6 @@
 import { SampleJetton, SampleJetton_init } from "./output/jetton_SampleJetton";
 import { createExecutorFromCode } from "ton-nodejs";
-import { randomAddress } from "./utils/randomAddress";
+import { randomAddress } from "../src/test/utils/randomAddress";
 import { Address, beginCell, Cell, contractAddress, StateInit, toNano } from "ton";
 import BN from "bn.js";
 import qs from 'qs';
