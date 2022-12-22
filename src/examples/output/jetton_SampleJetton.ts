@@ -42,6 +42,7 @@ export type Context = {
     bounced: boolean;
     sender: Address;
     value: BN;
+    raw: Cell;
 }
 
 export function packContext(src: Context): Cell {
@@ -49,6 +50,7 @@ export function packContext(src: Context): Cell {
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
     b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeRef(src.raw);
     return b_0.endCell();
 }
 
@@ -56,6 +58,7 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
 }
 
 export function packTupleContext(src: Context): StackItem[] {
@@ -63,6 +66,7 @@ export function packTupleContext(src: Context): StackItem[] {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
@@ -70,13 +74,15 @@ export function unpackStackContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -534,9 +540,9 @@ export function unpackTupleMint(slice: TupleSlice4): Mint {
     return { $$type: 'Mint', amount: amount };
 }
 export async function SampleJetton_init(owner: Address, content: Cell | null) {
-    const __code = 'te6ccgECNAEABKwAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAsLQIBIAYHAgFiJCUCAUgICQIBIA8QAgFICgsAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgOXHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCEKMqXF+64wIgghDTqLheuuMCghB73ZfeuuMCMPLAgoAwNDgALCBu8tCAgALow7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQoypcX7ry4IGBAQHXAAExEDRBMPAiyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQAwjDtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBQE0x8BghDTqLheuvLggW0B0gABkjHU3gExEDRBMPAjyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQA4O1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCEHvdl9668uCBgQEB1wD6QAFtAtIAAZZsEvpAAVneQxMzEFYQRRA0WPAkyPhCAcxVMFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJ7VQCAVgREgIBIBYXABVZR/AcoA4HABygCAIBIBMUAAkcFnwBYAH3MhxAcoBUAfwFXABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8BXIcPAVcPAVJG6zmX/wFQTwAVAEzJU0A3DwFeIkbrOZf/AVBPABUATMlTQDcPAV4nDwFQJ/8BUCyVjMljMzAXDwFeIhbrOYf/AVAfABAcyUMXDwFeLJAYBUABPsAAgEgGBkCASAeHwIBIBobAgEgHB0AKRwA8jMQxNQI4EBAc8AAc8WAc8WyYABvALQ9AQwIIIA2K8BgBD0D2+h8uBkbQKCANivAYAQ9A9vofLgZBKCANivAQKAEPQXyPQAyUAD8BiAAQxwfwTIzEM0UEP6AgHPFiJulTJwWMoAln8BygASzOLKAMmAADz4QvgoWPAZgAgEgICECASAiIwANPAbbELwFoAAPPgo8BswQzCAAhRRVaBVMPAbXPAWcHBTAPgo+CgiEDQQPshVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJXjIUEDpAqvAXVQKAANT4QW8jMDFVQPAbAYERTQLwFlAGxwUV8vRVAoAIBICYnABnRgKiiGYeA+oGlCoEcAgEgKCkCASAqKwAZPhBbyMwMSPHBfLghIAAJBAjXwOAAEz4QW8jMDEB8B6AADxVMPAgMUEwgAEW+KO9qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKeBDAIBIC4vAgEgMDEACbncPwGoAgFYMjMAcbd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4IGc6tPOK/OkoWA6wtxMj2UABJrbz2omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgoqgfgOQABFrxb2omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgp4DsA=';
+    const __code = 'te6ccgECNAEABLEAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAsLQIBIAYHAgFiJCUCAUgICQIBIA8QAgFICgsAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgOVHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQoypcX7rjAiCCENOouF664wKCEHvdl9664wIw8sCCgDA0OAAsIG7y0ICAAujDtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBQE0x8BghCjKlxfuvLggYEBAdcAATEQNEEw8CLI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADCMO1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCENOouF668uCBbQHSAAGSMdTeATEQNEEw8CPI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADg7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQe92X3rry4IGBAQHXAPpAAW0C0gABlmwS+kABWd5DEzMQVhBFEDRY8CTI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVAIBWBESAgEgFhcAFVlH8BygDgcAHKAIAgEgExQACRwWfAFgAfcyHEBygFQB/AVcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wFchw8BVw8BUkbrOZf/AVBPABUATMlTQDcPAV4iRus5l/8BUE8AFQBMyVNANw8BXicPAVAn/wFQLJWMyWMzMBcPAV4iFus5h/8BUB8AEBzJQxcPAV4skBgFQAE+wACASAYGQIBIB4fAgEgGhsCASAcHQApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwGIABDHB/BMjMQzRQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAyYAAPPhC+ChY8BmACASAgIQIBICIjAA08BtsQvAWgAA8+CjwGzBDMIACFFFVoFUw8Btc8BZwcFMA+Cj4KCIQNBA+yFVAghAXjUUZUAbLHxTLPxKBAQHPAAHPFgHPFgH6AsleMhQQOkCq8BdVAoAA5PhBbyQQI18DVUDwGwGBEU0C8BZQBscFFfL0VQKACASAmJwAZ0YCoohmHgPqBpQqBHAIBICgpAgEgKisAHT4QW8kECNfAyPHBfLghIAAJBAjXwOAAFz4QW8kECNfAwHwHoAAPFUw8CAxQTCAARb4o72omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgp4EMAgEgLi8CASAwMQAJudw/AagCAVgyMwBxt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTggZzq084r86ShYDrC3EyPZQAEmtvPaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CiqB+A5AAEWvFvaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CngOwA==';
     const depends = new Map<string, Cell>();
-    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECGwEAAyEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCA3rgGRoCAUgGBwIBIAwNAgFICAkAR2chwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgKDHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCEBeNRRm64wKCEA+KfqW64wIw8sCCgCgsACwgbvLQgIACyMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQF41FGbry4IHTP4EBAdcA+kABAfpAAQH6AFVANRBnEFZVA/AXyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAxO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQD4p+pbry4IHTP/oA+kABAfpAAW0C0gABlGwS1BLe+gAGBQRQMzYQeBBnVQTwGMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAgEgDg8Ar9r4H8ILeRmECIppkTY4L5eiio0MEAev4Q4X/5enwhKhAj+AsueAm4OCobMyoT0ClYZCqgQQgLxqKMqANlj4pln4lAgIDngADniwDniwD9AWSgCqgxingKQCAVgQEQIBIBITABUlH8BygDgcAHKAIAAJHBZ8AWACASAUFQIBIBcYAfcyHEBygFQB/AScAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wEshw8BJw8BIkbrOZf/ASBPABUATMlTQDcPAS4iRus5l/8BIE8AFQBMyVNANw8BLicPASAn/wEgLJWMyWMzMBcPAS4iFus5h/8BIB8AEBzJQxcPAS4skBgFgApHADyMxDE1AjgQEBzwABzxYBzxbJgAAT7AABvALQ9AQwIIIA2K8BgBD0D2+h8uBkbQKCANivAYAQ9A9vofLgZBKCANivAQKAEPQXyPQAyUAD8BWAAaRbMvhBbyMwMVMDxwWzjhX4QlQgRPAWAYERTQLwE1ADxwUS8vSSMDHiE6CCAPX8IcL/8vQCgAAms8fgKwABNrejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzA', 'base64'))[0]);
+    depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECGwEAAyIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCA3rgGRoCAUgGBwIBIAwNAgEgCAkAR2shwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgKBRwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEBeNRRm64wKCEA+KfqW64wIw8sCCgKCwALQgbvLQgIALIw7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAXjUUZuvLggdM/gQEB1wD6QAEB+kABAfoAVUA1EGcQVlUD8BjI+EIBzFUgUCOBAQHPAAHPFgHPFsntVADE7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kABbQLSAAGUbBLUEt76AAYFBFAzNhB4EGdVBPAZyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQCASAODwIB1BcYABX0o/gOUAcDgA5QBAIBIBARAgEgEhMCASAVFgAJHBZ8AaAB9zIcQHKAVAH8BNwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ATyHDwE3DwEyRus5l/8BME8AJQBMyVNANw8BPiJG6zmX/wEwTwAlAEzJU0A3DwE+Jw8BMCf/ATAslYzJYzMwFw8BPiIW6zmH/wEwHwAgHMlDFw8BPiyQGAUAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwFoABtDEz+EFvJBAjXwNTBMcFs44T+EJUIFPwFwGBEU0C8BRYxwXy9JFb4hSgggD1/CHC//L0A8IAMIACvF8D+EFvJFuBEU0yJscF8vRRUaGCAPX8IcL/8vT4QlQgR/AXXPAUcHBUNmZUJ6BSsMhVQIIQF41FGVAGyx8Uyz8SgQEBzwABzxYBzxYB+gLJQBVQYxTwFYAAJrPH4C0AATa3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwA==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });

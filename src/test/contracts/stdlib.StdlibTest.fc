@@ -1,4 +1,4 @@
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
 builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
@@ -71,7 +71,7 @@ _ __gen_get_sliceRefs(slice $sc) method_id(77445) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -93,5 +93,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmTBg4poz4ci5Vg7BDzqzwYJqx3CXViSeZV4EwDiCmMG2X";
+    return "ipfs://QmcJTCuoTHWP1Xpcw2fhERzDDw9rmCsCcWBz1bZPbn7Syu";
 }

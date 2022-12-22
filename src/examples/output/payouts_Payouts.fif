@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __tact_my_balance
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
+  DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_compute_contract_address
@@ -55,7 +56,13 @@ PROGRAM{
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
-    UNTRIPLE
+    4 UNTUPLE
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -259,8 +266,8 @@ PROGRAM{
     -ROT
   }>
   __gen_Context_get_sender PROCINLINE:<{
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
   }>
   __gen_load_Payouts PROCINLINE:<{
     c4 PUSH
@@ -552,6 +559,7 @@ PROGRAM{
   }>
   __gen_Payouts_receive_comment PROC:<{
     __tact_context_get INLINECALLDICT
+    DROP
     16059 PUSHINT
     s3 POP
     1000000000 PUSHINT
@@ -592,6 +600,7 @@ PROGRAM{
   }>
   __gen_Payouts_receive_CanPayoutResponse PROC:<{
     __tact_context_get INLINECALLDICT
+    DROP
     s2 POP
     __tact_context_sys GETGLOB
     MYADDR
@@ -667,9 +676,9 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    DROP
-    s1 s0 s4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     __tact_context SETGLOB
     s0 s2 XCHG
     IFJMP:<{
@@ -733,6 +742,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d505057384c4b4e47346131687065544e44627a54445a383973724d6e5959447446704c7942566846526f6f64} PUSHSLICE
+    x{697066733a2f2f516d53335954734d463744697164596142514c645a4735367641517775764e6258776342523671534e65364e7152} PUSHSLICE
   }>
 }END>c

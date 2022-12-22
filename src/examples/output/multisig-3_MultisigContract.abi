@@ -79,6 +79,14 @@
             "name": "Int",
             "optional": false
           }
+        },
+        {
+          "name": "raw",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
         }
       ],
       "allocation": {
@@ -110,12 +118,20 @@
               },
               "kind": "int",
               "bits": 257
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
             }
           ],
           "next": null,
           "size": {
             "bits": 525,
-            "refs": 0
+            "refs": 1
           }
         }
       }

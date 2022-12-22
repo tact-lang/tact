@@ -28,9 +28,9 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s0 POP
-    1 0 4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     1 SETGLOBVAR
     s0 s2 XCHG
     <{
@@ -60,7 +60,7 @@ SETCP0
       8 LDU
       ROTREV
       1 2 BLKDROP2
-      19 CALLDICT
+      20 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -93,7 +93,7 @@ SETCP0
       LDMSGADDR
       s0 s1 XCHG
       s1 POP
-      21 CALLDICT
+      22 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -120,7 +120,7 @@ SETCP0
         LDMSGADDR
         s0 s1 XCHG
         s1 POP
-        20 CALLDICT
+        21 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -140,7 +140,7 @@ SETCP0
     ISNULL
     128 THROWIF
 
-  13: 
+  14: 
     <{
       -1 PUSHINT
       s0 s1 XCHG
@@ -151,13 +151,13 @@ SETCP0
     s0 s1 XCHG
     1 STI
 
-  14: 
+  15: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
     2 STI
     s0 s7 XCHG2
-    13 CALLDICT
+    14 CALLDICT
     0 PUSHINT
     s0 s1 XCHG
     3 STI
@@ -177,18 +177,18 @@ SETCP0
     OR
     <{
       -1 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
       NEWC
       0 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
       0 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
       s4 PUSH
       ISNULL
       NOT
       <{
         -1 PUSHINT
-        13 CALLDICT
+        14 CALLDICT
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -198,7 +198,7 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        13 CALLDICT
+        14 CALLDICT
       }> PUSHCONT
       IFELSE
       s4 PUSH
@@ -206,7 +206,7 @@ SETCP0
       NOT
       <{
         -1 PUSHINT
-        13 CALLDICT
+        14 CALLDICT
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -216,14 +216,14 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        13 CALLDICT
+        14 CALLDICT
       }> PUSHCONT
       IFELSE
       0 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
       s0 s2 XCHG
       -1 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -234,7 +234,7 @@ SETCP0
       s3 POP
       s0 s1 XCHG
       0 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -242,7 +242,7 @@ SETCP0
     NOT
     <{
       -1 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
       s0 s1 XCHG
       1 CALLDICT
       s0 s1 XCHG
@@ -251,14 +251,14 @@ SETCP0
     <{
       s1 POP
       0 PUSHINT
-      13 CALLDICT
+      14 CALLDICT
     }> PUSHCONT
     IFELSE
     ENDC
     s0 s1 XCHG
     SENDRAWMSG
 
-  15: 
+  16: 
     s0 s1 XCHG
     NEWC
     STREF
@@ -266,18 +266,18 @@ SETCP0
     STSLICER
     ENDC
 
-  16: 
+  17: 
     1 GETGLOBVAR
-    3 UNTUPLE
-    s0 POP
-    s1 POP
+    4 UNTUPLE
+    s2 s3 XCHG
+    3 BLKDROP
     s1 PUSH
     SDEQ
     132 THROWIFNOT
 
-  17: 
+  18: 
     s0 s2 XCHG
-    16 CALLDICT
+    17 CALLDICT
     -1 PUSHINT
     NEWC
     ENDC
@@ -285,21 +285,21 @@ SETCP0
     s5 s5 XCHG2
     PUSHNULL
     PUSHNULL
-    14 CALLDICT
-
-  18: 
+    15 CALLDICT
 
   19: 
-    17 CALLDICT
 
   20: 
-    0 PUSHINT
-    160 PUSHINT
-    17 CALLDICT
+    18 CALLDICT
 
   21: 
+    0 PUSHINT
+    160 PUSHINT
+    18 CALLDICT
+
+  22: 
     s0 s1 XCHG
-    16 CALLDICT
+    17 CALLDICT
     s0 POP
 
   owner: 
@@ -311,7 +311,7 @@ SETCP0
     LDMSGADDR
     s0 s1 XCHG
     s1 POP
-    18 CALLDICT
+    19 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -320,7 +320,7 @@ SETCP0
     86142586315491086060343270784266291122 PUSHINT
 
   122670: 
-    15 CALLDICT
+    16 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

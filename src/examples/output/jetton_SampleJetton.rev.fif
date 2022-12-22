@@ -27,9 +27,9 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s0 POP
-    1 0 4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     1 SETGLOBVAR
     s0 s2 XCHG
     <{
@@ -558,9 +558,9 @@ SETCP0
 
   31: 
     1 GETGLOBVAR
-    3 UNTUPLE
-    s0 POP
-    s1 POP
+    4 UNTUPLE
+    s2 s3 XCHG
+    3 BLKDROP
     5 1 BLKSWAP
     27 CALLDICT
     s0 s1 XCHG
@@ -575,9 +575,9 @@ SETCP0
 
   32: 
     1 GETGLOBVAR
-    3 UNTUPLE
-    s0 POP
-    s1 POP
+    4 UNTUPLE
+    s2 s3 XCHG
+    3 BLKDROP
     s3 PUSH
     SDEQ
     132 THROWIFNOT
@@ -588,9 +588,9 @@ SETCP0
 
   34: 
     1 GETGLOBVAR
-    3 UNTUPLE
-    s0 POP
-    s1 POP
+    4 UNTUPLE
+    s2 s3 XCHG
+    3 BLKDROP
     s0 s1 XCHG
     30 CALLDICT
 

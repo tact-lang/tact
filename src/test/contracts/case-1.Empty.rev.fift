@@ -21,9 +21,9 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s0 POP
-    1 0 2 PUXC2
-    TRIPLE
+    s2 PUSH
+    s4 s4 XCHG2
+    4 TUPLE
     1 SETGLOBVAR
     IFRET
     130 THROW

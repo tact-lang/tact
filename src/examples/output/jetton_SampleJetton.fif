@@ -51,7 +51,7 @@ PROGRAM{
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
-    UNTRIPLE
+    4 UNTUPLE
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -222,8 +222,8 @@ PROGRAM{
     DROP
   }>
   __gen_Context_get_sender PROCINLINE:<{
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
   }>
   __gen_load_SampleJetton PROCINLINE:<{
     c4 PUSH
@@ -450,8 +450,8 @@ PROGRAM{
   }>
   __gen_SampleJetton_requireWallet PROC:<{
     __tact_context_get INLINECALLDICT
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
     5 -ROLL
     __gen_SampleJetton_getJettonWalletInit CALLDICT
     SWAP
@@ -481,8 +481,8 @@ PROGRAM{
   }>
   __gen_SampleJetton_receive_Mint PROC:<{
     __tact_context_get INLINECALLDICT
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
     SWAP
     __gen_SampleJetton_mint CALLDICT
   }>
@@ -526,9 +526,9 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    DROP
-    s1 s0 s4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     __tact_context SETGLOB
     s0 s2 XCHG
     IFJMP:<{
@@ -588,6 +588,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d594534736e617876574c616538514734443262676e784e766f734c616336437331326b6869754b43697a6368} PUSHSLICE
+    x{697066733a2f2f516d56777933777342314755715a677837396a4e6f713667733843784c6775395153425a72654b32664c6a6f4376} PUSHSLICE
   }>
 }END>c

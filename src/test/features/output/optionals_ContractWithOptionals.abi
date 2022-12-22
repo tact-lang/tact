@@ -79,6 +79,14 @@
             "name": "Int",
             "optional": false
           }
+        },
+        {
+          "name": "raw",
+          "type": {
+            "kind": "ref",
+            "name": "Slice",
+            "optional": false
+          }
         }
       ],
       "allocation": {
@@ -110,12 +118,20 @@
               },
               "kind": "int",
               "bits": 257
+            },
+            {
+              "index": 3,
+              "size": {
+                "bits": 0,
+                "refs": 1
+              },
+              "kind": "slice"
             }
           ],
           "next": null,
           "size": {
             "bits": 525,
-            "refs": 0
+            "refs": 1
           }
         }
       }
@@ -490,7 +506,7 @@
             {
               "index": 3,
               "size": {
-                "bits": 268,
+                "bits": 267,
                 "refs": 0
               },
               "kind": "optional",
@@ -531,7 +547,7 @@
             }
           },
           "size": {
-            "bits": 529,
+            "bits": 528,
             "refs": 2
           }
         }
@@ -647,7 +663,7 @@
             {
               "index": 3,
               "size": {
-                "bits": 268,
+                "bits": 267,
                 "refs": 0
               },
               "kind": "optional",
@@ -686,14 +702,14 @@
                 {
                   "index": 5,
                   "size": {
-                    "bits": 530,
+                    "bits": 529,
                     "refs": 2
                   },
                   "kind": "optional",
                   "inner": {
                     "index": 5,
                     "size": {
-                      "bits": 529,
+                      "bits": 528,
                       "refs": 2
                     },
                     "kind": "struct",
@@ -703,7 +719,7 @@
               ],
               "next": null,
               "size": {
-                "bits": 530,
+                "bits": 529,
                 "refs": 2
               }
             },
@@ -713,7 +729,7 @@
             }
           },
           "size": {
-            "bits": 529,
+            "bits": 528,
             "refs": 2
           }
         }

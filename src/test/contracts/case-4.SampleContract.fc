@@ -1,4 +1,4 @@
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
 (slice, ((int, int))) __gen_read_Source(slice sc_0) inline {
@@ -45,7 +45,7 @@ _ __gen_get_stake() method_id(80984) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -63,5 +63,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmfY4fgYhdy9venyorKjFcRWzUcivXKV7xc7kLe64VW3gb";
+    return "ipfs://Qmb72AmiagB4xKKshUrfxdYnXSmpa7yyGQpAvcmEP3xAa4";
 }

@@ -14,16 +14,21 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
     // Handle optional
 
     if (f.kind === 'optional') {
-        ctx.append(`if (null?(v'${f.name})) {`);
-        ctx.inIndent(() => {
-            ctx.append(`build_${index} = store_int(build_${index}, false, 1);`);
-        });
-        ctx.append(`} else {`);
-        ctx.inIndent(() => {
-            ctx.append(`build_${index} = store_int(build_${index}, true, 1);`);
-            writeSerializerField(f.inner, index, ctx, true);
-        });
-        ctx.append(`}`);
+        if (f.inner.kind === 'address') {
+            ctx.used(`__tact_store_address_opt`);
+            ctx.append(`build_${index} = __tact_store_address_opt(build_${index}, v'${f.name});`);
+        } else {
+            ctx.append(`if (null?(v'${f.name})) {`);
+            ctx.inIndent(() => {
+                ctx.append(`build_${index} = store_int(build_${index}, false, 1);`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`build_${index} = store_int(build_${index}, true, 1);`);
+                writeSerializerField(f.inner, index, ctx, true);
+            });
+            ctx.append(`}`);
+        }
         return;
     }
 
@@ -176,12 +181,17 @@ function writeFieldParser(f: StorageField, index: number, ctx: WriterContext, op
     // Handle optional
 
     if (f.kind === 'optional') {
-        ctx.append(`${varName} = null();`);
-        ctx.append(`if (sc_${index}~load_int(1)) {`);
-        ctx.inIndent(() => {
-            writeFieldParser(f.inner, index, ctx, true);
-        });
-        ctx.append('}');
+        if (f.inner.kind === 'address') {
+            ctx.used(`__tact_load_address_opt`);
+            ctx.append(`${varName} = sc_${index}~__tact_load_address_opt();`);
+        } else {
+            ctx.append(`${varName} = null();`);
+            ctx.append(`if (sc_${index}~load_int(1)) {`);
+            ctx.inIndent(() => {
+                writeFieldParser(f.inner, index, ctx, true);
+            });
+            ctx.append('}');
+        }
         return;
     }
 

@@ -42,6 +42,7 @@ export type Context = {
     bounced: boolean;
     sender: Address;
     value: BN;
+    raw: Cell;
 }
 
 export function packContext(src: Context): Cell {
@@ -49,6 +50,7 @@ export function packContext(src: Context): Cell {
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
     b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeRef(src.raw);
     return b_0.endCell();
 }
 
@@ -56,6 +58,7 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
 }
 
 export function packTupleContext(src: Context): StackItem[] {
@@ -63,6 +66,7 @@ export function packTupleContext(src: Context): StackItem[] {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
@@ -70,13 +74,15 @@ export function unpackStackContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -302,7 +308,7 @@ export function unpackTupleExecuted(slice: TupleSlice4): Executed {
     return { $$type: 'Executed', seqno: seqno };
 }
 export async function MultisigContract_init(key1: BN, key2: BN, key3: BN) {
-    const __code = 'te6ccgECJAEAApMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEhMCAdQICQIBWAsMAW8cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECkVvgghAw3ilCuuMCMPLAgoAoACwgbvLQgIACw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BTI+EIBzFUwUDTLH8v/y//L/8ntVAIBIA0OAgEgEBEAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AMcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDMhw8Axw8AwkbrOZf/AMBPABUATMlTQDcPAM4iRus5l/8AwE8AFQBMyVNANw8AzicPAMAn/wDALJWMyWMzMBcPAM4iFus5h/8AwB8AEBzJQxcPAM4skBgDwAE+wAAIxwBMjMVTBQNMsfy//L/8v/yYAATH8zAXBtbW3wDYAIBIBQVAG/So6oeQqkCgR5Y+A/QEA54tk/IApAhV8iCkZlPyIKgmb/IhAonsptV15egDBAF6IgdgA2Hl6eAfAIBIBYXAgEgGBkACQQI18DgAAcE18DgAAUbDGAABRfA4AAvvmS/aiaGoA/DFpj+n/6f/p/6qYNgp4CcAgEgHB0CASAeHwAJuKx/AOgCASAgIQIBICIjAC+w6ftRNDUAfhi0x/T/9P/0/9VMGwU8BKAAL7Dhu1E0NQB+GLTH9P/0//T/1UwbBTwEYAAvsPl7UTQ1AH4YtMf0//T/9P/VTBsFPAQgAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmA=';
+    const __code = 'te6ccgECJAEAApIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAsMAW0cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEDDeKUK64wIw8sCCgCgALCBu8tCAgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4IHTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwFcj4QgHMVTBQNMsfy//L/8v/ye1UABVZR/AcoA4HABygCAIBIA0OAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgDwAjHAEyMxVMFA0yx/L/8v/y//JgAAT7AAIBIBITAgFIGBkCASAUFQIBIBYXABMfzMBcG1tbfAOgAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAbxUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAQgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngKQCASAcHQIBIB4fAAm4rH8A+AIBICAhAgEgIiMAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwE4AAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPASgAC+w+XtRNDUAfhi0x/T/9P/0/9VMGwU8BGAATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYA==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

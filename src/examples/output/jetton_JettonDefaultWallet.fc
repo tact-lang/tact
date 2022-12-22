@@ -1,9 +1,13 @@
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(int, slice, int) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -197,20 +201,26 @@ cell __gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
 (((int, slice, slice)), ()) __gen_JettonDefaultWallet_receive_TokenTransferInternal((int, slice, slice) $self, (int, int, slice, slice, int) $msg) impure {
     var ($self'balance, $self'owner, $self'master) = $self;
     var ($msg'queryId, $msg'amount, $msg'from, $msg'responseAddress, $msg'forwardTonAmount) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     if (__tact_address_neq($ctx'sender, $self'master)) {
         var ($sinit'code, $sinit'data) = __gen_JettonDefaultWallet_init_child(__tact_context_sys, $self'master, $msg'from);
         throw_unless(4429, __tact_address_eq(contractAddress(($sinit'code, $sinit'data)), $ctx'sender));
     }
     $self'balance = ($self'balance + $msg'amount);
     throw_unless(62972, ($self'balance >= 0));
+    int $msgValue = $ctx'value;
+    int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
+    int $storageFee = (10000000 - min($tonBalanceBeforeMsg, 10000000));
+    $msgValue = ($msgValue - ($storageFee + 10000000));
+    if (($msg'forwardTonAmount > 0)) {
+    }
     return (($self'balance, $self'owner, $self'master), ());
 }
 
 (((int, slice, slice)), ()) __gen_JettonDefaultWallet_receive_TokenTransfer((int, slice, slice) $self, (int, int, slice, slice, cell, int) $msg) impure {
     var ($self'balance, $self'owner, $self'master) = $self;
     var ($msg'queryId, $msg'amount, $msg'destination, $msg'responseDestination, $msg'customPayload, $msg'forwardTonAmount) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(4429, __tact_address_eq($ctx'sender, $self'owner));
     $self'balance = ($self'balance - $msg'amount);
     throw_unless(62972, ($self'balance >= 0));
@@ -232,7 +242,7 @@ cell __gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -272,5 +282,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmbSCvFojpRAhwkRYv3rv16iGYBhh5uJM6rKwh8jsK9zcw";
+    return "ipfs://QmZqQMLgrMuhM9p8hGSXqkAwf7bSYJSbJHMxjtpVnVhNkN";
 }

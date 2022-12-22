@@ -42,6 +42,7 @@ export type Context = {
     bounced: boolean;
     sender: Address;
     value: BN;
+    raw: Cell;
 }
 
 export function packContext(src: Context): Cell {
@@ -49,6 +50,7 @@ export function packContext(src: Context): Cell {
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
     b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeRef(src.raw);
     return b_0.endCell();
 }
 
@@ -56,6 +58,7 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
 }
 
 export function packTupleContext(src: Context): StackItem[] {
@@ -63,6 +66,7 @@ export function packTupleContext(src: Context): StackItem[] {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
@@ -70,13 +74,15 @@ export function unpackStackContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -285,9 +291,9 @@ export function unpackTupleCanPayoutResponse(slice: TupleSlice4): CanPayoutRespo
     return { $$type: 'CanPayoutResponse', amount: amount, address: address, ok: ok };
 }
 export async function Payouts_init(owner: Address, publicKey: BN) {
-    const __code = 'te6ccgECNAEABPwAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAwMQIBIAYHAgFiJCUCASAICQIBIBITAgEgCgsCASAQEQIBIAwNAEdrIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0IC907ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAwVEEVbwP4YQKRW+AgghBu9vVRuuMCIIIQts9/D7qOOjDtRNDUAfhi+kABAYEBAdcAWWwSAtMfAYIQts9/D7ry4IH6QAExEvAmyPhCAcxZWc8WgQEBzwDJ7VTggODwALQgbvLQgIAIww7UTQ1AH4YvpAAQGBAQHXAFlsEgLTHwGCEG729VG68uCBgQEB1wD6QAEB0gBVIDMQNFjwJcj4QgHMWVnPFoEBAc8Aye1UAILAAI43INdJwh+OLu1E0NQB+GL6QAEBgQEB1wBZbBICgCDXIRLwJMj4QgHMWVnPFoEBAc8Aye1U2zHgMJEw4vLAggAj83kQDkyZC3WcsAt5Es5mT0GMALvRBrpRDrpMuQYQARYQBYxyUBt5FAP5FnmNWBUILVgSiq2wQQYQBOEFUBCuuMKBnniyAKbyy3gSmg0OEATOQAt4EoIlDVAUcJGJnhAEzqGGgQa6UQ66TJOBBxcXQvgcABX8o/gOUAcDgA5QBAIBIBQVAgEgFhcCASAdHgIBIBgZAgEgGxwACRwWfAGgAfcyHEBygFQB/AXcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wF8hw8Bdw8BckbrOZf/AXBPACUATMlTQDcPAX4iRus5l/8BcE8AJQBMyVNANw8BficPAXAn/wFwLJWMyWMzMBcPAX4iFus5h/8BcB8AIBzJQxcPAX4skBgGgAE+wAABTJ0IAADMmACASAfIAIBICIjAfUINdJqwLIAY5gAdMHIcJAIsFbsJYBpr9YywWOTCHCYCLBe7CWAaa5WMsFjjshwi8iwTqwlgGmBFjLBY4qIcAtIsArsZaAPjICywWOGSHAXyLAL7GWgD8yAssFmQHAPZPywIbfAeLi4uLi5DEgzzEgqTgCIMMA4wJb8BqAhAC0f8gBlHAByx/ebwABb4xtb4wB8AzwC4AAQAvAaAqHXGDAABTwHIAAdHADyMwDWs8WWM8WygDJgAgEgJicCASAsLQIBICgpAgEgKisAOQC0PQEMIIAoPoBgBD0D2+h8uBkbcj0AMlAA/AfgABsAsjMAlnPFoEBAc8AyYAAZPhBbyMwMSLHBfLghIAADDCACASAuLwAJRZ8CIxgArz4QW8jgT67M4IQO5rKAL4S8vQB8B76AIMI1xgwyCPPFiL6AvAb+QCCAL0RUSX5EPL0+EL4KFUC8CDwGH9wgEIEyAGCED6esWZYyx+BAQHPAMlBQG1t8BmAAyT4QW8jMvhC+Cgl8CDwGAGBEU0CxwXy9AGOK4IA9fz4J28QWKGCEDuaygChI6HCAPL0cIBCi3U3VjY2Vzc48B0QJG1t8BmOHDAxcHCAQovEFscmVhZHkgcGFpZI8B0QNG1t8BnigAgEgMjMAlb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOFALHuhMolza1VSFYUsAFgNBOCBnOrTzivzpKFgOsLcTI9lAAJusG/AhgAL7hR3tRNDUAfhi+kABAYEBAdcAWWwS8COA==';
+    const __code = 'te6ccgECNAEABP8AART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAwMQIBIAYHAgFiIiMCASAICQIBWBITAgEgCgsCAWoQEQIBIAwNAEf2Q4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQB907ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEG729VG6jkYw7UTQ1AH4YvpAAQGBAQHXAFlsEgLTHwGCEG729VG68uCBgQEB1wD6QAEB0gBVIDMQNFjwJsj4QgHMWVnPFoEBAc8Aye1UgOAAtCBu8tCAgBnuAgghC2z38Puo46MO1E0NQB+GL6QAEBgQEB1wBZbBIC0x8BghC2z38PuvLggfpAATES8CfI+EIBzFlZzxaBAQHPAMntVODAAJEw4w3ywIIPAG4g10nCH44u7UTQ1AH4YvpAAQGBAQHXAFlsEgKAINchEvAlyPhCAcxZWc8WgQEBzwDJ7VTbMeAwACMbyIByZMhbrOWAW8iWczJ6DGAAuwg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOACASAUFQIBIBscAgEgFhcCASAYGQAVJR/AcoA4HABygCAACRwWfAHgAfcyHEBygFQB/AYcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGMhw8Bhw8BgkbrOZf/AYBPACUATMlTQDcPAY4iRus5l/8BgE8AJQBMyVNANw8BjicPAYAn/wGALJWMyWMzMBcPAY4iFus5h/8BgB8AIBzJQxcPAY4skBgGgAFMnQgAAT7AAIBIB0eAgEgICEAAzJgAfUINdJqwLIAY5gAdMHIcJAIsFbsJYBpr9YywWOTCHCYCLBe7CWAaa5WMsFjjshwi8iwTqwlgGmBFjLBY4qIcAtIsArsZaAPjICywWOGSHAXyLAL7GWgD8yAssFmQHAPZPywIbfAeLi4uLi5DEgzzEgqTgCIMMA4wJb8BuAfABAC8BsCodcYMAAtH/IAZRwAcsf3m8AAW+MbW+MAfAN8AyAABTwHYAIBICQlAgEgKisCASAmJwIBICgpAB0cAPIzANazxZYzxbKAMmAAOQC0PQEMIIAoPoBgBD0D2+h8uBkbcj0AMlAA/AggABsAsjMAlnPFoEBAc8AyYAAdPhBbyQQI18DIscF8uCEgAgEgLC0CASAuLwADDCAAsT4QW8kMIE+uzOCEDuaygC+EvL0AfAf+gCDCNcYMMgjzxYi+gLwHPkAggC9EVEl+RDy9PhC+ChVAvAh8Bl/cIBCBMgBghA+nrFmWMsfgQEBzwDJQUBtbfAagAMs+EFvJDAy+EL4KCXwIfAZAYERTQLHBfL0AY4rggD1/PgnbxBYoYIQO5rKAKEjocIA8vRwgEKLdTdWNjZXNzjwHhAkbW3wGo4cMDFwcIBCi8QWxyZWFkeSBwYWlkjwHhA0bW3wGuKAACRZ8CMxgAgEgMjMAlb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOFALHuhMolza1VSFYUsAFgNBOCBnOrTzivzpKFgOsLcTI9lAAJusG/AigAL7hR3tRNDUAfhi+kABAYEBAdcAWWwS8CSA==';
     const depends = new Map<string, Cell>();
-    depends.set('41210', Cell.fromBoc(Buffer.from('te6ccgECGgEAAm0AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAWFwIBIAYHAgFiEBECAdQICQIBWAsMAcccCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAMFRBFW8D+GECjiww7UTQ1AH4YvpAAQH6QAEB0gBVIGwTVQLwE8j4QgHMVSBazxZYzxbKAMntVOCCED6esWa64wIw8sCCgCgALCBu8tCAgAIDtRNDUAfhi+kABAfpAAQHSAFUgbBMD0x8BghA+nrFmuvLggYEBAdcAATFBMPASyPhCAcxVIFrPFljPFsoAye1UABVZR/AcoA4HABygCAIBIA0OAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgDwAhPhBbyMwMX8CcIBCWG1t8A6AABPsAAgEgEhMCASAUFQAdHADyMwDWs8WWM8WygDJgAAUMDGAAsz4QW8jMIERTTIlxwXy9IIQBfXhAHD7AiGOH38yIn/IVSCCEG729VFQBMsfEoEBAc8AAc8WygDJ8A+OHSJwyFUgghBu9vVRUATLHxKBAQHPAAHPFsoAyfAP4oAAFFtwgADO+KO9qJoagD8MX0gAID9IACA6QAqkDYJ+AjAIBZhgZAAmw5fwEIABxsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnBAznVp5xX50lCwHWFuJkeyg', 'base64'))[0]);
+    depends.set('41210', Cell.fromBoc(Buffer.from('te6ccgECGgEAAm4AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAWFwIBIAYHAgFIDg8CAdQICQIB9AsMAcUcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKOLDDtRNDUAfhi+kABAfpAAQHSAFUgbBNVAvAUyPhCAcxVIFrPFljPFsoAye1U4IIQPp6xZrrjAjDywIKAKAAsIG7y0ICAAgO1E0NQB+GL6QAEB+kABAdIAVSBsEwPTHwGCED6esWa68uCBgQEB1wABMUEw8BPI+EIBzFUgWs8WWM8WygDJ7VQAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgDQAE+wACASAQEQAF0tuEAgEgEhMCASAUFQAlPhBbyQQI18DfwJwgEJYbW3wD4AAdHADyMwDWs8WWM8WygDJgAAUMDGAAsz4QW8kW4ERTTIlxwXy9IIQBfXhAHD7AiGOH38yIn/IVSCCEG729VFQBMsfEoEBAc8AAc8WygDJ8BCOHSJwyFUgghBu9vVRUATLHxKBAQHPAAHPFsoAyfAQ4oAAzvijvaiaGoA/DF9IACA/SAAgOkAKpA2CfgJQCAWYYGQAJsOX8BGAAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwQM51aecV+dJQsB1hbiZHsoA==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
     let __stack: StackItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });

@@ -42,7 +42,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
             ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
             ctx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
-            ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value);`);
+            ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
             ctx.append();
 
             // Handle bounced

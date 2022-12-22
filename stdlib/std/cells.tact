@@ -80,6 +80,9 @@ extends native preloadUint(self: Slice, l: Int): Int;
 @name(load_coins)
 extends mutates native loadCoins(self: Slice): Int;
 
+@name(skip_bits)
+extends mutates native skipBits(self: Slice, l: Int): Slice;
+
 @name(end_parse)
 extends native endParse(self: Slice);
 

@@ -1,6 +1,7 @@
 PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
+  DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_compute_contract_address
@@ -40,7 +41,13 @@ PROGRAM{
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
-    UNTRIPLE
+    4 UNTUPLE
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -399,8 +406,8 @@ PROGRAM{
   }>
   __gen_Multisig_receive_Request PROC:<{
     __tact_context_get INLINECALLDICT
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
     267 PUSHINT
     s11 PUSH
     s0 s2 XCHG
@@ -431,8 +438,8 @@ PROGRAM{
   }>
   __gen_Multisig_receive_Signed PROC:<{
     __tact_context_get INLINECALLDICT
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
     __tact_context_sys GETGLOB
     MYADDR
     s0 s12 s2 XCPUXC
@@ -481,9 +488,9 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    DROP
-    s1 s0 s4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     __tact_context SETGLOB
     s0 s2 XCHG
     IFJMP:<{
@@ -530,6 +537,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d64725959754e334776345631684763505a7074374e735a45504a39375169514d506772465350453248556976} PUSHSLICE
+    x{697066733a2f2f516d61393551725570734d36576f486a4b6d6456395653795a3953705a7a4c7a316879346258744b337a684e6e71} PUSHSLICE
   }>
 }END>c

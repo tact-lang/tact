@@ -42,26 +42,72 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_context', () => {
-        ctx.append(`global (int, slice, int) __tact_context;`);
+        ctx.append(`global (int, slice, int, slice) __tact_context;`);
         ctx.append(`global cell __tact_context_sys;`);
     });
     ctx.fun('__tact_context_get', () => {
         ctx.used('__tact_context');
-        ctx.append(`(int, slice, int) __tact_context_get() inline { return __tact_context; }`);
-    })
+        ctx.append(`(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }`);
+    });
+    ctx.fun('__tact_verify_address', () => {
+        ctx.append(`() __tact_verify_address(slice address) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`throw_unless(134, address.slice_bits() != 267);`) // Check if has correct length
+        });
+        ctx.append(`}`);
+    });
     ctx.fun('__tact_load_address', () => {
         ctx.append(`(slice, slice) __tact_load_address(slice cs) inline {`);
         ctx.inIndent(() => {
             ctx.append(`slice raw = cs~load_msg_addr();`);
+            ctx.used(`__tact_verify_address`);
+            ctx.append(`__tact_verify_address(raw);`);
             ctx.append(`return (cs, raw);`);
+        });
+        ctx.append(`}`);
+    });
+    ctx.fun('__tact_load_address_opt', () => {
+        ctx.append(`(slice, slice) __tact_load_address_opt(slice cs) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`slice raw = cs~load_msg_addr();`);
+            ctx.append(`if (raw.preload_uint(2) != 0) {`)
+            ctx.inIndent(() => {
+                ctx.used(`__tact_verify_address`);
+                ctx.append(`__tact_verify_address(raw);`);
+                ctx.append(`return (cs, raw);`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.append(`return (cs, null());`);
+            });
+            ctx.append(`}`);
         });
         ctx.append(`}`);
     });
     ctx.fun('__tact_store_address', () => {
         ctx.append(`builder __tact_store_address(builder b, slice address) inline {`);
         ctx.inIndent(() => {
+            ctx.used(`__tact_verify_address`);
+            ctx.append(`__tact_verify_address(address);`) // Check if not null
             ctx.append(`b = b.store_slice(address);`) // Is std address
             ctx.append(`return b;`);
+        });
+        ctx.append(`}`);
+    });
+    ctx.fun('__tact_store_address_opt', () => {
+        ctx.append(`builder __tact_store_address_opt(builder b, slice address) inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(address)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`b = b.store_uint(0, 2);`) // Empty std
+                ctx.append(`return b;`);
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                ctx.used(`__tact_store_address`);
+                ctx.append(`return __tact_store_address(b, address);`);
+            });
+            ctx.append(`}`);
         });
         ctx.append(`}`);
     });

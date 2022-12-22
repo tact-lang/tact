@@ -1492,7 +1492,7 @@ exports[`grammar should parse case-14 1`] = `
         {
           "as": null,
           "id": 2,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int;,
@@ -1507,7 +1507,7 @@ exports[`grammar should parse case-14 1`] = `
         {
           "as": null,
           "id": 4,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "b",
           "ref": b: Int;,
@@ -1950,7 +1950,7 @@ exports[`grammar should parse case-17 1`] = `
         {
           "as": null,
           "id": 2,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int;,
@@ -1977,7 +1977,7 @@ exports[`grammar should parse case-17 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int;,
@@ -2013,7 +2013,7 @@ exports[`grammar should parse case-18 1`] = `
         {
           "as": null,
           "id": 2,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int;,
@@ -2040,7 +2040,7 @@ exports[`grammar should parse case-18 1`] = `
         {
           "as": "coin",
           "id": 5,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "x",
           "ref": x: Int as coin;,
@@ -2076,7 +2076,12 @@ exports[`grammar should parse case-19 1`] = `
         {
           "as": null,
           "id": 3,
-          "init": 1000n,
+          "init": {
+            "id": 2,
+            "kind": "number",
+            "ref": 1000,
+            "value": 1000n,
+          },
           "kind": "def_field",
           "name": "x",
           "ref": x: Int = 1000;,
@@ -2103,7 +2108,12 @@ exports[`grammar should parse case-19 1`] = `
         {
           "as": "coins",
           "id": 7,
-          "init": 1000n,
+          "init": {
+            "id": 6,
+            "kind": "number",
+            "ref": 1000,
+            "value": 1000n,
+          },
           "kind": "def_field",
           "name": "x",
           "ref": x: Int as coins = 1000;,
@@ -2118,7 +2128,12 @@ exports[`grammar should parse case-19 1`] = `
         {
           "as": null,
           "id": 10,
-          "init": true,
+          "init": {
+            "id": 9,
+            "kind": "boolean",
+            "ref": true,
+            "value": true,
+          },
           "kind": "def_field",
           "name": "y",
           "ref": y: Bool = true;,
@@ -2155,7 +2170,7 @@ exports[`grammar should parse case-20 1`] = `
         {
           "as": null,
           "id": 2,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "y",
           "ref": y: map[Int]Int;,
@@ -2182,7 +2197,7 @@ exports[`grammar should parse case-20 1`] = `
         {
           "as": null,
           "id": 5,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "x",
           "ref": x: map[Int]Int;,
@@ -2264,7 +2279,7 @@ exports[`grammar should parse case-22 1`] = `
         {
           "as": null,
           "id": 3,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int;,
@@ -2291,7 +2306,7 @@ exports[`grammar should parse case-22 1`] = `
         {
           "as": null,
           "id": 6,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "b",
           "ref": b: Int;,
@@ -2340,7 +2355,7 @@ exports[`grammar should parse case-23 1`] = `
         {
           "as": null,
           "id": 3,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int;,
@@ -2406,7 +2421,7 @@ exports[`grammar should parse case-23 1`] = `
         {
           "as": null,
           "id": 10,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "b",
           "ref": b: Int;,
@@ -2494,7 +2509,7 @@ exports[`grammar should parse case-24 1`] = `
         {
           "as": null,
           "id": 3,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "a",
           "ref": a: Int;,
@@ -2560,7 +2575,7 @@ exports[`grammar should parse case-24 1`] = `
         {
           "as": null,
           "id": 10,
-          "init": undefined,
+          "init": null,
           "kind": "def_field",
           "name": "b",
           "ref": b: Int;,

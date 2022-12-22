@@ -1,16 +1,22 @@
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(int, slice, int) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
     return (cs, raw);
 }
 
 builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
     b = b.store_slice(address);
     return b;
 }
@@ -139,8 +145,8 @@ builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, in
     return (sc_0, (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue));
 }
 
-_ __gen_Context_get_sender((int, slice, int) v) inline {
-    var (v'bounced, v'sender, v'value) = v;
+_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
+    var (v'bounced, v'sender, v'value, v'raw) = v;
     return v'sender;
 }
 
@@ -212,7 +218,7 @@ builder storeBool(builder $s, int $value) impure {
 }
 
 () reply(cell $body) impure {
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
@@ -297,7 +303,7 @@ _ __gen_get_stopped() method_id(74107) {
         send((true, $self'owner, 0, 128, null(), null(), null()));
         return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
     }
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(16059, ($ctx'value >= ($self'investment + $self'fee)));
     $self'queue~__tact_dict_set_int_slice(257, $self'queueEnd, $ctx'sender);
     $self'queueEnd = ($self'queueEnd + 1);
@@ -357,7 +363,7 @@ _ __gen_get_stopped() method_id(74107) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -428,5 +434,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmPJjpN7MbXTzWzgWvWSFoWVgew6PGnZcJNwnjbYXA2ipJ";
+    return "ipfs://QmXGXeC5oUuy4LJ1BnAUaUDTiKitoxpnXxpFQ2SXtBjUtH";
 }

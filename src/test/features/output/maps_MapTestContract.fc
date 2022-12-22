@@ -6,11 +6,16 @@
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
     return (cs, raw);
 }
 
@@ -506,7 +511,7 @@ _ __gen_get_addrMap4Value(slice $key) method_id(100021) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -600,5 +605,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmYnes3g5eAAwQ462ve6gXmA3secc4eu78CEcTEfk4Nmmc";
+    return "ipfs://QmS56vrR3XzNQm4Y2HVBAmSrUBvZGjrEXDykubLSKR7k5c";
 }

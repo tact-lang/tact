@@ -78,16 +78,20 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 } else if (f.kind === 'slice') {
                     w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
                 } else if (f.kind === 'optional') {
-                    w.append(`if (src.${s.fields[f.index].name} !== null) {`);
-                    w.inIndent(() => {
-                        w.append(`b_${index} = b_${index}.storeBit(true);`);
-                        processField(index, f.inner);
-                    });
-                    w.append(`} else {`);
-                    w.inIndent(() => {
-                        w.append(`b_${index} = b_${index}.storeBit(false);`);
-                    });
-                    w.append(`}`);
+                    if (f.inner.kind === 'address') {
+                        w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
+                    } else {
+                        w.append(`if (src.${s.fields[f.index].name} !== null) {`);
+                        w.inIndent(() => {
+                            w.append(`b_${index} = b_${index}.storeBit(true);`);
+                            processField(index, f.inner);
+                        });
+                        w.append(`} else {`);
+                        w.inIndent(() => {
+                            w.append(`b_${index} = b_${index}.storeBit(false);`);
+                        });
+                        w.append(`}`);
+                    }
                 } else if (f.kind === 'struct') {
                     w.append(`b_${index} = b_${index}.storeCellCopy(pack${f.type}(src.${s.fields[f.index].name}));`);
                 } else if (f.kind === 'address') {

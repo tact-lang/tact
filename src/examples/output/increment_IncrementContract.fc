@@ -2,10 +2,10 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(int, slice, int) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
     if (null?(v)) {
@@ -127,8 +127,8 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
     return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
 }
 
-_ __gen_Context_get_sender((int, slice, int) v) inline {
-    var (v'bounced, v'sender, v'value) = v;
+_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
+    var (v'bounced, v'sender, v'value, v'raw) = v;
     return v'sender;
 }
 
@@ -178,7 +178,7 @@ _ __gen_get_counters2() method_id(77570) {
 (((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'value) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $self'counters~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
     $self'counters4~__tact_dict_set_slice_int(267, $ctx'sender, $msg'value, 257);
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
@@ -227,7 +227,7 @@ _ __gen_get_counters2() method_id(77570) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -285,5 +285,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmUDfSGBbhr3cjRx4kkKo9Ss1EnVKeHsD7QceFxXmzGZW4";
+    return "ipfs://QmVddZStmqexvCkcmMBN1WBSLe1JahJPwSUT9oEgqUBDDR";
 }

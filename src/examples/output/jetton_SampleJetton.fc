@@ -1,9 +1,9 @@
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(int, slice, int) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
@@ -124,8 +124,8 @@ _ __gen_StateInit_get_code((cell, cell) v) inline {
     return v'code;
 }
 
-_ __gen_Context_get_sender((int, slice, int) v) inline {
-    var (v'bounced, v'sender, v'value) = v;
+_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
+    var (v'bounced, v'sender, v'value, v'raw) = v;
     return v'sender;
 }
 
@@ -271,7 +271,7 @@ _ __gen_get_get_jetton_data() method_id(106029) {
 
 ((int, slice, cell, int), ()) __gen_SampleJetton_requireWallet((int, slice, cell, int) $self, slice $owner) impure {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_getJettonWalletInit($owner);
     throw_unless(4429, __tact_address_eq(contractAddress(($winit'code, $winit'data)), $ctx'sender));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
@@ -297,7 +297,7 @@ _ __gen_get_owner() method_id(83229) {
 (((int, slice, cell, int)), ()) __gen_SampleJetton_receive_Mint((int, slice, cell, int) $self, (int) $msg) impure {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'amount) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, $msg'amount);
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
@@ -330,7 +330,7 @@ _ __gen_get_owner() method_id(83229) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -380,5 +380,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmYE4snaxvWLae8QG4D2bgnxNvosLac6Cs12khiuKCizch";
+    return "ipfs://QmVwy3wsB1GUqZgx79jNoq6gs8CxLgu9QSBZreK2fLjoCv";
 }

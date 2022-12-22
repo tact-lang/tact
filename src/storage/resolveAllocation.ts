@@ -49,14 +49,19 @@ function allocateField(ctx: CompilerContext, src: FieldDescription, type: TypeRe
 
     if (type.kind === 'ref') {
 
-        // Resolve Optional
-        if (type.optional) {
-            let inner = allocateField(ctx, src, { ...type, optional: false });
-            return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits + 1, refs: inner.size.refs }, index: src.index };
-        }
-
         // Resolve Direct
         let td = getType(ctx, type.name);
+
+        // Resolve Optional
+        if (type.optional) {
+            if (td.name !== 'Address') {
+                let inner = allocateField(ctx, src, { ...type, optional: false });
+                return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits + 1, refs: inner.size.refs }, index: src.index };
+            } else {
+                let inner = allocateField(ctx, src, { ...type, optional: false });
+                return { name: src.name, kind: 'optional', inner, size: { bits: inner.size.bits, refs: inner.size.refs }, index: src.index };
+            }
+        }
 
         // Primitive types
         if (td.kind === 'primitive') {

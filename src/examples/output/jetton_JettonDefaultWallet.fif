@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_my_balance
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
   DECLPROC __tact_load_address
@@ -29,6 +30,10 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_my_balance PROCINLINE:<{
+    BALANCE
+    FIRST
+  }>
   __tact_not_null PROC:<{
     DUP
     ISNULL
@@ -36,7 +41,7 @@ PROGRAM{
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
-    UNTRIPLE
+    4 UNTUPLE
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -339,41 +344,41 @@ PROGRAM{
     __gen_JettonDefaultWallet_init CALLDICT
   }>
   __gen_JettonDefaultWallet_receive_TokenTransferInternal PROC:<{
-    2DROP
-    s2 POP
-    __tact_context_get INLINECALLDICT
-    DROP
     NIP
-    s0 s3 PUSH2
+    s3 POP
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    s0 s4 PUSH2
     __tact_address_neq INLINECALLDICT
     IF:<{
       __tact_context_sys GETGLOB
-      s0 s4 s3 XCPUXC
+      s0 s5 s2 XCPUXC
       __gen_JettonDefaultWallet_init_child CALLDICT
       SWAP
       4429 PUSHINT
       s0 s2 XCHG
       contractAddress CALLDICT
-      s0 s3 XCHG2
+      ROT
       __tact_address_eq INLINECALLDICT
-      s1 s2 XCHG
       THROWANYIFNOT
     }>ELSE<{
-      DROP
-      NIP
+      2DROP
     }>
-    s1 s3 XCHG
+    s1 s4 XCHG
     ADD
     62972 PUSHINT
     OVER
     -1 GTINT
     THROWANYIFNOT
-    s0 s2 XCHG
+    s0 s3 XCHG
+    0 GTINT
+    DROP
   }>
   __gen_JettonDefaultWallet_receive_TokenTransfer PROC:<{
     3 BLKDROP
     __tact_context_get INLINECALLDICT
-    DROP
+    2DROP
     4429 PUSHINT
     s2 POP
     s6 PUSH
@@ -425,9 +430,9 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    DROP
-    s1 s0 s4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     __tact_context SETGLOB
     s0 s2 XCHG
     IFJMP:<{
@@ -472,6 +477,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d62534376466f6a70524168776b525976337276313669475942686835754a4d36724b7768386a734b397a6377} PUSHSLICE
+    x{697066733a2f2f516d5a71514d4c67724d75684d39703868475358716b417766376253594a53624a484d786a7470566e56684e6b4e} PUSHSLICE
   }>
 }END>c

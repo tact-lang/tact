@@ -42,6 +42,7 @@ export type Context = {
     bounced: boolean;
     sender: Address;
     value: BN;
+    raw: Cell;
 }
 
 export function packContext(src: Context): Cell {
@@ -49,6 +50,7 @@ export function packContext(src: Context): Cell {
     b_0 = b_0.storeBit(src.bounced);
     b_0 = b_0.storeAddress(src.sender);
     b_0 = b_0.storeInt(src.value, 257);
+    b_0 = b_0.storeRef(src.raw);
     return b_0.endCell();
 }
 
@@ -56,6 +58,7 @@ export function packStackContext(src: Context, __stack: StackItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
 }
 
 export function packTupleContext(src: Context): StackItem[] {
@@ -63,6 +66,7 @@ export function packTupleContext(src: Context): StackItem[] {
     __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
+    __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
@@ -70,13 +74,15 @@ export function unpackStackContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export function unpackTupleContext(slice: TupleSlice4): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value };
+    const raw = slice.readCell();
+    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
 export type SendParameters = {
     $$type: 'SendParameters';
@@ -357,7 +363,7 @@ export function unpackTupleSomething(slice: TupleSlice4): Something {
     return { $$type: 'Something', value: value };
 }
 export async function IncrementContract_init() {
-    const __code = 'te6ccgECKgEAA/EAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgEgGBkCASAICQAPvEDd5aEA3kMCASAKCwIBIBITAgEgDA0AI1IW6VW1n0WjDgyAHPAEEz9EKASfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QDBUQRVvA/hhApFb4CCCENd5xO264wIgghAiRqi9uuMCIIIQCGR7QrrjAoIQkVyQSbqAODxARAAsIG7y0ICAAvDDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghDXecTtuvLggYEBAdcAgQEB1wBZMhBWEEUQNEMA8BjI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQArjDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghAiRqi9uvLggYEBAdcAATEQRRA0QTDwGcj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVADEMO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCEAhke0K68uCBgQEB1wBtAdIAAZIx1N5ZMhBWEEUQNEMA8BrI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQAuo5W7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQkVyQSbry4IGBAQHXAAExEEUQNEEw8BvI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VTgMPLAggIBIBQVAgEgFhcAHRBM/QMb6GUAdcAMOBbbYAAbCBulTBZ9Fow4EEz9BWAAERZ9A1vodwwbYAAjCFulVtZ9Fkw4MgBzwBBM/RBgAgFYGhsCAUgeHwA9VtbW1tbQXIzAVQRfQAEvQAAcj0ABL0ABL0AMkBzMmAIBIBwdAAUXwSAABwUXwSACASAgIQIBICIjAD8+EFvIzAxgQEBIBA5QUBSkPADECOBAQtAB4EBAfAHAYABLCSBAQEicfAEIG6aMBSBAQEBf3HwA52BAQEB8AGzEDYScfAD4gOAALyCAM4pJYEBASTwBm7y9BAkgQEBWfAFAoACXIEBAW1TEhBJWfADBIEBASZtcfADA4EBASZt8AWBAQv4QW8jMDEQJG2BAQHwB4EBAW0gbpIwbZvwDsgBAYEBAc8AyeJBcPAFEDRBMIAIBICYnAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwCASAoKQA/u0B+1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFfAWgACbQ+/gKwAD+14F2omhqAPwxegJ6AmoA6HoCegJ6AhgIGogaNgr4C8A==';
+    const __code = 'te6ccgECKgEAA/QAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgEgGBkCASAICQAPvEDd5aEA3kMCASAKCwIBIBITAgEgDA0AI1IW6VW1n0WjDgyAHPAEEz9EKASdHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQ13nE7brjAiCCECJGqL264wIgghAIZHtCuuMCghCRXJBJuoA4PEBEACwgbvLQgIAC8MO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCENd5xO268uCBgQEB1wCBAQHXAFkyEFYQRRA0QwDwGMj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVACuMO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCECJGqL268uCBgQEB1wABMRBFEDRBMPAZyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAMQw7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQCGR7Qrry4IGBAQHXAG0B0gABkjHU3lkyEFYQRRA0QwDwGsj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVAC6jlbtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghCRXJBJuvLggYEBAdcAATEQRRA0QTDwG8j4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOAw8sCCAgEgFBUCASAWFwAdEEz9AxvoZQB1wAw4FttgABsIG6VMFn0WjDgQTP0FYAARFn0DW+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGACAVgaGwIBSB4fAD1W1tbW1tBcjMBVBF9AAS9AAByPQAEvQAEvQAyQHMyYAgEgHB0ABRfBIAAHBRfBIAIBICAhAgEgIiMAQz4QW8kECNfA4EBASAQOUFAUpDwAxAjgQELQAeBAQHwBwGAASwkgQEBInHwBCBumjAUgQEBAX9x8AOdgQEBAfABsxA2EnHwA+IDgAC8ggDOKSWBAQEk8AZu8vQQJIEBAVnwBQKAAmyBAQFtUxIQSVnwAwSBAQEmbXHwAwOBAQEmbfAFgQEL+EFvJBAjXwMQJG2BAQHwB4EBAW0gbpIwbZvwDsgBAYEBAc8AyeJBcPAFEDRBMIAIBICYnAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwCASAoKQA/u0B+1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFfAWgACbQ+/gKwAD+14F2omhqAPwxegJ6AmoA6HoCegJ6AhgIGogaNgr4C8A==';
     const depends = new Map<string, Cell>();
     let systemCell = beginCell().storeDict(null).endCell();
     let __stack: StackItem[] = [];

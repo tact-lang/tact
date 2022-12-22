@@ -6,17 +6,23 @@ int __tact_my_balance() inline {
 
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(int, slice, int) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
     return (cs, raw);
 }
 
 builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
     b = b.store_slice(address);
     return b;
 }
@@ -154,8 +160,8 @@ builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
     return (sc_0, (v'owner, v'publicKey));
 }
 
-_ __gen_Context_get_sender((int, slice, int) v) inline {
-    var (v'bounced, v'sender, v'value) = v;
+_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
+    var (v'bounced, v'sender, v'value, v'raw) = v;
     return v'sender;
 }
 
@@ -336,7 +342,7 @@ _ __gen_get_owner() method_id(83229) {
 
 ((slice, int), ()) __gen_Payouts_receive_comment((slice, int) $self, slice $msg) impure {
     var ($self'owner, $self'publicKey) = $self;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(16059, ($ctx'value >= 1000000000));
     slice $data = __gen_String_fromBase64($msg);
     int $amount = $data~load_coins();
@@ -355,7 +361,7 @@ _ __gen_get_owner() method_id(83229) {
 (((slice, int)), ()) __gen_Payouts_receive_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'amount, $msg'address, $msg'ok) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value) = __tact_context_get();
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     var ($init'code, $init'data) = __gen_Beacon_init_child(__tact_context_sys, my_address(), $msg'address);
     slice $address = contractAddress(($init'code, $init'data));
     throw_unless(4429, __tact_address_eq($ctx'sender, $address));
@@ -388,7 +394,7 @@ _ __gen_get_owner() method_id(83229) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -440,5 +446,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmPPW8LKNG4a1hpeTNDbzTDZ89srMnYYDtFpLyBVhFRood";
+    return "ipfs://QmS3YTsMF7DiqdYaBQLdZG56vAQwuvNbXwcBR6qSNe6NqR";
 }

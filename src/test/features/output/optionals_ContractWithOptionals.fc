@@ -1,16 +1,35 @@
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int) __tact_context;
+global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(slice, slice) __tact_load_address(slice cs) inline {
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+(slice, slice) __tact_load_address_opt(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    return (cs, raw);
+    if (raw.preload_uint(2) != 0) {
+        __tact_verify_address(raw);
+        return (cs, raw);
+    } else {
+        return (cs, null());
+    }
 }
 
 builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
     b = b.store_slice(address);
     return b;
+}
+
+builder __tact_store_address_opt(builder b, slice address) inline {
+    if (null?(address)) {
+        b = b.store_uint(0, 2);
+        return b;
+    } else {
+        return __tact_store_address(b, address);
+    }
 }
 
 forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
@@ -64,12 +83,7 @@ builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice,
         build_0 = store_int(build_0, true, 1);
         build_0 = store_ref(build_0, v'c);
     }
-    if (null?(v'd)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = __tact_store_address(build_0, v'd);
-    }
+    build_0 = __tact_store_address_opt(build_0, v'd);
     var build_1 = begin_cell();
     if (null?(v'e)) {
         build_1 = store_int(build_1, false, 1);
@@ -98,10 +112,7 @@ tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) {
     if (sc_0~load_int(1)) {
         v'c = sc_0~load_ref();
     }
-    var v'd = null();
-    if (sc_0~load_int(1)) {
-        v'd = sc_0~__tact_load_address();
-    }
+    var v'd = sc_0~__tact_load_address_opt();
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'e = null();
     if (sc_1~load_int(1)) {
@@ -128,10 +139,7 @@ tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) 
     if (sc_0~load_int(1)) {
         v'c = sc_0~load_ref();
     }
-    var v'd = null();
-    if (sc_0~load_int(1)) {
-        v'd = sc_0~__tact_load_address();
-    }
+    var v'd = sc_0~__tact_load_address_opt();
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'e = null();
     if (sc_1~load_int(1)) {
@@ -170,12 +178,7 @@ builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slic
         build_0 = store_int(build_0, true, 1);
         build_0 = store_ref(build_0, v'c);
     }
-    if (null?(v'd)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = __tact_store_address(build_0, v'd);
-    }
+    build_0 = __tact_store_address_opt(build_0, v'd);
     var build_1 = begin_cell();
     if (null?(v'e)) {
         build_1 = store_int(build_1, false, 1);
@@ -208,10 +211,7 @@ builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slic
     if (sc_0~load_int(1)) {
         v'c = sc_0~load_ref();
     }
-    var v'd = null();
-    if (sc_0~load_int(1)) {
-        v'd = sc_0~__tact_load_address();
-    }
+    var v'd = sc_0~__tact_load_address_opt();
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'e = null();
     if (sc_1~load_int(1)) {
@@ -476,7 +476,7 @@ _ __gen_get_notNullF() method_id(115160) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Handle bounced messages
     if (msg_bounced) {
@@ -507,5 +507,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmQmtXTPWgq7VBDhb1TQj89X6n72nEz9GEjKbveVXN8hD8";
+    return "ipfs://QmSxAD82V1xb3jwGibhTEbwQzwHQgQWRtM8Pcczhvtp2w4";
 }

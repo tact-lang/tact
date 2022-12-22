@@ -1,6 +1,7 @@
 PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
+  DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_address_eq
@@ -32,7 +33,13 @@ PROGRAM{
   }>
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
-    UNTRIPLE
+    4 UNTUPLE
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -216,8 +223,8 @@ PROGRAM{
   }>
   reply PROC:<{
     __tact_context_get INLINECALLDICT
-    DROP
-    NIP
+    s2 s3 XCHG
+    3 BLKDROP
     TRUE
     s0 s2 XCHG
     0 PUSHINT
@@ -246,7 +253,7 @@ PROGRAM{
   }>
   __gen_Beacon_receive_CanPayout PROC:<{
     __tact_context_get INLINECALLDICT
-    DROP
+    2DROP
     4429 PUSHINT
     s2 POP
     s5 PUSH
@@ -298,9 +305,9 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    DROP
-    s1 s0 s4 PUXC2
-    TRIPLE
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
     __tact_context SETGLOB
     s0 s2 XCHG
     IFJMP:<{
@@ -333,6 +340,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5853594672553178326866465878346a365868437571556b7943594c726f59507969516f676f6e5074656f64} PUSHSLICE
+    x{697066733a2f2f516d544b39416e737273736d6f3259334445364a3167426a4e5a5a79724c3162756862784756756b4a3239434c34} PUSHSLICE
   }>
 }END>c
