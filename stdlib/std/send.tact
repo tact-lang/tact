@@ -1,6 +1,12 @@
 @name(send_raw_message)
 native nativeSendMessage(cell: Cell, mode: Int);
 
+const SendRemainingBalance: Int = 128;
+const SendRemainingValue: Int = 64;
+const SendIgnoreErrors: Int = 2;
+const SendPayGasSeparately: Int = 1;
+const SendDestroyIfZero: Int = 32;
+
 struct SendParameters {
     bounce: Bool = true;
     to: Address;
@@ -68,7 +74,7 @@ fun reply(body: Cell?) {
         bounce: true,
         to: ctx.sender,
         value: 0,
-        mode: 64 + 2, 
+        mode: SendRemainingValue + SendIgnoreErrors, 
         body: body
     });
 }

@@ -41,7 +41,7 @@ contract RugPull with OwnableTransferable, Stoppable {
 
         // Fowrad everything to owner if rugpulled
         if (self.rugpulled) {
-            send(SendParameters{value: 0, to: self.owner, mode: 128 });
+            send(SendParameters{value: 0, to: self.owner, mode: SendRemainingBalance });
             return;
         }
 
@@ -68,16 +68,16 @@ contract RugPull with OwnableTransferable, Stoppable {
         if (!self.rugpulled) {
             nativeReserve(self.balance, 0);
         }
-        send(SendParameters{value: 0, to: self.owner, mode: 128 });
+        send(SendParameters{value: 0, to: self.owner, mode: SendRemainingBalance });
     }
 
     receive("rugpull") {
         self.rugpulled = true;
-        send(SendParameters{value: 0, to: self.owner, mode: 128 });
+        send(SendParameters{value: 0, to: self.owner, mode: SendRemainingBalance });
     } 
 
     fun sendPayout(to: Address, value: Int) {
-        send(SendParameters{value: value, to: to, mode: 2 });
+        send(SendParameters{value: value, to: to, mode: SendIgnoreErrors });
     }
 
     get fun params(): RugParams {

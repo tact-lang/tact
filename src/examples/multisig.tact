@@ -55,7 +55,7 @@ contract MultisigSigner {
             send(SendParameters{
                 value: 0, 
                 to: self.master, 
-                mode: 128 + 2, 
+                mode: SendRemainingBalance + SendIgnoreErrors, 
                 bounce: false, 
                 body: abi.pack_cell(Signed{ request: self.request })
             });
@@ -94,7 +94,7 @@ contract Multisig {
         send(SendParameters{
             value: 0, 
             to: opAddress, 
-            mode: 64 + 2, 
+            mode: SendRemainingValue + SendIgnoreErrors, 
             bounce: true,
             code: opInit.code,
             data: opInit.data

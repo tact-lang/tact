@@ -79,7 +79,7 @@ contract Payouts with OwnableTransferable {
         send(SendParameters{
             to: address, 
             value: 0, 
-            mode: 64 + 2, 
+            mode: SendRemainingValue + SendIgnoreErrors, 
             bounce: true, 
             body: abi.pack_cell(CanPayout{amount: amount})
         });
@@ -102,7 +102,7 @@ contract Payouts with OwnableTransferable {
             send(SendParameters{
                 to: msg.address, 
                 value: msg.amount, 
-                mode: 64 + 2, 
+                mode: SendRemainingValue + SendIgnoreErrors, 
                 bounce: false, 
                 body: "Success".asComment()
             });
@@ -110,7 +110,7 @@ contract Payouts with OwnableTransferable {
             send(SendParameters{
                 to: msg.address, 
                 value: 0, 
-                mode: 64 + 2, 
+                mode: SendRemainingValue + SendIgnoreErrors, 
                 bounce: false, 
                 body: "Already paid".asComment()
             });
