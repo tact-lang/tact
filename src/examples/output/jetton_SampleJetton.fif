@@ -26,9 +26,10 @@ PROGRAM{
   DECLPROC __gen_store_SampleJetton
   DECLPROC storeBool
   DECLPROC emptyCell
+  DECLPROC __gen_Cell_asSlice
+  DECLPROC emptySlice
   DECLPROC contractAddress
   DECLPROC send
-  DECLPROC __gen_Cell_asSlice
   DECLPROC __gen_JettonDefaultWallet_init
   DECLPROC __gen_JettonDefaultWallet_init_child
   DECLPROC __gen_SampleJetton_init
@@ -304,6 +305,13 @@ PROGRAM{
     NEWC
     ENDC
   }>
+  __gen_Cell_asSlice PROC:<{
+    CTOS
+  }>
+  emptySlice PROC:<{
+    emptyCell CALLDICT
+    __gen_Cell_asSlice CALLDICT
+  }>
   contractAddress PROC:<{
     0 PUSHINT
     -ROT
@@ -408,9 +416,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_Cell_asSlice PROC:<{
-    CTOS
-  }>
   __gen_JettonDefaultWallet_init PROC:<{
     0 PUSHINT
     s0 s3 XCHG
@@ -491,8 +496,7 @@ PROGRAM{
     OVER
     MYADDR
     OVER
-    emptyCell CALLDICT
-    __gen_Cell_asSlice CALLDICT
+    emptySlice CALLDICT
     s3 s5 XCHG
     s4 s14 XCHG
     s2 s3 XCHG

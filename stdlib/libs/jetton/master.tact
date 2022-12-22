@@ -90,7 +90,7 @@ trait Jetton with Ownable {
                 from: myAddress(),
                 responseAddress: responseAddress,
                 forwardTonAmount: 0,
-                forwardPayload: emptyCell().asSlice()
+                forwardPayload: emptySlice()
             }),
             code: winit.code,
             data: winit.data
