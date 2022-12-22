@@ -38,3 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix fallback and bounce argument type resolving
 - Fixed `loadUint`/`preloadUint`
 - Fixed invalid generation of `>=` and `>` operators
+
+## [0.2.0]
+
+# Added
+- `supported_interfaces` TEP support. TACT now automatically builds a list of supported interfaces of a contract
+- `IPFS`-based ABI reporting. TACT now automatically calculates and embeds ABI hash into smart contract and prepares a file to upload to IPFS.
