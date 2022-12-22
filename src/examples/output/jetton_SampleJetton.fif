@@ -15,7 +15,7 @@ PROGRAM{
   DECLPROC __gen_read_TokenBurnNotification
   DECLPROC __gen_write_TokenExcesses
   DECLPROC __gen_writecell_TokenExcesses
-  DECLPROC __gen_read_JettonUpdateContent
+  DECLPROC __gen_read_TokenUpdateContent
   DECLPROC __gen_read_Mint
   DECLPROC __gen_write_JettonDefaultWallet
   DECLPROC __gen_write_SampleJetton
@@ -44,7 +44,7 @@ PROGRAM{
   83229 DECLMETHOD __gen_get_owner
   DECLPROC __gen_SampleJetton_receive_Mint
   DECLPROC __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2
-  DECLPROC __gen_SampleJetton_receive_JettonUpdateContent
+  DECLPROC __gen_SampleJetton_receive_TokenUpdateContent
   DECLPROC __gen_SampleJetton_receive_TokenBurnNotification
   DECLPROC recv_internal
   122307 DECLMETHOD init_SampleJetton
@@ -192,10 +192,10 @@ PROGRAM{
     __gen_write_TokenExcesses INLINECALLDICT
     ENDC
   }>
-  __gen_read_JettonUpdateContent PROCINLINE:<{
+  __gen_read_TokenUpdateContent PROCINLINE:<{
     32 LDU
     SWAP
-    3551049822 PUSHINT
+    1862840892 PUSHINT
     EQUAL
     129 THROWIFNOT
     PUSHNULL
@@ -479,9 +479,9 @@ PROGRAM{
     __gen_SampleJetton_get_jetton_data CALLDICT
   }>
   __gen_SampleJetton_mint PROC:<{
-    s5 s5 XCPU
+    s6 s1 XCPU
     ADD
-    4 -ROLL
+    4 2 BLKSWAP
     __gen_SampleJetton_getJettonWalletInit CALLDICT
     2DUP
     contractAddress CALLDICT
@@ -490,19 +490,20 @@ PROGRAM{
     64 PUSHINT
     OVER
     MYADDR
-    MYADDR
-    s2 PUSH
+    OVER
     emptyCell CALLDICT
     __gen_Cell_asSlice CALLDICT
-    s4 s5 XCHG
-    s4 s15 XCHG
+    s3 s5 XCHG
+    s4 s14 XCHG
+    s2 s3 XCHG
+    s2 s15 XCHG
     __gen_writecell_TokenTransferInternal INLINECALLDICT
-    5 2 REVERSE
-    s1 s4 XCHG
-    s3 s10 XCHG
-    s0 s10 s10 XCHG3
+    s5 s6 s0 XCHG3
+    s4 s10 XCHG
+    s3 s9 XCHG
+    s0 s10 s9 XCHG3
     send CALLDICT
-    3 ROLL
+    2SWAP
   }>
   __gen_SampleJetton_requireWallet PROC:<{
     __tact_context_get INLINECALLDICT
@@ -539,7 +540,7 @@ PROGRAM{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
-    SWAP
+    TUCK
     __gen_SampleJetton_mint CALLDICT
   }>
   __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 PROC:<{
@@ -547,9 +548,10 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
     1000000000 PUSHINT
+    OVER
     __gen_SampleJetton_mint CALLDICT
   }>
-  __gen_SampleJetton_receive_JettonUpdateContent PROC:<{
+  __gen_SampleJetton_receive_TokenUpdateContent PROC:<{
     4 -ROLL
     __gen_SampleJetton_requireOwner CALLDICT
     NIP
@@ -632,17 +634,17 @@ PROGRAM{
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DUP
-    3551049822 PUSHINT
+    1862840892 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
       __gen_load_SampleJetton INLINECALLDICT
       s0 s4 XCHG
-      __gen_read_JettonUpdateContent INLINECALLDICT
+      __gen_read_TokenUpdateContent INLINECALLDICT
       NIP
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      __gen_SampleJetton_receive_JettonUpdateContent CALLDICT
+      __gen_SampleJetton_receive_TokenUpdateContent CALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DUP
@@ -686,6 +688,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a6937576a5672556b5737796d667a77416a6555514e4a71696969684246594e39736569536365373173666b} PUSHSLICE
+    x{697066733a2f2f516d61397a31434a5241336859456f65676f3843477579614d4b7069626e64656f4143353953597a664b65346951} PUSHSLICE
   }>
 }END>c

@@ -563,14 +563,14 @@ export function unpackTupleTokenExcesses(slice: TupleSlice4): TokenExcesses {
     const queryId = slice.readBigNumber();
     return { $$type: 'TokenExcesses', queryId: queryId };
 }
-export type JettonUpdateContent = {
-    $$type: 'JettonUpdateContent';
+export type TokenUpdateContent = {
+    $$type: 'TokenUpdateContent';
     content: Cell | null;
 }
 
-export function packJettonUpdateContent(src: JettonUpdateContent): Cell {
+export function packTokenUpdateContent(src: TokenUpdateContent): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(3551049822, 32);
+    b_0 = b_0.storeUint(1862840892, 32);
     if (src.content !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.content);
@@ -580,7 +580,7 @@ export function packJettonUpdateContent(src: JettonUpdateContent): Cell {
     return b_0.endCell();
 }
 
-export function packStackJettonUpdateContent(src: JettonUpdateContent, __stack: StackItem[]) {
+export function packStackTokenUpdateContent(src: TokenUpdateContent, __stack: StackItem[]) {
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
     } else {
@@ -588,7 +588,7 @@ export function packStackJettonUpdateContent(src: JettonUpdateContent, __stack: 
     }
 }
 
-export function packTupleJettonUpdateContent(src: JettonUpdateContent): StackItem[] {
+export function packTupleTokenUpdateContent(src: TokenUpdateContent): StackItem[] {
     let __stack: StackItem[] = [];
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
@@ -598,13 +598,13 @@ export function packTupleJettonUpdateContent(src: JettonUpdateContent): StackIte
     return __stack;
 }
 
-export function unpackStackJettonUpdateContent(slice: TupleSlice4): JettonUpdateContent {
+export function unpackStackTokenUpdateContent(slice: TupleSlice4): TokenUpdateContent {
     const content = slice.readCellOpt();
-    return { $$type: 'JettonUpdateContent', content: content };
+    return { $$type: 'TokenUpdateContent', content: content };
 }
-export function unpackTupleJettonUpdateContent(slice: TupleSlice4): JettonUpdateContent {
+export function unpackTupleTokenUpdateContent(slice: TupleSlice4): TokenUpdateContent {
     const content = slice.readCellOpt();
-    return { $$type: 'JettonUpdateContent', content: content };
+    return { $$type: 'TokenUpdateContent', content: content };
 }
 export type JettonData = {
     $$type: 'JettonData';

@@ -899,7 +899,7 @@
       }
     },
     {
-      "name": "JettonUpdateContent",
+      "name": "TokenUpdateContent",
       "header": 0,
       "fields": [
         {
@@ -912,7 +912,7 @@
         }
       ],
       "allocation": {
-        "prefix": 3551049822,
+        "prefix": 1862840892,
         "root": {
           "fields": [
             {

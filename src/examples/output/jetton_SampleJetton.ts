@@ -563,14 +563,14 @@ export function unpackTupleTokenExcesses(slice: TupleSlice4): TokenExcesses {
     const queryId = slice.readBigNumber();
     return { $$type: 'TokenExcesses', queryId: queryId };
 }
-export type JettonUpdateContent = {
-    $$type: 'JettonUpdateContent';
+export type TokenUpdateContent = {
+    $$type: 'TokenUpdateContent';
     content: Cell | null;
 }
 
-export function packJettonUpdateContent(src: JettonUpdateContent): Cell {
+export function packTokenUpdateContent(src: TokenUpdateContent): Cell {
     let b_0 = new Builder();
-    b_0 = b_0.storeUint(3551049822, 32);
+    b_0 = b_0.storeUint(1862840892, 32);
     if (src.content !== null) {
         b_0 = b_0.storeBit(true);
         b_0 = b_0.storeRef(src.content);
@@ -580,7 +580,7 @@ export function packJettonUpdateContent(src: JettonUpdateContent): Cell {
     return b_0.endCell();
 }
 
-export function packStackJettonUpdateContent(src: JettonUpdateContent, __stack: StackItem[]) {
+export function packStackTokenUpdateContent(src: TokenUpdateContent, __stack: StackItem[]) {
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
     } else {
@@ -588,7 +588,7 @@ export function packStackJettonUpdateContent(src: JettonUpdateContent, __stack: 
     }
 }
 
-export function packTupleJettonUpdateContent(src: JettonUpdateContent): StackItem[] {
+export function packTupleTokenUpdateContent(src: TokenUpdateContent): StackItem[] {
     let __stack: StackItem[] = [];
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
@@ -598,13 +598,13 @@ export function packTupleJettonUpdateContent(src: JettonUpdateContent): StackIte
     return __stack;
 }
 
-export function unpackStackJettonUpdateContent(slice: TupleSlice4): JettonUpdateContent {
+export function unpackStackTokenUpdateContent(slice: TupleSlice4): TokenUpdateContent {
     const content = slice.readCellOpt();
-    return { $$type: 'JettonUpdateContent', content: content };
+    return { $$type: 'TokenUpdateContent', content: content };
 }
-export function unpackTupleJettonUpdateContent(slice: TupleSlice4): JettonUpdateContent {
+export function unpackTupleTokenUpdateContent(slice: TupleSlice4): TokenUpdateContent {
     const content = slice.readCellOpt();
-    return { $$type: 'JettonUpdateContent', content: content };
+    return { $$type: 'TokenUpdateContent', content: content };
 }
 export type JettonData = {
     $$type: 'JettonData';
@@ -750,7 +750,7 @@ export function unpackTupleMint(slice: TupleSlice4): Mint {
     return { $$type: 'Mint', amount: amount };
 }
 export async function SampleJetton_init(owner: Address, content: Cell | null) {
-    const __code = 'te6ccgECOwEABZQAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAzNAIBIAYHAgFIGxwCASAICQIBWBARAgHUCgsAR95DgA5YC5gOWAuADlgAlmZmT8gGQ5AOWAuADlgAllA+X/5OhASXO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCjKlxfuuMCIIIQ06i4XrrjAiCCEHvdl9664wLAAIAwNDg8ACwgbvLQgIAC6MO1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCEKMqXF+68uCBgQEB1wABMRA0QTDwKcj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAMIw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQ06i4Xrry4IFtAdIAAZIx1N4BMRA0QTDwK8j4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAOgw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQe92X3rry4IHTP/oA+kABAfpAIdcLAcMAkQGSMW3iFEMwNBBnEFYQRVUC8CzI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADqjm35AYLwzQ2YbLGi9GiucIn0/DFiwRbl9T+9EaaDn1Lb9QQIMLK6jkXtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBTwKsj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1U2zHgkTDi8sCCAgFYEhMCASAUFQAVJR/AcoA4HABygCAABTIyYAIBIBYXAgEgGRoACRwWfAIgAfcyHEBygFQB/AacAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGshw8Bpw8BokbrOZf/AaBPABUATMlTQDcPAa4iRus5l/8BoE8AFQBMyVNANw8BricPAaAn/wGgLJWMyWMzMBcPAa4iFus5h/8BoB8AEBzJQxcPAa4skBgGAAE+wAAAzQgACkcAPIzEMTUCOBAQHPAAHPFgHPFsmACASAdHgIBICssAgEgHyACASAlJgIBICEiAgEgIyQAbwC0PQEMCCCANivAYAQ9A9vofLgZG0CggDYrwGAEPQPb6Hy4GQSggDYrwECgBD0F8j0AMlAA/AfgAEMcH8EyMxDNFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJgAA8+EL4KFjwIIAANPAibELwHIAIBICcoAgEgKSoADz4KPAiMEMwgAKkUVWgVTDwIlzwHHBwgEAh+Cj4KCLwG/AeEEUQT8hVUIIQF41FGVAHyx8Vyz8TgQEBzwABzxYBIG6VMHABywGSzxbiAfoCAc8WyV4yFBA6QKrwHVUCgADk+EFvJBAjXwNVQPAiAYERTQLwHFAGxwUV8vRVAoAAdPhBbyQQI18DI8cF8uCEgAgEgLS4Aa9CCOIGyK7+BMoGlCSt1nHD7g4QCED5ADBCGqZO22sZY/ln+SIEggcILg2tvgOiBHJGhpxIYBAIBIC8wAgEgMTIACQQI18DgABc+EFvJBAjXwMB8CWAAIT4QW8kECNfA4IQO5rKAPAlgAA8VTDwJzFBMIABFvijvaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CngUQCASA1NgIBIDc4AAm53D8CGAIBWDk6AHG3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOCBnOrTzivzpKFgOsLcTI9lAASa289qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKKoH4EcAARa8W9qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKeBJA';
+    const __code = 'te6ccgECOwEABZcAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAzNAIBIAYHAgFIGxwCASAICQIBWBARAgHUCgsAR95DgA5YC5gOWAuADlgAlmZmT8gGQ5AOWAuADlgAllA+X/5OhASXO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCjKlxfuuMCIIIQbwiyPLrjAiCCEHvdl9664wLAAIAwNDg8ACwgbvLQgIAC6MO1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCEKMqXF+68uCBgQEB1wABMRA0QTDwKcj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAMIw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQbwiyPLry4IFtAdIAAZIx1N4BMRA0QTDwK8j4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAOgw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQe92X3rry4IHTP/oA+kABAfpAIdcLAcMAkQGSMW3iFEMwNBBnEFYQRVUC8CzI+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADqjm35AYLwzQ2YbLGi9GiucIn0/DFiwRbl9T+9EaaDn1Lb9QQIMLK6jkXtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBTwKsj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1U2zHgkTDi8sCCAgFYEhMCASAUFQAVJR/AcoA4HABygCAABTIyYAIBIBYXAgEgGRoACRwWfAIgAfcyHEBygFQB/AacAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGshw8Bpw8BokbrOZf/AaBPABUATMlTQDcPAa4iRus5l/8BoE8AFQBMyVNANw8BricPAaAn/wGgLJWMyWMzMBcPAa4iFus5h/8BoB8AEBzJQxcPAa4skBgGAAE+wAAAzQgACkcAPIzEMTUCOBAQHPAAHPFgHPFsmACASAdHgIBICssAgEgHyACASAlJgIBICEiAgEgIyQAbwC0PQEMCCCANivAYAQ9A9vofLgZG0CggDYrwGAEPQPb6Hy4GQSggDYrwECgBD0F8j0AMlAA/AfgAEMcH8EyMxDNFBD+gIBzxYibpUycFjKAJZ/AcoAEsziygDJgAA8+EL4KFjwIIAANPAibELwHIAIBICcoAgEgKSoADz4KPAiMEMwgAK0UWGgVTHwIlzwHHBwgEAh+Cgh8BvwHhA1EE4QIxAvyFVQghAXjUUZUAfLHxXLPxOBAQHPAAHPFgEgbpUwcAHLAZLPFuIB+gIBzxbJRWAQShA5QKnwHVqAAOT4QW8kECNfA1VA8CIBgRFNAvAcUAbHBRXy9FUCgAB0+EFvJBAjXwMjxwXy4ISACASAtLgBr0II4gbIrv4EygaUJK3WccPuDhAIQPkAMEIapk7baxlj+Wf5IgSCBwguDa2+A6IEckaGnEhgEAgEgLzACASAxMgAJBAjXwOAAFz4QW8kECNfA2bwJYAAjPhBbyQQI18DghA7msoAIfAlgAA8VTDwJzFBMIABFvijvaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CngUQCASA1NgIBIDc4AAm53D8CGAIBWDk6AHG3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOCBnOrTzivzpKFgOsLcTI9lAASa289qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKKoH4EcAARa8W9qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKeBJA';
     const depends = new Map<string, Cell>();
     depends.set('55471', Cell.fromBoc(Buffer.from('te6ccgECKQEABYwAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAlJgIBIAYHAgFIEhMCASAICQIB7hARAgFICgsAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQT1RwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhAo4zMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTVQLwKMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1U4CCCEA+KfqW64wIgghAXjUUZuuMCghBZXwe8uuMCMIDA0ODwALQgbvLQgIAN4w7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeJtAtIAAZRsEtQS3voAUWYWFURANxCJEHhVBfAlyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQA0DDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uCB0z+BAQHXAPpAAQH6QCHXCwHDAJEBkjFt4gH6AFFVFRRDMDYQeBBnVQTwJsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UALztRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEFlfB7y68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4hRDMDQQVhBFVQLwJ8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAAbywIIAFSUfwHKAOBwAcoAgAAkcFnwCYAIBIBQVAE/cAQa5Dpj+mfmP0AGECaqRFBCAvGoozdAcEIPe7L710J2Il5egnQAUAgEgFhcCASAdHgIBIBgZAgEgGxwB9zIcQHKAVAH8B5wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AeyHDwHnDwHiRus5l/8B4E8AJQBMyVNANw8B7iJG6zmX/wHgTwAlAEzJU0A3DwHuJw8B4Cf/AeAslYzJYzMwFw8B7iIW6zmH/wHgHwAgHMlDFw8B7iyQGAaACUbDH6ADFx1yH6ADH6ADCnA6sAgAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwIoAIBIB8gAgEgIiMADz4QlMS8CMwgAacbCL4QW8kgRFNUzvHBfL0UbehggD1/CHC//L0QzBSPPAhcSTCAJIwct6BPrsCqIIJMS0AoIIImJaAoBK88vT4QlQgZPAjXPAff1B2cIBAK1RMORiAhAGjIVVCCEBeNRRlQB8sfFcs/E4EBAc8AAc8WASBulTBwAcsBks8W4gH6AgHPFskQVhA0WfAgAe8+EFvJFMqxwWzjhL4QlO48CMBgRFNAvAfJMcF8vTeUcigggD1/CHC//L0IfgnbxAhoYIImJaAZrYIoYIImJaAoKEmwgCWEH1QiV8I4w0lbrMiwgCwjh1wBvACcATIAYIQ1TJ221jLH8s/yRBHQzAXbW3wIJI1W+KAkANMW/hBbySBEU1TOMcF8vRRhKGCAPX8IcL/8vRDMFI58CGBPrsBggkxLQCgggiYloCgErzy9H9wA4BAVDNmyFUwghB73ZfeUAXLHxPLPwH6AgHPFgEgbpUwcAHLAZLPFuLJVBMEUDNtbfAggAHJQTUMw8CFSMKAaoXBwKEgTUHTIVTCCEHNi0JxQBcsfE8s/AfoCAc8WAc8WySgQRkMTUFVtbfAgUAUAN7/YF2omhqAPwxQICA64B9IACA/SAAoZg2CfgSQCAnMnKAAJrPH4EUAAca3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwThO6PAB8tmwHk/kHVks1lEJwA==', 'base64'))[0]);
     let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();
@@ -802,7 +802,7 @@ export class SampleJetton {
     readonly executor: ContractExecutor; 
     constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Mint | 'Mint!' | JettonUpdateContent | TokenBurnNotification) {
+    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Mint | 'Mint!' | TokenUpdateContent | TokenBurnNotification) {
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Mint') {
             body = packMint(message);
@@ -810,8 +810,8 @@ export class SampleJetton {
         if (message === 'Mint!') {
             body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'JettonUpdateContent') {
-            body = packJettonUpdateContent(message);
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenUpdateContent') {
+            body = packTokenUpdateContent(message);
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenBurnNotification') {
             body = packTokenBurnNotification(message);

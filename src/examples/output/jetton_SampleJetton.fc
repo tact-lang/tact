@@ -106,8 +106,8 @@ cell __gen_writecell_TokenExcesses((int) v) inline {
     return __gen_write_TokenExcesses(begin_cell(), v).end_cell();
 }
 
-(slice, ((cell))) __gen_read_JettonUpdateContent(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3551049822);
+(slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1862840892);
     var v'content = null();
     if (sc_0~load_int(1)) {
         v'content = sc_0~load_ref();
@@ -304,12 +304,12 @@ _ __gen_get_get_jetton_data() method_id(106029) {
     return res;
 }
 
-((int, slice, cell, int), ()) __gen_SampleJetton_mint((int, slice, cell, int) $self, slice $to, int $amount) impure {
+((int, slice, cell, int), ()) __gen_SampleJetton_mint((int, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     $self'totalSupply = ($self'totalSupply + $amount);
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_getJettonWalletInit($to);
     slice $walletAddress = contractAddress(($winit'code, $winit'data));
-    send((false, $walletAddress, 0, 64, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), my_address(), 0, __gen_Cell_asSlice(emptyCell()))), $winit'code, $winit'data));
+    send((false, $walletAddress, 0, 64, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), $responseAddress, 0, __gen_Cell_asSlice(emptyCell()))), $winit'code, $winit'data));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -342,18 +342,18 @@ _ __gen_get_owner() method_id(83229) {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, $msg'amount);
+    ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, $msg'amount, $ctx'sender);
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
 ((int, slice, cell, int), ()) __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2((int, slice, cell, int) $self) impure {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, 1000000000);
+    ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, 1000000000, $ctx'sender);
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-(((int, slice, cell, int)), ()) __gen_SampleJetton_receive_JettonUpdateContent((int, slice, cell, int) $self, (cell) $msg) impure {
+(((int, slice, cell, int)), ()) __gen_SampleJetton_receive_TokenUpdateContent((int, slice, cell, int) $self, (cell) $msg) impure {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'content) = $msg;
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_requireOwner();
@@ -400,11 +400,11 @@ _ __gen_get_owner() method_id(83229) {
         return ();
     }
     
-    ;; Receive JettonUpdateContent message
-    if (op == 3551049822) {
+    ;; Receive TokenUpdateContent message
+    if (op == 1862840892) {
         var self = __gen_load_SampleJetton();
-        var msg = in_msg~__gen_read_JettonUpdateContent();
-        self~__gen_SampleJetton_receive_JettonUpdateContent(msg);
+        var msg = in_msg~__gen_read_TokenUpdateContent();
+        self~__gen_SampleJetton_receive_TokenUpdateContent(msg);
         __gen_store_SampleJetton(self);
         return ();
     }
@@ -447,5 +447,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmZi7WjVrUkW7ymfzwAjeUQNJqiiihBFYN9seiSce71sfk";
+    return "ipfs://Qma9z1CJRA3hYEoego8CGuyaMKpibndeoAC59SYzfKe4iQ";
 }
