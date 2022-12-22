@@ -1194,6 +1194,10 @@
       "type": "Mint"
     },
     {
+      "kind": "internal-comment",
+      "comment": "Mint!"
+    },
+    {
       "kind": "internal-binary",
       "type": "JettonUpdateContent"
     },

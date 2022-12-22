@@ -43,6 +43,7 @@ PROGRAM{
   DECLPROC __gen_SampleJetton_owner
   83229 DECLMETHOD __gen_get_owner
   DECLPROC __gen_SampleJetton_receive_Mint
+  DECLPROC __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2
   DECLPROC __gen_SampleJetton_receive_JettonUpdateContent
   DECLPROC __gen_SampleJetton_receive_TokenBurnNotification
   DECLPROC recv_internal
@@ -486,7 +487,8 @@ PROGRAM{
     contractAddress CALLDICT
     FALSE
     0 PUSHINT
-    s0 s0 PUSH2
+    64 PUSHINT
+    OVER
     MYADDR
     MYADDR
     s2 PUSH
@@ -540,6 +542,13 @@ PROGRAM{
     SWAP
     __gen_SampleJetton_mint CALLDICT
   }>
+  __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 PROC:<{
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    1000000000 PUSHINT
+    __gen_SampleJetton_mint CALLDICT
+  }>
   __gen_SampleJetton_receive_JettonUpdateContent PROC:<{
     4 -ROLL
     __gen_SampleJetton_requireOwner CALLDICT
@@ -576,6 +585,7 @@ PROGRAM{
     s3 s0 s0 XCHG3
   }>
   recv_internal PROC:<{
+    SAMEALTSAVE
     0 PUSHINT
     OVER
     SBITS
@@ -635,9 +645,11 @@ PROGRAM{
       __gen_SampleJetton_receive_JettonUpdateContent CALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
+    DUP
     2078119902 PUSHINT
     EQUAL
     IFJMP:<{
+      DROP
       __gen_load_SampleJetton INLINECALLDICT
       s0 s4 XCHG
       __gen_read_TokenBurnNotification INLINECALLDICT
@@ -649,7 +661,20 @@ PROGRAM{
       __gen_SampleJetton_receive_TokenBurnNotification CALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
-    DROP
+    0 EQINT
+    IF:<{
+      HASHSU
+      92748154967237992140665580847895802782213764542359950109876145449566260965554 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_SampleJetton INLINECALLDICT
+        __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 CALLDICT
+        __gen_store_SampleJetton INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
     130 THROW
   }>
   init_SampleJetton PROC:<{
@@ -661,6 +686,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d664b6d62546f33375a6373515762443359364b6b51786a6477544c4e7977634e7944486454325554736a6e52} PUSHSLICE
+    x{697066733a2f2f516d5a6937576a5672556b5737796d667a77416a6555514e4a71696969684246594e39736569536365373173666b} PUSHSLICE
   }>
 }END>c

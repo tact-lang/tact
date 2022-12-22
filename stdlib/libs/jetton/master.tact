@@ -83,6 +83,7 @@ trait Jetton with Ownable {
             to: walletAddress, 
             value: 0, 
             bounce: false,
+            mode: SendRemainingValue,
             body: abi.pack_cell(TokenTransferInternal{ 
                 amount: amount,
                 queryId: 0,

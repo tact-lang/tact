@@ -309,7 +309,7 @@ _ __gen_get_get_jetton_data() method_id(106029) {
     $self'totalSupply = ($self'totalSupply + $amount);
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_getJettonWalletInit($to);
     slice $walletAddress = contractAddress(($winit'code, $winit'data));
-    send((false, $walletAddress, 0, 0, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), my_address(), 0, __gen_Cell_asSlice(emptyCell()))), $winit'code, $winit'data));
+    send((false, $walletAddress, 0, 64, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), my_address(), 0, __gen_Cell_asSlice(emptyCell()))), $winit'code, $winit'data));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -343,6 +343,13 @@ _ __gen_get_owner() method_id(83229) {
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, $msg'amount);
+    return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
+}
+
+((int, slice, cell, int), ()) __gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2((int, slice, cell, int) $self) impure {
+    var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    ($self'totalSupply, $self'owner, $self'content, $self'mintable)~__gen_SampleJetton_mint($ctx'sender, 1000000000);
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -411,6 +418,19 @@ _ __gen_get_owner() method_id(83229) {
         return ();
     }
     
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Mint!" message
+        if (text_op == 0xcd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2) {
+            var self = __gen_load_SampleJetton();
+            self~__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2();
+            __gen_store_SampleJetton(self);
+            return ();
+        }
+    }
+    
     throw(130);
 }
 
@@ -427,5 +447,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmfKmbTo37ZcsQWbD3Y6KkQxjdwTLNywcNyDHdT2UTsjnR";
+    return "ipfs://QmZi7WjVrUkW7ymfzwAjeUQNJqiiihBFYN9seiSce71sfk";
 }

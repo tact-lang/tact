@@ -22,4 +22,9 @@ contract SampleJetton with Jetton {
         let ctx: Context = context();
         self.mint(ctx.sender, msg.amount);
     }
+
+    receive("Mint!") {
+        let ctx: Context = context();
+        self.mint(ctx.sender, 1000000000);
+    }
 }
