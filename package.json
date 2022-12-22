@@ -63,8 +63,10 @@
     "github": {
       "release": true
     },
-    "@release-it/keep-a-changelog": {
-      "filename": "CHANGELOG.md"
+    "plugins": {
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md"
+      }
     }
   }
 }
