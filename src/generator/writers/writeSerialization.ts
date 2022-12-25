@@ -50,7 +50,7 @@ function writeSerializerField(f: StorageField, index: number, ctx: WriterContext
     }
 
     if (f.kind === 'slice') {
-        ctx.append(`build_${index} = store_ref(build_${index}, v'${f.name}.end_cell());`);
+        ctx.append(`build_${index} = store_ref(build_${index}, begin_cell().store_slice(v'${f.name}).end_cell());`);
         return;
     }
 
