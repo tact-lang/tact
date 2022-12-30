@@ -6,6 +6,7 @@ TACT is a scallable and safe language to build smart contracts for TON.
 * [Functions](/docs/functions.md)
 * [Statements](/docs/statements.md)
 * [Contracts](/docs/contract.md)
+* [Tact standard library](/docs/stdlib.md)
 
 ## TLDR
 
