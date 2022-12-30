@@ -1707,14 +1707,14 @@ builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int,
         build_0 = store_int(build_0, false, 1);
     } else {
         build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v'c.end_cell());
+        build_0 = store_ref(build_0, begin_cell().store_slice(v'c).end_cell());
     }
     var build_1 = begin_cell();
     if (null?(v'd)) {
         build_1 = store_int(build_1, false, 1);
     } else {
         build_1 = store_int(build_1, true, 1);
-        build_1 = store_ref(build_1, v'd.end_cell());
+        build_1 = store_ref(build_1, begin_cell().store_slice(v'd).end_cell());
     }
     build_1 = store_int(build_1, v'e, 1);
     build_1 = store_int(build_1, v'f, 257);
