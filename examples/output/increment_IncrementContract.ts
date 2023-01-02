@@ -190,6 +190,68 @@ export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
     const data = slice.readCellOpt();
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
 }
+export type Deploy = {
+    $$type: 'Deploy';
+    queryId: bigint;
+}
+
+export function storeDeploy(src: Deploy) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeUint(2509716940, 32);
+        b_0 = b_0.storeUint(src.queryId, 64);
+    };
+}
+
+export function packStackDeploy(src: Deploy, __stack: TupleItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+}
+
+export function packTupleDeploy(src: Deploy): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    return __stack;
+}
+
+export function unpackStackDeploy(slice: TupleReader): Deploy {
+    const queryId = slice.readBigNumber();
+    return { $$type: 'Deploy', queryId: queryId };
+}
+export function unpackTupleDeploy(slice: TupleReader): Deploy {
+    const queryId = slice.readBigNumber();
+    return { $$type: 'Deploy', queryId: queryId };
+}
+export type DeployOk = {
+    $$type: 'DeployOk';
+    queryId: bigint;
+}
+
+export function storeDeployOk(src: DeployOk) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeUint(3548362785, 32);
+        b_0 = b_0.storeUint(src.queryId, 64);
+    };
+}
+
+export function packStackDeployOk(src: DeployOk, __stack: TupleItem[]) {
+    __stack.push({ type: 'int', value: src.queryId });
+}
+
+export function packTupleDeployOk(src: DeployOk): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'int', value: src.queryId });
+    return __stack;
+}
+
+export function unpackStackDeployOk(slice: TupleReader): DeployOk {
+    const queryId = slice.readBigNumber();
+    return { $$type: 'DeployOk', queryId: queryId };
+}
+export function unpackTupleDeployOk(slice: TupleReader): DeployOk {
+    const queryId = slice.readBigNumber();
+    return { $$type: 'DeployOk', queryId: queryId };
+}
 export type Increment = {
     $$type: 'Increment';
     key: bigint;
@@ -370,7 +432,7 @@ export function unpackTupleSomething(slice: TupleReader): Something {
     return { $$type: 'Something', value: value };
 }
 async function IncrementContract_init() {
-    const __code = 'te6ccgECKgEAA/QAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgEgGBkCASAICQAPvEDd5aEA3kMCASAKCwIBIBITAgEgDA0AI1IW6VW1n0WjDgyAHPAEEz9EKASdHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQ13nE7brjAiCCECJGqL264wIgghAIZHtCuuMCghCRXJBJuoA4PEBEACwgbvLQgIAC8MO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCENd5xO268uCBgQEB1wCBAQHXAFkyEFYQRRA0QwDwGMj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVACuMO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCECJGqL268uCBgQEB1wABMRBFEDRBMPAZyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAMQw7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQCGR7Qrry4IGBAQHXAG0B0gABkjHU3lkyEFYQRRA0QwDwGsj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVAC6jlbtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghCRXJBJuvLggYEBAdcAATEQRRA0QTDwG8j4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOAw8sCCAgEgFBUCASAWFwAdEEz9AxvoZQB1wAw4FttgABsIG6VMFn0WjDgQTP0FYAARFn0DW+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGACAVgaGwIBSB4fAD1W1tbW1tBcjMBVBF9AAS9AAByPQAEvQAEvQAyQHMyYAgEgHB0ABRfBIAAHBRfBIAIBICAhAgEgIiMAQz4QW8kECNfA4EBASAQOUFAUpDwAxAjgQELQAeBAQHwBwGAASwkgQEBInHwBCBumjAUgQEBAX9x8AOdgQEBAfABsxA2EnHwA+IDgAC8ggDOKSWBAQEk8AZu8vQQJIEBAVnwBQKAAmyBAQFtUxIQSVnwAwSBAQEmbXHwAwOBAQEmbfAFgQEL+EFvJBAjXwMQJG2BAQHwB4EBAW0gbpIwbZvwDsgBAYEBAc8AyeJBcPAFEDRBMIAIBICYnAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwCASAoKQA/u0B+1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFfAWgACbQ+/gKwAD+14F2omhqAPwxegJ6AmoA6HoCegJ6AhgIGogaNgr4C8A==';
+    const __code = 'te6ccgECNAEABSEAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAuLwIBIAYHAgFiJicCASAICQIBIBkaAgEgCgsCAdQXGAIBSAwNAgEgExQEnxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCENd5xO264wIgghAiRqi9uuMCIIIQCGR7QrrjAiCCEJFckEm6gDg8QEQALCBu8tCAgALww7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQ13nE7bry4IGBAQHXAIEBAdcAWTIQVhBFEDRDAPAgyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAK4w7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQIkaovbry4IGBAQHXAAExEEUQNEEw8CHI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQAxDDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghAIZHtCuvLggYEBAdcAbQHSAAGSMdTeWTIQVhBFEDRDAPAiyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAc6OVzDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghCRXJBJuvLggYEBAdcAATEQRRA0QTDwI8j4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOCCEJWXPcy64wIw8sCCEgCm7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQlZc9zLry4IHTPwExEEUQNEEw8CTI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQAI1IW6VW1n0WjDgyAHPAEEz9EKAIBIBUWAB0QTP0DG+hlAHXADDgW22AAGwgbpUwWfRaMOBBM/QVgABEWfQNb6HcMG2AAIwhbpVbWfRZMODIAc8AQTP0QYAAPtkDd5aEA3kMCASAbHAIBWB0eAgEgICEAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AacAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGshw8Bpw8BokbrOZf/AaBPABUATMlTQDcPAa4iRus5l/8BoE8AFQBMyVNANw8BricPAaAn/wGgLJWMyWMzMBcPAa4iFus5h/8BoB8AEBzJQxcPAa4skBgHwAE+wACASAiIwIBICQlACU+EFvJBAjXwN/AnCAQlhtbfAbgAD0bW1tbW0FyMwFUEX0ABL0AAHI9AAS9AAS9ADJAczJgAAUXwSAABwUXwSACASAoKQAh1kAMEIab/cEKxlj+Wf5PgOQCASAqKwIBICwtAEM+EFvJBAjXwOBAQEgEDlBQFKQ8AUQI4EBC0AHgQEB8AkBgAEsJIEBASJx8AYgbpowFIEBAQF/cfAFnYEBAQHwAbMQNhJx8AXiA4AAvIIAziklgQEBJPAIbvL0ECSBAQFZ8AcCgAJsgQEBbVMSEElZ8AUEgQEBJm1x8AUDgQEBJm3wB4EBC/hBbyQQI18DECRtgQEB8AmBAQFtIG6SMG2b8BPIAQGBAQHPAMniQXDwBxA0QTCACASAwMQBNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMAgEgMjMAP7tAftRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBXwHoAAm0Pv4DsAA/teBdqJoagD8MXoCegJqAOh6AnoCegIYCBqIGjYK+A/A=';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -436,7 +498,7 @@ export class IncrementContract implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Increment | Toggle | Persist | Reset) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Increment | Toggle | Persist | Reset | Deploy) {
         
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
@@ -450,6 +512,9 @@ export class IncrementContract implements Contract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Reset') {
             body = beginCell().store(storeReset(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
+            body = beginCell().store(storeDeploy(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
         

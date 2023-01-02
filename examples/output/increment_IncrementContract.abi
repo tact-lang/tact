@@ -294,6 +294,76 @@
       }
     },
     {
+      "name": "Deploy",
+      "header": 0,
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 2509716940,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 64,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 64
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 64,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "DeployOk",
+      "header": 0,
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "kind": "ref",
+            "name": "Int",
+            "optional": false
+          }
+        }
+      ],
+      "allocation": {
+        "prefix": 3548362785,
+        "root": {
+          "fields": [
+            {
+              "index": 0,
+              "size": {
+                "bits": 64,
+                "refs": 0
+              },
+              "kind": "uint",
+              "bits": 64
+            }
+          ],
+          "next": null,
+          "size": {
+            "bits": 64,
+            "refs": 0
+          }
+        }
+      }
+    },
+    {
       "name": "Increment",
       "header": 0,
       "fields": [
@@ -530,6 +600,10 @@
     {
       "kind": "internal-binary",
       "type": "Reset"
+    },
+    {
+      "kind": "internal-binary",
+      "type": "Deploy"
     }
   ],
   "getters": [

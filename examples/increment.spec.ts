@@ -9,6 +9,8 @@ describe('increment', () => {
         let system = await ContractSystem.create();
         let treasure = system.treasure('treasure');
         let contract = system.open(await IncrementContract.fromInit());
+        await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
+        await system.run();
 
         // Send internal message
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Increment', key: 0n, value: -1232n });

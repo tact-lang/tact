@@ -1,3 +1,5 @@
+import "@stdlib/deploy";
+
 message Increment {
     key: Int;
     value: Int;
@@ -20,7 +22,7 @@ struct Something {
     value: Int;
 }
 
-contract IncrementContract {
+contract IncrementContract with Deployable {
     counters: map[Int]Int;
     counters2: map[Int]Bool;
     counters3: map[Int]Cell;
