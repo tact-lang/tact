@@ -18,6 +18,13 @@ builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     return sc~__gen_read_StdlibTest();
 }
 
+() __gen_store_StdlibTest((int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_StdlibTest(b, v);
+    set_data(b.end_cell());
+}
+
 cell __gen_StdlibTest_init(cell sys') {
     var (($self'v)) = (0);
     var b' = begin_cell();
@@ -59,6 +66,11 @@ _ __gen_get_sliceRefs(slice $sc) method_id(77445) {
     return res;
 }
 
+(((int)), ()) __gen_StdlibTest_receive((int) $self) impure {
+    var ($self'v) = $self;
+    return (($self'v), ());
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -78,6 +90,14 @@ _ __gen_get_sliceRefs(slice $sc) method_id(77445) {
         return ();
     }
     
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_StdlibTest();
+        self~__gen_StdlibTest_receive();
+        __gen_store_StdlibTest(self);
+        return ();
+    }
+    
     throw(130);
 }
 
@@ -93,5 +113,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmcJTCuoTHWP1Xpcw2fhERzDDw9rmCsCcWBz1bZPbn7Syu";
+    return "ipfs://Qmai8suhP7dTwV9Htbc3cuuDs2WBv9d1UnU46WRmM4RtnQ";
 }

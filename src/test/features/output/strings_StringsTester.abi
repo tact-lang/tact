@@ -298,7 +298,11 @@
     "name": "init_StringsTester",
     "args": []
   },
-  "receivers": [],
+  "receivers": [
+    {
+      "kind": "internal-empty"
+    }
+  ],
   "getters": [
     {
       "name": "constantString",

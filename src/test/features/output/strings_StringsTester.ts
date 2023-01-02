@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -191,7 +191,7 @@ export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
 }
 async function StringsTester_init() {
-    const __code = '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';
+    const __code = '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';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -205,31 +205,31 @@ async function StringsTester_init() {
     return { code: codeCell, data };
 }
 
-export const StringsTester_errors: { [key: string]: string } = {
-    '2': `Stack undeflow`,
-    '3': `Stack overflow`,
-    '4': `Integer overflow`,
-    '5': `Integer out of expected range`,
-    '6': `Invalid opcode`,
-    '7': `Type check error`,
-    '8': `Cell overflow`,
-    '9': `Cell underflow`,
-    '10': `Dictionary error`,
-    '13': `Out of gas error`,
-    '32': `Method ID not found`,
-    '34': `Action is invalid or not supported`,
-    '37': `Not enough TON`,
-    '38': `Not enough extra-currencies`,
-    '128': `Null reference exception`,
-    '129': `Invalid serialization prefix`,
-    '130': `Invalid incoming message`,
-    '131': `Constraints error`,
-    '132': `Access denied`,
-    '133': `Contract stopped`,
-    '134': `Invalid argument`,
+const StringsTester_errors: { [key: number]: { message: string } } = {
+    2: { message: `Stack undeflow` },
+    3: { message: `Stack overflow` },
+    4: { message: `Integer overflow` },
+    5: { message: `Integer out of expected range` },
+    6: { message: `Invalid opcode` },
+    7: { message: `Type check error` },
+    8: { message: `Cell overflow` },
+    9: { message: `Cell underflow` },
+    10: { message: `Dictionary error` },
+    13: { message: `Out of gas error` },
+    32: { message: `Method ID not found` },
+    34: { message: `Action is invalid or not supported` },
+    37: { message: `Not enough TON` },
+    38: { message: `Not enough extra-currencies` },
+    128: { message: `Null reference exception` },
+    129: { message: `Invalid serialization prefix` },
+    130: { message: `Invalid incoming message` },
+    131: { message: `Constraints error` },
+    132: { message: `Access denied` },
+    133: { message: `Contract stopped` },
+    134: { message: `Invalid argument` },
 }
 
-export class StringsTester {
+export class StringsTester implements Contract {
     
     static async init() {
         return await StringsTester_init();
@@ -247,218 +247,104 @@ export class StringsTester {
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
+    readonly abi: ContractABI = {
+        errors: StringsTester_errors
+    };
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
     }
     
-    async getConstantString(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('constantString', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null) {
+        
+        let body: Cell | null = null;
+        if (message === null) {
+            body = new Cell();
         }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
+    }
+    
+    async getConstantString(provider: ContractProvider) {
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('constantString', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getConstantStringUnicode(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('constantStringUnicode', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('constantStringUnicode', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getConstantStringUnicodeLong(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('constantStringUnicodeLong', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('constantStringUnicodeLong', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getDynamicStringCell(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('dynamicStringCell', __stack);
-            return result.stack.readCell();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('dynamicStringCell', __stack);
+        return result.stack.readCell();
     }
     
     async getDynamicCommentCell(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('dynamicCommentCell', __stack);
-            return result.stack.readCell();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('dynamicCommentCell', __stack);
+        return result.stack.readCell();
     }
     
     async getDynamicCommentCellLarge(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('dynamicCommentCellLarge', __stack);
-            return result.stack.readCell();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('dynamicCommentCellLarge', __stack);
+        return result.stack.readCell();
     }
     
     async getDynamicCommentStringLarge(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('dynamicCommentStringLarge', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('dynamicCommentStringLarge', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getStringWithNumber(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('stringWithNumber', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('stringWithNumber', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getStringWithNegativeNumber(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('stringWithNegativeNumber', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('stringWithNegativeNumber', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getStringWithLargeNumber(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('stringWithLargeNumber', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('stringWithLargeNumber', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getStringWithFloat(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('stringWithFloat', __stack);
-            return readString(result.stack.readCell().beginParse());
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('stringWithFloat', __stack);
+        return result.stack.readCell().beginParse().loadStringTail();
     }
     
     async getBase64(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('base64', __stack);
-            return result.stack.readCell();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('base64', __stack);
+        return result.stack.readCell();
     }
     
     async getProcessBase64(provider: ContractProvider, src: string) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'slice', cell: stringToCell(src) });
-            let result = await provider.get('processBase64', __stack);
-            return result.stack.readCell();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (StringsTester_errors[e.exitCode.toString()]) {
-                    throw new Error(StringsTester_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeStringTail(src).endCell() });
+        let result = await provider.get('processBase64', __stack);
+        return result.stack.readCell();
     }
     
 }

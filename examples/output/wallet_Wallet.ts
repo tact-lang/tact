@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -312,33 +312,33 @@ async function Wallet_init(key: bigint, walletId: bigint) {
     return { code: codeCell, data };
 }
 
-export const Wallet_errors: { [key: string]: string } = {
-    '2': `Stack undeflow`,
-    '3': `Stack overflow`,
-    '4': `Integer overflow`,
-    '5': `Integer out of expected range`,
-    '6': `Invalid opcode`,
-    '7': `Type check error`,
-    '8': `Cell overflow`,
-    '9': `Cell underflow`,
-    '10': `Dictionary error`,
-    '13': `Out of gas error`,
-    '32': `Method ID not found`,
-    '34': `Action is invalid or not supported`,
-    '37': `Not enough TON`,
-    '38': `Not enough extra-currencies`,
-    '128': `Null reference exception`,
-    '129': `Invalid serialization prefix`,
-    '130': `Invalid incoming message`,
-    '131': `Constraints error`,
-    '132': `Access denied`,
-    '133': `Contract stopped`,
-    '134': `Invalid argument`,
-    '17654': `Invalid seqno`,
-    '48401': `Invalid signature`,
+const Wallet_errors: { [key: number]: { message: string } } = {
+    2: { message: `Stack undeflow` },
+    3: { message: `Stack overflow` },
+    4: { message: `Integer overflow` },
+    5: { message: `Integer out of expected range` },
+    6: { message: `Invalid opcode` },
+    7: { message: `Type check error` },
+    8: { message: `Cell overflow` },
+    9: { message: `Cell underflow` },
+    10: { message: `Dictionary error` },
+    13: { message: `Out of gas error` },
+    32: { message: `Method ID not found` },
+    34: { message: `Action is invalid or not supported` },
+    37: { message: `Not enough TON` },
+    38: { message: `Not enough extra-currencies` },
+    128: { message: `Null reference exception` },
+    129: { message: `Invalid serialization prefix` },
+    130: { message: `Invalid incoming message` },
+    131: { message: `Constraints error` },
+    132: { message: `Access denied` },
+    133: { message: `Contract stopped` },
+    134: { message: `Invalid argument` },
+    17654: { message: `Invalid seqno` },
+    48401: { message: `Invalid signature` },
 }
 
-export class Wallet {
+export class Wallet implements Contract {
     
     static async init(key: bigint, walletId: bigint) {
         return await Wallet_init(key,walletId);
@@ -356,6 +356,10 @@ export class Wallet {
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
+    readonly abi: ContractABI = {
+        errors: Wallet_errors
+    };
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
@@ -389,51 +393,21 @@ export class Wallet {
     }
     
     async getPublicKey(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('publicKey', __stack);
-            return result.stack.readBigNumber();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Wallet_errors[e.exitCode.toString()]) {
-                    throw new Error(Wallet_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('publicKey', __stack);
+        return result.stack.readBigNumber();
     }
     
     async getWalletId(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('walletId', __stack);
-            return result.stack.readBigNumber();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Wallet_errors[e.exitCode.toString()]) {
-                    throw new Error(Wallet_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('walletId', __stack);
+        return result.stack.readBigNumber();
     }
     
     async getSeqno(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('seqno', __stack);
-            return result.stack.readBigNumber();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Wallet_errors[e.exitCode.toString()]) {
-                    throw new Error(Wallet_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('seqno', __stack);
+        return result.stack.readBigNumber();
     }
     
 }

@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -302,31 +302,31 @@ async function SerializationTester2_init(a: Vars, b: Vars) {
     return { code: codeCell, data };
 }
 
-export const SerializationTester2_errors: { [key: string]: string } = {
-    '2': `Stack undeflow`,
-    '3': `Stack overflow`,
-    '4': `Integer overflow`,
-    '5': `Integer out of expected range`,
-    '6': `Invalid opcode`,
-    '7': `Type check error`,
-    '8': `Cell overflow`,
-    '9': `Cell underflow`,
-    '10': `Dictionary error`,
-    '13': `Out of gas error`,
-    '32': `Method ID not found`,
-    '34': `Action is invalid or not supported`,
-    '37': `Not enough TON`,
-    '38': `Not enough extra-currencies`,
-    '128': `Null reference exception`,
-    '129': `Invalid serialization prefix`,
-    '130': `Invalid incoming message`,
-    '131': `Constraints error`,
-    '132': `Access denied`,
-    '133': `Contract stopped`,
-    '134': `Invalid argument`,
+const SerializationTester2_errors: { [key: number]: { message: string } } = {
+    2: { message: `Stack undeflow` },
+    3: { message: `Stack overflow` },
+    4: { message: `Integer overflow` },
+    5: { message: `Integer out of expected range` },
+    6: { message: `Invalid opcode` },
+    7: { message: `Type check error` },
+    8: { message: `Cell overflow` },
+    9: { message: `Cell underflow` },
+    10: { message: `Dictionary error` },
+    13: { message: `Out of gas error` },
+    32: { message: `Method ID not found` },
+    34: { message: `Action is invalid or not supported` },
+    37: { message: `Not enough TON` },
+    38: { message: `Not enough extra-currencies` },
+    128: { message: `Null reference exception` },
+    129: { message: `Invalid serialization prefix` },
+    130: { message: `Invalid incoming message` },
+    131: { message: `Constraints error` },
+    132: { message: `Access denied` },
+    133: { message: `Contract stopped` },
+    134: { message: `Invalid argument` },
 }
 
-export class SerializationTester2 {
+export class SerializationTester2 implements Contract {
     
     static async init(a: Vars, b: Vars) {
         return await SerializationTester2_init(a,b);
@@ -344,6 +344,10 @@ export class SerializationTester2 {
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
+    readonly abi: ContractABI = {
+        errors: SerializationTester2_errors
+    };
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
@@ -362,35 +366,15 @@ export class SerializationTester2 {
     }
     
     async getGetA(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('getA', __stack);
-            return unpackStackVars(result.stack);
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (SerializationTester2_errors[e.exitCode.toString()]) {
-                    throw new Error(SerializationTester2_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('getA', __stack);
+        return unpackStackVars(result.stack);
     }
     
     async getGetB(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('getB', __stack);
-            return unpackStackVars(result.stack);
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (SerializationTester2_errors[e.exitCode.toString()]) {
-                    throw new Error(SerializationTester2_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('getB', __stack);
+        return unpackStackVars(result.stack);
     }
     
 }

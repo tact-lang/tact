@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -383,13 +383,13 @@ export function packTupleSetIntMap4(src: SetIntMap4): TupleItem[] {
 export function unpackStackSetIntMap4(slice: TupleReader): SetIntMap4 {
     const key = slice.readBigNumber();
     const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
     return { $$type: 'SetIntMap4', key: key, value: value };
 }
 export function unpackTupleSetIntMap4(slice: TupleReader): SetIntMap4 {
     const key = slice.readBigNumber();
     const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
     return { $$type: 'SetIntMap4', key: key, value: value };
 }
 export type SetAddrMap1 = {
@@ -585,13 +585,13 @@ export function packTupleSetAddrMap4(src: SetAddrMap4): TupleItem[] {
 export function unpackStackSetAddrMap4(slice: TupleReader): SetAddrMap4 {
     const key = slice.readAddress();
     const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
     return { $$type: 'SetAddrMap4', key: key, value: value };
 }
 export function unpackTupleSetAddrMap4(slice: TupleReader): SetAddrMap4 {
     const key = slice.readAddress();
     const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleSlice4(value_p.items));
+    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
     return { $$type: 'SetAddrMap4', key: key, value: value };
 }
 export type SomeStruct = {
@@ -639,31 +639,31 @@ async function MapTestContract_init() {
     return { code: codeCell, data };
 }
 
-export const MapTestContract_errors: { [key: string]: string } = {
-    '2': `Stack undeflow`,
-    '3': `Stack overflow`,
-    '4': `Integer overflow`,
-    '5': `Integer out of expected range`,
-    '6': `Invalid opcode`,
-    '7': `Type check error`,
-    '8': `Cell overflow`,
-    '9': `Cell underflow`,
-    '10': `Dictionary error`,
-    '13': `Out of gas error`,
-    '32': `Method ID not found`,
-    '34': `Action is invalid or not supported`,
-    '37': `Not enough TON`,
-    '38': `Not enough extra-currencies`,
-    '128': `Null reference exception`,
-    '129': `Invalid serialization prefix`,
-    '130': `Invalid incoming message`,
-    '131': `Constraints error`,
-    '132': `Access denied`,
-    '133': `Contract stopped`,
-    '134': `Invalid argument`,
+const MapTestContract_errors: { [key: number]: { message: string } } = {
+    2: { message: `Stack undeflow` },
+    3: { message: `Stack overflow` },
+    4: { message: `Integer overflow` },
+    5: { message: `Integer out of expected range` },
+    6: { message: `Invalid opcode` },
+    7: { message: `Type check error` },
+    8: { message: `Cell overflow` },
+    9: { message: `Cell underflow` },
+    10: { message: `Dictionary error` },
+    13: { message: `Out of gas error` },
+    32: { message: `Method ID not found` },
+    34: { message: `Action is invalid or not supported` },
+    37: { message: `Not enough TON` },
+    38: { message: `Not enough extra-currencies` },
+    128: { message: `Null reference exception` },
+    129: { message: `Invalid serialization prefix` },
+    130: { message: `Invalid incoming message` },
+    131: { message: `Constraints error` },
+    132: { message: `Access denied` },
+    133: { message: `Contract stopped` },
+    134: { message: `Invalid argument` },
 }
 
-export class MapTestContract {
+export class MapTestContract implements Contract {
     
     static async init() {
         return await MapTestContract_init();
@@ -681,6 +681,10 @@ export class MapTestContract {
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
+    readonly abi: ContractABI = {
+        errors: MapTestContract_errors
+    };
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
@@ -720,271 +724,111 @@ export class MapTestContract {
     }
     
     async getIntMap1(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('intMap1', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('intMap1', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getIntMap1Value(provider: ContractProvider, key: bigint) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'int', value: key });
-            let result = await provider.get('intMap1Value', __stack);
-            return result.stack.readBigNumberOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'int', value: key });
+        let result = await provider.get('intMap1Value', __stack);
+        return result.stack.readBigNumberOpt();
     }
     
     async getIntMap2(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('intMap2', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('intMap2', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getIntMap2Value(provider: ContractProvider, key: bigint) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'int', value: key });
-            let result = await provider.get('intMap2Value', __stack);
-            return result.stack.readBooleanOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'int', value: key });
+        let result = await provider.get('intMap2Value', __stack);
+        return result.stack.readBooleanOpt();
     }
     
     async getIntMap3(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('intMap3', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('intMap3', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getIntMap3Value(provider: ContractProvider, key: bigint) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'int', value: key });
-            let result = await provider.get('intMap3Value', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'int', value: key });
+        let result = await provider.get('intMap3Value', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getIntMap4(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('intMap4', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('intMap4', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getIntMap4Value(provider: ContractProvider, key: bigint) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'int', value: key });
-            let result = await provider.get('intMap4Value', __stack);
-            let pp = result.stack.pop();
-            if (pp.type !== 'tuple') { return null; }
-            return unpackTupleSomeStruct(new TupleSlice4(pp.items));
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'int', value: key });
+        let result = await provider.get('intMap4Value', __stack);
+        let pp = result.stack.pop();
+        if (pp.type !== 'tuple') { return null; }
+        return unpackTupleSomeStruct(new TupleSlice4(pp.items));
     }
     
     async getAddrMap1(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('addrMap1', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('addrMap1', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getAddrMap1Value(provider: ContractProvider, key: Address) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-            let result = await provider.get('addrMap1Value', __stack);
-            return result.stack.readBigNumberOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+        let result = await provider.get('addrMap1Value', __stack);
+        return result.stack.readBigNumberOpt();
     }
     
     async getAddrMap2(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('addrMap2', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('addrMap2', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getAddrMap2Value(provider: ContractProvider, key: Address) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-            let result = await provider.get('addrMap2Value', __stack);
-            return result.stack.readBooleanOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+        let result = await provider.get('addrMap2Value', __stack);
+        return result.stack.readBooleanOpt();
     }
     
     async getAddrMap3(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('addrMap3', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('addrMap3', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getAddrMap3Value(provider: ContractProvider, key: Address) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-            let result = await provider.get('addrMap3Value', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+        let result = await provider.get('addrMap3Value', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getAddrMap4(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('addrMap4', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('addrMap4', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getAddrMap4Value(provider: ContractProvider, key: Address) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
-            let result = await provider.get('addrMap4Value', __stack);
-            let pp = result.stack.pop();
-            if (pp.type !== 'tuple') { return null; }
-            return unpackTupleSomeStruct(new TupleSlice4(pp.items));
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (MapTestContract_errors[e.exitCode.toString()]) {
-                    throw new Error(MapTestContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
+        let result = await provider.get('addrMap4Value', __stack);
+        let pp = result.stack.pop();
+        if (pp.type !== 'tuple') { return null; }
+        return unpackTupleSomeStruct(new TupleSlice4(pp.items));
     }
     
 }

@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -352,7 +352,7 @@ export function unpackStackStructWithOptionals(slice: TupleReader): StructWithOp
     const c = slice.readCellOpt();
     const d = slice.readAddressOpt();
     const e_p = slice.pop();
-    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleSlice4(e_p.items));
+    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleReader(e_p.items));
     return { $$type: 'StructWithOptionals', a: a, b: b, c: c, d: d, e: e };
 }
 export function unpackTupleStructWithOptionals(slice: TupleReader): StructWithOptionals {
@@ -361,7 +361,7 @@ export function unpackTupleStructWithOptionals(slice: TupleReader): StructWithOp
     const c = slice.readCellOpt();
     const d = slice.readAddressOpt();
     const e_p = slice.pop();
-    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleSlice4(e_p.items));
+    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleReader(e_p.items));
     return { $$type: 'StructWithOptionals', a: a, b: b, c: c, d: d, e: e };
 }
 export type Update = {
@@ -490,9 +490,9 @@ export function unpackStackUpdate(slice: TupleReader): Update {
     const c = slice.readCellOpt();
     const d = slice.readAddressOpt();
     const e_p = slice.pop();
-    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleSlice4(e_p.items));
+    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleReader(e_p.items));
     const f_p = slice.pop();
-    const f = f_p.type !== 'tuple' ? null : unpackTupleStructWithOptionals(new TupleSlice4(f_p.items));
+    const f = f_p.type !== 'tuple' ? null : unpackTupleStructWithOptionals(new TupleReader(f_p.items));
     return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f };
 }
 export function unpackTupleUpdate(slice: TupleReader): Update {
@@ -501,9 +501,9 @@ export function unpackTupleUpdate(slice: TupleReader): Update {
     const c = slice.readCellOpt();
     const d = slice.readAddressOpt();
     const e_p = slice.pop();
-    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleSlice4(e_p.items));
+    const e = e_p.type !== 'tuple' ? null : unpackTupleSomeGenericStruct(new TupleReader(e_p.items));
     const f_p = slice.pop();
-    const f = f_p.type !== 'tuple' ? null : unpackTupleStructWithOptionals(new TupleSlice4(f_p.items));
+    const f = f_p.type !== 'tuple' ? null : unpackTupleStructWithOptionals(new TupleReader(f_p.items));
     return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f };
 }
 async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
@@ -551,31 +551,31 @@ async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c
     return { code: codeCell, data };
 }
 
-export const ContractWithOptionals_errors: { [key: string]: string } = {
-    '2': `Stack undeflow`,
-    '3': `Stack overflow`,
-    '4': `Integer overflow`,
-    '5': `Integer out of expected range`,
-    '6': `Invalid opcode`,
-    '7': `Type check error`,
-    '8': `Cell overflow`,
-    '9': `Cell underflow`,
-    '10': `Dictionary error`,
-    '13': `Out of gas error`,
-    '32': `Method ID not found`,
-    '34': `Action is invalid or not supported`,
-    '37': `Not enough TON`,
-    '38': `Not enough extra-currencies`,
-    '128': `Null reference exception`,
-    '129': `Invalid serialization prefix`,
-    '130': `Invalid incoming message`,
-    '131': `Constraints error`,
-    '132': `Access denied`,
-    '133': `Contract stopped`,
-    '134': `Invalid argument`,
+const ContractWithOptionals_errors: { [key: number]: { message: string } } = {
+    2: { message: `Stack undeflow` },
+    3: { message: `Stack overflow` },
+    4: { message: `Integer overflow` },
+    5: { message: `Integer out of expected range` },
+    6: { message: `Invalid opcode` },
+    7: { message: `Type check error` },
+    8: { message: `Cell overflow` },
+    9: { message: `Cell underflow` },
+    10: { message: `Dictionary error` },
+    13: { message: `Out of gas error` },
+    32: { message: `Method ID not found` },
+    34: { message: `Action is invalid or not supported` },
+    37: { message: `Not enough TON` },
+    38: { message: `Not enough extra-currencies` },
+    128: { message: `Null reference exception` },
+    129: { message: `Invalid serialization prefix` },
+    130: { message: `Invalid incoming message` },
+    131: { message: `Constraints error` },
+    132: { message: `Access denied` },
+    133: { message: `Contract stopped` },
+    134: { message: `Invalid argument` },
 }
 
-export class ContractWithOptionals {
+export class ContractWithOptionals implements Contract {
     
     static async init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
         return await ContractWithOptionals_init(a,b,c,d,e,f);
@@ -593,6 +593,10 @@ export class ContractWithOptionals {
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
+    readonly abi: ContractABI = {
+        errors: ContractWithOptionals_errors
+    };
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
@@ -611,295 +615,115 @@ export class ContractWithOptionals {
     }
     
     async getIsNotNullA(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('isNotNullA', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('isNotNullA', __stack);
+        return result.stack.readBoolean();
     }
     
     async getIsNotNullB(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('isNotNullB', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('isNotNullB', __stack);
+        return result.stack.readBoolean();
     }
     
     async getIsNotNullC(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('isNotNullC', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('isNotNullC', __stack);
+        return result.stack.readBoolean();
     }
     
     async getIsNotNullD(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('isNotNullD', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('isNotNullD', __stack);
+        return result.stack.readBoolean();
     }
     
     async getIsNotNullE(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('isNotNullE', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('isNotNullE', __stack);
+        return result.stack.readBoolean();
     }
     
     async getIsNotNullF(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('isNotNullF', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('isNotNullF', __stack);
+        return result.stack.readBoolean();
     }
     
     async getNullA(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('nullA', __stack);
-            return result.stack.readBigNumberOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('nullA', __stack);
+        return result.stack.readBigNumberOpt();
     }
     
     async getNullB(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('nullB', __stack);
-            return result.stack.readBooleanOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('nullB', __stack);
+        return result.stack.readBooleanOpt();
     }
     
     async getNullC(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('nullC', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('nullC', __stack);
+        return result.stack.readCellOpt();
     }
     
     async getNullD(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('nullD', __stack);
-            return result.stack.readAddressOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('nullD', __stack);
+        return result.stack.readAddressOpt();
     }
     
     async getNullE(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('nullE', __stack);
-            let pp = result.stack.pop();
-            if (pp.type !== 'tuple') { return null; }
-            return unpackTupleSomeGenericStruct(new TupleSlice4(pp.items));
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('nullE', __stack);
+        let pp = result.stack.pop();
+        if (pp.type !== 'tuple') { return null; }
+        return unpackTupleSomeGenericStruct(new TupleSlice4(pp.items));
     }
     
     async getNullF(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('nullF', __stack);
-            let pp = result.stack.pop();
-            if (pp.type !== 'tuple') { return null; }
-            return unpackTupleStructWithOptionals(new TupleSlice4(pp.items));
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('nullF', __stack);
+        let pp = result.stack.pop();
+        if (pp.type !== 'tuple') { return null; }
+        return unpackTupleStructWithOptionals(new TupleSlice4(pp.items));
     }
     
     async getNotNullA(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('notNullA', __stack);
-            return result.stack.readBigNumber();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('notNullA', __stack);
+        return result.stack.readBigNumber();
     }
     
     async getNotNullB(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('notNullB', __stack);
-            return result.stack.readBoolean();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('notNullB', __stack);
+        return result.stack.readBoolean();
     }
     
     async getNotNullC(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('notNullC', __stack);
-            return result.stack.readCell();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('notNullC', __stack);
+        return result.stack.readCell();
     }
     
     async getNotNullD(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('notNullD', __stack);
-            return result.stack.readAddress();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('notNullD', __stack);
+        return result.stack.readAddress();
     }
     
     async getNotNullE(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('notNullE', __stack);
-            return unpackStackSomeGenericStruct(result.stack);
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('notNullE', __stack);
+        return unpackStackSomeGenericStruct(result.stack);
     }
     
     async getNotNullF(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('notNullF', __stack);
-            return unpackStackStructWithOptionals(result.stack);
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (ContractWithOptionals_errors[e.exitCode.toString()]) {
-                    throw new Error(ContractWithOptionals_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('notNullF', __stack);
+        return unpackStackStructWithOptionals(result.stack);
     }
     
 }

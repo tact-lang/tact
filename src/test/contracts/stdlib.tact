@@ -6,6 +6,10 @@ contract StdlibTest {
         // Nothing to do
     }
 
+    receive() {
+        // Deploy
+    }
+
     get fun sliceEmpty(sc: Slice): Bool {
         return sc.empty();
     }

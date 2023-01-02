@@ -40,7 +40,7 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: bo
             w.append(`__stack.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
             return;
         } else if (ref.name === 'String') {
-            w.append(`__stack.push({ type: 'slice', cell: stringToCell(${name}) });`);
+            w.append(`__stack.push({ type: 'slice', cell: beginCell().storeStringTail(${name}).endCell() });`);
             return;
         } else {
             if (optional || forceTuple) {

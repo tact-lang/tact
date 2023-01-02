@@ -34,14 +34,14 @@ export function readFromStack(name: string, ref: TypeRef, w: Writer, forceTuple:
             return;
         } else if (ref.name === 'String') {
             if (ref.optional) {
-                w.append(`const ${name} = readString(slice.readCell());`);
+                w.append(`const ${name} = slice.readCell().beginParse().loadStringTail();`);
             } else {
-                w.append(`const ${name} = readString(slice.readCell());`);
+                w.append(`const ${name} = slice.readCell().beginParse().loadStringTail();`);
             }
         } else {
             if (ref.optional) {
                 w.append(`const ${name}_p = slice.pop();`);
-                w.append(`const ${name} = ${name}_p.type !== 'tuple' ? null : unpackTuple${ref.name}(new TupleSlice4(${name}_p.items));`);
+                w.append(`const ${name} = ${name}_p.type !== 'tuple' ? null : unpackTuple${ref.name}(new TupleReader(${name}_p.items));`);
             } else if (forceTuple) {
                 w.append(`const ${name} = unpackTuple${ref.name}(slice);`);
             } else {

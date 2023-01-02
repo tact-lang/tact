@@ -1,7 +1,6 @@
 import { IncrementContract } from "./output/increment_IncrementContract";
 import { ContractSystem } from "ton-emulator";
 import { toNano } from "ton-core";
-import { inspect } from "util";
 
 describe('increment', () => {
     it('should deploy', async () => {
@@ -13,8 +12,11 @@ describe('increment', () => {
 
         // Send internal message
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Increment', key: 0n, value: -1232n });
-        let res = await system.run();
-        console.warn(inspect(res, false, 1000));
+        await system.run();
+
+        // Get counters
+        let counters = await contract.getCounters();
+        let counters2 = await contract.getCounters2();
 
         // let res = await executor.get('counters');
         // let dict = parseDict(res.stack.readCell().beginParse(), 257, (sc) => sc.readInt(257).toString(10));

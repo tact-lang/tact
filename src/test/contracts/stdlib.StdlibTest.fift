@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __gen_write_StdlibTest
   DECLPROC __gen_read_StdlibTest
   DECLPROC __gen_load_StdlibTest
+  DECLPROC __gen_store_StdlibTest
   DECLPROC __gen_StdlibTest_init
   DECLPROC __gen_StdlibTest_sliceEmpty
   73995 DECLMETHOD __gen_get_sliceEmpty
@@ -9,6 +10,7 @@ PROGRAM{
   75090 DECLMETHOD __gen_get_sliceBits
   DECLPROC __gen_StdlibTest_sliceRefs
   77445 DECLMETHOD __gen_get_sliceRefs
+  DECLPROC __gen_StdlibTest_receive
   DECLPROC recv_internal
   108504 DECLMETHOD init_StdlibTest
   113617 DECLMETHOD supported_interfaces
@@ -33,6 +35,16 @@ PROGRAM{
     __tact_context_sys SETGLOB
     __gen_read_StdlibTest INLINECALLDICT
     NIP
+  }>
+  __gen_store_StdlibTest PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    SWAP
+    __gen_write_StdlibTest INLINECALLDICT
+    ENDC
+    c4 POP
   }>
   __gen_StdlibTest_init PROC:<{
     0 PUSHINT
@@ -70,13 +82,19 @@ PROGRAM{
     SWAP
     __gen_StdlibTest_sliceRefs CALLDICT
   }>
+  __gen_StdlibTest_receive PROC:<{
+  }>
   recv_internal PROC:<{
-    DUP
+    0 PUSHINT
+    OVER
     SBITS
-    NIP
     31 GTINT
     IF:<{
+      DROP
+      DUP
+      32 PLDU
     }>
+    s0 s2 XCHG
     CTOS
     4 LDU
     SWAP
@@ -91,10 +109,22 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s4 s4 XCHG2
+    s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
+    s0 s2 XCHG
     IFJMP:<{
+      2DROP
+    }>
+    0 EQINT
+    SWAP
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      __gen_load_StdlibTest INLINECALLDICT
+      __gen_StdlibTest_receive CALLDICT
+      __gen_store_StdlibTest INLINECALLDICT
     }>
     130 THROW
   }>
@@ -106,6 +136,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d634a5443756f54485750315870637732666845527a44447739726d4373436357427a31625a50626e37537975} PUSHSLICE
+    x{697066733a2f2f516d616938737568503764547756394874626333637575447332574276396431556e55343657526d4d3452746e51} PUSHSLICE
   }>
 }END>c

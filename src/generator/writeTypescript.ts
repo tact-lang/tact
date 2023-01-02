@@ -38,7 +38,7 @@ function writeField(field: ContractField, w: Writer) {
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';`);
+    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';`);
     w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
     w.append();
 
@@ -204,17 +204,17 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
     }
 
     // Errors
-    w.append(`export const ${abi.name}_errors: { [key: string]: string } = {`);
+    w.append(`const ${abi.name}_errors: { [key: number]: { message: string } } = {`);
     w.inIndent(() => {
         for (let k in abi.errors) {
-            w.append(`'${k}': \`${abi.errors[k].message}\`,`);
+            w.append(`${k}: { message: \`${abi.errors[k].message}\` },`);
         }
     });
     w.append(`}`);
     w.append();
 
     // Wrapper
-    w.append(`export class ${abi.name} {`);
+    w.append(`export class ${abi.name} implements Contract {`);
     w.inIndent(() => {
         w.append();
 
@@ -245,6 +245,12 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
 
         w.append(`readonly address: Address; `);
         w.append(`readonly init?: { code: Cell, data: Cell };`);
+        w.append(`readonly abi: ContractABI = {`);
+        w.inIndent(() => {
+            w.append(`errors: ${abi.name}_errors`)
+        });
+        w.append(`};`);
+        w.append();
         w.append(`private constructor(address: Address, init?: { code: Cell, data: Cell }) {`);
         w.inIndent(() => {
             w.append('this.address = address;');
@@ -315,95 +321,77 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         for (let g of abi.getters) {
             w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.args)].join(', ')}) {`);
             w.inIndent(() => {
-                w.append('try {')
-                w.inIndent(() => {
-                    w.append(`let __stack: TupleItem[] = [];`);
-                    for (let a of g.args) {
-                        writeToStack(a.name, a.type, w);
-                    }
-                    w.append(`let result = await provider.get('${g.name}', __stack);`);
+                w.append(`let __stack: TupleItem[] = [];`);
+                for (let a of g.args) {
+                    writeToStack(a.name, a.type, w);
+                }
+                w.append(`let result = await provider.get('${g.name}', __stack);`);
 
-                    if (g.returns) {
-                        if (g.returns.kind === 'ref') {
-                            if (g.returns.name === 'Bool') {
-                                if (g.returns.optional) {
-                                    w.append(`return result.stack.readBooleanOpt();`);
-                                } else {
-                                    w.append(`return result.stack.readBoolean();`);
-                                }
-                            } else if (g.returns.name === 'Int') {
-                                if (g.returns.optional) {
-                                    w.append(`return result.stack.readBigNumberOpt();`);
-                                } else {
-                                    w.append(`return result.stack.readBigNumber();`);
-                                }
-                            } else if (g.returns.name === 'Address') {
-                                if (g.returns.optional) {
-                                    w.append(`return result.stack.readAddressOpt();`);
-                                } else {
-                                    w.append(`return result.stack.readAddress();`);
-                                }
-                            } else if (g.returns.name === 'Cell') {
-                                if (g.returns.optional) {
-                                    w.append(`return result.stack.readCellOpt();`);
-                                } else {
-                                    w.append(`return result.stack.readCell();`);
-                                }
-                            } else if (g.returns.name === 'Slice') {
-                                if (g.returns.optional) {
-                                    w.append(`return result.stack.readCellOpt();`);
-                                } else {
-                                    w.append(`return result.stack.readCell();`);
-                                }
-                            } else if (g.returns.name === 'Builder') {
-                                if (g.returns.optional) {
-                                    w.append(`return result.stack.readCellOpt();`);
-                                } else {
-                                    w.append(`return result.stack.readCell();`);
-                                }
-                            } else if (g.returns.name === 'String') {
-                                if (g.returns.optional) {
-                                    w.append(`let c = result.stack.readCellOpt();`);
-                                    w.append(`if (c === null) { return null; }`);
-                                    w.append(`return readString(c.beginParse());`);
-                                } else {
-                                    w.append(`return readString(result.stack.readCell().beginParse());`);
-                                }
+                if (g.returns) {
+                    if (g.returns.kind === 'ref') {
+                        if (g.returns.name === 'Bool') {
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readBooleanOpt();`);
                             } else {
-                                if (g.returns.optional) {
-                                    w.append(`let pp = result.stack.pop();`);
-                                    w.append(`if (pp.type !== 'tuple') { return null; }`);
-                                    w.append(`return unpackTuple${g.returns.name}(new TupleSlice4(pp.items));`);
-                                } else {
-                                    w.append(`return unpackStack${g.returns.name}(result.stack);`);
-                                }
+                                w.append(`return result.stack.readBoolean();`);
                             }
-                        } else if (g.returns.kind === 'map') {
-                            w.append(`return result.stack.readCellOpt();`);
-                        } else if (g.returns.kind === 'null') {
-                            throw Error('Impossible');
-                        } else if (g.returns.kind === 'void') {
-                            throw Error('Impossible');
+                        } else if (g.returns.name === 'Int') {
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readBigNumberOpt();`);
+                            } else {
+                                w.append(`return result.stack.readBigNumber();`);
+                            }
+                        } else if (g.returns.name === 'Address') {
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readAddressOpt();`);
+                            } else {
+                                w.append(`return result.stack.readAddress();`);
+                            }
+                        } else if (g.returns.name === 'Cell') {
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readCellOpt();`);
+                            } else {
+                                w.append(`return result.stack.readCell();`);
+                            }
+                        } else if (g.returns.name === 'Slice') {
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readCellOpt();`);
+                            } else {
+                                w.append(`return result.stack.readCell();`);
+                            }
+                        } else if (g.returns.name === 'Builder') {
+                            if (g.returns.optional) {
+                                w.append(`return result.stack.readCellOpt();`);
+                            } else {
+                                w.append(`return result.stack.readCell();`);
+                            }
+                        } else if (g.returns.name === 'String') {
+                            if (g.returns.optional) {
+                                w.append(`let c = result.stack.readCellOpt();`);
+                                w.append(`if (c === null) { return null; }`);
+                                w.append(`return c.beginParse().loadStringTail();`);
+                            } else {
+                                w.append(`return result.stack.readCell().beginParse().loadStringTail();`);
+                            }
                         } else {
-                            throw Error('Not implemented');
+                            if (g.returns.optional) {
+                                w.append(`let pp = result.stack.pop();`);
+                                w.append(`if (pp.type !== 'tuple') { return null; }`);
+                                w.append(`return unpackTuple${g.returns.name}(new TupleSlice4(pp.items));`);
+                            } else {
+                                w.append(`return unpackStack${g.returns.name}(result.stack);`);
+                            }
                         }
+                    } else if (g.returns.kind === 'map') {
+                        w.append(`return result.stack.readCellOpt();`);
+                    } else if (g.returns.kind === 'null') {
+                        throw Error('Impossible');
+                    } else if (g.returns.kind === 'void') {
+                        throw Error('Impossible');
+                    } else {
+                        throw Error('Not implemented');
                     }
-                });
-                w.append(`} catch (e) {`);
-                w.inIndent(() => {
-                    w.append(`if (e instanceof ComputeError) {`)
-                    w.inIndent(() => {
-                        w.append(`if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }`);
-                        w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
-                        w.inIndent(() => {
-                            w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);
-                        });
-                        w.append(`}`);
-                    });
-                    w.append(`}`);
-                    w.append(`throw e;`);
-                });
-                w.append(`}`);
+                }
             });
             w.append(`}`);
             w.append();

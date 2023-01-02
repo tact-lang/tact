@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -320,35 +320,35 @@ async function Multisig_init(members: Cell, totalWeight: bigint, requiredWeight:
     return { code: codeCell, data };
 }
 
-export const Multisig_errors: { [key: string]: string } = {
-    '2': `Stack undeflow`,
-    '3': `Stack overflow`,
-    '4': `Integer overflow`,
-    '5': `Integer out of expected range`,
-    '6': `Invalid opcode`,
-    '7': `Type check error`,
-    '8': `Cell overflow`,
-    '9': `Cell underflow`,
-    '10': `Dictionary error`,
-    '13': `Out of gas error`,
-    '32': `Method ID not found`,
-    '34': `Action is invalid or not supported`,
-    '37': `Not enough TON`,
-    '38': `Not enough extra-currencies`,
-    '128': `Null reference exception`,
-    '129': `Invalid serialization prefix`,
-    '130': `Invalid incoming message`,
-    '131': `Constraints error`,
-    '132': `Access denied`,
-    '133': `Contract stopped`,
-    '134': `Invalid argument`,
-    '4429': `Invalid sender`,
-    '4755': `Timeout`,
-    '40810': `Completed`,
-    '46307': `Not a member`,
+const Multisig_errors: { [key: number]: { message: string } } = {
+    2: { message: `Stack undeflow` },
+    3: { message: `Stack overflow` },
+    4: { message: `Integer overflow` },
+    5: { message: `Integer out of expected range` },
+    6: { message: `Invalid opcode` },
+    7: { message: `Type check error` },
+    8: { message: `Cell overflow` },
+    9: { message: `Cell underflow` },
+    10: { message: `Dictionary error` },
+    13: { message: `Out of gas error` },
+    32: { message: `Method ID not found` },
+    34: { message: `Action is invalid or not supported` },
+    37: { message: `Not enough TON` },
+    38: { message: `Not enough extra-currencies` },
+    128: { message: `Null reference exception` },
+    129: { message: `Invalid serialization prefix` },
+    130: { message: `Invalid incoming message` },
+    131: { message: `Constraints error` },
+    132: { message: `Access denied` },
+    133: { message: `Contract stopped` },
+    134: { message: `Invalid argument` },
+    4429: { message: `Invalid sender` },
+    4755: { message: `Timeout` },
+    40810: { message: `Completed` },
+    46307: { message: `Not a member` },
 }
 
-export class Multisig {
+export class Multisig implements Contract {
     
     static async init(members: Cell, totalWeight: bigint, requiredWeight: bigint) {
         return await Multisig_init(members,totalWeight,requiredWeight);
@@ -366,6 +366,10 @@ export class Multisig {
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
+    readonly abi: ContractABI = {
+        errors: Multisig_errors
+    };
+    
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
@@ -387,36 +391,16 @@ export class Multisig {
     }
     
     async getMember(provider: ContractProvider, address: Address) {
-        try {
-            let __stack: TupleItem[] = [];
-            __stack.push({ type: 'slice', cell: beginCell().storeAddress(address).endCell() });
-            let result = await provider.get('member', __stack);
-            return result.stack.readBigNumberOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Multisig_errors[e.exitCode.toString()]) {
-                    throw new Error(Multisig_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        __stack.push({ type: 'slice', cell: beginCell().storeAddress(address).endCell() });
+        let result = await provider.get('member', __stack);
+        return result.stack.readBigNumberOpt();
     }
     
     async getMembers(provider: ContractProvider) {
-        try {
-            let __stack: TupleItem[] = [];
-            let result = await provider.get('members', __stack);
-            return result.stack.readCellOpt();
-        } catch (e) {
-            if (e instanceof ComputeError) {
-                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (Multisig_errors[e.exitCode.toString()]) {
-                    throw new Error(Multisig_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('members', __stack);
+        return result.stack.readCellOpt();
     }
     
 }

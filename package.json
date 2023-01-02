@@ -33,9 +33,8 @@
     "prando": "^6.0.1",
     "qs": "^6.11.0",
     "ton-compiler": "^2.0.0",
-    "ton-core": "^0.34.0",
+    "ton-core": "^0.36.0",
     "ton-crypto": "^3.2.0",
-    "ton-emulator": "^1.0.1",
     "zod": "^3.20.2"
   },
   "devDependencies": {
@@ -48,7 +47,8 @@
     "release-it": "^15.5.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.3",
+    "ton-emulator": "^1.1.0"
   },
   "publishConfig": {
     "access": "public",

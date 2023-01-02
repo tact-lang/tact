@@ -5,6 +5,10 @@ contract StringsTester {
         self.fee = ton("1.2");
     }
 
+    receive() {
+        // Deploy
+    }
+
     get fun constantString(): String {
         return "test string";
     }
