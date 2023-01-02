@@ -63,7 +63,6 @@
       "path": "./src/test/features/optionals.tact",
       "output": "./src/test/features/output",
       "experimental": {
-        "inline": true,
         "debug": true
       }
     },
@@ -72,7 +71,6 @@
       "path": "./src/test/features/serialization.tact",
       "output": "./src/test/features/output",
       "experimental": {
-        "inline": true,
         "debug": true
       }
     },
@@ -81,7 +79,6 @@
       "path": "./src/test/features/serialization-2.tact",
       "output": "./src/test/features/output",
       "experimental": {
-        "inline": true,
         "debug": true
       }
     },
@@ -90,7 +87,6 @@
       "path": "./src/test/features/strings.tact",
       "output": "./src/test/features/output",
       "experimental": {
-        "inline": false,
         "debug": true
       }
     },
@@ -99,7 +95,6 @@
       "path": "./src/test/features/constants.tact",
       "output": "./src/test/features/output",
       "experimental": {
-        "inline": true,
         "debug": true
       }
     }

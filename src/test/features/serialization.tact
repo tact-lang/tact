@@ -44,6 +44,10 @@ contract SerializationTester {
         // abi.dump(self.i);
     }
 
+    receive() {
+        // Deploy
+    }
+
     receive(msg: Update) {
         self.a = msg.a;
         self.b = msg.b;

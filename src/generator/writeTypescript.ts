@@ -377,7 +377,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                             if (g.returns.optional) {
                                 w.append(`let pp = result.stack.pop();`);
                                 w.append(`if (pp.type !== 'tuple') { return null; }`);
-                                w.append(`return unpackTuple${g.returns.name}(new TupleSlice4(pp.items));`);
+                                w.append(`return unpackTuple${g.returns.name}(new TupleReader(pp.items));`);
                             } else {
                                 w.append(`return unpackStack${g.returns.name}(result.stack);`);
                             }

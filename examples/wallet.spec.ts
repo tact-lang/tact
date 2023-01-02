@@ -1,70 +1,51 @@
-import { packTransfer, packTransferMessage, Transfer, Wallet, Wallet_init } from "./output/wallet_Wallet";
-import { mnemonicNew, mnemonicToWalletKey, sign } from 'ton-crypto';
-import { createExecutorFromCode, ExecuteError } from "ton-nodejs";
-import { beginCell, CellMessage, CommonMessageInfo, InternalMessage, toNano } from "ton";
-import { BN } from "bn.js";
+import { storeTransfer, Transfer, Wallet } from "./output/wallet_Wallet";
+import { ContractSystem, testKey } from "ton-emulator";
+import { beginCell, toNano } from "ton-core";
+import { sign } from "ton-crypto";
 
 describe('wallet', () => {
     it('should deploy', async () => {
 
         // Create wallet
-        let mnemonic = await mnemonicNew(24);
-        let key = await mnemonicToWalletKey(mnemonic);
-        let pk = new BN(key.publicKey.toString('hex'), 'hex');
-        let init = await Wallet_init(pk, new BN(0));
+        let key = testKey('wallet-key');
+        let publicKey = beginCell().storeBuffer(key.publicKey).endCell().beginParse().loadUintBig(256);
+        let system = await ContractSystem.create();
+        let treasure = system.treasure('treasure');
+        let contract = system.open(await Wallet.fromInit(publicKey, 0n));
+        await contract.send(treasure, { value: toNano('10') }, 'Deploy');
+        await system.run();
 
         // Create executor
-        let executor = await createExecutorFromCode(init);
-        expect((await executor.get('publicKey')).stack.readBigNumber().toString('hex')).toBe(pk.toString(16));
-        expect((await executor.get('walletId')).stack.readNumber()).toBe(0);
-        expect((await executor.get('seqno')).stack.readNumber()).toBe(0);
+        expect(await contract.getPublicKey()).toBe(publicKey);
+        expect(await contract.getWalletId()).toBe(0n);
+        expect(await contract.getSeqno()).toBe(0n);
 
-        // Try send
-
+        // Send transfer and check seqno
         let transfer: Transfer = {
             $$type: 'Transfer',
-            seqno: new BN(0),
-            mode: new BN(1),
+            seqno: 0n,
+            mode: 1n,
             amount: toNano(10),
-            to: executor.address,
+            to: treasure.address,
             body: null
         };
-        // let transfer = new Cell();
-        // new InternalMessage({ to: executor.address, value: toNano(10), bounce: false, body: new CommonMessageInfo() }).writeTo(transfer);
-        let signed = sign(packTransfer(transfer).hash(), key.secretKey);
-
-        try {
-            let res = await executor.internal(new InternalMessage({
-                to: executor.address,
-                from: executor.address,
-                bounce: false,
-                value: toNano(10),
-                body: new CommonMessageInfo({
-                    body: new CellMessage(packTransferMessage({
-                        $$type: 'TransferMessage',
-                        transfer,
-                        signature: beginCell().storeBuffer(signed).endCell()
-                    }))
-                })
-            }));
-            // console.warn(res);
-        } catch (e) {
-            if (e instanceof ExecuteError) {
-                console.warn(e.debugLogs);
-            }
-            throw e;
-        }
-
-        // Check seqno
-        let wallet = new Wallet(executor);
-        expect((await wallet.getSeqno()).toString(10)).toBe('1');
+        let signature = sign(beginCell().store(storeTransfer(transfer)).endCell().hash(), key.secretKey);
+        await contract.send(treasure, { value: toNano(1) }, {
+            $$type: 'TransferMessage',
+            transfer,
+            signature: beginCell().storeBuffer(signature).endCell()
+        });
+        await system.run();
+        expect(await contract.getSeqno()).toBe(1n);
 
         // Send empty message
-        await wallet.send({ amount: new BN(0) }, null);
-        expect((await wallet.getSeqno()).toString(10)).toBe('2');
+        await contract.send(treasure, { value: toNano(1) }, 'notify');
+        await system.run();
+        expect(await contract.getSeqno()).toBe(2n);
 
         // Send comment message
-        await wallet.send({ amount: new BN(0) }, 'notify');
-        expect((await wallet.getSeqno()).toString(10)).toBe('3');
+        await contract.send(treasure, { value: toNano(1) }, null);
+        await system.run();
+        expect(await contract.getSeqno()).toBe(3n);
     });
 });

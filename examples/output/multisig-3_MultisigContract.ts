@@ -313,7 +313,7 @@ export function unpackTupleExecuted(slice: TupleReader): Executed {
     return { $$type: 'Executed', seqno: seqno };
 }
 async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
-    const __code = 'te6ccgECJAEAApIAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAaGwIBIAYHAgFIEBECAdQICQIBWAsMAW0cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEDDeKUK64wIw8sCCgCgALCBu8tCAgALDtRNDUAfhi0x/T/9P/0/9VMGwUBNMfAYIQMN4pQrry4IHTH/oA+kABQzAD1AHQAdQB0AHUAdAWQzA2EIkQeBBnVQTwFcj4QgHMVTBQNMsfy//L/8v/ye1UABVZR/AcoA4HABygCAIBIA0OAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgDwAjHAEyMxVMFA0yx/L/8v/y//JgAAT7AAIBIBITAgFIGBkCASAUFQIBIBYXABMfzMBcG1tbfAOgAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAbxUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAQgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngKQCASAcHQIBIB4fAAm4rH8A+AIBICAhAgEgIiMAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwE4AAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPASgAC+w+XtRNDUAfhi0x/T/9P/0/9VMGwU8BGAATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYA==';
+    const __code = 'te6ccgECJwEAAvkAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIERICAdQICQIBWAwNAn07ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEDDeKUK64wLAAJEw4w3ywIKAKCwALCBu8tCAgALIw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BbI+EIBzFUwUDTLH8v/y//L/8ntVACm+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGuo4r7UTQ1AH4YtMf0//T/9P/VTBsFPAVyPhCAcxVMFA0yx/L/8v/y//J7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8B9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGAQACMcATIzFUwUDTLH8v/y//L/8mAABPsAAgEgExQCASAZGgIBIBUWAgEgFxgAEx/MwFwbW1t8A6AACQQI18DgAAcE18DgAAUbDGACASAbHABvRUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAQgABRfA4AABIAAvvmS/aiaGoA/DFpj+n/6f/p/6qYNgp4CkAgEgHyACASAhIgAJuKx/APgCASAjJAIBICUmAC+w6ftRNDUAfhi0x/T/9P/0/9VMGwU8BOAAL7Dhu1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsPl7UTQ1AH4YtMf0//T/9P/VTBsFPARgAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmA=';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -383,9 +383,12 @@ export class MultisigContract implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Execute) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: 'Deploy' | Execute) {
         
         let body: Cell | null = null;
+        if (message === 'Deploy') {
+            body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();
+        }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Execute') {
             body = beginCell().store(storeExecute(message)).endCell();
         }

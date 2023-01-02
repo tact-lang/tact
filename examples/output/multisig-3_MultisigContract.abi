@@ -510,6 +510,10 @@
   },
   "receivers": [
     {
+      "kind": "internal-comment",
+      "comment": "Deploy"
+    },
+    {
       "kind": "internal-binary",
       "type": "Execute"
     }

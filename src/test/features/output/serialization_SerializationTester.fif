@@ -23,6 +23,7 @@ PROGRAM{
   95541 DECLMETHOD __gen_get_getH
   DECLPROC __gen_SerializationTester_getI
   91412 DECLMETHOD __gen_get_getI
+  DECLPROC __gen_SerializationTester_receive
   DECLPROC __gen_SerializationTester_receive_Update
   DECLPROC recv_internal
   91479 DECLMETHOD init_SerializationTester
@@ -150,7 +151,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  __gen_SerializationTester_init PROCINLINE:<{
+  __gen_SerializationTester_init PROC:<{
     s0 s9 XCHG
     NEWC
     STREF
@@ -158,77 +159,79 @@ PROGRAM{
     __gen_write_SerializationTester INLINECALLDICT
     ENDC
   }>
-  __gen_SerializationTester_getA PROCINLINE:<{
+  __gen_SerializationTester_getA PROC:<{
     8 BLKDROP
   }>
   __gen_get_getA PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getA INLINECALLDICT
+    __gen_SerializationTester_getA CALLDICT
   }>
-  __gen_SerializationTester_getB PROCINLINE:<{
+  __gen_SerializationTester_getB PROC:<{
     s7 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getB PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getB INLINECALLDICT
+    __gen_SerializationTester_getB CALLDICT
   }>
-  __gen_SerializationTester_getC PROCINLINE:<{
+  __gen_SerializationTester_getC PROC:<{
     s6 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getC PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getC INLINECALLDICT
+    __gen_SerializationTester_getC CALLDICT
   }>
-  __gen_SerializationTester_getD PROCINLINE:<{
+  __gen_SerializationTester_getD PROC:<{
     s5 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getD PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getD INLINECALLDICT
+    __gen_SerializationTester_getD CALLDICT
   }>
-  __gen_SerializationTester_getE PROCINLINE:<{
+  __gen_SerializationTester_getE PROC:<{
     s4 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getE PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getE INLINECALLDICT
+    __gen_SerializationTester_getE CALLDICT
   }>
-  __gen_SerializationTester_getF PROCINLINE:<{
+  __gen_SerializationTester_getF PROC:<{
     s3 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getF PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getF INLINECALLDICT
+    __gen_SerializationTester_getF CALLDICT
   }>
-  __gen_SerializationTester_getG PROCINLINE:<{
+  __gen_SerializationTester_getG PROC:<{
     s2 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getG PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getG INLINECALLDICT
+    __gen_SerializationTester_getG CALLDICT
   }>
-  __gen_SerializationTester_getH PROCINLINE:<{
+  __gen_SerializationTester_getH PROC:<{
     s1 s8 XCHG
     8 BLKDROP
   }>
   __gen_get_getH PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getH INLINECALLDICT
+    __gen_SerializationTester_getH CALLDICT
   }>
-  __gen_SerializationTester_getI PROCINLINE:<{
+  __gen_SerializationTester_getI PROC:<{
     8 1 BLKDROP2
   }>
   __gen_get_getI PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getI INLINECALLDICT
+    __gen_SerializationTester_getI CALLDICT
   }>
-  __gen_SerializationTester_receive_Update PROCINLINE:<{
+  __gen_SerializationTester_receive PROC:<{
+  }>
+  __gen_SerializationTester_receive_Update PROC:<{
     s2 POP
     s8 POP
     s8 POP
@@ -272,6 +275,18 @@ PROGRAM{
     IFJMP:<{
       2DROP
     }>
+    DUP
+    0 EQINT
+    s2 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      __gen_load_SerializationTester INLINECALLDICT
+      __gen_SerializationTester_receive CALLDICT
+      __gen_store_SerializationTester INLINECALLDICT
+    }>
     2676568142 PUSHINT
     EQUAL
     IFJMP:<{
@@ -288,20 +303,20 @@ PROGRAM{
       s10 s11 XCHG
       s9 s10 XCHG
       8 ROLL
-      __gen_SerializationTester_receive_Update INLINECALLDICT
+      __gen_SerializationTester_receive_Update CALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
     DROP
     130 THROW
   }>
   init_SerializationTester PROC:<{
-    __gen_SerializationTester_init INLINECALLDICT
+    __gen_SerializationTester_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d6657466f387142346f32547045586f3335375a6b39426f7458324869754362375063447a44704172464a4d51} PUSHSLICE
+    x{697066733a2f2f516d65654e53383353644e583652726733445a423635736e314d3378687938417152483936364567356867585137} PUSHSLICE
   }>
 }END>c

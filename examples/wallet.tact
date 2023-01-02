@@ -22,6 +22,10 @@ contract Wallet {
         self.walletId = walletId;
     }
 
+    receive("Deploy") {
+        // Do nothing
+    } 
+
     receive(msg: TransferMessage) {
 
         // Check Signature

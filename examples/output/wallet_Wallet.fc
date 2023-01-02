@@ -207,6 +207,11 @@ _ __gen_get_seqno() method_id(85143) {
     return res;
 }
 
+((int, int, int), ()) __gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure {
+    var ($self'seqno, $self'key, $self'walletId) = $self;
+    return (($self'seqno, $self'key, $self'walletId), ());
+}
+
 (((int, int, int)), ()) __gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, ($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)) = $msg;
@@ -304,6 +309,14 @@ _ __gen_get_seqno() method_id(85143) {
     if (op == 0) {
         var text_op = slice_hash(in_msg);
         
+        ;; Receive "Deploy" message
+        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
+            var self = __gen_load_Wallet();
+            self~__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            __gen_store_Wallet(self);
+            return ();
+        }
+        
         ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
             var self = __gen_load_Wallet();
@@ -347,5 +360,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmazZbnbhm397vWNHKPtWDNZ2vtzU1ZjscmxEVMdsW3jn2";
+    return "ipfs://QmYs1aHEXTJ71tKr7TQUEavCEiWP7HFSGe6KeHR7qMag6T";
 }

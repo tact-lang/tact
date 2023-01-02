@@ -27,6 +27,10 @@ contract MultisigContract {
         self.user3_key = key3;
     }
 
+    receive("Deploy") {
+        // Do nothing
+    }
+
     receive(msg: Execute) {
 
         // Check all signatures

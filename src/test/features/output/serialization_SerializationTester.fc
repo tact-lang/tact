@@ -63,7 +63,7 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     set_data(b.end_cell());
 }
 
-cell __gen_SerializationTester_init(cell sys', int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) inline {
+cell __gen_SerializationTester_init(cell sys', int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = (null(), null(), null(), null(), null(), null(), null(), null(), null());
     $self'a = $a;
     $self'b = $b;
@@ -80,7 +80,7 @@ cell __gen_SerializationTester_init(cell sys', int $a, int $b, int $c, int $d, i
     return b'.end_cell();
 }
 
-int __gen_SerializationTester_getA((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getA((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'a;
 }
@@ -91,7 +91,7 @@ _ __gen_get_getA() method_id(123932) {
     return res;
 }
 
-int __gen_SerializationTester_getB((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getB((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'b;
 }
@@ -102,7 +102,7 @@ _ __gen_get_getB() method_id(119935) {
     return res;
 }
 
-int __gen_SerializationTester_getC((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getC((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'c;
 }
@@ -113,7 +113,7 @@ _ __gen_get_getC() method_id(115806) {
     return res;
 }
 
-int __gen_SerializationTester_getD((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getD((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'd;
 }
@@ -124,7 +124,7 @@ _ __gen_get_getD() method_id(111801) {
     return res;
 }
 
-int __gen_SerializationTester_getE((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getE((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'e;
 }
@@ -135,7 +135,7 @@ _ __gen_get_getE() method_id(107672) {
     return res;
 }
 
-int __gen_SerializationTester_getF((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getF((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'f;
 }
@@ -146,7 +146,7 @@ _ __gen_get_getF() method_id(103675) {
     return res;
 }
 
-int __gen_SerializationTester_getG((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getG((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'g;
 }
@@ -157,7 +157,7 @@ _ __gen_get_getG() method_id(99546) {
     return res;
 }
 
-int __gen_SerializationTester_getH((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getH((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'h;
 }
@@ -168,7 +168,7 @@ _ __gen_get_getH() method_id(95541) {
     return res;
 }
 
-int __gen_SerializationTester_getI((int, int, int, int, int, int, int, int, int) $self) impure inline {
+int __gen_SerializationTester_getI((int, int, int, int, int, int, int, int, int) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'i;
 }
@@ -179,7 +179,12 @@ _ __gen_get_getI() method_id(91412) {
     return res;
 }
 
-(((int, int, int, int, int, int, int, int, int)), ()) __gen_SerializationTester_receive_Update((int, int, int, int, int, int, int, int, int) $self, (int, int, int, int, int, int, int, int, int) $msg) impure inline {
+(((int, int, int, int, int, int, int, int, int)), ()) __gen_SerializationTester_receive((int, int, int, int, int, int, int, int, int) $self) impure {
+    var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i) = $self;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i), ());
+}
+
+(((int, int, int, int, int, int, int, int, int)), ()) __gen_SerializationTester_receive_Update((int, int, int, int, int, int, int, int, int) $self, (int, int, int, int, int, int, int, int, int) $msg) impure {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i) = $self;
     var ($msg'a, $msg'b, $msg'c, $msg'd, $msg'e, $msg'f, $msg'g, $msg'h, $msg'i) = $msg;
     $self'a = $msg'a;
@@ -212,6 +217,14 @@ _ __gen_get_getI() method_id(91412) {
         return ();
     }
     
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_SerializationTester();
+        self~__gen_SerializationTester_receive();
+        __gen_store_SerializationTester(self);
+        return ();
+    }
+    
     ;; Receive Update message
     if (op == 2676568142) {
         var self = __gen_load_SerializationTester();
@@ -236,5 +249,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmfWFo8qB4o2TpEXo357Zk9BotX2HiuCb7PcDzDpArFJMQ";
+    return "ipfs://QmeeNS83SdNX6Rrg3DZB65sn1M3xhy8AqRH966Eg5hgXQ7";
 }

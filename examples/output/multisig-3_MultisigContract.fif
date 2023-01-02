@@ -23,6 +23,7 @@ PROGRAM{
   99239 DECLMETHOD __gen_get_key3
   DECLPROC __gen_MultisigContract_seqno
   85143 DECLMETHOD __gen_get_seqno
+  DECLPROC __gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC __gen_MultisigContract_receive_Execute
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
@@ -281,6 +282,8 @@ PROGRAM{
     __gen_load_MultisigContract INLINECALLDICT
     __gen_MultisigContract_seqno CALLDICT
   }>
+  __gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROC:<{
+  }>
   __gen_MultisigContract_receive_Execute PROC:<{
     s5 s4 s3 PUSH3
     __gen_writecell_Operation INLINECALLDICT
@@ -307,6 +310,7 @@ PROGRAM{
     __gen_MultisigContract_execute CALLDICT
   }>
   recv_internal PROC:<{
+    SAMEALTSAVE
     0 PUSHINT
     OVER
     SBITS
@@ -338,9 +342,11 @@ PROGRAM{
     IFJMP:<{
       2DROP
     }>
+    DUP
     819865922 PUSHINT
     EQUAL
     IFJMP:<{
+      DROP
       __gen_load_MultisigContract INLINECALLDICT
       s0 s4 XCHG
       __gen_read_Execute INLINECALLDICT
@@ -352,7 +358,20 @@ PROGRAM{
       __gen_MultisigContract_receive_Execute CALLDICT
       __gen_store_MultisigContract INLINECALLDICT
     }>
-    DROP
+    0 EQINT
+    IF:<{
+      HASHSU
+      60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_MultisigContract INLINECALLDICT
+        __gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 CALLDICT
+        __gen_store_MultisigContract INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
     130 THROW
   }>
   init_MultisigContract PROC:<{
@@ -363,6 +382,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d57624448414b444252736d73526e58365533366f655944587042524843427667625534323433706f73464469} PUSHSLICE
+    x{697066733a2f2f516d55384e48685a4274414d376e6358655066567352714765797138584765696563454a6a4c344a64363332654b} PUSHSLICE
   }>
 }END>c

@@ -791,6 +791,9 @@
   },
   "receivers": [
     {
+      "kind": "internal-empty"
+    },
+    {
       "kind": "internal-binary",
       "type": "Update"
     }

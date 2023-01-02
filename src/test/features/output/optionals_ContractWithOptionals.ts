@@ -507,7 +507,7 @@ export function unpackTupleUpdate(slice: TupleReader): Update {
     return { $$type: 'Update', a: a, b: b, c: c, d: d, e: e, f: f };
 }
 async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-    const __code = 'te6ccgECPAEABKwAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIB1AYHAgEgCgsDrxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4IIQn4kwTrqPoNs8Bts8NhCrEJoQiRB4EGdVBGxmyPhCAcxVUNs8ye1U4DDywIKA5CC4ACwgbvLQgIAL00x8BghCfiTBOuvLggW0B0gABljGBAQHXAN5tAdIAAZMx0gDebQHSAAGSMdTe+kAh1wsBwwCRAZIxbeIB1AHQbQHSAAGOJzGBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQI/AKAd7UMNBtAdIAAZEw4w07CQAQECYQJRAkECMCASANDAIBIAwNAAVG8FgAD0IG7y0IBvJYAgEgEBECASAaGwIBIBITAgEgFhcCASAUFQERtFo7Z4vgrdZwOQEVsKT2zwQNV8FbrOA5ARWwrLbPBBFXwVus4DkBEbZG22eNii3WcDkCASAYGQETsJV2zwVXwVus4DkBFbCdNs8ECVfBW6zgOQIBIBwdAgEgKCkCASAeHwIBICQlAgHHICECAcciIwEPoSds8ECVfBY5AROhc2zwQRV8F8AGOQENoaNs8FV8FjkBE6H3bPBA1XwXwAY5AQ2wAvbPGxRgOQIBICYnARGsn+2eL4L4AMA5AE2t6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMACASAqKwIBIDM0AgFiLC0BDbA7Ns8XwWA5AQ+nsbZ42KPgHTkBEaVoDZGYDbZ5ky4C9CVuljVwUAbKAJ1/UAfKABWBAQHPABBF4iNuljNwUAPKAJd/AcoAE8oA4iFulHAyygCVfwHKAMziASBulTBwAcsBks8W4sgjbo4rfwHKAAPwCBBXUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzOMNyCJuLzAADDNwUAPKAAE0lTJwWMoAjot/AcoAAvAOEFbbPOLJAczJAcwxAfYkbpY0cFAFygCdf1AGygAUgQEBzwAQNOIibpUycFjKAJd/AcoAEsoA4iFulHAyygCVfwHKAMziWCBulTBwAcsBks8W4sgibpUycFjKAI4rfwHKAALwCBBWUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzOIyAAbJAcwCAcc1NgIBxzc4AQ+iP2zwQRV8FjkBE6JrbPBAlXwXwAY5AQ+iu2zwQNV8FjkBEaLvbPBVfBfAIjkBDu1E0NQB+GI6Ae5tAdIAAZYxgQEB1wDebQHSAAGTMdIA3m0B0gABkjHU3vpAIdcLAcMAkQGSMW3iAdQB0G0B0gABjicxgQEB1wCBAQHXAIEBAdcA1AHQgQEB1wCBAQHXADAQJRAkECPwCgHe1DDQbQHSAAGRMOMNECYQJRAkECNsFjsA2jFtAdIAAZYxgQEB1wDebQHSAAGTMdIA3m0B0gABkjHU3vpAIdcLAcMAkQGSMW3iAdQB0G0B0gABjigxgQEB1wCBAQHXAIEBAdcA1AHQgQEB1wCBAQHXADAQJRAkECNsFfAKkTDiFRRDMGwV8Aw=';
+    const __code = 'te6ccgECZwEABZ0AART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAUFQIBICAhAgFiBgcCASAICQIBIA4PAgEgCgsCASAMDQAJF8F8AGAADQQRV8F8AGAADQQNV8F8AGAADQQJV8F8AGACASAQEQIBIBITAAsFV8F8AiAACRsUfAOgAAEgAAUbGaACASAWFwIBIEpLAgEgGBkCASAcHQIBIBobAQ20WjtnngKQZAENsKT2zzwFoGQBDbCsts88BWBkAQ22RttnngMwZAIBIB4fAQ2wlXbPPAYgZAENsJ02zzwF4GQCASAiIwIBIC0uAgHUJCUCASApKgOnHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIMAAItdJwSGwjxFb2zzwJsj4QgHMVVDbPMntVOCCEJ+JME664wIw8sCCgZDEmAAsIG7y0ICADQNs8Bts8NhCrEJoQiRB4EGdVBPAnyPhCAcxVUNs8ye1UZCcxAvTTHwGCEJ+JME668uCBbQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N76QCHXCwHDAJEBkjFt4gHUAdBtAdIAAY4nMYEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAj8AoB3tQw0G0B0gABkTDjDWYoABAQJhAlECQQIwIBICwrAgEgKywABUbwWAAPQgbvLQgG8lgCASAvMAIBIDw9AQ/wNkZgNtnmTDECASA2NwL0JW6WNXBQBsoAnX9QB8oAFYEBAc8AEEXiI26WM3BQA8oAl38BygATygDiIW6UcDLKAJV/AcoAzOIBIG6VMHABywGSzxbiyCNujit/AcoAA/AIEFdQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHM4w3IIm4yMwAMM3BQA8oAATSVMnBYygCOi38BygAC8A4QVts84skBzMkBzDQB9iRuljRwUAXKAJ1/UAbKABSBAQHPABA04iJulTJwWMoAl38BygASygDiIW6UcDLKAJV/AcoAzOJYIG6VMHABywGSzxbiyCJulTJwWMoAjit/AcoAAvAIEFZQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHM4jUABskBzAIBIDg5AgEgOjsACRfBW6zgAA0EEVfBW6zgAA0EDVfBW6zgAA0ECVfBW6zgAgEgPj8CASBERQIBIEBBAgEgQkMACwVXwVus4AAJGxRbrOAABRfBYAAJBBFXwWACASBGRwIBIEhJAAkEDVfBYAAJBAlXwWAABwVXwWAABRsUYAIBIExNAgEgWFkCASBOTwIBIFRVAgHHUFECAcdSUwELoSds88B2ZAELoXNs88CGZAELoaNs88B6ZAELofds88CKZAENsAL2zzwH4GQCASBWVwENrJ/tnngQQGQATa3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwAIBIFpbAgEgXl8CAWJcXQENsDs2zzwGoGQBC6extnngS2QAB6Vp4CcCAcdgYQIBx2JjAQuiP2zzwG5kAQuia2zzwI5kAQuiu2zzwHJkAQui72zzwJJkAQ7tRNDUAfhiZQHubQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N76QCHXCwHDAJEBkjFt4gHUAdBtAdIAAY4nMYEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAj8AoB3tQw0G0B0gABkTDjDRAmECUQJBAjbBZmANoxbQHSAAGWMYEBAdcA3m0B0gABkzHSAN5tAdIAAZIx1N76QCHXCwHDAJEBkjFt4gHUAdBtAdIAAY4oMYEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAjbBXwCpEw4hUUQzBsFfAM';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -602,9 +602,12 @@ export class ContractWithOptionals implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Update) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | Update) {
         
         let body: Cell | null = null;
+        if (message === null) {
+            body = new Cell();
+        }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Update') {
             body = beginCell().store(storeUpdate(message)).endCell();
         }
@@ -679,7 +682,7 @@ export class ContractWithOptionals implements Contract {
         let result = await provider.get('nullE', __stack);
         let pp = result.stack.pop();
         if (pp.type !== 'tuple') { return null; }
-        return unpackTupleSomeGenericStruct(new TupleSlice4(pp.items));
+        return unpackTupleSomeGenericStruct(new TupleReader(pp.items));
     }
     
     async getNullF(provider: ContractProvider) {
@@ -687,7 +690,7 @@ export class ContractWithOptionals implements Contract {
         let result = await provider.get('nullF', __stack);
         let pp = result.stack.pop();
         if (pp.type !== 'tuple') { return null; }
-        return unpackTupleStructWithOptionals(new TupleSlice4(pp.items));
+        return unpackTupleStructWithOptionals(new TupleReader(pp.items));
     }
     
     async getNotNullA(provider: ContractProvider) {

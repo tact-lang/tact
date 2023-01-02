@@ -61,6 +61,7 @@ PROGRAM{
   81348 DECLMETHOD __gen_get_addrMap4
   DECLPROC __gen_MapTestContract_addrMap4Value
   100021 DECLMETHOD __gen_get_addrMap4Value
+  DECLPROC __gen_MapTestContract_receive
   DECLPROC __gen_MapTestContract_receive_SetIntMap1
   DECLPROC __gen_MapTestContract_receive_SetIntMap2
   DECLPROC __gen_MapTestContract_receive_SetIntMap3
@@ -626,6 +627,8 @@ PROGRAM{
     8 ROLL
     __gen_MapTestContract_addrMap4Value CALLDICT
   }>
+  __gen_MapTestContract_receive PROC:<{
+  }>
   __gen_MapTestContract_receive_SetIntMap1 PROC:<{
     257 PUSHINT
     DUP
@@ -719,6 +722,18 @@ PROGRAM{
     s0 s2 XCHG
     IFJMP:<{
       2DROP
+    }>
+    DUP
+    0 EQINT
+    s2 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      __gen_load_MapTestContract INLINECALLDICT
+      __gen_MapTestContract_receive CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
     }>
     DUP
     1056067080 PUSHINT
@@ -881,6 +896,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d53353676725233587a4e516d345932485642416d53725542765a476a72455844796b75624c534b52376b3563} PUSHSLICE
+    x{697066733a2f2f516d50464d7a464b4a354576575766776a344a43747972574d55753238377a53516169344c78627454586773397a} PUSHSLICE
   }>
 }END>c

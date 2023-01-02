@@ -238,7 +238,7 @@ builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slic
     set_data(b.end_cell());
 }
 
-cell __gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) inline {
+cell __gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) {
     var ($e) = $e;
     var ($f) = $f;
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = (null(), null(), null(), null(), null(), null());
@@ -254,7 +254,7 @@ cell __gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice 
     return b'.end_cell();
 }
 
-int __gen_ContractWithOptionals_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'a));
 }
@@ -265,7 +265,7 @@ _ __gen_get_isNotNullA() method_id(74449) {
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'b));
 }
@@ -276,7 +276,7 @@ _ __gen_get_isNotNullB() method_id(70322) {
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'c));
 }
@@ -287,7 +287,7 @@ _ __gen_get_isNotNullC() method_id(66195) {
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'd));
 }
@@ -298,7 +298,7 @@ _ __gen_get_isNotNullD() method_id(94836) {
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'e));
 }
@@ -309,7 +309,7 @@ _ __gen_get_isNotNullE() method_id(90709) {
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'f));
 }
@@ -320,7 +320,7 @@ _ __gen_get_isNotNullF() method_id(86582) {
     return res;
 }
 
-int __gen_ContractWithOptionals_nullA((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_nullA((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'a;
 }
@@ -331,7 +331,7 @@ _ __gen_get_nullA() method_id(119020) {
     return res;
 }
 
-int __gen_ContractWithOptionals_nullB((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_nullB((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'b;
 }
@@ -342,7 +342,7 @@ _ __gen_get_nullB() method_id(123023) {
     return res;
 }
 
-cell __gen_ContractWithOptionals_nullC((int, int, cell, slice, tuple, tuple) $self) impure inline {
+cell __gen_ContractWithOptionals_nullC((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'c;
 }
@@ -353,7 +353,7 @@ _ __gen_get_nullC() method_id(127150) {
     return res;
 }
 
-slice __gen_ContractWithOptionals_nullD((int, int, cell, slice, tuple, tuple) $self) impure inline {
+slice __gen_ContractWithOptionals_nullD((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'd;
 }
@@ -364,7 +364,7 @@ _ __gen_get_nullD() method_id(98377) {
     return res;
 }
 
-tuple __gen_ContractWithOptionals_nullE((int, int, cell, slice, tuple, tuple) $self) impure inline {
+tuple __gen_ContractWithOptionals_nullE((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'e;
 }
@@ -375,7 +375,7 @@ _ __gen_get_nullE() method_id(102504) {
     return res;
 }
 
-tuple __gen_ContractWithOptionals_nullF((int, int, cell, slice, tuple, tuple) $self) impure inline {
+tuple __gen_ContractWithOptionals_nullF((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'f;
 }
@@ -386,7 +386,7 @@ _ __gen_get_nullF() method_id(106507) {
     return res;
 }
 
-int __gen_ContractWithOptionals_notNullA((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_notNullA((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'a);
 }
@@ -397,7 +397,7 @@ _ __gen_get_notNullA() method_id(110911) {
     return res;
 }
 
-int __gen_ContractWithOptionals_notNullB((int, int, cell, slice, tuple, tuple) $self) impure inline {
+int __gen_ContractWithOptionals_notNullB((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'b);
 }
@@ -408,7 +408,7 @@ _ __gen_get_notNullB() method_id(98652) {
     return res;
 }
 
-cell __gen_ContractWithOptionals_notNullC((int, int, cell, slice, tuple, tuple) $self) impure inline {
+cell __gen_ContractWithOptionals_notNullC((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'c);
 }
@@ -419,7 +419,7 @@ _ __gen_get_notNullC() method_id(102781) {
     return res;
 }
 
-slice __gen_ContractWithOptionals_notNullD((int, int, cell, slice, tuple, tuple) $self) impure inline {
+slice __gen_ContractWithOptionals_notNullD((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'd);
 }
@@ -430,7 +430,7 @@ _ __gen_get_notNullD() method_id(123290) {
     return res;
 }
 
-(int, int, int, int, int) __gen_ContractWithOptionals_notNullE((int, int, cell, slice, tuple, tuple) $self) impure inline {
+(int, int, int, int, int) __gen_ContractWithOptionals_notNullE((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __gen_SomeGenericStruct_not_null($self'e);
 }
@@ -441,7 +441,7 @@ _ __gen_get_notNullE() method_id(127419) {
     return res;
 }
 
-(int, int, cell, slice, tuple) __gen_ContractWithOptionals_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline {
+(int, int, cell, slice, tuple) __gen_ContractWithOptionals_notNullF((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __gen_StructWithOptionals_not_null($self'f);
 }
@@ -452,7 +452,12 @@ _ __gen_get_notNullF() method_id(115160) {
     return res;
 }
 
-(((int, int, cell, slice, tuple, tuple)), ()) __gen_ContractWithOptionals_receive_Update((int, int, cell, slice, tuple, tuple) $self, (int, int, cell, slice, tuple, tuple) $msg) impure inline {
+(((int, int, cell, slice, tuple, tuple)), ()) __gen_ContractWithOptionals_receive((int, int, cell, slice, tuple, tuple) $self) impure {
+    var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), ());
+}
+
+(((int, int, cell, slice, tuple, tuple)), ()) __gen_ContractWithOptionals_receive_Update((int, int, cell, slice, tuple, tuple) $self, (int, int, cell, slice, tuple, tuple) $msg) impure {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
     var ($msg'a, $msg'b, $msg'c, $msg'd, $msg'e, $msg'f) = $msg;
     $self'a = $msg'a;
@@ -483,6 +488,14 @@ _ __gen_get_notNullF() method_id(115160) {
         return ();
     }
     
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_ContractWithOptionals();
+        self~__gen_ContractWithOptionals_receive();
+        __gen_store_ContractWithOptionals(self);
+        return ();
+    }
+    
     ;; Receive Update message
     if (op == 2676568142) {
         var self = __gen_load_ContractWithOptionals();
@@ -507,5 +520,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmSxAD82V1xb3jwGibhTEbwQzwHQgQWRtM8Pcczhvtp2w4";
+    return "ipfs://QmX9XQufeycp1Fx28MJjAghqMaLc78i4w17LGTEQFk6cmi";
 }

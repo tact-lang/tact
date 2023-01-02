@@ -443,6 +443,11 @@ _ __gen_get_addrMap4Value(slice $key) method_id(100021) {
     return res;
 }
 
+(((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
+}
+
 (((cell, cell, cell, cell, cell, cell, cell, cell)), ()) __gen_MapTestContract_receive_SetIntMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
     var ($msg'key, $msg'value) = $msg;
@@ -515,6 +520,14 @@ _ __gen_get_addrMap4Value(slice $key) method_id(100021) {
     
     ;; Handle bounced messages
     if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_MapTestContract();
+        self~__gen_MapTestContract_receive();
+        __gen_store_MapTestContract(self);
         return ();
     }
     
@@ -605,5 +618,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmS56vrR3XzNQm4Y2HVBAmSrUBvZGjrEXDykubLSKR7k5c";
+    return "ipfs://QmPFMzFKJ5EvWWfwj4JCtyrWMUu287zSQai4LxbtTXgs9z";
 }

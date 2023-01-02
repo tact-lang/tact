@@ -49,6 +49,10 @@ contract ContractWithOptionals {
         // abi.dump(self.f);
     }
 
+    receive() {
+        // Deploy
+    }
+
     receive(msg: Update) {
         self.a = msg.a;
         self.b = msg.b;

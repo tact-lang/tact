@@ -48,6 +48,10 @@ contract MapTestContract {
         // Nothing to do
     }
 
+    receive() {
+        // Nothing to do
+    }
+
     //
     // Int Maps
     //

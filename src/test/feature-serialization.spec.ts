@@ -1,8 +1,8 @@
-import BN from 'bn.js';
-import { createExecutorFromCode } from 'ton-nodejs';
+import { toNano } from 'ton-core';
+import { ContractSystem } from 'ton-emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
-import { SerializationTester2, SerializationTester2_init } from './features/output/serialization-2_SerializationTester2';
-import { SerializationTester, SerializationTester_init } from './features/output/serialization_SerializationTester';
+import { SerializationTester2 } from './features/output/serialization-2_SerializationTester2';
+import { SerializationTester } from './features/output/serialization_SerializationTester';
 
 describe('feature-serialization', () => {
     beforeEach(() => {
@@ -14,17 +14,17 @@ describe('feature-serialization', () => {
     // Simple case
     //
     {
-        let cases: { a: BN, b: BN, c: BN, d: BN, e: BN, f: BN, g: BN, h: BN, i: BN }[] = [];
+        let cases: { a: bigint, b: bigint, c: bigint, d: bigint, e: bigint, f: bigint, g: bigint, h: bigint, i: bigint }[] = [];
         cases.push({
-            a: new BN(1),
-            b: new BN(2),
-            c: new BN(3),
-            d: new BN(4),
-            e: new BN(5),
-            f: new BN(6),
-            g: new BN(7),
-            h: new BN(8),
-            i: new BN(9)
+            a: 1n,
+            b: 2n,
+            c: 3n,
+            d: 4n,
+            e: 5n,
+            f: 6n,
+            g: 7n,
+            h: 8n,
+            i: 9n
         });
 
         for (let i = 0; i < cases.length; i++) {
@@ -33,20 +33,22 @@ describe('feature-serialization', () => {
                 let cs = cases[i];
 
                 // Init contract
-                let init = await SerializationTester_init(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f, cs.g, cs.h, cs.i);
-                let executor = await createExecutorFromCode(init);
-                let contract = new SerializationTester(executor);
+                let system = await ContractSystem.create();
+                let treasure = system.treasure('treasure');
+                let contract = system.open(await SerializationTester.fromInit(cs.a, cs.b, cs.c, cs.d, cs.e, cs.f, cs.g, cs.h, cs.i));
+                await contract.send(treasure, { value: toNano('10') }, null);
+                await system.run();
 
                 // Check inputs
-                expect((await contract.getGetA()).eq(cs.a)).toBe(true);
-                expect((await contract.getGetB()).eq(cs.b)).toBe(true);
-                expect((await contract.getGetC()).eq(cs.c)).toBe(true);
-                expect((await contract.getGetD()).eq(cs.d)).toBe(true);
-                expect((await contract.getGetE()).eq(cs.e)).toBe(true);
-                expect((await contract.getGetF()).eq(cs.f)).toBe(true);
-                expect((await contract.getGetG()).eq(cs.g)).toBe(true);
-                expect((await contract.getGetH()).eq(cs.h)).toBe(true);
-                expect((await contract.getGetI()).eq(cs.i)).toBe(true);
+                expect(await contract.getGetA()).toBe(cs.a);
+                expect(await contract.getGetB()).toBe(cs.b);
+                expect(await contract.getGetC()).toBe(cs.c);
+                expect(await contract.getGetD()).toBe(cs.d);
+                expect(await contract.getGetE()).toBe(cs.e);
+                expect(await contract.getGetF()).toBe(cs.f);
+                expect(await contract.getGetG()).toBe(cs.g);
+                expect(await contract.getGetH()).toBe(cs.h);
+                expect(await contract.getGetI()).toBe(cs.i);
             })
         }
     }
@@ -55,23 +57,23 @@ describe('feature-serialization', () => {
     // Cases with references
     //
     {
-        let cases: { a: { $$type: 'Vars', a: BN, b: BN, c: BN, d: BN, e: BN }, b: { $$type: 'Vars', a: BN, b: BN, c: BN, d: BN, e: BN } }[] = [];
+        let cases: { a: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint }, b: { $$type: 'Vars', a: bigint, b: bigint, c: bigint, d: bigint, e: bigint } }[] = [];
         cases.push({
             a: {
                 $$type: 'Vars',
-                a: new BN(1),
-                b: new BN(2),
-                c: new BN(3),
-                d: new BN(4),
-                e: new BN(5)
+                a: 1n,
+                b: 2n,
+                c: 3n,
+                d: 4n,
+                e: 5n
             },
             b: {
                 $$type: 'Vars',
-                a: new BN(6),
-                b: new BN(7),
-                c: new BN(8),
-                d: new BN(9),
-                e: new BN(10)
+                a: 6n,
+                b: 7n,
+                c: 8n,
+                d: 9n,
+                e: 10n
             }
         })
 
@@ -80,23 +82,25 @@ describe('feature-serialization', () => {
                 let cs = cases[i];
 
                 // Init contract
-                let init = await SerializationTester2_init(cs.a, cs.b);
-                let executor = await createExecutorFromCode(init);
-                let contract = new SerializationTester2(executor);
+                let system = await ContractSystem.create();
+                let treasure = system.treasure('treasure');
+                let contract = system.open(await SerializationTester2.fromInit(cs.a, cs.b));
+                await contract.send(treasure, { value: toNano('10') }, null);
+                await system.run();
 
                 // Checl values
                 let a = await contract.getGetA();
                 let b = await contract.getGetB();
-                expect(a.a.eq(cs.a.a)).toBe(true);
-                expect(a.b.eq(cs.a.b)).toBe(true);
-                expect(a.c.eq(cs.a.c)).toBe(true);
-                expect(a.d.eq(cs.a.d)).toBe(true);
-                expect(a.e.eq(cs.a.e)).toBe(true);
-                expect(b.a.eq(cs.b.a)).toBe(true);
-                expect(b.b.eq(cs.b.b)).toBe(true);
-                expect(b.c.eq(cs.b.c)).toBe(true);
-                expect(b.d.eq(cs.b.d)).toBe(true);
-                expect(b.e.eq(cs.b.e)).toBe(true);
+                expect(a.a).toBe(cs.a.a);
+                expect(a.b).toBe(cs.a.b);
+                expect(a.c).toBe(cs.a.c);
+                expect(a.d).toBe(cs.a.d);
+                expect(a.e).toBe(cs.a.e);
+                expect(b.a).toBe(cs.b.a);
+                expect(b.b).toBe(cs.b.b);
+                expect(b.c).toBe(cs.b.c);
+                expect(b.d).toBe(cs.b.d);
+                expect(b.e).toBe(cs.b.e);
             });
         }
     }
