@@ -1,4 +1,4 @@
-import { toNano } from "ton";
+import { toNano } from "ton-core";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";

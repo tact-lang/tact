@@ -25,7 +25,7 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: bo
             w.append(`__stack.push({ type: 'int', value: ${name} });`);
             return;
         } else if (ref.name === 'Bool') {
-            w.append(`__stack.push({ type: 'int', value: ${name} ? new BN(-1) : new BN(0) });`);
+            w.append(`__stack.push({ type: 'int', value: ${name} ? -1n : 0n });`);
             return;
         } else if (ref.name === 'Cell') {
             w.append(`__stack.push({ type: 'cell', cell: ${name} });`);

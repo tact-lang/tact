@@ -5,7 +5,9 @@ PROGRAM{
   DECLPROC __tact_store_address
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_comment
+  DECLPROC __tact_string_builder_start_string
   DECLPROC __tact_string_builder_end
+  DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
   DECLPROC __gen_write_Echo
   DECLPROC __gen_read_Echo
@@ -16,9 +18,13 @@ PROGRAM{
   DECLPROC reply
   DECLPROC __gen_Slice_asCell
   DECLPROC __gen_String_asComment
+  DECLPROC __gen_Echo_init
+  DECLPROC __gen_Echo_hello
+  115554 DECLMETHOD __gen_get_hello
   DECLPROC __gen_Echo_receive_comment
   DECLPROC __gen_Echo_receive_fallback
   DECLPROC recv_internal
+  101720 DECLMETHOD init_Echo
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
@@ -59,6 +65,10 @@ PROGRAM{
     TRUE
     __tact_string_builder_start INLINECALLDICT
   }>
+  __tact_string_builder_start_string PROCINLINE:<{
+    FALSE
+    __tact_string_builder_start INLINECALLDICT
+  }>
   __tact_string_builder_end PROC:<{
     UNCONS
     SWAP
@@ -75,6 +85,10 @@ PROGRAM{
       ENDC
     }>
     NIP
+  }>
+  __tact_string_builder_end_slice PROC:<{
+    __tact_string_builder_end CALLDICT
+    CTOS
   }>
   __tact_string_builder_append PROC:<{
     DUP
@@ -305,6 +319,29 @@ PROGRAM{
     __tact_string_builder_append CALLDICT
     __tact_string_builder_end CALLDICT
   }>
+  __gen_Echo_init PROC:<{
+    0 PUSHINT
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_Echo INLINECALLDICT
+    ENDC
+  }>
+  __gen_Echo_hello PROC:<{
+    NIP
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE
+    __tact_string_builder_append CALLDICT
+    SWAP
+    __tact_string_builder_append CALLDICT
+    __tact_string_builder_end_slice CALLDICT
+  }>
+  __gen_get_hello PROC:<{
+    __gen_load_Echo INLINECALLDICT
+    SWAP
+    __gen_Echo_hello CALLDICT
+  }>
   __gen_Echo_receive_comment PROC:<{
     __gen_String_asComment CALLDICT
     reply CALLDICT
@@ -366,11 +403,14 @@ PROGRAM{
     __gen_Echo_receive_fallback CALLDICT
     __gen_store_Echo INLINECALLDICT
   }>
+  init_Echo PROC:<{
+    __gen_Echo_init CALLDICT
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d6265507332635473714663567074704632477058343550646d6b66624442714b366d7868743352505353686a} PUSHSLICE
+    x{697066733a2f2f516d5769555644343651456d4261615071643176504447686e6d5a654a64384b6739777746435465475a36657767} PUSHSLICE
   }>
 }END>c

@@ -8,7 +8,7 @@ import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
-import { beginCell } from "ton";
+import { beginCell } from "ton-core";
 import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";

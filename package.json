@@ -23,10 +23,8 @@
   },
   "dependencies": {
     "@ipld/dag-pb": "2.1.18",
-    "@types/bn.js": "^5.1.1",
     "arg": "^5.0.2",
     "blockstore-core": "1.0.5",
-    "bn.js": "^5.2.1",
     "change-case": "^4.1.2",
     "ipfs-unixfs-importer": "9.0.10",
     "multiformats": "9.9.0",
@@ -34,12 +32,10 @@
     "ora": "^6.1.2",
     "prando": "^6.0.1",
     "qs": "^6.11.0",
-    "ton": "12.3.2",
     "ton-compiler": "^2.0.0",
-    "ton-contract-executor": "^0.6.0",
+    "ton-core": "^0.34.0",
     "ton-crypto": "^3.2.0",
-    "ton-nodejs": "^1.4.3",
-    "tvm-disassembler": "^1.2.1",
+    "ton-emulator": "^1.0.1",
     "zod": "^3.20.2"
   },
   "devDependencies": {
@@ -53,9 +49,6 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3"
-  },
-  "resolutions": {
-    "ton": "12.3.2"
   },
   "publishConfig": {
     "access": "public",

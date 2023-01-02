@@ -1,6 +1,5 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4, readString, stringToCell } from 'ton';
-import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
-import BN from 'bn.js';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -8,31 +7,32 @@ export type StateInit = {
     data: Cell;
 }
 
-export function packStateInit(src: StateInit): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeRef(src.code);
-    b_0 = b_0.storeRef(src.data);
-    return b_0.endCell();
+export function storeStateInit(src: StateInit) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeRef(src.code);
+        b_0 = b_0.storeRef(src.data);
+    };
 }
 
-export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
 }
 
-export function packTupleStateInit(src: StateInit): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTupleStateInit(src: StateInit): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+export function unpackStackStateInit(slice: TupleReader): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
 }
-export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
+export function unpackTupleStateInit(slice: TupleReader): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
@@ -41,43 +41,44 @@ export type Context = {
     $$type: 'Context';
     bounced: boolean;
     sender: Address;
-    value: BN;
+    value: bigint;
     raw: Cell;
 }
 
-export function packContext(src: Context): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeBit(src.bounced);
-    b_0 = b_0.storeAddress(src.sender);
-    b_0 = b_0.storeInt(src.value, 257);
-    b_0 = b_0.storeRef(src.raw);
-    return b_0.endCell();
+export function storeContext(src: Context) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeBit(src.bounced);
+        b_0 = b_0.storeAddress(src.sender);
+        b_0 = b_0.storeInt(src.value, 257);
+        b_0 = b_0.storeRef(src.raw);
+    };
 }
 
-export function packStackContext(src: Context, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+export function packStackContext(src: Context, __stack: TupleItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'slice', cell: src.raw });
 }
 
-export function packTupleContext(src: Context): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+export function packTupleContext(src: Context): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleSlice4): Context {
+export function unpackStackContext(slice: TupleReader): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
     const raw = slice.readCell();
     return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
-export function unpackTupleContext(slice: TupleSlice4): Context {
+export function unpackTupleContext(slice: TupleReader): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
@@ -88,42 +89,43 @@ export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
     to: Address;
-    value: BN;
-    mode: BN;
+    value: bigint;
+    mode: bigint;
     body: Cell | null;
     code: Cell | null;
     data: Cell | null;
 }
 
-export function packSendParameters(src: SendParameters): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeBit(src.bounce);
-    b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(src.value, 257);
-    b_0 = b_0.storeInt(src.mode, 257);
-    if (src.body !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.body);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    if (src.code !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.code);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    if (src.data !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.data);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
+export function storeSendParameters(src: SendParameters) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeBit(src.bounce);
+        b_0 = b_0.storeAddress(src.to);
+        b_0 = b_0.storeInt(src.value, 257);
+        b_0 = b_0.storeInt(src.mode, 257);
+        if (src.body !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.body);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+        if (src.code !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.code);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+        if (src.data !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.data);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+    };
 }
 
-export function packStackSendParameters(src: SendParameters, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
+    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'int', value: src.mode });
@@ -144,9 +146,9 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
-export function packTupleSendParameters(src: SendParameters): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+export function packTupleSendParameters(src: SendParameters): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'int', value: src.mode });
@@ -168,7 +170,7 @@ export function packTupleSendParameters(src: SendParameters): StackItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+export function unpackStackSendParameters(slice: TupleReader): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -178,7 +180,7 @@ export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
     const data = slice.readCellOpt();
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
 }
-export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
+export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -188,16 +190,17 @@ export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
     const data = slice.readCellOpt();
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
 }
-export async function StdlibTest_init() {
+async function StdlibTest_init() {
     const __code = 'te6ccgEBFAEA8AABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAwNAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAIBIAYHAgEgCAkCASAKCwAZHAByMwBAYEBAc8AyYAAHDHHAIAAHDHXSYAAHDHXSoAICcg4PAgFmEhMCASAQEQAnr0L2omhqAPwxQICA64AAmID4A8AAJqkL7UTQ1AH4YoEBAdcAATEB8AUAJqlS7UTQ1AH4YoEBAdcAATEB8AYACbH2PAEgAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmA=';
-    const depends = new Map<string, Cell>();
-    let systemCell = beginCell().storeDict(null).endCell();
-    let __stack: StackItem[] = [];
+    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
+    let systemCell = beginCell().storeDict(depends).endCell();
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
-    let res = await executor.get('init_StdlibTest', __stack, { debug: true });
-    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
+    let system = await ContractSystem.create();
+    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
+    let res = await executor.get('init_StdlibTest', __stack);
+    if (!res.success) { throw Error(res.error); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -227,19 +230,37 @@ export const StdlibTest_errors: { [key: string]: string } = {
 }
 
 export class StdlibTest {
-    readonly executor: ContractExecutor; 
-    constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async getSliceEmpty(sc: Cell) {
+    static async init() {
+        return await StdlibTest_init();
+    }
+    
+    static async fromInit() {
+        const init = await StdlibTest_init();
+        const address = contractAddress(0, init);
+        return new StdlibTest(address, init);
+    }
+    
+    static fromAddress(address: Address) {
+        return new StdlibTest(address);
+    }
+    
+    readonly address: Address; 
+    readonly init?: { code: Cell, data: Cell };
+    private constructor(address: Address, init?: { code: Cell, data: Cell }) {
+        this.address = address;
+        this.init = init;
+    }
+    
+    async getSliceEmpty(provider: ContractProvider, sc: Cell) {
         try {
-            let __stack: StackItem[] = [];
+            let __stack: TupleItem[] = [];
             __stack.push({ type: 'slice', cell: sc });
-            let result = await this.executor.get('sliceEmpty', __stack, { debug: true });
-            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            let result = await provider.get('sliceEmpty', __stack);
             return result.stack.readBoolean();
         } catch (e) {
-            if (e instanceof ExecuteError) {
-                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+            if (e instanceof ComputeError) {
+                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (StdlibTest_errors[e.exitCode.toString()]) {
                     throw new Error(StdlibTest_errors[e.exitCode.toString()]);
                 }
@@ -247,16 +268,16 @@ export class StdlibTest {
             throw e;
         }
     }
-    async getSliceBits(sc: Cell) {
+    
+    async getSliceBits(provider: ContractProvider, sc: Cell) {
         try {
-            let __stack: StackItem[] = [];
+            let __stack: TupleItem[] = [];
             __stack.push({ type: 'slice', cell: sc });
-            let result = await this.executor.get('sliceBits', __stack, { debug: true });
-            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            let result = await provider.get('sliceBits', __stack);
             return result.stack.readBigNumber();
         } catch (e) {
-            if (e instanceof ExecuteError) {
-                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+            if (e instanceof ComputeError) {
+                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (StdlibTest_errors[e.exitCode.toString()]) {
                     throw new Error(StdlibTest_errors[e.exitCode.toString()]);
                 }
@@ -264,16 +285,16 @@ export class StdlibTest {
             throw e;
         }
     }
-    async getSliceRefs(sc: Cell) {
+    
+    async getSliceRefs(provider: ContractProvider, sc: Cell) {
         try {
-            let __stack: StackItem[] = [];
+            let __stack: TupleItem[] = [];
             __stack.push({ type: 'slice', cell: sc });
-            let result = await this.executor.get('sliceRefs', __stack, { debug: true });
-            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            let result = await provider.get('sliceRefs', __stack);
             return result.stack.readBigNumber();
         } catch (e) {
-            if (e instanceof ExecuteError) {
-                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+            if (e instanceof ComputeError) {
+                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (StdlibTest_errors[e.exitCode.toString()]) {
                     throw new Error(StdlibTest_errors[e.exitCode.toString()]);
                 }
@@ -281,4 +302,5 @@ export class StdlibTest {
             throw e;
         }
     }
+    
 }

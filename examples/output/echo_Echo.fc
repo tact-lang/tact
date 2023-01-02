@@ -27,6 +27,10 @@ tuple __tact_string_builder_start_comment() inline {
     return __tact_string_builder_start(true);
 }
 
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(false);
+}
+
 cell __tact_string_builder_end(tuple builders) {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
@@ -35,6 +39,10 @@ cell __tact_string_builder_end(tuple builders) {
         c = b.store_ref(c).end_cell();
     }
     return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) {
+    return __tact_string_builder_end(builders).begin_parse();
 }
 
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
@@ -99,6 +107,9 @@ builder __gen_write_Echo(builder build_0, (int) v) inline {
     b = __gen_write_Echo(b, v);
     set_data(b.end_cell());
 }
+
+;; String "Hello, "
+slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE";
 
 builder storeBool(builder $s, int $value) impure {
     if ($value) {
@@ -170,6 +181,28 @@ cell __gen_String_asComment(slice $self) impure {
     return __tact_string_builder_end($b);
 }
 
+cell __gen_Echo_init(cell sys') {
+    var (($self'v)) = (0);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_Echo(b', ($self'v));
+    return b'.end_cell();
+}
+
+slice __gen_Echo_hello((int) $self, slice $src) impure {
+    var (($self'v)) = $self;
+    tuple $builder = __tact_string_builder_start_string();
+    $builder~__tact_string_builder_append(__gen_str_591567833());
+    $builder~__tact_string_builder_append($src);
+    return __tact_string_builder_end_slice($builder);
+}
+
+_ __gen_get_hello(slice $src) method_id(115554) {
+    var self = __gen_load_Echo();
+    var res = __gen_Echo_hello(self, $src);
+    return res;
+}
+
 ((int), ()) __gen_Echo_receive_comment((int) $self, slice $msg) impure {
     var ($self'v) = $self;
     reply(__gen_String_asComment($msg));
@@ -217,6 +250,10 @@ cell __gen_String_asComment(slice $self) impure {
     __gen_store_Echo(self);
 }
 
+cell init_Echo(cell sys') method_id {
+    return __gen_Echo_init(sys');
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -225,5 +262,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmbePs2cTsqFcVptpF2GpX45PdmkfbDBqK6mxht3RPSShj";
+    return "ipfs://QmWiUVD46QEmBaaPqd1vPDGhnmZeJd8Kg9wwFCTeGZ6ewg";
 }

@@ -1,6 +1,5 @@
-import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4, readString, stringToCell } from 'ton';
-import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';
-import BN from 'bn.js';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';
+import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -8,31 +7,32 @@ export type StateInit = {
     data: Cell;
 }
 
-export function packStateInit(src: StateInit): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeRef(src.code);
-    b_0 = b_0.storeRef(src.data);
-    return b_0.endCell();
+export function storeStateInit(src: StateInit) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeRef(src.code);
+        b_0 = b_0.storeRef(src.data);
+    };
 }
 
-export function packStackStateInit(src: StateInit, __stack: StackItem[]) {
+export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
 }
 
-export function packTupleStateInit(src: StateInit): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTupleStateInit(src: StateInit): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleSlice4): StateInit {
+export function unpackStackStateInit(slice: TupleReader): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
 }
-export function unpackTupleStateInit(slice: TupleSlice4): StateInit {
+export function unpackTupleStateInit(slice: TupleReader): StateInit {
     const code = slice.readCell();
     const data = slice.readCell();
     return { $$type: 'StateInit', code: code, data: data };
@@ -41,43 +41,44 @@ export type Context = {
     $$type: 'Context';
     bounced: boolean;
     sender: Address;
-    value: BN;
+    value: bigint;
     raw: Cell;
 }
 
-export function packContext(src: Context): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeBit(src.bounced);
-    b_0 = b_0.storeAddress(src.sender);
-    b_0 = b_0.storeInt(src.value, 257);
-    b_0 = b_0.storeRef(src.raw);
-    return b_0.endCell();
+export function storeContext(src: Context) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeBit(src.bounced);
+        b_0 = b_0.storeAddress(src.sender);
+        b_0 = b_0.storeInt(src.value, 257);
+        b_0 = b_0.storeRef(src.raw);
+    };
 }
 
-export function packStackContext(src: Context, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+export function packStackContext(src: Context, __stack: TupleItem[]) {
+    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'slice', cell: src.raw });
 }
 
-export function packTupleContext(src: Context): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? new BN(-1) : new BN(0) });
+export function packTupleContext(src: Context): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'slice', cell: src.raw });
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleSlice4): Context {
+export function unpackStackContext(slice: TupleReader): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
     const raw = slice.readCell();
     return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
 }
-export function unpackTupleContext(slice: TupleSlice4): Context {
+export function unpackTupleContext(slice: TupleReader): Context {
     const bounced = slice.readBoolean();
     const sender = slice.readAddress();
     const value = slice.readBigNumber();
@@ -88,42 +89,43 @@ export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
     to: Address;
-    value: BN;
-    mode: BN;
+    value: bigint;
+    mode: bigint;
     body: Cell | null;
     code: Cell | null;
     data: Cell | null;
 }
 
-export function packSendParameters(src: SendParameters): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeBit(src.bounce);
-    b_0 = b_0.storeAddress(src.to);
-    b_0 = b_0.storeInt(src.value, 257);
-    b_0 = b_0.storeInt(src.mode, 257);
-    if (src.body !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.body);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    if (src.code !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.code);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    if (src.data !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.data);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
+export function storeSendParameters(src: SendParameters) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeBit(src.bounce);
+        b_0 = b_0.storeAddress(src.to);
+        b_0 = b_0.storeInt(src.value, 257);
+        b_0 = b_0.storeInt(src.mode, 257);
+        if (src.body !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.body);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+        if (src.code !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.code);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+        if (src.data !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.data);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+    };
 }
 
-export function packStackSendParameters(src: SendParameters, __stack: StackItem[]) {
-    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
+    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'int', value: src.mode });
@@ -144,9 +146,9 @@ export function packStackSendParameters(src: SendParameters, __stack: StackItem[
     }
 }
 
-export function packTupleSendParameters(src: SendParameters): StackItem[] {
-    let __stack: StackItem[] = [];
-    __stack.push({ type: 'int', value: src.bounce ? new BN(-1) : new BN(0) });
+export function packTupleSendParameters(src: SendParameters): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
     __stack.push({ type: 'int', value: src.value });
     __stack.push({ type: 'int', value: src.mode });
@@ -168,7 +170,7 @@ export function packTupleSendParameters(src: SendParameters): StackItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
+export function unpackStackSendParameters(slice: TupleReader): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -178,7 +180,7 @@ export function unpackStackSendParameters(slice: TupleSlice4): SendParameters {
     const data = slice.readCellOpt();
     return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
 }
-export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
+export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
     const bounce = slice.readBoolean();
     const to = slice.readAddress();
     const value = slice.readBigNumber();
@@ -190,90 +192,93 @@ export function unpackTupleSendParameters(slice: TupleSlice4): SendParameters {
 }
 export type Increment = {
     $$type: 'Increment';
-    key: BN;
-    value: BN;
+    key: bigint;
+    value: bigint;
 }
 
-export function packIncrement(src: Increment): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(3615081709, 32);
-    b_0 = b_0.storeInt(src.key, 257);
-    b_0 = b_0.storeInt(src.value, 257);
-    return b_0.endCell();
+export function storeIncrement(src: Increment) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeUint(3615081709, 32);
+        b_0 = b_0.storeInt(src.key, 257);
+        b_0 = b_0.storeInt(src.value, 257);
+    };
 }
 
-export function packStackIncrement(src: Increment, __stack: StackItem[]) {
+export function packStackIncrement(src: Increment, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
     __stack.push({ type: 'int', value: src.value });
 }
 
-export function packTupleIncrement(src: Increment): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTupleIncrement(src: Increment): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'int', value: src.key });
     __stack.push({ type: 'int', value: src.value });
     return __stack;
 }
 
-export function unpackStackIncrement(slice: TupleSlice4): Increment {
+export function unpackStackIncrement(slice: TupleReader): Increment {
     const key = slice.readBigNumber();
     const value = slice.readBigNumber();
     return { $$type: 'Increment', key: key, value: value };
 }
-export function unpackTupleIncrement(slice: TupleSlice4): Increment {
+export function unpackTupleIncrement(slice: TupleReader): Increment {
     const key = slice.readBigNumber();
     const value = slice.readBigNumber();
     return { $$type: 'Increment', key: key, value: value };
 }
 export type Toggle = {
     $$type: 'Toggle';
-    key: BN;
+    key: bigint;
 }
 
-export function packToggle(src: Toggle): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(575056061, 32);
-    b_0 = b_0.storeInt(src.key, 257);
-    return b_0.endCell();
+export function storeToggle(src: Toggle) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeUint(575056061, 32);
+        b_0 = b_0.storeInt(src.key, 257);
+    };
 }
 
-export function packStackToggle(src: Toggle, __stack: StackItem[]) {
+export function packStackToggle(src: Toggle, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
 }
 
-export function packTupleToggle(src: Toggle): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTupleToggle(src: Toggle): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'int', value: src.key });
     return __stack;
 }
 
-export function unpackStackToggle(slice: TupleSlice4): Toggle {
+export function unpackStackToggle(slice: TupleReader): Toggle {
     const key = slice.readBigNumber();
     return { $$type: 'Toggle', key: key };
 }
-export function unpackTupleToggle(slice: TupleSlice4): Toggle {
+export function unpackTupleToggle(slice: TupleReader): Toggle {
     const key = slice.readBigNumber();
     return { $$type: 'Toggle', key: key };
 }
 export type Persist = {
     $$type: 'Persist';
-    key: BN;
+    key: bigint;
     content: Cell | null;
 }
 
-export function packPersist(src: Persist): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(140802882, 32);
-    b_0 = b_0.storeInt(src.key, 257);
-    if (src.content !== null) {
-        b_0 = b_0.storeBit(true);
-        b_0 = b_0.storeRef(src.content);
-    } else {
-        b_0 = b_0.storeBit(false);
-    }
-    return b_0.endCell();
+export function storePersist(src: Persist) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeUint(140802882, 32);
+        b_0 = b_0.storeInt(src.key, 257);
+        if (src.content !== null) {
+            b_0 = b_0.storeBit(true);
+            b_0 = b_0.storeRef(src.content);
+        } else {
+            b_0 = b_0.storeBit(false);
+        }
+    };
 }
 
-export function packStackPersist(src: Persist, __stack: StackItem[]) {
+export function packStackPersist(src: Persist, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
@@ -282,8 +287,8 @@ export function packStackPersist(src: Persist, __stack: StackItem[]) {
     }
 }
 
-export function packTuplePersist(src: Persist): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTuplePersist(src: Persist): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'int', value: src.key });
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
@@ -293,85 +298,88 @@ export function packTuplePersist(src: Persist): StackItem[] {
     return __stack;
 }
 
-export function unpackStackPersist(slice: TupleSlice4): Persist {
+export function unpackStackPersist(slice: TupleReader): Persist {
     const key = slice.readBigNumber();
     const content = slice.readCellOpt();
     return { $$type: 'Persist', key: key, content: content };
 }
-export function unpackTuplePersist(slice: TupleSlice4): Persist {
+export function unpackTuplePersist(slice: TupleReader): Persist {
     const key = slice.readBigNumber();
     const content = slice.readCellOpt();
     return { $$type: 'Persist', key: key, content: content };
 }
 export type Reset = {
     $$type: 'Reset';
-    key: BN;
+    key: bigint;
 }
 
-export function packReset(src: Reset): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeUint(2438762569, 32);
-    b_0 = b_0.storeInt(src.key, 257);
-    return b_0.endCell();
+export function storeReset(src: Reset) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeUint(2438762569, 32);
+        b_0 = b_0.storeInt(src.key, 257);
+    };
 }
 
-export function packStackReset(src: Reset, __stack: StackItem[]) {
+export function packStackReset(src: Reset, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
 }
 
-export function packTupleReset(src: Reset): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTupleReset(src: Reset): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'int', value: src.key });
     return __stack;
 }
 
-export function unpackStackReset(slice: TupleSlice4): Reset {
+export function unpackStackReset(slice: TupleReader): Reset {
     const key = slice.readBigNumber();
     return { $$type: 'Reset', key: key };
 }
-export function unpackTupleReset(slice: TupleSlice4): Reset {
+export function unpackTupleReset(slice: TupleReader): Reset {
     const key = slice.readBigNumber();
     return { $$type: 'Reset', key: key };
 }
 export type Something = {
     $$type: 'Something';
-    value: BN;
+    value: bigint;
 }
 
-export function packSomething(src: Something): Cell {
-    let b_0 = new Builder();
-    b_0 = b_0.storeInt(src.value, 257);
-    return b_0.endCell();
+export function storeSomething(src: Something) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0 = b_0.storeInt(src.value, 257);
+    };
 }
 
-export function packStackSomething(src: Something, __stack: StackItem[]) {
+export function packStackSomething(src: Something, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
 
-export function packTupleSomething(src: Something): StackItem[] {
-    let __stack: StackItem[] = [];
+export function packTupleSomething(src: Something): TupleItem[] {
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'int', value: src.value });
     return __stack;
 }
 
-export function unpackStackSomething(slice: TupleSlice4): Something {
+export function unpackStackSomething(slice: TupleReader): Something {
     const value = slice.readBigNumber();
     return { $$type: 'Something', value: value };
 }
-export function unpackTupleSomething(slice: TupleSlice4): Something {
+export function unpackTupleSomething(slice: TupleReader): Something {
     const value = slice.readBigNumber();
     return { $$type: 'Something', value: value };
 }
-export async function IncrementContract_init() {
+async function IncrementContract_init() {
     const __code = 'te6ccgECKgEAA/QAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAkJQIBIAYHAgEgGBkCASAICQAPvEDd5aEA3kMCASAKCwIBIBITAgEgDA0AI1IW6VW1n0WjDgyAHPAEEz9EKASdHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQ13nE7brjAiCCECJGqL264wIgghAIZHtCuuMCghCRXJBJuoA4PEBEACwgbvLQgIAC8MO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCENd5xO268uCBgQEB1wCBAQHXAFkyEFYQRRA0QwDwGMj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVACuMO1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFQXTHwGCECJGqL268uCBgQEB1wABMRBFEDRBMPAZyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAMQw7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQCGR7Qrry4IGBAQHXAG0B0gABkjHU3lkyEFYQRRA0QwDwGsj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVAC6jlbtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghCRXJBJuvLggYEBAdcAATEQRRA0QTDwG8j4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOAw8sCCAgEgFBUCASAWFwAdEEz9AxvoZQB1wAw4FttgABsIG6VMFn0WjDgQTP0FYAARFn0DW+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGACAVgaGwIBSB4fAD1W1tbW1tBcjMBVBF9AAS9AAByPQAEvQAEvQAyQHMyYAgEgHB0ABRfBIAAHBRfBIAIBICAhAgEgIiMAQz4QW8kECNfA4EBASAQOUFAUpDwAxAjgQELQAeBAQHwBwGAASwkgQEBInHwBCBumjAUgQEBAX9x8AOdgQEBAfABsxA2EnHwA+IDgAC8ggDOKSWBAQEk8AZu8vQQJIEBAVnwBQKAAmyBAQFtUxIQSVnwAwSBAQEmbXHwAwOBAQEmbfAFgQEL+EFvJBAjXwMQJG2BAQHwB4EBAW0gbpIwbZvwDsgBAYEBAc8AyeJBcPAFEDRBMIAIBICYnAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwCASAoKQA/u0B+1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFfAWgACbQ+/gKwAD+14F2omhqAPwxegJ6AmoA6HoCegJ6AhgIGogaNgr4C8A==';
-    const depends = new Map<string, Cell>();
-    let systemCell = beginCell().storeDict(null).endCell();
-    let __stack: StackItem[] = [];
+    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
+    let systemCell = beginCell().storeDict(depends).endCell();
+    let __stack: TupleItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });
-    let res = await executor.get('init_IncrementContract', __stack, { debug: true });
-    if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }
+    let system = await ContractSystem.create();
+    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
+    let res = await executor.get('init_IncrementContract', __stack);
+    if (!res.success) { throw Error(res.error); }
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -402,54 +410,57 @@ export const IncrementContract_errors: { [key: string]: string } = {
 }
 
 export class IncrementContract {
-    readonly executor: ContractExecutor; 
-    constructor(executor: ContractExecutor) { this.executor = executor; } 
     
-    async send(args: { amount: BN, from?: Address, debug?: boolean }, message: Increment | Toggle | Persist | Reset) {
+    static async init() {
+        return await IncrementContract_init();
+    }
+    
+    static async fromInit() {
+        const init = await IncrementContract_init();
+        const address = contractAddress(0, init);
+        return new IncrementContract(address, init);
+    }
+    
+    static fromAddress(address: Address) {
+        return new IncrementContract(address);
+    }
+    
+    readonly address: Address; 
+    readonly init?: { code: Cell, data: Cell };
+    private constructor(address: Address, init?: { code: Cell, data: Cell }) {
+        this.address = address;
+        this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Increment | Toggle | Persist | Reset) {
+        
         let body: Cell | null = null;
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
-            body = packIncrement(message);
+            body = beginCell().store(storeIncrement(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Toggle') {
-            body = packToggle(message);
+            body = beginCell().store(storeToggle(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Persist') {
-            body = packPersist(message);
+            body = beginCell().store(storePersist(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Reset') {
-            body = packReset(message);
+            body = beginCell().store(storeReset(message)).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }
-        try {
-            let r = await this.executor.internal(new InternalMessage({
-                to: this.executor.address,
-                from: args.from || this.executor.address,
-                bounce: false,
-                value: args.amount,
-                body: new CommonMessageInfo({
-                    body: new CellMessage(body!)
-                })
-            }), { debug: args.debug });
-            if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }
-        } catch (e) {
-            if (e instanceof ExecuteError) {
-                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
-                if (IncrementContract_errors[e.exitCode.toString()]) {
-                    throw new Error(IncrementContract_errors[e.exitCode.toString()]);
-                }
-            }
-            throw e;
-        }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
-    async getCounters() {
+    
+    async getCounters(provider: ContractProvider) {
         try {
-            let __stack: StackItem[] = [];
-            let result = await this.executor.get('counters', __stack, { debug: true });
-            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            let __stack: TupleItem[] = [];
+            let result = await provider.get('counters', __stack);
             return result.stack.readCellOpt();
         } catch (e) {
-            if (e instanceof ExecuteError) {
-                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+            if (e instanceof ComputeError) {
+                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (IncrementContract_errors[e.exitCode.toString()]) {
                     throw new Error(IncrementContract_errors[e.exitCode.toString()]);
                 }
@@ -457,15 +468,15 @@ export class IncrementContract {
             throw e;
         }
     }
-    async getCounters2() {
+    
+    async getCounters2(provider: ContractProvider) {
         try {
-            let __stack: StackItem[] = [];
-            let result = await this.executor.get('counters2', __stack, { debug: true });
-            if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }
+            let __stack: TupleItem[] = [];
+            let result = await provider.get('counters2', __stack);
             return result.stack.readCellOpt();
         } catch (e) {
-            if (e instanceof ExecuteError) {
-                if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }
+            if (e instanceof ComputeError) {
+                if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }
                 if (IncrementContract_errors[e.exitCode.toString()]) {
                     throw new Error(IncrementContract_errors[e.exitCode.toString()]);
                 }
@@ -473,4 +484,5 @@ export class IncrementContract {
             throw e;
         }
     }
+    
 }

@@ -294,13 +294,35 @@
       }
     }
   ],
-  "init": null,
+  "init": {
+    "name": "init_Echo",
+    "args": []
+  },
   "receivers": [
     {
       "kind": "internal-fallback"
     }
   ],
-  "getters": [],
+  "getters": [
+    {
+      "name": "hello",
+      "args": [
+        {
+          "name": "src",
+          "type": {
+            "kind": "ref",
+            "name": "String",
+            "optional": false
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "String",
+        "optional": false
+      }
+    }
+  ],
   "dependsOn": {},
   "errors": {
     "2": {

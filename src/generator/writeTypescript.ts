@@ -8,7 +8,7 @@ import { readFromStack } from "./typescript/readFromStack";
 function printFieldType(ref: TypeRef): string {
     if (ref.kind === 'ref') {
         if (ref.name === 'Int') {
-            return 'BN' + (ref.optional ? ' | null' : '');
+            return 'bigint' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Bool') {
             return 'boolean' + (ref.optional ? ' | null' : '');
         } else if (ref.name === 'Cell' || ref.name === 'Slice' || ref.name === 'Builder') {
@@ -29,7 +29,7 @@ function printFieldType(ref: TypeRef): string {
 }
 
 function writeArguments(args: ContractFunctionArg[]) {
-    return args.map((v) => `${v.name}: ${printFieldType(v.type)}`).join(', ');
+    return args.map((v) => `${v.name}: ${printFieldType(v.type)}`);
 }
 
 function writeField(field: ContractField, w: Writer) {
@@ -38,9 +38,8 @@ function writeField(field: ContractField, w: Writer) {
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, StackItem, Address, Builder, InternalMessage, CommonMessageInfo, CellMessage, beginCell, serializeDict, TupleSlice4, readString, stringToCell } from 'ton';`);
-    w.append(`import { ContractExecutor, createExecutorFromCode, ExecuteError } from 'ton-nodejs';`);
-    w.append(`import BN from 'bn.js';`);
+    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender } from 'ton-core';`);
+    w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
     w.append();
 
     // Structs
@@ -55,77 +54,81 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         w.append(`}`);
         w.append();
 
-        w.append(`export function pack${s.name}(src: ${s.name}): Cell {`);
+        w.append(`export function store${s.name}(src: ${s.name}) {`);
         w.inIndent(() => {
-            w.append(`let b_0 = new Builder();`);
-            if (s.allocation.prefix) {
-                w.append(`b_0 = b_0.storeUint(${s.allocation.prefix}, 32);`);
-            }
+            w.append(`return (builder: Builder) => {`)
+            w.inIndent(() => {
+                w.append(`let b_0 = builder;`);
+                if (s.allocation.prefix) {
+                    w.append(`b_0 = b_0.storeUint(${s.allocation.prefix}, 32);`);
+                }
 
-            function processField(index: number, f: AllocationField) {
-                if (f.kind === 'int') {
-                    if (f.bits === 1) {
-                        w.append(`b_${index} = b_${index}.storeBit(src.${s.fields[f.index].name});`);
-                    } else {
-                        w.append(`b_${index} = b_${index}.storeInt(src.${s.fields[f.index].name}, ${f.bits});`);
-                    }
-                } else if (f.kind === 'uint') {
-                    w.append(`b_${index} = b_${index}.storeUint(src.${s.fields[f.index].name}, ${f.bits});`);
-                } else if (f.kind === 'coins') {
-                    w.append(`b_${index} = b_${index}.storeCoins(src.${s.fields[f.index].name});`);
-                } else if (f.kind === 'cell') {
-                    w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
-                } else if (f.kind === 'slice') {
-                    w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
-                } else if (f.kind === 'optional') {
-                    if (f.inner.kind === 'address') {
+                function processField(index: number, f: AllocationField) {
+                    if (f.kind === 'int') {
+                        if (f.bits === 1) {
+                            w.append(`b_${index} = b_${index}.storeBit(src.${s.fields[f.index].name});`);
+                        } else {
+                            w.append(`b_${index} = b_${index}.storeInt(src.${s.fields[f.index].name}, ${f.bits});`);
+                        }
+                    } else if (f.kind === 'uint') {
+                        w.append(`b_${index} = b_${index}.storeUint(src.${s.fields[f.index].name}, ${f.bits});`);
+                    } else if (f.kind === 'coins') {
+                        w.append(`b_${index} = b_${index}.storeCoins(src.${s.fields[f.index].name});`);
+                    } else if (f.kind === 'cell') {
+                        w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
+                    } else if (f.kind === 'slice') {
+                        w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
+                    } else if (f.kind === 'optional') {
+                        if (f.inner.kind === 'address') {
+                            w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
+                        } else {
+                            w.append(`if (src.${s.fields[f.index].name} !== null) {`);
+                            w.inIndent(() => {
+                                w.append(`b_${index} = b_${index}.storeBit(true);`);
+                                processField(index, f.inner);
+                            });
+                            w.append(`} else {`);
+                            w.inIndent(() => {
+                                w.append(`b_${index} = b_${index}.storeBit(false);`);
+                            });
+                            w.append(`}`);
+                        }
+                    } else if (f.kind === 'struct') {
+                        w.append(`b_${index} = b_${index}.store(store${f.type}(src.${s.fields[f.index].name}));`);
+                    } else if (f.kind === 'address') {
                         w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
+                    } else if (f.kind === 'remaining') {
+                        w.append(`b_${index} = b_${index}.storeSlice(src.${s.fields[f.index].name}.beginParse());`);
+                    } else if (f.kind === 'bytes') {
+                        w.append(`b_${index} = b_${index}.storeSlice(src.${s.fields[f.index].name});`);
+                    } else if (f.kind === 'map') {
+                        w.append(`b_${index} = b_${index}.storeDict(src.${s.fields[f.index].name});`);
                     } else {
-                        w.append(`if (src.${s.fields[f.index].name} !== null) {`);
-                        w.inIndent(() => {
-                            w.append(`b_${index} = b_${index}.storeBit(true);`);
-                            processField(index, f.inner);
-                        });
-                        w.append(`} else {`);
-                        w.inIndent(() => {
-                            w.append(`b_${index} = b_${index}.storeBit(false);`);
-                        });
-                        w.append(`}`);
+                        throw Error('Unsupported field type');
                     }
-                } else if (f.kind === 'struct') {
-                    w.append(`b_${index} = b_${index}.storeCellCopy(pack${f.type}(src.${s.fields[f.index].name}));`);
-                } else if (f.kind === 'address') {
-                    w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
-                } else if (f.kind === 'remaining') {
-                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
-                } else if (f.kind === 'bytes') {
-                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
-                } else if (f.kind === 'map') {
-                    w.append(`b_${index} = b_${index}.storeCellCopy(src.${s.fields[f.index].name});`);
-                } else {
-                    throw Error('Unsupported field type');
                 }
-            }
 
-            function processCell(index: number, src: AllocationCell) {
-                for (let f of src.fields) {
-                    processField(index, f);
+                function processCell(index: number, src: AllocationCell) {
+                    for (let f of src.fields) {
+                        processField(index, f);
+                    }
+                    if (src.next) {
+                        w.append(`let b_${index + 1} = new Builder();`);
+                        processCell(index + 1, src.next);
+                        w.append(`b_${index} = b_${index}.storeRef(b_${index + 1}.endCell());`);
+                    }
                 }
-                if (src.next) {
-                    w.append(`let b_${index + 1} = new Builder();`);
-                    processCell(index + 1, src.next);
-                    w.append(`b_${index} = b_${index}.storeRef(b_${index + 1}.endCell());`);
-                }
-            }
-            processCell(0, s.allocation.root);
+                processCell(0, s.allocation.root);
 
-            w.append(`return b_0.endCell();`);
+
+            });
+            w.append(`};`);
         });
         w.append(`}`);
         w.append();
 
         // Pack to stack
-        w.append(`export function packStack${s.name}(src: ${s.name}, __stack: StackItem[]) {`);
+        w.append(`export function packStack${s.name}(src: ${s.name}, __stack: TupleItem[]) {`);
         w.inIndent(() => {
             for (const f of s.fields) {
                 writeToStack(`src.${f.name}`, f.type, w);
@@ -133,9 +136,9 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         });
         w.append(`}`);
         w.append();
-        w.append(`export function packTuple${s.name}(src: ${s.name}): StackItem[] {`);
+        w.append(`export function packTuple${s.name}(src: ${s.name}): TupleItem[] {`);
         w.inIndent(() => {
-            w.append(`let __stack: StackItem[] = [];`)
+            w.append(`let __stack: TupleItem[] = [];`)
             for (const f of s.fields) {
                 writeToStack(`src.${f.name}`, f.type, w, false, true);
             }
@@ -145,7 +148,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         w.append();
 
         // Unpack from stack
-        w.append(`export function unpackStack${s.name}(slice: TupleSlice4): ${s.name} {`)
+        w.append(`export function unpackStack${s.name}(slice: TupleReader): ${s.name} {`)
         w.inIndent(() => {
             for (const f of s.fields) {
                 readFromStack(f.name, f.type, w);
@@ -153,7 +156,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
             w.append(`return { $$type: '${s.name}', ${s.fields.map(f => `${f.name}: ${f.name}`).join(', ')} };`);
         });
         w.append(`}`);
-        w.append(`export function unpackTuple${s.name}(slice: TupleSlice4): ${s.name} {`)
+        w.append(`export function unpackTuple${s.name}(slice: TupleReader): ${s.name} {`)
         w.inIndent(() => {
             for (const f of s.fields) {
                 readFromStack(f.name, f.type, w, true);
@@ -165,27 +168,23 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
 
     // Init
     if (abi.init) {
-        w.append(`export async function ${abi.name}_init(${writeArguments(abi.init.args)}) {`);
+        w.append(`async function ${abi.name}_init(${writeArguments(abi.init.args).join(', ')}) {`);
         w.inIndent(() => {
 
             // Code references
             w.append(`const __code = '${code}';`);
-            w.append(`const depends = new Map<string, Cell>();`);
+            w.append(`const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());`);
             for (let s in abi.dependsOn) {
                 let cd = depends[s];
                 if (!cd) {
                     throw Error(`Cannot find code for ${s}`);
                 }
-                w.append(`depends.set('${abi.dependsOn[s].uid}', Cell.fromBoc(Buffer.from('${cd.code}', 'base64'))[0]);`);
+                w.append(`depends.set(${abi.dependsOn[s].uid}, Cell.fromBoc(Buffer.from('${cd.code}', 'base64'))[0]);`);
             }
-            if (Object.values(abi.dependsOn).length > 0) {
-                w.append(`let systemCell = beginCell().storeDict(serializeDict(depends, 16, (src, v) => v.refs.push(src))).endCell();`);
-            } else {
-                w.append(`let systemCell = beginCell().storeDict(null).endCell();`);
-            }
+            w.append(`let systemCell = beginCell().storeDict(depends).endCell();`);
 
             // Stack
-            w.append('let __stack: StackItem[] = [];');
+            w.append('let __stack: TupleItem[] = [];');
             w.append(`__stack.push({ type: 'cell', cell: systemCell });`);
             for (let a of abi.init!.args) {
                 writeToStack(a.name, a.type, w);
@@ -193,9 +192,10 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
 
             // Deploy
             w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
-            w.append(`let executor = await createExecutorFromCode({ code: codeCell, data: new Cell() });`);
-            w.append(`let res = await executor.get('${abi.init!.name}', __stack, { debug: true });`);
-            w.append(`if (res.debugLogs.length > 0) { console.warn(res.debugLogs); }`);
+            w.append(`let system = await ContractSystem.create();`);
+            w.append(`let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);`);
+            w.append(`let res = await executor.get('${abi.init!.name}', __stack);`);
+            w.append(`if (!res.success) { throw Error(res.error); }`);
             w.append(`let data = res.stack.readCell();`);
             w.append(`return { code: codeCell, data };`);
         });
@@ -216,8 +216,41 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
     // Wrapper
     w.append(`export class ${abi.name} {`);
     w.inIndent(() => {
-        w.append(`readonly executor: ContractExecutor; `);
-        w.append(`constructor(executor: ContractExecutor) { this.executor = executor; } `);
+        w.append();
+
+        if (abi.init) {
+            w.append(`static async init(${writeArguments(abi.init.args).join(', ')}) {`);
+            w.inIndent(() => {
+                w.append(`return await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
+            });
+            w.append(`}`);
+            w.append();
+
+            w.append(`static async fromInit(${writeArguments(abi.init.args).join(', ')}) {`);
+            w.inIndent(() => {
+                w.append(`const init = await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
+                w.append(`const address = contractAddress(0, init);`);
+                w.append(`return new ${abi.name}(address, init);`);
+            });
+            w.append(`}`);
+            w.append();
+        }
+
+        w.append(`static fromAddress(address: Address) {`);
+        w.inIndent(() => {
+            w.append(`return new ${abi.name}(address);`);
+        });
+        w.append(`}`);
+        w.append();
+
+        w.append(`readonly address: Address; `);
+        w.append(`readonly init?: { code: Cell, data: Cell };`);
+        w.append(`private constructor(address: Address, init?: { code: Cell, data: Cell }) {`);
+        w.inIndent(() => {
+            w.append('this.address = address;');
+            w.append('this.init = init;');
+        });
+        w.append('}')
         w.append();
 
         // Receivers
@@ -234,14 +267,17 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     receivers.push(`Slice`);
                 }
             }
-            w.append(`async send(args: { amount: BN, from?: Address, debug?: boolean }, message: ${receivers.join(' | ')}) {`);
+            w.append(`async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${receivers.join(' | ')}) {`);
             w.inIndent(() => {
+                w.append();
+
+                // Parse message
                 w.append(`let body: Cell | null = null;`);
                 for (const r of abi.receivers) {
                     if (r.kind === 'internal-binary') {
                         w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${r.type}') {`);
                         w.inIndent(() => {
-                            w.append(`body = pack${r.type}(message);`);
+                            w.append(`body = beginCell().store(store${r.type}(message)).endCell();`);
                         });
                         w.append(`}`);
                     } else if (r.kind === 'internal-empty') {
@@ -259,61 +295,33 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                     } else if (r.kind === 'internal-fallback') {
                         w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
                         w.inIndent(() => {
-                            w.append(`body = message.toCell();`);
+                            w.append(`body = message.asCell();`);
                         });
                         w.append(`}`);
                     }
                 }
                 w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
+                w.append();
 
-                w.append('try {')
-                w.inIndent(() => {
-                    w.append(`let r = await this.executor.internal(new InternalMessage({`);
-                    w.inIndent(() => {
-                        w.append(`to: this.executor.address,`);
-                        w.append(`from: args.from || this.executor.address,`);
-                        w.append(`bounce: false,`);
-                        w.append(`value: args.amount,`);
-                        w.append(`body: new CommonMessageInfo({`);
-                        w.inIndent(() => {
-                            w.append(`body: new CellMessage(body!)`);
-                        });
-                        w.append(`})`);
-                    });
-                    w.append(`}), { debug: args.debug });`);
-                    w.append(`if (r.debugLogs.length > 0) { console.warn(r.debugLogs); }`);
-                });
-                w.append(`} catch (e) {`);
-                w.inIndent(() => {
-                    w.append(`if (e instanceof ExecuteError) {`)
-                    w.inIndent(() => {
-                        w.append(`if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }`);
-                        w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
-                        w.inIndent(() => {
-                            w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);
-                        });
-                        w.append(`}`);
-                    });
-                    w.append(`}`);
-                    w.append(`throw e;`);
-                });
-                w.append(`}`);
+                // Send message
+                w.append(`await provider.internal(via, { ...args, body: body });`);
+                w.append();
             });
             w.append(`}`);
+            w.append();
         }
 
         // Getters
         for (let g of abi.getters) {
-            w.append(`async get${changeCase.pascalCase(g.name)}(${writeArguments(g.args)}) {`);
+            w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.args)].join(', ')}) {`);
             w.inIndent(() => {
                 w.append('try {')
                 w.inIndent(() => {
-                    w.append(`let __stack: StackItem[] = [];`);
+                    w.append(`let __stack: TupleItem[] = [];`);
                     for (let a of g.args) {
                         writeToStack(a.name, a.type, w);
                     }
-                    w.append(`let result = await this.executor.get('${g.name}', __stack, { debug: true });`);
-                    w.append(`if (result.debugLogs.length > 0) { console.warn(result.debugLogs); }`);
+                    w.append(`let result = await provider.get('${g.name}', __stack);`);
 
                     if (g.returns) {
                         if (g.returns.kind === 'ref') {
@@ -383,9 +391,9 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 });
                 w.append(`} catch (e) {`);
                 w.inIndent(() => {
-                    w.append(`if (e instanceof ExecuteError) {`)
+                    w.append(`if (e instanceof ComputeError) {`)
                     w.inIndent(() => {
-                        w.append(`if (e.debugLogs.length > 0) { console.warn(e.debugLogs); }`);
+                        w.append(`if (e.debugLogs && e.debugLogs.length > 0) { console.warn(e.debugLogs); }`);
                         w.append(`if (${abi.name}_errors[e.exitCode.toString()]) {`);
                         w.inIndent(() => {
                             w.append(`throw new Error(${abi.name}_errors[e.exitCode.toString()]);`);
@@ -398,6 +406,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                 w.append(`}`);
             });
             w.append(`}`);
+            w.append();
         }
     });
     w.append(`}`);

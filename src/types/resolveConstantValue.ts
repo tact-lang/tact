@@ -1,4 +1,4 @@
-import { toNano } from "ton";
+import { toNano } from "ton-core";
 import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
 

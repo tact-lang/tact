@@ -1,4 +1,3 @@
-import { BN } from "bn.js";
 import { contractErrors } from "../../abi/errors";
 import { WriterContext } from "../Writer";
 
@@ -547,7 +546,7 @@ export function writeStdlib(ctx: WriterContext) {
             });
             ctx.append(`}`);
             ctx.append();
-            ctx.append(`if (src < ${new BN(10).pow(new BN(30)).toString(10)}) {`); // Better cut-off?
+            ctx.append(`if (src < ${(10n ** 30n).toString(10)}) {`); // Better cut-off?
             ctx.inIndent(() => {
                 ctx.append(`int len = 0;`);
                 ctx.append(`int value = 0;`);

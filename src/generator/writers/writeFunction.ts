@@ -1,4 +1,4 @@
-import { beginCell } from "ton";
+import { beginCell } from "ton-core";
 import { enabledInline } from "../../config";
 import { ASTCondition, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";

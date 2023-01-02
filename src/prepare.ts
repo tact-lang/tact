@@ -3,8 +3,8 @@ import { compile, compileProjects, getContracts, precompile } from './main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from './generator/createABI';
 import { writeTypescript } from './generator/writeTypescript';
-import { fromCode } from 'tvm-disassembler';
-import { Cell } from 'ton';
+// import { fromCode } from 'tvm-disassembler';
+// import { Cell } from 'ton';
 import { ContractABI } from './abi/ContractABI';
 import { CompilerContext } from './context';
 
@@ -51,8 +51,8 @@ import { CompilerContext } from './context';
                     fs.writeFileSync(prefix + ".cell", c.output!);
 
                     // Cell -> Fift decpmpiler
-                    let source = fromCode(Cell.fromBoc(c.output!)[0]);
-                    fs.writeFileSync(prefix + ".rev.fift", source);
+                    // let source = fromCode(Cell.fromBoc(c.output!)[0]);
+                    // fs.writeFileSync(prefix + ".rev.fift", source);
 
                     // Tact -> ABI
                     let abi = createABI(ctx, contract);
@@ -94,8 +94,8 @@ import { CompilerContext } from './context';
             fs.writeFileSync(p.path + r + ".cell", c.output!);
 
             // Cell -> Fift decpmpiler
-            let source = fromCode(Cell.fromBoc(c.output!)[0]);
-            fs.writeFileSync(p.path + r + ".rev.fift", source);
+            // let source = fromCode(Cell.fromBoc(c.output!)[0]);
+            // fs.writeFileSync(p.path + r + ".rev.fift", source);
         }
     }
 })();
