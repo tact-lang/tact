@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- `toCell` to all structs and messages
+
+## Removed
+- `abi.pack_cell` and `abi.pack_slice`
+
 ## Changed
 - Updated codegen to prefix function names with a `$` to avoid clashing with system functions
-- `random` and `randomInt` that are correctly initialized on first use unlike native one
+- `random` and `randomInt` that are correctly initialized on first use unlike native one 
 
 ## [0.6.0] - 2023-01-03
 
