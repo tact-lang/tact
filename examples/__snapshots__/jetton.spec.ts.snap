@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jetton should deploy 1`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "cell": "x{A32A5C5F0000000000000000000000000000000000000000000000000001C6BF526340004_}",
+        "type": "cell",
+      },
+      "bounce": true,
+      "from": "kQAI-3FJVc_ywSuY4vq0bYrzR7S4Och4y7bTU_i5yLOB3A6P",
+      "to": "kQCbtsqQzwlrylWKSG1XDADTB7WtkTnZWgR4rQHV0cLj_wHk",
+      "type": "internal",
+      "value": 1000000000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 22512n,
+    "type": "processed",
+  },
+  {
+    "messages": [
+      {
+        "body": {
+          "cell": "x{178D451900000000000000007038D7EA4C68000801376D95219E12D794AB1490DAAE1801A60F6B5B2273B2B408F15A03ABA385C7FF00023EDC525573FCB04AE638BEAD1B62BCD1ED2E0E721E32EDB4D4FE2E722CE07702_}",
+          "type": "cell",
+        },
+        "bounce": false,
+        "from": "kQCbtsqQzwlrylWKSG1XDADTB7WtkTnZWgR4rQHV0cLj_wHk",
+        "to": "kQCd_wim2tV1G8jckJjgIuInuy5izpZ2QSYDPysuu1-HPALT",
+        "type": "internal",
+        "value": 960191000n,
+      },
+    ],
+    "type": "sent",
+  },
+]
+`;

@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`muiltisig-3 should deploy 1`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "text": "Deploy",
+        "type": "text",
+      },
+      "bounce": true,
+      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+      "to": "kQALnu0JlNiDVCRSe1Wt0qxC6o96OgKCtY-mZMr_xQn5EhIE",
+      "type": "internal",
+      "value": 10000000000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 3934n,
+    "type": "processed",
+  },
+]
+`;

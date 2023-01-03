@@ -12,8 +12,10 @@ describe('muiltisig-3', () => {
         let system = await ContractSystem.create();
         let treasure = system.treasure('treasure');
         let contract = system.open(await MultisigContract.fromInit(key1, key2, key3));
+        let tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, 'Deploy');
         await system.run();
+        expect(tracker.events()).toMatchSnapshot();
 
         // Check keys
         expect(await contract.getKey1()).toBe(key1);

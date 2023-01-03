@@ -12,6 +12,7 @@ describe('wallet', () => {
         let system = await ContractSystem.create();
         let treasure = system.treasure('treasure');
         let contract = system.open(await Wallet.fromInit(publicKey, 0n));
+        let tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, 'Deploy');
         await system.run();
 
@@ -36,16 +37,19 @@ describe('wallet', () => {
             signature: beginCell().storeBuffer(signature).endCell()
         });
         await system.run();
+        expect(tracker.events()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(1n);
 
         // Send empty message
         await contract.send(treasure, { value: toNano(1) }, 'notify');
         await system.run();
+        expect(tracker.events()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(2n);
 
         // Send comment message
         await contract.send(treasure, { value: toNano(1) }, null);
         await system.run();
+        expect(tracker.events()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(3n);
     });
 });

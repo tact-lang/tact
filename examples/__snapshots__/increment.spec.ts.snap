@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`increment should deploy 1`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "cell": "x{95973DCC0000000000000000}",
+        "type": "cell",
+      },
+      "bounce": true,
+      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+      "to": "kQCEQY_waSye2WCVqEM0nASwkljH7WI2_CJwGOTBJofOHxTx",
+      "type": "internal",
+      "value": 10000000000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 10488n,
+    "type": "processed",
+  },
+  {
+    "messages": [
+      {
+        "body": {
+          "cell": "x{D37FB8210000000000000000}",
+          "type": "cell",
+        },
+        "bounce": true,
+        "from": "kQCEQY_waSye2WCVqEM0nASwkljH7WI2_CJwGOTBJofOHxTx",
+        "to": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+        "type": "internal",
+        "value": 9988316000n,
+      },
+    ],
+    "type": "sent",
+  },
+]
+`;
+
+exports[`increment should deploy 2`] = `
+[
+  {
+    "message": {
+      "body": {
+        "cell": "x{D779C4ED00000000000000000000000000000000000000000000000000000000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECC2_}",
+        "type": "cell",
+      },
+      "bounce": true,
+      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+      "to": "kQCEQY_waSye2WCVqEM0nASwkljH7WI2_CJwGOTBJofOHxTx",
+      "type": "internal",
+      "value": 10000000000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 7322n,
+    "type": "processed",
+  },
+]
+`;
