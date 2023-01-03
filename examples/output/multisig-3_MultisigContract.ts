@@ -10,9 +10,16 @@ export type StateInit = {
 export function storeStateInit(src: StateInit) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeRef(src.code);
-        b_0 = b_0.storeRef(src.data);
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
     };
+}
+
+export function loadStateInit(slice: Slice) {
+    let sc_0 = slice;
+    let _code = sc_0.loadRef();
+    let _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
@@ -48,11 +55,20 @@ export type Context = {
 export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounced);
-        b_0 = b_0.storeAddress(src.sender);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeRef(src.raw);
+        b_0.storeBit(src.bounced);
+        b_0.storeAddress(src.sender);
+        b_0.storeInt(src.value, 257);
+        b_0.storeRef(src.raw);
     };
+}
+
+export function loadContext(slice: Slice) {
+    let sc_0 = slice;
+    let _bounced = sc_0.loadBit();
+    let _sender = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
 export function packStackContext(src: Context, __stack: TupleItem[]) {
@@ -99,29 +115,50 @@ export type SendParameters = {
 export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounce);
-        b_0 = b_0.storeAddress(src.to);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeInt(src.mode, 257);
+        b_0.storeBit(src.bounce);
+        b_0.storeAddress(src.to);
+        b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.mode, 257);
         if (src.body !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.body);
+            b_0.storeBit(true);
+            b_0.storeRef(src.body);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.code !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.code);
+            b_0.storeBit(true);
+            b_0.storeRef(src.code);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.data !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.data);
+            b_0.storeBit(true);
+            b_0.storeRef(src.data);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSendParameters(slice: Slice) {
+    let sc_0 = slice;
+    let _bounce = sc_0.loadBit();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _mode = sc_0.loadIntBig(257);
+    let _body: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _body = sc_0.loadRef();
+    }
+    let _code: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _code = sc_0.loadRef();
+    }
+    let _data: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _data = sc_0.loadRef();
+    }
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
@@ -200,10 +237,18 @@ export type Operation = {
 export function storeOperation(src: Operation) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(src.seqno, 32);
-        b_0 = b_0.storeCoins(src.amount);
-        b_0 = b_0.storeAddress(src.target);
+        b_0.storeUint(src.seqno, 32);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.target);
     };
+}
+
+export function loadOperation(slice: Slice) {
+    let sc_0 = slice;
+    let _seqno = sc_0.loadUintBig(32);
+    let _amount = sc_0.loadCoins();
+    let _target = sc_0.loadAddress();
+    return { $$type: 'Operation' as const, seqno: _seqno, amount: _amount, target: _target };
 }
 
 export function packStackOperation(src: Operation, __stack: TupleItem[]) {
@@ -243,12 +288,22 @@ export type Execute = {
 export function storeExecute(src: Execute) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(819865922, 32);
-        b_0 = b_0.store(storeOperation(src.operation));
-        b_0 = b_0.storeRef(src.signature1);
-        b_0 = b_0.storeRef(src.signature2);
-        b_0 = b_0.storeRef(src.signature3);
+        b_0.storeUint(819865922, 32);
+        b_0.store(storeOperation(src.operation));
+        b_0.storeRef(src.signature1);
+        b_0.storeRef(src.signature2);
+        b_0.storeRef(src.signature3);
     };
+}
+
+export function loadExecute(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 819865922) { throw Error('Invalid prefix'); }
+    let _operation = loadOperation(sc_0);
+    let _signature1 = sc_0.loadRef();
+    let _signature2 = sc_0.loadRef();
+    let _signature3 = sc_0.loadRef();
+    return { $$type: 'Execute' as const, operation: _operation, signature1: _signature1, signature2: _signature2, signature3: _signature3 };
 }
 
 export function packStackExecute(src: Execute, __stack: TupleItem[]) {
@@ -289,9 +344,16 @@ export type Executed = {
 export function storeExecuted(src: Executed) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(4174937, 32);
-        b_0 = b_0.storeUint(src.seqno, 32);
+        b_0.storeUint(4174937, 32);
+        b_0.storeUint(src.seqno, 32);
     };
+}
+
+export function loadExecuted(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 4174937) { throw Error('Invalid prefix'); }
+    let _seqno = sc_0.loadUintBig(32);
+    return { $$type: 'Executed' as const, seqno: _seqno };
 }
 
 export function packStackExecuted(src: Executed, __stack: TupleItem[]) {

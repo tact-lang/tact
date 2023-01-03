@@ -1,5 +1,5 @@
 import { TypeRef } from "../../types/types";
-import { Writer } from "../Writer";
+import { Writer } from "../../utils/Writer";
 
 export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: boolean = false, forceTuple: boolean = false) {
 
@@ -57,7 +57,7 @@ export function writeToStack(name: string, ref: TypeRef, w: Writer, optional: bo
     //
 
     if (ref.kind === 'map') {
-        w.append(`__stack.push({ type: 'cell', cell: ${name}});`);
+        w.append(`__stack.push({ type: 'cell', cell:  beginCell().storeDict(${name}).endCell() });`);
         return;
     }
 

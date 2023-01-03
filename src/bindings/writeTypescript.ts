@@ -1,39 +1,13 @@
-import { AllocationCell, AllocationField, ContractABI, ContractField, ContractFunctionArg } from "../abi/ContractABI";
-import { TypeRef } from "../types/types";
-import { Writer } from "./Writer";
+import { ContractABI, ContractFunctionArg } from "../abi/ContractABI";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
 import { readFromStack } from "./typescript/readFromStack";
-
-function printFieldType(ref: TypeRef): string {
-    if (ref.kind === 'ref') {
-        if (ref.name === 'Int') {
-            return 'bigint' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Bool') {
-            return 'boolean' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Cell' || ref.name === 'Slice' || ref.name === 'Builder') {
-            return 'Cell' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Address') {
-            return 'Address' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'String') {
-            return 'string' + (ref.optional ? ' | null' : '');
-        } else {
-            return ref.name + (ref.optional ? ' | null' : '');
-        }
-    }
-    if (ref.kind === 'map') {
-        return `Cell`;
-    }
-
-    throw Error(`Unsupported type`);
-}
+import { Writer } from "../utils/Writer";
+import { writeParser, writeSerializer, writeStruct } from "./typescript/writeStruct";
+import { getTSFieldType } from "./typescript/getTSFieldType";
 
 function writeArguments(args: ContractFunctionArg[]) {
-    return args.map((v) => `${v.name}: ${printFieldType(v.type)}`);
-}
-
-function writeField(field: ContractField, w: Writer) {
-    w.append(`${field.name}: ${printFieldType(field.type)};`);
+    return args.map((v) => `${v.name}: ${getTSFieldType(v.type)}`);
 }
 
 export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
@@ -44,88 +18,9 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
 
     // Structs
     for (let s of abi.structs) {
-        w.append(`export type ${s.name} = {`);
-        w.inIndent(() => {
-            w.append(`$$type: '${s.name}';`);
-            for (let f of s.fields) {
-                writeField(f, w);
-            }
-        });
-        w.append(`}`);
-        w.append();
-
-        w.append(`export function store${s.name}(src: ${s.name}) {`);
-        w.inIndent(() => {
-            w.append(`return (builder: Builder) => {`)
-            w.inIndent(() => {
-                w.append(`let b_0 = builder;`);
-                if (s.allocation.prefix) {
-                    w.append(`b_0 = b_0.storeUint(${s.allocation.prefix}, 32);`);
-                }
-
-                function processField(index: number, f: AllocationField) {
-                    if (f.kind === 'int') {
-                        if (f.bits === 1) {
-                            w.append(`b_${index} = b_${index}.storeBit(src.${s.fields[f.index].name});`);
-                        } else {
-                            w.append(`b_${index} = b_${index}.storeInt(src.${s.fields[f.index].name}, ${f.bits});`);
-                        }
-                    } else if (f.kind === 'uint') {
-                        w.append(`b_${index} = b_${index}.storeUint(src.${s.fields[f.index].name}, ${f.bits});`);
-                    } else if (f.kind === 'coins') {
-                        w.append(`b_${index} = b_${index}.storeCoins(src.${s.fields[f.index].name});`);
-                    } else if (f.kind === 'cell') {
-                        w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
-                    } else if (f.kind === 'slice') {
-                        w.append(`b_${index} = b_${index}.storeRef(src.${s.fields[f.index].name});`);
-                    } else if (f.kind === 'optional') {
-                        if (f.inner.kind === 'address') {
-                            w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
-                        } else {
-                            w.append(`if (src.${s.fields[f.index].name} !== null) {`);
-                            w.inIndent(() => {
-                                w.append(`b_${index} = b_${index}.storeBit(true);`);
-                                processField(index, f.inner);
-                            });
-                            w.append(`} else {`);
-                            w.inIndent(() => {
-                                w.append(`b_${index} = b_${index}.storeBit(false);`);
-                            });
-                            w.append(`}`);
-                        }
-                    } else if (f.kind === 'struct') {
-                        w.append(`b_${index} = b_${index}.store(store${f.type}(src.${s.fields[f.index].name}));`);
-                    } else if (f.kind === 'address') {
-                        w.append(`b_${index} = b_${index}.storeAddress(src.${s.fields[f.index].name});`);
-                    } else if (f.kind === 'remaining') {
-                        w.append(`b_${index} = b_${index}.storeSlice(src.${s.fields[f.index].name}.beginParse());`);
-                    } else if (f.kind === 'bytes') {
-                        w.append(`b_${index} = b_${index}.storeSlice(src.${s.fields[f.index].name});`);
-                    } else if (f.kind === 'map') {
-                        w.append(`b_${index} = b_${index}.storeDict(src.${s.fields[f.index].name});`);
-                    } else {
-                        throw Error('Unsupported field type');
-                    }
-                }
-
-                function processCell(index: number, src: AllocationCell) {
-                    for (let f of src.fields) {
-                        processField(index, f);
-                    }
-                    if (src.next) {
-                        w.append(`let b_${index + 1} = new Builder();`);
-                        processCell(index + 1, src.next);
-                        w.append(`b_${index} = b_${index}.storeRef(b_${index + 1}.endCell());`);
-                    }
-                }
-                processCell(0, s.allocation.root);
-
-
-            });
-            w.append(`};`);
-        });
-        w.append(`}`);
-        w.append();
+        writeStruct(s, w);
+        writeSerializer(s, w);
+        writeParser(s, w);
 
         // Pack to stack
         w.append(`export function packStack${s.name}(src: ${s.name}, __stack: TupleItem[]) {`);

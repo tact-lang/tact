@@ -14,7 +14,7 @@ import { compileContract } from "ton-compiler";
 import { fromCode } from "tvm-disassembler";
 import { Cell } from "ton-core";
 import { ContractABI } from "./abi/ContractABI";
-import { writeTypescript } from "./generator/writeTypescript";
+import { writeTypescript } from "./bindings/writeTypescript";
 import { resolveStrings } from "./types/resolveStrings";
 
 function resolveLibraryPath(filePath: string, name: string): string {

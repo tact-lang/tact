@@ -1,5 +1,5 @@
 import { TypeRef } from "../../types/types";
-import { Writer } from "../Writer";
+import { Writer } from "../../utils/Writer";
 
 export function readFromStack(name: string, ref: TypeRef, w: Writer, forceTuple: boolean = false) {
 

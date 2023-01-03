@@ -10,9 +10,16 @@ export type StateInit = {
 export function storeStateInit(src: StateInit) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeRef(src.code);
-        b_0 = b_0.storeRef(src.data);
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
     };
+}
+
+export function loadStateInit(slice: Slice) {
+    let sc_0 = slice;
+    let _code = sc_0.loadRef();
+    let _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
@@ -48,11 +55,20 @@ export type Context = {
 export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounced);
-        b_0 = b_0.storeAddress(src.sender);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeRef(src.raw);
+        b_0.storeBit(src.bounced);
+        b_0.storeAddress(src.sender);
+        b_0.storeInt(src.value, 257);
+        b_0.storeRef(src.raw);
     };
+}
+
+export function loadContext(slice: Slice) {
+    let sc_0 = slice;
+    let _bounced = sc_0.loadBit();
+    let _sender = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
 export function packStackContext(src: Context, __stack: TupleItem[]) {
@@ -99,29 +115,50 @@ export type SendParameters = {
 export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounce);
-        b_0 = b_0.storeAddress(src.to);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeInt(src.mode, 257);
+        b_0.storeBit(src.bounce);
+        b_0.storeAddress(src.to);
+        b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.mode, 257);
         if (src.body !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.body);
+            b_0.storeBit(true);
+            b_0.storeRef(src.body);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.code !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.code);
+            b_0.storeBit(true);
+            b_0.storeRef(src.code);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.data !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.data);
+            b_0.storeBit(true);
+            b_0.storeRef(src.data);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSendParameters(slice: Slice) {
+    let sc_0 = slice;
+    let _bounce = sc_0.loadBit();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _mode = sc_0.loadIntBig(257);
+    let _body: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _body = sc_0.loadRef();
+    }
+    let _code: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _code = sc_0.loadRef();
+    }
+    let _data: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _data = sc_0.loadRef();
+    }
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
@@ -204,20 +241,36 @@ export type Request = {
 export function storeRequest(src: Request) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(4096439811, 32);
-        b_0 = b_0.storeAddress(src.requested);
-        b_0 = b_0.storeAddress(src.to);
-        b_0 = b_0.storeCoins(src.value);
-        b_0 = b_0.storeUint(src.timeout, 32);
-        b_0 = b_0.storeBit(src.bounce);
-        b_0 = b_0.storeUint(src.mode, 8);
+        b_0.storeUint(4096439811, 32);
+        b_0.storeAddress(src.requested);
+        b_0.storeAddress(src.to);
+        b_0.storeCoins(src.value);
+        b_0.storeUint(src.timeout, 32);
+        b_0.storeBit(src.bounce);
+        b_0.storeUint(src.mode, 8);
         if (src.body !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.body);
+            b_0.storeBit(true);
+            b_0.storeRef(src.body);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadRequest(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 4096439811) { throw Error('Invalid prefix'); }
+    let _requested = sc_0.loadAddress();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadCoins();
+    let _timeout = sc_0.loadUintBig(32);
+    let _bounce = sc_0.loadBit();
+    let _mode = sc_0.loadUintBig(8);
+    let _body: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _body = sc_0.loadRef();
+    }
+    return { $$type: 'Request' as const, requested: _requested, to: _to, value: _value, timeout: _timeout, bounce: _bounce, mode: _mode, body: _body };
 }
 
 export function packStackRequest(src: Request, __stack: TupleItem[]) {
@@ -278,9 +331,16 @@ export type Signed = {
 export function storeSigned(src: Signed) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(420994549, 32);
-        b_0 = b_0.store(storeRequest(src.request));
+        b_0.storeUint(420994549, 32);
+        b_0.store(storeRequest(src.request));
     };
+}
+
+export function loadSigned(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 420994549) { throw Error('Invalid prefix'); }
+    let _request = loadRequest(sc_0);
+    return { $$type: 'Signed' as const, request: _request };
 }
 
 export function packStackSigned(src: Signed, __stack: TupleItem[]) {
@@ -308,7 +368,7 @@ async function Multisig_init(members: Cell, totalWeight: bigint, requiredWeight:
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'cell', cell: members});
+    __stack.push({ type: 'cell', cell:  beginCell().storeDict(members).endCell() });
     __stack.push({ type: 'int', value: totalWeight });
     __stack.push({ type: 'int', value: requiredWeight });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];

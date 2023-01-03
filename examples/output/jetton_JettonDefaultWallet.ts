@@ -10,9 +10,16 @@ export type StateInit = {
 export function storeStateInit(src: StateInit) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeRef(src.code);
-        b_0 = b_0.storeRef(src.data);
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
     };
+}
+
+export function loadStateInit(slice: Slice) {
+    let sc_0 = slice;
+    let _code = sc_0.loadRef();
+    let _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
@@ -48,11 +55,20 @@ export type Context = {
 export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounced);
-        b_0 = b_0.storeAddress(src.sender);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeRef(src.raw);
+        b_0.storeBit(src.bounced);
+        b_0.storeAddress(src.sender);
+        b_0.storeInt(src.value, 257);
+        b_0.storeRef(src.raw);
     };
+}
+
+export function loadContext(slice: Slice) {
+    let sc_0 = slice;
+    let _bounced = sc_0.loadBit();
+    let _sender = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
 export function packStackContext(src: Context, __stack: TupleItem[]) {
@@ -99,29 +115,50 @@ export type SendParameters = {
 export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounce);
-        b_0 = b_0.storeAddress(src.to);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeInt(src.mode, 257);
+        b_0.storeBit(src.bounce);
+        b_0.storeAddress(src.to);
+        b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.mode, 257);
         if (src.body !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.body);
+            b_0.storeBit(true);
+            b_0.storeRef(src.body);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.code !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.code);
+            b_0.storeBit(true);
+            b_0.storeRef(src.code);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.data !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.data);
+            b_0.storeBit(true);
+            b_0.storeRef(src.data);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSendParameters(slice: Slice) {
+    let sc_0 = slice;
+    let _bounce = sc_0.loadBit();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _mode = sc_0.loadIntBig(257);
+    let _body: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _body = sc_0.loadRef();
+    }
+    let _code: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _code = sc_0.loadRef();
+    }
+    let _data: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _data = sc_0.loadRef();
+    }
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
@@ -198,9 +235,16 @@ export type ChangeOwner = {
 export function storeChangeOwner(src: ChangeOwner) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(3067051791, 32);
-        b_0 = b_0.storeAddress(src.newOwner);
+        b_0.storeUint(3067051791, 32);
+        b_0.storeAddress(src.newOwner);
     };
+}
+
+export function loadChangeOwner(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3067051791) { throw Error('Invalid prefix'); }
+    let _newOwner = sc_0.loadAddress();
+    return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
 export function packStackChangeOwner(src: ChangeOwner, __stack: TupleItem[]) {
@@ -235,20 +279,36 @@ export type TokenTransfer = {
 export function storeTokenTransfer(src: TokenTransfer) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(260734629, 32);
-        b_0 = b_0.storeUint(src.queryId, 64);
-        b_0 = b_0.storeCoins(src.amount);
-        b_0 = b_0.storeAddress(src.destination);
-        b_0 = b_0.storeAddress(src.responseDestination);
+        b_0.storeUint(260734629, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.destination);
+        b_0.storeAddress(src.responseDestination);
         if (src.customPayload !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.customPayload);
+            b_0.storeBit(true);
+            b_0.storeRef(src.customPayload);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
-        b_0 = b_0.storeCoins(src.forwardTonAmount);
-        b_0 = b_0.storeSlice(src.forwardPayload.beginParse());
+        b_0.storeCoins(src.forwardTonAmount);
+        b_0.storeSlice(src.forwardPayload.beginParse());
     };
+}
+
+export function loadTokenTransfer(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 260734629) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _amount = sc_0.loadCoins();
+    let _destination = sc_0.loadAddress();
+    let _responseDestination = sc_0.loadMaybeAddress();
+    let _customPayload: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _customPayload = sc_0.loadRef();
+    }
+    let _forwardTonAmount = sc_0.loadCoins();
+    let _forwardPayload = sc_0.asCell();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
 export function packStackTokenTransfer(src: TokenTransfer, __stack: TupleItem[]) {
@@ -322,14 +382,26 @@ export type TokenTransferInternal = {
 export function storeTokenTransferInternal(src: TokenTransferInternal) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(395134233, 32);
-        b_0 = b_0.storeUint(src.queryId, 64);
-        b_0 = b_0.storeCoins(src.amount);
-        b_0 = b_0.storeAddress(src.from);
-        b_0 = b_0.storeAddress(src.responseAddress);
-        b_0 = b_0.storeCoins(src.forwardTonAmount);
-        b_0 = b_0.storeSlice(src.forwardPayload.beginParse());
+        b_0.storeUint(395134233, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.from);
+        b_0.storeAddress(src.responseAddress);
+        b_0.storeCoins(src.forwardTonAmount);
+        b_0.storeSlice(src.forwardPayload.beginParse());
     };
+}
+
+export function loadTokenTransferInternal(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 395134233) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _amount = sc_0.loadCoins();
+    let _from = sc_0.loadAddress();
+    let _responseAddress = sc_0.loadMaybeAddress();
+    let _forwardTonAmount = sc_0.loadCoins();
+    let _forwardPayload = sc_0.asCell();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
 export function packStackTokenTransferInternal(src: TokenTransferInternal, __stack: TupleItem[]) {
@@ -389,12 +461,22 @@ export type TokenNotification = {
 export function storeTokenNotification(src: TokenNotification) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(1935855772, 32);
-        b_0 = b_0.storeUint(src.queryId, 64);
-        b_0 = b_0.storeCoins(src.amount);
-        b_0 = b_0.storeAddress(src.from);
-        b_0 = b_0.storeSlice(src.forwardPayload.beginParse());
+        b_0.storeUint(1935855772, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.from);
+        b_0.storeSlice(src.forwardPayload.beginParse());
     };
+}
+
+export function loadTokenNotification(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1935855772) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _amount = sc_0.loadCoins();
+    let _from = sc_0.loadAddress();
+    let _forwardPayload = sc_0.asCell();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
 }
 
 export function packStackTokenNotification(src: TokenNotification, __stack: TupleItem[]) {
@@ -438,12 +520,22 @@ export type TokenBurn = {
 export function storeTokenBurn(src: TokenBurn) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(1499400124, 32);
-        b_0 = b_0.storeUint(src.queryId, 64);
-        b_0 = b_0.storeCoins(src.amount);
-        b_0 = b_0.storeAddress(src.owner);
-        b_0 = b_0.storeAddress(src.responseAddress);
+        b_0.storeUint(1499400124, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.responseAddress);
     };
+}
+
+export function loadTokenBurn(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1499400124) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _amount = sc_0.loadCoins();
+    let _owner = sc_0.loadAddress();
+    let _responseAddress = sc_0.loadMaybeAddress();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
 export function packStackTokenBurn(src: TokenBurn, __stack: TupleItem[]) {
@@ -495,12 +587,22 @@ export type TokenBurnNotification = {
 export function storeTokenBurnNotification(src: TokenBurnNotification) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(2078119902, 32);
-        b_0 = b_0.storeUint(src.queryId, 64);
-        b_0 = b_0.storeCoins(src.amount);
-        b_0 = b_0.storeAddress(src.owner);
-        b_0 = b_0.storeAddress(src.responseAddress);
+        b_0.storeUint(2078119902, 32);
+        b_0.storeUint(src.queryId, 64);
+        b_0.storeCoins(src.amount);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.responseAddress);
     };
+}
+
+export function loadTokenBurnNotification(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2078119902) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    let _amount = sc_0.loadCoins();
+    let _owner = sc_0.loadAddress();
+    let _responseAddress = sc_0.loadMaybeAddress();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
 export function packStackTokenBurnNotification(src: TokenBurnNotification, __stack: TupleItem[]) {
@@ -549,9 +651,16 @@ export type TokenExcesses = {
 export function storeTokenExcesses(src: TokenExcesses) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(3576854235, 32);
-        b_0 = b_0.storeUint(src.queryId, 64);
+        b_0.storeUint(3576854235, 32);
+        b_0.storeUint(src.queryId, 64);
     };
+}
+
+export function loadTokenExcesses(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3576854235) { throw Error('Invalid prefix'); }
+    let _queryId = sc_0.loadUintBig(64);
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
 }
 
 export function packStackTokenExcesses(src: TokenExcesses, __stack: TupleItem[]) {
@@ -580,14 +689,24 @@ export type TokenUpdateContent = {
 export function storeTokenUpdateContent(src: TokenUpdateContent) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(1862840892, 32);
+        b_0.storeUint(1862840892, 32);
         if (src.content !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.content);
+            b_0.storeBit(true);
+            b_0.storeRef(src.content);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadTokenUpdateContent(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1862840892) { throw Error('Invalid prefix'); }
+    let _content: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _content = sc_0.loadRef();
+    }
+    return { $$type: 'TokenUpdateContent' as const, content: _content };
 }
 
 export function packStackTokenUpdateContent(src: TokenUpdateContent, __stack: TupleItem[]) {
@@ -628,17 +747,30 @@ export type JettonData = {
 export function storeJettonData(src: JettonData) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeInt(src.totalSupply, 257);
-        b_0 = b_0.storeBit(src.mintable);
-        b_0 = b_0.storeAddress(src.owner);
+        b_0.storeInt(src.totalSupply, 257);
+        b_0.storeBit(src.mintable);
+        b_0.storeAddress(src.owner);
         if (src.content !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.content);
+            b_0.storeBit(true);
+            b_0.storeRef(src.content);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
-        b_0 = b_0.storeRef(src.walletCode);
+        b_0.storeRef(src.walletCode);
     };
+}
+
+export function loadJettonData(slice: Slice) {
+    let sc_0 = slice;
+    let _totalSupply = sc_0.loadIntBig(257);
+    let _mintable = sc_0.loadBit();
+    let _owner = sc_0.loadAddress();
+    let _content: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _content = sc_0.loadRef();
+    }
+    let _walletCode = sc_0.loadRef();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
 }
 
 export function packStackJettonData(src: JettonData, __stack: TupleItem[]) {
@@ -694,11 +826,20 @@ export type JettonWalletData = {
 export function storeJettonWalletData(src: JettonWalletData) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeInt(src.balance, 257);
-        b_0 = b_0.storeAddress(src.owner);
-        b_0 = b_0.storeAddress(src.master);
-        b_0 = b_0.storeRef(src.walletCode);
+        b_0.storeInt(src.balance, 257);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.master);
+        b_0.storeRef(src.walletCode);
     };
+}
+
+export function loadJettonWalletData(slice: Slice) {
+    let sc_0 = slice;
+    let _balance = sc_0.loadIntBig(257);
+    let _owner = sc_0.loadAddress();
+    let _master = sc_0.loadAddress();
+    let _walletCode = sc_0.loadRef();
+    return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
 }
 
 export function packStackJettonWalletData(src: JettonWalletData, __stack: TupleItem[]) {
@@ -739,9 +880,16 @@ export type Mint = {
 export function storeMint(src: Mint) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(2737462367, 32);
-        b_0 = b_0.storeInt(src.amount, 257);
+        b_0.storeUint(2737462367, 32);
+        b_0.storeInt(src.amount, 257);
     };
+}
+
+export function loadMint(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2737462367) { throw Error('Invalid prefix'); }
+    let _amount = sc_0.loadIntBig(257);
+    return { $$type: 'Mint' as const, amount: _amount };
 }
 
 export function packStackMint(src: Mint, __stack: TupleItem[]) {

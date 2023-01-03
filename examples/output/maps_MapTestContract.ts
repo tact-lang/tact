@@ -10,9 +10,16 @@ export type StateInit = {
 export function storeStateInit(src: StateInit) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeRef(src.code);
-        b_0 = b_0.storeRef(src.data);
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
     };
+}
+
+export function loadStateInit(slice: Slice) {
+    let sc_0 = slice;
+    let _code = sc_0.loadRef();
+    let _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
@@ -48,11 +55,20 @@ export type Context = {
 export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounced);
-        b_0 = b_0.storeAddress(src.sender);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeRef(src.raw);
+        b_0.storeBit(src.bounced);
+        b_0.storeAddress(src.sender);
+        b_0.storeInt(src.value, 257);
+        b_0.storeRef(src.raw);
     };
+}
+
+export function loadContext(slice: Slice) {
+    let sc_0 = slice;
+    let _bounced = sc_0.loadBit();
+    let _sender = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
 export function packStackContext(src: Context, __stack: TupleItem[]) {
@@ -99,29 +115,50 @@ export type SendParameters = {
 export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounce);
-        b_0 = b_0.storeAddress(src.to);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeInt(src.mode, 257);
+        b_0.storeBit(src.bounce);
+        b_0.storeAddress(src.to);
+        b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.mode, 257);
         if (src.body !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.body);
+            b_0.storeBit(true);
+            b_0.storeRef(src.body);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.code !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.code);
+            b_0.storeBit(true);
+            b_0.storeRef(src.code);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.data !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.data);
+            b_0.storeBit(true);
+            b_0.storeRef(src.data);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSendParameters(slice: Slice) {
+    let sc_0 = slice;
+    let _bounce = sc_0.loadBit();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _mode = sc_0.loadIntBig(257);
+    let _body: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _body = sc_0.loadRef();
+    }
+    let _code: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _code = sc_0.loadRef();
+    }
+    let _data: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _data = sc_0.loadRef();
+    }
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
@@ -199,15 +236,26 @@ export type SetIntMap1 = {
 export function storeSetIntMap1(src: SetIntMap1) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(1056067080, 32);
-        b_0 = b_0.storeInt(src.key, 257);
+        b_0.storeUint(1056067080, 32);
+        b_0.storeInt(src.key, 257);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeInt(src.value, 257);
+            b_0.storeBit(true);
+            b_0.storeInt(src.value, 257);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetIntMap1(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1056067080) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadIntBig(257);
+    let _value: bigint | null = null;
+    if (sc_0.loadBit()) {
+        _value = sc_0.loadIntBig(257);
+    }
+    return { $$type: 'SetIntMap1' as const, key: _key, value: _value };
 }
 
 export function packStackSetIntMap1(src: SetIntMap1, __stack: TupleItem[]) {
@@ -249,15 +297,26 @@ export type SetIntMap2 = {
 export function storeSetIntMap2(src: SetIntMap2) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(2818252722, 32);
-        b_0 = b_0.storeInt(src.key, 257);
+        b_0.storeUint(2818252722, 32);
+        b_0.storeInt(src.key, 257);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeBit(src.value);
+            b_0.storeBit(true);
+            b_0.storeBit(src.value);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetIntMap2(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2818252722) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadIntBig(257);
+    let _value: boolean | null = null;
+    if (sc_0.loadBit()) {
+        _value = sc_0.loadBit();
+    }
+    return { $$type: 'SetIntMap2' as const, key: _key, value: _value };
 }
 
 export function packStackSetIntMap2(src: SetIntMap2, __stack: TupleItem[]) {
@@ -299,15 +358,26 @@ export type SetIntMap3 = {
 export function storeSetIntMap3(src: SetIntMap3) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(3506188068, 32);
-        b_0 = b_0.storeInt(src.key, 257);
+        b_0.storeUint(3506188068, 32);
+        b_0.storeInt(src.key, 257);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.value);
+            b_0.storeBit(true);
+            b_0.storeRef(src.value);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetIntMap3(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3506188068) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadIntBig(257);
+    let _value: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _value = sc_0.loadRef();
+    }
+    return { $$type: 'SetIntMap3' as const, key: _key, value: _value };
 }
 
 export function packStackSetIntMap3(src: SetIntMap3, __stack: TupleItem[]) {
@@ -349,15 +419,26 @@ export type SetIntMap4 = {
 export function storeSetIntMap4(src: SetIntMap4) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(1318632071, 32);
-        b_0 = b_0.storeInt(src.key, 257);
+        b_0.storeUint(1318632071, 32);
+        b_0.storeInt(src.key, 257);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.store(storeSomeStruct(src.value));
+            b_0.storeBit(true);
+            b_0.store(storeSomeStruct(src.value));
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetIntMap4(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1318632071) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadIntBig(257);
+    let _value: SomeStruct | null = null;
+    if (sc_0.loadBit()) {
+        _value = loadSomeStruct(sc_0);
+    }
+    return { $$type: 'SetIntMap4' as const, key: _key, value: _value };
 }
 
 export function packStackSetIntMap4(src: SetIntMap4, __stack: TupleItem[]) {
@@ -401,15 +482,26 @@ export type SetAddrMap1 = {
 export function storeSetAddrMap1(src: SetAddrMap1) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(3295239033, 32);
-        b_0 = b_0.storeAddress(src.key);
+        b_0.storeUint(3295239033, 32);
+        b_0.storeAddress(src.key);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeInt(src.value, 257);
+            b_0.storeBit(true);
+            b_0.storeInt(src.value, 257);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetAddrMap1(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3295239033) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadAddress();
+    let _value: bigint | null = null;
+    if (sc_0.loadBit()) {
+        _value = sc_0.loadIntBig(257);
+    }
+    return { $$type: 'SetAddrMap1' as const, key: _key, value: _value };
 }
 
 export function packStackSetAddrMap1(src: SetAddrMap1, __stack: TupleItem[]) {
@@ -451,15 +543,26 @@ export type SetAddrMap2 = {
 export function storeSetAddrMap2(src: SetAddrMap2) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(1566575299, 32);
-        b_0 = b_0.storeAddress(src.key);
+        b_0.storeUint(1566575299, 32);
+        b_0.storeAddress(src.key);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeBit(src.value);
+            b_0.storeBit(true);
+            b_0.storeBit(src.value);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetAddrMap2(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1566575299) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadAddress();
+    let _value: boolean | null = null;
+    if (sc_0.loadBit()) {
+        _value = sc_0.loadBit();
+    }
+    return { $$type: 'SetAddrMap2' as const, key: _key, value: _value };
 }
 
 export function packStackSetAddrMap2(src: SetAddrMap2, __stack: TupleItem[]) {
@@ -501,15 +604,26 @@ export type SetAddrMap3 = {
 export function storeSetAddrMap3(src: SetAddrMap3) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(711408213, 32);
-        b_0 = b_0.storeAddress(src.key);
+        b_0.storeUint(711408213, 32);
+        b_0.storeAddress(src.key);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.value);
+            b_0.storeBit(true);
+            b_0.storeRef(src.value);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetAddrMap3(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 711408213) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadAddress();
+    let _value: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _value = sc_0.loadRef();
+    }
+    return { $$type: 'SetAddrMap3' as const, key: _key, value: _value };
 }
 
 export function packStackSetAddrMap3(src: SetAddrMap3, __stack: TupleItem[]) {
@@ -551,15 +665,26 @@ export type SetAddrMap4 = {
 export function storeSetAddrMap4(src: SetAddrMap4) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(3020140534, 32);
-        b_0 = b_0.storeAddress(src.key);
+        b_0.storeUint(3020140534, 32);
+        b_0.storeAddress(src.key);
         if (src.value !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.store(storeSomeStruct(src.value));
+            b_0.storeBit(true);
+            b_0.store(storeSomeStruct(src.value));
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSetAddrMap4(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3020140534) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadAddress();
+    let _value: SomeStruct | null = null;
+    if (sc_0.loadBit()) {
+        _value = loadSomeStruct(sc_0);
+    }
+    return { $$type: 'SetAddrMap4' as const, key: _key, value: _value };
 }
 
 export function packStackSetAddrMap4(src: SetAddrMap4, __stack: TupleItem[]) {
@@ -602,8 +727,14 @@ export type SomeStruct = {
 export function storeSomeStruct(src: SomeStruct) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.value, 257);
     };
+}
+
+export function loadSomeStruct(slice: Slice) {
+    let sc_0 = slice;
+    let _value = sc_0.loadIntBig(257);
+    return { $$type: 'SomeStruct' as const, value: _value };
 }
 
 export function packStackSomeStruct(src: SomeStruct, __stack: TupleItem[]) {

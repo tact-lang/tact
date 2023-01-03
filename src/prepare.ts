@@ -2,7 +2,7 @@ import fs from 'fs';
 import { compile, compileProjects, getContracts, precompile } from './main';
 import { compileContract } from 'ton-compiler';
 import { createABI } from './generator/createABI';
-import { writeTypescript } from './generator/writeTypescript';
+import { writeTypescript } from './bindings/writeTypescript';
 import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton-core';
 import { ContractABI } from './abi/ContractABI';

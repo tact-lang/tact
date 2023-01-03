@@ -10,9 +10,16 @@ export type StateInit = {
 export function storeStateInit(src: StateInit) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeRef(src.code);
-        b_0 = b_0.storeRef(src.data);
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
     };
+}
+
+export function loadStateInit(slice: Slice) {
+    let sc_0 = slice;
+    let _code = sc_0.loadRef();
+    let _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
@@ -48,11 +55,20 @@ export type Context = {
 export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounced);
-        b_0 = b_0.storeAddress(src.sender);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeRef(src.raw);
+        b_0.storeBit(src.bounced);
+        b_0.storeAddress(src.sender);
+        b_0.storeInt(src.value, 257);
+        b_0.storeRef(src.raw);
     };
+}
+
+export function loadContext(slice: Slice) {
+    let sc_0 = slice;
+    let _bounced = sc_0.loadBit();
+    let _sender = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
 export function packStackContext(src: Context, __stack: TupleItem[]) {
@@ -99,29 +115,50 @@ export type SendParameters = {
 export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeBit(src.bounce);
-        b_0 = b_0.storeAddress(src.to);
-        b_0 = b_0.storeInt(src.value, 257);
-        b_0 = b_0.storeInt(src.mode, 257);
+        b_0.storeBit(src.bounce);
+        b_0.storeAddress(src.to);
+        b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.mode, 257);
         if (src.body !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.body);
+            b_0.storeBit(true);
+            b_0.storeRef(src.body);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.code !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.code);
+            b_0.storeBit(true);
+            b_0.storeRef(src.code);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.data !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.data);
+            b_0.storeBit(true);
+            b_0.storeRef(src.data);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
     };
+}
+
+export function loadSendParameters(slice: Slice) {
+    let sc_0 = slice;
+    let _bounce = sc_0.loadBit();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _mode = sc_0.loadIntBig(257);
+    let _body: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _body = sc_0.loadRef();
+    }
+    let _code: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _code = sc_0.loadRef();
+    }
+    let _data: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _data = sc_0.loadRef();
+    }
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
@@ -202,14 +239,25 @@ export type SomeGenericStruct = {
 export function storeSomeGenericStruct(src: SomeGenericStruct) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeInt(src.value1, 257);
-        b_0 = b_0.storeInt(src.value2, 257);
-        b_0 = b_0.storeInt(src.value3, 257);
+        b_0.storeInt(src.value1, 257);
+        b_0.storeInt(src.value2, 257);
+        b_0.storeInt(src.value3, 257);
         let b_1 = new Builder();
-        b_1 = b_1.storeInt(src.value4, 257);
-        b_1 = b_1.storeInt(src.value5, 257);
-        b_0 = b_0.storeRef(b_1.endCell());
+        b_1.storeInt(src.value4, 257);
+        b_1.storeInt(src.value5, 257);
+        b_0.storeRef(b_1.endCell());
     };
+}
+
+export function loadSomeGenericStruct(slice: Slice) {
+    let sc_0 = slice;
+    let _value1 = sc_0.loadIntBig(257);
+    let _value2 = sc_0.loadIntBig(257);
+    let _value3 = sc_0.loadIntBig(257);
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _value4 = sc_1.loadIntBig(257);
+    let _value5 = sc_1.loadIntBig(257);
+    return { $$type: 'SomeGenericStruct' as const, value1: _value1, value2: _value2, value3: _value3, value4: _value4, value5: _value5 };
 }
 
 export function packStackSomeGenericStruct(src: SomeGenericStruct, __stack: TupleItem[]) {
@@ -259,33 +307,56 @@ export function storeStructWithOptionals(src: StructWithOptionals) {
     return (builder: Builder) => {
         let b_0 = builder;
         if (src.a !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeInt(src.a, 257);
+            b_0.storeBit(true);
+            b_0.storeInt(src.a, 257);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.b !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeBit(src.b);
+            b_0.storeBit(true);
+            b_0.storeBit(src.b);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.c !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.c);
+            b_0.storeBit(true);
+            b_0.storeRef(src.c);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
-        b_0 = b_0.storeAddress(src.d);
+        b_0.storeAddress(src.d);
         let b_1 = new Builder();
         if (src.e !== null) {
-            b_1 = b_1.storeBit(true);
-            b_1 = b_1.store(storeSomeGenericStruct(src.e));
+            b_1.storeBit(true);
+            b_1.store(storeSomeGenericStruct(src.e));
         } else {
-            b_1 = b_1.storeBit(false);
+            b_1.storeBit(false);
         }
-        b_0 = b_0.storeRef(b_1.endCell());
+        b_0.storeRef(b_1.endCell());
     };
+}
+
+export function loadStructWithOptionals(slice: Slice) {
+    let sc_0 = slice;
+    let _a: bigint | null = null;
+    if (sc_0.loadBit()) {
+        _a = sc_0.loadIntBig(257);
+    }
+    let _b: boolean | null = null;
+    if (sc_0.loadBit()) {
+        _b = sc_0.loadBit();
+    }
+    let _c: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _c = sc_0.loadRef();
+    }
+    let _d = sc_0.loadMaybeAddress();
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _e: SomeGenericStruct | null = null;
+    if (sc_1.loadBit()) {
+        _e = loadSomeGenericStruct(sc_1);
+    }
+    return { $$type: 'StructWithOptionals' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
 }
 
 export function packStackStructWithOptionals(src: StructWithOptionals, __stack: TupleItem[]) {
@@ -377,43 +448,72 @@ export type Update = {
 export function storeUpdate(src: Update) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0 = b_0.storeUint(2676568142, 32);
+        b_0.storeUint(2676568142, 32);
         if (src.a !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeInt(src.a, 257);
+            b_0.storeBit(true);
+            b_0.storeInt(src.a, 257);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.b !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeBit(src.b);
+            b_0.storeBit(true);
+            b_0.storeBit(src.b);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
         if (src.c !== null) {
-            b_0 = b_0.storeBit(true);
-            b_0 = b_0.storeRef(src.c);
+            b_0.storeBit(true);
+            b_0.storeRef(src.c);
         } else {
-            b_0 = b_0.storeBit(false);
+            b_0.storeBit(false);
         }
-        b_0 = b_0.storeAddress(src.d);
+        b_0.storeAddress(src.d);
         let b_1 = new Builder();
         if (src.e !== null) {
-            b_1 = b_1.storeBit(true);
-            b_1 = b_1.store(storeSomeGenericStruct(src.e));
+            b_1.storeBit(true);
+            b_1.store(storeSomeGenericStruct(src.e));
         } else {
-            b_1 = b_1.storeBit(false);
+            b_1.storeBit(false);
         }
         let b_2 = new Builder();
         if (src.f !== null) {
-            b_2 = b_2.storeBit(true);
-            b_2 = b_2.store(storeStructWithOptionals(src.f));
+            b_2.storeBit(true);
+            b_2.store(storeStructWithOptionals(src.f));
         } else {
-            b_2 = b_2.storeBit(false);
+            b_2.storeBit(false);
         }
-        b_1 = b_1.storeRef(b_2.endCell());
-        b_0 = b_0.storeRef(b_1.endCell());
+        b_1.storeRef(b_2.endCell());
+        b_0.storeRef(b_1.endCell());
     };
+}
+
+export function loadUpdate(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 2676568142) { throw Error('Invalid prefix'); }
+    let _a: bigint | null = null;
+    if (sc_0.loadBit()) {
+        _a = sc_0.loadIntBig(257);
+    }
+    let _b: boolean | null = null;
+    if (sc_0.loadBit()) {
+        _b = sc_0.loadBit();
+    }
+    let _c: Cell | null = null;
+    if (sc_0.loadBit()) {
+        _c = sc_0.loadRef();
+    }
+    let _d = sc_0.loadMaybeAddress();
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _e: SomeGenericStruct | null = null;
+    if (sc_1.loadBit()) {
+        _e = loadSomeGenericStruct(sc_1);
+    }
+    let sc_2 = sc_1.loadRef().beginParse();
+    let _f: StructWithOptionals | null = null;
+    if (sc_2.loadBit()) {
+        _f = loadStructWithOptionals(sc_2);
+    }
+    return { $$type: 'Update' as const, a: _a, b: _b, c: _c, d: _d, e: _e, f: _f };
 }
 
 export function packStackUpdate(src: Update, __stack: TupleItem[]) {
