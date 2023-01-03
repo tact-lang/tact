@@ -22,23 +22,23 @@ PROGRAM{
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_Payouts
   DECLPROC __gen_store_Payouts
-  DECLPROC storeBool
-  DECLPROC contractAddress
-  DECLPROC send
-  DECLPROC __gen_Builder_asSlice
-  DECLPROC __gen_Builder_asCell
-  DECLPROC __gen_Slice_fromBase64
-  DECLPROC __gen_String_asComment
-  DECLPROC __gen_String_fromBase64
-  DECLPROC __gen_Beacon_init
-  DECLPROC __gen_Beacon_init_child
-  DECLPROC __gen_Payouts_init
-  DECLPROC __gen_Payouts_requireOwner
-  DECLPROC __gen_Payouts_owner
-  83229 DECLMETHOD __gen_get_owner
-  DECLPROC __gen_Payouts_receive_comment
-  DECLPROC __gen_Payouts_receive_CanPayoutResponse
-  DECLPROC __gen_Payouts_receive_ChangeOwner
+  DECLPROC $storeBool
+  DECLPROC $contractAddress
+  DECLPROC $send
+  DECLPROC $__gen_Builder_asSlice
+  DECLPROC $__gen_Builder_asCell
+  DECLPROC $__gen_Slice_fromBase64
+  DECLPROC $__gen_String_asComment
+  DECLPROC $__gen_String_fromBase64
+  DECLPROC $__gen_Beacon_init
+  DECLPROC $__gen_Beacon_init_child
+  DECLPROC $__gen_Payouts_init
+  DECLPROC $__gen_Payouts_requireOwner
+  DECLPROC $__gen_Payouts_owner
+  83229 DECLMETHOD $__gen_get_owner
+  DECLPROC $__gen_Payouts_receive_comment
+  DECLPROC $__gen_Payouts_receive_CanPayoutResponse
+  DECLPROC $__gen_Payouts_receive_ChangeOwner
   DECLPROC recv_internal
   76827 DECLMETHOD init_Payouts
   113617 DECLMETHOD supported_interfaces
@@ -288,7 +288,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -298,18 +298,18 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  contractAddress PROC:<{
+  $contractAddress PROC:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address CALLDICT
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -329,18 +329,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -349,14 +349,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -365,13 +365,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -381,14 +381,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -396,20 +396,20 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  __gen_Builder_asSlice PROC:<{
+  $__gen_Builder_asSlice PROC:<{
     ENDC
     CTOS
   }>
-  __gen_Builder_asCell PROC:<{
+  $__gen_Builder_asCell PROC:<{
     ENDC
   }>
-  __gen_Slice_fromBase64 PROC:<{
+  $__gen_Slice_fromBase64 PROC:<{
     DUP
     SBITS
     3 RSHIFT#
@@ -494,25 +494,25 @@ PROGRAM{
     0 NEQINT
     IFJMP:<{
       s0 s2 XCHG
-      __gen_Builder_asSlice CALLDICT
+      $__gen_Builder_asSlice CALLDICT
       s0 s2 XCHG
       SUB
       LDSLICEX
       DROP
     }>
     2DROP
-    __gen_Builder_asSlice CALLDICT
+    $__gen_Builder_asSlice CALLDICT
   }>
-  __gen_String_asComment PROC:<{
+  $__gen_String_asComment PROC:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append CALLDICT
     __tact_string_builder_end CALLDICT
   }>
-  __gen_String_fromBase64 PROC:<{
-    __gen_Slice_fromBase64 CALLDICT
+  $__gen_String_fromBase64 PROC:<{
+    $__gen_Slice_fromBase64 CALLDICT
   }>
-  __gen_Beacon_init PROC:<{
+  $__gen_Beacon_init PROC:<{
     FALSE
     s0 s3 XCHG
     NEWC
@@ -521,7 +521,7 @@ PROGRAM{
     __gen_write_Beacon INLINECALLDICT
     ENDC
   }>
-  __gen_Beacon_init_child PROC:<{
+  $__gen_Beacon_init_child PROC:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -533,9 +533,9 @@ PROGRAM{
     STDICT
     ENDC
     s0 s0 s3 XCHG3
-    __gen_Beacon_init CALLDICT
+    $__gen_Beacon_init CALLDICT
   }>
-  __gen_Payouts_init PROC:<{
+  $__gen_Payouts_init PROC:<{
     s0 s2 XCHG
     NEWC
     STREF
@@ -543,21 +543,21 @@ PROGRAM{
     __gen_write_Payouts INLINECALLDICT
     ENDC
   }>
-  __gen_Payouts_requireOwner PROC:<{
+  $__gen_Payouts_requireOwner PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_sender INLINECALLDICT
     s2 PUSH
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  __gen_Payouts_owner PROC:<{
+  $__gen_Payouts_owner PROC:<{
     DROP
   }>
-  __gen_get_owner PROC:<{
+  $__gen_get_owner PROC:<{
     __gen_load_Payouts INLINECALLDICT
-    __gen_Payouts_owner CALLDICT
+    $__gen_Payouts_owner CALLDICT
   }>
-  __gen_Payouts_receive_comment PROC:<{
+  $__gen_Payouts_receive_comment PROC:<{
     __tact_context_get INLINECALLDICT
     DROP
     16059 PUSHINT
@@ -567,7 +567,7 @@ PROGRAM{
     s1 s2 XCHG
     THROWANYIFNOT
     SWAP
-    __gen_String_fromBase64 CALLDICT
+    $__gen_String_fromBase64 CALLDICT
     LDGRAMS
     9 PUSHPOW2
     LDSLICEX
@@ -577,7 +577,7 @@ PROGRAM{
     __tact_store_address INLINECALLDICT
     s2 PUSH
     STGRAMS
-    __gen_Builder_asCell CALLDICT
+    $__gen_Builder_asCell CALLDICT
     HASHCU
     48401 PUSHINT
     s2 s5 XCPU
@@ -586,8 +586,8 @@ PROGRAM{
     __tact_context_sys GETGLOB
     MYADDR
     3 ROLL
-    __gen_Beacon_init_child CALLDICT
-    contractAddress CALLDICT
+    $__gen_Beacon_init_child CALLDICT
+    $contractAddress CALLDICT
     TRUE
     0 PUSHINT
     66 PUSHINT
@@ -596,17 +596,17 @@ PROGRAM{
     s1 s4 s0 XCHG3
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_Payouts_receive_CanPayoutResponse PROC:<{
+  $__gen_Payouts_receive_CanPayoutResponse PROC:<{
     __tact_context_get INLINECALLDICT
     DROP
     s2 POP
     __tact_context_sys GETGLOB
     MYADDR
     s5 PUSH
-    __gen_Beacon_init_child CALLDICT
-    contractAddress CALLDICT
+    $__gen_Beacon_init_child CALLDICT
+    $contractAddress CALLDICT
     SWAP
     4429 PUSHINT
     s0 s2 XCHG
@@ -627,11 +627,11 @@ PROGRAM{
       FALSE
       66 PUSHINT
       B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE
-      __gen_String_asComment CALLDICT
+      $__gen_String_asComment CALLDICT
       s2 s4 XCHG
       PUSHNULL
       PUSHNULL
-      send CALLDICT
+      $send CALLDICT
     }>ELSE<{
       DROP
       NIP
@@ -639,16 +639,16 @@ PROGRAM{
       0 PUSHINT
       66 PUSHINT
       B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE
-      __gen_String_asComment CALLDICT
+      $__gen_String_asComment CALLDICT
       s3 s4 XCHG
       PUSHNULL
       PUSHNULL
-      send CALLDICT
+      $send CALLDICT
     }>
   }>
-  __gen_Payouts_receive_ChangeOwner PROC:<{
+  $__gen_Payouts_receive_ChangeOwner PROC:<{
     -ROT
-    __gen_Payouts_requireOwner CALLDICT
+    $__gen_Payouts_requireOwner CALLDICT
     NIP
   }>
   recv_internal PROC:<{
@@ -695,7 +695,7 @@ PROGRAM{
       s3 POP
       s3 s4 XCHG
       ROT
-      __gen_Payouts_receive_CanPayoutResponse CALLDICT
+      $__gen_Payouts_receive_CanPayoutResponse CALLDICT
       __gen_store_Payouts INLINECALLDICT
     }>
     DUP
@@ -708,7 +708,7 @@ PROGRAM{
       __gen_read_ChangeOwner INLINECALLDICT
       NIP
       s1 s2 XCHG
-      __gen_Payouts_receive_ChangeOwner CALLDICT
+      $__gen_Payouts_receive_ChangeOwner CALLDICT
       __gen_store_Payouts INLINECALLDICT
     }>
     0 EQINT
@@ -722,7 +722,7 @@ PROGRAM{
         32 PUSHINT
         SDSKIPFIRST
         s1 s2 XCHG
-        __gen_Payouts_receive_comment CALLDICT
+        $__gen_Payouts_receive_comment CALLDICT
         __gen_store_Payouts INLINECALLDICT
         RETALT
       }>
@@ -733,7 +733,7 @@ PROGRAM{
     130 THROW
   }>
   init_Payouts PROC:<{
-    __gen_Payouts_init CALLDICT
+    $__gen_Payouts_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

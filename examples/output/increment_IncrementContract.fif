@@ -24,19 +24,19 @@ PROGRAM{
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
-  DECLPROC storeBool
-  DECLPROC send
-  DECLPROC reply
-  DECLPROC __gen_IncrementContract_init
-  DECLPROC __gen_IncrementContract_counters
-  95239 DECLMETHOD __gen_get_counters
-  DECLPROC __gen_IncrementContract_counters2
-  77570 DECLMETHOD __gen_get_counters2
-  DECLPROC __gen_IncrementContract_receive_Increment
-  DECLPROC __gen_IncrementContract_receive_Toggle
-  DECLPROC __gen_IncrementContract_receive_Persist
-  DECLPROC __gen_IncrementContract_receive_Reset
-  DECLPROC __gen_IncrementContract_receive_Deploy
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $reply
+  DECLPROC $__gen_IncrementContract_init
+  DECLPROC $__gen_IncrementContract_counters
+  95239 DECLMETHOD $__gen_get_counters
+  DECLPROC $__gen_IncrementContract_counters2
+  77570 DECLMETHOD $__gen_get_counters2
+  DECLPROC $__gen_IncrementContract_receive_Increment
+  DECLPROC $__gen_IncrementContract_receive_Toggle
+  DECLPROC $__gen_IncrementContract_receive_Persist
+  DECLPROC $__gen_IncrementContract_receive_Reset
+  DECLPROC $__gen_IncrementContract_receive_Deploy
   DECLPROC recv_internal
   66039 DECLMETHOD init_IncrementContract
   113617 DECLMETHOD supported_interfaces
@@ -275,7 +275,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -285,13 +285,13 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -311,18 +311,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -331,14 +331,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -347,13 +347,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -363,14 +363,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -378,13 +378,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  reply PROC:<{
+  $reply PROC:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -395,9 +395,9 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_IncrementContract_init PROC:<{
+  $__gen_IncrementContract_init PROC:<{
     PUSHNULL
     PUSHNULL
     PUSHNULL
@@ -410,22 +410,22 @@ PROGRAM{
     __gen_write_IncrementContract INLINECALLDICT
     ENDC
   }>
-  __gen_IncrementContract_counters PROC:<{
+  $__gen_IncrementContract_counters PROC:<{
     4 BLKDROP
   }>
-  __gen_get_counters PROC:<{
+  $__gen_get_counters PROC:<{
     __gen_load_IncrementContract INLINECALLDICT
-    __gen_IncrementContract_counters CALLDICT
+    $__gen_IncrementContract_counters CALLDICT
   }>
-  __gen_IncrementContract_counters2 PROC:<{
+  $__gen_IncrementContract_counters2 PROC:<{
     s1 s4 XCHG
     4 BLKDROP
   }>
-  __gen_get_counters2 PROC:<{
+  $__gen_get_counters2 PROC:<{
     __gen_load_IncrementContract INLINECALLDICT
-    __gen_IncrementContract_counters2 CALLDICT
+    $__gen_IncrementContract_counters2 CALLDICT
   }>
-  __gen_IncrementContract_receive_Increment PROC:<{
+  $__gen_IncrementContract_receive_Increment PROC:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -442,7 +442,7 @@ PROGRAM{
     __tact_dict_set_slice_int CALLDICT
     SWAP
   }>
-  __gen_IncrementContract_receive_Toggle PROC:<{
+  $__gen_IncrementContract_receive_Toggle PROC:<{
     s4 PUSH
     257 PUSHINT
     s2 PUSH
@@ -470,7 +470,7 @@ PROGRAM{
     }>
     s0 s3 XCHG
   }>
-  __gen_IncrementContract_receive_Persist PROC:<{
+  $__gen_IncrementContract_receive_Persist PROC:<{
     52777 PUSHINT
     s5 PUSH
     257 PUSHINT
@@ -484,7 +484,7 @@ PROGRAM{
     __tact_dict_set_int_cell CALLDICT
     s0 s2 XCHG
   }>
-  __gen_IncrementContract_receive_Reset PROC:<{
+  $__gen_IncrementContract_receive_Reset PROC:<{
     257 PUSHINT
     PUSHNULL
     s1 s2 PUSH2
@@ -517,9 +517,9 @@ PROGRAM{
     s3 s4 XCHG
     s1 s3 s0 XCHG3
   }>
-  __gen_IncrementContract_receive_Deploy PROC:<{
+  $__gen_IncrementContract_receive_Deploy PROC:<{
     __gen_writecell_DeployOk INLINECALLDICT
-    reply CALLDICT
+    $reply CALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -566,7 +566,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      __gen_IncrementContract_receive_Increment CALLDICT
+      $__gen_IncrementContract_receive_Increment CALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DUP
@@ -581,7 +581,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      __gen_IncrementContract_receive_Toggle CALLDICT
+      $__gen_IncrementContract_receive_Toggle CALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DUP
@@ -597,7 +597,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      __gen_IncrementContract_receive_Persist CALLDICT
+      $__gen_IncrementContract_receive_Persist CALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DUP
@@ -612,7 +612,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      __gen_IncrementContract_receive_Reset CALLDICT
+      $__gen_IncrementContract_receive_Reset CALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     2509716940 PUSHINT
@@ -625,14 +625,14 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      __gen_IncrementContract_receive_Deploy CALLDICT
+      $__gen_IncrementContract_receive_Deploy CALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DROP
     130 THROW
   }>
   init_IncrementContract PROC:<{
-    __gen_IncrementContract_init CALLDICT
+    $__gen_IncrementContract_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

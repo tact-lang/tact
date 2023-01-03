@@ -238,7 +238,7 @@ builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slic
     set_data(b.end_cell());
 }
 
-cell __gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) {
+cell $__gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) {
     var ($e) = $e;
     var ($f) = $f;
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = (null(), null(), null(), null(), null(), null());
@@ -254,210 +254,210 @@ cell __gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice 
     return b'.end_cell();
 }
 
-int __gen_ContractWithOptionals_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'a));
 }
 
-_ __gen_get_isNotNullA() method_id(74449) {
+_ $__gen_get_isNotNullA() method_id(74449) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_isNotNullA(self);
+    var res = $__gen_ContractWithOptionals_isNotNullA(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'b));
 }
 
-_ __gen_get_isNotNullB() method_id(70322) {
+_ $__gen_get_isNotNullB() method_id(70322) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_isNotNullB(self);
+    var res = $__gen_ContractWithOptionals_isNotNullB(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'c));
 }
 
-_ __gen_get_isNotNullC() method_id(66195) {
+_ $__gen_get_isNotNullC() method_id(66195) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_isNotNullC(self);
+    var res = $__gen_ContractWithOptionals_isNotNullC(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'd));
 }
 
-_ __gen_get_isNotNullD() method_id(94836) {
+_ $__gen_get_isNotNullD() method_id(94836) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_isNotNullD(self);
+    var res = $__gen_ContractWithOptionals_isNotNullD(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'e));
 }
 
-_ __gen_get_isNotNullE() method_id(90709) {
+_ $__gen_get_isNotNullE() method_id(90709) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_isNotNullE(self);
+    var res = $__gen_ContractWithOptionals_isNotNullE(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return (~ null?($self'f));
 }
 
-_ __gen_get_isNotNullF() method_id(86582) {
+_ $__gen_get_isNotNullF() method_id(86582) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_isNotNullF(self);
+    var res = $__gen_ContractWithOptionals_isNotNullF(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_nullA((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_nullA((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'a;
 }
 
-_ __gen_get_nullA() method_id(119020) {
+_ $__gen_get_nullA() method_id(119020) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_nullA(self);
+    var res = $__gen_ContractWithOptionals_nullA(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_nullB((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_nullB((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'b;
 }
 
-_ __gen_get_nullB() method_id(123023) {
+_ $__gen_get_nullB() method_id(123023) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_nullB(self);
+    var res = $__gen_ContractWithOptionals_nullB(self);
     return res;
 }
 
-cell __gen_ContractWithOptionals_nullC((int, int, cell, slice, tuple, tuple) $self) impure {
+cell $__gen_ContractWithOptionals_nullC((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'c;
 }
 
-_ __gen_get_nullC() method_id(127150) {
+_ $__gen_get_nullC() method_id(127150) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_nullC(self);
+    var res = $__gen_ContractWithOptionals_nullC(self);
     return res;
 }
 
-slice __gen_ContractWithOptionals_nullD((int, int, cell, slice, tuple, tuple) $self) impure {
+slice $__gen_ContractWithOptionals_nullD((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'd;
 }
 
-_ __gen_get_nullD() method_id(98377) {
+_ $__gen_get_nullD() method_id(98377) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_nullD(self);
+    var res = $__gen_ContractWithOptionals_nullD(self);
     return res;
 }
 
-tuple __gen_ContractWithOptionals_nullE((int, int, cell, slice, tuple, tuple) $self) impure {
+tuple $__gen_ContractWithOptionals_nullE((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'e;
 }
 
-_ __gen_get_nullE() method_id(102504) {
+_ $__gen_get_nullE() method_id(102504) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_nullE(self);
+    var res = $__gen_ContractWithOptionals_nullE(self);
     return res;
 }
 
-tuple __gen_ContractWithOptionals_nullF((int, int, cell, slice, tuple, tuple) $self) impure {
+tuple $__gen_ContractWithOptionals_nullF((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'f;
 }
 
-_ __gen_get_nullF() method_id(106507) {
+_ $__gen_get_nullF() method_id(106507) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_nullF(self);
+    var res = $__gen_ContractWithOptionals_nullF(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_notNullA((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_notNullA((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'a);
 }
 
-_ __gen_get_notNullA() method_id(110911) {
+_ $__gen_get_notNullA() method_id(110911) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_notNullA(self);
+    var res = $__gen_ContractWithOptionals_notNullA(self);
     return res;
 }
 
-int __gen_ContractWithOptionals_notNullB((int, int, cell, slice, tuple, tuple) $self) impure {
+int $__gen_ContractWithOptionals_notNullB((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'b);
 }
 
-_ __gen_get_notNullB() method_id(98652) {
+_ $__gen_get_notNullB() method_id(98652) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_notNullB(self);
+    var res = $__gen_ContractWithOptionals_notNullB(self);
     return res;
 }
 
-cell __gen_ContractWithOptionals_notNullC((int, int, cell, slice, tuple, tuple) $self) impure {
+cell $__gen_ContractWithOptionals_notNullC((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'c);
 }
 
-_ __gen_get_notNullC() method_id(102781) {
+_ $__gen_get_notNullC() method_id(102781) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_notNullC(self);
+    var res = $__gen_ContractWithOptionals_notNullC(self);
     return res;
 }
 
-slice __gen_ContractWithOptionals_notNullD((int, int, cell, slice, tuple, tuple) $self) impure {
+slice $__gen_ContractWithOptionals_notNullD((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __tact_not_null($self'd);
 }
 
-_ __gen_get_notNullD() method_id(123290) {
+_ $__gen_get_notNullD() method_id(123290) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_notNullD(self);
+    var res = $__gen_ContractWithOptionals_notNullD(self);
     return res;
 }
 
-(int, int, int, int, int) __gen_ContractWithOptionals_notNullE((int, int, cell, slice, tuple, tuple) $self) impure {
+(int, int, int, int, int) $__gen_ContractWithOptionals_notNullE((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __gen_SomeGenericStruct_not_null($self'e);
 }
 
-_ __gen_get_notNullE() method_id(127419) {
+_ $__gen_get_notNullE() method_id(127419) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_notNullE(self);
+    var res = $__gen_ContractWithOptionals_notNullE(self);
     return res;
 }
 
-(int, int, cell, slice, tuple) __gen_ContractWithOptionals_notNullF((int, int, cell, slice, tuple, tuple) $self) impure {
+(int, int, cell, slice, tuple) $__gen_ContractWithOptionals_notNullF((int, int, cell, slice, tuple, tuple) $self) impure {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return __gen_StructWithOptionals_not_null($self'f);
 }
 
-_ __gen_get_notNullF() method_id(115160) {
+_ $__gen_get_notNullF() method_id(115160) {
     var self = __gen_load_ContractWithOptionals();
-    var res = __gen_ContractWithOptionals_notNullF(self);
+    var res = $__gen_ContractWithOptionals_notNullF(self);
     return res;
 }
 
-(((int, int, cell, slice, tuple, tuple)), ()) __gen_ContractWithOptionals_receive((int, int, cell, slice, tuple, tuple) $self) impure {
+(((int, int, cell, slice, tuple, tuple)), ()) $__gen_ContractWithOptionals_receive((int, int, cell, slice, tuple, tuple) $self) impure {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), ());
 }
 
-(((int, int, cell, slice, tuple, tuple)), ()) __gen_ContractWithOptionals_receive_Update((int, int, cell, slice, tuple, tuple) $self, (int, int, cell, slice, tuple, tuple) $msg) impure {
+(((int, int, cell, slice, tuple, tuple)), ()) $__gen_ContractWithOptionals_receive_Update((int, int, cell, slice, tuple, tuple) $self, (int, int, cell, slice, tuple, tuple) $msg) impure {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
     var ($msg'a, $msg'b, $msg'c, $msg'd, $msg'e, $msg'f) = $msg;
     $self'a = $msg'a;
@@ -491,7 +491,7 @@ _ __gen_get_notNullF() method_id(115160) {
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         var self = __gen_load_ContractWithOptionals();
-        self~__gen_ContractWithOptionals_receive();
+        self~$__gen_ContractWithOptionals_receive();
         __gen_store_ContractWithOptionals(self);
         return ();
     }
@@ -500,7 +500,7 @@ _ __gen_get_notNullF() method_id(115160) {
     if (op == 2676568142) {
         var self = __gen_load_ContractWithOptionals();
         var msg = in_msg~__gen_read_Update();
-        self~__gen_ContractWithOptionals_receive_Update(msg);
+        self~$__gen_ContractWithOptionals_receive_Update(msg);
         __gen_store_ContractWithOptionals(self);
         return ();
     }
@@ -509,7 +509,7 @@ _ __gen_get_notNullF() method_id(115160) {
 }
 
 cell init_ContractWithOptionals(cell sys', int a, int b, cell c, slice d, tuple e, tuple f) method_id {
-    return __gen_ContractWithOptionals_init(sys', a, b, c, d, e, f);
+    return $__gen_ContractWithOptionals_init(sys', a, b, c, d, e, f);
 }
 
 _ supported_interfaces() method_id {

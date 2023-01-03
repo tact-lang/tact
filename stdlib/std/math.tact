@@ -1,14 +1,33 @@
-@name(random)
-native random(): Int;
-
-@name(rand)
-native randomInterval(max: Int): Int;
+// Prepare random
 
 @name(randomize)
-native randomize(x: Int);
+native nativeRandomize(x: Int);
 
 @name(randomize_lt)
-native randomizeLt();
+native nativeRandomizeLt();
+
+@name(__tact_prepare_random)
+native nativePrepareRandom();
+
+// Random
+
+@name(random)
+native nativeRandom(): Int;
+
+@name(rand)
+native nativeRandomInterval(max: Int): Int;
+
+fun randomInt(): Int {
+    nativePrepareRandom();
+    return nativeRandom();
+}
+
+fun random(min: Int, max: Int): Int {
+    nativePrepareRandom();
+    return min + nativeRandomInterval(max - min);
+}
+
+// Math
 
 @name(min)
 native min(x: Int, y: Int): Int;

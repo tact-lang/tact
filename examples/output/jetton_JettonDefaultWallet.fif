@@ -28,18 +28,18 @@ PROGRAM{
   DECLPROC __gen_StateInit_get_code
   DECLPROC __gen_load_JettonDefaultWallet
   DECLPROC __gen_store_JettonDefaultWallet
-  DECLPROC storeBool
-  DECLPROC contractAddress
-  DECLPROC send
-  DECLPROC __gen_Context_readForwardFee
-  DECLPROC __gen_JettonDefaultWallet_init
-  DECLPROC __gen_JettonDefaultWallet_init_child
-  DECLPROC __gen_JettonDefaultWallet_get_wallet_data
-  97026 DECLMETHOD __gen_get_get_wallet_data
-  DECLPROC __gen_JettonDefaultWallet_receive_TokenTransfer
-  DECLPROC __gen_JettonDefaultWallet_receive_TokenTransferInternal
-  DECLPROC __gen_JettonDefaultWallet_receive_TokenBurn
-  DECLPROC __gen_JettonDefaultWallet_receive_bounced
+  DECLPROC $storeBool
+  DECLPROC $contractAddress
+  DECLPROC $send
+  DECLPROC $__gen_Context_readForwardFee
+  DECLPROC $__gen_JettonDefaultWallet_init
+  DECLPROC $__gen_JettonDefaultWallet_init_child
+  DECLPROC $__gen_JettonDefaultWallet_get_wallet_data
+  97026 DECLMETHOD $__gen_get_get_wallet_data
+  DECLPROC $__gen_JettonDefaultWallet_receive_TokenTransfer
+  DECLPROC $__gen_JettonDefaultWallet_receive_TokenTransferInternal
+  DECLPROC $__gen_JettonDefaultWallet_receive_TokenBurn
+  DECLPROC $__gen_JettonDefaultWallet_receive_bounced
   DECLPROC recv_internal
   111075 DECLMETHOD init_JettonDefaultWallet
   113617 DECLMETHOD supported_interfaces
@@ -314,7 +314,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -324,18 +324,18 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  contractAddress PROC:<{
+  $contractAddress PROC:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address CALLDICT
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -355,18 +355,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -375,14 +375,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -391,13 +391,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -407,14 +407,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -422,13 +422,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  __gen_Context_readForwardFee PROC:<{
+  $__gen_Context_readForwardFee PROC:<{
     3 1 BLKDROP2
     LDGRAMS
     NIP
@@ -441,7 +441,7 @@ PROGRAM{
     3 MULCONST
     1 RSHIFT#
   }>
-  __gen_JettonDefaultWallet_init PROC:<{
+  $__gen_JettonDefaultWallet_init PROC:<{
     0 PUSHINT
     s0 s3 XCHG
     NEWC
@@ -450,7 +450,7 @@ PROGRAM{
     __gen_write_JettonDefaultWallet INLINECALLDICT
     ENDC
   }>
-  __gen_JettonDefaultWallet_init_child PROC:<{
+  $__gen_JettonDefaultWallet_init_child PROC:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -470,19 +470,19 @@ PROGRAM{
     STDICT
     ENDC
     s0 s0 s3 XCHG3
-    __gen_JettonDefaultWallet_init CALLDICT
+    $__gen_JettonDefaultWallet_init CALLDICT
   }>
-  __gen_JettonDefaultWallet_get_wallet_data PROC:<{
+  $__gen_JettonDefaultWallet_get_wallet_data PROC:<{
     __tact_context_sys GETGLOB
     s1 s2 PUSH2
-    __gen_JettonDefaultWallet_init_child CALLDICT
+    $__gen_JettonDefaultWallet_init_child CALLDICT
     __gen_StateInit_get_code INLINECALLDICT
   }>
-  __gen_get_get_wallet_data PROC:<{
+  $__gen_get_get_wallet_data PROC:<{
     __gen_load_JettonDefaultWallet INLINECALLDICT
-    __gen_JettonDefaultWallet_get_wallet_data CALLDICT
+    $__gen_JettonDefaultWallet_get_wallet_data CALLDICT
   }>
-  __gen_JettonDefaultWallet_receive_TokenTransfer PROC:<{
+  $__gen_JettonDefaultWallet_receive_TokenTransfer PROC:<{
     2 2 BLKDROP2
     __tact_context_get INLINECALLDICT
     4429 PUSHINT
@@ -497,7 +497,7 @@ PROGRAM{
     THROWANYIFNOT
     s3 s3 s0 XCHG3
     s3 s11 PUXC
-    __gen_Context_readForwardFee CALLDICT
+    $__gen_Context_readForwardFee CALLDICT
     1 PUSHINT
     s4 PUSH
     0 GTINT
@@ -517,9 +517,9 @@ PROGRAM{
     THROWANYIFNOT
     __tact_context_sys GETGLOB
     s0 s6 s3 XCPUXC
-    __gen_JettonDefaultWallet_init_child CALLDICT
+    $__gen_JettonDefaultWallet_init_child CALLDICT
     2DUP
-    contractAddress CALLDICT
+    $contractAddress CALLDICT
     TRUE
     s7 s6 XCHG2
     0 PUSHINT
@@ -531,20 +531,20 @@ PROGRAM{
     s5 s6 XCHG
     s3 s4 XCHG
     -ROT
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_JettonDefaultWallet_receive_TokenTransferInternal PROC:<{
+  $__gen_JettonDefaultWallet_receive_TokenTransferInternal PROC:<{
     __tact_context_get INLINECALLDICT
     s2 s10 PUSH2
     __tact_address_neq INLINECALLDICT
     IF:<{
       __tact_context_sys GETGLOB
       s11 s8 PUSH2
-      __gen_JettonDefaultWallet_init_child CALLDICT
+      $__gen_JettonDefaultWallet_init_child CALLDICT
       SWAP
       4429 PUSHINT
       s0 s2 XCHG
-      contractAddress CALLDICT
+      $contractAddress CALLDICT
       s4 PUSH
       __tact_address_eq INLINECALLDICT
       THROWANYIFNOT
@@ -571,7 +571,7 @@ PROGRAM{
     IF:<{
       s4 s13 XCHG2
       s3 s3 s0 XCHG3
-      __gen_Context_readForwardFee CALLDICT
+      $__gen_Context_readForwardFee CALLDICT
       s3 s(-1) PUXC
       ADD
       s1 s10 XCHG
@@ -588,7 +588,7 @@ PROGRAM{
       s5 s5 XCHG2
       PUSHNULL
       PUSHNULL
-      send CALLDICT
+      $send CALLDICT
       s0 s5 XCHG2
     }>ELSE<{
       s7 s13 XCHG
@@ -613,13 +613,13 @@ PROGRAM{
       s1 s7 XCHG
       PUSHNULL
       PUSHNULL
-      send CALLDICT
+      $send CALLDICT
     }>ELSE<{
       s5 POP
       2DROP
     }>
   }>
-  __gen_JettonDefaultWallet_receive_TokenBurn PROC:<{
+  $__gen_JettonDefaultWallet_receive_TokenBurn PROC:<{
     2DROP
     __tact_context_get INLINECALLDICT
     4429 PUSHINT
@@ -634,7 +634,7 @@ PROGRAM{
     THROWANYIFNOT
     s3 s3 s0 XCHG3
     s3 s8 PUXC
-    __gen_Context_readForwardFee CALLDICT
+    $__gen_Context_readForwardFee CALLDICT
     16059 PUSHINT
     SWAP
     20000000 PUSHINT
@@ -654,9 +654,9 @@ PROGRAM{
     s3 s3 XCHG2
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_JettonDefaultWallet_receive_bounced PROC:<{
+  $__gen_JettonDefaultWallet_receive_bounced PROC:<{
     32 PUSHINT
     SDSKIPFIRST
     32 LDU
@@ -712,7 +712,7 @@ PROGRAM{
       DROP
       __gen_load_JettonDefaultWallet INLINECALLDICT
       3 ROLL
-      __gen_JettonDefaultWallet_receive_bounced CALLDICT
+      $__gen_JettonDefaultWallet_receive_bounced CALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DUP
@@ -727,7 +727,7 @@ PROGRAM{
       s8 s9 XCHG
       s7 s8 XCHG
       6 ROLL
-      __gen_JettonDefaultWallet_receive_TokenTransfer CALLDICT
+      $__gen_JettonDefaultWallet_receive_TokenTransfer CALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DUP
@@ -742,7 +742,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      __gen_JettonDefaultWallet_receive_TokenTransferInternal CALLDICT
+      $__gen_JettonDefaultWallet_receive_TokenTransferInternal CALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     1499400124 PUSHINT
@@ -755,14 +755,14 @@ PROGRAM{
       s5 s6 XCHG
       s4 s5 XCHG
       3 ROLL
-      __gen_JettonDefaultWallet_receive_TokenBurn CALLDICT
+      $__gen_JettonDefaultWallet_receive_TokenBurn CALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DROP
     130 THROW
   }>
   init_JettonDefaultWallet PROC:<{
-    __gen_JettonDefaultWallet_init CALLDICT
+    $__gen_JettonDefaultWallet_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

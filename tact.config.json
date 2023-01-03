@@ -102,6 +102,14 @@
       "experimental": {
         "debug": true
       }
+    },
+    {
+      "name": "random",
+      "path": "./src/test/features/random.tact",
+      "output": "./src/test/features/output",
+      "experimental": {
+        "debug": true
+      }
     }
   ]
 }

@@ -1,18 +1,18 @@
 PROGRAM{
   DECLPROC __gen_read_ConstantTester
   DECLPROC __gen_load_ConstantTester
-  DECLPROC __gen_ConstantTester_something1
-  121234 DECLMETHOD __gen_get_something1
-  DECLPROC __gen_ConstantTester_something2
-  125425 DECLMETHOD __gen_get_something2
-  DECLPROC __gen_ConstantTester_something3
-  129488 DECLMETHOD __gen_get_something3
-  DECLPROC __gen_ConstantTester_something4
-  100663 DECLMETHOD __gen_get_something4
-  DECLPROC __gen_ConstantTester_something5
-  104726 DECLMETHOD __gen_get_something5
-  DECLPROC __gen_ConstantTester_globalConst
-  116577 DECLMETHOD __gen_get_globalConst
+  DECLPROC $__gen_ConstantTester_something1
+  121234 DECLMETHOD $__gen_get_something1
+  DECLPROC $__gen_ConstantTester_something2
+  125425 DECLMETHOD $__gen_get_something2
+  DECLPROC $__gen_ConstantTester_something3
+  129488 DECLMETHOD $__gen_get_something3
+  DECLPROC $__gen_ConstantTester_something4
+  100663 DECLMETHOD $__gen_get_something4
+  DECLPROC $__gen_ConstantTester_something5
+  104726 DECLMETHOD $__gen_get_something5
+  DECLPROC $__gen_ConstantTester_globalConst
+  116577 DECLMETHOD $__gen_get_globalConst
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -32,53 +32,53 @@ PROGRAM{
     __gen_read_ConstantTester INLINECALLDICT
     NIP
   }>
-  __gen_ConstantTester_something1 PROC:<{
+  $__gen_ConstantTester_something1 PROC:<{
     DROP
     10 PUSHINT
   }>
-  __gen_get_something1 PROC:<{
+  $__gen_get_something1 PROC:<{
     __gen_load_ConstantTester INLINECALLDICT
-    __gen_ConstantTester_something1 CALLDICT
+    $__gen_ConstantTester_something1 CALLDICT
   }>
-  __gen_ConstantTester_something2 PROC:<{
+  $__gen_ConstantTester_something2 PROC:<{
     DROP
     PUSHNULL
   }>
-  __gen_get_something2 PROC:<{
+  $__gen_get_something2 PROC:<{
     __gen_load_ConstantTester INLINECALLDICT
-    __gen_ConstantTester_something2 CALLDICT
+    $__gen_ConstantTester_something2 CALLDICT
   }>
-  __gen_ConstantTester_something3 PROC:<{
+  $__gen_ConstantTester_something3 PROC:<{
     DROP
     123000000000 PUSHINT
   }>
-  __gen_get_something3 PROC:<{
+  $__gen_get_something3 PROC:<{
     __gen_load_ConstantTester INLINECALLDICT
-    __gen_ConstantTester_something3 CALLDICT
+    $__gen_ConstantTester_something3 CALLDICT
   }>
-  __gen_ConstantTester_something4 PROC:<{
+  $__gen_ConstantTester_something4 PROC:<{
     DROP
     456000000000 PUSHINT
   }>
-  __gen_get_something4 PROC:<{
+  $__gen_get_something4 PROC:<{
     __gen_load_ConstantTester INLINECALLDICT
-    __gen_ConstantTester_something4 CALLDICT
+    $__gen_ConstantTester_something4 CALLDICT
   }>
-  __gen_ConstantTester_something5 PROC:<{
+  $__gen_ConstantTester_something5 PROC:<{
     DROP
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
   }>
-  __gen_get_something5 PROC:<{
+  $__gen_get_something5 PROC:<{
     __gen_load_ConstantTester INLINECALLDICT
-    __gen_ConstantTester_something5 CALLDICT
+    $__gen_ConstantTester_something5 CALLDICT
   }>
-  __gen_ConstantTester_globalConst PROC:<{
+  $__gen_ConstantTester_globalConst PROC:<{
     DROP
     100 PUSHINT
   }>
-  __gen_get_globalConst PROC:<{
+  $__gen_get_globalConst PROC:<{
     __gen_load_ConstantTester INLINECALLDICT
-    __gen_ConstantTester_globalConst CALLDICT
+    $__gen_ConstantTester_globalConst CALLDICT
   }>
   recv_internal PROC:<{
     DUP

@@ -3,14 +3,14 @@ PROGRAM{
   DECLPROC __gen_read_StdlibTest
   DECLPROC __gen_load_StdlibTest
   DECLPROC __gen_store_StdlibTest
-  DECLPROC __gen_StdlibTest_init
-  DECLPROC __gen_StdlibTest_sliceEmpty
-  73995 DECLMETHOD __gen_get_sliceEmpty
-  DECLPROC __gen_StdlibTest_sliceBits
-  75090 DECLMETHOD __gen_get_sliceBits
-  DECLPROC __gen_StdlibTest_sliceRefs
-  77445 DECLMETHOD __gen_get_sliceRefs
-  DECLPROC __gen_StdlibTest_receive
+  DECLPROC $__gen_StdlibTest_init
+  DECLPROC $__gen_StdlibTest_sliceEmpty
+  73995 DECLMETHOD $__gen_get_sliceEmpty
+  DECLPROC $__gen_StdlibTest_sliceBits
+  75090 DECLMETHOD $__gen_get_sliceBits
+  DECLPROC $__gen_StdlibTest_sliceRefs
+  77445 DECLMETHOD $__gen_get_sliceRefs
+  DECLPROC $__gen_StdlibTest_receive
   DECLPROC recv_internal
   108504 DECLMETHOD init_StdlibTest
   113617 DECLMETHOD supported_interfaces
@@ -46,7 +46,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  __gen_StdlibTest_init PROC:<{
+  $__gen_StdlibTest_init PROC:<{
     0 PUSHINT
     SWAP
     NEWC
@@ -55,34 +55,34 @@ PROGRAM{
     __gen_write_StdlibTest INLINECALLDICT
     ENDC
   }>
-  __gen_StdlibTest_sliceEmpty PROC:<{
+  $__gen_StdlibTest_sliceEmpty PROC:<{
     NIP
     SEMPTY
   }>
-  __gen_get_sliceEmpty PROC:<{
+  $__gen_get_sliceEmpty PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceEmpty CALLDICT
+    $__gen_StdlibTest_sliceEmpty CALLDICT
   }>
-  __gen_StdlibTest_sliceBits PROC:<{
+  $__gen_StdlibTest_sliceBits PROC:<{
     NIP
     SBITS
   }>
-  __gen_get_sliceBits PROC:<{
+  $__gen_get_sliceBits PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceBits CALLDICT
+    $__gen_StdlibTest_sliceBits CALLDICT
   }>
-  __gen_StdlibTest_sliceRefs PROC:<{
+  $__gen_StdlibTest_sliceRefs PROC:<{
     NIP
     SREFS
   }>
-  __gen_get_sliceRefs PROC:<{
+  $__gen_get_sliceRefs PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    __gen_StdlibTest_sliceRefs CALLDICT
+    $__gen_StdlibTest_sliceRefs CALLDICT
   }>
-  __gen_StdlibTest_receive PROC:<{
+  $__gen_StdlibTest_receive PROC:<{
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -123,13 +123,13 @@ PROGRAM{
     AND
     IFJMP:<{
       __gen_load_StdlibTest INLINECALLDICT
-      __gen_StdlibTest_receive CALLDICT
+      $__gen_StdlibTest_receive CALLDICT
       __gen_store_StdlibTest INLINECALLDICT
     }>
     130 THROW
   }>
   init_StdlibTest PROC:<{
-    __gen_StdlibTest_init CALLDICT
+    $__gen_StdlibTest_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

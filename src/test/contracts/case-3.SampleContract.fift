@@ -2,8 +2,8 @@ PROGRAM{
   DECLPROC __gen_read_Source
   DECLPROC __gen_read_SampleContract
   DECLPROC __gen_load_SampleContract
-  DECLPROC __gen_SampleContract_stake
-  80984 DECLMETHOD __gen_get_stake
+  DECLPROC $__gen_SampleContract_stake
+  80984 DECLMETHOD $__gen_get_stake
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -38,12 +38,12 @@ PROGRAM{
     __gen_read_SampleContract INLINECALLDICT
     1 4 BLKDROP2
   }>
-  __gen_SampleContract_stake PROC:<{
+  $__gen_SampleContract_stake PROC:<{
     3 BLKDROP
   }>
-  __gen_get_stake PROC:<{
+  $__gen_get_stake PROC:<{
     __gen_load_SampleContract INLINECALLDICT
-    __gen_SampleContract_stake CALLDICT
+    $__gen_SampleContract_stake CALLDICT
   }>
   recv_internal PROC:<{
     DUP

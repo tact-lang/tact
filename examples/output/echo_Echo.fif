@@ -13,16 +13,16 @@ PROGRAM{
   DECLPROC __gen_read_Echo
   DECLPROC __gen_load_Echo
   DECLPROC __gen_store_Echo
-  DECLPROC storeBool
-  DECLPROC send
-  DECLPROC reply
-  DECLPROC __gen_Slice_asCell
-  DECLPROC __gen_String_asComment
-  DECLPROC __gen_Echo_init
-  DECLPROC __gen_Echo_hello
-  115554 DECLMETHOD __gen_get_hello
-  DECLPROC __gen_Echo_receive_comment
-  DECLPROC __gen_Echo_receive_fallback
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $reply
+  DECLPROC $__gen_Slice_asCell
+  DECLPROC $__gen_String_asComment
+  DECLPROC $__gen_Echo_init
+  DECLPROC $__gen_Echo_hello
+  115554 DECLMETHOD $__gen_get_hello
+  DECLPROC $__gen_Echo_receive_comment
+  DECLPROC $__gen_Echo_receive_fallback
   DECLPROC recv_internal
   101720 DECLMETHOD init_Echo
   113617 DECLMETHOD supported_interfaces
@@ -185,7 +185,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -195,13 +195,13 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -221,18 +221,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -241,14 +241,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -257,13 +257,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -273,14 +273,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -288,13 +288,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  reply PROC:<{
+  $reply PROC:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -305,21 +305,21 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_Slice_asCell PROC:<{
+  $__gen_Slice_asCell PROC:<{
     NEWC
     SWAP
     STSLICER
     ENDC
   }>
-  __gen_String_asComment PROC:<{
+  $__gen_String_asComment PROC:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append CALLDICT
     __tact_string_builder_end CALLDICT
   }>
-  __gen_Echo_init PROC:<{
+  $__gen_Echo_init PROC:<{
     0 PUSHINT
     SWAP
     NEWC
@@ -328,7 +328,7 @@ PROGRAM{
     __gen_write_Echo INLINECALLDICT
     ENDC
   }>
-  __gen_Echo_hello PROC:<{
+  $__gen_Echo_hello PROC:<{
     NIP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE
@@ -337,18 +337,18 @@ PROGRAM{
     __tact_string_builder_append CALLDICT
     __tact_string_builder_end_slice CALLDICT
   }>
-  __gen_get_hello PROC:<{
+  $__gen_get_hello PROC:<{
     __gen_load_Echo INLINECALLDICT
     SWAP
-    __gen_Echo_hello CALLDICT
+    $__gen_Echo_hello CALLDICT
   }>
-  __gen_Echo_receive_comment PROC:<{
-    __gen_String_asComment CALLDICT
-    reply CALLDICT
+  $__gen_Echo_receive_comment PROC:<{
+    $__gen_String_asComment CALLDICT
+    $reply CALLDICT
   }>
-  __gen_Echo_receive_fallback PROC:<{
-    __gen_Slice_asCell CALLDICT
-    reply CALLDICT
+  $__gen_Echo_receive_fallback PROC:<{
+    $__gen_Slice_asCell CALLDICT
+    $reply CALLDICT
   }>
   recv_internal PROC:<{
     SAMEALTSAVE
@@ -393,18 +393,18 @@ PROGRAM{
         SWAP
         32 PUSHINT
         SDSKIPFIRST
-        __gen_Echo_receive_comment CALLDICT
+        $__gen_Echo_receive_comment CALLDICT
         __gen_store_Echo INLINECALLDICT
         RETALT
       }>
     }>
     __gen_load_Echo INLINECALLDICT
     SWAP
-    __gen_Echo_receive_fallback CALLDICT
+    $__gen_Echo_receive_fallback CALLDICT
     __gen_store_Echo INLINECALLDICT
   }>
   init_Echo PROC:<{
-    __gen_Echo_init CALLDICT
+    $__gen_Echo_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

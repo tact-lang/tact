@@ -111,7 +111,7 @@ builder __gen_write_Echo(builder build_0, (int) v) inline {
 ;; String "Hello, "
 slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE";
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -119,69 +119,69 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-() reply(cell $body) impure {
+() $reply(cell $body) impure {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell __gen_Slice_asCell(slice $self) impure {
+cell $__gen_Slice_asCell(slice $self) impure {
     var ($self) = $self;
     builder $builder = begin_cell();
     $builder = store_slice($builder, $self);
     return end_cell($builder);
 }
 
-cell __gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
 }
 
-cell __gen_Echo_init(cell sys') {
+cell $__gen_Echo_init(cell sys') {
     var (($self'v)) = (0);
     var b' = begin_cell();
     b' = b'.store_ref(sys');
@@ -189,7 +189,7 @@ cell __gen_Echo_init(cell sys') {
     return b'.end_cell();
 }
 
-slice __gen_Echo_hello((int) $self, slice $src) impure {
+slice $__gen_Echo_hello((int) $self, slice $src) impure {
     var (($self'v)) = $self;
     tuple $builder = __tact_string_builder_start_string();
     $builder~__tact_string_builder_append(__gen_str_591567833());
@@ -197,21 +197,21 @@ slice __gen_Echo_hello((int) $self, slice $src) impure {
     return __tact_string_builder_end_slice($builder);
 }
 
-_ __gen_get_hello(slice $src) method_id(115554) {
+_ $__gen_get_hello(slice $src) method_id(115554) {
     var self = __gen_load_Echo();
-    var res = __gen_Echo_hello(self, $src);
+    var res = $__gen_Echo_hello(self, $src);
     return res;
 }
 
-((int), ()) __gen_Echo_receive_comment((int) $self, slice $msg) impure {
+((int), ()) $__gen_Echo_receive_comment((int) $self, slice $msg) impure {
     var ($self'v) = $self;
-    reply(__gen_String_asComment($msg));
+    $reply($__gen_String_asComment($msg));
     return (($self'v), ());
 }
 
-((int), ()) __gen_Echo_receive_fallback((int) $self, slice $msg) impure {
+((int), ()) $__gen_Echo_receive_fallback((int) $self, slice $msg) impure {
     var ($self'v) = $self;
-    reply(__gen_Slice_asCell($msg));
+    $reply($__gen_Slice_asCell($msg));
     return (($self'v), ());
 }
 
@@ -238,7 +238,7 @@ _ __gen_get_hello(slice $src) method_id(115554) {
     if (op == 0) {
         if (slice_bits(in_msg) >= 32) {
             var self = __gen_load_Echo();
-            self~__gen_Echo_receive_comment(in_msg.skip_bits(32));
+            self~$__gen_Echo_receive_comment(in_msg.skip_bits(32));
             __gen_store_Echo(self);
             return ();
         }
@@ -246,12 +246,12 @@ _ __gen_get_hello(slice $src) method_id(115554) {
     
     ;; Receiver fallback
     var self = __gen_load_Echo();
-    self~__gen_Echo_receive_fallback(in_msg);
+    self~$__gen_Echo_receive_fallback(in_msg);
     __gen_store_Echo(self);
 }
 
 cell init_Echo(cell sys') method_id {
-    return __gen_Echo_init(sys');
+    return $__gen_Echo_init(sys');
 }
 
 _ supported_interfaces() method_id {

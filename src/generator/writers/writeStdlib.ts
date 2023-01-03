@@ -55,6 +55,21 @@ export function writeStdlib(ctx: WriterContext) {
         });
         ctx.append(`}`);
     });
+
+    ctx.fun('__tact_prepare_random', () => {
+        ctx.append(`global int __tact_randomized;`);
+        ctx.append(`() __tact_prepare_random() impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(__tact_randomized)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`randomize_lt();`);
+                ctx.append(`__tact_randomized = true;`);
+            });
+            ctx.append(`}`);
+        });
+        ctx.append(`}`);
+    });
+
     ctx.fun('__tact_load_address', () => {
         ctx.append(`(slice, slice) __tact_load_address(slice cs) inline {`);
         ctx.inIndent(() => {

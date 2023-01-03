@@ -15,6 +15,7 @@ import { writeInterfaces } from "./writers/writeInterfaces";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getAllStrings } from "../types/resolveStrings";
 import { writeString } from './writers/writeString';
+import { fn } from "./writers/id";
 
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
@@ -58,7 +59,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                     // Execute function
                     ctx.used(`__gen_${type.name}_receive_bounced`);
-                    ctx.append(`self~__gen_${type.name}_receive_bounced(in_msg);`);
+                    ctx.append(`self~${fn(`__gen_${type.name}_receive_bounced`)}(in_msg);`);
 
                     // Persist
                     ctx.used(`__gen_store_${type.name}`);
@@ -95,7 +96,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                         // Execute function
                         ctx.used(`__gen_${type.name}_receive_${selector.type}`);
-                        ctx.append(`self~__gen_${type.name}_receive_${selector.type}(msg);`);
+                        ctx.append(`self~${fn(`__gen_${type.name}_receive_${selector.type}`)}(msg);`);
 
                         // Persist
                         ctx.used(`__gen_store_${type.name}`);
@@ -119,7 +120,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                         // Execute function
                         ctx.used(`__gen_${type.name}_receive`);
-                        ctx.append(`self~__gen_${type.name}_receive();`);
+                        ctx.append(`self~${fn(`__gen_${type.name}_receive`)}();`);
 
                         // Persist
                         ctx.used(`__gen_store_${type.name}`);
@@ -161,7 +162,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                                     // Execute function
                                     ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
-                                    ctx.append(`self~__gen_${type.name}_receive_comment_${hash}();`);
+                                    ctx.append(`self~${fn(`__gen_${type.name}_receive_comment_${hash}`)}();`);
 
                                     // Persist
                                     ctx.used(`__gen_store_${type.name}`);
@@ -188,7 +189,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                             // Execute function
                             ctx.used(`__gen_${type.name}_receive_comment`);
-                            ctx.append(`self~__gen_${type.name}_receive_comment(in_msg.skip_bits(32));`);
+                            ctx.append(`self~${fn(`__gen_${type.name}_receive_comment`)}(in_msg.skip_bits(32));`);
 
                             // Persist
                             ctx.used(`__gen_store_${type.name}`);
@@ -217,7 +218,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                 // Execute function
                 ctx.used(`__gen_${type.name}_receive_fallback`);
-                ctx.append(`self~__gen_${type.name}_receive_fallback(in_msg);`);
+                ctx.append(`self~${fn(`__gen_${type.name}_receive_fallback`)}(in_msg);`);
 
                 // Persist
                 ctx.used(`__gen_store_${type.name}`);
@@ -236,7 +237,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`cell init_${type.name}(${[`cell sys'`, ...type.init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name)].join(', ')}) method_id {`);
             ctx.inIndent(() => {
                 ctx.used(`__gen_${type.name}_init`);
-                ctx.append(`return __gen_${type.name}_init(${[`sys'`, ...type.init!.args.map((a) => a.name)].join(', ')});`);
+                ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[`sys'`, ...type.init!.args.map((a) => a.name)].join(', ')});`);
             });
             ctx.append(`}`);
             ctx.append();

@@ -2,30 +2,33 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
   DECLPROC __tact_verify_address
-  DECLPROC __tact_load_address
+  DECLPROC __tact_prepare_random
   DECLPROC __tact_store_address
-  DECLPROC __tact_address_eq
-  DECLPROC __gen_read_CanPayout
-  DECLPROC __gen_write_CanPayoutResponse
-  DECLPROC __gen_writecell_CanPayoutResponse
-  DECLPROC __gen_write_Beacon
-  DECLPROC __gen_read_Beacon
-  DECLPROC __gen_load_Beacon
-  DECLPROC __gen_store_Beacon
+  DECLPROC __gen_read_Deploy
+  DECLPROC __gen_write_DeployOk
+  DECLPROC __gen_writecell_DeployOk
+  DECLPROC __gen_write_RandomContract
+  DECLPROC __gen_read_RandomContract
+  DECLPROC __gen_load_RandomContract
+  DECLPROC __gen_store_RandomContract
   DECLPROC $storeBool
+  DECLPROC $randomInt
+  DECLPROC $random
   DECLPROC $send
   DECLPROC $reply
-  DECLPROC $__gen_Beacon_init
-  DECLPROC $__gen_Beacon_owner
-  83229 DECLMETHOD $__gen_get_owner
-  DECLPROC $__gen_Beacon_receive_CanPayout
-  DECLPROC $__gen_Beacon_receive_bounced
+  DECLPROC $__gen_RandomContract_init
+  DECLPROC $__gen_RandomContract_randomInt
+  128647 DECLMETHOD $__gen_get_randomInt
+  DECLPROC $__gen_RandomContract_random
+  92013 DECLMETHOD $__gen_get_random
+  DECLPROC $__gen_RandomContract_receive_Deploy
   DECLPROC recv_internal
-  107415 DECLMETHOD init_Beacon
+  77915 DECLMETHOD init_RandomContract
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  DECLGLOBVAR __tact_randomized
   __tact_not_null PROC:<{
     DUP
     ISNULL
@@ -41,74 +44,66 @@ PROGRAM{
     NEQ
     134 THROWIFNOT
   }>
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
-    SWAP
+  __tact_prepare_random PROCINLINE:<{
+    __tact_randomized GETGLOB
+    ISNULL
+    IF:<{
+      LTIME
+      ADDRAND
+      TRUE
+      __tact_randomized SETGLOB
+    }>
   }>
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __tact_address_eq PROCINLINE:<{
-    SDEQ
-  }>
-  __gen_read_CanPayout PROCINLINE:<{
+  __gen_read_Deploy PROCINLINE:<{
     32 LDU
     SWAP
-    1050587494 PUSHINT
+    2509716940 PUSHINT
     EQUAL
     129 THROWIFNOT
+    64 LDU
+    SWAP
+  }>
+  __gen_write_DeployOk PROCINLINE:<{
+    3548362785 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  __gen_writecell_DeployOk PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_DeployOk INLINECALLDICT
+    ENDC
+  }>
+  __gen_write_RandomContract PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  __gen_read_RandomContract PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  __gen_write_CanPayoutResponse PROCINLINE:<{
-    1861678417 PUSHINT
-    s0 s4 XCHG2
-    32 STU
-    s1 s2 XCHG
-    257 PUSHINT
-    STIX
-    SWAP
-    __tact_store_address INLINECALLDICT
-    1 STI
-  }>
-  __gen_writecell_CanPayoutResponse PROCINLINE:<{
-    NEWC
-    3 -ROLL
-    __gen_write_CanPayoutResponse INLINECALLDICT
-    ENDC
-  }>
-  __gen_write_Beacon PROCINLINE:<{
-    2SWAP
-    __tact_store_address INLINECALLDICT
-    ROT
-    __tact_store_address INLINECALLDICT
-    1 STI
-  }>
-  __gen_read_Beacon PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    SWAP
-    1 LDI
-    3 -ROLL
-  }>
-  __gen_load_Beacon PROCINLINE:<{
+  __gen_load_RandomContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_Beacon INLINECALLDICT
-    1 3 BLKDROP2
+    __gen_read_RandomContract INLINECALLDICT
+    NIP
   }>
-  __gen_store_Beacon PROCINLINE:<{
+  __gen_store_RandomContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
-    3 -ROLL
-    __gen_write_Beacon INLINECALLDICT
+    SWAP
+    __gen_write_RandomContract INLINECALLDICT
     ENDC
     c4 POP
   }>
@@ -121,6 +116,17 @@ PROGRAM{
     0 PUSHINT
     SWAP
     1 STI
+  }>
+  $randomInt PROC:<{
+    __tact_prepare_random INLINECALLDICT
+    RANDU256
+  }>
+  $random PROC:<{
+    __tact_prepare_random INLINECALLDICT
+    OVER
+    SUB
+    RAND
+    ADD
   }>
   $send PROC:<{
     NEWC
@@ -234,52 +240,35 @@ PROGRAM{
     PUSHNULL
     $send CALLDICT
   }>
-  $__gen_Beacon_init PROC:<{
-    FALSE
-    s0 s3 XCHG
+  $__gen_RandomContract_init PROC:<{
+    0 PUSHINT
+    SWAP
     NEWC
     STREF
-    s0 s3 XCHG
-    __gen_write_Beacon INLINECALLDICT
+    SWAP
+    __gen_write_RandomContract INLINECALLDICT
     ENDC
   }>
-  $__gen_Beacon_owner PROC:<{
+  $__gen_RandomContract_randomInt PROC:<{
     DROP
-    NIP
+    $randomInt CALLDICT
   }>
-  $__gen_get_owner PROC:<{
-    __gen_load_Beacon INLINECALLDICT
-    $__gen_Beacon_owner CALLDICT
+  $__gen_get_randomInt PROC:<{
+    __gen_load_RandomContract INLINECALLDICT
+    $__gen_RandomContract_randomInt CALLDICT
   }>
-  $__gen_Beacon_receive_CanPayout PROC:<{
-    __tact_context_get INLINECALLDICT
-    2DROP
-    4429 PUSHINT
-    s2 POP
-    s5 PUSH
-    __tact_address_eq INLINECALLDICT
-    THROWANYIFNOT
-    100000000 PUSHINT
-    0 PUSHINT
-    RAWRESERVE
-    OVER
-    IF:<{
-      TRUE
-      s2 POP
-      s2 PUSH
-      TRUE
-      __gen_writecell_CanPayoutResponse INLINECALLDICT
-      $reply CALLDICT
-    }>ELSE<{
-      s2 PUSH
-      FALSE
-      __gen_writecell_CanPayoutResponse INLINECALLDICT
-      $reply CALLDICT
-    }>
+  $__gen_RandomContract_random PROC:<{
+    1 2 BLKDROP2
+    $random CALLDICT
   }>
-  $__gen_Beacon_receive_bounced PROC:<{
-    2DROP
-    FALSE
+  $__gen_get_random PROC:<{
+    __gen_load_RandomContract INLINECALLDICT
+    -ROT
+    $__gen_RandomContract_random CALLDICT
+  }>
+  $__gen_RandomContract_receive_Deploy PROC:<{
+    __gen_writecell_DeployOk INLINECALLDICT
+    $reply CALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -311,35 +300,29 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     IFJMP:<{
-      DROP
-      __gen_load_Beacon INLINECALLDICT
-      3 ROLL
-      $__gen_Beacon_receive_bounced CALLDICT
-      __gen_store_Beacon INLINECALLDICT
+      2DROP
     }>
-    1050587494 PUSHINT
+    2509716940 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_Beacon INLINECALLDICT
-      s0 s3 XCHG
-      __gen_read_CanPayout INLINECALLDICT
+      __gen_load_RandomContract INLINECALLDICT
+      SWAP
+      __gen_read_Deploy INLINECALLDICT
       NIP
-      s1 s3 s0 XCHG3
-      $__gen_Beacon_receive_CanPayout CALLDICT
-      __gen_store_Beacon INLINECALLDICT
+      $__gen_RandomContract_receive_Deploy CALLDICT
+      __gen_store_RandomContract INLINECALLDICT
     }>
     DROP
     130 THROW
   }>
-  init_Beacon PROC:<{
-    $__gen_Beacon_init CALLDICT
+  init_RandomContract PROC:<{
+    $__gen_RandomContract_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
-    86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d544b39416e737273736d6f3259334445364a3167426a4e5a5a79724c3162756862784756756b4a3239434c34} PUSHSLICE
+    x{697066733a2f2f516d6238783451356479376b32504a3931566e66374a6f63476f433454464e33724838586f7357507233394e4543} PUSHSLICE
   }>
 }END>c

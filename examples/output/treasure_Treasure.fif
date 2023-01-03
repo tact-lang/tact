@@ -12,16 +12,16 @@ PROGRAM{
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_load_Treasure
   DECLPROC __gen_store_Treasure
-  DECLPROC storeBool
-  DECLPROC send
-  DECLPROC __gen_Treasure_init
-  DECLPROC __gen_Treasure_requireOwner
-  DECLPROC __gen_Treasure_doWithdraw
-  DECLPROC __gen_Treasure_owner
-  83229 DECLMETHOD __gen_get_owner
-  DECLPROC __gen_Treasure_receive_Withdraw
-  DECLPROC __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
-  DECLPROC __gen_Treasure_receive_ChangeOwner
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $__gen_Treasure_init
+  DECLPROC $__gen_Treasure_requireOwner
+  DECLPROC $__gen_Treasure_doWithdraw
+  DECLPROC $__gen_Treasure_owner
+  83229 DECLMETHOD $__gen_get_owner
+  DECLPROC $__gen_Treasure_receive_Withdraw
+  DECLPROC $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
+  DECLPROC $__gen_Treasure_receive_ChangeOwner
   DECLPROC recv_internal
   122670 DECLMETHOD init_Treasure
   113617 DECLMETHOD supported_interfaces
@@ -100,7 +100,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -110,13 +110,13 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -136,18 +136,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -156,14 +156,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -172,13 +172,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -188,14 +188,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -203,13 +203,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  __gen_Treasure_init PROC:<{
+  $__gen_Treasure_init PROC:<{
     SWAP
     NEWC
     STREF
@@ -217,16 +217,16 @@ PROGRAM{
     __gen_write_Treasure INLINECALLDICT
     ENDC
   }>
-  __gen_Treasure_requireOwner PROC:<{
+  $__gen_Treasure_requireOwner PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_sender INLINECALLDICT
     OVER
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  __gen_Treasure_doWithdraw PROC:<{
+  $__gen_Treasure_doWithdraw PROC:<{
     s0 s2 XCHG
-    __gen_Treasure_requireOwner CALLDICT
+    $__gen_Treasure_requireOwner CALLDICT
     TRUE
     NEWC
     ENDC
@@ -234,25 +234,25 @@ PROGRAM{
     s5 s5 XCHG2
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_Treasure_owner PROC:<{
+  $__gen_Treasure_owner PROC:<{
   }>
-  __gen_get_owner PROC:<{
+  $__gen_get_owner PROC:<{
     __gen_load_Treasure INLINECALLDICT
-    __gen_Treasure_owner CALLDICT
+    $__gen_Treasure_owner CALLDICT
   }>
-  __gen_Treasure_receive_Withdraw PROC:<{
-    __gen_Treasure_doWithdraw CALLDICT
+  $__gen_Treasure_receive_Withdraw PROC:<{
+    $__gen_Treasure_doWithdraw CALLDICT
   }>
-  __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROC:<{
+  $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROC:<{
     0 PUSHINT
     160 PUSHINT
-    __gen_Treasure_doWithdraw CALLDICT
+    $__gen_Treasure_doWithdraw CALLDICT
   }>
-  __gen_Treasure_receive_ChangeOwner PROC:<{
+  $__gen_Treasure_receive_ChangeOwner PROC:<{
     SWAP
-    __gen_Treasure_requireOwner CALLDICT
+    $__gen_Treasure_requireOwner CALLDICT
     DROP
   }>
   recv_internal PROC:<{
@@ -297,7 +297,7 @@ PROGRAM{
       SWAP
       __gen_read_Withdraw INLINECALLDICT
       1 2 BLKDROP2
-      __gen_Treasure_receive_Withdraw CALLDICT
+      $__gen_Treasure_receive_Withdraw CALLDICT
       __gen_store_Treasure INLINECALLDICT
     }>
     DUP
@@ -309,7 +309,7 @@ PROGRAM{
       SWAP
       __gen_read_ChangeOwner INLINECALLDICT
       NIP
-      __gen_Treasure_receive_ChangeOwner CALLDICT
+      $__gen_Treasure_receive_ChangeOwner CALLDICT
       __gen_store_Treasure INLINECALLDICT
     }>
     0 EQINT
@@ -319,7 +319,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_Treasure INLINECALLDICT
-        __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d CALLDICT
+        $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d CALLDICT
         __gen_store_Treasure INLINECALLDICT
         RETALT
       }>
@@ -329,7 +329,7 @@ PROGRAM{
     130 THROW
   }>
   init_Treasure PROC:<{
-    __gen_Treasure_init CALLDICT
+    $__gen_Treasure_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

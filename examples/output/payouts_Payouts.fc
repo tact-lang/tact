@@ -184,7 +184,7 @@ slice __gen_str_3364490128() asm "B{b5ee9c7241010101000900000e537563636573731535
 ;; String "Already paid"
 slice __gen_str_2620117026() asm "B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE";
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -192,65 +192,65 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-slice contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-slice __gen_Builder_asSlice(builder $self) impure {
+slice $__gen_Builder_asSlice(builder $self) impure {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
 
-cell __gen_Builder_asCell(builder $self) impure {
+cell $__gen_Builder_asCell(builder $self) impure {
     var ($self) = $self;
     return end_cell($self);
 }
 
-slice __gen_Slice_fromBase64(slice $self) impure {
+slice $__gen_Slice_fromBase64(slice $self) impure {
     var ($self) = $self;
     int $size = (slice_bits($self) / 8);
     builder $result = begin_cell();
@@ -274,26 +274,26 @@ slice __gen_Slice_fromBase64(slice $self) impure {
     int $total = builder_bits($result);
     int $padding = ($total % 8);
     if (($padding != 0)) {
-        slice $s = __gen_Builder_asSlice($result);
+        slice $s = $__gen_Builder_asSlice($result);
         return $s~load_bits(($total - $padding));
     } else {
-        return __gen_Builder_asSlice($result);
+        return $__gen_Builder_asSlice($result);
     }
 }
 
-cell __gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
 }
 
-slice __gen_String_fromBase64(slice $self) impure {
+slice $__gen_String_fromBase64(slice $self) impure {
     var ($self) = $self;
-    return __gen_Slice_fromBase64(__tact_str_to_slice($self));
+    return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
 }
 
-cell __gen_Beacon_init(cell sys', slice $master, slice $owner) {
+cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
     var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
     $self'master = $master;
     $self'owner = $owner;
@@ -304,16 +304,16 @@ cell __gen_Beacon_init(cell sys', slice $master, slice $owner) {
     return b'.end_cell();
 }
 
-(cell, cell) __gen_Beacon_init_child(cell sys', slice $master, slice $owner) {
+(cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell mine = __tact_dict_get_code(source, 41210);
     cell contracts = new_dict();
     cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, __gen_Beacon_init(sys, $master, $owner));
+    return (mine, $__gen_Beacon_init(sys, $master, $owner));
 }
 
-cell __gen_Payouts_init(cell sys', slice $owner, int $publicKey) {
+cell $__gen_Payouts_init(cell sys', slice $owner, int $publicKey) {
     var (($self'owner, $self'publicKey)) = (null(), null());
     $self'owner = $owner;
     $self'publicKey = $publicKey;
@@ -323,61 +323,61 @@ cell __gen_Payouts_init(cell sys', slice $owner, int $publicKey) {
     return b'.end_cell();
 }
 
-((slice, int), ()) __gen_Payouts_requireOwner((slice, int) $self) impure {
+((slice, int), ()) $__gen_Payouts_requireOwner((slice, int) $self) impure {
     var (($self'owner, $self'publicKey)) = $self;
     throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
     return (($self'owner, $self'publicKey), ());
 }
 
-slice __gen_Payouts_owner((slice, int) $self) impure {
+slice $__gen_Payouts_owner((slice, int) $self) impure {
     var (($self'owner, $self'publicKey)) = $self;
     return $self'owner;
 }
 
-_ __gen_get_owner() method_id(83229) {
+_ $__gen_get_owner() method_id(83229) {
     var self = __gen_load_Payouts();
-    var res = __gen_Payouts_owner(self);
+    var res = $__gen_Payouts_owner(self);
     return res;
 }
 
-((slice, int), ()) __gen_Payouts_receive_comment((slice, int) $self, slice $msg) impure {
+((slice, int), ()) $__gen_Payouts_receive_comment((slice, int) $self, slice $msg) impure {
     var ($self'owner, $self'publicKey) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(16059, ($ctx'value >= 1000000000));
-    slice $data = __gen_String_fromBase64($msg);
+    slice $data = $__gen_String_fromBase64($msg);
     int $amount = $data~load_coins();
     slice $signature = $data~load_bits(512);
     builder $dataToSign = begin_cell();
     $dataToSign = __tact_store_address($dataToSign, $ctx'sender);
     $dataToSign = store_coins($dataToSign, $amount);
-    int $hash = cell_hash(__gen_Builder_asCell($dataToSign));
+    int $hash = cell_hash($__gen_Builder_asCell($dataToSign));
     throw_unless(48401, check_signature($hash, $signature, $self'publicKey));
-    var ($init'code, $init'data) = __gen_Beacon_init_child(__tact_context_sys, my_address(), $ctx'sender);
-    slice $address = contractAddress(($init'code, $init'data));
-    send((true, $address, 0, (64 + 2), __gen_writecell_CanPayout(($amount)), null(), null()));
+    var ($init'code, $init'data) = $__gen_Beacon_init_child(__tact_context_sys, my_address(), $ctx'sender);
+    slice $address = $contractAddress(($init'code, $init'data));
+    $send((true, $address, 0, (64 + 2), __gen_writecell_CanPayout(($amount)), null(), null()));
     return (($self'owner, $self'publicKey), ());
 }
 
-(((slice, int)), ()) __gen_Payouts_receive_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure {
+(((slice, int)), ()) $__gen_Payouts_receive_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'amount, $msg'address, $msg'ok) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    var ($init'code, $init'data) = __gen_Beacon_init_child(__tact_context_sys, my_address(), $msg'address);
-    slice $address = contractAddress(($init'code, $init'data));
+    var ($init'code, $init'data) = $__gen_Beacon_init_child(__tact_context_sys, my_address(), $msg'address);
+    slice $address = $contractAddress(($init'code, $init'data));
     throw_unless(4429, __tact_address_eq($ctx'sender, $address));
     if ($msg'ok) {
         throw_unless(62972, ((((__tact_my_balance() - $ctx'value) - 1000000000) - $msg'amount) > 0));
-        send((false, $msg'address, $msg'amount, (64 + 2), __gen_String_asComment(__gen_str_3364490128()), null(), null()));
+        $send((false, $msg'address, $msg'amount, (64 + 2), $__gen_String_asComment(__gen_str_3364490128()), null(), null()));
     } else {
-        send((false, $msg'address, 0, (64 + 2), __gen_String_asComment(__gen_str_2620117026()), null(), null()));
+        $send((false, $msg'address, 0, (64 + 2), $__gen_String_asComment(__gen_str_2620117026()), null(), null()));
     }
     return (($self'owner, $self'publicKey), ());
 }
 
-(((slice, int)), ()) __gen_Payouts_receive_ChangeOwner((slice, int) $self, (slice) $msg) impure {
+(((slice, int)), ()) $__gen_Payouts_receive_ChangeOwner((slice, int) $self, (slice) $msg) impure {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'newOwner) = $msg;
-    ($self'owner, $self'publicKey)~__gen_Payouts_requireOwner();
+    ($self'owner, $self'publicKey)~$__gen_Payouts_requireOwner();
     $self'owner = $msg'newOwner;
     return (($self'owner, $self'publicKey), ());
 }
@@ -405,7 +405,7 @@ _ __gen_get_owner() method_id(83229) {
     if (op == 1861678417) {
         var self = __gen_load_Payouts();
         var msg = in_msg~__gen_read_CanPayoutResponse();
-        self~__gen_Payouts_receive_CanPayoutResponse(msg);
+        self~$__gen_Payouts_receive_CanPayoutResponse(msg);
         __gen_store_Payouts(self);
         return ();
     }
@@ -414,7 +414,7 @@ _ __gen_get_owner() method_id(83229) {
     if (op == 3067051791) {
         var self = __gen_load_Payouts();
         var msg = in_msg~__gen_read_ChangeOwner();
-        self~__gen_Payouts_receive_ChangeOwner(msg);
+        self~$__gen_Payouts_receive_ChangeOwner(msg);
         __gen_store_Payouts(self);
         return ();
     }
@@ -423,7 +423,7 @@ _ __gen_get_owner() method_id(83229) {
     if (op == 0) {
         if (slice_bits(in_msg) >= 32) {
             var self = __gen_load_Payouts();
-            self~__gen_Payouts_receive_comment(in_msg.skip_bits(32));
+            self~$__gen_Payouts_receive_comment(in_msg.skip_bits(32));
             __gen_store_Payouts(self);
             return ();
         }
@@ -433,7 +433,7 @@ _ __gen_get_owner() method_id(83229) {
 }
 
 cell init_Payouts(cell sys', slice owner, int publicKey) method_id {
-    return __gen_Payouts_init(sys', owner, publicKey);
+    return $__gen_Payouts_init(sys', owner, publicKey);
 }
 
 _ supported_interfaces() method_id {

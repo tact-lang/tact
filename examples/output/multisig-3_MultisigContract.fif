@@ -11,20 +11,20 @@ PROGRAM{
   DECLPROC __gen_read_MultisigContract
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
-  DECLPROC storeBool
-  DECLPROC send
-  DECLPROC __gen_MultisigContract_init
-  DECLPROC __gen_MultisigContract_execute
-  DECLPROC __gen_MultisigContract_key1
-  107493 DECLMETHOD __gen_get_key1
-  DECLPROC __gen_MultisigContract_key2
-  103302 DECLMETHOD __gen_get_key2
-  DECLPROC __gen_MultisigContract_key3
-  99239 DECLMETHOD __gen_get_key3
-  DECLPROC __gen_MultisigContract_seqno
-  85143 DECLMETHOD __gen_get_seqno
-  DECLPROC __gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC __gen_MultisigContract_receive_Execute
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $__gen_MultisigContract_init
+  DECLPROC $__gen_MultisigContract_execute
+  DECLPROC $__gen_MultisigContract_key1
+  107493 DECLMETHOD $__gen_get_key1
+  DECLPROC $__gen_MultisigContract_key2
+  103302 DECLMETHOD $__gen_get_key2
+  DECLPROC $__gen_MultisigContract_key3
+  99239 DECLMETHOD $__gen_get_key3
+  DECLPROC $__gen_MultisigContract_seqno
+  85143 DECLMETHOD $__gen_get_seqno
+  DECLPROC $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $__gen_MultisigContract_receive_Execute
   DECLPROC recv_internal
   117447 DECLMETHOD init_MultisigContract
   113617 DECLMETHOD supported_interfaces
@@ -124,7 +124,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -134,13 +134,13 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -160,18 +160,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -180,14 +180,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -196,13 +196,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -212,14 +212,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -227,13 +227,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  __gen_MultisigContract_init PROC:<{
+  $__gen_MultisigContract_init PROC:<{
     0 PUSHINT
     s0 s4 XCHG
     NEWC
@@ -242,7 +242,7 @@ PROGRAM{
     __gen_write_MultisigContract INLINECALLDICT
     ENDC
   }>
-  __gen_MultisigContract_execute PROC:<{
+  $__gen_MultisigContract_execute PROC:<{
     TRUE
     s3 POP
     SWAP
@@ -250,41 +250,41 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_MultisigContract_key1 PROC:<{
+  $__gen_MultisigContract_key1 PROC:<{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_get_key1 PROC:<{
+  $__gen_get_key1 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_key1 CALLDICT
+    $__gen_MultisigContract_key1 CALLDICT
   }>
-  __gen_MultisigContract_key2 PROC:<{
+  $__gen_MultisigContract_key2 PROC:<{
     s1 s3 XCHG
     3 BLKDROP
   }>
-  __gen_get_key2 PROC:<{
+  $__gen_get_key2 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_key2 CALLDICT
+    $__gen_MultisigContract_key2 CALLDICT
   }>
-  __gen_MultisigContract_key3 PROC:<{
+  $__gen_MultisigContract_key3 PROC:<{
     3 1 BLKDROP2
   }>
-  __gen_get_key3 PROC:<{
+  $__gen_get_key3 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_key3 CALLDICT
+    $__gen_MultisigContract_key3 CALLDICT
   }>
-  __gen_MultisigContract_seqno PROC:<{
+  $__gen_MultisigContract_seqno PROC:<{
     3 BLKDROP
   }>
-  __gen_get_seqno PROC:<{
+  $__gen_get_seqno PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    __gen_MultisigContract_seqno CALLDICT
+    $__gen_MultisigContract_seqno CALLDICT
   }>
-  __gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROC:<{
+  $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROC:<{
   }>
-  __gen_MultisigContract_receive_Execute PROC:<{
+  $__gen_MultisigContract_receive_Execute PROC:<{
     s5 s4 s3 PUSH3
     __gen_writecell_Operation INLINECALLDICT
     HASHCU
@@ -307,7 +307,7 @@ PROGRAM{
     SWAP
     AND
     THROWANYIFNOT
-    __gen_MultisigContract_execute CALLDICT
+    $__gen_MultisigContract_execute CALLDICT
   }>
   recv_internal PROC:<{
     SAMEALTSAVE
@@ -355,7 +355,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      __gen_MultisigContract_receive_Execute CALLDICT
+      $__gen_MultisigContract_receive_Execute CALLDICT
       __gen_store_MultisigContract INLINECALLDICT
     }>
     0 EQINT
@@ -365,7 +365,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_MultisigContract INLINECALLDICT
-        __gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 CALLDICT
+        $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 CALLDICT
         __gen_store_MultisigContract INLINECALLDICT
         RETALT
       }>
@@ -375,7 +375,7 @@ PROGRAM{
     130 THROW
   }>
   init_MultisigContract PROC:<{
-    __gen_MultisigContract_init CALLDICT
+    $__gen_MultisigContract_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

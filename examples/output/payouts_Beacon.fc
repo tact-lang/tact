@@ -72,7 +72,7 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -80,55 +80,55 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-() reply(cell $body) impure {
+() $reply(cell $body) impure {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell __gen_Beacon_init(cell sys', slice $master, slice $owner) {
+cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
     var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
     $self'master = $master;
     $self'owner = $owner;
@@ -139,18 +139,18 @@ cell __gen_Beacon_init(cell sys', slice $master, slice $owner) {
     return b'.end_cell();
 }
 
-slice __gen_Beacon_owner((slice, slice, int) $self) impure {
+slice $__gen_Beacon_owner((slice, slice, int) $self) impure {
     var (($self'master, $self'owner, $self'completed)) = $self;
     return $self'owner;
 }
 
-_ __gen_get_owner() method_id(83229) {
+_ $__gen_get_owner() method_id(83229) {
     var self = __gen_load_Beacon();
-    var res = __gen_Beacon_owner(self);
+    var res = $__gen_Beacon_owner(self);
     return res;
 }
 
-(((slice, slice, int)), ()) __gen_Beacon_receive_CanPayout((slice, slice, int) $self, (int) $msg) impure {
+(((slice, slice, int)), ()) $__gen_Beacon_receive_CanPayout((slice, slice, int) $self, (int) $msg) impure {
     var ($self'master, $self'owner, $self'completed) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -158,14 +158,14 @@ _ __gen_get_owner() method_id(83229) {
     raw_reserve(100000000, 0);
     if ($self'completed) {
         $self'completed = true;
-        reply(__gen_writecell_CanPayoutResponse(($msg'amount, $self'owner, true)));
+        $reply(__gen_writecell_CanPayoutResponse(($msg'amount, $self'owner, true)));
     } else {
-        reply(__gen_writecell_CanPayoutResponse(($msg'amount, $self'owner, false)));
+        $reply(__gen_writecell_CanPayoutResponse(($msg'amount, $self'owner, false)));
     }
     return (($self'master, $self'owner, $self'completed), ());
 }
 
-((slice, slice, int), ()) __gen_Beacon_receive_bounced((slice, slice, int) $self, slice $msg) impure {
+((slice, slice, int), ()) $__gen_Beacon_receive_bounced((slice, slice, int) $self, slice $msg) impure {
     var ($self'master, $self'owner, $self'completed) = $self;
     $self'completed = false;
     return (($self'master, $self'owner, $self'completed), ());
@@ -188,7 +188,7 @@ _ __gen_get_owner() method_id(83229) {
     ;; Handle bounced messages
     if (msg_bounced) {
         var self = __gen_load_Beacon();
-        self~__gen_Beacon_receive_bounced(in_msg);
+        self~$__gen_Beacon_receive_bounced(in_msg);
         __gen_store_Beacon(self);
         return ();
     }
@@ -197,7 +197,7 @@ _ __gen_get_owner() method_id(83229) {
     if (op == 1050587494) {
         var self = __gen_load_Beacon();
         var msg = in_msg~__gen_read_CanPayout();
-        self~__gen_Beacon_receive_CanPayout(msg);
+        self~$__gen_Beacon_receive_CanPayout(msg);
         __gen_store_Beacon(self);
         return ();
     }
@@ -206,7 +206,7 @@ _ __gen_get_owner() method_id(83229) {
 }
 
 cell init_Beacon(cell sys', slice master, slice owner) method_id {
-    return __gen_Beacon_init(sys', master, owner);
+    return $__gen_Beacon_init(sys', master, owner);
 }
 
 _ supported_interfaces() method_id {

@@ -4,27 +4,27 @@ PROGRAM{
   DECLPROC __gen_read_SerializationTester
   DECLPROC __gen_load_SerializationTester
   DECLPROC __gen_store_SerializationTester
-  DECLPROC __gen_SerializationTester_init
-  DECLPROC __gen_SerializationTester_getA
-  123932 DECLMETHOD __gen_get_getA
-  DECLPROC __gen_SerializationTester_getB
-  119935 DECLMETHOD __gen_get_getB
-  DECLPROC __gen_SerializationTester_getC
-  115806 DECLMETHOD __gen_get_getC
-  DECLPROC __gen_SerializationTester_getD
-  111801 DECLMETHOD __gen_get_getD
-  DECLPROC __gen_SerializationTester_getE
-  107672 DECLMETHOD __gen_get_getE
-  DECLPROC __gen_SerializationTester_getF
-  103675 DECLMETHOD __gen_get_getF
-  DECLPROC __gen_SerializationTester_getG
-  99546 DECLMETHOD __gen_get_getG
-  DECLPROC __gen_SerializationTester_getH
-  95541 DECLMETHOD __gen_get_getH
-  DECLPROC __gen_SerializationTester_getI
-  91412 DECLMETHOD __gen_get_getI
-  DECLPROC __gen_SerializationTester_receive
-  DECLPROC __gen_SerializationTester_receive_Update
+  DECLPROC $__gen_SerializationTester_init
+  DECLPROC $__gen_SerializationTester_getA
+  123932 DECLMETHOD $__gen_get_getA
+  DECLPROC $__gen_SerializationTester_getB
+  119935 DECLMETHOD $__gen_get_getB
+  DECLPROC $__gen_SerializationTester_getC
+  115806 DECLMETHOD $__gen_get_getC
+  DECLPROC $__gen_SerializationTester_getD
+  111801 DECLMETHOD $__gen_get_getD
+  DECLPROC $__gen_SerializationTester_getE
+  107672 DECLMETHOD $__gen_get_getE
+  DECLPROC $__gen_SerializationTester_getF
+  103675 DECLMETHOD $__gen_get_getF
+  DECLPROC $__gen_SerializationTester_getG
+  99546 DECLMETHOD $__gen_get_getG
+  DECLPROC $__gen_SerializationTester_getH
+  95541 DECLMETHOD $__gen_get_getH
+  DECLPROC $__gen_SerializationTester_getI
+  91412 DECLMETHOD $__gen_get_getI
+  DECLPROC $__gen_SerializationTester_receive
+  DECLPROC $__gen_SerializationTester_receive_Update
   DECLPROC recv_internal
   91479 DECLMETHOD init_SerializationTester
   113617 DECLMETHOD supported_interfaces
@@ -151,7 +151,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  __gen_SerializationTester_init PROC:<{
+  $__gen_SerializationTester_init PROC:<{
     s0 s9 XCHG
     NEWC
     STREF
@@ -159,79 +159,79 @@ PROGRAM{
     __gen_write_SerializationTester INLINECALLDICT
     ENDC
   }>
-  __gen_SerializationTester_getA PROC:<{
+  $__gen_SerializationTester_getA PROC:<{
     8 BLKDROP
   }>
-  __gen_get_getA PROC:<{
+  $__gen_get_getA PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getA CALLDICT
+    $__gen_SerializationTester_getA CALLDICT
   }>
-  __gen_SerializationTester_getB PROC:<{
+  $__gen_SerializationTester_getB PROC:<{
     s7 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getB PROC:<{
+  $__gen_get_getB PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getB CALLDICT
+    $__gen_SerializationTester_getB CALLDICT
   }>
-  __gen_SerializationTester_getC PROC:<{
+  $__gen_SerializationTester_getC PROC:<{
     s6 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getC PROC:<{
+  $__gen_get_getC PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getC CALLDICT
+    $__gen_SerializationTester_getC CALLDICT
   }>
-  __gen_SerializationTester_getD PROC:<{
+  $__gen_SerializationTester_getD PROC:<{
     s5 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getD PROC:<{
+  $__gen_get_getD PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getD CALLDICT
+    $__gen_SerializationTester_getD CALLDICT
   }>
-  __gen_SerializationTester_getE PROC:<{
+  $__gen_SerializationTester_getE PROC:<{
     s4 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getE PROC:<{
+  $__gen_get_getE PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getE CALLDICT
+    $__gen_SerializationTester_getE CALLDICT
   }>
-  __gen_SerializationTester_getF PROC:<{
+  $__gen_SerializationTester_getF PROC:<{
     s3 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getF PROC:<{
+  $__gen_get_getF PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getF CALLDICT
+    $__gen_SerializationTester_getF CALLDICT
   }>
-  __gen_SerializationTester_getG PROC:<{
+  $__gen_SerializationTester_getG PROC:<{
     s2 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getG PROC:<{
+  $__gen_get_getG PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getG CALLDICT
+    $__gen_SerializationTester_getG CALLDICT
   }>
-  __gen_SerializationTester_getH PROC:<{
+  $__gen_SerializationTester_getH PROC:<{
     s1 s8 XCHG
     8 BLKDROP
   }>
-  __gen_get_getH PROC:<{
+  $__gen_get_getH PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getH CALLDICT
+    $__gen_SerializationTester_getH CALLDICT
   }>
-  __gen_SerializationTester_getI PROC:<{
+  $__gen_SerializationTester_getI PROC:<{
     8 1 BLKDROP2
   }>
-  __gen_get_getI PROC:<{
+  $__gen_get_getI PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    __gen_SerializationTester_getI CALLDICT
+    $__gen_SerializationTester_getI CALLDICT
   }>
-  __gen_SerializationTester_receive PROC:<{
+  $__gen_SerializationTester_receive PROC:<{
   }>
-  __gen_SerializationTester_receive_Update PROC:<{
+  $__gen_SerializationTester_receive_Update PROC:<{
     s2 POP
     s8 POP
     s8 POP
@@ -284,7 +284,7 @@ PROGRAM{
     IFJMP:<{
       2DROP
       __gen_load_SerializationTester INLINECALLDICT
-      __gen_SerializationTester_receive CALLDICT
+      $__gen_SerializationTester_receive CALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
     2676568142 PUSHINT
@@ -303,14 +303,14 @@ PROGRAM{
       s10 s11 XCHG
       s9 s10 XCHG
       8 ROLL
-      __gen_SerializationTester_receive_Update CALLDICT
+      $__gen_SerializationTester_receive_Update CALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
     DROP
     130 THROW
   }>
   init_SerializationTester PROC:<{
-    __gen_SerializationTester_init CALLDICT
+    $__gen_SerializationTester_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

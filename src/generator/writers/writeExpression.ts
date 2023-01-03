@@ -8,7 +8,7 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
 import { getStringId } from "../../types/resolveStrings";
-import { id } from "./id";
+import { fn, id } from "./id";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -316,6 +316,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
         } else {
             ctx.used(n);
+            n = fn(n);
         }
         return n + '(' + f.args.map((a) => writeExpression(a, ctx)).join(', ') + ')';
     }
@@ -375,6 +376,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             let name = `__gen_${src.name}_${f.name}`;
             if (ff.ast.kind === 'def_function') {
                 ctx.used(name);
+                name = fn(name);
             } else {
                 name = ff.ast.nativeName;
                 if (name.startsWith('__tact')) {
@@ -421,7 +423,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     if (f.kind === 'init_of') {
         ctx.used(`__gen_${f.name}_init_child`);
         ctx.used(`__tact_context`);
-        return `__gen_${f.name}_init_child(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+        return `${fn(`__gen_${f.name}_init_child`)}(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
     }
 
     //

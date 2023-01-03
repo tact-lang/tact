@@ -140,7 +140,7 @@ builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -148,55 +148,55 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-slice contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-cell __gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
+cell $__gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
     var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = (null(), null(), 0, null(), null(), null());
     $self'master = $master;
@@ -210,16 +210,16 @@ cell __gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $req
     return b'.end_cell();
 }
 
-(cell, cell) __gen_MultisigSigner_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
+(cell, cell) $__gen_MultisigSigner_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell mine = __tact_dict_get_code(source, 37817);
     cell contracts = new_dict();
     cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, __gen_MultisigSigner_init(sys, $master, $members, $requiredWeight, $request));
+    return (mine, $__gen_MultisigSigner_init(sys, $master, $members, $requiredWeight, $request));
 }
 
-cell __gen_Multisig_init(cell sys', cell $members, int $totalWeight, int $requiredWeight) {
+cell $__gen_Multisig_init(cell sys', cell $members, int $totalWeight, int $requiredWeight) {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = (null(), null(), null(), null());
     $self'members = $members;
     $self'requiredWeight = $requiredWeight;
@@ -231,49 +231,49 @@ cell __gen_Multisig_init(cell sys', cell $members, int $totalWeight, int $requir
     return b'.end_cell();
 }
 
-int __gen_Multisig_member((int, cell, int, int) $self, slice $address) impure {
+int $__gen_Multisig_member((int, cell, int, int) $self, slice $address) impure {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
     return __tact_dict_get_slice_int($self'members, 267, $address, 257);
 }
 
-_ __gen_get_member(slice $address) method_id(70789) {
+_ $__gen_get_member(slice $address) method_id(70789) {
     var self = __gen_load_Multisig();
-    var res = __gen_Multisig_member(self, $address);
+    var res = $__gen_Multisig_member(self, $address);
     return res;
 }
 
-cell __gen_Multisig_members((int, cell, int, int) $self) impure {
+cell $__gen_Multisig_members((int, cell, int, int) $self) impure {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
     return $self'members;
 }
 
-_ __gen_get_members() method_id(104769) {
+_ $__gen_get_members() method_id(104769) {
     var self = __gen_load_Multisig();
-    var res = __gen_Multisig_members(self);
+    var res = $__gen_Multisig_members(self);
     return res;
 }
 
-(((int, cell, int, int)), ()) __gen_Multisig_receive_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure {
+(((int, cell, int, int)), ()) $__gen_Multisig_receive_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     int $weight = __tact_not_null(__tact_dict_get_slice_int($self'members, 267, $ctx'sender, 257));
     throw_unless(46307, ($weight > 0));
-    var ($opInit'code, $opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body));
-    slice $opAddress = contractAddress(($opInit'code, $opInit'data));
-    send((true, $opAddress, 0, (64 + 2), null(), $opInit'code, $opInit'data));
+    var ($opInit'code, $opInit'data) = $__gen_MultisigSigner_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body));
+    slice $opAddress = $contractAddress(($opInit'code, $opInit'data));
+    $send((true, $opAddress, 0, (64 + 2), null(), $opInit'code, $opInit'data));
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
 
-(((int, cell, int, int)), ()) __gen_Multisig_receive_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure {
+(((int, cell, int, int)), ()) $__gen_Multisig_receive_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var (($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body)) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    var ($opInit'code, $opInit'data) = __gen_MultisigSigner_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body));
-    slice $opAddress = contractAddress(($opInit'code, $opInit'data));
+    var ($opInit'code, $opInit'data) = $__gen_MultisigSigner_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body));
+    slice $opAddress = $contractAddress(($opInit'code, $opInit'data));
     throw_unless(4429, __tact_address_eq($opAddress, $ctx'sender));
     throw_unless(4755, ($msg'request'timeout > now()));
-    send(($msg'request'bounce, $msg'request'to, $msg'request'value, $msg'request'mode, $msg'request'body, null(), null()));
+    $send(($msg'request'bounce, $msg'request'to, $msg'request'value, $msg'request'mode, $msg'request'body, null(), null()));
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
 
@@ -300,7 +300,7 @@ _ __gen_get_members() method_id(104769) {
     if (op == 4096439811) {
         var self = __gen_load_Multisig();
         var msg = in_msg~__gen_read_Request();
-        self~__gen_Multisig_receive_Request(msg);
+        self~$__gen_Multisig_receive_Request(msg);
         __gen_store_Multisig(self);
         return ();
     }
@@ -309,7 +309,7 @@ _ __gen_get_members() method_id(104769) {
     if (op == 420994549) {
         var self = __gen_load_Multisig();
         var msg = in_msg~__gen_read_Signed();
-        self~__gen_Multisig_receive_Signed(msg);
+        self~$__gen_Multisig_receive_Signed(msg);
         __gen_store_Multisig(self);
         return ();
     }
@@ -318,7 +318,7 @@ _ __gen_get_members() method_id(104769) {
 }
 
 cell init_Multisig(cell sys', cell members, int totalWeight, int requiredWeight) method_id {
-    return __gen_Multisig_init(sys', members, totalWeight, requiredWeight);
+    return $__gen_Multisig_init(sys', members, totalWeight, requiredWeight);
 }
 
 _ supported_interfaces() method_id {

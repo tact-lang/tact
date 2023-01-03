@@ -67,7 +67,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -75,50 +75,50 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-cell __gen_Treasure_init(cell sys', slice $owner) {
+cell $__gen_Treasure_init(cell sys', slice $owner) {
     var (($self'owner)) = (null());
     $self'owner = $owner;
     var b' = begin_cell();
@@ -127,47 +127,47 @@ cell __gen_Treasure_init(cell sys', slice $owner) {
     return b'.end_cell();
 }
 
-((slice), ()) __gen_Treasure_requireOwner((slice) $self) impure {
+((slice), ()) $__gen_Treasure_requireOwner((slice) $self) impure {
     var (($self'owner)) = $self;
     throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
     return (($self'owner), ());
 }
 
-((slice), ()) __gen_Treasure_doWithdraw((slice) $self, int $amount, int $mode) impure {
+((slice), ()) $__gen_Treasure_doWithdraw((slice) $self, int $amount, int $mode) impure {
     var (($self'owner)) = $self;
-    ($self'owner)~__gen_Treasure_requireOwner();
-    send((true, $self'owner, $amount, $mode, end_cell(begin_cell()), null(), null()));
+    ($self'owner)~$__gen_Treasure_requireOwner();
+    $send((true, $self'owner, $amount, $mode, end_cell(begin_cell()), null(), null()));
     return (($self'owner), ());
 }
 
-slice __gen_Treasure_owner((slice) $self) impure {
+slice $__gen_Treasure_owner((slice) $self) impure {
     var (($self'owner)) = $self;
     return $self'owner;
 }
 
-_ __gen_get_owner() method_id(83229) {
+_ $__gen_get_owner() method_id(83229) {
     var self = __gen_load_Treasure();
-    var res = __gen_Treasure_owner(self);
+    var res = $__gen_Treasure_owner(self);
     return res;
 }
 
-(((slice)), ()) __gen_Treasure_receive_Withdraw((slice) $self, (int, int) $msg) impure {
+(((slice)), ()) $__gen_Treasure_receive_Withdraw((slice) $self, (int, int) $msg) impure {
     var ($self'owner) = $self;
     var ($msg'amount, $msg'mode) = $msg;
-    ($self'owner)~__gen_Treasure_doWithdraw($msg'amount, $msg'mode);
+    ($self'owner)~$__gen_Treasure_doWithdraw($msg'amount, $msg'mode);
     return (($self'owner), ());
 }
 
-((slice), ()) __gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) $self) impure {
+((slice), ()) $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) $self) impure {
     var ($self'owner) = $self;
-    ($self'owner)~__gen_Treasure_doWithdraw(0, (32 + 128));
+    ($self'owner)~$__gen_Treasure_doWithdraw(0, (32 + 128));
     return (($self'owner), ());
 }
 
-(((slice)), ()) __gen_Treasure_receive_ChangeOwner((slice) $self, (slice) $msg) impure {
+(((slice)), ()) $__gen_Treasure_receive_ChangeOwner((slice) $self, (slice) $msg) impure {
     var ($self'owner) = $self;
     var ($msg'newOwner) = $msg;
-    ($self'owner)~__gen_Treasure_requireOwner();
+    ($self'owner)~$__gen_Treasure_requireOwner();
     $self'owner = $msg'newOwner;
     return (($self'owner), ());
 }
@@ -195,7 +195,7 @@ _ __gen_get_owner() method_id(83229) {
     if (op == 1286094280) {
         var self = __gen_load_Treasure();
         var msg = in_msg~__gen_read_Withdraw();
-        self~__gen_Treasure_receive_Withdraw(msg);
+        self~$__gen_Treasure_receive_Withdraw(msg);
         __gen_store_Treasure(self);
         return ();
     }
@@ -204,7 +204,7 @@ _ __gen_get_owner() method_id(83229) {
     if (op == 3067051791) {
         var self = __gen_load_Treasure();
         var msg = in_msg~__gen_read_ChangeOwner();
-        self~__gen_Treasure_receive_ChangeOwner(msg);
+        self~$__gen_Treasure_receive_ChangeOwner(msg);
         __gen_store_Treasure(self);
         return ();
     }
@@ -216,7 +216,7 @@ _ __gen_get_owner() method_id(83229) {
         ;; Receive "Destroy" message
         if (text_op == 0x986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d) {
             var self = __gen_load_Treasure();
-            self~__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
+            self~$__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
             __gen_store_Treasure(self);
             return ();
         }
@@ -226,7 +226,7 @@ _ __gen_get_owner() method_id(83229) {
 }
 
 cell init_Treasure(cell sys', slice owner) method_id {
-    return __gen_Treasure_init(sys', owner);
+    return $__gen_Treasure_init(sys', owner);
 }
 
 _ supported_interfaces() method_id {

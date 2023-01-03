@@ -172,7 +172,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -180,55 +180,55 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-() reply(cell $body) impure {
+() $reply(cell $body) impure {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell __gen_IncrementContract_init(cell sys') {
+cell $__gen_IncrementContract_init(cell sys') {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = (null(), null(), null(), null(), null());
     var b' = begin_cell();
     b' = b'.store_ref(sys');
@@ -236,29 +236,29 @@ cell __gen_IncrementContract_init(cell sys') {
     return b'.end_cell();
 }
 
-cell __gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure {
+cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters;
 }
 
-_ __gen_get_counters() method_id(95239) {
+_ $__gen_get_counters() method_id(95239) {
     var self = __gen_load_IncrementContract();
-    var res = __gen_IncrementContract_counters(self);
+    var res = $__gen_IncrementContract_counters(self);
     return res;
 }
 
-cell __gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure {
+cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters4;
 }
 
-_ __gen_get_counters2() method_id(77570) {
+_ $__gen_get_counters2() method_id(77570) {
     var self = __gen_load_IncrementContract();
-    var res = __gen_IncrementContract_counters2(self);
+    var res = $__gen_IncrementContract_counters2(self);
     return res;
 }
 
-(((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'value) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -267,7 +267,7 @@ _ __gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     int $ex = __tact_dict_get_int_int($self'counters2, 257, $msg'key, 1);
@@ -279,7 +279,7 @@ _ __gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'content) = $msg;
     throw_unless(52777, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
@@ -287,7 +287,7 @@ _ __gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     $self'counters~__tact_dict_set_int_int(257, $msg'key, null(), 257);
@@ -298,10 +298,10 @@ _ __gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) __gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($deploy'queryId) = $deploy;
-    reply(__gen_writecell_DeployOk(($deploy'queryId)));
+    $reply(__gen_writecell_DeployOk(($deploy'queryId)));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
@@ -328,7 +328,7 @@ _ __gen_get_counters2() method_id(77570) {
     if (op == 3615081709) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Increment();
-        self~__gen_IncrementContract_receive_Increment(msg);
+        self~$__gen_IncrementContract_receive_Increment(msg);
         __gen_store_IncrementContract(self);
         return ();
     }
@@ -337,7 +337,7 @@ _ __gen_get_counters2() method_id(77570) {
     if (op == 575056061) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Toggle();
-        self~__gen_IncrementContract_receive_Toggle(msg);
+        self~$__gen_IncrementContract_receive_Toggle(msg);
         __gen_store_IncrementContract(self);
         return ();
     }
@@ -346,7 +346,7 @@ _ __gen_get_counters2() method_id(77570) {
     if (op == 140802882) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Persist();
-        self~__gen_IncrementContract_receive_Persist(msg);
+        self~$__gen_IncrementContract_receive_Persist(msg);
         __gen_store_IncrementContract(self);
         return ();
     }
@@ -355,7 +355,7 @@ _ __gen_get_counters2() method_id(77570) {
     if (op == 2438762569) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Reset();
-        self~__gen_IncrementContract_receive_Reset(msg);
+        self~$__gen_IncrementContract_receive_Reset(msg);
         __gen_store_IncrementContract(self);
         return ();
     }
@@ -364,7 +364,7 @@ _ __gen_get_counters2() method_id(77570) {
     if (op == 2509716940) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Deploy();
-        self~__gen_IncrementContract_receive_Deploy(msg);
+        self~$__gen_IncrementContract_receive_Deploy(msg);
         __gen_store_IncrementContract(self);
         return ();
     }
@@ -373,7 +373,7 @@ _ __gen_get_counters2() method_id(77570) {
 }
 
 cell init_IncrementContract(cell sys') method_id {
-    return __gen_IncrementContract_init(sys');
+    return $__gen_IncrementContract_init(sys');
 }
 
 _ supported_interfaces() method_id {

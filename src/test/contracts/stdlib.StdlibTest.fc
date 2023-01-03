@@ -25,7 +25,7 @@ builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     set_data(b.end_cell());
 }
 
-cell __gen_StdlibTest_init(cell sys') {
+cell $__gen_StdlibTest_init(cell sys') {
     var (($self'v)) = (0);
     var b' = begin_cell();
     b' = b'.store_ref(sys');
@@ -33,40 +33,40 @@ cell __gen_StdlibTest_init(cell sys') {
     return b'.end_cell();
 }
 
-int __gen_StdlibTest_sliceEmpty((int) $self, slice $sc) impure {
+int $__gen_StdlibTest_sliceEmpty((int) $self, slice $sc) impure {
     var (($self'v)) = $self;
     return slice_empty?($sc);
 }
 
-_ __gen_get_sliceEmpty(slice $sc) method_id(73995) {
+_ $__gen_get_sliceEmpty(slice $sc) method_id(73995) {
     var self = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceEmpty(self, $sc);
+    var res = $__gen_StdlibTest_sliceEmpty(self, $sc);
     return res;
 }
 
-int __gen_StdlibTest_sliceBits((int) $self, slice $sc) impure {
+int $__gen_StdlibTest_sliceBits((int) $self, slice $sc) impure {
     var (($self'v)) = $self;
     return slice_bits($sc);
 }
 
-_ __gen_get_sliceBits(slice $sc) method_id(75090) {
+_ $__gen_get_sliceBits(slice $sc) method_id(75090) {
     var self = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceBits(self, $sc);
+    var res = $__gen_StdlibTest_sliceBits(self, $sc);
     return res;
 }
 
-int __gen_StdlibTest_sliceRefs((int) $self, slice $sc) impure {
+int $__gen_StdlibTest_sliceRefs((int) $self, slice $sc) impure {
     var (($self'v)) = $self;
     return slice_refs($sc);
 }
 
-_ __gen_get_sliceRefs(slice $sc) method_id(77445) {
+_ $__gen_get_sliceRefs(slice $sc) method_id(77445) {
     var self = __gen_load_StdlibTest();
-    var res = __gen_StdlibTest_sliceRefs(self, $sc);
+    var res = $__gen_StdlibTest_sliceRefs(self, $sc);
     return res;
 }
 
-(((int)), ()) __gen_StdlibTest_receive((int) $self) impure {
+(((int)), ()) $__gen_StdlibTest_receive((int) $self) impure {
     var ($self'v) = $self;
     return (($self'v), ());
 }
@@ -93,7 +93,7 @@ _ __gen_get_sliceRefs(slice $sc) method_id(77445) {
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         var self = __gen_load_StdlibTest();
-        self~__gen_StdlibTest_receive();
+        self~$__gen_StdlibTest_receive();
         __gen_store_StdlibTest(self);
         return ();
     }
@@ -102,7 +102,7 @@ _ __gen_get_sliceRefs(slice $sc) method_id(77445) {
 }
 
 cell init_StdlibTest(cell sys') method_id {
-    return __gen_StdlibTest_init(sys');
+    return $__gen_StdlibTest_init(sys');
 }
 
 _ supported_interfaces() method_id {

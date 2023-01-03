@@ -124,7 +124,7 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -132,50 +132,50 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-cell __gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
+cell $__gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
     var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = (null(), null(), 0, null(), null(), null());
     $self'master = $master;
@@ -189,23 +189,23 @@ cell __gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $req
     return b'.end_cell();
 }
 
-(slice, slice, int, int, int, int, cell) __gen_MultisigSigner_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
+(slice, slice, int, int, int, int, cell) $__gen_MultisigSigner_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = $self;
     return ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body);
 }
 
-_ __gen_get_request() method_id(107262) {
+_ $__gen_get_request() method_id(107262) {
     var self = __gen_load_MultisigSigner();
-    var res = __gen_MultisigSigner_request(self);
+    var res = $__gen_MultisigSigner_request(self);
     return res;
 }
 
-(((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) __gen_MultisigSigner_receive((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
+(((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) $__gen_MultisigSigner_receive((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
 
-((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) __gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     throw_unless(4755, ($self'request'timeout > now()));
     throw_unless(40810, (~ $self'completed));
@@ -215,7 +215,7 @@ _ __gen_get_request() method_id(107262) {
     $self'weight = ($self'weight + $weight);
     if (($self'weight >= $self'requiredWeight)) {
         $self'completed = true;
-        send((false, $self'master, 0, (128 + 2), __gen_writecell_Signed((($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))), null(), null()));
+        $send((false, $self'master, 0, (128 + 2), __gen_writecell_Signed((($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))), null(), null()));
     }
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
@@ -242,7 +242,7 @@ _ __gen_get_request() method_id(107262) {
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         var self = __gen_load_MultisigSigner();
-        self~__gen_MultisigSigner_receive();
+        self~$__gen_MultisigSigner_receive();
         __gen_store_MultisigSigner(self);
         return ();
     }
@@ -254,7 +254,7 @@ _ __gen_get_request() method_id(107262) {
         ;; Receive "YES" message
         if (text_op == 0x22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039) {
             var self = __gen_load_MultisigSigner();
-            self~__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
+            self~$__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
             __gen_store_MultisigSigner(self);
             return ();
         }
@@ -264,7 +264,7 @@ _ __gen_get_request() method_id(107262) {
 }
 
 cell init_MultisigSigner(cell sys', slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) method_id {
-    return __gen_MultisigSigner_init(sys', master, members, requiredWeight, request);
+    return $__gen_MultisigSigner_init(sys', master, members, requiredWeight, request);
 }
 
 _ supported_interfaces() method_id {

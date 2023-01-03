@@ -102,7 +102,7 @@ _ __gen_Context_get_bounced((int, slice, int, slice) v) inline {
     set_data(b.end_cell());
 }
 
-builder storeBool(builder $s, int $value) impure {
+builder $storeBool(builder $s, int $value) impure {
     if ($value) {
         return store_int($s, (- 1), 1);
     } else {
@@ -110,50 +110,50 @@ builder storeBool(builder $s, int $value) impure {
     }
 }
 
-() send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = storeBool($b, $params'bounce);
+    $b = $storeBool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         builder $bc = begin_cell();
-        $bc = storeBool($bc, false);
-        $bc = storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = storeBool($bc, true);
+            $bc = $storeBool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = storeBool($bc, false);
+            $bc = $storeBool($bc, false);
         }
-        $bc = storeBool($bc, false);
-        $b = storeBool($b, true);
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = storeBool($b, true);
+        $b = $storeBool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = storeBool($b, false);
+        $b = $storeBool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
 
-cell __gen_Wallet_init(cell sys', int $key, int $walletId) {
+cell $__gen_Wallet_init(cell sys', int $key, int $walletId) {
     var (($self'seqno, $self'key, $self'walletId)) = (0, null(), null());
     $self'key = $key;
     $self'walletId = $walletId;
@@ -163,7 +163,7 @@ cell __gen_Wallet_init(cell sys', int $key, int $walletId) {
     return b'.end_cell();
 }
 
-(cell, cell) __gen_Wallet_init_child(cell sys', int $key, int $walletId) {
+(cell, cell) $__gen_Wallet_init_child(cell sys', int $key, int $walletId) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell mine = __tact_dict_get_code(source, 14718);
@@ -171,59 +171,59 @@ cell __gen_Wallet_init(cell sys', int $key, int $walletId) {
     cell code_14718 = __tact_dict_get_code(source, 14718);
     contracts = __tact_dict_set_code(contracts, 14718, code_14718);
     cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, __gen_Wallet_init(sys, $key, $walletId));
+    return (mine, $__gen_Wallet_init(sys, $key, $walletId));
 }
 
-int __gen_Wallet_publicKey((int, int, int) $self) impure {
+int $__gen_Wallet_publicKey((int, int, int) $self) impure {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'key;
 }
 
-_ __gen_get_publicKey() method_id(86520) {
+_ $__gen_get_publicKey() method_id(86520) {
     var self = __gen_load_Wallet();
-    var res = __gen_Wallet_publicKey(self);
+    var res = $__gen_Wallet_publicKey(self);
     return res;
 }
 
-int __gen_Wallet_walletId((int, int, int) $self) impure {
+int $__gen_Wallet_walletId((int, int, int) $self) impure {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'walletId;
 }
 
-_ __gen_get_walletId() method_id(114762) {
+_ $__gen_get_walletId() method_id(114762) {
     var self = __gen_load_Wallet();
-    var res = __gen_Wallet_walletId(self);
+    var res = $__gen_Wallet_walletId(self);
     return res;
 }
 
-int __gen_Wallet_seqno((int, int, int) $self) impure {
+int $__gen_Wallet_seqno((int, int, int) $self) impure {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'seqno;
 }
 
-_ __gen_get_seqno() method_id(85143) {
+_ $__gen_get_seqno() method_id(85143) {
     var self = __gen_load_Wallet();
-    var res = __gen_Wallet_seqno(self);
+    var res = $__gen_Wallet_seqno(self);
     return res;
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-(((int, int, int)), ()) __gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure {
+(((int, int, int)), ()) $__gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, ($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)) = $msg;
     int $op_hash = cell_hash(__gen_writecell_Transfer(($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)));
     throw_unless(48401, check_signature($op_hash, $msg'signature, $self'key));
     throw_unless(17654, ($msg'transfer'seqno == $self'seqno));
     $self'seqno = ($self'seqno + 1);
-    send((true, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'mode, $msg'transfer'body, null(), null()));
+    $send((true, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'mode, $msg'transfer'body, null(), null()));
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_fallback((int, int, int) $self, slice $msg) impure {
+((int, int, int), ()) $__gen_Wallet_receive_fallback((int, int, int) $self, slice $msg) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -231,7 +231,7 @@ _ __gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-(((int, int, int)), ()) __gen_Wallet_receive((int, int, int) $self) impure {
+(((int, int, int)), ()) $__gen_Wallet_receive((int, int, int) $self) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -239,7 +239,7 @@ _ __gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) $self) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -247,7 +247,7 @@ _ __gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) $self) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -255,13 +255,13 @@ _ __gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) $self) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
-    var ($walletInit'code, $walletInit'data) = __gen_Wallet_init_child(__tact_context_sys, $self'key, ($self'walletId + 1));
+    var ($walletInit'code, $walletInit'data) = $__gen_Wallet_init_child(__tact_context_sys, $self'key, ($self'walletId + 1));
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) __gen_Wallet_receive_bounced((int, int, int) $self, slice $msg) impure {
+((int, int, int), ()) $__gen_Wallet_receive_bounced((int, int, int) $self, slice $msg) impure {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
@@ -283,7 +283,7 @@ _ __gen_get_seqno() method_id(85143) {
     ;; Handle bounced messages
     if (msg_bounced) {
         var self = __gen_load_Wallet();
-        self~__gen_Wallet_receive_bounced(in_msg);
+        self~$__gen_Wallet_receive_bounced(in_msg);
         __gen_store_Wallet(self);
         return ();
     }
@@ -292,7 +292,7 @@ _ __gen_get_seqno() method_id(85143) {
     if (op == 123) {
         var self = __gen_load_Wallet();
         var msg = in_msg~__gen_read_TransferMessage();
-        self~__gen_Wallet_receive_TransferMessage(msg);
+        self~$__gen_Wallet_receive_TransferMessage(msg);
         __gen_store_Wallet(self);
         return ();
     }
@@ -300,7 +300,7 @@ _ __gen_get_seqno() method_id(85143) {
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         var self = __gen_load_Wallet();
-        self~__gen_Wallet_receive();
+        self~$__gen_Wallet_receive();
         __gen_store_Wallet(self);
         return ();
     }
@@ -312,7 +312,7 @@ _ __gen_get_seqno() method_id(85143) {
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
             var self = __gen_load_Wallet();
-            self~__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            self~$__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             __gen_store_Wallet(self);
             return ();
         }
@@ -320,7 +320,7 @@ _ __gen_get_seqno() method_id(85143) {
         ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
             var self = __gen_load_Wallet();
-            self~__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
+            self~$__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
             __gen_store_Wallet(self);
             return ();
         }
@@ -328,7 +328,7 @@ _ __gen_get_seqno() method_id(85143) {
         ;; Receive "слава україни" message
         if (text_op == 0x6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2) {
             var self = __gen_load_Wallet();
-            self~__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2();
+            self~$__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2();
             __gen_store_Wallet(self);
             return ();
         }
@@ -336,7 +336,7 @@ _ __gen_get_seqno() method_id(85143) {
         ;; Receive "duplicate" message
         if (text_op == 0x9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9) {
             var self = __gen_load_Wallet();
-            self~__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9();
+            self~$__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9();
             __gen_store_Wallet(self);
             return ();
         }
@@ -344,12 +344,12 @@ _ __gen_get_seqno() method_id(85143) {
     
     ;; Receiver fallback
     var self = __gen_load_Wallet();
-    self~__gen_Wallet_receive_fallback(in_msg);
+    self~$__gen_Wallet_receive_fallback(in_msg);
     __gen_store_Wallet(self);
 }
 
 cell init_Wallet(cell sys', int key, int walletId) method_id {
-    return __gen_Wallet_init(sys', key, walletId);
+    return $__gen_Wallet_init(sys', key, walletId);
 }
 
 _ supported_interfaces() method_id {

@@ -4,14 +4,14 @@ PROGRAM{
   DECLPROC __gen_read_Wallet
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
-  DECLPROC __gen_Wallet_init
-  DECLPROC __gen_Wallet_publicKey
-  86520 DECLMETHOD __gen_get_publicKey
-  DECLPROC __gen_Wallet_walletId
-  114762 DECLMETHOD __gen_get_walletId
-  DECLPROC __gen_Wallet_seqno
-  85143 DECLMETHOD __gen_get_seqno
-  DECLPROC __gen_Wallet_receive_TransferMessage
+  DECLPROC $__gen_Wallet_init
+  DECLPROC $__gen_Wallet_publicKey
+  86520 DECLMETHOD $__gen_get_publicKey
+  DECLPROC $__gen_Wallet_walletId
+  114762 DECLMETHOD $__gen_get_walletId
+  DECLPROC $__gen_Wallet_seqno
+  85143 DECLMETHOD $__gen_get_seqno
+  DECLPROC $__gen_Wallet_receive_TransferMessage
   DECLPROC recv_internal
   80403 DECLMETHOD init_Wallet
   113617 DECLMETHOD supported_interfaces
@@ -59,7 +59,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  __gen_Wallet_init PROCINLINE:<{
+  $__gen_Wallet_init PROCINLINE:<{
     0 PUSHINT
     s0 s3 XCHG
     NEWC
@@ -68,29 +68,29 @@ PROGRAM{
     __gen_write_Wallet INLINECALLDICT
     ENDC
   }>
-  __gen_Wallet_publicKey PROCINLINE:<{
+  $__gen_Wallet_publicKey PROCINLINE:<{
     DROP
     NIP
   }>
-  __gen_get_publicKey PROC:<{
+  $__gen_get_publicKey PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_publicKey INLINECALLDICT
+    $__gen_Wallet_publicKey INLINECALLDICT
   }>
-  __gen_Wallet_walletId PROCINLINE:<{
+  $__gen_Wallet_walletId PROCINLINE:<{
     2 1 BLKDROP2
   }>
-  __gen_get_walletId PROC:<{
+  $__gen_get_walletId PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_walletId INLINECALLDICT
+    $__gen_Wallet_walletId INLINECALLDICT
   }>
-  __gen_Wallet_seqno PROCINLINE:<{
+  $__gen_Wallet_seqno PROCINLINE:<{
     2DROP
   }>
-  __gen_get_seqno PROC:<{
+  $__gen_get_seqno PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_seqno INLINECALLDICT
+    $__gen_Wallet_seqno INLINECALLDICT
   }>
-  __gen_Wallet_receive_TransferMessage PROCINLINE:<{
+  $__gen_Wallet_receive_TransferMessage PROCINLINE:<{
     DUP
     HASHSU
     48401 PUSHINT
@@ -154,14 +154,14 @@ PROGRAM{
       s2 POP
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      __gen_Wallet_receive_TransferMessage INLINECALLDICT
+      $__gen_Wallet_receive_TransferMessage INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     DROP
     130 THROW
   }>
   init_Wallet PROC:<{
-    __gen_Wallet_init INLINECALLDICT
+    $__gen_Wallet_init INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

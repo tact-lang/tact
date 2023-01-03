@@ -15,24 +15,24 @@ PROGRAM{
   DECLPROC __gen_Context_get_bounced
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
-  DECLPROC storeBool
-  DECLPROC send
-  DECLPROC __gen_Wallet_init
-  DECLPROC __gen_Wallet_init_child
-  DECLPROC __gen_Wallet_publicKey
-  86520 DECLMETHOD __gen_get_publicKey
-  DECLPROC __gen_Wallet_walletId
-  114762 DECLMETHOD __gen_get_walletId
-  DECLPROC __gen_Wallet_seqno
-  85143 DECLMETHOD __gen_get_seqno
-  DECLPROC __gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC __gen_Wallet_receive_TransferMessage
-  DECLPROC __gen_Wallet_receive_fallback
-  DECLPROC __gen_Wallet_receive
-  DECLPROC __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
-  DECLPROC __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2
-  DECLPROC __gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
-  DECLPROC __gen_Wallet_receive_bounced
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $__gen_Wallet_init
+  DECLPROC $__gen_Wallet_init_child
+  DECLPROC $__gen_Wallet_publicKey
+  86520 DECLMETHOD $__gen_get_publicKey
+  DECLPROC $__gen_Wallet_walletId
+  114762 DECLMETHOD $__gen_get_walletId
+  DECLPROC $__gen_Wallet_seqno
+  85143 DECLMETHOD $__gen_get_seqno
+  DECLPROC $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $__gen_Wallet_receive_TransferMessage
+  DECLPROC $__gen_Wallet_receive_fallback
+  DECLPROC $__gen_Wallet_receive
+  DECLPROC $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
+  DECLPROC $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2
+  DECLPROC $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
+  DECLPROC $__gen_Wallet_receive_bounced
   DECLPROC recv_internal
   80403 DECLMETHOD init_Wallet
   113617 DECLMETHOD supported_interfaces
@@ -163,7 +163,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  storeBool PROC:<{
+  $storeBool PROC:<{
     IFJMP:<{
       -1 PUSHINT
       SWAP
@@ -173,13 +173,13 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  send PROC:<{
+  $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    storeBool CALLDICT
+    $storeBool CALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -199,18 +199,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       NEWC
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -219,14 +219,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        storeBool CALLDICT
+        $storeBool CALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -235,13 +235,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        storeBool CALLDICT
+        $storeBool CALLDICT
       }>
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -251,14 +251,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      storeBool CALLDICT
+      $storeBool CALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -266,13 +266,13 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      storeBool CALLDICT
+      $storeBool CALLDICT
     }>
     ENDC
     SWAP
     SENDRAWMSG
   }>
-  __gen_Wallet_init PROC:<{
+  $__gen_Wallet_init PROC:<{
     0 PUSHINT
     s0 s3 XCHG
     NEWC
@@ -281,7 +281,7 @@ PROGRAM{
     __gen_write_Wallet INLINECALLDICT
     ENDC
   }>
-  __gen_Wallet_init_child PROC:<{
+  $__gen_Wallet_init_child PROC:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -301,33 +301,33 @@ PROGRAM{
     STDICT
     ENDC
     s0 s0 s3 XCHG3
-    __gen_Wallet_init CALLDICT
+    $__gen_Wallet_init CALLDICT
   }>
-  __gen_Wallet_publicKey PROC:<{
+  $__gen_Wallet_publicKey PROC:<{
     DROP
     NIP
   }>
-  __gen_get_publicKey PROC:<{
+  $__gen_get_publicKey PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_publicKey CALLDICT
+    $__gen_Wallet_publicKey CALLDICT
   }>
-  __gen_Wallet_walletId PROC:<{
+  $__gen_Wallet_walletId PROC:<{
     2 1 BLKDROP2
   }>
-  __gen_get_walletId PROC:<{
+  $__gen_get_walletId PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_walletId CALLDICT
+    $__gen_Wallet_walletId CALLDICT
   }>
-  __gen_Wallet_seqno PROC:<{
+  $__gen_Wallet_seqno PROC:<{
     2DROP
   }>
-  __gen_get_seqno PROC:<{
+  $__gen_get_seqno PROC:<{
     __gen_load_Wallet INLINECALLDICT
-    __gen_Wallet_seqno CALLDICT
+    $__gen_Wallet_seqno CALLDICT
   }>
-  __gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROC:<{
+  $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROC:<{
   }>
-  __gen_Wallet_receive_TransferMessage PROC:<{
+  $__gen_Wallet_receive_TransferMessage PROC:<{
     s4 s3 s2 PUSH3
     s4 s3 PUSH2
     __gen_writecell_Transfer INLINECALLDICT
@@ -349,9 +349,9 @@ PROGRAM{
     s3 s3 s0 XCHG3
     PUSHNULL
     PUSHNULL
-    send CALLDICT
+    $send CALLDICT
   }>
-  __gen_Wallet_receive_fallback PROC:<{
+  $__gen_Wallet_receive_fallback PROC:<{
     DROP
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
@@ -362,7 +362,7 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive PROC:<{
+  $__gen_Wallet_receive PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -372,7 +372,7 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROC:<{
+  $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -382,7 +382,7 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 PROC:<{
+  $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 PROC:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_bounced INLINECALLDICT
     NOT
@@ -392,9 +392,9 @@ PROGRAM{
       s0 s2 XCHG
     }>
   }>
-  __gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROC:<{
+  $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROC:<{
   }>
-  __gen_Wallet_receive_bounced PROC:<{
+  $__gen_Wallet_receive_bounced PROC:<{
     DROP
   }>
   recv_internal PROC:<{
@@ -431,7 +431,7 @@ PROGRAM{
       DROP
       __gen_load_Wallet INLINECALLDICT
       3 ROLL
-      __gen_Wallet_receive_bounced CALLDICT
+      $__gen_Wallet_receive_bounced CALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     DUP
@@ -445,7 +445,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      __gen_Wallet_receive_TransferMessage CALLDICT
+      $__gen_Wallet_receive_TransferMessage CALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     DUP
@@ -457,7 +457,7 @@ PROGRAM{
     IFJMP:<{
       2DROP
       __gen_load_Wallet INLINECALLDICT
-      __gen_Wallet_receive CALLDICT
+      $__gen_Wallet_receive CALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
     0 EQINT
@@ -470,7 +470,7 @@ PROGRAM{
       IFJMP:<{
         2DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 CALLDICT
+        $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 CALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
@@ -480,7 +480,7 @@ PROGRAM{
       IFJMP:<{
         2DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 CALLDICT
+        $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 CALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
@@ -490,7 +490,7 @@ PROGRAM{
       IFJMP:<{
         2DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 CALLDICT
+        $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 CALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
@@ -499,18 +499,18 @@ PROGRAM{
       IFJMP:<{
         DROP
         __gen_load_Wallet INLINECALLDICT
-        __gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 CALLDICT
+        $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 CALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
     }>
     __gen_load_Wallet INLINECALLDICT
     3 ROLL
-    __gen_Wallet_receive_fallback CALLDICT
+    $__gen_Wallet_receive_fallback CALLDICT
     __gen_store_Wallet INLINECALLDICT
   }>
   init_Wallet PROC:<{
-    __gen_Wallet_init CALLDICT
+    $__gen_Wallet_init CALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
