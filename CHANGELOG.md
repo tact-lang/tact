@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - `toCell` to all structs and messages
 - restored disassembler as part of a compilation flow
+- `typescript` bindings parser of structs and messages
 
 ## Removed
 - `abi.pack_cell` and `abi.pack_slice`
