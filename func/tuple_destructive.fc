@@ -1,0 +1,8 @@
+_ fn([int, int, int, int, int, [int, int]] b) impure {
+    var [a, b, c, d, e, f] = b;
+    return a + b + c + d + e;
+}
+
+_ main() impure {
+    fn([1, 2, 3, 4, 5, [6, 7]]);
+}

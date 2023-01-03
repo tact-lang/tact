@@ -11,8 +11,8 @@ import { resolvePackaging } from "./types/resolvePackaging";
 import { parseImports } from "./grammar/grammar";
 import { Config, parseConfig } from "./config/parseConfig";
 import { compileContract } from "ton-compiler";
-// import { fromCode } from "tvm-disassembler";
-// import { Cell } from "ton";
+import { fromCode } from "tvm-disassembler";
+import { Cell } from "ton-core";
 import { ContractABI } from "./abi/ContractABI";
 import { writeTypescript } from "./generator/writeTypescript";
 import { resolveStrings } from "./types/resolveStrings";
@@ -216,15 +216,15 @@ export async function compileProjects(configPath: string, projectNames: string[]
             }
 
             // Cell -> Fift decompiler
-            // console.log('   > ' + contract + ': fift decompiler');
-            // try {
-            //     let source = fromCode(Cell.fromBoc(boc)[0]);
-            //     fs.writeFileSync(pathFifDec, source);
-            // } catch (e) {
-            //     console.warn('Fift decompiler crashed, skipping...');
-            //     console.warn(e);
-            //     continue;
-            // }
+            console.log('   > ' + contract + ': fift decompiler');
+            try {
+                let source = fromCode(Cell.fromBoc(boc)[0]);
+                fs.writeFileSync(pathFifDec, source);
+            } catch (e) {
+                console.warn('Fift decompiler crashed, skipping...');
+                console.warn(e);
+                continue;
+            }
 
             // Tact -> ABI
             let abi: ContractABI;

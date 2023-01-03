@@ -28,6 +28,30 @@ SETCP0
     IFRET
     130 THROW
 
+  3: 
+    s0 POP
+    -6 PUSHINT
+
+  4: 
+    s0 POP
+    PUSHNULL
+
+  5: 
+    s0 POP
+    123000000000 PUSHINT
+
+  6: 
+    s0 POP
+    456000000000 PUSHINT
+
+  7: 
+    s0 POP
+    PUSHSLICE
+
+  8: 
+    s0 POP
+    100 PUSHINT
+
   100663: 
     c4 PUSH
     CTOS
@@ -38,8 +62,7 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 POP
-    456000000000 PUSHINT
+    6 CALLDICT
 
   104726: 
     c4 PUSH
@@ -51,8 +74,7 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 POP
-    PUSHSLICE
+    7 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -68,8 +90,7 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 POP
-    100 PUSHINT
+    8 CALLDICT
 
   121234: 
     c4 PUSH
@@ -81,8 +102,7 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 POP
-    -6 PUSHINT
+    3 CALLDICT
 
   125425: 
     c4 PUSH
@@ -94,8 +114,7 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 POP
-    PUSHNULL
+    4 CALLDICT
 
   129488: 
     c4 PUSH
@@ -107,8 +126,7 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 POP
-    123000000000 PUSHINT
+    5 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

@@ -36,6 +36,116 @@ SETCP0
       2DROP
     }> PUSHCONT
     IFJMP
+    s0 PUSH
+    0 EQINT
+    s2 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    <{
+      2DROP
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
+      1 10 BLKDROP2
+      11 CALLDICT
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      10 1 BLKSWAP
+      s5 s10 XCHG
+      s4 s9 XCHG
+      s3 s8 XCHG
+      s7 s6 s10 XCHG3
+      s4 s5 XCHG2
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      257 PUSHINT
+      STIX
+      s0 s1 XCHG
+      NEWC
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      ENDC
+      s0 s1 XCHG
+      STREF
+      NEWC
+      5 1 BLKSWAP
+      s0 s6 XCHG
+      s4 s5 XCHG2
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      257 PUSHINT
+      STIX
+      s0 s1 XCHG
+      NEWC
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
+      c4 POP
+    }> IFJMPREF
     2676568142 PUSHINT
     EQUAL
     <{
@@ -152,7 +262,7 @@ SETCP0
       s11 s12 XCHG
       s10 s11 XCHG
       1 9 BLKSWAP
-      10 10 BLKDROP2
+      12 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -210,7 +320,7 @@ SETCP0
     s0 POP
     130 THROW
 
-  97554: 
+  8: 
     s0 s10 XCHG
     NEWC
     STREF
@@ -262,6 +372,20 @@ SETCP0
     s0 s1 XCHG
     STREF
     ENDC
+
+  9: 
+    5 BLKDROP
+
+  10: 
+    5 5 BLKDROP2
+
+  11: 
+
+  12: 
+    10 10 BLKDROP2
+
+  97554: 
+    8 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -315,7 +439,7 @@ SETCP0
     s5 s10 XCHG
     1 4 BLKSWAP
     1 10 BLKDROP2
-    5 5 BLKDROP2
+    10 CALLDICT
 
   123932: 
     c4 PUSH
@@ -365,7 +489,7 @@ SETCP0
     s5 s10 XCHG
     1 4 BLKSWAP
     1 10 BLKDROP2
-    5 BLKDROP
+    9 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG
