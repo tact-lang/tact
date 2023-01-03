@@ -34,6 +34,14 @@ global cell __tact_context_sys;
     throw_unless(134, address.slice_bits() != 267);
 }
 
+global int __tact_randomized;
+() __tact_prepare_random() impure inline {
+    if (null?(__tact_randomized)) {
+        randomize_lt();
+        __tact_randomized = true;
+    }
+}
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     __tact_verify_address(raw);
@@ -673,6 +681,14 @@ global cell __tact_context_sys;
     throw_unless(134, address.slice_bits() != 267);
 }
 
+global int __tact_randomized;
+() __tact_prepare_random() impure inline {
+    if (null?(__tact_randomized)) {
+        randomize_lt();
+        __tact_randomized = true;
+    }
+}
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     __tact_verify_address(raw);
@@ -1310,6 +1326,14 @@ global cell __tact_context_sys;
 
 () __tact_verify_address(slice address) inline {
     throw_unless(134, address.slice_bits() != 267);
+}
+
+global int __tact_randomized;
+() __tact_prepare_random() impure inline {
+    if (null?(__tact_randomized)) {
+        randomize_lt();
+        __tact_randomized = true;
+    }
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {

@@ -7,6 +7,7 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable } from "./isAssignable";
+import { StructFunctions } from "../abi/struct";
 
 let store = createContextStore<{ ast: ASTExpression, description: TypeRef }>();
 
@@ -285,6 +286,16 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         // Register return type
         let srcT = getType(ctx, src.name);
+
+        // Check struct ABI
+        if (srcT.kind === 'struct') {
+            let abi = StructFunctions[exp.name];
+            if (abi) {
+                let resolved = abi.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
+                return registerExpType(ctx, exp, resolved);
+            }
+        }
+
         let f = srcT.functions.get(exp.name)!;
         if (!f) {
             throwError(`Type "${src.name}" does not have a function named "${exp.name}"`, exp.ref);

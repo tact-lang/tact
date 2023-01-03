@@ -354,15 +354,11 @@ exports[`resolveStatements should resolve statements for case-5 1`] = `
     "Bool",
   ],
   [
-    "abi",
-    "$ABI",
-  ],
-  [
     "p",
     "Point",
   ],
   [
-    "abi.pack_cell(p)",
+    "p.toCell()",
     "Cell",
   ],
 ]

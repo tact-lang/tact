@@ -34,9 +34,9 @@ contract Beacon with Ownable {
         // Send response
         if (self.completed) {
             self.completed = true;    
-            reply(abi.pack_cell(CanPayoutResponse{ok: true, amount: msg.amount, address: self.owner}));
+            reply(CanPayoutResponse{ok: true, amount: msg.amount, address: self.owner}.toCell());
         } else {
-            reply(abi.pack_cell(CanPayoutResponse{ok: false, amount: msg.amount, address: self.owner}));
+            reply(CanPayoutResponse{ok: false, amount: msg.amount, address: self.owner}.toCell());
         }        
     }
 
@@ -81,7 +81,7 @@ contract Payouts with OwnableTransferable {
             value: 0, 
             mode: SendRemainingValue + SendIgnoreErrors, 
             bounce: true, 
-            body: abi.pack_cell(CanPayout{amount: amount})
+            body: CanPayout{amount: amount}.toCell()
         });
     }
 

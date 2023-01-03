@@ -41,9 +41,9 @@ trait Jetton with Ownable {
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue + SendIgnoreErrors,
-                body: abi.pack_cell(TokenExcesses{
+                body: TokenExcesses{
                     queryId: msg.queryId
-                })
+                }.toCell()
             });
         }
     }
@@ -85,14 +85,14 @@ trait Jetton with Ownable {
             value: 0, 
             bounce: false,
             mode: SendRemainingValue,
-            body: abi.pack_cell(TokenTransferInternal{ 
+            body: TokenTransferInternal{ 
                 amount: amount,
                 queryId: 0,
                 from: myAddress(),
                 responseAddress: responseAddress,
                 forwardTonAmount: 0,
                 forwardPayload: emptySlice()
-            }),
+            }.toCell(),
             code: winit.code,
             data: winit.data
         });

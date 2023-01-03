@@ -12,5 +12,5 @@ fun isZero(p: Point): Bool {
 }
 
 fun packPoint(p: Point): Cell {
-    return abi.pack_cell(p);
+    return p.toCell();
 }

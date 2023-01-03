@@ -40,7 +40,7 @@ fun main() {
     let n: Int = -j.b + a + (+b);
     let o: Int? = null;
     let p: Int? = o!! + 1;
-    let q: Cell = abi.pack_cell(j);
+    let q: Cell = j.toCell();
 }
 `;
 
@@ -53,7 +53,7 @@ const golden: string[] = [
     'true',
     'false',
     '((($a > 1) | (($b < 2) & ($c == 3))) | (~ ((($d != 4) & true) & (~ false))))',
-    'f1($a)',
+    '$f1($a)',
     '(1, 2)',
     `$j'a`,
     '__gen_A_get_b((1, 2))',

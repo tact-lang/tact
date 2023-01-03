@@ -57,7 +57,7 @@ contract MultisigSigner {
                 to: self.master, 
                 mode: SendRemainingBalance + SendIgnoreErrors, 
                 bounce: false, 
-                body: abi.pack_cell(Signed{ request: self.request })
+                body: Signed{ request: self.request }.toCell()
             });
         }
     }

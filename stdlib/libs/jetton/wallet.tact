@@ -43,14 +43,14 @@ contract JettonDefaultWallet {
             value: 0,
             mode: SendRemainingValue, 
             bounce: true,
-            body: abi.pack_cell(TokenTransferInternal{
+            body: TokenTransferInternal{
                 amount: msg.amount,
                 queryId: msg.queryId,
                 from: self.owner,
                 responseAddress: self.owner,
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload
-            }),
+            }.toCell(),
             code: init.code,
             data: init.data
         });
@@ -83,12 +83,12 @@ contract JettonDefaultWallet {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 bounce: false,
-                body: abi.pack_cell(TokenNotification{
+                body: TokenNotification{
                     queryId: msg.queryId,
                     amount: msg.amount,
                     from: msg.from,
                     forwardPayload: msg.forwardPayload
-                })
+                }.toCell()
             });
         }
 
@@ -98,9 +98,9 @@ contract JettonDefaultWallet {
                 to: msg.responseAddress!!,
                 value: msgValue,
                 bounce: false,
-                body: abi.pack_cell(TokenExcesses{
+                body: TokenExcesses{
                     queryId: msg.queryId
-                })
+                }.toCell()
             });
         }
     }
@@ -125,12 +125,12 @@ contract JettonDefaultWallet {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: abi.pack_cell(TokenBurnNotification{
+            body: TokenBurnNotification{
                 queryId: msg.queryId,
                 amount: msg.amount,
                 owner: self.owner,
                 responseAddress: self.owner
-            })
+            }.toCell()
         });
     }
 

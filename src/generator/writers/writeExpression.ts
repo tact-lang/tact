@@ -9,6 +9,7 @@ import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
 import { getStringId } from "../../types/resolveStrings";
 import { fn, id } from "./id";
+import { StructFunctions } from "../../abi/struct";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -370,9 +371,17 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Render function call
             let t = getType(ctx.ctx, src.name);
-            let ff = t.functions.get(f.name)!;
 
-            // Resolve name
+            // Check struct ABI
+            if (t.kind === 'struct') {
+                let abi = StructFunctions[f.name];
+                if (abi) {
+                    return abi.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
+                }
+            }
+
+            // Resolve function
+            let ff = t.functions.get(f.name)!;
             let name = `__gen_${src.name}_${f.name}`;
             if (ff.ast.kind === 'def_function') {
                 ctx.used(name);

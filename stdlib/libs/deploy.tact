@@ -9,6 +9,6 @@ message DeployOk {
 
 trait Deployable {
     receive(deploy: Deploy) {
-        reply(abi.pack_cell(DeployOk{queryId: deploy.queryId}));
+        reply(DeployOk{queryId: deploy.queryId}.toCell());
     }
 }
