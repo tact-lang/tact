@@ -86,10 +86,53 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${type.name}_opt_to_tuple`, () => {
         ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) { return null(); }`);
+            ctx.append(`if (null?(v)) { return null(); } `);
             ctx.used(`__gen_${type.name}_not_null`);
             ctx.used(`__gen_${type.name}_to_tuple`);
-            ctx.append(`return __gen_${type.name}_to_tuple(__gen_${type.name}_not_null(v));`);
+            ctx.append(`return __gen_${type.name}_to_tuple(__gen_${type.name}_not_null(v)); `);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__gen_${type.name}_from_tuple`, () => {
+        ctx.append(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v) {`);
+        ctx.inIndent(() => {
+
+            // Resolve vars
+            let vars: string[] = [];
+            let out: string[] = [];
+            for (let f of type.fields) {
+                if (f.type.kind === 'ref') {
+                    let t = getType(ctx.ctx, f.type.name);
+                    if (t.kind === 'struct') {
+                        vars.push(`tuple v'${f.name}`);
+                        if (f.type.optional) {
+                            ctx.used(`__gen_${f.type.name}_from_opt_tuple`);
+                            out.push(`__gen_${f.type.name}_from_opt_tuple(v'${f.name})`);
+                        } else {
+                            ctx.used(`__gen_${f.type.name}_from_tuple`);
+                            out.push(`__gen_${f.type.name}_from_tuple(v'${f.name})`);
+                        }
+                        continue;
+                    }
+                }
+                vars.push(`${resolveFuncType(f.type, ctx)} v'${f.name}`);
+                out.push(`v'${f.name}`);
+            }
+            ctx.used(`__tact_tuple_destroy_${vars.length}`);
+            ctx.append(`var (${vars.join(', ')}) = __tact_tuple_destroy_${vars.length}(v);`);
+            ctx.append(`return (${out.join(', ')});`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__gen_${type.name}_from_opt_tuple`, () => {
+        ctx.append(`tuple __gen_${type.name}_from_opt_tuple(tuple v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) { return null(); } `);
+            ctx.used(`__gen_${type.name}_as_optional`);
+            ctx.used(`__gen_${type.name}_from_tuple`);
+            ctx.append(`return __gen_${type.name}_as_optional(__gen_${type.name}_from_tuple(v));`);
         });
         ctx.append(`}`);
     });
@@ -101,7 +144,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${type.name}_to_external`, () => {
         ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v) {`);
         ctx.inIndent(() => {
-            ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
+            ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v; `);
             let vars: string[] = [];
             for (let f of type.fields) {
                 if (f.type.kind === 'ref') {

@@ -225,8 +225,9 @@ _ $__gen_get_owner() method_id(83229) {
     throw(130);
 }
 
-cell init_Treasure(cell sys', slice owner) method_id {
-    return $__gen_Treasure_init(sys', owner);
+cell init_Treasure(cell sys', slice $$owner) method_id {
+    slice $owner = $$owner;
+    return $__gen_Treasure_init(sys', $owner);
 }
 
 _ supported_interfaces() method_id {

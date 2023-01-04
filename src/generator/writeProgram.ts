@@ -9,13 +9,14 @@ import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSe
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell } from "ton-core";
-import { writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
+import { unwrapExternal, writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getAllStrings } from "../types/resolveStrings";
 import { writeString } from './writers/writeString';
-import { fn } from "./writers/id";
+import { fn, id } from "./writers/id";
+import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
 
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
@@ -234,10 +235,17 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
         // Init method
         if (type.init) {
-            ctx.append(`cell init_${type.name}(${[`cell sys'`, ...type.init.args.map((a) => resolveFuncType(a.type, ctx) + ' ' + a.name)].join(', ')}) method_id {`);
+            ctx.append(`cell init_${type.name}(${[`cell sys'`, ...type.init.args.map((a) => resolveFuncTupledType(a.type, ctx) + ' ' + id('$' + a.name))].join(', ')}) method_id {`);
             ctx.inIndent(() => {
+
+                // Unpack arguments
+                for (let arg of type.init!.args) {
+                    unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
+                }
+
+                // Call init function
                 ctx.used(`__gen_${type.name}_init`);
-                ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[`sys'`, ...type.init!.args.map((a) => a.name)].join(', ')});`);
+                ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[`sys'`, ...type.init!.args.map((a) => id(a.name))].join(', ')});`);
             });
             ctx.append(`}`);
             ctx.append();

@@ -235,12 +235,22 @@ tuple __gen_SomeGenericStruct_to_tuple(((int, int, int, int, int)) v) {
 }
 
 tuple __gen_SomeGenericStruct_opt_to_tuple(tuple v) inline {
-    if (null?(v)) { return null(); }
-    return __gen_SomeGenericStruct_to_tuple(__gen_SomeGenericStruct_not_null(v));
+    if (null?(v)) { return null(); } 
+    return __gen_SomeGenericStruct_to_tuple(__gen_SomeGenericStruct_not_null(v)); 
+}
+
+(int, int, int, int, int) __gen_SomeGenericStruct_from_tuple(tuple v) {
+    var (int v'value1, int v'value2, int v'value3, int v'value4, int v'value5) = __tact_tuple_destroy_5(v);
+    return (v'value1, v'value2, v'value3, v'value4, v'value5);
+}
+
+tuple __gen_SomeGenericStruct_from_opt_tuple(tuple v) {
+    if (null?(v)) { return null(); } 
+    return __gen_SomeGenericStruct_as_optional(__gen_SomeGenericStruct_from_tuple(v));
 }
 
 (int, int, int, int, int) __gen_SomeGenericStruct_to_external(((int, int, int, int, int)) v) {
-    var (v'value1, v'value2, v'value3, v'value4, v'value5) = v;
+    var (v'value1, v'value2, v'value3, v'value4, v'value5) = v; 
     return (v'value1, v'value2, v'value3, v'value4, v'value5);
 }
 
@@ -259,12 +269,22 @@ tuple __gen_StructWithOptionals_to_tuple(((int, int, cell, slice, tuple)) v) {
 }
 
 tuple __gen_StructWithOptionals_opt_to_tuple(tuple v) inline {
-    if (null?(v)) { return null(); }
-    return __gen_StructWithOptionals_to_tuple(__gen_StructWithOptionals_not_null(v));
+    if (null?(v)) { return null(); } 
+    return __gen_StructWithOptionals_to_tuple(__gen_StructWithOptionals_not_null(v)); 
+}
+
+(int, int, cell, slice, tuple) __gen_StructWithOptionals_from_tuple(tuple v) {
+    var (int v'a, int v'b, cell v'c, slice v'd, tuple v'e) = __tact_tuple_destroy_5(v);
+    return (v'a, v'b, v'c, v'd, __gen_SomeGenericStruct_from_opt_tuple(v'e));
+}
+
+tuple __gen_StructWithOptionals_from_opt_tuple(tuple v) {
+    if (null?(v)) { return null(); } 
+    return __gen_StructWithOptionals_as_optional(__gen_StructWithOptionals_from_tuple(v));
 }
 
 (int, int, cell, slice, tuple) __gen_StructWithOptionals_to_external(((int, int, cell, slice, tuple)) v) {
-    var (v'a, v'b, v'c, v'd, v'e) = v;
+    var (v'a, v'b, v'c, v'd, v'e) = v; 
     return (v'a, v'b, v'c, v'd, __gen_SomeGenericStruct_opt_to_tuple(v'e));
 }
 
@@ -572,8 +592,14 @@ _ $__gen_get_testVariables() method_id(87190) {
     throw(130);
 }
 
-cell init_ContractWithOptionals(cell sys', int a, int b, cell c, slice d, tuple e, tuple f) method_id {
-    return $__gen_ContractWithOptionals_init(sys', a, b, c, d, e, f);
+cell init_ContractWithOptionals(cell sys', int $$a, int $$b, cell $$c, slice $$d, tuple $$e, tuple $$f) method_id {
+    int $a = $$a;
+    int $b = $$b;
+    cell $c = $$c;
+    slice $d = $$d;
+    tuple $e = __gen_SomeGenericStruct_from_opt_tuple($$e);
+    tuple $f = __gen_StructWithOptionals_from_opt_tuple($$f);
+    return $__gen_ContractWithOptionals_init(sys', $a, $b, $c, $d, $e, $f);
 }
 
 _ supported_interfaces() method_id {

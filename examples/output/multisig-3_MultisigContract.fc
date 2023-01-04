@@ -254,8 +254,11 @@ _ $__gen_get_seqno() method_id(85143) {
     throw(130);
 }
 
-cell init_MultisigContract(cell sys', int key1, int key2, int key3) method_id {
-    return $__gen_MultisigContract_init(sys', key1, key2, key3);
+cell init_MultisigContract(cell sys', int $$key1, int $$key2, int $$key3) method_id {
+    int $key1 = $$key1;
+    int $key2 = $$key2;
+    int $key3 = $$key3;
+    return $__gen_MultisigContract_init(sys', $key1, $key2, $key3);
 }
 
 _ supported_interfaces() method_id {

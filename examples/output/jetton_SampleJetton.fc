@@ -165,7 +165,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
 }
 
 (int, int, slice, cell, cell) __gen_JettonData_to_external(((int, int, slice, cell, cell)) v) {
-    var (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode) = v;
+    var (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode) = v; 
     return (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode);
 }
 
@@ -296,7 +296,8 @@ slice $__gen_SampleJetton_get_wallet_address((int, slice, cell, int) $self, slic
     return $contractAddress(($winit'code, $winit'data));
 }
 
-_ $__gen_get_get_wallet_address(slice $owner) method_id(103289) {
+_ $__gen_get_get_wallet_address(slice $$owner) method_id(103289) {
+    slice $owner = $$owner;
     var self = __gen_load_SampleJetton();
     var res = $__gen_SampleJetton_get_wallet_address(self, $owner);
     return res;
@@ -443,8 +444,10 @@ _ $__gen_get_owner() method_id(83229) {
     throw(130);
 }
 
-cell init_SampleJetton(cell sys', slice owner, cell content) method_id {
-    return $__gen_SampleJetton_init(sys', owner, content);
+cell init_SampleJetton(cell sys', slice $$owner, cell $$content) method_id {
+    slice $owner = $$owner;
+    cell $content = $$content;
+    return $__gen_SampleJetton_init(sys', $owner, $content);
 }
 
 _ supported_interfaces() method_id {

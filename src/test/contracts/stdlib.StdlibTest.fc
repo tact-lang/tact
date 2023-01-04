@@ -38,7 +38,8 @@ int $__gen_StdlibTest_sliceEmpty((int) $self, slice $sc) impure {
     return slice_empty?($sc);
 }
 
-_ $__gen_get_sliceEmpty(slice $sc) method_id(73995) {
+_ $__gen_get_sliceEmpty(slice $$sc) method_id(73995) {
+    slice $sc = $$sc;
     var self = __gen_load_StdlibTest();
     var res = $__gen_StdlibTest_sliceEmpty(self, $sc);
     return res;
@@ -49,7 +50,8 @@ int $__gen_StdlibTest_sliceBits((int) $self, slice $sc) impure {
     return slice_bits($sc);
 }
 
-_ $__gen_get_sliceBits(slice $sc) method_id(75090) {
+_ $__gen_get_sliceBits(slice $$sc) method_id(75090) {
+    slice $sc = $$sc;
     var self = __gen_load_StdlibTest();
     var res = $__gen_StdlibTest_sliceBits(self, $sc);
     return res;
@@ -60,7 +62,8 @@ int $__gen_StdlibTest_sliceRefs((int) $self, slice $sc) impure {
     return slice_refs($sc);
 }
 
-_ $__gen_get_sliceRefs(slice $sc) method_id(77445) {
+_ $__gen_get_sliceRefs(slice $$sc) method_id(77445) {
+    slice $sc = $$sc;
     var self = __gen_load_StdlibTest();
     var res = $__gen_StdlibTest_sliceRefs(self, $sc);
     return res;

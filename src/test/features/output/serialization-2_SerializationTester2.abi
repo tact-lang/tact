@@ -609,6 +609,40 @@
         "name": "Both",
         "optional": true
       }
+    },
+    {
+      "name": "process",
+      "args": [
+        {
+          "name": "src",
+          "type": {
+            "kind": "ref",
+            "name": "Vars",
+            "optional": false
+          }
+        },
+        {
+          "name": "both",
+          "type": {
+            "kind": "ref",
+            "name": "Both",
+            "optional": false
+          }
+        },
+        {
+          "name": "both2",
+          "type": {
+            "kind": "ref",
+            "name": "Both",
+            "optional": true
+          }
+        }
+      ],
+      "returns": {
+        "kind": "ref",
+        "name": "Vars",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},

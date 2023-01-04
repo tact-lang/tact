@@ -12,10 +12,28 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { fn, id } from "./id";
 import { writeExpression, writeValue } from "./writeExpression";
 import { cast } from "./cast";
+import { resolveFuncTupledType } from "./resolveFuncTupledType";
 
-function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
+export function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
     let expr = getExpType(ctx.ctx, expression);
     return cast(expr, to, writeExpression(expression, ctx), ctx); // Cast for nullable
+}
+
+export function unwrapExternal(targetName: string, sourceName: string, type: TypeRef, ctx: WriterContext) {
+    if (type.kind === 'ref') {
+        let t = getType(ctx.ctx, type.name);
+        if (t.kind === 'struct') {
+            if (type.optional) {
+                ctx.used(`__gen_${t.name}_from_opt_tuple`);
+                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = __gen_${t.name}_from_opt_tuple(${sourceName});`);
+            } else {
+                ctx.used(`__gen_${t.name}_from_tuple`);
+                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = __gen_${t.name}_from_tuple(${sourceName});`);
+            }
+            return;
+        }
+    }
+    ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${sourceName};`);
 }
 
 function writeStatement(f: ASTStatement, self: string | null, returns: TypeRef | null, ctx: WriterContext) {
@@ -348,8 +366,13 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
             throw new Error(`No self type for getter ${f.name}`); // Impossible
         }
 
-        ctx.append(`_ ${fn(`__gen_get_${f.name}`)}(${[f.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')}) method_id(${getMethodId(f.name)}) {`);
+        ctx.append(`_ ${fn(`__gen_get_${f.name}`)}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + ' ' + id('$' + v.name)).join(', ')}) method_id(${getMethodId(f.name)}) {`);
         ctx.inIndent(() => {
+
+            // Unpack arguments
+            for (let arg of f.args) {
+                unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
+            }
 
             // Load contract state
             ctx.used(`__gen_load_${self.name}`);

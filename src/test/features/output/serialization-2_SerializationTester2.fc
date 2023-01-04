@@ -3,6 +3,8 @@ global cell __tact_context_sys;
 
 forall X0, X1 -> tuple __tact_tuple_create_2((X0, X1) v) asm "2 TUPLE";
 
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
 forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
 
 forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
@@ -74,12 +76,17 @@ tuple __gen_Vars_to_tuple(((int, int, int, int, int)) v) {
 }
 
 tuple __gen_Vars_opt_to_tuple(tuple v) inline {
-    if (null?(v)) { return null(); }
-    return __gen_Vars_to_tuple(__gen_Vars_not_null(v));
+    if (null?(v)) { return null(); } 
+    return __gen_Vars_to_tuple(__gen_Vars_not_null(v)); 
+}
+
+(int, int, int, int, int) __gen_Vars_from_tuple(tuple v) {
+    var (int v'a, int v'b, int v'c, int v'd, int v'e) = __tact_tuple_destroy_5(v);
+    return (v'a, v'b, v'c, v'd, v'e);
 }
 
 (int, int, int, int, int) __gen_Vars_to_external(((int, int, int, int, int)) v) {
-    var (v'a, v'b, v'c, v'd, v'e) = v;
+    var (v'a, v'b, v'c, v'd, v'e) = v; 
     return (v'a, v'b, v'c, v'd, v'e);
 }
 
@@ -109,12 +116,22 @@ tuple __gen_Both_to_tuple((((int, int, int, int, int), (int, int, int, int, int)
 }
 
 tuple __gen_Both_opt_to_tuple(tuple v) inline {
-    if (null?(v)) { return null(); }
-    return __gen_Both_to_tuple(__gen_Both_not_null(v));
+    if (null?(v)) { return null(); } 
+    return __gen_Both_to_tuple(__gen_Both_not_null(v)); 
+}
+
+((int, int, int, int, int), (int, int, int, int, int)) __gen_Both_from_tuple(tuple v) {
+    var (tuple v'a, tuple v'b) = __tact_tuple_destroy_2(v);
+    return (__gen_Vars_from_tuple(v'a), __gen_Vars_from_tuple(v'b));
+}
+
+tuple __gen_Both_from_opt_tuple(tuple v) {
+    if (null?(v)) { return null(); } 
+    return __gen_Both_as_optional(__gen_Both_from_tuple(v));
 }
 
 (tuple, tuple) __gen_Both_to_external((((int, int, int, int, int), (int, int, int, int, int))) v) {
-    var (v'a, v'b) = v;
+    var (v'a, v'b) = v; 
     return (__gen_Vars_to_tuple(v'a), __gen_Vars_to_tuple(v'b));
 }
 
@@ -218,6 +235,23 @@ _ $__gen_get_getBothOpt() method_id(69430) {
     return __gen_Both_opt_to_external(res);
 }
 
+(int, int, int, int, int) $__gen_SerializationTester2_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    var (($src'a, $src'b, $src'c, $src'd, $src'e)) = $src;
+    var ((($both'a'a, $both'a'b, $both'a'c, $both'a'd, $both'a'e), ($both'b'a, $both'b'b, $both'b'c, $both'b'd, $both'b'e))) = $both;
+    var ($both2) = $both2;
+    return (($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5));
+}
+
+_ $__gen_get_process(tuple $$src, tuple $$both, tuple $$both2) method_id(104435) {
+    (int, int, int, int, int) $src = __gen_Vars_from_tuple($$src);
+    ((int, int, int, int, int), (int, int, int, int, int)) $both = __gen_Both_from_tuple($$both);
+    tuple $both2 = __gen_Both_from_opt_tuple($$both2);
+    var self = __gen_load_SerializationTester2();
+    var res = $__gen_SerializationTester2_process(self, $src, $both, $both2);
+    return __gen_Vars_to_external(res);
+}
+
 ((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
     var (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)) = $self;
     return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), ());
@@ -270,8 +304,10 @@ _ $__gen_get_getBothOpt() method_id(69430) {
     throw(130);
 }
 
-cell init_SerializationTester2(cell sys', (int, int, int, int, int) a, (int, int, int, int, int) b) method_id {
-    return $__gen_SerializationTester2_init(sys', a, b);
+cell init_SerializationTester2(cell sys', tuple $$a, tuple $$b) method_id {
+    (int, int, int, int, int) $a = __gen_Vars_from_tuple($$a);
+    (int, int, int, int, int) $b = __gen_Vars_from_tuple($$b);
+    return $__gen_SerializationTester2_init(sys', $a, $b);
 }
 
 _ supported_interfaces() method_id {
@@ -282,5 +318,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmfYHfqf6yfeaq1UUnrS6GHzsinoRQJZ5vHtuuMmmm16VT";
+    return "ipfs://QmdvPJ9z2zAbjkyMMSWPPM7bUxfxd61M1G1n8uGa4Hgxzi";
 }

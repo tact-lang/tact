@@ -154,7 +154,9 @@ int $__gen_RandomContract_random((int) $self, int $min, int $max) impure {
     return $random($min, $max);
 }
 
-_ $__gen_get_random(int $min,int $max) method_id(92013) {
+_ $__gen_get_random(int $$min, int $$max) method_id(92013) {
+    int $min = $$min;
+    int $max = $$max;
     var self = __gen_load_RandomContract();
     var res = $__gen_RandomContract_random(self, $min, $max);
     return res;

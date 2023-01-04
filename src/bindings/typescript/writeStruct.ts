@@ -1,4 +1,5 @@
 import { AllocationCell, AllocationField, ContractField, ContractStruct } from "../../abi/ContractABI";
+import { TypeRef } from "../../types/types";
 import { Writer } from "../../utils/Writer";
 import { getTSFieldType } from "./getTSFieldType";
 
@@ -160,6 +161,18 @@ function writeSerializerField(index: number, f: AllocationField, s: ContractStru
     }
 }
 
+export function writeTupleParser(s: ContractStruct, w: Writer) {
+    w.append(`function loadTuple${s.name}(source: TupleReader) {`);
+    w.inIndent(() => {
+        for (let f of s.fields) {
+            writeTupleFieldParser(f, s, w);
+        }
+        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+    });
+    w.append(`}`);
+    w.append();
+}
+
 function writeTupleFieldParser(f: ContractField, s: ContractStruct, w: Writer) {
     let name = `_${f.name}`;
     if (f.type.kind === 'ref') {
@@ -216,14 +229,78 @@ function writeTupleFieldParser(f: ContractField, s: ContractStruct, w: Writer) {
     throw Error('Unsupported type');
 }
 
-export function writeTupleParser(s: ContractStruct, w: Writer) {
-    w.append(`function loadTuple${s.name}(source: TupleReader) {`);
+export function writeTupleSerializer(s: ContractStruct, w: Writer) {
+    w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
+        w.append(`let __tuple: TupleItem[] = [];`);
         for (let f of s.fields) {
-            writeTupleFieldParser(f, s, w);
+            writeVariableToStack(`source.${f.name}`, f.type, w);
         }
-        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+        w.append(`return __tuple;`);
     });
     w.append(`}`);
     w.append();
+}
+
+export function writeArgumentToStack(name: string, ref: TypeRef, w: Writer) {
+    writeVariableToStack(name, ref, w);
+}
+
+function writeVariableToStack(name: string, ref: TypeRef, w: Writer) {
+
+    //
+    // Reference
+    //
+
+    if (ref.kind === 'ref') {
+        if (ref.optional) {
+            w.append(`if (${name} !== null) {`);
+            w.inIndent(() => {
+                writeVariableToStack(name, { ...ref, optional: false }, w);
+            });
+            w.append('} else {');
+            w.inIndent(() => {
+                w.append(`__tuple.push({ type: 'null' });`);
+            });
+            w.append('}');
+            return;
+        }
+
+        if (ref.name === 'Int') {
+            w.append(`__tuple.push({ type: 'int', value: ${name} });`);
+            return;
+        } else if (ref.name === 'Bool') {
+            w.append(`__tuple.push({ type: 'int', value: ${name} ? -1n : 0n });`);
+            return;
+        } else if (ref.name === 'Cell') {
+            w.append(`__tuple.push({ type: 'cell', cell: ${name} });`);
+            return;
+        } else if (ref.name === 'Slice') {
+            w.append(`__tuple.push({ type: 'slice', cell: ${name} });`);
+            return;
+        } else if (ref.name === 'Builder') {
+            w.append(`__tuple.push({ type: 'builder', cell: ${name} });`);
+            return;
+        } else if (ref.name === 'Address') {
+            w.append(`__tuple.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
+            return;
+        } else if (ref.name === 'String') {
+            w.append(`__tuple.push({ type: 'slice', cell: beginCell().storeStringTail(${name}).endCell() });`);
+            return;
+        } else {
+            w.append(`__tuple.push({ type: 'tuple', items: storeTuple${ref.name}(${name}) });`);
+            return;
+        }
+    }
+
+    //
+    // Map
+    //
+
+    if (ref.kind === 'map') {
+        w.append(`__tuple.push({ type: 'cell', cell: ${name} });`);
+        return;
+    }
+
+    throw Error(`Unsupported type`);
 }

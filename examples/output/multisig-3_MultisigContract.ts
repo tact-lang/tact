@@ -28,16 +28,11 @@ function loadTupleStateInit(source: TupleReader) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
-export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-}
-
-export function packTupleStateInit(src: StateInit): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-    return __stack;
+function storeTupleStateInit(source: StateInit) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: source.code });
+    __tuple.push({ type: 'cell', cell: source.data });
+    return __tuple;
 }
 
 export type Context = {
@@ -75,20 +70,13 @@ function loadTupleContext(source: TupleReader) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
-export function packStackContext(src: Context, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-}
-
-export function packTupleContext(src: Context): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-    return __stack;
+function storeTupleContext(source: Context) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounced ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.sender).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'slice', cell: source.raw });
+    return __tuple;
 }
 
 export type SendParameters = {
@@ -162,50 +150,28 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
-export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
+function storeTupleSendParameters(source: SendParameters) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounce ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.to).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'int', value: source.mode });
+    if (source.body !== null) {
+        __tuple.push({ type: 'cell', cell: source.body });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
+    if (source.code !== null) {
+        __tuple.push({ type: 'cell', cell: source.code });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
+    if (source.data !== null) {
+        __tuple.push({ type: 'cell', cell: source.data });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleSendParameters(src: SendParameters): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type Operation = {
@@ -239,18 +205,12 @@ function loadTupleOperation(source: TupleReader) {
     return { $$type: 'Operation' as const, seqno: _seqno, amount: _amount, target: _target };
 }
 
-export function packStackOperation(src: Operation, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.seqno });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
-}
-
-export function packTupleOperation(src: Operation): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.seqno });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.target).endCell() });
-    return __stack;
+function storeTupleOperation(source: Operation) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.seqno });
+    __tuple.push({ type: 'int', value: source.amount });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.target).endCell() });
+    return __tuple;
 }
 
 export type Execute = {
@@ -290,20 +250,13 @@ function loadTupleExecute(source: TupleReader) {
     return { $$type: 'Execute' as const, operation: _operation, signature1: _signature1, signature2: _signature2, signature3: _signature3 };
 }
 
-export function packStackExecute(src: Execute, __stack: TupleItem[]) {
-    packStackOperation(src.operation, __stack);
-    __stack.push({ type: 'slice', cell: src.signature1 });
-    __stack.push({ type: 'slice', cell: src.signature2 });
-    __stack.push({ type: 'slice', cell: src.signature3 });
-}
-
-export function packTupleExecute(src: Execute): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'tuple', items: packTupleOperation(src.operation) });
-    __stack.push({ type: 'slice', cell: src.signature1 });
-    __stack.push({ type: 'slice', cell: src.signature2 });
-    __stack.push({ type: 'slice', cell: src.signature3 });
-    return __stack;
+function storeTupleExecute(source: Execute) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'tuple', items: storeTupleOperation(source.operation) });
+    __tuple.push({ type: 'slice', cell: source.signature1 });
+    __tuple.push({ type: 'slice', cell: source.signature2 });
+    __tuple.push({ type: 'slice', cell: source.signature3 });
+    return __tuple;
 }
 
 export type Executed = {
@@ -331,30 +284,34 @@ function loadTupleExecuted(source: TupleReader) {
     return { $$type: 'Executed' as const, seqno: _seqno };
 }
 
-export function packStackExecuted(src: Executed, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.seqno });
-}
-
-export function packTupleExecuted(src: Executed): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.seqno });
-    return __stack;
+function storeTupleExecuted(source: Executed) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.seqno });
+    return __tuple;
 }
 
 async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
     const __code = 'te6ccgECJwEAAvkAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIERICAdQICQIBWAwNAn07ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEDDeKUK64wLAAJEw4w3ywIKAKCwALCBu8tCAgALIw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BbI+EIBzFUwUDTLH8v/y//L/8ntVACm+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGuo4r7UTQ1AH4YtMf0//T/9P/VTBsFPAVyPhCAcxVMFA0yx/L/8v/y//J7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8B9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGAQACMcATIzFUwUDTLH8v/y//L/8mAABPsAAgEgExQCASAZGgIBIBUWAgEgFxgAEx/MwFwbW1t8A6AACQQI18DgAAcE18DgAAUbDGACASAbHABvRUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAQgABRfA4AABIAAvvmS/aiaGoA/DFpj+n/6f/p/6qYNgp4CkAgEgHyACASAhIgAJuKx/APgCASAjJAIBICUmAC+w6ftRNDUAfhi0x/T/9P/0/9VMGwU8BOAAL7Dhu1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsPl7UTQ1AH4YtMf0//T/9P/VTBsFPARgAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmA=';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'int', value: key1 });
-    __stack.push({ type: 'int', value: key2 });
-    __stack.push({ type: 'int', value: key3 });
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    __tuple.push({ type: 'int', value: key1 });
+    __tuple.push({ type: 'int', value: key2 });
+    __tuple.push({ type: 'int', value: key3 });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_MultisigContract', __stack);
+    let res = await executor.get('init_MultisigContract', __tuple);
     if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (MultisigContract_errors[res.exitCode]) {
+            throw new ComputeError(MultisigContract_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -428,26 +385,26 @@ export class MultisigContract implements Contract {
     }
     
     async getKey1(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('key1', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('key1', __tuple);
         return result.stack.readBigNumber();
     }
     
     async getKey2(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('key2', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('key2', __tuple);
         return result.stack.readBigNumber();
     }
     
     async getKey3(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('key3', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('key3', __tuple);
         return result.stack.readBigNumber();
     }
     
     async getSeqno(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('seqno', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('seqno', __tuple);
         return result.stack.readBigNumber();
     }
     

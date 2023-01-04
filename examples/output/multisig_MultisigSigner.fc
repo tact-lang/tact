@@ -43,6 +43,8 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
+forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm "7 UNTUPLE";
+
 builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline {
     var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
     build_0 = store_uint(build_0, 4096439811, 32);
@@ -111,8 +113,13 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return (sc_0, (v'master, v'members, v'weight, v'requiredWeight, v'completed, v'request));
 }
 
+(slice, slice, int, int, int, int, cell) __gen_Request_from_tuple(tuple v) {
+    var (slice v'requested, slice v'to, int v'value, int v'timeout, int v'bounce, int v'mode, cell v'body) = __tact_tuple_destroy_7(v);
+    return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
+}
+
 (slice, slice, int, int, int, int, cell) __gen_Request_to_external(((slice, slice, int, int, int, int, cell)) v) {
-    var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
+    var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v; 
     return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
 }
 
@@ -268,8 +275,12 @@ _ $__gen_get_request() method_id(107262) {
     throw(130);
 }
 
-cell init_MultisigSigner(cell sys', slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) method_id {
-    return $__gen_MultisigSigner_init(sys', master, members, requiredWeight, request);
+cell init_MultisigSigner(cell sys', slice $$master, cell $$members, int $$requiredWeight, tuple $$request) method_id {
+    slice $master = $$master;
+    cell $members = $$members;
+    int $requiredWeight = $$requiredWeight;
+    (slice, slice, int, int, int, int, cell) $request = __gen_Request_from_tuple($$request);
+    return $__gen_MultisigSigner_init(sys', $master, $members, $requiredWeight, $request);
 }
 
 _ supported_interfaces() method_id {

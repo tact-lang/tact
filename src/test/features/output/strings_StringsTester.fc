@@ -407,7 +407,8 @@ slice $__gen_StringsTester_processBase64((int) $self, slice $src) impure {
     return $__gen_String_fromBase64($src);
 }
 
-_ $__gen_get_processBase64(slice $src) method_id(128362) {
+_ $__gen_get_processBase64(slice $$src) method_id(128362) {
+    slice $src = $$src;
     var self = __gen_load_StringsTester();
     var res = $__gen_StringsTester_processBase64(self, $src);
     return res;

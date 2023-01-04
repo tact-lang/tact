@@ -80,4 +80,8 @@ contract SerializationTester2 {
     get fun getBothOpt():Both? {
         return Both{a: self.a, b: self.b};
     }
+
+    get fun process(src: Vars, both: Both, both2: Both?): Vars {
+        return Vars{a: src.a + 1, b: src.b + 2, c: src.c + 3, d: src.d + 4, e: src.e + 5};
+    }
 }

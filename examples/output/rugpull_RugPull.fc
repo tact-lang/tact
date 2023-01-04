@@ -151,7 +151,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
 }
 
 (int, int, int) __gen_RugParams_to_external(((int, int, int)) v) {
-    var (v'investment, v'returns, v'fee) = v;
+    var (v'investment, v'returns, v'fee) = v; 
     return (v'investment, v'returns, v'fee);
 }
 
@@ -424,8 +424,12 @@ _ $__gen_get_stopped() method_id(74107) {
     throw(130);
 }
 
-cell init_RugPull(cell sys', slice owner, int investment, int returns, int fee) method_id {
-    return $__gen_RugPull_init(sys', owner, investment, returns, fee);
+cell init_RugPull(cell sys', slice $$owner, int $$investment, int $$returns, int $$fee) method_id {
+    slice $owner = $$owner;
+    int $investment = $$investment;
+    int $returns = $$returns;
+    int $fee = $$fee;
+    return $__gen_RugPull_init(sys', $owner, $investment, $returns, $fee);
 }
 
 _ supported_interfaces() method_id {

@@ -28,16 +28,11 @@ function loadTupleStateInit(source: TupleReader) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
-export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-}
-
-export function packTupleStateInit(src: StateInit): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-    return __stack;
+function storeTupleStateInit(source: StateInit) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: source.code });
+    __tuple.push({ type: 'cell', cell: source.data });
+    return __tuple;
 }
 
 export type Context = {
@@ -75,20 +70,13 @@ function loadTupleContext(source: TupleReader) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
-export function packStackContext(src: Context, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-}
-
-export function packTupleContext(src: Context): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-    return __stack;
+function storeTupleContext(source: Context) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounced ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.sender).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'slice', cell: source.raw });
+    return __tuple;
 }
 
 export type SendParameters = {
@@ -162,50 +150,28 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
-export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
+function storeTupleSendParameters(source: SendParameters) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounce ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.to).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'int', value: source.mode });
+    if (source.body !== null) {
+        __tuple.push({ type: 'cell', cell: source.body });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
+    if (source.code !== null) {
+        __tuple.push({ type: 'cell', cell: source.code });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
+    if (source.data !== null) {
+        __tuple.push({ type: 'cell', cell: source.data });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleSendParameters(src: SendParameters): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type ChangeOwner = {
@@ -233,14 +199,10 @@ function loadTupleChangeOwner(source: TupleReader) {
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
-export function packStackChangeOwner(src: ChangeOwner, __stack: TupleItem[]) {
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
-}
-
-export function packTupleChangeOwner(src: ChangeOwner): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
-    return __stack;
+function storeTupleChangeOwner(source: ChangeOwner) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.newOwner).endCell() });
+    return __tuple;
 }
 
 export type RugParams = {
@@ -274,35 +236,37 @@ function loadTupleRugParams(source: TupleReader) {
     return { $$type: 'RugParams' as const, investment: _investment, returns: _returns, fee: _fee };
 }
 
-export function packStackRugParams(src: RugParams, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.investment });
-    __stack.push({ type: 'int', value: src.returns });
-    __stack.push({ type: 'int', value: src.fee });
-}
-
-export function packTupleRugParams(src: RugParams): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.investment });
-    __stack.push({ type: 'int', value: src.returns });
-    __stack.push({ type: 'int', value: src.fee });
-    return __stack;
+function storeTupleRugParams(source: RugParams) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.investment });
+    __tuple.push({ type: 'int', value: source.returns });
+    __tuple.push({ type: 'int', value: source.fee });
+    return __tuple;
 }
 
 async function RugPull_init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
     const __code = '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';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
-    __stack.push({ type: 'int', value: investment });
-    __stack.push({ type: 'int', value: returns });
-    __stack.push({ type: 'int', value: fee });
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+    __tuple.push({ type: 'int', value: investment });
+    __tuple.push({ type: 'int', value: returns });
+    __tuple.push({ type: 'int', value: fee });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_RugPull', __stack);
+    let res = await executor.get('init_RugPull', __tuple);
     if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (RugPull_errors[res.exitCode]) {
+            throw new ComputeError(RugPull_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -386,20 +350,20 @@ export class RugPull implements Contract {
     }
     
     async getParams(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('params', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('params', __tuple);
         return loadTupleRugParams(result.stack);
     }
     
     async getOwner(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('owner', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('owner', __tuple);
         return result.stack.readAddress();
     }
     
     async getStopped(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('stopped', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('stopped', __tuple);
         return result.stack.readBoolean();
     }
     

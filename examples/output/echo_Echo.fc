@@ -197,7 +197,8 @@ slice $__gen_Echo_hello((int) $self, slice $src) impure {
     return __tact_string_builder_end_slice($builder);
 }
 
-_ $__gen_get_hello(slice $src) method_id(115554) {
+_ $__gen_get_hello(slice $$src) method_id(115554) {
+    slice $src = $$src;
     var self = __gen_load_Echo();
     var res = $__gen_Echo_hello(self, $src);
     return res;

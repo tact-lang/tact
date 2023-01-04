@@ -28,16 +28,11 @@ function loadTupleStateInit(source: TupleReader) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
-export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-}
-
-export function packTupleStateInit(src: StateInit): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-    return __stack;
+function storeTupleStateInit(source: StateInit) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: source.code });
+    __tuple.push({ type: 'cell', cell: source.data });
+    return __tuple;
 }
 
 export type Context = {
@@ -75,20 +70,13 @@ function loadTupleContext(source: TupleReader) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
-export function packStackContext(src: Context, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-}
-
-export function packTupleContext(src: Context): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-    return __stack;
+function storeTupleContext(source: Context) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounced ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.sender).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'slice', cell: source.raw });
+    return __tuple;
 }
 
 export type SendParameters = {
@@ -162,50 +150,28 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
-export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
+function storeTupleSendParameters(source: SendParameters) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounce ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.to).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'int', value: source.mode });
+    if (source.body !== null) {
+        __tuple.push({ type: 'cell', cell: source.body });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
+    if (source.code !== null) {
+        __tuple.push({ type: 'cell', cell: source.code });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
+    if (source.data !== null) {
+        __tuple.push({ type: 'cell', cell: source.data });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleSendParameters(src: SendParameters): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type ChangeOwner = {
@@ -233,14 +199,10 @@ function loadTupleChangeOwner(source: TupleReader) {
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
-export function packStackChangeOwner(src: ChangeOwner, __stack: TupleItem[]) {
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
-}
-
-export function packTupleChangeOwner(src: ChangeOwner): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
-    return __stack;
+function storeTupleChangeOwner(source: ChangeOwner) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.newOwner).endCell() });
+    return __tuple;
 }
 
 export type TokenTransfer = {
@@ -300,42 +262,24 @@ function loadTupleTokenTransfer(source: TupleReader) {
     return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
-export function packStackTokenTransfer(src: TokenTransfer, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
-    if (src.responseDestination !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
+function storeTupleTokenTransfer(source: TokenTransfer) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    __tuple.push({ type: 'int', value: source.amount });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.destination).endCell() });
+    if (source.responseDestination !== null) {
+        __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.responseDestination).endCell() });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.customPayload !== null) {
-        __stack.push({ type: 'cell', cell: src.customPayload });
+    if (source.customPayload !== null) {
+        __tuple.push({ type: 'cell', cell: source.customPayload });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    __stack.push({ type: 'int', value: src.forwardTonAmount });
-    __stack.push({ type: 'slice', cell: src.forwardPayload });
-}
-
-export function packTupleTokenTransfer(src: TokenTransfer): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.destination).endCell() });
-    if (src.responseDestination !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseDestination).endCell() });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.customPayload !== null) {
-        __stack.push({ type: 'cell', cell: src.customPayload });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    __stack.push({ type: 'int', value: src.forwardTonAmount });
-    __stack.push({ type: 'slice', cell: src.forwardPayload });
-    return __stack;
+    __tuple.push({ type: 'int', value: source.forwardTonAmount });
+    __tuple.push({ type: 'slice', cell: source.forwardPayload });
+    return __tuple;
 }
 
 export type TokenTransferInternal = {
@@ -383,32 +327,19 @@ function loadTupleTokenTransferInternal(source: TupleReader) {
     return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
-export function packStackTokenTransferInternal(src: TokenTransferInternal, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    if (src.responseAddress !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+function storeTupleTokenTransferInternal(source: TokenTransferInternal) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    __tuple.push({ type: 'int', value: source.amount });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.from).endCell() });
+    if (source.responseAddress !== null) {
+        __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.responseAddress).endCell() });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    __stack.push({ type: 'int', value: src.forwardTonAmount });
-    __stack.push({ type: 'slice', cell: src.forwardPayload });
-}
-
-export function packTupleTokenTransferInternal(src: TokenTransferInternal): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    if (src.responseAddress !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    __stack.push({ type: 'int', value: src.forwardTonAmount });
-    __stack.push({ type: 'slice', cell: src.forwardPayload });
-    return __stack;
+    __tuple.push({ type: 'int', value: source.forwardTonAmount });
+    __tuple.push({ type: 'slice', cell: source.forwardPayload });
+    return __tuple;
 }
 
 export type TokenNotification = {
@@ -448,20 +379,13 @@ function loadTupleTokenNotification(source: TupleReader) {
     return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
 }
 
-export function packStackTokenNotification(src: TokenNotification, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    __stack.push({ type: 'slice', cell: src.forwardPayload });
-}
-
-export function packTupleTokenNotification(src: TokenNotification): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.from).endCell() });
-    __stack.push({ type: 'slice', cell: src.forwardPayload });
-    return __stack;
+function storeTupleTokenNotification(source: TokenNotification) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    __tuple.push({ type: 'int', value: source.amount });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.from).endCell() });
+    __tuple.push({ type: 'slice', cell: source.forwardPayload });
+    return __tuple;
 }
 
 export type TokenBurn = {
@@ -501,28 +425,17 @@ function loadTupleTokenBurn(source: TupleReader) {
     return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
-export function packStackTokenBurn(src: TokenBurn, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.responseAddress !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+function storeTupleTokenBurn(source: TokenBurn) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    __tuple.push({ type: 'int', value: source.amount });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.owner).endCell() });
+    if (source.responseAddress !== null) {
+        __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.responseAddress).endCell() });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleTokenBurn(src: TokenBurn): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.responseAddress !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type TokenBurnNotification = {
@@ -562,28 +475,17 @@ function loadTupleTokenBurnNotification(source: TupleReader) {
     return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
-export function packStackTokenBurnNotification(src: TokenBurnNotification, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.responseAddress !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
+function storeTupleTokenBurnNotification(source: TokenBurnNotification) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    __tuple.push({ type: 'int', value: source.amount });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.owner).endCell() });
+    if (source.responseAddress !== null) {
+        __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.responseAddress).endCell() });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleTokenBurnNotification(src: TokenBurnNotification): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    __stack.push({ type: 'int', value: src.amount });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.responseAddress !== null) {
-        __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.responseAddress).endCell() });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type TokenExcesses = {
@@ -611,14 +513,10 @@ function loadTupleTokenExcesses(source: TupleReader) {
     return { $$type: 'TokenExcesses' as const, queryId: _queryId };
 }
 
-export function packStackTokenExcesses(src: TokenExcesses, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-}
-
-export function packTupleTokenExcesses(src: TokenExcesses): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    return __stack;
+function storeTupleTokenExcesses(source: TokenExcesses) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    return __tuple;
 }
 
 export type TokenUpdateContent = {
@@ -654,22 +552,14 @@ function loadTupleTokenUpdateContent(source: TupleReader) {
     return { $$type: 'TokenUpdateContent' as const, content: _content };
 }
 
-export function packStackTokenUpdateContent(src: TokenUpdateContent, __stack: TupleItem[]) {
-    if (src.content !== null) {
-        __stack.push({ type: 'cell', cell: src.content });
+function storeTupleTokenUpdateContent(source: TokenUpdateContent) {
+    let __tuple: TupleItem[] = [];
+    if (source.content !== null) {
+        __tuple.push({ type: 'cell', cell: source.content });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleTokenUpdateContent(src: TokenUpdateContent): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    if (src.content !== null) {
-        __stack.push({ type: 'cell', cell: src.content });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type JettonData = {
@@ -719,30 +609,18 @@ function loadTupleJettonData(source: TupleReader) {
     return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
 }
 
-export function packStackJettonData(src: JettonData, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.totalSupply });
-    __stack.push({ type: 'int', value: src.mintable ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.content !== null) {
-        __stack.push({ type: 'cell', cell: src.content });
+function storeTupleJettonData(source: JettonData) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.totalSupply });
+    __tuple.push({ type: 'int', value: source.mintable ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.owner).endCell() });
+    if (source.content !== null) {
+        __tuple.push({ type: 'cell', cell: source.content });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    __stack.push({ type: 'cell', cell: src.walletCode });
-}
-
-export function packTupleJettonData(src: JettonData): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.totalSupply });
-    __stack.push({ type: 'int', value: src.mintable ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    if (src.content !== null) {
-        __stack.push({ type: 'cell', cell: src.content });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    __stack.push({ type: 'cell', cell: src.walletCode });
-    return __stack;
+    __tuple.push({ type: 'cell', cell: source.walletCode });
+    return __tuple;
 }
 
 export type JettonWalletData = {
@@ -780,20 +658,13 @@ function loadTupleJettonWalletData(source: TupleReader) {
     return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
 }
 
-export function packStackJettonWalletData(src: JettonWalletData, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.balance });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.master).endCell() });
-    __stack.push({ type: 'cell', cell: src.walletCode });
-}
-
-export function packTupleJettonWalletData(src: JettonWalletData): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.balance });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.master).endCell() });
-    __stack.push({ type: 'cell', cell: src.walletCode });
-    return __stack;
+function storeTupleJettonWalletData(source: JettonWalletData) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.balance });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.owner).endCell() });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.master).endCell() });
+    __tuple.push({ type: 'cell', cell: source.walletCode });
+    return __tuple;
 }
 
 export type Mint = {
@@ -821,14 +692,10 @@ function loadTupleMint(source: TupleReader) {
     return { $$type: 'Mint' as const, amount: _amount };
 }
 
-export function packStackMint(src: Mint, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.amount });
-}
-
-export function packTupleMint(src: Mint): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.amount });
-    return __stack;
+function storeTupleMint(source: Mint) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.amount });
+    return __tuple;
 }
 
 async function JettonDefaultWallet_init(master: Address, owner: Address) {
@@ -836,15 +703,23 @@ async function JettonDefaultWallet_init(master: Address, owner: Address) {
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     depends.set(55471, Cell.fromBoc(Buffer.from('te6ccgECKwEABZEAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAnKAIBIAYHAgFIEhMCASAICQIBbhARAgFICgsAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQT1RwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhAo4zMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTVQLwKcj4QgHMVSBQI4EBAc8AAc8WAc8Wye1U4CCCEA+KfqW64wIgghAXjUUZuuMCghBZXwe8uuMCMIDA0ODwALQgbvLQgIAN4w7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeJtAtIAAZRsEtQS3voAUWYWFURANxCJEHhVBfAmyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAyjDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4gH6AFFVFRRDMDYQeBBnVQTwJ8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UALztRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEFlfB7y68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4hRDMDQQVhBFVQLwKMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAAbywIIAAUgAFVlH8BygDgcAHKAIAgEgFBUCAdQlJgIBIBYXAgEgHR4CASAYGQIBIBscAAkcFnwCYAH3MhxAcoBUAfwH3ABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8B/IcPAfcPAfJG6zmX/wHwTwAlAEzJU0A3DwH+IkbrOZf/AfBPACUATMlTQDcPAf4nDwHwJ/8B8CyVjMljMzAXDwH+IhbrOYf/AfAfACAcyUMXDwH+LJAYBoABPsAACUbDH6ADFx1yH6ADH6ADCnA6sAgACkcAPIzEMTUCOBAQHPAAHPFgHPFsmACASAfIAIBICEiAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwI4AAPPhCUxLwJDCABpxsIvhBbySBEU1TO8cF8vRRt6GCAPX8IcL/8vRDMFI88CJxJMIAkjBy3oE+uwKoggkxLQCgggiYloCgErzy9PhCVCBk8CRc8CB/UHZwgEArVEw5GICMB7z4QW8kUyrHBbOOEvhCU7jwJAGBEU0C8CAkxwXy9N5RyKCCAPX8IcL/8vQh+CdvECGhggiYloBmtgihggiYloCgoSbCAJYQfVCJXwjjDSVusyLCALCOHXAG8AJwBMgBghDVMnbbWMsfyz/JEEdDMBdtbfAhkjVb4oCQAZMhVUIIQF41FGVAHyx8Vyz9QA/oCAc8WASBulTBwAcsBks8W4gH6AgHPFskQVhA0WfAhAHJQTUMw8CJSMKAaoXBwKEgTUHTIVTCCEHNi0JxQBcsfE8s/AfoCAc8WAc8WySgQRkMTUFVtbfAhUAUA0xb+EFvJIERTVM4xwXy9FGEoYIA9fwhwv/y9EMwUjnwIoE+uwGCCTEtAKCCCJiWgKASvPL0f3ADgEBUM2bIVTCCEHvdl95QBcsfE8s/AfoCAc8WASBulTBwAcsBks8W4slUEwRQM21t8CGAATyAINch0x/TPzH6ADCBNVIighAXjUUZugOCEHvdl966E7ES8vQToAKAAO7/YF2omhqAPwxQICA64B9IACA/SAAoZg2CfgS+A5AICcykqAAms8fgRwABxrejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOE7o8AHy2bAeT+QdWSzWUQnA', 'base64'))[0]);
     let systemCell = beginCell().storeDict(depends).endCell();
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: systemCell });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_JettonDefaultWallet', __stack);
+    let res = await executor.get('init_JettonDefaultWallet', __tuple);
     if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (JettonDefaultWallet_errors[res.exitCode]) {
+            throw new ComputeError(JettonDefaultWallet_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -923,8 +798,8 @@ export class JettonDefaultWallet implements Contract {
     }
     
     async getGetWalletData(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('get_wallet_data', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('get_wallet_data', __tuple);
         return loadTupleJettonWalletData(result.stack);
     }
     

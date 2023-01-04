@@ -2,7 +2,7 @@ import { ContractABI, ContractFunctionArg } from "../abi/ContractABI";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
 import { Writer } from "../utils/Writer";
-import { writeParser, writeSerializer, writeStruct, writeTupleParser } from "./typescript/writeStruct";
+import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { getTSFieldType } from "./typescript/getTSFieldType";
 
 function writeArguments(args: ContractFunctionArg[]) {
@@ -21,26 +21,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         writeSerializer(s, w);
         writeParser(s, w);
         writeTupleParser(s, w);
-
-        // Pack to stack
-        w.append(`export function packStack${s.name}(src: ${s.name}, __stack: TupleItem[]) {`);
-        w.inIndent(() => {
-            for (const f of s.fields) {
-                writeToStack(`src.${f.name}`, f.type, w);
-            }
-        });
-        w.append(`}`);
-        w.append();
-        w.append(`export function packTuple${s.name}(src: ${s.name}): TupleItem[] {`);
-        w.inIndent(() => {
-            w.append(`let __stack: TupleItem[] = [];`)
-            for (const f of s.fields) {
-                writeToStack(`src.${f.name}`, f.type, w, false, true);
-            }
-            w.append(`return __stack;`);
-        });
-        w.append(`}`);
-        w.append();
+        writeTupleSerializer(s, w);
     }
 
     // Init
@@ -61,18 +42,32 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
             w.append(`let systemCell = beginCell().storeDict(depends).endCell();`);
 
             // Stack
-            w.append('let __stack: TupleItem[] = [];');
-            w.append(`__stack.push({ type: 'cell', cell: systemCell });`);
+            w.append('let __tuple: TupleItem[] = [];');
+            w.append(`__tuple.push({ type: 'cell', cell: systemCell });`);
             for (let a of abi.init!.args) {
-                writeToStack(a.name, a.type, w);
+                writeArgumentToStack(a.name, a.type, w);
             }
 
             // Deploy
             w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
             w.append(`let system = await ContractSystem.create();`);
             w.append(`let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);`);
-            w.append(`let res = await executor.get('${abi.init!.name}', __stack);`);
+            w.append(`let res = await executor.get('${abi.init!.name}', __tuple);`);
             w.append(`if (!res.success) { throw Error(res.error); }`);
+            w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
+            w.inIndent(() => {
+                w.append(`if (${abi.name}_errors[res.exitCode]) {`);
+                w.inIndent(() => {
+                    w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });`);
+                });
+                w.append(`} else {`);
+                w.inIndent(() => {
+                    w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });`);
+                });
+                w.append(`}`);
+            });
+            w.append(`}`);
+            w.append();
             w.append(`let data = res.stack.readCell();`);
             w.append(`return { code: codeCell, data };`);
         });
@@ -198,11 +193,11 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         for (let g of abi.getters) {
             w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.args)].join(', ')}) {`);
             w.inIndent(() => {
-                w.append(`let __stack: TupleItem[] = [];`);
+                w.append(`let __tuple: TupleItem[] = [];`);
                 for (let a of g.args) {
-                    writeToStack(a.name, a.type, w);
+                    writeArgumentToStack(a.name, a.type, w);
                 }
-                w.append(`let result = await provider.get('${g.name}', __stack);`);
+                w.append(`let result = await provider.get('${g.name}', __tuple);`);
 
                 if (g.returns) {
                     if (g.returns.kind === 'ref') {

@@ -17,10 +17,14 @@ PROGRAM{
   DECLPROC __gen_read_ContractWithOptionals
   DECLPROC __gen_SomeGenericStruct_to_tuple
   DECLPROC __gen_SomeGenericStruct_opt_to_tuple
+  DECLPROC __gen_SomeGenericStruct_from_tuple
+  DECLPROC __gen_SomeGenericStruct_from_opt_tuple
   DECLPROC __gen_SomeGenericStruct_to_external
   DECLPROC __gen_SomeGenericStruct_opt_to_external
   DECLPROC __gen_StructWithOptionals_to_tuple
   DECLPROC __gen_StructWithOptionals_opt_to_tuple
+  DECLPROC __gen_StructWithOptionals_from_tuple
+  DECLPROC __gen_StructWithOptionals_from_opt_tuple
   DECLPROC __gen_StructWithOptionals_to_external
   DECLPROC __gen_StructWithOptionals_opt_to_external
   DECLPROC __gen_load_ContractWithOptionals
@@ -507,6 +511,19 @@ PROGRAM{
       __gen_SomeGenericStruct_to_tuple CALLDICT
     }>
   }>
+  __gen_SomeGenericStruct_from_tuple PROC:<{
+    5 UNTUPLE
+  }>
+  __gen_SomeGenericStruct_from_opt_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    __gen_SomeGenericStruct_from_tuple CALLDICT
+    __gen_SomeGenericStruct_as_optional INLINECALLDICT
+  }>
   __gen_SomeGenericStruct_to_external PROC:<{
   }>
   __gen_SomeGenericStruct_opt_to_external PROCINLINE:<{
@@ -533,6 +550,20 @@ PROGRAM{
       __gen_StructWithOptionals_not_null INLINECALLDICT
       __gen_StructWithOptionals_to_tuple CALLDICT
     }>
+  }>
+  __gen_StructWithOptionals_from_tuple PROC:<{
+    5 UNTUPLE
+    __gen_SomeGenericStruct_from_opt_tuple CALLDICT
+  }>
+  __gen_StructWithOptionals_from_opt_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    __gen_StructWithOptionals_from_tuple CALLDICT
+    __gen_StructWithOptionals_as_optional INLINECALLDICT
   }>
   __gen_StructWithOptionals_to_external PROC:<{
     __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
@@ -818,6 +849,10 @@ PROGRAM{
     130 THROW
   }>
   init_ContractWithOptionals PROC:<{
+    SWAP
+    __gen_SomeGenericStruct_from_opt_tuple CALLDICT
+    SWAP
+    __gen_StructWithOptionals_from_opt_tuple CALLDICT
     $__gen_ContractWithOptionals_init CALLDICT
   }>
   supported_interfaces PROC:<{

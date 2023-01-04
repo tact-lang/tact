@@ -237,8 +237,17 @@ _ $__gen_get_getI() method_id(91412) {
     throw(130);
 }
 
-cell init_SerializationTester(cell sys', int a, int b, int c, int d, int e, int f, int g, int h, int i) method_id {
-    return $__gen_SerializationTester_init(sys', a, b, c, d, e, f, g, h, i);
+cell init_SerializationTester(cell sys', int $$a, int $$b, int $$c, int $$d, int $$e, int $$f, int $$g, int $$h, int $$i) method_id {
+    int $a = $$a;
+    int $b = $$b;
+    int $c = $$c;
+    int $d = $$d;
+    int $e = $$e;
+    int $f = $$f;
+    int $g = $$g;
+    int $h = $$h;
+    int $i = $$i;
+    return $__gen_SerializationTester_init(sys', $a, $b, $c, $d, $e, $f, $g, $h, $i);
 }
 
 _ supported_interfaces() method_id {

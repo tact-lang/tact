@@ -28,16 +28,11 @@ function loadTupleStateInit(source: TupleReader) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
-export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-}
-
-export function packTupleStateInit(src: StateInit): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: src.code });
-    __stack.push({ type: 'cell', cell: src.data });
-    return __stack;
+function storeTupleStateInit(source: StateInit) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: source.code });
+    __tuple.push({ type: 'cell', cell: source.data });
+    return __tuple;
 }
 
 export type Context = {
@@ -75,20 +70,13 @@ function loadTupleContext(source: TupleReader) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
-export function packStackContext(src: Context, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-}
-
-export function packTupleContext(src: Context): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'slice', cell: src.raw });
-    return __stack;
+function storeTupleContext(source: Context) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounced ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.sender).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'slice', cell: source.raw });
+    return __tuple;
 }
 
 export type SendParameters = {
@@ -162,50 +150,28 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
-export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
+function storeTupleSendParameters(source: SendParameters) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.bounce ? -1n : 0n });
+    __tuple.push({ type: 'slice', cell: beginCell().storeAddress(source.to).endCell() });
+    __tuple.push({ type: 'int', value: source.value });
+    __tuple.push({ type: 'int', value: source.mode });
+    if (source.body !== null) {
+        __tuple.push({ type: 'cell', cell: source.body });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
+    if (source.code !== null) {
+        __tuple.push({ type: 'cell', cell: source.code });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
+    if (source.data !== null) {
+        __tuple.push({ type: 'cell', cell: source.data });
     } else {
-        __stack.push({ type: 'null' });
+        __tuple.push({ type: 'null' });
     }
-}
-
-export function packTupleSendParameters(src: SendParameters): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
-    __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
-    __stack.push({ type: 'int', value: src.value });
-    __stack.push({ type: 'int', value: src.mode });
-    if (src.body !== null) {
-        __stack.push({ type: 'cell', cell: src.body });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.code !== null) {
-        __stack.push({ type: 'cell', cell: src.code });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    if (src.data !== null) {
-        __stack.push({ type: 'cell', cell: src.data });
-    } else {
-        __stack.push({ type: 'null' });
-    }
-    return __stack;
+    return __tuple;
 }
 
 export type Deploy = {
@@ -233,14 +199,10 @@ function loadTupleDeploy(source: TupleReader) {
     return { $$type: 'Deploy' as const, queryId: _queryId };
 }
 
-export function packStackDeploy(src: Deploy, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-}
-
-export function packTupleDeploy(src: Deploy): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    return __stack;
+function storeTupleDeploy(source: Deploy) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    return __tuple;
 }
 
 export type DeployOk = {
@@ -268,27 +230,31 @@ function loadTupleDeployOk(source: TupleReader) {
     return { $$type: 'DeployOk' as const, queryId: _queryId };
 }
 
-export function packStackDeployOk(src: DeployOk, __stack: TupleItem[]) {
-    __stack.push({ type: 'int', value: src.queryId });
-}
-
-export function packTupleDeployOk(src: DeployOk): TupleItem[] {
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'int', value: src.queryId });
-    return __stack;
+function storeTupleDeployOk(source: DeployOk) {
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'int', value: source.queryId });
+    return __tuple;
 }
 
 async function RandomContract_init() {
     const __code = 'te6ccgECHwEAAhoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIDg8CAdQICQIBWAoLANEcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEJWXPcy6jjHtRNDUAfhigQEB1wABMQHTHwGCEJWXPcy68uCB0z8BMfAVyPhCAcwBAYEBAc8Aye1U4DDywIKAACwgbvLQgIAAVWUfwHKAOBwAcoAgCASAMDQAdPhDbpf4JfgVf/hj3vgQgACM+ENul/gl+BV/+GPeIaH4EaCACASAQEQIBSBcYAgEgEhMCASAVFgH3MhxAcoBUAfwDXABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8A3IcPANcPANJG6zmX/wDQTwAVAEzJU0A3DwDeIkbrOZf/ANBPABUATMlTQDcPAN4nDwDQJ/8A0CyVjMljMzAXDwDeIhbrOYf/ANAfABAcyUMXDwDeLJAYBQAJT4QW8kECNfA38CcIBCWG1t8BCAABPsAABkcAHIzAEBgQEBzwDJgAAcMPAOgAAkbBLwD4AAhMgBghDTf7ghWMsfyz/J8BGACASAbHAIBIB0eAAm7Bb8BKAAnunbe1E0NQB+GKBAQHXAAExWfAUgATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAlu2h+1E0NQB+GKBAQHXAAEx8BOA==';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
-    let __stack: TupleItem[] = [];
-    __stack.push({ type: 'cell', cell: systemCell });
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_RandomContract', __stack);
+    let res = await executor.get('init_RandomContract', __tuple);
     if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (RandomContract_errors[res.exitCode]) {
+            throw new ComputeError(RandomContract_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -357,16 +323,16 @@ export class RandomContract implements Contract {
     }
     
     async getRandomInt(provider: ContractProvider) {
-        let __stack: TupleItem[] = [];
-        let result = await provider.get('randomInt', __stack);
+        let __tuple: TupleItem[] = [];
+        let result = await provider.get('randomInt', __tuple);
         return result.stack.readBigNumber();
     }
     
     async getRandom(provider: ContractProvider, min: bigint, max: bigint) {
-        let __stack: TupleItem[] = [];
-        __stack.push({ type: 'int', value: min });
-        __stack.push({ type: 'int', value: max });
-        let result = await provider.get('random', __stack);
+        let __tuple: TupleItem[] = [];
+        __tuple.push({ type: 'int', value: min });
+        __tuple.push({ type: 'int', value: max });
+        let result = await provider.get('random', __tuple);
         return result.stack.readBigNumber();
     }
     

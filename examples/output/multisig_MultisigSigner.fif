@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC __gen_writecell_Signed
   DECLPROC __gen_write_MultisigSigner
   DECLPROC __gen_read_MultisigSigner
+  DECLPROC __gen_Request_from_tuple
   DECLPROC __gen_Request_to_external
   DECLPROC __gen_load_MultisigSigner
   DECLPROC __gen_store_MultisigSigner
@@ -182,6 +183,9 @@ PROGRAM{
     s7 s9 XCHG
     s7 s8 XCHG
     6 ROLL
+  }>
+  __gen_Request_from_tuple PROC:<{
+    7 UNTUPLE
   }>
   __gen_Request_to_external PROC:<{
   }>
@@ -449,6 +453,7 @@ PROGRAM{
     130 THROW
   }>
   init_MultisigSigner PROC:<{
+    __gen_Request_from_tuple CALLDICT
     $__gen_MultisigSigner_init CALLDICT
   }>
   supported_interfaces PROC:<{

@@ -95,7 +95,7 @@ SETCP0
       s7 s8 XCHG
       1 6 BLKSWAP
       1 12 BLKDROP2
-      21 CALLDICT
+      22 CALLDICT
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -208,7 +208,7 @@ SETCP0
         s7 s8 XCHG
         1 6 BLKSWAP
         1 12 BLKDROP2
-        22 CALLDICT
+        23 CALLDICT
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -302,8 +302,11 @@ SETCP0
     PUSHNULL
 
   14: 
+    7 UNTUPLE
 
-  17: 
+  15: 
+
+  18: 
     <{
       -1 PUSHINT
       s0 s1 XCHG
@@ -314,13 +317,13 @@ SETCP0
     s0 s1 XCHG
     1 STI
 
-  18: 
+  19: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
     2 STI
     s0 s7 XCHG2
-    17 CALLDICT
+    18 CALLDICT
     0 PUSHINT
     s0 s1 XCHG
     3 STI
@@ -340,18 +343,18 @@ SETCP0
     OR
     <{
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       NEWC
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s4 PUSH
       ISNULL
       NOT
       <{
         -1 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -361,7 +364,7 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
       }> PUSHCONT
       IFELSE
       s4 PUSH
@@ -369,7 +372,7 @@ SETCP0
       NOT
       <{
         -1 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -379,14 +382,14 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
       }> PUSHCONT
       IFELSE
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s2 XCHG
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -397,7 +400,7 @@ SETCP0
       s3 POP
       s0 s1 XCHG
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -405,7 +408,7 @@ SETCP0
     NOT
     <{
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s1 XCHG
       1 CALLDICT
       s0 s1 XCHG
@@ -414,14 +417,14 @@ SETCP0
     <{
       s1 POP
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
     }> PUSHCONT
     IFELSE
     ENDC
     s0 s1 XCHG
     SENDRAWMSG
 
-  19: 
+  20: 
     0 PUSHINT
     0 PUSHINT
     s0 s12 XCHG
@@ -481,12 +484,12 @@ SETCP0
     STREF
     ENDC
 
-  20: 
+  21: 
     5 7 BLKDROP2
 
-  21: 
-
   22: 
+
+  23: 
     4755 PUSHINT
     s4 PUSH
     NOW
@@ -562,13 +565,14 @@ SETCP0
       3 1 BLKSWAP
       PUSHNULL
       PUSHNULL
-      18 CALLDICT
+      19 CALLDICT
       s0 s7 XCHG
     }> IFREF
     s0 s9 XCHG
 
   66268: 
-    19 CALLDICT
+    14 CALLDICT
+    20 CALLDICT
 
   107262: 
     c4 PUSH
@@ -621,8 +625,8 @@ SETCP0
     s7 s8 XCHG
     1 6 BLKSWAP
     1 12 BLKDROP2
-    20 CALLDICT
-    14 CALLDICT
+    21 CALLDICT
+    15 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

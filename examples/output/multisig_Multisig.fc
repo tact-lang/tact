@@ -236,7 +236,8 @@ int $__gen_Multisig_member((int, cell, int, int) $self, slice $address) impure {
     return __tact_dict_get_slice_int($self'members, 267, $address, 257);
 }
 
-_ $__gen_get_member(slice $address) method_id(70789) {
+_ $__gen_get_member(slice $$address) method_id(70789) {
+    slice $address = $$address;
     var self = __gen_load_Multisig();
     var res = $__gen_Multisig_member(self, $address);
     return res;
@@ -317,8 +318,11 @@ _ $__gen_get_members() method_id(104769) {
     throw(130);
 }
 
-cell init_Multisig(cell sys', cell members, int totalWeight, int requiredWeight) method_id {
-    return $__gen_Multisig_init(sys', members, totalWeight, requiredWeight);
+cell init_Multisig(cell sys', cell $$members, int $$totalWeight, int $$requiredWeight) method_id {
+    cell $members = $$members;
+    int $totalWeight = $$totalWeight;
+    int $requiredWeight = $$requiredWeight;
+    return $__gen_Multisig_init(sys', $members, $totalWeight, $requiredWeight);
 }
 
 _ supported_interfaces() method_id {

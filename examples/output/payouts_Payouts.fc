@@ -432,8 +432,10 @@ _ $__gen_get_owner() method_id(83229) {
     throw(130);
 }
 
-cell init_Payouts(cell sys', slice owner, int publicKey) method_id {
-    return $__gen_Payouts_init(sys', owner, publicKey);
+cell init_Payouts(cell sys', slice $$owner, int $$publicKey) method_id {
+    slice $owner = $$owner;
+    int $publicKey = $$publicKey;
+    return $__gen_Payouts_init(sys', $owner, $publicKey);
 }
 
 _ supported_interfaces() method_id {

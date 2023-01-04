@@ -348,8 +348,10 @@ _ $__gen_get_seqno() method_id(85143) {
     __gen_store_Wallet(self);
 }
 
-cell init_Wallet(cell sys', int key, int walletId) method_id {
-    return $__gen_Wallet_init(sys', key, walletId);
+cell init_Wallet(cell sys', int $$key, int $$walletId) method_id {
+    int $key = $$key;
+    int $walletId = $$walletId;
+    return $__gen_Wallet_init(sys', $key, $walletId);
 }
 
 _ supported_interfaces() method_id {

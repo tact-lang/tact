@@ -205,8 +205,10 @@ _ $__gen_get_owner() method_id(83229) {
     throw(130);
 }
 
-cell init_Beacon(cell sys', slice master, slice owner) method_id {
-    return $__gen_Beacon_init(sys', master, owner);
+cell init_Beacon(cell sys', slice $$master, slice $$owner) method_id {
+    slice $master = $$master;
+    slice $owner = $$owner;
+    return $__gen_Beacon_init(sys', $master, $owner);
 }
 
 _ supported_interfaces() method_id {
