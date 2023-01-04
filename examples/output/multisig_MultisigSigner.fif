@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC __gen_writecell_Signed
   DECLPROC __gen_write_MultisigSigner
   DECLPROC __gen_read_MultisigSigner
+  DECLPROC __gen_Request_to_external
   DECLPROC __gen_load_MultisigSigner
   DECLPROC __gen_store_MultisigSigner
   DECLPROC $storeBool
@@ -182,6 +183,8 @@ PROGRAM{
     s7 s8 XCHG
     6 ROLL
   }>
+  __gen_Request_to_external PROC:<{
+  }>
   __gen_load_MultisigSigner PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -332,6 +335,7 @@ PROGRAM{
   $__gen_get_request PROC:<{
     __gen_load_MultisigSigner INLINECALLDICT
     $__gen_MultisigSigner_request CALLDICT
+    __gen_Request_to_external CALLDICT
   }>
   $__gen_MultisigSigner_receive PROC:<{
   }>

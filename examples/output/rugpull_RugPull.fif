@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC __gen_write_RugPull
   DECLPROC __gen_read_RugPull
   DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_RugParams_to_external
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
   DECLPROC $storeBool
@@ -265,6 +266,8 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
+  __gen_RugParams_to_external PROC:<{
+  }>
   __gen_load_RugPull PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -443,6 +446,7 @@ PROGRAM{
   $__gen_get_params PROC:<{
     __gen_load_RugPull INLINECALLDICT
     $__gen_RugPull_params CALLDICT
+    __gen_RugParams_to_external CALLDICT
   }>
   $__gen_RugPull_requireOwner PROC:<{
     __tact_context_get INLINECALLDICT

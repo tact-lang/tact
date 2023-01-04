@@ -1,6 +1,42 @@
-import { AllocationCell, AllocationField, ContractStruct } from "../../abi/ContractABI";
+import { AllocationCell, AllocationField, ContractField, ContractStruct } from "../../abi/ContractABI";
 import { Writer } from "../../utils/Writer";
 import { getTSFieldType } from "./getTSFieldType";
+
+export function writeStruct(s: ContractStruct, w: Writer) {
+    w.append(`export type ${s.name} = {`);
+    w.inIndent(() => {
+        w.append(`$$type: '${s.name}';`);
+        for (let f of s.fields) {
+            w.append(`${f.name}: ${getTSFieldType(f.type)};`);
+        }
+    });
+    w.append(`}`);
+    w.append();
+}
+
+export function writeParser(s: ContractStruct, w: Writer) {
+    w.append(`export function load${s.name}(slice: Slice) {`);
+    w.inIndent(() => {
+        w.append(`let sc_0 = slice;`);
+        if (s.allocation.prefix) {
+            w.append(`if (sc_0.loadUint(32) !== ${s.allocation.prefix}) { throw Error('Invalid prefix'); }`)
+        }
+        writeParserCell(0, s.allocation.root, s, w);
+        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+    });
+    w.append(`}`);
+    w.append();
+}
+
+function writeParserCell(index: number, src: AllocationCell, s: ContractStruct, w: Writer) {
+    for (let f of src.fields) {
+        writeParserField(index, f, s, w);
+    }
+    if (src.next) {
+        w.append(`let sc_${index + 1} = sc_${index}.loadRef().beginParse();`);
+        writeParserCell(index + 1, src.next, s, w);
+    }
+}
 
 function writeParserField(index: number, f: AllocationField, s: ContractStruct, w: Writer, fromNullable = false) {
 
@@ -51,28 +87,32 @@ function writeParserField(index: number, f: AllocationField, s: ContractStruct, 
     }
 }
 
-function writeParserCell(index: number, src: AllocationCell, s: ContractStruct, w: Writer) {
-    for (let f of src.fields) {
-        writeParserField(index, f, s, w);
-    }
-    if (src.next) {
-        w.append(`let sc_${index + 1} = sc_${index}.loadRef().beginParse();`);
-        writeParserCell(index + 1, src.next, s, w);
-    }
-}
-
-export function writeParser(s: ContractStruct, w: Writer) {
-    w.append(`export function load${s.name}(slice: Slice) {`);
+export function writeSerializer(s: ContractStruct, w: Writer) {
+    w.append(`export function store${s.name}(src: ${s.name}) {`);
     w.inIndent(() => {
-        w.append(`let sc_0 = slice;`);
-        if (s.allocation.prefix) {
-            w.append(`if (sc_0.loadUint(32) !== ${s.allocation.prefix}) { throw Error('Invalid prefix'); }`)
-        }
-        writeParserCell(0, s.allocation.root, s, w);
-        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+        w.append(`return (builder: Builder) => {`)
+        w.inIndent(() => {
+            w.append(`let b_0 = builder;`);
+            if (s.allocation.prefix) {
+                w.append(`b_0.storeUint(${s.allocation.prefix}, 32);`);
+            }
+            writeSerializerCell(0, s.allocation.root, s, w);
+        });
+        w.append(`};`);
     });
     w.append(`}`);
     w.append();
+}
+
+function writeSerializerCell(index: number, src: AllocationCell, s: ContractStruct, w: Writer) {
+    for (let f of src.fields) {
+        writeSerializerField(index, f, s, w);
+    }
+    if (src.next) {
+        w.append(`let b_${index + 1} = new Builder();`);
+        writeSerializerCell(index + 1, src.next, s, w);
+        w.append(`b_${index}.storeRef(b_${index + 1}.endCell());`);
+    }
 }
 
 function writeSerializerField(index: number, f: AllocationField, s: ContractStruct, w: Writer) {
@@ -120,41 +160,69 @@ function writeSerializerField(index: number, f: AllocationField, s: ContractStru
     }
 }
 
-function writeSerializerCell(index: number, src: AllocationCell, s: ContractStruct, w: Writer) {
-    for (let f of src.fields) {
-        writeSerializerField(index, f, s, w);
-    }
-    if (src.next) {
-        w.append(`let b_${index + 1} = new Builder();`);
-        writeSerializerCell(index + 1, src.next, s, w);
-        w.append(`b_${index}.storeRef(b_${index + 1}.endCell());`);
-    }
-}
-
-export function writeSerializer(s: ContractStruct, w: Writer) {
-    w.append(`export function store${s.name}(src: ${s.name}) {`);
-    w.inIndent(() => {
-        w.append(`return (builder: Builder) => {`)
-        w.inIndent(() => {
-            w.append(`let b_0 = builder;`);
-            if (s.allocation.prefix) {
-                w.append(`b_0.storeUint(${s.allocation.prefix}, 32);`);
+function writeTupleFieldParser(f: ContractField, s: ContractStruct, w: Writer) {
+    let name = `_${f.name}`;
+    if (f.type.kind === 'ref') {
+        if (f.type.name === 'Int') {
+            if (f.type.optional) {
+                w.append(`const ${name} = source.readBigNumberOpt();`);
+            } else {
+                w.append(`const ${name} = source.readBigNumber();`);
             }
-            writeSerializerCell(0, s.allocation.root, s, w);
-        });
-        w.append(`};`);
-    });
-    w.append(`}`);
-    w.append();
+            return;
+        } else if (f.type.name === 'Bool') {
+            if (f.type.optional) {
+                w.append(`const ${name} = source.readBooleanOpt();`);
+            } else {
+                w.append(`const ${name} = source.readBoolean();`);
+            }
+            return;
+        } else if (f.type.name === 'Address') {
+            if (f.type.optional) {
+                w.append(`const ${name} = source.readAddressOpt();`);
+            } else {
+                w.append(`const ${name} = source.readAddress();`);
+            }
+            return;
+        } else if (f.type.name === 'Cell' || f.type.name === 'Slice' || f.type.name === 'Builder') {
+            if (f.type.optional) {
+                w.append(`const ${name} = source.readCellOpt();`);
+            } else {
+                w.append(`const ${name} = source.readCell();`);
+            }
+            return;
+        } else if (f.type.name === 'String') {
+            if (f.type.optional) {
+                w.append(`const ${name} = source.readCell().beginParse().loadStringTail();`);
+            } else {
+                w.append(`const ${name} = source.readCell().beginParse().loadStringTail();`);
+            }
+        } else {
+            if (f.type.optional) {
+                w.append(`const ${name}_p = source.readTupleOpt();`);
+                w.append(`const ${name} = ${name}_p ? loadTuple${f.type.name}(${name}_p) : null;`);
+            } else {
+                w.append(`const ${name} = loadTuple${f.type.name}(source.readTuple());`);
+            }
+            return;
+        }
+    }
+
+    if (f.type.kind === 'map') {
+        w.append(`const ${name} = slice.readCellOpt();`);
+        return;
+    }
+
+    throw Error('Unsupported type');
 }
 
-export function writeStruct(s: ContractStruct, w: Writer) {
-    w.append(`export type ${s.name} = {`);
+export function writeTupleParser(s: ContractStruct, w: Writer) {
+    w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
-        w.append(`$$type: '${s.name}';`);
         for (let f of s.fields) {
-            w.append(`${f.name}: ${getTSFieldType(f.type)};`);
+            writeTupleFieldParser(f, s, w);
         }
+        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
     });
     w.append(`}`);
     w.append();

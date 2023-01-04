@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    const _code = source.readCell();
+    const _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
@@ -34,16 +40,6 @@ export function packTupleStateInit(src: StateInit): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -71,6 +67,14 @@ export function loadContext(slice: Slice) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
+function loadTupleContext(source: TupleReader) {
+    const _bounced = source.readBoolean();
+    const _sender = source.readAddress();
+    const _value = source.readBigNumber();
+    const _raw = source.readCell();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
 export function packStackContext(src: Context, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
@@ -87,20 +91,6 @@ export function packTupleContext(src: Context): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
-export function unpackTupleContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -161,6 +151,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    const _bounce = source.readBoolean();
+    const _to = source.readAddress();
+    const _value = source.readBigNumber();
+    const _mode = source.readBigNumber();
+    const _body = source.readCellOpt();
+    const _code = source.readCellOpt();
+    const _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
@@ -207,26 +208,6 @@ export function packTupleSendParameters(src: SendParameters): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
 async function StringsTester_init() {
     const __code = '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';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());

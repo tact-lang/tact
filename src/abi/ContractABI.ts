@@ -77,8 +77,3 @@ export type ContractABI = {
         [name: string]: { uid: number }
     }
 }
-
-export type Address = {
-    wc: number;
-    hash: number;
-}

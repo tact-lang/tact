@@ -164,6 +164,11 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
+(int, int, slice, cell, cell) __gen_JettonData_to_external(((int, int, slice, cell, cell)) v) {
+    var (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode) = v;
+    return (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode);
+}
+
 (int, slice, cell, int) __gen_load_SampleJetton() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
@@ -305,7 +310,7 @@ _ $__gen_get_get_wallet_address(slice $owner) method_id(103289) {
 _ $__gen_get_get_jetton_data() method_id(106029) {
     var self = __gen_load_SampleJetton();
     var res = $__gen_SampleJetton_get_jetton_data(self);
-    return res;
+    return __gen_JettonData_to_external(res);
 }
 
 ((int, slice, cell, int), ()) $__gen_SampleJetton_mint((int, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure {

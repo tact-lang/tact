@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    const _code = source.readCell();
+    const _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
@@ -34,16 +40,6 @@ export function packTupleStateInit(src: StateInit): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -71,6 +67,14 @@ export function loadContext(slice: Slice) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
+function loadTupleContext(source: TupleReader) {
+    const _bounced = source.readBoolean();
+    const _sender = source.readAddress();
+    const _value = source.readBigNumber();
+    const _raw = source.readCell();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
 export function packStackContext(src: Context, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
@@ -87,20 +91,6 @@ export function packTupleContext(src: Context): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
-export function unpackTupleContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -161,6 +151,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    const _bounce = source.readBoolean();
+    const _to = source.readAddress();
+    const _value = source.readBigNumber();
+    const _mode = source.readBigNumber();
+    const _body = source.readCellOpt();
+    const _code = source.readCellOpt();
+    const _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
@@ -207,26 +208,6 @@ export function packTupleSendParameters(src: SendParameters): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
 export type SetIntMap1 = {
     $$type: 'SetIntMap1';
     key: bigint;
@@ -258,6 +239,12 @@ export function loadSetIntMap1(slice: Slice) {
     return { $$type: 'SetIntMap1' as const, key: _key, value: _value };
 }
 
+function loadTupleSetIntMap1(source: TupleReader) {
+    const _key = source.readBigNumber();
+    const _value = source.readBigNumberOpt();
+    return { $$type: 'SetIntMap1' as const, key: _key, value: _value };
+}
+
 export function packStackSetIntMap1(src: SetIntMap1, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
     if (src.value !== null) {
@@ -278,16 +265,6 @@ export function packTupleSetIntMap1(src: SetIntMap1): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetIntMap1(slice: TupleReader): SetIntMap1 {
-    const key = slice.readBigNumber();
-    const value = slice.readBigNumberOpt();
-    return { $$type: 'SetIntMap1', key: key, value: value };
-}
-export function unpackTupleSetIntMap1(slice: TupleReader): SetIntMap1 {
-    const key = slice.readBigNumber();
-    const value = slice.readBigNumberOpt();
-    return { $$type: 'SetIntMap1', key: key, value: value };
-}
 export type SetIntMap2 = {
     $$type: 'SetIntMap2';
     key: bigint;
@@ -319,6 +296,12 @@ export function loadSetIntMap2(slice: Slice) {
     return { $$type: 'SetIntMap2' as const, key: _key, value: _value };
 }
 
+function loadTupleSetIntMap2(source: TupleReader) {
+    const _key = source.readBigNumber();
+    const _value = source.readBooleanOpt();
+    return { $$type: 'SetIntMap2' as const, key: _key, value: _value };
+}
+
 export function packStackSetIntMap2(src: SetIntMap2, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
     if (src.value !== null) {
@@ -339,16 +322,6 @@ export function packTupleSetIntMap2(src: SetIntMap2): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetIntMap2(slice: TupleReader): SetIntMap2 {
-    const key = slice.readBigNumber();
-    const value = slice.readBooleanOpt();
-    return { $$type: 'SetIntMap2', key: key, value: value };
-}
-export function unpackTupleSetIntMap2(slice: TupleReader): SetIntMap2 {
-    const key = slice.readBigNumber();
-    const value = slice.readBooleanOpt();
-    return { $$type: 'SetIntMap2', key: key, value: value };
-}
 export type SetIntMap3 = {
     $$type: 'SetIntMap3';
     key: bigint;
@@ -380,6 +353,12 @@ export function loadSetIntMap3(slice: Slice) {
     return { $$type: 'SetIntMap3' as const, key: _key, value: _value };
 }
 
+function loadTupleSetIntMap3(source: TupleReader) {
+    const _key = source.readBigNumber();
+    const _value = source.readCellOpt();
+    return { $$type: 'SetIntMap3' as const, key: _key, value: _value };
+}
+
 export function packStackSetIntMap3(src: SetIntMap3, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
     if (src.value !== null) {
@@ -400,16 +379,6 @@ export function packTupleSetIntMap3(src: SetIntMap3): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetIntMap3(slice: TupleReader): SetIntMap3 {
-    const key = slice.readBigNumber();
-    const value = slice.readCellOpt();
-    return { $$type: 'SetIntMap3', key: key, value: value };
-}
-export function unpackTupleSetIntMap3(slice: TupleReader): SetIntMap3 {
-    const key = slice.readBigNumber();
-    const value = slice.readCellOpt();
-    return { $$type: 'SetIntMap3', key: key, value: value };
-}
 export type SetIntMap4 = {
     $$type: 'SetIntMap4';
     key: bigint;
@@ -441,6 +410,13 @@ export function loadSetIntMap4(slice: Slice) {
     return { $$type: 'SetIntMap4' as const, key: _key, value: _value };
 }
 
+function loadTupleSetIntMap4(source: TupleReader) {
+    const _key = source.readBigNumber();
+    const _value_p = source.readTupleOpt();
+    const _value = _value_p ? loadTupleSomeStruct(_value_p) : null;
+    return { $$type: 'SetIntMap4' as const, key: _key, value: _value };
+}
+
 export function packStackSetIntMap4(src: SetIntMap4, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.key });
     if (src.value !== null) {
@@ -461,18 +437,6 @@ export function packTupleSetIntMap4(src: SetIntMap4): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetIntMap4(slice: TupleReader): SetIntMap4 {
-    const key = slice.readBigNumber();
-    const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
-    return { $$type: 'SetIntMap4', key: key, value: value };
-}
-export function unpackTupleSetIntMap4(slice: TupleReader): SetIntMap4 {
-    const key = slice.readBigNumber();
-    const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
-    return { $$type: 'SetIntMap4', key: key, value: value };
-}
 export type SetAddrMap1 = {
     $$type: 'SetAddrMap1';
     key: Address;
@@ -504,6 +468,12 @@ export function loadSetAddrMap1(slice: Slice) {
     return { $$type: 'SetAddrMap1' as const, key: _key, value: _value };
 }
 
+function loadTupleSetAddrMap1(source: TupleReader) {
+    const _key = source.readAddress();
+    const _value = source.readBigNumberOpt();
+    return { $$type: 'SetAddrMap1' as const, key: _key, value: _value };
+}
+
 export function packStackSetAddrMap1(src: SetAddrMap1, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
     if (src.value !== null) {
@@ -524,16 +494,6 @@ export function packTupleSetAddrMap1(src: SetAddrMap1): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetAddrMap1(slice: TupleReader): SetAddrMap1 {
-    const key = slice.readAddress();
-    const value = slice.readBigNumberOpt();
-    return { $$type: 'SetAddrMap1', key: key, value: value };
-}
-export function unpackTupleSetAddrMap1(slice: TupleReader): SetAddrMap1 {
-    const key = slice.readAddress();
-    const value = slice.readBigNumberOpt();
-    return { $$type: 'SetAddrMap1', key: key, value: value };
-}
 export type SetAddrMap2 = {
     $$type: 'SetAddrMap2';
     key: Address;
@@ -565,6 +525,12 @@ export function loadSetAddrMap2(slice: Slice) {
     return { $$type: 'SetAddrMap2' as const, key: _key, value: _value };
 }
 
+function loadTupleSetAddrMap2(source: TupleReader) {
+    const _key = source.readAddress();
+    const _value = source.readBooleanOpt();
+    return { $$type: 'SetAddrMap2' as const, key: _key, value: _value };
+}
+
 export function packStackSetAddrMap2(src: SetAddrMap2, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
     if (src.value !== null) {
@@ -585,16 +551,6 @@ export function packTupleSetAddrMap2(src: SetAddrMap2): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetAddrMap2(slice: TupleReader): SetAddrMap2 {
-    const key = slice.readAddress();
-    const value = slice.readBooleanOpt();
-    return { $$type: 'SetAddrMap2', key: key, value: value };
-}
-export function unpackTupleSetAddrMap2(slice: TupleReader): SetAddrMap2 {
-    const key = slice.readAddress();
-    const value = slice.readBooleanOpt();
-    return { $$type: 'SetAddrMap2', key: key, value: value };
-}
 export type SetAddrMap3 = {
     $$type: 'SetAddrMap3';
     key: Address;
@@ -626,6 +582,12 @@ export function loadSetAddrMap3(slice: Slice) {
     return { $$type: 'SetAddrMap3' as const, key: _key, value: _value };
 }
 
+function loadTupleSetAddrMap3(source: TupleReader) {
+    const _key = source.readAddress();
+    const _value = source.readCellOpt();
+    return { $$type: 'SetAddrMap3' as const, key: _key, value: _value };
+}
+
 export function packStackSetAddrMap3(src: SetAddrMap3, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
     if (src.value !== null) {
@@ -646,16 +608,6 @@ export function packTupleSetAddrMap3(src: SetAddrMap3): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetAddrMap3(slice: TupleReader): SetAddrMap3 {
-    const key = slice.readAddress();
-    const value = slice.readCellOpt();
-    return { $$type: 'SetAddrMap3', key: key, value: value };
-}
-export function unpackTupleSetAddrMap3(slice: TupleReader): SetAddrMap3 {
-    const key = slice.readAddress();
-    const value = slice.readCellOpt();
-    return { $$type: 'SetAddrMap3', key: key, value: value };
-}
 export type SetAddrMap4 = {
     $$type: 'SetAddrMap4';
     key: Address;
@@ -687,6 +639,13 @@ export function loadSetAddrMap4(slice: Slice) {
     return { $$type: 'SetAddrMap4' as const, key: _key, value: _value };
 }
 
+function loadTupleSetAddrMap4(source: TupleReader) {
+    const _key = source.readAddress();
+    const _value_p = source.readTupleOpt();
+    const _value = _value_p ? loadTupleSomeStruct(_value_p) : null;
+    return { $$type: 'SetAddrMap4' as const, key: _key, value: _value };
+}
+
 export function packStackSetAddrMap4(src: SetAddrMap4, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.key).endCell() });
     if (src.value !== null) {
@@ -707,18 +666,6 @@ export function packTupleSetAddrMap4(src: SetAddrMap4): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSetAddrMap4(slice: TupleReader): SetAddrMap4 {
-    const key = slice.readAddress();
-    const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
-    return { $$type: 'SetAddrMap4', key: key, value: value };
-}
-export function unpackTupleSetAddrMap4(slice: TupleReader): SetAddrMap4 {
-    const key = slice.readAddress();
-    const value_p = slice.pop();
-    const value = value_p.type !== 'tuple' ? null : unpackTupleSomeStruct(new TupleReader(value_p.items));
-    return { $$type: 'SetAddrMap4', key: key, value: value };
-}
 export type SomeStruct = {
     $$type: 'SomeStruct';
     value: bigint;
@@ -737,6 +684,11 @@ export function loadSomeStruct(slice: Slice) {
     return { $$type: 'SomeStruct' as const, value: _value };
 }
 
+function loadTupleSomeStruct(source: TupleReader) {
+    const _value = source.readBigNumber();
+    return { $$type: 'SomeStruct' as const, value: _value };
+}
+
 export function packStackSomeStruct(src: SomeStruct, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.value });
 }
@@ -747,16 +699,8 @@ export function packTupleSomeStruct(src: SomeStruct): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSomeStruct(slice: TupleReader): SomeStruct {
-    const value = slice.readBigNumber();
-    return { $$type: 'SomeStruct', value: value };
-}
-export function unpackTupleSomeStruct(slice: TupleReader): SomeStruct {
-    const value = slice.readBigNumber();
-    return { $$type: 'SomeStruct', value: value };
-}
 async function MapTestContract_init() {
-    const __code = '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';
+    const __code = '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';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -906,9 +850,9 @@ export class MapTestContract implements Contract {
         let __stack: TupleItem[] = [];
         __stack.push({ type: 'int', value: key });
         let result = await provider.get('intMap4Value', __stack);
-        let pp = result.stack.pop();
-        if (pp.type !== 'tuple') { return null; }
-        return unpackTupleSomeStruct(new TupleReader(pp.items));
+        let pp = result.stack.peek();
+        if (pp.type === 'null' && result.stack.remaining === 1) { return null; }
+        return loadTupleSomeStruct(result.stack);
     }
     
     async getAddrMap1(provider: ContractProvider) {
@@ -960,9 +904,9 @@ export class MapTestContract implements Contract {
         let __stack: TupleItem[] = [];
         __stack.push({ type: 'slice', cell: beginCell().storeAddress(key).endCell() });
         let result = await provider.get('addrMap4Value', __stack);
-        let pp = result.stack.pop();
-        if (pp.type !== 'tuple') { return null; }
-        return unpackTupleSomeStruct(new TupleReader(pp.items));
+        let pp = result.stack.peek();
+        if (pp.type === 'null' && result.stack.remaining === 1) { return null; }
+        return loadTupleSomeStruct(result.stack);
     }
     
 }

@@ -15,6 +15,14 @@ PROGRAM{
   DECLPROC __gen_StructWithOptionals_not_null
   DECLPROC __gen_write_ContractWithOptionals
   DECLPROC __gen_read_ContractWithOptionals
+  DECLPROC __gen_SomeGenericStruct_to_tuple
+  DECLPROC __gen_SomeGenericStruct_opt_to_tuple
+  DECLPROC __gen_SomeGenericStruct_to_external
+  DECLPROC __gen_SomeGenericStruct_opt_to_external
+  DECLPROC __gen_StructWithOptionals_to_tuple
+  DECLPROC __gen_StructWithOptionals_opt_to_tuple
+  DECLPROC __gen_StructWithOptionals_to_external
+  DECLPROC __gen_StructWithOptionals_opt_to_external
   DECLPROC __gen_load_ContractWithOptionals
   DECLPROC __gen_store_ContractWithOptionals
   DECLPROC $__gen_ContractWithOptionals_init
@@ -139,7 +147,7 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  __gen_SomeGenericStruct_not_null PROC:<{
+  __gen_SomeGenericStruct_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -203,7 +211,7 @@ PROGRAM{
       SWAP
       1 STI
       s0 s2 XCHG
-      __gen_SomeGenericStruct_not_null CALLDICT
+      __gen_SomeGenericStruct_not_null INLINECALLDICT
       s5 s6 XCHG
       __gen_write_SomeGenericStruct INLINECALLDICT
     }>
@@ -211,7 +219,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_SomeGenericStruct_as_optional PROC:<{
+  __gen_SomeGenericStruct_as_optional PROCINLINE:<{
     5 TUPLE
   }>
   __gen_read_StructWithOptionals PROCINLINE:<{
@@ -253,7 +261,7 @@ PROGRAM{
       NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
       1 5 BLKDROP2
-      __gen_SomeGenericStruct_as_optional CALLDICT
+      __gen_SomeGenericStruct_as_optional INLINECALLDICT
     }>ELSE<{
       DROP
     }>
@@ -261,7 +269,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_StructWithOptionals_as_optional PROC:<{
+  __gen_StructWithOptionals_as_optional PROCINLINE:<{
     5 TUPLE
   }>
   __gen_read_Update PROCINLINE:<{
@@ -307,7 +315,7 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
-      __gen_SomeGenericStruct_as_optional CALLDICT
+      __gen_SomeGenericStruct_as_optional INLINECALLDICT
       SWAP
     }>
     LDREF
@@ -321,7 +329,7 @@ PROGRAM{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
       1 5 BLKDROP2
-      __gen_StructWithOptionals_as_optional CALLDICT
+      __gen_StructWithOptionals_as_optional INLINECALLDICT
     }>ELSE<{
       DROP
     }>
@@ -330,7 +338,7 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  __gen_StructWithOptionals_not_null PROC:<{
+  __gen_StructWithOptionals_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -394,7 +402,7 @@ PROGRAM{
       SWAP
       1 STI
       s0 s3 XCHG
-      __gen_SomeGenericStruct_not_null CALLDICT
+      __gen_SomeGenericStruct_not_null INLINECALLDICT
       s5 s7 XCHG
       __gen_write_SomeGenericStruct INLINECALLDICT
     }>
@@ -411,7 +419,7 @@ PROGRAM{
       SWAP
       1 STI
       s0 s2 XCHG
-      __gen_StructWithOptionals_not_null CALLDICT
+      __gen_StructWithOptionals_not_null INLINECALLDICT
       s5 s6 XCHG
       __gen_write_StructWithOptionals INLINECALLDICT
     }>
@@ -460,7 +468,7 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
-      __gen_SomeGenericStruct_as_optional CALLDICT
+      __gen_SomeGenericStruct_as_optional INLINECALLDICT
       SWAP
     }>
     LDREF
@@ -474,7 +482,7 @@ PROGRAM{
       NIP
       __gen_read_StructWithOptionals INLINECALLDICT
       1 5 BLKDROP2
-      __gen_StructWithOptionals_as_optional CALLDICT
+      __gen_StructWithOptionals_as_optional INLINECALLDICT
     }>ELSE<{
       DROP
     }>
@@ -482,6 +490,46 @@ PROGRAM{
     s2 s5 XCHG
     s2 s4 XCHG
     s2 s3 XCHG
+  }>
+  __gen_SomeGenericStruct_to_tuple PROC:<{
+    5 TUPLE
+  }>
+  __gen_SomeGenericStruct_opt_to_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    5 UNTUPLE
+    __gen_SomeGenericStruct_to_tuple CALLDICT
+  }>
+  __gen_SomeGenericStruct_to_external PROC:<{
+  }>
+  __gen_SomeGenericStruct_opt_to_external PROC:<{
+    __gen_SomeGenericStruct_opt_to_tuple CALLDICT
+    5 UNTUPLE
+  }>
+  __gen_StructWithOptionals_to_tuple PROC:<{
+    __gen_SomeGenericStruct_opt_to_tuple CALLDICT
+    5 TUPLE
+  }>
+  __gen_StructWithOptionals_opt_to_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    5 UNTUPLE
+    __gen_StructWithOptionals_to_tuple CALLDICT
+  }>
+  __gen_StructWithOptionals_to_external PROC:<{
+    __gen_SomeGenericStruct_opt_to_tuple CALLDICT
+  }>
+  __gen_StructWithOptionals_opt_to_external PROC:<{
+    __gen_StructWithOptionals_opt_to_tuple CALLDICT
+    5 UNTUPLE
   }>
   __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH
@@ -606,6 +654,7 @@ PROGRAM{
   $__gen_get_nullE PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_nullE CALLDICT
+    __gen_SomeGenericStruct_opt_to_external CALLDICT
   }>
   $__gen_ContractWithOptionals_nullF PROC:<{
     5 1 BLKDROP2
@@ -613,6 +662,7 @@ PROGRAM{
   $__gen_get_nullF PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_nullF CALLDICT
+    __gen_StructWithOptionals_opt_to_external CALLDICT
   }>
   $__gen_ContractWithOptionals_notNullA PROC:<{
     5 BLKDROP
@@ -652,19 +702,21 @@ PROGRAM{
   $__gen_ContractWithOptionals_notNullE PROC:<{
     s1 s5 XCHG
     5 BLKDROP
-    __gen_SomeGenericStruct_not_null CALLDICT
+    __gen_SomeGenericStruct_not_null INLINECALLDICT
   }>
   $__gen_get_notNullE PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_notNullE CALLDICT
+    __gen_SomeGenericStruct_to_external CALLDICT
   }>
   $__gen_ContractWithOptionals_notNullF PROC:<{
     5 1 BLKDROP2
-    __gen_StructWithOptionals_not_null CALLDICT
+    __gen_StructWithOptionals_not_null INLINECALLDICT
   }>
   $__gen_get_notNullF PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_notNullF CALLDICT
+    __gen_StructWithOptionals_to_external CALLDICT
   }>
   $__gen_ContractWithOptionals_receive PROC:<{
   }>

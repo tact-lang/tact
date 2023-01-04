@@ -26,6 +26,9 @@ PROGRAM{
   DECLPROC __gen_read_SetAddrMap4
   DECLPROC __gen_write_MapTestContract
   DECLPROC __gen_read_MapTestContract
+  DECLPROC __gen_SomeStruct_to_tuple
+  DECLPROC __gen_SomeStruct_opt_to_tuple
+  DECLPROC __gen_SomeStruct_opt_to_external
   DECLPROC __gen_load_MapTestContract
   DECLPROC __gen_store_MapTestContract
   DECLPROC $__gen_MapTestContract_init
@@ -247,7 +250,7 @@ PROGRAM{
     __gen_write_SomeStruct INLINECALLDICT
     ENDC
   }>
-  __gen_SomeStruct_not_null PROC:<{
+  __gen_SomeStruct_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -260,7 +263,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_SomeStruct_not_null CALLDICT
+      __gen_SomeStruct_not_null INLINECALLDICT
       __gen_writecell_SomeStruct INLINECALLDICT
     }>
   }>
@@ -283,7 +286,7 @@ PROGRAM{
       1 TUPLE
     }>
   }>
-  __gen_SomeStruct_as_optional PROC:<{
+  __gen_SomeStruct_as_optional PROCINLINE:<{
     1 TUPLE
   }>
   __gen_read_SetIntMap4 PROCINLINE:<{
@@ -301,7 +304,7 @@ PROGRAM{
     IF:<{
       NIP
       __gen_read_SomeStruct INLINECALLDICT
-      __gen_SomeStruct_as_optional CALLDICT
+      __gen_SomeStruct_as_optional INLINECALLDICT
       SWAP
     }>
     -ROT
@@ -375,7 +378,7 @@ PROGRAM{
     IF:<{
       1 2 BLKDROP2
       __gen_read_SomeStruct INLINECALLDICT
-      __gen_SomeStruct_as_optional CALLDICT
+      __gen_SomeStruct_as_optional INLINECALLDICT
       -ROT
     }>
     s0 s2 XCHG
@@ -423,6 +426,23 @@ PROGRAM{
     DROP
     s6 s8 XCHG
     s6 s7 XCHG
+  }>
+  __gen_SomeStruct_to_tuple PROC:<{
+    1 TUPLE
+  }>
+  __gen_SomeStruct_opt_to_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    1 UNTUPLE
+    __gen_SomeStruct_to_tuple CALLDICT
+  }>
+  __gen_SomeStruct_opt_to_external PROC:<{
+    __gen_SomeStruct_opt_to_tuple CALLDICT
+    1 UNTUPLE
   }>
   __gen_load_MapTestContract PROCINLINE:<{
     c4 PUSH
@@ -540,6 +560,7 @@ PROGRAM{
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_intMap4Value CALLDICT
+    __gen_SomeStruct_opt_to_external CALLDICT
   }>
   $__gen_MapTestContract_addrMap1 PROC:<{
     s3 s7 XCHG
@@ -625,6 +646,7 @@ PROGRAM{
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_addrMap4Value CALLDICT
+    __gen_SomeStruct_opt_to_external CALLDICT
   }>
   $__gen_MapTestContract_receive_SetIntMap1 PROC:<{
     257 PUSHINT

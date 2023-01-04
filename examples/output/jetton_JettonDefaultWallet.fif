@@ -26,6 +26,7 @@ PROGRAM{
   DECLPROC __gen_write_JettonDefaultWallet
   DECLPROC __gen_read_JettonDefaultWallet
   DECLPROC __gen_StateInit_get_code
+  DECLPROC __gen_JettonWalletData_to_external
   DECLPROC __gen_load_JettonDefaultWallet
   DECLPROC __gen_store_JettonDefaultWallet
   DECLPROC $storeBool
@@ -295,6 +296,8 @@ PROGRAM{
   __gen_StateInit_get_code PROCINLINE:<{
     DROP
   }>
+  __gen_JettonWalletData_to_external PROC:<{
+  }>
   __gen_load_JettonDefaultWallet PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -481,6 +484,7 @@ PROGRAM{
   $__gen_get_get_wallet_data PROC:<{
     __gen_load_JettonDefaultWallet INLINECALLDICT
     $__gen_JettonDefaultWallet_get_wallet_data CALLDICT
+    __gen_JettonWalletData_to_external CALLDICT
   }>
   $__gen_JettonDefaultWallet_receive_TokenTransfer PROC:<{
     2 2 BLKDROP2

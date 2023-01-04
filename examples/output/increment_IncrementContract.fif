@@ -206,7 +206,7 @@ PROGRAM{
     __gen_write_Something INLINECALLDICT
     ENDC
   }>
-  __gen_Something_not_null PROC:<{
+  __gen_Something_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -219,7 +219,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_Something_not_null CALLDICT
+      __gen_Something_not_null INLINECALLDICT
       __gen_writecell_Something INLINECALLDICT
     }>
   }>

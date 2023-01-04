@@ -91,6 +91,7 @@ describe('feature-serialization', () => {
                 // Checl values
                 let a = await contract.getGetA();
                 let b = await contract.getGetB();
+                let both = await contract.getGetBoth();
                 expect(a.a).toBe(cs.a.a);
                 expect(a.b).toBe(cs.a.b);
                 expect(a.c).toBe(cs.a.c);
@@ -101,6 +102,16 @@ describe('feature-serialization', () => {
                 expect(b.c).toBe(cs.b.c);
                 expect(b.d).toBe(cs.b.d);
                 expect(b.e).toBe(cs.b.e);
+                expect(both.a.a).toBe(cs.a.a);
+                expect(both.a.b).toBe(cs.a.b);
+                expect(both.a.c).toBe(cs.a.c);
+                expect(both.a.d).toBe(cs.a.d);
+                expect(both.a.e).toBe(cs.a.e);
+                expect(both.b.a).toBe(cs.b.a);
+                expect(both.b.b).toBe(cs.b.b);
+                expect(both.b.c).toBe(cs.b.c);
+                expect(both.b.d).toBe(cs.b.d);
+                expect(both.b.e).toBe(cs.b.e);
             });
         }
     }

@@ -4,6 +4,9 @@ PROGRAM{
   DECLPROC __gen_read_Update
   DECLPROC __gen_write_SerializationTester2
   DECLPROC __gen_read_SerializationTester2
+  DECLPROC __gen_Vars_to_tuple
+  DECLPROC __gen_Vars_to_external
+  DECLPROC __gen_Both_to_external
   DECLPROC __gen_load_SerializationTester2
   DECLPROC __gen_store_SerializationTester2
   DECLPROC $__gen_SerializationTester2_init
@@ -11,6 +14,8 @@ PROGRAM{
   123932 DECLMETHOD $__gen_get_getA
   DECLPROC $__gen_SerializationTester2_getB
   119935 DECLMETHOD $__gen_get_getB
+  DECLPROC $__gen_SerializationTester2_getBoth
+  81754 DECLMETHOD $__gen_get_getBoth
   DECLPROC $__gen_SerializationTester2_receive
   DECLPROC $__gen_SerializationTester2_receive_Update
   DECLPROC recv_internal
@@ -99,6 +104,17 @@ PROGRAM{
     s5 s10 XCHG
     4 ROLL
   }>
+  __gen_Vars_to_tuple PROC:<{
+    5 TUPLE
+  }>
+  __gen_Vars_to_external PROC:<{
+  }>
+  __gen_Both_to_external PROC:<{
+    5 5 BLKSWAP
+    __gen_Vars_to_tuple CALLDICT
+    5 -ROLL
+    __gen_Vars_to_tuple CALLDICT
+  }>
   __gen_load_SerializationTester2 PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -132,6 +148,7 @@ PROGRAM{
   $__gen_get_getA PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getA CALLDICT
+    __gen_Vars_to_external CALLDICT
   }>
   $__gen_SerializationTester2_getB PROC:<{
     5 5 BLKDROP2
@@ -139,6 +156,14 @@ PROGRAM{
   $__gen_get_getB PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getB CALLDICT
+    __gen_Vars_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_getBoth PROC:<{
+  }>
+  $__gen_get_getBoth PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBoth CALLDICT
+    __gen_Both_to_external CALLDICT
   }>
   $__gen_SerializationTester2_receive PROC:<{
   }>
@@ -220,6 +245,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d533159423770595556567a366333355539514e6643625064694e73543839737955714b72624162374b393954} PUSHSLICE
+    x{697066733a2f2f516d50386e593337653574467162534e6b76506870337444444d7877776132324645797768317563726143754761} PUSHSLICE
   }>
 }END>c

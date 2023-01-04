@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    const _code = source.readCell();
+    const _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
@@ -34,16 +40,6 @@ export function packTupleStateInit(src: StateInit): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -71,6 +67,14 @@ export function loadContext(slice: Slice) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
+function loadTupleContext(source: TupleReader) {
+    const _bounced = source.readBoolean();
+    const _sender = source.readAddress();
+    const _value = source.readBigNumber();
+    const _raw = source.readCell();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
 export function packStackContext(src: Context, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
@@ -87,20 +91,6 @@ export function packTupleContext(src: Context): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
-export function unpackTupleContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -161,6 +151,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    const _bounce = source.readBoolean();
+    const _to = source.readAddress();
+    const _value = source.readBigNumber();
+    const _mode = source.readBigNumber();
+    const _body = source.readCellOpt();
+    const _code = source.readCellOpt();
+    const _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
@@ -207,26 +208,6 @@ export function packTupleSendParameters(src: SendParameters): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -247,6 +228,11 @@ export function loadChangeOwner(slice: Slice) {
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
+function loadTupleChangeOwner(source: TupleReader) {
+    const _newOwner = source.readAddress();
+    return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
 export function packStackChangeOwner(src: ChangeOwner, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
 }
@@ -257,14 +243,6 @@ export function packTupleChangeOwner(src: ChangeOwner): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackChangeOwner(slice: TupleReader): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
-}
-export function unpackTupleChangeOwner(slice: TupleReader): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
-}
 export type TokenTransfer = {
     $$type: 'TokenTransfer';
     queryId: bigint;
@@ -311,6 +289,17 @@ export function loadTokenTransfer(slice: Slice) {
     return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
+function loadTupleTokenTransfer(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _destination = source.readAddress();
+    const _responseDestination = source.readAddressOpt();
+    const _customPayload = source.readCellOpt();
+    const _forwardTonAmount = source.readBigNumber();
+    const _forwardPayload = source.readCell();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
+}
+
 export function packStackTokenTransfer(src: TokenTransfer, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
@@ -349,26 +338,6 @@ export function packTupleTokenTransfer(src: TokenTransfer): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackTokenTransfer(slice: TupleReader): TokenTransfer {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const destination = slice.readAddress();
-    const responseDestination = slice.readAddressOpt();
-    const customPayload = slice.readCellOpt();
-    const forwardTonAmount = slice.readBigNumber();
-    const forwardPayload = slice.readCell();
-    return { $$type: 'TokenTransfer', queryId: queryId, amount: amount, destination: destination, responseDestination: responseDestination, customPayload: customPayload, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
-}
-export function unpackTupleTokenTransfer(slice: TupleReader): TokenTransfer {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const destination = slice.readAddress();
-    const responseDestination = slice.readAddressOpt();
-    const customPayload = slice.readCellOpt();
-    const forwardTonAmount = slice.readBigNumber();
-    const forwardPayload = slice.readCell();
-    return { $$type: 'TokenTransfer', queryId: queryId, amount: amount, destination: destination, responseDestination: responseDestination, customPayload: customPayload, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
-}
 export type TokenTransferInternal = {
     $$type: 'TokenTransferInternal';
     queryId: bigint;
@@ -404,6 +373,16 @@ export function loadTokenTransferInternal(slice: Slice) {
     return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
+function loadTupleTokenTransferInternal(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _responseAddress = source.readAddressOpt();
+    const _forwardTonAmount = source.readBigNumber();
+    const _forwardPayload = source.readCell();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
+}
+
 export function packStackTokenTransferInternal(src: TokenTransferInternal, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
@@ -432,24 +411,6 @@ export function packTupleTokenTransferInternal(src: TokenTransferInternal): Tupl
     return __stack;
 }
 
-export function unpackStackTokenTransferInternal(slice: TupleReader): TokenTransferInternal {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const from = slice.readAddress();
-    const responseAddress = slice.readAddressOpt();
-    const forwardTonAmount = slice.readBigNumber();
-    const forwardPayload = slice.readCell();
-    return { $$type: 'TokenTransferInternal', queryId: queryId, amount: amount, from: from, responseAddress: responseAddress, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
-}
-export function unpackTupleTokenTransferInternal(slice: TupleReader): TokenTransferInternal {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const from = slice.readAddress();
-    const responseAddress = slice.readAddressOpt();
-    const forwardTonAmount = slice.readBigNumber();
-    const forwardPayload = slice.readCell();
-    return { $$type: 'TokenTransferInternal', queryId: queryId, amount: amount, from: from, responseAddress: responseAddress, forwardTonAmount: forwardTonAmount, forwardPayload: forwardPayload };
-}
 export type TokenNotification = {
     $$type: 'TokenNotification';
     queryId: bigint;
@@ -479,6 +440,14 @@ export function loadTokenNotification(slice: Slice) {
     return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
 }
 
+function loadTupleTokenNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _from = source.readAddress();
+    const _forwardPayload = source.readCell();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
+}
+
 export function packStackTokenNotification(src: TokenNotification, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
@@ -495,20 +464,6 @@ export function packTupleTokenNotification(src: TokenNotification): TupleItem[] 
     return __stack;
 }
 
-export function unpackStackTokenNotification(slice: TupleReader): TokenNotification {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const from = slice.readAddress();
-    const forwardPayload = slice.readCell();
-    return { $$type: 'TokenNotification', queryId: queryId, amount: amount, from: from, forwardPayload: forwardPayload };
-}
-export function unpackTupleTokenNotification(slice: TupleReader): TokenNotification {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const from = slice.readAddress();
-    const forwardPayload = slice.readCell();
-    return { $$type: 'TokenNotification', queryId: queryId, amount: amount, from: from, forwardPayload: forwardPayload };
-}
 export type TokenBurn = {
     $$type: 'TokenBurn';
     queryId: bigint;
@@ -538,6 +493,14 @@ export function loadTokenBurn(slice: Slice) {
     return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
+function loadTupleTokenBurn(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _responseAddress = source.readAddressOpt();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
+}
+
 export function packStackTokenBurn(src: TokenBurn, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
@@ -562,20 +525,6 @@ export function packTupleTokenBurn(src: TokenBurn): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackTokenBurn(slice: TupleReader): TokenBurn {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const responseAddress = slice.readAddressOpt();
-    return { $$type: 'TokenBurn', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
-}
-export function unpackTupleTokenBurn(slice: TupleReader): TokenBurn {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const responseAddress = slice.readAddressOpt();
-    return { $$type: 'TokenBurn', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
-}
 export type TokenBurnNotification = {
     $$type: 'TokenBurnNotification';
     queryId: bigint;
@@ -605,6 +554,14 @@ export function loadTokenBurnNotification(slice: Slice) {
     return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
+function loadTupleTokenBurnNotification(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    const _amount = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _responseAddress = source.readAddressOpt();
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
+}
+
 export function packStackTokenBurnNotification(src: TokenBurnNotification, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.queryId });
     __stack.push({ type: 'int', value: src.amount });
@@ -629,20 +586,6 @@ export function packTupleTokenBurnNotification(src: TokenBurnNotification): Tupl
     return __stack;
 }
 
-export function unpackStackTokenBurnNotification(slice: TupleReader): TokenBurnNotification {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const responseAddress = slice.readAddressOpt();
-    return { $$type: 'TokenBurnNotification', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
-}
-export function unpackTupleTokenBurnNotification(slice: TupleReader): TokenBurnNotification {
-    const queryId = slice.readBigNumber();
-    const amount = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const responseAddress = slice.readAddressOpt();
-    return { $$type: 'TokenBurnNotification', queryId: queryId, amount: amount, owner: owner, responseAddress: responseAddress };
-}
 export type TokenExcesses = {
     $$type: 'TokenExcesses';
     queryId: bigint;
@@ -663,6 +606,11 @@ export function loadTokenExcesses(slice: Slice) {
     return { $$type: 'TokenExcesses' as const, queryId: _queryId };
 }
 
+function loadTupleTokenExcesses(source: TupleReader) {
+    const _queryId = source.readBigNumber();
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
 export function packStackTokenExcesses(src: TokenExcesses, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.queryId });
 }
@@ -673,14 +621,6 @@ export function packTupleTokenExcesses(src: TokenExcesses): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackTokenExcesses(slice: TupleReader): TokenExcesses {
-    const queryId = slice.readBigNumber();
-    return { $$type: 'TokenExcesses', queryId: queryId };
-}
-export function unpackTupleTokenExcesses(slice: TupleReader): TokenExcesses {
-    const queryId = slice.readBigNumber();
-    return { $$type: 'TokenExcesses', queryId: queryId };
-}
 export type TokenUpdateContent = {
     $$type: 'TokenUpdateContent';
     content: Cell | null;
@@ -709,6 +649,11 @@ export function loadTokenUpdateContent(slice: Slice) {
     return { $$type: 'TokenUpdateContent' as const, content: _content };
 }
 
+function loadTupleTokenUpdateContent(source: TupleReader) {
+    const _content = source.readCellOpt();
+    return { $$type: 'TokenUpdateContent' as const, content: _content };
+}
+
 export function packStackTokenUpdateContent(src: TokenUpdateContent, __stack: TupleItem[]) {
     if (src.content !== null) {
         __stack.push({ type: 'cell', cell: src.content });
@@ -727,14 +672,6 @@ export function packTupleTokenUpdateContent(src: TokenUpdateContent): TupleItem[
     return __stack;
 }
 
-export function unpackStackTokenUpdateContent(slice: TupleReader): TokenUpdateContent {
-    const content = slice.readCellOpt();
-    return { $$type: 'TokenUpdateContent', content: content };
-}
-export function unpackTupleTokenUpdateContent(slice: TupleReader): TokenUpdateContent {
-    const content = slice.readCellOpt();
-    return { $$type: 'TokenUpdateContent', content: content };
-}
 export type JettonData = {
     $$type: 'JettonData';
     totalSupply: bigint;
@@ -773,6 +710,15 @@ export function loadJettonData(slice: Slice) {
     return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
 }
 
+function loadTupleJettonData(source: TupleReader) {
+    const _totalSupply = source.readBigNumber();
+    const _mintable = source.readBoolean();
+    const _owner = source.readAddress();
+    const _content = source.readCellOpt();
+    const _walletCode = source.readCell();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
+}
+
 export function packStackJettonData(src: JettonData, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.totalSupply });
     __stack.push({ type: 'int', value: src.mintable ? -1n : 0n });
@@ -799,22 +745,6 @@ export function packTupleJettonData(src: JettonData): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackJettonData(slice: TupleReader): JettonData {
-    const totalSupply = slice.readBigNumber();
-    const mintable = slice.readBoolean();
-    const owner = slice.readAddress();
-    const content = slice.readCellOpt();
-    const walletCode = slice.readCell();
-    return { $$type: 'JettonData', totalSupply: totalSupply, mintable: mintable, owner: owner, content: content, walletCode: walletCode };
-}
-export function unpackTupleJettonData(slice: TupleReader): JettonData {
-    const totalSupply = slice.readBigNumber();
-    const mintable = slice.readBoolean();
-    const owner = slice.readAddress();
-    const content = slice.readCellOpt();
-    const walletCode = slice.readCell();
-    return { $$type: 'JettonData', totalSupply: totalSupply, mintable: mintable, owner: owner, content: content, walletCode: walletCode };
-}
 export type JettonWalletData = {
     $$type: 'JettonWalletData';
     balance: bigint;
@@ -842,6 +772,14 @@ export function loadJettonWalletData(slice: Slice) {
     return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
 }
 
+function loadTupleJettonWalletData(source: TupleReader) {
+    const _balance = source.readBigNumber();
+    const _owner = source.readAddress();
+    const _master = source.readAddress();
+    const _walletCode = source.readCell();
+    return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
+}
+
 export function packStackJettonWalletData(src: JettonWalletData, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.balance });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.owner).endCell() });
@@ -858,20 +796,6 @@ export function packTupleJettonWalletData(src: JettonWalletData): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackJettonWalletData(slice: TupleReader): JettonWalletData {
-    const balance = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const master = slice.readAddress();
-    const walletCode = slice.readCell();
-    return { $$type: 'JettonWalletData', balance: balance, owner: owner, master: master, walletCode: walletCode };
-}
-export function unpackTupleJettonWalletData(slice: TupleReader): JettonWalletData {
-    const balance = slice.readBigNumber();
-    const owner = slice.readAddress();
-    const master = slice.readAddress();
-    const walletCode = slice.readCell();
-    return { $$type: 'JettonWalletData', balance: balance, owner: owner, master: master, walletCode: walletCode };
-}
 export type Mint = {
     $$type: 'Mint';
     amount: bigint;
@@ -892,6 +816,11 @@ export function loadMint(slice: Slice) {
     return { $$type: 'Mint' as const, amount: _amount };
 }
 
+function loadTupleMint(source: TupleReader) {
+    const _amount = source.readBigNumber();
+    return { $$type: 'Mint' as const, amount: _amount };
+}
+
 export function packStackMint(src: Mint, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.amount });
 }
@@ -902,18 +831,10 @@ export function packTupleMint(src: Mint): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackMint(slice: TupleReader): Mint {
-    const amount = slice.readBigNumber();
-    return { $$type: 'Mint', amount: amount };
-}
-export function unpackTupleMint(slice: TupleReader): Mint {
-    const amount = slice.readBigNumber();
-    return { $$type: 'Mint', amount: amount };
-}
 async function SampleJetton_init(owner: Address, content: Cell | null) {
-    const __code = 'te6ccgECPQEABbEAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASA1NgIBIAYHAgFIGxwCASAICQIBWBARAgHUCgsAR95DgA5YC5gOWAuADlgAlmZmT8gGQ5AOWAuADlgAllA+X/5OhASXO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCjKlxfuuMCIIIQbwiyPLrjAiCCEHvdl9664wLAAIAwNDg8ACwgbvLQgIAC6MO1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCEKMqXF+68uCBgQEB1wABMRA0QTDwKsj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAMIw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQbwiyPLry4IFtAdIAAZIx1N4BMRA0QTDwLMj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAOgw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQe92X3rry4IHTP/oA+kABAfpAIdcLAcMAkQGSMW3iFEMwNBBnEFYQRVUC8C3I+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADqjm35AYLwzQ2YbLGi9GiucIn0/DFiwRbl9T+9EaaDn1Lb9QQIMLK6jkXtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBTwK8j4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1U2zHgkTDi8sCCAgFYEhMCASAUFQAVJR/AcoA4HABygCAABTIyYAIBIBYXAgEgGBkAAzQgAAk8BvwHIAAJHBZ8AiAB9zIcQHKAVAH8BpwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AayHDwGnDwGiRus5l/8BoE8AFQBMyVNANw8BriJG6zmX/wGgTwAVAEzJU0A3DwGuJw8BoCf/AaAslYzJYzMwFw8BriIW6zmH/wGgHwAQHMlDFw8BriyQGAaAAT7AAIBIB0eAgEgKywCASAfIAIBICUmAgEgISICASAjJAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwIIABDHB/BMjMQzRQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAyYAAPPhC+ChY8CGACASAnKAIBICkqAA08CNsQvAegAA8+CjwIzBDMIAClFFhoFUx8CNc8B5wcIBAIfgoIfAdEDUQThAjEC/IVVCCEBeNRRlQB8sfFcs/UAP6AgHPFgEgbpUwcAHLAZLPFuIB+gIBzxbJRWAQShA5QKnwH1qAAOT4QW8kECNfA1VA8CMBgRFNAvAeUAbHBRXy9FUCgAgEgLS4CAUgzNAIBIC8wAgEgMTIAHT4QW8kECNfAyPHBfLghIAAJBAjXwOAAFz4QW8kECNfA2bwJoAAjPhBbyQQI18DghA7msoAIfAmgAA8VTDwKDFBMIABrBBHEDZFd/AnUDShJW6zjh9wcIBCB8gBghDVMnbbWMsfyz/JECQQOEFwbW3wHxAjkjQ04kMAgAEW+KO9qJoagD8MX0AfSAAtoFpAADKNglqCW9pAAIoGbYKeBTAIBIDc4AgEgOToACbncPwIoAgFYOzwAlbd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4YTIikya+3yRcvbDO06rpAsE4IGc6tPOK/OkoWA6wtxMj2UABJrbz2omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgoqgfgSQABFrxb2omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgp4EsA=';
+    const __code = 'te6ccgECPwEABbsAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASA3OAIBIAYHAgFIGhsCASAICQIBWBARAgHUCgsAR95DgA5YC5gOWAuADlgAlmZmT8gGQ5AOWAuADlgAllA+X/5OhASXO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCjKlxfuuMCIIIQbwiyPLrjAiCCEHvdl9664wLAAIAwNDg8ACwgbvLQgIAC6MO1E0NQB+GL6APpAAW0C0gABlGwS1BLe0gAEUDNsFATTHwGCEKMqXF+68uCBgQEB1wABMRA0QTDwK8j4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAMIw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQbwiyPLry4IFtAdIAAZIx1N4BMRA0QTDwLcj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1UAOgw7UTQ1AH4YvoA+kABbQLSAAGUbBLUEt7SAARQM2wUBNMfAYIQe92X3rry4IHTP/oA+kABAfpAIdcLAcMAkQGSMW3iFEMwNBBnEFYQRVUC8C7I+EIBzFUwUEP6AgHPFiJulTJwWMoAln8BygASzOLKAMntVADqjm35AYLwzQ2YbLGi9GiucIn0/DFiwRbl9T+9EaaDn1Lb9QQIMLK6jkXtRNDUAfhi+gD6QAFtAtIAAZRsEtQS3tIABFAzbBTwLMj4QgHMVTBQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAye1U2zHgkTDi8sCCAgEgEhMCASAUFQABSAAVWUfwHKAOBwAcoAgCASAWFwIBIBgZAAUyMmAAAzQgAAk8BzwHYAAJHBZ8AiACASAcHQIBICssAgEgHh8CASAlJgIBICAhAgEgIyQB9zIcQHKAVAH8BtwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AbyHDwG3DwGyRus5l/8BsE8AFQBMyVNANw8BviJG6zmX/wGwTwAVAEzJU0A3DwG+Jw8BsCf/AbAslYzJYzMwFw8BviIW6zmH/wGwHwAQHMlDFw8BviyQGAiACkcAPIzEMTUCOBAQHPAAHPFgHPFsmAABPsAAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwIYABDHB/BMjMQzRQQ/oCAc8WIm6VMnBYygCWfwHKABLM4soAyYAIBICcoAgEgKSoADz4QvgoWPAigAA08CRsQvAfgAA8+CjwJDBDMIAClFFhoFUx8CRc8B9wcIBAIfgoIfAeEDUQThAjEC/IVVCCEBeNRRlQB8sfFcs/UAP6AgHPFgEgbpUwcAHLAZLPFuIB+gIBzxbJRWAQShA5QKnwIFqACASAtLgIBIDM0AgEgLzACASAxMgA5PhBbyQQI18DVUDwJAGBEU0C8B9QBscFFfL0VQKAAHT4QW8kECNfAyPHBfLghIAAJBAjXwOAAFz4QW8kECNfA2bwJ4AIBIDU2AGtBBHEDZFd/AoUDShJW6zjh9wcIBCB8gBghDVMnbbWMsfyz/JECQQOEFwbW3wIBAjkjQ04kMAgAIz4QW8kECNfA4IQO5rKACHwJ4AAPFUw8CkxQTCAARb4o72omhqAPwxfQB9IAC2gWkAAMo2CWoJb2kAAigZtgp4FUAgEgOToCASA7PAAJudw/AjgCAVg9PgCVt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwThhMiKTJr7fJFy9sM7TqukCwTggZzq084r86ShYDrC3EyPZQAEmtvPaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CiqB+BLAAEmvFvaiaGoA/DF9AH0gALaBaQAAyjYJaglvaQACKBm2CngTeAxA';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    depends.set(55471, Cell.fromBoc(Buffer.from('te6ccgECKQEABYcAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAlJgIBIAYHAgFIEhMCASAICQIB7hARAgFICgsAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQT1RwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhAo4zMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTVQLwKMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1U4CCCEA+KfqW64wIgghAXjUUZuuMCghBZXwe8uuMCMIDA0ODwALQgbvLQgIAN4w7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeJtAtIAAZRsEtQS3voAUWYWFURANxCJEHhVBfAlyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAyjDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4gH6AFFVFRRDMDYQeBBnVQTwJsj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UALztRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEFlfB7y68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4hRDMDQQVhBFVQLwJ8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAAbywIIAFSUfwHKAOBwAcoAgAAkcFnwCYAIBIBQVAE/cAQa5Dpj+mfmP0AGECaqRFBCAvGoozdAcEIPe7L710J2Il5egnQAUAgEgFhcCASAdHgIBIBgZAgEgGxwB9zIcQHKAVAH8B5wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AeyHDwHnDwHiRus5l/8B4E8AJQBMyVNANw8B7iJG6zmX/wHgTwAlAEzJU0A3DwHuJw8B4Cf/AeAslYzJYzMwFw8B7iIW6zmH/wHgHwAgHMlDFw8B7iyQGAaACUbDH6ADFx1yH6ADH6ADCnA6sAgAAT7AAApHADyMxDE1AjgQEBzwABzxYBzxbJgAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwIoAIBIB8gAgEgIiMADz4QlMS8CMwgAacbCL4QW8kgRFNUzvHBfL0UbehggD1/CHC//L0QzBSPPAhcSTCAJIwct6BPrsCqIIJMS0AoIIImJaAoBK88vT4QlQgZPAjXPAff1B2cIBAK1RMORiAhAGTIVVCCEBeNRRlQB8sfFcs/UAP6AgHPFgEgbpUwcAHLAZLPFuIB+gIBzxbJEFYQNFnwIAHvPhBbyRTKscFs44S+EJTuPAjAYERTQLwHyTHBfL03lHIoIIA9fwhwv/y9CH4J28QIaGCCJiWgGa2CKGCCJiWgKChJsIAlhB9UIlfCOMNJW6zIsIAsI4dcAbwAnAEyAGCENUydttYyx/LP8kQR0MwF21t8CCSNVvigJADTFv4QW8kgRFNUzjHBfL0UYShggD1/CHC//L0QzBSOfAhgT67AYIJMS0AoIIImJaAoBK88vR/cAOAQFQzZshVMIIQe92X3lAFyx8Tyz8B+gIBzxYBIG6VMHABywGSzxbiyVQTBFAzbW3wIIAByUE1DMPAhUjCgGqFwcChIE1B0yFUwghBzYtCcUAXLHxPLPwH6AgHPFgHPFskoEEZDE1BVbW3wIFAFADe/2BdqJoagD8MUCAgOuAfSAAgP0gAKGYNgn4EkAgJzJygACazx+BFAAHGt6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4TujwAfLZsB5P5B1ZLNZRCcA=', 'base64'))[0]);
+    depends.set(55471, Cell.fromBoc(Buffer.from('te6ccgECKwEABZEAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAnKAIBIAYHAgFIEhMCASAICQIBbhARAgFICgsAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQT1RwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhAo4zMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTVQLwKcj4QgHMVSBQI4EBAc8AAc8WAc8Wye1U4CCCEA+KfqW64wIgghAXjUUZuuMCghBZXwe8uuMCMIDA0ODwALQgbvLQgIAN4w7UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghAPin6luvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeJtAtIAAZRsEtQS3voAUWYWFURANxCJEHhVBfAmyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQAyjDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEBeNRRm68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4gH6AFFVFRRDMDYQeBBnVQTwJ8j4QgHMVSBQI4EBAc8AAc8WAc8Wye1UALztRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEFlfB7y68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4hRDMDQQVhBFVQLwKMj4QgHMVSBQI4EBAc8AAc8WAc8Wye1UAAbywIIAAUgAFVlH8BygDgcAHKAIAgEgFBUCAdQlJgIBIBYXAgEgHR4CASAYGQIBIBscAAkcFnwCYAH3MhxAcoBUAfwH3ABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8B/IcPAfcPAfJG6zmX/wHwTwAlAEzJU0A3DwH+IkbrOZf/AfBPACUATMlTQDcPAf4nDwHwJ/8B8CyVjMljMzAXDwH+IhbrOYf/AfAfACAcyUMXDwH+LJAYBoABPsAACUbDH6ADFx1yH6ADH6ADCnA6sAgACkcAPIzEMTUCOBAQHPAAHPFgHPFsmACASAfIAIBICEiAG8AtD0BDAgggDYrwGAEPQPb6Hy4GRtAoIA2K8BgBD0D2+h8uBkEoIA2K8BAoAQ9BfI9ADJQAPwI4AAPPhCUxLwJDCABpxsIvhBbySBEU1TO8cF8vRRt6GCAPX8IcL/8vRDMFI88CJxJMIAkjBy3oE+uwKoggkxLQCgggiYloCgErzy9PhCVCBk8CRc8CB/UHZwgEArVEw5GICMB7z4QW8kUyrHBbOOEvhCU7jwJAGBEU0C8CAkxwXy9N5RyKCCAPX8IcL/8vQh+CdvECGhggiYloBmtgihggiYloCgoSbCAJYQfVCJXwjjDSVusyLCALCOHXAG8AJwBMgBghDVMnbbWMsfyz/JEEdDMBdtbfAhkjVb4oCQAZMhVUIIQF41FGVAHyx8Vyz9QA/oCAc8WASBulTBwAcsBks8W4gH6AgHPFskQVhA0WfAhAHJQTUMw8CJSMKAaoXBwKEgTUHTIVTCCEHNi0JxQBcsfE8s/AfoCAc8WAc8WySgQRkMTUFVtbfAhUAUA0xb+EFvJIERTVM4xwXy9FGEoYIA9fwhwv/y9EMwUjnwIoE+uwGCCTEtAKCCCJiWgKASvPL0f3ADgEBUM2bIVTCCEHvdl95QBcsfE8s/AfoCAc8WASBulTBwAcsBks8W4slUEwRQM21t8CGAATyAINch0x/TPzH6ADCBNVIighAXjUUZugOCEHvdl966E7ES8vQToAKAAO7/YF2omhqAPwxQICA64B9IACA/SAAoZg2CfgS+A5AICcykqAAms8fgRwABxrejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOE7o8AHy2bAeT+QdWSzWUQnA', 'base64'))[0]);
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
     __stack.push({ type: 'cell', cell: systemCell });
@@ -1018,7 +939,7 @@ export class SampleJetton implements Contract {
     async getGetJettonData(provider: ContractProvider) {
         let __stack: TupleItem[] = [];
         let result = await provider.get('get_jetton_data', __stack);
-        return unpackStackJettonData(result.stack);
+        return loadTupleJettonData(result.stack);
     }
     
     async getOwner(provider: ContractProvider) {

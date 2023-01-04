@@ -1,6 +1,8 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
+
 builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = store_int(build_0, v'a, 257);
@@ -47,6 +49,21 @@ builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, 
     return (sc_0, (v'a, v'b));
 }
 
+tuple __gen_Vars_to_tuple(((int, int, int, int, int)) v) {
+    var (v'a, v'b, v'c, v'd, v'e) = v;
+    return __tact_tuple_create_5(v'a, v'b, v'c, v'd, v'e);
+}
+
+(int, int, int, int, int) __gen_Vars_to_external(((int, int, int, int, int)) v) {
+    var (v'a, v'b, v'c, v'd, v'e) = v;
+    return (v'a, v'b, v'c, v'd, v'e);
+}
+
+(tuple, tuple) __gen_Both_to_external((((int, int, int, int, int), (int, int, int, int, int))) v) {
+    var (v'a, v'b) = v;
+    return (__gen_Vars_to_tuple(v'a), __gen_Vars_to_tuple(v'b));
+}
+
 ((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
@@ -80,7 +97,7 @@ cell $__gen_SerializationTester2_init(cell sys', (int, int, int, int, int) $a, (
 _ $__gen_get_getA() method_id(123932) {
     var self = __gen_load_SerializationTester2();
     var res = $__gen_SerializationTester2_getA(self);
-    return res;
+    return __gen_Vars_to_external(res);
 }
 
 (int, int, int, int, int) $__gen_SerializationTester2_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
@@ -91,7 +108,18 @@ _ $__gen_get_getA() method_id(123932) {
 _ $__gen_get_getB() method_id(119935) {
     var self = __gen_load_SerializationTester2();
     var res = $__gen_SerializationTester2_getB(self);
-    return res;
+    return __gen_Vars_to_external(res);
+}
+
+((int, int, int, int, int), (int, int, int, int, int)) $__gen_SerializationTester2_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+}
+
+_ $__gen_get_getBoth() method_id(81754) {
+    var self = __gen_load_SerializationTester2();
+    var res = $__gen_SerializationTester2_getBoth(self);
+    return __gen_Both_to_external(res);
 }
 
 ((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
@@ -158,5 +186,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmS1YB7pYUVVz6c35U9QNfCbPdiNsT89syUqKrbAb7K99T";
+    return "ipfs://QmP8nY37e5tFqbSNkvPhp3tDDMxwwa22FEywh1ucraCuGa";
 }

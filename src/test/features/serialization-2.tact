@@ -6,6 +6,11 @@ struct Vars {
     e: Int;
 }
 
+struct Both {
+    a: Vars;
+    b: Vars;
+}
+
 message Update {
     a: Vars;
     b: Vars;
@@ -55,7 +60,24 @@ contract SerializationTester2 {
     get fun getA(): Vars {
         return self.a;
     }
+
+    // get fun getAopt(): Vars? {
+    //    return self.a;
+    // }
+
     get fun getB(): Vars {
         return self.b;
     }
+
+    // get fun getBopt(): Vars? {
+    //    return self.b;
+    // }
+
+    get fun getBoth():Both {
+        return Both{a: self.a, b: self.b};
+    }
+
+    // get fun getBothOpt():Both? {
+    //    return Both{a: self.a, b: self.b};
+    // }
 }

@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    const _code = source.readCell();
+    const _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
@@ -34,16 +40,6 @@ export function packTupleStateInit(src: StateInit): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -71,6 +67,14 @@ export function loadContext(slice: Slice) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
+function loadTupleContext(source: TupleReader) {
+    const _bounced = source.readBoolean();
+    const _sender = source.readAddress();
+    const _value = source.readBigNumber();
+    const _raw = source.readCell();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
 export function packStackContext(src: Context, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
@@ -87,20 +91,6 @@ export function packTupleContext(src: Context): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
-export function unpackTupleContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -161,6 +151,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    const _bounce = source.readBoolean();
+    const _to = source.readAddress();
+    const _value = source.readBigNumber();
+    const _mode = source.readBigNumber();
+    const _body = source.readCellOpt();
+    const _code = source.readCellOpt();
+    const _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
@@ -207,26 +208,6 @@ export function packTupleSendParameters(src: SendParameters): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
 export type Vars = {
     $$type: 'Vars';
     a: bigint;
@@ -260,6 +241,15 @@ export function loadVars(slice: Slice) {
     return { $$type: 'Vars' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
 }
 
+function loadTupleVars(source: TupleReader) {
+    const _a = source.readBigNumber();
+    const _b = source.readBigNumber();
+    const _c = source.readBigNumber();
+    const _d = source.readBigNumber();
+    const _e = source.readBigNumber();
+    return { $$type: 'Vars' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
+}
+
 export function packStackVars(src: Vars, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.a });
     __stack.push({ type: 'int', value: src.b });
@@ -278,22 +268,48 @@ export function packTupleVars(src: Vars): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackVars(slice: TupleReader): Vars {
-    const a = slice.readBigNumber();
-    const b = slice.readBigNumber();
-    const c = slice.readBigNumber();
-    const d = slice.readBigNumber();
-    const e = slice.readBigNumber();
-    return { $$type: 'Vars', a: a, b: b, c: c, d: d, e: e };
+export type Both = {
+    $$type: 'Both';
+    a: Vars;
+    b: Vars;
 }
-export function unpackTupleVars(slice: TupleReader): Vars {
-    const a = slice.readBigNumber();
-    const b = slice.readBigNumber();
-    const c = slice.readBigNumber();
-    const d = slice.readBigNumber();
-    const e = slice.readBigNumber();
-    return { $$type: 'Vars', a: a, b: b, c: c, d: d, e: e };
+
+export function storeBoth(src: Both) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.store(storeVars(src.a));
+        let b_1 = new Builder();
+        b_1.store(storeVars(src.b));
+        b_0.storeRef(b_1.endCell());
+    };
 }
+
+export function loadBoth(slice: Slice) {
+    let sc_0 = slice;
+    let _a = loadVars(sc_0);
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _b = loadVars(sc_1);
+    return { $$type: 'Both' as const, a: _a, b: _b };
+}
+
+function loadTupleBoth(source: TupleReader) {
+    const _a = loadTupleVars(source.readTuple());
+    const _b = loadTupleVars(source.readTuple());
+    return { $$type: 'Both' as const, a: _a, b: _b };
+}
+
+export function packStackBoth(src: Both, __stack: TupleItem[]) {
+    packStackVars(src.a, __stack);
+    packStackVars(src.b, __stack);
+}
+
+export function packTupleBoth(src: Both): TupleItem[] {
+    let __stack: TupleItem[] = [];
+    __stack.push({ type: 'tuple', items: packTupleVars(src.a) });
+    __stack.push({ type: 'tuple', items: packTupleVars(src.b) });
+    return __stack;
+}
+
 export type Update = {
     $$type: 'Update';
     a: Vars;
@@ -320,6 +336,12 @@ export function loadUpdate(slice: Slice) {
     return { $$type: 'Update' as const, a: _a, b: _b };
 }
 
+function loadTupleUpdate(source: TupleReader) {
+    const _a = loadTupleVars(source.readTuple());
+    const _b = loadTupleVars(source.readTuple());
+    return { $$type: 'Update' as const, a: _a, b: _b };
+}
+
 export function packStackUpdate(src: Update, __stack: TupleItem[]) {
     packStackVars(src.a, __stack);
     packStackVars(src.b, __stack);
@@ -332,18 +354,8 @@ export function packTupleUpdate(src: Update): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackUpdate(slice: TupleReader): Update {
-    const a = unpackStackVars(slice);
-    const b = unpackStackVars(slice);
-    return { $$type: 'Update', a: a, b: b };
-}
-export function unpackTupleUpdate(slice: TupleReader): Update {
-    const a = unpackTupleVars(slice);
-    const b = unpackTupleVars(slice);
-    return { $$type: 'Update', a: a, b: b };
-}
 async function SerializationTester2_init(a: Vars, b: Vars) {
-    const __code = 'te6ccgECGQEAA9cAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASATFAKD24EOuk4Q/KmBBrhY/vAWhpgYC42GAAyL/IuHEA/SARKDM3gnwwgUit8BBgABFrpOCQ2HGBQQhPxJgnXXGBGHlgQUBgcCASALDAG2W+1E0NQB+GKBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIwXUAdCBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIzUQWlUDbBrwCwgBsu1E0NQB+GKBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIwXUAdCBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIzUQWlUDbBoKCQC6yPhCAcxVkBBaEEkQOEdqUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzMhVQAZQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHMyQHMye1UAf7THwGCEJ+JME668uCBgQEB1wCBAQHXAIEBAdcA1AHQgQEB1wCBAQHXADAQJRAkECMF1AHQgQEB1wCBAQHXAIEBAdcA1AHQgQEB1wCBAQHXADAQJRAkECM1EFpVAzoREhETERIRERESEREREBERERAPERAPEO8Q3hDNELwQq1UICgC+8AzI+EIBzFWQEFoQSRA4R2pQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHMyFVABlBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczJAczJ7VQCASANDgAF02VUAgEgDxACASAREgCxArIzAoQWhBJEDhHalBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczIVUAGUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzMkBzMmAABRfBYAAFGxVgAAEgAAm/6JeARAIBIBUWAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gCASAXGAC5to/9qJoagD8MUCAgOuAQICA64BAgIDrgGoA6ECAgOuAQICA64AYCBKIEggRguoA6ECAgOuAQICA64BAgIDrgGoA6ECAgOuAQICA64AYCBKIEggRmogtKoG2DXgFQALm0g52omhqAPwxQICA64BAgIDrgECAgOuAagDoQICA64BAgIDrgBgIEogSCBGC6gDoQICA64BAgIDrgECAgOuAagDoQICA64BAgIDrgBgIEogSCBGaiC0qgbYNeATA=';
+    const __code = 'te6ccgECIQEABGUAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAAXRsqoCASAICQIBIBARAoPTgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBEoMzeCfDCBSK3wEGAAEWuk4JDYcYFBCE/EmCddcYEYeWBBQKCwIBWA8YAbZb7UTQ1AH4YoEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAjBdQB0IEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAjNRBaVQNsGvAPDAGy7UTQ1AH4YoEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAjBdQB0IEBAdcAgQEB1wCBAQHXANQB0IEBAdcAgQEB1wAwECUQJBAjNRBaVQNsGgoNALrI+EIBzFWQEFoQSRA4R2pQRYEBAc8AEoEBAc8AgQEBzwAByIEBAc8AEoEBAc8AyQHMyFVABlBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczJAczJ7VQB/tMfAYIQn4kwTrry4IGBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIwXUAdCBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIzUQWlUDOhESERMREhERERIREREQEREREA8REA8Q7xDeEM0QvBCrVQgOAL7wEMj4QgHMVZAQWhBJEDhHalBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczIVUAGUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzMkBzMntVAAFG8FgAgEgEhMCASAUFQARRVRPAGVUDwBoALFQrIzAoQWhBJEDhHalBFgQEBzwASgQEBzwCBAQHPAAHIgQEBzwASgQEBzwDJAczIVUAGUEWBAQHPABKBAQHPAIEBAc8AAciBAQHPABKBAQHPAMkBzMkBzMmAIBIBYXAgEgGBgABRfBYAAFGxVgAAEgAgEgGxwCASAdHgC9u/Wu1E0NQB+GKBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIwXUAdCBAQHXAIEBAdcAgQEB1wDUAdCBAQHXAIEBAdcAMBAlECQQIzUQWlUDbBrwDvAIgACbvRLwC4AE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gCASAfIAC9to/9qJoagD8MUCAgOuAQICA64BAgIDrgGoA6ECAgOuAQICA64AYCBKIEggRguoA6ECAgOuAQICA64BAgIDrgGoA6ECAgOuAQICA64AYCBKIEggRmogtKoG2DXgG+APAAvbSDnaiaGoA/DFAgIDrgECAgOuAQICA64BqAOhAgIDrgECAgOuAGAgSiBIIEYLqAOhAgIDrgECAgOuAQICA64BqAOhAgIDrgECAgOuAGAgSiBIIEZqILSqBtg14BngDw';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -428,13 +440,19 @@ export class SerializationTester2 implements Contract {
     async getGetA(provider: ContractProvider) {
         let __stack: TupleItem[] = [];
         let result = await provider.get('getA', __stack);
-        return unpackStackVars(result.stack);
+        return loadTupleVars(result.stack);
     }
     
     async getGetB(provider: ContractProvider) {
         let __stack: TupleItem[] = [];
         let result = await provider.get('getB', __stack);
-        return unpackStackVars(result.stack);
+        return loadTupleVars(result.stack);
+    }
+    
+    async getGetBoth(provider: ContractProvider) {
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('getBoth', __stack);
+        return loadTupleBoth(result.stack);
     }
     
 }

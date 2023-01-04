@@ -1,6 +1,8 @@
 import { contractErrors } from "../../abi/errors";
+import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { resolveFuncTupledType } from "./resolveFuncTupledType";
 import { resolveFuncType } from "./resolveFuncType";
 
 export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
@@ -14,31 +16,111 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`return v'${f.name};`);
             });
             ctx.append(`}`);
-        });;
+        });
     }
 
     // Unpack
     ctx.fun(`__gen_${type.name}_unpack`, () => {
         ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v) asm "NOP";`);
-    });;
+    });
 
     // Not null
     ctx.fun(`__gen_${type.name}_not_null`, () => {
-        ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v) {`);
+        ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`)
             ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
             ctx.append(`return __tact_tuple_destroy_${type.fields.length}(v);`);
         });
         ctx.append(`}`);
-    });;
+    });
 
     ctx.fun(`__gen_${type.name}_as_optional`, () => {
-        ctx.append(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v) {`);
+        ctx.append(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
             ctx.used(`__tact_tuple_create_${type.fields.length}`);
             ctx.append(`return __tact_tuple_create_${type.fields.length}(v);`);
         });
         ctx.append(`}`);
-    });;
+    });
+
+    //
+    // Convert to and from tupled representation
+    //
+
+    ctx.fun(`__gen_${type.name}_to_tuple`, () => {
+        ctx.append(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
+            let vars: string[] = [];
+            for (let f of type.fields) {
+                if (f.type.kind === 'ref') {
+                    let t = getType(ctx.ctx, f.type.name);
+                    if (t.kind === 'struct') {
+                        if (f.type.optional) {
+                            vars.push(`__gen_${f.type.name}_opt_to_tuple(v'${f.name})`);
+                        } else {
+                            vars.push(`__gen_${f.type.name}_to_tuple(v'${f.name})`);
+                        }
+                        continue;
+                    }
+                }
+                vars.push(`v'${f.name}`);
+            }
+            ctx.used(`__tact_tuple_create_${vars.length}`);
+            ctx.append(`return __tact_tuple_create_${vars.length}(${vars.join(', ')});`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__gen_${type.name}_opt_to_tuple`, () => {
+        ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`if (null?(v)) { return null(); }`);
+            ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
+            ctx.used(`__gen_${type.name}_to_tuple`);
+            ctx.append(`return __gen_${type.name}_to_tuple(__tact_tuple_destroy_${type.fields.length}(v));`);
+        });
+        ctx.append(`}`);
+    });
+
+    //
+    // Convert to and from external representation
+    //
+
+    ctx.fun(`__gen_${type.name}_to_external`, () => {
+        ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v) {`);
+        ctx.inIndent(() => {
+            ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
+            let vars: string[] = [];
+            for (let f of type.fields) {
+                if (f.type.kind === 'ref') {
+                    let t = getType(ctx.ctx, f.type.name);
+                    if (t.kind === 'struct') {
+                        if (f.type.optional) {
+                            ctx.used(`__gen_${f.type.name}_opt_to_tuple`);
+                            vars.push(`__gen_${f.type.name}_opt_to_tuple(v'${f.name})`);
+                        } else {
+                            ctx.used(`__gen_${f.type.name}_to_tuple`);
+                            vars.push(`__gen_${f.type.name}_to_tuple(v'${f.name})`);
+                        }
+                        continue;
+                    }
+                }
+                vars.push(`v'${f.name}`);
+            }
+            ctx.append(`return (${vars.join(', ')});`);
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__gen_${type.name}_opt_to_external`, () => {
+        ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_opt_to_external(tuple v) {`);
+        ctx.inIndent(() => {
+            ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
+            ctx.used(`__gen_${type.name}_opt_to_tuple`);
+            ctx.append(`return __tact_tuple_destroy_${type.fields.length}(__gen_${type.name}_opt_to_tuple(v));`);
+        });
+        ctx.append(`}`);
+    });
 }

@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    const _code = source.readCell();
+    const _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
@@ -34,16 +40,6 @@ export function packTupleStateInit(src: StateInit): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -71,6 +67,14 @@ export function loadContext(slice: Slice) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
+function loadTupleContext(source: TupleReader) {
+    const _bounced = source.readBoolean();
+    const _sender = source.readAddress();
+    const _value = source.readBigNumber();
+    const _raw = source.readCell();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
 export function packStackContext(src: Context, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
@@ -87,20 +91,6 @@ export function packTupleContext(src: Context): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
-export function unpackTupleContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -161,6 +151,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    const _bounce = source.readBoolean();
+    const _to = source.readAddress();
+    const _value = source.readBigNumber();
+    const _mode = source.readBigNumber();
+    const _body = source.readCellOpt();
+    const _code = source.readCellOpt();
+    const _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
@@ -207,26 +208,6 @@ export function packTupleSendParameters(src: SendParameters): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -247,6 +228,11 @@ export function loadChangeOwner(slice: Slice) {
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
+function loadTupleChangeOwner(source: TupleReader) {
+    const _newOwner = source.readAddress();
+    return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
 export function packStackChangeOwner(src: ChangeOwner, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
 }
@@ -257,14 +243,6 @@ export function packTupleChangeOwner(src: ChangeOwner): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackChangeOwner(slice: TupleReader): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
-}
-export function unpackTupleChangeOwner(slice: TupleReader): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
-}
 export type RugParams = {
     $$type: 'RugParams';
     investment: bigint;
@@ -289,6 +267,13 @@ export function loadRugParams(slice: Slice) {
     return { $$type: 'RugParams' as const, investment: _investment, returns: _returns, fee: _fee };
 }
 
+function loadTupleRugParams(source: TupleReader) {
+    const _investment = source.readBigNumber();
+    const _returns = source.readBigNumber();
+    const _fee = source.readBigNumber();
+    return { $$type: 'RugParams' as const, investment: _investment, returns: _returns, fee: _fee };
+}
+
 export function packStackRugParams(src: RugParams, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.investment });
     __stack.push({ type: 'int', value: src.returns });
@@ -303,20 +288,8 @@ export function packTupleRugParams(src: RugParams): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackRugParams(slice: TupleReader): RugParams {
-    const investment = slice.readBigNumber();
-    const returns = slice.readBigNumber();
-    const fee = slice.readBigNumber();
-    return { $$type: 'RugParams', investment: investment, returns: returns, fee: fee };
-}
-export function unpackTupleRugParams(slice: TupleReader): RugParams {
-    const investment = slice.readBigNumber();
-    const returns = slice.readBigNumber();
-    const fee = slice.readBigNumber();
-    return { $$type: 'RugParams', investment: investment, returns: returns, fee: fee };
-}
 async function RugPull_init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
-    const __code = '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';
+    const __code = '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';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -415,7 +388,7 @@ export class RugPull implements Contract {
     async getParams(provider: ContractProvider) {
         let __stack: TupleItem[] = [];
         let result = await provider.get('params', __stack);
-        return unpackStackRugParams(result.stack);
+        return loadTupleRugParams(result.stack);
     }
     
     async getOwner(provider: ContractProvider) {

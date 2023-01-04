@@ -345,6 +345,21 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
             ctx.used(`__gen_${self.name}_${f.name}`);
             ctx.append(`var res = ${fn(`__gen_${self.name}_${f.name}`)}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
 
+            // Pack if needed
+            if (f.returns.kind === 'ref') {
+                let t = getType(ctx.ctx, f.returns.name);
+                if (t.kind === 'struct') {
+                    if (f.returns.optional) {
+                        ctx.used(`__gen_${t.name}_opt_to_external`);
+                        ctx.append(`return __gen_${t.name}_opt_to_external(res);`);
+                    } else {
+                        ctx.used(`__gen_${t.name}_to_external`);
+                        ctx.append(`return __gen_${t.name}_to_external(res);`);
+                    }
+                    return;
+                }
+            }
+
             // Return restult
             ctx.append(`return res;`);
         });

@@ -150,6 +150,11 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
+(int, int, int) __gen_RugParams_to_external(((int, int, int)) v) {
+    var (v'investment, v'returns, v'fee) = v;
+    return (v'investment, v'returns, v'fee);
+}
+
 (slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
@@ -259,7 +264,7 @@ cell $__gen_RugPull_init(cell sys', slice $owner, int $investment, int $returns,
 _ $__gen_get_params() method_id(116437) {
     var self = __gen_load_RugPull();
     var res = $__gen_RugPull_params(self);
-    return res;
+    return __gen_RugParams_to_external(res);
 }
 
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) $self) impure {

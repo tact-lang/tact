@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    const _code = source.readCell();
+    const _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export function packStackStateInit(src: StateInit, __stack: TupleItem[]) {
     __stack.push({ type: 'cell', cell: src.code });
     __stack.push({ type: 'cell', cell: src.data });
@@ -34,16 +40,6 @@ export function packTupleStateInit(src: StateInit): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
-export function unpackTupleStateInit(slice: TupleReader): StateInit {
-    const code = slice.readCell();
-    const data = slice.readCell();
-    return { $$type: 'StateInit', code: code, data: data };
-}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -71,6 +67,14 @@ export function loadContext(slice: Slice) {
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
+function loadTupleContext(source: TupleReader) {
+    const _bounced = source.readBoolean();
+    const _sender = source.readAddress();
+    const _value = source.readBigNumber();
+    const _raw = source.readCell();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
 export function packStackContext(src: Context, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounced ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.sender).endCell() });
@@ -87,20 +91,6 @@ export function packTupleContext(src: Context): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
-export function unpackTupleContext(slice: TupleReader): Context {
-    const bounced = slice.readBoolean();
-    const sender = slice.readAddress();
-    const value = slice.readBigNumber();
-    const raw = slice.readCell();
-    return { $$type: 'Context', bounced: bounced, sender: sender, value: value, raw: raw };
-}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -161,6 +151,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    const _bounce = source.readBoolean();
+    const _to = source.readAddress();
+    const _value = source.readBigNumber();
+    const _mode = source.readBigNumber();
+    const _body = source.readCellOpt();
+    const _code = source.readCellOpt();
+    const _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export function packStackSendParameters(src: SendParameters, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.bounce ? -1n : 0n });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.to).endCell() });
@@ -207,26 +208,6 @@ export function packTupleSendParameters(src: SendParameters): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
-export function unpackTupleSendParameters(slice: TupleReader): SendParameters {
-    const bounce = slice.readBoolean();
-    const to = slice.readAddress();
-    const value = slice.readBigNumber();
-    const mode = slice.readBigNumber();
-    const body = slice.readCellOpt();
-    const code = slice.readCellOpt();
-    const data = slice.readCellOpt();
-    return { $$type: 'SendParameters', bounce: bounce, to: to, value: value, mode: mode, body: body, code: code, data: data };
-}
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -247,6 +228,11 @@ export function loadChangeOwner(slice: Slice) {
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
+function loadTupleChangeOwner(source: TupleReader) {
+    const _newOwner = source.readAddress();
+    return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
 export function packStackChangeOwner(src: ChangeOwner, __stack: TupleItem[]) {
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.newOwner).endCell() });
 }
@@ -257,14 +243,6 @@ export function packTupleChangeOwner(src: ChangeOwner): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackChangeOwner(slice: TupleReader): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
-}
-export function unpackTupleChangeOwner(slice: TupleReader): ChangeOwner {
-    const newOwner = slice.readAddress();
-    return { $$type: 'ChangeOwner', newOwner: newOwner };
-}
 export type CanPayout = {
     $$type: 'CanPayout';
     amount: bigint;
@@ -285,6 +263,11 @@ export function loadCanPayout(slice: Slice) {
     return { $$type: 'CanPayout' as const, amount: _amount };
 }
 
+function loadTupleCanPayout(source: TupleReader) {
+    const _amount = source.readBigNumber();
+    return { $$type: 'CanPayout' as const, amount: _amount };
+}
+
 export function packStackCanPayout(src: CanPayout, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.amount });
 }
@@ -295,14 +278,6 @@ export function packTupleCanPayout(src: CanPayout): TupleItem[] {
     return __stack;
 }
 
-export function unpackStackCanPayout(slice: TupleReader): CanPayout {
-    const amount = slice.readBigNumber();
-    return { $$type: 'CanPayout', amount: amount };
-}
-export function unpackTupleCanPayout(slice: TupleReader): CanPayout {
-    const amount = slice.readBigNumber();
-    return { $$type: 'CanPayout', amount: amount };
-}
 export type CanPayoutResponse = {
     $$type: 'CanPayoutResponse';
     amount: bigint;
@@ -329,6 +304,13 @@ export function loadCanPayoutResponse(slice: Slice) {
     return { $$type: 'CanPayoutResponse' as const, amount: _amount, address: _address, ok: _ok };
 }
 
+function loadTupleCanPayoutResponse(source: TupleReader) {
+    const _amount = source.readBigNumber();
+    const _address = source.readAddress();
+    const _ok = source.readBoolean();
+    return { $$type: 'CanPayoutResponse' as const, amount: _amount, address: _address, ok: _ok };
+}
+
 export function packStackCanPayoutResponse(src: CanPayoutResponse, __stack: TupleItem[]) {
     __stack.push({ type: 'int', value: src.amount });
     __stack.push({ type: 'slice', cell: beginCell().storeAddress(src.address).endCell() });
@@ -343,18 +325,6 @@ export function packTupleCanPayoutResponse(src: CanPayoutResponse): TupleItem[] 
     return __stack;
 }
 
-export function unpackStackCanPayoutResponse(slice: TupleReader): CanPayoutResponse {
-    const amount = slice.readBigNumber();
-    const address = slice.readAddress();
-    const ok = slice.readBoolean();
-    return { $$type: 'CanPayoutResponse', amount: amount, address: address, ok: ok };
-}
-export function unpackTupleCanPayoutResponse(slice: TupleReader): CanPayoutResponse {
-    const amount = slice.readBigNumber();
-    const address = slice.readAddress();
-    const ok = slice.readBoolean();
-    return { $$type: 'CanPayoutResponse', amount: amount, address: address, ok: ok };
-}
 async function Payouts_init(owner: Address, publicKey: bigint) {
     const __code = 'te6ccgECNAEABP8AART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAwMQIBIAYHAgFiIiMCASAICQIBWBITAgEgCgsCAWoQEQIBIAwNAEf2Q4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQB907ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEG729VG6jkYw7UTQ1AH4YvpAAQGBAQHXAFlsEgLTHwGCEG729VG68uCBgQEB1wD6QAEB0gBVIDMQNFjwJsj4QgHMWVnPFoEBAc8Aye1UgOAAtCBu8tCAgBnuAgghC2z38Puo46MO1E0NQB+GL6QAEBgQEB1wBZbBIC0x8BghC2z38PuvLggfpAATES8CfI+EIBzFlZzxaBAQHPAMntVODAAJEw4w3ywIIPAG4g10nCH44u7UTQ1AH4YvpAAQGBAQHXAFlsEgKAINchEvAlyPhCAcxZWc8WgQEBzwDJ7VTbMeAwACMbyIByZMhbrOWAW8iWczJ6DGAAuwg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOACASAUFQIBIBscAgEgFhcCASAYGQAVJR/AcoA4HABygCAACRwWfAHgAfcyHEBygFQB/AYcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGMhw8Bhw8BgkbrOZf/AYBPACUATMlTQDcPAY4iRus5l/8BgE8AJQBMyVNANw8BjicPAYAn/wGALJWMyWMzMBcPAY4iFus5h/8BgB8AIBzJQxcPAY4skBgGgAFMnQgAAT7AAIBIB0eAgEgICEAAzJgAfUINdJqwLIAY5gAdMHIcJAIsFbsJYBpr9YywWOTCHCYCLBe7CWAaa5WMsFjjshwi8iwTqwlgGmBFjLBY4qIcAtIsArsZaAPjICywWOGSHAXyLAL7GWgD8yAssFmQHAPZPywIbfAeLi4uLi5DEgzzEgqTgCIMMA4wJb8BuAfABAC8BsCodcYMAAtH/IAZRwAcsf3m8AAW+MbW+MAfAN8AyAABTwHYAIBICQlAgEgKisCASAmJwIBICgpAB0cAPIzANazxZYzxbKAMmAAOQC0PQEMIIAoPoBgBD0D2+h8uBkbcj0AMlAA/AggABsAsjMAlnPFoEBAc8AyYAAdPhBbyQQI18DIscF8uCEgAgEgLC0CASAuLwADDCAAsT4QW8kMIE+uzOCEDuaygC+EvL0AfAf+gCDCNcYMMgjzxYi+gLwHPkAggC9EVEl+RDy9PhC+ChVAvAh8Bl/cIBCBMgBghA+nrFmWMsfgQEBzwDJQUBtbfAagAMs+EFvJDAy+EL4KCXwIfAZAYERTQLHBfL0AY4rggD1/PgnbxBYoYIQO5rKAKEjocIA8vRwgEKLdTdWNjZXNzjwHhAkbW3wGo4cMDFwcIBCi8QWxyZWFkeSBwYWlkjwHhA0bW3wGuKAACRZ8CMxgAgEgMjMAlb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOFALHuhMolza1VSFYUsAFgNBOCBnOrTzivzpKFgOsLcTI9lAAJusG/AigAL7hR3tRNDUAfhi+kABAYEBAdcAWWwS8CSA==';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());

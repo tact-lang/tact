@@ -1,9 +1,8 @@
 import { ContractABI, ContractFunctionArg } from "../abi/ContractABI";
 import * as changeCase from "change-case";
 import { writeToStack } from "./typescript/writeToStack";
-import { readFromStack } from "./typescript/readFromStack";
 import { Writer } from "../utils/Writer";
-import { writeParser, writeSerializer, writeStruct } from "./typescript/writeStruct";
+import { writeParser, writeSerializer, writeStruct, writeTupleParser } from "./typescript/writeStruct";
 import { getTSFieldType } from "./typescript/getTSFieldType";
 
 function writeArguments(args: ContractFunctionArg[]) {
@@ -21,6 +20,7 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         writeStruct(s, w);
         writeSerializer(s, w);
         writeParser(s, w);
+        writeTupleParser(s, w);
 
         // Pack to stack
         w.append(`export function packStack${s.name}(src: ${s.name}, __stack: TupleItem[]) {`);
@@ -41,24 +41,6 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
         });
         w.append(`}`);
         w.append();
-
-        // Unpack from stack
-        w.append(`export function unpackStack${s.name}(slice: TupleReader): ${s.name} {`)
-        w.inIndent(() => {
-            for (const f of s.fields) {
-                readFromStack(f.name, f.type, w);
-            }
-            w.append(`return { $$type: '${s.name}', ${s.fields.map(f => `${f.name}: ${f.name}`).join(', ')} };`);
-        });
-        w.append(`}`);
-        w.append(`export function unpackTuple${s.name}(slice: TupleReader): ${s.name} {`)
-        w.inIndent(() => {
-            for (const f of s.fields) {
-                readFromStack(f.name, f.type, w, true);
-            }
-            w.append(`return { $$type: '${s.name}', ${s.fields.map(f => `${f.name}: ${f.name}`).join(', ')} };`);
-        });
-        w.append(`}`);
     }
 
     // Init
@@ -270,11 +252,11 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                             }
                         } else {
                             if (g.returns.optional) {
-                                w.append(`let pp = result.stack.pop();`);
-                                w.append(`if (pp.type !== 'tuple') { return null; }`);
-                                w.append(`return unpackTuple${g.returns.name}(new TupleReader(pp.items));`);
+                                w.append(`let pp = result.stack.peek();`);
+                                w.append(`if (pp.type === 'null' && result.stack.remaining === 1) { return null; }`);
+                                w.append(`return loadTuple${g.returns.name}(result.stack);`);
                             } else {
-                                w.append(`return unpackStack${g.returns.name}(result.stack);`);
+                                w.append(`return loadTuple${g.returns.name}(result.stack);`);
                             }
                         }
                     } else if (g.returns.kind === 'map') {

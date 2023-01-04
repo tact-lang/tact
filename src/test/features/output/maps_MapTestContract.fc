@@ -135,7 +135,7 @@ cell __gen_writecell_SomeStruct((int) v) inline {
     return __gen_write_SomeStruct(begin_cell(), v).end_cell();
 }
 
-((int)) __gen_SomeStruct_not_null(tuple v) {
+((int)) __gen_SomeStruct_not_null(tuple v) inline {
     throw_if(128, null?(v));
     return __tact_tuple_destroy_1(v);
 }
@@ -161,7 +161,7 @@ tuple __gen_readopt_SomeStruct(cell cl) inline {
     return __tact_tuple_create_1(v'value);
 }
 
-tuple __gen_SomeStruct_as_optional(((int)) v) {
+tuple __gen_SomeStruct_as_optional(((int)) v) inline {
     return __tact_tuple_create_1(v);
 }
 
@@ -244,6 +244,20 @@ builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, ce
     var v'addrMap3 = sc_2~load_dict();
     var v'addrMap4 = sc_2~load_dict();
     return (sc_0, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
+}
+
+tuple __gen_SomeStruct_to_tuple(((int)) v) {
+    var (v'value) = v;
+    return __tact_tuple_create_1(v'value);
+}
+
+tuple __gen_SomeStruct_opt_to_tuple(tuple v) {
+    if (null?(v)) { return null(); }
+    return __gen_SomeStruct_to_tuple(__tact_tuple_destroy_1(v));
+}
+
+(int) __gen_SomeStruct_opt_to_external(tuple v) {
+    return __tact_tuple_destroy_1(__gen_SomeStruct_opt_to_tuple(v));
 }
 
 (cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline {
@@ -352,7 +366,7 @@ tuple $__gen_MapTestContract_intMap4Value((cell, cell, cell, cell, cell, cell, c
 _ $__gen_get_intMap4Value(int $key) method_id(119013) {
     var self = __gen_load_MapTestContract();
     var res = $__gen_MapTestContract_intMap4Value(self, $key);
-    return res;
+    return __gen_SomeStruct_opt_to_external(res);
 }
 
 cell $__gen_MapTestContract_addrMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {
@@ -440,7 +454,7 @@ tuple $__gen_MapTestContract_addrMap4Value((cell, cell, cell, cell, cell, cell, 
 _ $__gen_get_addrMap4Value(slice $key) method_id(100021) {
     var self = __gen_load_MapTestContract();
     var res = $__gen_MapTestContract_addrMap4Value(self, $key);
-    return res;
+    return __gen_SomeStruct_opt_to_external(res);
 }
 
 (((cell, cell, cell, cell, cell, cell, cell, cell)), ()) $__gen_MapTestContract_receive((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure {

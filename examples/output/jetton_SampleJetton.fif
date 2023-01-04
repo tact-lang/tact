@@ -22,6 +22,7 @@ PROGRAM{
   DECLPROC __gen_read_SampleJetton
   DECLPROC __gen_StateInit_get_code
   DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_JettonData_to_external
   DECLPROC __gen_load_SampleJetton
   DECLPROC __gen_store_SampleJetton
   DECLPROC $storeBool
@@ -271,6 +272,8 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
+  __gen_JettonData_to_external PROC:<{
+  }>
   __gen_load_SampleJetton PROCINLINE:<{
     c4 PUSH
     CTOS
@@ -481,6 +484,7 @@ PROGRAM{
   $__gen_get_get_jetton_data PROC:<{
     __gen_load_SampleJetton INLINECALLDICT
     $__gen_SampleJetton_get_jetton_data CALLDICT
+    __gen_JettonData_to_external CALLDICT
   }>
   $__gen_SampleJetton_mint PROC:<{
     s6 s1 XCPU

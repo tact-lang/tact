@@ -120,7 +120,7 @@ cell __gen_writecell_Something((int) v) inline {
     return __gen_write_Something(begin_cell(), v).end_cell();
 }
 
-((int)) __gen_Something_not_null(tuple v) {
+((int)) __gen_Something_not_null(tuple v) inline {
     throw_if(128, null?(v));
     return __tact_tuple_destroy_1(v);
 }

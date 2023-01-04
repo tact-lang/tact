@@ -411,12 +411,6 @@ SETCP0
     s1 s3 s3 XCHG3
     DICTSETB
 
-  19: 
-    s0 PUSH
-    ISNULL
-    128 THROWIF
-    1 UNTUPLE
-
   26: 
     <{
       -1 PUSHINT
@@ -680,7 +674,10 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
-      19 CALLDICT
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      1 UNTUPLE
       NEWC
       s0 s1 XCHG
       s0 s1 XCHG
