@@ -600,6 +600,15 @@
         "name": "Both",
         "optional": false
       }
+    },
+    {
+      "name": "getBothOpt",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Both",
+        "optional": true
+      }
     }
   ],
   "dependsOn": {},

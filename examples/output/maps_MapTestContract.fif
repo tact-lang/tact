@@ -437,7 +437,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      1 UNTUPLE
+      __gen_SomeStruct_not_null INLINECALLDICT
       __gen_SomeStruct_to_tuple CALLDICT
     }>
   }>

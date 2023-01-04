@@ -1083,6 +1083,9 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      s0 PUSH
+      ISNULL
+      128 THROWIF
       5 UNTUPLE
       17 CALLDICT
     }> PUSHCONT
@@ -1097,6 +1100,9 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      s0 PUSH
+      ISNULL
+      128 THROWIF
       5 UNTUPLE
       17 CALLDICT
     }> PUSHCONT
@@ -3234,6 +3240,9 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      s0 PUSH
+      ISNULL
+      128 THROWIF
       5 UNTUPLE
       17 CALLDICT
     }> PUSHCONT
@@ -3608,6 +3617,9 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      s0 PUSH
+      ISNULL
+      128 THROWIF
       5 UNTUPLE
       21 CALLDICT
     }> PUSHCONT

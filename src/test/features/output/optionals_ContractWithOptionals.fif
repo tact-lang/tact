@@ -503,7 +503,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      5 UNTUPLE
+      __gen_SomeGenericStruct_not_null INLINECALLDICT
       __gen_SomeGenericStruct_to_tuple CALLDICT
     }>
   }>
@@ -530,7 +530,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      5 UNTUPLE
+      __gen_StructWithOptionals_not_null INLINECALLDICT
       __gen_StructWithOptionals_to_tuple CALLDICT
     }>
   }>

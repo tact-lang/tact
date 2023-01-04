@@ -2,8 +2,11 @@ import { contractErrors } from "../../abi/errors";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
+import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
 import { resolveFuncType } from "./resolveFuncType";
+import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
 export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
 
@@ -29,8 +32,13 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`)
-            ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
-            ctx.append(`return __tact_tuple_destroy_${type.fields.length}(v);`);
+            let flatPack = resolveFuncFlatPack(type, 'vvv', ctx);
+            let flatTypes = resolveFuncFlatTypes(type, ctx);
+            if (flatPack.length !== flatTypes.length) throw Error('Flat pack and flat types length mismatch');
+            let pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
+            ctx.used(`__tact_tuple_destroy_${flatPack.length}`);
+            ctx.append(`var (${pairs.join(', ')}) = __tact_tuple_destroy_${flatPack.length}(v);`);
+            ctx.append(`return ${resolveFuncTypeUnpack(type, 'vvv', ctx)};`);
         });
         ctx.append(`}`);
     });
@@ -38,8 +46,10 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${type.name}_as_optional`, () => {
         ctx.append(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
-            ctx.used(`__tact_tuple_create_${type.fields.length}`);
-            ctx.append(`return __tact_tuple_create_${type.fields.length}(v);`);
+            ctx.append(`var ${resolveFuncTypeUnpack(type, 'v', ctx)} = v;`);
+            let flatPack = resolveFuncFlatPack(type, 'v', ctx);
+            ctx.used(`__tact_tuple_create_${flatPack.length}`);
+            ctx.append(`return __tact_tuple_create_${flatPack.length}(${flatPack.join(', ')});`);
         });
         ctx.append(`}`);
     });
@@ -77,9 +87,9 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`if (null?(v)) { return null(); }`);
-            ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
+            ctx.used(`__gen_${type.name}_not_null`);
             ctx.used(`__gen_${type.name}_to_tuple`);
-            ctx.append(`return __gen_${type.name}_to_tuple(__tact_tuple_destroy_${type.fields.length}(v));`);
+            ctx.append(`return __gen_${type.name}_to_tuple(__gen_${type.name}_not_null(v));`);
         });
         ctx.append(`}`);
     });

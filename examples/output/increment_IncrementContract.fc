@@ -122,7 +122,8 @@ cell __gen_writecell_Something((int) v) inline {
 
 ((int)) __gen_Something_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_1(v);
+    var (int vvv'value) = __tact_tuple_destroy_1(v);
+    return (vvv'value);
 }
 
 cell __gen_writecellopt_Something(tuple v) inline {

@@ -137,7 +137,8 @@ cell __gen_writecell_SomeStruct((int) v) inline {
 
 ((int)) __gen_SomeStruct_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_1(v);
+    var (int vvv'value) = __tact_tuple_destroy_1(v);
+    return (vvv'value);
 }
 
 cell __gen_writecellopt_SomeStruct(tuple v) inline {
@@ -162,7 +163,8 @@ tuple __gen_readopt_SomeStruct(cell cl) inline {
 }
 
 tuple __gen_SomeStruct_as_optional(((int)) v) inline {
-    return __tact_tuple_create_1(v);
+    var (v'value) = v;
+    return __tact_tuple_create_1(v'value);
 }
 
 (slice, ((int, tuple))) __gen_read_SetIntMap4(slice sc_0) inline {
@@ -253,7 +255,7 @@ tuple __gen_SomeStruct_to_tuple(((int)) v) {
 
 tuple __gen_SomeStruct_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_SomeStruct_to_tuple(__tact_tuple_destroy_1(v));
+    return __gen_SomeStruct_to_tuple(__gen_SomeStruct_not_null(v));
 }
 
 tuple __gen_SomeStruct_opt_to_external(tuple v) inline {

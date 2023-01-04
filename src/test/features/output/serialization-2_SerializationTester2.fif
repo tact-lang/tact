@@ -4,12 +4,18 @@ PROGRAM{
   DECLPROC __gen_read_Update
   DECLPROC __gen_write_SerializationTester2
   DECLPROC __gen_read_SerializationTester2
+  DECLPROC __gen_Vars_not_null
   DECLPROC __gen_Vars_as_optional
   DECLPROC __gen_Vars_to_tuple
   DECLPROC __gen_Vars_opt_to_tuple
   DECLPROC __gen_Vars_to_external
   DECLPROC __gen_Vars_opt_to_external
+  DECLPROC __gen_Both_not_null
+  DECLPROC __gen_Both_as_optional
+  DECLPROC __gen_Both_to_tuple
+  DECLPROC __gen_Both_opt_to_tuple
   DECLPROC __gen_Both_to_external
+  DECLPROC __gen_Both_opt_to_external
   DECLPROC __gen_load_SerializationTester2
   DECLPROC __gen_store_SerializationTester2
   DECLPROC $__gen_SerializationTester2_init
@@ -23,6 +29,8 @@ PROGRAM{
   73763 DECLMETHOD $__gen_get_getBopt
   DECLPROC $__gen_SerializationTester2_getBoth
   81754 DECLMETHOD $__gen_get_getBoth
+  DECLPROC $__gen_SerializationTester2_getBothOpt
+  69430 DECLMETHOD $__gen_get_getBothOpt
   DECLPROC $__gen_SerializationTester2_receive
   DECLPROC $__gen_SerializationTester2_receive_Update
   DECLPROC recv_internal
@@ -111,33 +119,83 @@ PROGRAM{
     s5 s10 XCHG
     4 ROLL
   }>
+  __gen_Vars_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    5 UNTUPLE
+  }>
   __gen_Vars_as_optional PROCINLINE:<{
     5 TUPLE
   }>
   __gen_Vars_to_tuple PROC:<{
     5 TUPLE
   }>
-  __gen_Vars_opt_to_tuple PROC:<{
+  __gen_Vars_opt_to_tuple PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      __gen_Vars_not_null INLINECALLDICT
+      __gen_Vars_to_tuple CALLDICT
     }>
-    5 UNTUPLE
-    __gen_Vars_to_tuple CALLDICT
   }>
   __gen_Vars_to_external PROC:<{
   }>
-  __gen_Vars_opt_to_external PROC:<{
-    __gen_Vars_opt_to_tuple CALLDICT
-    5 UNTUPLE
+  __gen_Vars_opt_to_external PROCINLINE:<{
+    __gen_Vars_opt_to_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
+  }>
+  __gen_Both_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    10 UNTUPLE
+  }>
+  __gen_Both_as_optional PROCINLINE:<{
+    10 TUPLE
+  }>
+  __gen_Both_to_tuple PROC:<{
+    5 5 BLKSWAP
+    __gen_Vars_to_tuple CALLDICT
+    5 -ROLL
+    __gen_Vars_to_tuple CALLDICT
+    2 TUPLE
+  }>
+  __gen_Both_opt_to_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_Both_not_null INLINECALLDICT
+      __gen_Both_to_tuple CALLDICT
+    }>
   }>
   __gen_Both_to_external PROC:<{
     5 5 BLKSWAP
     __gen_Vars_to_tuple CALLDICT
     5 -ROLL
     __gen_Vars_to_tuple CALLDICT
+  }>
+  __gen_Both_opt_to_external PROCINLINE:<{
+    __gen_Both_opt_to_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
   }>
   __gen_load_SerializationTester2 PROCINLINE:<{
     c4 PUSH
@@ -181,7 +239,7 @@ PROGRAM{
   $__gen_get_getAopt PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getAopt CALLDICT
-    __gen_Vars_opt_to_external CALLDICT
+    __gen_Vars_opt_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_getB PROC:<{
     5 5 BLKDROP2
@@ -198,7 +256,7 @@ PROGRAM{
   $__gen_get_getBopt PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getBopt CALLDICT
-    __gen_Vars_opt_to_external CALLDICT
+    __gen_Vars_opt_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_getBoth PROC:<{
   }>
@@ -206,6 +264,14 @@ PROGRAM{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getBoth CALLDICT
     __gen_Both_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_getBothOpt PROC:<{
+    __gen_Both_as_optional INLINECALLDICT
+  }>
+  $__gen_get_getBothOpt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBothOpt CALLDICT
+    __gen_Both_opt_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_receive PROC:<{
   }>
@@ -287,6 +353,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5367706848354d586a3433707a55744c646869635533676735764e645a476d654e6e66474c57774754704e55} PUSHSLICE
+    x{697066733a2f2f516d6659486671663679666561713155556e72533647487a73696e6f52514a5a3576487475754d6d6d6d31365654} PUSHSLICE
   }>
 }END>c

@@ -654,7 +654,8 @@ slice __gen_writeslice_A((int, int, int, int, int, int, int) v}) inline {
 
 ((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_7(v);
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
 cell __gen_writecellopt_A(tuple v) inline {
@@ -702,7 +703,8 @@ _ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
 ((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v) asm "NOP";
 
 tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) inline {
-    return __tact_tuple_create_7(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
 tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v) {
@@ -712,7 +714,7 @@ tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v) {
 
 tuple __gen_A_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_A_to_tuple(__tact_tuple_destroy_7(v));
+    return __gen_A_to_tuple(__gen_A_not_null(v));
 }
 
 (int, int, int, int, int, int, int) __gen_A_to_external(((int, int, int, int, int, int, int)) v) {
@@ -768,11 +770,13 @@ _ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
 
 ((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_7(v);
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
 tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) inline {
-    return __tact_tuple_create_7(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
 tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v) {
@@ -782,7 +786,7 @@ tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v) {
 
 tuple __gen_B_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_B_to_tuple(__tact_tuple_destroy_7(v));
+    return __gen_B_to_tuple(__gen_B_not_null(v));
 }
 
 (int, int, int, int, int, int, int) __gen_B_to_external(((int, int, int, int, int, int, int)) v) {
@@ -843,11 +847,13 @@ _ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
 
 ((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_8(v);
+    var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
 }
 
 tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) inline {
-    return __tact_tuple_create_8(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }
 
 tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v) {
@@ -857,7 +863,7 @@ tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v) {
 
 tuple __gen_C_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_C_to_tuple(__tact_tuple_destroy_8(v));
+    return __gen_C_to_tuple(__gen_C_not_null(v));
 }
 
 (cell, cell, slice, slice, int, int, int, slice) __gen_C_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) {
@@ -1569,7 +1575,8 @@ slice __gen_writeslice_B((int, int, int, int, int, int, int) v}) inline {
 
 ((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_7(v);
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
 cell __gen_writecellopt_B(tuple v) inline {
@@ -1618,11 +1625,13 @@ _ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
 
 ((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_7(v);
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
 tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) inline {
-    return __tact_tuple_create_7(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
 tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v) {
@@ -1632,7 +1641,7 @@ tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v) {
 
 tuple __gen_A_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_A_to_tuple(__tact_tuple_destroy_7(v));
+    return __gen_A_to_tuple(__gen_A_not_null(v));
 }
 
 (int, int, int, int, int, int, int) __gen_A_to_external(((int, int, int, int, int, int, int)) v) {
@@ -1687,7 +1696,8 @@ _ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
 ((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v) asm "NOP";
 
 tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) inline {
-    return __tact_tuple_create_7(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
 tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v) {
@@ -1697,7 +1707,7 @@ tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v) {
 
 tuple __gen_B_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_B_to_tuple(__tact_tuple_destroy_7(v));
+    return __gen_B_to_tuple(__gen_B_not_null(v));
 }
 
 (int, int, int, int, int, int, int) __gen_B_to_external(((int, int, int, int, int, int, int)) v) {
@@ -1758,11 +1768,13 @@ _ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
 
 ((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_8(v);
+    var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
 }
 
 tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) inline {
-    return __tact_tuple_create_8(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }
 
 tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v) {
@@ -1772,7 +1784,7 @@ tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v) {
 
 tuple __gen_C_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_C_to_tuple(__tact_tuple_destroy_8(v));
+    return __gen_C_to_tuple(__gen_C_not_null(v));
 }
 
 (cell, cell, slice, slice, int, int, int, slice) __gen_C_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) {
@@ -2490,7 +2502,8 @@ slice __gen_writeslice_C((cell, cell, slice, slice, int, int, int, slice) v}) in
 
 ((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_8(v);
+    var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
 }
 
 cell __gen_writecellopt_C(tuple v) inline {
@@ -2539,11 +2552,13 @@ _ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
 
 ((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_7(v);
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
 tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) inline {
-    return __tact_tuple_create_7(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
 tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v) {
@@ -2553,7 +2568,7 @@ tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v) {
 
 tuple __gen_A_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_A_to_tuple(__tact_tuple_destroy_7(v));
+    return __gen_A_to_tuple(__gen_A_not_null(v));
 }
 
 (int, int, int, int, int, int, int) __gen_A_to_external(((int, int, int, int, int, int, int)) v) {
@@ -2609,11 +2624,13 @@ _ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
 
 ((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) inline {
     throw_if(128, null?(v));
-    return __tact_tuple_destroy_7(v);
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
 tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) inline {
-    return __tact_tuple_create_7(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
+    return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
 tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v) {
@@ -2623,7 +2640,7 @@ tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v) {
 
 tuple __gen_B_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_B_to_tuple(__tact_tuple_destroy_7(v));
+    return __gen_B_to_tuple(__gen_B_not_null(v));
 }
 
 (int, int, int, int, int, int, int) __gen_B_to_external(((int, int, int, int, int, int, int)) v) {
@@ -2683,7 +2700,8 @@ _ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
 ((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v) asm "NOP";
 
 tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) inline {
-    return __tact_tuple_create_8(v);
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
+    return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }
 
 tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v) {
@@ -2693,7 +2711,7 @@ tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v) {
 
 tuple __gen_C_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
-    return __gen_C_to_tuple(__tact_tuple_destroy_8(v));
+    return __gen_C_to_tuple(__gen_C_not_null(v));
 }
 
 (cell, cell, slice, slice, int, int, int, slice) __gen_C_to_external(((cell, cell, slice, slice, int, int, int, slice)) v) {
