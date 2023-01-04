@@ -563,7 +563,7 @@ export function packTupleUpdate(src: Update): TupleItem[] {
 }
 
 async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-    const __code = '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';
+    const __code = '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';
     const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
     let systemCell = beginCell().storeDict(depends).endCell();
     let __stack: TupleItem[] = [];
@@ -736,17 +736,17 @@ export class ContractWithOptionals implements Contract {
     async getNullE(provider: ContractProvider) {
         let __stack: TupleItem[] = [];
         let result = await provider.get('nullE', __stack);
-        let pp = result.stack.peek();
-        if (pp.type === 'null' && result.stack.remaining === 1) { return null; }
-        return loadTupleSomeGenericStruct(result.stack);
+        let pp = result.stack.readTupleOpt();
+        if (!pp) { return null; }
+        return loadTupleSomeGenericStruct(pp);
     }
     
     async getNullF(provider: ContractProvider) {
         let __stack: TupleItem[] = [];
         let result = await provider.get('nullF', __stack);
-        let pp = result.stack.peek();
-        if (pp.type === 'null' && result.stack.remaining === 1) { return null; }
-        return loadTupleStructWithOptionals(result.stack);
+        let pp = result.stack.readTupleOpt();
+        if (!pp) { return null; }
+        return loadTupleStructWithOptionals(pp);
     }
     
     async getNotNullA(provider: ContractProvider) {
@@ -783,6 +783,12 @@ export class ContractWithOptionals implements Contract {
         let __stack: TupleItem[] = [];
         let result = await provider.get('notNullF', __stack);
         return loadTupleStructWithOptionals(result.stack);
+    }
+    
+    async getTestVariables(provider: ContractProvider) {
+        let __stack: TupleItem[] = [];
+        let result = await provider.get('testVariables', __stack);
+        return loadTupleSomeGenericStruct(result.stack);
     }
     
 }

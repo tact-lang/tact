@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Updated codegen to prefix function names with a `$` to avoid clashing with system functions
 - `random` and `randomInt` that are correctly initialized on first use unlike native one 
+- Changed the way get methods results are generated to match more expected behavior
+
+## Fixed
+- non-nullable value could break the nullable variable memory representation
 
 ## [0.6.0] - 2023-01-03
 

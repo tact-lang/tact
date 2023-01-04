@@ -62,6 +62,8 @@ PROGRAM{
   127419 DECLMETHOD $__gen_get_notNullE
   DECLPROC $__gen_ContractWithOptionals_notNullF
   115160 DECLMETHOD $__gen_get_notNullF
+  DECLPROC $__gen_ContractWithOptionals_testVariables
+  87190 DECLMETHOD $__gen_get_testVariables
   DECLPROC $__gen_ContractWithOptionals_receive
   DECLPROC $__gen_ContractWithOptionals_receive_Update
   DECLPROC recv_internal
@@ -494,42 +496,56 @@ PROGRAM{
   __gen_SomeGenericStruct_to_tuple PROC:<{
     5 TUPLE
   }>
-  __gen_SomeGenericStruct_opt_to_tuple PROC:<{
+  __gen_SomeGenericStruct_opt_to_tuple PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      5 UNTUPLE
+      __gen_SomeGenericStruct_to_tuple CALLDICT
     }>
-    5 UNTUPLE
-    __gen_SomeGenericStruct_to_tuple CALLDICT
   }>
   __gen_SomeGenericStruct_to_external PROC:<{
   }>
-  __gen_SomeGenericStruct_opt_to_external PROC:<{
-    __gen_SomeGenericStruct_opt_to_tuple CALLDICT
-    5 UNTUPLE
-  }>
-  __gen_StructWithOptionals_to_tuple PROC:<{
-    __gen_SomeGenericStruct_opt_to_tuple CALLDICT
-    5 TUPLE
-  }>
-  __gen_StructWithOptionals_opt_to_tuple PROC:<{
+  __gen_SomeGenericStruct_opt_to_external PROCINLINE:<{
+    __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
     }>
-    5 UNTUPLE
-    __gen_StructWithOptionals_to_tuple CALLDICT
+  }>
+  __gen_StructWithOptionals_to_tuple PROC:<{
+    __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
+    5 TUPLE
+  }>
+  __gen_StructWithOptionals_opt_to_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      5 UNTUPLE
+      __gen_StructWithOptionals_to_tuple CALLDICT
+    }>
   }>
   __gen_StructWithOptionals_to_external PROC:<{
-    __gen_SomeGenericStruct_opt_to_tuple CALLDICT
+    __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
   }>
-  __gen_StructWithOptionals_opt_to_external PROC:<{
-    __gen_StructWithOptionals_opt_to_tuple CALLDICT
-    5 UNTUPLE
+  __gen_StructWithOptionals_opt_to_external PROCINLINE:<{
+    __gen_StructWithOptionals_opt_to_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
   }>
   __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH
@@ -654,7 +670,7 @@ PROGRAM{
   $__gen_get_nullE PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_nullE CALLDICT
-    __gen_SomeGenericStruct_opt_to_external CALLDICT
+    __gen_SomeGenericStruct_opt_to_external INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_nullF PROC:<{
     5 1 BLKDROP2
@@ -662,7 +678,7 @@ PROGRAM{
   $__gen_get_nullF PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_nullF CALLDICT
-    __gen_StructWithOptionals_opt_to_external CALLDICT
+    __gen_StructWithOptionals_opt_to_external INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_notNullA PROC:<{
     5 BLKDROP
@@ -717,6 +733,21 @@ PROGRAM{
     __gen_load_ContractWithOptionals INLINECALLDICT
     $__gen_ContractWithOptionals_notNullF CALLDICT
     __gen_StructWithOptionals_to_external CALLDICT
+  }>
+  $__gen_ContractWithOptionals_testVariables PROC:<{
+    6 BLKDROP
+    1 PUSHINT
+    2 PUSHINT
+    3 PUSHINT
+    4 PUSHINT
+    5 PUSHINT
+    __gen_SomeGenericStruct_as_optional INLINECALLDICT
+    __gen_SomeGenericStruct_not_null INLINECALLDICT
+  }>
+  $__gen_get_testVariables PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_testVariables CALLDICT
+    __gen_SomeGenericStruct_to_external CALLDICT
   }>
   $__gen_ContractWithOptionals_receive PROC:<{
   }>
@@ -794,6 +825,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5839585175666579637031467832384d4a6a416768714d614c63373869347731374c47544551466b36636d69} PUSHSLICE
+    x{697066733a2f2f516d556b37354b626978627978535a7447797a6241477a4171435a323332525a67664d776e547337434769636d67} PUSHSLICE
   }>
 }END>c

@@ -4,16 +4,23 @@ PROGRAM{
   DECLPROC __gen_read_Update
   DECLPROC __gen_write_SerializationTester2
   DECLPROC __gen_read_SerializationTester2
+  DECLPROC __gen_Vars_as_optional
   DECLPROC __gen_Vars_to_tuple
+  DECLPROC __gen_Vars_opt_to_tuple
   DECLPROC __gen_Vars_to_external
+  DECLPROC __gen_Vars_opt_to_external
   DECLPROC __gen_Both_to_external
   DECLPROC __gen_load_SerializationTester2
   DECLPROC __gen_store_SerializationTester2
   DECLPROC $__gen_SerializationTester2_init
   DECLPROC $__gen_SerializationTester2_getA
   123932 DECLMETHOD $__gen_get_getA
+  DECLPROC $__gen_SerializationTester2_getAopt
+  113663 DECLMETHOD $__gen_get_getAopt
   DECLPROC $__gen_SerializationTester2_getB
   119935 DECLMETHOD $__gen_get_getB
+  DECLPROC $__gen_SerializationTester2_getBopt
+  73763 DECLMETHOD $__gen_get_getBopt
   DECLPROC $__gen_SerializationTester2_getBoth
   81754 DECLMETHOD $__gen_get_getBoth
   DECLPROC $__gen_SerializationTester2_receive
@@ -104,10 +111,27 @@ PROGRAM{
     s5 s10 XCHG
     4 ROLL
   }>
+  __gen_Vars_as_optional PROCINLINE:<{
+    5 TUPLE
+  }>
   __gen_Vars_to_tuple PROC:<{
     5 TUPLE
   }>
+  __gen_Vars_opt_to_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    5 UNTUPLE
+    __gen_Vars_to_tuple CALLDICT
+  }>
   __gen_Vars_to_external PROC:<{
+  }>
+  __gen_Vars_opt_to_external PROC:<{
+    __gen_Vars_opt_to_tuple CALLDICT
+    5 UNTUPLE
   }>
   __gen_Both_to_external PROC:<{
     5 5 BLKSWAP
@@ -150,6 +174,15 @@ PROGRAM{
     $__gen_SerializationTester2_getA CALLDICT
     __gen_Vars_to_external CALLDICT
   }>
+  $__gen_SerializationTester2_getAopt PROC:<{
+    5 BLKDROP
+    __gen_Vars_as_optional INLINECALLDICT
+  }>
+  $__gen_get_getAopt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getAopt CALLDICT
+    __gen_Vars_opt_to_external CALLDICT
+  }>
   $__gen_SerializationTester2_getB PROC:<{
     5 5 BLKDROP2
   }>
@@ -157,6 +190,15 @@ PROGRAM{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getB CALLDICT
     __gen_Vars_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_getBopt PROC:<{
+    5 5 BLKDROP2
+    __gen_Vars_as_optional INLINECALLDICT
+  }>
+  $__gen_get_getBopt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBopt CALLDICT
+    __gen_Vars_opt_to_external CALLDICT
   }>
   $__gen_SerializationTester2_getBoth PROC:<{
   }>
@@ -245,6 +287,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d50386e593337653574467162534e6b76506870337444444d7877776132324645797768317563726143754761} PUSHSLICE
+    x{697066733a2f2f516d5367706848354d586a3433707a55744c646869635533676735764e645a476d654e6e66474c57774754704e55} PUSHSLICE
   }>
 }END>c

@@ -430,19 +430,26 @@ PROGRAM{
   __gen_SomeStruct_to_tuple PROC:<{
     1 TUPLE
   }>
-  __gen_SomeStruct_opt_to_tuple PROC:<{
+  __gen_SomeStruct_opt_to_tuple PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      1 UNTUPLE
+      __gen_SomeStruct_to_tuple CALLDICT
     }>
-    1 UNTUPLE
-    __gen_SomeStruct_to_tuple CALLDICT
   }>
-  __gen_SomeStruct_opt_to_external PROC:<{
-    __gen_SomeStruct_opt_to_tuple CALLDICT
-    1 UNTUPLE
+  __gen_SomeStruct_opt_to_external PROCINLINE:<{
+    __gen_SomeStruct_opt_to_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
   }>
   __gen_load_MapTestContract PROCINLINE:<{
     c4 PUSH
@@ -560,7 +567,7 @@ PROGRAM{
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_intMap4Value CALLDICT
-    __gen_SomeStruct_opt_to_external CALLDICT
+    __gen_SomeStruct_opt_to_external INLINECALLDICT
   }>
   $__gen_MapTestContract_addrMap1 PROC:<{
     s3 s7 XCHG
@@ -646,7 +653,7 @@ PROGRAM{
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_addrMap4Value CALLDICT
-    __gen_SomeStruct_opt_to_external CALLDICT
+    __gen_SomeStruct_opt_to_external INLINECALLDICT
   }>
   $__gen_MapTestContract_receive_SetIntMap1 PROC:<{
     257 PUSHINT

@@ -1,9 +1,9 @@
 import { beginCell } from "ton-core";
 import { enabledInline } from "../../config";
-import { ASTCondition, ASTStatement } from "../../grammar/ast";
+import { ASTCondition, ASTExpression, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
-import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription } from "../../types/types";
+import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription, TypeRef } from "../../types/types";
 import { getMethodId } from "../../utils";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
@@ -11,15 +11,25 @@ import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { fn, id } from "./id";
 import { writeExpression, writeValue } from "./writeExpression";
+import { cast } from "./cast";
 
-function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext) {
+function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
+    let expr = getExpType(ctx.ctx, expression);
+    return cast(expr, to, writeExpression(expression, ctx), ctx); // Cast for nullable
+}
+
+function writeStatement(f: ASTStatement, self: string | null, returns: TypeRef | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
         if (f.expression) {
-            let exp = writeExpression(f.expression, ctx);
+
+            // Format expression
+            let result = writeCastedExpression(f.expression, returns!, ctx);
+
+            // Return
             if (self) {
-                ctx.append(`return (${self}, ${exp});`);
+                ctx.append(`return (${self}, ${result});`);
             } else {
-                ctx.append(`return ${exp};`);
+                ctx.append(`return ${result};`);
             }
         } else {
             if (self) {
@@ -36,12 +46,16 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                ctx.append(`var ${resolveFuncTypeUnpack(t, id(f.name), ctx)} = ${writeExpression(f.expression, ctx)};`);
+                if (t.optional) {
+                    ctx.append(`tuple ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`);
+                } else {
+                    ctx.append(`var ${resolveFuncTypeUnpack(t, id(f.name), ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`);
+                }
                 return;
             }
         }
 
-        ctx.append(`${resolveFuncType(resolveTypeRef(ctx.ctx, f.type), ctx)} ${id(f.name)} = ${writeExpression(f.expression, ctx)};`);
+        ctx.append(`${resolveFuncType(t, ctx)} ${id(f.name)} = ${writeCastedExpression(f.expression, t, ctx)};`);
         return;
     } else if (f.kind === 'statement_assign') {
 
@@ -53,15 +67,15 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         if (t.kind === 'ref') {
             let tt = getType(ctx.ctx, t.name);
             if (tt.kind === 'contract' || tt.kind === 'struct') {
-                ctx.append(`${resolveFuncTypeUnpack(t, `${path}`, ctx)} = ${writeExpression(f.expression, ctx)};`);
+                ctx.append(`${resolveFuncTypeUnpack(t, `${path}`, ctx)} = ${writeCastedExpression(f.expression, t, ctx)};`);
                 return;
             }
         }
 
-        ctx.append(`${path} = ${writeExpression(f.expression, ctx)};`);
+        ctx.append(`${path} = ${writeCastedExpression(f.expression, t, ctx)};`);
         return;
     } else if (f.kind === 'statement_condition') {
-        writeCondition(f, self, false, ctx);
+        writeCondition(f, self, false, returns, ctx);
         return;
     } else if (f.kind === 'statement_expression') {
         let exp = writeExpression(f.expression, ctx);
@@ -71,7 +85,7 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         ctx.append(`while (${writeExpression(f.condition, ctx)}) {`);
         ctx.inIndent(() => {
             for (let s of f.statements) {
-                writeStatement(s, self, ctx);
+                writeStatement(s, self, returns, ctx);
             }
         });
         ctx.append(`}`);
@@ -80,7 +94,7 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         ctx.append(`do {`);
         ctx.inIndent(() => {
             for (let s of f.statements) {
-                writeStatement(s, self, ctx);
+                writeStatement(s, self, returns, ctx);
             }
         });
         ctx.append(`} until (${writeExpression(f.condition, ctx)});`);
@@ -89,7 +103,7 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
         ctx.append(`repeat (${writeExpression(f.condition, ctx)}) {`);
         ctx.inIndent(() => {
             for (let s of f.statements) {
-                writeStatement(s, self, ctx);
+                writeStatement(s, self, returns, ctx);
             }
         });
         ctx.append(`}`);
@@ -99,23 +113,23 @@ function writeStatement(f: ASTStatement, self: string | null, ctx: WriterContext
     throw Error('Unknown statement kind');
 }
 
-function writeCondition(f: ASTCondition, self: string | null, elseif: boolean, ctx: WriterContext) {
+function writeCondition(f: ASTCondition, self: string | null, elseif: boolean, returns: TypeRef | null, ctx: WriterContext) {
     ctx.append(`${(elseif ? '} else' : '')}if (${writeExpression(f.expression, ctx)}) {`);
     ctx.inIndent(() => {
         for (let s of f.trueStatements) {
-            writeStatement(s, self, ctx);
+            writeStatement(s, self, returns, ctx);
         }
     });
     if (f.falseStatements.length > 0) {
         ctx.append(`} else {`);
         ctx.inIndent(() => {
             for (let s of f.falseStatements) {
-                writeStatement(s, self, ctx);
+                writeStatement(s, self, returns, ctx);
             }
         });
         ctx.append(`}`);
     } else if (f.elseif) {
-        writeCondition(f.elseif, self, true, ctx);
+        writeCondition(f.elseif, self, true, returns, ctx);
     } else {
         ctx.append(`}`);
     }
@@ -172,7 +186,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
             // Process statements
             for (let s of fd.statements) {
-                writeStatement(s, returnsStr, ctx);
+                writeStatement(s, returnsStr, f.returns, ctx);
             }
 
             // Auto append return
@@ -200,7 +214,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                 ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
 
                 for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, ctx);
+                    writeStatement(s, selfRes, null, ctx);
                 }
 
                 if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
@@ -222,7 +236,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, ctx);
+                    writeStatement(s, selfRes, null, ctx);
                 }
 
                 if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
@@ -249,7 +263,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, ctx);
+                    writeStatement(s, selfRes, null, ctx);
                 }
 
                 if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
@@ -271,7 +285,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, ctx);
+                    writeStatement(s, selfRes, null, ctx);
                 }
 
                 if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
@@ -292,7 +306,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, ctx);
+                    writeStatement(s, selfRes, null, ctx);
                 }
 
                 if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
@@ -313,7 +327,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, ctx);
+                    writeStatement(s, selfRes, null, ctx);
                 }
 
                 if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
@@ -397,7 +411,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             // Generate statements
             let returns = resolveFuncTypeUnpack(t, id('self'), ctx);
             for (let s of init.ast.statements) {
-                writeStatement(s, returns, ctx);
+                writeStatement(s, returns, null, ctx);
             }
 
             // Assemble result cell

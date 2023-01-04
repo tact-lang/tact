@@ -960,6 +960,15 @@
         "name": "StructWithOptionals",
         "optional": false
       }
+    },
+    {
+      "name": "testVariables",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "SomeGenericStruct",
+        "optional": false
+      }
     }
   ],
   "dependsOn": {},

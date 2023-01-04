@@ -90,8 +90,12 @@ describe('feature-serialization', () => {
 
                 // Checl values
                 let a = await contract.getGetA();
+                let aOpt = await contract.getGetAopt();
                 let b = await contract.getGetB();
+                let bOpt = await contract.getGetBopt();
                 let both = await contract.getGetBoth();
+                expect(aOpt).toMatchObject(a);
+                expect(bOpt).toMatchObject(b);
                 expect(a.a).toBe(cs.a.a);
                 expect(a.b).toBe(cs.a.b);
                 expect(a.c).toBe(cs.a.c);

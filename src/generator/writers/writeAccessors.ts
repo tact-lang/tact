@@ -74,7 +74,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_opt_to_tuple`, () => {
-        ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) {`);
+        ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`if (null?(v)) { return null(); }`);
             ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
@@ -115,11 +115,19 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_opt_to_external`, () => {
-        ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_opt_to_external(tuple v) {`);
+        ctx.append(`tuple __gen_${type.name}_opt_to_external(tuple v) inline {`);
         ctx.inIndent(() => {
-            ctx.used(`__tact_tuple_destroy_${type.fields.length}`);
             ctx.used(`__gen_${type.name}_opt_to_tuple`);
-            ctx.append(`return __tact_tuple_destroy_${type.fields.length}(__gen_${type.name}_opt_to_tuple(v));`);
+            ctx.append(`var loaded = __gen_${type.name}_opt_to_tuple(v);`);
+            ctx.append(`if (null?(loaded)) {`);
+            ctx.inIndent(() => {
+                ctx.append(`return null();`);
+            });
+            ctx.append(`} else {`)
+            ctx.inIndent(() => {
+                ctx.append(`return (loaded);`);
+            });
+            ctx.append(`}`);
         });
         ctx.append(`}`);
     });

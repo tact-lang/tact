@@ -230,7 +230,7 @@ tuple __gen_SomeGenericStruct_to_tuple(((int, int, int, int, int)) v) {
     return __tact_tuple_create_5(v'value1, v'value2, v'value3, v'value4, v'value5);
 }
 
-tuple __gen_SomeGenericStruct_opt_to_tuple(tuple v) {
+tuple __gen_SomeGenericStruct_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
     return __gen_SomeGenericStruct_to_tuple(__tact_tuple_destroy_5(v));
 }
@@ -240,8 +240,13 @@ tuple __gen_SomeGenericStruct_opt_to_tuple(tuple v) {
     return (v'value1, v'value2, v'value3, v'value4, v'value5);
 }
 
-(int, int, int, int, int) __gen_SomeGenericStruct_opt_to_external(tuple v) {
-    return __tact_tuple_destroy_5(__gen_SomeGenericStruct_opt_to_tuple(v));
+tuple __gen_SomeGenericStruct_opt_to_external(tuple v) inline {
+    var loaded = __gen_SomeGenericStruct_opt_to_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
 }
 
 tuple __gen_StructWithOptionals_to_tuple(((int, int, cell, slice, tuple)) v) {
@@ -249,7 +254,7 @@ tuple __gen_StructWithOptionals_to_tuple(((int, int, cell, slice, tuple)) v) {
     return __tact_tuple_create_5(v'a, v'b, v'c, v'd, __gen_SomeGenericStruct_opt_to_tuple(v'e));
 }
 
-tuple __gen_StructWithOptionals_opt_to_tuple(tuple v) {
+tuple __gen_StructWithOptionals_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
     return __gen_StructWithOptionals_to_tuple(__tact_tuple_destroy_5(v));
 }
@@ -259,8 +264,13 @@ tuple __gen_StructWithOptionals_opt_to_tuple(tuple v) {
     return (v'a, v'b, v'c, v'd, __gen_SomeGenericStruct_opt_to_tuple(v'e));
 }
 
-(int, int, cell, slice, tuple) __gen_StructWithOptionals_opt_to_external(tuple v) {
-    return __tact_tuple_destroy_5(__gen_StructWithOptionals_opt_to_tuple(v));
+tuple __gen_StructWithOptionals_opt_to_external(tuple v) inline {
+    var loaded = __gen_StructWithOptionals_opt_to_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
 }
 
 (int, int, cell, slice, tuple, tuple) __gen_load_ContractWithOptionals() inline {
@@ -490,6 +500,18 @@ _ $__gen_get_notNullF() method_id(115160) {
     return __gen_StructWithOptionals_to_external(res);
 }
 
+(int, int, int, int, int) $__gen_ContractWithOptionals_testVariables((int, int, cell, slice, tuple, tuple) $self) impure {
+    var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
+    tuple $a = __gen_SomeGenericStruct_as_optional((1, 2, 3, 4, 5));
+    return __gen_SomeGenericStruct_not_null($a);
+}
+
+_ $__gen_get_testVariables() method_id(87190) {
+    var self = __gen_load_ContractWithOptionals();
+    var res = $__gen_ContractWithOptionals_testVariables(self);
+    return __gen_SomeGenericStruct_to_external(res);
+}
+
 (((int, int, cell, slice, tuple, tuple)), ()) $__gen_ContractWithOptionals_receive((int, int, cell, slice, tuple, tuple) $self) impure {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), ());
@@ -558,5 +580,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmX9XQufeycp1Fx28MJjAghqMaLc78i4w17LGTEQFk6cmi";
+    return "ipfs://QmUk75KbixbyxSZtGyzbAGzAqCZ232RZgfMwnTs7CGicmg";
 }

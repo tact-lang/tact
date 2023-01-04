@@ -252,9 +252,9 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
                             }
                         } else {
                             if (g.returns.optional) {
-                                w.append(`let pp = result.stack.peek();`);
-                                w.append(`if (pp.type === 'null' && result.stack.remaining === 1) { return null; }`);
-                                w.append(`return loadTuple${g.returns.name}(result.stack);`);
+                                w.append(`let pp = result.stack.readTupleOpt();`);
+                                w.append(`if (!pp) { return null; }`);
+                                w.append(`return loadTuple${g.returns.name}(pp);`);
                             } else {
                                 w.append(`return loadTuple${g.returns.name}(result.stack);`);
                             }

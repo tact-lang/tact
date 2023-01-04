@@ -907,21 +907,6 @@ SETCP0
   28: 
     SINGLE
 
-  29: 
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    IFJMP
-    1 UNTUPLE
-    28 CALLDICT
-
-  30: 
-    29 CALLDICT
-    1 UNTUPLE
-
   33: 
     PUSHNULL
     PUSHNULL
@@ -1523,7 +1508,24 @@ SETCP0
     1 8 BLKDROP2
     1 8 BLKSWAP
     49 CALLDICT
-    30 CALLDICT
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      1 UNTUPLE
+      28 CALLDICT
+    }> PUSHCONT
+    IFELSE
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    IF
 
   103396: 
     c4 PUSH
@@ -1612,7 +1614,24 @@ SETCP0
     1 8 BLKDROP2
     1 8 BLKSWAP
     41 CALLDICT
-    30 CALLDICT
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      1 UNTUPLE
+      28 CALLDICT
+    }> PUSHCONT
+    IFELSE
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    IF
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

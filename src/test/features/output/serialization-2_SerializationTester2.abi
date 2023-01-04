@@ -566,12 +566,30 @@
       }
     },
     {
+      "name": "getAopt",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Vars",
+        "optional": true
+      }
+    },
+    {
       "name": "getB",
       "args": [],
       "returns": {
         "kind": "ref",
         "name": "Vars",
         "optional": false
+      }
+    },
+    {
+      "name": "getBopt",
+      "args": [],
+      "returns": {
+        "kind": "ref",
+        "name": "Vars",
+        "optional": true
       }
     },
     {

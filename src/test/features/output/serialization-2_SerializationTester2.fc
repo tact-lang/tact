@@ -1,7 +1,13 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+forall X0, X1 -> tuple __tact_tuple_create_2((X0, X1) v) asm "2 TUPLE";
+
+forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
+
 forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
+
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
 
 builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
@@ -49,9 +55,18 @@ builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, 
     return (sc_0, (v'a, v'b));
 }
 
+tuple __gen_Vars_as_optional(((int, int, int, int, int)) v) inline {
+    return __tact_tuple_create_5(v);
+}
+
 tuple __gen_Vars_to_tuple(((int, int, int, int, int)) v) {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     return __tact_tuple_create_5(v'a, v'b, v'c, v'd, v'e);
+}
+
+tuple __gen_Vars_opt_to_tuple(tuple v) inline {
+    if (null?(v)) { return null(); }
+    return __gen_Vars_to_tuple(__tact_tuple_destroy_5(v));
 }
 
 (int, int, int, int, int) __gen_Vars_to_external(((int, int, int, int, int)) v) {
@@ -59,9 +74,41 @@ tuple __gen_Vars_to_tuple(((int, int, int, int, int)) v) {
     return (v'a, v'b, v'c, v'd, v'e);
 }
 
+tuple __gen_Vars_opt_to_external(tuple v) inline {
+    var loaded = __gen_Vars_opt_to_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
+}
+
+tuple __gen_Both_as_optional((((int, int, int, int, int), (int, int, int, int, int))) v) inline {
+    return __tact_tuple_create_2(v);
+}
+
+tuple __gen_Both_to_tuple((((int, int, int, int, int), (int, int, int, int, int))) v) {
+    var (v'a, v'b) = v;
+    return __tact_tuple_create_2(__gen_Vars_to_tuple(v'a), __gen_Vars_to_tuple(v'b));
+}
+
+tuple __gen_Both_opt_to_tuple(tuple v) inline {
+    if (null?(v)) { return null(); }
+    return __gen_Both_to_tuple(__tact_tuple_destroy_2(v));
+}
+
 (tuple, tuple) __gen_Both_to_external((((int, int, int, int, int), (int, int, int, int, int))) v) {
     var (v'a, v'b) = v;
     return (__gen_Vars_to_tuple(v'a), __gen_Vars_to_tuple(v'b));
+}
+
+tuple __gen_Both_opt_to_external(tuple v) inline {
+    var loaded = __gen_Both_opt_to_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
 }
 
 ((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() inline {
@@ -100,6 +147,17 @@ _ $__gen_get_getA() method_id(123932) {
     return __gen_Vars_to_external(res);
 }
 
+tuple $__gen_SerializationTester2_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    return __gen_Vars_as_optional(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e));
+}
+
+_ $__gen_get_getAopt() method_id(113663) {
+    var self = __gen_load_SerializationTester2();
+    var res = $__gen_SerializationTester2_getAopt(self);
+    return __gen_Vars_opt_to_external(res);
+}
+
 (int, int, int, int, int) $__gen_SerializationTester2_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     return ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e);
@@ -111,6 +169,17 @@ _ $__gen_get_getB() method_id(119935) {
     return __gen_Vars_to_external(res);
 }
 
+tuple $__gen_SerializationTester2_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    return __gen_Vars_as_optional(($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+}
+
+_ $__gen_get_getBopt() method_id(73763) {
+    var self = __gen_load_SerializationTester2();
+    var res = $__gen_SerializationTester2_getBopt(self);
+    return __gen_Vars_opt_to_external(res);
+}
+
 ((int, int, int, int, int), (int, int, int, int, int)) $__gen_SerializationTester2_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
@@ -120,6 +189,17 @@ _ $__gen_get_getBoth() method_id(81754) {
     var self = __gen_load_SerializationTester2();
     var res = $__gen_SerializationTester2_getBoth(self);
     return __gen_Both_to_external(res);
+}
+
+tuple $__gen_SerializationTester2_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
+    return __gen_Both_as_optional((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
+}
+
+_ $__gen_get_getBothOpt() method_id(69430) {
+    var self = __gen_load_SerializationTester2();
+    var res = $__gen_SerializationTester2_getBothOpt(self);
+    return __gen_Both_opt_to_external(res);
 }
 
 ((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
@@ -186,5 +266,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmP8nY37e5tFqbSNkvPhp3tDDMxwwa22FEywh1ucraCuGa";
+    return "ipfs://QmfYHfqf6yfeaq1UUnrS6GHzsinoRQJZ5vHtuuMmmm16VT";
 }

@@ -251,13 +251,18 @@ tuple __gen_SomeStruct_to_tuple(((int)) v) {
     return __tact_tuple_create_1(v'value);
 }
 
-tuple __gen_SomeStruct_opt_to_tuple(tuple v) {
+tuple __gen_SomeStruct_opt_to_tuple(tuple v) inline {
     if (null?(v)) { return null(); }
     return __gen_SomeStruct_to_tuple(__tact_tuple_destroy_1(v));
 }
 
-(int) __gen_SomeStruct_opt_to_external(tuple v) {
-    return __tact_tuple_destroy_1(__gen_SomeStruct_opt_to_tuple(v));
+tuple __gen_SomeStruct_opt_to_external(tuple v) inline {
+    var loaded = __gen_SomeStruct_opt_to_tuple(v);
+    if (null?(loaded)) {
+        return null();
+    } else {
+        return (loaded);
+    }
 }
 
 (cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline {
