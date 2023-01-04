@@ -1,6 +1,5 @@
 import { ContractABI, ContractFunctionArg } from "../abi/ContractABI";
 import * as changeCase from "change-case";
-import { writeToStack } from "./typescript/writeToStack";
 import { Writer } from "../utils/Writer";
 import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { getTSFieldType } from "./typescript/getTSFieldType";

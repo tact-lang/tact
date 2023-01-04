@@ -70,7 +70,7 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             // Check type
             let expressionType = getExpType(ctx, s.expression);
             let variableType = resolveTypeRef(ctx, s.type);
-            if (!isAssignable(variableType, resolveTypeRef(ctx, s.type))) {
+            if (!isAssignable(expressionType, variableType)) {
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(variableType)}`, s.ref);
             }
 

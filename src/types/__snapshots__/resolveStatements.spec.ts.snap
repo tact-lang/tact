@@ -90,6 +90,15 @@ exports[`resolveStatements should fail statements for case-9 1`] = `
 Invalid type "Bool" for argument "b""
 `;
 
+exports[`resolveStatements should fail statements for case-10 1`] = `
+"Line 6, col 5:
+  5 |     let a: Int = 0;
+> 6 |     let b: Bool = 0;
+          ^~~~~~~~~~~~~~~~
+  7 | }
+Type mismatch: Int is not assignable to Bool"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
