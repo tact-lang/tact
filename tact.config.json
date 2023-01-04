@@ -110,6 +110,14 @@
       "experimental": {
         "debug": true
       }
+    },
+    {
+      "name": "bug_18",
+      "path": "./src/test/bugs/bug_18.tact",
+      "output": "./src/test/bugs/output",
+      "experimental": {
+        "debug": true
+      }
     }
   ]
 }

@@ -1,0 +1,256 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_dict_set_int_slice
+  DECLPROC __tact_dict_get_int_slice
+  DECLPROC __tact_dict_set_slice_int
+  DECLPROC __tact_dict_get_slice_int
+  DECLPROC __gen_write_DDDD
+  DECLPROC __gen_read_DDDD
+  DECLPROC __gen_load_DDDD
+  DECLPROC __gen_store_DDDD
+  DECLPROC $__gen_DDDD_init
+  DECLPROC $__gen_DDDD_mapData_addr1
+  120259 DECLMETHOD $__gen_get_mapData_addr1
+  DECLPROC $__gen_DDDD_mapData2_addr1
+  66206 DECLMETHOD $__gen_get_mapData2_addr1
+  DECLPROC $__gen_DDDD_receive
+  DECLPROC recv_internal
+  77368 DECLMETHOD init_DDDD
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __tact_dict_set_int_slice PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>
+    s1 s3 s3 XCHG3
+    DICTISET
+  }>
+  __tact_dict_get_int_slice PROC:<{
+    -ROT
+    DICTIGET
+    NULLSWAPIFNOT
+    IFJMP:<{
+    }>
+    DROP
+    PUSHNULL
+  }>
+  __tact_dict_set_slice_int PROC:<{
+    OVER
+    ISNULL
+    IFJMP:<{
+      2DROP
+      -ROT
+      DICTDEL
+      DROP
+    }>
+    NEWC
+    SWAP
+    STIX
+    s1 s3 s3 XCHG3
+    DICTSETB
+  }>
+  __tact_dict_get_slice_int PROC:<{
+    s1 s3 s3 XCHG3
+    DICTGET
+    NULLSWAPIFNOT
+    IFJMP:<{
+      SWAP
+      LDIX
+      DROP
+    }>
+    2DROP
+    PUSHNULL
+  }>
+  __gen_write_DDDD PROCINLINE:<{
+    s5 s4 XCHG2
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
+    STDICT
+    STDICT
+  }>
+  __gen_read_DDDD PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDDICT
+    LDDICT
+    5 -ROLL
+  }>
+  __gen_load_DDDD PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_DDDD INLINECALLDICT
+    1 5 BLKDROP2
+  }>
+  __gen_store_DDDD PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    5 -ROLL
+    __gen_write_DDDD INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $__gen_DDDD_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    s0 s5 XCHG
+    NEWC
+    STREF
+    s0 s5 XCHG
+    __gen_write_DDDD INLINECALLDICT
+    ENDC
+  }>
+  $__gen_DDDD_mapData_addr1 PROC:<{
+    NIP
+    s2 POP
+    s3 POP
+    257 PUSHINT
+    s2 POP
+    __tact_dict_get_int_slice CALLDICT
+  }>
+  $__gen_get_mapData_addr1 PROC:<{
+    __gen_load_DDDD INLINECALLDICT
+    5 ROLL
+    $__gen_DDDD_mapData_addr1 CALLDICT
+  }>
+  $__gen_DDDD_mapData2_addr1 PROC:<{
+    4 2 BLKDROP2
+    267 PUSHINT
+    SWAP
+    257 PUSHINT
+    __tact_dict_get_slice_int CALLDICT
+  }>
+  $__gen_get_mapData2_addr1 PROC:<{
+    __gen_load_DDDD INLINECALLDICT
+    5 ROLL
+    $__gen_DDDD_mapData2_addr1 CALLDICT
+  }>
+  $__gen_DDDD_receive PROC:<{
+    SWAP
+    257 PUSHINT
+    0 PUSHINT
+    s6 PUSH
+    __tact_dict_set_int_slice CALLDICT
+    257 PUSHINT
+    1 PUSHINT
+    s5 PUSH
+    __tact_dict_set_int_slice CALLDICT
+    257 PUSHINT
+    2 PUSHINT
+    s4 PUSH
+    __tact_dict_set_int_slice CALLDICT
+    257 PUSHINT
+    3 PUSHINT
+    s6 PUSH
+    __tact_dict_set_int_slice CALLDICT
+    SWAP
+    267 PUSHINT
+    s5 PUSH
+    0 PUSHINT
+    257 PUSHINT
+    __tact_dict_set_slice_int CALLDICT
+    267 PUSHINT
+    s4 PUSH
+    1 PUSHINT
+    257 PUSHINT
+    __tact_dict_set_slice_int CALLDICT
+    267 PUSHINT
+    s3 PUSH
+    2 PUSHINT
+    257 PUSHINT
+    __tact_dict_set_slice_int CALLDICT
+    267 PUSHINT
+    s5 PUSH
+    3 PUSHINT
+    257 PUSHINT
+    __tact_dict_set_slice_int CALLDICT
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    0 EQINT
+    SWAP
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      __gen_load_DDDD INLINECALLDICT
+      $__gen_DDDD_receive CALLDICT
+      __gen_store_DDDD INLINECALLDICT
+    }>
+    130 THROW
+  }>
+  init_DDDD PROC:<{
+    $__gen_DDDD_init CALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d53676337474d394e7248617745745373724871536231666874535a6a57427a6d45484458337a7a4673545453} PUSHSLICE
+  }>
+}END>c

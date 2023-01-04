@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`bugs not have a bug #18 1`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "type": "empty",
+      },
+      "bounce": true,
+      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+      "to": "kQC3wtzQNzsO2lEhZebhhPToqqzkwuFENWiYGw5Wf-WQhOuD",
+      "type": "internal",
+      "value": 10000000000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 19001n,
+    "type": "processed",
+  },
+]
+`;
