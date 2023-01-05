@@ -14,6 +14,10 @@ contract SampleContract {
     c: Source;
     d: map[Int]Int;
 
+    init() {
+        // 
+    }
+
     public fun addStake() { 
         self.a = 10;
         self.b = -20;

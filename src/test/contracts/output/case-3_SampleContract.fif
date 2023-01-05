@@ -1,20 +1,44 @@
 PROGRAM{
+  DECLPROC __gen_write_Source
   DECLPROC __gen_read_Source
+  DECLPROC __gen_write_SampleContract
   DECLPROC __gen_read_SampleContract
   DECLPROC __gen_load_SampleContract
+  DECLPROC $__gen_SampleContract_init
   DECLPROC $__gen_SampleContract_stake
   80984 DECLMETHOD $__gen_get_stake
   DECLPROC recv_internal
+  119535 DECLMETHOD init_SampleContract
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __gen_write_Source PROCINLINE:<{
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
   __gen_read_Source PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
+  }>
+  __gen_write_SampleContract PROCINLINE:<{
+    s3 s4 XCHG2
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s0 s3 XCHG3
+    __gen_write_Source INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
   }>
   __gen_read_SampleContract PROCINLINE:<{
     257 PUSHINT
@@ -37,6 +61,16 @@ PROGRAM{
     __tact_context_sys SETGLOB
     __gen_read_SampleContract INLINECALLDICT
     1 4 BLKDROP2
+  }>
+  $__gen_SampleContract_init PROC:<{
+    PUSHNULL
+    0 PUSHINT
+    s0 s3 PUXC
+    NEWC
+    STREF
+    s4 s3 s4 XCHG3
+    __gen_write_SampleContract INLINECALLDICT
+    ENDC
   }>
   $__gen_SampleContract_stake PROC:<{
     3 BLKDROP
@@ -73,11 +107,14 @@ PROGRAM{
     }>
     130 THROW
   }>
+  init_SampleContract PROC:<{
+    $__gen_SampleContract_init CALLDICT
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d623732416d6961674234784b4b73685572667864596e58536d70613779794751704176636d45503378416134} PUSHSLICE
+    x{697066733a2f2f516d6555445171685962674e524c314b44416e5751504433317348364a6953384c346146745a556a576e5173614a} PUSHSLICE
   }>
 }END>c

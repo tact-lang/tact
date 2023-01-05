@@ -1,6 +1,12 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+builder __gen_write_ConstantTester(builder build_0, (int) v) inline {
+    var (v'v) = v;
+    build_0 = store_int(build_0, v'v, 257);
+    return build_0;
+}
+
 (slice, ((int))) __gen_read_ConstantTester(slice sc_0) inline {
     var v'v = sc_0~load_int(257);
     return (sc_0, (v'v));
@@ -14,6 +20,15 @@ global cell __tact_context_sys;
 
 ;; String "Hello world!"
 slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
+
+cell $__gen_ConstantTester_init(cell sys') {
+    var (($self'v)) = (null());
+    $self'v = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_ConstantTester(b', ($self'v));
+    return b'.end_cell();
+}
 
 int $__gen_ConstantTester_something1((int) $self) impure {
     var (($self'v)) = $self;
@@ -103,6 +118,10 @@ _ $__gen_get_globalConst() method_id(116577) {
     throw(130);
 }
 
+cell init_ConstantTester(cell sys') method_id {
+    return $__gen_ConstantTester_init(sys');
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -111,5 +130,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmP7dcNCjaJWzkvFmzZVr4kMhnbQz7psveCw1tWzhDJaTt";
+    return "ipfs://QmeTCpu41BYLduv9P5aECEQzf97z28EDyBwtcNFVtXiz9J";
 }

@@ -72,8 +72,5 @@ export type ContractABI = {
     getters: CotnractFunction[];
     errors: {
         [id: string]: { message: string }
-    },
-    dependsOn: {
-        [name: string]: { uid: number }
     }
 }

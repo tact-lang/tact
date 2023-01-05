@@ -13,6 +13,11 @@ contract SampleContract {
     b: Int;
     c: Source;
 
+    init() {
+        self.a = 0;
+        self.b = 0;
+    }
+
     public fun addStake() { 
         self.a = 10;
         self.b = -20;

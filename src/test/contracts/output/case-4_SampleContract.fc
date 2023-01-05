@@ -1,10 +1,28 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+builder __gen_write_Source(builder build_0, (int, int) v) inline {
+    var (v'a, v'b) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    return build_0;
+}
+
 (slice, ((int, int))) __gen_read_Source(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     return (sc_0, (v'a, v'b));
+}
+
+builder __gen_write_SampleContract(builder build_0, (int, int, (int, int), cell) v) inline {
+    var (v'a, v'b, (v'c'a, v'c'b), v'd) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    var build_1 = begin_cell();
+    build_1 = __gen_write_Source(build_1, (v'c'a, v'c'b));
+    build_1 = store_dict(build_1, v'd);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
 }
 
 (slice, ((int, int, (int, int), cell))) __gen_read_SampleContract(slice sc_0) inline {
@@ -20,6 +38,14 @@ global cell __tact_context_sys;
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleContract();
+}
+
+cell $__gen_SampleContract_init(cell sys') {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = (null(), null(), null(), null());
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SampleContract(b', ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd));
+    return b'.end_cell();
 }
 
 int $__gen_SampleContract_stake((int, int, (int, int), cell) $self) impure {
@@ -55,6 +81,10 @@ _ $__gen_get_stake() method_id(80984) {
     throw(130);
 }
 
+cell init_SampleContract(cell sys') method_id {
+    return $__gen_SampleContract_init(sys');
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -63,5 +93,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://Qmb72AmiagB4xKKshUrfxdYnXSmpa7yyGQpAvcmEP3xAa4";
+    return "ipfs://QmeUDQqhYbgNRL1KDAnWQPD31sH6JiS8L4aFtZUjWnQsaJ";
 }

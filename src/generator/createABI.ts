@@ -136,12 +136,6 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         }
     }
 
-    // Dependencies
-    let dependsOn: { [key: string]: { uid: number } } = {};
-    for (let d of contract.dependsOn) {
-        dependsOn[d.name] = { uid: d.uid };
-    }
-
     // Errors
     let errors: { [key: string]: { message: string } } = {};
     errors['2'] = { message: 'Stack undeflow' };
@@ -173,7 +167,6 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         init,
         receivers,
         getters,
-        dependsOn,
         errors
     };
 }

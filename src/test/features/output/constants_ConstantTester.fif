@@ -1,6 +1,8 @@
 PROGRAM{
+  DECLPROC __gen_write_ConstantTester
   DECLPROC __gen_read_ConstantTester
   DECLPROC __gen_load_ConstantTester
+  DECLPROC $__gen_ConstantTester_init
   DECLPROC $__gen_ConstantTester_something1
   121234 DECLMETHOD $__gen_get_something1
   DECLPROC $__gen_ConstantTester_something2
@@ -14,10 +16,16 @@ PROGRAM{
   DECLPROC $__gen_ConstantTester_globalConst
   116577 DECLMETHOD $__gen_get_globalConst
   DECLPROC recv_internal
+  126436 DECLMETHOD init_ConstantTester
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __gen_write_ConstantTester PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
   __gen_read_ConstantTester PROCINLINE:<{
     257 PUSHINT
     LDIX
@@ -31,6 +39,15 @@ PROGRAM{
     __tact_context_sys SETGLOB
     __gen_read_ConstantTester INLINECALLDICT
     NIP
+  }>
+  $__gen_ConstantTester_init PROC:<{
+    0 PUSHINT
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_ConstantTester INLINECALLDICT
+    ENDC
   }>
   $__gen_ConstantTester_something1 PROC:<{
     DROP
@@ -108,11 +125,14 @@ PROGRAM{
     }>
     130 THROW
   }>
+  init_ConstantTester PROC:<{
+    $__gen_ConstantTester_init CALLDICT
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d503764634e436a614a577a6b76466d7a5a5672346b4d686e62517a377073766543773174577a68444a615474} PUSHSLICE
+    x{697066733a2f2f516d6554437075343142594c64757639503561454345517a6639377a3238454479427774634e46567458697a394a} PUSHSLICE
   }>
 }END>c

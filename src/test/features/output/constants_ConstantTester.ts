@@ -174,6 +174,29 @@ function storeTupleSendParameters(source: SendParameters) {
     return __tuple;
 }
 
+async function ConstantTester_init() {
+    const __code = 'te6ccgECIAEAAXAAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAVgSEwIBIAYHAgFIDg8ARdEGukmOEPmGhpgYC42GAAyL/IuHEA/SARKCI3gnww7nlgQUAgEgCAkCASAKCwIBIAwNABkcAHIzAEBgQEBzwDJgAAUMHqAABQwbYAARDCCGByjXw4AgAgEgEBEAB0MIBkgAEQwghhqK7fQAIAAfDCLxIZWxsbyB3b3JsZCGIAIBIBQVAgEgGBkCASAWFwBNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwACWyTftRNDUAfhigQEB1wABMfAIgACWyRbtRNDUAfhigQEB1wABMfAJgAgEgGhsCASAcHQAlsdh7UTQ1AH4YoEBAdcAATHwCoAAlsmS7UTQ1AH4YoEBAdcAATHwBYAIBWB4fACWydDtRNDUAfhigQEB1wABMfAHgACSp8e1E0NQB+GKBAQHXAAEx8AYACKnk8AQ=';
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let system = await ContractSystem.create();
+    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
+    let res = await executor.get('init_ConstantTester', __tuple);
+    if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (ConstantTester_errors[res.exitCode]) {
+            throw new ComputeError(ConstantTester_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
+}
+
 const ConstantTester_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
@@ -199,6 +222,16 @@ const ConstantTester_errors: { [key: number]: { message: string } } = {
 }
 
 export class ConstantTester implements Contract {
+    
+    static async init() {
+        return await ConstantTester_init();
+    }
+    
+    static async fromInit() {
+        const init = await ConstantTester_init();
+        const address = contractAddress(0, init);
+        return new ConstantTester(address, init);
+    }
     
     static fromAddress(address: Address) {
         return new ConstantTester(address);

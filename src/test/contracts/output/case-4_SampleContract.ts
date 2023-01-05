@@ -208,6 +208,29 @@ function storeTupleSource(source: Source) {
     return __tuple;
 }
 
+async function SampleContract_init() {
+    const __code = 'te6ccgEBDAEA3gABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAgJAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAIBWAYHAFUbW1tbQXIzAVQRYEBAc8AEoEBAc8AyEADAoEBAc8AgQEBzwAS9ADJAczJgAAUXwSAAXb3ix2omhqAPwxQICA64BAgIDrgGoA6ECAgOuAQICA64AsgXoCGAgaiBoJNgr4A8AgEgCgsATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAJuS7/AGg=';
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let system = await ContractSystem.create();
+    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
+    let res = await executor.get('init_SampleContract', __tuple);
+    if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (SampleContract_errors[res.exitCode]) {
+            throw new ComputeError(SampleContract_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
+}
+
 const SampleContract_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
@@ -233,6 +256,16 @@ const SampleContract_errors: { [key: number]: { message: string } } = {
 }
 
 export class SampleContract implements Contract {
+    
+    static async init() {
+        return await SampleContract_init();
+    }
+    
+    static async fromInit() {
+        const init = await SampleContract_init();
+        const address = contractAddress(0, init);
+        return new SampleContract(address, init);
+    }
     
     static fromAddress(address: Address) {
         return new SampleContract(address);

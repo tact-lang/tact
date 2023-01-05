@@ -208,6 +208,29 @@ function storeTupleSource(source: Source) {
     return __tuple;
 }
 
+async function Empty_init() {
+    const __code = 'te6ccgEBCAEAgAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQIBIAYHAEVCDXSTHCHzDQ0wMBcbDAAZF/kXDiAfpAIlBEbwT4YdzywIKAAZRwAcjMAQGBAQHPAMmAAJvwRXgBQATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzA==';
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let system = await ContractSystem.create();
+    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
+    let res = await executor.get('init_Empty', __tuple);
+    if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (Empty_errors[res.exitCode]) {
+            throw new ComputeError(Empty_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
+}
+
 const Empty_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
@@ -233,6 +256,16 @@ const Empty_errors: { [key: number]: { message: string } } = {
 }
 
 export class Empty implements Contract {
+    
+    static async init() {
+        return await Empty_init();
+    }
+    
+    static async fromInit() {
+        const init = await Empty_init();
+        const address = contractAddress(0, init);
+        return new Empty(address, init);
+    }
     
     static fromAddress(address: Address) {
         return new Empty(address);

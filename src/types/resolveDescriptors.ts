@@ -583,6 +583,29 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
+    // Check for missing init methods
+    //
+
+    for (let k in types) {
+        let t = types[k];
+        if (t.kind === 'contract') {
+            if (!t.init) {
+                throwError('Contract ' + t.name + ' does not have init method', t.ast.ref);
+            }
+        }
+    }
+
+    // Check for structs to have at least one field
+    for (let k in types) {
+        let t = types[k];
+        if (t.kind === 'contract' || t.kind === 'struct') {
+            if (t.fields.length === 0) {
+                throwError((t.kind === 'contract' ? 'Contract' : 'Struct') + ' ' + t.name + ' does not have any fields', t.ast.ref);
+            }
+        }
+    }
+
+    //
     // Flatten and resolve traits
     //
 

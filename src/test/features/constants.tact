@@ -7,7 +7,11 @@ contract ConstantTester {
     const something4: Int = ton("123") + ton("333");
     const something5: String = "Hello world!";
 
-    v: Int = 0;
+    v: Int;
+
+    init() {
+        self.v = 0;
+    }
 
     get fun something1(): Int {
         return self.something1;

@@ -1,6 +1,21 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+builder __gen_write_Empty(builder build_0, (int) v) inline {
+    var (v'x) = v;
+    build_0 = store_int(build_0, v'x, 257);
+    return build_0;
+}
+
+cell $__gen_Empty_init(cell sys') {
+    var (($self'x)) = (null());
+    $self'x = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_Empty(b', ($self'x));
+    return b'.end_cell();
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -23,6 +38,10 @@ global cell __tact_context_sys;
     throw(130);
 }
 
+cell init_Empty(cell sys') method_id {
+    return $__gen_Empty_init(sys');
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -31,5 +50,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://Qmaphpsb3UfmRbAgrrMYUvDA7cRgvUr7A9bd9nyXS7DkPS";
+    return "ipfs://QmXYabsr9xuqSmawaETa3T1k31u9QXwL4zdYNPE3tGExLC";
 }
