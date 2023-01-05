@@ -11,6 +11,7 @@ import { packageCode } from '../packaging/packageCode';
 import { getContracts, getType } from '../types/resolveDescriptors';
 import { compile } from './compile';
 import { precompile } from "./precompile";
+const version = require('../../package.json').version;
 
 export async function build(project: ConfigProject, rootPath: string) {
 
@@ -183,7 +184,6 @@ export async function build(project: ConfigProject, rootPath: string) {
         // Package
         let pkg: PackageFileFormat = {
             name: contract,
-            date: new Date().toISOString(),
             abi: artifacts.abi,
             code: artifacts.codeBoc.toString('base64'),
             init: {
@@ -193,6 +193,10 @@ export async function build(project: ConfigProject, rootPath: string) {
             deployment: {
                 kind: 'system-cell',
                 system: systemCell.toBoc().toString('base64')
+            },
+            compiler: {
+                name: 'tact',
+                version
             }
         };
         let pkgData = packageCode(pkg);
