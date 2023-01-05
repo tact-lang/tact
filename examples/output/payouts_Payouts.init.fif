@@ -1,0 +1,36 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_Payouts
+  DECLPROC $__gen_Payouts_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_Payouts PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    257 PUSHINT
+    STIX
+  }>
+  $__gen_Payouts_init PROC:<{
+    s0 s2 XCHG
+    NEWC
+    STREF
+    s0 s2 XCHG
+    __gen_write_Payouts INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Payouts_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

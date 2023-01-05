@@ -1,0 +1,734 @@
+PROGRAM{
+  DECLPROC __tact_my_balance
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_compute_contract_address
+  DECLPROC __tact_address_eq
+  DECLPROC __tact_dict_get_code
+  DECLPROC __tact_string_builder_start
+  DECLPROC __tact_string_builder_start_comment
+  DECLPROC __tact_string_builder_end
+  DECLPROC __tact_string_builder_append
+  DECLPROC __gen_read_ChangeOwner
+  DECLPROC __gen_write_CanPayout
+  DECLPROC __gen_writecell_CanPayout
+  DECLPROC __gen_read_CanPayoutResponse
+  DECLPROC __gen_write_Beacon
+  DECLPROC __gen_write_Payouts
+  DECLPROC __gen_read_Payouts
+  DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_load_Payouts
+  DECLPROC __gen_store_Payouts
+  DECLPROC $storeBool
+  DECLPROC $contractAddress
+  DECLPROC $send
+  DECLPROC $__gen_Builder_asSlice
+  DECLPROC $__gen_Builder_asCell
+  DECLPROC $__gen_Slice_fromBase64
+  DECLPROC $__gen_String_asComment
+  DECLPROC $__gen_String_fromBase64
+  DECLPROC $__gen_Beacon_init
+  DECLPROC $__gen_Beacon_init_child
+  DECLPROC $__gen_Payouts_requireOwner
+  DECLPROC $__gen_Payouts_owner
+  83229 DECLMETHOD $__gen_get_owner
+  DECLPROC $__gen_Payouts_receive_comment
+  DECLPROC $__gen_Payouts_receive_CanPayoutResponse
+  DECLPROC $__gen_Payouts_receive_ChangeOwner
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_my_balance PROCINLINE:<{
+    BALANCE
+    FIRST
+  }>
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __tact_compute_contract_address PROC:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    2 STU
+    3 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    STREF
+    STREF
+    ENDC
+    HASHCU
+    NEWC
+    2 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+  }>
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
+  }>
+  __tact_dict_get_code PROCINLINE:<{
+    SWAP
+    16 PUSHINT
+    DICTUGETREF
+    NULLSWAPIFNOT
+    100 THROWIFNOT
+  }>
+  __tact_string_builder_start PROCINLINE:<{
+    NEWC
+    SWAP
+    IF:<{
+      0 PUSHINT
+      SWAP
+      32 STU
+    }>
+    NIL
+    SWAP
+    TPUSH
+    PUSHNULL
+    TPUSH
+  }>
+  __tact_string_builder_start_comment PROCINLINE:<{
+    TRUE
+    __tact_string_builder_start INLINECALLDICT
+  }>
+  __tact_string_builder_end PROC:<{
+    UNCONS
+    SWAP
+    ENDC
+    WHILE:<{
+      OVER
+      ISNULL
+      NOT
+    }>DO<{
+      SWAP
+      UNCONS
+      -ROT
+      STREF
+      ENDC
+    }>
+    NIP
+  }>
+  __tact_string_builder_append PROC:<{
+    DUP
+    SREFS
+    OVER
+    SBITS
+    WHILE:<{
+      DUP
+      0 GTINT
+      s2 PUSH
+      0 GTINT
+      OR
+    }>DO<{
+      s0 s3 XCHG
+      UNCONS
+      127 PUSHINT
+      s2 PUSH
+      BBITS
+      3 RSHIFT#
+      SUB
+      s0 s5 XCHG
+      3 RSHIFT#
+      s5 s5 XCPU
+      MIN
+      DUP
+      0 GTINT
+      IF:<{
+        DUP
+        3 LSHIFT#
+        s1 s5 XCHG
+        LDSLICEX
+        s3 s3 XCHG2
+        STSLICER
+        s0 s1 s4 XCHG3
+      }>
+      -ROT
+      CONS
+      s4 s1 PUSH2
+      SUB
+      0 GTINT
+      IF:<{
+        NEWC
+        SWAP
+        CONS
+        s4 s4 XCHG2
+        SUB
+        3 LSHIFT#
+      }>ELSE<{
+        NIP
+        s3 POP
+        0 GTINT
+        IF:<{
+          LDREF
+          DROP
+          CTOS
+          DUP
+          SREFS
+          OVER
+          SBITS
+        }>ELSE<{
+          0 PUSHINT
+          DUP
+        }>
+      }>
+    }>
+    3 BLKDROP
+  }>
+  __gen_read_ChangeOwner PROCINLINE:<{
+    32 LDU
+    SWAP
+    3067051791 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_write_CanPayout PROCINLINE:<{
+    1050587494 PUSHINT
+    ROT
+    32 STU
+    257 PUSHINT
+    STIX
+  }>
+  __gen_writecell_CanPayout PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_CanPayout INLINECALLDICT
+    ENDC
+  }>
+  __gen_read_CanPayoutResponse PROCINLINE:<{
+    32 LDU
+    SWAP
+    1861678417 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    3 -ROLL
+  }>
+  __gen_write_Beacon PROCINLINE:<{
+    2SWAP
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    1 STI
+  }>
+  __gen_write_Payouts PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    257 PUSHINT
+    STIX
+  }>
+  __gen_read_Payouts PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    257 PUSHINT
+    LDIX
+    -ROT
+  }>
+  __gen_Context_get_sender PROCINLINE:<{
+    s2 s3 XCHG
+    3 BLKDROP
+  }>
+  __gen_load_Payouts PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_Payouts INLINECALLDICT
+    1 2 BLKDROP2
+  }>
+  __gen_store_Payouts PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    -ROT
+    __gen_write_Payouts INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $storeBool PROC:<{
+    IFJMP:<{
+      -1 PUSHINT
+      SWAP
+      1 STI
+    }>
+    0 PUSHINT
+    SWAP
+    1 STI
+  }>
+  $contractAddress PROC:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address CALLDICT
+  }>
+  $send PROC:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    $storeBool CALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      $storeBool CALLDICT
+      NEWC
+      FALSE
+      $storeBool CALLDICT
+      FALSE
+      $storeBool CALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        $storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        $storeBool CALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        $storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        $storeBool CALLDICT
+      }>
+      FALSE
+      $storeBool CALLDICT
+      s0 s2 XCHG
+      TRUE
+      $storeBool CALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      $storeBool CALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      $storeBool CALLDICT
+      SWAP
+      __tact_not_null CALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      $storeBool CALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  $__gen_Builder_asSlice PROC:<{
+    ENDC
+    CTOS
+  }>
+  $__gen_Builder_asCell PROC:<{
+    ENDC
+  }>
+  $__gen_Slice_fromBase64 PROC:<{
+    DUP
+    SBITS
+    3 RSHIFT#
+    NEWC
+    SWAP
+    REPEAT:<{
+      SWAP
+      8 LDU
+      OVER
+      64 GTINT
+      s2 PUSH
+      91 LESSINT
+      AND
+      IF:<{
+        SWAP
+        -65 ADDCONST
+        ROT
+        6 STU
+      }>ELSE<{
+        OVER
+        96 GTINT
+        s2 PUSH
+        123 LESSINT
+        AND
+        IF:<{
+          SWAP
+          -71 ADDCONST
+          ROT
+          6 STU
+        }>ELSE<{
+          OVER
+          47 GTINT
+          s2 PUSH
+          58 LESSINT
+          AND
+          IF:<{
+            SWAP
+            4 ADDCONST
+            ROT
+            6 STU
+          }>ELSE<{
+            OVER
+            45 EQINT
+            s2 PUSH
+            43 EQINT
+            OR
+            IF:<{
+              62 PUSHINT
+              s2 POP
+              s0 s2 XCHG
+              6 STU
+            }>ELSE<{
+              OVER
+              95 EQINT
+              s2 PUSH
+              47 EQINT
+              OR
+              IF:<{
+                63 PUSHINT
+                s2 POP
+                s0 s2 XCHG
+                6 STU
+              }>ELSE<{
+                SWAP
+                61 EQINT
+                IFNOT:<{
+                  134 THROW
+                }>
+                SWAP
+              }>
+            }>
+          }>
+        }>
+      }>
+    }>
+    NIP
+    DUP
+    BBITS
+    DUP
+    3 MODPOW2#
+    DUP
+    0 NEQINT
+    IFJMP:<{
+      s0 s2 XCHG
+      $__gen_Builder_asSlice CALLDICT
+      s0 s2 XCHG
+      SUB
+      LDSLICEX
+      DROP
+    }>
+    2DROP
+    $__gen_Builder_asSlice CALLDICT
+  }>
+  $__gen_String_asComment PROC:<{
+    __tact_string_builder_start_comment INLINECALLDICT
+    SWAP
+    __tact_string_builder_append CALLDICT
+    __tact_string_builder_end CALLDICT
+  }>
+  $__gen_String_fromBase64 PROC:<{
+    $__gen_Slice_fromBase64 CALLDICT
+  }>
+  $__gen_Beacon_init PROC:<{
+    FALSE
+    s0 s3 XCHG
+    NEWC
+    STREF
+    s0 s3 XCHG
+    __gen_write_Beacon INLINECALLDICT
+    ENDC
+  }>
+  $__gen_Beacon_init_child PROC:<{
+    s0 s2 XCHG
+    CTOS
+    LDDICT
+    DROP
+    41210 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    NEWDICT
+    NEWC
+    STDICT
+    ENDC
+    s0 s0 s3 XCHG3
+    $__gen_Beacon_init CALLDICT
+  }>
+  $__gen_Payouts_requireOwner PROC:<{
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_sender INLINECALLDICT
+    s2 PUSH
+    __tact_address_eq INLINECALLDICT
+    132 THROWIFNOT
+  }>
+  $__gen_Payouts_owner PROC:<{
+    DROP
+  }>
+  $__gen_get_owner PROC:<{
+    __gen_load_Payouts INLINECALLDICT
+    $__gen_Payouts_owner CALLDICT
+  }>
+  $__gen_Payouts_receive_comment PROC:<{
+    __tact_context_get INLINECALLDICT
+    DROP
+    16059 PUSHINT
+    s3 POP
+    1000000000 PUSHINT
+    GEQ
+    s1 s2 XCHG
+    THROWANYIFNOT
+    SWAP
+    $__gen_String_fromBase64 CALLDICT
+    LDGRAMS
+    9 PUSHPOW2
+    LDSLICEX
+    DROP
+    NEWC
+    s3 PUSH
+    __tact_store_address INLINECALLDICT
+    s2 PUSH
+    STGRAMS
+    $__gen_Builder_asCell CALLDICT
+    HASHCU
+    48401 PUSHINT
+    s2 s5 XCPU
+    CHKSIGNU
+    THROWANYIFNOT
+    __tact_context_sys GETGLOB
+    MYADDR
+    3 ROLL
+    $__gen_Beacon_init_child CALLDICT
+    $contractAddress CALLDICT
+    TRUE
+    0 PUSHINT
+    66 PUSHINT
+    s0 s4 XCHG
+    __gen_writecell_CanPayout INLINECALLDICT
+    s1 s4 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
+    $send CALLDICT
+  }>
+  $__gen_Payouts_receive_CanPayoutResponse PROC:<{
+    __tact_context_get INLINECALLDICT
+    DROP
+    s2 POP
+    __tact_context_sys GETGLOB
+    MYADDR
+    s5 PUSH
+    $__gen_Beacon_init_child CALLDICT
+    $contractAddress CALLDICT
+    SWAP
+    4429 PUSHINT
+    s0 s2 XCHG
+    __tact_address_eq INLINECALLDICT
+    THROWANYIFNOT
+    SWAP
+    IF:<{
+      62972 PUSHINT
+      __tact_my_balance INLINECALLDICT
+      ROT
+      SUB
+      1000000000 PUSHINT
+      SUB
+      s3 PUSH
+      SUB
+      0 GTINT
+      THROWANYIFNOT
+      FALSE
+      66 PUSHINT
+      B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE
+      $__gen_String_asComment CALLDICT
+      s2 s4 XCHG
+      PUSHNULL
+      PUSHNULL
+      $send CALLDICT
+    }>ELSE<{
+      DROP
+      NIP
+      FALSE
+      0 PUSHINT
+      66 PUSHINT
+      B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE
+      $__gen_String_asComment CALLDICT
+      s3 s4 XCHG
+      PUSHNULL
+      PUSHNULL
+      $send CALLDICT
+    }>
+  }>
+  $__gen_Payouts_receive_ChangeOwner PROC:<{
+    -ROT
+    $__gen_Payouts_requireOwner CALLDICT
+    NIP
+  }>
+  recv_internal PROC:<{
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    DUP
+    1861678417 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_Payouts INLINECALLDICT
+      s0 s2 XCHG
+      __gen_read_CanPayoutResponse INLINECALLDICT
+      s3 POP
+      s3 s4 XCHG
+      ROT
+      $__gen_Payouts_receive_CanPayoutResponse CALLDICT
+      __gen_store_Payouts INLINECALLDICT
+    }>
+    DUP
+    3067051791 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_Payouts INLINECALLDICT
+      s0 s2 XCHG
+      __gen_read_ChangeOwner INLINECALLDICT
+      NIP
+      s1 s2 XCHG
+      $__gen_Payouts_receive_ChangeOwner CALLDICT
+      __gen_store_Payouts INLINECALLDICT
+    }>
+    0 EQINT
+    IF:<{
+      DUP
+      SBITS
+      31 GTINT
+      IFJMP:<{
+        __gen_load_Payouts INLINECALLDICT
+        s0 s2 XCHG
+        32 PUSHINT
+        SDSKIPFIRST
+        s1 s2 XCHG
+        $__gen_Payouts_receive_comment CALLDICT
+        __gen_store_Payouts INLINECALLDICT
+        RETALT
+      }>
+      DROP
+    }>ELSE<{
+      DROP
+    }>
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    212791963610352222038671851416501365766 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5a736b7966475935633662594435776763757a4b6a6a37327a4a726a33457674437172756143416371625a71} PUSHSLICE
+  }>
+}END>c

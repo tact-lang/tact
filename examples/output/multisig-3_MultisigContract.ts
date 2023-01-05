@@ -291,7 +291,8 @@ function storeTupleExecuted(source: Executed) {
 }
 
 async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
-    const __code = 'te6ccgECJwEAAvkAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIERICAdQICQIBWAwNAn07ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEDDeKUK64wLAAJEw4w3ywIKAKCwALCBu8tCAgALIw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BbI+EIBzFUwUDTLH8v/y//L/8ntVACm+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGuo4r7UTQ1AH4YtMf0//T/9P/VTBsFPAVyPhCAcxVMFA0yx/L/8v/y//J7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8B9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGAQACMcATIzFUwUDTLH8v/y//L/8mAABPsAAgEgExQCASAZGgIBIBUWAgEgFxgAEx/MwFwbW1t8A6AACQQI18DgAAcE18DgAAUbDGACASAbHABvRUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAQgABRfA4AABIAAvvmS/aiaGoA/DFpj+n/6f/p/6qYNgp4CkAgEgHyACASAhIgAJuKx/APgCASAjJAIBICUmAC+w6ftRNDUAfhi0x/T/9P/0/9VMGwU8BOAAL7Dhu1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsPl7UTQ1AH4YtMf0//T/9P/VTBsFPARgAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmA=';
+    const __init = 'te6ccgEBBgEANQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAI0cATIzFUwUDTLH8v/y//L/8mA==';
+    const __code = 'te6ccgECIwEAAtQAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAbHAIBIAYHAgFIERICAdQICQIBWAwNAn07ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEDDeKUK64wLAAJEw4w3ywIKAKCwALCBu8tCAgALIw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BXI+EIBzFUwUDTLH8v/y//L/8ntVACm+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGuo4r7UTQ1AH4YtMf0//T/9P/VTBsFPAUyPhCAcxVMFA0yx/L/8v/y//J7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8B9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGAQABMfzMBcG1tbfAOgAAT7AAIBIBMUAgFIGRoCASAVFgIBIBcYAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAASAAbxUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAPgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJwCAUgdHgIBIB8gAgEgISIAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPARgAC+w+XtRNDUAfhi0x/T/9P/0/9VMGwU8BCAATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYA==';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
@@ -300,9 +301,10 @@ async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
     __tuple.push({ type: 'int', value: key2 });
     __tuple.push({ type: 'int', value: key3 });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_MultisigContract', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (MultisigContract_errors[res.exitCode]) {

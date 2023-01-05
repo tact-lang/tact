@@ -64,11 +64,11 @@ Function "f1" expects 2 arguments, got 1"
 `;
 
 exports[`resolveStatements should fail statements for case-7 1`] = `
-"Line 10, col 16:
-   9 |     fun f2(a: Int): Int {
-> 10 |         return self.f1(a);
+"Line 16, col 16:
+  15 |     fun f2(a: Int): Int {
+> 16 |         return self.f1(a);
                       ^~~~~~~~~~
-  11 |     }
+  17 |     }
 Function "f1" expects 2 arguments, got 1"
 `;
 
@@ -82,11 +82,11 @@ Invalid type "Bool" for argument "b""
 `;
 
 exports[`resolveStatements should fail statements for case-9 1`] = `
-"Line 10, col 27:
-   9 |     fun f2(a: Int): Int {
-> 10 |         return self.f1(a, true);
+"Line 16, col 27:
+  15 |     fun f2(a: Int): Int {
+> 16 |         return self.f1(a, true);
                                  ^~~~
-  11 |     }
+  17 |     }
 Invalid type "Bool" for argument "b""
 `;
 

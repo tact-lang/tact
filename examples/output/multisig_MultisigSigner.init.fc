@@ -1,0 +1,72 @@
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm "7 UNTUPLE";
+
+builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline {
+    var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
+    build_0 = store_uint(build_0, 4096439811, 32);
+    build_0 = __tact_store_address(build_0, v'requested);
+    build_0 = __tact_store_address(build_0, v'to);
+    build_0 = store_coins(build_0, v'value);
+    build_0 = store_uint(build_0, v'timeout, 32);
+    build_0 = store_int(build_0, v'bounce, 1);
+    build_0 = store_uint(build_0, v'mode, 8);
+    if (null?(v'body)) {
+        build_0 = store_int(build_0, false, 1);
+    } else {
+        build_0 = store_int(build_0, true, 1);
+        build_0 = store_ref(build_0, v'body);
+    }
+    return build_0;
+}
+
+builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline {
+    var (v'master, v'members, v'weight, v'requiredWeight, v'completed, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = store_dict(build_0, v'members);
+    build_0 = store_int(build_0, v'weight, 257);
+    build_0 = store_int(build_0, v'requiredWeight, 257);
+    build_0 = store_int(build_0, v'completed, 1);
+    var build_1 = begin_cell();
+    build_1 = __gen_write_Request(build_1, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body));
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, slice, int, int, int, int, cell) __gen_Request_from_tuple(tuple v) {
+    var (slice v'requested, slice v'to, int v'value, int v'timeout, int v'bounce, int v'mode, cell v'body) = __tact_tuple_destroy_7(v);
+    return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
+}
+
+cell $__gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
+    var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
+    var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = (null(), null(), 0, null(), null(), null());
+    $self'master = $master;
+    $self'members = $members;
+    $self'requiredWeight = $requiredWeight;
+    $self'completed = false;
+    ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body) = ($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_MultisigSigner(b', ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)));
+    return b'.end_cell();
+}
+
+cell init(cell sys', slice $$master, cell $$members, int $$requiredWeight, tuple $$request) method_id {
+    slice $master = $$master;
+    cell $members = $$members;
+    int $requiredWeight = $$requiredWeight;
+    (slice, slice, int, int, int, int, cell) $request = __gen_Request_from_tuple($$request);
+    return $__gen_MultisigSigner_init(sys', $master, $members, $requiredWeight, $request);
+}
+
+() main() {
+}

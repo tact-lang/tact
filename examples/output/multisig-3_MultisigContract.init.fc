@@ -1,0 +1,29 @@
+builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline {
+    var (v'seqno, v'user1_key, v'user2_key, v'user3_key) = v;
+    build_0 = store_uint(build_0, v'seqno, 32);
+    build_0 = store_uint(build_0, v'user1_key, 256);
+    build_0 = store_uint(build_0, v'user2_key, 256);
+    build_0 = store_uint(build_0, v'user3_key, 256);
+    return build_0;
+}
+
+cell $__gen_MultisigContract_init(cell sys', int $key1, int $key2, int $key3) {
+    var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = (0, null(), null(), null());
+    $self'user1_key = $key1;
+    $self'user2_key = $key2;
+    $self'user3_key = $key3;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_MultisigContract(b', ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key));
+    return b'.end_cell();
+}
+
+cell init(cell sys', int $$key1, int $$key2, int $$key3) method_id {
+    int $key1 = $$key1;
+    int $key2 = $$key2;
+    int $key3 = $$key3;
+    return $__gen_MultisigContract_init(sys', $key1, $key2, $key3);
+}
+
+() main() {
+}

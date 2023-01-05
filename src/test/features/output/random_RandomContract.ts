@@ -237,15 +237,17 @@ function storeTupleDeployOk(source: DeployOk) {
 }
 
 async function RandomContract_init() {
-    const __code = 'te6ccgECHwEAAhoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIDg8CAdQICQIBWAoLANEcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEJWXPcy6jjHtRNDUAfhigQEB1wABMQHTHwGCEJWXPcy68uCB0z8BMfAVyPhCAcwBAYEBAc8Aye1U4DDywIKAACwgbvLQgIAAVWUfwHKAOBwAcoAgCASAMDQAdPhDbpf4JfgVf/hj3vgQgACM+ENul/gl+BV/+GPeIaH4EaCACASAQEQIBSBcYAgEgEhMCASAVFgH3MhxAcoBUAfwDXABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8A3IcPANcPANJG6zmX/wDQTwAVAEzJU0A3DwDeIkbrOZf/ANBPABUATMlTQDcPAN4nDwDQJ/8A0CyVjMljMzAXDwDeIhbrOYf/ANAfABAcyUMXDwDeLJAYBQAJT4QW8kECNfA38CcIBCWG1t8BCAABPsAABkcAHIzAEBgQEBzwDJgAAcMPAOgAAkbBLwD4AAhMgBghDTf7ghWMsfyz/J8BGACASAbHAIBIB0eAAm7Bb8BKAAnunbe1E0NQB+GKBAQHXAAExWfAUgATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAlu2h+1E0NQB+GKBAQHXAAEx8BOA==';
+    const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
+    const __code = 'te6ccgECGwEAAfoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAXGAIBIAYHAgFIDg8CAdQICQIBWAoLANEcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEJWXPcy6jjHtRNDUAfhigQEB1wABMQHTHwGCEJWXPcy68uCB0z8BMfAUyPhCAcwBAYEBAc8Aye1U4DDywIKAACwgbvLQgIAAVWUfwHKAOBwAcoAgCASAMDQAdPhDbpf4JfgVf/hj3vgQgACM+ENul/gl+BV/+GPeIaH4EaCACASAQEQAh1kAMEIab/cEKxlj+Wf5PgIwCASASEwIBIBUWAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgFAAlPhBbyQQI18DfwJwgEJYbW3wEIAAE+wAABww8A6AACRsEvAPgACe/O29qJoagD8MUCAgOuAAJis+AnAIBIBkaAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gAJbtoftRNDUAfhigQEB1wABMfASg=';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_RandomContract', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (RandomContract_errors[res.exitCode]) {

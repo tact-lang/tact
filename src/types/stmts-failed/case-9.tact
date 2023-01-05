@@ -2,6 +2,12 @@ primitive Int;
 primitive Bool;
 
 contract Main {
+
+    v: Int = 0;
+    init() {
+        
+    }
+
     fun f1(a: Int, b: Int): Int {
         return a + b;
     }

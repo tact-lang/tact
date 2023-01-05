@@ -24,11 +24,19 @@ struct Struct2 {
 contract Contract1 {
     c: Int;
     c2: Int;
+
+    init() {
+        
+    }
 }
 
 contract Contract2 {
     d: Int;
     e: Struct1;
+
+    init() {
+
+    }
 }
 `;
 

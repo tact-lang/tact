@@ -175,7 +175,8 @@ function storeTupleSendParameters(source: SendParameters) {
 }
 
 async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
-    const __code = 'te6ccgECGgEAAe0AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAUFQIBIAYHAgFYDg8A29OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gESgzN4J8MIFIrfBgAADrpOCQ2EcbdqJoagD8MX0gAID9IACA/SAAgPoCegIqoDYK+AfkfCEA5iqgKCpniyxniwDniwl6AHoAZPaqcHlgQUAgEgCAkCASAKCwIBIAwNABsIG6VMFn0WjDgQTP0FIAARFn0DG+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGAAHRBM/QKb6GUAdcAMOBbbYAIBIBARAgEgEhMALRtbQXIzAVQVM8WWM8WAc8WEvQA9ADJgABMMTIzgQEBMvAFgABcbEKBAQsBgQEB8AeAAjQBgQEBcCbwBIEBAXEl8ASBAQFyJPAEgQEBcybwBAGBAQslcIEBAfAGgQELJHGBAQHwBoEBCyNygQEB8AaBAQslc4EBAfAGgAgFIFhcCASAYGQBDtFPdqJoagD8MX0gAID9IACA/SAAgPoCegIqoDYKqoJ4B0AAJtcceAZAATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmABDuVw+1E0NQB+GL6QAEB+kABAfpAAQH0BPQEVUBsFVUE8A2A==';
+    const __init = 'te6ccgEBBgEAOgABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQALdNraC5GYCqCpniyxniwDniwl6AHoAZM';
+    const __code = 'te6ccgECFgEAAcMAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASASEwIBIAYHAgFYDg8A29OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gESgzN4J8MIFIrfBgAADrpOCQ2EcbdqJoagD8MX0gAID9IACA/SAAgPoCegIqoDYK+AdkfCEA5iqgKCpniyxniwDniwl6AHoAZPaqcHlgQUAgEgCAkCASAKCwIBIAwNABsIG6VMFn0WjDgQTP0FIAARFn0DG+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGAAHRBM/QKb6GUAdcAMOBbbYAIBIBARAI1AGBAQFwJvAEgQEBcSXwBIEBAXIk8ASBAQFzJvAEAYEBCyVwgQEB8AaBAQskcYEBAfAGgQELI3KBAQHwBoEBCyVzgQEB8AaAATDEyM4EBATLwBYAAXGxCgQELAYEBAfAHgAEO8FPdqJoagD8MX0gAID9IACA/SAAgPoCegIqoDYKqoJ4BsAgEgFBUATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmABDuVw+1E0NQB+GL6QAEB+kABAfpAAQH0BPQEVUBsFVUE8AyA==';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
@@ -184,9 +185,10 @@ async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
     __tuple.push({ type: 'slice', cell: beginCell().storeAddress(addr2).endCell() });
     __tuple.push({ type: 'slice', cell: beginCell().storeAddress(addr3).endCell() });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_DDDD', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (DDDD_errors[res.exitCode]) {

@@ -175,15 +175,17 @@ function storeTupleSendParameters(source: SendParameters) {
 }
 
 async function StdlibTest_init() {
-    const __code = 'te6ccgECFgEAASwAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgHUDA0ArdOBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gESgzN4J8MIFIrfBgAADrpOCQ2EcP9qJoagD8MUCAgOuAAJj4BOR8IQDmAIDAgIDngGT2qnB5YEFAIBIAgJABlXAByMwBAYEBAc8AyYAgEgCgsABwxxwCAABwx10mAABwx10qAAASACAnIQEQIBZhQVAgEgEhMAJ69C9qJoagD8MUCAgOuAAJiA+ARAACapC+1E0NQB+GKBAQHXAAExAfAGACapUu1E0NQB+GKBAQHXAAExAfAHAAmx9jwBYABNsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5g';
+    const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
+    const __code = 'te6ccgECEgEAAQwAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAMDQIBIAYHAAHcAK3TgQ66ThD8qYEGuFj+8BaGmBgLjYYADIv8i4cQD9IBEoMzeCfDCBSK3wYAAA66TgkNhHD/aiaGoA/DFAgIDrgACY+ARkfCEA5gCAwICA54Bk9qpweWBBQCASAICQAHUxxwCAIBIAoLAAcMddJgAAcMddKgAgJyDg8ATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAIBIBARACevQvaiaGoA/DFAgIDrgACYgPgDwAAmqQvtRNDUAfhigQEB1wABMQHwBQAmqVLtRNDUAfhigQEB1wABMQHwBg==';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_StdlibTest', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (StdlibTest_errors[res.exitCode]) {

@@ -1,0 +1,20 @@
+builder __gen_write_RandomContract(builder build_0, (int) v) inline {
+    var (v'field) = v;
+    build_0 = store_int(build_0, v'field, 257);
+    return build_0;
+}
+
+cell $__gen_RandomContract_init(cell sys') {
+    var (($self'field)) = (0);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_RandomContract(b', ($self'field));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_RandomContract_init(sys');
+}
+
+() main() {
+}

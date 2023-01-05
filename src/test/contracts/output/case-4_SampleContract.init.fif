@@ -1,0 +1,47 @@
+PROGRAM{
+  DECLPROC __gen_write_Source
+  DECLPROC __gen_write_SampleContract
+  DECLPROC $__gen_SampleContract_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_Source PROCINLINE:<{
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
+  __gen_write_SampleContract PROCINLINE:<{
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s0 s3 XCHG3
+    __gen_write_Source INLINECALLDICT
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  $__gen_SampleContract_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s5 XCHG
+    NEWC
+    STREF
+    s0 s5 XCHG
+    __gen_write_SampleContract INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_SampleContract_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

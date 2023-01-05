@@ -1,0 +1,35 @@
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
+    var (v'owner, v'publicKey) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_int(build_0, v'publicKey, 257);
+    return build_0;
+}
+
+cell $__gen_Payouts_init(cell sys', slice $owner, int $publicKey) {
+    var (($self'owner, $self'publicKey)) = (null(), null());
+    $self'owner = $owner;
+    $self'publicKey = $publicKey;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_Payouts(b', ($self'owner, $self'publicKey));
+    return b'.end_cell();
+}
+
+cell init(cell sys', slice $$owner, int $$publicKey) method_id {
+    slice $owner = $$owner;
+    int $publicKey = $$publicKey;
+    return $__gen_Payouts_init(sys', $owner, $publicKey);
+}
+
+() main() {
+}

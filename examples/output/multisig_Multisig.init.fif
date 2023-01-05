@@ -1,0 +1,33 @@
+PROGRAM{
+  DECLPROC __gen_write_Multisig
+  DECLPROC $__gen_Multisig_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_Multisig PROCINLINE:<{
+    s3 s4 XCHG2
+    257 PUSHINT
+    STIX
+    STDICT
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
+  $__gen_Multisig_init PROC:<{
+    NIP
+    PUSHNULL
+    0 PUSHINT
+    s0 s4 XCHG
+    NEWC
+    STREF
+    s4 s4 XCHG2
+    s3 s1 s3 XCHG3
+    __gen_write_Multisig INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Multisig_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

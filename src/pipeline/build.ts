@@ -44,30 +44,43 @@ export async function build(project: ConfigProject, rootPath: string) {
     let ok = true;
     let built: {
         [key: string]: {
-            boc: Buffer,
-            func: string,
-            fift: string,
-            fiftDecompiled: string,
+            codeBoc: Buffer,
+            initBoc: Buffer,
+            codeFunc: string,
+            initFunc: string,
+            codeFift: string,
+            initFift: string,
+            codeFiftDecompiled: string,
+            initFiftDecompiled: string,
             abi: string
         }
     } = {};
     for (let contract of getContracts(ctx)) {
         let pathAbi = path.resolve(outputPath, project.name + '_' + contract + ".abi");
-        let pathCodeFc = path.resolve(outputPath, project.name + '_' + contract + ".fc");
-        let pathCodeBoc = path.resolve(outputPath, project.name + '_' + contract + ".boc");
-        let pathCodeFif = path.resolve(outputPath, project.name + '_' + contract + ".fif");
-        let pathCodeFifDec = path.resolve(outputPath, project.name + '_' + contract + ".rev.fif");
+
+        let pathCodeFc = path.resolve(outputPath, project.name + '_' + contract + ".code.fc");
+        let pathCodeBoc = path.resolve(outputPath, project.name + '_' + contract + ".code.boc");
+        let pathCodeFif = path.resolve(outputPath, project.name + '_' + contract + ".code.fif");
+        let pathCodeFifDec = path.resolve(outputPath, project.name + '_' + contract + ".code.rev.fif");
+
+        let pathInitFc = path.resolve(outputPath, project.name + '_' + contract + ".init.fc");
+        let pathInitBoc = path.resolve(outputPath, project.name + '_' + contract + ".init.boc");
+        let pathInitFif = path.resolve(outputPath, project.name + '_' + contract + ".init.fif");
+        let pathInitFifDec = path.resolve(outputPath, project.name + '_' + contract + ".init.rev.fif");
 
         // Compiling contract to func
         console.log('   > ' + contract + ': tact compiler');
         let abi: string;
-        let func: string;
+        let codeFunc: string;
+        let initFunc: string;
         try {
             let res = await compile(ctx, contract);
             fs.writeFileSync(pathCodeFc, res.output.output, 'utf-8');
+            fs.writeFileSync(pathInitFc, res.output.initOutput, 'utf-8');
             fs.writeFileSync(pathAbi, res.output.abi, 'utf-8');
             abi = res.output.abi;
-            func = res.output.output;
+            codeFunc = res.output.output;
+            initFunc = res.output.initOutput;
         } catch (e) {
             console.warn('Tact compilation failed');
             console.warn(e);
@@ -77,8 +90,10 @@ export async function build(project: ConfigProject, rootPath: string) {
 
         // Compiling contract to TVM
         console.log('   > ' + contract + ': func compiler');
-        let boc: Buffer;
-        let fift: string;
+        let codeBoc: Buffer;
+        let codeFift: string;
+        let initBoc: Buffer;
+        let initFift: string;
         try {
             let c = await compileContract({ files: [pathCodeFc] });
             if (!c.ok) {
@@ -86,10 +101,20 @@ export async function build(project: ConfigProject, rootPath: string) {
                 ok = false;
                 continue;
             }
+            let c2 = await compileContract({ files: [pathInitFc] });
+            if (!c2.ok) {
+                console.warn(c2.log);
+                ok = false;
+                continue;
+            }
             fs.writeFileSync(pathCodeFif, c.fift, 'utf-8');
             fs.writeFileSync(pathCodeBoc, c.output);
-            fift = c.fift;
-            boc = c.output;
+            fs.writeFileSync(pathInitFif, c2.fift, 'utf-8');
+            fs.writeFileSync(pathInitBoc, c2.output);
+            codeFift = c.fift;
+            codeBoc = c.output;
+            initFift = c2.fift;
+            initBoc = c2.output;
         } catch (e) {
             console.warn('FunC compiler crashed');
             console.warn(e);
@@ -99,10 +124,13 @@ export async function build(project: ConfigProject, rootPath: string) {
 
         // Fift decompiler for generated code debug
         console.log('   > ' + contract + ': fift decompiler');
-        let fiftDecompiled: string;
+        let codeFiftDecompiled: string;
+        let initFiftDecompiled: string;
         try {
-            fiftDecompiled = fromBoc(boc);
-            fs.writeFileSync(pathCodeFifDec, fiftDecompiled, 'utf-8');
+            codeFiftDecompiled = fromBoc(codeBoc);
+            initFiftDecompiled = fromBoc(initBoc);
+            fs.writeFileSync(pathCodeFifDec, codeFiftDecompiled, 'utf-8');
+            fs.writeFileSync(pathInitFifDec, initFiftDecompiled, 'utf-8');
         } catch (e) {
             console.warn('Fift decompiler crashed');
             console.warn(e);
@@ -112,10 +140,14 @@ export async function build(project: ConfigProject, rootPath: string) {
 
         // Add to built map
         built[contract] = {
-            boc,
-            fift,
-            fiftDecompiled,
-            func,
+            codeFunc,
+            codeBoc,
+            codeFift,
+            codeFiftDecompiled,
+            initFunc,
+            initBoc,
+            initFift,
+            initFiftDecompiled,
             abi
         };
     }
@@ -144,7 +176,7 @@ export async function build(project: ConfigProject, rootPath: string) {
                 console.warn('   > ' + cd + ': no artifacts found');
                 return false;
             }
-            depends.set(c.uid, Cell.fromBoc(cd.boc)[0]);
+            depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]);
         }
         const systemCell = beginCell().storeDict(depends).endCell();
 
@@ -153,9 +185,9 @@ export async function build(project: ConfigProject, rootPath: string) {
             name: contract,
             date: new Date().toISOString(),
             abi: artifacts.abi,
-            code: artifacts.boc.toString('base64'),
+            code: artifacts.codeBoc.toString('base64'),
             init: {
-                code: '',
+                code: artifacts.initBoc.toString('base64'),
                 args: []
             },
             deployment: {
@@ -178,7 +210,7 @@ export async function build(project: ConfigProject, rootPath: string) {
             return false;
         }
         try {
-            let bindings = writeTypescript(JSON.parse(pkg.abi), pkg.code, pkg.deployment.system);
+            let bindings = writeTypescript(JSON.parse(pkg.abi), pkg.code, pkg.init.code, pkg.deployment.system);
             let pathBindings = path.resolve(outputPath, project.name + '_' + pkg.name + ".ts");
             fs.writeFileSync(pathBindings, bindings, 'utf-8');
         } catch (e) {

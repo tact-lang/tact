@@ -1,0 +1,423 @@
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
+    return (cs, raw);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+int __tact_address_eq(slice a, slice b) inline {
+    return equal_slice_bits(a, b);
+}
+
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+    
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+        
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+        
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+        
+        ;; Update builders
+        builders = cons(b, tail);
+        
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    
+    return ((builders), ());
+}
+
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3067051791);
+    var v'newOwner = sc_0~__tact_load_address();
+    return (sc_0, (v'newOwner));
+}
+
+builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
+    var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = store_int(build_0, v'investment, 257);
+    build_0 = store_int(build_0, v'returns, 257);
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, v'fee, 257);
+    build_1 = store_int(build_1, v'balance, 257);
+    build_1 = store_int(build_1, v'rugpulled, 1);
+    build_1 = store_int(build_1, v'stopped, 1);
+    build_1 = store_int(build_1, v'queueStart, 257);
+    var build_2 = begin_cell();
+    build_2 = store_int(build_2, v'queueEnd, 257);
+    build_2 = store_dict(build_2, v'queue);
+    build_1 = store_ref(build_1, build_2.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((slice, int, int, int, int, int, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'investment = sc_0~load_int(257);
+    var v'returns = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'fee = sc_1~load_int(257);
+    var v'balance = sc_1~load_int(257);
+    var v'rugpulled = sc_1~load_int(1);
+    var v'stopped = sc_1~load_int(1);
+    var v'queueStart = sc_1~load_int(257);
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'queueEnd = sc_2~load_int(257);
+    var v'queue = sc_2~load_dict();
+    return (sc_0, (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue));
+}
+
+_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
+    var (v'bounced, v'sender, v'value, v'raw) = v;
+    return v'sender;
+}
+
+(int, int, int) __gen_RugParams_to_external(((int, int, int)) v) {
+    var (v'investment, v'returns, v'fee) = v; 
+    return (v'investment, v'returns, v'fee);
+}
+
+(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_RugPull();
+}
+
+() __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_RugPull(b, v);
+    set_data(b.end_cell());
+}
+
+;; String "Stopped"
+slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE";
+
+builder $storeBool(builder $s, int $value) impure {
+    if ($value) {
+        return store_int($s, (- 1), 1);
+    } else {
+        return store_int($s, 0, 1);
+    }
+}
+
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
+    builder $b = begin_cell();
+    $b = store_int($b, 1, 2);
+    $b = $storeBool($b, $params'bounce);
+    $b = store_int($b, 0, 3);
+    $b = __tact_store_address($b, $params'to);
+    $b = store_coins($b, $params'value);
+    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+        $b = $storeBool($b, true);
+        builder $bc = begin_cell();
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        if ((~ null?($params'code))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'code));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        if ((~ null?($params'data))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'data));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
+        $b = store_ref($b, end_cell($bc));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $body = $params'body;
+    if ((~ null?($body))) {
+        $b = $storeBool($b, true);
+        $b = store_ref($b, __tact_not_null($body));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $c = end_cell($b);
+    send_raw_message($c, $params'mode);
+}
+
+() $reply(cell $body) impure {
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+}
+
+cell $__gen_String_asComment(slice $self) impure {
+    var ($self) = $self;
+    tuple $b = __tact_string_builder_start_comment();
+    $b~__tact_string_builder_append($self);
+    return __tact_string_builder_end($b);
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_sendPayout((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, int $value) impure {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    $send((true, $to, $value, 2, null(), null(), null()));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+(int, int, int) $__gen_RugPull_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    return ($self'investment, $self'returns, $self'fee);
+}
+
+_ $__gen_get_params() method_id(116437) {
+    var self = __gen_load_RugPull();
+    var res = $__gen_RugPull_params(self);
+    return __gen_RugParams_to_external(res);
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+slice $__gen_RugPull_owner((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    return $self'owner;
+}
+
+_ $__gen_get_owner() method_id(83229) {
+    var self = __gen_load_RugPull();
+    var res = $__gen_RugPull_owner(self);
+    return res;
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    throw_unless(40368, (~ $self'stopped));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+int $__gen_RugPull_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    return $self'stopped;
+}
+
+_ $__gen_get_stopped() method_id(74107) {
+    var self = __gen_load_RugPull();
+    var res = $__gen_RugPull_stopped(self);
+    return res;
+}
+
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireNotStopped();
+    if ($self'rugpulled) {
+        $send((true, $self'owner, 0, 128, null(), null(), null()));
+        return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+    }
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    throw_unless(16059, ($ctx'value >= ($self'investment + $self'fee)));
+    $self'queue~__tact_dict_set_int_slice(257, $self'queueEnd, $ctx'sender);
+    $self'queueEnd = ($self'queueEnd + 1);
+    $self'balance = ($self'balance + $self'investment);
+    while ((($self'balance > $self'returns) & (($self'queueEnd - $self'queueStart) > 0))) {
+        slice $investor = __tact_not_null(__tact_dict_get_int_slice($self'queue, 257, $self'queueStart));
+        $self'balance = ($self'balance - $self'returns);
+        $self'queueStart = ($self'queueStart + 1);
+        ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_sendPayout($investor, $self'returns);
+    }
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireOwner();
+    if ((~ $self'rugpulled)) {
+        raw_reserve($self'balance, 0);
+    }
+    $send((true, $self'owner, 0, 128, null(), null(), null()));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
+    $self'rugpulled = true;
+    $send((true, $self'owner, 0, 128, null(), null(), null()));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (slice) $msg) impure {
+    var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
+    var ($msg'newOwner) = $msg;
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireOwner();
+    $self'owner = $msg'newOwner;
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+    var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireOwner();
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireNotStopped();
+    $self'stopped = true;
+    $reply($__gen_String_asComment(__gen_str_441410314()));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_RugPull();
+        self~$__gen_RugPull_receive();
+        __gen_store_RugPull(self);
+        return ();
+    }
+    
+    ;; Receive ChangeOwner message
+    if (op == 3067051791) {
+        var self = __gen_load_RugPull();
+        var msg = in_msg~__gen_read_ChangeOwner();
+        self~$__gen_RugPull_receive_ChangeOwner(msg);
+        __gen_store_RugPull(self);
+        return ();
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "withdraw" message
+        if (text_op == 0x095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4) {
+            var self = __gen_load_RugPull();
+            self~$__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4();
+            __gen_store_RugPull(self);
+            return ();
+        }
+        
+        ;; Receive "rugpull" message
+        if (text_op == 0xcde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea) {
+            var self = __gen_load_RugPull();
+            self~$__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea();
+            __gen_store_RugPull(self);
+            return ();
+        }
+        
+        ;; Receive "Stop" message
+        if (text_op == 0xbcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501) {
+            var self = __gen_load_RugPull();
+            self~$__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501();
+            __gen_store_RugPull(self);
+            return ();
+        }
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.ownable.transferable"H >> 128,
+        "org.ton.ownable"H >> 128,
+        "org.ton.stoppable"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmY9FL2FgApG48Fnc53DYaMwzErdDdZQYPp2gEqd5CGRZn";
+}

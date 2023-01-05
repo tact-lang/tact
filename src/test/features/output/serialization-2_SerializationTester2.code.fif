@@ -1,0 +1,422 @@
+PROGRAM{
+  DECLPROC __gen_write_Vars
+  DECLPROC __gen_read_Vars
+  DECLPROC __gen_read_Update
+  DECLPROC __gen_write_SerializationTester2
+  DECLPROC __gen_read_SerializationTester2
+  DECLPROC __gen_Vars_not_null
+  DECLPROC __gen_Vars_as_optional
+  DECLPROC __gen_Vars_to_tuple
+  DECLPROC __gen_Vars_opt_to_tuple
+  DECLPROC __gen_Vars_from_tuple
+  DECLPROC __gen_Vars_to_external
+  DECLPROC __gen_Vars_opt_to_external
+  DECLPROC __gen_Both_not_null
+  DECLPROC __gen_Both_as_optional
+  DECLPROC __gen_Both_to_tuple
+  DECLPROC __gen_Both_opt_to_tuple
+  DECLPROC __gen_Both_from_tuple
+  DECLPROC __gen_Both_from_opt_tuple
+  DECLPROC __gen_Both_to_external
+  DECLPROC __gen_Both_opt_to_external
+  DECLPROC __gen_load_SerializationTester2
+  DECLPROC __gen_store_SerializationTester2
+  DECLPROC $__gen_SerializationTester2_getA
+  123932 DECLMETHOD $__gen_get_getA
+  DECLPROC $__gen_SerializationTester2_getAopt
+  113663 DECLMETHOD $__gen_get_getAopt
+  DECLPROC $__gen_SerializationTester2_getB
+  119935 DECLMETHOD $__gen_get_getB
+  DECLPROC $__gen_SerializationTester2_getBopt
+  73763 DECLMETHOD $__gen_get_getBopt
+  DECLPROC $__gen_SerializationTester2_getBoth
+  81754 DECLMETHOD $__gen_get_getBoth
+  DECLPROC $__gen_SerializationTester2_getBothOpt
+  69430 DECLMETHOD $__gen_get_getBothOpt
+  DECLPROC $__gen_SerializationTester2_process
+  104435 DECLMETHOD $__gen_get_process
+  DECLPROC $__gen_SerializationTester2_receive
+  DECLPROC $__gen_SerializationTester2_receive_Update
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __gen_write_Vars PROCINLINE:<{
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_Vars PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    DROP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
+  }>
+  __gen_read_Update PROCINLINE:<{
+    32 LDU
+    SWAP
+    2676568142 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __gen_read_Vars INLINECALLDICT
+    s0 s5 XCHG
+    LDREF
+    SWAP
+    CTOS
+    __gen_read_Vars INLINECALLDICT
+    s5 POP
+    s5 s10 XCHG
+    4 ROLL
+  }>
+  __gen_write_SerializationTester2 PROCINLINE:<{
+    s5 s10 XCHG
+    s4 s9 XCHG
+    s3 s8 XCHG
+    s7 s6 s10 XCHG3
+    __gen_write_Vars INLINECALLDICT
+    NEWC
+    5 -ROLL
+    s0 s6 XCHG
+    __gen_write_Vars INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_read_SerializationTester2 PROCINLINE:<{
+    __gen_read_Vars INLINECALLDICT
+    s0 s5 XCHG
+    LDREF
+    SWAP
+    CTOS
+    __gen_read_Vars INLINECALLDICT
+    s5 POP
+    s5 s10 XCHG
+    4 ROLL
+  }>
+  __gen_Vars_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    5 UNTUPLE
+  }>
+  __gen_Vars_as_optional PROCINLINE:<{
+    5 TUPLE
+  }>
+  __gen_Vars_to_tuple PROC:<{
+    5 TUPLE
+  }>
+  __gen_Vars_opt_to_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_Vars_not_null INLINECALLDICT
+      __gen_Vars_to_tuple CALLDICT
+    }>
+  }>
+  __gen_Vars_from_tuple PROC:<{
+    5 UNTUPLE
+  }>
+  __gen_Vars_to_external PROC:<{
+  }>
+  __gen_Vars_opt_to_external PROCINLINE:<{
+    __gen_Vars_opt_to_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
+  }>
+  __gen_Both_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    10 UNTUPLE
+  }>
+  __gen_Both_as_optional PROCINLINE:<{
+    10 TUPLE
+  }>
+  __gen_Both_to_tuple PROC:<{
+    5 5 BLKSWAP
+    __gen_Vars_to_tuple CALLDICT
+    5 -ROLL
+    __gen_Vars_to_tuple CALLDICT
+    2 TUPLE
+  }>
+  __gen_Both_opt_to_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_Both_not_null INLINECALLDICT
+      __gen_Both_to_tuple CALLDICT
+    }>
+  }>
+  __gen_Both_from_tuple PROC:<{
+    2 UNTUPLE
+    SWAP
+    __gen_Vars_from_tuple CALLDICT
+    s0 s5 XCHG
+    __gen_Vars_from_tuple CALLDICT
+    s8 s9 XCHG
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
+  }>
+  __gen_Both_from_opt_tuple PROC:<{
+    DUP
+    ISNULL
+    IFJMP:<{
+      DROP
+      PUSHNULL
+    }>
+    __gen_Both_from_tuple CALLDICT
+    __gen_Both_as_optional INLINECALLDICT
+  }>
+  __gen_Both_to_external PROC:<{
+    5 5 BLKSWAP
+    __gen_Vars_to_tuple CALLDICT
+    5 -ROLL
+    __gen_Vars_to_tuple CALLDICT
+  }>
+  __gen_Both_opt_to_external PROCINLINE:<{
+    __gen_Both_opt_to_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
+  }>
+  __gen_load_SerializationTester2 PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_SerializationTester2 INLINECALLDICT
+    1 10 BLKDROP2
+  }>
+  __gen_store_SerializationTester2 PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    10 -ROLL
+    __gen_write_SerializationTester2 INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $__gen_SerializationTester2_getA PROC:<{
+    5 BLKDROP
+  }>
+  $__gen_get_getA PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getA CALLDICT
+    __gen_Vars_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_getAopt PROC:<{
+    5 BLKDROP
+    __gen_Vars_as_optional INLINECALLDICT
+  }>
+  $__gen_get_getAopt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getAopt CALLDICT
+    __gen_Vars_opt_to_external INLINECALLDICT
+  }>
+  $__gen_SerializationTester2_getB PROC:<{
+    5 5 BLKDROP2
+  }>
+  $__gen_get_getB PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getB CALLDICT
+    __gen_Vars_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_getBopt PROC:<{
+    5 5 BLKDROP2
+    __gen_Vars_as_optional INLINECALLDICT
+  }>
+  $__gen_get_getBopt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBopt CALLDICT
+    __gen_Vars_opt_to_external INLINECALLDICT
+  }>
+  $__gen_SerializationTester2_getBoth PROC:<{
+  }>
+  $__gen_get_getBoth PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBoth CALLDICT
+    __gen_Both_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_getBothOpt PROC:<{
+    __gen_Both_as_optional INLINECALLDICT
+  }>
+  $__gen_get_getBothOpt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBothOpt CALLDICT
+    __gen_Both_opt_to_external INLINECALLDICT
+  }>
+  $__gen_SerializationTester2_process PROC:<{
+    11 BLKDROP
+    10 5 BLKDROP2
+    s0 s4 XCHG
+    INC
+    s0 s3 XCHG
+    2 ADDCONST
+    s0 s2 XCHG
+    3 ADDCONST
+    SWAP
+    4 ADDCONST
+    s0 s4 XCHG
+    5 ADDCONST
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+  }>
+  $__gen_get_process PROC:<{
+    s0 s2 XCHG
+    __gen_Vars_from_tuple CALLDICT
+    s0 s5 XCHG
+    __gen_Both_from_tuple CALLDICT
+    s0 s15 XCHG
+    __gen_Both_from_opt_tuple CALLDICT
+    __gen_load_SerializationTester2 INLINECALLDICT
+    s9 25 s() XCHG
+    s8 24 s() XCHG
+    s7 23 s() XCHG
+    s6 22 s() XCHG
+    s5 21 s() XCHG
+    s4 20 s() XCHG
+    s3 19 s() XCHG
+    s2 18 s() XCHG
+    s1 17 s() XCHG
+    s0 16 s() XCHG
+    s7 s15 XCHG
+    s6 s14 XCHG
+    s5 s13 XCHG
+    s4 s12 XCHG
+    s8 s11 XCHG
+    s3 s10 XCHG
+    s9 s1 s7 XCHG3
+    s0 s6 XCHG
+    s0 s5 XCHG
+    s0 s4 XCHG
+    s8 s8 s3 XCHG3
+    $__gen_SerializationTester2_process CALLDICT
+    __gen_Vars_to_external CALLDICT
+  }>
+  $__gen_SerializationTester2_receive PROC:<{
+  }>
+  $__gen_SerializationTester2_receive_Update PROC:<{
+    10 10 BLKDROP2
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    DUP
+    0 EQINT
+    s2 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      __gen_load_SerializationTester2 INLINECALLDICT
+      $__gen_SerializationTester2_receive CALLDICT
+      __gen_store_SerializationTester2 INLINECALLDICT
+    }>
+    2676568142 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_SerializationTester2 INLINECALLDICT
+      s0 s10 XCHG
+      __gen_read_Update INLINECALLDICT
+      s10 POP
+      18 s() 19 s() XCHG
+      17 s() 18 s() XCHG
+      16 s() 17 s() XCHG
+      s15 16 s() XCHG
+      s14 s15 XCHG
+      s13 s14 XCHG
+      s12 s13 XCHG
+      s11 s12 XCHG
+      s10 s11 XCHG
+      9 ROLL
+      $__gen_SerializationTester2_receive_Update CALLDICT
+      __gen_store_SerializationTester2 INLINECALLDICT
+    }>
+    DROP
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d56756d65503670384e386f5678624a78335565726674447251327254764746563154694d4b414e4e5136647a} PUSHSLICE
+  }>
+}END>c

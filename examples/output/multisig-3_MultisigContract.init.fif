@@ -1,0 +1,27 @@
+PROGRAM{
+  DECLPROC __gen_write_MultisigContract
+  DECLPROC $__gen_MultisigContract_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_MultisigContract PROCINLINE:<{
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
+  }>
+  $__gen_MultisigContract_init PROC:<{
+    0 PUSHINT
+    s0 s4 XCHG
+    NEWC
+    STREF
+    4 -ROLL
+    __gen_write_MultisigContract INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_MultisigContract_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

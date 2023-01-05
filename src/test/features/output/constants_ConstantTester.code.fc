@@ -1,0 +1,115 @@
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(slice, ((int))) __gen_read_ConstantTester(slice sc_0) inline {
+    var v'v = sc_0~load_int(257);
+    return (sc_0, (v'v));
+}
+
+(int) __gen_load_ConstantTester() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_ConstantTester();
+}
+
+;; String "Hello world!"
+slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
+
+int $__gen_ConstantTester_something1((int) $self) impure {
+    var (($self'v)) = $self;
+    return 10;
+}
+
+_ $__gen_get_something1() method_id(121234) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something1(self);
+    return res;
+}
+
+int $__gen_ConstantTester_something2((int) $self) impure {
+    var (($self'v)) = $self;
+    return null();
+}
+
+_ $__gen_get_something2() method_id(125425) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something2(self);
+    return res;
+}
+
+int $__gen_ConstantTester_something3((int) $self) impure {
+    var (($self'v)) = $self;
+    return 123000000000;
+}
+
+_ $__gen_get_something3() method_id(129488) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something3(self);
+    return res;
+}
+
+int $__gen_ConstantTester_something4((int) $self) impure {
+    var (($self'v)) = $self;
+    return 456000000000;
+}
+
+_ $__gen_get_something4() method_id(100663) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something4(self);
+    return res;
+}
+
+slice $__gen_ConstantTester_something5((int) $self) impure {
+    var (($self'v)) = $self;
+    return __gen_str_3226689099();
+}
+
+_ $__gen_get_something5() method_id(104726) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something5(self);
+    return res;
+}
+
+int $__gen_ConstantTester_globalConst((int) $self) impure {
+    var (($self'v)) = $self;
+    return 100;
+}
+
+_ $__gen_get_globalConst() method_id(116577) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_globalConst(self);
+    return res;
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmeTCpu41BYLduv9P5aECEQzf97z28EDyBwtcNFVtXiz9J";
+}

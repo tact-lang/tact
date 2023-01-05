@@ -12,14 +12,14 @@ exports[`bugs not have a bug #18 1`] = `
       },
       "bounce": true,
       "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQC3wtzQNzsO2lEhZebhhPToqqzkwuFENWiYGw5Wf-WQhOuD",
+      "to": "kQB_EVEdX0NqZCnUmwgu46OJY1h4BqWJnww6tiazg37_PEg5",
       "type": "internal",
       "value": 10000000000n,
     },
     "type": "received",
   },
   {
-    "gasUsed": 19001n,
+    "gasUsed": 18901n,
     "type": "processed",
   },
 ]

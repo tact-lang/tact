@@ -1,0 +1,48 @@
+forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
+
+builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    build_0 = store_int(build_0, v'c, 257);
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, v'd, 257);
+    build_1 = store_int(build_1, v'e, 257);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline {
+    var ((v'a'a, v'a'b, v'a'c, v'a'd, v'a'e), (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e)) = v;
+    build_0 = __gen_write_Vars(build_0, (v'a'a, v'a'b, v'a'c, v'a'd, v'a'e));
+    var build_1 = begin_cell();
+    build_1 = __gen_write_Vars(build_1, (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e));
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(int, int, int, int, int) __gen_Vars_from_tuple(tuple v) {
+    var (int v'a, int v'b, int v'c, int v'd, int v'e) = __tact_tuple_destroy_5(v);
+    return (v'a, v'b, v'c, v'd, v'e);
+}
+
+cell $__gen_SerializationTester2_init(cell sys', (int, int, int, int, int) $a, (int, int, int, int, int) $b) {
+    var (($a'a, $a'b, $a'c, $a'd, $a'e)) = $a;
+    var (($b'a, $b'b, $b'c, $b'd, $b'e)) = $b;
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = (null(), null());
+    ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($a'a, $a'b, $a'c, $a'd, $a'e);
+    ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e) = ($b'a, $b'b, $b'c, $b'd, $b'e);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SerializationTester2(b', (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
+    return b'.end_cell();
+}
+
+cell init(cell sys', tuple $$a, tuple $$b) method_id {
+    (int, int, int, int, int) $a = __gen_Vars_from_tuple($$a);
+    (int, int, int, int, int) $b = __gen_Vars_from_tuple($$b);
+    return $__gen_SerializationTester2_init(sys', $a, $b);
+}
+
+() main() {
+}

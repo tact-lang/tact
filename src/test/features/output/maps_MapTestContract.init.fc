@@ -1,0 +1,31 @@
+builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
+    var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4) = v;
+    build_0 = store_dict(build_0, v'intMap1);
+    build_0 = store_dict(build_0, v'intMap2);
+    var build_1 = begin_cell();
+    build_1 = store_dict(build_1, v'intMap3);
+    build_1 = store_dict(build_1, v'intMap4);
+    build_1 = store_dict(build_1, v'addrMap1);
+    var build_2 = begin_cell();
+    build_2 = store_dict(build_2, v'addrMap2);
+    build_2 = store_dict(build_2, v'addrMap3);
+    build_2 = store_dict(build_2, v'addrMap4);
+    build_1 = store_ref(build_1, build_2.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell $__gen_MapTestContract_init(cell sys') {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = (null(), null(), null(), null(), null(), null(), null(), null());
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_MapTestContract(b', ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_MapTestContract_init(sys');
+}
+
+() main() {
+}

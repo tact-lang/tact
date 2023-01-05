@@ -1,0 +1,377 @@
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_ref(d, kl, k, v), ());
+    }
+}
+
+cell __tact_dict_get_int_cell(cell d, int kl, int k) {
+    var (r, ok) = idict_get_ref?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
+
+(slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2509716940);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+builder __gen_write_DeployOk(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 3548362785, 32);
+    build_0 = store_uint(build_0, v'queryId, 64);
+    return build_0;
+}
+
+cell __gen_writecell_DeployOk((int) v) inline {
+    return __gen_write_DeployOk(begin_cell(), v).end_cell();
+}
+
+(slice, ((int, int))) __gen_read_Increment(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3615081709);
+    var v'key = sc_0~load_int(257);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'key, v'value));
+}
+
+(slice, ((int))) __gen_read_Toggle(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 575056061);
+    var v'key = sc_0~load_int(257);
+    return (sc_0, (v'key));
+}
+
+(slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 140802882);
+    var v'key = sc_0~load_int(257);
+    var v'content = null();
+    if (sc_0~load_int(1)) {
+        v'content = sc_0~load_ref();
+    }
+    return (sc_0, (v'key, v'content));
+}
+
+(slice, ((int))) __gen_read_Reset(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2438762569);
+    var v'key = sc_0~load_int(257);
+    return (sc_0, (v'key));
+}
+
+builder __gen_write_Something(builder build_0, (int) v) inline {
+    var (v'value) = v;
+    build_0 = store_int(build_0, v'value, 257);
+    return build_0;
+}
+
+cell __gen_writecell_Something((int) v) inline {
+    return __gen_write_Something(begin_cell(), v).end_cell();
+}
+
+((int)) __gen_Something_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (int vvv'value) = __tact_tuple_destroy_1(v);
+    return (vvv'value);
+}
+
+cell __gen_writecellopt_Something(tuple v) inline {
+    if (null?(v)) {
+        return null();
+    }
+    return __gen_writecell_Something(__gen_Something_not_null(v));
+}
+
+builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
+    var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
+    build_0 = store_dict(build_0, v'counters);
+    build_0 = store_dict(build_0, v'counters2);
+    var build_1 = begin_cell();
+    build_1 = store_dict(build_1, v'counters3);
+    build_1 = store_dict(build_1, v'counters4);
+    build_1 = store_dict(build_1, v'counters5);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc_0) inline {
+    var v'counters = sc_0~load_dict();
+    var v'counters2 = sc_0~load_dict();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'counters3 = sc_1~load_dict();
+    var v'counters4 = sc_1~load_dict();
+    var v'counters5 = sc_1~load_dict();
+    return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
+}
+
+_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
+    var (v'bounced, v'sender, v'value, v'raw) = v;
+    return v'sender;
+}
+
+(cell, cell, cell, cell, cell) __gen_load_IncrementContract() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_IncrementContract();
+}
+
+() __gen_store_IncrementContract((cell, cell, cell, cell, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_IncrementContract(b, v);
+    set_data(b.end_cell());
+}
+
+builder $storeBool(builder $s, int $value) impure {
+    if ($value) {
+        return store_int($s, (- 1), 1);
+    } else {
+        return store_int($s, 0, 1);
+    }
+}
+
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
+    builder $b = begin_cell();
+    $b = store_int($b, 1, 2);
+    $b = $storeBool($b, $params'bounce);
+    $b = store_int($b, 0, 3);
+    $b = __tact_store_address($b, $params'to);
+    $b = store_coins($b, $params'value);
+    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+        $b = $storeBool($b, true);
+        builder $bc = begin_cell();
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        if ((~ null?($params'code))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'code));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        if ((~ null?($params'data))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'data));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
+        $b = store_ref($b, end_cell($bc));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $body = $params'body;
+    if ((~ null?($body))) {
+        $b = $storeBool($b, true);
+        $b = store_ref($b, __tact_not_null($body));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $c = end_cell($b);
+    send_raw_message($c, $params'mode);
+}
+
+() $reply(cell $body) impure {
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+}
+
+cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure {
+    var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
+    return $self'counters;
+}
+
+_ $__gen_get_counters() method_id(95239) {
+    var self = __gen_load_IncrementContract();
+    var res = $__gen_IncrementContract_counters(self);
+    return res;
+}
+
+cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure {
+    var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
+    return $self'counters4;
+}
+
+_ $__gen_get_counters2() method_id(77570) {
+    var self = __gen_load_IncrementContract();
+    var res = $__gen_IncrementContract_counters2(self);
+    return res;
+}
+
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
+    var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
+    var ($msg'key, $msg'value) = $msg;
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    $self'counters~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
+    $self'counters4~__tact_dict_set_slice_int(267, $ctx'sender, $msg'value, 257);
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
+}
+
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
+    var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
+    var ($msg'key) = $msg;
+    int $ex = __tact_dict_get_int_int($self'counters2, 257, $msg'key, 1);
+    if (null?($ex)) {
+        $self'counters2~__tact_dict_set_int_int(257, $msg'key, true, 1);
+    } else {
+        $self'counters2~__tact_dict_set_int_int(257, $msg'key, (~ __tact_not_null($ex)), 1);
+    }
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
+}
+
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure {
+    var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
+    var ($msg'key, $msg'content) = $msg;
+    throw_unless(52777, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
+    $self'counters3~__tact_dict_set_int_cell(257, $msg'key, $msg'content);
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
+}
+
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
+    var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
+    var ($msg'key) = $msg;
+    $self'counters~__tact_dict_set_int_int(257, $msg'key, null(), 257);
+    $self'counters2~__tact_dict_set_int_int(257, $msg'key, null(), 1);
+    $self'counters3~__tact_dict_set_int_cell(257, $msg'key, null());
+    $self'counters4~__tact_dict_set_slice_int(267, __gen_Context_get_sender(__tact_context_get()), null(), 257);
+    $self'counters5~__tact_dict_set_int_cell(257, $msg'key, __gen_writecellopt_Something(null()));
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
+}
+
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure {
+    var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
+    var ($deploy'queryId) = $deploy;
+    $reply(__gen_writecell_DeployOk(($deploy'queryId)));
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Increment message
+    if (op == 3615081709) {
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Increment();
+        self~$__gen_IncrementContract_receive_Increment(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    ;; Receive Toggle message
+    if (op == 575056061) {
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Toggle();
+        self~$__gen_IncrementContract_receive_Toggle(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    ;; Receive Persist message
+    if (op == 140802882) {
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Persist();
+        self~$__gen_IncrementContract_receive_Persist(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    ;; Receive Reset message
+    if (op == 2438762569) {
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Reset();
+        self~$__gen_IncrementContract_receive_Reset(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2509716940) {
+        var self = __gen_load_IncrementContract();
+        var msg = in_msg~__gen_read_Deploy();
+        self~$__gen_IncrementContract_receive_Deploy(msg);
+        __gen_store_IncrementContract(self);
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmcM5tDFJkBVjBLHNGrvhwcfEF2sRai9ZUZkHYScNUHWt5";
+}

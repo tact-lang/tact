@@ -8,7 +8,7 @@ function writeArguments(args: ContractFunctionArg[]) {
     return args.map((v) => `${v.name}: ${getTSFieldType(v.type)}`);
 }
 
-export function writeTypescript(abi: ContractABI, code: string, system: string) {
+export function writeTypescript(abi: ContractABI, code: string, initCode: string, system: string) {
     let w = new Writer();
     w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';`);
     w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
@@ -29,6 +29,7 @@ export function writeTypescript(abi: ContractABI, code: string, system: string) 
         w.inIndent(() => {
 
             // Code references
+            w.append(`const __init = '${initCode}';`)
             w.append(`const __code = '${code}';`);
             w.append(`const __system = '${system}';`);
             w.append(`let systemCell = Cell.fromBase64(__system);`);
@@ -42,9 +43,10 @@ export function writeTypescript(abi: ContractABI, code: string, system: string) 
 
             // Deploy
             w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
+            w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
             w.append(`let system = await ContractSystem.create();`);
-            w.append(`let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);`);
-            w.append(`let res = await executor.get('${abi.init!.name}', __tuple);`);
+            w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
+            w.append(`let res = await executor.get('init', __tuple);`);
             w.append(`if (!res.success) { throw Error(res.error); }`);
             w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
             w.inIndent(() => {

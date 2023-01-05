@@ -1,0 +1,47 @@
+SETCP0
+(:methods
+  recv_internal: 
+
+  2: 
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s8 XCHG
+    NEWC
+    STREF
+    s0 s8 XCHG
+    s7 s8 XCHG2
+    STDICT
+    s1 s5 XCHG
+    STDICT
+    s0 s3 XCHG
+    NEWC
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    STDICT
+    s0 s2 XCHG
+    NEWC
+    STDICT
+    s1 s3 XCHG
+    STDICT
+    s1 s3 XCHG
+    STDICT
+    ENDC
+    ROT
+    STREF
+    ENDC
+    s0 s1 XCHG
+    STREF
+    ENDC
+
+  107886: 
+    2 CALLDICT
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

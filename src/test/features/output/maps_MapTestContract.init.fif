@@ -1,0 +1,52 @@
+PROGRAM{
+  DECLPROC __gen_write_MapTestContract
+  DECLPROC $__gen_MapTestContract_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_MapTestContract PROCINLINE:<{
+    s7 s8 XCHG2
+    STDICT
+    s1 s5 XCHG
+    STDICT
+    s0 s3 XCHG
+    NEWC
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    STDICT
+    s0 s2 XCHG
+    NEWC
+    STDICT
+    s1 s3 XCHG
+    STDICT
+    s1 s3 XCHG
+    STDICT
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
+  }>
+  $__gen_MapTestContract_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s8 XCHG
+    NEWC
+    STREF
+    s0 s8 XCHG
+    __gen_write_MapTestContract INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_MapTestContract_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

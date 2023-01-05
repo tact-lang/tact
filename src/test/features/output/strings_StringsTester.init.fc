@@ -1,0 +1,21 @@
+builder __gen_write_StringsTester(builder build_0, (int) v) inline {
+    var (v'fee) = v;
+    build_0 = store_int(build_0, v'fee, 257);
+    return build_0;
+}
+
+cell $__gen_StringsTester_init(cell sys') {
+    var (($self'fee)) = (0);
+    $self'fee = 1200000000;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_StringsTester(b', ($self'fee));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_StringsTester_init(sys');
+}
+
+() main() {
+}

@@ -1,0 +1,42 @@
+PROGRAM{
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  recv_internal PROC:<{
+    DUP
+    SBITS
+    NIP
+    31 GTINT
+    IF:<{
+    }>
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s4 s4 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    IFJMP:<{
+    }>
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d58596162737239787571536d6177614554613354316b333175395158774c347a64594e504533744745784c43} PUSHSLICE
+  }>
+}END>c

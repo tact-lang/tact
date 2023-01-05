@@ -1,0 +1,331 @@
+PROGRAM{
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_address_eq
+  DECLPROC __gen_read_CanPayout
+  DECLPROC __gen_write_CanPayoutResponse
+  DECLPROC __gen_writecell_CanPayoutResponse
+  DECLPROC __gen_write_Beacon
+  DECLPROC __gen_read_Beacon
+  DECLPROC __gen_load_Beacon
+  DECLPROC __gen_store_Beacon
+  DECLPROC $storeBool
+  DECLPROC $send
+  DECLPROC $reply
+  DECLPROC $__gen_Beacon_owner
+  83229 DECLMETHOD $__gen_get_owner
+  DECLPROC $__gen_Beacon_receive_CanPayout
+  DECLPROC $__gen_Beacon_receive_bounced
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
+  }>
+  __gen_read_CanPayout PROCINLINE:<{
+    32 LDU
+    SWAP
+    1050587494 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_write_CanPayoutResponse PROCINLINE:<{
+    1861678417 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    SWAP
+    __tact_store_address INLINECALLDICT
+    1 STI
+  }>
+  __gen_writecell_CanPayoutResponse PROCINLINE:<{
+    NEWC
+    3 -ROLL
+    __gen_write_CanPayoutResponse INLINECALLDICT
+    ENDC
+  }>
+  __gen_write_Beacon PROCINLINE:<{
+    2SWAP
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    1 STI
+  }>
+  __gen_read_Beacon PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    3 -ROLL
+  }>
+  __gen_load_Beacon PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_Beacon INLINECALLDICT
+    1 3 BLKDROP2
+  }>
+  __gen_store_Beacon PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    3 -ROLL
+    __gen_write_Beacon INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $storeBool PROC:<{
+    IFJMP:<{
+      -1 PUSHINT
+      SWAP
+      1 STI
+    }>
+    0 PUSHINT
+    SWAP
+    1 STI
+  }>
+  $send PROC:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    $storeBool CALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      $storeBool CALLDICT
+      NEWC
+      FALSE
+      $storeBool CALLDICT
+      FALSE
+      $storeBool CALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        $storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        $storeBool CALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        $storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        $storeBool CALLDICT
+      }>
+      FALSE
+      $storeBool CALLDICT
+      s0 s2 XCHG
+      TRUE
+      $storeBool CALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      $storeBool CALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      $storeBool CALLDICT
+      SWAP
+      __tact_not_null CALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      $storeBool CALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  $reply PROC:<{
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    TRUE
+    s0 s2 XCHG
+    0 PUSHINT
+    66 PUSHINT
+    ROT
+    PUSHNULL
+    PUSHNULL
+    $send CALLDICT
+  }>
+  $__gen_Beacon_owner PROC:<{
+    DROP
+    NIP
+  }>
+  $__gen_get_owner PROC:<{
+    __gen_load_Beacon INLINECALLDICT
+    $__gen_Beacon_owner CALLDICT
+  }>
+  $__gen_Beacon_receive_CanPayout PROC:<{
+    __tact_context_get INLINECALLDICT
+    2DROP
+    4429 PUSHINT
+    s2 POP
+    s5 PUSH
+    __tact_address_eq INLINECALLDICT
+    THROWANYIFNOT
+    100000000 PUSHINT
+    0 PUSHINT
+    RAWRESERVE
+    OVER
+    IF:<{
+      TRUE
+      s2 POP
+      s2 PUSH
+      TRUE
+      __gen_writecell_CanPayoutResponse INLINECALLDICT
+      $reply CALLDICT
+    }>ELSE<{
+      s2 PUSH
+      FALSE
+      __gen_writecell_CanPayoutResponse INLINECALLDICT
+      $reply CALLDICT
+    }>
+  }>
+  $__gen_Beacon_receive_bounced PROC:<{
+    2DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      DROP
+      __gen_load_Beacon INLINECALLDICT
+      3 ROLL
+      $__gen_Beacon_receive_bounced CALLDICT
+      __gen_store_Beacon INLINECALLDICT
+    }>
+    1050587494 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_Beacon INLINECALLDICT
+      s0 s3 XCHG
+      __gen_read_CanPayout INLINECALLDICT
+      NIP
+      s1 s3 s0 XCHG3
+      $__gen_Beacon_receive_CanPayout CALLDICT
+      __gen_store_Beacon INLINECALLDICT
+    }>
+    DROP
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d50654b486b736a6158397345467778414d36474d6972436d6e434667594468327a356a79424a354862655448} PUSHSLICE
+  }>
+}END>c

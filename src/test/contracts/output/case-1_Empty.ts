@@ -222,15 +222,17 @@ function storeTupleSource(source: Source) {
 }
 
 async function Empty_init() {
-    const __code = 'te6ccgEBCAEAgAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQIBIAYHAEVCDXSTHCHzDQ0wMBcbDAAZF/kXDiAfpAIlBEbwT4YdzywIKAAZRwAcjMAQGBAQHPAMmAAJvwRXgBQATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzA==';
+    const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
+    const __code = 'te6ccgEBBAEAYAABFP8A9KQT9LzyyAsBAgFiAgMARtAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QCJQRG8E+GHc8sCCAE2hd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHM=';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_Empty', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Empty_errors[res.exitCode]) {

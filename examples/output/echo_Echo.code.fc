@@ -1,0 +1,255 @@
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+tuple __tact_string_builder_start_string() inline {
+    return __tact_string_builder_start(false);
+}
+
+cell __tact_string_builder_end(tuple builders) {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+slice __tact_string_builder_end_slice(tuple builders) {
+    return __tact_string_builder_end(builders).begin_parse();
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+    
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+        
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+        
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+        
+        ;; Update builders
+        builders = cons(b, tail);
+        
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+    
+    return ((builders), ());
+}
+
+builder __gen_write_Echo(builder build_0, (int) v) inline {
+    var (v'v) = v;
+    build_0 = store_int(build_0, v'v, 257);
+    return build_0;
+}
+
+(slice, ((int))) __gen_read_Echo(slice sc_0) inline {
+    var v'v = sc_0~load_int(257);
+    return (sc_0, (v'v));
+}
+
+(int) __gen_load_Echo() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_Echo();
+}
+
+() __gen_store_Echo((int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_Echo(b, v);
+    set_data(b.end_cell());
+}
+
+;; String "Hello, "
+slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE";
+
+builder $storeBool(builder $s, int $value) impure {
+    if ($value) {
+        return store_int($s, (- 1), 1);
+    } else {
+        return store_int($s, 0, 1);
+    }
+}
+
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
+    builder $b = begin_cell();
+    $b = store_int($b, 1, 2);
+    $b = $storeBool($b, $params'bounce);
+    $b = store_int($b, 0, 3);
+    $b = __tact_store_address($b, $params'to);
+    $b = store_coins($b, $params'value);
+    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+        $b = $storeBool($b, true);
+        builder $bc = begin_cell();
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        if ((~ null?($params'code))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'code));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        if ((~ null?($params'data))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'data));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
+        $b = store_ref($b, end_cell($bc));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $body = $params'body;
+    if ((~ null?($body))) {
+        $b = $storeBool($b, true);
+        $b = store_ref($b, __tact_not_null($body));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $c = end_cell($b);
+    send_raw_message($c, $params'mode);
+}
+
+() $reply(cell $body) impure {
+    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+}
+
+cell $__gen_Slice_asCell(slice $self) impure {
+    var ($self) = $self;
+    builder $builder = begin_cell();
+    $builder = store_slice($builder, $self);
+    return end_cell($builder);
+}
+
+cell $__gen_String_asComment(slice $self) impure {
+    var ($self) = $self;
+    tuple $b = __tact_string_builder_start_comment();
+    $b~__tact_string_builder_append($self);
+    return __tact_string_builder_end($b);
+}
+
+slice $__gen_Echo_hello((int) $self, slice $src) impure {
+    var (($self'v)) = $self;
+    tuple $builder = __tact_string_builder_start_string();
+    $builder~__tact_string_builder_append(__gen_str_591567833());
+    $builder~__tact_string_builder_append($src);
+    return __tact_string_builder_end_slice($builder);
+}
+
+_ $__gen_get_hello(slice $$src) method_id(115554) {
+    slice $src = $$src;
+    var self = __gen_load_Echo();
+    var res = $__gen_Echo_hello(self, $src);
+    return res;
+}
+
+((int), ()) $__gen_Echo_receive_comment((int) $self, slice $msg) impure {
+    var ($self'v) = $self;
+    $reply($__gen_String_asComment($msg));
+    return (($self'v), ());
+}
+
+((int), ()) $__gen_Echo_receive_fallback((int) $self, slice $msg) impure {
+    var ($self'v) = $self;
+    $reply($__gen_Slice_asCell($msg));
+    return (($self'v), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        if (slice_bits(in_msg) >= 32) {
+            var self = __gen_load_Echo();
+            self~$__gen_Echo_receive_comment(in_msg.skip_bits(32));
+            __gen_store_Echo(self);
+            return ();
+        }
+    }
+    
+    ;; Receiver fallback
+    var self = __gen_load_Echo();
+    self~$__gen_Echo_receive_fallback(in_msg);
+    __gen_store_Echo(self);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmTACmZMqZLqhrbx3kpJBEwWz9Uo7Z8tdvXboZtRyheqTA";
+}

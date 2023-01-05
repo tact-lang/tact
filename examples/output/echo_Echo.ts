@@ -175,15 +175,17 @@ function storeTupleSendParameters(source: SendParameters) {
 }
 
 async function Echo_init() {
-    const __code = 'te6ccgECJAEAArEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAVggIQIBIAYHAgFIERICAdQICQIBIAsMAd87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4MAAji4g10nCH44m7UTQ1AH4YoEBAdcAATEBgCDXIfAWyPhCAcwBAYEBAc8Aye1U2zHg3u1E0NQB+GKBAQHXAAExAfAXgCgALCBu8tCAgAB7I+EIBzAEBgQEBzwDJ7VQCASANDgAV9KP4DlAHA4AOUAQCASAPEAC7Qg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOAAjG8iAcmTIW6zlgFvIlnMyegxgAAc8AjQgAgEgExQCASAaGwIBIBUWAgEgGBkB9zIcQHKAVAH8A9wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/APyHDwD3DwDyRus5l/8A8E8AFQBMyVNANw8A/iJG6zmX/wDwTwAVAEzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmH/wDwHwAQHMlDFw8A/iyQGAXACU+EFvJBAjXwN/AnCAQlhtbfAQgAAT7AAALMgBzxbJgAC0f8gBlHAByx/ebwABb4xtb4wB8ArwCIAIBIBwdAgEgHh8AGRwAcjMAQGBAQHPAMmAARQxcMgBlHAByx/ebwABb4xtb4yLdIZWxsbywgjwCgHwCvAJgAAk8BPwEYAAJPAS8BGACASAiIwAnuDYu1E0NQB+GKBAQHXAAExAfAVgACbWrHgKQAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzA=';
+    const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
+    const __code = 'te6ccgECIAEAApEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAVgeHwIBIAYHAgFIERICAdQICQIBIAsMAd87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4MAAji4g10nCH44m7UTQ1AH4YoEBAdcAATEBgCDXIfAVyPhCAcwBAYEBAc8Aye1U2zHg3u1E0NQB+GKBAQHXAAExAfAWgCgALCBu8tCAgAB7I+EIBzAEBgQEBzwDJ7VQCASANDgAV9KP4DlAHA4AOUAQCASAPEAC7Qg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOAAjG8iAcmTIW6zlgFvIlnMyegxgAAc8AjQgAgEgExQCASAaGwIBIBUWAgEgGBkB9zIcQHKAVAH8A9wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/APyHDwD3DwDyRus5l/8A8E8AFQBMyVNANw8A/iJG6zmX/wDwTwAVAEzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmH/wDwHwAQHMlDFw8A/iyQGAXACU+EFvJBAjXwN/AnCAQlhtbfAQgAAT7AAALMgBzxbJgAC0f8gBlHAByx/ebwABb4xtb4wB8ArwCIAIBIBwdAAlPAS8BGABFDFwyAGUcAHLH95vAAFvjG1vjIt0hlbGxvLCCPAKAfAK8AmAACTwE/ARgAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gAJ7g2LtRNDUAfhigQEB1wABMQHwFI';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_Echo', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Echo_errors[res.exitCode]) {

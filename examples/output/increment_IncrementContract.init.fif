@@ -1,0 +1,40 @@
+PROGRAM{
+  DECLPROC __gen_write_IncrementContract
+  DECLPROC $__gen_IncrementContract_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_IncrementContract PROCINLINE:<{
+    s4 s5 XCHG2
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    SWAP
+    NEWC
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  $__gen_IncrementContract_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s5 XCHG
+    NEWC
+    STREF
+    s0 s5 XCHG
+    __gen_write_IncrementContract INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_IncrementContract_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

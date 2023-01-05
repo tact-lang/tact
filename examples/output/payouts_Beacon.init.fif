@@ -1,0 +1,38 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_Beacon
+  DECLPROC $__gen_Beacon_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_Beacon PROCINLINE:<{
+    2SWAP
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    1 STI
+  }>
+  $__gen_Beacon_init PROC:<{
+    FALSE
+    s0 s3 XCHG
+    NEWC
+    STREF
+    s0 s3 XCHG
+    __gen_write_Beacon INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Beacon_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

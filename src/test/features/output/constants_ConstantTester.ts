@@ -175,15 +175,17 @@ function storeTupleSendParameters(source: SendParameters) {
 }
 
 async function ConstantTester_init() {
-    const __code = 'te6ccgECIAEAAXAAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAVgSEwIBIAYHAgFIDg8ARdEGukmOEPmGhpgYC42GAAyL/IuHEA/SARKCI3gnww7nlgQUAgEgCAkCASAKCwIBIAwNABkcAHIzAEBgQEBzwDJgAAUMHqAABQwbYAARDCCGByjXw4AgAgEgEBEAB0MIBkgAEQwghhqK7fQAIAAfDCLxIZWxsbyB3b3JsZCGIAIBIBQVAgEgGBkCASAWFwBNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwACWyTftRNDUAfhigQEB1wABMfAIgACWyRbtRNDUAfhigQEB1wABMfAJgAgEgGhsCASAcHQAlsdh7UTQ1AH4YoEBAdcAATHwCoAAlsmS7UTQ1AH4YoEBAdcAATHwBYAIBWB4fACWydDtRNDUAfhigQEB1wABMfAHgACSp8e1E0NQB+GKBAQHXAAEx8AYACKnk8AQ=';
+    const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
+    const __code = 'te6ccgECHAEAAVIAART/APSkE/S88sgLAQIBYgIDAgLMBAUCAVgQEQIBIAYHAAfZhAMkAgEgCAkCASAKCwBFQg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QCJQRG8E+GHc8sCCgABVMHqAIBIAwNAgEgDg8ABQwbYAARDCCGByjXw4AgABEMIIYaiu30ACAAHwwi8SGVsbG8gd29ybGQhiACASASEwIBIBYXAgEgFBUATbd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMAAlsk37UTQ1AH4YoEBAdcAATHwBoAAlskW7UTQ1AH4YoEBAdcAATHwB4AIBIBgZAgEgGhsAJbHYe1E0NQB+GKBAQHXAAEx8AiAAJbJku1E0NQB+GKBAQHXAAEx8AOAAJbJ8e1E0NQB+GKBAQHXAAEx8ASAAJbJ0O1E0NQB+GKBAQHXAAEx8AWA=';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_ConstantTester', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (ConstantTester_errors[res.exitCode]) {

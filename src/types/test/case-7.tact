@@ -2,7 +2,7 @@ primitive Int;
 primitive Bool;
 
 struct Point {
-    
+    p: Int;
 }
 
 contract Main {

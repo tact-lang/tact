@@ -1,0 +1,127 @@
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1843760589);
+    var v'signature = sc_0~load_bits(512);
+    var v'transfer = sc_0;
+    return (sc_0, (v'signature, v'transfer));
+}
+
+builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
+    var (v'seqno, v'key, v'walletId) = v;
+    build_0 = store_uint(build_0, v'seqno, 32);
+    build_0 = store_uint(build_0, v'key, 256);
+    build_0 = store_uint(build_0, v'walletId, 64);
+    return build_0;
+}
+
+(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'key = sc_0~load_uint(256);
+    var v'walletId = sc_0~load_uint(64);
+    return (sc_0, (v'seqno, v'key, v'walletId));
+}
+
+(int, int, int) __gen_load_Wallet() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_Wallet();
+}
+
+() __gen_store_Wallet((int, int, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_Wallet(b, v);
+    set_data(b.end_cell());
+}
+
+int $__gen_Wallet_publicKey((int, int, int) $self) impure inline {
+    var (($self'seqno, $self'key, $self'walletId)) = $self;
+    return $self'key;
+}
+
+_ $__gen_get_publicKey() method_id(86520) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_publicKey(self);
+    return res;
+}
+
+int $__gen_Wallet_walletId((int, int, int) $self) impure inline {
+    var (($self'seqno, $self'key, $self'walletId)) = $self;
+    return $self'walletId;
+}
+
+_ $__gen_get_walletId() method_id(114762) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_walletId(self);
+    return res;
+}
+
+int $__gen_Wallet_seqno((int, int, int) $self) impure inline {
+    var (($self'seqno, $self'key, $self'walletId)) = $self;
+    return $self'seqno;
+}
+
+_ $__gen_get_seqno() method_id(85143) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_seqno(self);
+    return res;
+}
+
+(((int, int, int)), ()) $__gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, slice) $msg) impure inline {
+    var ($self'seqno, $self'key, $self'walletId) = $self;
+    var ($msg'signature, $msg'transfer) = $msg;
+    int $op_hash = slice_hash($msg'transfer);
+    throw_unless(48401, check_signature($op_hash, $msg'signature, $self'key));
+    slice $pkg = $msg'transfer;
+    int $seqno = $pkg~load_int(32);
+    int $mode = $pkg~load_int(8);
+    cell $body = $pkg~load_ref();
+    throw_unless(17654, ($seqno == $self'seqno));
+    $self'seqno = (($self'seqno + 1) % 65536);
+    send_raw_message($body, $mode);
+    return (($self'seqno, $self'key, $self'walletId), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive TransferMessage message
+    if (op == 1843760589) {
+        var self = __gen_load_Wallet();
+        var msg = in_msg~__gen_read_TransferMessage();
+        self~$__gen_Wallet_receive_TransferMessage(msg);
+        __gen_store_Wallet(self);
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmWEXCcoYG8s8zGwYE32r4SXGdb4FHk3fHDxgHrWnuqMnZ";
+}

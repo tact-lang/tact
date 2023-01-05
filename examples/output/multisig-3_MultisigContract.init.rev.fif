@@ -1,0 +1,22 @@
+SETCP0
+(:methods
+  recv_internal: 
+
+  2: 
+    0 PUSHINT
+    s0 s4 XCHG
+    NEWC
+    STREF
+    4 1 BLKSWAP
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
+    ENDC
+
+  107886: 
+    2 CALLDICT
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

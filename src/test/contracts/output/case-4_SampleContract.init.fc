@@ -1,0 +1,32 @@
+builder __gen_write_Source(builder build_0, (int, int) v) inline {
+    var (v'a, v'b) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    return build_0;
+}
+
+builder __gen_write_SampleContract(builder build_0, (int, int, (int, int), cell) v) inline {
+    var (v'a, v'b, (v'c'a, v'c'b), v'd) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    var build_1 = begin_cell();
+    build_1 = __gen_write_Source(build_1, (v'c'a, v'c'b));
+    build_1 = store_dict(build_1, v'd);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell $__gen_SampleContract_init(cell sys') {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = (null(), null(), null(), null());
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SampleContract(b', ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_SampleContract_init(sys');
+}
+
+() main() {
+}

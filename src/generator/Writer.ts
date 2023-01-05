@@ -19,6 +19,13 @@ export class WriterContext {
         return `__gen_internal_${this.#nextId++}`;
     }
 
+    clone() {
+        let res = new WriterContext(this.ctx);
+        res.#functions = new Map(this.#functions);
+        res.#nextId = this.#nextId;
+        return res;
+    }
+
     //
     // Rendering
     //

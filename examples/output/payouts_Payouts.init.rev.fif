@@ -1,0 +1,20 @@
+SETCP0
+(:methods
+  recv_internal: 
+
+  4: 
+    s0 s2 XCHG
+    NEWC
+    STREF
+    s0 s2 XCHG
+    ROTREV
+    STSLICER
+    257 PUSHINT
+    STIX
+    ENDC
+
+  107886: 
+    4 CALLDICT
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

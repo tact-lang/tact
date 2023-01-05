@@ -1,0 +1,67 @@
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(slice, ((int, int))) __gen_read_Source(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    return (sc_0, (v'a, v'b));
+}
+
+(slice, ((int, int, (int, int), cell))) __gen_read_SampleContract(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'c = sc_1~__gen_read_Source();
+    var v'd = sc_1~load_dict();
+    return (sc_0, (v'a, v'b, v'c, v'd));
+}
+
+(int, int, (int, int), cell) __gen_load_SampleContract() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_SampleContract();
+}
+
+int $__gen_SampleContract_stake((int, int, (int, int), cell) $self) impure {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = $self;
+    return $self'a;
+}
+
+_ $__gen_get_stake() method_id(80984) {
+    var self = __gen_load_SampleContract();
+    var res = $__gen_SampleContract_stake(self);
+    return res;
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmeUDQqhYbgNRL1KDAnWQPD31sH6JiS8L4aFtZUjWnQsaJ";
+}

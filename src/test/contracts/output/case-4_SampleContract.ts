@@ -209,15 +209,17 @@ function storeTupleSource(source: Source) {
 }
 
 async function SampleContract_init() {
-    const __code = 'te6ccgEBDAEA3gABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAgJAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAIBWAYHAFUbW1tbQXIzAVQRYEBAc8AEoEBAc8AyEADAoEBAc8AgQEBzwAS9ADJAczJgAAUXwSAAXb3ix2omhqAPwxQICA64BAgIDrgGoA6ECAgOuAQICA64AsgXoCGAgaiBoJNgr4A8AgEgCgsATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAJuS7/AGg=';
+    const __init = 'te6ccgEBBgEATgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AcAAUgAVVbW1tbQXIzAVQRYEBAc8AEoEBAc8AyEADAoEBAc8AgQEBzwAS9ADJAczJg=';
+    const __code = 'te6ccgEBCAEAoAABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAAF0vgkAF294sdqJoagD8MUCAgOuAQICA64BqAOhAgIDrgECAgOuALIF6AhgIGogaCTYK+AJABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHM';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_SampleContract', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (SampleContract_errors[res.exitCode]) {

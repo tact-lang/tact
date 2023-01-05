@@ -211,7 +211,8 @@ function storeTupleTransferMessage(source: TransferMessage) {
 }
 
 async function Wallet_init(key: bigint, walletId: bigint) {
-    const __code = 'te6ccgECDQEAAUYAART/APSkE/S88sgLAQIBYgIDAW7QcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEG3ljc264wIw8sCCBAIBIAUGAMDtRNDUAfhi0x/T/9M/VSBsEwPTHwGCEG3ljc268uCBgwjXGGYyEDRDACD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wDI+EIBzFUgUCPLH8v/yz/J7VQCASAHCAIBIAsMACO7oTcAPIzFUgUCPLH8v/yz/JgCAUgJCgApsyX7UTQ1AH4YtMf0//TP1UgbBNbgACuwfjtRNDUAfhi0x/T/9M/VSBsEzAxgAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gAK7gErtRNDUAfhi0x/T/9M/VSBsE2whg=';
+    const __init = 'te6ccgEBBAEAKQABFP8A9KQT9LzyyAsBAgFiAgMAAtAAI6FK3OAHkZiqQKBHlj+X/5Z/kw==';
+    const __code = 'te6ccgECCwEAAS0AART/APSkE/S88sgLAQIBYgIDAW7QcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEG3ljc264wIw8sCCBAIBIAUGAMDtRNDUAfhi0x/T/9M/VSBsEwPTHwGCEG3ljc268uCBgwjXGGYyEDRDACD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wDI+EIBzFUgUCPLH8v/yz/J7VQCAWoHCAIBIAkKACmzJftRNDUAfhi0x/T/9M/VSBsE1uAAK7B+O1E0NQB+GLTH9P/0z9VIGwTMDGAATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAruASu1E0NQB+GLTH9P/0z9VIGwTbCGA==';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
@@ -219,9 +220,10 @@ async function Wallet_init(key: bigint, walletId: bigint) {
     __tuple.push({ type: 'int', value: key });
     __tuple.push({ type: 'int', value: walletId });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_Wallet', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Wallet_errors[res.exitCode]) {

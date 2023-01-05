@@ -1,0 +1,26 @@
+PROGRAM{
+  DECLPROC __gen_write_Wallet
+  DECLPROC $__gen_Wallet_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_Wallet PROCINLINE:<{
+    s2 s3 XCHG2
+    32 STU
+    256 STU
+    64 STU
+  }>
+  $__gen_Wallet_init PROC:<{
+    0 PUSHINT
+    s0 s3 XCHG
+    NEWC
+    STREF
+    3 -ROLL
+    __gen_write_Wallet INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Wallet_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

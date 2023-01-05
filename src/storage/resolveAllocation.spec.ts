@@ -5,7 +5,6 @@ import { getAllocations, resolveAllocations } from './resolveAllocation';
 import { openContext } from '../grammar/store';
 import { resolveStatements } from '../types/resolveStatements';
 import { CompilerContext } from '../context';
-import { createABI } from '../generator/createABI';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/std/primitives.tact', 'utf-8');
 const src = `
@@ -45,6 +44,10 @@ struct Deep2 {
 }
 
 contract Sample {
+    v: Int = 0;
+    init() {
+
+    }
     public fun main(a: Int, b: Int) {
     }
 }

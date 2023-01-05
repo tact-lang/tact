@@ -4,7 +4,6 @@ import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { WriterContext } from "./Writer";
-import { resolveFuncType } from "./writers/resolveFuncType";
 import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
@@ -17,6 +16,30 @@ import { getAllStrings } from "../types/resolveStrings";
 import { writeString } from './writers/writeString';
 import { fn, id } from "./writers/id";
 import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
+
+function writeInitContract(type: TypeDescription, ctx: WriterContext) {
+    // Main field
+    ctx.fun('$main', () => {
+        ctx.append(`cell init(${[`cell sys'`, ...type.init!.args.map((a) => resolveFuncTupledType(a.type, ctx) + ' ' + id('$' + a.name))].join(', ')}) method_id {`);
+        ctx.inIndent(() => {
+
+            // Unpack arguments
+            for (let arg of type.init!.args) {
+                unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
+            }
+
+            // Call init function
+            ctx.used(`__gen_${type.name}_init`);
+            ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[`sys'`, ...type.init!.args.map((a) => id(a.name))].join(', ')});`);
+        });
+        ctx.append(`}`);
+        ctx.append();
+
+        // To to avoid compiler crash
+        ctx.append(`() main() {`);
+        ctx.append(`}`);
+    });
+}
 
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
@@ -233,24 +256,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
         ctx.append('}');
         ctx.append();
 
-        // Init method
-        if (type.init) {
-            ctx.append(`cell init_${type.name}(${[`cell sys'`, ...type.init.args.map((a) => resolveFuncTupledType(a.type, ctx) + ' ' + id('$' + a.name))].join(', ')}) method_id {`);
-            ctx.inIndent(() => {
-
-                // Unpack arguments
-                for (let arg of type.init!.args) {
-                    unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
-                }
-
-                // Call init function
-                ctx.used(`__gen_${type.name}_init`);
-                ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[`sys'`, ...type.init!.args.map((a) => id(a.name))].join(', ')});`);
-            });
-            ctx.append(`}`);
-            ctx.append();
-        }
-
         // Implicit dependencies
         for (let f of type.functions.values()) {
             if (f.isGetter) {
@@ -357,9 +362,14 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     let abiLink = await calculateIPFSlink(Buffer.from(abi));
 
     // Write contract
-    writeMainContract(c, abiLink, wctx);
+    let mainCtx = wctx.clone();
+    writeMainContract(c, abiLink, mainCtx);
+    let output = mainCtx.render(debug);
 
-    // Render output
-    let output = wctx.render(debug);
-    return { output, abi };
+    // Write init
+    let initCtx = wctx.clone();
+    writeInitContract(c, initCtx);
+    let initOutput = initCtx.render(debug);
+
+    return { output, initOutput, abi };
 }

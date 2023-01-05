@@ -1,0 +1,50 @@
+builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i) = v;
+    build_0 = store_int(build_0, v'a, 257);
+    build_0 = store_int(build_0, v'b, 257);
+    build_0 = store_int(build_0, v'c, 257);
+    var build_1 = begin_cell();
+    build_1 = store_int(build_1, v'd, 257);
+    build_1 = store_int(build_1, v'e, 257);
+    build_1 = store_int(build_1, v'f, 257);
+    var build_2 = begin_cell();
+    build_2 = store_int(build_2, v'g, 257);
+    build_2 = store_int(build_2, v'h, 257);
+    build_2 = store_int(build_2, v'i, 257);
+    build_1 = store_ref(build_1, build_2.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+cell $__gen_SerializationTester_init(cell sys', int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) {
+    var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = (null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'a = $a;
+    $self'b = $b;
+    $self'c = $c;
+    $self'd = $d;
+    $self'e = $e;
+    $self'f = $f;
+    $self'g = $g;
+    $self'h = $h;
+    $self'i = $i;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_SerializationTester(b', ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i));
+    return b'.end_cell();
+}
+
+cell init(cell sys', int $$a, int $$b, int $$c, int $$d, int $$e, int $$f, int $$g, int $$h, int $$i) method_id {
+    int $a = $$a;
+    int $b = $$b;
+    int $c = $$c;
+    int $d = $$d;
+    int $e = $$e;
+    int $f = $$f;
+    int $g = $$g;
+    int $h = $$h;
+    int $i = $$i;
+    return $__gen_SerializationTester_init(sys', $a, $b, $c, $d, $e, $f, $g, $h, $i);
+}
+
+() main() {
+}

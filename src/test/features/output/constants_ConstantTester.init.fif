@@ -1,0 +1,25 @@
+PROGRAM{
+  DECLPROC __gen_write_ConstantTester
+  DECLPROC $__gen_ConstantTester_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_ConstantTester PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  $__gen_ConstantTester_init PROC:<{
+    0 PUSHINT
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_ConstantTester INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_ConstantTester_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

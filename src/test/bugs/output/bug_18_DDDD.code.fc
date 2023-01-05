@@ -1,0 +1,168 @@
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(134, address.slice_bits() != 267);
+}
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
+    return (cs, raw);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set(d, kl, k, v), ());
+    }
+}
+
+slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r;
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
+    var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
+    build_0 = __tact_store_address(build_0, v'addr1);
+    build_0 = __tact_store_address(build_0, v'addr2);
+    build_0 = __tact_store_address(build_0, v'addr3);
+    build_0 = store_dict(build_0, v'mapData);
+    build_0 = store_dict(build_0, v'mapData2);
+    return build_0;
+}
+
+(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline {
+    var v'addr1 = sc_0~__tact_load_address();
+    var v'addr2 = sc_0~__tact_load_address();
+    var v'addr3 = sc_0~__tact_load_address();
+    var v'mapData = sc_0~load_dict();
+    var v'mapData2 = sc_0~load_dict();
+    return (sc_0, (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2));
+}
+
+(slice, slice, slice, cell, cell) __gen_load_DDDD() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_DDDD();
+}
+
+() __gen_store_DDDD((slice, slice, slice, cell, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_DDDD(b, v);
+    set_data(b.end_cell());
+}
+
+slice $__gen_DDDD_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure {
+    var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
+    return __tact_dict_get_int_slice($self'mapData, 257, $key);
+}
+
+_ $__gen_get_mapData_addr1(int $$key) method_id(120259) {
+    int $key = $$key;
+    var self = __gen_load_DDDD();
+    var res = $__gen_DDDD_mapData_addr1(self, $key);
+    return res;
+}
+
+int $__gen_DDDD_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure {
+    var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
+    return __tact_dict_get_slice_int($self'mapData2, 267, $key, 257);
+}
+
+_ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
+    slice $key = $$key;
+    var self = __gen_load_DDDD();
+    var res = $__gen_DDDD_mapData2_addr1(self, $key);
+    return res;
+}
+
+(((slice, slice, slice, cell, cell)), ()) $__gen_DDDD_receive((slice, slice, slice, cell, cell) $self) impure {
+    var ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2) = $self;
+    $self'mapData~__tact_dict_set_int_slice(257, 0, $self'addr1);
+    $self'mapData~__tact_dict_set_int_slice(257, 1, $self'addr2);
+    $self'mapData~__tact_dict_set_int_slice(257, 2, $self'addr3);
+    $self'mapData~__tact_dict_set_int_slice(257, 3, $self'addr1);
+    $self'mapData2~__tact_dict_set_slice_int(267, $self'addr1, 0, 257);
+    $self'mapData2~__tact_dict_set_slice_int(267, $self'addr2, 1, 257);
+    $self'mapData2~__tact_dict_set_slice_int(267, $self'addr3, 2, 257);
+    $self'mapData2~__tact_dict_set_slice_int(267, $self'addr1, 3, 257);
+    return (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_DDDD();
+        self~$__gen_DDDD_receive();
+        __gen_store_DDDD(self);
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmXotXwbvzXopN4tbuBGBMQfjLU54yVoqfGBG8MVzGFkRw";
+}

@@ -1,0 +1,108 @@
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
+    var (v'v) = v;
+    build_0 = store_int(build_0, v'v, 257);
+    return build_0;
+}
+
+(slice, ((int))) __gen_read_StdlibTest(slice sc_0) inline {
+    var v'v = sc_0~load_int(257);
+    return (sc_0, (v'v));
+}
+
+(int) __gen_load_StdlibTest() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_StdlibTest();
+}
+
+() __gen_store_StdlibTest((int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_StdlibTest(b, v);
+    set_data(b.end_cell());
+}
+
+int $__gen_StdlibTest_sliceEmpty((int) $self, slice $sc) impure {
+    var (($self'v)) = $self;
+    return slice_empty?($sc);
+}
+
+_ $__gen_get_sliceEmpty(slice $$sc) method_id(73995) {
+    slice $sc = $$sc;
+    var self = __gen_load_StdlibTest();
+    var res = $__gen_StdlibTest_sliceEmpty(self, $sc);
+    return res;
+}
+
+int $__gen_StdlibTest_sliceBits((int) $self, slice $sc) impure {
+    var (($self'v)) = $self;
+    return slice_bits($sc);
+}
+
+_ $__gen_get_sliceBits(slice $$sc) method_id(75090) {
+    slice $sc = $$sc;
+    var self = __gen_load_StdlibTest();
+    var res = $__gen_StdlibTest_sliceBits(self, $sc);
+    return res;
+}
+
+int $__gen_StdlibTest_sliceRefs((int) $self, slice $sc) impure {
+    var (($self'v)) = $self;
+    return slice_refs($sc);
+}
+
+_ $__gen_get_sliceRefs(slice $$sc) method_id(77445) {
+    slice $sc = $$sc;
+    var self = __gen_load_StdlibTest();
+    var res = $__gen_StdlibTest_sliceRefs(self, $sc);
+    return res;
+}
+
+(((int)), ()) $__gen_StdlibTest_receive((int) $self) impure {
+    var ($self'v) = $self;
+    return (($self'v), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        var self = __gen_load_StdlibTest();
+        self~$__gen_StdlibTest_receive();
+        __gen_store_StdlibTest(self);
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmWMKapjkZtMCG1BsEZfDANErxeKsm2RSbnuTfFnu6fSKv";
+}

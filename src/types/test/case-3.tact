@@ -5,6 +5,10 @@ contract HelloWorld {
     a: Int;
     b: Bool;
 
+    init() {
+        
+    }
+
     fun hello() {
         
     }

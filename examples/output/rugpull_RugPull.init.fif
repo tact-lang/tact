@@ -1,0 +1,72 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_RugPull
+  DECLPROC $__gen_RugPull_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_RugPull PROCINLINE:<{
+    s10 s9 XCHG2
+    __tact_store_address INLINECALLDICT
+    s1 s7 XCHG
+    257 PUSHINT
+    STIX
+    s1 s5 XCHG
+    257 PUSHINT
+    STIX
+    s0 s3 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    1 STI
+    s1 s2 XCHG
+    1 STI
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    s0 s3 XCHG
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
+  }>
+  $__gen_RugPull_init PROC:<{
+    PUSHNULL
+    PUSHNULL
+    FALSE
+    0 PUSHINT
+    s0 s(-1) s8 PU2XC
+    NEWC
+    STREF
+    s0 s10 XCHG
+    s0 s5 XCHG
+    s0 s3 XCHG
+    s0 s4 XCHG
+    __gen_write_RugPull INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_RugPull_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

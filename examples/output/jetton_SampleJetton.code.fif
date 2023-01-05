@@ -1,0 +1,686 @@
+PROGRAM{
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_load_address_opt
+  DECLPROC __tact_store_address
+  DECLPROC __tact_store_address_opt
+  DECLPROC __tact_compute_contract_address
+  DECLPROC __tact_address_eq
+  DECLPROC __tact_dict_set_code
+  DECLPROC __tact_dict_get_code
+  DECLPROC __gen_write_TokenTransferInternal
+  DECLPROC __gen_writecell_TokenTransferInternal
+  DECLPROC __gen_read_TokenBurnNotification
+  DECLPROC __gen_write_TokenExcesses
+  DECLPROC __gen_writecell_TokenExcesses
+  DECLPROC __gen_read_TokenUpdateContent
+  DECLPROC __gen_read_Mint
+  DECLPROC __gen_write_JettonDefaultWallet
+  DECLPROC __gen_write_SampleJetton
+  DECLPROC __gen_read_SampleJetton
+  DECLPROC __gen_StateInit_get_code
+  DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_JettonData_to_external
+  DECLPROC __gen_load_SampleJetton
+  DECLPROC __gen_store_SampleJetton
+  DECLPROC $storeBool
+  DECLPROC $emptyCell
+  DECLPROC $__gen_Cell_asSlice
+  DECLPROC $emptySlice
+  DECLPROC $contractAddress
+  DECLPROC $send
+  DECLPROC $__gen_JettonDefaultWallet_init
+  DECLPROC $__gen_JettonDefaultWallet_init_child
+  DECLPROC $__gen_SampleJetton_getJettonWalletInit
+  DECLPROC $__gen_SampleJetton_get_wallet_address
+  103289 DECLMETHOD $__gen_get_get_wallet_address
+  DECLPROC $__gen_SampleJetton_get_jetton_data
+  106029 DECLMETHOD $__gen_get_get_jetton_data
+  DECLPROC $__gen_SampleJetton_mint
+  DECLPROC $__gen_SampleJetton_requireWallet
+  DECLPROC $__gen_SampleJetton_requireOwner
+  DECLPROC $__gen_SampleJetton_owner
+  83229 DECLMETHOD $__gen_get_owner
+  DECLPROC $__gen_SampleJetton_receive_Mint
+  DECLPROC $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2
+  DECLPROC $__gen_SampleJetton_receive_TokenUpdateContent
+  DECLPROC $__gen_SampleJetton_receive_TokenBurnNotification
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_not_null PROC:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+  }>
+  __tact_load_address_opt PROCINLINE:<{
+    LDMSGADDR
+    OVER
+    2 PLDU
+    0 NEQINT
+    IF:<{
+      SWAP
+    }>ELSE<{
+      NIP
+      PUSHNULL
+    }>
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __tact_store_address_opt PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      0 PUSHINT
+      SWAP
+      2 STU
+    }>ELSE<{
+      __tact_store_address INLINECALLDICT
+    }>
+  }>
+  __tact_compute_contract_address PROC:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    2 STU
+    3 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    STREF
+    STREF
+    ENDC
+    HASHCU
+    NEWC
+    2 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+  }>
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
+  }>
+  __tact_dict_set_code PROCINLINE:<{
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
+  }>
+  __tact_dict_get_code PROCINLINE:<{
+    SWAP
+    16 PUSHINT
+    DICTUGETREF
+    NULLSWAPIFNOT
+    100 THROWIFNOT
+  }>
+  __gen_write_TokenTransferInternal PROCINLINE:<{
+    395134233 PUSHINT
+    s0 s7 XCHG2
+    32 STU
+    s1 s5 XCHG
+    64 STU
+    s0 s3 XCHG2
+    STGRAMS
+    SWAP
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address_opt INLINECALLDICT
+    SWAP
+    STGRAMS
+    SWAP
+    STSLICER
+  }>
+  __gen_writecell_TokenTransferInternal PROCINLINE:<{
+    NEWC
+    6 -ROLL
+    __gen_write_TokenTransferInternal INLINECALLDICT
+    ENDC
+  }>
+  __gen_read_TokenBurnNotification PROCINLINE:<{
+    32 LDU
+    SWAP
+    2078119902 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    LDGRAMS
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address_opt INLINECALLDICT
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
+  __gen_write_TokenExcesses PROCINLINE:<{
+    3576854235 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  __gen_writecell_TokenExcesses PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_TokenExcesses INLINECALLDICT
+    ENDC
+  }>
+  __gen_read_TokenUpdateContent PROCINLINE:<{
+    32 LDU
+    SWAP
+    1862840892 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    PUSHNULL
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      NIP
+      LDREF
+    }>
+    SWAP
+  }>
+  __gen_read_Mint PROCINLINE:<{
+    32 LDU
+    SWAP
+    2737462367 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_write_JettonDefaultWallet PROCINLINE:<{
+    s2 s3 XCHG2
+    257 PUSHINT
+    STIX
+    SWAP
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_write_SampleJetton PROCINLINE:<{
+    s4 s3 XCHG2
+    STGRAMS
+    SWAP
+    __tact_store_address INLINECALLDICT
+    s2 PUSH
+    ISNULL
+    IF:<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>ELSE<{
+      TRUE
+      SWAP
+      1 STI
+      s1 s2 XCHG
+      STREF
+    }>
+    1 STI
+  }>
+  __gen_read_SampleJetton PROCINLINE:<{
+    LDGRAMS
+    __tact_load_address INLINECALLDICT
+    PUSHNULL
+    s0 s2 XCHG
+    1 LDI
+    SWAP
+    IF:<{
+      1 2 BLKDROP2
+      LDREF
+      s1 s2 XCHG
+    }>
+    1 LDI
+    s0 s4 XCHG
+    s3 s3 XCHG2
+  }>
+  __gen_StateInit_get_code PROCINLINE:<{
+    DROP
+  }>
+  __gen_Context_get_sender PROCINLINE:<{
+    s2 s3 XCHG
+    3 BLKDROP
+  }>
+  __gen_JettonData_to_external PROC:<{
+  }>
+  __gen_load_SampleJetton PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_SampleJetton INLINECALLDICT
+    1 4 BLKDROP2
+  }>
+  __gen_store_SampleJetton PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    4 -ROLL
+    __gen_write_SampleJetton INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $storeBool PROC:<{
+    IFJMP:<{
+      -1 PUSHINT
+      SWAP
+      1 STI
+    }>
+    0 PUSHINT
+    SWAP
+    1 STI
+  }>
+  $emptyCell PROC:<{
+    NEWC
+    ENDC
+  }>
+  $__gen_Cell_asSlice PROC:<{
+    CTOS
+  }>
+  $emptySlice PROC:<{
+    $emptyCell CALLDICT
+    $__gen_Cell_asSlice CALLDICT
+  }>
+  $contractAddress PROC:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address CALLDICT
+  }>
+  $send PROC:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    $storeBool CALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      $storeBool CALLDICT
+      NEWC
+      FALSE
+      $storeBool CALLDICT
+      FALSE
+      $storeBool CALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        $storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        $storeBool CALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        $storeBool CALLDICT
+        s0 s4 XCHG
+        __tact_not_null CALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        $storeBool CALLDICT
+      }>
+      FALSE
+      $storeBool CALLDICT
+      s0 s2 XCHG
+      TRUE
+      $storeBool CALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      $storeBool CALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      $storeBool CALLDICT
+      SWAP
+      __tact_not_null CALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      $storeBool CALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  $__gen_JettonDefaultWallet_init PROC:<{
+    0 PUSHINT
+    s0 s3 XCHG
+    NEWC
+    STREF
+    s3 s1 s3 XCHG3
+    __gen_write_JettonDefaultWallet INLINECALLDICT
+    ENDC
+  }>
+  $__gen_JettonDefaultWallet_init_child PROC:<{
+    s0 s2 XCHG
+    CTOS
+    LDDICT
+    DROP
+    DUP
+    55471 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    NEWDICT
+    s0 s2 XCHG
+    55471 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    s1 s2 XCHG
+    55471 PUSHINT
+    SWAP
+    __tact_dict_set_code INLINECALLDICT
+    NEWC
+    STDICT
+    ENDC
+    s0 s0 s3 XCHG3
+    $__gen_JettonDefaultWallet_init CALLDICT
+  }>
+  $__gen_SampleJetton_getJettonWalletInit PROC:<{
+    __tact_context_sys GETGLOB
+    MYADDR
+    ROT
+    $__gen_JettonDefaultWallet_init_child CALLDICT
+  }>
+  $__gen_SampleJetton_get_wallet_address PROC:<{
+    $__gen_SampleJetton_getJettonWalletInit CALLDICT
+    4 2 BLKDROP2
+    $contractAddress CALLDICT
+  }>
+  $__gen_get_get_wallet_address PROC:<{
+    __gen_load_SampleJetton INLINECALLDICT
+    4 ROLL
+    $__gen_SampleJetton_get_wallet_address CALLDICT
+  }>
+  $__gen_SampleJetton_get_jetton_data PROC:<{
+    MYADDR
+    $__gen_SampleJetton_getJettonWalletInit CALLDICT
+    __gen_StateInit_get_code INLINECALLDICT
+    s3 s3 s0 XCHG3
+  }>
+  $__gen_get_get_jetton_data PROC:<{
+    __gen_load_SampleJetton INLINECALLDICT
+    $__gen_SampleJetton_get_jetton_data CALLDICT
+    __gen_JettonData_to_external CALLDICT
+  }>
+  $__gen_SampleJetton_mint PROC:<{
+    s6 s1 XCPU
+    ADD
+    4 2 BLKSWAP
+    $__gen_SampleJetton_getJettonWalletInit CALLDICT
+    2DUP
+    $contractAddress CALLDICT
+    FALSE
+    0 PUSHINT
+    64 PUSHINT
+    OVER
+    MYADDR
+    OVER
+    $emptySlice CALLDICT
+    s3 s5 XCHG
+    s4 s14 XCHG
+    s2 s3 XCHG
+    s2 s15 XCHG
+    __gen_writecell_TokenTransferInternal INLINECALLDICT
+    s5 s6 s0 XCHG3
+    s4 s10 XCHG
+    s3 s9 XCHG
+    s0 s10 s9 XCHG3
+    $send CALLDICT
+    2SWAP
+  }>
+  $__gen_SampleJetton_requireWallet PROC:<{
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    5 -ROLL
+    $__gen_SampleJetton_getJettonWalletInit CALLDICT
+    SWAP
+    4429 PUSHINT
+    s0 s2 XCHG
+    $contractAddress CALLDICT
+    s0 s6 XCHG2
+    __tact_address_eq INLINECALLDICT
+    s1 s5 XCHG
+    THROWANYIFNOT
+    3 ROLL
+  }>
+  $__gen_SampleJetton_requireOwner PROC:<{
+    __tact_context_get INLINECALLDICT
+    __gen_Context_get_sender INLINECALLDICT
+    s3 PUSH
+    __tact_address_eq INLINECALLDICT
+    132 THROWIFNOT
+  }>
+  $__gen_SampleJetton_owner PROC:<{
+    s2 s3 XCHG
+    3 BLKDROP
+  }>
+  $__gen_get_owner PROC:<{
+    __gen_load_SampleJetton INLINECALLDICT
+    $__gen_SampleJetton_owner CALLDICT
+  }>
+  $__gen_SampleJetton_receive_Mint PROC:<{
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    TUCK
+    $__gen_SampleJetton_mint CALLDICT
+  }>
+  $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 PROC:<{
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    1000000000 PUSHINT
+    OVER
+    $__gen_SampleJetton_mint CALLDICT
+  }>
+  $__gen_SampleJetton_receive_TokenUpdateContent PROC:<{
+    4 -ROLL
+    $__gen_SampleJetton_requireOwner CALLDICT
+    NIP
+    s1 s3 s0 XCHG3
+  }>
+  $__gen_SampleJetton_receive_TokenBurnNotification PROC:<{
+    s4 s7 XCHG
+    s3 s6 XCHG
+    s5 s7 s7 XCHG3
+    $__gen_SampleJetton_requireWallet CALLDICT
+    s3 s4 XCHG2
+    SUB
+    s5 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      FALSE
+      0 PUSHINT
+      66 PUSHINT
+      s0 s7 XCHG
+      __gen_writecell_TokenExcesses INLINECALLDICT
+      s2 s4 XCHG
+      s3 s8 XCHG
+      s1 s7 s0 XCHG3
+      PUSHNULL
+      PUSHNULL
+      $send CALLDICT
+      s2 s3 XCHG
+    }>ELSE<{
+      s4 POP
+      s4 POP
+    }>
+    s3 s0 s0 XCHG3
+  }>
+  recv_internal PROC:<{
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    DUP
+    2737462367 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s4 XCHG
+      __gen_read_Mint INLINECALLDICT
+      NIP
+      s3 s4 XCHG
+      s1 s3 s0 XCHG3
+      $__gen_SampleJetton_receive_Mint CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
+    }>
+    DUP
+    1862840892 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s4 XCHG
+      __gen_read_TokenUpdateContent INLINECALLDICT
+      NIP
+      s3 s4 XCHG
+      s1 s3 s0 XCHG3
+      $__gen_SampleJetton_receive_TokenUpdateContent CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
+    }>
+    DUP
+    2078119902 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_SampleJetton INLINECALLDICT
+      s0 s4 XCHG
+      __gen_read_TokenBurnNotification INLINECALLDICT
+      s4 POP
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      3 ROLL
+      $__gen_SampleJetton_receive_TokenBurnNotification CALLDICT
+      __gen_store_SampleJetton INLINECALLDICT
+    }>
+    0 EQINT
+    IF:<{
+      HASHSU
+      92748154967237992140665580847895802782213764542359950109876145449566260965554 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_SampleJetton INLINECALLDICT
+        $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 CALLDICT
+        __gen_store_SampleJetton INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    258390863389042349688353801369539695109 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d64364b687a447154573559386559794d6341646a79456836464864374e655a7a35376e32436b5752626d6b4c} PUSHSLICE
+  }>
+}END>c

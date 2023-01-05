@@ -1,0 +1,21 @@
+builder __gen_write_Empty(builder build_0, (int) v) inline {
+    var (v'x) = v;
+    build_0 = store_int(build_0, v'x, 257);
+    return build_0;
+}
+
+cell $__gen_Empty_init(cell sys') {
+    var (($self'x)) = (null());
+    $self'x = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_Empty(b', ($self'x));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_Empty_init(sys');
+}
+
+() main() {
+}

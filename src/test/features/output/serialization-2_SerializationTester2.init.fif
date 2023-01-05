@@ -1,0 +1,66 @@
+PROGRAM{
+  DECLPROC __gen_write_Vars
+  DECLPROC __gen_write_SerializationTester2
+  DECLPROC __gen_Vars_from_tuple
+  DECLPROC $__gen_SerializationTester2_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_Vars PROCINLINE:<{
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_write_SerializationTester2 PROCINLINE:<{
+    s5 s10 XCHG
+    s4 s9 XCHG
+    s3 s8 XCHG
+    s7 s6 s10 XCHG3
+    __gen_write_Vars INLINECALLDICT
+    NEWC
+    5 -ROLL
+    s0 s6 XCHG
+    __gen_write_Vars INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  __gen_Vars_from_tuple PROC:<{
+    5 UNTUPLE
+  }>
+  $__gen_SerializationTester2_init PROC:<{
+    s0 s10 XCHG
+    NEWC
+    STREF
+    s0 s10 XCHG
+    __gen_write_SerializationTester2 INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    SWAP
+    __gen_Vars_from_tuple CALLDICT
+    s0 s5 XCHG
+    __gen_Vars_from_tuple CALLDICT
+    s8 s9 XCHG
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
+    $__gen_SerializationTester2_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

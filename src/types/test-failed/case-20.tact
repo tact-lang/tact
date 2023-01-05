@@ -10,5 +10,5 @@ extends fun hello(self: Main): Bool {
 }
 
 struct Main {
-    
+    v: Int = 0;
 }

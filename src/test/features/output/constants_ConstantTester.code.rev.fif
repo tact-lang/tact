@@ -1,0 +1,132 @@
+SETCP0
+(:methods
+  recv_internal: 
+    s0 PUSH
+    SBITS
+    s1 POP
+    31 GTINT
+    s0 POP
+    CTOS
+    4 LDU
+    s0 s1 XCHG
+    1 PUSHINT
+    AND
+    1 EQINT
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    LDMSGADDR
+    s2 PUSH
+    s4 s4 XCHG2
+    4 TUPLE
+    1 SETGLOBVAR
+    IFRET
+    130 THROW
+
+  3: 
+    s0 POP
+    -6 PUSHINT
+
+  4: 
+    s0 POP
+    PUSHNULL
+
+  5: 
+    s0 POP
+    123000000000 PUSHINT
+
+  6: 
+    s0 POP
+    456000000000 PUSHINT
+
+  7: 
+    s0 POP
+    PUSHSLICE
+
+  8: 
+    s0 POP
+    100 PUSHINT
+
+  100663: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    6 CALLDICT
+
+  104726: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    7 CALLDICT
+
+  113617: 
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+
+  116577: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    8 CALLDICT
+
+  121234: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    3 CALLDICT
+
+  125425: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    4 CALLDICT
+
+  129488: 
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    5 CALLDICT
+) 19 DICTPUSHCONST
+DICTIGETJMPZ
+11 THROWARG

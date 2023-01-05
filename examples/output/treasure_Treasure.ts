@@ -242,16 +242,18 @@ function storeTupleWithdraw(source: Withdraw) {
 }
 
 async function Treasure_init(owner: Address) {
-    const __code = 'te6ccgECHwEAAn4AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAbHAIBIAYHAgFIDxACAdQICQIB9AwNAu87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEEyoPci6ji4w7UTQ1AH4YvpAATEB0x8BghBMqD3IuvLggfoA0wdZbBLwFMj4QgHMAc8Wye1U4CCCELbPfw+64wLAAJEw4w3ywIKAKCwALCBu8tCAgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLggfpAATHwFsj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAVyPhCAcwBzxbJ7VTbMeAAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgDgAE+wACASAREgIBIBcYAgEgExQCASAVFgAPAHIzAHPFsmAAHT4QW8kECNfAyHHBfLghIAAfALwEX/IyVQTAlBVbW3wD4AABIAIBIBkaAAlAHwETCAAFPASgAA0cIEAoPASgAB++KO9qJoagD8MX0gAJj4CcAgEgHR4Albu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcKAWPdCZRLm1qqkKwpYALAaCcEDOdWnnFfnSULAdYW4mR7KAAJufLvAQg=';
+    const __init = 'te6ccgEBBgEAKwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQAD9AORmAOeLZM';
+    const __code = 'te6ccgECGwEAAmMAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIDxACAdQICQIB9AwNAu87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEEyoPci6ji4w7UTQ1AH4YvpAATEB0x8BghBMqD3IuvLggfoA0wdZbBLwE8j4QgHMAc8Wye1U4CCCELbPfw+64wLAAJEw4w3ywIKAKCwALCBu8tCAgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLggfpAATHwFcj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAUyPhCAcwBzxbJ7VTbMeAAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgDgAE+wACASAREgIBSBcYAgEgExQCASAVFgAdPhBbyQQI18DIccF8uCEgAB8AvAQf8jJVBMCUFVtbfAPgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAB++KO9qJoagD8MX0gAJj4CUAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwThQCx7oTKJc2tVUhWFLABYDQTggZzq084r86ShYDrC3EyPZQ=';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     __tuple.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: codeCell, data: new Cell() }, system);
-    let res = await executor.get('init_Treasure', __tuple);
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Treasure_errors[res.exitCode]) {

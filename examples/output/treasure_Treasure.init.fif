@@ -1,0 +1,33 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_Treasure
+  DECLPROC $__gen_Treasure_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    134 THROWIFNOT
+  }>
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_Treasure PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  $__gen_Treasure_init PROC:<{
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_Treasure INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Treasure_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c
