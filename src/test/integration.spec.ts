@@ -1,8 +1,10 @@
 import fs from 'fs';
 import { CompilerContext } from '../context';
 import { __DANGER_resetNodeId } from '../grammar/ast';
-import { compile, getContracts, precompile } from '../main';
 import { loadCases } from '../utils/loadCases';
+import { precompile } from '../pipeline/precompile';
+import { compile } from '../pipeline/compile';
+import { getContracts } from '../types/resolveDescriptors';
 
 describe('integration', () => {
     beforeEach(() => {
@@ -14,7 +16,7 @@ describe('integration', () => {
             ctx = precompile(ctx, __dirname + "/contracts/" + r.name + '.tact');
             let contract = getContracts(ctx)[0];
             let res = await compile(ctx, contract);
-            expect(res.output.output).toEqual(fs.readFileSync(__dirname + "/contracts/" + r.name + '.' + contract + '.fc', 'utf8'));
+            expect(res.output.output).toEqual(fs.readFileSync(__dirname + "/contracts/output/" + r.name + '_' + contract + '.fc', 'utf8'));
         });
     }
 });

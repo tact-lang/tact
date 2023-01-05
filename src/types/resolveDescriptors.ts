@@ -877,6 +877,10 @@ export function getAllTypes(ctx: CompilerContext) {
     return store.all(ctx);
 }
 
+export function getContracts(ctx: CompilerContext) {
+    return Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'contract').map((v) => v.name);
+}
+
 export function getStaticFunction(ctx: CompilerContext, name: string): FunctionDescription {
     let r = staticFunctionsStore.get(ctx, name);
     if (!r) {

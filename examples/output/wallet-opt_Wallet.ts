@@ -212,8 +212,8 @@ function storeTupleTransferMessage(source: TransferMessage) {
 
 async function Wallet_init(key: bigint, walletId: bigint) {
     const __code = 'te6ccgECDQEAAUYAART/APSkE/S88sgLAQIBYgIDAW7QcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEG3ljc264wIw8sCCBAIBIAUGAMDtRNDUAfhi0x/T/9M/VSBsEwPTHwGCEG3ljc268uCBgwjXGGYyEDRDACD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wDI+EIBzFUgUCPLH8v/yz/J7VQCASAHCAIBIAsMACO7oTcAPIzFUgUCPLH8v/yz/JgCAUgJCgApsyX7UTQ1AH4YtMf0//TP1UgbBNbgACuwfjtRNDUAfhi0x/T/9M/VSBsEzAxgAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gAK7gErtRNDUAfhi0x/T/9M/VSBsE2whg=';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     __tuple.push({ type: 'int', value: key });

@@ -6,7 +6,7 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/prepare.ts",
+    "gen": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./src/test/prepare.ts",
     "clean": "rm -fr dist",
     "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/",
     "test": "jest",
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@ipld/dag-pb": "2.1.18",
+    "@types/tmp": "^0.2.3",
     "arg": "^5.0.2",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
@@ -32,6 +33,7 @@
     "ora": "^6.1.2",
     "prando": "^6.0.1",
     "qs": "^6.11.0",
+    "tmp": "^0.2.1",
     "ton-compiler": "^2.0.0",
     "ton-core": "^0.37.0",
     "ton-crypto": "^3.2.0",

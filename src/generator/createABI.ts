@@ -5,7 +5,6 @@ import { getAllocation } from "../storage/resolveAllocation";
 import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveStrings";
-import { TypeDescription } from "../types/types";
 
 function createAbiAllocationField(src: StorageField): AllocationField {
     if (src.kind === 'optional') {
@@ -74,36 +73,15 @@ function createAbiAllocation(src: StorageAllocation): Allocation {
     };
 }
 
-export function createABI(ctx: CompilerContext, name: string | null): ContractABI {
+export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
     let allTypes = Object.values(getAllTypes(ctx));
 
     // Contract
-    let contract: TypeDescription;
-    if (name) {
-        contract = allTypes.find((v) => v.name === name)!;
-        if (!contract) {
-            throw Error(`Contract ${name} not found`);
-        }
-    } else {
-
-        // All contracts
-        let contracts = allTypes.filter((v) => v.kind === 'contract');
-
-        // Contract
-        if (contracts.length > 1) {
-            throw Error('Too many contracts');
-        }
-
-        // Empty contract
-        if (contracts.length === 0) {
-            throw Error('No contracts');
-        }
-
-        // Entry Point
-        contract = contracts[0];
+    let contract = allTypes.find((v) => v.name === name)!;
+    if (!contract) {
+        throw Error(`Contract ${name} not found`);
     }
-
     if (contract.kind !== 'contract') {
         throw Error('Not a contract');
     }

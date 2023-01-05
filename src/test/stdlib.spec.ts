@@ -1,6 +1,6 @@
 import { beginCell, toNano } from "ton-core";
 import { ContractSystem } from "ton-emulator";
-import { StdlibTest } from './contracts/stdlib.StdlibTest.bind';
+import { StdlibTest } from './contracts/output/stdlib_StdlibTest';
 
 describe('stdlib', () => {
     it('should execute slice methods correctly', async () => {

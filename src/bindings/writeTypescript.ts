@@ -8,7 +8,7 @@ function writeArguments(args: ContractFunctionArg[]) {
     return args.map((v) => `${v.name}: ${getTSFieldType(v.type)}`);
 }
 
-export function writeTypescript(abi: ContractABI, code: string, depends: { [key: string]: { code: string } }) {
+export function writeTypescript(abi: ContractABI, code: string, system: string) {
     let w = new Writer();
     w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';`);
     w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
@@ -30,15 +30,8 @@ export function writeTypescript(abi: ContractABI, code: string, depends: { [key:
 
             // Code references
             w.append(`const __code = '${code}';`);
-            w.append(`const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());`);
-            for (let s in abi.dependsOn) {
-                let cd = depends[s];
-                if (!cd) {
-                    throw Error(`Cannot find code for ${s}`);
-                }
-                w.append(`depends.set(${abi.dependsOn[s].uid}, Cell.fromBoc(Buffer.from('${cd.code}', 'base64'))[0]);`);
-            }
-            w.append(`let systemCell = beginCell().storeDict(depends).endCell();`);
+            w.append(`const __system = '${system}';`);
+            w.append(`let systemCell = Cell.fromBase64(__system);`);
 
             // Stack
             w.append('let __tuple: TupleItem[] = [];');

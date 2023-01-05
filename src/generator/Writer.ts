@@ -1,6 +1,6 @@
 import { enabledDebug } from "../config";
 import { CompilerContext } from "../context";
-import { topologicalSort } from "../utils";
+import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
 
 export class WriterContext {

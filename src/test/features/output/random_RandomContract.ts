@@ -238,8 +238,8 @@ function storeTupleDeployOk(source: DeployOk) {
 
 async function RandomContract_init() {
     const __code = 'te6ccgECHwEAAhoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFIDg8CAdQICQIBWAoLANEcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEJWXPcy6jjHtRNDUAfhigQEB1wABMQHTHwGCEJWXPcy68uCB0z8BMfAVyPhCAcwBAYEBAc8Aye1U4DDywIKAACwgbvLQgIAAVWUfwHKAOBwAcoAgCASAMDQAdPhDbpf4JfgVf/hj3vgQgACM+ENul/gl+BV/+GPeIaH4EaCACASAQEQIBSBcYAgEgEhMCASAVFgH3MhxAcoBUAfwDXABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8A3IcPANcPANJG6zmX/wDQTwAVAEzJU0A3DwDeIkbrOZf/ANBPABUATMlTQDcPAN4nDwDQJ/8A0CyVjMljMzAXDwDeIhbrOYf/ANAfABAcyUMXDwDeLJAYBQAJT4QW8kECNfA38CcIBCWG1t8BCAABPsAABkcAHIzAEBgQEBzwDJgAAcMPAOgAAkbBLwD4AAhMgBghDTf7ghWMsfyz/J8BGACASAbHAIBIB0eAAm7Bb8BKAAnunbe1E0NQB+GKBAQHXAAExWfAUgATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAlu2h+1E0NQB+GKBAQHXAAEx8BOA==';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];

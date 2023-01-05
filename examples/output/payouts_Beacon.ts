@@ -279,8 +279,8 @@ function storeTupleCanPayoutResponse(source: CanPayoutResponse) {
 
 async function Beacon_init(master: Address, owner: Address) {
     const __code = 'te6ccgECGgEAAm4AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAWFwIBIAYHAgFIDg8CAdQICQIB9AsMAcUcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKOLDDtRNDUAfhi+kABAfpAAQHSAFUgbBNVAvAUyPhCAcxVIFrPFljPFsoAye1U4IIQPp6xZrrjAjDywIKAKAAsIG7y0ICAAgO1E0NQB+GL6QAEB+kABAdIAVSBsEwPTHwGCED6esWa68uCBgQEB1wABMUEw8BPI+EIBzFUgWs8WWM8WygDJ7VQAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgDQAE+wACASAQEQAF0tuEAgEgEhMCASAUFQAlPhBbyQQI18DfwJwgEJYbW3wD4AAdHADyMwDWs8WWM8WygDJgAAUMDGAAsz4QW8kW4ERTTIlxwXy9IIQBfXhAHD7AiGOH38yIn/IVSCCEG729VFQBMsfEoEBAc8AAc8WygDJ8BCOHSJwyFUgghBu9vVRUATLHxKBAQHPAAHPFsoAyfAQ4oAAzvijvaiaGoA/DF9IACA/SAAgOkAKpA2CfgJQCAWYYGQAJsOX8BGAAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwQM51aecV+dJQsB1hbiZHsoA==';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     __tuple.push({ type: 'slice', cell: beginCell().storeAddress(master).endCell() });

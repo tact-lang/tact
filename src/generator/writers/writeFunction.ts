@@ -4,7 +4,7 @@ import { ASTCondition, ASTExpression, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription, TypeRef } from "../../types/types";
-import { getMethodId } from "../../utils";
+import { getMethodId } from "../../utils/utils";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";

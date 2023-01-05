@@ -176,8 +176,8 @@ function storeTupleSendParameters(source: SendParameters) {
 
 async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
     const __code = 'te6ccgECGgEAAe0AART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAUFQIBIAYHAgFYDg8A29OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gESgzN4J8MIFIrfBgAADrpOCQ2EcbdqJoagD8MX0gAID9IACA/SAAgPoCegIqoDYK+AfkfCEA5iqgKCpniyxniwDniwl6AHoAZPaqcHlgQUAgEgCAkCASAKCwIBIAwNABsIG6VMFn0WjDgQTP0FIAARFn0DG+h3DBtgACMIW6VW1n0WTDgyAHPAEEz9EGAAHRBM/QKb6GUAdcAMOBbbYAIBIBARAgEgEhMALRtbQXIzAVQVM8WWM8WAc8WEvQA9ADJgABMMTIzgQEBMvAFgABcbEKBAQsBgQEB8AeAAjQBgQEBcCbwBIEBAXEl8ASBAQFyJPAEgQEBcybwBAGBAQslcIEBAfAGgQELJHGBAQHwBoEBCyNygQEB8AaBAQslc4EBAfAGgAgFIFhcCASAYGQBDtFPdqJoagD8MX0gAID9IACA/SAAgPoCegIqoDYKqoJ4B0AAJtcceAZAATbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmABDuVw+1E0NQB+GL6QAEB+kABAfpAAQH0BPQEVUBsFVUE8A2A==';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     __tuple.push({ type: 'slice', cell: beginCell().storeAddress(addr1).endCell() });

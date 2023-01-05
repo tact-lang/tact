@@ -176,8 +176,8 @@ function storeTupleSendParameters(source: SendParameters) {
 
 async function Echo_init() {
     const __code = 'te6ccgECJAEAArEAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAVggIQIBIAYHAgFIERICAdQICQIBIAsMAd87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4MAAji4g10nCH44m7UTQ1AH4YoEBAdcAATEBgCDXIfAWyPhCAcwBAYEBAc8Aye1U2zHg3u1E0NQB+GKBAQHXAAExAfAXgCgALCBu8tCAgAB7I+EIBzAEBgQEBzwDJ7VQCASANDgAV9KP4DlAHA4AOUAQCASAPEAC7Qg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOAAjG8iAcmTIW6zlgFvIlnMyegxgAAc8AjQgAgEgExQCASAaGwIBIBUWAgEgGBkB9zIcQHKAVAH8A9wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/APyHDwD3DwDyRus5l/8A8E8AFQBMyVNANw8A/iJG6zmX/wDwTwAVAEzJU0A3DwD+Jw8A8Cf/APAslYzJYzMwFw8A/iIW6zmH/wDwHwAQHMlDFw8A/iyQGAXACU+EFvJBAjXwN/AnCAQlhtbfAQgAAT7AAALMgBzxbJgAC0f8gBlHAByx/ebwABb4xtb4wB8ArwCIAIBIBwdAgEgHh8AGRwAcjMAQGBAQHPAMmAARQxcMgBlHAByx/ebwABb4xtb4yLdIZWxsbywgjwCgHwCvAJgAAk8BPwEYAAJPAS8BGACASAiIwAnuDYu1E0NQB+GKBAQHXAAExAfAVgACbWrHgKQAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzA=';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];

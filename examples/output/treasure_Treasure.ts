@@ -243,8 +243,8 @@ function storeTupleWithdraw(source: Withdraw) {
 
 async function Treasure_init(owner: Address) {
     const __code = 'te6ccgECHwEAAn4AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAbHAIBIAYHAgFIDxACAdQICQIB9AwNAu87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEEyoPci6ji4w7UTQ1AH4YvpAATEB0x8BghBMqD3IuvLggfoA0wdZbBLwFMj4QgHMAc8Wye1U4CCCELbPfw+64wLAAJEw4w3ywIKAKCwALCBu8tCAgAFYw7UTQ1AH4YvpAATEB0x8BghC2z38PuvLggfpAATHwFsj4QgHMAc8Wye1UAIT5AYLwmGwroSS7kofrSgvY0xBOHABno8k5UtiJx00IGFvTDU26jhrtRNDUAfhi+kABMfAVyPhCAcwBzxbJ7VTbMeAAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgDgAE+wACASAREgIBIBcYAgEgExQCASAVFgAPAHIzAHPFsmAAHT4QW8kECNfAyHHBfLghIAAfALwEX/IyVQTAlBVbW3wD4AABIAIBIBkaAAlAHwETCAAFPASgAA0cIEAoPASgAB++KO9qJoagD8MX0gAJj4CcAgEgHR4Albu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcKAWPdCZRLm1qqkKwpYALAaCcEDOdWnnFfnSULAdYW4mR7KAAJufLvAQg=';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     __tuple.push({ type: 'slice', cell: beginCell().storeAddress(owner).endCell() });

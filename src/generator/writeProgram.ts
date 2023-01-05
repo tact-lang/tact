@@ -353,8 +353,8 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     }
 
     // Prepare ABI
-    let abi = Buffer.from(JSON.stringify(abiSrc));
-    let abiLink = await calculateIPFSlink(abi);
+    let abi = JSON.stringify(abiSrc);
+    let abiLink = await calculateIPFSlink(Buffer.from(abi));
 
     // Write contract
     writeMainContract(c, abiLink, wctx);

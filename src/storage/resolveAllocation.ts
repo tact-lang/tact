@@ -2,7 +2,7 @@ import { CompilerContext, createContextStore } from "../context";
 import { throwError } from "../grammar/ast";
 import { getAllTypes, getType } from "../types/resolveDescriptors";
 import { FieldDescription, TypeDescription, TypeRef } from "../types/types";
-import { topologicalSort } from "../utils";
+import { topologicalSort } from "../utils/utils";
 import { crc32 } from "../utils/crc32";
 import { StorageAllocation, StorageCell, StorageField } from "./StorageAllocation";
 

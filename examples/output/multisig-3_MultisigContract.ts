@@ -292,8 +292,8 @@ function storeTupleExecuted(source: Executed) {
 
 async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
     const __code = 'te6ccgECJwEAAvkAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIERICAdQICQIBWAwNAn07ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEDDeKUK64wLAAJEw4w3ywIKAKCwALCBu8tCAgALIw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BbI+EIBzFUwUDTLH8v/y//L/8ntVACm+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGuo4r7UTQ1AH4YtMf0//T/9P/VTBsFPAVyPhCAcxVMFA0yx/L/8v/y//J7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8B9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGAQACMcATIzFUwUDTLH8v/y//L/8mAABPsAAgEgExQCASAZGgIBIBUWAgEgFxgAEx/MwFwbW1t8A6AACQQI18DgAAcE18DgAAUbDGACASAbHABvRUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAQgABRfA4AABIAAvvmS/aiaGoA/DFpj+n/6f/p/6qYNgp4CkAgEgHyACASAhIgAJuKx/APgCASAjJAIBICUmAC+w6ftRNDUAfhi0x/T/9P/0/9VMGwU8BOAAL7Dhu1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsPl7UTQ1AH4YtMf0//T/9P/VTBsFPARgAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmA=';
-    const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-    let systemCell = beginCell().storeDict(depends).endCell();
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
     let __tuple: TupleItem[] = [];
     __tuple.push({ type: 'cell', cell: systemCell });
     __tuple.push({ type: 'int', value: key1 });
