@@ -316,4 +316,67 @@ export class SerializationTester implements Contract {
         
     }
     
+    async getGetA(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getA', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetB(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getB', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetC(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getC', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetD(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getD', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetE(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getE', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetF(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getF', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetG(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getG', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetH(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getH', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getGetI(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getI', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

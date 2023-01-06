@@ -575,4 +575,126 @@ export class MapTestContract implements Contract {
         
     }
     
+    async getIntMap1(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap1', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getIntMap1Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap1Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap2', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getIntMap2Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap2Value', builder.build())).stack;
+        let result = source.readBooleanOpt();
+        return result;
+    }
+    
+    async getIntMap3(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap3', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getIntMap3Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap3Value', builder.build())).stack;
+        let result = source.readCellOpt();
+        return result;
+    }
+    
+    async getIntMap4(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap4', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getIntMap4Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap4Value', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleSomeStruct(result_p) : null;
+        return result;
+    }
+    
+    async getAddrMap1(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('addrMap1', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getAddrMap1Value(provider: ContractProvider, key: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(key);
+        let source = (await provider.get('addrMap1Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getAddrMap2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('addrMap2', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getAddrMap2Value(provider: ContractProvider, key: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(key);
+        let source = (await provider.get('addrMap2Value', builder.build())).stack;
+        let result = source.readBooleanOpt();
+        return result;
+    }
+    
+    async getAddrMap3(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('addrMap3', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getAddrMap3Value(provider: ContractProvider, key: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(key);
+        let source = (await provider.get('addrMap3Value', builder.build())).stack;
+        let result = source.readCellOpt();
+        return result;
+    }
+    
+    async getAddrMap4(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('addrMap4', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getAddrMap4Value(provider: ContractProvider, key: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(key);
+        let source = (await provider.get('addrMap4Value', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleSomeStruct(result_p) : null;
+        return result;
+    }
+    
 }

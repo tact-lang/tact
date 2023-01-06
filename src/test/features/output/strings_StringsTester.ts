@@ -227,4 +227,96 @@ export class StringsTester implements Contract {
         
     }
     
+    async getConstantString(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('constantString', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getConstantStringUnicode(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('constantStringUnicode', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getConstantStringUnicodeLong(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('constantStringUnicodeLong', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getDynamicStringCell(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('dynamicStringCell', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
+    async getDynamicCommentCell(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('dynamicCommentCell', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
+    async getDynamicCommentCellLarge(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('dynamicCommentCellLarge', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
+    async getDynamicCommentStringLarge(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('dynamicCommentStringLarge', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getStringWithNumber(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('stringWithNumber', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getStringWithNegativeNumber(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('stringWithNegativeNumber', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getStringWithLargeNumber(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('stringWithLargeNumber', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getStringWithFloat(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('stringWithFloat', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getBase64(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('base64', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
+    async getProcessBase64(provider: ContractProvider, src: string) {
+        let builder = new TupleBuilder();
+        builder.writeString(src);
+        let source = (await provider.get('processBase64', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
 }

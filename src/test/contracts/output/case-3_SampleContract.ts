@@ -249,4 +249,11 @@ export class SampleContract implements Contract {
         this.init = init;
     }
     
+    async getStake(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('stake', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

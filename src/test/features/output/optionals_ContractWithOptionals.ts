@@ -425,4 +425,139 @@ export class ContractWithOptionals implements Contract {
         
     }
     
+    async getIsNotNullA(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('isNotNullA', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNullB(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('isNotNullB', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNullC(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('isNotNullC', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNullD(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('isNotNullD', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNullE(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('isNotNullE', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNullF(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('isNotNullF', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getNullA(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('nullA', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getNullB(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('nullB', builder.build())).stack;
+        let result = source.readBooleanOpt();
+        return result;
+    }
+    
+    async getNullC(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('nullC', builder.build())).stack;
+        let result = source.readCellOpt();
+        return result;
+    }
+    
+    async getNullD(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('nullD', builder.build())).stack;
+        let result = source.readAddressOpt();
+        return result;
+    }
+    
+    async getNullE(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('nullE', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleSomeGenericStruct(result_p) : null;
+        return result;
+    }
+    
+    async getNullF(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('nullF', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleStructWithOptionals(result_p) : null;
+        return result;
+    }
+    
+    async getNotNullA(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('notNullA', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getNotNullB(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('notNullB', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getNotNullC(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('notNullC', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
+    async getNotNullD(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('notNullD', builder.build())).stack;
+        let result = source.readAddress();
+        return result;
+    }
+    
+    async getNotNullE(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('notNullE', builder.build())).stack;
+        const result = loadTupleSomeGenericStruct(source);
+        return result;
+    }
+    
+    async getNotNullF(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('notNullF', builder.build())).stack;
+        const result = loadTupleStructWithOptionals(source);
+        return result;
+    }
+    
+    async getTestVariables(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('testVariables', builder.build())).stack;
+        const result = loadTupleSomeGenericStruct(source);
+        return result;
+    }
+    
 }

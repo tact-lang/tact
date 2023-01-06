@@ -1,7 +1,7 @@
 import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { CompilerContext } from "../../context";
 import { getAllocation, resolveAllocations } from "../../storage/resolveAllocation";
-import { getAllTypes, resolveDescriptors } from "../../types/resolveDescriptors";
+import { getAllTypes, getType, resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
@@ -59,13 +59,13 @@ describe('writeSerialization', () => {
             ctx = resolveAllocations(ctx);
             let wctx = new WriterContext(ctx);
             writeStdlib(wctx);
-            writeSerializer(s, getAllocation(ctx, s), wctx);
+            writeSerializer(getType(ctx, s), getAllocation(ctx, s), wctx);
             for (let t of Object.values(getAllTypes(ctx))) {
                 if (t.kind === 'contract' || t.kind === 'struct') {
                     writeAccessors(t, wctx);
                 }
             }
-            writeParser(s, getAllocation(ctx, s), wctx);
+            writeParser(getType(ctx, s), getAllocation(ctx, s), wctx);
             expect(wctx.render(true)).toMatchSnapshot();
         });
     }

@@ -714,4 +714,26 @@ export class SampleJetton implements Contract {
         
     }
     
+    async getGetWalletAddress(provider: ContractProvider, owner: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(owner);
+        let source = (await provider.get('get_wallet_address', builder.build())).stack;
+        let result = source.readAddress();
+        return result;
+    }
+    
+    async getGetJettonData(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('get_jetton_data', builder.build())).stack;
+        const result = loadTupleJettonData(source);
+        return result;
+    }
+    
+    async getOwner(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('owner', builder.build())).stack;
+        let result = source.readAddress();
+        return result;
+    }
+    
 }

@@ -227,4 +227,28 @@ export class StdlibTest implements Contract {
         
     }
     
+    async getSliceEmpty(provider: ContractProvider, sc: Cell) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(sc);
+        let source = (await provider.get('sliceEmpty', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getSliceBits(provider: ContractProvider, sc: Cell) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(sc);
+        let source = (await provider.get('sliceBits', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSliceRefs(provider: ContractProvider, sc: Cell) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(sc);
+        let source = (await provider.get('sliceRefs', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

@@ -230,4 +230,12 @@ export class Echo implements Contract {
         
     }
     
+    async getHello(provider: ContractProvider, src: string) {
+        let builder = new TupleBuilder();
+        builder.writeString(src);
+        let source = (await provider.get('hello', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
 }

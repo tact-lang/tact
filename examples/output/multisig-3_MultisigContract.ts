@@ -351,4 +351,32 @@ export class MultisigContract implements Contract {
         
     }
     
+    async getKey1(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('key1', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getKey2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('key2', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getKey3(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('key3', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSeqno(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('seqno', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

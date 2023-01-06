@@ -465,4 +465,18 @@ export class IncrementContract implements Contract {
         
     }
     
+    async getCounters(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('counters', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
+    async getCounters2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('counters2', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
 }

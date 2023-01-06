@@ -1,7 +1,8 @@
+import * as changeCase from 'change-case';
 import { Writer } from "../utils/Writer";
 import { getTSFieldType } from "./typescript/getTSFieldType";
 import { ABIArgument, ABIType, ContractABI } from "ton-core";
-import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
+import { writeArgumentToStack, writeGetParser, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
 import { topologicalSort } from "../utils/utils";
 import { allocate, getAllocationOperationFromField } from "../storage/allocator";
@@ -241,87 +242,27 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             w.append();
         }
 
-        // // Getters
-        // if (abi.getters) {
-        //     for (let g of abi.getters) {
-        //         w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.args)].join(', ')}) {`);
-        //         w.inIndent(() => {
-        //             w.append(`let __tuple: TupleItem[] = [];`);
-        //             for (let a of g.args) {
-        //                 writeArgumentToStack(a.name, a.type, w);
-        //             }
-        //             w.append(`let result = await provider.get('${g.name}', __tuple);`);
-
-        //             if (g.returns) {
-        //                 if (g.returns.kind === 'ref') {
-        //                     if (g.returns.name === 'Bool') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`return result.stack.readBooleanOpt();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readBoolean();`);
-        //                         }
-        //                     } else if (g.returns.name === 'Int') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`return result.stack.readBigNumberOpt();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readBigNumber();`);
-        //                         }
-        //                     } else if (g.returns.name === 'Address') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`return result.stack.readAddressOpt();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readAddress();`);
-        //                         }
-        //                     } else if (g.returns.name === 'Cell') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`return result.stack.readCellOpt();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readCell();`);
-        //                         }
-        //                     } else if (g.returns.name === 'Slice') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`return result.stack.readCellOpt();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readCell();`);
-        //                         }
-        //                     } else if (g.returns.name === 'Builder') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`return result.stack.readCellOpt();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readCell();`);
-        //                         }
-        //                     } else if (g.returns.name === 'String') {
-        //                         if (g.returns.optional) {
-        //                             w.append(`let c = result.stack.readCellOpt();`);
-        //                             w.append(`if (c === null) { return null; }`);
-        //                             w.append(`return c.beginParse().loadStringTail();`);
-        //                         } else {
-        //                             w.append(`return result.stack.readCell().beginParse().loadStringTail();`);
-        //                         }
-        //                     } else {
-        //                         if (g.returns.optional) {
-        //                             w.append(`let pp = result.stack.readTupleOpt();`);
-        //                             w.append(`if (!pp) { return null; }`);
-        //                             w.append(`return loadTuple${g.returns.name}(pp);`);
-        //                         } else {
-        //                             w.append(`return loadTuple${g.returns.name}(result.stack);`);
-        //                         }
-        //                     }
-        //                 } else if (g.returns.kind === 'map') {
-        //                     w.append(`return result.stack.readCellOpt();`);
-        //                 } else if (g.returns.kind === 'null') {
-        //                     throw Error('Impossible');
-        //                 } else if (g.returns.kind === 'void') {
-        //                     throw Error('Impossible');
-        //                 } else {
-        //                     throw Error('Not implemented');
-        //                 }
-        //             }
-        //         });
-        //         w.append(`}`);
-        //         w.append();
-        //     }
-        // }
+        // Getters
+        if (abi.getters) {
+            for (let g of abi.getters) {
+                w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.arguments ? g.arguments : [])].join(', ')}) {`);
+                w.inIndent(() => {
+                    w.append(`let builder = new TupleBuilder();`);
+                    if (g.arguments) {
+                        for (let a of g.arguments) {
+                            writeArgumentToStack(a.name, a.type, w);
+                        }
+                    }
+                    w.append(`let source = (await provider.get('${g.name}', builder.build())).stack;`);
+                    if (g.returnType) {
+                        writeGetParser('result', g.returnType, w);
+                        w.append(`return result;`);
+                    }
+                });
+                w.append(`}`);
+                w.append();
+            }
+        }
     });
     w.append(`}`);
 

@@ -215,4 +215,46 @@ export class ConstantTester implements Contract {
         this.init = init;
     }
     
+    async getSomething1(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something1', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSomething2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something2', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getSomething3(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something3', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSomething4(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something4', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSomething5(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('something5', builder.build())).stack;
+        let result = source.readString();
+        return result;
+    }
+    
+    async getGlobalConst(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('globalConst', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

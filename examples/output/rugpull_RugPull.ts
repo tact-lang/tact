@@ -316,4 +316,25 @@ export class RugPull implements Contract {
         
     }
     
+    async getParams(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('params', builder.build())).stack;
+        const result = loadTupleRugParams(source);
+        return result;
+    }
+    
+    async getOwner(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('owner', builder.build())).stack;
+        let result = source.readAddress();
+        return result;
+    }
+    
+    async getStopped(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('stopped', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
 }

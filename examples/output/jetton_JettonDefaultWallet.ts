@@ -711,4 +711,11 @@ export class JettonDefaultWallet implements Contract {
         
     }
     
+    async getGetWalletData(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('get_wallet_data', builder.build())).stack;
+        const result = loadTupleJettonWalletData(source);
+        return result;
+    }
+    
 }

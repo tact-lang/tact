@@ -329,4 +329,19 @@ export class Multisig implements Contract {
         
     }
     
+    async getMember(provider: ContractProvider, address: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(address);
+        let source = (await provider.get('member', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getMembers(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('members', builder.build())).stack;
+        const result = source.readCellOpt();
+        return result;
+    }
+    
 }

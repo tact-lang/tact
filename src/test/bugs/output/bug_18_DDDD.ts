@@ -230,4 +230,20 @@ export class DDDD implements Contract {
         
     }
     
+    async getMapDataAddr1(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('mapData_addr1', builder.build())).stack;
+        let result = source.readAddressOpt();
+        return result;
+    }
+    
+    async getMapData2Addr1(provider: ContractProvider, key: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(key);
+        let source = (await provider.get('mapData2_addr1', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
 }

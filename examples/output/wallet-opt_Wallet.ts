@@ -267,4 +267,25 @@ export class Wallet implements Contract {
         
     }
     
+    async getPublicKey(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('publicKey', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getWalletId(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('walletId', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getSeqno(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('seqno', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

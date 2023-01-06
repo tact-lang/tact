@@ -330,4 +330,11 @@ export class MultisigSigner implements Contract {
         
     }
     
+    async getRequest(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('request', builder.build())).stack;
+        const result = loadTupleRequest(source);
+        return result;
+    }
+    
 }

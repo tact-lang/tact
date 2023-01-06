@@ -289,4 +289,20 @@ export class RandomContract implements Contract {
         
     }
     
+    async getRandomInt(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('randomInt', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getRandom(provider: ContractProvider, min: bigint, max: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(min);
+        builder.writeNumber(max);
+        let source = (await provider.get('random', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
 }

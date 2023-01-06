@@ -1,4 +1,4 @@
-import { ABIField, ABIType, ABITypeRef } from "ton-core";
+import { ABIType, ABITypeRef } from "ton-core";
 import { serializers } from "../../serializer/serializers";
 import { AllocationCell } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
@@ -180,7 +180,7 @@ export function writeTupleParser(s: ABIType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
         for (let f of s.fields) {
-            writeTupleFieldParser(f, s, w);
+            writeTupleFieldParser('_' + f.name, f.type, w);
         }
         w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
     });
@@ -188,9 +188,11 @@ export function writeTupleParser(s: ABIType, w: Writer) {
     w.append();
 }
 
-function writeTupleFieldParser(f: ABIField, s: ABIType, w: Writer) {
-    let name = `_${f.name}`;
-    let type = f.type;
+export function writeGetParser(name: string, type: ABITypeRef, w: Writer) {
+    writeTupleFieldParser(name, type, w, true);
+}
+
+function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGet = false) {
 
     //
     // Default Serializers
@@ -216,7 +218,11 @@ function writeTupleFieldParser(f: ABIField, s: ABIType, w: Writer) {
             w.append(`const ${name}_p = source.readTupleOpt();`);
             w.append(`const ${name} = ${name}_p ? loadTuple${type.type}(${name}_p) : null;`);
         } else {
-            w.append(`const ${name} = loadTuple${type.type}(source.readTuple());`);
+            if (fromGet) {
+                w.append(`const ${name} = loadTuple${type.type}(source);`);
+            } else {
+                w.append(`const ${name} = loadTuple${type.type}(source.readTuple());`);
+            }
         }
         return;
     }
@@ -225,8 +231,8 @@ function writeTupleFieldParser(f: ABIField, s: ABIType, w: Writer) {
     // Dict Serializer
     //
 
-    if (f.type.kind === 'map') {
-        w.append(`const ${name} = slice.readCellOpt();`);
+    if (type.kind === 'map') {
+        w.append(`const ${name} = source.readCellOpt();`);
         return;
     }
 

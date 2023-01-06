@@ -360,4 +360,63 @@ export class SerializationTester2 implements Contract {
         
     }
     
+    async getGetA(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getA', builder.build())).stack;
+        const result = loadTupleVars(source);
+        return result;
+    }
+    
+    async getGetAopt(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getAopt', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleVars(result_p) : null;
+        return result;
+    }
+    
+    async getGetB(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getB', builder.build())).stack;
+        const result = loadTupleVars(source);
+        return result;
+    }
+    
+    async getGetBopt(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getBopt', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleVars(result_p) : null;
+        return result;
+    }
+    
+    async getGetBoth(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getBoth', builder.build())).stack;
+        const result = loadTupleBoth(source);
+        return result;
+    }
+    
+    async getGetBothOpt(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('getBothOpt', builder.build())).stack;
+        const result_p = source.readTupleOpt();
+        const result = result_p ? loadTupleBoth(result_p) : null;
+        return result;
+    }
+    
+    async getProcess(provider: ContractProvider, src: Vars, both: Both, both2: Both | null) {
+        let builder = new TupleBuilder();
+        builder.writeTuple(storeTupleVars(src));
+        builder.writeTuple(storeTupleBoth(both));
+        if (both2 !== null) {
+            builder.writeTuple(storeTupleBoth(both2));
+        } else {
+            builder.writeTuple(null);
+        }
+        let source = (await provider.get('process', builder.build())).stack;
+        const result = loadTupleVars(source);
+        return result;
+    }
+    
 }
