@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -85,6 +99,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -94,7 +119,7 @@ export function storeChangeOwner(src: ChangeOwner) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(3067051791, 32);
-        b_0.storeBit(src.newOwner);
+        b_0.storeAddress(src.newOwner);
     };
 }
 
@@ -102,6 +127,11 @@ export function loadChangeOwner(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 3067051791) { throw Error('Invalid prefix'); }
     let _newOwner = sc_0.loadAddress();
+    return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
+function loadTupleChangeOwner(source: TupleReader) {
+    let _newOwner = source.readAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
@@ -122,11 +152,11 @@ export function storeTokenTransfer(src: TokenTransfer) {
         b_0.storeUint(260734629, 32);
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
-        b_0.storeBit(src.destination);
+        b_0.storeAddress(src.destination);
         if (src.responseDestination !== null && src.responseDestination !== undefined) { b_0.storeBit(true).storeAddress(src.responseDestination); } else { b_0.storeBit(false); }
         if (src.customPayload !== null && src.customPayload !== undefined) { b_0.storeBit(true).storeRef(src.customPayload); } else { b_0.storeBit(false); }
         b_0.storeCoins(src.forwardTonAmount);
-        let b_0.storeBuilder(src.forwardPayload.asBuilder());
+        b_0.storeBuilder(src.forwardPayload.asBuilder());
     };
 }
 
@@ -140,6 +170,17 @@ export function loadTokenTransfer(slice: Slice) {
     let _customPayload = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _forwardTonAmount = sc_0.loadCoins();
     let _forwardPayload = sc_0.asCell();
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
+}
+
+function loadTupleTokenTransfer(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _amount = source.readBigNumber();
+    let _destination = source.readAddress();
+    let _responseDestination = source.readAddressOpt();
+    let _customPayload = source.readCellOpt();
+    let _forwardTonAmount = source.readBigNumber();
+    let _forwardPayload = source.readCell();
     return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
@@ -159,10 +200,10 @@ export function storeTokenTransferInternal(src: TokenTransferInternal) {
         b_0.storeUint(395134233, 32);
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
-        b_0.storeBit(src.from);
+        b_0.storeAddress(src.from);
         if (src.responseAddress !== null && src.responseAddress !== undefined) { b_0.storeBit(true).storeAddress(src.responseAddress); } else { b_0.storeBit(false); }
         b_0.storeCoins(src.forwardTonAmount);
-        let b_0.storeBuilder(src.forwardPayload.asBuilder());
+        b_0.storeBuilder(src.forwardPayload.asBuilder());
     };
 }
 
@@ -175,6 +216,16 @@ export function loadTokenTransferInternal(slice: Slice) {
     let _responseAddress = sc_0.loadBit() ? sc_0.loadAddress() : null;
     let _forwardTonAmount = sc_0.loadCoins();
     let _forwardPayload = sc_0.asCell();
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
+}
+
+function loadTupleTokenTransferInternal(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _amount = source.readBigNumber();
+    let _from = source.readAddress();
+    let _responseAddress = source.readAddressOpt();
+    let _forwardTonAmount = source.readBigNumber();
+    let _forwardPayload = source.readCell();
     return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
@@ -192,8 +243,8 @@ export function storeTokenNotification(src: TokenNotification) {
         b_0.storeUint(1935855772, 32);
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
-        b_0.storeBit(src.from);
-        let b_0.storeBuilder(src.forwardPayload.asBuilder());
+        b_0.storeAddress(src.from);
+        b_0.storeBuilder(src.forwardPayload.asBuilder());
     };
 }
 
@@ -204,6 +255,14 @@ export function loadTokenNotification(slice: Slice) {
     let _amount = sc_0.loadCoins();
     let _from = sc_0.loadAddress();
     let _forwardPayload = sc_0.asCell();
+    return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
+}
+
+function loadTupleTokenNotification(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _amount = source.readBigNumber();
+    let _from = source.readAddress();
+    let _forwardPayload = source.readCell();
     return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
 }
 
@@ -221,7 +280,7 @@ export function storeTokenBurn(src: TokenBurn) {
         b_0.storeUint(1499400124, 32);
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
-        b_0.storeBit(src.owner);
+        b_0.storeAddress(src.owner);
         if (src.responseAddress !== null && src.responseAddress !== undefined) { b_0.storeBit(true).storeAddress(src.responseAddress); } else { b_0.storeBit(false); }
     };
 }
@@ -233,6 +292,14 @@ export function loadTokenBurn(slice: Slice) {
     let _amount = sc_0.loadCoins();
     let _owner = sc_0.loadAddress();
     let _responseAddress = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
+}
+
+function loadTupleTokenBurn(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _amount = source.readBigNumber();
+    let _owner = source.readAddress();
+    let _responseAddress = source.readAddressOpt();
     return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
@@ -250,7 +317,7 @@ export function storeTokenBurnNotification(src: TokenBurnNotification) {
         b_0.storeUint(2078119902, 32);
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
-        b_0.storeBit(src.owner);
+        b_0.storeAddress(src.owner);
         if (src.responseAddress !== null && src.responseAddress !== undefined) { b_0.storeBit(true).storeAddress(src.responseAddress); } else { b_0.storeBit(false); }
     };
 }
@@ -262,6 +329,14 @@ export function loadTokenBurnNotification(slice: Slice) {
     let _amount = sc_0.loadCoins();
     let _owner = sc_0.loadAddress();
     let _responseAddress = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
+}
+
+function loadTupleTokenBurnNotification(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    let _amount = source.readBigNumber();
+    let _owner = source.readAddress();
+    let _responseAddress = source.readAddressOpt();
     return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
@@ -285,6 +360,11 @@ export function loadTokenExcesses(slice: Slice) {
     return { $$type: 'TokenExcesses' as const, queryId: _queryId };
 }
 
+function loadTupleTokenExcesses(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    return { $$type: 'TokenExcesses' as const, queryId: _queryId };
+}
+
 export type TokenUpdateContent = {
     $$type: 'TokenUpdateContent';
     content: Cell | null;
@@ -305,6 +385,11 @@ export function loadTokenUpdateContent(slice: Slice) {
     return { $$type: 'TokenUpdateContent' as const, content: _content };
 }
 
+function loadTupleTokenUpdateContent(source: TupleReader) {
+    let _content = source.readCellOpt();
+    return { $$type: 'TokenUpdateContent' as const, content: _content };
+}
+
 export type JettonData = {
     $$type: 'JettonData';
     totalSupply: bigint;
@@ -319,7 +404,7 @@ export function storeJettonData(src: JettonData) {
         let b_0 = builder;
         b_0.storeInt(src.totalSupply, 257);
         b_0.storeBit(src.mintable);
-        b_0.storeBit(src.owner);
+        b_0.storeAddress(src.owner);
         if (src.content !== null && src.content !== undefined) { b_0.storeBit(true).storeRef(src.content); } else { b_0.storeBit(false); }
         b_0.storeRef(src.walletCode);
     };
@@ -335,6 +420,15 @@ export function loadJettonData(slice: Slice) {
     return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
 }
 
+function loadTupleJettonData(source: TupleReader) {
+    let _totalSupply = source.readBigNumber();
+    let _mintable = source.readBoolean();
+    let _owner = source.readAddress();
+    let _content = source.readCellOpt();
+    let _walletCode = source.readCell();
+    return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
+}
+
 export type JettonWalletData = {
     $$type: 'JettonWalletData';
     balance: bigint;
@@ -347,8 +441,8 @@ export function storeJettonWalletData(src: JettonWalletData) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeInt(src.balance, 257);
-        b_0.storeBit(src.owner);
-        b_0.storeBit(src.master);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.master);
         b_0.storeRef(src.walletCode);
     };
 }
@@ -359,6 +453,14 @@ export function loadJettonWalletData(slice: Slice) {
     let _owner = sc_0.loadAddress();
     let _master = sc_0.loadAddress();
     let _walletCode = sc_0.loadRef();
+    return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
+}
+
+function loadTupleJettonWalletData(source: TupleReader) {
+    let _balance = source.readBigNumber();
+    let _owner = source.readAddress();
+    let _master = source.readAddress();
+    let _walletCode = source.readCell();
     return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
 }
 
@@ -379,6 +481,11 @@ export function loadMint(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 2737462367) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadIntBig(257);
+    return { $$type: 'Mint' as const, amount: _amount };
+}
+
+function loadTupleMint(source: TupleReader) {
+    let _amount = source.readBigNumber();
     return { $$type: 'Mint' as const, amount: _amount };
 }
 

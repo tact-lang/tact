@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -82,6 +96,17 @@ export function loadSendParameters(slice: Slice) {
     let _body = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _code = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _data = sc_0.loadBit() ? sc_0.loadRef() : null;
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
@@ -132,6 +157,19 @@ export function loadUpdate(slice: Slice) {
     let _g = sc_2.loadIntBig(257);
     let _h = sc_2.loadIntBig(257);
     let _i = sc_2.loadIntBig(257);
+    return { $$type: 'Update' as const, a: _a, b: _b, c: _c, d: _d, e: _e, f: _f, g: _g, h: _h, i: _i };
+}
+
+function loadTupleUpdate(source: TupleReader) {
+    let _a = source.readBigNumber();
+    let _b = source.readBigNumber();
+    let _c = source.readBigNumber();
+    let _d = source.readBigNumber();
+    let _e = source.readBigNumber();
+    let _f = source.readBigNumber();
+    let _g = source.readBigNumber();
+    let _h = source.readBigNumber();
+    let _i = source.readBigNumber();
     return { $$type: 'Update' as const, a: _a, b: _b, c: _c, d: _d, e: _e, f: _f, g: _g, h: _h, i: _i };
 }
 

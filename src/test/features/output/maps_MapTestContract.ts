@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -82,6 +96,17 @@ export function loadSendParameters(slice: Slice) {
     let _body = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _code = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _data = sc_0.loadBit() ? sc_0.loadRef() : null;
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
@@ -108,6 +133,12 @@ export function loadSetIntMap1(slice: Slice) {
     return { $$type: 'SetIntMap1' as const, key: _key, value: _value };
 }
 
+function loadTupleSetIntMap1(source: TupleReader) {
+    let _key = source.readBigNumber();
+    let _value = source.readBigNumberOpt();
+    return { $$type: 'SetIntMap1' as const, key: _key, value: _value };
+}
+
 export type SetIntMap2 = {
     $$type: 'SetIntMap2';
     key: bigint;
@@ -128,6 +159,12 @@ export function loadSetIntMap2(slice: Slice) {
     if (sc_0.loadUint(32) !== 2818252722) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _value = sc_0.loadBit() ? sc_0.loadBit() : null;
+    return { $$type: 'SetIntMap2' as const, key: _key, value: _value };
+}
+
+function loadTupleSetIntMap2(source: TupleReader) {
+    let _key = source.readBigNumber();
+    let _value = source.readBooleanOpt();
     return { $$type: 'SetIntMap2' as const, key: _key, value: _value };
 }
 
@@ -154,6 +191,12 @@ export function loadSetIntMap3(slice: Slice) {
     return { $$type: 'SetIntMap3' as const, key: _key, value: _value };
 }
 
+function loadTupleSetIntMap3(source: TupleReader) {
+    let _key = source.readBigNumber();
+    let _value = source.readCellOpt();
+    return { $$type: 'SetIntMap3' as const, key: _key, value: _value };
+}
+
 export type SetIntMap4 = {
     $$type: 'SetIntMap4';
     key: bigint;
@@ -173,7 +216,14 @@ export function loadSetIntMap4(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 1318632071) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
-    _value = sc_0.loadBit() ? loadSomeStruct(sc_0) : null;
+    let _value = sc_0.loadBit() ? loadSomeStruct(sc_0) : null;
+    return { $$type: 'SetIntMap4' as const, key: _key, value: _value };
+}
+
+function loadTupleSetIntMap4(source: TupleReader) {
+    let _key = source.readBigNumber();
+    const _value_p = source.readTupleOpt();
+    const _value = _value_p ? loadTupleSomeStruct(_value_p) : null;
     return { $$type: 'SetIntMap4' as const, key: _key, value: _value };
 }
 
@@ -187,7 +237,7 @@ export function storeSetAddrMap1(src: SetAddrMap1) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(3295239033, 32);
-        b_0.storeBit(src.key);
+        b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeInt(src.value, 257); } else { b_0.storeBit(false); }
     };
 }
@@ -197,6 +247,12 @@ export function loadSetAddrMap1(slice: Slice) {
     if (sc_0.loadUint(32) !== 3295239033) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? sc_0.loadIntBig(257) : null;
+    return { $$type: 'SetAddrMap1' as const, key: _key, value: _value };
+}
+
+function loadTupleSetAddrMap1(source: TupleReader) {
+    let _key = source.readAddress();
+    let _value = source.readBigNumberOpt();
     return { $$type: 'SetAddrMap1' as const, key: _key, value: _value };
 }
 
@@ -210,7 +266,7 @@ export function storeSetAddrMap2(src: SetAddrMap2) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(1566575299, 32);
-        b_0.storeBit(src.key);
+        b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeBit(src.value); } else { b_0.storeBit(false); }
     };
 }
@@ -220,6 +276,12 @@ export function loadSetAddrMap2(slice: Slice) {
     if (sc_0.loadUint(32) !== 1566575299) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? sc_0.loadBit() : null;
+    return { $$type: 'SetAddrMap2' as const, key: _key, value: _value };
+}
+
+function loadTupleSetAddrMap2(source: TupleReader) {
+    let _key = source.readAddress();
+    let _value = source.readBooleanOpt();
     return { $$type: 'SetAddrMap2' as const, key: _key, value: _value };
 }
 
@@ -233,7 +295,7 @@ export function storeSetAddrMap3(src: SetAddrMap3) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(711408213, 32);
-        b_0.storeBit(src.key);
+        b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeRef(src.value); } else { b_0.storeBit(false); }
     };
 }
@@ -243,6 +305,12 @@ export function loadSetAddrMap3(slice: Slice) {
     if (sc_0.loadUint(32) !== 711408213) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? sc_0.loadRef() : null;
+    return { $$type: 'SetAddrMap3' as const, key: _key, value: _value };
+}
+
+function loadTupleSetAddrMap3(source: TupleReader) {
+    let _key = source.readAddress();
+    let _value = source.readCellOpt();
     return { $$type: 'SetAddrMap3' as const, key: _key, value: _value };
 }
 
@@ -256,7 +324,7 @@ export function storeSetAddrMap4(src: SetAddrMap4) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(3020140534, 32);
-        b_0.storeBit(src.key);
+        b_0.storeAddress(src.key);
         if (src.value !== null) { b_0.storeBit(true); storeSomeStruct(src.value, b_0); } else { b_0.storeBit(false); }
     };
 }
@@ -265,7 +333,14 @@ export function loadSetAddrMap4(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 3020140534) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
-    _value = sc_0.loadBit() ? loadSomeStruct(sc_0) : null;
+    let _value = sc_0.loadBit() ? loadSomeStruct(sc_0) : null;
+    return { $$type: 'SetAddrMap4' as const, key: _key, value: _value };
+}
+
+function loadTupleSetAddrMap4(source: TupleReader) {
+    let _key = source.readAddress();
+    const _value_p = source.readTupleOpt();
+    const _value = _value_p ? loadTupleSomeStruct(_value_p) : null;
     return { $$type: 'SetAddrMap4' as const, key: _key, value: _value };
 }
 
@@ -284,6 +359,11 @@ export function storeSomeStruct(src: SomeStruct) {
 export function loadSomeStruct(slice: Slice) {
     let sc_0 = slice;
     let _value = sc_0.loadIntBig(257);
+    return { $$type: 'SomeStruct' as const, value: _value };
+}
+
+function loadTupleSomeStruct(source: TupleReader) {
+    let _value = source.readBigNumber();
     return { $$type: 'SomeStruct' as const, value: _value };
 }
 

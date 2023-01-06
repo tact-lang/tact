@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -85,6 +99,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export type Operation = {
     $$type: 'Operation';
     seqno: bigint;
@@ -97,7 +122,7 @@ export function storeOperation(src: Operation) {
         let b_0 = builder;
         b_0.storeUint(src.seqno, 32);
         b_0.storeCoins(src.amount);
-        b_0.storeBit(src.target);
+        b_0.storeAddress(src.target);
     };
 }
 
@@ -106,6 +131,13 @@ export function loadOperation(slice: Slice) {
     let _seqno = sc_0.loadUintBig(32);
     let _amount = sc_0.loadCoins();
     let _target = sc_0.loadAddress();
+    return { $$type: 'Operation' as const, seqno: _seqno, amount: _amount, target: _target };
+}
+
+function loadTupleOperation(source: TupleReader) {
+    let _seqno = source.readBigNumber();
+    let _amount = source.readBigNumber();
+    let _target = source.readAddress();
     return { $$type: 'Operation' as const, seqno: _seqno, amount: _amount, target: _target };
 }
 
@@ -121,7 +153,7 @@ export function storeExecute(src: Execute) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(819865922, 32);
-        storeOperation(src.operation, b_0);
+        b_0.store(storeOperation(src.operation));
         b_0.storeRef(src.signature1);
         b_0.storeRef(src.signature2);
         b_0.storeRef(src.signature3);
@@ -131,10 +163,18 @@ export function storeExecute(src: Execute) {
 export function loadExecute(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 819865922) { throw Error('Invalid prefix'); }
-    _operation = loadOperation(sc_0);
+    let _operation = loadOperation(sc_0);
     let _signature1 = sc_0.loadRef();
     let _signature2 = sc_0.loadRef();
     let _signature3 = sc_0.loadRef();
+    return { $$type: 'Execute' as const, operation: _operation, signature1: _signature1, signature2: _signature2, signature3: _signature3 };
+}
+
+function loadTupleExecute(source: TupleReader) {
+    const _operation = loadTupleOperation(source.readTuple());
+    let _signature1 = source.readCell();
+    let _signature2 = source.readCell();
+    let _signature3 = source.readCell();
     return { $$type: 'Execute' as const, operation: _operation, signature1: _signature1, signature2: _signature2, signature3: _signature3 };
 }
 
@@ -155,6 +195,11 @@ export function loadExecuted(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 4174937) { throw Error('Invalid prefix'); }
     let _seqno = sc_0.loadUintBig(32);
+    return { $$type: 'Executed' as const, seqno: _seqno };
+}
+
+function loadTupleExecuted(source: TupleReader) {
+    let _seqno = source.readBigNumber();
     return { $$type: 'Executed' as const, seqno: _seqno };
 }
 

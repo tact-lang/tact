@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -85,6 +99,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -94,7 +119,7 @@ export function storeChangeOwner(src: ChangeOwner) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(3067051791, 32);
-        b_0.storeBit(src.newOwner);
+        b_0.storeAddress(src.newOwner);
     };
 }
 
@@ -102,6 +127,11 @@ export function loadChangeOwner(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 3067051791) { throw Error('Invalid prefix'); }
     let _newOwner = sc_0.loadAddress();
+    return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
+function loadTupleChangeOwner(source: TupleReader) {
+    let _newOwner = source.readAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
@@ -126,6 +156,13 @@ export function loadRugParams(slice: Slice) {
     let _investment = sc_0.loadIntBig(257);
     let _returns = sc_0.loadIntBig(257);
     let _fee = sc_0.loadIntBig(257);
+    return { $$type: 'RugParams' as const, investment: _investment, returns: _returns, fee: _fee };
+}
+
+function loadTupleRugParams(source: TupleReader) {
+    let _investment = source.readBigNumber();
+    let _returns = source.readBigNumber();
+    let _fee = source.readBigNumber();
     return { $$type: 'RugParams' as const, investment: _investment, returns: _returns, fee: _fee };
 }
 

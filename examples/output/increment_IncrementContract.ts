@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -82,6 +96,17 @@ export function loadSendParameters(slice: Slice) {
     let _body = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _code = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _data = sc_0.loadBit() ? sc_0.loadRef() : null;
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
@@ -105,6 +130,11 @@ export function loadDeploy(slice: Slice) {
     return { $$type: 'Deploy' as const, queryId: _queryId };
 }
 
+function loadTupleDeploy(source: TupleReader) {
+    let _queryId = source.readBigNumber();
+    return { $$type: 'Deploy' as const, queryId: _queryId };
+}
+
 export type DeployOk = {
     $$type: 'DeployOk';
     queryId: bigint;
@@ -122,6 +152,11 @@ export function loadDeployOk(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 3548362785) { throw Error('Invalid prefix'); }
     let _queryId = sc_0.loadUintBig(64);
+    return { $$type: 'DeployOk' as const, queryId: _queryId };
+}
+
+function loadTupleDeployOk(source: TupleReader) {
+    let _queryId = source.readBigNumber();
     return { $$type: 'DeployOk' as const, queryId: _queryId };
 }
 
@@ -148,6 +183,12 @@ export function loadIncrement(slice: Slice) {
     return { $$type: 'Increment' as const, key: _key, value: _value };
 }
 
+function loadTupleIncrement(source: TupleReader) {
+    let _key = source.readBigNumber();
+    let _value = source.readBigNumber();
+    return { $$type: 'Increment' as const, key: _key, value: _value };
+}
+
 export type Toggle = {
     $$type: 'Toggle';
     key: bigint;
@@ -165,6 +206,11 @@ export function loadToggle(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 575056061) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
+    return { $$type: 'Toggle' as const, key: _key };
+}
+
+function loadTupleToggle(source: TupleReader) {
+    let _key = source.readBigNumber();
     return { $$type: 'Toggle' as const, key: _key };
 }
 
@@ -191,6 +237,12 @@ export function loadPersist(slice: Slice) {
     return { $$type: 'Persist' as const, key: _key, content: _content };
 }
 
+function loadTuplePersist(source: TupleReader) {
+    let _key = source.readBigNumber();
+    let _content = source.readCellOpt();
+    return { $$type: 'Persist' as const, key: _key, content: _content };
+}
+
 export type Reset = {
     $$type: 'Reset';
     key: bigint;
@@ -211,6 +263,11 @@ export function loadReset(slice: Slice) {
     return { $$type: 'Reset' as const, key: _key };
 }
 
+function loadTupleReset(source: TupleReader) {
+    let _key = source.readBigNumber();
+    return { $$type: 'Reset' as const, key: _key };
+}
+
 export type Something = {
     $$type: 'Something';
     value: bigint;
@@ -226,6 +283,11 @@ export function storeSomething(src: Something) {
 export function loadSomething(slice: Slice) {
     let sc_0 = slice;
     let _value = sc_0.loadIntBig(257);
+    return { $$type: 'Something' as const, value: _value };
+}
+
+function loadTupleSomething(source: TupleReader) {
+    let _value = source.readBigNumber();
     return { $$type: 'Something' as const, value: _value };
 }
 

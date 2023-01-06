@@ -1,7 +1,7 @@
 import { Writer } from "../utils/Writer";
 import { getTSFieldType } from "./typescript/getTSFieldType";
 import { ABIArgument, ABIType, ContractABI } from "ton-core";
-import { writeParser, writeSerializer, writeStruct } from "./typescript/writeStruct";
+import { writeParser, writeSerializer, writeStruct, writeTupleParser } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
 import { topologicalSort } from "../utils/utils";
 import { allocate, getAllocationOperationFromField } from "../storage/allocator";
@@ -54,7 +54,7 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             writeStruct(s, w);
             writeSerializer(s, allocations[s.name].root, w);
             writeParser(s, allocations[s.name].root, w);
-            // writeTupleParser(s, w);
+            writeTupleParser(s, w);
             // writeTupleSerializer(s, w);
         }
     }

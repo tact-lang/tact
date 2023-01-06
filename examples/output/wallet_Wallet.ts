@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -85,6 +99,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export type Transfer = {
     $$type: 'Transfer';
     seqno: bigint;
@@ -99,7 +124,7 @@ export function storeTransfer(src: Transfer) {
         let b_0 = builder;
         b_0.storeUint(src.seqno, 32);
         b_0.storeUint(src.mode, 8);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeCoins(src.amount);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
     };
@@ -115,6 +140,15 @@ export function loadTransfer(slice: Slice) {
     return { $$type: 'Transfer' as const, seqno: _seqno, mode: _mode, to: _to, amount: _amount, body: _body };
 }
 
+function loadTupleTransfer(source: TupleReader) {
+    let _seqno = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _to = source.readAddress();
+    let _amount = source.readBigNumber();
+    let _body = source.readCellOpt();
+    return { $$type: 'Transfer' as const, seqno: _seqno, mode: _mode, to: _to, amount: _amount, body: _body };
+}
+
 export type TransferMessage = {
     $$type: 'TransferMessage';
     signature: Cell;
@@ -126,7 +160,7 @@ export function storeTransferMessage(src: TransferMessage) {
         let b_0 = builder;
         b_0.storeUint(123, 32);
         b_0.storeRef(src.signature);
-        storeTransfer(src.transfer, b_0);
+        b_0.store(storeTransfer(src.transfer));
     };
 }
 
@@ -134,7 +168,13 @@ export function loadTransferMessage(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 123) { throw Error('Invalid prefix'); }
     let _signature = sc_0.loadRef();
-    _transfer = loadTransfer(sc_0);
+    let _transfer = loadTransfer(sc_0);
+    return { $$type: 'TransferMessage' as const, signature: _signature, transfer: _transfer };
+}
+
+function loadTupleTransferMessage(source: TupleReader) {
+    let _signature = source.readCell();
+    const _transfer = loadTupleTransfer(source.readTuple());
     return { $$type: 'TransferMessage' as const, signature: _signature, transfer: _transfer };
 }
 

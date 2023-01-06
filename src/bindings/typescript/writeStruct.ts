@@ -65,9 +65,9 @@ function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
             throw Error('Unsupported ' + type.type + ' format: ' + type.format);
         }
         if (type.optional) {
-            w.append(`${name} = sc_${gen}.loadBit() ? load${type.type}(sc_${gen}) : null;`);
+            w.append(`let ${name} = sc_${gen}.loadBit() ? load${type.type}(sc_${gen}) : null;`);
         } else {
-            w.append(`${name} = load${type.type}(sc_${gen});`);
+            w.append(`let ${name} = load${type.type}(sc_${gen});`);
         }
         return;
     }
@@ -81,7 +81,7 @@ function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
         if (type.format !== null && type.format !== undefined) {
             throw Error('Unsupported map format: ' + type.format);
         }
-        w.append(`${name} = sc_${gen}.loadMaybeCell();`);
+        w.append(`let ${name} = sc_${gen}.loadMaybeCell();`);
         return;
     }
 
@@ -143,7 +143,7 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
         if (type.optional) {
             w.append(`if (${name} !== null) { b_${gen}.storeBit(true); store${type.type}(${name}, b_${gen}); } else { b_${gen}.storeBit(false); }`);
         } else {
-            w.append(`store${type.type}(${name}, b_${gen});`);
+            w.append(`b_${gen}.store(store${type.type}(${name}));`);
         }
         return;
     }
@@ -167,73 +167,63 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
     throw Error('Unsupported field type');
 }
 
-// export function writeTupleParser(s: ContractStruct, w: Writer) {
-//     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
-//     w.inIndent(() => {
-//         for (let f of s.fields) {
-//             writeTupleFieldParser(f, s, w);
-//         }
-//         w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
-//     });
-//     w.append(`}`);
-//     w.append();
-// }
+export function writeTupleParser(s: ABIType, w: Writer) {
+    w.append(`function loadTuple${s.name}(source: TupleReader) {`);
+    w.inIndent(() => {
+        for (let f of s.fields) {
+            writeTupleFieldParser(f, s, w);
+        }
+        w.append(`return { ${[`$$type: '${s.name}' as const`, ...s.fields.map((v) => v.name + ': _' + v.name)].join(', ')} };`);
+    });
+    w.append(`}`);
+    w.append();
+}
 
-// function writeTupleFieldParser(f: ContractField, s: ContractStruct, w: Writer) {
-//     let name = `_${f.name}`;
-//     if (f.type.kind === 'ref') {
-//         if (f.type.name === 'Int') {
-//             if (f.type.optional) {
-//                 w.append(`const ${name} = source.readBigNumberOpt();`);
-//             } else {
-//                 w.append(`const ${name} = source.readBigNumber();`);
-//             }
-//             return;
-//         } else if (f.type.name === 'Bool') {
-//             if (f.type.optional) {
-//                 w.append(`const ${name} = source.readBooleanOpt();`);
-//             } else {
-//                 w.append(`const ${name} = source.readBoolean();`);
-//             }
-//             return;
-//         } else if (f.type.name === 'Address') {
-//             if (f.type.optional) {
-//                 w.append(`const ${name} = source.readAddressOpt();`);
-//             } else {
-//                 w.append(`const ${name} = source.readAddress();`);
-//             }
-//             return;
-//         } else if (f.type.name === 'Cell' || f.type.name === 'Slice' || f.type.name === 'Builder') {
-//             if (f.type.optional) {
-//                 w.append(`const ${name} = source.readCellOpt();`);
-//             } else {
-//                 w.append(`const ${name} = source.readCell();`);
-//             }
-//             return;
-//         } else if (f.type.name === 'String') {
-//             if (f.type.optional) {
-//                 w.append(`const ${name} = source.readCell().beginParse().loadStringTail();`);
-//             } else {
-//                 w.append(`const ${name} = source.readCell().beginParse().loadStringTail();`);
-//             }
-//         } else {
-//             if (f.type.optional) {
-//                 w.append(`const ${name}_p = source.readTupleOpt();`);
-//                 w.append(`const ${name} = ${name}_p ? loadTuple${f.type.name}(${name}_p) : null;`);
-//             } else {
-//                 w.append(`const ${name} = loadTuple${f.type.name}(source.readTuple());`);
-//             }
-//             return;
-//         }
-//     }
+function writeTupleFieldParser(f: ABIField, s: ABIType, w: Writer) {
+    let name = `_${f.name}`;
+    let type = f.type;
 
-//     if (f.type.kind === 'map') {
-//         w.append(`const ${name} = slice.readCellOpt();`);
-//         return;
-//     }
+    //
+    // Default Serializers
+    //
 
-//     throw Error('Unsupported type');
-// }
+    for (let s of serializers) {
+        let v = s.abiMatcher(type);
+        if (v) {
+            s.tsLoadTuple(v, `source`, name, w);
+            return;
+        }
+    }
+
+    //
+    // Struct serializer
+    //
+
+    if (type.kind === 'simple') {
+        if (type.format !== null && type.format !== undefined) {
+            throw Error('Unsupported struct format: ' + type.format);
+        }
+        if (type.optional) {
+            w.append(`const ${name}_p = source.readTupleOpt();`);
+            w.append(`const ${name} = ${name}_p ? loadTuple${type.type}(${name}_p) : null;`);
+        } else {
+            w.append(`const ${name} = loadTuple${type.type}(source.readTuple());`);
+        }
+        return;
+    }
+
+    //
+    // Dict Serializer
+    //
+
+
+    if (f.type.kind === 'map') {
+        w.append(`const ${name} = slice.readCellOpt();`);
+        return;
+    }
+
+    throw Error('Unsupported type');
+}
 
 // export function writeTupleSerializer(s: ABIType, w: Writer) {
 //     w.append(`function storeTuple${s.name}(source: ${s.name}) {`);

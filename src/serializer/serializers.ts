@@ -4,6 +4,7 @@ import { Writer } from "../utils/Writer";
 export type Serializer<T> = {
     tsType: (v: T) => string,
     tsLoad: (v: T, slice: string, field: string, w: Writer) => void,
+    tsLoadTuple: (v: T, reader: string, field: string, w: Writer) => void,
     tsStore: (v: T, builder: string, field: string, w: Writer) => void,
     abiMatcher: (src: ABITypeRef) => T | null,
     size: (v: T) => { bits: number, refs: number } | 'terminal'
@@ -22,6 +23,13 @@ let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadBit() ? ${slice}.loadIntBig(${v.bits}) : null;`);
         } else {
             w.append(`let ${field} = ${slice}.loadIntBig(${v.bits});`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readBigNumber();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -63,6 +71,13 @@ let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadUintBig(${v.bits});`);
         }
     },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readBigNumber();`);
+        }
+    },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(`if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeUint(${field}, ${v.bits}); } else { ${builder}.storeBit(false); }`);
@@ -102,6 +117,13 @@ let coinsSerializer: Serializer<{ optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadCoins();`);
         }
     },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readBigNumber();`);
+        }
+    },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(`if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeCoins(${field}); } else { ${builder}.storeBit(false); }`);
@@ -137,6 +159,13 @@ let boolSerializer: Serializer<{ optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadBit() ? ${slice}.loadBit() : null;`);
         } else {
             w.append(`let ${field} = ${slice}.loadBit();`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readBooleanOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readBoolean();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -176,11 +205,18 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadAddress();`);
         }
     },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readAddressOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readAddress();`);
+        }
+    },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(`if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeAddress(${field}); } else { ${builder}.storeBit(false); }`);
         } else {
-            w.append(`${builder}.storeBit(${field});`);
+            w.append(`${builder}.storeAddress(${field});`);
         }
     },
     abiMatcher(src) {
@@ -213,6 +249,13 @@ let cellSerializer: Serializer<{ optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadRef();`);
         }
     },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readCellOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readCell();`);
+        }
+    },
     tsStore(v, builder, field, w) {
         if (v.optional) {
             w.append(`if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeRef(${field}); } else { ${builder}.storeBit(false); }`);
@@ -242,8 +285,11 @@ let remainderSerializer: Serializer<{}> = {
     tsLoad(v, slice, field, w) {
         w.append(`let ${field} = ${slice}.asCell();`);
     },
+    tsLoadTuple(v, reader, field, w) {
+        w.append(`let ${field} = ${reader}.readCell();`);
+    },
     tsStore(v, builder, field, w) {
-        w.append(`let ${builder}.storeBuilder(${field}.asBuilder());`);
+        w.append(`${builder}.storeBuilder(${field}.asBuilder());`);
     },
     abiMatcher(src) {
         if (src.kind === 'simple') {
@@ -273,6 +319,13 @@ let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadBit() ? ${slice}.loadBuffer(${v.bytes}) : null;`);
         } else {
             w.append(`let ${field} = ${slice}.loadBuffer(${v.bytes});`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readBufferOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readBuffer();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -310,6 +363,13 @@ let stringSerializer: Serializer<{ optional: boolean }> = {
             w.append(`let ${field} = ${slice}.loadBit() ? ${slice}.loadStringRefTail() : null;`);
         } else {
             w.append(`let ${field} = ${slice}.loadStringRefTail();`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readStringOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readString();`);
         }
     },
     tsStore(v, builder, field, w) {

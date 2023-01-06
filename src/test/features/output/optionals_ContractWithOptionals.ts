@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -82,6 +96,17 @@ export function loadSendParameters(slice: Slice) {
     let _body = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _code = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _data = sc_0.loadBit() ? sc_0.loadRef() : null;
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
@@ -118,6 +143,15 @@ export function loadSomeGenericStruct(slice: Slice) {
     return { $$type: 'SomeGenericStruct' as const, value1: _value1, value2: _value2, value3: _value3, value4: _value4, value5: _value5 };
 }
 
+function loadTupleSomeGenericStruct(source: TupleReader) {
+    let _value1 = source.readBigNumber();
+    let _value2 = source.readBigNumber();
+    let _value3 = source.readBigNumber();
+    let _value4 = source.readBigNumber();
+    let _value5 = source.readBigNumber();
+    return { $$type: 'SomeGenericStruct' as const, value1: _value1, value2: _value2, value3: _value3, value4: _value4, value5: _value5 };
+}
+
 export type StructWithOptionals = {
     $$type: 'StructWithOptionals';
     a: bigint | null;
@@ -147,7 +181,17 @@ export function loadStructWithOptionals(slice: Slice) {
     let _c = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _d = sc_0.loadBit() ? sc_0.loadAddress() : null;
     let sc_1 = sc_0.loadRef().beginParse();
-    _e = sc_1.loadBit() ? loadSomeGenericStruct(sc_1) : null;
+    let _e = sc_1.loadBit() ? loadSomeGenericStruct(sc_1) : null;
+    return { $$type: 'StructWithOptionals' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
+}
+
+function loadTupleStructWithOptionals(source: TupleReader) {
+    let _a = source.readBigNumberOpt();
+    let _b = source.readBooleanOpt();
+    let _c = source.readCellOpt();
+    let _d = source.readAddressOpt();
+    const _e_p = source.readTupleOpt();
+    const _e = _e_p ? loadTupleSomeGenericStruct(_e_p) : null;
     return { $$type: 'StructWithOptionals' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
 }
 
@@ -186,9 +230,21 @@ export function loadUpdate(slice: Slice) {
     let _c = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _d = sc_0.loadBit() ? sc_0.loadAddress() : null;
     let sc_1 = sc_0.loadRef().beginParse();
-    _e = sc_1.loadBit() ? loadSomeGenericStruct(sc_1) : null;
+    let _e = sc_1.loadBit() ? loadSomeGenericStruct(sc_1) : null;
     let sc_2 = sc_1.loadRef().beginParse();
-    _f = sc_2.loadBit() ? loadStructWithOptionals(sc_2) : null;
+    let _f = sc_2.loadBit() ? loadStructWithOptionals(sc_2) : null;
+    return { $$type: 'Update' as const, a: _a, b: _b, c: _c, d: _d, e: _e, f: _f };
+}
+
+function loadTupleUpdate(source: TupleReader) {
+    let _a = source.readBigNumberOpt();
+    let _b = source.readBooleanOpt();
+    let _c = source.readCellOpt();
+    let _d = source.readAddressOpt();
+    const _e_p = source.readTupleOpt();
+    const _e = _e_p ? loadTupleSomeGenericStruct(_e_p) : null;
+    const _f_p = source.readTupleOpt();
+    const _f = _f_p ? loadTupleStructWithOptionals(_f_p) : null;
     return { $$type: 'Update' as const, a: _a, b: _b, c: _c, d: _d, e: _e, f: _f };
 }
 

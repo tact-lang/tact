@@ -22,6 +22,12 @@ export function loadStateInit(slice: Slice) {
     return { $$type: 'StateInit' as const, code: _code, data: _data };
 }
 
+function loadTupleStateInit(source: TupleReader) {
+    let _code = source.readCell();
+    let _data = source.readCell();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -34,7 +40,7 @@ export function storeContext(src: Context) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounced);
-        b_0.storeBit(src.sender);
+        b_0.storeAddress(src.sender);
         b_0.storeInt(src.value, 257);
         b_0.storeRef(src.raw);
     };
@@ -46,6 +52,14 @@ export function loadContext(slice: Slice) {
     let _sender = sc_0.loadAddress();
     let _value = sc_0.loadIntBig(257);
     let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function loadTupleContext(source: TupleReader) {
+    let _bounced = source.readBoolean();
+    let _sender = source.readAddress();
+    let _value = source.readBigNumber();
+    let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
 }
 
@@ -64,7 +78,7 @@ export function storeSendParameters(src: SendParameters) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeBit(src.bounce);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.to);
         b_0.storeInt(src.value, 257);
         b_0.storeInt(src.mode, 257);
         if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
@@ -85,6 +99,17 @@ export function loadSendParameters(slice: Slice) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function loadTupleSendParameters(source: TupleReader) {
+    let _bounce = source.readBoolean();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    let _code = source.readCellOpt();
+    let _data = source.readCellOpt();
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
 export type Request = {
     $$type: 'Request';
     requested: Address;
@@ -100,8 +125,8 @@ export function storeRequest(src: Request) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(4096439811, 32);
-        b_0.storeBit(src.requested);
-        b_0.storeBit(src.to);
+        b_0.storeAddress(src.requested);
+        b_0.storeAddress(src.to);
         b_0.storeCoins(src.value);
         b_0.storeUint(src.timeout, 32);
         b_0.storeBit(src.bounce);
@@ -123,6 +148,17 @@ export function loadRequest(slice: Slice) {
     return { $$type: 'Request' as const, requested: _requested, to: _to, value: _value, timeout: _timeout, bounce: _bounce, mode: _mode, body: _body };
 }
 
+function loadTupleRequest(source: TupleReader) {
+    let _requested = source.readAddress();
+    let _to = source.readAddress();
+    let _value = source.readBigNumber();
+    let _timeout = source.readBigNumber();
+    let _bounce = source.readBoolean();
+    let _mode = source.readBigNumber();
+    let _body = source.readCellOpt();
+    return { $$type: 'Request' as const, requested: _requested, to: _to, value: _value, timeout: _timeout, bounce: _bounce, mode: _mode, body: _body };
+}
+
 export type Signed = {
     $$type: 'Signed';
     request: Request;
@@ -132,14 +168,19 @@ export function storeSigned(src: Signed) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeUint(420994549, 32);
-        storeRequest(src.request, b_0);
+        b_0.store(storeRequest(src.request));
     };
 }
 
 export function loadSigned(slice: Slice) {
     let sc_0 = slice;
     if (sc_0.loadUint(32) !== 420994549) { throw Error('Invalid prefix'); }
-    _request = loadRequest(sc_0);
+    let _request = loadRequest(sc_0);
+    return { $$type: 'Signed' as const, request: _request };
+}
+
+function loadTupleSigned(source: TupleReader) {
+    const _request = loadTupleRequest(source.readTuple());
     return { $$type: 'Signed' as const, request: _request };
 }
 
