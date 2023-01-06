@@ -123,7 +123,7 @@ cell __tact_string_builder_end(tuple builders) {
 builder __gen_write_CanPayout(builder build_0, (int) v) inline {
     var (v'amount) = v;
     build_0 = store_uint(build_0, 1050587494, 32);
-    build_0 = store_int(build_0, v'amount, 257);
+    build_0 = build_0.store_int(v'amount, 257);
     return build_0;
 }
 
@@ -143,14 +143,14 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     var (v'master, v'owner, v'completed) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = store_int(build_0, v'completed, 1);
+    build_0 = build_0.store_int(v'completed, 1);
     return build_0;
 }
 
 builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
     var (v'owner, v'publicKey) = v;
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = store_int(build_0, v'publicKey, 257);
+    build_0 = build_0.store_int(v'publicKey, 257);
     return build_0;
 }
 
@@ -432,5 +432,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmZskyfGY5c6bYD5wgcuzKjj72zJrj3EvtCqruaCAcqbZq";
+    return "ipfs://QmTtYvjv9jC1ocgo4RUj4rJyqc8aimKT1Zty4WXaiyBtXg";
 }

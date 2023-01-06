@@ -77,15 +77,16 @@ SETCP0
       32 LDU
       1 LDI
       8 LDU
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       7 1 BLKSWAP
       s7 POP
       s7 s12 XCHG
@@ -131,16 +132,17 @@ SETCP0
       8 STU
       s1 PUSH
       ISNULL
-      <{
-        0 PUSHINT
-        s2 POP
-        1 STI
-      }> PUSHCONT
+      NOT
       <{
         -1 PUSHINT
         s0 s1 XCHG
         1 STI
         STREF
+      }> PUSHCONT
+      <{
+        0 PUSHINT
+        s2 POP
+        1 STI
       }> PUSHCONT
       IFELSE
       ENDC
@@ -190,15 +192,16 @@ SETCP0
         32 LDU
         1 LDI
         8 LDU
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         7 1 BLKSWAP
         s7 POP
         s7 s12 XCHG
@@ -244,16 +247,17 @@ SETCP0
         8 STU
         s1 PUSH
         ISNULL
-        <{
-          0 PUSHINT
-          s2 POP
-          1 STI
-        }> PUSHCONT
+        NOT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
           STREF
+        }> PUSHCONT
+        <{
+          0 PUSHINT
+          s2 POP
+          1 STI
         }> PUSHCONT
         IFELSE
         ENDC
@@ -485,16 +489,17 @@ SETCP0
       8 STU
       s1 PUSH
       ISNULL
-      <{
-        0 PUSHINT
-        s2 POP
-        1 STI
-      }> PUSHCONT
+      NOT
       <{
         -1 PUSHINT
         s0 s1 XCHG
         1 STI
         STREF
+      }> PUSHCONT
+      <{
+        0 PUSHINT
+        s2 POP
+        1 STI
       }> PUSHCONT
       IFELSE
       ENDC
@@ -540,15 +545,16 @@ SETCP0
     32 LDU
     1 LDI
     8 LDU
-    PUSHNULL
-    s0 s1 XCHG
     1 LDI
     s0 s1 XCHG
     <{
-      s1 POP
       LDREF
     }> PUSHCONT
-    IF
+    <{
+      PUSHNULL
+      s0 s1 XCHG
+    }> PUSHCONT
+    IFELSE
     7 1 BLKSWAP
     s7 POP
     s7 s12 XCHG

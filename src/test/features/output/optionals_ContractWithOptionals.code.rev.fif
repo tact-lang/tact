@@ -50,34 +50,37 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -94,12 +97,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -118,49 +118,53 @@ SETCP0
           s2 s4 XCHG
           s2 s3 XCHG
           5 TUPLE
-          s0 s1 XCHG
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+        }> PUSHCONT
+        IFELSE
+        s0 s1 XCHG
         LDREF
         s0 POP
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         <{
-          s1 POP
-          PUSHNULL
-          s0 s1 XCHG
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             257 PUSHINT
             LDI
           }> PUSHCONT
-          IF
-          PUSHNULL
-          s0 s1 XCHG
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             1 LDI
           }> PUSHCONT
-          IF
-          PUSHNULL
-          s0 s1 XCHG
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             LDREF
           }> PUSHCONT
-          IF
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           LDMSGADDR
           s1 PUSH
           2 PLDU
@@ -177,12 +181,9 @@ SETCP0
           LDREF
           s0 s1 XCHG
           CTOS
-          PUSHNULL
-          s0 s1 XCHG
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             257 PUSHINT
             LDI
             257 PUSHINT
@@ -205,6 +206,7 @@ SETCP0
           }> PUSHCONT
           <{
             s0 POP
+            PUSHNULL
           }> PUSHCONT
           IFELSE
           s1 s5 XCHG
@@ -220,58 +222,183 @@ SETCP0
         1 6 BLKDROP2
       }> CALLREF
       46 CALLDICT
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      6 1 BLKSWAP
+      s5 PUSH
+      ISNULL
+      NOT
       <{
+        -1 PUSHINT
+        s0 s7 XCHG2
+        1 STI
+        s1 s5 XCHG
+        257 PUSHINT
+        STIX
+      }> PUSHCONT
+      <{
+        s5 POP
+        0 PUSHINT
+        s0 s6 XCHG2
+        1 STI
+        s4 s5 XCHG
+      }> PUSHCONT
+      IFELSE
+      s3 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s1 s3 XCHG
+        1 STI
+      }> PUSHCONT
+      <{
+        s3 POP
+        0 PUSHINT
+        s0 s3 XCHG2
+        1 STI
+      }> PUSHCONT
+      IFELSE
+      s1 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        STREF
+      }> PUSHCONT
+      <{
+        0 PUSHINT
+        s2 POP
+        1 STI
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
+      s0 PUSH
+      ISNULL
+      <{
+        s0 POP
+        0 PUSHINT
+        s0 s1 XCHG
+        2 STU
+      }> PUSHCONT
+      <{
+        STSLICER
+      }> PUSHCONT
+      IFELSE
+      NEWC
+      s2 PUSH
+      ISNULL
+      NOT
+      <{
+        s2 POP
+        0 PUSHINT
+        ROT
+        1 STI
+      }> PUSHCONT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s0 s2 XCHG
+        s0 PUSH
+        ISNULL
+        128 THROWIF
+        5 UNTUPLE
+        s5 s6 XCHG
+        s4 s5 XCHG2
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
         NEWC
-        2 GETGLOBVAR
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
         s0 s1 XCHG
         STREF
-        6 1 BLKSWAP
-        s5 PUSH
+      }> IFREFELSE
+      NEWC
+      s3 PUSH
+      ISNULL
+      NOT
+      <{
+        s3 POP
+        0 PUSHINT
+        s0 s3 XCHG2
+        1 STI
+      }> PUSHCONT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s0 s3 XCHG
+        s0 PUSH
         ISNULL
-        <{
-          s5 POP
-          0 PUSHINT
-          s0 s6 XCHG2
-          1 STI
-        }> PUSHCONT
+        128 THROWIF
+        5 UNTUPLE
+        s5 s7 XCHG
+        s4 PUSH
+        ISNULL
+        NOT
         <{
           -1 PUSHINT
-          s0 s7 XCHG2
+          s0 s6 XCHG2
           1 STI
-          s1 s5 XCHG
+          s1 s4 XCHG
           257 PUSHINT
           STIX
-          s4 s5 XCHG
+        }> PUSHCONT
+        <{
+          s4 POP
+          0 PUSHINT
+          s0 s5 XCHG2
+          1 STI
+          s3 s4 XCHG
         }> PUSHCONT
         IFELSE
-        s3 PUSH
+        s2 PUSH
         ISNULL
-        <{
-          s3 POP
-          0 PUSHINT
-          s0 s3 XCHG2
-          1 STI
-        }> PUSHCONT
+        NOT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
-          s1 s3 XCHG
+          s1 s2 XCHG
+          1 STI
+        }> PUSHCONT
+        <{
+          s2 POP
+          0 PUSHINT
+          ROT
           1 STI
         }> PUSHCONT
         IFELSE
         s1 PUSH
         ISNULL
-        <{
-          0 PUSHINT
-          s2 POP
-          1 STI
-        }> PUSHCONT
+        NOT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
           STREF
+        }> PUSHCONT
+        <{
+          0 PUSHINT
+          s2 POP
+          1 STI
         }> PUSHCONT
         IFELSE
         s0 s1 XCHG
@@ -288,24 +415,25 @@ SETCP0
         }> PUSHCONT
         IFELSE
         NEWC
-        s3 PUSH
+        s2 PUSH
         ISNULL
+        NOT
         <{
-          s3 POP
+          s2 POP
           0 PUSHINT
-          s0 s3 XCHG2
+          ROT
           1 STI
         }> PUSHCONT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
-          s0 s3 XCHG
+          s0 s2 XCHG
           s0 PUSH
           ISNULL
           128 THROWIF
           5 UNTUPLE
-          s5 s7 XCHG
+          s5 s6 XCHG
           s4 s5 XCHG2
           257 PUSHINT
           STIX
@@ -324,143 +452,20 @@ SETCP0
           ENDC
           s0 s1 XCHG
           STREF
-        }> IFELSEREF
-        NEWC
-        s2 PUSH
-        ISNULL
-        <{
-          s2 POP
-          0 PUSHINT
-          ROT
-          1 STI
-        }> PUSHCONT
-        <{
-          -1 PUSHINT
-          s0 s1 XCHG
-          1 STI
-          s0 s2 XCHG
-          s0 PUSH
-          ISNULL
-          128 THROWIF
-          5 UNTUPLE
-          s5 s6 XCHG
-          <{
-            s4 PUSH
-            ISNULL
-            <{
-              s4 POP
-              0 PUSHINT
-              s0 s5 XCHG2
-              1 STI
-            }> PUSHCONT
-            <{
-              -1 PUSHINT
-              s0 s6 XCHG2
-              1 STI
-              s1 s4 XCHG
-              257 PUSHINT
-              STIX
-              s3 s4 XCHG
-            }> PUSHCONT
-            IFELSE
-            s2 PUSH
-            ISNULL
-            <{
-              s2 POP
-              0 PUSHINT
-              ROT
-              1 STI
-            }> PUSHCONT
-            <{
-              -1 PUSHINT
-              s0 s1 XCHG
-              1 STI
-              s1 s2 XCHG
-              1 STI
-            }> PUSHCONT
-            IFELSE
-            s1 PUSH
-            ISNULL
-            <{
-              0 PUSHINT
-              s2 POP
-              1 STI
-            }> PUSHCONT
-            <{
-              -1 PUSHINT
-              s0 s1 XCHG
-              1 STI
-              STREF
-            }> PUSHCONT
-            IFELSE
-            ROT
-            s0 PUSH
-            ISNULL
-            <{
-              s0 POP
-              0 PUSHINT
-              s0 s1 XCHG
-              2 STU
-            }> PUSHCONT
-            <{
-              STSLICER
-            }> PUSHCONT
-            IFELSE
-            NEWC
-            s2 PUSH
-            ISNULL
-            <{
-              -1 PUSHINT
-              s0 s1 XCHG
-              1 STI
-              s0 s2 XCHG
-              s0 PUSH
-              ISNULL
-              128 THROWIF
-              5 UNTUPLE
-              s5 s6 XCHG
-              s4 s5 XCHG2
-              257 PUSHINT
-              STIX
-              s1 s2 XCHG
-              257 PUSHINT
-              STIX
-              257 PUSHINT
-              STIX
-              s0 s1 XCHG
-              NEWC
-              257 PUSHINT
-              STIX
-              s1 s2 XCHG
-              257 PUSHINT
-              STIX
-              ENDC
-              s0 s1 XCHG
-              STREF
-            }> PUSHCONT
-            <{
-              s2 POP
-              0 PUSHINT
-              ROT
-              1 STI
-            }> IFREFELSE
-            ENDC
-            s0 s1 XCHG
-            STREF
-          }> CALLREF
-        }> PUSHCONT
-        IFELSE
+        }> IFREFELSE
         ENDC
         s0 s1 XCHG
         STREF
-        ENDC
-        s0 s1 XCHG
-        STREF
-        ENDC
-        c4 POP
-      }> CALLREF
-    }> PUSHCONT
-    IFJMP
+      }> IFREFELSE
+      ENDC
+      ROT
+      STREF
+      ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
+      c4 POP
+    }> IFJMPREF
     2676568142 PUSHINT
     EQUAL
     <{
@@ -470,34 +475,37 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -514,12 +522,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -538,49 +543,53 @@ SETCP0
           s2 s4 XCHG
           s2 s3 XCHG
           5 TUPLE
-          s0 s1 XCHG
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+        }> PUSHCONT
+        IFELSE
+        s0 s1 XCHG
         LDREF
         s0 POP
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         <{
-          s1 POP
-          PUSHNULL
-          s0 s1 XCHG
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             257 PUSHINT
             LDI
           }> PUSHCONT
-          IF
-          PUSHNULL
-          s0 s1 XCHG
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             1 LDI
           }> PUSHCONT
-          IF
-          PUSHNULL
-          s0 s1 XCHG
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             LDREF
           }> PUSHCONT
-          IF
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           LDMSGADDR
           s1 PUSH
           2 PLDU
@@ -597,12 +606,9 @@ SETCP0
           LDREF
           s0 s1 XCHG
           CTOS
-          PUSHNULL
-          s0 s1 XCHG
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             257 PUSHINT
             LDI
             257 PUSHINT
@@ -625,6 +631,7 @@ SETCP0
           }> PUSHCONT
           <{
             s0 POP
+            PUSHNULL
           }> PUSHCONT
           IFELSE
           s1 s5 XCHG
@@ -646,34 +653,37 @@ SETCP0
         2676568142 PUSHINT
         EQUAL
         129 THROWIFNOT
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -690,12 +700,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -714,49 +721,53 @@ SETCP0
           s2 s4 XCHG
           s2 s3 XCHG
           5 TUPLE
-          s0 s1 XCHG
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+        }> PUSHCONT
+        IFELSE
+        s0 s1 XCHG
         LDREF
         s0 POP
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         <{
-          s1 POP
-          PUSHNULL
-          s0 s1 XCHG
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             257 PUSHINT
             LDI
           }> PUSHCONT
-          IF
-          PUSHNULL
-          s0 s1 XCHG
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             1 LDI
           }> PUSHCONT
-          IF
-          PUSHNULL
-          s0 s1 XCHG
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             LDREF
           }> PUSHCONT
-          IF
+          <{
+            PUSHNULL
+            s0 s1 XCHG
+          }> PUSHCONT
+          IFELSE
           LDMSGADDR
           s1 PUSH
           2 PLDU
@@ -773,12 +784,9 @@ SETCP0
           LDREF
           s0 s1 XCHG
           CTOS
-          PUSHNULL
-          s0 s1 XCHG
           1 LDI
           s0 s1 XCHG
           <{
-            s1 POP
             257 PUSHINT
             LDI
             257 PUSHINT
@@ -801,6 +809,7 @@ SETCP0
           }> PUSHCONT
           <{
             s0 POP
+            PUSHNULL
           }> PUSHCONT
           IFELSE
           s1 s5 XCHG
@@ -822,58 +831,183 @@ SETCP0
       s6 s7 XCHG
       1 5 BLKSWAP
       47 CALLDICT
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      6 1 BLKSWAP
+      s5 PUSH
+      ISNULL
+      NOT
       <{
+        -1 PUSHINT
+        s0 s7 XCHG2
+        1 STI
+        s1 s5 XCHG
+        257 PUSHINT
+        STIX
+      }> PUSHCONT
+      <{
+        s5 POP
+        0 PUSHINT
+        s0 s6 XCHG2
+        1 STI
+        s4 s5 XCHG
+      }> PUSHCONT
+      IFELSE
+      s3 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s1 s3 XCHG
+        1 STI
+      }> PUSHCONT
+      <{
+        s3 POP
+        0 PUSHINT
+        s0 s3 XCHG2
+        1 STI
+      }> PUSHCONT
+      IFELSE
+      s1 PUSH
+      ISNULL
+      NOT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        STREF
+      }> PUSHCONT
+      <{
+        0 PUSHINT
+        s2 POP
+        1 STI
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
+      s0 PUSH
+      ISNULL
+      <{
+        s0 POP
+        0 PUSHINT
+        s0 s1 XCHG
+        2 STU
+      }> PUSHCONT
+      <{
+        STSLICER
+      }> PUSHCONT
+      IFELSE
+      NEWC
+      s2 PUSH
+      ISNULL
+      NOT
+      <{
+        s2 POP
+        0 PUSHINT
+        ROT
+        1 STI
+      }> PUSHCONT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s0 s2 XCHG
+        s0 PUSH
+        ISNULL
+        128 THROWIF
+        5 UNTUPLE
+        s5 s6 XCHG
+        s4 s5 XCHG2
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
         NEWC
-        2 GETGLOBVAR
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
         s0 s1 XCHG
         STREF
-        6 1 BLKSWAP
-        s5 PUSH
+      }> IFREFELSE
+      NEWC
+      s3 PUSH
+      ISNULL
+      NOT
+      <{
+        s3 POP
+        0 PUSHINT
+        s0 s3 XCHG2
+        1 STI
+      }> PUSHCONT
+      <{
+        -1 PUSHINT
+        s0 s1 XCHG
+        1 STI
+        s0 s3 XCHG
+        s0 PUSH
         ISNULL
-        <{
-          s5 POP
-          0 PUSHINT
-          s0 s6 XCHG2
-          1 STI
-        }> PUSHCONT
+        128 THROWIF
+        5 UNTUPLE
+        s5 s7 XCHG
+        s4 PUSH
+        ISNULL
+        NOT
         <{
           -1 PUSHINT
-          s0 s7 XCHG2
+          s0 s6 XCHG2
           1 STI
-          s1 s5 XCHG
+          s1 s4 XCHG
           257 PUSHINT
           STIX
-          s4 s5 XCHG
+        }> PUSHCONT
+        <{
+          s4 POP
+          0 PUSHINT
+          s0 s5 XCHG2
+          1 STI
+          s3 s4 XCHG
         }> PUSHCONT
         IFELSE
-        s3 PUSH
+        s2 PUSH
         ISNULL
-        <{
-          s3 POP
-          0 PUSHINT
-          s0 s3 XCHG2
-          1 STI
-        }> PUSHCONT
+        NOT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
-          s1 s3 XCHG
+          s1 s2 XCHG
+          1 STI
+        }> PUSHCONT
+        <{
+          s2 POP
+          0 PUSHINT
+          ROT
           1 STI
         }> PUSHCONT
         IFELSE
         s1 PUSH
         ISNULL
-        <{
-          0 PUSHINT
-          s2 POP
-          1 STI
-        }> PUSHCONT
+        NOT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
           STREF
+        }> PUSHCONT
+        <{
+          0 PUSHINT
+          s2 POP
+          1 STI
         }> PUSHCONT
         IFELSE
         s0 s1 XCHG
@@ -890,24 +1024,25 @@ SETCP0
         }> PUSHCONT
         IFELSE
         NEWC
-        s3 PUSH
+        s2 PUSH
         ISNULL
+        NOT
         <{
-          s3 POP
+          s2 POP
           0 PUSHINT
-          s0 s3 XCHG2
+          ROT
           1 STI
         }> PUSHCONT
         <{
           -1 PUSHINT
           s0 s1 XCHG
           1 STI
-          s0 s3 XCHG
+          s0 s2 XCHG
           s0 PUSH
           ISNULL
           128 THROWIF
           5 UNTUPLE
-          s5 s7 XCHG
+          s5 s6 XCHG
           s4 s5 XCHG2
           257 PUSHINT
           STIX
@@ -926,141 +1061,19 @@ SETCP0
           ENDC
           s0 s1 XCHG
           STREF
-        }> IFELSEREF
-        NEWC
-        s2 PUSH
-        ISNULL
-        <{
-          s2 POP
-          0 PUSHINT
-          ROT
-          1 STI
-        }> PUSHCONT
-        <{
-          -1 PUSHINT
-          s0 s1 XCHG
-          1 STI
-          s0 s2 XCHG
-          s0 PUSH
-          ISNULL
-          128 THROWIF
-          5 UNTUPLE
-          s5 s6 XCHG
-          <{
-            s4 PUSH
-            ISNULL
-            <{
-              s4 POP
-              0 PUSHINT
-              s0 s5 XCHG2
-              1 STI
-            }> PUSHCONT
-            <{
-              -1 PUSHINT
-              s0 s6 XCHG2
-              1 STI
-              s1 s4 XCHG
-              257 PUSHINT
-              STIX
-              s3 s4 XCHG
-            }> PUSHCONT
-            IFELSE
-            s2 PUSH
-            ISNULL
-            <{
-              s2 POP
-              0 PUSHINT
-              ROT
-              1 STI
-            }> PUSHCONT
-            <{
-              -1 PUSHINT
-              s0 s1 XCHG
-              1 STI
-              s1 s2 XCHG
-              1 STI
-            }> PUSHCONT
-            IFELSE
-            s1 PUSH
-            ISNULL
-            <{
-              0 PUSHINT
-              s2 POP
-              1 STI
-            }> PUSHCONT
-            <{
-              -1 PUSHINT
-              s0 s1 XCHG
-              1 STI
-              STREF
-            }> PUSHCONT
-            IFELSE
-            ROT
-            s0 PUSH
-            ISNULL
-            <{
-              s0 POP
-              0 PUSHINT
-              s0 s1 XCHG
-              2 STU
-            }> PUSHCONT
-            <{
-              STSLICER
-            }> PUSHCONT
-            IFELSE
-            NEWC
-            s2 PUSH
-            ISNULL
-            <{
-              -1 PUSHINT
-              s0 s1 XCHG
-              1 STI
-              s0 s2 XCHG
-              s0 PUSH
-              ISNULL
-              128 THROWIF
-              5 UNTUPLE
-              s5 s6 XCHG
-              s4 s5 XCHG2
-              257 PUSHINT
-              STIX
-              s1 s2 XCHG
-              257 PUSHINT
-              STIX
-              257 PUSHINT
-              STIX
-              s0 s1 XCHG
-              NEWC
-              257 PUSHINT
-              STIX
-              s1 s2 XCHG
-              257 PUSHINT
-              STIX
-              ENDC
-              s0 s1 XCHG
-              STREF
-            }> PUSHCONT
-            <{
-              s2 POP
-              0 PUSHINT
-              ROT
-              1 STI
-            }> IFREFELSE
-            ENDC
-            s0 s1 XCHG
-            STREF
-          }> CALLREF
-        }> PUSHCONT
-        IFELSE
+        }> IFREFELSE
         ENDC
         s0 s1 XCHG
         STREF
-        ENDC
-        s0 s1 XCHG
-        STREF
-        ENDC
-        c4 POP
-      }> CALLREF
+      }> IFREFELSE
+      ENDC
+      ROT
+      STREF
+      ENDC
+      s0 s1 XCHG
+      STREF
+      ENDC
+      c4 POP
     }> IFJMPREF
     s0 POP
     130 THROW
@@ -1223,34 +1236,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -1267,12 +1283,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -1291,49 +1304,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -1350,12 +1367,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -1378,6 +1392,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -1401,34 +1416,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -1445,12 +1463,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -1469,49 +1484,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -1528,12 +1547,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -1556,6 +1572,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -1579,34 +1596,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -1623,12 +1643,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -1647,49 +1664,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -1706,12 +1727,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -1734,6 +1752,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -1757,34 +1776,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -1801,12 +1823,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -1825,49 +1844,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -1884,12 +1907,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -1912,6 +1932,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -1935,34 +1956,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -1979,12 +2003,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -2003,49 +2024,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -2062,12 +2087,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -2090,6 +2112,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -2114,34 +2137,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -2158,12 +2184,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -2182,49 +2205,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -2241,12 +2268,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -2269,6 +2293,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -2292,34 +2317,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -2336,12 +2364,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -2360,49 +2385,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -2419,12 +2448,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -2447,6 +2473,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -2470,34 +2497,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -2514,12 +2544,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -2538,49 +2565,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -2597,12 +2628,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -2625,6 +2653,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -2648,34 +2677,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -2692,12 +2724,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -2716,49 +2745,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -2775,12 +2808,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -2803,6 +2833,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -2826,34 +2857,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -2870,12 +2904,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -2894,49 +2925,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -2953,12 +2988,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -2981,6 +3013,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -3025,34 +3058,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -3069,12 +3105,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -3093,49 +3126,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -3152,12 +3189,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -3180,6 +3214,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -3203,34 +3238,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -3247,12 +3285,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -3271,49 +3306,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -3330,12 +3369,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -3358,6 +3394,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -3402,34 +3439,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -3446,12 +3486,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -3470,49 +3507,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -3529,12 +3570,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -3557,6 +3595,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -3584,34 +3623,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -3628,12 +3670,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -3652,49 +3691,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -3711,12 +3754,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -3739,6 +3779,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -3763,34 +3804,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -3807,12 +3851,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -3831,49 +3872,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -3890,12 +3935,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -3918,6 +3960,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -3941,34 +3984,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -3985,12 +4031,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -4009,49 +4052,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -4068,12 +4115,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -4096,6 +4140,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -4119,34 +4164,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -4163,12 +4211,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -4187,49 +4232,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -4246,12 +4295,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -4274,6 +4320,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -4297,34 +4344,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -4341,12 +4391,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -4365,49 +4412,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -4424,12 +4475,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -4452,6 +4500,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG
@@ -4475,34 +4524,37 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
-      PUSHNULL
-      s0 s1 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDMSGADDR
       s1 PUSH
       2 PLDU
@@ -4519,12 +4571,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         257 PUSHINT
@@ -4543,49 +4592,53 @@ SETCP0
         s2 s4 XCHG
         s2 s3 XCHG
         5 TUPLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s0 s1 XCHG
       LDREF
       s0 POP
       CTOS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
         s0 POP
+        PUSHNULL
       }> PUSHCONT
       <{
-        s1 POP
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           1 LDI
         }> PUSHCONT
-        IF
-        PUSHNULL
-        s0 s1 XCHG
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           LDREF
         }> PUSHCONT
-        IF
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
         LDMSGADDR
         s1 PUSH
         2 PLDU
@@ -4602,12 +4655,9 @@ SETCP0
         LDREF
         s0 s1 XCHG
         CTOS
-        PUSHNULL
-        s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          s1 POP
           257 PUSHINT
           LDI
           257 PUSHINT
@@ -4630,6 +4680,7 @@ SETCP0
         }> PUSHCONT
         <{
           s0 POP
+          PUSHNULL
         }> PUSHCONT
         IFELSE
         s1 s5 XCHG

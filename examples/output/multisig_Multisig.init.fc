@@ -1,9 +1,9 @@
 builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;
-    build_0 = store_int(build_0, v'seqno, 257);
-    build_0 = store_dict(build_0, v'members);
-    build_0 = store_int(build_0, v'totalWeight, 257);
-    build_0 = store_int(build_0, v'requiredWeight, 257);
+    build_0 = build_0.store_int(v'seqno, 257);
+    build_0 = build_0.store_dict(v'members);
+    build_0 = build_0.store_int(v'totalWeight, 257);
+    build_0 = build_0.store_int(v'requiredWeight, 257);
     return build_0;
 }
 

@@ -73,7 +73,7 @@ forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
 builder __gen_write_DeployOk(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3548362785, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
+    build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
@@ -97,10 +97,7 @@ cell __gen_writecell_DeployOk((int) v) inline {
 (slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 140802882);
     var v'key = sc_0~load_int(257);
-    var v'content = null();
-    if (sc_0~load_int(1)) {
-        v'content = sc_0~load_ref();
-    }
+    var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'content));
 }
 
@@ -112,7 +109,7 @@ cell __gen_writecell_DeployOk((int) v) inline {
 
 builder __gen_write_Something(builder build_0, (int) v) inline {
     var (v'value) = v;
-    build_0 = store_int(build_0, v'value, 257);
+    build_0 = build_0.store_int(v'value, 257);
     return build_0;
 }
 
@@ -135,12 +132,12 @@ cell __gen_writecellopt_Something(tuple v) inline {
 
 builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
     var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
-    build_0 = store_dict(build_0, v'counters);
-    build_0 = store_dict(build_0, v'counters2);
+    build_0 = build_0.store_dict(v'counters);
+    build_0 = build_0.store_dict(v'counters2);
     var build_1 = begin_cell();
-    build_1 = store_dict(build_1, v'counters3);
-    build_1 = store_dict(build_1, v'counters4);
-    build_1 = store_dict(build_1, v'counters5);
+    build_1 = build_1.store_dict(v'counters3);
+    build_1 = build_1.store_dict(v'counters4);
+    build_1 = build_1.store_dict(v'counters5);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -373,5 +370,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmcM5tDFJkBVjBLHNGrvhwcfEF2sRai9ZUZkHYScNUHWt5";
+    return "ipfs://QmZAHmkR3GJ6eSpmvSduhh1nNzZ4nCPNa1856goRvQeXjt";
 }

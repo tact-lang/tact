@@ -33,16 +33,11 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 
 builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) inline {
     var (v'seqno, v'mode, v'to, v'amount, v'body) = v;
-    build_0 = store_uint(build_0, v'seqno, 32);
-    build_0 = store_uint(build_0, v'mode, 8);
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_uint(v'mode, 8);
     build_0 = __tact_store_address(build_0, v'to);
-    build_0 = store_coins(build_0, v'amount);
-    if (null?(v'body)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v'body);
-    }
+    build_0 = build_0.store_coins(v'amount);
+    build_0 = ~ null?(v'body) ? build_0.store_int(true, 1).store_ref(v'body) : build_0.store_int(false, 1);
     return build_0;
 }
 
@@ -55,10 +50,7 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
     var v'mode = sc_0~load_uint(8);
     var v'to = sc_0~__tact_load_address();
     var v'amount = sc_0~load_coins();
-    var v'body = null();
-    if (sc_0~load_int(1)) {
-        v'body = sc_0~load_ref();
-    }
+    var v'body = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'seqno, v'mode, v'to, v'amount, v'body));
 }
 
@@ -71,9 +63,9 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
 
 builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     var (v'seqno, v'key, v'walletId) = v;
-    build_0 = store_uint(build_0, v'seqno, 32);
-    build_0 = store_uint(build_0, v'key, 256);
-    build_0 = store_uint(build_0, v'walletId, 64);
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_uint(v'key, 256);
+    build_0 = build_0.store_uint(v'walletId, 64);
     return build_0;
 }
 
@@ -356,5 +348,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmRf2ZmLCUPdzSYhdNu1G5bXeNkScM2XZAZYui89n6NH2k";
+    return "ipfs://QmTfoSMt8ekbxjRKTPTdgrnsk3MqxmfUfACfKmCYoA4cem";
 }

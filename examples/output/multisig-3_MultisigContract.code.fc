@@ -21,8 +21,8 @@ builder __tact_store_address(builder b, slice address) inline {
 
 builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
     var (v'seqno, v'amount, v'target) = v;
-    build_0 = store_uint(build_0, v'seqno, 32);
-    build_0 = store_coins(build_0, v'amount);
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'target);
     return build_0;
 }
@@ -49,10 +49,10 @@ cell __gen_writecell_Operation((int, int, slice) v) inline {
 
 builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline {
     var (v'seqno, v'user1_key, v'user2_key, v'user3_key) = v;
-    build_0 = store_uint(build_0, v'seqno, 32);
-    build_0 = store_uint(build_0, v'user1_key, 256);
-    build_0 = store_uint(build_0, v'user2_key, 256);
-    build_0 = store_uint(build_0, v'user3_key, 256);
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_uint(v'user1_key, 256);
+    build_0 = build_0.store_uint(v'user2_key, 256);
+    build_0 = build_0.store_uint(v'user3_key, 256);
     return build_0;
 }
 
@@ -251,5 +251,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmX5zqzPVfPivwenyfKB6tT84Q3H7S5fNh14YB9nLegH88";
+    return "ipfs://QmdrWqGbt8j4RgYPgoipu8f3qFCD79r4p852Tp41ztLMax";
 }

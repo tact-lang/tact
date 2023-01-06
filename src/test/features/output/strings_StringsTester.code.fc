@@ -158,7 +158,7 @@ slice __tact_float_to_string(int src, int digits) {
 
 builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     var (v'fee) = v;
-    build_0 = store_int(build_0, v'fee, 257);
+    build_0 = build_0.store_int(v'fee, 257);
     return build_0;
 }
 
@@ -448,5 +448,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmSK7HCb1HsUZu8zAUzjoaaG4e6ZY31X19zy9hL2qjsRD5";
+    return "ipfs://QmTj7yaqqzRK8vKtjfohXHtvuZbJiFCGWqQCMVKn8x66Ju";
 }

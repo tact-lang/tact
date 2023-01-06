@@ -89,15 +89,16 @@ SETCP0
       s0 s1 XCHG
       s0 s1 XCHG
       LDGRAMS
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       5 1 BLKSWAP
       s5 s6 XCHG
       s6 POP
@@ -456,16 +457,17 @@ SETCP0
     STGRAMS
     s1 PUSH
     ISNULL
-    <{
-      0 PUSHINT
-      s2 POP
-      1 STI
-    }> PUSHCONT
+    NOT
     <{
       -1 PUSHINT
       s0 s1 XCHG
       1 STI
       STREF
+    }> PUSHCONT
+    <{
+      0 PUSHINT
+      s2 POP
+      1 STI
     }> PUSHCONT
     IFELSE
     ENDC

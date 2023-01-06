@@ -92,7 +92,7 @@ export function getAllocationOperationFromField(src: FieldDescription, structLoa
                         throwError('Unknown serialization type ' + src.as, src.ref);
                     }
                 } else {
-                    return { kind: 'int', bits: 267, optional: type.optional };
+                    return { kind: 'int', bits: 257, optional: type.optional };
                 }
             }
             if (type.name === 'Bool') {

@@ -21,17 +21,18 @@ PROGRAM{
     __tact_store_address INLINECALLDICT
     s2 PUSH
     ISNULL
+    NOT
     IF:<{
-      s2 POP
-      FALSE
-      ROT
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       s1 s2 XCHG
       STREF
+    }>ELSE<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
     }>
     1 STI
   }>

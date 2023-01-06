@@ -1,19 +1,19 @@
-import { TypeRef } from "../../types/types";
+import { ABITypeRef } from "ton-core";
 
-export function getTSFieldType(ref: TypeRef): string {
-    if (ref.kind === 'ref') {
-        if (ref.name === 'Int') {
+export function getTSFieldType(ref: ABITypeRef): string {
+    if (ref.kind === 'simple') {
+        if (ref.type === 'int' || ref.type === 'uint') {
             return 'bigint' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Bool') {
+        } else if (ref.type === 'bool') {
             return 'boolean' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Cell' || ref.name === 'Slice' || ref.name === 'Builder') {
+        } else if (ref.type === 'cell' || ref.type === 'slice' || ref.type === 'builder') {
             return 'Cell' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'Address') {
+        } else if (ref.type === 'address') {
             return 'Address' + (ref.optional ? ' | null' : '');
-        } else if (ref.name === 'String') {
+        } else if (ref.type === 'string') {
             return 'string' + (ref.optional ? ' | null' : '');
         } else {
-            return ref.name + (ref.optional ? ' | null' : '');
+            return ref.type + (ref.optional ? ' | null' : '');
         }
     }
     if (ref.kind === 'map') {

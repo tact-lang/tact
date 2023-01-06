@@ -11,7 +11,7 @@ builder __tact_store_address(builder b, slice address) inline {
 builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
     var (v'owner, v'publicKey) = v;
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = store_int(build_0, v'publicKey, 257);
+    build_0 = build_0.store_int(v'publicKey, 257);
     return build_0;
 }
 

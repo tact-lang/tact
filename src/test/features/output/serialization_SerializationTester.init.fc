@@ -1,16 +1,16 @@
 builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i) = v;
-    build_0 = store_int(build_0, v'a, 257);
-    build_0 = store_int(build_0, v'b, 257);
-    build_0 = store_int(build_0, v'c, 257);
+    build_0 = build_0.store_int(v'a, 257);
+    build_0 = build_0.store_int(v'b, 257);
+    build_0 = build_0.store_int(v'c, 257);
     var build_1 = begin_cell();
-    build_1 = store_int(build_1, v'd, 257);
-    build_1 = store_int(build_1, v'e, 257);
-    build_1 = store_int(build_1, v'f, 257);
+    build_1 = build_1.store_int(v'd, 257);
+    build_1 = build_1.store_int(v'e, 257);
+    build_1 = build_1.store_int(v'f, 257);
     var build_2 = begin_cell();
-    build_2 = store_int(build_2, v'g, 257);
-    build_2 = store_int(build_2, v'h, 257);
-    build_2 = store_int(build_2, v'i, 257);
+    build_2 = build_2.store_int(v'g, 257);
+    build_2 = build_2.store_int(v'h, 257);
+    build_2 = build_2.store_int(v'i, 257);
     build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;

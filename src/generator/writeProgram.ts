@@ -6,7 +6,7 @@ import { WriterContext } from "./Writer";
 import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
-import { beginCell } from "ton-core";
+import { beginCell, ContractABI } from "ton-core";
 import { unwrapExternal, writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
@@ -101,12 +101,12 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
                 // Generic receiver
                 if (selector.kind === 'internal-binary') {
                     let allocation = getAllocation(ctx.ctx, selector.type);
-                    if (!allocation.prefix) {
+                    if (!allocation.header) {
                         throw Error('Invalid allocation');
                     }
                     ctx.append();
                     ctx.append(`;; Receive ${selector.type} message`);
-                    ctx.append(`if (op == ${allocation.prefix}) {`);
+                    ctx.append(`if (op == ${allocation.header}) {`);
                     ctx.inIndent(() => {
 
                         // Load storage
@@ -285,8 +285,8 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     // Serializators
     let allocations = getAllocations(ctx);
     for (let k of allocations) {
-        writeSerializer(k.type.name, k.allocation, wctx);
-        writeParser(k.type.name, k.type.fields, k.allocation, wctx);
+        writeSerializer(k.type, k.allocation, wctx);
+        writeParser(k.type, k.allocation, wctx);
     }
 
     // Accessors

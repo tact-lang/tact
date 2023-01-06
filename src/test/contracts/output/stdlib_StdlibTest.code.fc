@@ -3,7 +3,7 @@ global cell __tact_context_sys;
 
 builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     var (v'v) = v;
-    build_0 = store_int(build_0, v'v, 257);
+    build_0 = build_0.store_int(v'v, 257);
     return build_0;
 }
 
@@ -104,5 +104,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmWMKapjkZtMCG1BsEZfDANErxeKsm2RSbnuTfFnu6fSKv";
+    return "ipfs://QmPEBLpABJk8Xxd4bVw9MVnJkAuLB8Jtf9B3BgNDVamJfW";
 }

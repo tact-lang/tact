@@ -73,12 +73,12 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int, slice) v) inline {
     var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
-    build_0 = store_coins(build_0, v'amount);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'from);
     build_0 = __tact_store_address_opt(build_0, v'responseAddress);
-    build_0 = store_coins(build_0, v'forwardTonAmount);
-    build_0 = store_slice(build_0, v'forwardPayload);
+    build_0 = build_0.store_coins(v'forwardTonAmount);
+    build_0 = build_0.store_slice(v'forwardPayload);
     return build_0;
 }
 
@@ -98,7 +98,7 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) 
 builder __gen_write_TokenExcesses(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3576854235, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
+    build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
@@ -108,10 +108,7 @@ cell __gen_writecell_TokenExcesses((int) v) inline {
 
 (slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1862840892);
-    var v'content = null();
-    if (sc_0~load_int(1)) {
-        v'content = sc_0~load_ref();
-    }
+    var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'content));
 }
 
@@ -123,7 +120,7 @@ cell __gen_writecell_TokenExcesses((int) v) inline {
 
 builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
     var (v'balance, v'owner, v'master) = v;
-    build_0 = store_int(build_0, v'balance, 257);
+    build_0 = build_0.store_int(v'balance, 257);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = __tact_store_address(build_0, v'master);
     return build_0;
@@ -131,25 +128,17 @@ builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) 
 
 builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inline {
     var (v'totalSupply, v'owner, v'content, v'mintable) = v;
-    build_0 = store_coins(build_0, v'totalSupply);
+    build_0 = build_0.store_coins(v'totalSupply);
     build_0 = __tact_store_address(build_0, v'owner);
-    if (null?(v'content)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v'content);
-    }
-    build_0 = store_int(build_0, v'mintable, 1);
+    build_0 = ~ null?(v'content) ? build_0.store_int(true, 1).store_ref(v'content) : build_0.store_int(false, 1);
+    build_0 = build_0.store_int(v'mintable, 1);
     return build_0;
 }
 
 (slice, ((int, slice, cell, int))) __gen_read_SampleJetton(slice sc_0) inline {
     var v'totalSupply = sc_0~load_coins();
     var v'owner = sc_0~__tact_load_address();
-    var v'content = null();
-    if (sc_0~load_int(1)) {
-        v'content = sc_0~load_ref();
-    }
+    var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     var v'mintable = sc_0~load_int(1);
     return (sc_0, (v'totalSupply, v'owner, v'content, v'mintable));
 }
@@ -442,5 +431,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://Qmd6KhzDqTW5Y8eYyMcAdjyEh6FHd7NeZz57n2CkWRbmkL";
+    return "ipfs://QmYDVEJU2xLtsUuvnYg8cY8yY7qMTpGcriw6XB6nQs7NXm";
 }

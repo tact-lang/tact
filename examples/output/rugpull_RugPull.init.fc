@@ -11,17 +11,17 @@ builder __tact_store_address(builder b, slice address) inline {
 builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
     var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = store_int(build_0, v'investment, 257);
-    build_0 = store_int(build_0, v'returns, 257);
+    build_0 = build_0.store_int(v'investment, 257);
+    build_0 = build_0.store_int(v'returns, 257);
     var build_1 = begin_cell();
-    build_1 = store_int(build_1, v'fee, 257);
-    build_1 = store_int(build_1, v'balance, 257);
-    build_1 = store_int(build_1, v'rugpulled, 1);
-    build_1 = store_int(build_1, v'stopped, 1);
-    build_1 = store_int(build_1, v'queueStart, 257);
+    build_1 = build_1.store_int(v'fee, 257);
+    build_1 = build_1.store_int(v'balance, 257);
+    build_1 = build_1.store_int(v'rugpulled, 1);
+    build_1 = build_1.store_int(v'stopped, 1);
+    build_1 = build_1.store_int(v'queueStart, 257);
     var build_2 = begin_cell();
-    build_2 = store_int(build_2, v'queueEnd, 257);
-    build_2 = store_dict(build_2, v'queue);
+    build_2 = build_2.store_int(v'queueEnd, 257);
+    build_2 = build_2.store_dict(v'queue);
     build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;

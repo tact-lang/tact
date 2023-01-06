@@ -31,15 +31,16 @@ PROGRAM{
     8 STU
     OVER
     ISNULL
+    NOT
     IF:<{
-      FALSE
-      s2 POP
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       STREF
+    }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
     }>
   }>
   __gen_write_MultisigSigner PROCINLINE:<{

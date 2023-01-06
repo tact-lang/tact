@@ -84,10 +84,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     var v'amount = sc_0~load_coins();
     var v'destination = sc_0~__tact_load_address();
     var v'responseDestination = sc_0~__tact_load_address_opt();
-    var v'customPayload = null();
-    if (sc_0~load_int(1)) {
-        v'customPayload = sc_0~load_ref();
-    }
+    var v'customPayload = sc_0~load_int(1) ? sc_0~load_ref() : null();
     var v'forwardTonAmount = sc_0~load_coins();
     var v'forwardPayload = sc_0;
     return (sc_0, (v'queryId, v'amount, v'destination, v'responseDestination, v'customPayload, v'forwardTonAmount, v'forwardPayload));
@@ -96,12 +93,12 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int, slice) v) inline {
     var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
-    build_0 = store_coins(build_0, v'amount);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'from);
     build_0 = __tact_store_address_opt(build_0, v'responseAddress);
-    build_0 = store_coins(build_0, v'forwardTonAmount);
-    build_0 = store_slice(build_0, v'forwardPayload);
+    build_0 = build_0.store_coins(v'forwardTonAmount);
+    build_0 = build_0.store_slice(v'forwardPayload);
     return build_0;
 }
 
@@ -123,10 +120,10 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) 
 builder __gen_write_TokenNotification(builder build_0, (int, int, slice, slice) v) inline {
     var (v'queryId, v'amount, v'from, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 1935855772, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
-    build_0 = store_coins(build_0, v'amount);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'from);
-    build_0 = store_slice(build_0, v'forwardPayload);
+    build_0 = build_0.store_slice(v'forwardPayload);
     return build_0;
 }
 
@@ -146,8 +143,8 @@ cell __gen_writecell_TokenNotification((int, int, slice, slice) v) inline {
 builder __gen_write_TokenBurnNotification(builder build_0, (int, int, slice, slice) v) inline {
     var (v'queryId, v'amount, v'owner, v'responseAddress) = v;
     build_0 = store_uint(build_0, 2078119902, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
-    build_0 = store_coins(build_0, v'amount);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = __tact_store_address_opt(build_0, v'responseAddress);
     return build_0;
@@ -160,7 +157,7 @@ cell __gen_writecell_TokenBurnNotification((int, int, slice, slice) v) inline {
 builder __gen_write_TokenExcesses(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3576854235, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
+    build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
@@ -170,7 +167,7 @@ cell __gen_writecell_TokenExcesses((int) v) inline {
 
 builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
     var (v'balance, v'owner, v'master) = v;
-    build_0 = store_int(build_0, v'balance, 257);
+    build_0 = build_0.store_int(v'balance, 257);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = __tact_store_address(build_0, v'master);
     return build_0;
@@ -434,5 +431,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://Qmdf1brGAj2mWhqbgyrk7uJazmL33BwdhA2EmwiaSaQdAf";
+    return "ipfs://QmS4UG6hQQMo2MqumBK8LMJQGdzu9Dguam5AXMCiHKvcBt";
 }

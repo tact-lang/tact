@@ -15,18 +15,19 @@ SETCP0
     STSLICER
     s2 PUSH
     ISNULL
-    <{
-      s2 POP
-      0 PUSHINT
-      ROT
-      1 STI
-    }> PUSHCONT
+    NOT
     <{
       -1 PUSHINT
       s0 s1 XCHG
       1 STI
       s1 s2 XCHG
       STREF
+    }> PUSHCONT
+    <{
+      s2 POP
+      0 PUSHINT
+      ROT
+      1 STI
     }> PUSHCONT
     IFELSE
     1 STI

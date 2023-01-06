@@ -23,12 +23,12 @@ forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v
 
 builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int) v) inline {
     var (v'value1, v'value2, v'value3, v'value4, v'value5) = v;
-    build_0 = store_int(build_0, v'value1, 257);
-    build_0 = store_int(build_0, v'value2, 257);
-    build_0 = store_int(build_0, v'value3, 257);
+    build_0 = build_0.store_int(v'value1, 257);
+    build_0 = build_0.store_int(v'value2, 257);
+    build_0 = build_0.store_int(v'value3, 257);
     var build_1 = begin_cell();
-    build_1 = store_int(build_1, v'value4, 257);
-    build_1 = store_int(build_1, v'value5, 257);
+    build_1 = build_1.store_int(v'value4, 257);
+    build_1 = build_1.store_int(v'value5, 257);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -41,32 +41,12 @@ builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int)
 
 builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice, tuple) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
-    if (null?(v'a)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, v'a, 257);
-    }
-    if (null?(v'b)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, v'b, 1);
-    }
-    if (null?(v'c)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v'c);
-    }
+    build_0 = ~ null?(v'a) ? build_0.store_int(true, 1).store_int(v'a, 257) : build_0.store_int(false, 1);
+    build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_int(v'b, 1) : build_0.store_int(false, 1);
+    build_0 = ~ null?(v'c) ? build_0.store_int(true, 1).store_ref(v'c) : build_0.store_int(false, 1);
     build_0 = __tact_store_address_opt(build_0, v'd);
     var build_1 = begin_cell();
-    if (null?(v'e)) {
-        build_1 = store_int(build_1, false, 1);
-    } else {
-        build_1 = store_int(build_1, true, 1);
-        build_1 = __gen_write_SomeGenericStruct(build_1, __gen_SomeGenericStruct_not_null(v'e));
-    }
+    build_1 = ~ null?(v'e) ? build_1.store_int(true, 1).__gen_write_SomeGenericStruct( __gen_SomeGenericStruct_not_null(v'e)) : build_1.store_int(false, 1);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -79,39 +59,14 @@ builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice,
 
 builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slice, tuple, tuple) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f) = v;
-    if (null?(v'a)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, v'a, 257);
-    }
-    if (null?(v'b)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_int(build_0, v'b, 1);
-    }
-    if (null?(v'c)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v'c);
-    }
+    build_0 = ~ null?(v'a) ? build_0.store_int(true, 1).store_int(v'a, 257) : build_0.store_int(false, 1);
+    build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_int(v'b, 1) : build_0.store_int(false, 1);
+    build_0 = ~ null?(v'c) ? build_0.store_int(true, 1).store_ref(v'c) : build_0.store_int(false, 1);
     build_0 = __tact_store_address_opt(build_0, v'd);
     var build_1 = begin_cell();
-    if (null?(v'e)) {
-        build_1 = store_int(build_1, false, 1);
-    } else {
-        build_1 = store_int(build_1, true, 1);
-        build_1 = __gen_write_SomeGenericStruct(build_1, __gen_SomeGenericStruct_not_null(v'e));
-    }
+    build_1 = ~ null?(v'e) ? build_1.store_int(true, 1).__gen_write_SomeGenericStruct( __gen_SomeGenericStruct_not_null(v'e)) : build_1.store_int(false, 1);
     var build_2 = begin_cell();
-    if (null?(v'f)) {
-        build_2 = store_int(build_2, false, 1);
-    } else {
-        build_2 = store_int(build_2, true, 1);
-        build_2 = __gen_write_StructWithOptionals(build_2, __gen_StructWithOptionals_not_null(v'f));
-    }
+    build_2 = ~ null?(v'f) ? build_2.store_int(true, 1).__gen_write_StructWithOptionals( __gen_StructWithOptionals_not_null(v'f)) : build_2.store_int(false, 1);
     build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;

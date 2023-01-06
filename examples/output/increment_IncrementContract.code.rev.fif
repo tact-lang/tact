@@ -185,15 +185,16 @@ SETCP0
       129 THROWIFNOT
       257 PUSHINT
       LDI
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       ROTREV
       s2 POP
       s5 s6 XCHG

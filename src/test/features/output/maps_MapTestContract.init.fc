@@ -1,15 +1,15 @@
 builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
     var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4) = v;
-    build_0 = store_dict(build_0, v'intMap1);
-    build_0 = store_dict(build_0, v'intMap2);
+    build_0 = build_0.store_dict(v'intMap1);
+    build_0 = build_0.store_dict(v'intMap2);
     var build_1 = begin_cell();
-    build_1 = store_dict(build_1, v'intMap3);
-    build_1 = store_dict(build_1, v'intMap4);
-    build_1 = store_dict(build_1, v'addrMap1);
+    build_1 = build_1.store_dict(v'intMap3);
+    build_1 = build_1.store_dict(v'intMap4);
+    build_1 = build_1.store_dict(v'addrMap1);
     var build_2 = begin_cell();
-    build_2 = store_dict(build_2, v'addrMap2);
-    build_2 = store_dict(build_2, v'addrMap3);
-    build_2 = store_dict(build_2, v'addrMap4);
+    build_2 = build_2.store_dict(v'addrMap2);
+    build_2 = build_2.store_dict(v'addrMap3);
+    build_2 = build_2.store_dict(v'addrMap4);
     build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;

@@ -86,7 +86,7 @@ slice __tact_string_builder_end_slice(tuple builders) {
 
 builder __gen_write_Echo(builder build_0, (int) v) inline {
     var (v'v) = v;
-    build_0 = store_int(build_0, v'v, 257);
+    build_0 = build_0.store_int(v'v, 257);
     return build_0;
 }
 
@@ -251,5 +251,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmTACmZMqZLqhrbx3kpJBEwWz9Uo7Z8tdvXboZtRyheqTA";
+    return "ipfs://QmdHkWEaikwQM4ngXPwTNB5SNP5u2h6B7vpmPJB2NiHnwF";
 }

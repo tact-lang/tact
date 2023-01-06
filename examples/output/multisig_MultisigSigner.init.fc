@@ -15,26 +15,21 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
     build_0 = store_uint(build_0, 4096439811, 32);
     build_0 = __tact_store_address(build_0, v'requested);
     build_0 = __tact_store_address(build_0, v'to);
-    build_0 = store_coins(build_0, v'value);
-    build_0 = store_uint(build_0, v'timeout, 32);
-    build_0 = store_int(build_0, v'bounce, 1);
-    build_0 = store_uint(build_0, v'mode, 8);
-    if (null?(v'body)) {
-        build_0 = store_int(build_0, false, 1);
-    } else {
-        build_0 = store_int(build_0, true, 1);
-        build_0 = store_ref(build_0, v'body);
-    }
+    build_0 = build_0.store_coins(v'value);
+    build_0 = build_0.store_uint(v'timeout, 32);
+    build_0 = build_0.store_int(v'bounce, 1);
+    build_0 = build_0.store_uint(v'mode, 8);
+    build_0 = ~ null?(v'body) ? build_0.store_int(true, 1).store_ref(v'body) : build_0.store_int(false, 1);
     return build_0;
 }
 
 builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline {
     var (v'master, v'members, v'weight, v'requiredWeight, v'completed, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
     build_0 = __tact_store_address(build_0, v'master);
-    build_0 = store_dict(build_0, v'members);
-    build_0 = store_int(build_0, v'weight, 257);
-    build_0 = store_int(build_0, v'requiredWeight, 257);
-    build_0 = store_int(build_0, v'completed, 1);
+    build_0 = build_0.store_dict(v'members);
+    build_0 = build_0.store_int(v'weight, 257);
+    build_0 = build_0.store_int(v'requiredWeight, 257);
+    build_0 = build_0.store_int(v'completed, 1);
     var build_1 = begin_cell();
     build_1 = __gen_write_Request(build_1, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body));
     build_0 = store_ref(build_0, build_1.end_cell());

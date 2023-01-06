@@ -17,8 +17,8 @@ PROGRAM{
   DECLPROC __gen_SomeStruct_not_null
   DECLPROC __gen_writecellopt_SomeStruct
   DECLPROC __gen_read_SomeStruct
-  DECLPROC __gen_readopt_SomeStruct
   DECLPROC __gen_SomeStruct_as_optional
+  DECLPROC __gen_readopt_SomeStruct
   DECLPROC __gen_read_SetIntMap4
   DECLPROC __gen_read_SetAddrMap1
   DECLPROC __gen_read_SetAddrMap2
@@ -191,14 +191,14 @@ PROGRAM{
     129 THROWIFNOT
     257 PUSHINT
     LDIX
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       257 PUSHINT
       LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     -ROT
   }>
@@ -210,13 +210,13 @@ PROGRAM{
     129 THROWIFNOT
     257 PUSHINT
     LDIX
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       1 LDI
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     -ROT
   }>
@@ -228,13 +228,13 @@ PROGRAM{
     129 THROWIFNOT
     257 PUSHINT
     LDIX
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     -ROT
   }>
@@ -271,6 +271,9 @@ PROGRAM{
     LDIX
     SWAP
   }>
+  __gen_SomeStruct_as_optional PROCINLINE:<{
+    1 TUPLE
+  }>
   __gen_readopt_SomeStruct PROCINLINE:<{
     DUP
     ISNULL
@@ -279,14 +282,10 @@ PROGRAM{
       PUSHNULL
     }>ELSE<{
       CTOS
-      257 PUSHINT
-      LDIX
-      DROP
-      1 TUPLE
+      __gen_read_SomeStruct INLINECALLDICT
+      NIP
+      __gen_SomeStruct_as_optional INLINECALLDICT
     }>
-  }>
-  __gen_SomeStruct_as_optional PROCINLINE:<{
-    1 TUPLE
   }>
   __gen_read_SetIntMap4 PROCINLINE:<{
     32 LDU
@@ -296,17 +295,15 @@ PROGRAM{
     129 THROWIFNOT
     257 PUSHINT
     LDIX
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       __gen_read_SomeStruct INLINECALLDICT
       __gen_SomeStruct_as_optional INLINECALLDICT
-      SWAP
+    }>ELSE<{
+      PUSHNULL
     }>
-    -ROT
+    s1 s2 XCHG
   }>
   __gen_read_SetAddrMap1 PROCINLINE:<{
     32 LDU
@@ -315,17 +312,17 @@ PROGRAM{
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
-    PUSHNULL
-    s0 s2 XCHG
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      1 2 BLKDROP2
       257 PUSHINT
       LDIX
-      s1 s2 XCHG
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    s0 s2 XCHG
+    -ROT
   }>
   __gen_read_SetAddrMap2 PROCINLINE:<{
     32 LDU
@@ -334,16 +331,16 @@ PROGRAM{
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
-    PUSHNULL
-    s0 s2 XCHG
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      1 2 BLKDROP2
       1 LDI
-      s1 s2 XCHG
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    s0 s2 XCHG
+    -ROT
   }>
   __gen_read_SetAddrMap3 PROCINLINE:<{
     32 LDU
@@ -352,16 +349,16 @@ PROGRAM{
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
-    PUSHNULL
-    s0 s2 XCHG
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      1 2 BLKDROP2
       LDREF
-      s1 s2 XCHG
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    s0 s2 XCHG
+    -ROT
   }>
   __gen_read_SetAddrMap4 PROCINLINE:<{
     32 LDU
@@ -370,17 +367,16 @@ PROGRAM{
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
-    PUSHNULL
-    s0 s2 XCHG
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      1 2 BLKDROP2
       __gen_read_SomeStruct INLINECALLDICT
       __gen_SomeStruct_as_optional INLINECALLDICT
-      -ROT
+    }>ELSE<{
+      PUSHNULL
     }>
-    s0 s2 XCHG
+    s1 s2 XCHG
   }>
   __gen_write_MapTestContract PROCINLINE:<{
     s7 s8 XCHG2
@@ -904,6 +900,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d62436d4b3733636f556b6e346e4569766b3469417446526e575764326d44334170513951766a384a48514e70} PUSHSLICE
+    x{697066733a2f2f516d59704b585879316f757473597279537a4b416e6a35324c587454487443447556527579456151745777364671} PUSHSLICE
   }>
 }END>c

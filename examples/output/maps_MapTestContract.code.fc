@@ -98,36 +98,27 @@ forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
 (slice, ((int, int))) __gen_read_SetIntMap1(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1056067080);
     var v'key = sc_0~load_int(257);
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = sc_0~load_int(257);
-    }
+    var v'value = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((int, int))) __gen_read_SetIntMap2(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2818252722);
     var v'key = sc_0~load_int(257);
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = sc_0~load_int(1);
-    }
+    var v'value = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((int, cell))) __gen_read_SetIntMap3(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3506188068);
     var v'key = sc_0~load_int(257);
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = sc_0~load_ref();
-    }
+    var v'value = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'value));
 }
 
 builder __gen_write_SomeStruct(builder build_0, (int) v) inline {
     var (v'value) = v;
-    build_0 = store_int(build_0, v'value, 257);
+    build_0 = build_0.store_int(v'value, 257);
     return build_0;
 }
 
@@ -153,82 +144,66 @@ cell __gen_writecellopt_SomeStruct(tuple v) inline {
     return (sc_0, (v'value));
 }
 
-tuple __gen_readopt_SomeStruct(cell cl) inline {
-    if (null?(cl)) {
-        return null();
-    }
-    var sc_0 = cl.begin_parse();
-    var v'value = sc_0~load_int(257);
-    return __tact_tuple_create_1(v'value);
-}
-
 tuple __gen_SomeStruct_as_optional(((int)) v) inline {
     var (v'value) = v;
     return __tact_tuple_create_1(v'value);
 }
 
+tuple __gen_readopt_SomeStruct(cell cl) inline {
+    if (null?(cl)) {
+        return null();
+    }
+    var sc = cl.begin_parse();
+    return __gen_SomeStruct_as_optional(sc~__gen_read_SomeStruct());
+}
+
 (slice, ((int, tuple))) __gen_read_SetIntMap4(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1318632071);
     var v'key = sc_0~load_int(257);
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct());
-    }
+    var v'value = sc_0~load_int(1) ? __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct()) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, int))) __gen_read_SetAddrMap1(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3295239033);
     var v'key = sc_0~__tact_load_address();
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = sc_0~load_int(257);
-    }
+    var v'value = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, int))) __gen_read_SetAddrMap2(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1566575299);
     var v'key = sc_0~__tact_load_address();
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = sc_0~load_int(1);
-    }
+    var v'value = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, cell))) __gen_read_SetAddrMap3(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 711408213);
     var v'key = sc_0~__tact_load_address();
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = sc_0~load_ref();
-    }
+    var v'value = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, tuple))) __gen_read_SetAddrMap4(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3020140534);
     var v'key = sc_0~__tact_load_address();
-    var v'value = null();
-    if (sc_0~load_int(1)) {
-        v'value = __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct());
-    }
+    var v'value = sc_0~load_int(1) ? __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct()) : null();
     return (sc_0, (v'key, v'value));
 }
 
 builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
     var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4) = v;
-    build_0 = store_dict(build_0, v'intMap1);
-    build_0 = store_dict(build_0, v'intMap2);
+    build_0 = build_0.store_dict(v'intMap1);
+    build_0 = build_0.store_dict(v'intMap2);
     var build_1 = begin_cell();
-    build_1 = store_dict(build_1, v'intMap3);
-    build_1 = store_dict(build_1, v'intMap4);
-    build_1 = store_dict(build_1, v'addrMap1);
+    build_1 = build_1.store_dict(v'intMap3);
+    build_1 = build_1.store_dict(v'intMap4);
+    build_1 = build_1.store_dict(v'addrMap1);
     var build_2 = begin_cell();
-    build_2 = store_dict(build_2, v'addrMap2);
-    build_2 = store_dict(build_2, v'addrMap3);
-    build_2 = store_dict(build_2, v'addrMap4);
+    build_2 = build_2.store_dict(v'addrMap2);
+    build_2 = build_2.store_dict(v'addrMap3);
+    build_2 = build_2.store_dict(v'addrMap4);
     build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
@@ -622,5 +597,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmeprmB6vCeZvMojrsC3rekTzRVcRNESn1FFKTDyWeJRtk";
+    return "ipfs://QmYpKXXy1outsYrySzKAnj52LXtTHtCDuVRuyEaQtWw6Fq";
 }

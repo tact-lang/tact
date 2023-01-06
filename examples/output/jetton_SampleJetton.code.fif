@@ -197,13 +197,13 @@ PROGRAM{
     1862840892 PUSHINT
     EQUAL
     129 THROWIFNOT
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     SWAP
   }>
@@ -233,35 +233,35 @@ PROGRAM{
     __tact_store_address INLINECALLDICT
     s2 PUSH
     ISNULL
+    NOT
     IF:<{
-      s2 POP
-      FALSE
-      ROT
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       s1 s2 XCHG
       STREF
+    }>ELSE<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
     }>
     1 STI
   }>
   __gen_read_SampleJetton PROCINLINE:<{
     LDGRAMS
     __tact_load_address INLINECALLDICT
-    PUSHNULL
-    s0 s2 XCHG
+    SWAP
     1 LDI
     SWAP
     IF:<{
-      1 2 BLKDROP2
       LDREF
-      s1 s2 XCHG
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     1 LDI
-    s0 s4 XCHG
-    s3 s3 XCHG2
+    4 -ROLL
   }>
   __gen_StateInit_get_code PROCINLINE:<{
     DROP
@@ -681,6 +681,6 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d64364b687a447154573559386559794d6341646a79456836464864374e655a7a35376e32436b5752626d6b4c} PUSHSLICE
+    x{697066733a2f2f516d594456454a5532784c74735575766e596738635938795937714d54704763726977365842366e5173374e586d} PUSHSLICE
   }>
 }END>c

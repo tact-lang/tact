@@ -1,11 +1,11 @@
 builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
     var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
-    build_0 = store_dict(build_0, v'counters);
-    build_0 = store_dict(build_0, v'counters2);
+    build_0 = build_0.store_dict(v'counters);
+    build_0 = build_0.store_dict(v'counters2);
     var build_1 = begin_cell();
-    build_1 = store_dict(build_1, v'counters3);
-    build_1 = store_dict(build_1, v'counters4);
-    build_1 = store_dict(build_1, v'counters5);
+    build_1 = build_1.store_dict(v'counters3);
+    build_1 = build_1.store_dict(v'counters4);
+    build_1 = build_1.store_dict(v'counters5);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }

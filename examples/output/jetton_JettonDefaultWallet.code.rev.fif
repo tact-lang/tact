@@ -108,21 +108,23 @@ SETCP0
         PUSHNULL
       }> PUSHCONT
       IFELSE
-      PUSHNULL
-      s0 s2 XCHG
+      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        1 2 BLKDROP2
         LDREF
-        s1 s2 XCHG
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       LDGRAMS
       s6 s6 XCPU
       s1 s6 XCHG
       s1 s5 XCHG
-      s4 s4 s0 XCHG3
+      s1 s4 XCHG
+      s3 s3 s0 XCHG3
       s7 POP
       s8 s9 XCHG
       s7 s8 XCHG

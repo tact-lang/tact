@@ -83,15 +83,16 @@ PROGRAM{
     STGRAMS
     OVER
     ISNULL
+    NOT
     IF:<{
-      FALSE
-      s2 POP
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       STREF
+    }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
     }>
   }>
   __gen_writecell_Transfer PROCINLINE:<{
@@ -106,13 +107,13 @@ PROGRAM{
     __tact_load_address INLINECALLDICT
     SWAP
     LDGRAMS
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     5 -ROLL
   }>
@@ -513,6 +514,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5266325a6d4c435550647a535968644e753147356258654e6b53634d32585a415a59756938396e364e48326b} PUSHSLICE
+    x{697066733a2f2f516d54666f534d7438656b62786a524b5450546467726e736b334d71786d6655664143664b6d43596f413463656d} PUSHSLICE
   }>
 }END>c

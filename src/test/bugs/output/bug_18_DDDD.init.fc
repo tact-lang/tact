@@ -13,8 +13,8 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     build_0 = __tact_store_address(build_0, v'addr1);
     build_0 = __tact_store_address(build_0, v'addr2);
     build_0 = __tact_store_address(build_0, v'addr3);
-    build_0 = store_dict(build_0, v'mapData);
-    build_0 = store_dict(build_0, v'mapData2);
+    build_0 = build_0.store_dict(v'mapData);
+    build_0 = build_0.store_dict(v'mapData2);
     return build_0;
 }
 

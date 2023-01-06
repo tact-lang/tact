@@ -1,8 +1,8 @@
 builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     var (v'seqno, v'key, v'walletId) = v;
-    build_0 = store_uint(build_0, v'seqno, 32);
-    build_0 = store_uint(build_0, v'key, 256);
-    build_0 = store_uint(build_0, v'walletId, 64);
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_uint(v'key, 256);
+    build_0 = build_0.store_uint(v'walletId, 64);
     return build_0;
 }
 

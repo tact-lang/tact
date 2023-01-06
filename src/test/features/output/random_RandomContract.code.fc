@@ -32,7 +32,7 @@ builder __tact_store_address(builder b, slice address) inline {
 builder __gen_write_DeployOk(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3548362785, 32);
-    build_0 = store_uint(build_0, v'queryId, 64);
+    build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
@@ -42,7 +42,7 @@ cell __gen_writecell_DeployOk((int) v) inline {
 
 builder __gen_write_RandomContract(builder build_0, (int) v) inline {
     var (v'field) = v;
-    build_0 = store_int(build_0, v'field, 257);
+    build_0 = build_0.store_int(v'field, 257);
     return build_0;
 }
 
@@ -200,5 +200,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmPntAcwu8WYUxH7DQyuSBHqpKRrrxVmAYFVrAQTMbeGFT";
+    return "ipfs://QmccmhDJmrsbWDJm6USxuLDkXYrktRPGvp42fWyCZNUW57";
 }

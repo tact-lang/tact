@@ -34,9 +34,9 @@ int __tact_address_eq(slice a, slice b) inline {
 builder __gen_write_CanPayoutResponse(builder build_0, (int, slice, int) v) inline {
     var (v'amount, v'address, v'ok) = v;
     build_0 = store_uint(build_0, 1861678417, 32);
-    build_0 = store_int(build_0, v'amount, 257);
+    build_0 = build_0.store_int(v'amount, 257);
     build_0 = __tact_store_address(build_0, v'address);
-    build_0 = store_int(build_0, v'ok, 1);
+    build_0 = build_0.store_int(v'ok, 1);
     return build_0;
 }
 
@@ -48,7 +48,7 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     var (v'master, v'owner, v'completed) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = store_int(build_0, v'completed, 1);
+    build_0 = build_0.store_int(v'completed, 1);
     return build_0;
 }
 
@@ -203,5 +203,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmPeKHksjaX9sEFwxAM6GMirCmnCFgYDh2z5jyBJ5HbeTH";
+    return "ipfs://QmPf2bZvfY6CyFj88nyphuL1BUFBoK84tB2aF78mHwWznm";
 }

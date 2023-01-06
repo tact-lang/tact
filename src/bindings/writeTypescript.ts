@@ -1,6 +1,6 @@
 import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
-import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
+// import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { getTSFieldType } from "./typescript/getTSFieldType";
 import { ABIArgument, ContractABI } from "ton-core";
 
@@ -17,11 +17,11 @@ export function writeTypescript(abi: ContractABI, code: string, initCode: string
     // Structs
     if (abi.types) {
         for (let s of abi.types) {
-            writeStruct(s, w);
-            writeSerializer(s, w);
-            writeParser(s, w);
-            writeTupleParser(s, w);
-            writeTupleSerializer(s, w);
+            // writeStruct(s, w);
+            // writeSerializer(s, w);
+            // writeParser(s, w);
+            // writeTupleParser(s, w);
+            // writeTupleSerializer(s, w);
         }
     }
 
@@ -130,142 +130,144 @@ export function writeTypescript(abi: ContractABI, code: string, initCode: string
         w.append();
 
         // Receivers
-        if (abi.receivers.length > 0) {
-            let receivers: string[] = [];
-            for (const r of abi.receivers) {
-                if (r.kind === 'internal-empty') {
-                    receivers.push(`null`);
-                } else if (r.kind === 'internal-binary') {
-                    receivers.push(`${r.type}`);
-                } else if (r.kind === 'internal-comment') {
-                    receivers.push(`'${r.comment}'`);
-                } else if (r.kind === 'internal-fallback') {
-                    receivers.push(`Slice`);
-                }
-            }
-            w.append(`async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${receivers.join(' | ')}) {`);
-            w.inIndent(() => {
-                w.append();
+        // if (abi.receivers.length > 0) {
+        //     let receivers: string[] = [];
+        //     for (const r of abi.receivers) {
+        //         if (r.kind === 'internal-empty') {
+        //             receivers.push(`null`);
+        //         } else if (r.kind === 'internal-binary') {
+        //             receivers.push(`${r.type}`);
+        //         } else if (r.kind === 'internal-comment') {
+        //             receivers.push(`'${r.comment}'`);
+        //         } else if (r.kind === 'internal-fallback') {
+        //             receivers.push(`Slice`);
+        //         }
+        //     }
+        //     w.append(`async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${receivers.join(' | ')}) {`);
+        //     w.inIndent(() => {
+        //         w.append();
 
-                // Parse message
-                w.append(`let body: Cell | null = null;`);
-                for (const r of abi.receivers) {
-                    if (r.kind === 'internal-binary') {
-                        w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${r.type}') {`);
-                        w.inIndent(() => {
-                            w.append(`body = beginCell().store(store${r.type}(message)).endCell();`);
-                        });
-                        w.append(`}`);
-                    } else if (r.kind === 'internal-empty') {
-                        w.append(`if (message === null) {`);
-                        w.inIndent(() => {
-                            w.append(`body = new Cell();`);
-                        });
-                        w.append(`}`);
-                    } else if (r.kind === 'internal-comment') {
-                        w.append(`if (message === '${r.comment}') {`);
-                        w.inIndent(() => {
-                            w.append(`body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();`);
-                        });
-                        w.append(`}`);
-                    } else if (r.kind === 'internal-fallback') {
-                        w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
-                        w.inIndent(() => {
-                            w.append(`body = message.asCell();`);
-                        });
-                        w.append(`}`);
-                    }
-                }
-                w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
-                w.append();
+        //         // Parse message
+        //         w.append(`let body: Cell | null = null;`);
+        //         for (const r of abi.receivers) {
+        //             if (r.kind === 'internal-binary') {
+        //                 w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${r.type}') {`);
+        //                 w.inIndent(() => {
+        //                     w.append(`body = beginCell().store(store${r.type}(message)).endCell();`);
+        //                 });
+        //                 w.append(`}`);
+        //             } else if (r.kind === 'internal-empty') {
+        //                 w.append(`if (message === null) {`);
+        //                 w.inIndent(() => {
+        //                     w.append(`body = new Cell();`);
+        //                 });
+        //                 w.append(`}`);
+        //             } else if (r.kind === 'internal-comment') {
+        //                 w.append(`if (message === '${r.comment}') {`);
+        //                 w.inIndent(() => {
+        //                     w.append(`body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();`);
+        //                 });
+        //                 w.append(`}`);
+        //             } else if (r.kind === 'internal-fallback') {
+        //                 w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
+        //                 w.inIndent(() => {
+        //                     w.append(`body = message.asCell();`);
+        //                 });
+        //                 w.append(`}`);
+        //             }
+        //         }
+        //         w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
+        //         w.append();
 
-                // Send message
-                w.append(`await provider.internal(via, { ...args, body: body });`);
-                w.append();
-            });
-            w.append(`}`);
-            w.append();
-        }
+        //         // Send message
+        //         w.append(`await provider.internal(via, { ...args, body: body });`);
+        //         w.append();
+        //     });
+        //     w.append(`}`);
+        //     w.append();
+        // }
 
-        // Getters
-        for (let g of abi.getters) {
-            w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.args)].join(', ')}) {`);
-            w.inIndent(() => {
-                w.append(`let __tuple: TupleItem[] = [];`);
-                for (let a of g.args) {
-                    writeArgumentToStack(a.name, a.type, w);
-                }
-                w.append(`let result = await provider.get('${g.name}', __tuple);`);
+        // // Getters
+        // if (abi.getters) {
+        //     for (let g of abi.getters) {
+        //         w.append(`async get${changeCase.pascalCase(g.name)}(${['provider: ContractProvider', ...writeArguments(g.args)].join(', ')}) {`);
+        //         w.inIndent(() => {
+        //             w.append(`let __tuple: TupleItem[] = [];`);
+        //             for (let a of g.args) {
+        //                 writeArgumentToStack(a.name, a.type, w);
+        //             }
+        //             w.append(`let result = await provider.get('${g.name}', __tuple);`);
 
-                if (g.returns) {
-                    if (g.returns.kind === 'ref') {
-                        if (g.returns.name === 'Bool') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readBooleanOpt();`);
-                            } else {
-                                w.append(`return result.stack.readBoolean();`);
-                            }
-                        } else if (g.returns.name === 'Int') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readBigNumberOpt();`);
-                            } else {
-                                w.append(`return result.stack.readBigNumber();`);
-                            }
-                        } else if (g.returns.name === 'Address') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readAddressOpt();`);
-                            } else {
-                                w.append(`return result.stack.readAddress();`);
-                            }
-                        } else if (g.returns.name === 'Cell') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readCellOpt();`);
-                            } else {
-                                w.append(`return result.stack.readCell();`);
-                            }
-                        } else if (g.returns.name === 'Slice') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readCellOpt();`);
-                            } else {
-                                w.append(`return result.stack.readCell();`);
-                            }
-                        } else if (g.returns.name === 'Builder') {
-                            if (g.returns.optional) {
-                                w.append(`return result.stack.readCellOpt();`);
-                            } else {
-                                w.append(`return result.stack.readCell();`);
-                            }
-                        } else if (g.returns.name === 'String') {
-                            if (g.returns.optional) {
-                                w.append(`let c = result.stack.readCellOpt();`);
-                                w.append(`if (c === null) { return null; }`);
-                                w.append(`return c.beginParse().loadStringTail();`);
-                            } else {
-                                w.append(`return result.stack.readCell().beginParse().loadStringTail();`);
-                            }
-                        } else {
-                            if (g.returns.optional) {
-                                w.append(`let pp = result.stack.readTupleOpt();`);
-                                w.append(`if (!pp) { return null; }`);
-                                w.append(`return loadTuple${g.returns.name}(pp);`);
-                            } else {
-                                w.append(`return loadTuple${g.returns.name}(result.stack);`);
-                            }
-                        }
-                    } else if (g.returns.kind === 'map') {
-                        w.append(`return result.stack.readCellOpt();`);
-                    } else if (g.returns.kind === 'null') {
-                        throw Error('Impossible');
-                    } else if (g.returns.kind === 'void') {
-                        throw Error('Impossible');
-                    } else {
-                        throw Error('Not implemented');
-                    }
-                }
-            });
-            w.append(`}`);
-            w.append();
-        }
+        //             if (g.returns) {
+        //                 if (g.returns.kind === 'ref') {
+        //                     if (g.returns.name === 'Bool') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`return result.stack.readBooleanOpt();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readBoolean();`);
+        //                         }
+        //                     } else if (g.returns.name === 'Int') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`return result.stack.readBigNumberOpt();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readBigNumber();`);
+        //                         }
+        //                     } else if (g.returns.name === 'Address') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`return result.stack.readAddressOpt();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readAddress();`);
+        //                         }
+        //                     } else if (g.returns.name === 'Cell') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`return result.stack.readCellOpt();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readCell();`);
+        //                         }
+        //                     } else if (g.returns.name === 'Slice') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`return result.stack.readCellOpt();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readCell();`);
+        //                         }
+        //                     } else if (g.returns.name === 'Builder') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`return result.stack.readCellOpt();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readCell();`);
+        //                         }
+        //                     } else if (g.returns.name === 'String') {
+        //                         if (g.returns.optional) {
+        //                             w.append(`let c = result.stack.readCellOpt();`);
+        //                             w.append(`if (c === null) { return null; }`);
+        //                             w.append(`return c.beginParse().loadStringTail();`);
+        //                         } else {
+        //                             w.append(`return result.stack.readCell().beginParse().loadStringTail();`);
+        //                         }
+        //                     } else {
+        //                         if (g.returns.optional) {
+        //                             w.append(`let pp = result.stack.readTupleOpt();`);
+        //                             w.append(`if (!pp) { return null; }`);
+        //                             w.append(`return loadTuple${g.returns.name}(pp);`);
+        //                         } else {
+        //                             w.append(`return loadTuple${g.returns.name}(result.stack);`);
+        //                         }
+        //                     }
+        //                 } else if (g.returns.kind === 'map') {
+        //                     w.append(`return result.stack.readCellOpt();`);
+        //                 } else if (g.returns.kind === 'null') {
+        //                     throw Error('Impossible');
+        //                 } else if (g.returns.kind === 'void') {
+        //                     throw Error('Impossible');
+        //                 } else {
+        //                     throw Error('Not implemented');
+        //                 }
+        //             }
+        //         });
+        //         w.append(`}`);
+        //         w.append();
+        //     }
+        // }
     });
     w.append(`}`);
 

@@ -156,57 +156,56 @@ PROGRAM{
   __gen_write_StructWithOptionals PROCINLINE:<{
     s4 PUSH
     ISNULL
+    NOT
     IF:<{
-      s4 POP
-      FALSE
-      s0 s5 XCHG2
-      1 STI
-    }>ELSE<{
       TRUE
       s0 s6 XCHG2
       1 STI
       s1 s4 XCHG
       257 PUSHINT
       STIX
+    }>ELSE<{
+      s4 POP
+      FALSE
+      s0 s5 XCHG2
+      1 STI
       s3 s4 XCHG
     }>
     s2 PUSH
     ISNULL
+    NOT
     IF:<{
-      s2 POP
-      FALSE
-      ROT
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       s1 s2 XCHG
       1 STI
-    }>
-    OVER
-    ISNULL
-    IF:<{
-      FALSE
-      s2 POP
-      1 STI
     }>ELSE<{
-      TRUE
-      SWAP
-      1 STI
-      STREF
-    }>
-    ROT
-    __tact_store_address_opt INLINECALLDICT
-    NEWC
-    s2 PUSH
-    ISNULL
-    IF:<{
       s2 POP
       FALSE
       ROT
       1 STI
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
     }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
+    }>
+    SWAP
+    __tact_store_address_opt INLINECALLDICT
+    NEWC
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
       TRUE
       SWAP
       1 STI
@@ -214,6 +213,11 @@ PROGRAM{
       __gen_SomeGenericStruct_not_null INLINECALLDICT
       s5 s6 XCHG
       __gen_write_SomeGenericStruct INLINECALLDICT
+    }>ELSE<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
     }>
     ENDC
     SWAP
@@ -223,47 +227,45 @@ PROGRAM{
     5 TUPLE
   }>
   __gen_read_StructWithOptionals PROCINLINE:<{
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       257 PUSHINT
       LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       1 LDI
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     __tact_load_address_opt INLINECALLDICT
     SWAP
     LDREF
     SWAP
     CTOS
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
       1 5 BLKDROP2
       __gen_SomeGenericStruct_as_optional INLINECALLDICT
     }>ELSE<{
       DROP
+      PUSHNULL
     }>
     s1 s5 XCHG
     s1 s4 XCHG
@@ -278,60 +280,57 @@ PROGRAM{
     2676568142 PUSHINT
     EQUAL
     129 THROWIFNOT
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       257 PUSHINT
       LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       1 LDI
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     __tact_load_address_opt INLINECALLDICT
     SWAP
     LDREF
     SWAP
     CTOS
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
       __gen_SomeGenericStruct_as_optional INLINECALLDICT
-      SWAP
+    }>ELSE<{
+      PUSHNULL
     }>
+    SWAP
     LDREF
     DROP
     CTOS
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       __gen_read_StructWithOptionals INLINECALLDICT
       1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional INLINECALLDICT
     }>ELSE<{
       DROP
+      PUSHNULL
     }>
     s2 s6 XCHG
     s2 s5 XCHG
@@ -347,144 +346,146 @@ PROGRAM{
   __gen_write_ContractWithOptionals PROCINLINE:<{
     s5 PUSH
     ISNULL
+    NOT
     IF:<{
-      s5 POP
-      FALSE
-      s0 s6 XCHG2
-      1 STI
-    }>ELSE<{
       TRUE
       s0 s7 XCHG2
       1 STI
       s1 s5 XCHG
       257 PUSHINT
       STIX
+    }>ELSE<{
+      s5 POP
+      FALSE
+      s0 s6 XCHG2
+      1 STI
       s4 s5 XCHG
     }>
     s3 PUSH
     ISNULL
+    NOT
     IF:<{
-      s3 POP
-      FALSE
-      s0 s3 XCHG2
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       s1 s3 XCHG
       1 STI
-    }>
-    OVER
-    ISNULL
-    IF:<{
-      FALSE
-      s2 POP
-      1 STI
     }>ELSE<{
-      TRUE
-      SWAP
-      1 STI
-      STREF
-    }>
-    SWAP
-    __tact_store_address_opt INLINECALLDICT
-    NEWC
-    s3 PUSH
-    ISNULL
-    IF:<{
       s3 POP
       FALSE
       s0 s3 XCHG2
       1 STI
-    }>ELSE<{
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
       TRUE
       SWAP
       1 STI
-      s0 s3 XCHG
-      __gen_SomeGenericStruct_not_null INLINECALLDICT
-      s5 s7 XCHG
-      __gen_write_SomeGenericStruct INLINECALLDICT
+      STREF
+    }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
     }>
+    SWAP
+    __tact_store_address_opt INLINECALLDICT
     NEWC
     s2 PUSH
     ISNULL
+    NOT
     IF:<{
-      s2 POP
-      FALSE
-      ROT
-      1 STI
-    }>ELSE<{
       TRUE
       SWAP
       1 STI
       s0 s2 XCHG
-      __gen_StructWithOptionals_not_null INLINECALLDICT
+      __gen_SomeGenericStruct_not_null INLINECALLDICT
       s5 s6 XCHG
+      __gen_write_SomeGenericStruct INLINECALLDICT
+    }>ELSE<{
+      s2 POP
+      FALSE
+      ROT
+      1 STI
+    }>
+    NEWC
+    s3 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      s0 s3 XCHG
+      __gen_StructWithOptionals_not_null INLINECALLDICT
+      s5 s7 XCHG
       __gen_write_StructWithOptionals INLINECALLDICT
+    }>ELSE<{
+      s3 POP
+      FALSE
+      s0 s3 XCHG2
+      1 STI
     }>
     ENDC
-    SWAP
+    ROT
     STREF
     ENDC
     SWAP
     STREF
   }>
   __gen_read_ContractWithOptionals PROCINLINE:<{
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       257 PUSHINT
       LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       1 LDI
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
     }>
     __tact_load_address_opt INLINECALLDICT
     SWAP
     LDREF
     SWAP
     CTOS
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       __gen_read_SomeGenericStruct INLINECALLDICT
       __gen_SomeGenericStruct_as_optional INLINECALLDICT
-      SWAP
+    }>ELSE<{
+      PUSHNULL
     }>
+    SWAP
     LDREF
     DROP
     CTOS
-    PUSHNULL
-    SWAP
     1 LDI
     SWAP
     IF:<{
-      NIP
       __gen_read_StructWithOptionals INLINECALLDICT
       1 5 BLKDROP2
       __gen_StructWithOptionals_as_optional INLINECALLDICT
     }>ELSE<{
       DROP
+      PUSHNULL
     }>
     s2 s6 XCHG
     s2 s5 XCHG
@@ -812,6 +813,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a4c787969646146764d335131377747647475445a65786d73314a636776417658654b6e7662315035486e6b} PUSHSLICE
+    x{697066733a2f2f516d656a66424b38573538457a365146484e504b3661734c685977644a6a717a61714d4534744e6563784c7a6e38} PUSHSLICE
   }>
 }END>c

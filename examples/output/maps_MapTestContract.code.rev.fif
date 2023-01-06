@@ -72,16 +72,17 @@ SETCP0
       129 THROWIFNOT
       257 PUSHINT
       LDI
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       ROTREV
       s2 POP
       s8 s9 XCHG
@@ -159,15 +160,16 @@ SETCP0
       129 THROWIFNOT
       257 PUSHINT
       LDI
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         1 LDI
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       ROTREV
       s2 POP
       s8 s9 XCHG
@@ -245,15 +247,16 @@ SETCP0
       129 THROWIFNOT
       257 PUSHINT
       LDI
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         LDREF
       }> PUSHCONT
-      IF
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
       ROTREV
       s2 POP
       s8 s9 XCHG
@@ -331,20 +334,19 @@ SETCP0
       129 THROWIFNOT
       257 PUSHINT
       LDI
-      PUSHNULL
-      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        s1 POP
         257 PUSHINT
         LDI
         s0 s1 XCHG
         SINGLE
-        s0 s1 XCHG
       }> PUSHCONT
-      IF
-      ROTREV
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s1 s2 XCHG
       s2 POP
       s8 s9 XCHG
       s7 s8 XCHG
@@ -422,18 +424,19 @@ SETCP0
       129 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
-      PUSHNULL
-      s0 s2 XCHG
+      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        1 2 BLKDROP2
         257 PUSHINT
         LDI
-        s1 s2 XCHG
       }> PUSHCONT
-      IF
-      s0 s2 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
+      ROTREV
       s2 POP
       s8 s9 XCHG
       s7 s8 XCHG
@@ -510,17 +513,18 @@ SETCP0
       129 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
-      PUSHNULL
-      s0 s2 XCHG
+      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        1 2 BLKDROP2
         1 LDI
-        s1 s2 XCHG
       }> PUSHCONT
-      IF
-      s0 s2 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
+      ROTREV
       s2 POP
       s8 s9 XCHG
       s7 s8 XCHG
@@ -597,17 +601,18 @@ SETCP0
       129 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
-      PUSHNULL
-      s0 s2 XCHG
+      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        1 2 BLKDROP2
         LDREF
-        s1 s2 XCHG
       }> PUSHCONT
-      IF
-      s0 s2 XCHG
+      <{
+        PUSHNULL
+        s0 s1 XCHG
+      }> PUSHCONT
+      IFELSE
+      ROTREV
       s2 POP
       s8 s9 XCHG
       s7 s8 XCHG
@@ -683,20 +688,20 @@ SETCP0
       129 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
-      PUSHNULL
-      s0 s2 XCHG
+      s0 s1 XCHG
       1 LDI
       s0 s1 XCHG
       <{
-        1 2 BLKDROP2
         257 PUSHINT
         LDI
         s0 s1 XCHG
         SINGLE
-        ROTREV
       }> PUSHCONT
-      IF
-      s0 s2 XCHG
+      <{
+        PUSHNULL
+      }> PUSHCONT
+      IFELSE
+      s1 s2 XCHG
       s2 POP
       s8 s9 XCHG
       s7 s8 XCHG
@@ -898,7 +903,8 @@ SETCP0
       CTOS
       257 PUSHINT
       LDI
-      s0 POP
+      s0 s1 XCHG
+      s1 POP
       SINGLE
     }> PUSHCONT
     IFELSE
@@ -960,7 +966,8 @@ SETCP0
       CTOS
       257 PUSHINT
       LDI
-      s0 POP
+      s0 s1 XCHG
+      s1 POP
       SINGLE
     }> PUSHCONT
     IFELSE
