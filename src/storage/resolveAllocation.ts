@@ -6,6 +6,7 @@ import { crc32 } from "../utils/crc32";
 import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
+import { createTLBType } from "../types/createTLBType";
 
 let store = createContextStore<StorageAllocation>();
 
@@ -79,16 +80,20 @@ export function resolveAllocations(ctx: CompilerContext) {
         // Convert fields
         let ops: AllocationOperation[] = [];
         for (let f of s.fields) {
-            ops.push(getAllocationOperationFromField(f, (name) => store.get(ctx, name)!.size, ctx));
+            ops.push(getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size, ctx));
         }
 
         // Perform allocation
         let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
 
+        // tlb
+        let tlb = createTLBType(s.name, s.fields.map((d) => d.abi), header !== null ? 'message' : 'struct');
+
         // Store allocation
         let allocation: StorageAllocation = {
             type: s,
             header, root,
+            tlb: tlb.tlb,
             size: {
                 bits: root.size.bits + reserveBits,
                 refs: root.size.refs + reserveRefs

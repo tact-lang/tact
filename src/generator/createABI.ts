@@ -1,6 +1,7 @@
-import { ABIType, ContractABI } from "ton-core";
+import { ABIGetter, ABIType, ContractABI } from "ton-core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
+import { getAllocation } from "../storage/resolveAllocation";
 // import { getAllocation } from "../storage/resolveAllocation";
 // import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
 import { getAllTypes } from "../types/resolveDescriptors";
@@ -88,16 +89,17 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
     // Structs
     let types: ABIType[] = [];
-    // for (let t of allTypes) {
-    //     if (t.kind === 'struct') {
-    //         structs.push({
-    //             name: t.name,
-    //             header: 0,
-    //             fields: t.fields.map((v) => ({ name: v.name, type: v.type })),
-    //             allocation: createAbiAllocation(getAllocation(ctx, t.name))
-    //         });
-    //     }
-    // }
+    for (let t of allTypes) {
+        if (t.kind === 'struct') {
+            let allocation = getAllocation(ctx, t.name);
+            types.push({
+                name: t.name,
+                header: allocation.header,
+                tlb: allocation.tlb,
+                fields: t.fields.map((v) => v.abi)
+            } as any);
+        }
+    }
 
     // Init
     // let init: ContractInit | null = null;
@@ -130,16 +132,16 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     // }
 
     // Getters
-    // let getters: CotnractFunction[] = [];
-    // for (let f of contract.functions.values()) {
-    //     if (f.isGetter) {
-    //         getters.push({
-    //             name: f.name,
-    //             args: f.args.map((v) => ({ name: v.name, type: v.type })),
-    //             returns: f.returns
-    //         });
-    //     }
-    // }
+    let getters: ABIGetter[] = [];
+    for (let f of contract.functions.values()) {
+        if (f.isGetter) {
+            getters.push({
+                name: f.name,
+                args: f.args.map((v) => v.),
+                returns: f.returns
+            });
+        }
+    }
 
     // Errors
     let errors: { [key: string]: { message: string } } = {};
@@ -166,12 +168,11 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     return {
-        // version: '0.0.1',
         name: contract.name,
-        // types: [],
+        types,
         // init,
         // receivers,
-        // getters,
+        getters,
         errors
     };
 }

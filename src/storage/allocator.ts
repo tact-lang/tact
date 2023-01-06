@@ -1,3 +1,4 @@
+import { ABIField, ABITypeRef } from "ton-core";
 import { CompilerContext } from "../context";
 import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
@@ -59,98 +60,108 @@ export function getOperationSize(src: AllocationOperation): { bits: number, refs
     throw new Error('Unsupported operation');
 }
 
-export function getAllocationOperationFromField(src: FieldDescription, structLoader: (name: string) => { bits: number, refs: number }, ctx: CompilerContext): AllocationOperation {
-    let type = src.type;
+export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (name: string) => { bits: number, refs: number }, ctx: CompilerContext): AllocationOperation {
 
     // Reference types
-    if (type.kind === 'ref') {
-        let td = getType(ctx, type.name);
+    if (src.kind === 'simple') {
+        // let td = getType(ctx, src.type);
 
         // Handle primitive types
-        if (td.kind === 'primitive') {
-            if (type.name === 'Int') {
-                if (src.as) {
-                    if (src.as === 'coins') {
-                        return { kind: 'coins', optional: type.optional };
-                    } else if (src.as === 'int8') {
-                        return { kind: 'int', bits: 8, optional: type.optional };
-                    } else if (src.as === 'int32') {
-                        return { kind: 'int', bits: 32, optional: type.optional };
-                    } else if (src.as === 'int64') {
-                        return { kind: 'int', bits: 64, optional: type.optional };
-                    } else if (src.as === 'int256') {
-                        return { kind: 'int', bits: 256, optional: type.optional };
-                    } else if (src.as === 'uint8') {
-                        return { kind: 'uint', bits: 8, optional: type.optional };
-                    } else if (src.as === 'uint32') {
-                        return { kind: 'uint', bits: 32, optional: type.optional };
-                    } else if (src.as === 'uint64') {
-                        return { kind: 'uint', bits: 64, optional: type.optional };
-                    } else if (src.as === 'uint256') {
-                        return { kind: 'uint', bits: 256, optional: type.optional };
-                    } else {
-                        throwError('Unknown serialization type ' + src.as, src.ref);
-                    }
-                } else {
-                    return { kind: 'int', bits: 257, optional: type.optional };
-                }
+        // if (td.kind === 'primitive') {
+        if (src.type === 'int') {
+            if (src.format === 8) {
+                return { kind: 'int', bits: 8, optional: src.optional ? src.optional : false };
+            } else if (src.format === 16) {
+                return { kind: 'int', bits: 16, optional: src.optional ? src.optional : false };
+            } else if (src.format === 32) {
+                return { kind: 'int', bits: 32, optional: src.optional ? src.optional : false };
+            } else if (src.format === 64) {
+                return { kind: 'int', bits: 64, optional: src.optional ? src.optional : false };
+            } else if (src.format === 128) {
+                return { kind: 'int', bits: 128, optional: src.optional ? src.optional : false };
+            } else if (src.format === 256) {
+                return { kind: 'int', bits: 256, optional: src.optional ? src.optional : false };
+            } else if (src.format === 257) {
+                return { kind: 'int', bits: 257, optional: src.optional ? src.optional : false };
+            } else if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported int format ' + src.format);
             }
-            if (type.name === 'Bool') {
-                if (src.as) {
-                    throwError('Unknown serialization type ' + src.as, src.ref);
-                }
-                return { kind: 'boolean', optional: type.optional };
+            return { kind: 'int', bits: 257, optional: src.optional ? src.optional : false };
+        }
+        if (src.type === 'uint') {
+            if (src.format === 8) {
+                return { kind: 'uint', bits: 8, optional: src.optional ? src.optional : false };
+            } else if (src.format === 16) {
+                return { kind: 'uint', bits: 16, optional: src.optional ? src.optional : false };
+            } else if (src.format === 32) {
+                return { kind: 'uint', bits: 32, optional: src.optional ? src.optional : false };
+            } else if (src.format === 64) {
+                return { kind: 'uint', bits: 64, optional: src.optional ? src.optional : false };
+            } else if (src.format === 128) {
+                return { kind: 'uint', bits: 128, optional: src.optional ? src.optional : false };
+            } else if (src.format === 256) {
+                return { kind: 'uint', bits: 256, optional: src.optional ? src.optional : false };
+            } else if (src.format === 'coins') {
+                return { kind: 'coins', optional: src.optional ? src.optional : false };
+            } else if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported int format ' + src.format);
             }
-            if (type.name === 'Cell') {
-                if (src.as) {
-                    if (src.as === 'remaining') {
-                        return { kind: 'cell', optional: type.optional, format: 'remainder' };
-                    }
-                    throwError('Unknown serialization type ' + src.as, src.ref);
-                }
-                return { kind: 'cell', optional: type.optional, format: 'default' };
+            return { kind: 'uint', bits: 256, optional: src.optional ? src.optional : false };
+        }
+        if (src.type === 'bool') {
+            if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported bool format ' + src.format);
             }
-            if (type.name === 'Slice') {
-                if (src.as) {
-                    if (src.as === 'remaining') {
-                        return { kind: 'slice', optional: type.optional, format: 'remainder' };
-                    } else if (src.as === 'bytes64') {
-                        return { kind: 'fixed-bytes', bytes: 64, optional: type.optional };
-                    } else if (src.as === 'bytes32') {
-                        return { kind: 'fixed-bytes', bytes: 32, optional: type.optional };
-                    }
-                    throwError('Unknown serialization type ' + src.as, src.ref);
-                }
-                return { kind: 'slice', optional: type.optional, format: 'default' };
+            return { kind: 'boolean', optional: src.optional ? src.optional : false };
+        }
+        if (src.type === 'cell') {
+            if (src.format === 'remainder') {
+                return { kind: 'cell', optional: src.optional ? src.optional : false, format: 'remainder' };
+            } else if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported cell format ' + src.format);
             }
-            if (type.name === 'Address') {
-                return { kind: 'address', optional: type.optional };
+            return { kind: 'cell', optional: src.optional ? src.optional : false, format: 'default' };
+        }
+        if (src.type === 'slice') {
+            if (src.format === 'remainder') {
+                return { kind: 'slice', optional: src.optional ? src.optional : false, format: 'remainder' };
+            } else if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported slice format ' + src.format);
             }
-            throw new Error('Unsupported primitive type: ' + type.name);
+            return { kind: 'slice', optional: src.optional ? src.optional : false, format: 'default' };
+        }
+        if (src.type === 'address') {
+            return { kind: 'address', optional: src.optional ? src.optional : false };
+        }
+        if (src.type === 'fixed-bytes') {
+            if (src.format === 32 || src.format === 64) {
+                return { kind: 'fixed-bytes', bytes: src.format, optional: src.optional ? src.optional : false };
+            } else {
+                throw Error('Unsupported fixed-bytes format ' + src.format);
+            }
+        }
+        if (src.type === 'string') {
+            if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported string format ' + src.format);
+            }
+            return { kind: 'string', optional: src.optional ? src.optional : false };
         }
 
-        // Handle struct types
-        if (td.kind === 'struct') {
-
-            // Load referenced struct
-            let size = structLoader(td.name);
-            if (src.as) {
-                if (src.as === 'reference') {
-                    return { kind: 'struct', type: td.name, ref: true, optional: type.optional, size };
-                } else {
-                    throwError('Unknown serialization type ' + src.as, src.ref);
-                }
-            }
-            return { kind: 'struct', type: td.name, ref: false, optional: type.optional, size };
+        // Struct types
+        let size = structLoader(src.type);
+        if (src.format === 'ref') {
+            return { kind: 'struct', type: src.type, ref: true, optional: src.optional ? src.optional : false, size };
+        } else if (src.format !== undefined && src.format !== null) {
+            throw Error('Unsupported struct format ' + src.format);
+        } else {
+            return { kind: 'struct', type: src.type, ref: false, optional: src.optional ? src.optional : false, size };
         }
-
-        throw new Error('Not-serializable type: ' + type.name);
     }
 
     // Map
-    if (type.kind === 'map') {
-        if (src.as) {
-            throwError('Unknown serialization type ' + src.as, src.ref);
+    if (src.kind === 'map') {
+        if (src.format !== null && src.format !== undefined) {
+            throw Error('Unsupported map format ' + src.format);
         }
         return { kind: 'map' };
     }

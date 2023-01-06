@@ -5,6 +5,7 @@ import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { resolveConstantValue } from "./resolveConstantValue";
+import { resolveABIType } from "./resolveABITypeRef";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -17,6 +18,7 @@ let allowedPrimitiveFields: { [key: string]: boolean } = {
     ['Address']: true,
 
     ['String']: false,
+    ['StringBuilder']: false,
     ['Builder']: false,
 }
 
@@ -115,6 +117,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 fields: [],
                 traits: [],
+                header: null,
+                tlb: null,
                 functions: new Map(),
                 receivers: [],
                 dependsOn: [],
@@ -128,6 +132,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'contract',
                 name: a.name,
                 uid,
+                header: null,
+                tlb: null,
                 fields: [],
                 traits: [],
                 functions: new Map(),
@@ -143,6 +149,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'struct',
                 name: a.name,
                 uid,
+                header: null,
+                tlb: null,
                 fields: [],
                 traits: [],
                 functions: new Map(),
@@ -158,6 +166,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 kind: 'trait',
                 name: a.name,
                 uid,
+                header: null,
+                tlb: null,
                 fields: [],
                 traits: [],
                 functions: new Map(),
@@ -193,7 +203,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
             d = resolveConstantValue(tr, src.init);
         }
 
-        return { name: src.name, type: tr, index, as: src.as, default: d, ref: src.ref, ast: src };
+        // Resolve abi type
+        let type = resolveABIType(src);
+
+        return { name: src.name, type: tr, index, as: src.as, default: d, ref: src.ref, ast: src, abi: { name: src.name, type } };
     }
 
     function buildConstantDescription(src: ASTConstant): ConstantDescription {

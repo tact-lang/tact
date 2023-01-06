@@ -1,9 +1,12 @@
+import { ABIField } from "ton-core";
 import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract' | 'trait';
     name: string;
     uid: number;
+    header: number | null;
+    tlb: string | null;
     fields: FieldDescription[];
     traits: TypeDescription[];
     functions: Map<string, FunctionDescription>;
@@ -36,7 +39,8 @@ export type FieldDescription = {
     as: string | null,
     default: bigint | boolean | string | null | undefined,
     ref: ASTRef,
-    ast: ASTNode
+    ast: ASTNode,
+    abi: ABIField
 }
 
 export type ConstantDescription = {
