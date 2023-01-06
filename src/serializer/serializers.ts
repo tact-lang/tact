@@ -2,16 +2,26 @@ import { ABITypeRef } from "ton-core";
 import { Writer } from "../utils/Writer";
 
 export type Serializer<T> = {
+
+    // Typescript
     tsType: (v: T) => string,
     tsLoad: (v: T, slice: string, field: string, w: Writer) => void,
     tsLoadTuple: (v: T, reader: string, field: string, w: Writer) => void,
     tsStore: (v: T, builder: string, field: string, w: Writer) => void,
     tsStoreTuple: (v: T, to: string, field: string, w: Writer) => void,
+
+    // FunC
+    funcType: (v: T) => string,
+
+    // Matcher and measurer
     abiMatcher: (src: ABITypeRef) => T | null,
     size: (v: T) => { bits: number, refs: number } | 'terminal'
 };
 
 let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
+    funcType(v) {
+        return 'int';
+    },
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -61,6 +71,9 @@ let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
 };
 
 let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
+    funcType(v) {
+        return 'int';
+    },
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -110,6 +123,9 @@ let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
 };
 
 let coinsSerializer: Serializer<{ optional: boolean }> = {
+    funcType(v) {
+        return 'int';
+    },
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -157,6 +173,9 @@ let coinsSerializer: Serializer<{ optional: boolean }> = {
 };
 
 let boolSerializer: Serializer<{ optional: boolean }> = {
+    funcType(v) {
+        return 'int';
+    },
     tsType(v) {
         if (v.optional) {
             return 'boolean | null';
@@ -204,6 +223,9 @@ let boolSerializer: Serializer<{ optional: boolean }> = {
 };
 
 let addressSerializer: Serializer<{ optional: boolean }> = {
+    funcType(v) {
+        return 'slice';
+    },
     tsType(v) {
         if (v.optional) {
             return 'Address | null';
@@ -251,6 +273,9 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
 };
 
 let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = {
+    funcType(v) {
+        return v.kind;
+    },
     tsType(v) {
         if (v.optional) {
             return 'Cell | null';
@@ -302,6 +327,9 @@ let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = 
 }
 
 let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
+    funcType(v) {
+        return v.kind;
+    },
     tsType(v) {
         return 'Cell';
     },
@@ -337,6 +365,9 @@ let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
 }
 
 let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
+    funcType(v) {
+        return 'slice';
+    },
     tsType(v) {
         if (v.optional) {
             return 'Buffer | null';
@@ -384,6 +415,9 @@ let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
 };
 
 let stringSerializer: Serializer<{ optional: boolean }> = {
+    funcType(v) {
+        return 'slice';
+    },
     tsType(v) {
         if (v.optional) {
             return 'string | null';
@@ -430,7 +464,42 @@ let stringSerializer: Serializer<{ optional: boolean }> = {
     },
 }
 
+let guardedTypes = ['int', 'uint', 'address', 'bool', 'string', 'cell', 'slice', 'builder', 'fixed-bytes'];
+let guard: Serializer<{}> = {
+    abiMatcher(src) {
+        if (src.kind === 'simple') {
+            if (guardedTypes.includes(src.type)) {
+                throw Error(`Unable to resolve serializer for ${src.type} with ${src.format ? src.format : null} format`);
+            }
+        }
+        return null;
+    },
+    funcType(v) {
+        throw Error('Unreachable');
+    },
+    tsType(v) {
+        throw Error('Unreachable');
+    },
+    tsLoad(v, slice, field, w) {
+        throw Error('Unreachable');
+    },
+    tsLoadTuple(v, reader, field, w) {
+        throw Error('Unreachable');
+    },
+    tsStore(v, builder, field, w) {
+        throw Error('Unreachable');
+    },
+    tsStoreTuple(v, to, field, w) {
+        throw Error('Unreachable');
+    },
+    size(v) {
+        throw Error('Unreachable');
+    },
+}
+
 export const serializers: Serializer<any>[] = [
+
+    // Primitive types
     intSerializer,
     uintSerializer,
     coinsSerializer,
@@ -439,5 +508,8 @@ export const serializers: Serializer<any>[] = [
     cellSerializer,
     remainderSerializer,
     fixedBytesSerializer,
-    stringSerializer
+    stringSerializer,
+
+    // Guard
+    guard
 ];
