@@ -1,5 +1,5 @@
-import { ABIField, ABIType } from "ton-core";
-import { Serializer, serializers } from "../../serializer/serializers";
+import { ABIField, ABIType, ABITypeRef } from "ton-core";
+import { serializers } from "../../serializer/serializers";
 import { AllocationCell } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
 import { getTSFieldType } from "./getTSFieldType";
@@ -8,7 +8,16 @@ export function writeStruct(s: ABIType, w: Writer) {
     w.append(`export type ${s.name} = {`);
     w.inIndent(() => {
         w.append(`$$type: '${s.name}';`);
-        for (let f of s.fields) {
+        outer: for (let f of s.fields) {
+
+            for (let s of serializers) {
+                let v = s.abiMatcher(f.type);
+                if (v) {
+                    w.append(`${f.name}: ${s.tsType(v)};`);
+                    continue outer;
+                }
+            }
+
             w.append(`${f.name}: ${getTSFieldType(f.type)};`);
         }
     });
@@ -141,7 +150,7 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
             throw Error('Unsupported struct format: ' + type.format);
         }
         if (type.optional) {
-            w.append(`if (${name} !== null) { b_${gen}.storeBit(true); store${type.type}(${name}, b_${gen}); } else { b_${gen}.storeBit(false); }`);
+            w.append(`if (${name} !== null) { b_${gen}.storeBit(true); b_${gen}.store(store${type.type}(${name})); } else { b_${gen}.storeBit(false); }`);
         } else {
             w.append(`b_${gen}.store(store${type.type}(${name}));`);
         }
@@ -216,7 +225,6 @@ function writeTupleFieldParser(f: ABIField, s: ABIType, w: Writer) {
     // Dict Serializer
     //
 
-
     if (f.type.kind === 'map') {
         w.append(`const ${name} = slice.readCellOpt();`);
         return;
@@ -225,78 +233,69 @@ function writeTupleFieldParser(f: ABIField, s: ABIType, w: Writer) {
     throw Error('Unsupported type');
 }
 
-// export function writeTupleSerializer(s: ABIType, w: Writer) {
-//     w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
-//     w.inIndent(() => {
-//         w.append(`let __tuple: TupleItem[] = [];`);
-//         for (let f of s.fields) {
-//             writeVariableToStack(`source.${f.name}`, f.type, w);
-//         }
-//         w.append(`return __tuple;`);
-//     });
-//     w.append(`}`);
-//     w.append();
-// }
+export function writeTupleSerializer(s: ABIType, w: Writer) {
+    w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
+    w.inIndent(() => {
+        w.append(`let builder = new TupleBuilder();`);
+        for (let f of s.fields) {
+            writeVariableToStack(`source.${f.name}`, f.type, w);
+        }
+        w.append(`return builder.build();`);
+    });
+    w.append(`}`);
+    w.append();
+}
 
-// export function writeArgumentToStack(name: string, ref: ABITypeRef, w: Writer) {
-//     writeVariableToStack(name, ref, w);
-// }
+export function writeArgumentToStack(name: string, ref: ABITypeRef, w: Writer) {
+    writeVariableToStack(name, ref, w);
+}
 
-// function writeVariableToStack(name: string, ref: ABITypeRef, w: Writer) {
+function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
 
-//     //
-//     // Reference
-//     //
+    //
+    // Default Serializers
+    //
 
-//     if (ref.kind === 'simple') {
-//         if (ref.optional) {
-//             w.append(`if (${name} !== null) {`);
-//             w.inIndent(() => {
-//                 writeVariableToStack(name, { ...ref, optional: false }, w);
-//             });
-//             w.append('} else {');
-//             w.inIndent(() => {
-//                 w.append(`__tuple.push({ type: 'null' });`);
-//             });
-//             w.append('}');
-//             return;
-//         }
+    for (let s of serializers) {
+        let v = s.abiMatcher(type);
+        if (v) {
+            s.tsStoreTuple(v, `builder`, name, w);
+            return;
+        }
+    }
 
-//         if (ref.type === 'int') {
-//             w.append(`__tuple.push({ type: 'int', value: ${name} });`);
-//             return;
-//         } else if (ref.type === 'bool') {
-//             w.append(`__tuple.push({ type: 'int', value: ${name} ? -1n : 0n });`);
-//             return;
-//         } else if (ref.type === 'cell') {
-//             w.append(`__tuple.push({ type: 'cell', cell: ${name} });`);
-//             return;
-//         } else if (ref.type === 'slice') {
-//             w.append(`__tuple.push({ type: 'slice', cell: ${name} });`);
-//             return;
-//         } else if (ref.type === 'builder') {
-//             w.append(`__tuple.push({ type: 'builder', cell: ${name} });`);
-//             return;
-//         } else if (ref.type === 'address') {
-//             w.append(`__tuple.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
-//             return;
-//         } else if (ref.type === 'string') {
-//             w.append(`__tuple.push({ type: 'slice', cell: beginCell().storeStringTail(${name}).endCell() });`);
-//             return;
-//         } else {
-//             w.append(`__tuple.push({ type: 'tuple', items: storeTuple${ref.type}(${name}) });`);
-//             return;
-//         }
-//     }
+    //
+    // Struct serializer
+    //
 
-//     //
-//     // Map
-//     //
+    if (type.kind === 'simple') {
+        if (type.format !== null && type.format !== undefined) {
+            throw Error('Unsupported struct format: ' + type.format);
+        }
+        if (type.optional) {
+            w.append(`if (${name} !== null) {`);
+            w.inIndent(() => {
+                w.append(`builder.writeTuple(storeTuple${type.type}(${name}));`);
+            });
+            w.append(`} else {`);
+            w.inIndent(() => {
+                w.append(`builder.writeTuple(null);`);
+            });
+            w.append(`}`);
+        } else {
+            w.append(`builder.writeTuple(storeTuple${type.type}(${name}));`);
+        }
+        return;
+    }
 
-//     if (ref.kind === 'map') {
-//         w.append(`__tuple.push({ type: 'cell', cell: ${name} });`);
-//         return;
-//     }
+    //
+    // Map serializer
+    //
 
-//     throw Error(`Unsupported type`);
-// }
+    if (type.kind === 'map') {
+        w.append(`builder.writeCell(${name});`);
+        return;
+    }
+
+    throw Error(`Unsupported type`);
+}

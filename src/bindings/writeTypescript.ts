@@ -1,7 +1,7 @@
 import { Writer } from "../utils/Writer";
 import { getTSFieldType } from "./typescript/getTSFieldType";
 import { ABIArgument, ABIType, ContractABI } from "ton-core";
-import { writeParser, writeSerializer, writeStruct, writeTupleParser } from "./typescript/writeStruct";
+import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
 import { topologicalSort } from "../utils/utils";
 import { allocate, getAllocationOperationFromField } from "../storage/allocator";
@@ -12,7 +12,7 @@ function writeArguments(args: ABIArgument[]) {
 
 export function writeTypescript(abi: ContractABI, init?: { code: string, initCode: string, system: string, args: ABIArgument[] }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';`);
+    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';`);
     w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
     w.append();
 
@@ -46,16 +46,12 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             allocations[f.name] = { size: { bits: allocation.size.bits + headerBits, refs: allocation.size.refs }, root: allocation };
         }
 
-        // for (let s of abi.types) {
-        //     allocations[s.name] = s.allocation;
-        // }
-
         for (let s of abi.types) {
             writeStruct(s, w);
             writeSerializer(s, allocations[s.name].root, w);
             writeParser(s, allocations[s.name].root, w);
             writeTupleParser(s, w);
-            // writeTupleSerializer(s, w);
+            writeTupleSerializer(s, w);
         }
     }
 
@@ -71,18 +67,19 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             w.append(`let systemCell = Cell.fromBase64(__system);`);
 
             // Stack
-            w.append('let __tuple: TupleItem[] = [];');
-            w.append(`__tuple.push({ type: 'cell', cell: systemCell });`);
-            // for (let a of init.args) {
-            //     writeArgumentToStac(a.name, a.type, w);
-            // }
+            w.append('let builder = new TupleBuilder();');
+            w.append(`builder.writeCell(systemCell);`);
+            for (let a of init.args) {
+                writeArgumentToStack(a.name, a.type, w);
+            }
+            w.append(`let __stack = builder.build();`);
 
             // Deploy
             w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
             w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
             w.append(`let system = await ContractSystem.create();`);
             w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
-            w.append(`let res = await executor.get('init', __tuple);`);
+            w.append(`let res = await executor.get('init', __stack);`);
             w.append(`if (!res.success) { throw Error(res.error); }`);
             w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
             w.inIndent(() => {
@@ -164,62 +161,85 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
         w.append();
 
         // Receivers
-        // if (abi.receivers.length > 0) {
-        //     let receivers: string[] = [];
-        //     for (const r of abi.receivers) {
-        //         if (r.kind === 'internal-empty') {
-        //             receivers.push(`null`);
-        //         } else if (r.kind === 'internal-binary') {
-        //             receivers.push(`${r.type}`);
-        //         } else if (r.kind === 'internal-comment') {
-        //             receivers.push(`'${r.comment}'`);
-        //         } else if (r.kind === 'internal-fallback') {
-        //             receivers.push(`Slice`);
-        //         }
-        //     }
-        //     w.append(`async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${receivers.join(' | ')}) {`);
-        //     w.inIndent(() => {
-        //         w.append();
+        if (abi.receivers && abi.receivers.length > 0) {
 
-        //         // Parse message
-        //         w.append(`let body: Cell | null = null;`);
-        //         for (const r of abi.receivers) {
-        //             if (r.kind === 'internal-binary') {
-        //                 w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${r.type}') {`);
-        //                 w.inIndent(() => {
-        //                     w.append(`body = beginCell().store(store${r.type}(message)).endCell();`);
-        //                 });
-        //                 w.append(`}`);
-        //             } else if (r.kind === 'internal-empty') {
-        //                 w.append(`if (message === null) {`);
-        //                 w.inIndent(() => {
-        //                     w.append(`body = new Cell();`);
-        //                 });
-        //                 w.append(`}`);
-        //             } else if (r.kind === 'internal-comment') {
-        //                 w.append(`if (message === '${r.comment}') {`);
-        //                 w.inIndent(() => {
-        //                     w.append(`body = beginCell().storeUint(0, 32).storeBuffer(Buffer.from(message)).endCell();`);
-        //                 });
-        //                 w.append(`}`);
-        //             } else if (r.kind === 'internal-fallback') {
-        //                 w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
-        //                 w.inIndent(() => {
-        //                     w.append(`body = message.asCell();`);
-        //                 });
-        //                 w.append(`}`);
-        //             }
-        //         }
-        //         w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
-        //         w.append();
+            // Types
+            let receivers: string[] = [];
+            for (const r of abi.receivers) {
+                if (r.receiver !== 'internal') {
+                    continue;
+                }
+                if (r.message.kind === 'empty') {
+                    receivers.push(`null`);
+                } else if (r.message.kind === 'typed') {
+                    receivers.push(`${r.message.type}`);
+                } else if (r.message.kind === 'text') {
+                    if (r.message.text !== null && r.message.text !== undefined) {
+                        receivers.push(`'${r.message.text}'`);
+                    } else {
+                        receivers.push(`string`);
+                    }
+                } else if (r.message.kind === 'any') {
+                    receivers.push(`Slice`);
+                }
+            }
 
-        //         // Send message
-        //         w.append(`await provider.internal(via, { ...args, body: body });`);
-        //         w.append();
-        //     });
-        //     w.append(`}`);
-        //     w.append();
-        // }
+            // Receiver function
+            w.append(`async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: ${receivers.join(' | ')}) {`);
+            w.inIndent(() => {
+                w.append();
+
+                // Parse message
+                w.append(`let body: Cell | null = null;`);
+                for (const r of abi.receivers!) {
+                    if (r.receiver !== 'internal') {
+                        continue;
+                    }
+                    const msg = r.message;
+                    if (msg.kind === 'typed') {
+                        w.append(`if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === '${msg.type}') {`);
+                        w.inIndent(() => {
+                            w.append(`body = beginCell().store(store${msg.type}(message)).endCell();`);
+                        });
+                        w.append(`}`);
+                    } else if (msg.kind === 'empty') {
+                        w.append(`if (message === null) {`);
+                        w.inIndent(() => {
+                            w.append(`body = new Cell();`);
+                        });
+                        w.append(`}`);
+                    } else if (msg.kind === 'text') {
+                        if ((msg.text === null || msg.text === undefined)) {
+                            w.append(`if (typeof message === 'string') {`);
+                            w.inIndent(() => {
+                                w.append(`body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`);
+                            });
+                            w.append(`}`);
+                        } else {
+                            w.append(`if (message === '${msg.text}') {`);
+                            w.inIndent(() => {
+                                w.append(`body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`);
+                            });
+                            w.append(`}`);
+                        }
+                    } else if (msg.kind === 'any') {
+                        w.append(`if (message && typeof message === 'object' && message instanceof Slice) {`);
+                        w.inIndent(() => {
+                            w.append(`body = message.asCell();`);
+                        });
+                        w.append(`}`);
+                    }
+                }
+                w.append(`if (body === null) { throw new Error('Invalid message type'); }`);
+                w.append();
+
+                // Send message
+                w.append(`await provider.internal(via, { ...args, body: body });`);
+                w.append();
+            });
+            w.append(`}`);
+            w.append();
+        }
 
         // // Getters
         // if (abi.getters) {

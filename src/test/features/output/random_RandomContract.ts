@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -110,6 +126,18 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
+}
+
 export type Deploy = {
     $$type: 'Deploy';
     queryId: bigint;
@@ -133,6 +161,12 @@ export function loadDeploy(slice: Slice) {
 function loadTupleDeploy(source: TupleReader) {
     let _queryId = source.readBigNumber();
     return { $$type: 'Deploy' as const, queryId: _queryId };
+}
+
+function storeTupleDeploy(source: Deploy) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
 }
 
 export type DeployOk = {
@@ -160,18 +194,25 @@ function loadTupleDeployOk(source: TupleReader) {
     return { $$type: 'DeployOk' as const, queryId: _queryId };
 }
 
+function storeTupleDeployOk(source: DeployOk) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
+}
+
 async function RandomContract_init() {
     const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
     const __code = 'te6ccgECGwEAAfoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAXGAIBIAYHAgFIDg8CAdQICQIBWAoLANEcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEJWXPcy6jjHtRNDUAfhigQEB1wABMQHTHwGCEJWXPcy68uCB0z8BMfAUyPhCAcwBAYEBAc8Aye1U4DDywIKAACwgbvLQgIAAVWUfwHKAOBwAcoAgCASAMDQAdPhDbpf4JfgVf/hj3vgQgACM+ENul/gl+BV/+GPeIaH4EaCACASAQEQAh1kAMEIab/cEKxlj+Wf5PgIwCASASEwIBIBUWAfcyHEBygFQB/ANcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDchw8A1w8A0kbrOZf/ANBPABUATMlTQDcPAN4iRus5l/8A0E8AFQBMyVNANw8A3icPANAn/wDQLJWMyWMzMBcPAN4iFus5h/8A0B8AEBzJQxcPAN4skBgFAAlPhBbyQQI18DfwJwgEJYbW3wEIAAE+wAABww8A6AACRsEvAPgACe/O29qJoagD8MUCAgOuAAJis+AnAIBIBkaAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gAJbtoftRNDUAfhigQEB1wABMfASg=';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (RandomContract_errors[res.exitCode]) {
@@ -234,6 +275,18 @@ export class RandomContract implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Deploy) {
+        
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
+            body = beginCell().store(storeDeploy(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

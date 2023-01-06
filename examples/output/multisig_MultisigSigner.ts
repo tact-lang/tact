@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -108,6 +124,18 @@ function loadTupleSendParameters(source: TupleReader) {
     let _code = source.readCellOpt();
     let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Request = {
@@ -159,6 +187,18 @@ function loadTupleRequest(source: TupleReader) {
     return { $$type: 'Request' as const, requested: _requested, to: _to, value: _value, timeout: _timeout, bounce: _bounce, mode: _mode, body: _body };
 }
 
+function storeTupleRequest(source: Request) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.requested);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.timeout);
+    builder.writeBoolean(source.bounce);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    return builder.build();
+}
+
 export type Signed = {
     $$type: 'Signed';
     request: Request;
@@ -184,18 +224,29 @@ function loadTupleSigned(source: TupleReader) {
     return { $$type: 'Signed' as const, request: _request };
 }
 
+function storeTupleSigned(source: Signed) {
+    let builder = new TupleBuilder();
+    builder.writeTuple(storeTupleRequest(source.request));
+    return builder.build();
+}
+
 async function MultisigSigner_init(master: Address, members: Cell, requiredWeight: bigint, request: Request) {
     const __init = 'te6ccgEBCAEAiQABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQANoUrd4AvgDQAB1AIBIAYHAAVW8ngAs0cHAMyMwMBwVQk1AIBkQUUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFus5V/AcoAzJRwMsoA4skBzMmA==';
     const __code = 'te6ccgECHgEAA+oAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAnUcHQIBIAYHAgFIEhMCASAICQABvQIBSAoLAgFYEBECfzt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIMAAItdJwSGw4wLAAJEw4w3ywIKAMDQALCBu8tCAgAaxb7UTQ1AH4YvpAAQH0BIEBAdcAgQEB1wDSANQB0NMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMH0gABkdSSbQHiVWA3EHwQexB6EHkQeFUFbBzwFA4B+vkBgvAirubQptwUZXcnfdWNBq4wkKPN09iohWEYQgiuX26wObqO1e1E0NQB+GL6QAEB9ASBAQHXAIEBAdcA0gDUAdDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVgNxB8EHsQehB5EHhVBWwc8BXgDwCmyPhCAcxVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRiCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOLJAczJ7VQAqsj4QgHMVbBQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6zlX8BygDMlHAyygDiyQHMye1U2zEAIwhbpVbWfRZMODIAc8AQTP0QYAAdEEz9ApvoZQB1wAw4FttgAgEgFBUCAUgZGgAVWUfwHKAOBwAcoAgCASAWFwH3MhxAcoBUAfwEXABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8BHIcPARcPARJG6zmX/wEQTwAVAEzJU0A3DwEeIkbrOZf/ARBPABUATMlTQDcPAR4nDwEQJ/8BECyVjMljMzAXDwEeIhbrOYf/ARAfABAcyUMXDwEeLJAYBgABRsV4AAE+wAAASABdSBEpMk+CO88vSCAJ9qKLPy9PhBbyQQI18DK4EBCyKBAQHwB/ABHIEBC1ANbYEBAfAGUKugUwi+4wAJgGwCgN39wcIEAglR5h1R5h1YSyFVgghAZF931UAjLHweCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOLJL1UgbW3wEgcAs7C/u1E0NQB+GL6QAEB9ASBAQHXAIEBAdcA0gDUAdDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVgNxB8EHsQehB5EHhVBWwc8BPwDoABNsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5g';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeAddress(master);
+    builder.writeCell(members);
+    builder.writeNumber(requiredWeight);
+    builder.writeTuple(storeTupleRequest(request));
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (MultisigSigner_errors[res.exitCode]) {
@@ -262,6 +313,21 @@ export class MultisigSigner implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | 'YES') {
+        
+        let body: Cell | null = null;
+        if (message === null) {
+            body = new Cell();
+        }
+        if (message === 'YES') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

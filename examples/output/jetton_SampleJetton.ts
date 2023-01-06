@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -110,6 +126,18 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -133,6 +161,12 @@ export function loadChangeOwner(slice: Slice) {
 function loadTupleChangeOwner(source: TupleReader) {
     let _newOwner = source.readAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
+function storeTupleChangeOwner(source: ChangeOwner) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.newOwner);
+    return builder.build();
 }
 
 export type TokenTransfer = {
@@ -184,6 +218,18 @@ function loadTupleTokenTransfer(source: TupleReader) {
     return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
+function storeTupleTokenTransfer(source: TokenTransfer) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.destination);
+    builder.writeAddress(source.responseDestination);
+    builder.writeCell(source.customPayload);
+    builder.writeNumber(source.forwardTonAmount);
+    builder.writeSlice(source.forwardPayload);
+    return builder.build();
+}
+
 export type TokenTransferInternal = {
     $$type: 'TokenTransferInternal';
     queryId: bigint;
@@ -229,6 +275,17 @@ function loadTupleTokenTransferInternal(source: TupleReader) {
     return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
 }
 
+function storeTupleTokenTransferInternal(source: TokenTransferInternal) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.from);
+    builder.writeAddress(source.responseAddress);
+    builder.writeNumber(source.forwardTonAmount);
+    builder.writeSlice(source.forwardPayload);
+    return builder.build();
+}
+
 export type TokenNotification = {
     $$type: 'TokenNotification';
     queryId: bigint;
@@ -264,6 +321,15 @@ function loadTupleTokenNotification(source: TupleReader) {
     let _from = source.readAddress();
     let _forwardPayload = source.readCell();
     return { $$type: 'TokenNotification' as const, queryId: _queryId, amount: _amount, from: _from, forwardPayload: _forwardPayload };
+}
+
+function storeTupleTokenNotification(source: TokenNotification) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.from);
+    builder.writeSlice(source.forwardPayload);
+    return builder.build();
 }
 
 export type TokenBurn = {
@@ -303,6 +369,15 @@ function loadTupleTokenBurn(source: TupleReader) {
     return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
+function storeTupleTokenBurn(source: TokenBurn) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.responseAddress);
+    return builder.build();
+}
+
 export type TokenBurnNotification = {
     $$type: 'TokenBurnNotification';
     queryId: bigint;
@@ -340,6 +415,15 @@ function loadTupleTokenBurnNotification(source: TupleReader) {
     return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
+function storeTupleTokenBurnNotification(source: TokenBurnNotification) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.responseAddress);
+    return builder.build();
+}
+
 export type TokenExcesses = {
     $$type: 'TokenExcesses';
     queryId: bigint;
@@ -365,6 +449,12 @@ function loadTupleTokenExcesses(source: TupleReader) {
     return { $$type: 'TokenExcesses' as const, queryId: _queryId };
 }
 
+function storeTupleTokenExcesses(source: TokenExcesses) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
+}
+
 export type TokenUpdateContent = {
     $$type: 'TokenUpdateContent';
     content: Cell | null;
@@ -388,6 +478,12 @@ export function loadTokenUpdateContent(slice: Slice) {
 function loadTupleTokenUpdateContent(source: TupleReader) {
     let _content = source.readCellOpt();
     return { $$type: 'TokenUpdateContent' as const, content: _content };
+}
+
+function storeTupleTokenUpdateContent(source: TokenUpdateContent) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.content);
+    return builder.build();
 }
 
 export type JettonData = {
@@ -429,6 +525,16 @@ function loadTupleJettonData(source: TupleReader) {
     return { $$type: 'JettonData' as const, totalSupply: _totalSupply, mintable: _mintable, owner: _owner, content: _content, walletCode: _walletCode };
 }
 
+function storeTupleJettonData(source: JettonData) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.totalSupply);
+    builder.writeBoolean(source.mintable);
+    builder.writeAddress(source.owner);
+    builder.writeCell(source.content);
+    builder.writeCell(source.walletCode);
+    return builder.build();
+}
+
 export type JettonWalletData = {
     $$type: 'JettonWalletData';
     balance: bigint;
@@ -464,6 +570,15 @@ function loadTupleJettonWalletData(source: TupleReader) {
     return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
 }
 
+function storeTupleJettonWalletData(source: JettonWalletData) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.balance);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.master);
+    builder.writeCell(source.walletCode);
+    return builder.build();
+}
+
 export type Mint = {
     $$type: 'Mint';
     amount: bigint;
@@ -489,18 +604,27 @@ function loadTupleMint(source: TupleReader) {
     return { $$type: 'Mint' as const, amount: _amount };
 }
 
+function storeTupleMint(source: Mint) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.amount);
+    return builder.build();
+}
+
 async function SampleJetton_init(owner: Address, content: Cell | null) {
     const __init = 'te6ccgEBBgEARgABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQARdOD+CZGYhmigh/QEA54sRN1nLP4DlAAlmSpk4LGUAcWUAZM';
     const __code = 'te6ccgECOwEABXwAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASA1NgIBIAYHAgFIGhsCASAICQIBWBARAgHUCgsAR95DgA5YC5gOWAuADlgAlmZmT8gGQ5AOWAuADlgAllA+X/5OhASXO37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCjKlxfuuMCIIIQbwiyPLrjAiCCEHvdl9664wLAAIAwNDg8ACwgbvLQgIAC4MO1E0NQB+GL6APpAAQHSAAGR1JJtAeLSAFUwbBQE0x8BghCjKlxfuvLggYEBAdcAATEQNEEw8CrI+EIBzFUwUEP6AgHPFiJus5Z/AcoAEsyVMnBYygDiygDJ7VQAwDDtRNDUAfhi+gD6QAEB0gABkdSSbQHi0gBVMGwUBNMfAYIQbwiyPLry4IHSAAGR1JJtAeIBMRA0QTDwLMj4QgHMVTBQQ/oCAc8WIm6zln8BygASzJUycFjKAOLKAMntVADmMO1E0NQB+GL6APpAAQHSAAGR1JJtAeLSAFUwbBQE0x8BghB73ZfeuvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeIUQzA0EGcQVhBFVQLwLcj4QgHMVTBQQ/oCAc8WIm6zln8BygASzJUycFjKAOLKAMntVADojmz5AYLwzQ2YbLGi9GiucIn0/DFiwRbl9T+9EaaDn1Lb9QQIMLK6jkTtRNDUAfhi+gD6QAEB0gABkdSSbQHi0gBVMGwU8CvI+EIBzFUwUEP6AgHPFiJus5Z/AcoAEsyVMnBYygDiygDJ7VTbMeCRMOLywIICASASEwIBIBQVAAFIABVZR/AcoA4HABygCAIBIBYXAgEgGBkABTIyYAADNCAACTwHPAdgAAkcFnwCIAIBIBwdAgEgKywCASAeHwIBICUmAgEgICECASAjJAH3MhxAcoBUAfwG3ABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8BvIcPAbcPAbJG6zmX/wGwTwAVAEzJU0A3DwG+IkbrOZf/AbBPABUATMlTQDcPAb4nDwGwJ/8BsCyVjMljMzAXDwG+IhbrOYf/AbAfABAcyUMXDwG+LJAYCIAKRwA8jMQxNQI4EBAc8AAc8WAc8WyYAAE+wAAbwC0PQEMCCCANivAYAQ9A9vofLgZG0CggDYrwGAEPQPb6Hy4GQSggDYrwECgBD0F8j0AMlAA/AhgAA8+EL4KFjwIoAIBICcoAgEgKSoADTwI2xC8B+AADz4KPAjMEMwgAKUUWGgVTHwI1zwH3BwgEAh+Cgh8B4QNRBOECMQL8hVUIIQF41FGVAHyx8Vyz9QA/oCAc8WASBulTBwAcsBks8W4gH6AgHPFslFYBBKEDlAqfAgWoAA5PhBbyQQI18DVUDwIwGBEU0C8B9QBscFFfL0VQKACASAtLgIBSDM0AgEgLzACASAxMgAdPhBbyQQI18DI8cF8uCEgAAkECNfA4AAXPhBbyQQI18DZvAmgACM+EFvJBAjXwOCEDuaygAh8CaAADxVMPAoMUEwgAGsEEcQNkV38CdQNKElbrOOH3BwgEIHyAGCENUydttYyx/LP8kQJBA4QXBtbfAgECOSNDTiQwCAAQb4o72omhqAPwxfQB9IACA6QAAyOpJNoDxaQAqmDYKeBTAIBSDc4AgFYOToAlbd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4YTIikya+3yRcvbDO06rpAsE4IGc6tPOK/OkoWA6wtxMj2UABFrbz2omhqAPwxfQB9IACA6QAAyOpJNoDxaQAqmDYKKoH4EkAARa8W9qJoagD8MX0AfSAAgOkAAMjqSTaA8WkAKpg2CngS+AxA';
     const __system = 'te6cckECKwEABY8AAQHAAQEFobFfAgEU/wD0pBP0vPLICwMCAWIHBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwThO6PAB8tmwHk/kHVks1lEJwAO7/YF2omhqAPwxQICA64B9IACA/SAAoZg2CfgS+A5AICyh4IAgFIDAkCAdQLCgBPIAg1yHTH9M/MfoAMIE1UiKCEBeNRRm6A4IQe92X3roTsRLy9BOgAoADTFv4QW8kgRFNUzjHBfL0UYShggD1/CHC//L0QzBSOfAigT67AYIJMS0AoIIImJaAoBK88vR/cAOAQFQzZshVMIIQe92X3lAFyx8Tyz8B+gIBzxYBIG6VMHABywGSzxbiyVQTBFAzbW3wIYAIBIBYNAgEgEw4CASARDwHvPhBbyRTKscFs44S+EJTuPAkAYERTQLwICTHBfL03lHIoIIA9fwhwv/y9CH4J28QIaGCCJiWgGa2CKGCCJiWgKChJsIAlhB9UIlfCOMNJW6zIsIAsI4dcAbwAnAEyAGCENUydttYyx/LP8kQR0MwF21t8CGSNVvigEAByUE1DMPAiUjCgGqFwcChIE1B0yFUwghBzYtCcUAXLHxPLPwH6AgHPFgHPFskoEEZDE1BVbW3wIVAFAacbCL4QW8kgRFNUzvHBfL0UbehggD1/CHC//L0QzBSPPAicSTCAJIwct6BPrsCqIIJMS0AoIIImJaAoBK88vT4QlQgZPAkXPAgf1B2cIBAK1RMORiASAGTIVVCCEBeNRRlQB8sfFcs/UAP6AgHPFgEgbpUwcAHLAZLPFuIB+gIBzxbJEFYQNFnwIQIBIBUUAA8+EJTEvAkMIABvALQ9AQwIIIA2K8BgBD0D2+h8uBkbQKCANivAYAQ9A9vofLgZBKCANivAQKAEPQXyPQAyUAD8COACASAaFwIBIBkYACkcAPIzEMTUCOBAQHPAAHPFgHPFsmAAJRsMfoAMXHXIfoAMfoAMKcDqwCACASAdGwH3MhxAcoBUAfwH3ABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8B/IcPAfcPAfJG6zmX/wHwTwAlAEzJU0A3DwH+IkbrOZf/AfBPACUATMlTQDcPAf4nDwHwJ/8B8CyVjMljMzAXDwH+IhbrOYf/AfAfACAcyUMXDwH+LJAYBwABPsAAAkcFnwCYAIBICIfAgFuISAAFVlH8BygDgcAHKAIAAFIAgEgJCMAR7OQ4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQIBSCYlAAtCBu8tCAgE9UcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKOMzDtRNDUAfhigQEB1wD6QAEB+kABQzBsE1UC8CnI+EIBzFUgUCOBAQHPAAHPFgHPFsntVOAgghAPin6luuMCIIIQF41FGbrjAoIQWV8HvLrjAjCCopKCcABvLAggC87UTQ1AH4YoEBAdcA+kABAfpAAUMwbBMD0x8BghBZXwe8uvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeIUQzA0EFYQRVUC8CjI+EIBzFUgUCOBAQHPAAHPFgHPFsntVADKMO1E0NQB+GKBAQHXAPpAAQH6QAFDMGwTA9MfAYIQF41FGbry4IHTP/oA+kABAfpAIdcLAcMAkQGSMW3iAfoAUVUVFEMwNhB4EGdVBPAnyPhCAcxVIFAjgQEBzwABzxYBzxbJ7VQA3jDtRNDUAfhigQEB1wD6QAEB+kABQzBsEwPTHwGCEA+KfqW68uCB0z/6APpAAQH6QCHXCwHDAJEBkjFt4gHSAAGR1JJtAeL6AFFmFhUUQzA3EIkQeFUF8CbI+EIBzFUgUCOBAQHPAAHPFgHPFsntVEg44xo=';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeAddress(owner);
+    builder.writeCell(content);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (SampleJetton_errors[res.exitCode]) {
@@ -567,6 +691,27 @@ export class SampleJetton implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Mint | 'Mint!' | TokenUpdateContent | TokenBurnNotification) {
+        
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Mint') {
+            body = beginCell().store(storeMint(message)).endCell();
+        }
+        if (message === 'Mint!') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenUpdateContent') {
+            body = beginCell().store(storeTokenUpdateContent(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'TokenBurnNotification') {
+            body = beginCell().store(storeTokenBurnNotification(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

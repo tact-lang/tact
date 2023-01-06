@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -110,6 +126,18 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
+}
+
 export type Vars = {
     $$type: 'Vars';
     a: bigint;
@@ -152,6 +180,16 @@ function loadTupleVars(source: TupleReader) {
     return { $$type: 'Vars' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
 }
 
+function storeTupleVars(source: Vars) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.a);
+    builder.writeNumber(source.b);
+    builder.writeNumber(source.c);
+    builder.writeNumber(source.d);
+    builder.writeNumber(source.e);
+    return builder.build();
+}
+
 export type Both = {
     $$type: 'Both';
     a: Vars;
@@ -180,6 +218,13 @@ function loadTupleBoth(source: TupleReader) {
     const _a = loadTupleVars(source.readTuple());
     const _b = loadTupleVars(source.readTuple());
     return { $$type: 'Both' as const, a: _a, b: _b };
+}
+
+function storeTupleBoth(source: Both) {
+    let builder = new TupleBuilder();
+    builder.writeTuple(storeTupleVars(source.a));
+    builder.writeTuple(storeTupleVars(source.b));
+    return builder.build();
 }
 
 export type Update = {
@@ -214,18 +259,28 @@ function loadTupleUpdate(source: TupleReader) {
     return { $$type: 'Update' as const, a: _a, b: _b };
 }
 
+function storeTupleUpdate(source: Update) {
+    let builder = new TupleBuilder();
+    builder.writeTuple(storeTupleVars(source.a));
+    builder.writeTuple(storeTupleVars(source.b));
+    return builder.build();
+}
+
 async function SerializationTester2_init(a: Vars, b: Vars) {
     const __init = 'te6ccgEBCAEAlAABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAloUrcA+AGC+AGIRIg8CDOIK3gCQIBIAYHALHQVkZgUILQgkiBwjtSgiwICA54AJQICA54BAgIDngADkQICA54AJQICA54BkgOZkKqADKCLAgIDngAlAgIDngECAgOeAAORAgIDngAlAgIDngGSA5mSA5mTAABSAAFVvJY';
     const __code = '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';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeTuple(storeTupleVars(a));
+    builder.writeTuple(storeTupleVars(b));
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (SerializationTester2_errors[res.exitCode]) {
@@ -288,6 +343,21 @@ export class SerializationTester2 implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | Update) {
+        
+        let body: Cell | null = null;
+        if (message === null) {
+            body = new Cell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Update') {
+            body = beginCell().store(storeUpdate(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

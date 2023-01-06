@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -108,6 +124,18 @@ function loadTupleSendParameters(source: TupleReader) {
     let _code = source.readCellOpt();
     let _data = source.readCellOpt();
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Request = {
@@ -159,6 +187,18 @@ function loadTupleRequest(source: TupleReader) {
     return { $$type: 'Request' as const, requested: _requested, to: _to, value: _value, timeout: _timeout, bounce: _bounce, mode: _mode, body: _body };
 }
 
+function storeTupleRequest(source: Request) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.requested);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.timeout);
+    builder.writeBoolean(source.bounce);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    return builder.build();
+}
+
 export type Signed = {
     $$type: 'Signed';
     request: Request;
@@ -184,18 +224,28 @@ function loadTupleSigned(source: TupleReader) {
     return { $$type: 'Signed' as const, request: _request };
 }
 
+function storeTupleSigned(source: Signed) {
+    let builder = new TupleBuilder();
+    builder.writeTuple(storeTupleRequest(source.request));
+    return builder.build();
+}
+
 async function Multisig_init(members: Cell, totalWeight: bigint, requiredWeight: bigint) {
     const __init = 'te6ccgEBBgEAQgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAPUMW1wBMjMUERDE1A0gQEBzwD0AIEBAc8AgQEBzwDJg=';
     const __code = 'te6ccgECIwEAA9QAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAfIAIBSAYHAgEgDg8CAUgICQIBWAwNAoEcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghD0KrYDuuMCghAZF931uuMCMPLAgoAoLAAsIG7y0ICAA3DDtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMH0gABkdSSbQHiVWA3EJoQiRB4VQXwGcj4QgHMVTBQNIEBAc8A9ACBAQHPAIEBAc8Aye1UAPTtRNDUAfhigQEB1wD0BIEBAdcAgQEB1wBVMGwUBNMfAYIQGRfd9bry4IHTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVgNxCaEIkQeFUF8BrI+EIBzFUwUDSBAQHPAPQAgQEBzwCBAQHPAMntVABHMhwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgAB0QTP0Cm+hlAHXADDgW22ACASAQEQIBSBscAgFYEhMCASAUFQAVJR/AcoA4HABygCAACRwWfAGgAgEgFhcCASAZGgH3MhxAcoBUAfwEnABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8BLIcPAScPASJG6zmX/wEgTwAVAEzJU0A3DwEuIkbrOZf/ASBPABUATMlTQDcPAS4nDwEgJ/8BICyVjMljMzAXDwEuIhbrOYf/ASAfABAcyUMXDwEuLJAYBgAsxwcAzIzAwHBVCTUAgGRBRQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUYghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6zlX8BygDMlHAyygDiyQHMyYAAE+wAAOwK0PQEMIIAk7kBgBD0D2+h8uBkbcj0AMlVkAvwFYAAXDRbgQELWIEBAfAHgAgEgHR4AZ0+EFvJBAjXwP4QvgoVCDDVFu6VHqYU6nwFvATgRFNCMcFF/L0gRKTA/gjvBPy9ARtbfAUgACQQI18DgAHU+EFvJBAjXwOBAQsrAoEBAfAH8AGCALTjAcIA8vT4QvgoVBh7UXoHVSPwFlzwE39wUEKAQlBCbQLwFIABFvKQvaiaGoA/DFAgIDrgHoCQICA64BAgIDrgCqYNgoqgfgLwCAUghIgBBtyg9qJoagD8MUCAgOuAegJAgIDrgECAgOuAKpg2CngMQAE23ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzA=';
     const __system = 'te6cckECIAEAA/QAAQHAAQEFoSdzAgEU/wD0pBP0vPLICwMCAWIHBAICdQYFAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmAAs7C/u1E0NQB+GL6QAEB9ASBAQHXAIEBAdcA0gDUAdDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVgNxB8EHsQehB5EHhVBWwc8BPwDoAICyxMIAgFIDQkCAUgMCgF1IESkyT4I7zy9IIAn2oos/L0+EFvJBAjXwMrgQELIoEBAfAH8AEcgQELUA1tgQEB8AZQq6BTCL7jAAmALAKA3f3BwgQCCVHmHVHmHVhLIVWCCEBkX3fVQCMsfB4IQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFus5V/AcoAzJRwMsoA4skvVSBtbfASBwABIAIBIBIOAgEgEA8ABRsV4AH3MhxAcoBUAfwEXABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8BHIcPARcPARJG6zmX/wEQTwAVAEzJU0A3DwEeIkbrOZf/ARBPABUATMlTQDcPAR4nDwEQJ/8BECyVjMljMzAXDwEeIhbrOYf/ARAfABAcyUMXDwEeLJAYBEABPsAABVZR/AcoA4HABygCAIBIBUUAAG9AgEgGRYCAVgYFwAdEEz9ApvoZQB1wAw4FttgACMIW6VW1n0WTDgyAHPAEEz9EGACAUgbGgALCBu8tCAgAn87ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CDAACLXScEhsOMCwACRMOMN8sCCgHhwB+vkBgvAirubQptwUZXcnfdWNBq4wkKPN09iohWEYQgiuX26wObqO1e1E0NQB+GL6QAEB9ASBAQHXAIEBAdcA0gDUAdDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVgNxB8EHsQehB5EHhVBWwc8BXgHQCqyPhCAcxVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRiCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOLJAczJ7VTbMQGsW+1E0NQB+GL6QAEB9ASBAQHXAIEBAdcA0gDUAdDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVgNxB8EHsQehB5EHhVBWwc8BQfAKbI+EIBzFWwUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GIIQ9Cq2A1AIyx9QBs8WUATPFlj6AssfygDLByFus5V/AcoAzJRwMsoA4skBzMntVPGj7ng=';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeCell(members);
+    builder.writeNumber(totalWeight);
+    builder.writeNumber(requiredWeight);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Multisig_errors[res.exitCode]) {
@@ -262,6 +312,21 @@ export class Multisig implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Request | Signed) {
+        
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Request') {
+            body = beginCell().store(storeRequest(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Signed') {
+            body = beginCell().store(storeSigned(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

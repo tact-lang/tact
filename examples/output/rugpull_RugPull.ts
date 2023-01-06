@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -110,6 +126,18 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -133,6 +161,12 @@ export function loadChangeOwner(slice: Slice) {
 function loadTupleChangeOwner(source: TupleReader) {
     let _newOwner = source.readAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
+}
+
+function storeTupleChangeOwner(source: ChangeOwner) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.newOwner);
+    return builder.build();
 }
 
 export type RugParams = {
@@ -166,18 +200,31 @@ function loadTupleRugParams(source: TupleReader) {
     return { $$type: 'RugParams' as const, investment: _investment, returns: _returns, fee: _fee };
 }
 
+function storeTupleRugParams(source: RugParams) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.investment);
+    builder.writeNumber(source.returns);
+    builder.writeNumber(source.fee);
+    return builder.build();
+}
+
 async function RugPull_init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
     const __init = 'te6ccgEBBgEAagABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQAjdNra4OCowBWRmBQKBgihU54sLwICA54AKwICA54AB5ECAgOeACUCAgOeAZQAJZQAJQICA54AB5ECAgOeACXoAZKxmZIDmZM';
     const __code = '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';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeAddress(owner);
+    builder.writeNumber(investment);
+    builder.writeNumber(returns);
+    builder.writeNumber(fee);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (RugPull_errors[res.exitCode]) {
@@ -243,6 +290,30 @@ export class RugPull implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | 'withdraw' | 'rugpull' | ChangeOwner | 'Stop') {
+        
+        let body: Cell | null = null;
+        if (message === null) {
+            body = new Cell();
+        }
+        if (message === 'withdraw') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (message === 'rugpull') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ChangeOwner') {
+            body = beginCell().store(storeChangeOwner(message)).endCell();
+        }
+        if (message === 'Stop') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

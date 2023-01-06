@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -110,6 +126,18 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
+}
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -135,6 +163,12 @@ function loadTupleChangeOwner(source: TupleReader) {
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
 
+function storeTupleChangeOwner(source: ChangeOwner) {
+    let builder = new TupleBuilder();
+    builder.writeAddress(source.newOwner);
+    return builder.build();
+}
+
 export type CanPayout = {
     $$type: 'CanPayout';
     amount: bigint;
@@ -158,6 +192,12 @@ export function loadCanPayout(slice: Slice) {
 function loadTupleCanPayout(source: TupleReader) {
     let _amount = source.readBigNumber();
     return { $$type: 'CanPayout' as const, amount: _amount };
+}
+
+function storeTupleCanPayout(source: CanPayout) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.amount);
+    return builder.build();
 }
 
 export type CanPayoutResponse = {
@@ -193,18 +233,29 @@ function loadTupleCanPayoutResponse(source: TupleReader) {
     return { $$type: 'CanPayoutResponse' as const, amount: _amount, address: _address, ok: _ok };
 }
 
+function storeTupleCanPayoutResponse(source: CanPayoutResponse) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.amount);
+    builder.writeAddress(source.address);
+    builder.writeBoolean(source.ok);
+    return builder.build();
+}
+
 async function Payouts_init(owner: Address, publicKey: bigint) {
     const __init = 'te6ccgEBBgEAMQABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQAG9AWRmASzni0CAgOeAZM';
     const __code = 'te6ccgECMAEABN4AART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAuLwIBIAYHAgFiIiMCASAICQIBWBITAgEgCgsCAWoQEQIBIAwNAEf2Q4AOWAuYDlgLgA5YAJZmZk/IBkOQDlgLgA5YAJZQPl/+ToQB907ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEG729VG6jkYw7UTQ1AH4YvpAAQGBAQHXAFlsEgLTHwGCEG729VG68uCBgQEB1wD6QAEB0gBVIDMQNFjwJcj4QgHMWVnPFoEBAc8Aye1UgOAAtCBu8tCAgBnuAgghC2z38Puo46MO1E0NQB+GL6QAEBgQEB1wBZbBIC0x8BghC2z38PuvLggfpAATES8CbI+EIBzFlZzxaBAQHPAMntVODAAJEw4w3ywIIPAG4g10nCH44u7UTQ1AH4YvpAAQGBAQHXAFlsEgKAINchEvAkyPhCAcxZWc8WgQEBzwDJ7VTbMeAwACMbyIByZMhbrOWAW8iWczJ6DGAAuwg10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwOACASAUFQIBIBscAgEgFhcCASAYGQAVJR/AcoA4HABygCAACRwWfAHgAfcyHEBygFQB/AYcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGMhw8Bhw8BgkbrOZf/AYBPACUATMlTQDcPAY4iRus5l/8BgE8AJQBMyVNANw8BjicPAYAn/wGALJWMyWMzMBcPAY4iFus5h/8BgB8AIBzJQxcPAY4skBgGgAFMnQgAAT7AAIBIB0eAgEgICEAAzJgAfUINdJqwLIAY5gAdMHIcJAIsFbsJYBpr9YywWOTCHCYCLBe7CWAaa5WMsFjjshwi8iwTqwlgGmBFjLBY4qIcAtIsArsZaAPjICywWOGSHAXyLAL7GWgD8yAssFmQHAPZPywIbfAeLi4uLi5DEgzzEgqTgCIMMA4wJb8BuAfABAC8BsCodcYMAAtH/IAZRwAcsf3m8AAW+MbW+MAfAN8AyAABTwHYAIBICQlAgEgKisCASAmJwIBICgpAB0cAPIzANazxZYzxbKAMmAAOQC0PQEMIIAoPoBgBD0D2+h8uBkbcj0AMlAA/AggAB0+EFvJBAjXwMixwXy4ISAAAwwgAgEgLC0ACUWfAiMYALE+EFvJDCBPrszghA7msoAvhLy9AHwH/oAgwjXGDDII88WIvoC8Bz5AIIAvRFRJfkQ8vT4QvgoVQLwIfAZf3CAQgTIAYIQPp6xZljLH4EBAc8AyUFAbW3wGoADLPhBbyQwMvhC+Cgl8CHwGQGBEU0CxwXy9AGOK4IA9fz4J28QWKGCEDuaygChI6HCAPL0cIBCi3U3VjY2Vzc48B4QJG1t8BqOHDAxcHCAQovEFscmVhZHkgcGFpZI8B4QNG1t8BrigAC++KO9qJoagD8MX0gAIDAgIDrgCy2CXgRwAlb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOFALHuhMolza1VSFYUsAFgNBOCBnOrTzivzpKFgOsLcTI9lA==';
     const __system = 'te6cckECGAEAAlYAAQHAAQEFoUH1AgEU/wD0pBP0vPLICwMCAWIHBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTggZzq084r86ShYDrC3EyPZQAM74o72omhqAPwxfSAAgP0gAIDpACqQNgn4CMAgLLDwgCAWIMCQIBIAsKAAUW3CAAsz4QW8kW4ERTTIlxwXy9IIQBfXhAHD7AiGOH38yIn/IVSCCEG729VFQBMsfEoEBAc8AAc8WygDJ8BCOHSJwyFUgghBu9vVRUATLHxKBAQHPAAHPFsoAyfAQ4oAIBIA4NAAUMDGAAJT4QW8kECNfA38CcIBCWG1t8A+ACASAUEAIB9BMRAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgEgAE+wAAFSUfwHKAOBwAcoAgAgHUFhUACwgbvLQgIAHFHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECjiww7UTQ1AH4YvpAAQH6QAEB0gBVIGwTVQLwE8j4QgHMVSBazxZYzxbKAMntVOCCED6esWa64wIw8sCCgFwCA7UTQ1AH4YvpAAQH6QAEB0gBVIGwTA9MfAYIQPp6xZrry4IGBAQHXAAExQTDwEsj4QgHMVSBazxZYzxbKAMntVN3DXM0=';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    builder.writeAddress(owner);
+    builder.writeNumber(publicKey);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Payouts_errors[res.exitCode]) {
@@ -271,6 +322,24 @@ export class Payouts implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: string | CanPayoutResponse | ChangeOwner) {
+        
+        let body: Cell | null = null;
+        if (typeof message === 'string') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'CanPayoutResponse') {
+            body = beginCell().store(storeCanPayoutResponse(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'ChangeOwner') {
+            body = beginCell().store(storeChangeOwner(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

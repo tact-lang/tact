@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -26,6 +26,13 @@ function loadTupleStateInit(source: TupleReader) {
     let _code = source.readCell();
     let _data = source.readCell();
     return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+function storeTupleStateInit(source: StateInit) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
 }
 
 export type Context = {
@@ -61,6 +68,15 @@ function loadTupleContext(source: TupleReader) {
     let _value = source.readBigNumber();
     let _raw = source.readCell();
     return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+function storeTupleContext(source: Context) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounced);
+    builder.writeAddress(source.sender);
+    builder.writeNumber(source.value);
+    builder.writeSlice(source.raw);
+    return builder.build();
 }
 
 export type SendParameters = {
@@ -110,6 +126,18 @@ function loadTupleSendParameters(source: TupleReader) {
     return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
 }
 
+function storeTupleSendParameters(source: SendParameters) {
+    let builder = new TupleBuilder();
+    builder.writeBoolean(source.bounce);
+    builder.writeAddress(source.to);
+    builder.writeNumber(source.value);
+    builder.writeNumber(source.mode);
+    builder.writeCell(source.body);
+    builder.writeCell(source.code);
+    builder.writeCell(source.data);
+    return builder.build();
+}
+
 export type Deploy = {
     $$type: 'Deploy';
     queryId: bigint;
@@ -135,6 +163,12 @@ function loadTupleDeploy(source: TupleReader) {
     return { $$type: 'Deploy' as const, queryId: _queryId };
 }
 
+function storeTupleDeploy(source: Deploy) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
+}
+
 export type DeployOk = {
     $$type: 'DeployOk';
     queryId: bigint;
@@ -158,6 +192,12 @@ export function loadDeployOk(slice: Slice) {
 function loadTupleDeployOk(source: TupleReader) {
     let _queryId = source.readBigNumber();
     return { $$type: 'DeployOk' as const, queryId: _queryId };
+}
+
+function storeTupleDeployOk(source: DeployOk) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.queryId);
+    return builder.build();
 }
 
 export type Increment = {
@@ -189,6 +229,13 @@ function loadTupleIncrement(source: TupleReader) {
     return { $$type: 'Increment' as const, key: _key, value: _value };
 }
 
+function storeTupleIncrement(source: Increment) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.key);
+    builder.writeNumber(source.value);
+    return builder.build();
+}
+
 export type Toggle = {
     $$type: 'Toggle';
     key: bigint;
@@ -212,6 +259,12 @@ export function loadToggle(slice: Slice) {
 function loadTupleToggle(source: TupleReader) {
     let _key = source.readBigNumber();
     return { $$type: 'Toggle' as const, key: _key };
+}
+
+function storeTupleToggle(source: Toggle) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.key);
+    return builder.build();
 }
 
 export type Persist = {
@@ -243,6 +296,13 @@ function loadTuplePersist(source: TupleReader) {
     return { $$type: 'Persist' as const, key: _key, content: _content };
 }
 
+function storeTuplePersist(source: Persist) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.key);
+    builder.writeCell(source.content);
+    return builder.build();
+}
+
 export type Reset = {
     $$type: 'Reset';
     key: bigint;
@@ -268,6 +328,12 @@ function loadTupleReset(source: TupleReader) {
     return { $$type: 'Reset' as const, key: _key };
 }
 
+function storeTupleReset(source: Reset) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.key);
+    return builder.build();
+}
+
 export type Something = {
     $$type: 'Something';
     value: bigint;
@@ -291,18 +357,25 @@ function loadTupleSomething(source: TupleReader) {
     return { $$type: 'Something' as const, value: _value };
 }
 
+function storeTupleSomething(source: Something) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.value);
+    return builder.build();
+}
+
 async function IncrementContract_init() {
     const __init = 'te6ccgEBBgEAQgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAPUbW1tbW0FyMwFUEX0ABL0AAHI9AAS9AAS9ADJAczJg=';
     const __code = 'te6ccgECLgEABOYAART/APSkE/S88sgLAQIBYgIDAgLKBAUCASAqKwIBIAYHAgHOJCUCASAICQIBWBkaAgEgCgsCAdQXGAIBSAwNAgEgExQEnxwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCENd5xO264wIgghAiRqi9uuMCIIIQCGR7QrrjAiCCEJFckEm6gDg8QEQALCBu8tCAgALww7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQ13nE7bry4IGBAQHXAIEBAdcAWTIQVhBFEDRDAPAfyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAK4w7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQIkaovbry4IGBAQHXAAExEEUQNEEw8CDI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQAxDDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghAIZHtCuvLggYEBAdcA0gABkdSSbQHiWTIQVhBFEDRDAPAhyPhCAcxVQFBF9AAS9AAByPQAEvQAEvQAyQHMye1UAc6OVzDtRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBUF0x8BghCRXJBJuvLggYEBAdcAATEQRRA0QTDwIsj4QgHMVUBQRfQAEvQAAcj0ABL0ABL0AMkBzMntVOCCEJWXPcy64wIw8sCCEgCm7UTQ1AH4YvQE9ATUAdD0BPQE9AQwEDUQNGwVBdMfAYIQlZc9zLry4IHTPwExEEUQNEEw8CPI+EIBzFVAUEX0ABL0AAHI9AAS9AAS9ADJAczJ7VQAI1IW6VW1n0WjDgyAHPAEEz9EKAIBIBUWAB0QTP0DG+hlAHXADDgW22AAGwgbpUwWfRaMOBBM/QVgABEWfQNb6HcMG2AAIwhbpVbWfRZMODIAc8AQTP0QYAIBWBscAgEgHh8AFSUfwHKAOBwAcoAgAfcyHEBygFQB/AacAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wGshw8Bpw8BokbrOZf/AaBPABUATMlTQDcPAa4iRus5l/8BoE8AFQBMyVNANw8BricPAaAn/wGgLJWMyWMzMBcPAa4iFus5h/8BoB8AEBzJQxcPAa4skBgHQAE+wACASAgIQIBICIjACU+EFvJBAjXwN/AnCAQlhtbfAbgAAUXwSAABwUXwSAAQz4QW8kECNfA4EBASAQOUFAUpDwBRAjgQELQAeBAQHwCQGACASAmJwIBICgpAEsJIEBASJx8AYgbpowFIEBAQF/cfAFnYEBAQHwAbMQNhJx8AXiA4AAvIIAziklgQEBJPAIbvL0ECSBAQFZ8AcCgAKcgQEBbVMSEElZ8AUEgQEBJm1x8AUDgQEBJm3wB4EBC/hBbyQQI18DECRtgQEB8AmBAQFtIG6SMG2OECBu8tCAbyHIAQGBAQHPAMniQXDwBxA0QTCAAITIAYIQ03+4IVjLH8s/yfAcgAgEgLC0ATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAA/uvAu1E0NQB+GL0BPQE1AHQ9AT0BPQEMBA1EDRsFfAegAP7tAftRNDUAfhi9AT0BNQB0PQE9AT0BDAQNRA0bBXwHY';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
-    let __tuple: TupleItem[] = [];
-    __tuple.push({ type: 'cell', cell: systemCell });
+    let builder = new TupleBuilder();
+    builder.writeCell(systemCell);
+    let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
     let system = await ContractSystem.create();
     let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __tuple);
+    let res = await executor.get('init', __stack);
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (IncrementContract_errors[res.exitCode]) {
@@ -366,6 +439,30 @@ export class IncrementContract implements Contract {
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
+    }
+    
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Increment | Toggle | Persist | Reset | Deploy) {
+        
+        let body: Cell | null = null;
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Increment') {
+            body = beginCell().store(storeIncrement(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Toggle') {
+            body = beginCell().store(storeToggle(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Persist') {
+            body = beginCell().store(storePersist(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Reset') {
+            body = beginCell().store(storeReset(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Deploy') {
+            body = beginCell().store(storeDeploy(message)).endCell();
+        }
+        if (body === null) { throw new Error('Invalid message type'); }
+        
+        await provider.internal(via, { ...args, body: body });
+        
     }
     
 }

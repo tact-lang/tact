@@ -6,6 +6,7 @@ export type Serializer<T> = {
     tsLoad: (v: T, slice: string, field: string, w: Writer) => void,
     tsLoadTuple: (v: T, reader: string, field: string, w: Writer) => void,
     tsStore: (v: T, builder: string, field: string, w: Writer) => void,
+    tsStoreTuple: (v: T, to: string, field: string, w: Writer) => void,
     abiMatcher: (src: ABITypeRef) => T | null,
     size: (v: T) => { bits: number, refs: number } | 'terminal'
 };
@@ -31,6 +32,9 @@ let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
         } else {
             w.append(`let ${field} = ${reader}.readBigNumber();`);
         }
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeNumber(${field});`);
     },
     tsStore(v, builder, field, w) {
         if (v.optional) {
@@ -85,6 +89,9 @@ let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
             w.append(`${builder}.storeUint(${field}, ${v.bits});`);
         }
     },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeNumber(${field});`);
+    },
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (src.type === 'uint') {
@@ -131,6 +138,9 @@ let coinsSerializer: Serializer<{ optional: boolean }> = {
             w.append(`${builder}.storeCoins(${field});`);
         }
     },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeNumber(${field});`);
+    },
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (src.type === 'uint') {
@@ -174,6 +184,9 @@ let boolSerializer: Serializer<{ optional: boolean }> = {
         } else {
             w.append(`${builder}.storeBit(${field});`);
         }
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeBoolean(${field});`);
     },
     abiMatcher(src) {
         if (src.kind === 'simple') {
@@ -219,6 +232,9 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
             w.append(`${builder}.storeAddress(${field});`);
         }
     },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeAddress(${field});`);
+    },
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (src.type === 'address') {
@@ -234,7 +250,7 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
     },
 };
 
-let cellSerializer: Serializer<{ optional: boolean }> = {
+let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'Cell | null';
@@ -263,11 +279,18 @@ let cellSerializer: Serializer<{ optional: boolean }> = {
             w.append(`${builder}.storeRef(${field});`);
         }
     },
+    tsStoreTuple(v, to, field, w) {
+        if (v.kind === 'cell') {
+            w.append(`${to}.writeCell(${field});`);
+        } else {
+            w.append(`${to}.writeSlice(${field});`);
+        }
+    },
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (src.type === 'cell' || src.type === 'slice') {
                 if (src.format === null || src.format === undefined || src.format === 'ref') {
-                    return { optional: src.optional ? src.optional : false };
+                    return { optional: src.optional ? src.optional : false, kind: src.type };
                 }
             }
         }
@@ -278,7 +301,7 @@ let cellSerializer: Serializer<{ optional: boolean }> = {
     },
 }
 
-let remainderSerializer: Serializer<{}> = {
+let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
     tsType(v) {
         return 'Cell';
     },
@@ -291,11 +314,18 @@ let remainderSerializer: Serializer<{}> = {
     tsStore(v, builder, field, w) {
         w.append(`${builder}.storeBuilder(${field}.asBuilder());`);
     },
+    tsStoreTuple(v, to, field, w) {
+        if (v.kind === 'cell') {
+            w.append(`${to}.writeCell(${field});`);
+        } else {
+            w.append(`${to}.writeSlice(${field});`);
+        }
+    },
     abiMatcher(src) {
         if (src.kind === 'simple') {
             if (src.type === 'cell' || src.type === 'slice') {
                 if (src.format === 'remainder') {
-                    return {};
+                    return { kind: src.type };
                 }
             }
         }
@@ -334,6 +364,9 @@ let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
         } else {
             w.append(`${builder}.storeBuffer(${field});`);
         }
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeBuffer(${field});`);
     },
     abiMatcher(src) {
         if (src.kind === 'simple') {
@@ -378,6 +411,9 @@ let stringSerializer: Serializer<{ optional: boolean }> = {
         } else {
             w.append(`${builder}.storeStringRefTail(${field});`);
         }
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeString(${field});`);
     },
     abiMatcher(src) {
         if (src.kind === 'simple') {
