@@ -1,5 +1,7 @@
 import { ABITypeRef } from "ton-core";
+import { CompilerContext } from "../context";
 import { ASTField, throwError } from "../grammar/ast";
+import { TypeRef } from "./types";
 
 type FormatDef = { [key: string]: { type: string, format: string | number } };
 
@@ -151,4 +153,77 @@ export function resolveABIType(src: ASTField): ABITypeRef {
     }
 
     throwError(`Unsupported type`, src.ref);
+}
+
+export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
+
+    if (src.kind === 'ref') {
+
+        // Primitives
+        if (src.name === 'Int') {
+            return { kind: 'simple', type: 'int', optional: src.optional, format: 257 }; // Default is maximumx size int
+        }
+        if (src.name === 'Bool') {
+            return { kind: 'simple', type: 'bool', optional: src.optional };
+        }
+        if (src.name === 'Cell') {
+            return { kind: 'simple', type: 'cell', optional: src.optional };
+        }
+        if (src.name === 'Slice') {
+            return { kind: 'simple', type: 'slice', optional: src.optional };
+        }
+        if (src.name === 'Address') {
+            return { kind: 'simple', type: 'address', optional: src.optional };
+        }
+        if (src.name === 'String') {
+            return { kind: 'simple', type: 'string', optional: src.optional };
+        }
+        if (src.name === 'StringBuilder' || src.name === 'Builder') {
+            throw Error(`Unsupported type ${src.name}`);
+        }
+
+        // Structs
+        return { kind: 'simple', type: src.name, optional: src.optional };
+    }
+
+    if (src.kind === 'map') {
+        let key: string;
+        let keyFormat: string | undefined = undefined;
+        let value: string;
+        let valueFormat: string | undefined = undefined;
+
+        // Resolve key type
+        if (src.key === 'Int') {
+            key = 'int';
+        } else if (src.key === 'Address') {
+            key = 'address';
+        } else {
+            throw Error(`Unsupported map key type ${src.key}`);
+        }
+
+        // Resolve value type
+        if (src.value === 'Int') {
+            value = 'int';
+        } else if (src.value === 'Bool') {
+            value = 'bool';
+        } else if (src.value === 'Cell') {
+            value = 'cell';
+            valueFormat = 'ref';
+        } else if (src.value === 'Slice') {
+            throw Error(`Unsupported map value type ${src.value}`);
+        } else if (src.value === 'Address') {
+            value = 'address';
+        } else if (src.value === 'String') {
+            throw Error(`Unsupported map value type ${src.value}`);
+        } else if (src.value === 'StringBuilder' || src.value === 'Builder') {
+            throw Error(`Unsupported map value type ${src.value}`);
+        } else {
+            value = src.value;
+            valueFormat = 'ref';
+        }
+
+        return { kind: 'map', key, keyFormat, value, valueFormat };
+    }
+
+    throw Error(`Unsupported type`);
 }

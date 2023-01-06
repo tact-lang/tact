@@ -1,78 +1,10 @@
-import { ABIGetter, ABIType, ContractABI } from "ton-core";
+import { ABIGetter, ABIReceiver, ABIType, ContractABI } from "ton-core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
 import { getAllocation } from "../storage/resolveAllocation";
-// import { getAllocation } from "../storage/resolveAllocation";
-// import { StorageAllocation, StorageCell, StorageField } from "../storage/StorageAllocation";
+import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveStrings";
-
-// function createAbiAllocationField(src: StorageField): AllocationField {
-//     if (src.kind === 'optional') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind,
-//             inner: createAbiAllocationField(src.inner)
-//         };
-//     } else if (src.kind === 'int' || src.kind === 'uint') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind,
-//             bits: src.bits
-//         };
-//     } else if (src.kind === 'coins' || src.kind === 'address' || src.kind === 'cell' || src.kind === 'slice') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind
-//         };
-//     } else if (src.kind === 'struct') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind,
-//             type: src.type.name
-//         };
-//     } else if (src.kind === 'remaining') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind
-//         };
-//     } else if (src.kind === 'bytes') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind,
-//             bytes: src.bytes
-//         };
-//     } else if (src.kind === 'map') {
-//         return {
-//             index: src.index,
-//             size: src.size,
-//             kind: src.kind
-//         };
-//     } else {
-//         throw Error('Unknown kind');
-//     }
-// }
-
-// function createAbiAllocationCell(src: StorageCell): AllocationCell {
-//     return {
-//         fields: src.fields.map(createAbiAllocationField),
-//         next: src.next ? createAbiAllocationCell(src.next) : null,
-//         size: src.size
-//     };
-// }
-
-// function createAbiAllocation(src: StorageAllocation): Allocation {
-//     return {
-//         prefix: src.prefix,
-//         root: createAbiAllocationCell(src.root)
-//     };
-// }
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
 
@@ -101,35 +33,48 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         }
     }
 
-    // Init
-    // let init: ContractInit | null = null;
-    // if (contract.init) {
-    //     init = { name: 'init_' + contract.name, args: contract.init.args.map((v) => ({ name: v.name, type: v.type })) };
-    // }
-
     // // Receivers
-    // let receivers: ContractReceiver[] = [];
-    // for (let r of Object.values(contract.receivers)) {
-    //     if (r.selector.kind === 'internal-binary') {
-    //         receivers.push({
-    //             kind: 'internal-binary',
-    //             type: r.selector.type
-    //         });
-    //     } else if (r.selector.kind === 'internal-empty') {
-    //         receivers.push({
-    //             kind: 'internal-empty'
-    //         });
-    //     } else if (r.selector.kind === 'internal-comment') {
-    //         receivers.push({
-    //             kind: 'internal-comment',
-    //             comment: r.selector.comment
-    //         });
-    //     } else if (r.selector.kind === 'internal-fallback') {
-    //         receivers.push({
-    //             kind: 'internal-fallback'
-    //         });
-    //     }
-    // }
+    let receivers: ABIReceiver[] = [];
+    for (let r of Object.values(contract.receivers)) {
+        if (r.selector.kind === 'internal-binary') {
+            receivers.push({
+                receiver: 'internal',
+                message: {
+                    kind: 'typed',
+                    type: r.selector.type
+                }
+            });
+        } else if (r.selector.kind === 'internal-empty') {
+            receivers.push({
+                receiver: 'internal',
+                message: {
+                    kind: 'empty'
+                }
+            });
+        } else if (r.selector.kind === 'internal-comment') {
+            receivers.push({
+                receiver: 'internal',
+                message: {
+                    kind: 'text',
+                    text: r.selector.comment
+                }
+            });
+        } else if (r.selector.kind === 'internal-comment-fallback') {
+            receivers.push({
+                receiver: 'internal',
+                message: {
+                    kind: 'text'
+                }
+            });
+        } else if (r.selector.kind === 'internal-fallback') {
+            receivers.push({
+                receiver: 'internal',
+                message: {
+                    kind: 'any'
+                }
+            });
+        }
+    }
 
     // Getters
     let getters: ABIGetter[] = [];
@@ -137,8 +82,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
-                args: f.args.map((v) => v.),
-                returns: f.returns
+                arguments: f.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type) })),
+                returnType: f.returns.kind !== 'void' ? createABITypeRefFromTypeRef(f.returns) : null
             });
         }
     }
@@ -170,8 +115,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     return {
         name: contract.name,
         types,
-        // init,
-        // receivers,
+        receivers,
         getters,
         errors
     };
