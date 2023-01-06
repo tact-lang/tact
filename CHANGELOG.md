@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - Introduced packaging compilation step that packages a contract to a single package that can be deployed in predictable way.
+- `tact-bindings` to build bindings to non-tact contracts
 
 ## [0.7.1] - 2023-01-04
 

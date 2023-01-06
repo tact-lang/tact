@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { ContractABI } from 'ton-core';
+import { writeTypescript } from './bindings/writeTypescript';
 import { Config, parseConfig } from "./config/parseConfig";
 import { build } from './pipeline/build';
 
@@ -46,4 +48,14 @@ export async function compileProjects(configPath: string, projectNames: string[]
         console.log('💼 Compiling project ' + project.name + '...');
         await build(project, rootPath);
     }
-} 
+}
+
+export async function compileBindings(language: string, abiPath: string, outputPath: string) {
+    if (language !== 'typescript') {
+        console.warn('Unsupported language: ' + language);
+        return;
+    }
+    let abi = JSON.parse(fs.readFileSync(abiPath, 'utf-8')) as ContractABI;
+    let output = writeTypescript(abi);
+    fs.writeFileSync(outputPath, output, 'utf-8');
+}
