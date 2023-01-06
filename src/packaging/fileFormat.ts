@@ -3,17 +3,17 @@ import { z } from 'zod';
 export const typeFormat = z.union([
     z.object({
         kind: z.literal('simple'),
-        name: z.string(),
-        optional: z.boolean().optional(),
-        format: z.union([z.boolean(), z.number(), z.string()]).optional()
+        type: z.string(),
+        optional: z.boolean().optional().nullable(),
+        format: z.union([z.boolean(), z.number(), z.string()]).optional().nullable()
     }),
     z.object({
         kind: z.literal('map'),
-        format: z.union([z.boolean(), z.number(), z.string()]).optional(),
+        format: z.union([z.boolean(), z.number(), z.string()]).optional().nullable(),
         key: z.string(),
-        keyFormat: z.union([z.boolean(), z.number(), z.string()]).optional(),
+        keyFormat: z.union([z.boolean(), z.number(), z.string()]).optional().nullable(),
         value: z.string(),
-        valueFormat: z.union([z.boolean(), z.number(), z.string()]).optional(),
+        valueFormat: z.union([z.boolean(), z.number(), z.string()]).optional().nullable(),
     }),
 ]);
 
@@ -45,7 +45,7 @@ export const fileFormat = z.object({
     compiler: z.object({
         name: z.string(),
         version: z.string(),
-        parameters: z.string().optional()
+        parameters: z.string().optional().nullable()
     })
 });
 

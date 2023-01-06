@@ -1,14 +1,16 @@
-import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
-// import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { getTSFieldType } from "./typescript/getTSFieldType";
-import { ABIArgument, ContractABI } from "ton-core";
+import { ABIArgument, ABIType, ContractABI } from "ton-core";
+import { writeParser, writeSerializer, writeStruct } from "./typescript/writeStruct";
+import { AllocationCell } from "../storage/operation";
+import { topologicalSort } from "../utils/utils";
+import { allocate, getAllocationOperationFromField } from "../storage/allocator";
 
 function writeArguments(args: ABIArgument[]) {
     return args.map((v) => `${v.name}: ${getTSFieldType(v.type)}`);
 }
 
-export function writeTypescript(abi: ContractABI, code: string, initCode: string, system: string) {
+export function writeTypescript(abi: ContractABI, init?: { code: string, initCode: string, system: string, args: ABIArgument[] }) {
     let w = new Writer();
     w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';`);
     w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
@@ -16,60 +18,92 @@ export function writeTypescript(abi: ContractABI, code: string, initCode: string
 
     // Structs
     if (abi.types) {
+
+        // Allocations
+        let allocations: { [key: string]: { size: { bits: number, refs: number }, root: AllocationCell } } = {};
+        let refs = (src: ABIType) => {
+            let res: ABIType[] = []
+            let t = new Set<string>();
+            for (let f of src.fields) {
+                const r = f.type;
+                if (r.kind === 'simple') {
+                    let e = abi.types!.find((v) => v.name === r.type);
+                    if (e) {
+                        if (!t.has(r.type)) {
+                            t.add(r.type);
+                            res.push(e);
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+        let sortedTypes = topologicalSort(abi.types, refs);
+        for (let f of sortedTypes) {
+            let ops = f.fields.map((v) => getAllocationOperationFromField(v.type, (s) => allocations[s].size));
+            let headerBits = f.header ? 32 : 0;
+            let allocation = allocate({ reserved: { bits: headerBits, refs: 0 }, ops });
+            allocations[f.name] = { size: { bits: allocation.size.bits + headerBits, refs: allocation.size.refs }, root: allocation };
+        }
+
+        // for (let s of abi.types) {
+        //     allocations[s.name] = s.allocation;
+        // }
+
         for (let s of abi.types) {
-            // writeStruct(s, w);
-            // writeSerializer(s, w);
-            // writeParser(s, w);
+            writeStruct(s, w);
+            writeSerializer(s, allocations[s.name].root, w);
+            writeParser(s, allocations[s.name].root, w);
             // writeTupleParser(s, w);
             // writeTupleSerializer(s, w);
         }
     }
 
     // Init
-    // if (abi.init) {
-    //     w.append(`async function ${abi.name}_init(${writeArguments(abi.init.args).join(', ')}) {`);
-    //     w.inIndent(() => {
+    if (init) {
+        w.append(`async function ${abi.name}_init(${writeArguments(init.args).join(', ')}) {`);
+        w.inIndent(() => {
 
-    //         // Code references
-    //         w.append(`const __init = '${initCode}';`)
-    //         w.append(`const __code = '${code}';`);
-    //         w.append(`const __system = '${system}';`);
-    //         w.append(`let systemCell = Cell.fromBase64(__system);`);
+            // Code references
+            w.append(`const __init = '${init.initCode}';`)
+            w.append(`const __code = '${init.code}';`);
+            w.append(`const __system = '${init.system}';`);
+            w.append(`let systemCell = Cell.fromBase64(__system);`);
 
-    //         // Stack
-    //         w.append('let __tuple: TupleItem[] = [];');
-    //         w.append(`__tuple.push({ type: 'cell', cell: systemCell });`);
-    //         for (let a of abi.init!.args) {
-    //             writeArgumentToStack(a.name, a.type, w);
-    //         }
+            // Stack
+            w.append('let __tuple: TupleItem[] = [];');
+            w.append(`__tuple.push({ type: 'cell', cell: systemCell });`);
+            // for (let a of init.args) {
+            //     writeArgumentToStac(a.name, a.type, w);
+            // }
 
-    //         // Deploy
-    //         w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
-    //         w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
-    //         w.append(`let system = await ContractSystem.create();`);
-    //         w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
-    //         w.append(`let res = await executor.get('init', __tuple);`);
-    //         w.append(`if (!res.success) { throw Error(res.error); }`);
-    //         w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
-    //         w.inIndent(() => {
-    //             w.append(`if (${abi.name}_errors[res.exitCode]) {`);
-    //             w.inIndent(() => {
-    //                 w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });`);
-    //             });
-    //             w.append(`} else {`);
-    //             w.inIndent(() => {
-    //                 w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });`);
-    //             });
-    //             w.append(`}`);
-    //         });
-    //         w.append(`}`);
-    //         w.append();
-    //         w.append(`let data = res.stack.readCell();`);
-    //         w.append(`return { code: codeCell, data };`);
-    //     });
-    //     w.append(`}`);
-    //     w.append();
-    // }
+            // Deploy
+            w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
+            w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
+            w.append(`let system = await ContractSystem.create();`);
+            w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
+            w.append(`let res = await executor.get('init', __tuple);`);
+            w.append(`if (!res.success) { throw Error(res.error); }`);
+            w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
+            w.inIndent(() => {
+                w.append(`if (${abi.name}_errors[res.exitCode]) {`);
+                w.inIndent(() => {
+                    w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });`);
+                });
+                w.append(`} else {`);
+                w.inIndent(() => {
+                    w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });`);
+                });
+                w.append(`}`);
+            });
+            w.append(`}`);
+            w.append();
+            w.append(`let data = res.stack.readCell();`);
+            w.append(`return { code: codeCell, data };`);
+        });
+        w.append(`}`);
+        w.append();
+    }
 
     // Errors
     w.append(`const ${abi.name}_errors: { [key: number]: { message: string } } = {`);
@@ -88,23 +122,23 @@ export function writeTypescript(abi: ContractABI, code: string, initCode: string
     w.inIndent(() => {
         w.append();
 
-        // if (abi.init) {
-        //     w.append(`static async init(${writeArguments(abi.init.args).join(', ')}) {`);
-        //     w.inIndent(() => {
-        //         w.append(`return await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
-        //     });
-        //     w.append(`}`);
-        //     w.append();
+        if (init) {
+            w.append(`static async init(${writeArguments(init.args).join(', ')}) {`);
+            w.inIndent(() => {
+                w.append(`return await ${abi.name}_init(${init!.args.map((v) => v.name)});`);
+            });
+            w.append(`}`);
+            w.append();
 
-        //     w.append(`static async fromInit(${writeArguments(abi.init.args).join(', ')}) {`);
-        //     w.inIndent(() => {
-        //         w.append(`const init = await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
-        //         w.append(`const address = contractAddress(0, init);`);
-        //         w.append(`return new ${abi.name}(address, init);`);
-        //     });
-        //     w.append(`}`);
-        //     w.append();
-        // }
+            w.append(`static async fromInit(${writeArguments(init.args).join(', ')}) {`);
+            w.inIndent(() => {
+                w.append(`const init = await ${abi.name}_init(${init!.args.map((v) => v.name)});`);
+                w.append(`const address = contractAddress(0, init);`);
+                w.append(`return new ${abi.name}(address, init);`);
+            });
+            w.append(`}`);
+            w.append();
+        }
 
         w.append(`static fromAddress(address: Address) {`);
         w.inIndent(() => {

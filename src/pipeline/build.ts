@@ -8,6 +8,7 @@ import { ConfigProject } from "../config/parseConfig";
 import { CompilerContext, enable } from "../context";
 import { PackageFileFormat } from '../packaging/fileFormat';
 import { packageCode } from '../packaging/packageCode';
+import { createABITypeRefFromTypeRef } from '../types/resolveABITypeRef';
 import { getContracts, getType } from '../types/resolveDescriptors';
 import { compile } from './compile';
 import { precompile } from "./precompile";
@@ -188,7 +189,7 @@ export async function build(project: ConfigProject, rootPath: string) {
             code: artifacts.codeBoc.toString('base64'),
             init: {
                 code: artifacts.initBoc.toString('base64'),
-                args: [],
+                args: getType(ctx, contract).init!.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type) })),
                 deployment: {
                     kind: 'system-cell',
                     system: systemCell.toBoc().toString('base64')
@@ -214,7 +215,7 @@ export async function build(project: ConfigProject, rootPath: string) {
             return false;
         }
         try {
-            let bindings = writeTypescript(JSON.parse(pkg.abi), pkg.code, pkg.init.code, pkg.init.deployment.system);
+            let bindings = writeTypescript(JSON.parse(pkg.abi), { code: pkg.code, initCode: pkg.init.code, system: pkg.init.deployment.system, args: pkg.init.args });
             let pathBindings = path.resolve(outputPath, project.name + '_' + pkg.name + ".ts");
             fs.writeFileSync(pathBindings, bindings, 'utf-8');
         } catch (e) {

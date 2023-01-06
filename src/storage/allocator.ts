@@ -1,8 +1,4 @@
-import { ABIField, ABITypeRef } from "ton-core";
-import { CompilerContext } from "../context";
-import { throwError } from "../grammar/ast";
-import { getType } from "../types/resolveDescriptors";
-import { FieldDescription } from "../types/types";
+import { ABITypeRef } from "ton-core";
 import { AllocationCell, AllocationOperation } from "./operation";
 
 const ALLOCATOR_RESERVE_BIT = 1;
@@ -60,7 +56,7 @@ export function getOperationSize(src: AllocationOperation): { bits: number, refs
     throw new Error('Unsupported operation');
 }
 
-export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (name: string) => { bits: number, refs: number }, ctx: CompilerContext): AllocationOperation {
+export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (name: string) => { bits: number, refs: number }): AllocationOperation {
 
     // Reference types
     if (src.kind === 'simple') {

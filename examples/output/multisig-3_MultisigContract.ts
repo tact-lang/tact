@@ -1,6 +1,188 @@
 import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+
+export function storeStateInit(src: StateInit) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
+    };
+}
+
+export function loadStateInit(slice: Slice) {
+    let sc_0 = slice;
+    let _code = sc_0.loadRef();
+    let _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+
+export type Context = {
+    $$type: 'Context';
+    bounced: boolean;
+    sender: Address;
+    value: bigint;
+    raw: Cell;
+}
+
+export function storeContext(src: Context) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeBit(src.bounced);
+        b_0.storeBit(src.sender);
+        b_0.storeInt(src.value, 257);
+        b_0.storeRef(src.raw);
+    };
+}
+
+export function loadContext(slice: Slice) {
+    let sc_0 = slice;
+    let _bounced = sc_0.loadBit();
+    let _sender = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _raw = sc_0.loadRef();
+    return { $$type: 'Context' as const, bounced: _bounced, sender: _sender, value: _value, raw: _raw };
+}
+
+export type SendParameters = {
+    $$type: 'SendParameters';
+    bounce: boolean;
+    to: Address;
+    value: bigint;
+    mode: bigint;
+    body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
+}
+
+export function storeSendParameters(src: SendParameters) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeBit(src.bounce);
+        b_0.storeBit(src.to);
+        b_0.storeInt(src.value, 257);
+        b_0.storeInt(src.mode, 257);
+        if (src.body !== null && src.body !== undefined) { b_0.storeBit(true).storeRef(src.body); } else { b_0.storeBit(false); }
+        if (src.code !== null && src.code !== undefined) { b_0.storeBit(true).storeRef(src.code); } else { b_0.storeBit(false); }
+        if (src.data !== null && src.data !== undefined) { b_0.storeBit(true).storeRef(src.data); } else { b_0.storeBit(false); }
+    };
+}
+
+export function loadSendParameters(slice: Slice) {
+    let sc_0 = slice;
+    let _bounce = sc_0.loadBit();
+    let _to = sc_0.loadAddress();
+    let _value = sc_0.loadIntBig(257);
+    let _mode = sc_0.loadIntBig(257);
+    let _body = sc_0.loadBit() ? sc_0.loadRef() : null;
+    let _code = sc_0.loadBit() ? sc_0.loadRef() : null;
+    let _data = sc_0.loadBit() ? sc_0.loadRef() : null;
+    return { $$type: 'SendParameters' as const, bounce: _bounce, to: _to, value: _value, mode: _mode, body: _body, code: _code, data: _data };
+}
+
+export type Operation = {
+    $$type: 'Operation';
+    seqno: bigint;
+    amount: bigint;
+    target: Address;
+}
+
+export function storeOperation(src: Operation) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(src.seqno, 32);
+        b_0.storeCoins(src.amount);
+        b_0.storeBit(src.target);
+    };
+}
+
+export function loadOperation(slice: Slice) {
+    let sc_0 = slice;
+    let _seqno = sc_0.loadUintBig(32);
+    let _amount = sc_0.loadCoins();
+    let _target = sc_0.loadAddress();
+    return { $$type: 'Operation' as const, seqno: _seqno, amount: _amount, target: _target };
+}
+
+export type Execute = {
+    $$type: 'Execute';
+    operation: Operation;
+    signature1: Cell;
+    signature2: Cell;
+    signature3: Cell;
+}
+
+export function storeExecute(src: Execute) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(819865922, 32);
+        storeOperation(src.operation, b_0);
+        b_0.storeRef(src.signature1);
+        b_0.storeRef(src.signature2);
+        b_0.storeRef(src.signature3);
+    };
+}
+
+export function loadExecute(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 819865922) { throw Error('Invalid prefix'); }
+    _operation = loadOperation(sc_0);
+    let _signature1 = sc_0.loadRef();
+    let _signature2 = sc_0.loadRef();
+    let _signature3 = sc_0.loadRef();
+    return { $$type: 'Execute' as const, operation: _operation, signature1: _signature1, signature2: _signature2, signature3: _signature3 };
+}
+
+export type Executed = {
+    $$type: 'Executed';
+    seqno: bigint;
+}
+
+export function storeExecuted(src: Executed) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(4174937, 32);
+        b_0.storeUint(src.seqno, 32);
+    };
+}
+
+export function loadExecuted(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 4174937) { throw Error('Invalid prefix'); }
+    let _seqno = sc_0.loadUintBig(32);
+    return { $$type: 'Executed' as const, seqno: _seqno };
+}
+
+async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
+    const __init = 'te6ccgEBBgEANQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAI0cATIzFUwUDTLH8v/y//L/8mA==';
+    const __code = 'te6ccgECIwEAAtQAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAbHAIBIAYHAgFIERICAdQICQIBWAwNAn07ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEDDeKUK64wLAAJEw4w3ywIKAKCwALCBu8tCAgALIw7UTQ1AH4YtMf0//T/9P/VTBsFATTHwGCEDDeKUK68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwNhCJEHgQZ1UE8BXI+EIBzFUwUDTLH8v/y//L/8ntVACm+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGuo4r7UTQ1AH4YtMf0//T/9P/VTBsFPAUyPhCAcxVMFA0yx/L/8v/y//J7VTbMeAAFVlH8BygDgcAHKAIAgEgDg8B9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGAQABMfzMBcG1tbfAOgAAT7AAIBIBMUAgFIGRoCASAVFgIBIBcYAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAASAAbxUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAPgAC++ZL9qJoagD8MWmP6f/p/+n/qpg2CngJwCAUgdHgIBIB8gAgEgISIAL7Dp+1E0NQB+GLTH9P/0//T/1UwbBTwEoAAvsOG7UTQ1AH4YtMf0//T/9P/VTBsFPARgAC+w+XtRNDUAfhi0x/T/9P/0/9VMGwU8BCAATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYA==';
+    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    let systemCell = Cell.fromBase64(__system);
+    let __tuple: TupleItem[] = [];
+    __tuple.push({ type: 'cell', cell: systemCell });
+    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
+    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
+    let system = await ContractSystem.create();
+    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
+    let res = await executor.get('init', __tuple);
+    if (!res.success) { throw Error(res.error); }
+    if (res.exitCode !== 0 && res.exitCode !== 1) {
+        if (MultisigContract_errors[res.exitCode]) {
+            throw new ComputeError(MultisigContract_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+        } else {
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+        }
+    }
+    
+    let data = res.stack.readCell();
+    return { code: codeCell, data };
+}
+
 const MultisigContract_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
@@ -28,6 +210,16 @@ const MultisigContract_errors: { [key: number]: { message: string } } = {
 }
 
 export class MultisigContract implements Contract {
+    
+    static async init(key1: bigint, key2: bigint, key3: bigint) {
+        return await MultisigContract_init(key1,key2,key3);
+    }
+    
+    static async fromInit(key1: bigint, key2: bigint, key3: bigint) {
+        const init = await MultisigContract_init(key1,key2,key3);
+        const address = contractAddress(0, init);
+        return new MultisigContract(address, init);
+    }
     
     static fromAddress(address: Address) {
         return new MultisigContract(address);
