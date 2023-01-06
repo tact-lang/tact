@@ -1,10 +1,10 @@
-import { ContractABI, ContractFunctionArg } from "../abi/ContractABI";
 import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
 import { writeArgumentToStack, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { getTSFieldType } from "./typescript/getTSFieldType";
+import { ABIArgument, ContractABI } from "ton-core";
 
-function writeArguments(args: ContractFunctionArg[]) {
+function writeArguments(args: ABIArgument[]) {
     return args.map((v) => `${v.name}: ${getTSFieldType(v.type)}`);
 }
 
@@ -15,65 +15,69 @@ export function writeTypescript(abi: ContractABI, code: string, initCode: string
     w.append();
 
     // Structs
-    for (let s of abi.structs) {
-        writeStruct(s, w);
-        writeSerializer(s, w);
-        writeParser(s, w);
-        writeTupleParser(s, w);
-        writeTupleSerializer(s, w);
+    if (abi.types) {
+        for (let s of abi.types) {
+            writeStruct(s, w);
+            writeSerializer(s, w);
+            writeParser(s, w);
+            writeTupleParser(s, w);
+            writeTupleSerializer(s, w);
+        }
     }
 
     // Init
-    if (abi.init) {
-        w.append(`async function ${abi.name}_init(${writeArguments(abi.init.args).join(', ')}) {`);
-        w.inIndent(() => {
+    // if (abi.init) {
+    //     w.append(`async function ${abi.name}_init(${writeArguments(abi.init.args).join(', ')}) {`);
+    //     w.inIndent(() => {
 
-            // Code references
-            w.append(`const __init = '${initCode}';`)
-            w.append(`const __code = '${code}';`);
-            w.append(`const __system = '${system}';`);
-            w.append(`let systemCell = Cell.fromBase64(__system);`);
+    //         // Code references
+    //         w.append(`const __init = '${initCode}';`)
+    //         w.append(`const __code = '${code}';`);
+    //         w.append(`const __system = '${system}';`);
+    //         w.append(`let systemCell = Cell.fromBase64(__system);`);
 
-            // Stack
-            w.append('let __tuple: TupleItem[] = [];');
-            w.append(`__tuple.push({ type: 'cell', cell: systemCell });`);
-            for (let a of abi.init!.args) {
-                writeArgumentToStack(a.name, a.type, w);
-            }
+    //         // Stack
+    //         w.append('let __tuple: TupleItem[] = [];');
+    //         w.append(`__tuple.push({ type: 'cell', cell: systemCell });`);
+    //         for (let a of abi.init!.args) {
+    //             writeArgumentToStack(a.name, a.type, w);
+    //         }
 
-            // Deploy
-            w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
-            w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
-            w.append(`let system = await ContractSystem.create();`);
-            w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
-            w.append(`let res = await executor.get('init', __tuple);`);
-            w.append(`if (!res.success) { throw Error(res.error); }`);
-            w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
-            w.inIndent(() => {
-                w.append(`if (${abi.name}_errors[res.exitCode]) {`);
-                w.inIndent(() => {
-                    w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });`);
-                });
-                w.append(`} else {`);
-                w.inIndent(() => {
-                    w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });`);
-                });
-                w.append(`}`);
-            });
-            w.append(`}`);
-            w.append();
-            w.append(`let data = res.stack.readCell();`);
-            w.append(`return { code: codeCell, data };`);
-        });
-        w.append(`}`);
-        w.append();
-    }
+    //         // Deploy
+    //         w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
+    //         w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
+    //         w.append(`let system = await ContractSystem.create();`);
+    //         w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
+    //         w.append(`let res = await executor.get('init', __tuple);`);
+    //         w.append(`if (!res.success) { throw Error(res.error); }`);
+    //         w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
+    //         w.inIndent(() => {
+    //             w.append(`if (${abi.name}_errors[res.exitCode]) {`);
+    //             w.inIndent(() => {
+    //                 w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });`);
+    //             });
+    //             w.append(`} else {`);
+    //             w.inIndent(() => {
+    //                 w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });`);
+    //             });
+    //             w.append(`}`);
+    //         });
+    //         w.append(`}`);
+    //         w.append();
+    //         w.append(`let data = res.stack.readCell();`);
+    //         w.append(`return { code: codeCell, data };`);
+    //     });
+    //     w.append(`}`);
+    //     w.append();
+    // }
 
     // Errors
     w.append(`const ${abi.name}_errors: { [key: number]: { message: string } } = {`);
     w.inIndent(() => {
-        for (let k in abi.errors) {
-            w.append(`${k}: { message: \`${abi.errors[k].message}\` },`);
+        if (abi.errors) {
+            for (let k in abi.errors) {
+                w.append(`${k}: { message: \`${abi.errors[parseInt(k, 10)].message}\` },`);
+            }
         }
     });
     w.append(`}`);
@@ -84,23 +88,23 @@ export function writeTypescript(abi: ContractABI, code: string, initCode: string
     w.inIndent(() => {
         w.append();
 
-        if (abi.init) {
-            w.append(`static async init(${writeArguments(abi.init.args).join(', ')}) {`);
-            w.inIndent(() => {
-                w.append(`return await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
-            });
-            w.append(`}`);
-            w.append();
+        // if (abi.init) {
+        //     w.append(`static async init(${writeArguments(abi.init.args).join(', ')}) {`);
+        //     w.inIndent(() => {
+        //         w.append(`return await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
+        //     });
+        //     w.append(`}`);
+        //     w.append();
 
-            w.append(`static async fromInit(${writeArguments(abi.init.args).join(', ')}) {`);
-            w.inIndent(() => {
-                w.append(`const init = await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
-                w.append(`const address = contractAddress(0, init);`);
-                w.append(`return new ${abi.name}(address, init);`);
-            });
-            w.append(`}`);
-            w.append();
-        }
+        //     w.append(`static async fromInit(${writeArguments(abi.init.args).join(', ')}) {`);
+        //     w.inIndent(() => {
+        //         w.append(`const init = await ${abi.name}_init(${abi.init!.args.map((v) => v.name)});`);
+        //         w.append(`const address = contractAddress(0, init);`);
+        //         w.append(`return new ${abi.name}(address, init);`);
+        //     });
+        //     w.append(`}`);
+        //     w.append();
+        // }
 
         w.append(`static fromAddress(address: Address) {`);
         w.inIndent(() => {

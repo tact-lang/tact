@@ -1,4 +1,3 @@
-import { ContractABI } from "../abi/ContractABI";
 import { CompilerContext } from "../context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
@@ -287,7 +286,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     let allocations = getAllocations(ctx);
     for (let k of allocations) {
         writeSerializer(k.type.name, k.allocation, wctx);
-        writeParser(k.type.name, k.allocation, wctx);
+        writeParser(k.type.name, k.type.fields, k.allocation, wctx);
     }
 
     // Accessors

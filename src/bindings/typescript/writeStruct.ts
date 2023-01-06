@@ -1,5 +1,4 @@
-import { AllocationCell, AllocationField, ContractField, ContractStruct } from "../../abi/ContractABI";
-import { TypeRef } from "../../types/types";
+import { ABIType, ABITypeRef } from "ton-core";
 import { Writer } from "../../utils/Writer";
 import { getTSFieldType } from "./getTSFieldType";
 
@@ -229,7 +228,7 @@ function writeTupleFieldParser(f: ContractField, s: ContractStruct, w: Writer) {
     throw Error('Unsupported type');
 }
 
-export function writeTupleSerializer(s: ContractStruct, w: Writer) {
+export function writeTupleSerializer(s: ABIType, w: Writer) {
     w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
         w.append(`let __tuple: TupleItem[] = [];`);
@@ -242,17 +241,17 @@ export function writeTupleSerializer(s: ContractStruct, w: Writer) {
     w.append();
 }
 
-export function writeArgumentToStack(name: string, ref: TypeRef, w: Writer) {
+export function writeArgumentToStack(name: string, ref: ABITypeRef, w: Writer) {
     writeVariableToStack(name, ref, w);
 }
 
-function writeVariableToStack(name: string, ref: TypeRef, w: Writer) {
+function writeVariableToStack(name: string, ref: ABITypeRef, w: Writer) {
 
     //
     // Reference
     //
 
-    if (ref.kind === 'ref') {
+    if (ref.kind === 'simple') {
         if (ref.optional) {
             w.append(`if (${name} !== null) {`);
             w.inIndent(() => {
@@ -266,29 +265,29 @@ function writeVariableToStack(name: string, ref: TypeRef, w: Writer) {
             return;
         }
 
-        if (ref.name === 'Int') {
+        if (ref.type === 'int') {
             w.append(`__tuple.push({ type: 'int', value: ${name} });`);
             return;
-        } else if (ref.name === 'Bool') {
+        } else if (ref.type === 'bool') {
             w.append(`__tuple.push({ type: 'int', value: ${name} ? -1n : 0n });`);
             return;
-        } else if (ref.name === 'Cell') {
+        } else if (ref.type === 'cell') {
             w.append(`__tuple.push({ type: 'cell', cell: ${name} });`);
             return;
-        } else if (ref.name === 'Slice') {
+        } else if (ref.type === 'slice') {
             w.append(`__tuple.push({ type: 'slice', cell: ${name} });`);
             return;
-        } else if (ref.name === 'Builder') {
+        } else if (ref.type === 'builder') {
             w.append(`__tuple.push({ type: 'builder', cell: ${name} });`);
             return;
-        } else if (ref.name === 'Address') {
+        } else if (ref.type === 'address') {
             w.append(`__tuple.push({ type: 'slice', cell: beginCell().storeAddress(${name}).endCell() });`);
             return;
-        } else if (ref.name === 'String') {
+        } else if (ref.type === 'string') {
             w.append(`__tuple.push({ type: 'slice', cell: beginCell().storeStringTail(${name}).endCell() });`);
             return;
         } else {
-            w.append(`__tuple.push({ type: 'tuple', items: storeTuple${ref.name}(${name}) });`);
+            w.append(`__tuple.push({ type: 'tuple', items: storeTuple${ref.type}(${name}) });`);
             return;
         }
     }

@@ -1,4 +1,4 @@
-import { Allocation, AllocationCell, AllocationField, ContractABI, ContractInit, ContractReceiver, ContractStruct, CotnractFunction } from "../abi/ContractABI";
+import { ABIType } from "ton-core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
 import { getAllocation } from "../storage/resolveAllocation";
@@ -87,10 +87,15 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // Structs
-    let structs: ContractStruct[] = [];
+    let types: ABIType[] = [];
     for (let t of allTypes) {
         if (t.kind === 'struct') {
-            structs.push({ name: t.name, header: 0, fields: t.fields.map((v) => ({ name: v.name, type: v.type })), allocation: createAbiAllocation(getAllocation(ctx, t.name)) });
+            structs.push({
+                name: t.name,
+                header: 0,
+                fields: t.fields.map((v) => ({ name: v.name, type: v.type })),
+                allocation: createAbiAllocation(getAllocation(ctx, t.name))
+            });
         }
     }
 

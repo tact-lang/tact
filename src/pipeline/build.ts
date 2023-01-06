@@ -188,11 +188,11 @@ export async function build(project: ConfigProject, rootPath: string) {
             code: artifacts.codeBoc.toString('base64'),
             init: {
                 code: artifacts.initBoc.toString('base64'),
-                args: []
-            },
-            deployment: {
-                kind: 'system-cell',
-                system: systemCell.toBoc().toString('base64')
+                args: [],
+                deployment: {
+                    kind: 'system-cell',
+                    system: systemCell.toBoc().toString('base64')
+                },
             },
             compiler: {
                 name: 'tact',
@@ -209,12 +209,12 @@ export async function build(project: ConfigProject, rootPath: string) {
     console.log('   > Bindings');
     for (let pkg of packages) {
         console.log('   > ' + pkg.name);
-        if (pkg.deployment.kind !== 'system-cell') {
-            console.warn('   > ' + pkg.name + ': unsupported deployment kind ' + pkg.deployment.kind);
+        if (pkg.init.deployment.kind !== 'system-cell') {
+            console.warn('   > ' + pkg.name + ': unsupported deployment kind ' + pkg.init.deployment.kind);
             return false;
         }
         try {
-            let bindings = writeTypescript(JSON.parse(pkg.abi), pkg.code, pkg.init.code, pkg.deployment.system);
+            let bindings = writeTypescript(JSON.parse(pkg.abi), pkg.code, pkg.init.code, pkg.init.deployment.system);
             let pathBindings = path.resolve(outputPath, project.name + '_' + pkg.name + ".ts");
             fs.writeFileSync(pathBindings, bindings, 'utf-8');
         } catch (e) {

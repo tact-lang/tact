@@ -1,31 +1,9 @@
-import { TypeDescription, TypeRef } from "../types/types";
+import { TypeDescription } from "../types/types";
+import { AllocationCell } from "./operation";
 
 export type StorageAllocation = {
     type: TypeDescription;
-    prefix: number | null;
-    root: StorageCell;
+    header: number | null;
+    root: AllocationCell;
     size: { bits: number, refs: number };
-    fields: { name: string, type: TypeRef, index: number }[];
 };
-
-export type StorageCell = {
-    fields: StorageField[];
-    next: StorageCell | null;
-    size: { bits: number, refs: number };
-}
-
-export type StorageField = {
-    index: number,
-    size: { bits: number, refs: number },
-    name: string
-} & (
-        | { kind: 'int' | 'uint', bits: number }
-        | { kind: 'coins' }
-        | { kind: 'address' }
-        | { kind: 'struct', type: TypeDescription }
-        | { kind: 'slice' | 'cell' }
-        | { kind: 'optional', inner: StorageField }
-        | { kind: 'map' }
-        | { kind: 'remaining' }
-        | { kind: 'bytes', bytes: number }
-    )
