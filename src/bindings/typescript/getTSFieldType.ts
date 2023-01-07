@@ -16,7 +16,7 @@ export function getTSFieldType(ref: ABITypeRef): string {
             return ref.type + (ref.optional ? ' | null' : '');
         }
     }
-    if (ref.kind === 'map') {
+    if (ref.kind === 'dict') {
         return `Cell`;
     }
 

@@ -8,7 +8,7 @@ export const typeFormat = z.union([
         format: z.union([z.boolean(), z.number(), z.string()]).optional().nullable()
     }),
     z.object({
-        kind: z.literal('map'),
+        kind: z.literal('dict'),
         format: z.union([z.boolean(), z.number(), z.string()]).optional().nullable(),
         key: z.string(),
         keyFormat: z.union([z.boolean(), z.number(), z.string()]).optional().nullable(),

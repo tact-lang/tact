@@ -86,7 +86,7 @@ function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
     // Dict serializer
     //
 
-    if (type.kind === 'map') {
+    if (type.kind === 'dict') {
         if (type.format !== null && type.format !== undefined) {
             throw Error('Unsupported map format: ' + type.format);
         }
@@ -161,7 +161,7 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
     // Map serializer
     //
 
-    if (type.kind === 'map') {
+    if (type.kind === 'dict') {
         if (type.format !== null && type.format !== undefined) {
             throw Error('Unsupported map format: ' + type.format);
         }
@@ -231,7 +231,7 @@ function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGe
     // Dict Serializer
     //
 
-    if (type.kind === 'map') {
+    if (type.kind === 'dict') {
         w.append(`const ${name} = source.readCellOpt();`);
         return;
     }
@@ -298,7 +298,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
     // Map serializer
     //
 
-    if (type.kind === 'map') {
+    if (type.kind === 'dict') {
         w.append(`builder.writeCell(${name});`);
         return;
     }

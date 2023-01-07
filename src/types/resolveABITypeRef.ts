@@ -149,7 +149,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             valueFormat = 'ref';
         }
 
-        return { kind: 'map', key, keyFormat, value, valueFormat };
+        return { kind: 'dict', key, keyFormat, value, valueFormat };
     }
 
     throwError(`Unsupported type`, src.ref);
@@ -222,7 +222,7 @@ export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
             valueFormat = 'ref';
         }
 
-        return { kind: 'map', key, keyFormat, value, valueFormat };
+        return { kind: 'dict', key, keyFormat, value, valueFormat };
     }
 
     throw Error(`Unsupported type`);

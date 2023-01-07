@@ -155,7 +155,7 @@ export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (
     }
 
     // Map
-    if (src.kind === 'map') {
+    if (src.kind === 'dict') {
         if (src.format !== null && src.format !== undefined) {
             throw Error('Unsupported map format ' + src.format);
         }

@@ -75,7 +75,7 @@ function createTLBField(src: ABIField) {
         return src.name + ':' + base;
     }
 
-    if (src.type.kind === 'map') {
+    if (src.type.kind === 'dict') {
         if (src.type.format !== null && src.type.format !== undefined) {
             throw Error('Unsupported map format ' + src.type.format);
         }

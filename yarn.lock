@@ -4423,10 +4423,10 @@ ton-compiler@^2.0.0:
     arg "^5.0.1"
     tmp "^0.2.1"
 
-ton-core@>=0.41.0:
-  version "0.41.0"
-  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.41.0.tgz#c325dcc39342e6a51a92c08f4343fc71a51b2437"
-  integrity sha512-tfwCyY62EE4kZOP4+wEA86U4E88y94SiosoRYghYL81DPWBmQK5H7OBZVILUqGF1S/HdcLXZMptWMllIOX7CRg==
+ton-core@>=0.42.0:
+  version "0.42.0"
+  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.42.0.tgz#0ef0115a5a6c9b8dbbab2218d031702cdcd5640d"
+  integrity sha512-Vr7HqnFqO6GXzBbCrGUn1o06CAlLjZNEfou02UyBtot9f4SY97kqWKhiqZkDs7nW54NFtm7pZdjFDbBWpAqK7w==
   dependencies:
     symbol.inspect "1.0.1"
 

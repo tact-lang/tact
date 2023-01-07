@@ -1,6 +1,8 @@
 import { ABITypeRef } from "ton-core";
 import { Writer } from "../utils/Writer";
 
+const primitiveTypes = ['int', 'uint', 'address', 'bool', 'string', 'cell', 'slice', 'builder', 'fixed-bytes'];
+
 export type Serializer<T> = {
 
     // Typescript
@@ -464,11 +466,10 @@ let stringSerializer: Serializer<{ optional: boolean }> = {
     },
 }
 
-let guardedTypes = ['int', 'uint', 'address', 'bool', 'string', 'cell', 'slice', 'builder', 'fixed-bytes'];
 let guard: Serializer<{}> = {
     abiMatcher(src) {
         if (src.kind === 'simple') {
-            if (guardedTypes.includes(src.type)) {
+            if (primitiveTypes.includes(src.type)) {
                 throw Error(`Unable to resolve serializer for ${src.type} with ${src.format ? src.format : null} format`);
             }
         }
@@ -511,5 +512,5 @@ export const serializers: Serializer<any>[] = [
     stringSerializer,
 
     // Guard
-    guard
+    guard,
 ];
