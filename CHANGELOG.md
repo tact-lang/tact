@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+- Changed message id algorithm to the one based on type signatures instead of tlb
+
 ## Added
 - Dictionaries in typescript bindings
 - Introduced packaging compilation step that packages a contract to a single package that can be deployed in predictable way.
