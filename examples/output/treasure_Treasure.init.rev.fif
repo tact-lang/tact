@@ -7,7 +7,9 @@ SETCP0
     NEWC
     STREF
     s0 s1 XCHG
-    STSLICER
+    <{
+      STSLICER
+    }> CALLREF
     ENDC
 
   107886: 

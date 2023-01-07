@@ -1,24 +1,24 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
+builder __gen_write_StdlibTest(builder build_0, (int) v) inline_ref {
     var (v'v) = v;
     build_0 = build_0.store_int(v'v, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_StdlibTest(slice sc_0) inline {
+(slice, ((int))) __gen_read_StdlibTest(slice sc_0) inline_ref {
     var v'v = sc_0~load_int(257);
     return (sc_0, (v'v));
 }
 
-(int) __gen_load_StdlibTest() inline {
+(int) __gen_load_StdlibTest() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_StdlibTest();
 }
 
-() __gen_store_StdlibTest((int) v) impure inline {
+() __gen_store_StdlibTest((int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_StdlibTest(b, v);

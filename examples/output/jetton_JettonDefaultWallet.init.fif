@@ -14,7 +14,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_JettonDefaultWallet PROCINLINE:<{
+  __gen_write_JettonDefaultWallet PROCREF:<{
     s2 s3 XCHG2
     257 PUSHINT
     STIX

@@ -41,303 +41,357 @@ SETCP0
     EQUAL
     <{
       s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s3 s5 XCHG
-      s3 s4 XCHG
-      1 5 BLKDROP2
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          LDDICT
+          LDDICT
+          LDREF
+          s0 s1 XCHG
+          CTOS
+          LDDICT
+          LDDICT
+          LDDICT
+          s0 POP
+          s3 s5 XCHG
+          s3 s4 XCHG
+        }> CALLREF
+        1 5 BLKDROP2
+      }> CALLREF
       s0 s5 XCHG
-      32 LDU
-      s0 s1 XCHG
-      3615081709 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      257 PUSHINT
-      LDI
-      ROTREV
+      <{
+        32 LDU
+        s0 s1 XCHG
+        3615081709 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        ROTREV
+      }> CALLREF
       s2 POP
       s5 s6 XCHG
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
       31 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      5 1 BLKSWAP
-      s4 s5 XCHG2
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s0 s1 XCHG
-      NEWC
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-      c4 POP
-    }> IFJMPREF
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        5 1 BLKSWAP
+        <{
+          s4 s5 XCHG2
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s0 s1 XCHG
+          NEWC
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          ENDC
+          s0 s1 XCHG
+          STREF
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
+    }> PUSHCONT
+    IFJMP
     s0 PUSH
     575056061 PUSHINT
     EQUAL
     <{
       s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s3 s5 XCHG
-      s3 s4 XCHG
-      1 5 BLKDROP2
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          LDDICT
+          LDDICT
+          LDREF
+          s0 s1 XCHG
+          CTOS
+          LDDICT
+          LDDICT
+          LDDICT
+          s0 POP
+          s3 s5 XCHG
+          s3 s4 XCHG
+        }> CALLREF
+        1 5 BLKDROP2
+      }> CALLREF
       s0 s5 XCHG
-      32 LDU
-      s0 s1 XCHG
-      575056061 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
+      <{
+        32 LDU
+        s0 s1 XCHG
+        575056061 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+      }> CALLREF
       s1 POP
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
       32 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      5 1 BLKSWAP
-      s4 s5 XCHG2
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s0 s1 XCHG
-      NEWC
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-      c4 POP
-    }> IFJMPREF
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        5 1 BLKSWAP
+        <{
+          s4 s5 XCHG2
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s0 s1 XCHG
+          NEWC
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          ENDC
+          s0 s1 XCHG
+          STREF
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
+    }> PUSHCONT
+    IFJMP
     s0 PUSH
     140802882 PUSHINT
     EQUAL
     <{
       s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s3 s5 XCHG
-      s3 s4 XCHG
-      1 5 BLKDROP2
-      s0 s5 XCHG
-      32 LDU
-      s0 s1 XCHG
-      140802882 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      1 LDI
-      s0 s1 XCHG
       <{
+        c4 PUSH
+        CTOS
         LDREF
-      }> PUSHCONT
-      <{
-        PUSHNULL
         s0 s1 XCHG
-      }> PUSHCONT
-      IFELSE
-      ROTREV
+        2 SETGLOBVAR
+        <{
+          LDDICT
+          LDDICT
+          LDREF
+          s0 s1 XCHG
+          CTOS
+          LDDICT
+          LDDICT
+          LDDICT
+          s0 POP
+          s3 s5 XCHG
+          s3 s4 XCHG
+        }> CALLREF
+        1 5 BLKDROP2
+      }> CALLREF
+      s0 s5 XCHG
+      <{
+        32 LDU
+        s0 s1 XCHG
+        140802882 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        1 LDI
+        s0 s1 XCHG
+        <{
+          LDREF
+        }> PUSHCONT
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
+        ROTREV
+      }> CALLREF
       s2 POP
       s5 s6 XCHG
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
       33 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      5 1 BLKSWAP
-      s4 s5 XCHG2
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s0 s1 XCHG
-      NEWC
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-      c4 POP
-    }> IFJMPREF
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        5 1 BLKSWAP
+        <{
+          s4 s5 XCHG2
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s0 s1 XCHG
+          NEWC
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          ENDC
+          s0 s1 XCHG
+          STREF
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
+    }> PUSHCONT
+    IFJMP
     s0 PUSH
     2438762569 PUSHINT
     EQUAL
     <{
       s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s3 s5 XCHG
-      s3 s4 XCHG
-      1 5 BLKDROP2
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          LDDICT
+          LDDICT
+          LDREF
+          s0 s1 XCHG
+          CTOS
+          LDDICT
+          LDDICT
+          LDDICT
+          s0 POP
+          s3 s5 XCHG
+          s3 s4 XCHG
+        }> CALLREF
+        1 5 BLKDROP2
+      }> CALLREF
       s0 s5 XCHG
-      32 LDU
-      s0 s1 XCHG
-      2438762569 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
+      <{
+        32 LDU
+        s0 s1 XCHG
+        2438762569 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+      }> CALLREF
       s1 POP
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
       34 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      5 1 BLKSWAP
-      s4 s5 XCHG2
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s0 s1 XCHG
-      NEWC
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-      c4 POP
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        5 1 BLKSWAP
+        <{
+          s4 s5 XCHG2
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s0 s1 XCHG
+          NEWC
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          ENDC
+          s0 s1 XCHG
+          STREF
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
     }> PUSHCONT
     IFJMP
     2509716940 PUSHINT
     EQUAL
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s3 s5 XCHG
-      s3 s4 XCHG
-      1 5 BLKDROP2
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          LDDICT
+          LDDICT
+          LDREF
+          s0 s1 XCHG
+          CTOS
+          LDDICT
+          LDDICT
+          LDDICT
+          s0 POP
+          s3 s5 XCHG
+          s3 s4 XCHG
+        }> CALLREF
+        1 5 BLKDROP2
+      }> CALLREF
       s0 s5 XCHG
-      32 LDU
-      s0 s1 XCHG
-      2509716940 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      64 LDU
-      s0 s1 XCHG
+      <{
+        32 LDU
+        s0 s1 XCHG
+        2509716940 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        64 LDU
+        s0 s1 XCHG
+      }> CALLREF
       s1 POP
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
       35 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      5 1 BLKSWAP
-      s4 s5 XCHG2
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s0 s1 XCHG
-      NEWC
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      s1 s2 XCHG
-      STDICT
-      ENDC
-      s0 s1 XCHG
-      STREF
-      ENDC
-      c4 POP
-    }> IFJMPREF
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        5 1 BLKSWAP
+        <{
+          s4 s5 XCHG2
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s0 s1 XCHG
+          NEWC
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          s1 s2 XCHG
+          STDICT
+          ENDC
+          s0 s1 XCHG
+          STREF
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
+    }> PUSHCONT
+    IFJMP
     s0 POP
     130 THROW
 
@@ -345,48 +399,6 @@ SETCP0
     s0 PUSH
     ISNULL
     128 THROWIF
-
-  5: 
-    s1 PUSH
-    ISNULL
-    <{
-      2DROP
-      ROTREV
-      DICTIDEL
-      s0 POP
-    }> PUSHCONT
-    IFJMP
-    NEWC
-    s0 s1 XCHG
-    STIX
-    s1 s3 s3 XCHG3
-    DICTISETB
-
-  6: 
-    s1 s3 s3 XCHG3
-    DICTIGET
-    NULLSWAPIFNOT
-    <{
-      s0 s1 XCHG
-      LDI
-      s0 POP
-    }> PUSHCONT
-    IFJMP
-    2DROP
-    PUSHNULL
-
-  7: 
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      ROTREV
-      DICTIDEL
-      s0 POP
-    }> PUSHCONT
-    IFJMP
-    s1 s3 s3 XCHG3
-    DICTISETREF
 
   8: 
     ROTREV
@@ -561,7 +573,22 @@ SETCP0
     s3 s9 XCHG
     s1 s4 s0 XCHG3
     s9 s-1 PUXC
-    5 CALLDICT
+    s1 PUSH
+    ISNULL
+    <{
+      2DROP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    <{
+      NEWC
+      s0 s1 XCHG
+      STIX
+      s1 s3 s3 XCHG3
+      DICTISETB
+    }> PUSHCONT
+    IFELSE
     s2 s3 XCHG
     267 PUSHINT
     s0 s0 s7 XCHG3
@@ -574,7 +601,19 @@ SETCP0
     257 PUSHINT
     s2 PUSH
     1 PUSHINT
-    6 CALLDICT
+    s1 s3 s3 XCHG3
+    DICTIGET
+    NULLSWAPIFNOT
+    <{
+      s0 s1 XCHG
+      LDI
+      s0 POP
+    }> PUSHCONT
+    <{
+      2DROP
+      PUSHNULL
+    }> PUSHCONT
+    IFELSE
     s0 PUSH
     ISNULL
     <{
@@ -584,7 +623,22 @@ SETCP0
       s0 s1 XCHG
       -1 PUSHINT
       1 PUSHINT
-      5 CALLDICT
+      s1 PUSH
+      ISNULL
+      <{
+        2DROP
+        ROTREV
+        DICTIDEL
+        s0 POP
+      }> PUSHCONT
+      <{
+        NEWC
+        s0 s1 XCHG
+        STIX
+        s1 s3 s3 XCHG3
+        DICTISETB
+      }> PUSHCONT
+      IFELSE
     }> PUSHCONT
     <{
       257 PUSHINT
@@ -594,7 +648,22 @@ SETCP0
       s3 s6 XCHG
       s1 s2 XCHG
       1 PUSHINT
-      5 CALLDICT
+      s1 PUSH
+      ISNULL
+      <{
+        2DROP
+        ROTREV
+        DICTIDEL
+        s0 POP
+      }> PUSHCONT
+      <{
+        NEWC
+        s0 s1 XCHG
+        STIX
+        s1 s3 s3 XCHG3
+        DICTISETB
+      }> PUSHCONT
+      IFELSE
     }> PUSHCONT
     IFELSE
     s0 s3 XCHG
@@ -610,7 +679,19 @@ SETCP0
     s2 s4 XCHG
     257 PUSHINT
     ROTREV
-    7 CALLDICT
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    <{
+      s1 s3 s3 XCHG3
+      DICTISETREF
+    }> PUSHCONT
+    IFELSE
     s0 s2 XCHG
 
   34: 
@@ -619,18 +700,60 @@ SETCP0
     s1 s2 PUSH2
     s4 s9 XCHG
     ROTREV
-    5 CALLDICT
+    s1 PUSH
+    ISNULL
+    <{
+      2DROP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    <{
+      NEWC
+      s0 s1 XCHG
+      STIX
+      s1 s3 s3 XCHG3
+      DICTISETB
+    }> PUSHCONT
+    IFELSE
     s0 s4 XCHG
     257 PUSHINT
     s6 PUSH
     PUSHNULL
     1 PUSHINT
-    5 CALLDICT
+    s1 PUSH
+    ISNULL
+    <{
+      2DROP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    <{
+      NEWC
+      s0 s1 XCHG
+      STIX
+      s1 s3 s3 XCHG3
+      DICTISETB
+    }> PUSHCONT
+    IFELSE
     s0 s3 XCHG
     257 PUSHINT
     s6 PUSH
     PUSHNULL
-    7 CALLDICT
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    <{
+      s1 s3 s3 XCHG3
+      DICTISETREF
+    }> PUSHCONT
+    IFELSE
     267 PUSHINT
     1 GETGLOBVAR
     4 UNTUPLE
@@ -642,78 +765,106 @@ SETCP0
     9 CALLDICT
     257 PUSHINT
     PUSHNULL
-    s0 PUSH
-    ISNULL
     <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    <{
+      s0 PUSH
+      ISNULL
+      <{
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      IFJMP
       s0 PUSH
       ISNULL
       128 THROWIF
       1 UNTUPLE
-      NEWC
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
-      ENDC
+      <{
+        NEWC
+        s0 s1 XCHG
+        <{
+          s0 s1 XCHG
+          257 PUSHINT
+          STIX
+        }> CALLREF
+        ENDC
+      }> CALLREF
+    }> CALLREF
+    s1 s7 s0 XCHG3
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      ROTREV
+      DICTIDEL
+      s0 POP
+    }> PUSHCONT
+    <{
+      s1 s3 s3 XCHG3
+      DICTISETREF
     }> PUSHCONT
     IFELSE
-    s1 s7 s0 XCHG3
-    7 CALLDICT
     s3 s4 XCHG
     s1 s3 s0 XCHG3
 
   35: 
-    NEWC
-    s0 s1 XCHG
-    3548362785 PUSHINT
-    ROT
-    32 STU
-    64 STU
-    ENDC
+    <{
+      NEWC
+      s0 s1 XCHG
+      <{
+        3548362785 PUSHINT
+        ROT
+        32 STU
+        64 STU
+      }> CALLREF
+      ENDC
+    }> CALLREF
     28 CALLDICT
 
   77570: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    1 5 BLKDROP2
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        LDDICT
+        LDDICT
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        LDDICT
+        LDDICT
+        LDDICT
+        s0 POP
+        s3 s5 XCHG
+        s3 s4 XCHG
+      }> CALLREF
+      1 5 BLKDROP2
+    }> CALLREF
     30 CALLDICT
 
   95239: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    1 5 BLKDROP2
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        LDDICT
+        LDDICT
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        LDDICT
+        LDDICT
+        LDDICT
+        s0 POP
+        s3 s5 XCHG
+        s3 s4 XCHG
+      }> CALLREF
+      1 5 BLKDROP2
+    }> CALLREF
     29 CALLDICT
 
   113617: 

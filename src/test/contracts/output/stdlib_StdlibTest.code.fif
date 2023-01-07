@@ -15,17 +15,17 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_write_StdlibTest PROCINLINE:<{
+  __gen_write_StdlibTest PROCREF:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_StdlibTest PROCINLINE:<{
+  __gen_read_StdlibTest PROCREF:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  __gen_load_StdlibTest PROCINLINE:<{
+  __gen_load_StdlibTest PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -34,7 +34,7 @@ PROGRAM{
     __gen_read_StdlibTest INLINECALLDICT
     NIP
   }>
-  __gen_store_StdlibTest PROCINLINE:<{
+  __gen_store_StdlibTest PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP

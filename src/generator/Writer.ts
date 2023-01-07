@@ -9,6 +9,7 @@ export class WriterContext {
     #functions: Map<string, { name: string, code: string, depends: Set<string> }> = new Map();
     #pendingWriter: Writer | null = null;
     #pendingDepends: Set<string> | null = null;
+    #pendingName: string | null = null;
     #nextId = 0;
 
     constructor(ctx: CompilerContext) {
@@ -98,17 +99,25 @@ export class WriterContext {
         // Write function
         this.#pendingWriter = new Writer();
         this.#pendingDepends = new Set();
+        this.#pendingName = name;
         handler();
         let code = this.#pendingWriter.end();
         let depends = this.#pendingDepends;
         this.#pendingDepends = null;
         this.#pendingWriter = null;
+        this.#pendingName = null;
         this.#functions.set(name, { name, code, depends });
     }
 
     used(name: string) {
-        this.#pendingDepends!!.add(name);
-        // console.log(`<-- "${name}"`);
+        if (this.#pendingName !== name) {
+            this.#pendingDepends!!.add(name);
+        }
+        return name;
+    }
+
+    currentContext() {
+        return this.#pendingName;
     }
 
     //
@@ -121,6 +130,10 @@ export class WriterContext {
 
     append(src: string = '') {
         this.#pendingWriter!.append(src);
+    }
+
+    write(src: string = '') {
+        this.#pendingWriter!.write(src);
     }
 
     debug(id?: number | undefined | null | string) {

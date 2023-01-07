@@ -10,7 +10,7 @@ builder __tact_store_address(builder b, slice address) inline {
 
 forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_destroy_7(tuple v) asm "7 UNTUPLE";
 
-builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline {
+builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline_ref {
     var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
     build_0 = store_uint(build_0, 4096439811, 32);
     build_0 = __tact_store_address(build_0, v'requested);
@@ -23,7 +23,7 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
     return build_0;
 }
 
-builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline {
+builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline_ref {
     var (v'master, v'members, v'weight, v'requiredWeight, v'completed, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = build_0.store_dict(v'members);

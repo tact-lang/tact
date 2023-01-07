@@ -19,7 +19,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
+builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline_ref {
     var (v'seqno, v'amount, v'target) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_coins(v'amount);
@@ -27,18 +27,18 @@ builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_Operation((int, int, slice) v) inline {
+cell __gen_writecell_Operation((int, int, slice) v) inline_ref {
     return __gen_write_Operation(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice))) __gen_read_Operation(slice sc_0) inline {
+(slice, ((int, int, slice))) __gen_read_Operation(slice sc_0) inline_ref {
     var v'seqno = sc_0~load_uint(32);
     var v'amount = sc_0~load_coins();
     var v'target = sc_0~__tact_load_address();
     return (sc_0, (v'seqno, v'amount, v'target));
 }
 
-(slice, (((int, int, slice), slice, slice, slice))) __gen_read_Execute(slice sc_0) inline {
+(slice, (((int, int, slice), slice, slice, slice))) __gen_read_Execute(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 819865922);
     var v'operation = sc_0~__gen_read_Operation();
     var v'signature1 = sc_0~load_ref().begin_parse();
@@ -47,7 +47,7 @@ cell __gen_writecell_Operation((int, int, slice) v) inline {
     return (sc_0, (v'operation, v'signature1, v'signature2, v'signature3));
 }
 
-builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline {
+builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline_ref {
     var (v'seqno, v'user1_key, v'user2_key, v'user3_key) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'user1_key, 256);
@@ -56,7 +56,7 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
     return build_0;
 }
 
-(slice, ((int, int, int, int))) __gen_read_MultisigContract(slice sc_0) inline {
+(slice, ((int, int, int, int))) __gen_read_MultisigContract(slice sc_0) inline_ref {
     var v'seqno = sc_0~load_uint(32);
     var v'user1_key = sc_0~load_uint(256);
     var v'user2_key = sc_0~load_uint(256);
@@ -66,13 +66,13 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
 
 ((int, int, slice)) __gen_Operation_unpack((int, int, slice) v) asm "NOP";
 
-(int, int, int, int) __gen_load_MultisigContract() inline {
+(int, int, int, int) __gen_load_MultisigContract() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MultisigContract();
 }
 
-() __gen_store_MultisigContract((int, int, int, int) v) impure inline {
+() __gen_store_MultisigContract((int, int, int, int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_MultisigContract(b, v);

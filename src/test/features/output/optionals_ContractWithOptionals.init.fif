@@ -37,7 +37,7 @@ PROGRAM{
       __tact_store_address INLINECALLDICT
     }>
   }>
-  __gen_write_SomeGenericStruct PROCINLINE:<{
+  __gen_write_SomeGenericStruct PROCREF:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -63,7 +63,7 @@ PROGRAM{
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_StructWithOptionals PROCINLINE:<{
+  __gen_write_StructWithOptionals PROCREF:<{
     s4 PUSH
     ISNULL
     NOT
@@ -139,7 +139,7 @@ PROGRAM{
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_ContractWithOptionals PROCINLINE:<{
+  __gen_write_ContractWithOptionals PROCREF:<{
     s5 PUSH
     ISNULL
     NOT
@@ -236,32 +236,34 @@ PROGRAM{
   __gen_SomeGenericStruct_from_tuple PROC:<{
     5 UNTUPLE
   }>
-  __gen_SomeGenericStruct_from_opt_tuple PROC:<{
+  __gen_SomeGenericStruct_from_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      __gen_SomeGenericStruct_from_tuple CALLDICT
+      __gen_SomeGenericStruct_as_optional INLINECALLDICT
     }>
-    __gen_SomeGenericStruct_from_tuple CALLDICT
-    __gen_SomeGenericStruct_as_optional INLINECALLDICT
   }>
   __gen_StructWithOptionals_as_optional PROCINLINE:<{
     5 TUPLE
   }>
   __gen_StructWithOptionals_from_tuple PROC:<{
     5 UNTUPLE
-    __gen_SomeGenericStruct_from_opt_tuple CALLDICT
+    __gen_SomeGenericStruct_from_opt_tuple INLINECALLDICT
   }>
-  __gen_StructWithOptionals_from_opt_tuple PROC:<{
+  __gen_StructWithOptionals_from_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      __gen_StructWithOptionals_from_tuple CALLDICT
+      __gen_StructWithOptionals_as_optional INLINECALLDICT
     }>
-    __gen_StructWithOptionals_from_tuple CALLDICT
-    __gen_StructWithOptionals_as_optional INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_init PROC:<{
     s0 s6 XCHG
@@ -273,9 +275,9 @@ PROGRAM{
   }>
   init PROC:<{
     SWAP
-    __gen_SomeGenericStruct_from_opt_tuple CALLDICT
+    __gen_SomeGenericStruct_from_opt_tuple INLINECALLDICT
     SWAP
-    __gen_StructWithOptionals_from_opt_tuple CALLDICT
+    __gen_StructWithOptionals_from_opt_tuple INLINECALLDICT
     $__gen_ContractWithOptionals_init CALLDICT
   }>
   main PROC:<{

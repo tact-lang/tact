@@ -54,7 +54,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __tact_compute_contract_address PROC:<{
+  __tact_compute_contract_address PROCINLINE:<{
     NEWC
     0 PUSHINT
     SWAP
@@ -83,17 +83,18 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  __tact_dict_get_slice_int PROC:<{
+  __tact_dict_get_slice_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
       SWAP
       LDIX
       DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
     }>
-    2DROP
-    PUSHNULL
   }>
   __tact_address_eq PROCINLINE:<{
     SDEQ
@@ -105,7 +106,7 @@ PROGRAM{
     NULLSWAPIFNOT
     100 THROWIFNOT
   }>
-  __gen_write_Request PROCINLINE:<{
+  __gen_write_Request PROCREF:<{
     4096439811 PUSHINT
     s0 s8 XCHG2
     32 STU
@@ -132,7 +133,7 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_read_Request PROCINLINE:<{
+  __gen_read_Request PROCREF:<{
     32 LDU
     SWAP
     4096439811 PUSHINT
@@ -156,7 +157,7 @@ PROGRAM{
     }>
     7 -ROLL
   }>
-  __gen_read_Signed PROCINLINE:<{
+  __gen_read_Signed PROCREF:<{
     32 LDU
     SWAP
     420994549 PUSHINT
@@ -164,7 +165,7 @@ PROGRAM{
     129 THROWIFNOT
     __gen_read_Request INLINECALLDICT
   }>
-  __gen_write_MultisigSigner PROCINLINE:<{
+  __gen_write_MultisigSigner PROCREF:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG
@@ -186,7 +187,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_write_Multisig PROCINLINE:<{
+  __gen_write_Multisig PROCREF:<{
     s3 s4 XCHG2
     257 PUSHINT
     STIX
@@ -196,7 +197,7 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  __gen_read_Multisig PROCINLINE:<{
+  __gen_read_Multisig PROCREF:<{
     257 PUSHINT
     LDIX
     LDDICT
@@ -206,7 +207,7 @@ PROGRAM{
     LDIX
     4 -ROLL
   }>
-  __gen_load_Multisig PROCINLINE:<{
+  __gen_load_Multisig PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -215,7 +216,7 @@ PROGRAM{
     __gen_read_Multisig INLINECALLDICT
     1 4 BLKDROP2
   }>
-  __gen_store_Multisig PROCINLINE:<{
+  __gen_store_Multisig PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -238,7 +239,7 @@ PROGRAM{
   $contractAddress PROC:<{
     0 PUSHINT
     -ROT
-    __tact_compute_contract_address CALLDICT
+    __tact_compute_contract_address INLINECALLDICT
   }>
   $send PROC:<{
     NEWC
@@ -376,7 +377,7 @@ PROGRAM{
     267 PUSHINT
     ROT
     257 PUSHINT
-    __tact_dict_get_slice_int CALLDICT
+    __tact_dict_get_slice_int INLINECALLDICT
   }>
   $__gen_get_member PROC:<{
     __gen_load_Multisig INLINECALLDICT
@@ -399,7 +400,7 @@ PROGRAM{
     s11 PUSH
     s0 s2 XCHG
     257 PUSHINT
-    __tact_dict_get_slice_int CALLDICT
+    __tact_dict_get_slice_int INLINECALLDICT
     __tact_not_null CALLDICT
     46307 PUSHINT
     SWAP

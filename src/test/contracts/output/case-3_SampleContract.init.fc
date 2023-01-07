@@ -1,11 +1,11 @@
-builder __gen_write_Source(builder build_0, (int, int) v) inline {
+builder __gen_write_Source(builder build_0, (int, int) v) inline_ref {
     var (v'a, v'b) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
     return build_0;
 }
 
-builder __gen_write_SampleContract(builder build_0, (int, int, (int, int)) v) inline {
+builder __gen_write_SampleContract(builder build_0, (int, int, (int, int)) v) inline_ref {
     var (v'a, v'b, (v'c'a, v'c'b)) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);

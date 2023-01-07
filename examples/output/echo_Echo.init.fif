@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_Echo_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Echo PROCINLINE:<{
+  __gen_write_Echo PROCREF:<{
     SWAP
     257 PUSHINT
     STIX

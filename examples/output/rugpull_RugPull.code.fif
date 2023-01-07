@@ -63,26 +63,28 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __tact_dict_set_int_slice PROC:<{
+  __tact_dict_set_int_slice PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       -ROT
       DICTIDEL
       DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTISET
     }>
-    s1 s3 s3 XCHG3
-    DICTISET
   }>
-  __tact_dict_get_int_slice PROC:<{
+  __tact_dict_get_int_slice PROCINLINE:<{
     -ROT
     DICTIGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
     }>
-    DROP
-    PUSHNULL
   }>
   __tact_address_eq PROCINLINE:<{
     SDEQ
@@ -105,7 +107,7 @@ PROGRAM{
     TRUE
     __tact_string_builder_start INLINECALLDICT
   }>
-  __tact_string_builder_end PROC:<{
+  __tact_string_builder_end PROCINLINE:<{
     UNCONS
     SWAP
     ENDC
@@ -122,7 +124,7 @@ PROGRAM{
     }>
     NIP
   }>
-  __tact_string_builder_append PROC:<{
+  __tact_string_builder_append PROCREF:<{
     DUP
     SREFS
     OVER
@@ -188,7 +190,7 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_read_ChangeOwner PROCINLINE:<{
+  __gen_read_ChangeOwner PROCREF:<{
     32 LDU
     SWAP
     3067051791 PUSHINT
@@ -196,7 +198,7 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_write_RugPull PROCINLINE:<{
+  __gen_write_RugPull PROCREF:<{
     s10 s9 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s7 XCHG
@@ -231,7 +233,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_RugPull PROCINLINE:<{
+  __gen_read_RugPull PROCREF:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
@@ -266,7 +268,7 @@ PROGRAM{
   }>
   __gen_RugParams_to_external PROC:<{
   }>
-  __gen_load_RugPull PROCINLINE:<{
+  __gen_load_RugPull PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -275,7 +277,7 @@ PROGRAM{
     __gen_read_RugPull INLINECALLDICT
     1 10 BLKDROP2
   }>
-  __gen_store_RugPull PROCINLINE:<{
+  __gen_store_RugPull PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -410,8 +412,8 @@ PROGRAM{
   $__gen_String_asComment PROC:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
-    __tact_string_builder_append CALLDICT
-    __tact_string_builder_end CALLDICT
+    __tact_string_builder_append INLINECALLDICT
+    __tact_string_builder_end INLINECALLDICT
   }>
   $__gen_RugPull_sendPayout PROC:<{
     TRUE
@@ -484,7 +486,7 @@ PROGRAM{
     THROWANYIFNOT
     257 PUSHINT
     s3 s1 PUXC
-    __tact_dict_set_int_slice CALLDICT
+    __tact_dict_set_int_slice INLINECALLDICT
     SWAP
     INC
     s5 s8 XCPU
@@ -500,7 +502,7 @@ PROGRAM{
       OVER
       257 PUSHINT
       s4 PUSH
-      __tact_dict_get_int_slice CALLDICT
+      __tact_dict_get_int_slice INLINECALLDICT
       __tact_not_null CALLDICT
       s1 s8 XCPU
       SUB

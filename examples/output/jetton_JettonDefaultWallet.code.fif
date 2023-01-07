@@ -96,7 +96,7 @@ PROGRAM{
       __tact_store_address INLINECALLDICT
     }>
   }>
-  __tact_compute_contract_address PROC:<{
+  __tact_compute_contract_address PROCINLINE:<{
     NEWC
     0 PUSHINT
     SWAP
@@ -144,7 +144,7 @@ PROGRAM{
     NULLSWAPIFNOT
     100 THROWIFNOT
   }>
-  __gen_read_TokenTransfer PROCINLINE:<{
+  __gen_read_TokenTransfer PROCREF:<{
     32 LDU
     SWAP
     260734629 PUSHINT
@@ -171,7 +171,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_TokenTransferInternal PROCINLINE:<{
+  __gen_write_TokenTransferInternal PROCREF:<{
     395134233 PUSHINT
     s0 s7 XCHG2
     32 STU
@@ -188,13 +188,13 @@ PROGRAM{
     SWAP
     STSLICER
   }>
-  __gen_writecell_TokenTransferInternal PROCINLINE:<{
+  __gen_writecell_TokenTransferInternal PROCREF:<{
     NEWC
     6 -ROLL
     __gen_write_TokenTransferInternal INLINECALLDICT
     ENDC
   }>
-  __gen_read_TokenTransferInternal PROCINLINE:<{
+  __gen_read_TokenTransferInternal PROCREF:<{
     32 LDU
     SWAP
     395134233 PUSHINT
@@ -212,7 +212,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_TokenNotification PROCINLINE:<{
+  __gen_write_TokenNotification PROCREF:<{
     1935855772 PUSHINT
     s0 s5 XCHG2
     32 STU
@@ -225,13 +225,13 @@ PROGRAM{
     SWAP
     STSLICER
   }>
-  __gen_writecell_TokenNotification PROCINLINE:<{
+  __gen_writecell_TokenNotification PROCREF:<{
     NEWC
     4 -ROLL
     __gen_write_TokenNotification INLINECALLDICT
     ENDC
   }>
-  __gen_read_TokenBurn PROCINLINE:<{
+  __gen_read_TokenBurn PROCREF:<{
     32 LDU
     SWAP
     1499400124 PUSHINT
@@ -245,7 +245,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_TokenBurnNotification PROCINLINE:<{
+  __gen_write_TokenBurnNotification PROCREF:<{
     2078119902 PUSHINT
     s0 s5 XCHG2
     32 STU
@@ -258,25 +258,25 @@ PROGRAM{
     SWAP
     __tact_store_address_opt INLINECALLDICT
   }>
-  __gen_writecell_TokenBurnNotification PROCINLINE:<{
+  __gen_writecell_TokenBurnNotification PROCREF:<{
     NEWC
     4 -ROLL
     __gen_write_TokenBurnNotification INLINECALLDICT
     ENDC
   }>
-  __gen_write_TokenExcesses PROCINLINE:<{
+  __gen_write_TokenExcesses PROCREF:<{
     3576854235 PUSHINT
     ROT
     32 STU
     64 STU
   }>
-  __gen_writecell_TokenExcesses PROCINLINE:<{
+  __gen_writecell_TokenExcesses PROCREF:<{
     NEWC
     SWAP
     __gen_write_TokenExcesses INLINECALLDICT
     ENDC
   }>
-  __gen_write_JettonDefaultWallet PROCINLINE:<{
+  __gen_write_JettonDefaultWallet PROCREF:<{
     s2 s3 XCHG2
     257 PUSHINT
     STIX
@@ -285,7 +285,7 @@ PROGRAM{
     SWAP
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_JettonDefaultWallet PROCINLINE:<{
+  __gen_read_JettonDefaultWallet PROCREF:<{
     257 PUSHINT
     LDIX
     __tact_load_address INLINECALLDICT
@@ -298,7 +298,7 @@ PROGRAM{
   }>
   __gen_JettonWalletData_to_external PROC:<{
   }>
-  __gen_load_JettonDefaultWallet PROCINLINE:<{
+  __gen_load_JettonDefaultWallet PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -307,7 +307,7 @@ PROGRAM{
     __gen_read_JettonDefaultWallet INLINECALLDICT
     1 3 BLKDROP2
   }>
-  __gen_store_JettonDefaultWallet PROCINLINE:<{
+  __gen_store_JettonDefaultWallet PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -330,7 +330,7 @@ PROGRAM{
   $contractAddress PROC:<{
     0 PUSHINT
     -ROT
-    __tact_compute_contract_address CALLDICT
+    __tact_compute_contract_address INLINECALLDICT
   }>
   $send PROC:<{
     NEWC

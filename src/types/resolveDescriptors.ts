@@ -267,6 +267,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
     }
 
+    //
+    // Resolve contract functions
+    //
+
     function resolveFunctionDescriptor(sself: string | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
 
         let self = sself;
@@ -436,10 +440,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    //
-    // Resolve contract functions
-    //
-
     for (const a of ast.types) {
 
         if (a.kind === 'def_contract' || a.kind === 'def_trait') {
@@ -608,7 +608,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
     }
 
+    //
     // Check for structs to have at least one field
+    //
+    
     for (let k in types) {
         let t = types[k];
         if (t.kind === 'contract' || t.kind === 'struct') {

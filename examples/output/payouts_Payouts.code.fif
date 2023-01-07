@@ -69,7 +69,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __tact_compute_contract_address PROC:<{
+  __tact_compute_contract_address PROCINLINE:<{
     NEWC
     0 PUSHINT
     SWAP
@@ -126,7 +126,7 @@ PROGRAM{
     TRUE
     __tact_string_builder_start INLINECALLDICT
   }>
-  __tact_string_builder_end PROC:<{
+  __tact_string_builder_end PROCINLINE:<{
     UNCONS
     SWAP
     ENDC
@@ -143,7 +143,7 @@ PROGRAM{
     }>
     NIP
   }>
-  __tact_string_builder_append PROC:<{
+  __tact_string_builder_append PROCREF:<{
     DUP
     SREFS
     OVER
@@ -209,7 +209,7 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_read_ChangeOwner PROCINLINE:<{
+  __gen_read_ChangeOwner PROCREF:<{
     32 LDU
     SWAP
     3067051791 PUSHINT
@@ -217,20 +217,20 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_write_CanPayout PROCINLINE:<{
+  __gen_write_CanPayout PROCREF:<{
     1050587494 PUSHINT
     ROT
     32 STU
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_CanPayout PROCINLINE:<{
+  __gen_writecell_CanPayout PROCREF:<{
     NEWC
     SWAP
     __gen_write_CanPayout INLINECALLDICT
     ENDC
   }>
-  __gen_read_CanPayoutResponse PROCINLINE:<{
+  __gen_read_CanPayoutResponse PROCREF:<{
     32 LDU
     SWAP
     1861678417 PUSHINT
@@ -243,20 +243,20 @@ PROGRAM{
     1 LDI
     3 -ROLL
   }>
-  __gen_write_Beacon PROCINLINE:<{
+  __gen_write_Beacon PROCREF:<{
     2SWAP
     __tact_store_address INLINECALLDICT
     ROT
     __tact_store_address INLINECALLDICT
     1 STI
   }>
-  __gen_write_Payouts PROCINLINE:<{
+  __gen_write_Payouts PROCREF:<{
     -ROT
     __tact_store_address INLINECALLDICT
     257 PUSHINT
     STIX
   }>
-  __gen_read_Payouts PROCINLINE:<{
+  __gen_read_Payouts PROCREF:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
@@ -267,7 +267,7 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_load_Payouts PROCINLINE:<{
+  __gen_load_Payouts PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -276,7 +276,7 @@ PROGRAM{
     __gen_read_Payouts INLINECALLDICT
     1 2 BLKDROP2
   }>
-  __gen_store_Payouts PROCINLINE:<{
+  __gen_store_Payouts PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -299,7 +299,7 @@ PROGRAM{
   $contractAddress PROC:<{
     0 PUSHINT
     -ROT
-    __tact_compute_contract_address CALLDICT
+    __tact_compute_contract_address INLINECALLDICT
   }>
   $send PROC:<{
     NEWC
@@ -504,8 +504,8 @@ PROGRAM{
   $__gen_String_asComment PROC:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
-    __tact_string_builder_append CALLDICT
-    __tact_string_builder_end CALLDICT
+    __tact_string_builder_append INLINECALLDICT
+    __tact_string_builder_end INLINECALLDICT
   }>
   $__gen_String_fromBase64 PROC:<{
     $__gen_Slice_fromBase64 CALLDICT

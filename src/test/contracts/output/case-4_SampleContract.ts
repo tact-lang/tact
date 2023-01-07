@@ -173,8 +173,8 @@ function storeTupleSource(source: Source) {
 }
 
 async function SampleContract_init() {
-    const __init = 'te6ccgEBBgEATgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AcAAUgAVVbW1tbQXIzAVQRYEBAc8AEoEBAc8AyEADAoEBAc8AgQEBzwAS9ADJAczJg=';
-    const __code = 'te6ccgEBCAEAoAABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAAF0vgkAF294sdqJoagD8MUCAgOuAQICA64BqAOhAgIDrgECAgOuALIF6AhgIGogaCTYK+AJABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHM';
+    const __init = 'te6ccgEBCAEAWAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AcAAUgBF1bW1tbQXIzAXbPMmAYBMFBFgQEBzwASgQEBzwDIQAPbPBL0AMkBzAcAFgKBAQHPAIEBAc8A';
+    const __code = 'te6ccgEBCwEArwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAAF0vgkAQ294sbZ54AkCABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMARbtRNDUAfhi2zxsFQkBMIEBAdcAgQEB1wDUAdDbPAL0BDAQNRA0EgoAFoEBAdcAgQEB1wBZ';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

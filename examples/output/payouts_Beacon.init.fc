@@ -8,7 +8,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
+builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline_ref {
     var (v'master, v'owner, v'completed) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);

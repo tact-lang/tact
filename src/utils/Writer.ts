@@ -1,3 +1,5 @@
+import { trimIndent } from "./text";
+
 export class Writer {
     private indent = 0;
     private lines: string[] = [];
@@ -10,6 +12,13 @@ export class Writer {
 
     append(src: string = '') {
         this.lines.push(' '.repeat(this.indent * 4) + src);
+    }
+
+    write(src: string) {
+        let lines = trimIndent(src).split('\n');
+        for (let l of lines) {
+            this.append(l);
+        }
     }
 
     end() {

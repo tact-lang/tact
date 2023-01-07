@@ -34,77 +34,95 @@ SETCP0
     s0 s2 XCHG
     <{
       s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      1 LDI
-      3 1 BLKSWAP
-      1 3 BLKDROP2
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          LDMSGADDR
+          s0 s1 XCHG
+          s0 s1 XCHG
+          LDMSGADDR
+          s0 s1 XCHG
+          s0 s1 XCHG
+          1 LDI
+          3 1 BLKSWAP
+        }> CALLREF
+        1 3 BLKDROP2
+      }> CALLREF
       1 3 BLKSWAP
       19 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      3 1 BLKSWAP
-      2SWAP
-      STSLICER
-      ROT
-      STSLICER
-      1 STI
-      ENDC
-      c4 POP
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        3 1 BLKSWAP
+        <{
+          2SWAP
+          STSLICER
+          ROT
+          STSLICER
+          1 STI
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
     }> PUSHCONT
     IFJMP
     1050587494 PUSHINT
     EQUAL
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      1 LDI
-      3 1 BLKSWAP
-      1 3 BLKDROP2
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          LDMSGADDR
+          s0 s1 XCHG
+          s0 s1 XCHG
+          LDMSGADDR
+          s0 s1 XCHG
+          s0 s1 XCHG
+          1 LDI
+          3 1 BLKSWAP
+        }> CALLREF
+        1 3 BLKDROP2
+      }> CALLREF
       s0 s3 XCHG
-      32 LDU
-      s0 s1 XCHG
-      1050587494 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
+      <{
+        32 LDU
+        s0 s1 XCHG
+        1050587494 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+      }> CALLREF
       s1 POP
       s1 s3 s0 XCHG3
       18 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      3 1 BLKSWAP
-      2SWAP
-      STSLICER
-      ROT
-      STSLICER
-      1 STI
-      ENDC
-      c4 POP
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        3 1 BLKSWAP
+        <{
+          2SWAP
+          STSLICER
+          ROT
+          STSLICER
+          1 STI
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
     }> IFJMPREF
     s0 POP
     130 THROW
@@ -268,35 +286,43 @@ SETCP0
       s2 POP
       s2 PUSH
       -1 PUSHINT
-      NEWC
-      3 1 BLKSWAP
-      1861678417 PUSHINT
-      s0 s4 XCHG2
-      32 STU
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      s0 s1 XCHG
-      STSLICER
-      1 STI
-      ENDC
+      <{
+        NEWC
+        3 1 BLKSWAP
+        <{
+          1861678417 PUSHINT
+          s0 s4 XCHG2
+          32 STU
+          s1 s2 XCHG
+          257 PUSHINT
+          STIX
+          s0 s1 XCHG
+          STSLICER
+          1 STI
+        }> CALLREF
+        ENDC
+      }> CALLREF
       16 CALLDICT
     }> PUSHCONT
     <{
       s2 PUSH
       0 PUSHINT
-      NEWC
-      3 1 BLKSWAP
-      1861678417 PUSHINT
-      s0 s4 XCHG2
-      32 STU
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      s0 s1 XCHG
-      STSLICER
-      1 STI
-      ENDC
+      <{
+        NEWC
+        3 1 BLKSWAP
+        <{
+          1861678417 PUSHINT
+          s0 s4 XCHG2
+          32 STU
+          s1 s2 XCHG
+          257 PUSHINT
+          STIX
+          s0 s1 XCHG
+          STSLICER
+          1 STI
+        }> CALLREF
+        ENDC
+      }> CALLREF
       16 CALLDICT
     }> PUSHCONT
     IFELSE
@@ -306,20 +332,24 @@ SETCP0
     0 PUSHINT
 
   owner: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    LDMSGADDR
-    s0 s1 XCHG
-    s0 s1 XCHG
-    LDMSGADDR
-    s0 s1 XCHG
-    s0 s1 XCHG
-    1 LDI
-    3 1 BLKSWAP
-    1 3 BLKDROP2
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        LDMSGADDR
+        s0 s1 XCHG
+        s0 s1 XCHG
+        LDMSGADDR
+        s0 s1 XCHG
+        s0 s1 XCHG
+        1 LDI
+        3 1 BLKSWAP
+      }> CALLREF
+      1 3 BLKDROP2
+    }> CALLREF
     17 CALLDICT
 
   113617: 

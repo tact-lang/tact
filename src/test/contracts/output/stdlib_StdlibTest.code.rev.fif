@@ -42,26 +42,34 @@ SETCP0
     33 LESSINT
     AND
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
-      s1 POP
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        <{
+          257 PUSHINT
+          LDI
+          s0 s1 XCHG
+        }> CALLREF
+        s1 POP
+      }> CALLREF
       8 CALLDICT
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
-      ENDC
-      c4 POP
+      <{
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        s0 s1 XCHG
+        <{
+          s0 s1 XCHG
+          257 PUSHINT
+          STIX
+        }> CALLREF
+        ENDC
+        c4 POP
+      }> CALLREF
     }> PUSHCONT
     IFJMP
     130 THROW
@@ -81,41 +89,53 @@ SETCP0
   8: 
 
   73995: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+      }> CALLREF
+      s1 POP
+    }> CALLREF
     s0 s1 XCHG
     5 CALLDICT
 
   75090: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+      }> CALLREF
+      s1 POP
+    }> CALLREF
     s0 s1 XCHG
     6 CALLDICT
 
   77445: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+      }> CALLREF
+      s1 POP
+    }> CALLREF
     s0 s1 XCHG
     7 CALLDICT
 

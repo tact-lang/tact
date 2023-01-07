@@ -21,7 +21,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -30,7 +30,7 @@ builder __tact_store_address(builder b, slice address) inline {
     }
 }
 
-slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r;
@@ -48,7 +48,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) {
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -57,7 +57,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
+builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline_ref {
     var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
     build_0 = __tact_store_address(build_0, v'addr1);
     build_0 = __tact_store_address(build_0, v'addr2);
@@ -67,7 +67,7 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     return build_0;
 }
 
-(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline {
+(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline_ref {
     var v'addr1 = sc_0~__tact_load_address();
     var v'addr2 = sc_0~__tact_load_address();
     var v'addr3 = sc_0~__tact_load_address();
@@ -76,13 +76,13 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     return (sc_0, (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2));
 }
 
-(slice, slice, slice, cell, cell) __gen_load_DDDD() inline {
+(slice, slice, slice, cell, cell) __gen_load_DDDD() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_DDDD();
 }
 
-() __gen_store_DDDD((slice, slice, slice, cell, cell) v) impure inline {
+() __gen_store_DDDD((slice, slice, slice, cell, cell) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_DDDD(b, v);

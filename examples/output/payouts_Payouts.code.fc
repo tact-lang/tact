@@ -27,7 +27,8 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-slice __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -35,6 +36,7 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
+
     var b2 = begin_cell();
     b2 = b2.store_uint(2, 2);
     b2 = b2.store_uint(0, 1);
@@ -65,7 +67,7 @@ tuple __tact_string_builder_start_comment() inline {
     return __tact_string_builder_start(true);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -75,27 +77,27 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -110,28 +112,28 @@ cell __tact_string_builder_end(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
-(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 3067051791);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
 
-builder __gen_write_CanPayout(builder build_0, (int) v) inline {
+builder __gen_write_CanPayout(builder build_0, (int) v) inline_ref {
     var (v'amount) = v;
     build_0 = store_uint(build_0, 1050587494, 32);
     build_0 = build_0.store_int(v'amount, 257);
     return build_0;
 }
 
-cell __gen_writecell_CanPayout((int) v) inline {
+cell __gen_writecell_CanPayout((int) v) inline_ref {
     return __gen_write_CanPayout(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, slice, int))) __gen_read_CanPayoutResponse(slice sc_0) inline {
+(slice, ((int, slice, int))) __gen_read_CanPayoutResponse(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 1861678417);
     var v'amount = sc_0~load_int(257);
     var v'address = sc_0~__tact_load_address();
@@ -139,7 +141,7 @@ cell __gen_writecell_CanPayout((int) v) inline {
     return (sc_0, (v'amount, v'address, v'ok));
 }
 
-builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
+builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline_ref {
     var (v'master, v'owner, v'completed) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -147,14 +149,14 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     return build_0;
 }
 
-builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
+builder __gen_write_Payouts(builder build_0, (slice, int) v) inline_ref {
     var (v'owner, v'publicKey) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_int(v'publicKey, 257);
     return build_0;
 }
 
-(slice, ((slice, int))) __gen_read_Payouts(slice sc_0) inline {
+(slice, ((slice, int))) __gen_read_Payouts(slice sc_0) inline_ref {
     var v'owner = sc_0~__tact_load_address();
     var v'publicKey = sc_0~load_int(257);
     return (sc_0, (v'owner, v'publicKey));
@@ -165,13 +167,13 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(slice, int) __gen_load_Payouts() inline {
+(slice, int) __gen_load_Payouts() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Payouts();
 }
 
-() __gen_store_Payouts((slice, int) v) impure inline {
+() __gen_store_Payouts((slice, int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Payouts(b, v);

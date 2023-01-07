@@ -18,12 +18,12 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_ConstantTester PROCINLINE:<{
+  __gen_read_ConstantTester PROCREF:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  __gen_load_ConstantTester PROCINLINE:<{
+  __gen_load_ConstantTester PROCREF:<{
     c4 PUSH
     CTOS
     LDREF

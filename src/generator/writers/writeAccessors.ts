@@ -127,7 +127,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_from_opt_tuple`, () => {
-        ctx.append(`tuple __gen_${type.name}_from_opt_tuple(tuple v) {`);
+        ctx.append(`tuple __gen_${type.name}_from_opt_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
             ctx.used(`__gen_${type.name}_as_optional`);

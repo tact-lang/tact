@@ -16,7 +16,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_Request PROCINLINE:<{
+  __gen_write_Request PROCREF:<{
     4096439811 PUSHINT
     s0 s8 XCHG2
     32 STU
@@ -43,7 +43,7 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_write_MultisigSigner PROCINLINE:<{
+  __gen_write_MultisigSigner PROCREF:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG

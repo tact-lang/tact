@@ -32,30 +32,36 @@ SETCP0
     4 BLKDROP
 
   80984: 
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    ROTREV
-    s0 s2 XCHG
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    s1 s2 XCHG
-    1 5 BLKDROP2
+    <{
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        <{
+          257 PUSHINT
+          LDI
+          257 PUSHINT
+          LDI
+          ROTREV
+        }> CALLREF
+        s0 s2 XCHG
+        LDDICT
+        s0 POP
+        s3 s5 XCHG
+        s3 s4 XCHG
+        s1 s2 XCHG
+      }> CALLREF
+      1 5 BLKDROP2
+    }> CALLREF
     4 CALLDICT
 
   113617: 

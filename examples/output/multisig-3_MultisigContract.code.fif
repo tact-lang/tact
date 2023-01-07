@@ -47,7 +47,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_Operation PROCINLINE:<{
+  __gen_write_Operation PROCREF:<{
     s2 s3 XCHG2
     32 STU
     SWAP
@@ -55,19 +55,19 @@ PROGRAM{
     SWAP
     __tact_store_address INLINECALLDICT
   }>
-  __gen_writecell_Operation PROCINLINE:<{
+  __gen_writecell_Operation PROCREF:<{
     NEWC
     3 -ROLL
     __gen_write_Operation INLINECALLDICT
     ENDC
   }>
-  __gen_read_Operation PROCINLINE:<{
+  __gen_read_Operation PROCREF:<{
     32 LDU
     LDGRAMS
     __tact_load_address INLINECALLDICT
     s3 s3 s0 XCHG3
   }>
-  __gen_read_Execute PROCINLINE:<{
+  __gen_read_Execute PROCREF:<{
     32 LDU
     SWAP
     819865922 PUSHINT
@@ -89,21 +89,21 @@ PROGRAM{
     s1 s6 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_MultisigContract PROCINLINE:<{
+  __gen_write_MultisigContract PROCREF:<{
     s3 s4 XCHG2
     32 STU
     256 STU
     256 STU
     256 STU
   }>
-  __gen_read_MultisigContract PROCINLINE:<{
+  __gen_read_MultisigContract PROCREF:<{
     32 LDU
     256 LDU
     256 LDU
     256 LDU
     4 -ROLL
   }>
-  __gen_load_MultisigContract PROCINLINE:<{
+  __gen_load_MultisigContract PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -112,7 +112,7 @@ PROGRAM{
     __gen_read_MultisigContract INLINECALLDICT
     1 4 BLKDROP2
   }>
-  __gen_store_MultisigContract PROCINLINE:<{
+  __gen_store_MultisigContract PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP

@@ -42,7 +42,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_write_Vars PROCINLINE:<{
+  __gen_write_Vars PROCREF:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -62,7 +62,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_Vars PROCINLINE:<{
+  __gen_read_Vars PROCREF:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -81,7 +81,7 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  __gen_read_Update PROCINLINE:<{
+  __gen_read_Update PROCREF:<{
     32 LDU
     SWAP
     2676568142 PUSHINT
@@ -97,7 +97,7 @@ PROGRAM{
     s5 s10 XCHG
     4 ROLL
   }>
-  __gen_write_SerializationTester2 PROCINLINE:<{
+  __gen_write_SerializationTester2 PROCREF:<{
     s5 s10 XCHG
     s4 s9 XCHG
     s3 s8 XCHG
@@ -111,7 +111,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_SerializationTester2 PROCINLINE:<{
+  __gen_read_SerializationTester2 PROCREF:<{
     __gen_read_Vars INLINECALLDICT
     s0 s5 XCHG
     LDREF
@@ -198,15 +198,16 @@ PROGRAM{
     s6 s7 XCHG
     s5 s6 XCHG
   }>
-  __gen_Both_from_opt_tuple PROC:<{
+  __gen_Both_from_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      __gen_Both_from_tuple CALLDICT
+      __gen_Both_as_optional INLINECALLDICT
     }>
-    __gen_Both_from_tuple CALLDICT
-    __gen_Both_as_optional INLINECALLDICT
   }>
   __gen_Both_to_external PROC:<{
     5 5 BLKSWAP
@@ -224,7 +225,7 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_load_SerializationTester2 PROCINLINE:<{
+  __gen_load_SerializationTester2 PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -233,7 +234,7 @@ PROGRAM{
     __gen_read_SerializationTester2 INLINECALLDICT
     1 10 BLKDROP2
   }>
-  __gen_store_SerializationTester2 PROCINLINE:<{
+  __gen_store_SerializationTester2 PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -314,7 +315,7 @@ PROGRAM{
     s0 s5 XCHG
     __gen_Both_from_tuple CALLDICT
     s0 s15 XCHG
-    __gen_Both_from_opt_tuple CALLDICT
+    __gen_Both_from_opt_tuple INLINECALLDICT
     __gen_load_SerializationTester2 INLINECALLDICT
     s9 25 s() XCHG
     s8 24 s() XCHG

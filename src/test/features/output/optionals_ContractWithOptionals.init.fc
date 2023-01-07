@@ -21,7 +21,7 @@ forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v)
 
 forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
 
-builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int) v) inline {
+builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int) v) inline_ref {
     var (v'value1, v'value2, v'value3, v'value4, v'value5) = v;
     build_0 = build_0.store_int(v'value1, 257);
     build_0 = build_0.store_int(v'value2, 257);
@@ -39,7 +39,7 @@ builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int)
     return (vvv'value1, vvv'value2, vvv'value3, vvv'value4, vvv'value5);
 }
 
-builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice, tuple) v) inline {
+builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice, tuple) v) inline_ref {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = ~ null?(v'a) ? build_0.store_int(true, 1).store_int(v'a, 257) : build_0.store_int(false, 1);
     build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_int(v'b, 1) : build_0.store_int(false, 1);
@@ -57,7 +57,7 @@ builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice,
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e);
 }
 
-builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slice, tuple, tuple) v) inline {
+builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slice, tuple, tuple) v) inline_ref {
     var (v'a, v'b, v'c, v'd, v'e, v'f) = v;
     build_0 = ~ null?(v'a) ? build_0.store_int(true, 1).store_int(v'a, 257) : build_0.store_int(false, 1);
     build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_int(v'b, 1) : build_0.store_int(false, 1);
@@ -82,7 +82,7 @@ tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) inline 
     return (v'value1, v'value2, v'value3, v'value4, v'value5);
 }
 
-tuple __gen_SomeGenericStruct_from_opt_tuple(tuple v) {
+tuple __gen_SomeGenericStruct_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_SomeGenericStruct_as_optional(__gen_SomeGenericStruct_from_tuple(v));
 }
@@ -97,7 +97,7 @@ tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) 
     return (v'a, v'b, v'c, v'd, __gen_SomeGenericStruct_from_opt_tuple(v'e));
 }
 
-tuple __gen_StructWithOptionals_from_opt_tuple(tuple v) {
+tuple __gen_StructWithOptionals_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_StructWithOptionals_as_optional(__gen_StructWithOptionals_from_tuple(v));
 }

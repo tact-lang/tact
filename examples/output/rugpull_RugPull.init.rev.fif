@@ -14,39 +14,41 @@ SETCP0
     s0 s5 XCHG
     s0 s3 XCHG
     s0 s4 XCHG
-    s10 s9 XCHG2
-    STSLICER
-    s1 s7 XCHG
-    257 PUSHINT
-    STIX
-    s1 s5 XCHG
-    257 PUSHINT
-    STIX
-    s0 s3 XCHG
-    NEWC
-    257 PUSHINT
-    STIX
-    s1 s2 XCHG
-    257 PUSHINT
-    STIX
-    1 STI
-    s1 s2 XCHG
-    1 STI
-    s1 s2 XCHG
-    257 PUSHINT
-    STIX
-    s0 s3 XCHG
-    NEWC
-    257 PUSHINT
-    STIX
-    s1 s2 XCHG
-    STDICT
-    ENDC
-    ROT
-    STREF
-    ENDC
-    s0 s1 XCHG
-    STREF
+    <{
+      s10 s9 XCHG2
+      STSLICER
+      s1 s7 XCHG
+      257 PUSHINT
+      STIX
+      s1 s5 XCHG
+      257 PUSHINT
+      STIX
+      s0 s3 XCHG
+      NEWC
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      1 STI
+      s1 s2 XCHG
+      1 STI
+      s1 s2 XCHG
+      257 PUSHINT
+      STIX
+      s0 s3 XCHG
+      NEWC
+      257 PUSHINT
+      STIX
+      s1 s2 XCHG
+      STDICT
+      ENDC
+      ROT
+      STREF
+      ENDC
+      s0 s1 XCHG
+      STREF
+    }> CALLREF
     ENDC
 
   107886: 

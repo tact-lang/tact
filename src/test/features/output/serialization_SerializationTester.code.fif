@@ -29,7 +29,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_Update PROCINLINE:<{
+  __gen_read_Update PROCREF:<{
     32 LDU
     SWAP
     2676568142 PUSHINT
@@ -64,7 +64,7 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
-  __gen_write_SerializationTester PROCINLINE:<{
+  __gen_write_SerializationTester PROCREF:<{
     s8 s9 XCHG2
     257 PUSHINT
     STIX
@@ -100,7 +100,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_SerializationTester PROCINLINE:<{
+  __gen_read_SerializationTester PROCREF:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -130,7 +130,7 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
-  __gen_load_SerializationTester PROCINLINE:<{
+  __gen_load_SerializationTester PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -139,7 +139,7 @@ PROGRAM{
     __gen_read_SerializationTester INLINECALLDICT
     1 9 BLKDROP2
   }>
-  __gen_store_SerializationTester PROCINLINE:<{
+  __gen_store_SerializationTester PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP

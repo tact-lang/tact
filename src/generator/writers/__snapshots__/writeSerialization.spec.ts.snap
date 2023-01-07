@@ -73,7 +73,8 @@ builder __tact_store_address_opt(builder b, slice address) inline {
     }
 }
 
-slice __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -81,6 +82,7 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
+
     var b2 = begin_cell();
     b2 = b2.store_uint(2, 2);
     b2 = b2.store_uint(0, 1);
@@ -93,7 +95,7 @@ forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
 
-(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -102,7 +104,7 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
     }
 }
 
-int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -111,7 +113,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -129,7 +131,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -138,7 +140,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r;
@@ -156,7 +158,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) {
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -165,7 +167,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) {
+(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -174,7 +176,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
     var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
         return r;
@@ -211,7 +213,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 
 tuple __tact_tuple_create_0() asm "NIL";
 
-() __tact_tuple_destroy_0() {
+() __tact_tuple_destroy_0() inline {
     return ();
 }
 
@@ -483,7 +485,7 @@ tuple __tact_string_builder_start_string() inline {
     return __tact_string_builder_start(false);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -493,31 +495,31 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-slice __tact_string_builder_end_slice(tuple builders) {
+slice __tact_string_builder_end_slice(tuple builders) inline {
     return __tact_string_builder_end(builders).begin_parse();
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -532,7 +534,7 @@ slice __tact_string_builder_end_slice(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
@@ -542,7 +544,7 @@ slice __tact_int_to_string(int src) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -553,7 +555,7 @@ slice __tact_int_to_string(int src) {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-        
+
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -564,7 +566,7 @@ slice __tact_int_to_string(int src) {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-        
+
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -578,12 +580,12 @@ slice __tact_int_to_string(int src) {
 slice __tact_float_to_string(int src, int digits) {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-    
+
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -597,30 +599,33 @@ slice __tact_float_to_string(int src, int digits) {
             len = len + 1;
         }
     }
-    
+
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-    
+
+    ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-    
+
+    ;; Assemble
     int c = len - 1;
     repeat(len) {
         int v = t.at(c);
         b = b.store_uint(v, 8);
         c = c - 1;
     }
+
     ;; Result
     return b.end_cell().begin_parse();
 }
 
-builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) inline {
+builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) inline_ref {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -634,12 +639,8 @@ builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) in
     return build_0;
 }
 
-cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline {
+cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline_ref {
     return __gen_write_A(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_A((int, int, int, int, int, int, int) v}) inline {
-    return __gen_writecell_A(v).begin_parse();
 }
 
 ((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) inline {
@@ -648,7 +649,7 @@ slice __gen_writeslice_A((int, int, int, int, int, int, int) v}) inline {
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
-cell __gen_writecellopt_A(tuple v) inline {
+cell __gen_writecellopt_A(tuple v) inline_ref {
     if (null?(v)) {
         return null();
     }
@@ -712,7 +713,7 @@ tuple __gen_A_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
-tuple __gen_A_from_opt_tuple(tuple v) {
+tuple __gen_A_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_A_as_optional(__gen_A_from_tuple(v));
 }
@@ -794,7 +795,7 @@ tuple __gen_B_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
-tuple __gen_B_from_opt_tuple(tuple v) {
+tuple __gen_B_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_B_as_optional(__gen_B_from_tuple(v));
 }
@@ -881,7 +882,7 @@ tuple __gen_C_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }
 
-tuple __gen_C_from_opt_tuple(tuple v) {
+tuple __gen_C_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_C_as_optional(__gen_C_from_tuple(v));
 }
@@ -900,7 +901,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     }
 }
 
-(slice, ((int, int, int, int, int, int, int))) __gen_read_A(slice sc_0) inline {
+(slice, ((int, int, int, int, int, int, int))) __gen_read_A(slice sc_0) inline_ref {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(1) ? sc_0~load_int(257) : null();
@@ -912,7 +913,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
-tuple __gen_readopt_A(cell cl) inline {
+tuple __gen_readopt_A(cell cl) inline_ref {
     if (null?(cl)) {
         return null();
     }
@@ -994,7 +995,8 @@ builder __tact_store_address_opt(builder b, slice address) inline {
     }
 }
 
-slice __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -1002,6 +1004,7 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
+
     var b2 = begin_cell();
     b2 = b2.store_uint(2, 2);
     b2 = b2.store_uint(0, 1);
@@ -1014,7 +1017,7 @@ forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
 
-(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -1023,7 +1026,7 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
     }
 }
 
-int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -1032,7 +1035,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -1050,7 +1053,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -1059,7 +1062,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r;
@@ -1077,7 +1080,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) {
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -1086,7 +1089,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) {
+(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -1095,7 +1098,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
     var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
         return r;
@@ -1132,7 +1135,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 
 tuple __tact_tuple_create_0() asm "NIL";
 
-() __tact_tuple_destroy_0() {
+() __tact_tuple_destroy_0() inline {
     return ();
 }
 
@@ -1404,7 +1407,7 @@ tuple __tact_string_builder_start_string() inline {
     return __tact_string_builder_start(false);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -1414,31 +1417,31 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-slice __tact_string_builder_end_slice(tuple builders) {
+slice __tact_string_builder_end_slice(tuple builders) inline {
     return __tact_string_builder_end(builders).begin_parse();
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -1453,7 +1456,7 @@ slice __tact_string_builder_end_slice(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
@@ -1463,7 +1466,7 @@ slice __tact_int_to_string(int src) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -1474,7 +1477,7 @@ slice __tact_int_to_string(int src) {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-        
+
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -1485,7 +1488,7 @@ slice __tact_int_to_string(int src) {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-        
+
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -1499,12 +1502,12 @@ slice __tact_int_to_string(int src) {
 slice __tact_float_to_string(int src, int digits) {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-    
+
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -1518,30 +1521,33 @@ slice __tact_float_to_string(int src, int digits) {
             len = len + 1;
         }
     }
-    
+
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-    
+
+    ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-    
+
+    ;; Assemble
     int c = len - 1;
     repeat(len) {
         int v = t.at(c);
         b = b.store_uint(v, 8);
         c = c - 1;
     }
+
     ;; Result
     return b.end_cell().begin_parse();
 }
 
-builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) inline {
+builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) inline_ref {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -1555,12 +1561,8 @@ builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) in
     return build_0;
 }
 
-cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline {
+cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline_ref {
     return __gen_write_B(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_B((int, int, int, int, int, int, int) v}) inline {
-    return __gen_writecell_B(v).begin_parse();
 }
 
 ((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) inline {
@@ -1569,7 +1571,7 @@ slice __gen_writeslice_B((int, int, int, int, int, int, int) v}) inline {
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
-cell __gen_writecellopt_B(tuple v) inline {
+cell __gen_writecellopt_B(tuple v) inline_ref {
     if (null?(v)) {
         return null();
     }
@@ -1639,7 +1641,7 @@ tuple __gen_A_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
-tuple __gen_A_from_opt_tuple(tuple v) {
+tuple __gen_A_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_A_as_optional(__gen_A_from_tuple(v));
 }
@@ -1715,7 +1717,7 @@ tuple __gen_B_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
-tuple __gen_B_from_opt_tuple(tuple v) {
+tuple __gen_B_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_B_as_optional(__gen_B_from_tuple(v));
 }
@@ -1802,7 +1804,7 @@ tuple __gen_C_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }
 
-tuple __gen_C_from_opt_tuple(tuple v) {
+tuple __gen_C_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_C_as_optional(__gen_C_from_tuple(v));
 }
@@ -1821,7 +1823,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     }
 }
 
-(slice, ((int, int, int, int, int, int, int))) __gen_read_B(slice sc_0) inline {
+(slice, ((int, int, int, int, int, int, int))) __gen_read_B(slice sc_0) inline_ref {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(1) ? sc_0~load_int(257) : null();
@@ -1833,7 +1835,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
-tuple __gen_readopt_B(cell cl) inline {
+tuple __gen_readopt_B(cell cl) inline_ref {
     if (null?(cl)) {
         return null();
     }
@@ -1915,7 +1917,8 @@ builder __tact_store_address_opt(builder b, slice address) inline {
     }
 }
 
-slice __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -1923,6 +1926,7 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
+
     var b2 = begin_cell();
     b2 = b2.store_uint(2, 2);
     b2 = b2.store_uint(0, 1);
@@ -1935,7 +1939,7 @@ forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
 
 forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
 
-(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -1944,7 +1948,7 @@ forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
     }
 }
 
-int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -1953,7 +1957,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -1971,7 +1975,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -1980,7 +1984,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r;
@@ -1998,7 +2002,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) {
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -2007,7 +2011,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) {
+(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -2016,7 +2020,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
     var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
         return r;
@@ -2053,7 +2057,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 
 tuple __tact_tuple_create_0() asm "NIL";
 
-() __tact_tuple_destroy_0() {
+() __tact_tuple_destroy_0() inline {
     return ();
 }
 
@@ -2325,7 +2329,7 @@ tuple __tact_string_builder_start_string() inline {
     return __tact_string_builder_start(false);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -2335,31 +2339,31 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-slice __tact_string_builder_end_slice(tuple builders) {
+slice __tact_string_builder_end_slice(tuple builders) inline {
     return __tact_string_builder_end(builders).begin_parse();
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -2374,7 +2378,7 @@ slice __tact_string_builder_end_slice(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
@@ -2384,7 +2388,7 @@ slice __tact_int_to_string(int src) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -2395,7 +2399,7 @@ slice __tact_int_to_string(int src) {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-        
+
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -2406,7 +2410,7 @@ slice __tact_int_to_string(int src) {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-        
+
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -2420,12 +2424,12 @@ slice __tact_int_to_string(int src) {
 slice __tact_float_to_string(int src, int digits) {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-    
+
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -2439,30 +2443,33 @@ slice __tact_float_to_string(int src, int digits) {
             len = len + 1;
         }
     }
-    
+
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-    
+
+    ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-    
+
+    ;; Assemble
     int c = len - 1;
     repeat(len) {
         int v = t.at(c);
         b = b.store_uint(v, 8);
         c = c - 1;
     }
+
     ;; Result
     return b.end_cell().begin_parse();
 }
 
-builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v) inline {
+builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v) inline_ref {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
     build_0 = build_0.store_ref(v'a);
     build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_ref(v'b) : build_0.store_int(false, 1);
@@ -2477,12 +2484,8 @@ builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int,
     return build_0;
 }
 
-cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inline {
+cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inline_ref {
     return __gen_write_C(begin_cell(), v).end_cell();
-}
-
-slice __gen_writeslice_C((cell, cell, slice, slice, int, int, int, slice) v}) inline {
-    return __gen_writecell_C(v).begin_parse();
 }
 
 ((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) inline {
@@ -2491,7 +2494,7 @@ slice __gen_writeslice_C((cell, cell, slice, slice, int, int, int, slice) v}) in
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
 }
 
-cell __gen_writecellopt_C(tuple v) inline {
+cell __gen_writecellopt_C(tuple v) inline_ref {
     if (null?(v)) {
         return null();
     }
@@ -2561,7 +2564,7 @@ tuple __gen_A_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
-tuple __gen_A_from_opt_tuple(tuple v) {
+tuple __gen_A_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_A_as_optional(__gen_A_from_tuple(v));
 }
@@ -2643,7 +2646,7 @@ tuple __gen_B_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);
 }
 
-tuple __gen_B_from_opt_tuple(tuple v) {
+tuple __gen_B_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_B_as_optional(__gen_B_from_tuple(v));
 }
@@ -2724,7 +2727,7 @@ tuple __gen_C_opt_to_tuple(tuple v) inline {
     return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
 }
 
-tuple __gen_C_from_opt_tuple(tuple v) {
+tuple __gen_C_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_C_as_optional(__gen_C_from_tuple(v));
 }
@@ -2743,7 +2746,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     }
 }
 
-(slice, ((cell, cell, slice, slice, int, int, int, slice))) __gen_read_C(slice sc_0) inline {
+(slice, ((cell, cell, slice, slice, int, int, int, slice))) __gen_read_C(slice sc_0) inline_ref {
     var v'a = sc_0~load_ref();
     var v'b = sc_0~load_int(1) ? sc_0~load_ref() : null();
     var v'c = sc_0~load_int(1) ? sc_0~load_ref().begin_parse() : null();
@@ -2756,7 +2759,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
 }
 
-tuple __gen_readopt_C(cell cl) inline {
+tuple __gen_readopt_C(cell cl) inline_ref {
     if (null?(cl)) {
         return null();
     }

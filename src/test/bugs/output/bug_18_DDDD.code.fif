@@ -33,26 +33,28 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __tact_dict_set_int_slice PROC:<{
+  __tact_dict_set_int_slice PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       -ROT
       DICTIDEL
       DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTISET
     }>
-    s1 s3 s3 XCHG3
-    DICTISET
   }>
-  __tact_dict_get_int_slice PROC:<{
+  __tact_dict_get_int_slice PROCINLINE:<{
     -ROT
     DICTIGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
     }>
-    DROP
-    PUSHNULL
   }>
   __tact_dict_set_slice_int PROC:<{
     OVER
@@ -69,19 +71,20 @@ PROGRAM{
     s1 s3 s3 XCHG3
     DICTSETB
   }>
-  __tact_dict_get_slice_int PROC:<{
+  __tact_dict_get_slice_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
       SWAP
       LDIX
       DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
     }>
-    2DROP
-    PUSHNULL
   }>
-  __gen_write_DDDD PROCINLINE:<{
+  __gen_write_DDDD PROCREF:<{
     s5 s4 XCHG2
     __tact_store_address INLINECALLDICT
     ROT
@@ -92,7 +95,7 @@ PROGRAM{
     STDICT
     STDICT
   }>
-  __gen_read_DDDD PROCINLINE:<{
+  __gen_read_DDDD PROCREF:<{
     __tact_load_address INLINECALLDICT
     SWAP
     __tact_load_address INLINECALLDICT
@@ -103,7 +106,7 @@ PROGRAM{
     LDDICT
     5 -ROLL
   }>
-  __gen_load_DDDD PROCINLINE:<{
+  __gen_load_DDDD PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -112,7 +115,7 @@ PROGRAM{
     __gen_read_DDDD INLINECALLDICT
     1 5 BLKDROP2
   }>
-  __gen_store_DDDD PROCINLINE:<{
+  __gen_store_DDDD PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -128,7 +131,7 @@ PROGRAM{
     s3 POP
     257 PUSHINT
     s2 POP
-    __tact_dict_get_int_slice CALLDICT
+    __tact_dict_get_int_slice INLINECALLDICT
   }>
   $__gen_get_mapData_addr1 PROC:<{
     __gen_load_DDDD INLINECALLDICT
@@ -140,7 +143,7 @@ PROGRAM{
     267 PUSHINT
     SWAP
     257 PUSHINT
-    __tact_dict_get_slice_int CALLDICT
+    __tact_dict_get_slice_int INLINECALLDICT
   }>
   $__gen_get_mapData2_addr1 PROC:<{
     __gen_load_DDDD INLINECALLDICT
@@ -152,19 +155,19 @@ PROGRAM{
     257 PUSHINT
     0 PUSHINT
     s6 PUSH
-    __tact_dict_set_int_slice CALLDICT
+    __tact_dict_set_int_slice INLINECALLDICT
     257 PUSHINT
     1 PUSHINT
     s5 PUSH
-    __tact_dict_set_int_slice CALLDICT
+    __tact_dict_set_int_slice INLINECALLDICT
     257 PUSHINT
     2 PUSHINT
     s4 PUSH
-    __tact_dict_set_int_slice CALLDICT
+    __tact_dict_set_int_slice INLINECALLDICT
     257 PUSHINT
     3 PUSHINT
     s6 PUSH
-    __tact_dict_set_int_slice CALLDICT
+    __tact_dict_set_int_slice INLINECALLDICT
     SWAP
     267 PUSHINT
     s5 PUSH

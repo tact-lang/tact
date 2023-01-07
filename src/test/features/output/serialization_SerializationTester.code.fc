@@ -1,7 +1,7 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_Update(slice sc_0) inline {
+(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_Update(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 2676568142);
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
@@ -17,7 +17,7 @@ global cell __tact_context_sys;
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
-builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
+builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline_ref {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -35,7 +35,7 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return build_0;
 }
 
-(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_SerializationTester(slice sc_0) inline {
+(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_SerializationTester(slice sc_0) inline_ref {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
@@ -50,13 +50,13 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
-(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline {
+(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SerializationTester();
 }
 
-() __gen_store_SerializationTester((int, int, int, int, int, int, int, int, int) v) impure inline {
+() __gen_store_SerializationTester((int, int, int, int, int, int, int, int, int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_SerializationTester(b, v);

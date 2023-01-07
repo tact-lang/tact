@@ -8,9 +8,11 @@ SETCP0
     NEWC
     STREF
     s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    STIX
+    <{
+      s0 s1 XCHG
+      257 PUSHINT
+      STIX
+    }> CALLREF
     ENDC
 
   107886: 

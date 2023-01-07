@@ -23,41 +23,41 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-(slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
+(slice, ((int))) __gen_read_Deploy(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 2509716940);
     var v'queryId = sc_0~load_uint(64);
     return (sc_0, (v'queryId));
 }
 
-builder __gen_write_DeployOk(builder build_0, (int) v) inline {
+builder __gen_write_DeployOk(builder build_0, (int) v) inline_ref {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3548362785, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
-cell __gen_writecell_DeployOk((int) v) inline {
+cell __gen_writecell_DeployOk((int) v) inline_ref {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
-builder __gen_write_RandomContract(builder build_0, (int) v) inline {
+builder __gen_write_RandomContract(builder build_0, (int) v) inline_ref {
     var (v'field) = v;
     build_0 = build_0.store_int(v'field, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_RandomContract(slice sc_0) inline {
+(slice, ((int))) __gen_read_RandomContract(slice sc_0) inline_ref {
     var v'field = sc_0~load_int(257);
     return (sc_0, (v'field));
 }
 
-(int) __gen_load_RandomContract() inline {
+(int) __gen_load_RandomContract() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_RandomContract();
 }
 
-() __gen_store_RandomContract((int) v) impure inline {
+() __gen_store_RandomContract((int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_RandomContract(b, v);

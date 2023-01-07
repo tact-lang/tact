@@ -1,4 +1,4 @@
-builder __gen_write_Echo(builder build_0, (int) v) inline {
+builder __gen_write_Echo(builder build_0, (int) v) inline_ref {
     var (v'v) = v;
     build_0 = build_0.store_int(v'v, 257);
     return build_0;

@@ -63,19 +63,20 @@ PROGRAM{
     s1 s3 s3 XCHG3
     DICTSETB
   }>
-  __tact_dict_get_slice_int PROC:<{
+  __tact_dict_get_slice_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
       SWAP
       LDIX
       DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
     }>
-    2DROP
-    PUSHNULL
   }>
-  __gen_write_Request PROCINLINE:<{
+  __gen_write_Request PROCREF:<{
     4096439811 PUSHINT
     s0 s8 XCHG2
     32 STU
@@ -102,7 +103,7 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_read_Request PROCINLINE:<{
+  __gen_read_Request PROCREF:<{
     32 LDU
     SWAP
     4096439811 PUSHINT
@@ -126,20 +127,20 @@ PROGRAM{
     }>
     7 -ROLL
   }>
-  __gen_write_Signed PROCINLINE:<{
+  __gen_write_Signed PROCREF:<{
     420994549 PUSHINT
     s0 s8 XCHG2
     32 STU
     s0 s7 XCHG
     __gen_write_Request INLINECALLDICT
   }>
-  __gen_writecell_Signed PROCINLINE:<{
+  __gen_writecell_Signed PROCREF:<{
     NEWC
     7 -ROLL
     __gen_write_Signed INLINECALLDICT
     ENDC
   }>
-  __gen_write_MultisigSigner PROCINLINE:<{
+  __gen_write_MultisigSigner PROCREF:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG
@@ -161,7 +162,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_MultisigSigner PROCINLINE:<{
+  __gen_read_MultisigSigner PROCREF:<{
     __tact_load_address INLINECALLDICT
     SWAP
     LDDICT
@@ -184,7 +185,7 @@ PROGRAM{
   }>
   __gen_Request_to_external PROC:<{
   }>
-  __gen_load_MultisigSigner PROCINLINE:<{
+  __gen_load_MultisigSigner PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -193,7 +194,7 @@ PROGRAM{
     __gen_read_MultisigSigner INLINECALLDICT
     1 12 BLKDROP2
   }>
-  __gen_store_MultisigSigner PROCINLINE:<{
+  __gen_store_MultisigSigner PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -339,7 +340,7 @@ PROGRAM{
     267 PUSHINT
     s2 PUSH
     257 PUSHINT
-    __tact_dict_get_slice_int CALLDICT
+    __tact_dict_get_slice_int INLINECALLDICT
     __tact_not_null CALLDICT
     s1 s12 XCHG
     267 PUSHINT

@@ -19,7 +19,7 @@ global cell __tact_context_sys;
     return (cs, raw);
 }
 
-(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {
+(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -28,7 +28,7 @@ global cell __tact_context_sys;
     }
 }
 
-int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
+int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -37,7 +37,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {
+(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -64,7 +64,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
@@ -73,7 +73,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) {
+(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -82,7 +82,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {
     }
 }
 
-cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {
+cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
     var (r, ok) = __tact_dict_get_ref(d, kl, k);
     if (ok) {
         return r;
@@ -95,34 +95,34 @@ forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
 
 forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
 
-(slice, ((int, int))) __gen_read_SetIntMap1(slice sc_0) inline {
+(slice, ((int, int))) __gen_read_SetIntMap1(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 1056067080);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((int, int))) __gen_read_SetIntMap2(slice sc_0) inline {
+(slice, ((int, int))) __gen_read_SetIntMap2(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 2818252722);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((int, cell))) __gen_read_SetIntMap3(slice sc_0) inline {
+(slice, ((int, cell))) __gen_read_SetIntMap3(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 3506188068);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'value));
 }
 
-builder __gen_write_SomeStruct(builder build_0, (int) v) inline {
+builder __gen_write_SomeStruct(builder build_0, (int) v) inline_ref {
     var (v'value) = v;
     build_0 = build_0.store_int(v'value, 257);
     return build_0;
 }
 
-cell __gen_writecell_SomeStruct((int) v) inline {
+cell __gen_writecell_SomeStruct((int) v) inline_ref {
     return __gen_write_SomeStruct(begin_cell(), v).end_cell();
 }
 
@@ -132,14 +132,14 @@ cell __gen_writecell_SomeStruct((int) v) inline {
     return (vvv'value);
 }
 
-cell __gen_writecellopt_SomeStruct(tuple v) inline {
+cell __gen_writecellopt_SomeStruct(tuple v) inline_ref {
     if (null?(v)) {
         return null();
     }
     return __gen_writecell_SomeStruct(__gen_SomeStruct_not_null(v));
 }
 
-(slice, ((int))) __gen_read_SomeStruct(slice sc_0) inline {
+(slice, ((int))) __gen_read_SomeStruct(slice sc_0) inline_ref {
     var v'value = sc_0~load_int(257);
     return (sc_0, (v'value));
 }
@@ -149,7 +149,7 @@ tuple __gen_SomeStruct_as_optional(((int)) v) inline {
     return __tact_tuple_create_1(v'value);
 }
 
-tuple __gen_readopt_SomeStruct(cell cl) inline {
+tuple __gen_readopt_SomeStruct(cell cl) inline_ref {
     if (null?(cl)) {
         return null();
     }
@@ -157,42 +157,42 @@ tuple __gen_readopt_SomeStruct(cell cl) inline {
     return __gen_SomeStruct_as_optional(sc~__gen_read_SomeStruct());
 }
 
-(slice, ((int, tuple))) __gen_read_SetIntMap4(slice sc_0) inline {
+(slice, ((int, tuple))) __gen_read_SetIntMap4(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 1318632071);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct()) : null();
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((slice, int))) __gen_read_SetAddrMap1(slice sc_0) inline {
+(slice, ((slice, int))) __gen_read_SetAddrMap1(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 3295239033);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((slice, int))) __gen_read_SetAddrMap2(slice sc_0) inline {
+(slice, ((slice, int))) __gen_read_SetAddrMap2(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 1566575299);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((slice, cell))) __gen_read_SetAddrMap3(slice sc_0) inline {
+(slice, ((slice, cell))) __gen_read_SetAddrMap3(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 711408213);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((slice, tuple))) __gen_read_SetAddrMap4(slice sc_0) inline {
+(slice, ((slice, tuple))) __gen_read_SetAddrMap4(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 3020140534);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct()) : null();
     return (sc_0, (v'key, v'value));
 }
 
-builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
+builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline_ref {
     var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4) = v;
     build_0 = build_0.store_dict(v'intMap1);
     build_0 = build_0.store_dict(v'intMap2);
@@ -209,7 +209,7 @@ builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, ce
     return build_0;
 }
 
-(slice, ((cell, cell, cell, cell, cell, cell, cell, cell))) __gen_read_MapTestContract(slice sc_0) inline {
+(slice, ((cell, cell, cell, cell, cell, cell, cell, cell))) __gen_read_MapTestContract(slice sc_0) inline_ref {
     var v'intMap1 = sc_0~load_dict();
     var v'intMap2 = sc_0~load_dict();
     slice sc_1 = sc_0~load_ref().begin_parse();
@@ -242,13 +242,13 @@ tuple __gen_SomeStruct_opt_to_external(tuple v) inline {
     }
 }
 
-(cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline {
+(cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MapTestContract();
 }
 
-() __gen_store_MapTestContract((cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline {
+() __gen_store_MapTestContract((cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_MapTestContract(b, v);

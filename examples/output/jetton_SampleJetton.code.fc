@@ -40,7 +40,8 @@ builder __tact_store_address_opt(builder b, slice address) inline {
     }
 }
 
-slice __tact_compute_contract_address(int chain, cell code, cell data) {
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+
     var b = begin_cell();
     b = b.store_uint(0, 2);
     b = b.store_uint(3, 2);
@@ -48,6 +49,7 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) {
     b = b.store_ref(code);
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
+
     var b2 = begin_cell();
     b2 = b2.store_uint(2, 2);
     b2 = b2.store_uint(0, 1);
@@ -70,7 +72,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int, slice) v) inline {
+builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, slice, int, slice) v) inline_ref {
     var (v'queryId, v'amount, v'from, v'responseAddress, v'forwardTonAmount, v'forwardPayload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
@@ -82,11 +84,11 @@ builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, sli
     return build_0;
 }
 
-cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) v) inline {
+cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) v) inline_ref {
     return __gen_write_TokenTransferInternal(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice, slice))) __gen_read_TokenBurnNotification(slice sc_0) inline {
+(slice, ((int, int, slice, slice))) __gen_read_TokenBurnNotification(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 2078119902);
     var v'queryId = sc_0~load_uint(64);
     var v'amount = sc_0~load_coins();
@@ -95,30 +97,30 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) 
     return (sc_0, (v'queryId, v'amount, v'owner, v'responseAddress));
 }
 
-builder __gen_write_TokenExcesses(builder build_0, (int) v) inline {
+builder __gen_write_TokenExcesses(builder build_0, (int) v) inline_ref {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3576854235, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
-cell __gen_writecell_TokenExcesses((int) v) inline {
+cell __gen_writecell_TokenExcesses((int) v) inline_ref {
     return __gen_write_TokenExcesses(begin_cell(), v).end_cell();
 }
 
-(slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline {
+(slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 1862840892);
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'content));
 }
 
-(slice, ((int))) __gen_read_Mint(slice sc_0) inline {
+(slice, ((int))) __gen_read_Mint(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 2737462367);
     var v'amount = sc_0~load_int(257);
     return (sc_0, (v'amount));
 }
 
-builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
+builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline_ref {
     var (v'balance, v'owner, v'master) = v;
     build_0 = build_0.store_int(v'balance, 257);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -126,7 +128,7 @@ builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) 
     return build_0;
 }
 
-builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inline {
+builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inline_ref {
     var (v'totalSupply, v'owner, v'content, v'mintable) = v;
     build_0 = build_0.store_coins(v'totalSupply);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -135,7 +137,7 @@ builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inl
     return build_0;
 }
 
-(slice, ((int, slice, cell, int))) __gen_read_SampleJetton(slice sc_0) inline {
+(slice, ((int, slice, cell, int))) __gen_read_SampleJetton(slice sc_0) inline_ref {
     var v'totalSupply = sc_0~load_coins();
     var v'owner = sc_0~__tact_load_address();
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
@@ -158,13 +160,13 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode);
 }
 
-(int, slice, cell, int) __gen_load_SampleJetton() inline {
+(int, slice, cell, int) __gen_load_SampleJetton() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleJetton();
 }
 
-() __gen_store_SampleJetton((int, slice, cell, int) v) impure inline {
+() __gen_store_SampleJetton((int, slice, cell, int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_SampleJetton(b, v);

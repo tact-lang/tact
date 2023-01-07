@@ -14,7 +14,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_DDDD PROCINLINE:<{
+  __gen_write_DDDD PROCREF:<{
     s5 s4 XCHG2
     __tact_store_address INLINECALLDICT
     ROT

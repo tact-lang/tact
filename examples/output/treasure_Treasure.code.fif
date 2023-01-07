@@ -51,7 +51,7 @@ PROGRAM{
   __tact_address_eq PROCINLINE:<{
     SDEQ
   }>
-  __gen_read_ChangeOwner PROCINLINE:<{
+  __gen_read_ChangeOwner PROCREF:<{
     32 LDU
     SWAP
     3067051791 PUSHINT
@@ -59,7 +59,7 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_read_Withdraw PROCINLINE:<{
+  __gen_read_Withdraw PROCREF:<{
     32 LDU
     SWAP
     1286094280 PUSHINT
@@ -69,17 +69,17 @@ PROGRAM{
     8 LDU
     -ROT
   }>
-  __gen_write_Treasure PROCINLINE:<{
+  __gen_write_Treasure PROCREF:<{
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_Treasure PROCINLINE:<{
+  __gen_read_Treasure PROCREF:<{
     __tact_load_address INLINECALLDICT
   }>
   __gen_Context_get_sender PROCINLINE:<{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_load_Treasure PROCINLINE:<{
+  __gen_load_Treasure PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -88,7 +88,7 @@ PROGRAM{
     __gen_read_Treasure INLINECALLDICT
     NIP
   }>
-  __gen_store_Treasure PROCINLINE:<{
+  __gen_store_Treasure PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP

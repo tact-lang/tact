@@ -8,7 +8,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
+builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline_ref {
     var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
     build_0 = __tact_store_address(build_0, v'addr1);
     build_0 = __tact_store_address(build_0, v'addr2);

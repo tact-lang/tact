@@ -14,7 +14,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_Beacon PROCINLINE:<{
+  __gen_write_Beacon PROCREF:<{
     2SWAP
     __tact_store_address INLINECALLDICT
     ROT

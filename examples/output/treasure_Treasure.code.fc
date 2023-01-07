@@ -25,26 +25,26 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 3067051791);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
 
-(slice, ((int, int))) __gen_read_Withdraw(slice sc_0) inline {
+(slice, ((int, int))) __gen_read_Withdraw(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 1286094280);
     var v'amount = sc_0~load_coins();
     var v'mode = sc_0~load_uint(8);
     return (sc_0, (v'amount, v'mode));
 }
 
-builder __gen_write_Treasure(builder build_0, (slice) v) inline {
+builder __gen_write_Treasure(builder build_0, (slice) v) inline_ref {
     var (v'owner) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     return build_0;
 }
 
-(slice, ((slice))) __gen_read_Treasure(slice sc_0) inline {
+(slice, ((slice))) __gen_read_Treasure(slice sc_0) inline_ref {
     var v'owner = sc_0~__tact_load_address();
     return (sc_0, (v'owner));
 }
@@ -54,13 +54,13 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(slice) __gen_load_Treasure() inline {
+(slice) __gen_load_Treasure() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Treasure();
 }
 
-() __gen_store_Treasure((slice) v) impure inline {
+() __gen_store_Treasure((slice) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Treasure(b, v);

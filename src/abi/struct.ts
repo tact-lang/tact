@@ -1,3 +1,4 @@
+import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
@@ -26,8 +27,7 @@ export const StructFunctions: { [key: string]: AbiFunction } = {
             if (args[0].kind !== 'ref') {
                 throwError('toCell() is implemented only a struct type', ref);
             }
-            ctx.used(`__gen_writecell_${args[0].name}`);
-            return `__gen_writecell_${args[0].name}(${resolved.map((v) => writeExpression(v, ctx)).join(', ')})`;
+            return `${ops.writerCell(args[0].name, ctx)}(${resolved.map((v) => writeExpression(v, ctx)).join(', ')})`;
         }
     }
 }

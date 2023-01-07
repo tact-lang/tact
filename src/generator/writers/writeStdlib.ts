@@ -2,157 +2,162 @@ import { contractErrors } from "../../abi/errors";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
+
     ctx.fun('__tact_set', () => {
-        ctx.append(`forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";`);
+        ctx.write(`forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";`);
     });
+
     ctx.fun('__tact_nop', () => {
-        ctx.append(`() __tact_nop() impure asm "NOP";`);
+        ctx.write(`() __tact_nop() impure asm "NOP";`);
     });
+
     ctx.fun('__tact_str_to_slice', () => {
-        ctx.append(`slice __tact_str_to_slice(slice s) asm "NOP";`);
+        ctx.write(`slice __tact_str_to_slice(slice s) asm "NOP";`);
     });
+
     ctx.fun(`__tact_my_balance`, () => {
-        ctx.append(`int __tact_my_balance() inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return pair_first(get_balance());`)
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            int __tact_my_balance() inline {
+                return pair_first(get_balance());
+            }
+        `);
     });
+
     ctx.fun('__tact_not_null', () => {
-        ctx.append(`forall X -> X __tact_not_null(X x) { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
+        ctx.write(`forall X -> X __tact_not_null(X x) { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
     });
+
     ctx.fun('__tact_dict_delete', () => {
-        ctx.append(`(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";`)
+        ctx.write(`(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";`)
     });
+
     ctx.fun('__tact_dict_set_ref', () => {
-        ctx.append(`((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";`)
+        ctx.write(`((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";`)
     });
+
     ctx.fun('__tact_dict_get', () => {
-        ctx.append(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`);
+        ctx.write(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`);
     });
+
     ctx.fun('__tact_dict_get_ref', () => {
-        ctx.append(`(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";`);
+        ctx.write(`(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";`);
     });
+
     ctx.fun('__tact_debug', () => {
-        ctx.append(`() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }`);
+        ctx.write(`() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }`);
     });
+
     ctx.fun('__tact_debug_str', () => {
-        ctx.append(`forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";`);
+        ctx.write(`forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";`);
     });
 
     ctx.fun('__tact_context', () => {
-        ctx.append(`global (int, slice, int, slice) __tact_context;`);
-        ctx.append(`global cell __tact_context_sys;`);
+        ctx.write(`
+            global (int, slice, int, slice) __tact_context;
+            global cell __tact_context_sys;
+        `);
     });
+
     ctx.fun('__tact_context_get', () => {
         ctx.used('__tact_context');
-        ctx.append(`(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }`);
+        ctx.write(`(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }`);
     });
+
     ctx.fun('__tact_verify_address', () => {
-        ctx.append(`() __tact_verify_address(slice address) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`throw_unless(134, address.slice_bits() != 267);`) // Check if has correct length
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            () __tact_verify_address(slice address) inline {
+                throw_unless(134, address.slice_bits() != 267);
+            }
+        `);
     });
 
     ctx.fun('__tact_prepare_random', () => {
-        ctx.append(`global int __tact_randomized;`);
-        ctx.append(`() __tact_prepare_random() impure inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(__tact_randomized)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`randomize_lt();`);
-                ctx.append(`__tact_randomized = true;`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            global int __tact_randomized;
+            () __tact_prepare_random() impure inline {
+                if (null?(__tact_randomized)) {
+                    randomize_lt();
+                    __tact_randomized = true;
+                }
+            }
+        `);
     });
 
     ctx.fun('__tact_load_address', () => {
-        ctx.append(`(slice, slice) __tact_load_address(slice cs) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`slice raw = cs~load_msg_addr();`);
-            ctx.used(`__tact_verify_address`);
-            ctx.append(`__tact_verify_address(raw);`);
-            ctx.append(`return (cs, raw);`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            (slice, slice) __tact_load_address(slice cs) inline {
+                slice raw = cs~load_msg_addr();
+                ${ctx.used(`__tact_verify_address`)}(raw);
+                return (cs, raw);
+            }
+        `);
     });
+
     ctx.fun('__tact_load_address_opt', () => {
-        ctx.append(`(slice, slice) __tact_load_address_opt(slice cs) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`slice raw = cs~load_msg_addr();`);
-            ctx.append(`if (raw.preload_uint(2) != 0) {`)
-            ctx.inIndent(() => {
-                ctx.used(`__tact_verify_address`);
-                ctx.append(`__tact_verify_address(raw);`);
-                ctx.append(`return (cs, raw);`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return (cs, null());`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            (slice, slice) __tact_load_address_opt(slice cs) inline {
+                slice raw = cs~load_msg_addr();
+                if (raw.preload_uint(2) != 0) {
+                    ${ctx.used(`__tact_verify_address`)}(raw);
+                    return (cs, raw);
+                } else {
+                    return (cs, null());
+                }
+            }
+        `);
     });
+
     ctx.fun('__tact_store_address', () => {
-        ctx.append(`builder __tact_store_address(builder b, slice address) inline {`);
-        ctx.inIndent(() => {
-            ctx.used(`__tact_verify_address`);
-            ctx.append(`__tact_verify_address(address);`) // Check if not null
-            ctx.append(`b = b.store_slice(address);`) // Is std address
-            ctx.append(`return b;`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            builder __tact_store_address(builder b, slice address) inline {
+                ${ctx.used(`__tact_verify_address`)}(address);
+                b = b.store_slice(address);
+                return b;
+            }
+        `);
     });
+
     ctx.fun('__tact_store_address_opt', () => {
-        ctx.append(`builder __tact_store_address_opt(builder b, slice address) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(address)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`b = b.store_uint(0, 2);`) // Empty std
-                ctx.append(`return b;`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.used(`__tact_store_address`);
-                ctx.append(`return __tact_store_address(b, address);`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            builder __tact_store_address_opt(builder b, slice address) inline {
+                if (null?(address)) {
+                    b = b.store_uint(0, 2);
+                    return b;
+                } else {
+                    return ${ctx.used(`__tact_store_address`)}(b, address);
+                }
+            }
+        `);
     });
+
     ctx.fun('__tact_compute_contract_address', () => {
-        ctx.append('slice __tact_compute_contract_address(int chain, cell code, cell data) {')
-        ctx.inIndent(() => {
+        ctx.write(`
+            slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
 
-            // Compute hash
-            ctx.append(`var b = begin_cell();`);
-            ctx.append(`b = b.store_uint(0, 2);`);
-            ctx.append(`b = b.store_uint(3, 2);`);
-            ctx.append(`b = b.store_uint(0, 1);`);
-            ctx.append(`b = b.store_ref(code);`);
-            ctx.append(`b = b.store_ref(data);`);
-            ctx.append(`var hash = cell_hash(b.end_cell());`);
+                var b = begin_cell();
+                b = b.store_uint(0, 2);
+                b = b.store_uint(3, 2);
+                b = b.store_uint(0, 1);
+                b = b.store_ref(code);
+                b = b.store_ref(data);
+                var hash = cell_hash(b.end_cell());
 
-            // Compute address
-            ctx.append(`var b2 = begin_cell();`) // Is std address
-            ctx.append(`b2 = b2.store_uint(2, 2);`) // Is std address
-            ctx.append(`b2 = b2.store_uint(0, 1);`) // Non-unicast
-            ctx.append(`b2 = b2.store_int(chain, 8);`) // Workchain (0 or -1)
-            ctx.append(`b2 = b2.store_uint(hash, 256);`) // Address hash
-            ctx.append(`return b2.end_cell().begin_parse();`);
-        });
-        ctx.append('}');
+                var b2 = begin_cell();
+                b2 = b2.store_uint(2, 2);
+                b2 = b2.store_uint(0, 1);
+                b2 = b2.store_int(chain, 8);
+                b2 = b2.store_uint(hash, 256);
+                return b2.end_cell().begin_parse();
+            }
+        `);
     });
+
     ctx.fun('__tact_to_tuple', () => {
-        ctx.append(`forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";`);
+        ctx.write(`forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";`);
     });
+
     ctx.fun('__tact_from_tuple', () => {
-        ctx.append(`forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";`);
+        ctx.write(`forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";`);
     });
 
     //
@@ -160,36 +165,29 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_int_int', () => {
-        ctx.append(`(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
-                ctx.append(`return (r, ());`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
+                if (null?(v)) {
+                    var (r, ok) = idict_delete?(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+                }
+            }
+        `);
     });
+
     ctx.fun('__tact_dict_get_int_int', () => {
-        ctx.append(`int __tact_dict_get_int_int(cell d, int kl, int k, int vl) {`);
-        ctx.inIndent(() => {
-            ctx.append(`var (r, ok) = idict_get?(d, kl, k);`);
-            ctx.append(`if (ok) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return r~load_int(vl);`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
+                var (r, ok) = idict_get?(d, kl, k);
+                if (ok) {
+                    return r~load_int(vl);
+                } else {
+                    return null();
+                }
+            }
+        `);
     });
 
     //
@@ -197,36 +195,29 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_int_cell', () => {
-        ctx.append(`(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
-                ctx.append(`return (r, ());`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return (idict_set_ref(d, kl, k, v), ());`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            (cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
+                if (null?(v)) {
+                    var (r, ok) = idict_delete?(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (idict_set_ref(d, kl, k, v), ());
+                }
+            }
+        `);
     });
+
     ctx.fun('__tact_dict_get_int_cell', () => {
-        ctx.append(`cell __tact_dict_get_int_cell(cell d, int kl, int k) {`);
-        ctx.inIndent(() => {
-            ctx.append(`var (r, ok) = idict_get_ref?(d, kl, k);`);
-            ctx.append(`if (ok) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return r;`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            cell __tact_dict_get_int_cell(cell d, int kl, int k) {
+                var (r, ok) = idict_get_ref?(d, kl, k);
+                if (ok) {
+                    return r;
+                } else {
+                    return null();
+                }
+            }
+        `);
     });
 
     //
@@ -234,36 +225,29 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_int_slice', () => {
-        ctx.append(`(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`var (r, ok) = idict_delete?(d, kl, k);`);
-                ctx.append(`return (r, ());`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return (idict_set(d, kl, k, v), ());`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            (cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
+                if (null?(v)) {
+                    var (r, ok) = idict_delete?(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (idict_set(d, kl, k, v), ());
+                }
+            }
+        `);
     });
+
     ctx.fun('__tact_dict_get_int_slice', () => {
-        ctx.append(`slice __tact_dict_get_int_slice(cell d, int kl, int k) {`);
-        ctx.inIndent(() => {
-            ctx.append(`var (r, ok) = idict_get?(d, kl, k);`);
-            ctx.append(`if (ok) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return r;`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
+                var (r, ok) = idict_get?(d, kl, k);
+                if (ok) {
+                    return r;
+                } else {
+                    return null();
+                }
+            }
+        `);
     });
 
     //
@@ -271,38 +255,29 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_slice_int', () => {
-        ctx.append(`(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.used('__tact_dict_delete');
-                ctx.append(`var (r, ok) = __tact_dict_delete(d, kl, k);`);
-                ctx.append(`return (r, ());`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            (cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+                if (null?(v)) {
+                    var (r, ok) = ${ctx.used(`__tact_dict_delete`)}(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+                }
+            }
+        `);
     });
+
     ctx.fun('__tact_dict_get_slice_int', () => {
-        ctx.append(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) {`);
-        ctx.inIndent(() => {
-            ctx.used(`__tact_dict_get`);
-            ctx.append(`var (r, ok) = __tact_dict_get(d, kl, k);`);
-            ctx.append(`if (ok) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return r~load_int(vl);`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
+                var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
+                if (ok) {
+                    return r~load_int(vl);
+                } else {
+                    return null();
+                }
+            }
+        `);
     });
 
     //
@@ -310,39 +285,29 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_slice_cell', () => {
-        ctx.append(`(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.used(`__tact_dict_delete`);
-                ctx.append(`var (r, ok) = __tact_dict_delete(d, kl, k);`);
-                ctx.append(`return (r, ());`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.used('__tact_dict_set_ref');
-                ctx.append(`return __tact_dict_set_ref(d, kl, k, v);`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            (cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
+                if (null?(v)) {
+                    var (r, ok) = ${ctx.used(`__tact_dict_delete`)}(d, kl, k);
+                    return (r, ());
+                } else {
+                    return ${ctx.used(`__tact_dict_set_ref`)}(d, kl, k, v);
+                }
+            }
+        `);
     });
+
     ctx.fun(`__tact_dict_get_slice_cell`, () => {
-        ctx.append(`cell __tact_dict_get_slice_cell(cell d, int kl, slice k) {`);
-        ctx.inIndent(() => {
-            ctx.used(`__tact_dict_get_ref`);
-            ctx.append(`var (r, ok) = __tact_dict_get_ref(d, kl, k);`);
-            ctx.append(`if (ok) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return r;`);
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-        });
-        ctx.append('}')
+        ctx.write(`
+            cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
+                var (r, ok) = ${ctx.used(`__tact_dict_get_ref`)}(d, kl, k);
+                if (ok) {
+                    return r;
+                } else {
+                    return null();
+                }
+            }
+        `);
     });
 
     //
@@ -350,18 +315,19 @@ export function writeStdlib(ctx: WriterContext) {
     // 
 
     ctx.fun(`__tact_address_eq`, () => {
-        ctx.append(`int __tact_address_eq(slice a, slice b) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return equal_slice_bits(a, b);`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            int __tact_address_eq(slice a, slice b) inline {
+                return equal_slice_bits(a, b);
+            }
+        `)
     });
+
     ctx.fun(`__tact_address_neq`, () => {
-        ctx.append(`int __tact_address_neq(slice a, slice b) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return ~ equal_slice_bits(a, b);`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            int __tact_address_neq(slice a, slice b) inline {
+                return ~ equal_slice_bits(a, b);
+            }
+        `);
     });
 
     //
@@ -369,18 +335,18 @@ export function writeStdlib(ctx: WriterContext) {
     // 
 
     ctx.fun(`__tact_cell_eq`, () => {
-        ctx.append(`int __tact_cell_eq(cell a, cell b) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return (a.cell_hash() ==  b.cell_hash());`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            int __tact_cell_eq(cell a, cell b) inline {
+                return (a.cell_hash() ==  b.cell_hash());
+            }
+        `);
     });
     ctx.fun(`__tact_cell_neq`, () => {
-        ctx.append(`int __tact_cell_neq(slice a, slice b) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return (a.cell_hash() !=  b.cell_hash());`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            int __tact_cell_neq(slice a, slice b) inline {
+                return (a.cell_hash() !=  b.cell_hash());
+            }
+        `);
     });
 
     //
@@ -388,20 +354,21 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_dict_set_code`, () => {
-        ctx.append(`cell __tact_dict_set_code(cell dict, int id, cell code) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return udict_set_ref(dict, 16, id, code);`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+                return udict_set_ref(dict, 16, id, code);
+            }
+        `);
     });
+
     ctx.fun(`__tact_dict_get_code`, () => {
-        ctx.append(`cell __tact_dict_get_code(cell dict, int id) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`var (data, ok) = udict_get_ref?(dict, 16, id);`);
-            ctx.append(`throw_unless(100, ok);`);
-            ctx.append(`return data;`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            cell __tact_dict_get_code(cell dict, int id) inline {
+                var (data, ok) = udict_get_ref?(dict, 16, id);
+                throw_unless(100, ok);
+                return data;
+            }
+        `);
     });
 
     //
@@ -412,7 +379,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.append(`tuple __tact_tuple_create_0() asm "NIL";`);
     });
     ctx.fun(`__tact_tuple_destroy_0`, () => {
-        ctx.append(`() __tact_tuple_destroy_0() {`);
+        ctx.append(`() __tact_tuple_destroy_0() inline {`);
         ctx.inIndent(() => {
             ctx.append(`return ();`)
         });
@@ -441,240 +408,190 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_string_builder_start_comment`, () => {
-        ctx.used(`__tact_string_builder_start`);
-        ctx.append(`tuple __tact_string_builder_start_comment() inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return __tact_string_builder_start(true);`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            tuple __tact_string_builder_start_comment() inline {
+                return ${ctx.used('__tact_string_builder_start')}(true);
+            }
+        `);
     });
 
     ctx.fun(`__tact_string_builder_start_string`, () => {
-        ctx.used(`__tact_string_builder_start`);
-        ctx.append(`tuple __tact_string_builder_start_string() inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`return __tact_string_builder_start(false);`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            tuple __tact_string_builder_start_string() inline {
+                return ${ctx.used('__tact_string_builder_start')}(false);
+            }
+        `);
     });
 
     ctx.fun(`__tact_string_builder_start`, () => {
-        ctx.append(`tuple __tact_string_builder_start(int comment) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`builder b = begin_cell();`);
-            ctx.append(`if (comment) {`);
-            ctx.inIndent(() => {
-                ctx.append(`b = store_uint(b, 0, 32);`);
-            });
-            ctx.append(`}`);
-            ctx.append(`return tpush(tpush(empty_tuple(), b), null());`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            tuple __tact_string_builder_start(int comment) inline {
+                builder b = begin_cell();
+                if (comment) {
+                    b = store_uint(b, 0, 32);
+                }
+                return tpush(tpush(empty_tuple(), b), null());
+            }
+        `);
     });
 
     ctx.fun(`__tact_string_builder_end`, () => {
-        ctx.append(`cell __tact_string_builder_end(tuple builders) {`);
-        ctx.inIndent(() => {
-            ctx.append(`(builder b, tuple tail) = uncons(builders);`);
-            ctx.append(`cell c = b.end_cell();`);
-            ctx.append(`while(~ null?(tail)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`(b, tail) = uncons(tail);`);
-                ctx.append(`c = b.store_ref(c).end_cell();`);
-            });
-            ctx.append(`}`);
-            ctx.append(`return c;`);
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            cell __tact_string_builder_end(tuple builders) inline {
+                (builder b, tuple tail) = uncons(builders);
+                cell c = b.end_cell();
+                while(~ null?(tail)) {
+                    (b, tail) = uncons(tail);
+                    c = b.store_ref(c).end_cell();
+                }
+                return c;
+            }
+        `);
     });
 
     ctx.fun(`__tact_string_builder_end_slice`, () => {
-        ctx.append(`slice __tact_string_builder_end_slice(tuple builders) {`);
-        ctx.inIndent(() => {
-            ctx.used(`__tact_string_builder_end`);
-            ctx.append(`return __tact_string_builder_end(builders).begin_parse();`)
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            slice __tact_string_builder_end_slice(tuple builders) inline {
+                return ${ctx.used('__tact_string_builder_end')}(builders).begin_parse();
+            }
+        `);
     });
 
     ctx.fun(`__tact_string_builder_append`, () => {
-        ctx.append(`((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {`);
-        ctx.inIndent(() => {
-            ctx.append(`int sliceRefs = slice_refs(sc);`);
-            ctx.append(`int sliceBits = slice_bits(sc);`);
-            ctx.append();
-            ctx.append(`while((sliceBits > 0) | (sliceRefs > 0)) {`);
-            ctx.inIndent(() => {
-                ctx.append();
-                ctx.append(`;; Load the current builder`);
-                ctx.append(`(builder b, tuple tail) = uncons(builders);`);
-                ctx.append(`int remBytes = 127 - (builder_bits(b) / 8);`);
-                ctx.append(`int exBytes = sliceBits / 8;`);
-                ctx.append();
-                ctx.append(`;; Append bits`);
-                ctx.append(`int amount = min(remBytes, exBytes);`);
-                ctx.append(`if (amount > 0) {`);
-                ctx.inIndent(() => {
-                    ctx.append(`slice read = sc~load_bits(amount * 8);`);
-                    ctx.append(`b = b.store_slice(read);`);
-                });
-                ctx.append(`}`);
-                ctx.append();
-                ctx.append(`;; Update builders`);
-                ctx.append(`builders = cons(b, tail);`);
-                ctx.append();
-                ctx.append(`;; Check if we need to add a new cell and continue`);
-                ctx.append(`if (exBytes - amount > 0) {`);
-                ctx.inIndent(() => {
-                    ctx.append(`var bb = begin_cell();`);
-                    ctx.append(`builders = cons(bb, builders);`);
-                    ctx.append(`sliceBits = (exBytes - amount) * 8;`);
-                });
-                ctx.append(`} elseif (sliceRefs > 0) {`);
-                ctx.inIndent(() => {
-                    ctx.append(`sc = sc~load_ref().begin_parse();`);
-                    ctx.append(`sliceRefs = slice_refs(sc);`);
-                    ctx.append(`sliceBits = slice_bits(sc);`);
-                });
-                ctx.append(`} else {`);
-                ctx.inIndent(() => {
-                    ctx.append(`sliceBits = 0;`);
-                    ctx.append(`sliceRefs = 0;`);
-                });
-                ctx.append(`}`);
-            });
-            ctx.append(`}`);
-            ctx.append();
-            ctx.append(`return ((builders), ());`)
-        });
-        ctx.append(`}`);
+        ctx.write(`
+            ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
+                int sliceRefs = slice_refs(sc);
+                int sliceBits = slice_bits(sc);
+
+                while((sliceBits > 0) | (sliceRefs > 0)) {
+
+                    ;; Load the current builder
+                    (builder b, tuple tail) = uncons(builders);
+                    int remBytes = 127 - (builder_bits(b) / 8);
+                    int exBytes = sliceBits / 8;
+
+                    ;; Append bits
+                    int amount = min(remBytes, exBytes);
+                    if (amount > 0) {
+                        slice read = sc~load_bits(amount * 8);
+                        b = b.store_slice(read);
+                    }
+
+                    ;; Update builders
+                    builders = cons(b, tail);
+
+                    ;; Check if we need to add a new cell and continue
+                    if (exBytes - amount > 0) {
+                        var bb = begin_cell();
+                        builders = cons(bb, builders);
+                        sliceBits = (exBytes - amount) * 8;
+                    } elseif (sliceRefs > 0) {
+                        sc = sc~load_ref().begin_parse();
+                        sliceRefs = slice_refs(sc);
+                        sliceBits = slice_bits(sc);
+                    } else {
+                        sliceBits = 0;
+                        sliceRefs = 0;
+                    }
+                }
+
+                return ((builders), ());
+            }
+        `);
     });
 
     ctx.fun(`__tact_int_to_string`, () => {
-        ctx.append(`slice __tact_int_to_string(int src) {`);
-        ctx.inIndent(() => {
-            ctx.append(`var b = begin_cell();`);
-            ctx.append(`if (src < 0) {`);
-            ctx.inIndent(() => {
-                ctx.append(`b = b.store_uint(45, 8);`);
-                ctx.append(`src = - src;`);
-            });
-            ctx.append(`}`);
-            ctx.append();
-            ctx.append(`if (src < ${(10n ** 30n).toString(10)}) {`); // Better cut-off?
-            ctx.inIndent(() => {
-                ctx.append(`int len = 0;`);
-                ctx.append(`int value = 0;`);
-                ctx.append(`int mult = 1;`);
-                ctx.append(`do {`);
-                ctx.inIndent(() => {
-                    ctx.append(`(src, int res) = src.divmod(10);`);
-                    ctx.append(`value = value + (res + 48) * mult;`);
-                    ctx.append(`mult = mult * 256;`);
-                    ctx.append(`len = len + 1;`);
-                });
-                ctx.append(`} until (src == 0);`)
-                ctx.append();
-                ctx.append(`b = b.store_uint(value, len * 8);`);
-            });
-            ctx.append(`} else {`)
-            ctx.inIndent(() => {
-                ctx.append(`tuple t = empty_tuple();`);
-                ctx.append(`int len = 0;`);
-                ctx.append(`do {`);
-                ctx.inIndent(() => {
-                    ctx.append(`int digit = src % 10;`);
-                    ctx.append(`t~tpush(digit);`);
-                    ctx.append(`len = len + 1;`);
-                    ctx.append(`src = src / 10;`);
-                });
-                ctx.append(`} until (src == 0);`);
-                ctx.append();
-                ctx.append(`int c = len - 1;`);
-                ctx.append(`repeat(len) {`);
-                ctx.inIndent(() => {
-                    ctx.append(`int v = t.at(c);`);
-                    ctx.append(`b = b.store_uint(v + 48, 8);`);
-                    ctx.append(`c = c - 1;`);
-                });
-                ctx.append(`}`);
-            });
-            ctx.append(`}`);
+        ctx.write(`
+            slice __tact_int_to_string(int src) {
+                var b = begin_cell();
+                if (src < 0) {
+                    b = b.store_uint(45, 8);
+                    src = - src;
+                }
 
-            ctx.append(`return b.end_cell().begin_parse();`);
-        });
-        ctx.append(`}`);
+                if (src < ${(10n ** 30n).toString(10)}) {
+                    int len = 0;
+                    int value = 0;
+                    int mult = 1;
+                    do {
+                        (src, int res) = src.divmod(10);
+                        value = value + (res + 48) * mult;
+                        mult = mult * 256;
+                        len = len + 1;
+                    } until (src == 0);
+
+                    b = b.store_uint(value, len * 8);
+                } else {
+                    tuple t = empty_tuple();
+                    int len = 0;
+                    do {
+                        int digit = src % 10;
+                        t~tpush(digit);
+                        len = len + 1;
+                        src = src / 10;
+                    } until (src == 0);
+
+                    int c = len - 1;
+                    repeat(len) {
+                        int v = t.at(c);
+                        b = b.store_uint(v + 48, 8);
+                        c = c - 1;
+                    }
+                }
+                return b.end_cell().begin_parse();
+            }
+        `);
     });
 
     ctx.fun(`__tact_float_to_string`, () => {
-        ctx.append(`slice __tact_float_to_string(int src, int digits) {`);
-        ctx.inIndent(() => {
-            ctx.append(`throw_if(134, (digits <= 0) | (digits > 77));`);
-            ctx.append(`builder b = begin_cell();`);
-            ctx.append();
+        ctx.write(`
+            slice __tact_float_to_string(int src, int digits) {
+                throw_if(134, (digits <= 0) | (digits > 77));
+                builder b = begin_cell();
 
-            // Negative
-            ctx.append(`if (src < 0) {`);
-            ctx.inIndent(() => {
-                ctx.append(`b = b.store_uint(45, 8);`);
-                ctx.append(`src = - src;`);
-            });
-            ctx.append(`}`);
-            ctx.append();
+                if (src < 0) {
+                    b = b.store_uint(45, 8);
+                    src = - src;
+                }
 
-            // Remainder
-            ctx.append(`;; Process rem part`);
-            ctx.append(`int skip = true;`);
-            ctx.append(`int len = 0;`);
-            ctx.append(`int rem = 0;`);
-            ctx.append(`tuple t = empty_tuple();`);
-            ctx.append(`repeat(digits) {`);
-            ctx.inIndent(() => {
-                ctx.append(`(src, rem) = src.divmod(10);`);
-                ctx.append(`if ( ~ ( skip & ( rem == 0 ) ) ) {`);
-                ctx.inIndent(() => {
-                    ctx.append(`skip = false;`);
-                    ctx.append(`t~tpush(rem + 48);`);
-                    ctx.append(`len = len + 1;`);
-                });
-                ctx.append(`}`);
-            });
-            ctx.append(`}`);
-            ctx.append();
+                ;; Process rem part
+                int skip = true;
+                int len = 0;
+                int rem = 0;
+                tuple t = empty_tuple();
+                repeat(digits) {
+                    (src, rem) = src.divmod(10);
+                    if ( ~ ( skip & ( rem == 0 ) ) ) {
+                        skip = false;
+                        t~tpush(rem + 48);
+                        len = len + 1;
+                    }
+                }
 
-            // Dot
-            ctx.append(`;; Process dot`);
-            ctx.append(`if (~ skip) {`);
-            ctx.inIndent(() => {
-                ctx.append(`t~tpush(46);`);
-                ctx.append(`len = len + 1;`);
-            });
-            ctx.append(`}`);
-            ctx.append();
+                ;; Process dot
+                if (~ skip) {
+                    t~tpush(46);
+                    len = len + 1;
+                }
 
-            // Main
-            ctx.append(`do {`);
-            ctx.inIndent(() => {
-                ctx.append(`(src, rem) = src.divmod(10);`);
-                ctx.append(`t~tpush(rem + 48);`);
-                ctx.append(`len = len + 1;`);
-            });
-            ctx.append(`} until (src == 0);`);
-            ctx.append();
+                ;; Main
+                do {
+                    (src, rem) = src.divmod(10);
+                    t~tpush(rem + 48);
+                    len = len + 1;
+                } until (src == 0);
 
-            // Assemble
-            ctx.append(`int c = len - 1;`);
-            ctx.append(`repeat(len) {`);
-            ctx.inIndent(() => {
-                ctx.append(`int v = t.at(c);`);
-                ctx.append(`b = b.store_uint(v, 8);`);
-                ctx.append(`c = c - 1;`);
-            });
-            ctx.append(`}`);
+                ;; Assemble
+                int c = len - 1;
+                repeat(len) {
+                    int v = t.at(c);
+                    b = b.store_uint(v, 8);
+                    c = c - 1;
+                }
 
-            ctx.append(`;; Result`);
-            ctx.append(`return b.end_cell().begin_parse();`);
-        });
-        ctx.append(`}`);
+                ;; Result
+                return b.end_cell().begin_parse();
+            }
+        `);
     });
 }

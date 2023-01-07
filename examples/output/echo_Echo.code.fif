@@ -67,7 +67,7 @@ PROGRAM{
     FALSE
     __tact_string_builder_start INLINECALLDICT
   }>
-  __tact_string_builder_end PROC:<{
+  __tact_string_builder_end PROCINLINE:<{
     UNCONS
     SWAP
     ENDC
@@ -84,11 +84,11 @@ PROGRAM{
     }>
     NIP
   }>
-  __tact_string_builder_end_slice PROC:<{
-    __tact_string_builder_end CALLDICT
+  __tact_string_builder_end_slice PROCINLINE:<{
+    __tact_string_builder_end INLINECALLDICT
     CTOS
   }>
-  __tact_string_builder_append PROC:<{
+  __tact_string_builder_append PROCREF:<{
     DUP
     SREFS
     OVER
@@ -154,17 +154,17 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_write_Echo PROCINLINE:<{
+  __gen_write_Echo PROCREF:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_Echo PROCINLINE:<{
+  __gen_read_Echo PROCREF:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  __gen_load_Echo PROCINLINE:<{
+  __gen_load_Echo PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -173,7 +173,7 @@ PROGRAM{
     __gen_read_Echo INLINECALLDICT
     NIP
   }>
-  __gen_store_Echo PROCINLINE:<{
+  __gen_store_Echo PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -314,17 +314,17 @@ PROGRAM{
   $__gen_String_asComment PROC:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
-    __tact_string_builder_append CALLDICT
-    __tact_string_builder_end CALLDICT
+    __tact_string_builder_append INLINECALLDICT
+    __tact_string_builder_end INLINECALLDICT
   }>
   $__gen_Echo_hello PROC:<{
     NIP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE
-    __tact_string_builder_append CALLDICT
+    __tact_string_builder_append INLINECALLDICT
     SWAP
-    __tact_string_builder_append CALLDICT
-    __tact_string_builder_end_slice CALLDICT
+    __tact_string_builder_append INLINECALLDICT
+    __tact_string_builder_end_slice INLINECALLDICT
   }>
   $__gen_get_hello PROC:<{
     __gen_load_Echo INLINECALLDICT

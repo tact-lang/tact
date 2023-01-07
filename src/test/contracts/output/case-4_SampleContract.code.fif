@@ -9,14 +9,14 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_Source PROCINLINE:<{
+  __gen_read_Source PROCREF:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
   }>
-  __gen_read_SampleContract PROCINLINE:<{
+  __gen_read_SampleContract PROCREF:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -32,7 +32,7 @@ PROGRAM{
     s3 s4 XCHG
     s1 s2 XCHG
   }>
-  __gen_load_SampleContract PROCINLINE:<{
+  __gen_load_SampleContract PROCREF:<{
     c4 PUSH
     CTOS
     LDREF

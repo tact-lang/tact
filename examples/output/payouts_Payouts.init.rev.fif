@@ -7,10 +7,12 @@ SETCP0
     NEWC
     STREF
     s0 s2 XCHG
-    ROTREV
-    STSLICER
-    257 PUSHINT
-    STIX
+    <{
+      ROTREV
+      STSLICER
+      257 PUSHINT
+      STIX
+    }> CALLREF
     ENDC
 
   107886: 

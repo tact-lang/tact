@@ -86,44 +86,47 @@ PROGRAM{
     LDMSGADDR
     SWAP
   }>
-  __tact_dict_set_int_int PROC:<{
+  __tact_dict_set_int_int PROCINLINE:<{
     OVER
     ISNULL
-    IFJMP:<{
+    IF:<{
       2DROP
       -ROT
       DICTIDEL
       DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTISETB
     }>
-    NEWC
-    SWAP
-    STIX
-    s1 s3 s3 XCHG3
-    DICTISETB
   }>
-  __tact_dict_get_int_int PROC:<{
+  __tact_dict_get_int_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTIGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
       SWAP
       LDIX
       DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
     }>
-    2DROP
-    PUSHNULL
   }>
-  __tact_dict_set_int_cell PROC:<{
+  __tact_dict_set_int_cell PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       -ROT
       DICTIDEL
       DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTISETREF
     }>
-    s1 s3 s3 XCHG3
-    DICTISETREF
   }>
   __tact_dict_get_int_cell PROC:<{
     -ROT
@@ -149,40 +152,43 @@ PROGRAM{
     s1 s3 s3 XCHG3
     DICTSETB
   }>
-  __tact_dict_get_slice_int PROC:<{
+  __tact_dict_get_slice_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTGET
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
       SWAP
       LDIX
       DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
     }>
-    2DROP
-    PUSHNULL
   }>
-  __tact_dict_set_slice_cell PROC:<{
+  __tact_dict_set_slice_cell PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       -ROT
       DICTDEL
       DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTSETREF
     }>
-    s1 s3 s3 XCHG3
-    DICTSETREF
   }>
-  __tact_dict_get_slice_cell PROC:<{
+  __tact_dict_get_slice_cell PROCINLINE:<{
     -ROT
     DICTGETREF
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
     }>
-    DROP
-    PUSHNULL
   }>
-  __gen_read_SetIntMap1 PROCINLINE:<{
+  __gen_read_SetIntMap1 PROCREF:<{
     32 LDU
     SWAP
     1056067080 PUSHINT
@@ -201,7 +207,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetIntMap2 PROCINLINE:<{
+  __gen_read_SetIntMap2 PROCREF:<{
     32 LDU
     SWAP
     2818252722 PUSHINT
@@ -219,7 +225,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetIntMap3 PROCINLINE:<{
+  __gen_read_SetIntMap3 PROCREF:<{
     32 LDU
     SWAP
     3506188068 PUSHINT
@@ -237,12 +243,12 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_write_SomeStruct PROCINLINE:<{
+  __gen_write_SomeStruct PROCREF:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_SomeStruct PROCINLINE:<{
+  __gen_writecell_SomeStruct PROCREF:<{
     NEWC
     SWAP
     __gen_write_SomeStruct INLINECALLDICT
@@ -254,18 +260,17 @@ PROGRAM{
     128 THROWIF
     1 UNTUPLE
   }>
-  __gen_writecellopt_SomeStruct PROCINLINE:<{
+  __gen_writecellopt_SomeStruct PROCREF:<{
     DUP
     ISNULL
-    IF:<{
+    IFJMP:<{
       DROP
       PUSHNULL
-    }>ELSE<{
-      __gen_SomeStruct_not_null INLINECALLDICT
-      __gen_writecell_SomeStruct INLINECALLDICT
     }>
+    __gen_SomeStruct_not_null INLINECALLDICT
+    __gen_writecell_SomeStruct INLINECALLDICT
   }>
-  __gen_read_SomeStruct PROCINLINE:<{
+  __gen_read_SomeStruct PROCREF:<{
     257 PUSHINT
     LDIX
     SWAP
@@ -273,20 +278,19 @@ PROGRAM{
   __gen_SomeStruct_as_optional PROCINLINE:<{
     1 TUPLE
   }>
-  __gen_readopt_SomeStruct PROCINLINE:<{
+  __gen_readopt_SomeStruct PROCREF:<{
     DUP
     ISNULL
-    IF:<{
+    IFJMP:<{
       DROP
       PUSHNULL
-    }>ELSE<{
-      CTOS
-      __gen_read_SomeStruct INLINECALLDICT
-      NIP
-      __gen_SomeStruct_as_optional INLINECALLDICT
     }>
+    CTOS
+    __gen_read_SomeStruct INLINECALLDICT
+    NIP
+    __gen_SomeStruct_as_optional INLINECALLDICT
   }>
-  __gen_read_SetIntMap4 PROCINLINE:<{
+  __gen_read_SetIntMap4 PROCREF:<{
     32 LDU
     SWAP
     1318632071 PUSHINT
@@ -304,7 +308,7 @@ PROGRAM{
     }>
     s1 s2 XCHG
   }>
-  __gen_read_SetAddrMap1 PROCINLINE:<{
+  __gen_read_SetAddrMap1 PROCREF:<{
     32 LDU
     SWAP
     3295239033 PUSHINT
@@ -323,7 +327,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetAddrMap2 PROCINLINE:<{
+  __gen_read_SetAddrMap2 PROCREF:<{
     32 LDU
     SWAP
     1566575299 PUSHINT
@@ -341,7 +345,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetAddrMap3 PROCINLINE:<{
+  __gen_read_SetAddrMap3 PROCREF:<{
     32 LDU
     SWAP
     711408213 PUSHINT
@@ -359,7 +363,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetAddrMap4 PROCINLINE:<{
+  __gen_read_SetAddrMap4 PROCREF:<{
     32 LDU
     SWAP
     3020140534 PUSHINT
@@ -377,7 +381,7 @@ PROGRAM{
     }>
     s1 s2 XCHG
   }>
-  __gen_write_MapTestContract PROCINLINE:<{
+  __gen_write_MapTestContract PROCREF:<{
     s7 s8 XCHG2
     STDICT
     s1 s5 XCHG
@@ -402,7 +406,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_MapTestContract PROCINLINE:<{
+  __gen_read_MapTestContract PROCREF:<{
     LDDICT
     LDDICT
     LDREF
@@ -445,7 +449,7 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_load_MapTestContract PROCINLINE:<{
+  __gen_load_MapTestContract PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -454,7 +458,7 @@ PROGRAM{
     __gen_read_MapTestContract INLINECALLDICT
     1 8 BLKDROP2
   }>
-  __gen_store_MapTestContract PROCINLINE:<{
+  __gen_store_MapTestContract PROCREF:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -475,7 +479,7 @@ PROGRAM{
     7 1 BLKDROP2
     257 PUSHINT
     TUCK
-    __tact_dict_get_int_int CALLDICT
+    __tact_dict_get_int_int INLINECALLDICT
   }>
   $__gen_get_intMap1Value PROC:<{
     __gen_load_MapTestContract INLINECALLDICT
@@ -496,7 +500,7 @@ PROGRAM{
     257 PUSHINT
     ROT
     1 PUSHINT
-    __tact_dict_get_int_int CALLDICT
+    __tact_dict_get_int_int INLINECALLDICT
   }>
   $__gen_get_intMap2Value PROC:<{
     __gen_load_MapTestContract INLINECALLDICT
@@ -563,7 +567,7 @@ PROGRAM{
     267 PUSHINT
     SWAP
     257 PUSHINT
-    __tact_dict_get_slice_int CALLDICT
+    __tact_dict_get_slice_int INLINECALLDICT
   }>
   $__gen_get_addrMap1Value PROC:<{
     __gen_load_MapTestContract INLINECALLDICT
@@ -585,7 +589,7 @@ PROGRAM{
     267 PUSHINT
     ROT
     1 PUSHINT
-    __tact_dict_get_slice_int CALLDICT
+    __tact_dict_get_slice_int INLINECALLDICT
   }>
   $__gen_get_addrMap2Value PROC:<{
     __gen_load_MapTestContract INLINECALLDICT
@@ -605,7 +609,7 @@ PROGRAM{
     6 2 BLKDROP2
     267 PUSHINT
     SWAP
-    __tact_dict_get_slice_cell CALLDICT
+    __tact_dict_get_slice_cell INLINECALLDICT
   }>
   $__gen_get_addrMap3Value PROC:<{
     __gen_load_MapTestContract INLINECALLDICT
@@ -624,7 +628,7 @@ PROGRAM{
     6 BLKDROP
     267 PUSHINT
     s2 POP
-    __tact_dict_get_slice_cell CALLDICT
+    __tact_dict_get_slice_cell INLINECALLDICT
     __gen_readopt_SomeStruct INLINECALLDICT
   }>
   $__gen_get_addrMap4Value PROC:<{
@@ -638,7 +642,7 @@ PROGRAM{
     DUP
     s4 s11 XCHG
     s3 s3 s0 XCHG3
-    __tact_dict_set_int_int CALLDICT
+    __tact_dict_set_int_int INLINECALLDICT
     s0 s7 XCHG
   }>
   $__gen_MapTestContract_receive_SetIntMap2 PROC:<{
@@ -646,14 +650,14 @@ PROGRAM{
     257 PUSHINT
     -ROT
     1 PUSHINT
-    __tact_dict_set_int_int CALLDICT
+    __tact_dict_set_int_int INLINECALLDICT
     s0 s6 XCHG
   }>
   $__gen_MapTestContract_receive_SetIntMap3 PROC:<{
     s2 s7 XCHG
     257 PUSHINT
     -ROT
-    __tact_dict_set_int_cell CALLDICT
+    __tact_dict_set_int_cell INLINECALLDICT
     s0 s5 XCHG
   }>
   $__gen_MapTestContract_receive_SetIntMap4 PROC:<{
@@ -662,7 +666,7 @@ PROGRAM{
     __gen_writecellopt_SomeStruct INLINECALLDICT
     s3 s7 XCHG
     s1 s2 XCHG
-    __tact_dict_set_int_cell CALLDICT
+    __tact_dict_set_int_cell INLINECALLDICT
     s0 s4 XCHG
   }>
   $__gen_MapTestContract_receive_SetAddrMap1 PROC:<{
@@ -685,7 +689,7 @@ PROGRAM{
     s2 s3 XCHG
     267 PUSHINT
     -ROT
-    __tact_dict_set_slice_cell CALLDICT
+    __tact_dict_set_slice_cell INLINECALLDICT
     SWAP
   }>
   $__gen_MapTestContract_receive_SetAddrMap4 PROC:<{
@@ -693,7 +697,7 @@ PROGRAM{
     SWAP
     __gen_writecellopt_SomeStruct INLINECALLDICT
     s1 s2 XCHG
-    __tact_dict_set_slice_cell CALLDICT
+    __tact_dict_set_slice_cell INLINECALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT

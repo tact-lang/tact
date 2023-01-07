@@ -19,7 +19,7 @@ tuple __tact_string_builder_start_string() inline {
     return __tact_string_builder_start(false);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -29,31 +29,31 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-slice __tact_string_builder_end_slice(tuple builders) {
+slice __tact_string_builder_end_slice(tuple builders) inline {
     return __tact_string_builder_end(builders).begin_parse();
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -68,7 +68,7 @@ slice __tact_string_builder_end_slice(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
@@ -78,7 +78,7 @@ slice __tact_int_to_string(int src) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -89,7 +89,7 @@ slice __tact_int_to_string(int src) {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-        
+
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -100,7 +100,7 @@ slice __tact_int_to_string(int src) {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-        
+
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -114,12 +114,12 @@ slice __tact_int_to_string(int src) {
 slice __tact_float_to_string(int src, int digits) {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-    
+
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-    
+
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -133,47 +133,50 @@ slice __tact_float_to_string(int src, int digits) {
             len = len + 1;
         }
     }
-    
+
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-    
+
+    ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-    
+
+    ;; Assemble
     int c = len - 1;
     repeat(len) {
         int v = t.at(c);
         b = b.store_uint(v, 8);
         c = c - 1;
     }
+
     ;; Result
     return b.end_cell().begin_parse();
 }
 
-builder __gen_write_StringsTester(builder build_0, (int) v) inline {
+builder __gen_write_StringsTester(builder build_0, (int) v) inline_ref {
     var (v'fee) = v;
     build_0 = build_0.store_int(v'fee, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_StringsTester(slice sc_0) inline {
+(slice, ((int))) __gen_read_StringsTester(slice sc_0) inline_ref {
     var v'fee = sc_0~load_int(257);
     return (sc_0, (v'fee));
 }
 
-(int) __gen_load_StringsTester() inline {
+(int) __gen_load_StringsTester() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_StringsTester();
 }
 
-() __gen_store_StringsTester((int) v) impure inline {
+() __gen_store_StringsTester((int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_StringsTester(b, v);

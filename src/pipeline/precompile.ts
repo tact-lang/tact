@@ -5,7 +5,6 @@ import { resolveDescriptors } from "../types/resolveDescriptors";
 import { resolveAllocations } from "../storage/resolveAllocation";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
-import { resolvePackaging } from "../types/resolvePackaging";
 import { parseImports } from "../grammar/grammar";
 import { resolveStrings } from "../types/resolveStrings";
 
@@ -77,7 +76,6 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
     ctx = resolveAllocations(ctx);
     ctx = resolveStrings(ctx);
     ctx = resolveStatements(ctx);
-    ctx = resolvePackaging(ctx);
 
     // Prepared context
     return ctx;

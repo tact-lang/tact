@@ -31,7 +31,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) inline {
+builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) inline_ref {
     var (v'seqno, v'mode, v'to, v'amount, v'body) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'mode, 8);
@@ -41,11 +41,11 @@ builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) in
     return build_0;
 }
 
-cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
+cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline_ref {
     return __gen_write_Transfer(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice, int, cell))) __gen_read_Transfer(slice sc_0) inline {
+(slice, ((int, int, slice, int, cell))) __gen_read_Transfer(slice sc_0) inline_ref {
     var v'seqno = sc_0~load_uint(32);
     var v'mode = sc_0~load_uint(8);
     var v'to = sc_0~__tact_load_address();
@@ -54,14 +54,14 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
     return (sc_0, (v'seqno, v'mode, v'to, v'amount, v'body));
 }
 
-(slice, ((slice, (int, int, slice, int, cell)))) __gen_read_TransferMessage(slice sc_0) inline {
+(slice, ((slice, (int, int, slice, int, cell)))) __gen_read_TransferMessage(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 123);
     var v'signature = sc_0~load_ref().begin_parse();
     var v'transfer = sc_0~__gen_read_Transfer();
     return (sc_0, (v'signature, v'transfer));
 }
 
-builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
+builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
     var (v'seqno, v'key, v'walletId) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'key, 256);
@@ -69,7 +69,7 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     return build_0;
 }
 
-(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
+(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline_ref {
     var v'seqno = sc_0~load_uint(32);
     var v'key = sc_0~load_uint(256);
     var v'walletId = sc_0~load_uint(64);
@@ -81,13 +81,13 @@ _ __gen_Context_get_bounced((int, slice, int, slice) v) inline {
     return v'bounced;
 }
 
-(int, int, int) __gen_load_Wallet() inline {
+(int, int, int) __gen_load_Wallet() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Wallet();
 }
 
-() __gen_store_Wallet((int, int, int) v) impure inline {
+() __gen_store_Wallet((int, int, int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Wallet(b, v);

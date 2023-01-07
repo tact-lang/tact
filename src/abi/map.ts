@@ -1,3 +1,4 @@
+import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { getType } from "../types/resolveDescriptors";
@@ -79,8 +80,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     }
                     if (t.kind === 'struct') {
                         ctx.used(`__tact_dict_set_int_cell`);
-                        ctx.used(`__gen_writecellopt_${t.name}`)
-                        return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, __gen_writecellopt_${t.name}(${resolved[2]}))`;
+                        return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }
@@ -111,8 +111,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     }
                     if (t.kind === 'struct') {
                         ctx.used(`__tact_dict_set_slice_cell`);
-                        ctx.used(`__gen_writecellopt_${t.name}`)
-                        return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, __gen_writecellopt_${t.name}(${resolved[2]}))`;
+                        return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }

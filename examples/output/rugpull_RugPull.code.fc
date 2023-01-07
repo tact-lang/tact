@@ -21,7 +21,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) {
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
         return (r, ());
@@ -30,7 +30,7 @@ builder __tact_store_address(builder b, slice address) inline {
     }
 }
 
-slice __tact_dict_get_int_slice(cell d, int kl, int k) {
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     var (r, ok) = idict_get?(d, kl, k);
     if (ok) {
         return r;
@@ -55,7 +55,7 @@ tuple __tact_string_builder_start_comment() inline {
     return __tact_string_builder_start(true);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -65,27 +65,27 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -100,17 +100,17 @@ cell __tact_string_builder_end(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
-(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 3067051791);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
 
-builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
+builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline_ref {
     var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_int(v'investment, 257);
@@ -129,7 +129,7 @@ builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, in
     return build_0;
 }
 
-(slice, ((slice, int, int, int, int, int, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline {
+(slice, ((slice, int, int, int, int, int, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline_ref {
     var v'owner = sc_0~__tact_load_address();
     var v'investment = sc_0~load_int(257);
     var v'returns = sc_0~load_int(257);
@@ -155,13 +155,13 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return (v'investment, v'returns, v'fee);
 }
 
-(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline {
+(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_RugPull();
 }
 
-() __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
+() __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_RugPull(b, v);

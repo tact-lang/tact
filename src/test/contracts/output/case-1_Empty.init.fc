@@ -1,4 +1,4 @@
-builder __gen_write_Empty(builder build_0, (int) v) inline {
+builder __gen_write_Empty(builder build_0, (int) v) inline_ref {
     var (v'x) = v;
     build_0 = build_0.store_int(v'x, 257);
     return build_0;

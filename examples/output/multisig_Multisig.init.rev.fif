@@ -11,14 +11,16 @@ SETCP0
     STREF
     s4 s4 XCHG2
     s3 s1 s3 XCHG3
-    s3 s4 XCHG2
-    257 PUSHINT
-    STIX
-    STDICT
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
+    <{
+      s3 s4 XCHG2
+      257 PUSHINT
+      STIX
+      STDICT
+      257 PUSHINT
+      STIX
+      257 PUSHINT
+      STIX
+    }> CALLREF
     ENDC
 
   107886: 

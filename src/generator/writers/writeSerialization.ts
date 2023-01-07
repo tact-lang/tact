@@ -3,6 +3,7 @@ import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
@@ -13,8 +14,8 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 export function writeSerializer(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
 
     // Write to builder
-    ctx.fun(`__gen_write_${type.name}`, () => {
-        ctx.append(`builder __gen_write_${type.name}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) inline {`);
+    ctx.fun(ops.writer(type.name, ctx), () => {
+        ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) inline_ref {`);
         ctx.inIndent(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(allocation.type, `v`, ctx)} = v;`)
             if (allocation.header) {
@@ -27,43 +28,24 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
     });
 
     // Write to cell
-    ctx.fun(`__gen_writecell_${type.name}`, () => {
-        ctx.append(`cell __gen_writecell_${type.name}(${resolveFuncType(allocation.type, ctx)} v) inline {`);
-        ctx.inIndent(() => {
-            ctx.used(`__gen_write_${type.name}`);
-            ctx.append(`return __gen_write_${type.name}(begin_cell(), v).end_cell();`);
-        });
-        ctx.append(`}`);
-    });
-
-    // Write to slice
-    ctx.fun(` __gen_writeslice_${type.name}`, () => {
-        ctx.append(`slice __gen_writeslice_${type.name}(${resolveFuncType(allocation.type, ctx)} v}) inline {`);
-        ctx.inIndent(() => {
-            ctx.used(`__gen_writecell_${type.name}`);
-            ctx.append(`return __gen_writecell_${type.name}(v).begin_parse();`);
-        });
-        ctx.append(`}`);
+    ctx.fun(ops.writerCell(type.name, ctx), () => {
+        ctx.write(`
+            cell ${ops.writerCell(type.name, ctx)}(${resolveFuncType(allocation.type, ctx)} v) inline_ref {
+                return ${ops.writer(type.name, ctx)}(begin_cell(), v).end_cell();
+            }
+        `);
     });
 
     // Write to opt cell
-    ctx.fun(`__gen_writecellopt_${type.name}`, () => {
-        ctx.append(`cell __gen_writecellopt_${type.name}(tuple v) inline {`);
-        ctx.inIndent(() => {
-
-            // If null
-            ctx.append(`if (null?(v)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-
-            // If not null
-            ctx.used(`__gen_writecell_${type.name}`);
-            ctx.used(`__gen_${type.name}_not_null`);
-            ctx.append(`return __gen_writecell_${type.name}(__gen_${type.name}_not_null(v));`);
-        });
-        ctx.append(`}`);
+    ctx.fun(ops.writerCellOpt(type.name, ctx), () => {
+        ctx.write(`
+            cell ${ops.writerCellOpt(type.name, ctx)}(tuple v) inline_ref {
+                if (null?(v)) {
+                    return null();
+                }
+                return ${ops.writerCell(type.name, ctx)}(${ctx.used(`__gen_${type.name}_not_null`)}(v));
+            }
+        `);
     });
 }
 
@@ -187,12 +169,10 @@ function writeSerializerField(f: AllocationOperation, type: TypeDescription, off
             throw Error('Not implemented');
         }
         if (f.optional) {
-            ctx.used(`__gen_write_${f.type}`);
             ctx.used(`__gen_${f.type}_not_null`);
-            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).__gen_write_${f.type}( __gen_${f.type}_not_null(${fieldName})) : build_${gen}.store_int(false, 1);`);
+            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(f.type, ctx)}( __gen_${f.type}_not_null(${fieldName})) : build_${gen}.store_int(false, 1);`);
         } else {
-            ctx.used(`__gen_write_${f.type}`);
-            ctx.append(`build_${gen} = __gen_write_${f.type}(build_${gen}, ${resolveFuncTypeUnpack(f.type, fieldName, ctx)});`);
+            ctx.append(`build_${gen} = ${ops.writer(f.type, ctx)}(build_${gen}, ${resolveFuncTypeUnpack(f.type, fieldName, ctx)});`);
         }
         return;
     }
@@ -206,7 +186,7 @@ function writeSerializerField(f: AllocationOperation, type: TypeDescription, off
 
 export function writeParser(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
     ctx.fun(`__gen_read_${type.name}`, () => {
-        ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${type.name}(slice sc_0) inline {`);
+        ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${type.name}(slice sc_0) inline_ref {`);
         ctx.inIndent(() => {
 
             // Check prefix
@@ -224,19 +204,15 @@ export function writeParser(type: TypeDescription, allocation: StorageAllocation
     });
 
     ctx.fun(`__gen_readopt_${type.name}`, () => {
-        ctx.append(`tuple __gen_readopt_${type.name}(cell cl) inline {`);
-        ctx.inIndent(() => {
-            ctx.append(`if (null?(cl)) {`);
-            ctx.inIndent(() => {
-                ctx.append(`return null();`);
-            });
-            ctx.append(`}`);
-            ctx.used(`__gen_read_${type.name}`);
-            ctx.used(`__gen_${type.name}_as_optional`);
-            ctx.append(`var sc = cl.begin_parse();`)
-            ctx.append(`return __gen_${type.name}_as_optional(sc~__gen_read_${type.name}());`);
-        });
-        ctx.append("}");
+        ctx.write(`
+            tuple __gen_readopt_${type.name}(cell cl) inline_ref {
+                if (null?(cl)) {
+                    return null();
+                }
+                var sc = cl.begin_parse();
+                return ${ctx.used(`__gen_${type.name}_as_optional`)}(sc~${ctx.used(`__gen_read_${type.name}`)}());
+            }
+        `);
     });
 }
 
@@ -389,7 +365,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline_ref {`); // NOTE: Inline function
         ctx.inIndent(() => {
 
             // Load data slice
@@ -408,7 +384,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline {`); // NOTE: Impure function
+        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline_ref {`); // NOTE: Impure function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
 
@@ -417,8 +393,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`b = b.store_ref(__tact_context_sys);`);
 
             // Build data
-            ctx.used(`__gen_write_${type.name}`);
-            ctx.append(`b = __gen_write_${type.name}(b, v);`);
+            ctx.append(`b = ${ops.writer(type.name, ctx)}(b, v);`);
 
             // Persist data
             ctx.append(`set_data(b.end_cell());`);

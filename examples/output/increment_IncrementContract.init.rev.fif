@@ -12,20 +12,22 @@ SETCP0
     NEWC
     STREF
     s0 s5 XCHG
-    s4 s5 XCHG2
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    s0 s1 XCHG
-    NEWC
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    ENDC
-    s0 s1 XCHG
-    STREF
+    <{
+      s4 s5 XCHG2
+      STDICT
+      s1 s2 XCHG
+      STDICT
+      s0 s1 XCHG
+      NEWC
+      STDICT
+      s1 s2 XCHG
+      STDICT
+      s1 s2 XCHG
+      STDICT
+      ENDC
+      s0 s1 XCHG
+      STREF
+    }> CALLREF
     ENDC
 
   107886: 

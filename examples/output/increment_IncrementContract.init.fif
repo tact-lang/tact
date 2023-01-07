@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_IncrementContract_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_IncrementContract PROCINLINE:<{
+  __gen_write_IncrementContract PROCREF:<{
     s4 s5 XCHG2
     STDICT
     s1 s2 XCHG

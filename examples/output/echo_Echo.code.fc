@@ -31,7 +31,7 @@ tuple __tact_string_builder_start_string() inline {
     return __tact_string_builder_start(false);
 }
 
-cell __tact_string_builder_end(tuple builders) {
+cell __tact_string_builder_end(tuple builders) inline {
     (builder b, tuple tail) = uncons(builders);
     cell c = b.end_cell();
     while(~ null?(tail)) {
@@ -41,31 +41,31 @@ cell __tact_string_builder_end(tuple builders) {
     return c;
 }
 
-slice __tact_string_builder_end_slice(tuple builders) {
+slice __tact_string_builder_end_slice(tuple builders) inline {
     return __tact_string_builder_end(builders).begin_parse();
 }
 
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) {
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-    
+
     while((sliceBits > 0) | (sliceRefs > 0)) {
-        
+
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-        
+
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-        
+
         ;; Update builders
         builders = cons(b, tail);
-        
+
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -80,28 +80,28 @@ slice __tact_string_builder_end_slice(tuple builders) {
             sliceRefs = 0;
         }
     }
-    
+
     return ((builders), ());
 }
 
-builder __gen_write_Echo(builder build_0, (int) v) inline {
+builder __gen_write_Echo(builder build_0, (int) v) inline_ref {
     var (v'v) = v;
     build_0 = build_0.store_int(v'v, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_Echo(slice sc_0) inline {
+(slice, ((int))) __gen_read_Echo(slice sc_0) inline_ref {
     var v'v = sc_0~load_int(257);
     return (sc_0, (v'v));
 }
 
-(int) __gen_load_Echo() inline {
+(int) __gen_load_Echo() inline_ref {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Echo();
 }
 
-() __gen_store_Echo((int) v) impure inline {
+() __gen_store_Echo((int) v) impure inline_ref {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Echo(b, v);

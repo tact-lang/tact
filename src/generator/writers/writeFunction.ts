@@ -13,6 +13,7 @@ import { fn, id } from "./id";
 import { writeExpression, writeValue } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
+import { ops } from "./ops";
 
 export function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
     let expr = getExpType(ctx.ctx, expression);
@@ -438,10 +439,9 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             }
 
             // Assemble result cell
-            ctx.used(`__gen_write_${t.name}`);
             ctx.append(`var b' = begin_cell();`)
             ctx.append(`b' = b'.store_ref(sys');`)
-            ctx.append(`b' = __gen_write_${t.name}(${[`b'`, resolveFuncTypeUnpack(t, id('self'), ctx)].join(', ')});`);
+            ctx.append(`b' = ${ops.writer(t.name, ctx)}(${[`b'`, resolveFuncTypeUnpack(t, id('self'), ctx)].join(', ')});`);
             ctx.append(`return b'.end_cell();`);
         });
         ctx.append(`}`);
@@ -451,19 +451,19 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
         ctx.append(`(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
         ctx.inIndent(() => {
-            ctx.used(`__tact_dict_get_code`);
-
-            // Parsing sys
-            ctx.append(`slice sc' = sys'.begin_parse();`);
-            ctx.append(`cell source = sc'~load_dict();`);
-            ctx.append(`cell mine = __tact_dict_get_code(source, ${t.uid});`);
+            ctx.write(`
+                slice sc' = sys'.begin_parse();
+                cell source = sc'~load_dict();
+                cell mine = ${ctx.used(`__tact_dict_get_code`)}(source, ${t.uid});
+                cell contracts = new_dict();
+            `);
 
             // Copy contracts code
-            ctx.append(`cell contracts = new_dict();`);
             for (let c of t.dependsOn) {
-                ctx.used(`__tact_dict_set_code`);
-                ctx.append(`cell code_${t.uid} = __tact_dict_get_code(source, ${t.uid});`);
-                ctx.append(`contracts = __tact_dict_set_code(contracts, ${t.uid}, code_${t.uid});`);
+                ctx.write(`
+                    cell code_${t.uid} = __tact_dict_get_code(source, ${t.uid});
+                    contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${t.uid}, code_${t.uid});
+                `);
             }
 
             // Build cell
