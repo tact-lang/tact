@@ -36,7 +36,7 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_re
 }
 
 (slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_Update(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1689508489);
+    throw_unless(129, sc_0~load_uint(32) == 2732768933);
     var v'a = sc_0~__gen_read_Vars();
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'b = sc_1~__gen_read_Vars();
@@ -281,7 +281,7 @@ _ $__gen_get_process(tuple $$src, tuple $$both, tuple $$both2) method_id(104435)
     }
     
     ;; Receive Update message
-    if (op == 1689508489) {
+    if (op == 2732768933) {
         var self = __gen_load_SerializationTester2();
         var msg = in_msg~__gen_read_Update();
         self~$__gen_SerializationTester2_receive_Update(msg);
@@ -300,5 +300,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmeNJwrYJcf9qb2XevA5E35xTeDmA84qRugKB5xb9AQ7Jc";
+    return "ipfs://QmZ4gvDo8AMpyyuVfpFpSGW3WUpAcjrg9YNPkfpYzMUQHi";
 }

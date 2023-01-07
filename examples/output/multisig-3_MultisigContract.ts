@@ -228,7 +228,7 @@ export type Execute = {
 export function storeExecute(src: Execute) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1722786278, 32);
+        b_0.storeUint(520967536, 32);
         b_0.store(storeOperation(src.operation));
         b_0.storeRef(src.signature1);
         b_0.storeRef(src.signature2);
@@ -238,7 +238,7 @@ export function storeExecute(src: Execute) {
 
 export function loadExecute(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1722786278) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 520967536) { throw Error('Invalid prefix'); }
     let _operation = loadOperation(sc_0);
     let _signature1 = sc_0.loadRef();
     let _signature2 = sc_0.loadRef();
@@ -281,14 +281,14 @@ export type Executed = {
 export function storeExecuted(src: Executed) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3360665911, 32);
+        b_0.storeUint(2652032952, 32);
         b_0.storeUint(src.seqno, 32);
     };
 }
 
 export function loadExecuted(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3360665911) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2652032952) { throw Error('Invalid prefix'); }
     let _seqno = sc_0.loadUintBig(32);
     return { $$type: 'Executed' as const, seqno: _seqno };
 }
@@ -316,7 +316,7 @@ function dictValueParserExecuted(): DictionaryValue<Executed> {
 }
 async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
     const __init = 'te6ccgEBBwEAOgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBE0cATIzFUw2zzJgGABRQNMsfy//L/8v/';
-    const __code = 'te6ccgECKgEAApoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAgIQIBIAYHAgFIFBUCAdQICQIBWA8QBJc7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEGavoea6j5Mw2zwE2zw2EIkQeBBnVQTwFds84MAAgKAoNCwALCBu8tCAgATzTHwGCEGavoea68uCB2zwD1AHQAdQB0AHUAdAWQzAMAnCPMPkBgvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqPCNs88BTbPNsx4JEw4vLAgigNABLTH/oA+kABQzABGMj4QgHMVTDbPMntVA4AFFA0yx/L/8v/y/8AFVlH8BygDgcAHKAIAgEgERIB9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGATABMfzMBcG1tbfAOgAAT7AAIBIBYXAgFIHB0CASAYGQIBIBobAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAASABVxUdUPbPPkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAPgHgEMyFUg2zzJHwAUUCPLHwH6AgHPFgENvmS+2eeAnCgCAUgiIwIBICQlAgEgJicBDbDp9s88BKAoAQ2w4bbPPARgKAENsPl2zzwEICgATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYAEW7UTQ1AH4Yts8bBQpABTTH9P/0//T/1Uw';
+    const __code = 'te6ccgECKgEAApoAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAgIQIBIAYHAgFIFBUCAdQICQIBWA8QBJc7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEB8NVXC6j5Mw2zwE2zw2EIkQeBBnVQTwFds84MAAgKAoNCwALCBu8tCAgATzTHwGCEB8NVXC68uCB2zwD1AHQAdQB0AHUAdAWQzAMAnCPMPkBgvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqPCNs88BTbPNsx4JEw4vLAgigNABLTH/oA+kABQzABGMj4QgHMVTDbPMntVA4AFFA0yx/L/8v/y/8AFVlH8BygDgcAHKAIAgEgERIB9zIcQHKAVAH8A1wAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ANyHDwDXDwDSRus5l/8A0E8AFQBMyVNANw8A3iJG6zmX/wDQTwAVAEzJU0A3DwDeJw8A0Cf/ANAslYzJYzMwFw8A3iIW6zmH/wDQHwAQHMlDFw8A3iyQGATABMfzMBcG1tbfAOgAAT7AAIBIBYXAgFIHB0CASAYGQIBIBobAAkECNfA4AAHBNfA4AAFGwxgAAUXwOAAASABVxUdUPbPPkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9PAPgHgEMyFUg2zzJHwAUUCPLHwH6AgHPFgENvmS+2eeAnCgCAUgiIwIBICQlAgEgJicBDbDp9s88BKAoAQ2w4bbPPARgKAENsPl2zzwEICgATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYAEW7UTQ1AH4Yts8bBQpABTTH9P/0//T/1Uw';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

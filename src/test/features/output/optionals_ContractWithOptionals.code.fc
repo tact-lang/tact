@@ -97,7 +97,7 @@ tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) 
 }
 
 (slice, ((int, int, cell, slice, tuple, tuple))) __gen_read_Update(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1709941748);
+    throw_unless(129, sc_0~load_uint(32) == 357891325);
     var v'a = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     var v'b = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     var v'c = sc_0~load_int(1) ? sc_0~load_ref() : null();
@@ -458,7 +458,7 @@ _ $__gen_get_testVariables() method_id(87190) {
     }
     
     ;; Receive Update message
-    if (op == 1709941748) {
+    if (op == 357891325) {
         var self = __gen_load_ContractWithOptionals();
         var msg = in_msg~__gen_read_Update();
         self~$__gen_ContractWithOptionals_receive_Update(msg);
@@ -477,5 +477,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmVkDRCfbEyHazYHaQyzPGoFf6REVUXsR3SHUB2qvM78xY";
+    return "ipfs://QmUiTS9wb8fiVaoTAvJYGimb38yQQW3Xm8LyFpSqYbG9qr";
 }

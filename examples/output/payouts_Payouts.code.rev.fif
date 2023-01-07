@@ -38,7 +38,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    30754297 PUSHINT
+    4293607646 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -62,7 +62,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        30754297 PUSHINT
+        4293607646 PUSHINT
         EQUAL
         129 THROWIFNOT
         257 PUSHINT
@@ -95,7 +95,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    1551828285 PUSHINT
+    256331011 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -119,7 +119,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        1551828285 PUSHINT
+        256331011 PUSHINT
         EQUAL
         129 THROWIFNOT
         LDMSGADDR
@@ -660,7 +660,7 @@ SETCP0
       NEWC
       s0 s1 XCHG
       <{
-        1723744808 PUSHINT
+        3289991647 PUSHINT
         ROT
         32 STU
         257 PUSHINT

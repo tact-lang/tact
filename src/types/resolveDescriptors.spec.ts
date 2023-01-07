@@ -1,5 +1,6 @@
 import { CompilerContext } from "../context";
 import { getAllStaticFunctions, getAllTypes, resolveDescriptors } from "./resolveDescriptors";
+import { resolveSignatures } from './resolveSignatures';
 import { ASTRef, __DANGER_resetNodeId } from "../grammar/ast";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
@@ -17,6 +18,7 @@ describe('resolveDescriptors', () => {
         it('should resolve descriptors for ' + r.name, () => {
             let ctx = openContext(new CompilerContext(), [r.code]);
             ctx = resolveDescriptors(ctx);
+            ctx = resolveSignatures(ctx);
             expect(getAllTypes(ctx)).toMatchSnapshot();
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });

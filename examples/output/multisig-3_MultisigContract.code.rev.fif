@@ -38,7 +38,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    1722786278 PUSHINT
+    520967536 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -61,7 +61,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        1722786278 PUSHINT
+        520967536 PUSHINT
         EQUAL
         129 THROWIFNOT
         <{

@@ -109,13 +109,13 @@ cell __gen_writecell_TokenExcesses((int) v) inline_ref {
 }
 
 (slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2639643761);
+    throw_unless(129, sc_0~load_uint(32) == 201882270);
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'content));
 }
 
 (slice, ((int))) __gen_read_Mint(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2512576642);
+    throw_unless(129, sc_0~load_uint(32) == 33240155);
     var v'amount = sc_0~load_int(257);
     return (sc_0, (v'amount));
 }
@@ -381,7 +381,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive Mint message
-    if (op == 2512576642) {
+    if (op == 33240155) {
         var self = __gen_load_SampleJetton();
         var msg = in_msg~__gen_read_Mint();
         self~$__gen_SampleJetton_receive_Mint(msg);
@@ -390,7 +390,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive TokenUpdateContent message
-    if (op == 2639643761) {
+    if (op == 201882270) {
         var self = __gen_load_SampleJetton();
         var msg = in_msg~__gen_read_TokenUpdateContent();
         self~$__gen_SampleJetton_receive_TokenUpdateContent(msg);
@@ -433,5 +433,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmXihSur6jGUsbC48qAXe2p8DjfrQUC3eKM5vDwJd6H8VH";
+    return "ipfs://QmdXS3ZbGPcmBBZ2mmX2MnwKN4W1DKG3PPePCYDCJeXpbp";
 }

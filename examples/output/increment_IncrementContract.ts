@@ -176,14 +176,14 @@ export type Deploy = {
 export function storeDeploy(src: Deploy) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2664267391, 32);
+        b_0.storeUint(2490013878, 32);
         b_0.storeUint(src.queryId, 64);
     };
 }
 
 export function loadDeploy(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2664267391) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2490013878) { throw Error('Invalid prefix'); }
     let _queryId = sc_0.loadUintBig(64);
     return { $$type: 'Deploy' as const, queryId: _queryId };
 }
@@ -217,14 +217,14 @@ export type DeployOk = {
 export function storeDeployOk(src: DeployOk) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3807866247, 32);
+        b_0.storeUint(2952335191, 32);
         b_0.storeUint(src.queryId, 64);
     };
 }
 
 export function loadDeployOk(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3807866247) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2952335191) { throw Error('Invalid prefix'); }
     let _queryId = sc_0.loadUintBig(64);
     return { $$type: 'DeployOk' as const, queryId: _queryId };
 }
@@ -259,7 +259,7 @@ export type Increment = {
 export function storeIncrement(src: Increment) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2222676481, 32);
+        b_0.storeUint(537284411, 32);
         b_0.storeInt(src.key, 257);
         b_0.storeInt(src.value, 257);
     };
@@ -267,7 +267,7 @@ export function storeIncrement(src: Increment) {
 
 export function loadIncrement(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2222676481) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 537284411) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _value = sc_0.loadIntBig(257);
     return { $$type: 'Increment' as const, key: _key, value: _value };
@@ -304,14 +304,14 @@ export type Toggle = {
 export function storeToggle(src: Toggle) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2327774463, 32);
+        b_0.storeUint(1081595080, 32);
         b_0.storeInt(src.key, 257);
     };
 }
 
 export function loadToggle(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2327774463) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1081595080) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     return { $$type: 'Toggle' as const, key: _key };
 }
@@ -346,7 +346,7 @@ export type Persist = {
 export function storePersist(src: Persist) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3075352047, 32);
+        b_0.storeUint(3801943978, 32);
         b_0.storeInt(src.key, 257);
         if (src.content !== null && src.content !== undefined) { b_0.storeBit(true).storeRef(src.content); } else { b_0.storeBit(false); }
     };
@@ -354,7 +354,7 @@ export function storePersist(src: Persist) {
 
 export function loadPersist(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3075352047) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3801943978) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _content = sc_0.loadBit() ? sc_0.loadRef() : null;
     return { $$type: 'Persist' as const, key: _key, content: _content };
@@ -391,14 +391,14 @@ export type Reset = {
 export function storeReset(src: Reset) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(116981676, 32);
+        b_0.storeUint(1718153138, 32);
         b_0.storeInt(src.key, 257);
     };
 }
 
 export function loadReset(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 116981676) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1718153138) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     return { $$type: 'Reset' as const, key: _key };
 }
@@ -465,7 +465,7 @@ function dictValueParserSomething(): DictionaryValue<Something> {
 }
 async function IncrementContract_init() {
     const __init = 'te6ccgEBBwEARwABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBGUbW1tbW0FyMwF2zzJgGAChQRfQAEvQAAcj0ABL0ABL0AMkBzA==';
-    const __code = 'te6ccgECNQEABG4AART/APSkE/S88sgLAQIBYgIDAgLKCAkCASAEBQIBIAYHAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwBDbrwLbPPAegYAQ27QH2zzwHYGAIBIAoLAgHOKisCASAMDQIBWB8gAgHUDg8CAdQdHgSfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQhHtaAbqPkzDbPAXbPDIQVhBFEDRDAPAf2zzgIIIQir8E/7qAYEBoRAAsIG7y0ICAAMNMfAYIQhHtaAbry4IGBAQHXAIEBAdcAWQQ4j5Ew2zwF2zwxEEUQNEEw8CDbPOAgghC3TiXvuhgSGhMAJtMfAYIQir8E/7ry4IGBAQHXAAEEPI+TMNs8Bds8MhBWEEUQNEMA8CHbPOAgghAG+P+suhgUGhUAONMfAYIQt04l77ry4IGBAQHXANIAAZHUkm0B4lkENo+RMNs8Bds8MRBFEDRBMPAi2zzgghCezX5/uhgWGhcAJtMfAYIQBvj/rLry4IGBAQHXAAEDLo+Q2zwF2zwxEEUQNEEw8CPbPOAw8sCCGBkaARbtRNDUAfhi2zxsFRsAINMfAYIQns1+f7ry4IHTPwEBGMj4QgHMVUDbPMntVBwAJPQE9ATUAdD0BPQE9AQwEDUQNAAoUEX0ABL0AAHI9AAS9AAS9ADJAcwAERZ9A1vodwwbYAAjCFulVtZ9Fkw4MgBzwBBM/RBgAgFYISICASAkJQAVJR/AcoA4HABygCAB9zIcQHKAVAH8BpwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AayHDwGnDwGiRus5l/8BoE8AFQBMyVNANw8BriJG6zmX/wGgTwAVAEzJU0A3DwGuJw8BoCf/AaAslYzJYzMwFw8BriIW6zmH/wGgHwAQHMlDFw8BriyQGAjAAT7AAIBICYnAgEgKCkAJT4QW8kECNfA38CcIBCWG1t8BuAABRfBIAAHBRfBIABjPhBbyQQI18DgQEBIBA5QUBSkCFulVtZ9FowmMgBzwBBM/RC4hAjgQELQAeBAQHwCQGACASAsLQIBIC4vAKkJIEBASJxQTP0DG+hlAHXADCSW23iIG6OGjAUgQEBAX9xIW6VW1n0WjCYyAHPAEEz9ELijh2BAQEB8AGzEDYScSFulVtZ9FowmMgBzwBBM/RC4uIDgAEcggDOKSWBAQEk8Ahu8vQQJIEBAVkgbpUwWfRaMJRBM/QV4gKAB6yBAQFtUxIQSVkhbpVbWfRaMJjIAc8AQTP0QuIEgQEBJm1xIW6VW1n0WjCYyAHPAEEz9ELiA4EBASZtIG6VMFn0WjCUQTP0FeKBAQv4QW8kECNfAxAkbYEBAfAJgQEBbds8QXAgbpUwWfRaMJRBM/QV4hA0QTCAwAQk2zzwHIDMBHiBukjBt4CBu8tCAbyHbPDEBCsgB2zzJMgAMAYEBAc8AAQrIAds8yTQAFoIQ4vdth1jLH8s/';
+    const __code = 'te6ccgECNQEABG4AART/APSkE/S88sgLAQIBYgIDAgLKCAkCASAEBQIBIAYHAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwBDbrwLbPPAegYAQ27QH2zzwHYGAIBIAoLAgHOKisCASAMDQIBWB8gAgHUDg8CAdQdHgSfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQIAZPO7qPkzDbPAXbPDIQVhBFEDRDAPAf2zzgIIIQQHfUyLqAYEBoRAAsIG7y0ICAAMNMfAYIQIAZPO7ry4IGBAQHXAIEBAdcAWQQ4j5Ew2zwF2zwxEEUQNEEw8CDbPOAgghDinQ+quhgSGhMAJtMfAYIQQHfUyLry4IGBAQHXAAEEPI+TMNs8Bds8MhBWEEUQNEMA8CHbPOAgghBmaO+yuhgUGhUAONMfAYIQ4p0Pqrry4IGBAQHXANIAAZHUkm0B4lkENo+RMNs8Bds8MRBFEDRBMPAi2zzgghCUapi2uhgWGhcAJtMfAYIQZmjvsrry4IGBAQHXAAEDLo+Q2zwF2zwxEEUQNEEw8CPbPOAw8sCCGBkaARbtRNDUAfhi2zxsFRsAINMfAYIQlGqYtrry4IHTPwEBGMj4QgHMVUDbPMntVBwAJPQE9ATUAdD0BPQE9AQwEDUQNAAoUEX0ABL0AAHI9AAS9AAS9ADJAcwAERZ9A1vodwwbYAAjCFulVtZ9Fkw4MgBzwBBM/RBgAgFYISICASAkJQAVJR/AcoA4HABygCAB9zIcQHKAVAH8BpwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AayHDwGnDwGiRus5l/8BoE8AFQBMyVNANw8BriJG6zmX/wGgTwAVAEzJU0A3DwGuJw8BoCf/AaAslYzJYzMwFw8BriIW6zmH/wGgHwAQHMlDFw8BriyQGAjAAT7AAIBICYnAgEgKCkAJT4QW8kECNfA38CcIBCWG1t8BuAABRfBIAAHBRfBIABjPhBbyQQI18DgQEBIBA5QUBSkCFulVtZ9FowmMgBzwBBM/RC4hAjgQELQAeBAQHwCQGACASAsLQIBIC4vAKkJIEBASJxQTP0DG+hlAHXADCSW23iIG6OGjAUgQEBAX9xIW6VW1n0WjCYyAHPAEEz9ELijh2BAQEB8AGzEDYScSFulVtZ9FowmMgBzwBBM/RC4uIDgAEcggDOKSWBAQEk8Ahu8vQQJIEBAVkgbpUwWfRaMJRBM/QV4gKAB6yBAQFtUxIQSVkhbpVbWfRaMJjIAc8AQTP0QuIEgQEBJm1xIW6VW1n0WjCYyAHPAEEz9ELiA4EBASZtIG6VMFn0WjCUQTP0FeKBAQv4QW8kECNfAxAkbYEBAfAJgQEBbds8QXAgbpUwWfRaMJRBM/QV4hA0QTCAwAQk2zzwHIDMBHiBukjBt4CBu8tCAbyHbPDEBCsgB2zzJMgAMAYEBAc8AAQrIAds8yTQAFoIQr/kPV1jLH8s/';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

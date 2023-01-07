@@ -5,6 +5,7 @@ import { getAllocations, resolveAllocations } from './resolveAllocation';
 import { openContext } from '../grammar/store';
 import { resolveStatements } from '../types/resolveStatements';
 import { CompilerContext } from '../context';
+import { resolveSignatures } from '../types/resolveSignatures';
 
 const stdlib = fs.readFileSync(__dirname + '/../../stdlib/std/primitives.tact', 'utf-8');
 const src = `
@@ -60,6 +61,7 @@ describe('resolveAllocation', () => {
     it('should write program', () => {
         let ctx = openContext(new CompilerContext(), [stdlib, src]);
         ctx = resolveDescriptors(ctx);
+        ctx = resolveSignatures(ctx);
         ctx = resolveStatements(ctx);
         ctx = resolveAllocations(ctx);
         expect(getAllocations(ctx)).toMatchSnapshot();

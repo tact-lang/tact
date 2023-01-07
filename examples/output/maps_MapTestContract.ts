@@ -177,7 +177,7 @@ export type SetIntMap1 = {
 export function storeSetIntMap1(src: SetIntMap1) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1447311020, 32);
+        b_0.storeUint(1510253336, 32);
         b_0.storeInt(src.key, 257);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeInt(src.value, 257); } else { b_0.storeBit(false); }
     };
@@ -185,7 +185,7 @@ export function storeSetIntMap1(src: SetIntMap1) {
 
 export function loadSetIntMap1(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1447311020) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1510253336) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _value = sc_0.loadBit() ? sc_0.loadIntBig(257) : null;
     return { $$type: 'SetIntMap1' as const, key: _key, value: _value };
@@ -223,7 +223,7 @@ export type SetIntMap2 = {
 export function storeSetIntMap2(src: SetIntMap2) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3876274154, 32);
+        b_0.storeUint(1629867766, 32);
         b_0.storeInt(src.key, 257);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeBit(src.value); } else { b_0.storeBit(false); }
     };
@@ -231,7 +231,7 @@ export function storeSetIntMap2(src: SetIntMap2) {
 
 export function loadSetIntMap2(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3876274154) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1629867766) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _value = sc_0.loadBit() ? sc_0.loadBit() : null;
     return { $$type: 'SetIntMap2' as const, key: _key, value: _value };
@@ -269,7 +269,7 @@ export type SetIntMap3 = {
 export function storeSetIntMap3(src: SetIntMap3) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(281598159, 32);
+        b_0.storeUint(3613954633, 32);
         b_0.storeInt(src.key, 257);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeRef(src.value); } else { b_0.storeBit(false); }
     };
@@ -277,7 +277,7 @@ export function storeSetIntMap3(src: SetIntMap3) {
 
 export function loadSetIntMap3(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 281598159) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3613954633) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _value = sc_0.loadBit() ? sc_0.loadRef() : null;
     return { $$type: 'SetIntMap3' as const, key: _key, value: _value };
@@ -315,7 +315,7 @@ export type SetIntMap4 = {
 export function storeSetIntMap4(src: SetIntMap4) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1833424137, 32);
+        b_0.storeUint(383013829, 32);
         b_0.storeInt(src.key, 257);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true); b_0.store(storeSomeStruct(src.value)); } else { b_0.storeBit(false); }
     };
@@ -323,7 +323,7 @@ export function storeSetIntMap4(src: SetIntMap4) {
 
 export function loadSetIntMap4(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1833424137) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 383013829) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadIntBig(257);
     let _value = sc_0.loadBit() ? loadSomeStruct(sc_0) : null;
     return { $$type: 'SetIntMap4' as const, key: _key, value: _value };
@@ -366,7 +366,7 @@ export type SetAddrMap1 = {
 export function storeSetAddrMap1(src: SetAddrMap1) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2269322868, 32);
+        b_0.storeUint(1749966413, 32);
         b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeInt(src.value, 257); } else { b_0.storeBit(false); }
     };
@@ -374,7 +374,7 @@ export function storeSetAddrMap1(src: SetAddrMap1) {
 
 export function loadSetAddrMap1(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2269322868) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1749966413) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? sc_0.loadIntBig(257) : null;
     return { $$type: 'SetAddrMap1' as const, key: _key, value: _value };
@@ -412,7 +412,7 @@ export type SetAddrMap2 = {
 export function storeSetAddrMap2(src: SetAddrMap2) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1111690779, 32);
+        b_0.storeUint(624157584, 32);
         b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeBit(src.value); } else { b_0.storeBit(false); }
     };
@@ -420,7 +420,7 @@ export function storeSetAddrMap2(src: SetAddrMap2) {
 
 export function loadSetAddrMap2(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1111690779) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 624157584) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? sc_0.loadBit() : null;
     return { $$type: 'SetAddrMap2' as const, key: _key, value: _value };
@@ -458,7 +458,7 @@ export type SetAddrMap3 = {
 export function storeSetAddrMap3(src: SetAddrMap3) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1999668272, 32);
+        b_0.storeUint(4276365062, 32);
         b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeRef(src.value); } else { b_0.storeBit(false); }
     };
@@ -466,7 +466,7 @@ export function storeSetAddrMap3(src: SetAddrMap3) {
 
 export function loadSetAddrMap3(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1999668272) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 4276365062) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? sc_0.loadRef() : null;
     return { $$type: 'SetAddrMap3' as const, key: _key, value: _value };
@@ -504,7 +504,7 @@ export type SetAddrMap4 = {
 export function storeSetAddrMap4(src: SetAddrMap4) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2141561569, 32);
+        b_0.storeUint(1683777913, 32);
         b_0.storeAddress(src.key);
         if (src.value !== null && src.value !== undefined) { b_0.storeBit(true); b_0.store(storeSomeStruct(src.value)); } else { b_0.storeBit(false); }
     };
@@ -512,7 +512,7 @@ export function storeSetAddrMap4(src: SetAddrMap4) {
 
 export function loadSetAddrMap4(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2141561569) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1683777913) { throw Error('Invalid prefix'); }
     let _key = sc_0.loadAddress();
     let _value = sc_0.loadBit() ? loadSomeStruct(sc_0) : null;
     return { $$type: 'SetAddrMap4' as const, key: _key, value: _value };
@@ -587,7 +587,7 @@ function dictValueParserSomeStruct(): DictionaryValue<SomeStruct> {
 }
 async function MapTestContract_init() {
     const __init = 'te6ccgEBBwEAVgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBH0bW1tbW1tbW0IyMwI2zzJgGAEBQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzA==';
-    const __code = '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';
+    const __code = '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';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

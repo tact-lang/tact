@@ -177,7 +177,7 @@ export type TransferMessage = {
 export function storeTransferMessage(src: TransferMessage) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2276255904, 32);
+        b_0.storeUint(3548477446, 32);
         b_0.storeBuffer(src.signature);
         b_0.storeBuilder(src.transfer.asBuilder());
     };
@@ -185,7 +185,7 @@ export function storeTransferMessage(src: TransferMessage) {
 
 export function loadTransferMessage(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2276255904) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3548477446) { throw Error('Invalid prefix'); }
     let _signature = sc_0.loadBuffer(64);
     let _transfer = sc_0.asCell();
     return { $$type: 'TransferMessage' as const, signature: _signature, transfer: _transfer };
@@ -216,7 +216,7 @@ function dictValueParserTransferMessage(): DictionaryValue<TransferMessage> {
 }
 async function Wallet_init(key: bigint, walletId: bigint) {
     const __init = 'te6ccgEBBQEALgABFP8A9KQT9LzyyAsBAgFiAgMAAtABF6FK3OAHkZiqQbZ5kwQAEFAjyx/L/8s/';
-    const __code = 'te6ccgECDwEAARoAART/APSkE/S88sgLAQIBYgIDA9LQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCEIes6KC6j7HbPAPbPDIQNEMAIPkBggC9EVE1+RAS8vTSH9IH1DCBRPZRNroT8vQEpKk4DwT7ANs84DDywIINBAUCASAHCAAk0x8BghCHrOiguvLggYMI1xhmARjI+EIBzFUg2zzJ7VQGABBQI8sfy//LPwIBagkKAgEgCwwBC7Ml9s8W4A0BDbB+Ns8MDGANAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gBDbgErbPGwhgNARbtRNDUAfhi2zxsEw4AENMf0//TP1Ug';
+    const __code = 'te6ccgECDwEAARoAART/APSkE/S88sgLAQIBYgIDA9LQcCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+CCENOBeAa6j7HbPAPbPDIQNEMAIPkBggC9EVE1+RAS8vTSH9IH1DCBRPZRNroT8vQEpKk4DwT7ANs84DDywIINBAUCASAHCAAk0x8BghDTgXgGuvLggYMI1xhmARjI+EIBzFUg2zzJ7VQGABBQI8sfy//LPwIBagkKAgEgCwwBC7Ml9s8W4A0BDbB+Ns8MDGANAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gBDbgErbPGwhgNARbtRNDUAfhi2zxsEw4AENMf0//TP1Ug';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

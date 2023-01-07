@@ -62,7 +62,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
 
 builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline_ref {
     var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
-    build_0 = store_uint(build_0, 3091609041, 32);
+    build_0 = store_uint(build_0, 4266760323, 32);
     build_0 = __tact_store_address(build_0, v'requested);
     build_0 = __tact_store_address(build_0, v'to);
     build_0 = build_0.store_coins(v'value);
@@ -74,7 +74,7 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
 }
 
 (slice, ((slice, slice, int, int, int, int, cell))) __gen_read_Request(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3091609041);
+    throw_unless(129, sc_0~load_uint(32) == 4266760323);
     var v'requested = sc_0~__tact_load_address();
     var v'to = sc_0~__tact_load_address();
     var v'value = sc_0~load_coins();
@@ -86,7 +86,7 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
 }
 
 (slice, (((slice, slice, int, int, int, int, cell)))) __gen_read_Signed(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3649905398);
+    throw_unless(129, sc_0~load_uint(32) == 2213172633);
     var v'request = sc_0~__gen_read_Request();
     return (sc_0, (v'request));
 }
@@ -280,7 +280,7 @@ _ $__gen_get_members() method_id(104769) {
     }
     
     ;; Receive Request message
-    if (op == 3091609041) {
+    if (op == 4266760323) {
         var self = __gen_load_Multisig();
         var msg = in_msg~__gen_read_Request();
         self~$__gen_Multisig_receive_Request(msg);
@@ -289,7 +289,7 @@ _ $__gen_get_members() method_id(104769) {
     }
     
     ;; Receive Signed message
-    if (op == 3649905398) {
+    if (op == 2213172633) {
         var self = __gen_load_Multisig();
         var msg = in_msg~__gen_read_Signed();
         self~$__gen_Multisig_receive_Signed(msg);
@@ -308,5 +308,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmXsz2ySJ5VSNZaAh7kGtHNUv7tHQFZncMJMcsWPQzu9er";
+    return "ipfs://QmWCPHBD9Bbino2FPazMBPXCqoF1LD7UCARuVFgADasoEk";
 }

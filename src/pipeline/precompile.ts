@@ -7,6 +7,7 @@ import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
 import { parseImports } from "../grammar/grammar";
 import { resolveStrings } from "../types/resolveStrings";
+import { resolveSignatures } from '../types/resolveSignatures';
 
 function resolveLibraryPath(filePath: string, name: string): string {
 
@@ -73,6 +74,7 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
     // Perform initial compiler steps
     ctx = openContext(ctx, [stdlib, ...imported, code]);
     ctx = resolveDescriptors(ctx);
+    ctx = resolveSignatures(ctx);
     ctx = resolveAllocations(ctx);
     ctx = resolveStrings(ctx);
     ctx = resolveStatements(ctx);

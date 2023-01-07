@@ -8,12 +8,12 @@ exports[`increment should deploy 1`] = `
   {
     "message": {
       "body": {
-        "cell": "x{9ECD7E7F0000000000000000}",
+        "cell": "x{946A98B60000000000000000}",
         "type": "cell",
       },
       "bounce": true,
       "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQDO9fIFoB0JNXGdpuOCTmefSIN0A3FSW7th7Sl8hvJGLpXT",
+      "to": "kQB1gLQfhKss06dSwdfc-DepOSBn3DU0kQy_lA5Z4XtVMhEi",
       "type": "internal",
       "value": 10000000000n,
     },
@@ -27,11 +27,11 @@ exports[`increment should deploy 1`] = `
     "messages": [
       {
         "body": {
-          "cell": "x{E2F76D870000000000000000}",
+          "cell": "x{AFF90F570000000000000000}",
           "type": "cell",
         },
         "bounce": true,
-        "from": "kQDO9fIFoB0JNXGdpuOCTmefSIN0A3FSW7th7Sl8hvJGLpXT",
+        "from": "kQB1gLQfhKss06dSwdfc-DepOSBn3DU0kQy_lA5Z4XtVMhEi",
         "to": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
         "type": "internal",
         "value": 9987322000n,
@@ -47,12 +47,12 @@ exports[`increment should deploy 2`] = `
   {
     "message": {
       "body": {
-        "cell": "x{847B5A0100000000000000000000000000000000000000000000000000000000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECC2_}",
+        "cell": "x{20064F3B00000000000000000000000000000000000000000000000000000000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECC2_}",
         "type": "cell",
       },
       "bounce": true,
       "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQDO9fIFoB0JNXGdpuOCTmefSIN0A3FSW7th7Sl8hvJGLpXT",
+      "to": "kQB1gLQfhKss06dSwdfc-DepOSBn3DU0kQy_lA5Z4XtVMhEi",
       "type": "internal",
       "value": 10000000000n,
     },

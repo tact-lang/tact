@@ -72,7 +72,7 @@ SETCP0
       }> CALLREF
     }> PUSHCONT
     IFJMP
-    1723744808 PUSHINT
+    3289991647 PUSHINT
     EQUAL
     <{
       <{
@@ -97,7 +97,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        1723744808 PUSHINT
+        3289991647 PUSHINT
         EQUAL
         129 THROWIFNOT
         257 PUSHINT
@@ -290,7 +290,7 @@ SETCP0
         NEWC
         3 1 BLKSWAP
         <{
-          30754297 PUSHINT
+          4293607646 PUSHINT
           s0 s4 XCHG2
           32 STU
           s1 s2 XCHG
@@ -311,7 +311,7 @@ SETCP0
         NEWC
         3 1 BLKSWAP
         <{
-          30754297 PUSHINT
+          4293607646 PUSHINT
           s0 s4 XCHG2
           32 STU
           s1 s2 XCHG

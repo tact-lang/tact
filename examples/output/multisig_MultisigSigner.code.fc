@@ -45,7 +45,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
 
 builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline_ref {
     var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
-    build_0 = store_uint(build_0, 3091609041, 32);
+    build_0 = store_uint(build_0, 4266760323, 32);
     build_0 = __tact_store_address(build_0, v'requested);
     build_0 = __tact_store_address(build_0, v'to);
     build_0 = build_0.store_coins(v'value);
@@ -57,7 +57,7 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
 }
 
 (slice, ((slice, slice, int, int, int, int, cell))) __gen_read_Request(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3091609041);
+    throw_unless(129, sc_0~load_uint(32) == 4266760323);
     var v'requested = sc_0~__tact_load_address();
     var v'to = sc_0~__tact_load_address();
     var v'value = sc_0~load_coins();
@@ -70,7 +70,7 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
 
 builder __gen_write_Signed(builder build_0, ((slice, slice, int, int, int, int, cell)) v) inline_ref {
     var ((v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
-    build_0 = store_uint(build_0, 3649905398, 32);
+    build_0 = store_uint(build_0, 2213172633, 32);
     build_0 = __gen_write_Request(build_0, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body));
     return build_0;
 }
@@ -254,5 +254,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmdX6PxHQ7z78EKZ3tddoxRznxsMF6nzgzXhCoVt65kb2P";
+    return "ipfs://QmXGw3kxqLwDpzSYCdyztqaem6MaQbAHWzEy87CqNnz9aZ";
 }

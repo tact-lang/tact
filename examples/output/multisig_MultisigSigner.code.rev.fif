@@ -67,7 +67,7 @@ SETCP0
           <{
             32 LDU
             s0 s1 XCHG
-            3091609041 PUSHINT
+            4266760323 PUSHINT
             EQUAL
             129 THROWIFNOT
             LDMSGADDR
@@ -127,7 +127,7 @@ SETCP0
           s3 s5 XCHG
           s1 s8 XCHG
           <{
-            3091609041 PUSHINT
+            4266760323 PUSHINT
             s0 s8 XCHG2
             32 STU
             s0 s6 XCHG2
@@ -195,7 +195,7 @@ SETCP0
             <{
               32 LDU
               s0 s1 XCHG
-              3091609041 PUSHINT
+              4266760323 PUSHINT
               EQUAL
               129 THROWIFNOT
               LDMSGADDR
@@ -255,7 +255,7 @@ SETCP0
             s3 s5 XCHG
             s1 s8 XCHG
             <{
-              3091609041 PUSHINT
+              4266760323 PUSHINT
               s0 s8 XCHG2
               32 STU
               s0 s6 XCHG2
@@ -497,12 +497,12 @@ SETCP0
         NEWC
         7 1 BLKSWAP
         <{
-          3649905398 PUSHINT
+          2213172633 PUSHINT
           s0 s8 XCHG2
           32 STU
           s0 s7 XCHG
           <{
-            3091609041 PUSHINT
+            4266760323 PUSHINT
             s0 s8 XCHG2
             32 STU
             s0 s6 XCHG2
@@ -566,7 +566,7 @@ SETCP0
         <{
           32 LDU
           s0 s1 XCHG
-          3091609041 PUSHINT
+          4266760323 PUSHINT
           EQUAL
           129 THROWIFNOT
           LDMSGADDR

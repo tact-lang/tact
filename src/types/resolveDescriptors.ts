@@ -6,7 +6,6 @@ import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
-import { createTLBType } from "./createTLBType";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -120,6 +119,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 traits: [],
                 header: null,
                 tlb: null,
+                signature: null,
                 functions: new Map(),
                 receivers: [],
                 dependsOn: [],
@@ -137,6 +137,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 tlb: null,
                 fields: [],
                 traits: [],
+                signature: null,
                 functions: new Map(),
                 receivers: [],
                 dependsOn: [],
@@ -152,6 +153,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 header: null,
                 tlb: null,
+                signature: null,
                 fields: [],
                 traits: [],
                 functions: new Map(),
@@ -169,6 +171,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 uid,
                 header: null,
                 tlb: null,
+                signature: null,
                 fields: [],
                 traits: [],
                 functions: new Map(),
@@ -848,23 +851,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Add dependencies
         for (let s of dependsOn) {
             t.dependsOn.push(types[s]!);
-        }
-    }
-
-    //
-    // Create TLB types
-    //
-
-    for (let k in types) {
-        let t = types[k];
-        if (t.kind === 'struct') {
-            let knownHeader: number | null = null;
-            if (t.ast.kind === 'def_struct' && t.ast.message && t.ast.prefix !== null) {
-                knownHeader = t.ast.prefix;
-            }
-            let tlb = createTLBType(t.name, t.fields.map((d) => d.abi), (t.ast.kind === 'def_struct' && t.ast.message) ? 'message' : 'struct', knownHeader);
-            t.header = tlb.header;
-            t.tlb = tlb.tlb;
         }
     }
 

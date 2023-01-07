@@ -22,7 +22,8 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     for (let t of abi.types!) {
         let tt = getType(ctx, t.name);
         w.write(`## ${t.name}`);
-        w.write(`TLB: ${tt.tlb!}`);
+        w.write(`TLB: \`${tt.tlb!}\``);
+        w.write(`Signature: \`${tt.signature!}\``);
         w.append();
     }
 

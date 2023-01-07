@@ -7,6 +7,7 @@ export type TypeDescription = {
     uid: number;
     header: number | null;
     tlb: string | null;
+    signature: string | null;
     fields: FieldDescription[];
     traits: TypeDescription[];
     functions: Map<string, FunctionDescription>;
