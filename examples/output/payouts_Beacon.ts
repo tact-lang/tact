@@ -176,14 +176,14 @@ export type ChangeOwner = {
 export function storeChangeOwner(src: ChangeOwner) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3067051791, 32);
+        b_0.storeUint(1551828285, 32);
         b_0.storeAddress(src.newOwner);
     };
 }
 
 export function loadChangeOwner(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3067051791) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1551828285) { throw Error('Invalid prefix'); }
     let _newOwner = sc_0.loadAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
@@ -217,14 +217,14 @@ export type CanPayout = {
 export function storeCanPayout(src: CanPayout) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1050587494, 32);
+        b_0.storeUint(1723744808, 32);
         b_0.storeInt(src.amount, 257);
     };
 }
 
 export function loadCanPayout(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1050587494) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1723744808) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadIntBig(257);
     return { $$type: 'CanPayout' as const, amount: _amount };
 }
@@ -260,7 +260,7 @@ export type CanPayoutResponse = {
 export function storeCanPayoutResponse(src: CanPayoutResponse) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1861678417, 32);
+        b_0.storeUint(30754297, 32);
         b_0.storeInt(src.amount, 257);
         b_0.storeAddress(src.address);
         b_0.storeBit(src.ok);
@@ -269,7 +269,7 @@ export function storeCanPayoutResponse(src: CanPayoutResponse) {
 
 export function loadCanPayoutResponse(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1861678417) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 30754297) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadIntBig(257);
     let _address = sc_0.loadAddress();
     let _ok = sc_0.loadBit();
@@ -303,7 +303,7 @@ function dictValueParserCanPayoutResponse(): DictionaryValue<CanPayoutResponse> 
 }
 async function Beacon_init(master: Address, owner: Address) {
     const __init = 'te6ccgEBBwEANwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQBEdOAHkZgHtnmTAYAEFrPFljPFsoA';
-    const __code = 'te6ccgECHQEAAiYAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFiERICAdQICQIB9A4PA38cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKPCTDbPFUC8BPbPOCCED6esWa64wIw8sCCgGwwKAAsIG7y0ICADGNs8A9s8MUEw8BLbPBsLDAAm0x8BghA+nrFmuvLggYEBAdcAAQEYyPhCAcxVINs8ye1UDQAQWs8WWM8WygAAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgEAAE+wACASATFAIBIBUWACU+EFvJBAjXwN/AnCAQlhtbfAPgAAUMDGACVz4QW8kW4ERTTIlxwXy9IIQBfXhAHD7AiGOiH8yIn/bPPAQjoYicNs88BDigFxcABRbcIAEMyFUg2zzJGAAqghBu9vVRUATLHxKBAQHPAAHPFsoAAQ2+KO7Z54CMGwBxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4IGc6tPOK/OkoWA6wtxMj2UARbtRNDUAfhi2zxsExwAGPpAAQH6QAEB0gBVIA==';
+    const __code = 'te6ccgECHQEAAiUAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAZGgIBIAYHAgFiERICAdQICQIB9A4PA38cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKPCTDbPFUC8BPbPOCCEGa+Qii64wIw8sCCgGwwKAAsIG7y0ICADGNs8A9s8MUEw8BLbPBsLDAAm0x8BghBmvkIouvLggYEBAdcAAQEYyPhCAcxVINs8ye1UDQAQWs8WWM8WygAAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgEAAE+wACASATFAIBIBUWACU+EFvJBAjXwN/AnCAQlhtbfAPgAAUMDGACVz4QW8kW4ERTTIlxwXy9IIQBfXhAHD7AiGOiH8yIn/bPPAQjoYicNs88BDigFxcABRbcIAEMyFUg2zzJGAAoggnVRflQBMsfEoEBAc8AAc8WygABDb4o7tnngIwbAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTggZzq084r86ShYDrC3EyPZQBFu1E0NQB+GLbPGwTHAAY+kABAfpAAQHSAFUg';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

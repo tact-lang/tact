@@ -65,14 +65,14 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
 forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
 
 (slice, ((int))) __gen_read_Deploy(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2509716940);
+    throw_unless(129, sc_0~load_uint(32) == 2664267391);
     var v'queryId = sc_0~load_uint(64);
     return (sc_0, (v'queryId));
 }
 
 builder __gen_write_DeployOk(builder build_0, (int) v) inline_ref {
     var (v'queryId) = v;
-    build_0 = store_uint(build_0, 3548362785, 32);
+    build_0 = store_uint(build_0, 3807866247, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
@@ -82,27 +82,27 @@ cell __gen_writecell_DeployOk((int) v) inline_ref {
 }
 
 (slice, ((int, int))) __gen_read_Increment(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3615081709);
+    throw_unless(129, sc_0~load_uint(32) == 2222676481);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(257);
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((int))) __gen_read_Toggle(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 575056061);
+    throw_unless(129, sc_0~load_uint(32) == 2327774463);
     var v'key = sc_0~load_int(257);
     return (sc_0, (v'key));
 }
 
 (slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 140802882);
+    throw_unless(129, sc_0~load_uint(32) == 3075352047);
     var v'key = sc_0~load_int(257);
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'content));
 }
 
 (slice, ((int))) __gen_read_Reset(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2438762569);
+    throw_unless(129, sc_0~load_uint(32) == 116981676);
     var v'key = sc_0~load_int(257);
     return (sc_0, (v'key));
 }
@@ -315,7 +315,7 @@ _ $__gen_get_counters2() method_id(77570) {
     }
     
     ;; Receive Increment message
-    if (op == 3615081709) {
+    if (op == 2222676481) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Increment();
         self~$__gen_IncrementContract_receive_Increment(msg);
@@ -324,7 +324,7 @@ _ $__gen_get_counters2() method_id(77570) {
     }
     
     ;; Receive Toggle message
-    if (op == 575056061) {
+    if (op == 2327774463) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Toggle();
         self~$__gen_IncrementContract_receive_Toggle(msg);
@@ -333,7 +333,7 @@ _ $__gen_get_counters2() method_id(77570) {
     }
     
     ;; Receive Persist message
-    if (op == 140802882) {
+    if (op == 3075352047) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Persist();
         self~$__gen_IncrementContract_receive_Persist(msg);
@@ -342,7 +342,7 @@ _ $__gen_get_counters2() method_id(77570) {
     }
     
     ;; Receive Reset message
-    if (op == 2438762569) {
+    if (op == 116981676) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Reset();
         self~$__gen_IncrementContract_receive_Reset(msg);
@@ -351,7 +351,7 @@ _ $__gen_get_counters2() method_id(77570) {
     }
     
     ;; Receive Deploy message
-    if (op == 2509716940) {
+    if (op == 2664267391) {
         var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Deploy();
         self~$__gen_IncrementContract_receive_Deploy(msg);
@@ -370,5 +370,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmSkqrje5KuPdQKdSFMFC5Fq2xB9qFCNu62itVrVvHs96q";
+    return "ipfs://QmZGvuJC9A9pBD1PShCRkCcQrCLdxJppAj8tRexcYBNFzS";
 }

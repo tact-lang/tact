@@ -4,7 +4,6 @@ exports[`resolveAllocation should write program 1`] = `
 [
   {
     "allocation": {
-      "header": null,
       "root": {
         "next": null,
         "ops": [
@@ -28,7 +27,6 @@ exports[`resolveAllocation should write program 1`] = `
         "bits": 514,
         "refs": 0,
       },
-      "tlb": "_ x:int257 y:int257 = Point",
       "type": {
         "ast": {
           "fields": [
@@ -153,7 +151,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "struct",
         "name": "Point",
         "receivers": [],
-        "tlb": null,
+        "tlb": "_ x:int257 y:int257 = Point",
         "traits": [],
         "uid": 35778,
       },
@@ -282,14 +280,13 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Point",
       "receivers": [],
-      "tlb": null,
+      "tlb": "_ x:int257 y:int257 = Point",
       "traits": [],
       "uid": 35778,
     },
   },
   {
     "allocation": {
-      "header": null,
       "root": {
         "next": null,
         "ops": [
@@ -313,7 +310,6 @@ exports[`resolveAllocation should write program 1`] = `
         "bits": 514,
         "refs": 0,
       },
-      "tlb": "_ z:Point = Point2",
       "type": {
         "ast": {
           "fields": [
@@ -386,7 +382,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "struct",
         "name": "Point2",
         "receivers": [],
-        "tlb": null,
+        "tlb": "_ z:Point = Point2",
         "traits": [],
         "uid": 62706,
       },
@@ -463,14 +459,13 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Point2",
       "receivers": [],
-      "tlb": null,
+      "tlb": "_ z:Point = Point2",
       "traits": [],
       "uid": 62706,
     },
   },
   {
     "allocation": {
-      "header": null,
       "root": {
         "next": {
           "next": null,
@@ -512,7 +507,6 @@ exports[`resolveAllocation should write program 1`] = `
         "bits": 514,
         "refs": 0,
       },
-      "tlb": "_ a:Point b:Point2 = Point3",
       "type": {
         "ast": {
           "fields": [
@@ -635,7 +629,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "struct",
         "name": "Point3",
         "receivers": [],
-        "tlb": null,
+        "tlb": "_ a:Point b:Point2 = Point3",
         "traits": [],
         "uid": 58579,
       },
@@ -762,14 +756,13 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Point3",
       "receivers": [],
-      "tlb": null,
+      "tlb": "_ a:Point b:Point2 = Point3",
       "traits": [],
       "uid": 58579,
     },
   },
   {
     "allocation": {
-      "header": null,
       "root": {
         "next": {
           "next": {
@@ -862,7 +855,6 @@ exports[`resolveAllocation should write program 1`] = `
         "bits": 771,
         "refs": 0,
       },
-      "tlb": "_ a:int257 b:int257 c:int257 d:int257 e:int257 f:int257 g:int257 h:int257 i:int257 j:int257 k:int257 = Deep",
       "type": {
         "ast": {
           "fields": [
@@ -1446,7 +1438,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "struct",
         "name": "Deep",
         "receivers": [],
-        "tlb": null,
+        "tlb": "_ a:int257 b:int257 c:int257 d:int257 e:int257 f:int257 g:int257 h:int257 i:int257 j:int257 k:int257 = Deep",
         "traits": [],
         "uid": 24254,
       },
@@ -2034,14 +2026,13 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Deep",
       "receivers": [],
-      "tlb": null,
+      "tlb": "_ a:int257 b:int257 c:int257 d:int257 e:int257 f:int257 g:int257 h:int257 i:int257 j:int257 k:int257 = Deep",
       "traits": [],
       "uid": 24254,
     },
   },
   {
     "allocation": {
-      "header": null,
       "root": {
         "next": {
           "next": {
@@ -2101,7 +2092,6 @@ exports[`resolveAllocation should write program 1`] = `
         "bits": 771,
         "refs": 0,
       },
-      "tlb": "_ a:Deep b:Deep c:Deep = Deep2",
       "type": {
         "ast": {
           "fields": [
@@ -2274,7 +2264,7 @@ exports[`resolveAllocation should write program 1`] = `
         "kind": "struct",
         "name": "Deep2",
         "receivers": [],
-        "tlb": null,
+        "tlb": "_ a:Deep b:Deep c:Deep = Deep2",
         "traits": [],
         "uid": 4906,
       },
@@ -2451,14 +2441,13 @@ exports[`resolveAllocation should write program 1`] = `
       "kind": "struct",
       "name": "Deep2",
       "receivers": [],
-      "tlb": null,
+      "tlb": "_ a:Deep b:Deep c:Deep = Deep2",
       "traits": [],
       "uid": 4906,
     },
   },
   {
     "allocation": {
-      "header": null,
       "root": {
         "next": null,
         "ops": [
@@ -2477,7 +2466,6 @@ exports[`resolveAllocation should write program 1`] = `
         "bits": 257,
         "refs": 1,
       },
-      "tlb": "_ v:int257 = Sample",
       "type": {
         "ast": {
           "attributes": [],

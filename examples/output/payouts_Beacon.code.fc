@@ -26,14 +26,14 @@ int __tact_address_eq(slice a, slice b) inline {
 }
 
 (slice, ((int))) __gen_read_CanPayout(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1050587494);
+    throw_unless(129, sc_0~load_uint(32) == 1723744808);
     var v'amount = sc_0~load_int(257);
     return (sc_0, (v'amount));
 }
 
 builder __gen_write_CanPayoutResponse(builder build_0, (int, slice, int) v) inline_ref {
     var (v'amount, v'address, v'ok) = v;
-    build_0 = store_uint(build_0, 1861678417, 32);
+    build_0 = store_uint(build_0, 30754297, 32);
     build_0 = build_0.store_int(v'amount, 257);
     build_0 = __tact_store_address(build_0, v'address);
     build_0 = build_0.store_int(v'ok, 1);
@@ -183,7 +183,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive CanPayout message
-    if (op == 1050587494) {
+    if (op == 1723744808) {
         var self = __gen_load_Beacon();
         var msg = in_msg~__gen_read_CanPayout();
         self~$__gen_Beacon_receive_CanPayout(msg);
@@ -203,5 +203,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmWnRBiQBK2pZ5W7N2mjjGCJC8dnTjHT3wBJDj1jzu7ByG";
+    return "ipfs://QmSYRvvcJHfn2VndV4f7iKLWCiwqiFckNJ2hEJazHRwzM3";
 }

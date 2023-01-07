@@ -24,14 +24,14 @@ builder __tact_store_address(builder b, slice address) inline {
 }
 
 (slice, ((int))) __gen_read_Deploy(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2509716940);
+    throw_unless(129, sc_0~load_uint(32) == 2664267391);
     var v'queryId = sc_0~load_uint(64);
     return (sc_0, (v'queryId));
 }
 
 builder __gen_write_DeployOk(builder build_0, (int) v) inline_ref {
     var (v'queryId) = v;
-    build_0 = store_uint(build_0, 3548362785, 32);
+    build_0 = store_uint(build_0, 3807866247, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
@@ -181,7 +181,7 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     }
     
     ;; Receive Deploy message
-    if (op == 2509716940) {
+    if (op == 2664267391) {
         var self = __gen_load_RandomContract();
         var msg = in_msg~__gen_read_Deploy();
         self~$__gen_RandomContract_receive_Deploy(msg);
@@ -200,5 +200,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmRC7HV7dxPSpcUqbTBq5xLCDmmpGqwmSKSJGid5K633uF";
+    return "ipfs://QmRpFudeimExv6hngQTuke4SJwhxoU5XqUTXQDrCUmcgkm";
 }

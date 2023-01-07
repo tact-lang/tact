@@ -37,7 +37,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    3615081709 PUSHINT
+    2222676481 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -66,7 +66,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        3615081709 PUSHINT
+        2222676481 PUSHINT
         EQUAL
         129 THROWIFNOT
         257 PUSHINT
@@ -109,7 +109,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    575056061 PUSHINT
+    2327774463 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -138,7 +138,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        575056061 PUSHINT
+        2327774463 PUSHINT
         EQUAL
         129 THROWIFNOT
         257 PUSHINT
@@ -178,7 +178,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    140802882 PUSHINT
+    3075352047 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -207,7 +207,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        140802882 PUSHINT
+        3075352047 PUSHINT
         EQUAL
         129 THROWIFNOT
         257 PUSHINT
@@ -258,7 +258,7 @@ SETCP0
     }> PUSHCONT
     IFJMP
     s0 PUSH
-    2438762569 PUSHINT
+    116981676 PUSHINT
     EQUAL
     <{
       s0 POP
@@ -287,7 +287,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        2438762569 PUSHINT
+        116981676 PUSHINT
         EQUAL
         129 THROWIFNOT
         257 PUSHINT
@@ -326,7 +326,7 @@ SETCP0
       }> CALLREF
     }> PUSHCONT
     IFJMP
-    2509716940 PUSHINT
+    2664267391 PUSHINT
     EQUAL
     <{
       <{
@@ -354,7 +354,7 @@ SETCP0
       <{
         32 LDU
         s0 s1 XCHG
-        2509716940 PUSHINT
+        2664267391 PUSHINT
         EQUAL
         129 THROWIFNOT
         64 LDU
@@ -810,7 +810,7 @@ SETCP0
       NEWC
       s0 s1 XCHG
       <{
-        3548362785 PUSHINT
+        3807866247 PUSHINT
         ROT
         32 STU
         64 STU

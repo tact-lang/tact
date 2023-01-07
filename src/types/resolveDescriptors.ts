@@ -6,6 +6,7 @@ import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
+import { createTLBType } from "./createTLBType";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -611,7 +612,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
     // Check for structs to have at least one field
     //
-    
+
     for (let k in types) {
         let t = types[k];
         if (t.kind === 'contract' || t.kind === 'struct') {
@@ -850,6 +851,22 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
     }
 
+    //
+    // Create TLB types
+    //
+
+    for (let k in types) {
+        let t = types[k];
+        if (t.kind === 'struct') {
+            let knownHeader: number | null = null;
+            if (t.ast.kind === 'def_struct' && t.ast.message && t.ast.prefix !== null) {
+                knownHeader = t.ast.prefix;
+            }
+            let tlb = createTLBType(t.name, t.fields.map((d) => d.abi), (t.ast.kind === 'def_struct' && t.ast.message) ? 'message' : 'struct', knownHeader);
+            t.header = tlb.header;
+            t.tlb = tlb.tlb;
+        }
+    }
 
     //
     // Resolve static functions

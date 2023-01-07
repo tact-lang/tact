@@ -117,14 +117,14 @@ cell __tact_string_builder_end(tuple builders) inline {
 }
 
 (slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3067051791);
+    throw_unless(129, sc_0~load_uint(32) == 1551828285);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
 
 builder __gen_write_CanPayout(builder build_0, (int) v) inline_ref {
     var (v'amount) = v;
-    build_0 = store_uint(build_0, 1050587494, 32);
+    build_0 = store_uint(build_0, 1723744808, 32);
     build_0 = build_0.store_int(v'amount, 257);
     return build_0;
 }
@@ -134,7 +134,7 @@ cell __gen_writecell_CanPayout((int) v) inline_ref {
 }
 
 (slice, ((int, slice, int))) __gen_read_CanPayoutResponse(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1861678417);
+    throw_unless(129, sc_0~load_uint(32) == 30754297);
     var v'amount = sc_0~load_int(257);
     var v'address = sc_0~__tact_load_address();
     var v'ok = sc_0~load_int(1);
@@ -394,7 +394,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive CanPayoutResponse message
-    if (op == 1861678417) {
+    if (op == 30754297) {
         var self = __gen_load_Payouts();
         var msg = in_msg~__gen_read_CanPayoutResponse();
         self~$__gen_Payouts_receive_CanPayoutResponse(msg);
@@ -403,7 +403,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive ChangeOwner message
-    if (op == 3067051791) {
+    if (op == 1551828285) {
         var self = __gen_load_Payouts();
         var msg = in_msg~__gen_read_ChangeOwner();
         self~$__gen_Payouts_receive_ChangeOwner(msg);
@@ -434,5 +434,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmQpAg78cKW3PtvGXmZZy3AXEwjAVXGq8V742CHf1wYWTL";
+    return "ipfs://Qmcg1s2sGP8L1vHMUUXFwC4oi8LcYLF84MY9sZnRh4hxKp";
 }

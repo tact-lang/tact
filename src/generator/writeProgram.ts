@@ -1,6 +1,6 @@
 import { CompilerContext } from "../context";
 import { getAllocation, getAllocations } from "../storage/resolveAllocation";
-import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
+import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { WriterContext } from "./Writer";
 import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSerialization";
@@ -100,9 +100,9 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                 // Generic receiver
                 if (selector.kind === 'internal-binary') {
-                    let allocation = getAllocation(ctx.ctx, selector.type);
+                    let allocation = getType(ctx.ctx, selector.type);
                     if (!allocation.header) {
-                        throw Error('Invalid allocation');
+                        throw Error('Invalid allocation: ' + selector.type);
                     }
                     ctx.append();
                     ctx.append(`;; Receive ${selector.type} message`);

@@ -176,14 +176,14 @@ export type ChangeOwner = {
 export function storeChangeOwner(src: ChangeOwner) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3067051791, 32);
+        b_0.storeUint(1551828285, 32);
         b_0.storeAddress(src.newOwner);
     };
 }
 
 export function loadChangeOwner(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3067051791) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1551828285) { throw Error('Invalid prefix'); }
     let _newOwner = sc_0.loadAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
@@ -563,14 +563,14 @@ export type TokenUpdateContent = {
 export function storeTokenUpdateContent(src: TokenUpdateContent) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1862840892, 32);
+        b_0.storeUint(2639643761, 32);
         if (src.content !== null && src.content !== undefined) { b_0.storeBit(true).storeRef(src.content); } else { b_0.storeBit(false); }
     };
 }
 
 export function loadTokenUpdateContent(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1862840892) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2639643761) { throw Error('Invalid prefix'); }
     let _content = sc_0.loadBit() ? sc_0.loadRef() : null;
     return { $$type: 'TokenUpdateContent' as const, content: _content };
 }
@@ -717,14 +717,14 @@ export type Mint = {
 export function storeMint(src: Mint) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2737462367, 32);
+        b_0.storeUint(2512576642, 32);
         b_0.storeInt(src.amount, 257);
     };
 }
 
 export function loadMint(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2737462367) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 2512576642) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadIntBig(257);
     return { $$type: 'Mint' as const, amount: _amount };
 }

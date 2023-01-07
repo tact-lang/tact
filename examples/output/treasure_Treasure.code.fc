@@ -26,13 +26,13 @@ int __tact_address_eq(slice a, slice b) inline {
 }
 
 (slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3067051791);
+    throw_unless(129, sc_0~load_uint(32) == 1551828285);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
 
 (slice, ((int, int))) __gen_read_Withdraw(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1286094280);
+    throw_unless(129, sc_0~load_uint(32) == 190515716);
     var v'amount = sc_0~load_coins();
     var v'mode = sc_0~load_uint(8);
     return (sc_0, (v'amount, v'mode));
@@ -183,7 +183,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive Withdraw message
-    if (op == 1286094280) {
+    if (op == 190515716) {
         var self = __gen_load_Treasure();
         var msg = in_msg~__gen_read_Withdraw();
         self~$__gen_Treasure_receive_Withdraw(msg);
@@ -192,7 +192,7 @@ _ $__gen_get_owner() method_id(83229) {
     }
     
     ;; Receive ChangeOwner message
-    if (op == 3067051791) {
+    if (op == 1551828285) {
         var self = __gen_load_Treasure();
         var msg = in_msg~__gen_read_ChangeOwner();
         self~$__gen_Treasure_receive_ChangeOwner(msg);
@@ -226,5 +226,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmNXoHgDeSfCMQtguXGXb9JdzjwzBYMYGZhMZk1rBfkY7Y";
+    return "ipfs://QmZSg9SFGztNUR6DgB7jQ5CeKV4cQW9h2YrhsZZAH2FEF2";
 }

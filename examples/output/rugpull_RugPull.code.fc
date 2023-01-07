@@ -105,7 +105,7 @@ cell __tact_string_builder_end(tuple builders) inline {
 }
 
 (slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3067051791);
+    throw_unless(129, sc_0~load_uint(32) == 1551828285);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
@@ -368,7 +368,7 @@ _ $__gen_get_stopped() method_id(74107) {
     }
     
     ;; Receive ChangeOwner message
-    if (op == 3067051791) {
+    if (op == 1551828285) {
         var self = __gen_load_RugPull();
         var msg = in_msg~__gen_read_ChangeOwner();
         self~$__gen_RugPull_receive_ChangeOwner(msg);
@@ -419,5 +419,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmVycsK8jJURpgYCsDH4bPKkRbiUBk4fsBzzMs5kSaioiz";
+    return "ipfs://QmZyCqVYFdb2Kp8wRjjyyjnta2BeJyLenfjXxf7c6B6bAP";
 }

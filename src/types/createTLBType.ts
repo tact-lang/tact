@@ -1,4 +1,4 @@
-import { ABIField } from "ton-core";
+import { ABIField, beginCell } from "ton-core";
 import * as cs from 'change-case';
 import { sha256_sync } from "ton-crypto";
 
@@ -87,15 +87,15 @@ function createTLBField(src: ABIField) {
     throw Error('Unsupported ABI field');
 }
 
-export function createTLBType(name: string, args: ABIField[], kind: 'struct' | 'message'): { tlb: string, header: number | null } {
+export function createTLBType(name: string, args: ABIField[], kind: 'struct' | 'message', knownHeader: number | null): { tlb: string, header: number | null } {
     let fields = args.map(createTLBField).join(' ');
     if (kind === 'struct') {
         return { tlb: '_ ' + fields + ' = ' + name, header: null };
     } else {
         let base = cs.snakeCase(name) + ' ' + fields + ' = ' + name;
-        let hash = sha256_sync(base);
-        let op = hash.subarray(0, 4).toString('hex');
-        let res = cs.snakeCase(name) + '#' + op + ' ' + fields + ' = ' + name;
-        return { tlb: res, header: null };
+        let op = knownHeader !== null ? knownHeader : beginCell().storeBuffer(sha256_sync(base)).endCell().beginParse().loadUint(32);
+        let opText = beginCell().storeUint(op, 32).endCell().beginParse().loadBuffer(4).toString('hex');
+        let res = cs.snakeCase(name) + '#' + opText + ' ' + fields + ' = ' + name;
+        return { tlb: res, header: op };
     }
 }

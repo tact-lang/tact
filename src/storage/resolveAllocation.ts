@@ -2,11 +2,9 @@ import { CompilerContext, createContextStore } from "../context";
 import { getAllTypes, getType } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
-import { crc32 } from "../utils/crc32";
 import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
-import { createTLBType } from "../types/createTLBType";
 
 let store = createContextStore<StorageAllocation>();
 
@@ -55,19 +53,9 @@ export function resolveAllocations(ctx: CompilerContext) {
     // Generate allocations
     for (let s of types) {
 
-        // Resolve prefix
-        let header: number | null = null;
-        if (s.ast.kind === 'def_struct' && s.ast.message) {
-            if (s.ast.prefix !== null) {
-                header = s.ast.prefix;
-            } else {
-                header = crc32(Buffer.from(s.name)); // TODO: Better allocation
-            }
-        }
-
         // Reserve bits
         let reserveBits = 0;
-        if (header !== null) {
+        if (s.header !== null) {
             reserveBits += 32; // Header size
         }
 
@@ -86,14 +74,10 @@ export function resolveAllocations(ctx: CompilerContext) {
         // Perform allocation
         let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
 
-        // tlb
-        let tlb = createTLBType(s.name, s.fields.map((d) => d.abi), header !== null ? 'message' : 'struct');
-
         // Store allocation
         let allocation: StorageAllocation = {
             type: s,
-            header, root,
-            tlb: tlb.tlb,
+            root,
             size: {
                 bits: root.size.bits + reserveBits,
                 refs: root.size.refs + reserveRefs

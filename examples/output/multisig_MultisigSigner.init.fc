@@ -12,7 +12,7 @@ forall X0, X1, X2, X3, X4, X5, X6 -> (X0, X1, X2, X3, X4, X5, X6) __tact_tuple_d
 
 builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, cell) v) inline_ref {
     var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v;
-    build_0 = store_uint(build_0, 4096439811, 32);
+    build_0 = store_uint(build_0, 3091609041, 32);
     build_0 = __tact_store_address(build_0, v'requested);
     build_0 = __tact_store_address(build_0, v'to);
     build_0 = build_0.store_coins(v'value);

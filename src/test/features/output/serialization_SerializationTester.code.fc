@@ -2,7 +2,7 @@ global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
 (slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_Update(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2676568142);
+    throw_unless(129, sc_0~load_uint(32) == 2630836914);
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
@@ -209,7 +209,7 @@ _ $__gen_get_getI() method_id(91412) {
     }
     
     ;; Receive Update message
-    if (op == 2676568142) {
+    if (op == 2630836914) {
         var self = __gen_load_SerializationTester();
         var msg = in_msg~__gen_read_Update();
         self~$__gen_SerializationTester_receive_Update(msg);
@@ -228,5 +228,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmRkUtCdYUW9iU178wXCZu1fhRZcUigs9PrX2djsEraMH8";
+    return "ipfs://QmThQ2Kma26LaoqnReJtu1fZdbe1e8EkY72fmTueRj7adn";
 }

@@ -176,14 +176,14 @@ export type ChangeOwner = {
 export function storeChangeOwner(src: ChangeOwner) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3067051791, 32);
+        b_0.storeUint(1551828285, 32);
         b_0.storeAddress(src.newOwner);
     };
 }
 
 export function loadChangeOwner(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3067051791) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1551828285) { throw Error('Invalid prefix'); }
     let _newOwner = sc_0.loadAddress();
     return { $$type: 'ChangeOwner' as const, newOwner: _newOwner };
 }
@@ -218,7 +218,7 @@ export type Withdraw = {
 export function storeWithdraw(src: Withdraw) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1286094280, 32);
+        b_0.storeUint(190515716, 32);
         b_0.storeCoins(src.amount);
         b_0.storeUint(src.mode, 8);
     };
@@ -226,7 +226,7 @@ export function storeWithdraw(src: Withdraw) {
 
 export function loadWithdraw(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1286094280) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 190515716) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadCoins();
     let _mode = sc_0.loadUintBig(8);
     return { $$type: 'Withdraw' as const, amount: _amount, mode: _mode };
@@ -257,7 +257,7 @@ function dictValueParserWithdraw(): DictionaryValue<Withdraw> {
 }
 async function Treasure_init(owner: Address) {
     const __init = 'te6ccgEBBwEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQBD9AORmAO2eZMBgAEzxY=';
-    const __code = 'te6ccgECIQEAAlsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIExQCAdQICQIB9BARBJU7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEEyoPci6j4ww2zwB2zxsEvAT2zzgIIIQts9/D7qAfCg4LAAsIG7y0ICAAJNMfAYIQTKg9yLry4IH6ANMHWQQgj4sw2zwB2zwx8BXbPODAAB8MDg0AINMfAYIQts9/D7ry4IH6QAECcI8w+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo8I2zzwFNs82zHgkTDi8sCCHw4BFsj4QgHMAds8ye1UDwAEzxYAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgEgAE+wACASAVFgIBSBscAgEgFxgCASAZGgAdPhBbyQQI18DIccF8uCEgAB8AvAQf8jJVBMCUFVtbfAPgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAQ2+KO7Z54CUHwCVvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4UAse6EyiXNrVVIVhSwAWA0E4IGc6tPOK/OkoWA6wtxMj2UARTtRNDUAfhi2zwxIAAG+kAB';
+    const __code = 'te6ccgECIQEAAlsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIExQCAdQICQIB9BARBJU7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEAtbCgS6j4ww2zwB2zxsEvAT2zzgIIIQXH8FPbqAfCg4LAAsIG7y0ICAAJNMfAYIQC1sKBLry4IH6ANMHWQQgj4sw2zwB2zwx8BXbPODAAB8MDg0AINMfAYIQXH8FPbry4IH6QAECcI8w+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo8I2zzwFNs82zHgkTDi8sCCHw4BFsj4QgHMAds8ye1UDwAEzxYAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgEgAE+wACASAVFgIBSBscAgEgFxgCASAZGgAdPhBbyQQI18DIccF8uCEgAB8AvAQf8jJVBMCUFVtbfAPgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAQ2+KO7Z54CUHwCVvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4UAse6EyiXNrVVIVhSwAWA0E4IGc6tPOK/OkoWA6wtxMj2UARTtRNDUAfhi2zwxIAAG+kAB';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

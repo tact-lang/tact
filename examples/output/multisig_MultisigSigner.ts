@@ -182,7 +182,7 @@ export type Request = {
 export function storeRequest(src: Request) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(4096439811, 32);
+        b_0.storeUint(3091609041, 32);
         b_0.storeAddress(src.requested);
         b_0.storeAddress(src.to);
         b_0.storeCoins(src.value);
@@ -195,7 +195,7 @@ export function storeRequest(src: Request) {
 
 export function loadRequest(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 4096439811) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3091609041) { throw Error('Invalid prefix'); }
     let _requested = sc_0.loadAddress();
     let _to = sc_0.loadAddress();
     let _value = sc_0.loadCoins();
@@ -247,14 +247,14 @@ export type Signed = {
 export function storeSigned(src: Signed) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(420994549, 32);
+        b_0.storeUint(3649905398, 32);
         b_0.store(storeRequest(src.request));
     };
 }
 
 export function loadSigned(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 420994549) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3649905398) { throw Error('Invalid prefix'); }
     let _request = loadRequest(sc_0);
     return { $$type: 'Signed' as const, request: _request };
 }
@@ -281,8 +281,8 @@ function dictValueParserSigned(): DictionaryValue<Signed> {
     }
 }
 async function MultisigSigner_init(master: Address, members: Dictionary<Address, bigint>, requiredWeight: bigint, request: Request) {
-    const __init = 'te6ccgEBCgEAkwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQANoUrd4AvgDQAB1AIBIAYHAAVW8ngBJUcHAMyMwMBwVQk1AIBkQU2zzJgIAUJQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUY2zzJAcwJAFSCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOI=';
-    const __code = 'te6ccgECIAEAAugAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAnUbHAIBIAYHAgFIDxACASAICQABvQIBSAoLACNohbpVbWfRZMODIAc8AQTP0QYDjzt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIMAAItdJwSGwjwdb2zzwFNs84MAAkTDjDfLAgoB0NDAALCBu8tCAgAmD5AYLwIq7m0KbcFGV3J33VjQauMJCjzdPYqIVhGEIIrl9usDm6jwjbPPAV2zzbMeAdDQEYyPhCAcxVsNs8ye1UDgFCUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GNs8yQHMGgIBIBESAgFIFhcAFVlH8BygDgcAHKAIAgEgExQB9zIcQHKAVAH8BFwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ARyHDwEXDwESRus5l/8BEE8AFQBMyVNANw8BHiJG6zmX/wEQTwAVAEzJU0A3DwEeJw8BECf/ARAslYzJYzMwFw8BHiIW6zmH/wEQHwAQHMlDFw8BHiyQGAVAAUbFeAABPsAAAEgAcMgRKTJPgjvPL0ggCfaiiz8vT4QW8kECNfAyuBAQsigQEBQTP0Cm+hlAHXADCSW23i8AEcgQELUA1tgQEB8AZQq6BTCL6OmTd/cHCBAIJUeYdUeYdWEts8L1UgbW3wEgfeCYBgBDMhVYNs8yRkBGoIQGRfd9VAIyx8H2zwaAFSCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIBEbC/ts88BPwDoB0ATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYAEW7UTQ1AH4Yts8bBweAUj6QAEB9ASBAQHXAIEBAdcA0gDUAdDbPDcQfBB7EHoQeRB4VQUfAFDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVg';
+    const __init = 'te6ccgEBCgEAkwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQANoUrd4AvgDQAB1AIBIAYHAAVW8ngBJUcHAMyMwMBwVQk1AIBkQU2zzJgIAUJQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUY2zzJAcwJAFSCELhGNdFQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOI=';
+    const __code = 'te6ccgECIAEAAugAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAnUbHAIBIAYHAgFIDxACASAICQABvQIBSAoLACNohbpVbWfRZMODIAc8AQTP0QYDjzt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIMAAItdJwSGwjwdb2zzwFNs84MAAkTDjDfLAgoB0NDAALCBu8tCAgAmD5AYLwIq7m0KbcFGV3J33VjQauMJCjzdPYqIVhGEIIrl9usDm6jwjbPPAV2zzbMeAdDQEYyPhCAcxVsNs8ye1UDgFCUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GNs8yQHMGgIBIBESAgFIFhcAFVlH8BygDgcAHKAIAgEgExQB9zIcQHKAVAH8BFwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ARyHDwEXDwESRus5l/8BEE8AFQBMyVNANw8BHiJG6zmX/wEQTwAVAEzJU0A3DwEeJw8BECf/ARAslYzJYzMwFw8BHiIW6zmH/wEQHwAQHMlDFw8BHiyQGAVAAUbFeAABPsAAAEgAcMgRKTJPgjvPL0ggCfaiiz8vT4QW8kECNfAyuBAQsigQEBQTP0Cm+hlAHXADCSW23i8AEcgQELUA1tgQEB8AZQq6BTCL6OmTd/cHCBAIJUeYdUeYdWEts8L1UgbW3wEgfeCYBgBDMhVYNs8yRkBGoIQ2Y0i9lAIyx8H2zwaAFSCELhGNdFQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIBEbC/ts88BPwDoB0ATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYAEW7UTQ1AH4Yts8bBweAUj6QAEB9ASBAQHXAIEBAdcA0gDUAdDbPDcQfBB7EHoQeRB4VQUfAFDTHwGCELhGNdG68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVg';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();

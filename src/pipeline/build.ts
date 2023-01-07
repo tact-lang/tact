@@ -6,6 +6,7 @@ import { fromBoc } from 'tvm-disassembler/dist/disassembler';
 import { writeTypescript } from '../bindings/writeTypescript';
 import { ConfigProject } from "../config/parseConfig";
 import { CompilerContext, enable } from "../context";
+import { writeReport } from '../generator/writeReport';
 import { PackageFileFormat } from '../packaging/fileFormat';
 import { packageCode } from '../packaging/packageCode';
 import { createABITypeRefFromTypeRef } from '../types/resolveABITypeRef';
@@ -220,6 +221,21 @@ export async function build(project: ConfigProject, rootPath: string) {
             fs.writeFileSync(pathBindings, bindings, 'utf-8');
         } catch (e) {
             console.warn('Bindings compiler crashed');
+            console.warn(e);
+            return false;
+        }
+    }
+
+    // Reports
+    console.log('   > Reports');
+    for (let pkg of packages) {
+        console.log('   > ' + pkg.name);
+        try {
+            let report = writeReport(ctx, pkg);
+            let pathBindings = path.resolve(outputPath, project.name + '_' + pkg.name + ".md");
+            fs.writeFileSync(pathBindings, report, 'utf-8');
+        } catch (e) {
+            console.warn('Report generation crashed');
             console.warn(e);
             return false;
         }

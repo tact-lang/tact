@@ -2,7 +2,7 @@ global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
 (slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1843760589);
+    throw_unless(129, sc_0~load_uint(32) == 2276255904);
     var v'signature = sc_0~load_bits(512);
     var v'transfer = sc_0;
     return (sc_0, (v'signature, v'transfer));
@@ -104,7 +104,7 @@ _ $__gen_get_seqno() method_id(85143) {
     }
     
     ;; Receive TransferMessage message
-    if (op == 1843760589) {
+    if (op == 2276255904) {
         var self = __gen_load_Wallet();
         var msg = in_msg~__gen_read_TransferMessage();
         self~$__gen_Wallet_receive_TransferMessage(msg);
@@ -123,5 +123,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmNjd1LU3akqLpdqBhUts6H1J5Ei8Hsa7oLKoXyPfZnnnp";
+    return "ipfs://QmNNhDshvBdWhhBDGjktK7Jz7D5rW29SuWQ8Y9HYScSqVV";
 }

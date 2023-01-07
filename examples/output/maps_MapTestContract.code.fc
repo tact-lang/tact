@@ -96,21 +96,21 @@ forall X0 -> tuple __tact_tuple_create_1((X0) v) asm "1 TUPLE";
 forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
 
 (slice, ((int, int))) __gen_read_SetIntMap1(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1056067080);
+    throw_unless(129, sc_0~load_uint(32) == 1447311020);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((int, int))) __gen_read_SetIntMap2(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 2818252722);
+    throw_unless(129, sc_0~load_uint(32) == 3876274154);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((int, cell))) __gen_read_SetIntMap3(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3506188068);
+    throw_unless(129, sc_0~load_uint(32) == 281598159);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'value));
@@ -158,35 +158,35 @@ tuple __gen_readopt_SomeStruct(cell cl) inline_ref {
 }
 
 (slice, ((int, tuple))) __gen_read_SetIntMap4(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1318632071);
+    throw_unless(129, sc_0~load_uint(32) == 1833424137);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(1) ? __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct()) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, int))) __gen_read_SetAddrMap1(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3295239033);
+    throw_unless(129, sc_0~load_uint(32) == 2269322868);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? sc_0~load_int(257) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, int))) __gen_read_SetAddrMap2(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 1566575299);
+    throw_unless(129, sc_0~load_uint(32) == 1111690779);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? sc_0~load_int(1) : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, cell))) __gen_read_SetAddrMap3(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 711408213);
+    throw_unless(129, sc_0~load_uint(32) == 1999668272);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'value));
 }
 
 (slice, ((slice, tuple))) __gen_read_SetAddrMap4(slice sc_0) inline_ref {
-    throw_unless(129, sc_0~load_uint(32) == 3020140534);
+    throw_unless(129, sc_0~load_uint(32) == 2141561569);
     var v'key = sc_0~__tact_load_address();
     var v'value = sc_0~load_int(1) ? __gen_SomeStruct_as_optional(sc_0~__gen_read_SomeStruct()) : null();
     return (sc_0, (v'key, v'value));
@@ -515,7 +515,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetIntMap1 message
-    if (op == 1056067080) {
+    if (op == 1447311020) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetIntMap1();
         self~$__gen_MapTestContract_receive_SetIntMap1(msg);
@@ -524,7 +524,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetIntMap2 message
-    if (op == 2818252722) {
+    if (op == 3876274154) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetIntMap2();
         self~$__gen_MapTestContract_receive_SetIntMap2(msg);
@@ -533,7 +533,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetIntMap3 message
-    if (op == 3506188068) {
+    if (op == 281598159) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetIntMap3();
         self~$__gen_MapTestContract_receive_SetIntMap3(msg);
@@ -542,7 +542,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetIntMap4 message
-    if (op == 1318632071) {
+    if (op == 1833424137) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetIntMap4();
         self~$__gen_MapTestContract_receive_SetIntMap4(msg);
@@ -551,7 +551,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetAddrMap1 message
-    if (op == 3295239033) {
+    if (op == 2269322868) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetAddrMap1();
         self~$__gen_MapTestContract_receive_SetAddrMap1(msg);
@@ -560,7 +560,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetAddrMap2 message
-    if (op == 1566575299) {
+    if (op == 1111690779) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetAddrMap2();
         self~$__gen_MapTestContract_receive_SetAddrMap2(msg);
@@ -569,7 +569,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetAddrMap3 message
-    if (op == 711408213) {
+    if (op == 1999668272) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetAddrMap3();
         self~$__gen_MapTestContract_receive_SetAddrMap3(msg);
@@ -578,7 +578,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     }
     
     ;; Receive SetAddrMap4 message
-    if (op == 3020140534) {
+    if (op == 2141561569) {
         var self = __gen_load_MapTestContract();
         var msg = in_msg~__gen_read_SetAddrMap4();
         self~$__gen_MapTestContract_receive_SetAddrMap4(msg);
@@ -597,5 +597,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmYRhtgzeuutzNfKiGapxRyLSucoi1jSuZfs5oc11NwgRA";
+    return "ipfs://QmUUPk3Zmeenrnoko9Q9SAaYCJTCr1BDa6EGri3qYRdAaA";
 }

@@ -18,8 +18,8 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
         ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) inline_ref {`);
         ctx.inIndent(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(allocation.type, `v`, ctx)} = v;`)
-            if (allocation.header) {
-                ctx.append(`build_0 = store_uint(build_0, ${allocation.header}, 32);`);
+            if (type.header) {
+                ctx.append(`build_0 = store_uint(build_0, ${type.header}, 32);`);
             }
             writeSerializerCell(allocation.root, type, 0, 0, ctx);
             ctx.append(`return build_0;`);
@@ -190,8 +190,8 @@ export function writeParser(type: TypeDescription, allocation: StorageAllocation
         ctx.inIndent(() => {
 
             // Check prefix
-            if (allocation.header) {
-                ctx.append(`throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(32) == ${allocation.header});`);
+            if (type.header) {
+                ctx.append(`throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(32) == ${type.header});`);
             }
 
             // Write cell parser

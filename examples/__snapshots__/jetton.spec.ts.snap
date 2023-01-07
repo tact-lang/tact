@@ -8,12 +8,12 @@ exports[`jetton should deploy 1`] = `
   {
     "message": {
       "body": {
-        "cell": "x{A32A5C5F0000000000000000000000000000000000000000000000000001C6BF526340004_}",
+        "cell": "x{95C2E0820000000000000000000000000000000000000000000000000001C6BF526340004_}",
         "type": "cell",
       },
       "bounce": true,
       "from": "kQAI-3FJVc_ywSuY4vq0bYrzR7S4Och4y7bTU_i5yLOB3A6P",
-      "to": "kQC0q_Lk6Cqu5E3UtvE70SdxeWde0Tvramsd_41V2GvedxRQ",
+      "to": "kQAUbypRMEU8DUMT474wm3_qg6CglbmV1DPZGW-0N4J7xBuU",
       "type": "internal",
       "value": 1000000000n,
     },
@@ -27,12 +27,12 @@ exports[`jetton should deploy 1`] = `
     "messages": [
       {
         "body": {
-          "cell": "x{178D451900000000000000007038D7EA4C680008016957E5C9D0555DC89BA96DE277A24EE2F2CEBDA277D6D4D63BFF1AABB0D7BCEF00023EDC525573FCB04AE638BEAD1B62BCD1ED2E0E721E32EDB4D4FE2E722CE07702_}",
+          "cell": "x{178D451900000000000000007038D7EA4C6800080028DE54A2608A781A8627C77C6136FFD50741412B732BA867B232DF686F04F78900023EDC525573FCB04AE638BEAD1B62BCD1ED2E0E721E32EDB4D4FE2E722CE07702_}",
           "type": "cell",
         },
         "bounce": false,
-        "from": "kQC0q_Lk6Cqu5E3UtvE70SdxeWde0Tvramsd_41V2GvedxRQ",
-        "to": "kQBawJXViQMQqfzivzzQLdxJ7srC--qZewbGFjY5hwRNGXtC",
+        "from": "kQAUbypRMEU8DUMT474wm3_qg6CglbmV1DPZGW-0N4J7xBuU",
+        "to": "kQCqWRrRBBvz_r4yJA2KjY9no7l3zl8LfvdCrp1qKVmWaTNg",
         "type": "internal",
         "value": 959503000n,
       },

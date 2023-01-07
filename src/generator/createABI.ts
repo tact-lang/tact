@@ -23,13 +23,11 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     let types: ABIType[] = [];
     for (let t of allTypes) {
         if (t.kind === 'struct') {
-            let allocation = getAllocation(ctx, t.name);
             types.push({
                 name: t.name,
-                header: allocation.header,
-                tlb: allocation.tlb,
+                header: t.header,
                 fields: t.fields.map((v) => v.abi)
-            } as any);
+            });
         }
     }
 
