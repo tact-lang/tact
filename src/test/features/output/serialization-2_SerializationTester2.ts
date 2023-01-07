@@ -409,7 +409,7 @@ export class SerializationTester2 implements Contract {
         let builder = new TupleBuilder();
         builder.writeTuple(storeTupleVars(src));
         builder.writeTuple(storeTupleBoth(both));
-        if (both2 !== null) {
+        if (both2 !== null && both2 !== undefined) {
             builder.writeTuple(storeTupleBoth(both2));
         } else {
             builder.writeTuple(null);

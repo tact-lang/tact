@@ -207,7 +207,7 @@ export function storeStructWithOptionals(src: StructWithOptionals) {
         if (src.c !== null && src.c !== undefined) { b_0.storeBit(true).storeRef(src.c); } else { b_0.storeBit(false); }
         if (src.d !== null && src.d !== undefined) { b_0.storeBit(true).storeAddress(src.d); } else { b_0.storeBit(false); }
         let b_1 = new Builder();
-        if (src.e !== null) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
+        if (src.e !== null && src.e !== undefined) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
         b_0.storeRef(b_1.endCell());
     };
 }
@@ -239,7 +239,7 @@ function storeTupleStructWithOptionals(source: StructWithOptionals) {
     builder.writeBoolean(source.b);
     builder.writeCell(source.c);
     builder.writeAddress(source.d);
-    if (source.e !== null) {
+    if (source.e !== null && source.e !== undefined) {
         builder.writeTuple(storeTupleSomeGenericStruct(source.e));
     } else {
         builder.writeTuple(null);
@@ -266,9 +266,9 @@ export function storeUpdate(src: Update) {
         if (src.c !== null && src.c !== undefined) { b_0.storeBit(true).storeRef(src.c); } else { b_0.storeBit(false); }
         if (src.d !== null && src.d !== undefined) { b_0.storeBit(true).storeAddress(src.d); } else { b_0.storeBit(false); }
         let b_1 = new Builder();
-        if (src.e !== null) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
+        if (src.e !== null && src.e !== undefined) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
         let b_2 = new Builder();
-        if (src.f !== null) { b_2.storeBit(true); b_2.store(storeStructWithOptionals(src.f)); } else { b_2.storeBit(false); }
+        if (src.f !== null && src.f !== undefined) { b_2.storeBit(true); b_2.store(storeStructWithOptionals(src.f)); } else { b_2.storeBit(false); }
         b_1.storeRef(b_2.endCell());
         b_0.storeRef(b_1.endCell());
     };
@@ -306,12 +306,12 @@ function storeTupleUpdate(source: Update) {
     builder.writeBoolean(source.b);
     builder.writeCell(source.c);
     builder.writeAddress(source.d);
-    if (source.e !== null) {
+    if (source.e !== null && source.e !== undefined) {
         builder.writeTuple(storeTupleSomeGenericStruct(source.e));
     } else {
         builder.writeTuple(null);
     }
-    if (source.f !== null) {
+    if (source.f !== null && source.f !== undefined) {
         builder.writeTuple(storeTupleStructWithOptionals(source.f));
     } else {
         builder.writeTuple(null);
@@ -330,12 +330,12 @@ async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c
     builder.writeBoolean(b);
     builder.writeCell(c);
     builder.writeAddress(d);
-    if (e !== null) {
+    if (e !== null && e !== undefined) {
         builder.writeTuple(storeTupleSomeGenericStruct(e));
     } else {
         builder.writeTuple(null);
     }
-    if (f !== null) {
+    if (f !== null && f !== undefined) {
         builder.writeTuple(storeTupleStructWithOptionals(f));
     } else {
         builder.writeTuple(null);

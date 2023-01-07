@@ -1,5 +1,5 @@
 import { ABITypeRef } from "ton-core";
-import { Writer } from "../utils/Writer";
+import { Writer } from "../../utils/Writer";
 
 const primitiveTypes = ['int', 'uint', 'address', 'bool', 'string', 'cell', 'slice', 'builder', 'fixed-bytes'];
 
@@ -8,12 +8,9 @@ export type Serializer<T> = {
     // Typescript
     tsType: (v: T) => string,
     tsLoad: (v: T, slice: string, field: string, w: Writer) => void,
-    tsLoadTuple: (v: T, reader: string, field: string, w: Writer) => void,
+    tsLoadTuple: (v: T, reader: string, field: string, w: Writer, fromGet: boolean) => void,
     tsStore: (v: T, builder: string, field: string, w: Writer) => void,
     tsStoreTuple: (v: T, to: string, field: string, w: Writer) => void,
-
-    // FunC
-    funcType: (v: T) => string,
 
     // Matcher and measurer
     abiMatcher: (src: ABITypeRef) => T | null,
@@ -21,9 +18,6 @@ export type Serializer<T> = {
 };
 
 let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
-    funcType(v) {
-        return 'int';
-    },
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -73,9 +67,6 @@ let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
 };
 
 let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
-    funcType(v) {
-        return 'int';
-    },
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -125,9 +116,6 @@ let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
 };
 
 let coinsSerializer: Serializer<{ optional: boolean }> = {
-    funcType(v) {
-        return 'int';
-    },
     tsType(v) {
         if (v.optional) {
             return 'bigint | null';
@@ -175,9 +163,6 @@ let coinsSerializer: Serializer<{ optional: boolean }> = {
 };
 
 let boolSerializer: Serializer<{ optional: boolean }> = {
-    funcType(v) {
-        return 'int';
-    },
     tsType(v) {
         if (v.optional) {
             return 'boolean | null';
@@ -225,9 +210,6 @@ let boolSerializer: Serializer<{ optional: boolean }> = {
 };
 
 let addressSerializer: Serializer<{ optional: boolean }> = {
-    funcType(v) {
-        return 'slice';
-    },
     tsType(v) {
         if (v.optional) {
             return 'Address | null';
@@ -275,9 +257,6 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
 };
 
 let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = {
-    funcType(v) {
-        return v.kind;
-    },
     tsType(v) {
         if (v.optional) {
             return 'Cell | null';
@@ -329,9 +308,6 @@ let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = 
 }
 
 let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
-    funcType(v) {
-        return v.kind;
-    },
     tsType(v) {
         return 'Cell';
     },
@@ -367,9 +343,6 @@ let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
 }
 
 let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
-    funcType(v) {
-        return 'slice';
-    },
     tsType(v) {
         if (v.optional) {
             return 'Buffer | null';
@@ -417,9 +390,6 @@ let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
 };
 
 let stringSerializer: Serializer<{ optional: boolean }> = {
-    funcType(v) {
-        return 'slice';
-    },
     tsType(v) {
         if (v.optional) {
             return 'string | null';
@@ -475,9 +445,6 @@ let guard: Serializer<{}> = {
         }
         return null;
     },
-    funcType(v) {
-        throw Error('Unreachable');
-    },
     tsType(v) {
         throw Error('Unreachable');
     },
@@ -498,6 +465,69 @@ let guard: Serializer<{}> = {
     },
 }
 
+let struct: Serializer<{ name: string, optional: boolean }> = {
+    abiMatcher(src) {
+        if (src.kind === 'simple') {
+            if (src.format !== null && src.format !== undefined) {
+                return null;
+            }
+            return { name: src.type, optional: src.optional ? src.optional : false };
+        }
+        return null;
+    },
+    tsType(v) {
+        if (v.optional) {
+            return v.name + ' | null';
+        } else {
+            return v.name;
+        }
+    },
+    tsLoad(v, slice, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${slice}.loadBit() ? load${v.name}(${slice}) : null;`);
+        } else {
+            w.append(`let ${field} = load${v.name}(${slice});`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w, fromGet: boolean) {
+        if (v.optional) {
+            w.append(`const ${field}_p = ${reader}.readTupleOpt();`);
+            w.append(`const ${field} = ${field}_p ? loadTuple${v.name}(${field}_p) : null;`);
+        } else {
+            if (fromGet) {
+                w.append(`const ${field} = loadTuple${v.name}(${reader});`);
+            } else {
+                w.append(`const ${field} = loadTuple${v.name}(${reader}.readTuple());`);
+            }
+        }
+    },
+    tsStore(v, builder, field, w) {
+        if (v.optional) {
+            w.append(`if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true); ${builder}.store(store${v.name}(${field})); } else { ${builder}.storeBit(false); }`);
+        } else {
+            w.append(`${builder}.store(store${v.name}(${field}));`);
+        }
+    },
+    tsStoreTuple(v, to, field, w) {
+        if (v.optional) {
+            w.append(`if (${field} !== null && ${field} !== undefined) {`);
+            w.inIndent(() => {
+                w.append(`builder.writeTuple(storeTuple${v.name}(${field}));`);
+            });
+            w.append(`} else {`);
+            w.inIndent(() => {
+                w.append(`builder.writeTuple(null);`);
+            });
+            w.append(`}`);
+        } else {
+            w.append(`builder.writeTuple(storeTuple${v.name}(${field}));`);
+        }
+    },
+    size(v) {
+        throw Error('Unreachable');
+    },
+}
+
 export const serializers: Serializer<any>[] = [
 
     // Primitive types
@@ -511,6 +541,9 @@ export const serializers: Serializer<any>[] = [
     fixedBytesSerializer,
     stringSerializer,
 
-    // Guard
+    // Guard to catch all primitve types that wasn't handled
     guard,
+
+    // Structs as fallback
+    struct,
 ];

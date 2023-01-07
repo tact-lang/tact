@@ -257,7 +257,7 @@ export function storeSetIntMap4(src: SetIntMap4) {
         let b_0 = builder;
         b_0.storeUint(1318632071, 32);
         b_0.storeInt(src.key, 257);
-        if (src.value !== null) { b_0.storeBit(true); b_0.store(storeSomeStruct(src.value)); } else { b_0.storeBit(false); }
+        if (src.value !== null && src.value !== undefined) { b_0.storeBit(true); b_0.store(storeSomeStruct(src.value)); } else { b_0.storeBit(false); }
     };
 }
 
@@ -279,7 +279,7 @@ function loadTupleSetIntMap4(source: TupleReader) {
 function storeTupleSetIntMap4(source: SetIntMap4) {
     let builder = new TupleBuilder();
     builder.writeNumber(source.key);
-    if (source.value !== null) {
+    if (source.value !== null && source.value !== undefined) {
         builder.writeTuple(storeTupleSomeStruct(source.value));
     } else {
         builder.writeTuple(null);
@@ -406,7 +406,7 @@ export function storeSetAddrMap4(src: SetAddrMap4) {
         let b_0 = builder;
         b_0.storeUint(3020140534, 32);
         b_0.storeAddress(src.key);
-        if (src.value !== null) { b_0.storeBit(true); b_0.store(storeSomeStruct(src.value)); } else { b_0.storeBit(false); }
+        if (src.value !== null && src.value !== undefined) { b_0.storeBit(true); b_0.store(storeSomeStruct(src.value)); } else { b_0.storeBit(false); }
     };
 }
 
@@ -428,7 +428,7 @@ function loadTupleSetAddrMap4(source: TupleReader) {
 function storeTupleSetAddrMap4(source: SetAddrMap4) {
     let builder = new TupleBuilder();
     builder.writeAddress(source.key);
-    if (source.value !== null) {
+    if (source.value !== null && source.value !== undefined) {
         builder.writeTuple(storeTupleSomeStruct(source.value));
     } else {
         builder.writeTuple(null);

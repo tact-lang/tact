@@ -1,5 +1,5 @@
 import { ABIType, ABITypeRef } from "ton-core";
-import { serializers } from "../../serializer/serializers";
+import { serializers } from "./serializers";
 import { AllocationCell } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
 import { getTSFieldType } from "./getTSFieldType";
@@ -66,23 +66,6 @@ function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
     }
 
     //
-    // Struct serializer
-    //
-
-    if (type.kind === 'simple') {
-        if (type.format !== null && type.format !== undefined) {
-            throw Error('Unsupported ' + type.type + ' format: ' + type.format);
-        }
-        if (type.optional) {
-            w.append(`let ${name} = sc_${gen}.loadBit() ? load${type.type}(sc_${gen}) : null;`);
-        } else {
-            w.append(`let ${name} = load${type.type}(sc_${gen});`);
-        }
-        return;
-    }
-
-
-    //
     // Dict serializer
     //
 
@@ -142,22 +125,6 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
     }
 
     //
-    // Struct serializer
-    //
-
-    if (type.kind === 'simple') {
-        if (type.format !== null && type.format !== undefined) {
-            throw Error('Unsupported struct format: ' + type.format);
-        }
-        if (type.optional) {
-            w.append(`if (${name} !== null) { b_${gen}.storeBit(true); b_${gen}.store(store${type.type}(${name})); } else { b_${gen}.storeBit(false); }`);
-        } else {
-            w.append(`b_${gen}.store(store${type.type}(${name}));`);
-        }
-        return;
-    }
-
-    //
     // Map serializer
     //
 
@@ -173,7 +140,7 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
     // Unsupported
     //
 
-    throw Error('Unsupported field type');
+    throw Error('Unsupported field type: ' + JSON.stringify(type));
 }
 
 export function writeTupleParser(s: ABIType, w: Writer) {
@@ -201,30 +168,9 @@ function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGe
     for (let s of serializers) {
         let v = s.abiMatcher(type);
         if (v) {
-            s.tsLoadTuple(v, `source`, name, w);
+            s.tsLoadTuple(v, `source`, name, w, fromGet);
             return;
         }
-    }
-
-    //
-    // Struct serializer
-    //
-
-    if (type.kind === 'simple') {
-        if (type.format !== null && type.format !== undefined) {
-            throw Error('Unsupported struct format: ' + type.format);
-        }
-        if (type.optional) {
-            w.append(`const ${name}_p = source.readTupleOpt();`);
-            w.append(`const ${name} = ${name}_p ? loadTuple${type.type}(${name}_p) : null;`);
-        } else {
-            if (fromGet) {
-                w.append(`const ${name} = loadTuple${type.type}(source);`);
-            } else {
-                w.append(`const ${name} = loadTuple${type.type}(source.readTuple());`);
-            }
-        }
-        return;
     }
 
     //
@@ -236,7 +182,7 @@ function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGe
         return;
     }
 
-    throw Error('Unsupported type');
+    throw Error('Unsupported field type: ' + JSON.stringify(type));
 }
 
 export function writeTupleSerializer(s: ABIType, w: Writer) {
@@ -271,30 +217,6 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
     }
 
     //
-    // Struct serializer
-    //
-
-    if (type.kind === 'simple') {
-        if (type.format !== null && type.format !== undefined) {
-            throw Error('Unsupported struct format: ' + type.format);
-        }
-        if (type.optional) {
-            w.append(`if (${name} !== null) {`);
-            w.inIndent(() => {
-                w.append(`builder.writeTuple(storeTuple${type.type}(${name}));`);
-            });
-            w.append(`} else {`);
-            w.inIndent(() => {
-                w.append(`builder.writeTuple(null);`);
-            });
-            w.append(`}`);
-        } else {
-            w.append(`builder.writeTuple(storeTuple${type.type}(${name}));`);
-        }
-        return;
-    }
-
-    //
     // Map serializer
     //
 
@@ -303,5 +225,5 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
         return;
     }
 
-    throw Error(`Unsupported type`);
+    throw Error('Unsupported field type: ' + JSON.stringify(type));
 }
