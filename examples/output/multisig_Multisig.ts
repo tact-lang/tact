@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type Request = {
     $$type: 'Request';
     requested: Address;
@@ -199,6 +229,16 @@ function storeTupleRequest(source: Request) {
     return builder.build();
 }
 
+function dictValueParserRequest(): DictionaryValue<Request> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeRequest(src)).endCell());
+        },
+        parse: (src) => {
+            return loadRequest(src.loadRef().beginParse());
+        }
+    }
+}
 export type Signed = {
     $$type: 'Signed';
     request: Request;
@@ -230,14 +270,24 @@ function storeTupleSigned(source: Signed) {
     return builder.build();
 }
 
-async function Multisig_init(members: Cell, totalWeight: bigint, requiredWeight: bigint) {
+function dictValueParserSigned(): DictionaryValue<Signed> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSigned(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSigned(src.loadRef().beginParse());
+        }
+    }
+}
+async function Multisig_init(members: Dictionary<Address, bigint>, totalWeight: bigint, requiredWeight: bigint) {
     const __init = 'te6ccgEBBwEARwABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBG0MW1wBMjMUERDE9s8yYBgAmUDSBAQHPAPQAgQEBzwCBAQHPAA==';
     const __code = 'te6ccgECJgEAA2sAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAgIQIBzgYHAgEgDQ4EnRwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEPQqtgO6j5Mw2zwE2zw3EJoQiRB4VQXwGds84IIQGRfd9bqAkCwoIAAsIG7y0ICADMo+S2zwE2zw3EJoQiRB4VQXwGts84DDywIIkCQoBHtMfAYIQGRfd9bry4IHbPAsBGMj4QgHMVTDbPMntVAwAUNMfAYIQ9Cq2A7ry4IH6QAEB+kABAfoA0x/SANMH0gABkdSSbQHiVWAAJlA0gQEBzwD0AIEBAc8AgQEBzwACASAPEAIBSBwdAgFYERICASATFAAVJR/AcoA4HABygCAASxwWchwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQgAgEgFRYCASAaGwH3MhxAcoBUAfwEnABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8BLIcPAScPASJG6zmX/wEgTwAVAEzJU0A3DwEuIkbrOZf/ASBPABUATMlTQDcPAS4nDwEgJ/8BICyVjMljMzAXDwEuIhbrOYf/ASAfABAcyUMXDwEuLJAYBcBJRwcAzIzAwHBVCTUAgGRBTbPMmAYAAT7AAFCUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GNs8yQHMGQBUghD0KrYDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6zlX8BygDMlHAyygDiADsCtD0BDCCAJO5AYAQ9A9vofLgZG3I9ADJVZAL8BWAAMQ0W4EBC1iBAQFBM/QKb6GUAdcAMJJbbeKACASAeHwBnT4QW8kECNfA/hC+ChUIMNUW7pUephTqfAW8BOBEU0IxwUX8vSBEpMD+CO8E/L0BG1t8BSAAJBAjXwOAAjz4QW8kECNfA4EBCysCgQEBQTP0Cm+hlAHXADCSW23i8AGCALTjAcIA8vT4QvgoVBh7UXoHVSPwFlzwE39wUEKAQlBCbQLwFIAERvKQu2eKoH4C8JAIBSCIjAQ23KDtnngMQJABNt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwARbtRNDUAfhi2zxsFCUAJoEBAdcA9ASBAQHXAIEBAdcAVTA=';
     const __system = 'te6cckECIgEAAvIAAQHAAQEFoSdzAgEU/wD0pBP0vPLICwMCAWIHBAICdQYFAE2y9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmABEbC/ts88BPwDoB8CAssUCAIBSA4JAgFIDQoBwyBEpMk+CO88vSCAJ9qKLPy9PhBbyQQI18DK4EBCyKBAQFBM/QKb6GUAdcAMJJbbeLwARyBAQtQDW2BAQHwBlCroFMIvo6ZN39wcIEAglR5h1R5h1YS2zwvVSBtbfASB94JgCwEMyFVg2zzJDAEaghAZF931UAjLHwfbPB4AASACASATDwIBIBEQAAUbFeAB9zIcQHKAVAH8BFwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ARyHDwEXDwESRus5l/8BEE8AFQBMyVNANw8BHiJG6zmX/wEQTwAVAEzJU0A3DwEeJw8BECf/ARAslYzJYzMwFw8BHiIW6zmH/wEQHwAQHMlDFw8BHiyQGASAAT7AAAVWUfwHKAOBwAcoAgCASAWFQABvQIBIBgXACNohbpVbWfRZMODIAc8AQTP0QYCAUgaGQALCBu8tCAgA487ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CDAACLXScEhsI8HW9s88BTbPODAAJEw4w3ywIKAfHBsCYPkBgvAirubQptwUZXcnfdWNBq4wkKPN09iohWEYQgiuX26wObqPCNs88BXbPNsx4B8cARjI+EIBzFWw2zzJ7VQdAUJQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUY2zzJAcweAFSCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIBFu1E0NQB+GLbPGwcIAFI+kABAfQEgQEB1wCBAQHXANIA1AHQ2zw3EHwQexB6EHkQeFUFIQBQ0x8BghD0KrYDuvLggfpAAQH6QAEB+gDTH9IA0wfSAAGR1JJtAeJVYFGe7+I=';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);
-    builder.writeCell(members);
+    builder.writeCell(members.size > 0 ? beginCell().storeDictDirect(members, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257)).endCell() : null);
     builder.writeNumber(totalWeight);
     builder.writeNumber(requiredWeight);
     let __stack = builder.build();
@@ -289,11 +339,11 @@ const Multisig_errors: { [key: number]: { message: string } } = {
 
 export class Multisig implements Contract {
     
-    static async init(members: Cell, totalWeight: bigint, requiredWeight: bigint) {
+    static async init(members: Dictionary<Address, bigint>, totalWeight: bigint, requiredWeight: bigint) {
         return await Multisig_init(members,totalWeight,requiredWeight);
     }
     
-    static async fromInit(members: Cell, totalWeight: bigint, requiredWeight: bigint) {
+    static async fromInit(members: Dictionary<Address, bigint>, totalWeight: bigint, requiredWeight: bigint) {
         const init = await Multisig_init(members,totalWeight,requiredWeight);
         const address = contractAddress(0, init);
         return new Multisig(address, init);
@@ -340,7 +390,7 @@ export class Multisig implements Contract {
     async getMembers(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('members', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
         return result;
     }
     

@@ -1,19 +1,32 @@
 import * as changeCase from 'change-case';
 import { Writer } from "../utils/Writer";
-import { getTSFieldType } from "./typescript/getTSFieldType";
 import { ABIArgument, ABIType, ContractABI } from "ton-core";
-import { writeArgumentToStack, writeGetParser, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
+import { writeArgumentToStack, writeDictParser, writeGetParser, writeParser, writeSerializer, writeStruct, writeTupleParser, writeTupleSerializer } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
 import { topologicalSort } from "../utils/utils";
 import { allocate, getAllocationOperationFromField } from "../storage/allocator";
+import { serializers } from './typescript/serializers';
 
 function writeArguments(args: ABIArgument[]) {
-    return args.map((v) => `${v.name}: ${getTSFieldType(v.type)}`);
+
+    let res: string[] = [];
+    outer: for (let f of args) {
+        for (let s of serializers) {
+            let v = s.abiMatcher(f.type);
+            if (v) {
+                res.push(`${f.name}: ${s.tsType(v)}`);
+                continue outer;
+            }
+        }
+        throw Error('Unsupported type: ' + JSON.stringify(f.type));
+    }
+
+    return res;
 }
 
 export function writeTypescript(abi: ContractABI, init?: { code: string, initCode: string, system: string, args: ABIArgument[] }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';`);
+    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';`);
     w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
     w.append();
 
@@ -53,6 +66,7 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             writeParser(s, allocations[s.name].root, w);
             writeTupleParser(s, w);
             writeTupleSerializer(s, w);
+            writeDictParser(s, w);
         }
     }
 

@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
     const __init = 'te6ccgEBBwEAPwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQBE9NraC5GYC7Z5kwGAB5QVM8WWM8WAc8WEvQA9AA=';
     const __code = 'te6ccgECFAEAAbAAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAODwIBIAYHAgFYCgsCe9OBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gESgzN4J8MIFIrfBgAADrpOCQ2EeDbZ54B22ecHlgQUEggAI2iFulVtZ9Fkw4MgBzwBBM/RBgEYyPhCAcxVQNs8ye1UCQAeUFTPFljPFgHPFhL0APQAAgEgDA0A7UAYEBAXAmIG6VMFn0WjCUQTP0FOKBAQFxJSBulTBZ9FowlEEz9BTigQEBciQgbpUwWfRaMJRBM/QU4oEBAXMmIG6VMFn0WjCUQTP0FOIBgQELJXCBAQHwBoEBCyRxgQEB8AaBAQsjcoEBAfAGgQELJXOBAQHwBoACEMTIzgQEBMln0DG+hkjBt34AAxGxCgQELAYEBAUEz9ApvoZQB1wAwkltt4oAERvBT22eKoJ4BsEgIBIBARAE27vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gBEblcPbPFUE8AyBIBFu1E0NQB+GLbPGwVEwAk+kABAfpAAQH6QAEB9AT0BFVA';

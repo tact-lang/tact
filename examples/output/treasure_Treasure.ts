@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -169,6 +199,16 @@ function storeTupleChangeOwner(source: ChangeOwner) {
     return builder.build();
 }
 
+function dictValueParserChangeOwner(): DictionaryValue<ChangeOwner> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeChangeOwner(src)).endCell());
+        },
+        parse: (src) => {
+            return loadChangeOwner(src.loadRef().beginParse());
+        }
+    }
+}
 export type Withdraw = {
     $$type: 'Withdraw';
     amount: bigint;
@@ -205,6 +245,16 @@ function storeTupleWithdraw(source: Withdraw) {
     return builder.build();
 }
 
+function dictValueParserWithdraw(): DictionaryValue<Withdraw> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeWithdraw(src)).endCell());
+        },
+        parse: (src) => {
+            return loadWithdraw(src.loadRef().beginParse());
+        }
+    }
+}
 async function Treasure_init(owner: Address) {
     const __init = 'te6ccgEBBwEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQBD9AORmAO2eZMBgAEzxY=';
     const __code = 'te6ccgECIQEAAlsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAdHgIBIAYHAgFIExQCAdQICQIB9BARBJU7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEEyoPci6j4ww2zwB2zxsEvAT2zzgIIIQts9/D7qAfCg4LAAsIG7y0ICAAJNMfAYIQTKg9yLry4IH6ANMHWQQgj4sw2zwB2zwx8BXbPODAAB8MDg0AINMfAYIQts9/D7ry4IH6QAECcI8w+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo8I2zzwFNs82zHgkTDi8sCCHw4BFsj4QgHMAds8ye1UDwAEzxYAFSUfwHKAOBwAcoAgAfcyHEBygFQB/AOcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wDshw8A5w8A4kbrOZf/AOBPABUATMlTQDcPAO4iRus5l/8A4E8AFQBMyVNANw8A7icPAOAn/wDgLJWMyWMzMBcPAO4iFus5h/8A4B8AEBzJQxcPAO4skBgEgAE+wACASAVFgIBSBscAgEgFxgCASAZGgAdPhBbyQQI18DIccF8uCEgAB8AvAQf8jJVBMCUFVtbfAPgAAEgAAU8BGAADRwgQCg8BGAACQB8BAwgAQ2+KO7Z54CUHwCVvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4UAse6EyiXNrVVIVhSwAWA0E4IGc6tPOK/OkoWA6wtxMj2UARTtRNDUAfhi2zwxIAAG+kAB';

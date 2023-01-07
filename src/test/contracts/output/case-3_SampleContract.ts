@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type Source = {
     $$type: 'Source';
     a: bigint;
@@ -172,6 +202,16 @@ function storeTupleSource(source: Source) {
     return builder.build();
 }
 
+function dictValueParserSource(): DictionaryValue<Source> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSource(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSource(src.loadRef().beginParse());
+        }
+    }
+}
 async function SampleContract_init() {
     const __init = 'te6ccgEBCAEAVAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AcAAUgBF1bXBSBMjMRDTbPMmAYBKFA0gQEBzwCBAQHPAMhAA9s8yQHMBwAWAoEBAc8AgQEBzwA=';
     const __code = 'te6ccgEBCwEAqwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAAF0vgcAQ294sbZ54AkCABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMARbtRNDUAfhi2zxsFAkBKIEBAdcAgQEB1wDUAdDbPDIQJEMACgAWgQEB1wCBAQHXAFk=';

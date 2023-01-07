@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetIntMap1 = {
     $$type: 'SetIntMap1';
     key: bigint;
@@ -174,6 +204,16 @@ function storeTupleSetIntMap1(source: SetIntMap1) {
     return builder.build();
 }
 
+function dictValueParserSetIntMap1(): DictionaryValue<SetIntMap1> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetIntMap1(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetIntMap1(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetIntMap2 = {
     $$type: 'SetIntMap2';
     key: bigint;
@@ -210,6 +250,16 @@ function storeTupleSetIntMap2(source: SetIntMap2) {
     return builder.build();
 }
 
+function dictValueParserSetIntMap2(): DictionaryValue<SetIntMap2> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetIntMap2(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetIntMap2(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetIntMap3 = {
     $$type: 'SetIntMap3';
     key: bigint;
@@ -246,6 +296,16 @@ function storeTupleSetIntMap3(source: SetIntMap3) {
     return builder.build();
 }
 
+function dictValueParserSetIntMap3(): DictionaryValue<SetIntMap3> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetIntMap3(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetIntMap3(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetIntMap4 = {
     $$type: 'SetIntMap4';
     key: bigint;
@@ -287,6 +347,16 @@ function storeTupleSetIntMap4(source: SetIntMap4) {
     return builder.build();
 }
 
+function dictValueParserSetIntMap4(): DictionaryValue<SetIntMap4> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetIntMap4(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetIntMap4(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetAddrMap1 = {
     $$type: 'SetAddrMap1';
     key: Address;
@@ -323,6 +393,16 @@ function storeTupleSetAddrMap1(source: SetAddrMap1) {
     return builder.build();
 }
 
+function dictValueParserSetAddrMap1(): DictionaryValue<SetAddrMap1> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetAddrMap1(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetAddrMap1(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetAddrMap2 = {
     $$type: 'SetAddrMap2';
     key: Address;
@@ -359,6 +439,16 @@ function storeTupleSetAddrMap2(source: SetAddrMap2) {
     return builder.build();
 }
 
+function dictValueParserSetAddrMap2(): DictionaryValue<SetAddrMap2> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetAddrMap2(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetAddrMap2(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetAddrMap3 = {
     $$type: 'SetAddrMap3';
     key: Address;
@@ -395,6 +485,16 @@ function storeTupleSetAddrMap3(source: SetAddrMap3) {
     return builder.build();
 }
 
+function dictValueParserSetAddrMap3(): DictionaryValue<SetAddrMap3> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetAddrMap3(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetAddrMap3(src.loadRef().beginParse());
+        }
+    }
+}
 export type SetAddrMap4 = {
     $$type: 'SetAddrMap4';
     key: Address;
@@ -436,6 +536,16 @@ function storeTupleSetAddrMap4(source: SetAddrMap4) {
     return builder.build();
 }
 
+function dictValueParserSetAddrMap4(): DictionaryValue<SetAddrMap4> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetAddrMap4(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetAddrMap4(src.loadRef().beginParse());
+        }
+    }
+}
 export type SomeStruct = {
     $$type: 'SomeStruct';
     value: bigint;
@@ -465,6 +575,16 @@ function storeTupleSomeStruct(source: SomeStruct) {
     return builder.build();
 }
 
+function dictValueParserSomeStruct(): DictionaryValue<SomeStruct> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSomeStruct(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSomeStruct(src.loadRef().beginParse());
+        }
+    }
+}
 async function MapTestContract_init() {
     const __init = 'te6ccgEBBwEAVgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBH0bW1tbW1tbW0IyMwI2zzJgGAEBQePQAFfQAA8j0ABL0APQAAsj0ABP0ABP0AMlYzMkBzA==';
     const __code = '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';
@@ -581,7 +701,7 @@ export class MapTestContract implements Contract {
     async getIntMap1(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('intMap1', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
         return result;
     }
     
@@ -596,7 +716,7 @@ export class MapTestContract implements Contract {
     async getIntMap2(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('intMap2', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Bool(), source.readCellOpt());
         return result;
     }
     
@@ -611,7 +731,7 @@ export class MapTestContract implements Contract {
     async getIntMap3(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('intMap3', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.Cell(), source.readCellOpt());
         return result;
     }
     
@@ -626,7 +746,7 @@ export class MapTestContract implements Contract {
     async getIntMap4(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('intMap4', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), dictValueParserSomeStruct(), source.readCellOpt());
         return result;
     }
     
@@ -642,7 +762,7 @@ export class MapTestContract implements Contract {
     async getAddrMap1(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('addrMap1', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
         return result;
     }
     
@@ -657,7 +777,7 @@ export class MapTestContract implements Contract {
     async getAddrMap2(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('addrMap2', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Bool(), source.readCellOpt());
         return result;
     }
     
@@ -672,7 +792,7 @@ export class MapTestContract implements Contract {
     async getAddrMap3(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('addrMap3', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.Cell(), source.readCellOpt());
         return result;
     }
     
@@ -687,7 +807,7 @@ export class MapTestContract implements Contract {
     async getAddrMap4(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('addrMap4', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.Address(), dictValueParserSomeStruct(), source.readCellOpt());
         return result;
     }
     

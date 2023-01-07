@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 async function Echo_init() {
     const __init = 'te6ccgEBBwEANQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBEUcAHIzAHbPMmAYADAGBAQHPAA==';
     const __code = 'te6ccgECHwEAAnsAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAVgbHAIBIAYHAgFIDQ4CAdQICQAV/KP4DlAHA4AOUAQElTt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgwACPFSDXScIfjw3bPAGAINch8BXbPNsx4N7bPAHwFoB0LHQoACwgbvLQgIAEE2zwLARbI+EIBzAHbPMntVAwADAGBAQHPAAIBIA8QAgEgFhcCASAREgIBIBQVAfcyHEBygFQB/APcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOPX/wD8hw8A9w8A8kbrOZf/APBPABUATMlTQDcPAP4iRus5l/8A8E8AFQBMyVNANw8A/icPAPAn/wDwLJWMyWMzMBcPAP4iFus5h/8A8B8AEBzJQxcPAP4skBgEwAlPhBbyQQI18DfwJwgEJYbW3wEIAAE+wAACzIAc8WyYAFLH/IAZRwAcsf3m8AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DGAaAgEgGBkACU8BLwEYAmUMXDIAZRwAcsf3m8AAW+MbW+Mi3SGVsbG8sII2zwB2zxvIgHJkyFus5YBbyJZzMnoMdCAaGgAJPAT8BGAAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwBNu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYAQ+4Ni2zwB8BSB0BFO1E0NQB+GLbPDEeAAyBAQHXAAE=';

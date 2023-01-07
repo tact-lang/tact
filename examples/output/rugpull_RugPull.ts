@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -169,6 +199,16 @@ function storeTupleChangeOwner(source: ChangeOwner) {
     return builder.build();
 }
 
+function dictValueParserChangeOwner(): DictionaryValue<ChangeOwner> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeChangeOwner(src)).endCell());
+        },
+        parse: (src) => {
+            return loadChangeOwner(src.loadRef().beginParse());
+        }
+    }
+}
 export type RugParams = {
     $$type: 'RugParams';
     investment: bigint;
@@ -208,6 +248,16 @@ function storeTupleRugParams(source: RugParams) {
     return builder.build();
 }
 
+function dictValueParserRugParams(): DictionaryValue<RugParams> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeRugParams(src)).endCell());
+        },
+        parse: (src) => {
+            return loadRugParams(src.loadRef().beginParse());
+        }
+    }
+}
 async function RugPull_init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
     const __init = 'te6ccgEBBwEAbwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQAJoUrd4AkAAdQBIdNra4OCowBWRmBQKBgm2eZMBgBwUKnPFheBAQHPABWBAQHPAAPIgQEBzwASgQEBzwDKABLKABKBAQHPAAPIgQEBzwAS9ADJWMzJAcw=';
     const __code = 'te6ccgECOAEABM4AART/APSkE/S88sgLAQIBYgIDAgLKCgsCASAEBQIBIAYHAgEgCAkBDboXvbPPAdgWAQ24Ud2zzwG4FgC5u70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwoBY90JlEubWqqQrClgAsBoJwQM51aecV+dJQsB1hbiZHsoJwkTBoZqbopDZ+4Ee+BVGPiYARG4bV2zzwGfARgWAgEgDA0CAc40NQIBzg4PAgEgGhsElTt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIMAAItdJwSGwjwdb2zzwHts84CCCELbPfw+64wLAAIBYXEBEACwgbvLQgIAM2MNs8Cts8MRCaEIkQeBBnEFYQRRA0QTDwIds8FhIXAQ6RMOMN8sCCEwAg0x8BghC2z38PuvLggfpAAQT2+QEggvAJUZAZSu5hHOiVxVA634X9hk3nkFdGFC9gjT6y+q0U5LqPCTDbPPAf2zzbMeAggvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rrjAoLwvPr3dpB8cZzI03nY8ZSqqifoyihxzVkXgXIfIVpFRQG6FhcUFQISMNs88CDbPNsxFhcCFo8I2zzwIts82zHgFhcBFu1E0NQB+GLbPGwaGAEYyPhCAcxVkNs8ye1UGQBq+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHgAcFCpzxYXgQEBzwAVgQEBzwADyIEBAc8AEoEBAc8AygASygASgQEBzwADyIEBAc8AEvQAyVjMyQHMAgEgHB0CASAmJwABZgIBIB4fAgEgICECASAjJAAVJR/AcoA4HABygCAB9zIcQHKAVAH8BRwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AUyHDwFHDwFCRus5l/8BQE8AFQBMyVNANw8BTiJG6zmX/wFATwAVAEzJU0A3DwFOJw8BQCf/AUAslYzJYzMwFw8BTiIW6zmH/wFAHwAQHMlDFw8BTiyQGAiAAT7AAAlPhBbyQQI18DfwJwgEJYbW3wFYAFLH/IAZRwAcsf3m8AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DGAlALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMCASAoKQIBIC4vAgEgKisCASAsLQARH9Zcm1tbfAVgAAkXwZsE4AAdPhBbyQQI18DKscF8uCEgAAUXwmACASAwMQIBIDIzABEggCdsCSz8vSAACQQOV8JgAMs8Bwkmn8qcIMGbW1t8BXg+EFvJDAygT67U7mgE74S8vSBAQFSMiBulTBZ9FowlEEz9BTiAaRRWKCZUwe8U2OhwgCwjh4hgQEBJFn0DG+hkjBt3/ABURihA6RROBdDMPAYUAXoUFWAAKTwGiSzlCVw+wLefypwgwZtbW3wFYAIBIDY3AClPAa8Bwzf4t1N0b3BwZWSPAX8BYDgAGw0f38qcIMGbW1t8BUEgAA0VZDwGmwZg';

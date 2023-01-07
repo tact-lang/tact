@@ -12,9 +12,8 @@ export type Serializer<T> = {
     tsStore: (v: T, builder: string, field: string, w: Writer) => void,
     tsStoreTuple: (v: T, to: string, field: string, w: Writer) => void,
 
-    // Matcher and measurer
+    // Matcher
     abiMatcher: (src: ABITypeRef) => T | null,
-    size: (v: T) => { bits: number, refs: number } | 'terminal'
 };
 
 let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
@@ -60,10 +59,7 @@ let intSerializer: Serializer<{ bits: number, optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: v.bits + (v.optional ? 1 : 0), refs: 0 };
-    },
+    }
 };
 
 let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
@@ -109,10 +105,7 @@ let uintSerializer: Serializer<{ bits: number, optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: v.bits + (v.optional ? 1 : 0), refs: 0 };
-    },
+    }
 };
 
 let coinsSerializer: Serializer<{ optional: boolean }> = {
@@ -156,10 +149,7 @@ let coinsSerializer: Serializer<{ optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: 124 + (v.optional ? 1 : 0), refs: 0 };
-    },
+    }
 };
 
 let boolSerializer: Serializer<{ optional: boolean }> = {
@@ -203,10 +193,7 @@ let boolSerializer: Serializer<{ optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: 1 + (v.optional ? 1 : 0), refs: 0 };
-    },
+    }
 };
 
 let addressSerializer: Serializer<{ optional: boolean }> = {
@@ -250,10 +237,7 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: 267 + (v.optional ? 1 : 0), refs: 0 };
-    },
+    }
 };
 
 let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = {
@@ -301,10 +285,7 @@ let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = 
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: (v.optional ? 1 : 0), refs: 1 };
-    },
+    }
 }
 
 let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
@@ -336,10 +317,7 @@ let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return 'terminal';
-    },
+    }
 }
 
 let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
@@ -383,10 +361,7 @@ let fixedBytesSerializer: Serializer<{ bytes: number, optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: v.bytes * 8 + (v.optional ? 1 : 0), refs: 0 };
-    },
+    }
 };
 
 let stringSerializer: Serializer<{ optional: boolean }> = {
@@ -430,10 +405,7 @@ let stringSerializer: Serializer<{ optional: boolean }> = {
             }
         }
         return null;
-    },
-    size(v) {
-        return { bits: (v.optional ? 1 : 0), refs: 1 };
-    },
+    }
 }
 
 let guard: Serializer<{}> = {
@@ -459,10 +431,7 @@ let guard: Serializer<{}> = {
     },
     tsStoreTuple(v, to, field, w) {
         throw Error('Unreachable');
-    },
-    size(v) {
-        throw Error('Unreachable');
-    },
+    }
 }
 
 let struct: Serializer<{ name: string, optional: boolean }> = {
@@ -512,19 +481,165 @@ let struct: Serializer<{ name: string, optional: boolean }> = {
         if (v.optional) {
             w.append(`if (${field} !== null && ${field} !== undefined) {`);
             w.inIndent(() => {
-                w.append(`builder.writeTuple(storeTuple${v.name}(${field}));`);
+                w.append(`${to}.writeTuple(storeTuple${v.name}(${field}));`);
             });
             w.append(`} else {`);
             w.inIndent(() => {
-                w.append(`builder.writeTuple(null);`);
+                w.append(`${to}.writeTuple(null);`);
             });
             w.append(`}`);
         } else {
-            w.append(`builder.writeTuple(storeTuple${v.name}(${field}));`);
+            w.append(`${to}.writeTuple(storeTuple${v.name}(${field}));`);
         }
-    },
-    size(v) {
+    }
+}
+
+type MapSerializerDescrKey = { kind: 'int' | 'uint', bits: number } | { kind: 'address' };
+type MapSerializerDescrValue = { kind: 'int' | 'uint', bits: number } | { kind: 'boolean' } | { kind: 'address' } | { kind: 'cell' } | { kind: 'struct', type: string };
+type MapSerializerDescr = {
+    key: MapSerializerDescrKey,
+    value: MapSerializerDescrValue
+}
+function getKeyParser(src: MapSerializerDescrKey) {
+    if (src.kind === 'int') {
+        return `Dictionary.Keys.BigInt(${src.bits})`;
+    } else if (src.kind === 'uint') {
+        return `Dictionary.Keys.BigUint(${src.bits})`;
+    } else if (src.kind === 'address') {
+        return 'Dictionary.Keys.Address()';
+    } else {
         throw Error('Unreachable');
+    }
+}
+function getValueParser(src: MapSerializerDescrValue) {
+    if (src.kind === 'int') {
+        return `Dictionary.Values.BigInt(${src.bits})`;
+    } else if (src.kind === 'uint') {
+        return `Dictionary.Values.BigUint(${src.bits})`;
+    } else if (src.kind === 'address') {
+        return 'Dictionary.Values.Address()';
+    } else if (src.kind === 'cell') {
+        return 'Dictionary.Values.Cell()';
+    } else if (src.kind === 'boolean') {
+        return 'Dictionary.Values.Bool()';
+    } else if (src.kind === 'struct') {
+        return `dictValueParser${src.type}()`;
+    } else {
+        throw Error('Unreachable');
+    }
+}
+
+let map: Serializer<MapSerializerDescr> = {
+    abiMatcher(src) {
+        if (src.kind === 'dict') {
+            if (src.format !== null && src.format !== undefined) {
+                return null;
+            }
+
+            // Resolve key
+            let key: { kind: 'int' | 'uint', bits: number } | { kind: 'address' } | null = null;
+            if (src.key === 'int') {
+                if (typeof src.keyFormat === 'number') {
+                    key = { kind: 'int', bits: src.keyFormat };
+                } else if (src.keyFormat === null || src.keyFormat === undefined) {
+                    key = { kind: 'int', bits: 257 };
+                }
+            }
+            if (src.key === 'uint') {
+                if (typeof src.keyFormat === 'number') {
+                    key = { kind: 'uint', bits: src.keyFormat };
+                } else if (src.keyFormat === null || src.keyFormat === undefined) {
+                    key = { kind: 'uint', bits: 256 };
+                }
+            }
+            if (src.key === 'address') {
+                if (src.keyFormat === null || src.keyFormat === undefined) {
+                    key = { kind: 'address' };
+                }
+            }
+
+            // Resolve value
+            let value: MapSerializerDescrValue | null = null;
+            if (src.value === 'int') {
+                if (typeof src.valueFormat === 'number') {
+                    value = { kind: 'int', bits: src.valueFormat };
+                } else if (src.valueFormat === null || src.valueFormat === undefined) {
+                    value = { kind: 'int', bits: 257 };
+                }
+            }
+            if (src.value === 'uint') {
+                if (typeof src.valueFormat === 'number') {
+                    value = { kind: 'uint', bits: src.valueFormat };
+                } else if (src.valueFormat === null || src.valueFormat === undefined) {
+                    value = { kind: 'uint', bits: 256 };
+                }
+            }
+            if (src.value === 'address') {
+                if (src.valueFormat === null || src.valueFormat === undefined) {
+                    value = { kind: 'address' };
+                }
+            }
+            if (src.value === 'cell') {
+                if (src.valueFormat === null || src.valueFormat === undefined || src.valueFormat === 'ref') {
+                    value = { kind: 'cell' };
+                }
+            }
+            if (primitiveTypes.indexOf(src.value) === -1) {
+                if (src.valueFormat === null || src.valueFormat === undefined || src.valueFormat === 'ref') {
+                    value = { kind: 'struct', type: src.value };
+                }
+            }
+            if (src.value === 'bool') {
+                if (src.valueFormat === null || src.valueFormat === undefined) {
+                    value = { kind: 'boolean' };
+                }
+            }
+
+            if (key && value) {
+                return { key, value };
+            }
+        }
+        return null;
+    },
+    tsType(v) {
+
+        // Resolve key type
+        let keyT: string;
+        if (v.key.kind === 'int' || v.key.kind === 'uint') {
+            keyT = `bigint`;
+        } else if (v.key.kind === 'address') {
+            keyT = `Address`;
+        } else {
+            throw Error('Unexpected key type');
+        }
+
+        // Resolve value type
+        let valueT: string;
+        if (v.value.kind === 'int' || v.value.kind === 'uint') {
+            valueT = `bigint`;
+        } else if (v.value.kind === 'address') {
+            valueT = `Address`;
+        } else if (v.value.kind === 'cell') {
+            valueT = `Cell`;
+        } else if (v.value.kind === 'struct') {
+            valueT = v.value.type;
+        } else {
+            throw Error('Unexpected key type');
+        }
+
+        return `Dictionary<${keyT}, ${valueT}>`;
+    },
+    tsLoad(v, slice, field, w) {
+        w.append(`let ${field} = Dictionary.load(${getKeyParser(v.key)}, ${getValueParser(v.value)}, ${slice});`);
+    },
+    tsLoadTuple(v, reader, field, w) {
+        w.append(`let ${field} = Dictionary.loadDirect(${getKeyParser(v.key)}, ${getValueParser(v.value)}, ${reader}.readCellOpt());`);
+    },
+    tsStore(v, builder, field, w) {
+        w.append(`${builder}.storeDict(${field}, ${getKeyParser(v.key)}, ${getValueParser(v.value)});`);
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeCell(${field}.size > 0 ? beginCell().storeDictDirect(${field}, ${getKeyParser(v.key)}, ${getValueParser(v.value)}).endCell() : null);`);
     },
 }
 
@@ -546,4 +661,5 @@ export const serializers: Serializer<any>[] = [
 
     // Structs as fallback
     struct,
+    map
 ];

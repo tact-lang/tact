@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type Deploy = {
     $$type: 'Deploy';
     queryId: bigint;
@@ -169,6 +199,16 @@ function storeTupleDeploy(source: Deploy) {
     return builder.build();
 }
 
+function dictValueParserDeploy(): DictionaryValue<Deploy> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeDeploy(src)).endCell());
+        },
+        parse: (src) => {
+            return loadDeploy(src.loadRef().beginParse());
+        }
+    }
+}
 export type DeployOk = {
     $$type: 'DeployOk';
     queryId: bigint;
@@ -200,6 +240,16 @@ function storeTupleDeployOk(source: DeployOk) {
     return builder.build();
 }
 
+function dictValueParserDeployOk(): DictionaryValue<DeployOk> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeDeployOk(src)).endCell());
+        },
+        parse: (src) => {
+            return loadDeployOk(src.loadRef().beginParse());
+        }
+    }
+}
 export type Increment = {
     $$type: 'Increment';
     key: bigint;
@@ -236,6 +286,16 @@ function storeTupleIncrement(source: Increment) {
     return builder.build();
 }
 
+function dictValueParserIncrement(): DictionaryValue<Increment> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeIncrement(src)).endCell());
+        },
+        parse: (src) => {
+            return loadIncrement(src.loadRef().beginParse());
+        }
+    }
+}
 export type Toggle = {
     $$type: 'Toggle';
     key: bigint;
@@ -267,6 +327,16 @@ function storeTupleToggle(source: Toggle) {
     return builder.build();
 }
 
+function dictValueParserToggle(): DictionaryValue<Toggle> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeToggle(src)).endCell());
+        },
+        parse: (src) => {
+            return loadToggle(src.loadRef().beginParse());
+        }
+    }
+}
 export type Persist = {
     $$type: 'Persist';
     key: bigint;
@@ -303,6 +373,16 @@ function storeTuplePersist(source: Persist) {
     return builder.build();
 }
 
+function dictValueParserPersist(): DictionaryValue<Persist> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storePersist(src)).endCell());
+        },
+        parse: (src) => {
+            return loadPersist(src.loadRef().beginParse());
+        }
+    }
+}
 export type Reset = {
     $$type: 'Reset';
     key: bigint;
@@ -334,6 +414,16 @@ function storeTupleReset(source: Reset) {
     return builder.build();
 }
 
+function dictValueParserReset(): DictionaryValue<Reset> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeReset(src)).endCell());
+        },
+        parse: (src) => {
+            return loadReset(src.loadRef().beginParse());
+        }
+    }
+}
 export type Something = {
     $$type: 'Something';
     value: bigint;
@@ -363,6 +453,16 @@ function storeTupleSomething(source: Something) {
     return builder.build();
 }
 
+function dictValueParserSomething(): DictionaryValue<Something> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSomething(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSomething(src.loadRef().beginParse());
+        }
+    }
+}
 async function IncrementContract_init() {
     const __init = 'te6ccgEBBwEARwABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBGUbW1tbW0FyMwF2zzJgGAChQRfQAEvQAAcj0ABL0ABL0AMkBzA==';
     const __code = 'te6ccgECNQEABG4AART/APSkE/S88sgLAQIBYgIDAgLKCAkCASAEBQIBIAYHAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwBDbrwLbPPAegYAQ27QH2zzwHYGAIBIAoLAgHOKisCASAMDQIBWB8gAgHUDg8CAdQdHgSfHAh10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIIIQ13nE7bqPkzDbPAXbPDIQVhBFEDRDAPAf2zzgIIIQIkaovbqAYEBoRAAsIG7y0ICAAMNMfAYIQ13nE7bry4IGBAQHXAIEBAdcAWQQ4j5Ew2zwF2zwxEEUQNEEw8CDbPOAgghAIZHtCuhgSGhMAJtMfAYIQIkaovbry4IGBAQHXAAEEPI+TMNs8Bds8MhBWEEUQNEMA8CHbPOAgghCRXJBJuhgUGhUAONMfAYIQCGR7Qrry4IGBAQHXANIAAZHUkm0B4lkENo+RMNs8Bds8MRBFEDRBMPAi2zzgghCVlz3MuhgWGhcAJtMfAYIQkVyQSbry4IGBAQHXAAEDLo+Q2zwF2zwxEEUQNEEw8CPbPOAw8sCCGBkaARbtRNDUAfhi2zxsFRsAINMfAYIQlZc9zLry4IHTPwEBGMj4QgHMVUDbPMntVBwAJPQE9ATUAdD0BPQE9AQwEDUQNAAoUEX0ABL0AAHI9AAS9AAS9ADJAcwAERZ9A1vodwwbYAAjCFulVtZ9Fkw4MgBzwBBM/RBgAgFYISICASAkJQAVJR/AcoA4HABygCAB9zIcQHKAVAH8BpwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/AayHDwGnDwGiRus5l/8BoE8AFQBMyVNANw8BriJG6zmX/wGgTwAVAEzJU0A3DwGuJw8BoCf/AaAslYzJYzMwFw8BriIW6zmH/wGgHwAQHMlDFw8BriyQGAjAAT7AAIBICYnAgEgKCkAJT4QW8kECNfA38CcIBCWG1t8BuAABRfBIAAHBRfBIABjPhBbyQQI18DgQEBIBA5QUBSkCFulVtZ9FowmMgBzwBBM/RC4hAjgQELQAeBAQHwCQGACASAsLQIBIC4vAKkJIEBASJxQTP0DG+hlAHXADCSW23iIG6OGjAUgQEBAX9xIW6VW1n0WjCYyAHPAEEz9ELijh2BAQEB8AGzEDYScSFulVtZ9FowmMgBzwBBM/RC4uIDgAEcggDOKSWBAQEk8Ahu8vQQJIEBAVkgbpUwWfRaMJRBM/QV4gKAB6yBAQFtUxIQSVkhbpVbWfRaMJjIAc8AQTP0QuIEgQEBJm1xIW6VW1n0WjCYyAHPAEEz9ELiA4EBASZtIG6VMFn0WjCUQTP0FeKBAQv4QW8kECNfAxAkbYEBAfAJgQEBbds8QXAgbpUwWfRaMJRBM/QV4hA0QTCAwAQk2zzwHIDMBHiBukjBt4CBu8tCAbyHbPDEBCsgB2zzJMgAMAYEBAc8AAQrIAds8yTQAFoIQ03+4IVjLH8s/';
@@ -468,14 +568,14 @@ export class IncrementContract implements Contract {
     async getCounters(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('counters', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
         return result;
     }
     
     async getCounters2(provider: ContractProvider) {
         let builder = new TupleBuilder();
         let source = (await provider.get('counters2', builder.build())).stack;
-        const result = source.readCellOpt();
+        let result = Dictionary.loadDirect(Dictionary.Keys.Address(), Dictionary.Values.BigInt(257), source.readCellOpt());
         return result;
     }
     

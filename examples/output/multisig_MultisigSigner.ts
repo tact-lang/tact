@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder } from 'ton-core';
+import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -35,6 +35,16 @@ function storeTupleStateInit(source: StateInit) {
     return builder.build();
 }
 
+function dictValueParserStateInit(): DictionaryValue<StateInit> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeStateInit(src)).endCell());
+        },
+        parse: (src) => {
+            return loadStateInit(src.loadRef().beginParse());
+        }
+    }
+}
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -79,6 +89,16 @@ function storeTupleContext(source: Context) {
     return builder.build();
 }
 
+function dictValueParserContext(): DictionaryValue<Context> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeContext(src)).endCell());
+        },
+        parse: (src) => {
+            return loadContext(src.loadRef().beginParse());
+        }
+    }
+}
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -138,6 +158,16 @@ function storeTupleSendParameters(source: SendParameters) {
     return builder.build();
 }
 
+function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSendParameters(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSendParameters(src.loadRef().beginParse());
+        }
+    }
+}
 export type Request = {
     $$type: 'Request';
     requested: Address;
@@ -199,6 +229,16 @@ function storeTupleRequest(source: Request) {
     return builder.build();
 }
 
+function dictValueParserRequest(): DictionaryValue<Request> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeRequest(src)).endCell());
+        },
+        parse: (src) => {
+            return loadRequest(src.loadRef().beginParse());
+        }
+    }
+}
 export type Signed = {
     $$type: 'Signed';
     request: Request;
@@ -230,7 +270,17 @@ function storeTupleSigned(source: Signed) {
     return builder.build();
 }
 
-async function MultisigSigner_init(master: Address, members: Cell, requiredWeight: bigint, request: Request) {
+function dictValueParserSigned(): DictionaryValue<Signed> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSigned(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSigned(src.loadRef().beginParse());
+        }
+    }
+}
+async function MultisigSigner_init(master: Address, members: Dictionary<Address, bigint>, requiredWeight: bigint, request: Request) {
     const __init = 'te6ccgEBCgEAkwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQANoUrd4AvgDQAB1AIBIAYHAAVW8ngBJUcHAMyMwMBwVQk1AIBkQU2zzJgIAUJQy88WGfQAF4EBAc8AFYEBAc8AE8oAyEYXEDUY2zzJAcwJAFSCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOI=';
     const __code = 'te6ccgECIAEAAugAART/APSkE/S88sgLAQIBYgIDAgLLBAUCAnUbHAIBIAYHAgFIDxACASAICQABvQIBSAoLACNohbpVbWfRZMODIAc8AQTP0QYDjzt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgIMAAItdJwSGwjwdb2zzwFNs84MAAkTDjDfLAgoB0NDAALCBu8tCAgAmD5AYLwIq7m0KbcFGV3J33VjQauMJCjzdPYqIVhGEIIrl9usDm6jwjbPPAV2zzbMeAdDQEYyPhCAcxVsNs8ye1UDgFCUMvPFhn0ABeBAQHPABWBAQHPABPKAMhGFxA1GNs8yQHMGgIBIBESAgFIFhcAFVlH8BygDgcAHKAIAgEgExQB9zIcQHKAVAH8BFwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY49f/ARyHDwEXDwESRus5l/8BEE8AFQBMyVNANw8BHiJG6zmX/wEQTwAVAEzJU0A3DwEeJw8BECf/ARAslYzJYzMwFw8BHiIW6zmH/wEQHwAQHMlDFw8BHiyQGAVAAUbFeAABPsAAAEgAcMgRKTJPgjvPL0ggCfaiiz8vT4QW8kECNfAyuBAQsigQEBQTP0Cm+hlAHXADCSW23i8AEcgQELUA1tgQEB8AZQq6BTCL6OmTd/cHCBAIJUeYdUeYdWEts8L1UgbW3wEgfeCYBgBDMhVYNs8yRkBGoIQGRfd9VAIyx8H2zwaAFSCEPQqtgNQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIBEbC/ts88BPwDoB0ATbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYAEW7UTQ1AH4Yts8bBweAUj6QAEB9ASBAQHXAIEBAdcA0gDUAdDbPDcQfBB7EHoQeRB4VQUfAFDTHwGCEPQqtgO68uCB+kABAfpAAQH6ANMf0gDTB9IAAZHUkm0B4lVg';
     const __system = 'te6cckEBAQEAAwAAAUD20kA0';
@@ -238,7 +288,7 @@ async function MultisigSigner_init(master: Address, members: Cell, requiredWeigh
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);
     builder.writeAddress(master);
-    builder.writeCell(members);
+    builder.writeCell(members.size > 0 ? beginCell().storeDictDirect(members, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257)).endCell() : null);
     builder.writeNumber(requiredWeight);
     builder.writeTuple(storeTupleRequest(request));
     let __stack = builder.build();
@@ -290,11 +340,11 @@ const MultisigSigner_errors: { [key: number]: { message: string } } = {
 
 export class MultisigSigner implements Contract {
     
-    static async init(master: Address, members: Cell, requiredWeight: bigint, request: Request) {
+    static async init(master: Address, members: Dictionary<Address, bigint>, requiredWeight: bigint, request: Request) {
         return await MultisigSigner_init(master,members,requiredWeight,request);
     }
     
-    static async fromInit(master: Address, members: Cell, requiredWeight: bigint, request: Request) {
+    static async fromInit(master: Address, members: Dictionary<Address, bigint>, requiredWeight: bigint, request: Request) {
         const init = await MultisigSigner_init(master,members,requiredWeight,request);
         const address = contractAddress(0, init);
         return new MultisigSigner(address, init);

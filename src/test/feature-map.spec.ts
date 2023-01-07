@@ -29,14 +29,14 @@ describe('feature-map', () => {
             await system.run();
 
             // Initial state
-            expect(await contract.getIntMap1()).toBeNull();
-            expect(await contract.getIntMap2()).toBeNull();
-            expect(await contract.getIntMap3()).toBeNull();
-            expect(await contract.getIntMap4()).toBeNull();
-            expect(await contract.getAddrMap1()).toBeNull();
-            expect(await contract.getAddrMap2()).toBeNull();
-            expect(await contract.getAddrMap3()).toBeNull();
-            expect(await contract.getAddrMap4()).toBeNull();
+            expect((await contract.getIntMap1()).size).toBe(0);
+            expect((await contract.getIntMap2()).size).toBe(0);
+            expect((await contract.getIntMap3()).size).toBe(0);
+            expect((await contract.getIntMap4()).size).toBe(0);
+            expect((await contract.getAddrMap1()).size).toBe(0);
+            expect((await contract.getAddrMap2()).size).toBe(0);
+            expect((await contract.getAddrMap3()).size).toBe(0);
+            expect((await contract.getAddrMap4()).size).toBe(0);
 
             // Keys for test
             let keys: bigint[] = [];

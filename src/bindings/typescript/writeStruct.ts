@@ -2,7 +2,6 @@ import { ABIType, ABITypeRef } from "ton-core";
 import { serializers } from "./serializers";
 import { AllocationCell } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
-import { getTSFieldType } from "./getTSFieldType";
 
 export function writeStruct(s: ABIType, w: Writer) {
     w.append(`export type ${s.name} = {`);
@@ -18,7 +17,7 @@ export function writeStruct(s: ABIType, w: Writer) {
                 }
             }
 
-            w.append(`${f.name}: ${getTSFieldType(f.type)};`);
+            throw Error('Unsupported type: ' + JSON.stringify(f.type));
         }
     });
     w.append(`}`);
@@ -52,11 +51,6 @@ function writeParserCell(gen: number, offset: number, src: AllocationCell, s: AB
 function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
     let name = '_' + s.fields[offset].name;
     let type = s.fields[offset].type;
-
-    //
-    // Default serializers
-    //
-
     for (let s of serializers) {
         let v = s.abiMatcher(type);
         if (v) {
@@ -64,19 +58,6 @@ function writeParserField(gen: number, offset: number, s: ABIType, w: Writer) {
             return;
         }
     }
-
-    //
-    // Dict serializer
-    //
-
-    if (type.kind === 'dict') {
-        if (type.format !== null && type.format !== undefined) {
-            throw Error('Unsupported map format: ' + type.format);
-        }
-        w.append(`let ${name} = sc_${gen}.loadMaybeCell();`);
-        return;
-    }
-
     throw Error('Unsupported type');
 }
 
@@ -111,11 +92,6 @@ function writeSerializerCell(gen: number, offset: number, src: AllocationCell, s
 function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer) {
     let name = 'src.' + s.fields[offset].name;
     let type = s.fields[offset].type;
-
-    //
-    // Default Serializers
-    //
-
     for (let s of serializers) {
         let v = s.abiMatcher(type);
         if (v) {
@@ -123,23 +99,6 @@ function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer
             return;
         }
     }
-
-    //
-    // Map serializer
-    //
-
-    if (type.kind === 'dict') {
-        if (type.format !== null && type.format !== undefined) {
-            throw Error('Unsupported map format: ' + type.format);
-        }
-        w.append(`b_${gen}.storeMaybeCell(${name});`);
-        return;
-    }
-
-    //
-    // Unsupported
-    //
-
     throw Error('Unsupported field type: ' + JSON.stringify(type));
 }
 
@@ -160,11 +119,6 @@ export function writeGetParser(name: string, type: ABITypeRef, w: Writer) {
 }
 
 function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGet = false) {
-
-    //
-    // Default Serializers
-    //
-
     for (let s of serializers) {
         let v = s.abiMatcher(type);
         if (v) {
@@ -172,16 +126,6 @@ function writeTupleFieldParser(name: string, type: ABITypeRef, w: Writer, fromGe
             return;
         }
     }
-
-    //
-    // Dict Serializer
-    //
-
-    if (type.kind === 'dict') {
-        w.append(`const ${name} = source.readCellOpt();`);
-        return;
-    }
-
     throw Error('Unsupported field type: ' + JSON.stringify(type));
 }
 
@@ -203,11 +147,6 @@ export function writeArgumentToStack(name: string, ref: ABITypeRef, w: Writer) {
 }
 
 function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
-
-    //
-    // Default Serializers
-    //
-
     for (let s of serializers) {
         let v = s.abiMatcher(type);
         if (v) {
@@ -215,15 +154,20 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
             return;
         }
     }
-
-    //
-    // Map serializer
-    //
-
-    if (type.kind === 'dict') {
-        w.append(`builder.writeCell(${name});`);
-        return;
-    }
-
     throw Error('Unsupported field type: ' + JSON.stringify(type));
+}
+
+export function writeDictParser(s: ABIType, w: Writer) {
+    w.write(`
+        function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
+            return {
+                serialize: (src, buidler) => {
+                    buidler.storeRef(beginCell().store(store${s.name}(src)).endCell());
+                },
+                parse: (src) => {
+                    return load${s.name}(src.loadRef().beginParse());
+                }
+            }
+        }
+    `);
 }
