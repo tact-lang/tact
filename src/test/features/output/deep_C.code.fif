@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_create_address
   DECLPROC __tact_compute_contract_address
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
@@ -40,6 +41,20 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
+  __tact_create_address PROCINLINE:<{
+    NEWC
+    2 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+  }>
   __tact_compute_contract_address PROCINLINE:<{
     NEWC
     0 PUSHINT
@@ -56,18 +71,7 @@ PROGRAM{
     STREF
     ENDC
     HASHCU
-    NEWC
-    2 PUSHINT
-    SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    1 STU
-    s1 s2 XCHG
-    8 STI
-    256 STU
-    ENDC
-    CTOS
+    __tact_create_address INLINECALLDICT
   }>
   __tact_dict_set_code PROCINLINE:<{
     s0 s2 XCHG

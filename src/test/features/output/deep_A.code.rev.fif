@@ -56,7 +56,7 @@ SETCP0
           }> CALLREF
           s1 POP
         }> CALLREF
-        24 CALLDICT
+        25 CALLDICT
         <{
           NEWC
           2 GETGLOBVAR
@@ -86,9 +86,9 @@ SETCP0
     ISNULL
     128 THROWIF
 
-  14: 
+  15: 
 
-  17: 
+  18: 
     <{
       -1 PUSHINT
       s0 s1 XCHG
@@ -99,7 +99,7 @@ SETCP0
     s0 s1 XCHG
     1 STI
 
-  18: 
+  19: 
     0 PUSHINT
     ROTREV
     NEWC
@@ -130,13 +130,13 @@ SETCP0
     ENDC
     CTOS
 
-  19: 
+  20: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
     2 STI
     s0 s7 XCHG2
-    17 CALLDICT
+    18 CALLDICT
     0 PUSHINT
     s0 s1 XCHG
     3 STI
@@ -156,18 +156,18 @@ SETCP0
     OR
     <{
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       NEWC
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s4 PUSH
       ISNULL
       NOT
       <{
         -1 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -177,7 +177,7 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
       }> PUSHCONT
       IFELSE
       s4 PUSH
@@ -185,7 +185,7 @@ SETCP0
       NOT
       <{
         -1 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -195,14 +195,14 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        17 CALLDICT
+        18 CALLDICT
       }> PUSHCONT
       IFELSE
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s2 XCHG
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -213,7 +213,7 @@ SETCP0
       s3 POP
       s0 s1 XCHG
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -221,7 +221,7 @@ SETCP0
     NOT
     <{
       -1 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
       s0 s1 XCHG
       1 CALLDICT
       s0 s1 XCHG
@@ -230,14 +230,14 @@ SETCP0
     <{
       s1 POP
       0 PUSHINT
-      17 CALLDICT
+      18 CALLDICT
     }> PUSHCONT
     IFELSE
     ENDC
     s0 s1 XCHG
     SENDRAWMSG
 
-  20: 
+  21: 
     -1 PUSHINT
     NEWC
     s0 s1 XCHG
@@ -344,7 +344,7 @@ SETCP0
     WHILE
     s1 POP
 
-  21: 
+  22: 
     0 PUSHINT
     s0 s1 XCHG
     NEWC
@@ -357,7 +357,7 @@ SETCP0
     }> CALLREF
     ENDC
 
-  22: 
+  23: 
     CTOS
     LDDICT
     s0 POP
@@ -391,26 +391,26 @@ SETCP0
     NEWC
     STDICT
     ENDC
-    21 CALLDICT
-
-  23: 
-    s0 POP
-    2 GETGLOBVAR
     22 CALLDICT
 
   24: 
+    s0 POP
     2 GETGLOBVAR
-    22 CALLDICT
+    23 CALLDICT
+
+  25: 
+    2 GETGLOBVAR
+    23 CALLDICT
     2DUP
-    18 CALLDICT
+    19 CALLDICT
     -1 PUSHINT
     0 PUSHINT
     66 PUSHINT
     PUSHSLICE
-    20 CALLDICT
+    21 CALLDICT
     4 3 REVERSE
     s0 s3 s4 XCHG3
-    19 CALLDICT
+    20 CALLDICT
 
   74105: 
     <{
@@ -426,8 +426,8 @@ SETCP0
       }> CALLREF
       s1 POP
     }> CALLREF
-    23 CALLDICT
-    14 CALLDICT
+    24 CALLDICT
+    15 CALLDICT
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-random should implement random correctly 1`] = `"kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv"`;
+exports[`feature-random should implement random correctly 1`] = `"kQAjaf-vgxov1tQia2T377gOzOh3xcMKVOLV0jR0N-7s02TD"`;
 
-exports[`feature-random should implement random correctly 2`] = `"kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0"`;
+exports[`feature-random should implement random correctly 2`] = `"kQCZUUfYZTPQEMSK6GefNZV1EfF58HqlD8T9tG_LSDKCS_JC"`;
 
-exports[`feature-random should implement random correctly 3`] = `"kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z"`;
+exports[`feature-random should implement random correctly 3`] = `"kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb"`;
 
 exports[`feature-random should implement random correctly 4`] = `
 [
@@ -19,7 +19,7 @@ exports[`feature-random should implement random correctly 4`] = `
       },
       "bounce": true,
       "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv",
+      "to": "kQAjaf-vgxov1tQia2T377gOzOh3xcMKVOLV0jR0N-7s02TD",
       "type": "internal",
       "value": 10000000000n,
     },
@@ -37,10 +37,10 @@ exports[`feature-random should implement random correctly 4`] = `
           "type": "text",
         },
         "bounce": true,
-        "from": "kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv",
-        "to": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
+        "from": "kQAjaf-vgxov1tQia2T377gOzOh3xcMKVOLV0jR0N-7s02TD",
+        "to": "kQCZUUfYZTPQEMSK6GefNZV1EfF58HqlD8T9tG_LSDKCS_JC",
         "type": "internal",
-        "value": 9962442000n,
+        "value": 9962528000n,
       },
     ],
     "type": "sent",
@@ -60,10 +60,10 @@ exports[`feature-random should implement random correctly 5`] = `
         "type": "text",
       },
       "bounce": true,
-      "from": "kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv",
-      "to": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
+      "from": "kQAjaf-vgxov1tQia2T377gOzOh3xcMKVOLV0jR0N-7s02TD",
+      "to": "kQCZUUfYZTPQEMSK6GefNZV1EfF58HqlD8T9tG_LSDKCS_JC",
       "type": "internal",
-      "value": 9962442000n,
+      "value": 9962528000n,
     },
     "type": "received",
   },
@@ -79,10 +79,10 @@ exports[`feature-random should implement random correctly 5`] = `
           "type": "text",
         },
         "bounce": true,
-        "from": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
-        "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+        "from": "kQCZUUfYZTPQEMSK6GefNZV1EfF58HqlD8T9tG_LSDKCS_JC",
+        "to": "kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb",
         "type": "internal",
-        "value": 9932310000n,
+        "value": 9932400000n,
       },
     ],
     "type": "sent",
@@ -102,15 +102,15 @@ exports[`feature-random should implement random correctly 6`] = `
         "type": "text",
       },
       "bounce": true,
-      "from": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
-      "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+      "from": "kQCZUUfYZTPQEMSK6GefNZV1EfF58HqlD8T9tG_LSDKCS_JC",
+      "to": "kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb",
       "type": "internal",
-      "value": 9932310000n,
+      "value": 9932400000n,
     },
     "type": "received",
   },
   {
-    "gasUsed": 19753n,
+    "gasUsed": 20103n,
     "type": "processed",
   },
   {
@@ -121,10 +121,10 @@ exports[`feature-random should implement random correctly 6`] = `
           "type": "text",
         },
         "bounce": true,
-        "from": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
-        "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+        "from": "kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb",
+        "to": "kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb",
         "type": "internal",
-        "value": 9902752000n,
+        "value": 9902496000n,
       },
     ],
     "type": "sent",
@@ -136,10 +136,10 @@ exports[`feature-random should implement random correctly 6`] = `
         "type": "text",
       },
       "bounce": true,
-      "from": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
-      "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+      "from": "kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb",
+      "to": "kQCGP44hFU3jyQwnFr2rRW8OshuOVwXYcQQt1Ti4TZ9gBhTb",
       "type": "internal",
-      "value": 9902752000n,
+      "value": 9902496000n,
     },
     "type": "received",
   },

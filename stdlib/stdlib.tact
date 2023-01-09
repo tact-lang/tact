@@ -8,3 +8,4 @@ import "./std/exceptions";
 import "./std/context";
 import "./std/reserve";
 import "./std/send";
+import "./std/config";

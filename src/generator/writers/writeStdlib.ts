@@ -130,10 +130,22 @@ export function writeStdlib(ctx: WriterContext) {
         `);
     });
 
+    ctx.fun('__tact_create_address', () => {
+        ctx.write(`
+            slice __tact_create_address(int chain, int hash) inline {
+                var b = begin_cell();
+                b = b.store_uint(2, 2);
+                b = b.store_uint(0, 1);
+                b = b.store_int(chain, 8);
+                b = b.store_uint(hash, 256);
+                return b.end_cell().begin_parse();
+            }
+        `);
+    });
+
     ctx.fun('__tact_compute_contract_address', () => {
         ctx.write(`
             slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
-
                 var b = begin_cell();
                 b = b.store_uint(0, 2);
                 b = b.store_uint(3, 2);
@@ -141,13 +153,7 @@ export function writeStdlib(ctx: WriterContext) {
                 b = b.store_ref(code);
                 b = b.store_ref(data);
                 var hash = cell_hash(b.end_cell());
-
-                var b2 = begin_cell();
-                b2 = b2.store_uint(2, 2);
-                b2 = b2.store_uint(0, 1);
-                b2 = b2.store_int(chain, 8);
-                b2 = b2.store_uint(hash, 256);
-                return b2.end_cell().begin_parse();
+                return ${ctx.used(`__tact_create_address`)}(chain, hash);
             }
         `);
     });
