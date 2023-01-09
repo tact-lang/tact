@@ -256,10 +256,11 @@ cell $__gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
 (cell, cell) $__gen_JettonDefaultWallet_init_child(cell sys', slice $master, slice $owner) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
-    cell mine = __tact_dict_get_code(source, 55471);
     cell contracts = new_dict();
-    cell code_55471 = __tact_dict_get_code(source, 55471);
-    contracts = __tact_dict_set_code(contracts, 55471, code_55471);
+    
+    ;; Contract Code: JettonDefaultWallet
+    cell mine = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, mine);
     cell sys = begin_cell().store_dict(contracts).end_cell();
     return (mine, $__gen_JettonDefaultWallet_init(sys, $master, $owner));
 }

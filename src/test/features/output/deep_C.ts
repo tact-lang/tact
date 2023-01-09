@@ -170,8 +170,8 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 }
 async function C_init() {
     const __init = 'te6ccgEBBwEANQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBEUcAHIzAHbPMmAYADAGBAQHPAA==';
-    const __code = 'te6ccgEBCgEA2AABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQBNoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAsvXb9uBDrpOEPypgQa4WP7wFoaYGAuNhgAMi/yLhxAP0gESgzN4J8MIFIrfBgAEeYfIDBeFoNTJmYDg65RzJxG0L/HU46oFXJrPe5jEoeB3LwSIau3UeEbZ54Au2ebZjwSJhxeWBBQGBwABZgEU7UTQ1AH4Yts8MQgBFsj4QgHMAds8ye1UCQAMgQEB1wABAAwBgQEBzwA=';
-    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    const __code = 'te6ccgECHgEAAtAAART/APSkE/S88sgLAQIBYgIDAgLLBAUATaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwIBIAYHAgFIDxACAdQICQAV/KP4DlAHA4AOUAQBaTt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgwACRMOMN8sCCgCgALCBu8tCAgA675ASCC8LQamTMwHB1yjmTiNoX+Opx1QKuTWe9zGJQ8DuXgkQ1duo8JMNs88BXbPNsx4ILw/DyCESRmWB26I/kEzRoJcjwIaa3qAEW9ZzPqT3bb0nK64wIMDQsCENs88BbbPNsxDA0BFO1E0NQB+GLbPDEOARbI+EIBzAHbPMntVBkADIEBAdcAAQIBIBESAgEgGhsCASATFAIBIBYXAEscFnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0IAH3MhxAcoBUAfwD3ABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8A/IcPAPcPAPJG6zmX/wDwTwAVAEzJU0A3DwD+IkbrOZf/APBPABUATMlTQDcPAP4nDwDwJ/8A8CyVjMljMzAXDwD+IhbrOYf/APAfABAcyUMXDwD+LJAYBUABPsAAUsf8gBlHAByx/ebwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMYBgBERwAcjMAds8yYBkAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwAMAYEBAc8AAgEgHB0AAUgARzQ9AQwbQGBeKcBgBD0D2+h8uCHAYF4pyICgBD0F8j0AMnwE4AA7PhC8BRc8BB/cIBCi4TWVzc2FnZTKPASXiNANPARg';
+    const __system = 'te6cckECIAEAAtoAAQHAAQEFoPFPAgEU/wD0pBP0vPLICwMCAWIFBABNoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAgLLFQYCAUgMBwIBIAkIAAFIAgEgCwoAOz4QvAUXPAQf3CAQouE1lc3NhZ2UyjwEl4jQDTwEYABHND0BDBtAYF4pwGAEPQPb6Hy4IcBgXinIgKAEPQXyPQAyfATgAgEgEQ0CASAPDgERHAByMwB2zzJgHQFLH/IAZRwAcsf3m8AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DGAQALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMCASAUEgH3MhxAcoBUAfwD3ABygJQBc8WUAP6AnABymgjbrMlbrOxjj1/8A/IcPAPcPAPJG6zmX/wDwTwAVAEzJU0A3DwD+IkbrOZf/APBPABUATMlTQDcPAP4nDwDwJ/8A8CyVjMljMzAXDwD+IhbrOYf/APAfABAcyUMXDwD+LJAYBMABPsAAEscFnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0IAIBIBcWABX8o/gOUAcDgA5QBAIB1BkYAAsIG7y0ICABaTt+3Ah10nCH5UwINcLH94C0NMDAXGwwAGRf5Fw4gH6QCJQZm8E+GECkVvgwACRMOMN8sCCgGgOu+QEggvC0GpkzMBwdco5k4jaF/jqcdUCrk1nvcxiUPA7l4JENXbqPCTDbPPAV2zzbMeCC8Pw8ghEkZlgduiP5BM0aCXI8CGmt6gBFvWcz6k9229JyuuMCHhwbAhDbPPAW2zzbMR4cARbI+EIBzAHbPMntVB0ADAGBAQHPAAEU7UTQ1AH4Yts8MR8ADIEBAdcAAawErQo=';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);
@@ -247,10 +247,13 @@ export class C implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: 'Message') {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: 'Message' | 'Message2') {
         
         let body: Cell | null = null;
         if (message === 'Message') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
+        }
+        if (message === 'Message2') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (body === null) { throw new Error('Invalid message type'); }

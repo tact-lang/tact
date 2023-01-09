@@ -7,6 +7,7 @@ PROGRAM{
   DECLPROC __tact_store_address
   DECLPROC __tact_compute_contract_address
   DECLPROC __tact_address_eq
+  DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_comment
@@ -100,6 +101,11 @@ PROGRAM{
   }>
   __tact_address_eq PROCINLINE:<{
     SDEQ
+  }>
+  __tact_dict_set_code PROCINLINE:<{
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
   }>
   __tact_dict_get_code PROCINLINE:<{
     SWAP
@@ -524,9 +530,14 @@ PROGRAM{
     CTOS
     LDDICT
     DROP
+    NEWDICT
+    SWAP
     41210 PUSHINT
     __tact_dict_get_code INLINECALLDICT
-    NEWDICT
+    SWAP
+    41210 PUSHINT
+    s2 PUSH
+    __tact_dict_set_code INLINECALLDICT
     NEWC
     STDICT
     ENDC

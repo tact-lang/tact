@@ -173,7 +173,9 @@ export async function build(project: ConfigProject, rootPath: string) {
 
         // System cell
         const depends = Dictionary.empty(Dictionary.Keys.Uint(16), Dictionary.Values.Cell());
-        for (let c of getType(ctx, contract).dependsOn) {
+        const ct = getType(ctx, contract);
+        depends.set(ct.uid, Cell.fromBoc(built[ct.name].codeBoc)[0]); // Mine
+        for (let c of ct.dependsOn) {
             let cd = built[c.name];
             if (!cd) {
                 console.warn('   > ' + cd + ': no artifacts found');

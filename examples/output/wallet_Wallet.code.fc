@@ -158,10 +158,11 @@ cell $__gen_Wallet_init(cell sys', int $key, int $walletId) {
 (cell, cell) $__gen_Wallet_init_child(cell sys', int $key, int $walletId) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
-    cell mine = __tact_dict_get_code(source, 14718);
     cell contracts = new_dict();
-    cell code_14718 = __tact_dict_get_code(source, 14718);
-    contracts = __tact_dict_set_code(contracts, 14718, code_14718);
+    
+    ;; Contract Code: Wallet
+    cell mine = __tact_dict_get_code(source, 14718);
+    contracts = __tact_dict_set_code(contracts, 14718, mine);
     cell sys = begin_cell().store_dict(contracts).end_cell();
     return (mine, $__gen_Wallet_init(sys, $key, $walletId));
 }

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: B
-BOC Size: 658 bytes
+BOC Size: 707 bytes
 
 # Types
 Total Types: 3
@@ -18,4 +18,6 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 # Get Methods
-Total Get Methods: 0
+Total Get Methods: 1
+
+## getNext

@@ -454,15 +454,20 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             ctx.write(`
                 slice sc' = sys'.begin_parse();
                 cell source = sc'~load_dict();
-                cell mine = ${ctx.used(`__tact_dict_get_code`)}(source, ${t.uid});
                 cell contracts = new_dict();
+
+                ;; Contract Code: ${t.name}
+                cell mine = ${ctx.used(`__tact_dict_get_code`)}(source, ${t.uid});
+                contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${t.uid}, mine);
             `);
 
             // Copy contracts code
             for (let c of t.dependsOn) {
                 ctx.write(`
-                    cell code_${t.uid} = __tact_dict_get_code(source, ${t.uid});
-                    contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${t.uid}, code_${t.uid});
+
+                    ;; Contract Code: ${c.name}
+                    cell code_${c.uid} = __tact_dict_get_code(source, ${c.uid});
+                    contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${c.uid}, code_${c.uid});
                 `);
             }
 

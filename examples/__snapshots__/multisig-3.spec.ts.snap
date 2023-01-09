@@ -13,7 +13,7 @@ exports[`muiltisig-3 should deploy 1`] = `
       },
       "bounce": true,
       "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQA4pfot9D03yAF1mWQmoiqj6XdczEHIfKo-PxVaI2AtRa_f",
+      "to": "kQDuEv4CfVm1VY--rWckk55_MiS1rwXvE8k0rPx11-85US-l",
       "type": "internal",
       "value": 10000000000n,
     },

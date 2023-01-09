@@ -215,7 +215,7 @@ function dictValueParserSource(): DictionaryValue<Source> {
 async function Empty_init() {
     const __init = 'te6ccgEBBwEANQABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgBEUcAHIzAHbPMmAYADAGBAQHPAA==';
     const __code = 'te6ccgEBBAEAYAABFP8A9KQT9LzyyAsBAgFiAgMARtAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QCJQRG8E+GHc8sCCAE2hd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHM=';
-    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    const __system = 'te6cckEBBgEAagABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAE2hd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMARtAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QCJQRG8E+GHc8sCCrofrZA==';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);

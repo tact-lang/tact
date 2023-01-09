@@ -850,7 +850,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Add dependencies
         for (let s of dependsOn) {
-            t.dependsOn.push(types[s]!);
+            if (s !== k) {
+                t.dependsOn.push(types[s]!);
+            }
         }
     }
 
@@ -858,8 +860,25 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Register transient dependencies
     //
 
+    function collectTransient(name: string, to: Set<string>) {
+        let t = types[name];
+        for (let d of t.dependsOn) {
+            if (to.has(d.name)) {
+                continue;
+            }
+            to.add(d.name);
+            collectTransient(d.name, to);
+        }
+    }
     for (let k in types) {
-
+        let dependsOn = new Set<string>();
+        dependsOn.add(k);
+        collectTransient(k, dependsOn);
+        for (let s of dependsOn) {
+            if (s !== k && !types[k].dependsOn.find((v) => v.name === s)) {
+                types[k].dependsOn.push(types[s]!);
+            }
+        }
     }
 
     //

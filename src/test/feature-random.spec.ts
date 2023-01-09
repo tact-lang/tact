@@ -1,4 +1,4 @@
-import { beginCell, toNano } from 'ton-core';
+import { toNano } from 'ton-core';
 import { ContractSystem } from 'ton-emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { RandomContract } from './features/output/random_RandomContract';

@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC __gen_write_A
   DECLPROC __gen_read_A
   DECLPROC __gen_write_B
+  DECLPROC __gen_StateInit_to_external
   DECLPROC __gen_load_A
   DECLPROC __gen_store_A
   DECLPROC $storeBool
@@ -20,6 +21,8 @@ PROGRAM{
   DECLPROC $__gen_String_asComment
   DECLPROC $__gen_B_init
   DECLPROC $__gen_B_init_child
+  DECLPROC $__gen_A_getNext
+  74105 DECLMETHOD $__gen_get_getNext
   DECLPROC $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
@@ -197,6 +200,8 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
+  __gen_StateInit_to_external PROC:<{
+  }>
   __gen_load_A PROCREF:<{
     c4 PUSH
     CTOS
@@ -349,21 +354,35 @@ PROGRAM{
     CTOS
     LDDICT
     DROP
-    DUP
+    NEWDICT
+    OVER
     26758 PUSHINT
     __tact_dict_get_code INLINECALLDICT
-    NEWDICT
-    s0 s2 XCHG
+    SWAP
     26758 PUSHINT
+    s2 PUSH
+    __tact_dict_set_code INLINECALLDICT
+    s0 s2 XCHG
+    30887 PUSHINT
     __tact_dict_get_code INLINECALLDICT
     s1 s2 XCHG
-    26758 PUSHINT
+    30887 PUSHINT
     SWAP
     __tact_dict_set_code INLINECALLDICT
     NEWC
     STDICT
     ENDC
     $__gen_B_init CALLDICT
+  }>
+  $__gen_A_getNext PROC:<{
+    DROP
+    __tact_context_sys GETGLOB
+    $__gen_B_init_child CALLDICT
+  }>
+  $__gen_get_getNext PROC:<{
+    __gen_load_A INLINECALLDICT
+    $__gen_A_getNext CALLDICT
+    __gen_StateInit_to_external CALLDICT
   }>
   $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROC:<{
     __tact_context_sys GETGLOB
@@ -433,6 +452,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a343768324c76713533617866425075733362367a437477534c4a5355525948636f5433716159474b337a67} PUSHSLICE
+    x{697066733a2f2f516d507a4e79797250593532626d6e33766942383178427476376b695266695157556e56746b5832546b64717939} PUSHSLICE
   }>
 }END>c

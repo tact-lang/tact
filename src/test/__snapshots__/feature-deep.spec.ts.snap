@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`feature-random should implement random correctly 1`] = `"kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv"`;
+
+exports[`feature-random should implement random correctly 2`] = `"kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0"`;
+
+exports[`feature-random should implement random correctly 3`] = `"kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z"`;
+
+exports[`feature-random should implement random correctly 4`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "text": "Message",
+        "type": "text",
+      },
+      "bounce": true,
+      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+      "to": "kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv",
+      "type": "internal",
+      "value": 10000000000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 22507n,
+    "type": "processed",
+  },
+  {
+    "messages": [
+      {
+        "body": {
+          "text": "Message",
+          "type": "text",
+        },
+        "bounce": true,
+        "from": "kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv",
+        "to": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
+        "type": "internal",
+        "value": 9962442000n,
+      },
+    ],
+    "type": "sent",
+  },
+]
+`;
+
+exports[`feature-random should implement random correctly 5`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "text": "Message",
+        "type": "text",
+      },
+      "bounce": true,
+      "from": "kQCKS0QgCVQwXzKIl2MB0pWoZn0OzUXRODR-kxAnrMysxqcv",
+      "to": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
+      "type": "internal",
+      "value": 9962442000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 20335n,
+    "type": "processed",
+  },
+  {
+    "messages": [
+      {
+        "body": {
+          "text": "Message",
+          "type": "text",
+        },
+        "bounce": true,
+        "from": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
+        "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+        "type": "internal",
+        "value": 9932310000n,
+      },
+    ],
+    "type": "sent",
+  },
+]
+`;
+
+exports[`feature-random should implement random correctly 6`] = `
+[
+  {
+    "type": "deploy",
+  },
+  {
+    "message": {
+      "body": {
+        "text": "Message",
+        "type": "text",
+      },
+      "bounce": true,
+      "from": "kQC0EzHemC36j86IRptd1JQURHVUnNCIUnbi5puK5WitsCt0",
+      "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+      "type": "internal",
+      "value": 9932310000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 19753n,
+    "type": "processed",
+  },
+  {
+    "messages": [
+      {
+        "body": {
+          "text": "Message2",
+          "type": "text",
+        },
+        "bounce": true,
+        "from": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+        "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+        "type": "internal",
+        "value": 9902752000n,
+      },
+    ],
+    "type": "sent",
+  },
+  {
+    "message": {
+      "body": {
+        "text": "Message2",
+        "type": "text",
+      },
+      "bounce": true,
+      "from": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+      "to": "kQA9ncKCPHR0-7cNpi4DckTkfy2jo3KirrZp1x6ZEgYoM72Z",
+      "type": "internal",
+      "value": 9902752000n,
+    },
+    "type": "received",
+  },
+  {
+    "gasUsed": 4338n,
+    "type": "processed",
+  },
+]
+`;

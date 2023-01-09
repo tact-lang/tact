@@ -49,6 +49,10 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
+cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+    return udict_set_ref(dict, 16, id, code);
+}
+
 cell __tact_dict_get_code(cell dict, int id) inline {
     var (data, ok) = udict_get_ref?(dict, 16, id);
     throw_unless(135, ok);
@@ -309,8 +313,11 @@ cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
 (cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
-    cell mine = __tact_dict_get_code(source, 41210);
     cell contracts = new_dict();
+    
+    ;; Contract Code: Beacon
+    cell mine = __tact_dict_get_code(source, 41210);
+    contracts = __tact_dict_set_code(contracts, 41210, mine);
     cell sys = begin_cell().store_dict(contracts).end_cell();
     return (mine, $__gen_Beacon_init(sys, $master, $owner));
 }

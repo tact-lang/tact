@@ -31,7 +31,7 @@ global cell __tact_context_sys;
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 () __tact_verify_address(slice address) inline {
-    throw_unless(134, address.slice_bits() != 267);
+    throw_unless(136, address.slice_bits() != 267);
 }
 
 global int __tact_randomized;
@@ -207,7 +207,7 @@ cell __tact_dict_set_code(cell dict, int id, cell code) inline {
 
 cell __tact_dict_get_code(cell dict, int id) inline {
     var (data, ok) = udict_get_ref?(dict, 16, id);
-    throw_unless(100, ok);
+    throw_unless(135, ok);
     return data;
 }
 
@@ -953,7 +953,7 @@ global cell __tact_context_sys;
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 () __tact_verify_address(slice address) inline {
-    throw_unless(134, address.slice_bits() != 267);
+    throw_unless(136, address.slice_bits() != 267);
 }
 
 global int __tact_randomized;
@@ -1129,7 +1129,7 @@ cell __tact_dict_set_code(cell dict, int id, cell code) inline {
 
 cell __tact_dict_get_code(cell dict, int id) inline {
     var (data, ok) = udict_get_ref?(dict, 16, id);
-    throw_unless(100, ok);
+    throw_unless(135, ok);
     return data;
 }
 
@@ -1875,7 +1875,7 @@ global cell __tact_context_sys;
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 () __tact_verify_address(slice address) inline {
-    throw_unless(134, address.slice_bits() != 267);
+    throw_unless(136, address.slice_bits() != 267);
 }
 
 global int __tact_randomized;
@@ -2051,7 +2051,7 @@ cell __tact_dict_set_code(cell dict, int id, cell code) inline {
 
 cell __tact_dict_get_code(cell dict, int id) inline {
     var (data, ok) = udict_get_ref?(dict, 16, id);
-    throw_unless(100, ok);
+    throw_unless(135, ok);
     return data;
 }
 

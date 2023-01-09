@@ -3,6 +3,7 @@ PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
   DECLPROC __tact_compute_contract_address
+  DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_comment
@@ -11,6 +12,7 @@ PROGRAM{
   DECLPROC __gen_write_B
   DECLPROC __gen_read_B
   DECLPROC __gen_write_C
+  DECLPROC __gen_StateInit_to_external
   DECLPROC __gen_load_B
   DECLPROC __gen_store_B
   DECLPROC $storeBool
@@ -19,6 +21,8 @@ PROGRAM{
   DECLPROC $__gen_String_asComment
   DECLPROC $__gen_C_init
   DECLPROC $__gen_C_init_child
+  DECLPROC $__gen_B_getNext
+  74105 DECLMETHOD $__gen_get_getNext
   DECLPROC $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
@@ -67,6 +71,11 @@ PROGRAM{
     256 STU
     ENDC
     CTOS
+  }>
+  __tact_dict_set_code PROCINLINE:<{
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
   }>
   __tact_dict_get_code PROCINLINE:<{
     SWAP
@@ -190,6 +199,8 @@ PROGRAM{
     SWAP
     257 PUSHINT
     STIX
+  }>
+  __gen_StateInit_to_external PROC:<{
   }>
   __gen_load_B PROCREF:<{
     c4 PUSH
@@ -343,13 +354,28 @@ PROGRAM{
     CTOS
     LDDICT
     DROP
+    NEWDICT
+    SWAP
     30887 PUSHINT
     __tact_dict_get_code INLINECALLDICT
-    NEWDICT
+    SWAP
+    30887 PUSHINT
+    s2 PUSH
+    __tact_dict_set_code INLINECALLDICT
     NEWC
     STDICT
     ENDC
     $__gen_C_init CALLDICT
+  }>
+  $__gen_B_getNext PROC:<{
+    DROP
+    __tact_context_sys GETGLOB
+    $__gen_C_init_child CALLDICT
+  }>
+  $__gen_get_getNext PROC:<{
+    __gen_load_B INLINECALLDICT
+    $__gen_B_getNext CALLDICT
+    __gen_StateInit_to_external CALLDICT
   }>
   $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROC:<{
     __tact_context_sys GETGLOB
@@ -419,6 +445,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d4e6253665865506b487a43744565755972333474547659515a784656397754365976325a3856326241716f74} PUSHSLICE
+    x{697066733a2f2f516d59775362487332757376674765485461794a37726a67743668646359766b38475636574d5464344432457879} PUSHSLICE
   }>
 }END>c

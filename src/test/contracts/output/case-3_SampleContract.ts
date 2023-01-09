@@ -215,7 +215,7 @@ function dictValueParserSource(): DictionaryValue<Source> {
 async function SampleContract_init() {
     const __init = 'te6ccgEBCAEAVAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AcAAUgBF1bXBSBMjMRDTbPMmAYBKFA0gQEBzwCBAQHPAMhAA9s8yQHMBwAWAoEBAc8AgQEBzwA=';
     const __code = 'te6ccgEBCwEAqwABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAAF0vgcAQ294sbZ54AkCABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMARbtRNDUAfhi2zxsFAkBKIEBAdcAgQEB1wDUAdDbPDIQJEMACgAWgQEB1wCBAQHXAFk=';
-    const __system = 'te6cckEBAQEAAwAAAUD20kA0';
+    const __system = 'te6cckEBDQEAtQABAcABAQWghxUCART/APSkE/S88sgLAwIBYgoEAgEgBgUATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAENveLG2eeAJAcBFu1E0NQB+GLbPGwUCAEogQEB1wCBAQHXANQB0Ns8MhAkQwAJABaBAQHXAIEBAdcAWQICzQwLAAXS+BwARdEGukmOEPmGhpgYC42GAAyL/IuHEA/SARKCI3gnww7nlgQUhQg3Eg==';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);

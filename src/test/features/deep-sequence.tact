@@ -17,6 +17,10 @@ contract A {
             body: "Message".asComment()
         });
     }
+
+    get fun getNext(): StateInit {
+        return initOf B();
+    }
 }
 
 contract B {
@@ -38,6 +42,10 @@ contract B {
             body: "Message".asComment()
         });
     }
+
+    get fun getNext(): StateInit {
+        return initOf C();
+    }
 }
 
 contract C {
@@ -47,6 +55,20 @@ contract C {
     }
 
     receive("Message") {
-        
+        let init: StateInit = initOf C();
+        let address: Address = contractAddress(init);
+        send(SendParameters{
+            value: 0, 
+            to: address, 
+            mode: SendRemainingValue + SendIgnoreErrors, 
+            bounce: true,
+            code: init.code,
+            data: init.data,
+            body: "Message2".asComment()
+        });
+    }
+
+    receive("Message2") {
+        // Nothing to do
     }
 }
