@@ -4,7 +4,7 @@ global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
 () __tact_verify_address(slice address) inline {
-    throw_unless(134, address.slice_bits() != 267);
+    throw_unless(136, address.slice_bits() != 267);
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -251,5 +251,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmZpQEAJUCfhxkZoNUxmDVGS49hqWukG7MefX4YQQ2wMYx";
+    return "ipfs://QmRsUnqoe7PntazkvD8ojeFJx6XmgC9KWscVzrqFGiPSst";
 }

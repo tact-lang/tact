@@ -66,7 +66,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_verify_address', () => {
         ctx.write(`
             () __tact_verify_address(slice address) inline {
-                throw_unless(134, address.slice_bits() != 267);
+                throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() != 267);
             }
         `);
     });
@@ -365,7 +365,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.write(`
             cell __tact_dict_get_code(cell dict, int id) inline {
                 var (data, ok) = udict_get_ref?(dict, 16, id);
-                throw_unless(100, ok);
+                throw_unless(${contractErrors.codeNotFound.id}, ok);
                 return data;
             }
         `);
@@ -546,7 +546,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun(`__tact_float_to_string`, () => {
         ctx.write(`
             slice __tact_float_to_string(int src, int digits) {
-                throw_if(134, (digits <= 0) | (digits > 77));
+                throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));
                 builder b = begin_cell();
 
                 if (src < 0) {

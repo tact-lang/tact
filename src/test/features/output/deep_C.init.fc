@@ -1,0 +1,20 @@
+builder __gen_write_C(builder build_0, (int) v) inline_ref {
+    var (v'a) = v;
+    build_0 = build_0.store_int(v'a, 257);
+    return build_0;
+}
+
+cell $__gen_C_init(cell sys') {
+    var (($self'a)) = (0);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_C(b', ($self'a));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_C_init(sys');
+}
+
+() main() {
+}

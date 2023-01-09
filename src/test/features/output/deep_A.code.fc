@@ -1,0 +1,272 @@
+forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+() __tact_verify_address(slice address) inline {
+    throw_unless(136, address.slice_bits() != 267);
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    __tact_verify_address(address);
+    b = b.store_slice(address);
+    return b;
+}
+
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+
+    var b = begin_cell();
+    b = b.store_uint(0, 2);
+    b = b.store_uint(3, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_ref(code);
+    b = b.store_ref(data);
+    var hash = cell_hash(b.end_cell());
+
+    var b2 = begin_cell();
+    b2 = b2.store_uint(2, 2);
+    b2 = b2.store_uint(0, 1);
+    b2 = b2.store_int(chain, 8);
+    b2 = b2.store_uint(hash, 256);
+    return b2.end_cell().begin_parse();
+}
+
+cell __tact_dict_set_code(cell dict, int id, cell code) inline {
+    return udict_set_ref(dict, 16, id, code);
+}
+
+cell __tact_dict_get_code(cell dict, int id) inline {
+    var (data, ok) = udict_get_ref?(dict, 16, id);
+    throw_unless(135, ok);
+    return data;
+}
+
+tuple __tact_string_builder_start(int comment) inline {
+    builder b = begin_cell();
+    if (comment) {
+        b = store_uint(b, 0, 32);
+    }
+    return tpush(tpush(empty_tuple(), b), null());
+}
+
+tuple __tact_string_builder_start_comment() inline {
+    return __tact_string_builder_start(true);
+}
+
+cell __tact_string_builder_end(tuple builders) inline {
+    (builder b, tuple tail) = uncons(builders);
+    cell c = b.end_cell();
+    while(~ null?(tail)) {
+        (b, tail) = uncons(tail);
+        c = b.store_ref(c).end_cell();
+    }
+    return c;
+}
+
+((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
+    int sliceRefs = slice_refs(sc);
+    int sliceBits = slice_bits(sc);
+
+    while((sliceBits > 0) | (sliceRefs > 0)) {
+
+        ;; Load the current builder
+        (builder b, tuple tail) = uncons(builders);
+        int remBytes = 127 - (builder_bits(b) / 8);
+        int exBytes = sliceBits / 8;
+
+        ;; Append bits
+        int amount = min(remBytes, exBytes);
+        if (amount > 0) {
+            slice read = sc~load_bits(amount * 8);
+            b = b.store_slice(read);
+        }
+
+        ;; Update builders
+        builders = cons(b, tail);
+
+        ;; Check if we need to add a new cell and continue
+        if (exBytes - amount > 0) {
+            var bb = begin_cell();
+            builders = cons(bb, builders);
+            sliceBits = (exBytes - amount) * 8;
+        } elseif (sliceRefs > 0) {
+            sc = sc~load_ref().begin_parse();
+            sliceRefs = slice_refs(sc);
+            sliceBits = slice_bits(sc);
+        } else {
+            sliceBits = 0;
+            sliceRefs = 0;
+        }
+    }
+
+    return ((builders), ());
+}
+
+builder __gen_write_A(builder build_0, (int) v) inline_ref {
+    var (v'a) = v;
+    build_0 = build_0.store_int(v'a, 257);
+    return build_0;
+}
+
+(slice, ((int))) __gen_read_A(slice sc_0) inline_ref {
+    var v'a = sc_0~load_int(257);
+    return (sc_0, (v'a));
+}
+
+builder __gen_write_B(builder build_0, (int) v) inline_ref {
+    var (v'a) = v;
+    build_0 = build_0.store_int(v'a, 257);
+    return build_0;
+}
+
+(int) __gen_load_A() inline_ref {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_A();
+}
+
+() __gen_store_A((int) v) impure inline_ref {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_A(b, v);
+    set_data(b.end_cell());
+}
+
+;; String "Message"
+slice __gen_str_796354186() asm "B{b5ee9c7241010101000900000e4d657373616765b15ae930} B>boc <s PUSHSLICE";
+
+builder $storeBool(builder $s, int $value) impure {
+    if ($value) {
+        return store_int($s, (- 1), 1);
+    } else {
+        return store_int($s, 0, 1);
+    }
+}
+
+slice $contractAddress((cell, cell) $s) impure {
+    var (($s'code, $s'data)) = $s;
+    return __tact_compute_contract_address(0, $s'code, $s'data);
+}
+
+() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
+    builder $b = begin_cell();
+    $b = store_int($b, 1, 2);
+    $b = $storeBool($b, $params'bounce);
+    $b = store_int($b, 0, 3);
+    $b = __tact_store_address($b, $params'to);
+    $b = store_coins($b, $params'value);
+    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
+    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+        $b = $storeBool($b, true);
+        builder $bc = begin_cell();
+        $bc = $storeBool($bc, false);
+        $bc = $storeBool($bc, false);
+        if ((~ null?($params'code))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'code));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        if ((~ null?($params'data))) {
+            $bc = $storeBool($bc, true);
+            $bc = store_ref($bc, __tact_not_null($params'data));
+        } else {
+            $bc = $storeBool($bc, false);
+        }
+        $bc = $storeBool($bc, false);
+        $b = $storeBool($b, true);
+        $b = store_ref($b, end_cell($bc));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $body = $params'body;
+    if ((~ null?($body))) {
+        $b = $storeBool($b, true);
+        $b = store_ref($b, __tact_not_null($body));
+    } else {
+        $b = $storeBool($b, false);
+    }
+    cell $c = end_cell($b);
+    send_raw_message($c, $params'mode);
+}
+
+cell $__gen_String_asComment(slice $self) impure {
+    var ($self) = $self;
+    tuple $b = __tact_string_builder_start_comment();
+    $b~__tact_string_builder_append($self);
+    return __tact_string_builder_end($b);
+}
+
+cell $__gen_B_init(cell sys') {
+    var (($self'a)) = (0);
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_B(b', ($self'a));
+    return b'.end_cell();
+}
+
+(cell, cell) $__gen_B_init_child(cell sys') {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell mine = __tact_dict_get_code(source, 26758);
+    cell contracts = new_dict();
+    cell code_26758 = __tact_dict_get_code(source, 26758);
+    contracts = __tact_dict_set_code(contracts, 26758, code_26758);
+    cell sys = begin_cell().store_dict(contracts).end_cell();
+    return (mine, $__gen_B_init(sys));
+}
+
+((int), ()) $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d((int) $self) impure {
+    var ($self'a) = $self;
+    var ($init'code, $init'data) = $__gen_B_init_child(__tact_context_sys);
+    slice $address = $contractAddress(($init'code, $init'data));
+    $send((true, $address, 0, (64 + 2), $__gen_String_asComment(__gen_str_796354186()), $init'code, $init'data));
+    return (($self'a), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Message" message
+        if (text_op == 0xb41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d) {
+            var self = __gen_load_A();
+            self~$__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d();
+            __gen_store_A(self);
+            return ();
+        }
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmZ47h2Lvq53axfBPus3b6zCtwSLJSURYHcoT3qaYGK3zg";
+}

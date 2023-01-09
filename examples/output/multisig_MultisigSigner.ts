@@ -332,6 +332,8 @@ const MultisigSigner_errors: { [key: number]: { message: string } } = {
     132: { message: `Access denied` },
     133: { message: `Contract stopped` },
     134: { message: `Invalid argument` },
+    135: { message: `Code of a contract was not found` },
+    136: { message: `Invalid address` },
     4429: { message: `Invalid sender` },
     4755: { message: `Timeout` },
     40810: { message: `Completed` },

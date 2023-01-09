@@ -20,7 +20,7 @@ PROGRAM{
     SBITS
     267 PUSHINT
     NEQ
-    134 THROWIFNOT
+    136 THROWIFNOT
   }>
   __tact_store_address PROCINLINE:<{
     STSLICER

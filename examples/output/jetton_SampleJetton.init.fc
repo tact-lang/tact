@@ -1,5 +1,5 @@
 () __tact_verify_address(slice address) inline {
-    throw_unless(134, address.slice_bits() != 267);
+    throw_unless(136, address.slice_bits() != 267);
 }
 
 builder __tact_store_address(builder b, slice address) inline {

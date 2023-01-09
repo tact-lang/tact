@@ -855,6 +855,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
+    // Register transient dependencies
+    //
+
+    for (let k in types) {
+
+    }
+
+    //
     // Resolve static functions
     //
 
