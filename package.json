@@ -1,6 +1,6 @@
 {
   "name": "ton-tact",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "main": "./dist/main.js",
   "repository": "https://github.com/ex3ndr/tact-v2.git",
   "author": "Steve Korshakov <steve@korshakov.com>",
