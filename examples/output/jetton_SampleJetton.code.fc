@@ -284,7 +284,8 @@ _ $__gen_get_get_wallet_address(slice $$owner) method_id(103289) {
 
 (int, int, slice, cell, cell) $__gen_SampleJetton_get_jetton_data((int, slice, cell, int) $self) impure {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
-    return ($self'totalSupply, $self'mintable, $self'owner, $self'content, __gen_StateInit_get_code(($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit(my_address())));
+    cell $code = __gen_StateInit_get_code(($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit(my_address()));
+    return ($self'totalSupply, $self'mintable, $self'owner, $self'content, $code);
 }
 
 _ $__gen_get_get_jetton_data() method_id(106029) {

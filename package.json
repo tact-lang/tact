@@ -35,7 +35,7 @@
     "prando": "^6.0.1",
     "qs": "^6.11.0",
     "tmp": "^0.2.1",
-    "ton-compiler": "^2.0.0",
+    "ton-compiler": "^2.1.1",
     "ton-core": ">=0.44.0",
     "ton-crypto": "^3.2.0",
     "tvm-disassembler": "^2.0.0",

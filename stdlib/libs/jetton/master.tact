@@ -59,12 +59,13 @@ trait Jetton with Ownable {
     }
 
     get fun get_jetton_data(): JettonData {
+        let code: Cell = self.getJettonWalletInit(myAddress()).code;
         return JettonData{ 
             totalSupply: self.totalSupply, 
             mintable: self.mintable, 
             owner: self.owner, 
             content: self.content, 
-            walletCode: self.getJettonWalletInit(myAddress()).code
+            walletCode: code
         };
     }
 

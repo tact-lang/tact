@@ -33,9 +33,15 @@ import { build } from '../pipeline/build';
 
             // Precompile
             console.log('Processing ' + p.path + r);
-            let c = await compileContract({ files: [p.path + r] });
-            if (!c.ok) {
-                console.warn(c.log);
+            let c;
+            try {
+                c = await compileContract({ files: [p.path + r], version: 'v2022.12' });
+                if (!c.ok) {
+                    console.warn(c.log);
+                    continue;
+                }
+            } catch (e) {
+                console.warn('Failed');
                 continue;
             }
             fs.writeFileSync(p.path + r + ".fift", c.fift!);

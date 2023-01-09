@@ -4415,10 +4415,10 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-ton-compiler@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ton-compiler/-/ton-compiler-2.0.0.tgz#1a972e32aa06967fc9d6744f637376792ef64b3a"
-  integrity sha512-ZLljfTeneFPd3ENfxx/OHhwKZzQF8j8oShVjqS5LQC7O603xmzU6QD8XGe/syqIZJx2a5xvho1So0nqrbqXWQw==
+ton-compiler@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ton-compiler/-/ton-compiler-2.1.1.tgz#9f44bed5ab39a8b0ae64d94a71c4a07a913dea0c"
+  integrity sha512-IE4oqSw3P6O/U1w09oKWSI2uDbm6uR2PgWSRtgtKBMI2qmdR0Icrx4TSt7lq3WlZ5vUHKN/DEO0KolpCOY0+OA==
   dependencies:
     arg "^5.0.1"
     tmp "^0.2.1"

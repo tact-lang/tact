@@ -1,6 +1,7 @@
 SETCP0
 (:methods
   recv_internal: 
+    c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
     s1 PUSH

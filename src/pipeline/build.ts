@@ -98,13 +98,13 @@ export async function build(project: ConfigProject, rootPath: string) {
         let initBoc: Buffer;
         let initFift: string;
         try {
-            let c = await compileContract({ files: [pathCodeFc] });
+            let c = await compileContract({ files: [pathCodeFc], version: 'v2022.12' });
             if (!c.ok) {
                 console.warn(c.log);
                 ok = false;
                 continue;
             }
-            let c2 = await compileContract({ files: [pathInitFc] });
+            let c2 = await compileContract({ files: [pathInitFc], version: 'v2022.12' });
             if (!c2.ok) {
                 console.warn(c2.log);
                 ok = false;

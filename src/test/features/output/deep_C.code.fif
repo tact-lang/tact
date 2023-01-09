@@ -372,6 +372,7 @@ PROGRAM{
   $__gen_C_receive_comment_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272 PROC:<{
   }>
   recv_internal PROC:<{
+    c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
     OVER

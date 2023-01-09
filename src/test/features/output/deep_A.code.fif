@@ -397,6 +397,7 @@ PROGRAM{
     $send CALLDICT
   }>
   recv_internal PROC:<{
+    c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
     OVER
