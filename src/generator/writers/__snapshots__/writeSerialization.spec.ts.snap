@@ -42,6 +42,11 @@ global int __tact_randomized;
     }
 }
 
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
+}
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     __tact_verify_address(raw);
@@ -966,6 +971,11 @@ global int __tact_randomized;
     }
 }
 
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
+}
+
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
     __tact_verify_address(raw);
@@ -1888,6 +1898,11 @@ global int __tact_randomized;
         randomize_lt();
         __tact_randomized = true;
     }
+}
+
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {

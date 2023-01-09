@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
   DECLPROC __tact_verify_address
+  DECLPROC __tact_store_bool
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_address_eq
@@ -12,7 +13,6 @@ PROGRAM{
   DECLPROC __gen_read_Beacon
   DECLPROC __gen_load_Beacon
   DECLPROC __gen_store_Beacon
-  DECLPROC $storeBool
   DECLPROC $send
   DECLPROC $reply
   DECLPROC $__gen_Beacon_owner
@@ -38,6 +38,10 @@ PROGRAM{
     267 PUSHINT
     NEQ
     136 THROWIFNOT
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -110,23 +114,13 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $storeBool PROC:<{
-    IFJMP:<{
-      -1 PUSHINT
-      SWAP
-      1 STI
-    }>
-    0 PUSHINT
-    SWAP
-    1 STI
-  }>
   $send PROC:<{
     NEWC
     1 PUSHINT
     SWAP
     2 STI
     s0 s7 XCHG2
-    $storeBool CALLDICT
+    __tact_store_bool INLINECALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -146,18 +140,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       NEWC
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -166,14 +160,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -182,13 +176,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
       }>
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       s0 s2 XCHG
       TRUE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -198,14 +192,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -213,7 +207,7 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
     }>
     ENDC
     SWAP

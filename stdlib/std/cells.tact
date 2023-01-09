@@ -11,15 +11,8 @@ native storeInt(s: Builder, value: Int, bits: Int): Builder;
 @name(store_uint)
 native storeUint(s: Builder, value: Int, bits: Int): Builder;
 
-fun storeBool(s: Builder, value: Bool): Builder {
-
-    // TODO: Make it optimal
-    if (value) {
-        return storeInt(s, -1, 1);
-    } else {
-        return storeInt(s, 0, 1);
-    }
-}
+@name(__tact_store_bool)
+native storeBool(s: Builder, value: Bool): Builder;
 
 @name(store_coins)
 native storeCoins(s: Builder, value: Int): Builder;

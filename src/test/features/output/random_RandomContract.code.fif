@@ -3,6 +3,7 @@ PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_verify_address
   DECLPROC __tact_prepare_random
+  DECLPROC __tact_store_bool
   DECLPROC __tact_store_address
   DECLPROC __gen_read_Deploy
   DECLPROC __gen_write_DeployOk
@@ -11,7 +12,6 @@ PROGRAM{
   DECLPROC __gen_read_RandomContract
   DECLPROC __gen_load_RandomContract
   DECLPROC __gen_store_RandomContract
-  DECLPROC $storeBool
   DECLPROC $randomInt
   DECLPROC $random
   DECLPROC $send
@@ -51,6 +51,10 @@ PROGRAM{
       TRUE
       __tact_randomized SETGLOB
     }>
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
   }>
   __tact_store_address PROCINLINE:<{
     STSLICER
@@ -105,16 +109,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $storeBool PROC:<{
-    IFJMP:<{
-      -1 PUSHINT
-      SWAP
-      1 STI
-    }>
-    0 PUSHINT
-    SWAP
-    1 STI
-  }>
   $randomInt PROC:<{
     __tact_prepare_random INLINECALLDICT
     RANDU256
@@ -132,7 +126,7 @@ PROGRAM{
     SWAP
     2 STI
     s0 s7 XCHG2
-    $storeBool CALLDICT
+    __tact_store_bool INLINECALLDICT
     0 PUSHINT
     SWAP
     3 STI
@@ -152,18 +146,18 @@ PROGRAM{
     OR
     IF:<{
       TRUE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       NEWC
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -172,14 +166,14 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
       }>
       s4 PUSH
       ISNULL
       NOT
       IF:<{
         TRUE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
         __tact_not_null CALLDICT
         s0 s4 XCHG2
@@ -188,13 +182,13 @@ PROGRAM{
         s4 POP
         s0 s3 XCHG
         FALSE
-        $storeBool CALLDICT
+        __tact_store_bool INLINECALLDICT
       }>
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       s0 s2 XCHG
       TRUE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       s0 s2 XCHG
       ENDC
       ROT
@@ -204,14 +198,14 @@ PROGRAM{
       s3 POP
       SWAP
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
     }>
     OVER
     ISNULL
     NOT
     IF:<{
       TRUE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
       SWAP
       __tact_not_null CALLDICT
       SWAP
@@ -219,7 +213,7 @@ PROGRAM{
     }>ELSE<{
       NIP
       FALSE
-      $storeBool CALLDICT
+      __tact_store_bool INLINECALLDICT
     }>
     ENDC
     SWAP

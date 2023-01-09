@@ -163,24 +163,14 @@ SETCP0
     ISNULL
     128 THROWIF
 
-  13: 
-    <{
-      -1 PUSHINT
-      s0 s1 XCHG
-      1 STI
-    }> PUSHCONT
-    IFJMP
-    0 PUSHINT
-    s0 s1 XCHG
-    1 STI
-
   14: 
     NEWC
     1 PUSHINT
     s0 s1 XCHG
     2 STI
     s0 s7 XCHG2
-    13 CALLDICT
+    s0 s1 XCHG
+    1 STI
     0 PUSHINT
     s0 s1 XCHG
     3 STI
@@ -200,18 +190,22 @@ SETCP0
     OR
     <{
       -1 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
       NEWC
       0 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
       0 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
       s4 PUSH
       ISNULL
       NOT
       <{
         -1 PUSHINT
-        13 CALLDICT
+        s0 s1 XCHG
+        1 STI
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -221,7 +215,8 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        13 CALLDICT
+        s0 s1 XCHG
+        1 STI
       }> PUSHCONT
       IFELSE
       s4 PUSH
@@ -229,7 +224,8 @@ SETCP0
       NOT
       <{
         -1 PUSHINT
-        13 CALLDICT
+        s0 s1 XCHG
+        1 STI
         s0 s4 XCHG
         1 CALLDICT
         s0 s4 XCHG2
@@ -239,14 +235,17 @@ SETCP0
         s4 POP
         s0 s3 XCHG
         0 PUSHINT
-        13 CALLDICT
+        s0 s1 XCHG
+        1 STI
       }> PUSHCONT
       IFELSE
       0 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
       s0 s2 XCHG
       -1 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
       s0 s2 XCHG
       ENDC
       ROT
@@ -257,7 +256,8 @@ SETCP0
       s3 POP
       s0 s1 XCHG
       0 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -265,21 +265,20 @@ SETCP0
     NOT
     <{
       -1 PUSHINT
-      13 CALLDICT
+      s0 s1 XCHG
+      1 STI
       s0 s1 XCHG
       1 CALLDICT
       s0 s1 XCHG
       STREF
-    }> PUSHCONT
-    <{
-      s1 POP
-      0 PUSHINT
-      13 CALLDICT
-    }> PUSHCONT
-    IFELSE
+    }> IFREFELSEREF
     ENDC
     s0 s1 XCHG
     SENDRAWMSG
+    s1 POP
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
 
   15: 
     -1 PUSHINT

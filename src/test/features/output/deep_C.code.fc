@@ -7,6 +7,11 @@ global cell __tact_context_sys;
     throw_unless(136, address.slice_bits() != 267);
 }
 
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
+}
+
 builder __tact_store_address(builder b, slice address) inline {
     __tact_verify_address(address);
     b = b.store_slice(address);
@@ -131,14 +136,6 @@ builder __gen_write_C(builder build_0, (int) v) inline_ref {
 ;; String "Message2"
 slice __gen_str_1801178584() asm "B{b5ee9c7241010101000a0000104d65737361676532cd775f6e} B>boc <s PUSHSLICE";
 
-builder $storeBool(builder $s, int $value) impure {
-    if ($value) {
-        return store_int($s, (- 1), 1);
-    } else {
-        return store_int($s, 0, 1);
-    }
-}
-
 slice $contractAddress((cell, cell) $s) impure {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
@@ -148,40 +145,40 @@ slice $contractAddress((cell, cell) $s) impure {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
-    $b = $storeBool($b, $params'bounce);
+    $b = __tact_store_bool($b, $params'bounce);
     $b = store_int($b, 0, 3);
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
     if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = $storeBool($b, true);
+        $b = __tact_store_bool($b, true);
         builder $bc = begin_cell();
-        $bc = $storeBool($bc, false);
-        $bc = $storeBool($bc, false);
+        $bc = __tact_store_bool($bc, false);
+        $bc = __tact_store_bool($bc, false);
         if ((~ null?($params'code))) {
-            $bc = $storeBool($bc, true);
+            $bc = __tact_store_bool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'code));
         } else {
-            $bc = $storeBool($bc, false);
+            $bc = __tact_store_bool($bc, false);
         }
         if ((~ null?($params'data))) {
-            $bc = $storeBool($bc, true);
+            $bc = __tact_store_bool($bc, true);
             $bc = store_ref($bc, __tact_not_null($params'data));
         } else {
-            $bc = $storeBool($bc, false);
+            $bc = __tact_store_bool($bc, false);
         }
-        $bc = $storeBool($bc, false);
-        $b = $storeBool($b, true);
+        $bc = __tact_store_bool($bc, false);
+        $b = __tact_store_bool($b, true);
         $b = store_ref($b, end_cell($bc));
     } else {
-        $b = $storeBool($b, false);
+        $b = __tact_store_bool($b, false);
     }
     cell $body = $params'body;
     if ((~ null?($body))) {
-        $b = $storeBool($b, true);
+        $b = __tact_store_bool($b, true);
         $b = store_ref($b, __tact_not_null($body));
     } else {
-        $b = $storeBool($b, false);
+        $b = __tact_store_bool($b, false);
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);

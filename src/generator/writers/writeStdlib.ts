@@ -83,6 +83,15 @@ export function writeStdlib(ctx: WriterContext) {
         `);
     });
 
+    ctx.fun('__tact_store_bool', () => {
+        ctx.write(`
+            builder __tact_store_bool(builder b, int v) inline {
+                b = b.store_int(v, 1);
+                return b;
+            }
+        `);
+    });
+
     ctx.fun('__tact_load_address', () => {
         ctx.write(`
             (slice, slice) __tact_load_address(slice cs) inline {
