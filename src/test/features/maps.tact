@@ -18,6 +18,11 @@ message SetIntMap4 {
     value: SomeStruct?;
 }
 
+message SetIntMap5 {
+    key: Int;
+    value: SomeStruct;
+}
+
 message SetAddrMap1 {
     key: Address;
     value: Int?;
@@ -36,6 +41,11 @@ message SetAddrMap3 {
 message SetAddrMap4 {
     key: Address;
     value: SomeStruct?;
+}
+
+message SetAddrMap5 {
+    key: Address;
+    value: SomeStruct;
 }
 
 struct SomeStruct {
@@ -74,6 +84,10 @@ contract MapTestContract {
     }
 
     receive(msg: SetIntMap4) {
+        self.intMap4.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetIntMap5) {
         self.intMap4.set(msg.key, msg.value);
     }
 
@@ -131,6 +145,10 @@ contract MapTestContract {
     }
 
     receive(msg: SetAddrMap4) {
+        self.addrMap4.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetAddrMap5) {
         self.addrMap4.set(msg.key, msg.value);
     }
 

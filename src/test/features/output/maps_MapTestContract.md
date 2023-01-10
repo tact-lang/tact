@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 1769 bytes
+BOC Size: 1963 bytes
 
 # Types
-Total Types: 12
+Total Types: 14
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -33,6 +33,10 @@ Signature: `SetIntMap3{key:int257,value:Maybe ^cell}`
 TLB: `set_int_map4#16d453c5 key:int257 value:Maybe SomeStruct{value:int257} = SetIntMap4`
 Signature: `SetIntMap4{key:int257,value:Maybe SomeStruct{value:int257}}`
 
+## SetIntMap5
+TLB: `set_int_map5#0e58f181 key:int257 value:SomeStruct{value:int257} = SetIntMap5`
+Signature: `SetIntMap5{key:int257,value:SomeStruct{value:int257}}`
+
 ## SetAddrMap1
 TLB: `set_addr_map1#684e5e4d key:address value:Maybe int257 = SetAddrMap1`
 Signature: `SetAddrMap1{key:address,value:Maybe int257}`
@@ -48,6 +52,10 @@ Signature: `SetAddrMap3{key:address,value:Maybe ^cell}`
 ## SetAddrMap4
 TLB: `set_addr_map4#645c6979 key:address value:Maybe SomeStruct{value:int257} = SetAddrMap4`
 Signature: `SetAddrMap4{key:address,value:Maybe SomeStruct{value:int257}}`
+
+## SetAddrMap5
+TLB: `set_addr_map5#50f95ce1 key:address value:SomeStruct{value:int257} = SetAddrMap5`
+Signature: `SetAddrMap5{key:address,value:SomeStruct{value:int257}}`
 
 ## SomeStruct
 TLB: `_ value:int257 = SomeStruct`

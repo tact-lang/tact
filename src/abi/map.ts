@@ -80,7 +80,11 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     }
                     if (t.kind === 'struct') {
                         ctx.used(`__tact_dict_set_int_cell`);
-                        return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
+                        if (args[2].kind === 'ref' && !args[2].optional) {
+                            return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
+                        } else {
+                            return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
+                        }
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }
@@ -111,7 +115,11 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     }
                     if (t.kind === 'struct') {
                         ctx.used(`__tact_dict_set_slice_cell`);
-                        return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
+                        if (args[2].kind === 'ref' && !args[2].optional) {
+                            return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
+                        } else {
+                            return `${resolved[0]}~__tact_dict_set_slice_cell(267, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
+                        }
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }

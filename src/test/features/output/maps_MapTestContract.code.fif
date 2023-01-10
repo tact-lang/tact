@@ -20,10 +20,12 @@ PROGRAM{
   DECLPROC __gen_SomeStruct_as_optional
   DECLPROC __gen_readopt_SomeStruct
   DECLPROC __gen_read_SetIntMap4
+  DECLPROC __gen_read_SetIntMap5
   DECLPROC __gen_read_SetAddrMap1
   DECLPROC __gen_read_SetAddrMap2
   DECLPROC __gen_read_SetAddrMap3
   DECLPROC __gen_read_SetAddrMap4
+  DECLPROC __gen_read_SetAddrMap5
   DECLPROC __gen_write_MapTestContract
   DECLPROC __gen_read_MapTestContract
   DECLPROC __gen_SomeStruct_to_tuple
@@ -68,10 +70,12 @@ PROGRAM{
   DECLPROC $__gen_MapTestContract_receive_SetIntMap2
   DECLPROC $__gen_MapTestContract_receive_SetIntMap3
   DECLPROC $__gen_MapTestContract_receive_SetIntMap4
+  DECLPROC $__gen_MapTestContract_receive_SetIntMap5
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap1
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap2
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap3
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap4
+  DECLPROC $__gen_MapTestContract_receive_SetAddrMap5
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -309,6 +313,17 @@ PROGRAM{
     }>
     s1 s2 XCHG
   }>
+  __gen_read_SetIntMap5 PROCREF:<{
+    32 LDU
+    SWAP
+    240710017 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    __gen_read_SomeStruct INLINECALLDICT
+    s1 s2 XCHG
+  }>
   __gen_read_SetAddrMap1 PROCREF:<{
     32 LDU
     SWAP
@@ -380,6 +395,17 @@ PROGRAM{
     }>ELSE<{
       PUSHNULL
     }>
+    s1 s2 XCHG
+  }>
+  __gen_read_SetAddrMap5 PROCREF:<{
+    32 LDU
+    SWAP
+    1358519521 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __gen_read_SomeStruct INLINECALLDICT
     s1 s2 XCHG
   }>
   __gen_write_MapTestContract PROCREF:<{
@@ -672,6 +698,15 @@ PROGRAM{
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s4 XCHG
   }>
+  $__gen_MapTestContract_receive_SetIntMap5 PROC:<{
+    257 PUSHINT
+    SWAP
+    __gen_writecell_SomeStruct INLINECALLDICT
+    s3 s7 XCHG
+    s1 s2 XCHG
+    __tact_dict_set_int_cell INLINECALLDICT
+    s0 s4 XCHG
+  }>
   $__gen_MapTestContract_receive_SetAddrMap1 PROC:<{
     s2 s5 XCHG
     267 PUSHINT
@@ -699,6 +734,13 @@ PROGRAM{
     267 PUSHINT
     SWAP
     __gen_writecellopt_SomeStruct INLINECALLDICT
+    s1 s2 XCHG
+    __tact_dict_set_slice_cell INLINECALLDICT
+  }>
+  $__gen_MapTestContract_receive_SetAddrMap5 PROC:<{
+    267 PUSHINT
+    SWAP
+    __gen_writecell_SomeStruct INLINECALLDICT
     s1 s2 XCHG
     __tact_dict_set_slice_cell INLINECALLDICT
   }>
@@ -823,6 +865,25 @@ PROGRAM{
       __gen_store_MapTestContract INLINECALLDICT
     }>
     DUP
+    240710017 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetIntMap5 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      $__gen_MapTestContract_receive_SetIntMap5 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
+    DUP
     1749966413 PUSHINT
     EQUAL
     IFJMP:<{
@@ -879,9 +940,11 @@ PROGRAM{
       $__gen_MapTestContract_receive_SetAddrMap3 CALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
+    DUP
     1683777913 PUSHINT
     EQUAL
     IFJMP:<{
+      DROP
       __gen_load_MapTestContract INLINECALLDICT
       s0 s8 XCHG
       __gen_read_SetAddrMap4 INLINECALLDICT
@@ -896,6 +959,23 @@ PROGRAM{
       $__gen_MapTestContract_receive_SetAddrMap4 CALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
+    1358519521 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_load_MapTestContract INLINECALLDICT
+      s0 s8 XCHG
+      __gen_read_SetAddrMap5 INLINECALLDICT
+      s2 POP
+      s8 s9 XCHG
+      s7 s8 XCHG
+      s6 s7 XCHG
+      s5 s6 XCHG
+      s4 s5 XCHG
+      s3 s4 XCHG
+      s3 s0 s0 XCHG3
+      $__gen_MapTestContract_receive_SetAddrMap5 CALLDICT
+      __gen_store_MapTestContract INLINECALLDICT
+    }>
     DROP
     130 THROW
   }>
@@ -904,6 +984,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d597971475933433643376a4347706752424a6d4c5072366b5538664c48444a63683862564642375662674571} PUSHSLICE
+    x{697066733a2f2f516d56395154613538544354514e73503533725975313861433673464664545076785a4e4c686a6f4e6438335041} PUSHSLICE
   }>
 }END>c
