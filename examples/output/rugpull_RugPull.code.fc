@@ -48,16 +48,12 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-tuple __tact_string_builder_start(int comment) inline {
-    builder b = begin_cell();
-    if (comment) {
-        b = store_uint(b, 0, 32);
-    }
+tuple __tact_string_builder_start(builder b) inline {
     return tpush(tpush(empty_tuple(), b), null());
 }
 
 tuple __tact_string_builder_start_comment() inline {
-    return __tact_string_builder_start(true);
+    return __tact_string_builder_start(begin_cell().store_uint(0, 32));
 }
 
 cell __tact_string_builder_end(tuple builders) inline {

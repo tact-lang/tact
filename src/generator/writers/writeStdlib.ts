@@ -14,6 +14,9 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_str_to_slice', () => {
         ctx.write(`slice __tact_str_to_slice(slice s) asm "NOP";`);
     });
+    ctx.fun('__tact_slice_to_str', () => {
+        ctx.write(`slice __tact_slice_to_str(slice s) asm "NOP";`);
+    });
 
     ctx.fun(`__tact_my_balance`, () => {
         ctx.write(`
@@ -425,7 +428,15 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun(`__tact_string_builder_start_comment`, () => {
         ctx.write(`
             tuple __tact_string_builder_start_comment() inline {
-                return ${ctx.used('__tact_string_builder_start')}(true);
+                return ${ctx.used('__tact_string_builder_start')}(begin_cell().store_uint(0, 32));
+            }
+        `);
+    });
+
+    ctx.fun(`__tact_string_builder_start_tail_string`, () => {
+        ctx.write(`
+            tuple __tact_string_builder_start_tail_string() inline {
+                return ${ctx.used('__tact_string_builder_start')}(begin_cell().store_uint(0, 8));
             }
         `);
     });
@@ -433,18 +444,14 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun(`__tact_string_builder_start_string`, () => {
         ctx.write(`
             tuple __tact_string_builder_start_string() inline {
-                return ${ctx.used('__tact_string_builder_start')}(false);
+                return ${ctx.used('__tact_string_builder_start')}(begin_cell());
             }
         `);
     });
 
     ctx.fun(`__tact_string_builder_start`, () => {
         ctx.write(`
-            tuple __tact_string_builder_start(int comment) inline {
-                builder b = begin_cell();
-                if (comment) {
-                    b = store_uint(b, 0, 32);
-                }
+            tuple __tact_string_builder_start(builder b) inline {
                 return tpush(tpush(empty_tuple(), b), null());
             }
         `);

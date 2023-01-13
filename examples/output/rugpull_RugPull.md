@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: RugPull
-BOC Size: 1241 bytes
+BOC Size: 1236 bytes
 
 # Types
 Total Types: 5

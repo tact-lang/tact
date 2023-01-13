@@ -253,15 +253,9 @@ SETCP0
     ENDC
 
   19: 
-    -1 PUSHINT
+    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
+    32 STU
     NIL
     s0 s1 XCHG
     TPUSH
@@ -361,15 +355,7 @@ SETCP0
 
   20: 
     s1 POP
-    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
     NIL
     s0 s1 XCHG
     TPUSH

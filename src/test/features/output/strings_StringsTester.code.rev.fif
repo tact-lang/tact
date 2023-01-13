@@ -376,15 +376,7 @@ SETCP0
     x{}
   19: 
     s0 POP
-    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
     NIL
     s0 s1 XCHG
     TPUSH
@@ -484,15 +476,9 @@ SETCP0
 
   20: 
     s0 POP
-    -1 PUSHINT
+    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
+    32 STU
     NIL
     s0 s1 XCHG
     TPUSH
@@ -598,15 +584,7 @@ SETCP0
      x{20D74A21D7499720C20022C200B18E4A036F22807F22CF31AB02A105AB025155B60820C2009C20AA0215D7185033CF164014DE596F025341A1C20099C8016F025044A1AA028E123133C20099D430D020D74A21D749927020E2E2E85F03}
   23: 
     s0 POP
-    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
     NIL
     s0 s1 XCHG
     TPUSH
@@ -782,15 +760,7 @@ SETCP0
 
   24: 
     s0 POP
-    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
     NIL
     s0 s1 XCHG
     TPUSH
@@ -966,15 +936,7 @@ SETCP0
 
   25: 
     s0 POP
-    0 PUSHINT
     NEWC
-    s0 s1 XCHG
-    <{
-      0 PUSHINT
-      s0 s1 XCHG
-      32 STU
-    }> PUSHCONT
-    IF
     NIL
     s0 s1 XCHG
     TPUSH

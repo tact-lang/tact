@@ -93,13 +93,6 @@ PROGRAM{
     135 THROWIFNOT
   }>
   __tact_string_builder_start PROCINLINE:<{
-    NEWC
-    SWAP
-    IF:<{
-      0 PUSHINT
-      SWAP
-      32 STU
-    }>
     NIL
     SWAP
     TPUSH
@@ -107,7 +100,9 @@ PROGRAM{
     TPUSH
   }>
   __tact_string_builder_start_comment PROCINLINE:<{
-    TRUE
+    0 PUSHINT
+    NEWC
+    32 STU
     __tact_string_builder_start INLINECALLDICT
   }>
   __tact_string_builder_end PROCINLINE:<{

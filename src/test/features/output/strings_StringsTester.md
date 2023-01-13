@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: StringsTester
-BOC Size: 2279 bytes
+BOC Size: 2226 bytes
 
 # Types
 Total Types: 3

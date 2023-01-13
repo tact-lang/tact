@@ -8,6 +8,12 @@ native beginString(): StringBuilder;
 @name(__tact_string_builder_start_comment)
 native beginComment(): StringBuilder;
 
+@name(__tact_string_builder_start_tail_string)
+native beginTailString(): StringBuilder;
+
+@name(__tact_string_builder_start)
+native beginStringFromBuilder(b: Builder): StringBuilder;
+
 @name(__tact_string_builder_append)
 extends mutates native append(self: StringBuilder, s: String);
 
@@ -42,6 +48,9 @@ extends fun asComment(self: String): Cell {
 
 @name(__tact_str_to_slice)
 extends native asSlice(self: String): Slice;
+
+@name(__tact_slice_to_str)
+extends native asString(self: Slice): String;
 
 extends fun fromBase64(self: String): Slice {
     return self.asSlice().fromBase64();

@@ -3,20 +3,16 @@ slice __tact_str_to_slice(slice s) asm "NOP";
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-tuple __tact_string_builder_start(int comment) inline {
-    builder b = begin_cell();
-    if (comment) {
-        b = store_uint(b, 0, 32);
-    }
+tuple __tact_string_builder_start(builder b) inline {
     return tpush(tpush(empty_tuple(), b), null());
 }
 
 tuple __tact_string_builder_start_comment() inline {
-    return __tact_string_builder_start(true);
+    return __tact_string_builder_start(begin_cell().store_uint(0, 32));
 }
 
 tuple __tact_string_builder_start_string() inline {
-    return __tact_string_builder_start(false);
+    return __tact_string_builder_start(begin_cell());
 }
 
 cell __tact_string_builder_end(tuple builders) inline {
