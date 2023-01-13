@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { compileContract } from 'ton-compiler';
 import { beginCell, Cell, Dictionary } from 'ton-core';
 import { fromBoc } from 'tvm-disassembler/dist/disassembler';
 import { writeTypescript } from '../bindings/writeTypescript';
 import { ConfigProject } from "../config/parseConfig";
 import { CompilerContext, enable } from "../context";
+import { funcCompile } from '../func/funcCompile';
 import { writeReport } from '../generator/writeReport';
 import { PackageFileFormat } from '../packaging/fileFormat';
 import { packageCode } from '../packaging/packageCode';
@@ -98,13 +98,13 @@ export async function build(project: ConfigProject, rootPath: string) {
         let initBoc: Buffer;
         let initFift: string;
         try {
-            let c = await compileContract({ files: [pathCodeFc], version: 'v2022.12' });
+            let c = await funcCompile(pathCodeFc);
             if (!c.ok) {
                 console.warn(c.log);
                 ok = false;
                 continue;
             }
-            let c2 = await compileContract({ files: [pathInitFc], version: 'v2022.12' });
+            let c2 = await funcCompile(pathInitFc);
             if (!c2.ok) {
                 console.warn(c2.log);
                 ok = false;

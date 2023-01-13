@@ -1,9 +1,9 @@
 import fs from 'fs';
 import { compileProjects } from '../main';
-import { compileContract } from 'ton-compiler';
 import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton-core';
 import { build } from '../pipeline/build';
+import { funcCompile } from '../func/funcCompile';
 
 // Read cases
 (async () => {
@@ -35,7 +35,7 @@ import { build } from '../pipeline/build';
             console.log('Processing ' + p.path + r);
             let c;
             try {
-                c = await compileContract({ files: [p.path + r], version: 'v2022.12' });
+                c = await funcCompile(p.path + r);
                 if (!c.ok) {
                     console.warn(c.log);
                     continue;

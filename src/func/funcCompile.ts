@@ -1,0 +1,125 @@
+import path from 'path';
+import fs from 'fs';
+
+// Wasm Imports
+const CompilerModule = require('./funcfiftlib.js');
+const FuncFiftLibWasm = require('./funcfiftlib.wasm.js').FuncFiftLibWasm;
+const WasmBinary = Buffer.from(FuncFiftLibWasm, 'base64');
+
+type Pointer = unknown;
+const writeToCString = (mod: any, data: string): Pointer => {
+    const len = mod.lengthBytesUTF8(data) + 1;
+    const ptr = mod._malloc(len);
+    mod.stringToUTF8(data, ptr, len);
+    return ptr;
+};
+const writeToCStringPtr = (mod: any, str: string, ptr: any) => {
+    const allocated = writeToCString(mod, str);
+    mod.setValue(ptr, allocated, '*');
+    return allocated;
+};
+
+const readFromCString = (mod: any, pointer: Pointer): string => mod.UTF8ToString(pointer);
+
+export function cutFirstLine(src: string) {
+    return src.slice(src.indexOf('\n') + 1);
+}
+
+export type FuncCompilationResult = {
+    ok: false,
+    log: string,
+    fift: string | null,
+    output: Buffer | null
+} | {
+    ok: true,
+    log: string,
+    fift: string,
+    output: Buffer
+}
+
+type CompileResult = {
+    status: "error",
+    message: string
+} | {
+    status: "ok",
+    codeBoc: string,
+    fiftCode: string,
+    warnings: string
+};
+
+export async function funcCompile(sourcePath: string): Promise<FuncCompilationResult> {
+
+    // Parameters
+    let files: string[] = [];
+    files.push(path.resolve(__dirname, '..', '..', 'stdlib', 'stdlib.fc'));
+    files.push(sourcePath);
+    let configStr = JSON.stringify({
+        sources: files,
+        optLevel: 2 // compileConfig.optLevel || 2
+    });
+
+    // Pointer tracking
+    const allocatedPointers: Pointer[] = [];
+    const trackPointer = (pointer: Pointer): Pointer => {
+        allocatedPointers.push(pointer);
+        return pointer;
+    };
+
+    // Create module
+    let mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { } });
+
+    // Execute
+    try {
+
+        // Write config
+        let configPointer = trackPointer(writeToCString(mod, configStr));
+
+        // FS emulation callback
+        const callbackPtr = trackPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
+            const kind: string = readFromCString(mod, _kind);
+            const data: string = readFromCString(mod, _data);
+            if (kind === 'realpath') {
+                allocatedPointers.push(writeToCStringPtr(mod, data, contents));
+            } else if (kind === 'source') {
+                try {
+                    let source: string = fs.readFileSync(data, 'utf-8');
+                    allocatedPointers.push(writeToCStringPtr(mod, source, contents));
+                } catch (err) {
+                    const e = err as any;
+                    allocatedPointers.push(writeToCStringPtr(mod, 'message' in e ? e.message : e.toString(), error));
+                }
+            } else {
+                allocatedPointers.push(writeToCStringPtr(mod, 'Unknown callback kind ' + kind, error));
+            }
+        }, 'viiii'));
+
+        // Execute
+        let resultPointer = trackPointer(mod._func_compile(configPointer, callbackPtr));
+        let retJson = readFromCString(mod, resultPointer);
+        let result = JSON.parse(retJson) as CompileResult;
+
+        if (result.status === 'error') {
+            return {
+                ok: false,
+                log: result.message ? result.message : 'Unknown error',
+                fift: null,
+                output: null
+            };
+        } else if (result.status === 'ok') {
+            return {
+                ok: true,
+                log: result.warnings ? result.warnings : '',
+                fift: cutFirstLine(unescape(result.fiftCode)),
+                output: Buffer.from(result.codeBoc, 'base64')
+            };
+        } else {
+            throw Error('Unexpected compiler response');
+        }
+
+    } catch (e) {
+        console.warn(e);
+        throw Error('Unexpected compiler response');
+    } finally {
+        allocatedPointers.forEach((pointer) => mod._free(pointer));
+    }
+}
