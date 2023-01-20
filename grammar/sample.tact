@@ -1,10 +1,11 @@
-import "@stdlib/ownable";
+import "@stdlib/ownable" /* Some Comment */;
+import some invalid import haha;
 
 struct SampleStruct {
     message: Int as uint32;
 }
 
-message(0x1234) MyMessage {
+message MyMessage {
     data: SampleStruct;
 }
 
@@ -20,5 +21,13 @@ contract MyContract with MyTrait, Ownable {
 
     init(owner: Address) {
         self.owner = owner;
+    }
+
+    get fun hello(arg: Int): Int {
+        // Single line comment
+        /**
+         *Multi line comment 
+         */
+        return (arg + 10) * 10;
     }
 }

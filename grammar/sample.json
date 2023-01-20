@@ -1,0 +1,2322 @@
+[
+  [
+    {
+      "content": "import",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "import",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.other.import.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "\"@stdlib/ownable\"",
+      "color": "var(--shiki-token-string-expression)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "\"",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "string.quoted.double.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "string",
+                    "markup.fenced_code",
+                    "markup.inline"
+                  ],
+                  "settings": {
+                    "foreground": "#000005"
+                  }
+                },
+                {
+                  "scope": [
+                    "entity.name.tag",
+                    "string.quoted",
+                    "string.regexp",
+                    "string.interpolated",
+                    "string.template",
+                    "string.unquoted.plain.out.yaml",
+                    "keyword.other.template"
+                  ],
+                  "settings": {
+                    "foreground": "#000010"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": "@stdlib/ownable",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "string.quoted.double.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "string",
+                    "markup.fenced_code",
+                    "markup.inline"
+                  ],
+                  "settings": {
+                    "foreground": "#000005"
+                  }
+                },
+                {
+                  "scope": [
+                    "entity.name.tag",
+                    "string.quoted",
+                    "string.regexp",
+                    "string.interpolated",
+                    "string.template",
+                    "string.unquoted.plain.out.yaml",
+                    "keyword.other.template"
+                  ],
+                  "settings": {
+                    "foreground": "#000010"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": "\"",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "string.quoted.double.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "string",
+                    "markup.fenced_code",
+                    "markup.inline"
+                  ],
+                  "settings": {
+                    "foreground": "#000005"
+                  }
+                },
+                {
+                  "scope": [
+                    "entity.name.tag",
+                    "string.quoted",
+                    "string.regexp",
+                    "string.interpolated",
+                    "string.template",
+                    "string.unquoted.plain.out.yaml",
+                    "keyword.other.template"
+                  ],
+                  "settings": {
+                    "foreground": "#000010"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "/* Some Comment */",
+      "color": "var(--shiki-token-comment)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "/*",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " Some Comment ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": "*/",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ";",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.terminator.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "import",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "import",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.other.import.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " some invalid import haha;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "some invalid import haha",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.import.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.terminator.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "struct SampleStruct ",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "struct",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.other.struct",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            },
+            {
+              "scopeName": "storage.type.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " SampleStruct ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.other.struct",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "{",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "{",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    message: Int as uint32;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    message: Int as uint32;",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "}",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.section.struct.end.bracket.curly.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "message MyMessage ",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "message",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.other.struct",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            },
+            {
+              "scopeName": "storage.type.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " MyMessage ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.other.struct",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "{",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "{",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    data: SampleStruct;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    data: SampleStruct;",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "}",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.section.struct.end.bracket.curly.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "trait MyTrait {",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "trait",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "MyTrait",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " {",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "get",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "get",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "fun",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "fun",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " traitState(): Int {",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "traitState",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "()",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ":",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "Int",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " {",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "return",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "return",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " 0;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "0",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    }",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    }",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "}",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "contract MyContract with MyTrait, Ownable {",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "contract",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "MyContract",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "with",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "MyTrait",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ", ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "Ownable",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " {",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "    owner: Address;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "owner:",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "Address",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "    init(owner: Address) {",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "init",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "(",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "owner:",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "Address",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ") {",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "self",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "self",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ".owner ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ".",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "owner",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "=",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "=",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " owner;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "owner",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    }",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    }",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "    ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "get",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "get",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "fun",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "fun",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " hello(arg: Int): Int {",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "hello",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "(",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "arg:",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "Int",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ")",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ":",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "Int",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " {",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "// Single line comment",
+      "color": "var(--shiki-token-comment)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "// Single line comment",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.line",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "/**",
+      "color": "var(--shiki-token-comment)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "/*",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": "*",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "         *Multi line comment ",
+      "color": "var(--shiki-token-comment)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "         *Multi line comment ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "         */",
+      "color": "var(--shiki-token-comment)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "         ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": "*/",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.block",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "comment",
+                    "string.quoted.docstring.multi"
+                  ],
+                  "settings": {
+                    "foreground": "#000006"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "return",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "return",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " (arg ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " (",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "arg",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "+",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "+",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " 10) ",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "10",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ") ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "*",
+      "color": "var(--shiki-token-keyword)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "*",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator",
+              "themeMatches": [
+                {
+                  "scope": [
+                    "keyword",
+                    "storage.modifier",
+                    "storage.type",
+                    "storage.control.clojure",
+                    "entity.name.function.clojure",
+                    "entity.name.tag.yaml",
+                    "support.function.node",
+                    "support.type.property-name.json",
+                    "punctuation.separator.key-value",
+                    "punctuation.definition.template-expression"
+                  ],
+                  "settings": {
+                    "foreground": "#000007"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " 10;",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "10",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    }",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    }",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "}",
+      "color": "var(--shiki-color-text)",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+]

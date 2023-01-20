@@ -1,24 +1,33 @@
-<html><head><meta charset="utf-8"></head><body><pre class="shiki nord" style="background-color: #2e3440ff"><code><span class="line"><span style="color: #81A1C1">import</span><span style="color: #D8DEE9FF"> </span><span style="color: #A3BE8C">&quot;@stdlib/ownable&quot;</span><span style="color: #D8DEE9FF">;</span></span>
+<html><head><meta charset="utf-8"></head><body><pre class="shiki dark-plus" style="background-color: #1E1E1E"><code><span class="line"><span style="color: #569CD6">import</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&quot;@stdlib/ownable&quot;</span><span style="color: #D4D4D4"> </span><span style="color: #6A9955">/* Some Comment */</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #569CD6">import</span><span style="color: #D4D4D4"> some invalid import haha;</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #81A1C1">struct</span><span style="color: #D8DEE9FF"> SampleStruct {</span></span>
-<span class="line"><span style="color: #D8DEE9FF">    </span><span style="color: #81A1C1">message</span><span style="color: #D8DEE9FF">: Int </span><span style="color: #81A1C1">as</span><span style="color: #D8DEE9FF"> uint32;</span></span>
-<span class="line"><span style="color: #D8DEE9FF">}</span></span>
+<span class="line"><span style="color: #569CD6">struct SampleStruct </span><span style="color: #D4D4D4">{</span></span>
+<span class="line"><span style="color: #D4D4D4">    message: Int as uint32;</span></span>
+<span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #81A1C1">message</span><span style="color: #D8DEE9FF">(0x1234) MyMessage {</span></span>
-<span class="line"><span style="color: #D8DEE9FF">    data: SampleStruct;</span></span>
-<span class="line"><span style="color: #D8DEE9FF">}</span></span>
+<span class="line"><span style="color: #569CD6">message MyMessage </span><span style="color: #D4D4D4">{</span></span>
+<span class="line"><span style="color: #D4D4D4">    data: SampleStruct;</span></span>
+<span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #81A1C1">trait</span><span style="color: #D8DEE9FF"> MyTrait {</span></span>
-<span class="line"><span style="color: #D8DEE9FF">    </span><span style="color: #81A1C1">get</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">fun</span><span style="color: #D8DEE9FF"> traitState(): Int {</span></span>
-<span class="line"><span style="color: #D8DEE9FF">        </span><span style="color: #81A1C1">return</span><span style="color: #D8DEE9FF"> 0;</span></span>
-<span class="line"><span style="color: #D8DEE9FF">    }</span></span>
-<span class="line"><span style="color: #D8DEE9FF">}</span></span>
+<span class="line"><span style="color: #9CDCFE">trait</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">MyTrait</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #C586C0">get</span><span style="color: #D4D4D4"> </span><span style="color: #C586C0">fun</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">traitState</span><span style="color: #D4D4D4">()</span><span style="color: #9CDCFE">:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">0</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #D4D4D4">    }</span></span>
+<span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #81A1C1">contract</span><span style="color: #D8DEE9FF"> MyContract </span><span style="color: #81A1C1">with</span><span style="color: #D8DEE9FF"> MyTrait, Ownable {</span></span>
+<span class="line"><span style="color: #9CDCFE">contract</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">MyContract</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">with</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">MyTrait</span><span style="color: #D4D4D4">, </span><span style="color: #9CDCFE">Ownable</span><span style="color: #D4D4D4"> {</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #D8DEE9FF">    owner: Address;</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">owner:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Address</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #D8DEE9FF">    init(owner: Address) {</span></span>
-<span class="line"><span style="color: #D8DEE9FF">        </span><span style="color: #81A1C1">self</span><span style="color: #D8DEE9FF">.owner </span><span style="color: #81A1C1">=</span><span style="color: #D8DEE9FF"> owner;</span></span>
-<span class="line"><span style="color: #D8DEE9FF">    }</span></span>
-<span class="line"><span style="color: #D8DEE9FF">}</span></span></code></pre></body></html>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">init</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">owner:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Address</span><span style="color: #D4D4D4">) {</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">self</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">owner</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">owner</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #D4D4D4">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #C586C0">get</span><span style="color: #D4D4D4"> </span><span style="color: #C586C0">fun</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">hello</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">arg:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Int</span><span style="color: #D4D4D4">)</span><span style="color: #9CDCFE">:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #6A9955">// Single line comment</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #6A9955">/**</span></span>
+<span class="line"><span style="color: #6A9955">         *Multi line comment </span></span>
+<span class="line"><span style="color: #6A9955">         */</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">arg</span><span style="color: #D4D4D4"> + </span><span style="color: #9CDCFE">10</span><span style="color: #D4D4D4">) * </span><span style="color: #9CDCFE">10</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #D4D4D4">    }</span></span>
+<span class="line"><span style="color: #D4D4D4">}</span></span></code></pre></body></html>

@@ -11,6 +11,12 @@
       "include": "#comments"
     },
     {
+      "include": "#import"
+    },
+    {
+      "include": "#struct"
+    },
+    {
       "include": "#keywords"
     },
     {
@@ -24,11 +30,52 @@
     }
   ],
   "repository": {
+    "import": {
+      "name": "meta.import.tact",
+      "begin": "\\b(import)\\b\\s*",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.import.tact"
+        }
+      },
+      "end": "\\s*(;)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.terminator.tact"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#strings"
+        }
+      ]
+    },
+    "struct": {
+      "name": "meta.struct.tact",
+      "begin": "\\b(struct|message)\\b\\s+([\\w]+)\\s+",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.other.struct"
+        },
+        "1": {
+          "name": "storage.type.tact"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.struct.end.bracket.curly.tact"
+        }
+      }
+    },
     "keywords": {
       "patterns": [
         {
           "name": "keyword.control.tact",
-          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|native|contract|trait|with|let|fun|import|self|is|initOf|struct|message|map|get|as)\\b"
+          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|native|let|fun|self|is|initOf|map|get|as)\\b"
         },
         {
           "name": "keyword.operator",
