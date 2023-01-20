@@ -2,10 +2,17 @@ import "@stdlib/ownable" /* Some Comment */;
 import some invalid import haha;
 
 struct SampleStruct {
-    message: Int as uint32;
+    /** Comment **/
+    value1: Int;
+    value2: /** Comment **/ Int as uint32;
+    value3: Bool = /** Comment **/ true;
 }
 
 message MyMessage {
+    data: SampleStruct;
+}
+
+message /**/ (0x123) MyMessage2 {
     data: SampleStruct;
 }
 

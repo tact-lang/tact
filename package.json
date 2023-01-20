@@ -6,7 +6,7 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "tm": "js-yaml ./grammar/tact.tmLanguage.yaml > ./grammar/tact.tmLanguage.json && ts-node ./scripts/tm.ts",
+    "tm": "ts-node ./scripts/tm.ts",
     "gen:grammar": "ohm generateBundles --withTypes src/grammar/*.ohm && yarn tm",
     "gen:pack": "ts-node ./scripts/pack.ts",
     "gen:compiler": "ts-node ./scripts/prepare.ts",
@@ -48,6 +48,7 @@
     "@ohm-js/cli": "^1.1.0",
     "@release-it/keep-a-changelog": "^3.1.0",
     "@types/jest": "^29.2.3",
+    "@types/js-yaml": "^4.0.5",
     "@types/node": "^18.11.9",
     "@types/qs": "^6.9.7",
     "jest": "^29.3.1",

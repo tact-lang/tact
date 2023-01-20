@@ -1,17 +1,25 @@
-fileTypes:
-  - tact
-foldingStartMarker: "\\{s*$"
-foldingStopMarker: "^\\s*\\}"
+# TACT TextMate grammar file
+---
 name: tact
 scopeName: source.tact
+fileTypes: [tact]
+foldingStartMarker: "\\{s*$"
+foldingStopMarker: "^\\s*\\}"
+
+variables:
+  hexNumber: \b0(?:x|X)[0-9a-fA-F][0-9a-fA-F_]*\b
+  decNumber: \b[0-9]+\b
+  anyNumber: (?:{{hexNumber}})|(?:{{decNumber}})
+
 patterns:
   - include: "#comments"
   - include: "#import"
   - include: "#struct"
+  - include: "#numeric"
   - include: "#keywords"
   - include: "#variables"
   - include: "#strings"
-  - include: "#numeric"
+
 repository:
   import:
     name: meta.import.tact
@@ -32,21 +40,37 @@ repository:
   # structure and message definition
   struct:
     name: meta.struct.tact
-    begin: \b(struct|message)\s+([\w]+)\s+({)\s+
+    begin: \b(struct|message)\b\s*(?:\(\s*({{anyNumber}})\s*\))?\s*([\w]+)\s*({)\s+
     beginCaptures:
       '1':
         name: keyword.other.struct
       '2':
-        name: entity.name.type.struct.tact
+        name: constant.numeric
       '3':
-        name: punctuation.section.struct.begin.bracket.curly.tact
+        name: entity.name.type.tact
+      '4':
+        name: punctuation.section.begin.bracket.curly.tact
     end: (})
     endCaptures:
       '1':
-        name: punctuation.section.struct.end.bracket.curly.tact
+        name: punctuation.section.end.bracket.curly.tact
     patterns:
       - include: "#comments"
+      - include: "#field"
 
+  field:
+    name: meta.struct.field.tact
+    begin: "\\s*([\\w]+)\\s*:\\s*([\\w]+)\\s*"
+    beginCaptures:
+      '1':
+        name: variable.other.definition.tact
+      '2':
+        name: entity.name.type.tact
+    end: "(;)"
+    endCaptures:
+      '1':
+        name: punctuation.terminator.tact
+  
   keywords:
     patterns:
       - name: keyword.control.tact
@@ -61,7 +85,7 @@ repository:
     end: '"'
   numeric:
     name: constant.numeric
-    match: (-?([\d]+|0x[\da-fA-F]+))\b
+    match: "{{anyNumber}}"
   comments:
     patterns:
       - name: comment.line
