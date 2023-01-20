@@ -421,7 +421,7 @@ Return Struct `Context`, that consists of
 | bounced | Bool    | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of incoming message |
 | sender  | Address | Address of sender                                                                                                         |
 | value   | Int     | Amount of nanoToncoins in message                                                                                         |
-| raw     | Slice   | Slice reminder of message                                                                                                 |
+| raw     | Slice   | Unparsed message                                                                                                 |
 
 #### readForwardFee
 ```

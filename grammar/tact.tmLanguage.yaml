@@ -1,0 +1,39 @@
+fileTypes:
+  - tact
+foldingStartMarker: "\\{s*$"
+foldingStopMarker: "^\\s*\\}"
+name: tact
+scopeName: source.tact
+patterns:
+  - include: "#comments"
+  - include: "#keywords"
+  - include: "#variables"
+  - include: "#strings"
+  - include: "#numeric"
+repository:
+  keywords:
+    patterns:
+      - name: keyword.control.tact
+        match: "\\b(if|else|while|do|until|repeat|return|extends|mutates|native|contract|trait|with|let|fun|import|self|is|initOf|struct|message|map|get|as)\\b"
+      - name: keyword.operator
+        match: "(?<=\\s)(<=>|>=|<=|!=|==|\\^>>|\\~>>|>>|<<|\\/%|\\^%|\\~%|\\^\\/|\\~\\/|\\+=|-=|\\*=|\\/=|~\\/=|\\^\\/=|%=|\\^%=|<<=|>>=|~>>=|\\^>>=|&=|\\|=|\\^=|\\^|=|~|\\/|%|-|\\*|\\+|>|<|&|\\||:|\\?)(?=\\s)"
+      - name: keyword.other
+        match: "\\b(false|true)\\b"
+  strings:
+    name: string.quoted.double.tact
+    begin: '"'
+    end: '"'
+  numeric:
+    name: constant.numeric
+    match: "(-?([\\d]+|0x[\\da-fA-F]+))\\b"
+  comments:
+    patterns:
+      - name: comment.line
+        match: "\\/\\/(.*)"
+      - name: comment.block
+        begin: "/\\*"
+        end: "\\*/"
+  variables:
+    patterns:
+      - match: (?!")(`([^`]+)`|((?=_)_|(?={){|(?=})}|(?![_`{}]))([^;,\[\]\(\)\s~.]+))
+        name: variable.name

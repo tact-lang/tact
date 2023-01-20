@@ -6,32 +6,28 @@
 native beginCell(): Builder;
 
 @name(store_int)
-native storeInt(s: Builder, value: Int, bits: Int): Builder;
+extends native storeInt(self: Builder, value: Int, bits: Int): Builder;
 
 @name(store_uint)
-native storeUint(s: Builder, value: Int, bits: Int): Builder;
+extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 
 @name(__tact_store_bool)
-native storeBool(s: Builder, value: Bool): Builder;
+extends native storeBool(self: Builder, value: Bool): Builder;
 
 @name(store_coins)
-native storeCoins(s: Builder, value: Int): Builder;
+extends native storeCoins(self: Builder, value: Int): Builder;
 
 @name(store_ref)
-native storeRef(s: Builder, cell: Cell): Builder;
+extends native storeRef(self: Builder, cell: Cell): Builder;
 
 @name(store_slice)
-native storeSlice(s: Builder, cell: Slice): Builder;
+extends native storeSlice(self: Builder, cell: Slice): Builder;
 
 @name(__tact_store_address)
-native storeAddress(s: Builder, address: Address): Builder;
+extends native storeAddress(self: Builder, address: Address): Builder;
 
 @name(end_cell)
-native endCell(s: Builder): Cell;
-
-//
-// Builder Size
-//
+extends native endCell(s: Builder): Cell;
 
 @name(builder_refs)
 extends native refs(self: Builder): Int;
