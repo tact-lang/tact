@@ -1,4 +1,5 @@
 # TACT TextMate grammar file
+# Built using ideas from https://github.com/microsoft/TypeScript-TmLanguage/blob/44ab72b502092e6797791078d181747fc9512097/TypeScript.YAML-tmLanguage
 ---
 name: tact
 scopeName: source.tact
