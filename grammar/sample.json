@@ -2,7 +2,7 @@
   [
     {
       "content": "import",
-      "color": "var(--shiki-token-keyword)",
+      "color": "#F78C6C",
       "fontStyle": 0,
       "explanation": [
         {
@@ -20,20 +20,17 @@
               "scopeName": "keyword.other.import.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Other Keyword",
+                  "scope": "keyword.other",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#F78C6C"
+                  }
+                },
+                {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
@@ -44,7 +41,7 @@
     },
     {
       "content": " ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -64,7 +61,7 @@
     },
     {
       "content": "\"@stdlib/ownable\"",
-      "color": "var(--shiki-token-string-expression)",
+      "color": "#C3E88D",
       "fontStyle": 0,
       "explanation": [
         {
@@ -82,27 +79,10 @@
               "scopeName": "string.quoted.double.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "string",
-                    "markup.fenced_code",
-                    "markup.inline"
-                  ],
+                  "name": "String",
+                  "scope": "string",
                   "settings": {
-                    "foreground": "#000005"
-                  }
-                },
-                {
-                  "scope": [
-                    "entity.name.tag",
-                    "string.quoted",
-                    "string.regexp",
-                    "string.interpolated",
-                    "string.template",
-                    "string.unquoted.plain.out.yaml",
-                    "keyword.other.template"
-                  ],
-                  "settings": {
-                    "foreground": "#000010"
+                    "foreground": "#C3E88D"
                   }
                 }
               ]
@@ -124,27 +104,10 @@
               "scopeName": "string.quoted.double.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "string",
-                    "markup.fenced_code",
-                    "markup.inline"
-                  ],
+                  "name": "String",
+                  "scope": "string",
                   "settings": {
-                    "foreground": "#000005"
-                  }
-                },
-                {
-                  "scope": [
-                    "entity.name.tag",
-                    "string.quoted",
-                    "string.regexp",
-                    "string.interpolated",
-                    "string.template",
-                    "string.unquoted.plain.out.yaml",
-                    "keyword.other.template"
-                  ],
-                  "settings": {
-                    "foreground": "#000010"
+                    "foreground": "#C3E88D"
                   }
                 }
               ]
@@ -166,27 +129,10 @@
               "scopeName": "string.quoted.double.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "string",
-                    "markup.fenced_code",
-                    "markup.inline"
-                  ],
+                  "name": "String",
+                  "scope": "string",
                   "settings": {
-                    "foreground": "#000005"
-                  }
-                },
-                {
-                  "scope": [
-                    "entity.name.tag",
-                    "string.quoted",
-                    "string.regexp",
-                    "string.interpolated",
-                    "string.template",
-                    "string.unquoted.plain.out.yaml",
-                    "keyword.other.template"
-                  ],
-                  "settings": {
-                    "foreground": "#000010"
+                    "foreground": "#C3E88D"
                   }
                 }
               ]
@@ -197,7 +143,7 @@
     },
     {
       "content": " ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -217,8 +163,8 @@
     },
     {
       "content": "/* Some Comment */",
-      "color": "var(--shiki-token-comment)",
-      "fontStyle": 0,
+      "color": "#676E95",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "/*",
@@ -235,12 +181,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -262,12 +207,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -289,12 +233,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -305,7 +248,7 @@
     },
     {
       "content": ";",
-      "color": "var(--shiki-color-text)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -321,7 +264,22 @@
             },
             {
               "scopeName": "punctuation.terminator.tact",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation, constant.other.symbol",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -331,7 +289,7 @@
   [
     {
       "content": "import",
-      "color": "var(--shiki-token-keyword)",
+      "color": "#F78C6C",
       "fontStyle": 0,
       "explanation": [
         {
@@ -349,20 +307,17 @@
               "scopeName": "keyword.other.import.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Other Keyword",
+                  "scope": "keyword.other",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#F78C6C"
+                  }
+                },
+                {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
@@ -372,8 +327,8 @@
       ]
     },
     {
-      "content": " some invalid import haha;",
-      "color": "var(--shiki-color-text)",
+      "content": " some invalid import haha",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -401,7 +356,14 @@
               "themeMatches": []
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "content": ";",
+      "color": "#89DDFF",
+      "fontStyle": 0,
+      "explanation": [
         {
           "content": ";",
           "scopes": [
@@ -415,7 +377,22 @@
             },
             {
               "scopeName": "punctuation.terminator.tact",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation, constant.other.symbol",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -425,8 +402,8 @@
   [],
   [
     {
-      "content": "struct SampleStruct ",
-      "color": "var(--shiki-token-keyword)",
+      "content": "struct",
+      "color": "#F78C6C",
       "fontStyle": 0,
       "explanation": [
         {
@@ -444,50 +421,52 @@
               "scopeName": "keyword.other.struct",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Other Keyword",
+                  "scope": "keyword.other",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#F78C6C"
                   }
-                }
-              ]
-            },
-            {
-              "scopeName": "storage.type.tact",
-              "themeMatches": [
+                },
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#A6ACCD",
+      "fontStyle": 0,
+      "explanation": [
         {
-          "content": " SampleStruct ",
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "SampleStruct",
+      "color": "#FFCB6B",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "SampleStruct",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -498,23 +477,20 @@
               "themeMatches": []
             },
             {
-              "scopeName": "keyword.other.struct",
+              "scopeName": "entity.name.type.struct.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Type",
+                  "scope": "entity.name.type, entity.other.inherited-class, entity.other",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#FFCB6B"
+                  }
+                },
+                {
+                  "name": "Class",
+                  "scope": "entity.name, entity.name.type.class, support.type, support.class, meta.use",
+                  "settings": {
+                    "foreground": "#FFCB6B"
                   }
                 }
               ]
@@ -524,8 +500,28 @@
       ]
     },
     {
+      "content": " ",
+      "color": "#A6ACCD",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "content": "{",
-      "color": "var(--shiki-color-text)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -538,6 +534,25 @@
             {
               "scopeName": "meta.struct.tact",
               "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.section.struct.begin.bracket.curly.tact",
+              "themeMatches": [
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation, constant.other.symbol",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -547,7 +562,7 @@
   [
     {
       "content": "    message: Int as uint32;",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -569,7 +584,7 @@
   [
     {
       "content": "}",
-      "color": "var(--shiki-color-text)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -585,7 +600,22 @@
             },
             {
               "scopeName": "punctuation.section.struct.end.bracket.curly.tact",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation, constant.other.symbol",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -595,8 +625,8 @@
   [],
   [
     {
-      "content": "message MyMessage ",
-      "color": "var(--shiki-token-keyword)",
+      "content": "message",
+      "color": "#F78C6C",
       "fontStyle": 0,
       "explanation": [
         {
@@ -614,50 +644,52 @@
               "scopeName": "keyword.other.struct",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Other Keyword",
+                  "scope": "keyword.other",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#F78C6C"
                   }
-                }
-              ]
-            },
-            {
-              "scopeName": "storage.type.tact",
-              "themeMatches": [
+                },
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#A6ACCD",
+      "fontStyle": 0,
+      "explanation": [
         {
-          "content": " MyMessage ",
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "MyMessage",
+      "color": "#FFCB6B",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "MyMessage",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -668,23 +700,20 @@
               "themeMatches": []
             },
             {
-              "scopeName": "keyword.other.struct",
+              "scopeName": "entity.name.type.struct.tact",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Type",
+                  "scope": "entity.name.type, entity.other.inherited-class, entity.other",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#FFCB6B"
+                  }
+                },
+                {
+                  "name": "Class",
+                  "scope": "entity.name, entity.name.type.class, support.type, support.class, meta.use",
+                  "settings": {
+                    "foreground": "#FFCB6B"
                   }
                 }
               ]
@@ -694,8 +723,28 @@
       ]
     },
     {
+      "content": " ",
+      "color": "#A6ACCD",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "content": "{",
-      "color": "var(--shiki-color-text)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -708,6 +757,25 @@
             {
               "scopeName": "meta.struct.tact",
               "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.section.struct.begin.bracket.curly.tact",
+              "themeMatches": [
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation, constant.other.symbol",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -717,7 +785,7 @@
   [
     {
       "content": "    data: SampleStruct;",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -739,7 +807,7 @@
   [
     {
       "content": "}",
-      "color": "var(--shiki-color-text)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -755,7 +823,22 @@
             },
             {
               "scopeName": "punctuation.section.struct.end.bracket.curly.tact",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation, constant.other.symbol",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Punctuation",
+                  "scope": "punctuation",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -766,7 +849,7 @@
   [
     {
       "content": "trait MyTrait {",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -778,7 +861,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -800,7 +891,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -819,7 +918,7 @@
   [
     {
       "content": "    ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -835,8 +934,8 @@
     },
     {
       "content": "get",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "get",
@@ -849,20 +948,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -873,7 +972,7 @@
     },
     {
       "content": " ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -889,8 +988,8 @@
     },
     {
       "content": "fun",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "fun",
@@ -903,20 +1002,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -927,7 +1026,7 @@
     },
     {
       "content": " traitState(): Int {",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -948,7 +1047,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -970,7 +1077,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -992,7 +1107,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1011,7 +1134,7 @@
   [
     {
       "content": "        ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1027,8 +1150,8 @@
     },
     {
       "content": "return",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "return",
@@ -1041,20 +1164,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1065,7 +1188,7 @@
     },
     {
       "content": " 0;",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1086,7 +1209,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1105,7 +1236,7 @@
   [
     {
       "content": "    }",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1123,7 +1254,7 @@
   [
     {
       "content": "}",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1142,7 +1273,7 @@
   [
     {
       "content": "contract MyContract with MyTrait, Ownable {",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1154,7 +1285,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1176,7 +1315,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1198,7 +1345,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1220,7 +1375,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1242,7 +1405,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1262,7 +1433,7 @@
   [
     {
       "content": "    owner: Address;",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1283,7 +1454,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1305,7 +1484,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1325,7 +1512,7 @@
   [
     {
       "content": "    init(owner: Address) {",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1346,7 +1533,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1368,7 +1563,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1390,7 +1593,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1409,7 +1620,7 @@
   [
     {
       "content": "        ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1425,8 +1636,8 @@
     },
     {
       "content": "self",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "self",
@@ -1439,20 +1650,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1463,7 +1674,7 @@
     },
     {
       "content": ".owner ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1484,7 +1695,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1501,7 +1720,7 @@
     },
     {
       "content": "=",
-      "color": "var(--shiki-token-keyword)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1515,20 +1734,10 @@
               "scopeName": "keyword.operator",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
@@ -1539,7 +1748,7 @@
     },
     {
       "content": " owner;",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1560,7 +1769,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1579,7 +1796,7 @@
   [
     {
       "content": "    }",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1598,7 +1815,7 @@
   [
     {
       "content": "    ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1614,8 +1831,8 @@
     },
     {
       "content": "get",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "get",
@@ -1628,20 +1845,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1652,7 +1869,7 @@
     },
     {
       "content": " ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1668,8 +1885,8 @@
     },
     {
       "content": "fun",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "fun",
@@ -1682,20 +1899,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1706,7 +1923,7 @@
     },
     {
       "content": " hello(arg: Int): Int {",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1727,7 +1944,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1749,7 +1974,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1771,7 +2004,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1793,7 +2034,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1815,7 +2064,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1834,7 +2091,7 @@
   [
     {
       "content": "        ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1850,8 +2107,8 @@
     },
     {
       "content": "// Single line comment",
-      "color": "var(--shiki-token-comment)",
-      "fontStyle": 0,
+      "color": "#676E95",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "// Single line comment",
@@ -1864,12 +2121,11 @@
               "scopeName": "comment.line",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1882,7 +2138,7 @@
   [
     {
       "content": "        ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -1898,8 +2154,8 @@
     },
     {
       "content": "/**",
-      "color": "var(--shiki-token-comment)",
-      "fontStyle": 0,
+      "color": "#676E95",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "/*",
@@ -1912,12 +2168,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1935,12 +2190,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1953,8 +2207,8 @@
   [
     {
       "content": "         *Multi line comment ",
-      "color": "var(--shiki-token-comment)",
-      "fontStyle": 0,
+      "color": "#676E95",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "         *Multi line comment ",
@@ -1967,12 +2221,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -1985,8 +2238,8 @@
   [
     {
       "content": "         */",
-      "color": "var(--shiki-token-comment)",
-      "fontStyle": 0,
+      "color": "#676E95",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "         ",
@@ -1999,12 +2252,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -2022,12 +2274,11 @@
               "scopeName": "comment.block",
               "themeMatches": [
                 {
-                  "scope": [
-                    "comment",
-                    "string.quoted.docstring.multi"
-                  ],
+                  "name": "Comment",
+                  "scope": "comment",
                   "settings": {
-                    "foreground": "#000006"
+                    "foreground": "#676E95",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -2040,7 +2291,7 @@
   [
     {
       "content": "        ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2056,8 +2307,8 @@
     },
     {
       "content": "return",
-      "color": "var(--shiki-token-keyword)",
-      "fontStyle": 0,
+      "color": "#89DDFF",
+      "fontStyle": 1,
       "explanation": [
         {
           "content": "return",
@@ -2070,20 +2321,20 @@
               "scopeName": "keyword.control.tact",
               "themeMatches": [
                 {
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
+                  "settings": {
+                    "foreground": "#89DDFF"
+                  }
+                },
+                {
+                  "name": "Keyword Control",
                   "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
+                    "keyword.control"
                   ],
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF",
+                    "fontStyle": "italic"
                   }
                 }
               ]
@@ -2094,7 +2345,7 @@
     },
     {
       "content": " (arg ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2115,7 +2366,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -2132,7 +2391,7 @@
     },
     {
       "content": "+",
-      "color": "var(--shiki-token-keyword)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2146,20 +2405,10 @@
               "scopeName": "keyword.operator",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
@@ -2170,7 +2419,7 @@
     },
     {
       "content": " 10) ",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2191,7 +2440,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -2208,7 +2465,7 @@
     },
     {
       "content": "*",
-      "color": "var(--shiki-token-keyword)",
+      "color": "#89DDFF",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2222,20 +2479,10 @@
               "scopeName": "keyword.operator",
               "themeMatches": [
                 {
-                  "scope": [
-                    "keyword",
-                    "storage.modifier",
-                    "storage.type",
-                    "storage.control.clojure",
-                    "entity.name.function.clojure",
-                    "entity.name.tag.yaml",
-                    "support.function.node",
-                    "support.type.property-name.json",
-                    "punctuation.separator.key-value",
-                    "punctuation.definition.template-expression"
-                  ],
+                  "name": "Keyword",
+                  "scope": "keyword, modifier, variable.language.this, support.type.object, constant.language",
                   "settings": {
-                    "foreground": "#000007"
+                    "foreground": "#89DDFF"
                   }
                 }
               ]
@@ -2246,7 +2493,7 @@
     },
     {
       "content": " 10;",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2267,7 +2514,15 @@
             },
             {
               "scopeName": "variable.name",
-              "themeMatches": []
+              "themeMatches": [
+                {
+                  "name": "Variable",
+                  "scope": "variable, variable.parameter, support.variable, variable.language, support.constant, meta.definition.variable entity.name.function, meta.function-call.arguments",
+                  "settings": {
+                    "foreground": "#A6ACCD"
+                  }
+                }
+              ]
             }
           ]
         },
@@ -2286,7 +2541,7 @@
   [
     {
       "content": "    }",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {
@@ -2304,7 +2559,7 @@
   [
     {
       "content": "}",
-      "color": "var(--shiki-color-text)",
+      "color": "#A6ACCD",
       "fontStyle": 0,
       "explanation": [
         {

@@ -15,10 +15,13 @@ const grammarSample = fs.readFileSync(require.resolve('../grammar/sample.tact'),
             }
         ] as any,
     });
-    let res = highlighter.codeToHtml(grammarSample, { lang: 'tact', theme: 'dark-plus' });
+
+    let theme = 'material-palenight'; // Most features
+
+    let res = highlighter.codeToHtml(grammarSample, { lang: 'tact', theme });
     res = `<html><head><meta charset="utf-8"></head><body>${res}</body></html>`;
     fs.writeFileSync(require.resolve('../grammar/sample.html'), res);
 
-    let tokens = highlighter.codeToThemedTokens(grammarSample, 'tact');
+    let tokens = highlighter.codeToThemedTokens(grammarSample, 'tact', theme);
     fs.writeFileSync(require.resolve('../grammar/sample.json'), JSON.stringify(tokens, null, 2));
 })();
