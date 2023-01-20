@@ -10,11 +10,15 @@ variables:
   hexNumber: \b0(?:x|X)[0-9a-fA-F][0-9a-fA-F_]*\b
   decNumber: \b[0-9]+\b
   anyNumber: (?:{{hexNumber}})|(?:{{decNumber}})
+  inlineComment: \/\*([^\*]|(\*[^\/]))*\*\/
+  space: (?:\s|(?:{{inlineComment}}))*
+  id: '\b[\w]+\b'
 
 patterns:
   - include: "#comments"
   - include: "#import"
   - include: "#struct"
+  - include: "#contract-or-trait"
   - include: "#numeric"
   - include: "#keywords"
   - include: "#variables"
@@ -40,37 +44,78 @@ repository:
   # structure and message definition
   struct:
     name: meta.struct.tact
-    begin: \b(struct|message)\b\s*(?:\(\s*({{anyNumber}})\s*\))?\s*([\w]+)\s*({)\s+
+    begin: \b(struct|message)\b
     beginCaptures:
       '1':
         name: keyword.other.struct
-      '2':
-        name: constant.numeric
-      '3':
-        name: entity.name.type.tact
-      '4':
-        name: punctuation.section.begin.bracket.curly.tact
-    end: (})
-    endCaptures:
-      '1':
-        name: punctuation.section.end.bracket.curly.tact
+    end: (?<=\})
     patterns:
       - include: "#comments"
-      - include: "#field"
+      - include: "#struct-header"
+      - include: "#struct-body"
+  struct-header:
+    patterns:
+      - include: "#comments"
+      - match: '{{id}}'
+        captures:
+          '0': { name: 'entity.name.type.tact' }
+      - match: '\(({{anyNumber}})\)'
+        captures:
+          '1': { name: 'constant.numeric' }
+  struct-body:
+    begin: \{
+    beginCaptures:
+      '0': { name: punctuation.definition.block.tact }
+    end: \}
+    endCaptures:
+      '0': { name: punctuation.definition.block.tact }
+    patterns:
+      - include: "#comments"
+      - include: "#field-declaration"
 
-  field:
+  field-declaration:
     name: meta.struct.field.tact
-    begin: "\\s*([\\w]+)\\s*:\\s*([\\w]+)\\s*"
+    begin: "({{id}})"
     beginCaptures:
       '1':
-        name: variable.other.definition.tact
-      '2':
-        name: entity.name.type.tact
+        name: variable.object.property.tact
     end: "(;)"
     endCaptures:
       '1':
         name: punctuation.terminator.tact
-  
+    patterns:
+      - include: '#comments'
+      - name: keyword.operator.type.annotation.tact
+        match: ':'
+      - name: keyword.control.as.tact
+        match: 'as'
+      - name: keyword.operator.optional.tact
+        match: \?
+      - name: entity.name.type.tact
+        match: '{{id}}'
+
+  # structure and message definition
+  contract-or-trait:
+    name: meta.struct.tact
+    begin: \b(contract|trait)\b
+    beginCaptures:
+      '1':
+        name: keyword.other.struct
+    end: (?<=\})
+    patterns:
+      - include: "#comments"
+      - include: "#contract-or-trait-body"
+  contract-or-trait-body:
+    begin: \{
+    beginCaptures:
+      '0': { name: punctuation.definition.block.tact }
+    end: \}
+    endCaptures:
+      '0': { name: punctuation.definition.block.tact }
+    patterns:
+      - include: "#comments"
+      - include: "#field-declaration"  
+
   keywords:
     patterns:
       - name: keyword.control.tact

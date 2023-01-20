@@ -8,7 +8,7 @@ struct SampleStruct {
     value3: Bool = /** Comment **/ true;
 }
 
-message MyMessage {
+message /**/ MyMessage {
     data: SampleStruct;
 }
 

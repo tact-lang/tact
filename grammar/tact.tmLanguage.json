@@ -17,6 +17,9 @@
       "include": "#struct"
     },
     {
+      "include": "#contract-or-trait"
+    },
+    {
       "include": "#numeric"
     },
     {
@@ -55,25 +58,59 @@
     },
     "struct": {
       "name": "meta.struct.tact",
-      "begin": "\\b(struct|message)\\b\\s*(?:\\(\\s*((?:\\b0(?:x|X)[0-9a-fA-F][0-9a-fA-F_]*\\b)|(?:\\b[0-9]+\\b))\\s*\\))?\\s*([\\w]+)\\s*({)\\s+",
+      "begin": "\\b(struct|message)\\b",
       "beginCaptures": {
         "1": {
           "name": "keyword.other.struct"
-        },
-        "2": {
-          "name": "constant.numeric"
-        },
-        "3": {
-          "name": "entity.name.type.tact"
-        },
-        "4": {
-          "name": "punctuation.section.begin.bracket.curly.tact"
         }
       },
-      "end": "(})",
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#struct-header"
+        },
+        {
+          "include": "#struct-body"
+        }
+      ]
+    },
+    "struct-header": {
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "match": "\\b[\\w]+\\b",
+          "captures": {
+            "0": {
+              "name": "entity.name.type.tact"
+            }
+          }
+        },
+        {
+          "match": "\\(((?:\\b0(?:x|X)[0-9a-fA-F][0-9a-fA-F_]*\\b)|(?:\\b[0-9]+\\b))\\)",
+          "captures": {
+            "1": {
+              "name": "constant.numeric"
+            }
+          }
+        }
+      ]
+    },
+    "struct-body": {
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.tact"
+        }
+      },
+      "end": "\\}",
       "endCaptures": {
-        "1": {
-          "name": "punctuation.section.end.bracket.curly.tact"
+        "0": {
+          "name": "punctuation.definition.block.tact"
         }
       },
       "patterns": [
@@ -81,19 +118,16 @@
           "include": "#comments"
         },
         {
-          "include": "#field"
+          "include": "#field-declaration"
         }
       ]
     },
-    "field": {
+    "field-declaration": {
       "name": "meta.struct.field.tact",
-      "begin": "\\s*([\\w]+)\\s*:\\s*([\\w]+)\\s*",
+      "begin": "(\\b[\\w]+\\b)",
       "beginCaptures": {
         "1": {
-          "name": "variable.other.definition.tact"
-        },
-        "2": {
-          "name": "entity.name.type.tact"
+          "name": "variable.object.property.tact"
         }
       },
       "end": "(;)",
@@ -101,7 +135,68 @@
         "1": {
           "name": "punctuation.terminator.tact"
         }
-      }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "name": "keyword.operator.type.annotation.tact",
+          "match": ":"
+        },
+        {
+          "name": "keyword.control.as.tact",
+          "match": "as"
+        },
+        {
+          "name": "keyword.operator.optional.tact",
+          "match": "\\?"
+        },
+        {
+          "name": "entity.name.type.tact",
+          "match": "\\b[\\w]+\\b"
+        }
+      ]
+    },
+    "contract-or-trait": {
+      "name": "meta.struct.tact",
+      "begin": "\\b(contract|trait)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.struct"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#contract-or-trait-body"
+        }
+      ]
+    },
+    "contract-or-trait-body": {
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.tact"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.tact"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#field-declaration"
+        }
+      ]
     },
     "keywords": {
       "patterns": [
