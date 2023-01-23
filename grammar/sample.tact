@@ -1,6 +1,10 @@
 import "@stdlib/ownable" /* Some Comment */;
 import some invalid import haha;
 
+extends fun add(self: Int, b: Int): Int {
+    return self * b;
+}
+
 struct SampleStruct {
     /** Comment **/
     value1: Int;
@@ -17,7 +21,7 @@ message /**/ (0x123) MyMessage2 {
 }
 
 trait MyTrait {
-    get fun traitState(): Int {
+    fun get extends traitState(): Int {
         return 0;
     }
 }
@@ -31,6 +35,10 @@ contract MyContract with MyTrait, Ownable {
     }
 
     get fun hello(arg: Int): Int {
+        if (arg == 0) {
+            return arg + 1000;
+        }
+
         // Single line comment
         /**
          *Multi line comment 

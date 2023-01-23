@@ -8,6 +8,9 @@ foldingStartMarker: "\\{s*$"
 foldingStopMarker: "^\\s*\\}"
 
 variables:
+  startOfIdentifier: (?<![_$[:alnum:]])(?:(?<=\.\.\.)|(?<!\.))
+  endOfIdentifier: (?![_$[:alnum:]])(?:(?=\.\.\.)|(?!\.))
+  startOfDeclaration: "{{startOfIdentifier}}"
   hexNumber: \b0(?:x|X)[0-9a-fA-F][0-9a-fA-F_]*\b
   decNumber: \b[0-9]+\b
   anyNumber: (?:{{hexNumber}})|(?:{{decNumber}})
@@ -20,6 +23,7 @@ patterns:
   - include: "#import"
   - include: "#struct"
   - include: "#contract-or-trait"
+  - include: "#fun-declaration"
   - include: "#numeric"
   - include: "#keywords"
   - include: "#variables"
@@ -28,13 +32,13 @@ patterns:
 repository:
   import:
     name: meta.import.tact
-    begin: \b(import)\b\s*
+    begin: '{{startOfDeclaration}}\b(import)\b\s*'
     beginCaptures:
-      '1':
+      "1":
         name: keyword.other.import.tact
     end: \s*(;)
     endCaptures:
-      '1':
+      "1":
         name: punctuation.terminator.tact
     patterns:
       - include: "#comments"
@@ -45,9 +49,9 @@ repository:
   # structure and message definition
   struct:
     name: meta.struct.tact
-    begin: \b(struct|message)\b
+    begin: '{{startOfDeclaration}}\b(struct|message)\b'
     beginCaptures:
-      '1':
+      "1":
         name: keyword.other.struct
     end: (?<=\})
     patterns:
@@ -57,66 +61,146 @@ repository:
   struct-header:
     patterns:
       - include: "#comments"
-      - match: '{{id}}'
+      - match: "{{id}}"
         captures:
-          '0': { name: 'entity.name.type.tact' }
+          "0": { name: "entity.name.type.tact" }
       - match: '\(({{anyNumber}})\)'
         captures:
-          '1': { name: 'constant.numeric' }
+          "1": { name: "constant.numeric" }
   struct-body:
     begin: \{
     beginCaptures:
-      '0': { name: punctuation.definition.block.tact }
+      "0": { name: punctuation.definition.block.tact }
     end: \}
     endCaptures:
-      '0': { name: punctuation.definition.block.tact }
+      "0": { name: punctuation.definition.block.tact }
     patterns:
       - include: "#comments"
       - include: "#field-declaration"
 
-  field-declaration:
-    name: meta.struct.field.tact
-    begin: "({{id}})"
-    beginCaptures:
-      '1':
-        name: variable.object.property.tact
-    end: "(;)"
-    endCaptures:
-      '1':
-        name: punctuation.terminator.tact
-    patterns:
-      - include: '#comments'
-      - name: keyword.operator.type.annotation.tact
-        match: ':'
-      - name: keyword.control.as.tact
-        match: 'as'
-      - name: keyword.operator.optional.tact
-        match: \?
-      - name: entity.name.type.tact
-        match: '{{id}}'
-
   # structure and message definition
   contract-or-trait:
     name: meta.struct.tact
-    begin: \b(contract|trait)\b
+    begin: '{{startOfDeclaration}}\b(contract|trait)\b'
     beginCaptures:
-      '1':
+      "1":
         name: keyword.other.struct
     end: (?<=\})
     patterns:
       - include: "#comments"
+      - name: keyword.control.with.tact
+        match: "with"
+      - name: entity.name.type.tact
+        match: "{{id}}"
       - include: "#contract-or-trait-body"
   contract-or-trait-body:
     begin: \{
     beginCaptures:
-      '0': { name: punctuation.definition.block.tact }
+      "0": { name: punctuation.definition.block.tact }
     end: \}
     endCaptures:
-      '0': { name: punctuation.definition.block.tact }
+      "0": { name: punctuation.definition.block.tact }
     patterns:
       - include: "#comments"
-      - include: "#field-declaration"  
+      - include: "#init-declaration"
+      - include: "#fun-declaration"
+      - include: "#field-declaration"
 
+  # Body
+  field-declaration:
+    name: meta.struct.field.tact
+    begin: "({{id}})"
+    beginCaptures:
+      "1":
+        name: variable.object.property.tact
+    end: "(;)"
+    endCaptures:
+      "1":
+        name: punctuation.terminator.tact
+    patterns:
+      - include: "#comments"
+      - name: keyword.operator.type.annotation.tact
+        match: ":"
+      - name: keyword.control.as.tact
+        match: "as"
+      - name: keyword.operator.optional.tact
+        match: \?
+      - name: entity.name.type.tact
+        match: "{{id}}"
+
+  # Init
+  init-declaration:
+    name: meta.struct.field.tact
+    begin: "(init)"
+    beginCaptures:
+      "1":
+        name: keyword.control.init.tact
+    end: (?<=\})
+    patterns:
+      - include: "#comments"
+      - include: "#fun-arguments"
+      - include: "#block-declaration"
+
+  # Function
+  fun-declaration:
+    name: meta.function.tact
+    begin: \b(get|native|extends|mutates|fun)\b
+    beginCaptures:
+      "1":
+        name: storage.modifier.tact
+    end: (?<=\})
+    patterns:
+      - include: "#fun-declaration-body"
+  fun-declaration-body:
+    patterns:
+      - include: "#comments"
+      - include: "#fun-arguments"
+      - include: "#block-declaration"
+      - name: storage.modifier.tact
+        match: \b(get|native|extends|mutates|fun)\b
+      - name: meta.definition.function.tact entity.name.function.tact
+        match: "{{id}}"
+
+  # Arguments
+  fun-arguments:
+    name: meta.parameters.tact
+    begin: \(
+    beginCaptures:
+      "0": { name: punctuation.definition.parameters.begin.tact }
+    end: \)
+    endCaptures:
+      "0": { name: punctuation.definition.parameters.end.tact }
+    patterns:
+      - include: "#comments"
+      - include: "#strings"
+      - match: '(?:(self)|({{id}}))\s*(:)\s*({{id}})'
+        captures:
+          "1": { name: variable.language.self.tact }
+          "2": { name: entity.name.function.tact }
+          "4": { name: entity.name.type.tact }
+
+  # Code block
+  block-declaration:
+    name: meta.block.tact
+    begin: \{
+    beginCaptures:
+      "0": { name: punctuation.definition.block.tact }
+    end: \}
+    endCaptures:
+      "0": { name: punctuation.definition.block.tact }
+    patterns:
+      - include: "#statements"
+
+  # Statements
+  statements:
+    patterns:
+      - include: "#comments"
+      - include: "#code-block"
+      - include: "#keywords"
+      - include: "#numeric"
+      - include: "#strings"
+
+  # Low level
   keywords:
     patterns:
       - name: keyword.control.tact

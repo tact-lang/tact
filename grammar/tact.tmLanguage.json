@@ -20,6 +20,9 @@
       "include": "#contract-or-trait"
     },
     {
+      "include": "#fun-declaration"
+    },
+    {
       "include": "#numeric"
     },
     {
@@ -35,7 +38,7 @@
   "repository": {
     "import": {
       "name": "meta.import.tact",
-      "begin": "\\b(import)\\b\\s*",
+      "begin": "(?<![_$[:alnum:]])(?:(?<=\\.\\.\\.)|(?<!\\.))\\b(import)\\b\\s*",
       "beginCaptures": {
         "1": {
           "name": "keyword.other.import.tact"
@@ -58,7 +61,7 @@
     },
     "struct": {
       "name": "meta.struct.tact",
-      "begin": "\\b(struct|message)\\b",
+      "begin": "(?<![_$[:alnum:]])(?:(?<=\\.\\.\\.)|(?<!\\.))\\b(struct|message)\\b",
       "beginCaptures": {
         "1": {
           "name": "keyword.other.struct"
@@ -122,6 +125,60 @@
         }
       ]
     },
+    "contract-or-trait": {
+      "name": "meta.struct.tact",
+      "begin": "(?<![_$[:alnum:]])(?:(?<=\\.\\.\\.)|(?<!\\.))\\b(contract|trait)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.other.struct"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "name": "keyword.control.with.tact",
+          "match": "with"
+        },
+        {
+          "name": "entity.name.type.tact",
+          "match": "\\b[\\w]+\\b"
+        },
+        {
+          "include": "#contract-or-trait-body"
+        }
+      ]
+    },
+    "contract-or-trait-body": {
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.tact"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.tact"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#init-declaration"
+        },
+        {
+          "include": "#fun-declaration"
+        },
+        {
+          "include": "#field-declaration"
+        }
+      ]
+    },
     "field-declaration": {
       "name": "meta.struct.field.tact",
       "begin": "(\\b[\\w]+\\b)",
@@ -158,12 +215,12 @@
         }
       ]
     },
-    "contract-or-trait": {
-      "name": "meta.struct.tact",
-      "begin": "\\b(contract|trait)\\b",
+    "init-declaration": {
+      "name": "meta.struct.field.tact",
+      "begin": "(init)",
       "beginCaptures": {
         "1": {
-          "name": "keyword.other.struct"
+          "name": "keyword.control.init.tact"
         }
       },
       "end": "(?<=\\})",
@@ -172,11 +229,88 @@
           "include": "#comments"
         },
         {
-          "include": "#contract-or-trait-body"
+          "include": "#fun-arguments"
+        },
+        {
+          "include": "#block-declaration"
         }
       ]
     },
-    "contract-or-trait-body": {
+    "fun-declaration": {
+      "name": "meta.function.tact",
+      "begin": "\\b(get|native|extends|mutates|fun)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "storage.modifier.tact"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#fun-declaration-body"
+        }
+      ]
+    },
+    "fun-declaration-body": {
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#fun-arguments"
+        },
+        {
+          "include": "#block-declaration"
+        },
+        {
+          "name": "storage.modifier.tact",
+          "match": "\\b(get|native|extends|mutates|fun)\\b"
+        },
+        {
+          "name": "meta.definition.function.tact entity.name.function.tact",
+          "match": "\\b[\\w]+\\b"
+        }
+      ]
+    },
+    "fun-arguments": {
+      "name": "meta.parameters.tact",
+      "begin": "\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.begin.tact"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.end.tact"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "match": "(?:(self)|(\\b[\\w]+\\b))\\s*(:)\\s*(\\b[\\w]+\\b)",
+          "captures": {
+            "1": {
+              "name": "variable.language.self.tact"
+            },
+            "2": {
+              "name": "entity.name.function.tact"
+            },
+            "4": {
+              "name": "entity.name.type.tact"
+            }
+          }
+        }
+      ]
+    },
+    "block-declaration": {
+      "name": "meta.block.tact",
       "begin": "\\{",
       "beginCaptures": {
         "0": {
@@ -191,10 +325,26 @@
       },
       "patterns": [
         {
+          "include": "#statements"
+        }
+      ]
+    },
+    "statements": {
+      "patterns": [
+        {
           "include": "#comments"
         },
         {
-          "include": "#field-declaration"
+          "include": "#code-block"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#numeric"
+        },
+        {
+          "include": "#strings"
         }
       ]
     },

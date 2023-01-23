@@ -1,6 +1,10 @@
 <html><head><meta charset="utf-8"></head><body><pre class="shiki dark-plus" style="background-color: #1E1E1E"><code><span class="line"><span style="color: #569CD6">import</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&quot;@stdlib/ownable&quot;</span><span style="color: #D4D4D4"> </span><span style="color: #6A9955">/* Some Comment */</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"><span style="color: #569CD6">import</span><span style="color: #D4D4D4"> some invalid import haha;</span></span>
 <span class="line"></span>
+<span class="line"><span style="color: #569CD6">extends</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">add</span><span style="color: #D4D4D4">(</span><span style="color: #569CD6">self</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4">, </span><span style="color: #DCDCAA">b</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4">): </span><span style="color: #DCDCAA">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> </span><span style="color: #C586C0">self</span><span style="color: #D4D4D4"> * b;</span></span>
+<span class="line"><span style="color: #D4D4D4">}</span></span>
+<span class="line"></span>
 <span class="line"><span style="color: #569CD6">struct</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">SampleStruct</span><span style="color: #D4D4D4"> {</span></span>
 <span class="line"><span style="color: #D4D4D4">    </span><span style="color: #6A9955">/** Comment **/</span></span>
 <span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">value1</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4">;</span></span>
@@ -16,25 +20,29 @@
 <span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">data</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">SampleStruct</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #569CD6">trait</span><span style="color: #D4D4D4"> MyTrait {</span></span>
-<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">get</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">fun</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">traitState</span><span style="color: #D4D4D4">(): </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4"> {</span></span>
-<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #4EC9B0">return</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">0</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #569CD6">trait</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">MyTrait</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">get</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">extends</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">traitState</span><span style="color: #D4D4D4">(): </span><span style="color: #DCDCAA">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> </span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
 <span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #569CD6">contract</span><span style="color: #D4D4D4"> MyContract with MyTrait, Ownable {</span></span>
+<span class="line"><span style="color: #569CD6">contract</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">MyContract</span><span style="color: #D4D4D4"> </span><span style="color: #C586C0">with</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">MyTrait</span><span style="color: #D4D4D4">, </span><span style="color: #4EC9B0">Ownable</span><span style="color: #D4D4D4"> {</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">owner</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Address</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">init</span><span style="color: #D4D4D4">(</span><span style="color: #4EC9B0">owner</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Address</span><span style="color: #D4D4D4">) {</span></span>
-<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #4EC9B0">self</span><span style="color: #D4D4D4">.</span><span style="color: #4EC9B0">owner</span><span style="color: #D4D4D4"> = </span><span style="color: #4EC9B0">owner</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #C586C0">init</span><span style="color: #D4D4D4">(</span><span style="color: #DCDCAA">owner</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Address</span><span style="color: #D4D4D4">) {</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">self</span><span style="color: #D4D4D4">.owner = owner;</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #C586C0">get</span><span style="color: #D4D4D4"> </span><span style="color: #C586C0">fun</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">hello</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">arg:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Int</span><span style="color: #D4D4D4">)</span><span style="color: #9CDCFE">:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">get</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">hello</span><span style="color: #D4D4D4">(</span><span style="color: #DCDCAA">arg</span><span style="color: #D4D4D4">: </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4">): </span><span style="color: #DCDCAA">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">if</span><span style="color: #D4D4D4"> (arg == </span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">) {</span></span>
+<span class="line"><span style="color: #D4D4D4">            </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> arg + </span><span style="color: #B5CEA8">1000</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #D4D4D4">        }</span></span>
+<span class="line"></span>
 <span class="line"><span style="color: #D4D4D4">        </span><span style="color: #6A9955">// Single line comment</span></span>
 <span class="line"><span style="color: #D4D4D4">        </span><span style="color: #6A9955">/**</span></span>
 <span class="line"><span style="color: #6A9955">         *Multi line comment </span></span>
 <span class="line"><span style="color: #6A9955">         */</span></span>
-<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">arg</span><span style="color: #D4D4D4"> + </span><span style="color: #B5CEA8">10</span><span style="color: #D4D4D4">) * </span><span style="color: #B5CEA8">10</span><span style="color: #D4D4D4">;</span></span>
+<span class="line"><span style="color: #D4D4D4">        </span><span style="color: #9CDCFE">return</span><span style="color: #D4D4D4"> (</span><span style="color: #4EC9B0">arg</span><span style="color: #D4D4D4"> + </span><span style="color: #4EC9B0">10</span><span style="color: #D4D4D4">) * </span><span style="color: #4EC9B0">10</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
 <span class="line"><span style="color: #D4D4D4">}</span></span></code></pre></body></html>
