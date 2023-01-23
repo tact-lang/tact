@@ -29,6 +29,7 @@ trait MyTrait {
 
 contract MyContract with MyTrait, Ownable {
 
+    value: Int as uint32 = 1230;
     owner: Address;
 
     init(owner: Address) {

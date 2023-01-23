@@ -196,6 +196,9 @@
         },
         {
           "include": "#type-annotation"
+        },
+        {
+          "include": "#variable-init"
         }
       ]
     },
@@ -437,6 +440,24 @@
         }
       },
       "end": "(?=\\}|\\,)",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#expressions"
+        }
+      ]
+    },
+    "variable-init": {
+      "name": "meta.variable.property.init",
+      "begin": "(=)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.tact"
+        }
+      },
+      "end": "(?=\\}|\\{|\\,|\\;)",
       "patterns": [
         {
           "include": "#comments"

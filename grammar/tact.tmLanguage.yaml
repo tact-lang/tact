@@ -126,6 +126,7 @@ repository:
     patterns:
       - include: "#comments"
       - include: "#type-annotation"
+      - include: "#variable-init"
 
   # Init
   init-declaration:
@@ -256,6 +257,15 @@ repository:
       "1": { name: '{{nameVariable}}' }
       "2": { name: punctuation.property.tact }
     end: (?=\}|\,)
+    patterns:
+      - include: '#comments'
+      - include: '#expressions'
+  variable-init:
+    name: meta.variable.property.init
+    begin: '(=)'
+    beginCaptures:
+      "1": { name: punctuation.tact }
+    end: (?=\}|\{|\,|\;)
     patterns:
       - include: '#comments'
       - include: '#expressions'
