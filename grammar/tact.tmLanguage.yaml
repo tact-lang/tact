@@ -234,6 +234,31 @@ repository:
       - include: "#type-annotation"
       - include: "#variables"
       - include: "#function-call"
+      - include: "#struct-init"
+
+  # Struct init
+  struct-init:
+    name: meta.struct.init
+    begin: '({{id}})\s*(\{)'
+    beginCaptures:
+      "1": { name: '{{nameTypeRef}}' }
+      "2": { name: punctuation.definition.block.begin.tact }
+    end: '(})'
+    endCaptures:
+      "2": { name: punctuation.definition.block.end.tact }
+    patterns: 
+      - include: "#comments"
+      - include: "#struct-property"
+  struct-property:
+    name: meta.struct.init.property,
+    begin: '({{id}})\s*(:)'
+    beginCaptures:
+      "1": { name: '{{nameVariable}}' }
+      "2": { name: punctuation.property.tact }
+    end: (?=\}|\,)
+    patterns:
+      - include: '#comments'
+      - include: '#expressions'
 
   # Type annotation
   type-annotation:
@@ -287,9 +312,9 @@ repository:
         end: \*/
   variables:
     patterns:
-      - match: '{{id}}(?!\s*\()'
+      - match: '{{id}}(?!\s*\()(?!\s*\{)'
         name: '{{nameVariable}}'
   function-call:
     patterns:
-      - match: '{{id}}(?=\s*\()'
+      - match: '{{id}}(?=\s*\()(?!\s*\{)'
         name: '{{nameFunction}}'

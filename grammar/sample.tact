@@ -51,6 +51,10 @@ contract MyContract with MyTrait, Ownable {
     }
 
     receive("Hello") {
-        
+        reply(SampleStruct{
+            value1: 0,
+            value2: 1 + 2,
+            value3: 2 != 3
+        }.asCell());
     }
 }

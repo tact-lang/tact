@@ -393,6 +393,56 @@
         },
         {
           "include": "#function-call"
+        },
+        {
+          "include": "#struct-init"
+        }
+      ]
+    },
+    "struct-init": {
+      "name": "meta.struct.init",
+      "begin": "(\\b[\\w]+\\b)\\s*(\\{)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.type.tact"
+        },
+        "2": {
+          "name": "punctuation.definition.block.begin.tact"
+        }
+      },
+      "end": "(})",
+      "endCaptures": {
+        "2": {
+          "name": "punctuation.definition.block.end.tact"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#struct-property"
+        }
+      ]
+    },
+    "struct-property": {
+      "name": "meta.struct.init.property,",
+      "begin": "(\\b[\\w]+\\b)\\s*(:)",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.name.tact"
+        },
+        "2": {
+          "name": "punctuation.property.tact"
+        }
+      },
+      "end": "(?=\\}|\\,)",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#expressions"
         }
       ]
     },
@@ -482,7 +532,7 @@
     "variables": {
       "patterns": [
         {
-          "match": "\\b[\\w]+\\b(?!\\s*\\()",
+          "match": "\\b[\\w]+\\b(?!\\s*\\()(?!\\s*\\{)",
           "name": "variable.name.tact"
         }
       ]
@@ -490,7 +540,7 @@
     "function-call": {
       "patterns": [
         {
-          "match": "\\b[\\w]+\\b(?=\\s*\\()",
+          "match": "\\b[\\w]+\\b(?=\\s*\\()(?!\\s*\\{)",
           "name": "entity.name.function.tact"
         }
       ]
