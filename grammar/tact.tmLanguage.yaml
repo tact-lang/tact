@@ -33,10 +33,7 @@ patterns:
   - include: "#struct"
   - include: "#contract-or-trait"
   - include: "#fun-declaration"
-  - include: "#numeric"
-  - include: "#keywords"
-  - include: "#variables"
-  - include: "#strings"
+  - include: "#statements"
 
 repository:
   import:
@@ -110,6 +107,8 @@ repository:
     patterns:
       - include: "#comments"
       - include: "#init-declaration"
+      - include: "#receive-declaration"
+      - include: "#bounce-declaration"
       - include: "#fun-declaration"
       - include: "#field-declaration"
 
@@ -135,6 +134,32 @@ repository:
     beginCaptures:
       "1":
         name: keyword.control.init.tact
+    end: (?<=\})
+    patterns:
+      - include: "#comments"
+      - include: "#fun-arguments"
+      - include: "#block-declaration"
+
+  # Receive
+  receive-declaration:
+    name: meta.struct.field.tact
+    begin: "(receive)"
+    beginCaptures:
+      "1":
+        name: keyword.control.receive.tact
+    end: (?<=\})
+    patterns:
+      - include: "#comments"
+      - include: "#fun-arguments"
+      - include: "#block-declaration"
+
+  # Bounce
+  bounce-declaration:
+    name: meta.struct.field.tact
+    begin: "(bounce)"
+    beginCaptures:
+      "1":
+        name: keyword.control.bounce.tact
     end: (?<=\})
     patterns:
       - include: "#comments"

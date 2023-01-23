@@ -49,4 +49,8 @@ contract MyContract with MyTrait, Ownable {
          */
         return (arg + 10 + b) * 10;
     }
+
+    receive("Hello") {
+        
+    }
 }

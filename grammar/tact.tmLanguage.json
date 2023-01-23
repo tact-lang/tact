@@ -23,16 +23,7 @@
       "include": "#fun-declaration"
     },
     {
-      "include": "#numeric"
-    },
-    {
-      "include": "#keywords"
-    },
-    {
-      "include": "#variables"
-    },
-    {
-      "include": "#strings"
+      "include": "#statements"
     }
   ],
   "repository": {
@@ -172,6 +163,12 @@
           "include": "#init-declaration"
         },
         {
+          "include": "#receive-declaration"
+        },
+        {
+          "include": "#bounce-declaration"
+        },
+        {
           "include": "#fun-declaration"
         },
         {
@@ -208,6 +205,48 @@
       "beginCaptures": {
         "1": {
           "name": "keyword.control.init.tact"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#fun-arguments"
+        },
+        {
+          "include": "#block-declaration"
+        }
+      ]
+    },
+    "receive-declaration": {
+      "name": "meta.struct.field.tact",
+      "begin": "(receive)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.receive.tact"
+        }
+      },
+      "end": "(?<=\\})",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#fun-arguments"
+        },
+        {
+          "include": "#block-declaration"
+        }
+      ]
+    },
+    "bounce-declaration": {
+      "name": "meta.struct.field.tact",
+      "begin": "(bounce)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.bounce.tact"
         }
       },
       "end": "(?<=\\})",
