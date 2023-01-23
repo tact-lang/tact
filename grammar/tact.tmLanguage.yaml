@@ -1,5 +1,6 @@
 # TACT TextMate grammar file
 # Built using ideas from https://github.com/microsoft/TypeScript-TmLanguage/blob/44ab72b502092e6797791078d181747fc9512097/TypeScript.YAML-tmLanguage
+# TextMate regexp reference: https://macromates.com/manual/en/regular_expressions
 ---
 name: tact
 scopeName: source.tact
@@ -8,6 +9,14 @@ foldingStartMarker: "\\{s*$"
 foldingStopMarker: "^\\s*\\}"
 
 variables:
+  
+  # Name mappings
+  nameTypeRef: entity.name.type.tact
+  nameSelf: variable.language.self.tact
+  nameVariable: variable.name.tact
+  nameFunction:  entity.name.function.tact
+
+  # Common regexps
   startOfIdentifier: (?<![_$[:alnum:]])(?:(?<=\.\.\.)|(?<!\.))
   endOfIdentifier: (?![_$[:alnum:]])(?:(?=\.\.\.)|(?!\.))
   startOfDeclaration: "{{startOfIdentifier}}"
@@ -43,8 +52,6 @@ repository:
     patterns:
       - include: "#comments"
       - include: "#strings"
-      # - name: invalid.illegal.character_not_allowed_here.tact
-      #   match: ^(\"[.]*\")
 
   # structure and message definition
   struct:
@@ -63,7 +70,7 @@ repository:
       - include: "#comments"
       - match: "{{id}}"
         captures:
-          "0": { name: "entity.name.type.tact" }
+          "0": { name: "{{nameTypeRef}}" }
       - match: '\(({{anyNumber}})\)'
         captures:
           "1": { name: "constant.numeric" }
@@ -90,7 +97,7 @@ repository:
       - include: "#comments"
       - name: keyword.control.with.tact
         match: "with"
-      - name: entity.name.type.tact
+      - name: '{{nameTypeRef}}'
         match: "{{id}}"
       - include: "#contract-or-trait-body"
   contract-or-trait-body:
@@ -119,14 +126,7 @@ repository:
         name: punctuation.terminator.tact
     patterns:
       - include: "#comments"
-      - name: keyword.operator.type.annotation.tact
-        match: ":"
-      - name: keyword.control.as.tact
-        match: "as"
-      - name: keyword.operator.optional.tact
-        match: \?
-      - name: entity.name.type.tact
-        match: "{{id}}"
+      - include: "#type-annotation"
 
   # Init
   init-declaration:
@@ -148,17 +148,18 @@ repository:
     beginCaptures:
       "1":
         name: storage.modifier.tact
-    end: (?<=\})
+    end: (?<=\}|;)
     patterns:
       - include: "#fun-declaration-body"
   fun-declaration-body:
     patterns:
       - include: "#comments"
       - include: "#fun-arguments"
+      - include: "#type-annotation" # Return type
       - include: "#block-declaration"
       - name: storage.modifier.tact
         match: \b(get|native|extends|mutates|fun)\b
-      - name: meta.definition.function.tact entity.name.function.tact
+      - name: meta.definition.function.tact {{nameFunction}}
         match: "{{id}}"
 
   # Arguments
@@ -175,19 +176,19 @@ repository:
       - include: "#strings"
       - match: '(?:(self)|({{id}}))\s*(:)\s*({{id}})'
         captures:
-          "1": { name: variable.language.self.tact }
-          "2": { name: entity.name.function.tact }
-          "4": { name: entity.name.type.tact }
+          "1": { name: '{{nameSelf}}'}
+          "2": { name: '{{nameVariable}}' }
+          "4": { name: '{{nameTypeRef}}' }
 
   # Code block
   block-declaration:
     name: meta.block.tact
     begin: \{
     beginCaptures:
-      "0": { name: punctuation.definition.block.tact }
+      "0": { name: punctuation.definition.block.begin.tact }
     end: \}
     endCaptures:
-      "0": { name: punctuation.definition.block.tact }
+      "0": { name: punctuation.definition.block.end.tact }
     patterns:
       - include: "#statements"
 
@@ -195,10 +196,46 @@ repository:
   statements:
     patterns:
       - include: "#comments"
-      - include: "#code-block"
+      - include: "#block-declaration"
+      - include: "#expressions"
+
+  # Expressions
+  expressions:
+    patterns:
+      - include: "#comments"
       - include: "#keywords"
       - include: "#numeric"
       - include: "#strings"
+      - include: "#type-annotation"
+      - include: "#variables"
+      - include: "#function-call"
+
+  # Type annotation
+  type-annotation:
+    name: meta.type.annotation.tact
+    begin: "(:)\\s+"
+    beginCaptures:
+      "1":
+        name: keyword.operator.type.annotation.tact
+    end: (?=\{|\;|\=|\,|\))
+    patterns:
+      - include: "#comments"
+      - include: "#type-as"
+      - name: keyword.operator.optional.tact
+        match: \?
+      - match: "{{id}}"
+        name: "{{nameTypeRef}}"
+  type-as:
+    name: meta.type.annotation.as.tact
+    begin: "(as)\\s+"
+    end: (?=\{|\;|\=|\,|\))
+    beginCaptures:
+      "1":
+        name: keyword.control.as.tact
+    patterns:
+      - include: "#comments"
+      - match: "{{id}}"
+        name: storage.modifier.tact
 
   # Low level
   keywords:
@@ -225,5 +262,9 @@ repository:
         end: \*/
   variables:
     patterns:
-      - match: (?!")(`([^`]+)`|((?=_)_|(?={){|(?=})}|(?![_`{}]))([^;,\[\]\(\)\s~.]+))
-        name: variable.name
+      - match: '{{id}}(?!\s*\()'
+        name: '{{nameVariable}}'
+  function-call:
+    patterns:
+      - match: '{{id}}(?=\s*\()'
+        name: '{{nameFunction}}'

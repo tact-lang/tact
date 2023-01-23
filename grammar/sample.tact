@@ -1,15 +1,16 @@
 import "@stdlib/ownable" /* Some Comment */;
-import some invalid import haha;
 
 extends fun add(self: Int, b: Int): Int {
     return self * b;
 }
 
+fun beginTailString(): StringBuilder;
+
 struct SampleStruct {
     /** Comment **/
     value1: Int;
     value2: /** Comment **/ Int as uint32;
-    value3: Bool = /** Comment **/ true;
+    value3: Bool;
 }
 
 message /**/ MyMessage {
@@ -39,10 +40,13 @@ contract MyContract with MyTrait, Ownable {
             return arg + 1000;
         }
 
+        // Declare variable
+        let b: Int = arg + 10 + self.owner.hash() + now();
+
         // Single line comment
         /**
          *Multi line comment 
          */
-        return (arg + 10) * 10;
+        return (arg + 10 + b) * 10;
     }
 }

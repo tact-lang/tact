@@ -49,7 +49,7 @@ import yaml from 'js-yaml';
         }
         transformGrammarRepository(
             src,
-            ["begin", "end", "match"],
+            ["begin", "end", "match", "name"],
             pattern => replacePatternVariables(pattern, variableReplacers)
         );
         return src;
