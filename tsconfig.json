@@ -65,7 +65,7 @@
   },
   "include": [
     "src/**/*"
-, "scripts/prepare.ts"  ],
+  ],
   "exclude": [
     "**/**.spec.ts",
     "**/**.bind.ts",
