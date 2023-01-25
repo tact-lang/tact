@@ -1,12 +1,14 @@
 # TACT language compiler
 
-* [Overview](/docs/overview.md)
+Next-generation TON smart contract language.
+
+* [Documentation](https://docs.tact-lang.org)
 * [Changelog](/CHANGELOG.md)
 * [Examples](/examples/)
 
 ## Getting started
 
-Easiest way to start is to use our [project template](https://github.com/ton-community/tact-template) and read [language overview](/docs/overview.md).
+The easiest way to start is to use our [project template](https://github.com/ton-community/tact-template) and read [getting started](https://docs.tact-lang.org).
 
 ```
 git clone https://github.com/ton-community/tact-template
@@ -20,8 +22,8 @@ TACT is distributed via NPM, to install tact into your project, you need:
 yarn add ton-tact
 ```
 
-TACT doesn't have environment dependencies and have everything built in. TACT's stdlib also distributed together with a compiler.
+TACT doesn't have environment dependencies and has everything built in. TACT's stdlib also distributed together with a compiler.
 
-## Licence
+## License
 
 MIT
