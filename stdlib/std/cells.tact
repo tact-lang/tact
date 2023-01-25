@@ -27,7 +27,7 @@ extends native storeSlice(self: Builder, cell: Slice): Builder;
 extends native storeAddress(self: Builder, address: Address): Builder;
 
 @name(end_cell)
-extends native endCell(s: Builder): Cell;
+extends native endCell(self: Builder): Cell;
 
 @name(builder_refs)
 extends native refs(self: Builder): Int;
@@ -102,7 +102,7 @@ extends native refsEmpty(self: Slice): Bool;
 //
 
 extends fun asSlice(self: Builder): Slice {
-    return endCell(self).beginParse();
+    return self.endCell().beginParse();
 }
 
 extends fun asSlice(self: Cell): Slice {
@@ -110,17 +110,17 @@ extends fun asSlice(self: Cell): Slice {
 }
 
 extends fun asCell(self: Slice): Cell {
-    let builder: Builder = beginCell();
-    builder = storeSlice(builder, self);
-    return endCell(builder);
+    return beginCell()
+        .storeSlice(self)
+        .endCell();
 }
 
 extends fun asCell(self: Builder): Cell {
-    return endCell(self);
+    return self.endCell();
 }
 
 fun emptyCell(): Cell {
-    return endCell(beginCell());
+    return beginCell().endCell();
 }
 
 fun emptySlice(): Slice {

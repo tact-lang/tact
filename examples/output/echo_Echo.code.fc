@@ -162,9 +162,7 @@ slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d19
 
 cell $__gen_Slice_asCell(slice $self) impure {
     var ($self) = $self;
-    builder $builder = begin_cell();
-    $builder = store_slice($builder, $self);
-    return end_cell($builder);
+    return end_cell(store_slice(begin_cell(), $self));
 }
 
 cell $__gen_String_asComment(slice $self) impure {

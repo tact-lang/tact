@@ -19,52 +19,52 @@ struct SendParameters {
 
 fun send(params: SendParameters) {
     let b: Builder = beginCell();
-    b = storeInt(b, 1, 2); // internal_message + ihd_disabled
-    b = storeBool(b, params.bounce); // bounce
-    b = storeInt(b, 0, 3); // bounced + from
-    b = storeAddress(b, params.to); // To
-    b = storeCoins(b, params.value); // Value
-    b = storeInt(b, 0, 1 + 4 + 4 + 64 + 32); // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+    b = b.storeInt(1, 2); // internal_message + ihd_disabled
+    b = b.storeBool(params.bounce); // bounce
+    b = b.storeInt(0, 3); // bounced + from
+    b = b.storeAddress(params.to); // To
+    b = b.storeCoins(params.value); // Value
+    b = b.storeInt(0, 1 + 4 + 4 + 64 + 32); // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
 
     // Stateinit
     if (params.code != null || params.data != null) {
-        b = storeBool(b, true); // State init
+        b = b.storeBool(true); // State init
 
         // Assemble state init cell
         let bc: Builder = beginCell();
-        bc = storeBool(bc, false); // SplitDepth
-        bc = storeBool(bc, false); // TickTock
+        bc = bc.storeBool(false); // SplitDepth
+        bc = bc.storeBool(false); // TickTock
         if (params.code != null) {
-            bc = storeBool(bc, true); // Code presence
-            bc = storeRef(bc, params.code!!);
+            bc = bc.storeBool(true); // Code presence
+            bc = bc.storeRef(params.code!!);
         } else {
-            bc = storeBool(bc, false); // Code presence
+            bc = bc.storeBool(false); // Code presence
         }
         if (params.data != null) {
-            bc = storeBool(bc, true); // Data presence
-            bc = storeRef(bc, params.data!!);
+            bc = bc.storeBool(true); // Data presence
+            bc = bc.storeRef(params.data!!);
         } else {
-            bc = storeBool(bc, false); // Data presence
+            bc = bc.storeBool(false); // Data presence
         }
-        bc = storeBool(bc, false); // Library
+        bc = bc.storeBool(false); // Library
 
-        b = storeBool(b, true); // Store as ref
-        b = storeRef(b, endCell(bc));
+        b = b.storeBool(true); // Store as ref
+        b = b.storeRef(bc.endCell());
     } else {
-        b = storeBool(b, false); // No state init
+        b = b.storeBool(false); // No state init
     }
 
     // Body
     let body: Cell? = params.body;
     if (body != null) {
-        b = storeBool(b, true);
-        b = storeRef(b, body!!);
+        b = b.storeBool(true);
+        b = b.storeRef(body!!);
     } else {
-        b = storeBool(b, false); // No body
+        b = b.storeBool(false); // No body
     }
 
     // Send
-    let c: Cell = endCell(b);
+    let c: Cell = b.endCell();
     nativeSendMessage(c, params.mode);
 }
 

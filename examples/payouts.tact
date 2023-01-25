@@ -68,8 +68,8 @@ contract Payouts with OwnableTransferable {
         
         // Verify signature
         let dataToSign: Builder = beginCell();
-        dataToSign = storeAddress(dataToSign, ctx.sender);
-        dataToSign = storeCoins(dataToSign, amount);
+        dataToSign = dataToSign.storeAddress(ctx.sender);
+        dataToSign = dataToSign.storeCoins(amount);
         let hash: Int = dataToSign.asCell().hash();
         require(checkSignature(hash, signature, self.publicKey), "Invalid signature");
 

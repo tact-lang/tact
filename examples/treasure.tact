@@ -18,7 +18,7 @@ contract Treasure with OwnableTransferable {
         self.requireOwner();
 
         // Perform withdraw
-        send(SendParameters{value: amount, to: self.owner, mode: mode, body: endCell(beginCell())});
+        send(SendParameters{value: amount, to: self.owner, mode: mode, body: beginCell().endCell()});
     }
 
     receive(msg: Withdraw) {

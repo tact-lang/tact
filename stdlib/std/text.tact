@@ -63,15 +63,15 @@ extends fun fromBase64(self: Slice): Slice {
     repeat (size) {
         let code: Int = self.loadUint(8);
         if (code >= 65 && code <= 90) { // A-Z
-            result = storeUint(result, code - 65, 6);
+            result = result.storeUint(code - 65, 6);
         } else if (code >= 97 && code <= 122) { // a-z
-            result = storeUint(result, code - (97 - 26), 6);
+            result = result.storeUint(code - (97 - 26), 6);
         } else if (code >= 48 && code <= 57) { // 0-9
-            result = storeUint(result, code + (52 - 48), 6);
+            result = result.storeUint(code + (52 - 48), 6);
         } else if (code == 45 || code == 43) { // - or +
-            result = storeUint(result, 62, 6);
+            result = result.storeUint(62, 6);
         } else if (code == 95 || code == 47) { // _ or /
-            result = storeUint(result, 63, 6);
+            result = result.storeUint(63, 6);
         } else if (code == 61) { // =
             // Skip
         } else {
