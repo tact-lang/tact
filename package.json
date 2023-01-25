@@ -12,7 +12,7 @@
     "gen:compiler": "ts-node ./scripts/prepare.ts",
     "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:compiler",
     "clean": "rm -fr dist",
-    "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/",
+    "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/ && cp ./src/func/funcfiftlib.* ./dist/func",
     "test": "jest",
     "release": "yarn clean && yarn build && yarn test && yarn release-it --npm.yarn1"
   },
