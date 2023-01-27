@@ -18,6 +18,10 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.write(`slice __tact_slice_to_str(slice s) asm "NOP";`);
     });
 
+    ctx.fun('__tact_address_to_slice', () => {
+        ctx.write(`slice __tact_address_to_slice(slice s) impure asm "NOP";`);
+    });
+
     ctx.fun(`__tact_my_balance`, () => {
         ctx.write(`
             int __tact_my_balance() inline {
