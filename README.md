@@ -8,10 +8,10 @@ Next-generation TON smart contract language.
 
 ## Getting started
 
-The easiest way to start is to use our [project template](https://github.com/ton-community/tact-template) and read [getting started](https://docs.tact-lang.org).
+The easiest way to start is to use our [project template](https://github.com/ton-core/tact-template) and read [getting started](https://docs.tact-lang.org).
 
 ```
-git clone https://github.com/ton-community/tact-template
+git clone https://github.com/ton-core/tact-template
 ```
 
 ## Installation

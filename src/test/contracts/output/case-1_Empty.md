@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Empty
-BOC Size: 107 bytes
+BOC Size: 206 bytes
 
 # Types
 Total Types: 4
@@ -22,4 +22,10 @@ TLB: `_ a:int257 b:int257 c:int257 d:int257 = Source`
 Signature: `Source{a:int257,b:int257,c:int257,d:int257}`
 
 # Get Methods
-Total Get Methods: 0
+Total Get Methods: 1
+
+## a
+Argument: x
+Argument: y
+Argument: z
+Argument: m

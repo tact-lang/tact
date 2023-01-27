@@ -1,9 +1,67 @@
 PROGRAM{
+  DECLPROC __gen_read_Empty
+  DECLPROC __gen_Source_from_tuple
+  DECLPROC __gen_load_Empty
+  DECLPROC $isZero
+  DECLPROC $__gen_Empty_a
+  97415 DECLMETHOD $__gen_get_a
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __gen_read_Empty PROCREF:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_Source_from_tuple PROC:<{
+    4 UNTUPLE
+  }>
+  __gen_load_Empty PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_Empty INLINECALLDICT
+    NIP
+  }>
+  $isZero PROC:<{
+    2DROP
+    s4 s3 PUSH2
+    ADD
+    INC
+    ROT
+    ADD
+    SWAP
+    ADD
+    s0 s2 XCHG
+    123 RSHIFT#
+    s0 s3 XCHG
+    10 LSHIFT#
+    s0 s2 XCHG
+    0 GTINT
+    SWAP
+    AND
+    s0 s2 XCHG
+    0 EQINT
+    s1 s2 XCHG
+    AND
+    SWAP
+    0 EQINT
+    AND
+  }>
+  $__gen_Empty_a PROC:<{
+    1 7 BLKDROP2
+    $isZero CALLDICT
+  }>
+  $__gen_get_a PROC:<{
+    __gen_Source_from_tuple CALLDICT
+    __gen_load_Empty INLINECALLDICT
+    7 -ROLL
+    $__gen_Empty_a CALLDICT
+  }>
   recv_internal PROC:<{
     DUP
     SBITS
@@ -37,6 +95,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d65554d443963444271673338797770585046656754684b384b6e31447078477a524c34727a4b50664d477752} PUSHSLICE
+    x{697066733a2f2f516d5a6f4e485954356f57534b45734c43533869764a37486b56453454565a345261675970717073474e65457644} PUSHSLICE
   }>
 }END>c

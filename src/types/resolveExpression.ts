@@ -88,7 +88,7 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
 
     // Check operands
     let resolved: TypeRef;
-    if (exp.op === '-' || exp.op === '+' || exp.op === '*' || exp.op === '/' || exp.op === '%') {
+    if (exp.op === '-' || exp.op === '+' || exp.op === '*' || exp.op === '/' || exp.op === '%' || exp.op === '>>' || exp.op === '<<') {
         if (le.kind !== 'ref' || le.optional || le.name !== 'Int') {
             throwError(`Invalid type "${printTypeRef(le)}" for binary operator "${exp.op}"`, exp.ref);
         }

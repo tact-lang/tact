@@ -2647,3 +2647,117 @@ exports[`grammar should parse case-24 1`] = `
   "kind": "program",
 }
 `;
+
+exports[`grammar should parse case-25 1`] = `
+{
+  "entries": [
+    {
+      "args": [
+        {
+          "id": 3,
+          "kind": "def_argument",
+          "name": "a",
+          "ref": a: Int,
+          "type": {
+            "id": 2,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+        {
+          "id": 5,
+          "kind": "def_argument",
+          "name": "b",
+          "ref": b: Int,
+          "type": {
+            "id": 4,
+            "kind": "type_ref_simple",
+            "name": "Int",
+            "optional": false,
+            "ref": Int,
+          },
+        },
+      ],
+      "attributes": [],
+      "id": 16,
+      "kind": "def_function",
+      "name": "function",
+      "ref": fun function(a: Int, b: Int): Int {
+    return (a >> b) || (a << (32 - b));
+},
+      "return": {
+        "id": 1,
+        "kind": "type_ref_simple",
+        "name": "Int",
+        "optional": false,
+        "ref": Int,
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 14,
+            "kind": "op_binary",
+            "left": {
+              "id": 8,
+              "kind": "op_binary",
+              "left": {
+                "id": 6,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": ">>",
+              "ref": a >> b,
+              "right": {
+                "id": 7,
+                "kind": "id",
+                "ref": b,
+                "value": "b",
+              },
+            },
+            "op": "||",
+            "ref": (a >> b) || (a << (32 - b)),
+            "right": {
+              "id": 13,
+              "kind": "op_binary",
+              "left": {
+                "id": 9,
+                "kind": "id",
+                "ref": a,
+                "value": "a",
+              },
+              "op": "<<",
+              "ref": a << (32 - b),
+              "right": {
+                "id": 12,
+                "kind": "op_binary",
+                "left": {
+                  "id": 10,
+                  "kind": "number",
+                  "ref": 32,
+                  "value": 32n,
+                },
+                "op": "-",
+                "ref": 32 - b,
+                "right": {
+                  "id": 11,
+                  "kind": "id",
+                  "ref": b,
+                  "value": "b",
+                },
+              },
+            },
+          },
+          "id": 15,
+          "kind": "statement_return",
+          "ref": return (a >> b) || (a << (32 - b));,
+        },
+      ],
+    },
+  ],
+  "id": 17,
+  "kind": "program",
+}
+`;

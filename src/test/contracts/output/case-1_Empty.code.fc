@@ -1,6 +1,49 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4 UNTUPLE";
+
+(slice, ((int))) __gen_read_Empty(slice sc_0) inline_ref {
+    var v'x = sc_0~load_int(257);
+    return (sc_0, (v'x));
+}
+
+(int, int, int, int) __gen_Source_from_tuple(tuple v) {
+    var (int v'a, int v'b, int v'c, int v'd) = __tact_tuple_destroy_4(v);
+    return (v'a, v'b, v'c, v'd);
+}
+
+(int) __gen_load_Empty() inline_ref {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_Empty();
+}
+
+int $isZero(int $x, int $y, int $z, (int, int, int, int) $m) impure {
+    var (($m'a, $m'b, $m'c, $m'd)) = $m;
+    int $b = ($x + $y);
+    $b = ((($b + 1) + $m'a) + $m'b);
+    int $c = ($y >> 123);
+    int $d = ($x << 10);
+    return (((($b > 0) & $z) & ($c == 0)) & ($d == 0));
+}
+
+int $__gen_Empty_a((int) $self, int $x, int $y, int $z, (int, int, int, int) $m) impure {
+    var (($self'x)) = $self;
+    var (($m'a, $m'b, $m'c, $m'd)) = $m;
+    return $isZero($x, $y, $z, ($m'a, $m'b, $m'c, $m'd));
+}
+
+_ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
+    int $x = $$x;
+    int $y = $$y;
+    int $z = $$z;
+    (int, int, int, int) $m = __gen_Source_from_tuple($$m);
+    var self = __gen_load_Empty();
+    var res = $__gen_Empty_a(self, $x, $y, $z, $m);
+    return res;
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -31,5 +74,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmeUMD9cDBqg38ywpXPFegThK8Kn1DpxGzRL4rzKPfMGwR";
+    return "ipfs://QmZoNHYT5oWSKEsLCS8ivJ7HkVE4TVZ4RagYpqpsGNeEvD";
 }
