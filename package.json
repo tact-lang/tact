@@ -3,6 +3,8 @@
   "version": "0.8.9",
   "main": "./dist/main.js",
   "repository": "https://github.com/ton-core/tact.git",
+  "homepage": "https://tact-lang.org",
+  "description": "Tact is a next-gen smart contract language for TON",
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {

@@ -1,6 +1,6 @@
 # TACT language compiler
 
-Next-generation TON smart contract language.
+A next-gen smart contract language for TON.
 
 * [Documentation](https://docs.tact-lang.org)
 * [Changelog](/CHANGELOG.md)
