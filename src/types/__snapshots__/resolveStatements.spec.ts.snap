@@ -99,6 +99,33 @@ exports[`resolveStatements should fail statements for case-10 1`] = `
 Type mismatch: Int is not assignable to Bool"
 `;
 
+exports[`resolveStatements should fail statements for case-11 1`] = `
+"Line 13, col 9:
+  12 |         a: 1,
+> 13 |         b: false // Invalid type
+               ^~~~~~~~
+  14 |     };
+Invalid type "Bool" for fields "b" with type Int in type SomeStruct"
+`;
+
+exports[`resolveStatements should fail statements for case-12 1`] = `
+"Line 13, col 9:
+  12 |         a: 1,
+> 13 |         a: 2,
+               ^~~~
+  14 |         b: 3
+Duplicate fields "a""
+`;
+
+exports[`resolveStatements should fail statements for case-13 1`] = `
+"Line 12, col 25:
+  11 | fun main() {
+> 12 |     let a: SomeStruct = SomeStruct{
+                               ^~~~~~~~~~~
+  13 |         a: 1,
+Missing fields "c" in type SomeStruct"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -434,6 +461,26 @@ exports[`resolveStatements should resolve statements for case-6 1`] = `
   [
     "1",
     "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-7 1`] = `
+[
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "SomeStruct{
+        a: 1,
+        b: 2
+    }",
+    "SomeStruct",
   ],
 ]
 `;

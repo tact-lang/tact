@@ -1,7 +1,7 @@
 import { abi } from "../abi/abi";
 import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
+import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction, resolveTypeRef } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
@@ -54,24 +54,37 @@ function resolveStructNew(exp: ASTOpNew, sctx: StatementContext, ctx: CompilerCo
         throwError(`Invalid type "${exp.type}" for construction`, exp.ref);
     }
 
+    // Process fields
     let processed = new Set<string>();
     for (let e of exp.args) {
 
         // Check duplicates
         if (processed.has(e.name)) {
-            throwError(`Duplicate argument "${e.name}"`, e.ref);
+            throwError(`Duplicate fields "${e.name}"`, e.ref);
         }
+        processed.add(e.name);
 
         // Check existing
         let f = tp.fields.find((v) => v.name === e.name);
         if (!f) {
-            throwError(`Unknown argument "${e.name}" in type ${tp.name}`, e.ref);
+            throwError(`Unknown fields "${e.name}" in type ${tp.name}`, e.ref);
         }
 
         // Resolve expression
         ctx = resolveExpression(e.exp, sctx, ctx);
 
-        // TODO: Check expression type
+        // Check expression type
+        let expressionType = getExpType(ctx, e.exp);
+        if (!isAssignable(expressionType, f.type)) {
+            throwError(`Invalid type "${printTypeRef(expressionType)}" for fields "${e.name}" with type ${printTypeRef(f.type)} in type ${tp.name}`, e.ref);
+        }
+    }
+
+    // Check missing fields
+    for (let f of tp.fields) {
+        if (f.default === undefined && !processed.has(f.name)) {
+            throwError(`Missing fields "${f.name}" in type ${tp.name}`, exp.ref);
+        }
     }
 
     // Register result

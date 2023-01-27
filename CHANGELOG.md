@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ## Fixed
 - `>>` and `<<` operations
+- Type checking of struct constructors
 
 ## [0.8.9] - 2023-01-25
 
