@@ -245,7 +245,7 @@ export function storeStructWithOptionals(src: StructWithOptionals) {
         if (src.a !== null && src.a !== undefined) { b_0.storeBit(true).storeInt(src.a, 257); } else { b_0.storeBit(false); }
         if (src.b !== null && src.b !== undefined) { b_0.storeBit(true).storeBit(src.b); } else { b_0.storeBit(false); }
         if (src.c !== null && src.c !== undefined) { b_0.storeBit(true).storeRef(src.c); } else { b_0.storeBit(false); }
-        if (src.d !== null && src.d !== undefined) { b_0.storeBit(true).storeAddress(src.d); } else { b_0.storeBit(false); }
+        b_0.storeAddress(src.d);
         let b_1 = new Builder();
         if (src.e !== null && src.e !== undefined) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
         b_0.storeRef(b_1.endCell());
@@ -257,7 +257,7 @@ export function loadStructWithOptionals(slice: Slice) {
     let _a = sc_0.loadBit() ? sc_0.loadIntBig(257) : null;
     let _b = sc_0.loadBit() ? sc_0.loadBit() : null;
     let _c = sc_0.loadBit() ? sc_0.loadRef() : null;
-    let _d = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    let _d = sc_0.loadMaybeAddress();
     let sc_1 = sc_0.loadRef().beginParse();
     let _e = sc_1.loadBit() ? loadSomeGenericStruct(sc_1) : null;
     return { $$type: 'StructWithOptionals' as const, a: _a, b: _b, c: _c, d: _d, e: _e };
@@ -314,7 +314,7 @@ export function storeUpdate(src: Update) {
         if (src.a !== null && src.a !== undefined) { b_0.storeBit(true).storeInt(src.a, 257); } else { b_0.storeBit(false); }
         if (src.b !== null && src.b !== undefined) { b_0.storeBit(true).storeBit(src.b); } else { b_0.storeBit(false); }
         if (src.c !== null && src.c !== undefined) { b_0.storeBit(true).storeRef(src.c); } else { b_0.storeBit(false); }
-        if (src.d !== null && src.d !== undefined) { b_0.storeBit(true).storeAddress(src.d); } else { b_0.storeBit(false); }
+        b_0.storeAddress(src.d);
         let b_1 = new Builder();
         if (src.e !== null && src.e !== undefined) { b_1.storeBit(true); b_1.store(storeSomeGenericStruct(src.e)); } else { b_1.storeBit(false); }
         let b_2 = new Builder();
@@ -330,7 +330,7 @@ export function loadUpdate(slice: Slice) {
     let _a = sc_0.loadBit() ? sc_0.loadIntBig(257) : null;
     let _b = sc_0.loadBit() ? sc_0.loadBit() : null;
     let _c = sc_0.loadBit() ? sc_0.loadRef() : null;
-    let _d = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    let _d = sc_0.loadMaybeAddress();
     let sc_1 = sc_0.loadRef().beginParse();
     let _e = sc_1.loadBit() ? loadSomeGenericStruct(sc_1) : null;
     let sc_2 = sc_1.loadRef().beginParse();

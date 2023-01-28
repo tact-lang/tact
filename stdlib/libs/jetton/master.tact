@@ -37,7 +37,7 @@ trait Jetton with Ownable {
         // Cashback
         if (msg.responseAddress != null) {
             send(SendParameters{
-                to: msg.responseAddress, 
+                to: msg.responseAddress!!, 
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue + SendIgnoreErrors,

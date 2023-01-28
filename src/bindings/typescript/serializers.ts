@@ -206,7 +206,7 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
     },
     tsLoad(v, slice, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${slice}.loadBit() ? ${slice}.loadAddress() : null;`);
+            w.append(`let ${field} = ${slice}.loadMaybeAddress();`);
         } else {
             w.append(`let ${field} = ${slice}.loadAddress();`);
         }
@@ -219,11 +219,7 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
         }
     },
     tsStore(v, builder, field, w) {
-        if (v.optional) {
-            w.append(`if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).storeAddress(${field}); } else { ${builder}.storeBit(false); }`);
-        } else {
-            w.append(`${builder}.storeAddress(${field});`);
-        }
+        w.append(`${builder}.storeAddress(${field});`);
     },
     tsStoreTuple(v, to, field, w) {
         w.append(`${to}.writeAddress(${field});`);

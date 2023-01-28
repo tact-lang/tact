@@ -357,7 +357,7 @@ _ $__gen_get_owner() method_id(83229) {
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_requireWallet($msg'owner);
     $self'totalSupply = ($self'totalSupply - $msg'amount);
     if ((~ null?($msg'responseAddress))) {
-        $send((false, $msg'responseAddress, 0, (64 + 2), __gen_writecell_TokenExcesses(($msg'queryId)), null(), null()));
+        $send((false, __tact_not_null($msg'responseAddress), 0, (64 + 2), __gen_writecell_TokenExcesses(($msg'queryId)), null(), null()));
     }
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }

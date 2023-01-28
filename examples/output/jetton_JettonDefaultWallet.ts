@@ -227,7 +227,7 @@ export function storeTokenTransfer(src: TokenTransfer) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.destination);
-        if (src.responseDestination !== null && src.responseDestination !== undefined) { b_0.storeBit(true).storeAddress(src.responseDestination); } else { b_0.storeBit(false); }
+        b_0.storeAddress(src.responseDestination);
         if (src.customPayload !== null && src.customPayload !== undefined) { b_0.storeBit(true).storeRef(src.customPayload); } else { b_0.storeBit(false); }
         b_0.storeCoins(src.forwardTonAmount);
         b_0.storeBuilder(src.forwardPayload.asBuilder());
@@ -240,7 +240,7 @@ export function loadTokenTransfer(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _destination = sc_0.loadAddress();
-    let _responseDestination = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    let _responseDestination = sc_0.loadMaybeAddress();
     let _customPayload = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _forwardTonAmount = sc_0.loadCoins();
     let _forwardPayload = sc_0.asCell();
@@ -297,7 +297,7 @@ export function storeTokenTransferInternal(src: TokenTransferInternal) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.from);
-        if (src.responseAddress !== null && src.responseAddress !== undefined) { b_0.storeBit(true).storeAddress(src.responseAddress); } else { b_0.storeBit(false); }
+        b_0.storeAddress(src.responseAddress);
         b_0.storeCoins(src.forwardTonAmount);
         b_0.storeBuilder(src.forwardPayload.asBuilder());
     };
@@ -309,7 +309,7 @@ export function loadTokenTransferInternal(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _from = sc_0.loadAddress();
-    let _responseAddress = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    let _responseAddress = sc_0.loadMaybeAddress();
     let _forwardTonAmount = sc_0.loadCoins();
     let _forwardPayload = sc_0.asCell();
     return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forwardTonAmount: _forwardTonAmount, forwardPayload: _forwardPayload };
@@ -417,7 +417,7 @@ export function storeTokenBurn(src: TokenBurn) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.owner);
-        if (src.responseAddress !== null && src.responseAddress !== undefined) { b_0.storeBit(true).storeAddress(src.responseAddress); } else { b_0.storeBit(false); }
+        b_0.storeAddress(src.responseAddress);
     };
 }
 
@@ -427,7 +427,7 @@ export function loadTokenBurn(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _owner = sc_0.loadAddress();
-    let _responseAddress = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    let _responseAddress = sc_0.loadMaybeAddress();
     return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 
@@ -473,7 +473,7 @@ export function storeTokenBurnNotification(src: TokenBurnNotification) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.owner);
-        if (src.responseAddress !== null && src.responseAddress !== undefined) { b_0.storeBit(true).storeAddress(src.responseAddress); } else { b_0.storeBit(false); }
+        b_0.storeAddress(src.responseAddress);
     };
 }
 
@@ -483,7 +483,7 @@ export function loadTokenBurnNotification(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _owner = sc_0.loadAddress();
-    let _responseAddress = sc_0.loadBit() ? sc_0.loadAddress() : null;
+    let _responseAddress = sc_0.loadMaybeAddress();
     return { $$type: 'TokenBurnNotification' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
 }
 

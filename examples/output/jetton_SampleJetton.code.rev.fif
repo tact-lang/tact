@@ -731,6 +731,8 @@ SETCP0
     NOT
     <{
       0 PUSHINT
+      s0 s6 XCHG
+      1 CALLDICT
       0 PUSHINT
       66 PUSHINT
       s0 s7 XCHG
@@ -745,13 +747,12 @@ SETCP0
         }> CALLREF
         ENDC
       }> CALLREF
-      s2 s4 XCHG
-      s3 s8 XCHG
-      s1 s7 s0 XCHG3
+      s4 s8 XCHG
+      s1 s3 s0 XCHG3
+      s1 s7 XCHG
       PUSHNULL
       PUSHNULL
       33 CALLDICT
-      s2 s3 XCHG
     }> PUSHCONT
     <{
       s4 POP

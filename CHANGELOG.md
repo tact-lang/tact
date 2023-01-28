@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+- Optional `Address` fields in typescript bindings
+
 ## Added
 - `Address.asSlice` for manual address parsing
 - `@stdlib/content` library with `createOffchainContent` functions
