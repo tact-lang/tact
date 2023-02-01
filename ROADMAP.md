@@ -24,6 +24,7 @@ This version would include the following features:
 * Typed tuples
 * Importing `func` files
 * `let` type inheritance when possible
+* Limited external messages support
 
 ## ✍️ Version v3
 
