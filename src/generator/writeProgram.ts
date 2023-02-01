@@ -280,7 +280,9 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     let contracts = allTypes.filter((v) => v.kind === 'contract');
 
     // Headers
-    wctx.header('#pragma version =0.4.1;'); // FunC version
+    wctx.header(`#pragma version =0.4.1;`); // FunC version
+    wctx.header(`#pragma allow-post-modification;`); // Allow post modification
+    wctx.header(`#pragma compute-asm-ltr;`); // Compute asm left to right
 
     // Stdlib
     writeStdlib(wctx);

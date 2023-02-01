@@ -1,4 +1,6 @@
 #pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 
 builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline_ref {
     var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;

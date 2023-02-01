@@ -1,4 +1,6 @@
 #pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 
 builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline_ref {
     var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;

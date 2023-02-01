@@ -466,8 +466,9 @@ SETCP0
     29 CALLDICT
 
   32: 
-    0 PUSHINT
     NEWC
+    0 PUSHINT
+    s0 s1 XCHG
     32 STU
     NIL
     s0 s1 XCHG

@@ -1,4 +1,6 @@
 #pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 
 () __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() != 267);

@@ -1,4 +1,6 @@
 #pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 
 builder __gen_write_StdlibTest(builder build_0, (int) v) inline_ref {
     var (v'v) = v;

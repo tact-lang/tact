@@ -54,8 +54,9 @@ PROGRAM{
     TPUSH
   }>
   __tact_string_builder_start_comment PROCINLINE:<{
-    0 PUSHINT
     NEWC
+    0 PUSHINT
+    SWAP
     32 STU
     __tact_string_builder_start INLINECALLDICT
   }>

@@ -1,4 +1,6 @@
 #pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 
 slice __tact_str_to_slice(slice s) asm "NOP";
 
