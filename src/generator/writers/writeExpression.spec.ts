@@ -69,7 +69,7 @@ describe('writeExpression', () => {
         __DANGER_resetNodeId();
     });
     it('should write expression', () => {
-        let ctx = openContext(new CompilerContext(), [code]);
+        let ctx = openContext(new CompilerContext(), [code], []);
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);
         let main = getStaticFunction(ctx, 'main');

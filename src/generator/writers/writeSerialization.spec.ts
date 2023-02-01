@@ -54,7 +54,7 @@ describe('writeSerialization', () => {
     });
     for (let s of ['A', 'B', 'C']) {
         it('should write serializer for ' + s, () => {
-            let ctx = openContext(new CompilerContext(), [code]);
+            let ctx = openContext(new CompilerContext(), [code], []);
             ctx = resolveDescriptors(ctx);
             ctx = resolveAllocations(ctx);
             let wctx = new WriterContext(ctx);
