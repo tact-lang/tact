@@ -10,7 +10,7 @@ global cell __tact_context_sys;
     return (sc_0, (v'v));
 }
 
-(int) __gen_load_ConstantTester() inline_ref {
+(int) __gen_load_ConstantTester() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_ConstantTester();
@@ -19,7 +19,7 @@ global cell __tact_context_sys;
 ;; String "Hello world!"
 slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
 
-int $__gen_ConstantTester_something1((int) $self) impure {
+int $__gen_ConstantTester_something1((int) $self) impure inline_ref {
     var (($self'v)) = $self;
     return 10;
 }
@@ -30,7 +30,7 @@ _ $__gen_get_something1() method_id(121234) {
     return res;
 }
 
-int $__gen_ConstantTester_something2((int) $self) impure {
+int $__gen_ConstantTester_something2((int) $self) impure inline_ref {
     var (($self'v)) = $self;
     return null();
 }
@@ -41,7 +41,7 @@ _ $__gen_get_something2() method_id(125425) {
     return res;
 }
 
-int $__gen_ConstantTester_something3((int) $self) impure {
+int $__gen_ConstantTester_something3((int) $self) impure inline_ref {
     var (($self'v)) = $self;
     return 123000000000;
 }
@@ -52,7 +52,7 @@ _ $__gen_get_something3() method_id(129488) {
     return res;
 }
 
-int $__gen_ConstantTester_something4((int) $self) impure {
+int $__gen_ConstantTester_something4((int) $self) impure inline_ref {
     var (($self'v)) = $self;
     return 456000000000;
 }
@@ -63,7 +63,7 @@ _ $__gen_get_something4() method_id(100663) {
     return res;
 }
 
-slice $__gen_ConstantTester_something5((int) $self) impure {
+slice $__gen_ConstantTester_something5((int) $self) impure inline_ref {
     var (($self'v)) = $self;
     return __gen_str_3226689099();
 }
@@ -74,7 +74,7 @@ _ $__gen_get_something5() method_id(104726) {
     return res;
 }
 
-int $__gen_ConstantTester_globalConst((int) $self) impure {
+int $__gen_ConstantTester_globalConst((int) $self) impure inline_ref {
     var (($self'v)) = $self;
     return 100;
 }

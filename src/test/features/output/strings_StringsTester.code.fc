@@ -170,13 +170,13 @@ builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     return (sc_0, (v'fee));
 }
 
-(int) __gen_load_StringsTester() inline_ref {
+(int) __gen_load_StringsTester() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_StringsTester();
 }
 
-() __gen_store_StringsTester((int) v) impure inline_ref {
+() __gen_store_StringsTester((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_StringsTester(b, v);
@@ -204,12 +204,12 @@ slice __gen_str_519161862() asm "B{b5ee9c7241010101001700002a48656c6c6f2c20796f7
 ;; String "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu"
 slice __gen_str_1560934365() asm "B{b5ee9c72410101010026000048545746756553426f5957356b637942745957746c494778705a32683049486476636d7375ff762436} B>boc <s PUSHSLICE";
 
-slice $__gen_Builder_asSlice(builder $self) impure {
+slice $__gen_Builder_asSlice(builder $self) impure inline_ref {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
 
-slice $__gen_Slice_fromBase64(slice $self) impure {
+slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     int $size = (slice_bits($self) / 8);
     builder $result = begin_cell();
@@ -240,12 +240,12 @@ slice $__gen_Slice_fromBase64(slice $self) impure {
     }
 }
 
-slice $__gen_String_fromBase64(slice $self) impure {
+slice $__gen_String_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
 }
 
-slice $__gen_StringsTester_constantString((int) $self) impure {
+slice $__gen_StringsTester_constantString((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     return __gen_str_3579288646();
 }
@@ -256,7 +256,7 @@ _ $__gen_get_constantString() method_id(93932) {
     return res;
 }
 
-slice $__gen_StringsTester_constantStringUnicode((int) $self) impure {
+slice $__gen_StringsTester_constantStringUnicode((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     return __gen_str_3070532033();
 }
@@ -267,7 +267,7 @@ _ $__gen_get_constantStringUnicode() method_id(94939) {
     return res;
 }
 
-slice $__gen_StringsTester_constantStringUnicodeLong((int) $self) impure {
+slice $__gen_StringsTester_constantStringUnicodeLong((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     return __gen_str_3872846997();
 }
@@ -278,7 +278,7 @@ _ $__gen_get_constantStringUnicodeLong() method_id(104680) {
     return res;
 }
 
-cell $__gen_StringsTester_dynamicStringCell((int) $self) impure {
+cell $__gen_StringsTester_dynamicStringCell((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_860684655());
@@ -291,7 +291,7 @@ _ $__gen_get_dynamicStringCell() method_id(122225) {
     return res;
 }
 
-cell $__gen_StringsTester_dynamicCommentCell((int) $self) impure {
+cell $__gen_StringsTester_dynamicCommentCell((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append(__gen_str_2498516892());
@@ -304,7 +304,7 @@ _ $__gen_get_dynamicCommentCell() method_id(122531) {
     return res;
 }
 
-cell $__gen_StringsTester_dynamicCommentCellLarge((int) $self) impure {
+cell $__gen_StringsTester_dynamicCommentCellLarge((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_860684655());
@@ -318,7 +318,7 @@ _ $__gen_get_dynamicCommentCellLarge() method_id(74771) {
     return res;
 }
 
-slice $__gen_StringsTester_dynamicCommentStringLarge((int) $self) impure {
+slice $__gen_StringsTester_dynamicCommentStringLarge((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_860684655());
@@ -332,7 +332,7 @@ _ $__gen_get_dynamicCommentStringLarge() method_id(74191) {
     return res;
 }
 
-slice $__gen_StringsTester_stringWithNumber((int) $self) impure {
+slice $__gen_StringsTester_stringWithNumber((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_519161862());
@@ -346,7 +346,7 @@ _ $__gen_get_stringWithNumber() method_id(68752) {
     return res;
 }
 
-slice $__gen_StringsTester_stringWithNegativeNumber((int) $self) impure {
+slice $__gen_StringsTester_stringWithNegativeNumber((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_519161862());
@@ -360,7 +360,7 @@ _ $__gen_get_stringWithNegativeNumber() method_id(82914) {
     return res;
 }
 
-slice $__gen_StringsTester_stringWithLargeNumber((int) $self) impure {
+slice $__gen_StringsTester_stringWithLargeNumber((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_519161862());
@@ -374,7 +374,7 @@ _ $__gen_get_stringWithLargeNumber() method_id(94811) {
     return res;
 }
 
-slice $__gen_StringsTester_stringWithFloat((int) $self) impure {
+slice $__gen_StringsTester_stringWithFloat((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     return __tact_float_to_string(95, 1);
 }
@@ -385,7 +385,7 @@ _ $__gen_get_stringWithFloat() method_id(80064) {
     return res;
 }
 
-slice $__gen_StringsTester_base64((int) $self) impure {
+slice $__gen_StringsTester_base64((int) $self) impure inline_ref {
     var (($self'fee)) = $self;
     return $__gen_String_fromBase64(__gen_str_1560934365());
 }
@@ -396,7 +396,7 @@ _ $__gen_get_base64() method_id(71427) {
     return res;
 }
 
-slice $__gen_StringsTester_processBase64((int) $self, slice $src) impure {
+slice $__gen_StringsTester_processBase64((int) $self, slice $src) impure inline_ref {
     var (($self'fee)) = $self;
     return $__gen_String_fromBase64($src);
 }

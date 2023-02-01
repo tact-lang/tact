@@ -187,9 +187,9 @@ PROGRAM{
     s7 s8 XCHG
     6 ROLL
   }>
-  __gen_Request_to_external PROC:<{
+  __gen_Request_to_external PROCINLINE:<{
   }>
-  __gen_load_MultisigSigner PROCREF:<{
+  __gen_load_MultisigSigner PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -198,7 +198,7 @@ PROGRAM{
     __gen_read_MultisigSigner INLINECALLDICT
     1 12 BLKDROP2
   }>
-  __gen_store_MultisigSigner PROCREF:<{
+  __gen_store_MultisigSigner PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -208,7 +208,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -307,13 +307,13 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_MultisigSigner_request PROC:<{
+  $__gen_MultisigSigner_request PROCREF:<{
     5 7 BLKDROP2
   }>
   $__gen_get_request PROC:<{
     __gen_load_MultisigSigner INLINECALLDICT
-    $__gen_MultisigSigner_request CALLDICT
-    __gen_Request_to_external CALLDICT
+    $__gen_MultisigSigner_request INLINECALLDICT
+    __gen_Request_to_external INLINECALLDICT
   }>
   $__gen_MultisigSigner_receive PROCINLINE:<{
   }>
@@ -360,7 +360,7 @@ PROGRAM{
       3 -ROLL
       PUSHNULL
       PUSHNULL
-      $send CALLDICT
+      $send INLINECALLDICT
       s0 s7 XCHG
     }>
     s0 s9 XCHG

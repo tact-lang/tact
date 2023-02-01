@@ -131,7 +131,7 @@ PROGRAM{
   __gen_Vars_as_optional PROCINLINE:<{
     5 TUPLE
   }>
-  __gen_Vars_to_tuple PROC:<{
+  __gen_Vars_to_tuple PROCINLINE:<{
     5 TUPLE
   }>
   __gen_Vars_opt_to_tuple PROCINLINE:<{
@@ -142,13 +142,13 @@ PROGRAM{
       PUSHNULL
     }>ELSE<{
       __gen_Vars_not_null INLINECALLDICT
-      __gen_Vars_to_tuple CALLDICT
+      __gen_Vars_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_Vars_from_tuple PROC:<{
+  __gen_Vars_from_tuple PROCINLINE:<{
     5 UNTUPLE
   }>
-  __gen_Vars_to_external PROC:<{
+  __gen_Vars_to_external PROCINLINE:<{
   }>
   __gen_Vars_opt_to_external PROCINLINE:<{
     __gen_Vars_opt_to_tuple INLINECALLDICT
@@ -169,11 +169,11 @@ PROGRAM{
   __gen_Both_as_optional PROCINLINE:<{
     10 TUPLE
   }>
-  __gen_Both_to_tuple PROC:<{
+  __gen_Both_to_tuple PROCINLINE:<{
     5 5 BLKSWAP
-    __gen_Vars_to_tuple CALLDICT
+    __gen_Vars_to_tuple INLINECALLDICT
     5 -ROLL
-    __gen_Vars_to_tuple CALLDICT
+    __gen_Vars_to_tuple INLINECALLDICT
     2 TUPLE
   }>
   __gen_Both_opt_to_tuple PROCINLINE:<{
@@ -184,15 +184,15 @@ PROGRAM{
       PUSHNULL
     }>ELSE<{
       __gen_Both_not_null INLINECALLDICT
-      __gen_Both_to_tuple CALLDICT
+      __gen_Both_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_Both_from_tuple PROC:<{
+  __gen_Both_from_tuple PROCINLINE:<{
     2 UNTUPLE
     SWAP
-    __gen_Vars_from_tuple CALLDICT
+    __gen_Vars_from_tuple INLINECALLDICT
     s0 s5 XCHG
-    __gen_Vars_from_tuple CALLDICT
+    __gen_Vars_from_tuple INLINECALLDICT
     s8 s9 XCHG
     s7 s8 XCHG
     s6 s7 XCHG
@@ -205,15 +205,15 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_Both_from_tuple CALLDICT
+      __gen_Both_from_tuple INLINECALLDICT
       __gen_Both_as_optional INLINECALLDICT
     }>
   }>
-  __gen_Both_to_external PROC:<{
+  __gen_Both_to_external PROCINLINE:<{
     5 5 BLKSWAP
-    __gen_Vars_to_tuple CALLDICT
+    __gen_Vars_to_tuple INLINECALLDICT
     5 -ROLL
-    __gen_Vars_to_tuple CALLDICT
+    __gen_Vars_to_tuple INLINECALLDICT
   }>
   __gen_Both_opt_to_external PROCINLINE:<{
     __gen_Both_opt_to_tuple INLINECALLDICT
@@ -225,7 +225,7 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_load_SerializationTester2 PROCREF:<{
+  __gen_load_SerializationTester2 PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -234,7 +234,7 @@ PROGRAM{
     __gen_read_SerializationTester2 INLINECALLDICT
     1 10 BLKDROP2
   }>
-  __gen_store_SerializationTester2 PROCREF:<{
+  __gen_store_SerializationTester2 PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -244,56 +244,56 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_SerializationTester2_getA PROC:<{
+  $__gen_SerializationTester2_getA PROCREF:<{
     5 BLKDROP
   }>
   $__gen_get_getA PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getA CALLDICT
-    __gen_Vars_to_external CALLDICT
+    $__gen_SerializationTester2_getA INLINECALLDICT
+    __gen_Vars_to_external INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getAopt PROC:<{
+  $__gen_SerializationTester2_getAopt PROCREF:<{
     5 BLKDROP
     __gen_Vars_as_optional INLINECALLDICT
   }>
   $__gen_get_getAopt PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getAopt CALLDICT
+    $__gen_SerializationTester2_getAopt INLINECALLDICT
     __gen_Vars_opt_to_external INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getB PROC:<{
+  $__gen_SerializationTester2_getB PROCREF:<{
     5 5 BLKDROP2
   }>
   $__gen_get_getB PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getB CALLDICT
-    __gen_Vars_to_external CALLDICT
+    $__gen_SerializationTester2_getB INLINECALLDICT
+    __gen_Vars_to_external INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getBopt PROC:<{
+  $__gen_SerializationTester2_getBopt PROCREF:<{
     5 5 BLKDROP2
     __gen_Vars_as_optional INLINECALLDICT
   }>
   $__gen_get_getBopt PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBopt CALLDICT
+    $__gen_SerializationTester2_getBopt INLINECALLDICT
     __gen_Vars_opt_to_external INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getBoth PROC:<{
+  $__gen_SerializationTester2_getBoth PROCREF:<{
   }>
   $__gen_get_getBoth PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBoth CALLDICT
-    __gen_Both_to_external CALLDICT
+    $__gen_SerializationTester2_getBoth INLINECALLDICT
+    __gen_Both_to_external INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getBothOpt PROC:<{
+  $__gen_SerializationTester2_getBothOpt PROCREF:<{
     __gen_Both_as_optional INLINECALLDICT
   }>
   $__gen_get_getBothOpt PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBothOpt CALLDICT
+    $__gen_SerializationTester2_getBothOpt INLINECALLDICT
     __gen_Both_opt_to_external INLINECALLDICT
   }>
-  $__gen_SerializationTester2_process PROC:<{
+  $__gen_SerializationTester2_process PROCREF:<{
     11 BLKDROP
     10 5 BLKDROP2
     s0 s4 XCHG
@@ -311,9 +311,9 @@ PROGRAM{
   }>
   $__gen_get_process PROC:<{
     s0 s2 XCHG
-    __gen_Vars_from_tuple CALLDICT
+    __gen_Vars_from_tuple INLINECALLDICT
     s0 s5 XCHG
-    __gen_Both_from_tuple CALLDICT
+    __gen_Both_from_tuple INLINECALLDICT
     s0 s15 XCHG
     __gen_Both_from_opt_tuple INLINECALLDICT
     __gen_load_SerializationTester2 INLINECALLDICT
@@ -338,8 +338,8 @@ PROGRAM{
     s0 s5 XCHG
     s0 s4 XCHG
     s8 s8 s3 XCHG3
-    $__gen_SerializationTester2_process CALLDICT
-    __gen_Vars_to_external CALLDICT
+    $__gen_SerializationTester2_process INLINECALLDICT
+    __gen_Vars_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_receive PROCINLINE:<{
   }>

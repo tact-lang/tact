@@ -60,30 +60,30 @@ builder __gen_write_RandomContract(builder build_0, (int) v) inline {
     return (sc_0, (v'field));
 }
 
-(int) __gen_load_RandomContract() inline_ref {
+(int) __gen_load_RandomContract() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_RandomContract();
 }
 
-() __gen_store_RandomContract((int) v) impure inline_ref {
+() __gen_store_RandomContract((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_RandomContract(b, v);
     set_data(b.end_cell());
 }
 
-int $randomInt() impure {
+int $randomInt() impure inline_ref {
     __tact_prepare_random();
     return random();
 }
 
-int $random(int $min, int $max) impure {
+int $random(int $min, int $max) impure inline_ref {
     __tact_prepare_random();
     return ($min + rand(($max - $min)));
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -126,12 +126,12 @@ int $random(int $min, int $max) impure {
     send_raw_message($c, $params'mode);
 }
 
-() $reply(cell $body) impure {
+() $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-int $__gen_RandomContract_randomInt((int) $self) impure {
+int $__gen_RandomContract_randomInt((int) $self) impure inline_ref {
     var (($self'field)) = $self;
     return $randomInt();
 }
@@ -142,7 +142,7 @@ _ $__gen_get_randomInt() method_id(128647) {
     return res;
 }
 
-int $__gen_RandomContract_random((int) $self, int $min, int $max) impure {
+int $__gen_RandomContract_random((int) $self, int $min, int $max) impure inline_ref {
     var (($self'field)) = $self;
     return $random($min, $max);
 }

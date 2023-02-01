@@ -260,7 +260,7 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_load_IncrementContract PROCREF:<{
+  __gen_load_IncrementContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -269,7 +269,7 @@ PROGRAM{
     __gen_read_IncrementContract INLINECALLDICT
     1 5 BLKDROP2
   }>
-  __gen_store_IncrementContract PROCREF:<{
+  __gen_store_IncrementContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -279,7 +279,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -378,7 +378,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $reply PROC:<{
+  $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -389,22 +389,22 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_IncrementContract_counters PROC:<{
+  $__gen_IncrementContract_counters PROCREF:<{
     4 BLKDROP
   }>
   $__gen_get_counters PROC:<{
     __gen_load_IncrementContract INLINECALLDICT
-    $__gen_IncrementContract_counters CALLDICT
+    $__gen_IncrementContract_counters INLINECALLDICT
   }>
-  $__gen_IncrementContract_counters2 PROC:<{
+  $__gen_IncrementContract_counters2 PROCREF:<{
     s1 s4 XCHG
     4 BLKDROP
   }>
   $__gen_get_counters2 PROC:<{
     __gen_load_IncrementContract INLINECALLDICT
-    $__gen_IncrementContract_counters2 CALLDICT
+    $__gen_IncrementContract_counters2 INLINECALLDICT
   }>
   $__gen_IncrementContract_receive_Increment PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -500,7 +500,7 @@ PROGRAM{
   }>
   $__gen_IncrementContract_receive_Deploy PROCINLINE:<{
     __gen_writecell_DeployOk INLINECALLDICT
-    $reply CALLDICT
+    $reply INLINECALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT

@@ -221,7 +221,7 @@ PROGRAM{
     LDIX
     4 -ROLL
   }>
-  __gen_load_Multisig PROCREF:<{
+  __gen_load_Multisig PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -230,7 +230,7 @@ PROGRAM{
     __gen_read_Multisig INLINECALLDICT
     1 4 BLKDROP2
   }>
-  __gen_store_Multisig PROCREF:<{
+  __gen_store_Multisig PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -240,12 +240,12 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $contractAddress PROC:<{
+  $contractAddress PROCREF:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -380,7 +380,7 @@ PROGRAM{
     s0 s11 XCHG
     $__gen_MultisigSigner_init CALLDICT
   }>
-  $__gen_Multisig_member PROC:<{
+  $__gen_Multisig_member PROCREF:<{
     s4 POP
     2DROP
     267 PUSHINT
@@ -391,15 +391,15 @@ PROGRAM{
   $__gen_get_member PROC:<{
     __gen_load_Multisig INLINECALLDICT
     4 ROLL
-    $__gen_Multisig_member CALLDICT
+    $__gen_Multisig_member INLINECALLDICT
   }>
-  $__gen_Multisig_members PROC:<{
+  $__gen_Multisig_members PROCREF:<{
     s2 s3 XCHG
     3 BLKDROP
   }>
   $__gen_get_members PROC:<{
     __gen_load_Multisig INLINECALLDICT
-    $__gen_Multisig_members CALLDICT
+    $__gen_Multisig_members INLINECALLDICT
   }>
   $__gen_Multisig_receive_Request PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -423,7 +423,7 @@ PROGRAM{
     3 4 BLKSWAP
     $__gen_MultisigSigner_init_child CALLDICT
     2DUP
-    $contractAddress CALLDICT
+    $contractAddress INLINECALLDICT
     TRUE
     0 PUSHINT
     s4 s2 XCHG2
@@ -431,7 +431,7 @@ PROGRAM{
     s4 s2 XCHG2
     PUSHNULL
     s0 s2 XCHG
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   $__gen_Multisig_receive_Signed PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -444,7 +444,7 @@ PROGRAM{
     s10 s9 s8 PUSH3
     s10 s9 PUSH2
     $__gen_MultisigSigner_init_child CALLDICT
-    $contractAddress CALLDICT
+    $contractAddress INLINECALLDICT
     4429 PUSHINT
     s0 s8 XCHG
     __tact_address_eq INLINECALLDICT
@@ -459,7 +459,7 @@ PROGRAM{
     s0 s4 XCHG
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT

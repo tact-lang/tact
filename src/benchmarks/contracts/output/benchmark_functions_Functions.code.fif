@@ -43,7 +43,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_load_Functions PROCREF:<{
+  __gen_load_Functions PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -52,7 +52,7 @@ PROGRAM{
     __gen_read_Functions INLINECALLDICT
     NIP
   }>
-  __gen_store_Functions PROCREF:<{
+  __gen_store_Functions PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -62,7 +62,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_Functions_update PROC:<{
+  $__gen_Functions_update PROCREF:<{
     ADD
   }>
   $__gen_Functions_receive_Add PROCINLINE:<{
@@ -70,7 +70,7 @@ PROGRAM{
     OVER
     0 GTINT
     THROWANYIFNOT
-    $__gen_Functions_update CALLDICT
+    $__gen_Functions_update INLINECALLDICT
   }>
   $__gen_Functions_receive_Sub PROCINLINE:<{
     55789 PUSHINT
@@ -78,7 +78,7 @@ PROGRAM{
     0 GTINT
     THROWANYIFNOT
     NEGATE
-    $__gen_Functions_update CALLDICT
+    $__gen_Functions_update INLINECALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT

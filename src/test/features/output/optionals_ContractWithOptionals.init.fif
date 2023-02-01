@@ -233,7 +233,7 @@ PROGRAM{
   __gen_SomeGenericStruct_as_optional PROCINLINE:<{
     5 TUPLE
   }>
-  __gen_SomeGenericStruct_from_tuple PROC:<{
+  __gen_SomeGenericStruct_from_tuple PROCINLINE:<{
     5 UNTUPLE
   }>
   __gen_SomeGenericStruct_from_opt_tuple PROCINLINE:<{
@@ -243,14 +243,14 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_SomeGenericStruct_from_tuple CALLDICT
+      __gen_SomeGenericStruct_from_tuple INLINECALLDICT
       __gen_SomeGenericStruct_as_optional INLINECALLDICT
     }>
   }>
   __gen_StructWithOptionals_as_optional PROCINLINE:<{
     5 TUPLE
   }>
-  __gen_StructWithOptionals_from_tuple PROC:<{
+  __gen_StructWithOptionals_from_tuple PROCINLINE:<{
     5 UNTUPLE
     __gen_SomeGenericStruct_from_opt_tuple INLINECALLDICT
   }>
@@ -261,7 +261,7 @@ PROGRAM{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_StructWithOptionals_from_tuple CALLDICT
+      __gen_StructWithOptionals_from_tuple INLINECALLDICT
       __gen_StructWithOptionals_as_optional INLINECALLDICT
     }>
   }>

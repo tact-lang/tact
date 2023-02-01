@@ -43,7 +43,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_load_Functions PROCREF:<{
+  __gen_load_Functions PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -52,7 +52,7 @@ PROGRAM{
     __gen_read_Functions INLINECALLDICT
     NIP
   }>
-  __gen_store_Functions PROCREF:<{
+  __gen_store_Functions PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP

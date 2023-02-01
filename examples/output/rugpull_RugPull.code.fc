@@ -155,18 +155,18 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(int, int, int) __gen_RugParams_to_external(((int, int, int)) v) {
+(int, int, int) __gen_RugParams_to_external(((int, int, int)) v) inline {
     var (v'investment, v'returns, v'fee) = v; 
     return (v'investment, v'returns, v'fee);
 }
 
-(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline_ref {
+(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_RugPull();
 }
 
-() __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline_ref {
+() __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_RugPull(b, v);
@@ -176,7 +176,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
 ;; String "Stopped"
 slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE";
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -219,25 +219,25 @@ slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09ba
     send_raw_message($c, $params'mode);
 }
 
-() $reply(cell $body) impure {
+() $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell $__gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_sendPayout((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, int $value) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_sendPayout((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, int $value) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     $send((true, $to, $value, 2, null(), null(), null()));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-(int, int, int) $__gen_RugPull_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+(int, int, int) $__gen_RugPull_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     return ($self'investment, $self'returns, $self'fee);
 }
@@ -248,13 +248,13 @@ _ $__gen_get_params() method_id(116437) {
     return __gen_RugParams_to_external(res);
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-slice $__gen_RugPull_owner((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+slice $__gen_RugPull_owner((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     return $self'owner;
 }
@@ -265,13 +265,13 @@ _ $__gen_get_owner() method_id(83229) {
     return res;
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     throw_unless(40368, (~ $self'stopped));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-int $__gen_RugPull_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+int $__gen_RugPull_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     return $self'stopped;
 }

@@ -59,7 +59,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     //
 
     ctx.fun(`__gen_${type.name}_to_tuple`, () => {
-        ctx.append(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v) {`);
+        ctx.append(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
             let vars: string[] = [];
@@ -95,7 +95,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_from_tuple`, () => {
-        ctx.append(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v) {`);
+        ctx.append(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
 
             // Resolve vars
@@ -142,7 +142,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     //
 
     ctx.fun(`__gen_${type.name}_to_external`, () => {
-        ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v) {`);
+        ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v; `);
             let vars: string[] = [];

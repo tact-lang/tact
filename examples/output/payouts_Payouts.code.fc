@@ -178,13 +178,13 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(slice, int) __gen_load_Payouts() inline_ref {
+(slice, int) __gen_load_Payouts() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Payouts();
 }
 
-() __gen_store_Payouts((slice, int) v) impure inline_ref {
+() __gen_store_Payouts((slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Payouts(b, v);
@@ -197,12 +197,12 @@ slice __gen_str_3364490128() asm "B{b5ee9c7241010101000900000e537563636573731535
 ;; String "Already paid"
 slice __gen_str_2620117026() asm "B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE";
 
-slice $contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -245,17 +245,17 @@ slice $contractAddress((cell, cell) $s) impure {
     send_raw_message($c, $params'mode);
 }
 
-slice $__gen_Builder_asSlice(builder $self) impure {
+slice $__gen_Builder_asSlice(builder $self) impure inline_ref {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
 
-cell $__gen_Builder_asCell(builder $self) impure {
+cell $__gen_Builder_asCell(builder $self) impure inline_ref {
     var ($self) = $self;
     return end_cell($self);
 }
 
-slice $__gen_Slice_fromBase64(slice $self) impure {
+slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     int $size = (slice_bits($self) / 8);
     builder $result = begin_cell();
@@ -286,14 +286,14 @@ slice $__gen_Slice_fromBase64(slice $self) impure {
     }
 }
 
-cell $__gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
 }
 
-slice $__gen_String_fromBase64(slice $self) impure {
+slice $__gen_String_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
 }
@@ -321,13 +321,13 @@ cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
     return (mine, $__gen_Beacon_init(sys, $master, $owner));
 }
 
-((slice, int), ()) $__gen_Payouts_requireOwner((slice, int) $self) impure {
+((slice, int), ()) $__gen_Payouts_requireOwner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
     return (($self'owner, $self'publicKey), ());
 }
 
-slice $__gen_Payouts_owner((slice, int) $self) impure {
+slice $__gen_Payouts_owner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     return $self'owner;
 }

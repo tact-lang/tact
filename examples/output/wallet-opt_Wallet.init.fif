@@ -9,7 +9,7 @@ PROGRAM{
     256 STU
     64 STU
   }>
-  $__gen_Wallet_init PROCINLINE:<{
+  $__gen_Wallet_init PROC:<{
     0 PUSHINT
     s0 s3 XCHG
     NEWC
@@ -19,7 +19,7 @@ PROGRAM{
     ENDC
   }>
   init PROC:<{
-    $__gen_Wallet_init INLINECALLDICT
+    $__gen_Wallet_init CALLDICT
   }>
   main PROC:<{
   }>

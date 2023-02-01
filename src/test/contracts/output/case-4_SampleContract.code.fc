@@ -20,13 +20,13 @@ global cell __tact_context_sys;
     return (sc_0, (v'a, v'b, v'c, v'd));
 }
 
-(int, int, (int, int), cell) __gen_load_SampleContract() inline_ref {
+(int, int, (int, int), cell) __gen_load_SampleContract() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleContract();
 }
 
-int $__gen_SampleContract_stake((int, int, (int, int), cell) $self) impure {
+int $__gen_SampleContract_stake((int, int, (int, int), cell) $self) impure inline_ref {
     var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = $self;
     return $self'a;
 }

@@ -68,20 +68,20 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     return (sc_0, (v'master, v'owner, v'completed));
 }
 
-(slice, slice, int) __gen_load_Beacon() inline_ref {
+(slice, slice, int) __gen_load_Beacon() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Beacon();
 }
 
-() __gen_store_Beacon((slice, slice, int) v) impure inline_ref {
+() __gen_store_Beacon((slice, slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Beacon(b, v);
     set_data(b.end_cell());
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -124,12 +124,12 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     send_raw_message($c, $params'mode);
 }
 
-() $reply(cell $body) impure {
+() $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-slice $__gen_Beacon_owner((slice, slice, int) $self) impure {
+slice $__gen_Beacon_owner((slice, slice, int) $self) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = $self;
     return $self'owner;
 }

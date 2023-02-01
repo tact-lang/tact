@@ -83,7 +83,7 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_load_Treasure PROCREF:<{
+  __gen_load_Treasure PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -92,7 +92,7 @@ PROGRAM{
     __gen_read_Treasure INLINECALLDICT
     NIP
   }>
-  __gen_store_Treasure PROCREF:<{
+  __gen_store_Treasure PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -102,7 +102,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -201,16 +201,16 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_Treasure_requireOwner PROC:<{
+  $__gen_Treasure_requireOwner PROCREF:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_sender INLINECALLDICT
     OVER
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  $__gen_Treasure_doWithdraw PROC:<{
+  $__gen_Treasure_doWithdraw PROCREF:<{
     s0 s2 XCHG
-    $__gen_Treasure_requireOwner CALLDICT
+    $__gen_Treasure_requireOwner INLINECALLDICT
     TRUE
     NEWC
     ENDC
@@ -218,25 +218,25 @@ PROGRAM{
     s5 s5 XCHG2
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_Treasure_owner PROC:<{
+  $__gen_Treasure_owner PROCREF:<{
   }>
   $__gen_get_owner PROC:<{
     __gen_load_Treasure INLINECALLDICT
-    $__gen_Treasure_owner CALLDICT
+    $__gen_Treasure_owner INLINECALLDICT
   }>
   $__gen_Treasure_receive_Withdraw PROCINLINE:<{
-    $__gen_Treasure_doWithdraw CALLDICT
+    $__gen_Treasure_doWithdraw INLINECALLDICT
   }>
   $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROCINLINE:<{
     0 PUSHINT
     160 PUSHINT
-    $__gen_Treasure_doWithdraw CALLDICT
+    $__gen_Treasure_doWithdraw INLINECALLDICT
   }>
   $__gen_Treasure_receive_ChangeOwner PROCINLINE:<{
     SWAP
-    $__gen_Treasure_requireOwner CALLDICT
+    $__gen_Treasure_requireOwner INLINECALLDICT
     DROP
   }>
   recv_internal PROC:<{

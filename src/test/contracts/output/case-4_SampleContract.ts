@@ -214,8 +214,8 @@ function dictValueParserSource(): DictionaryValue<Source> {
 }
 async function SampleContract_init() {
     const __init = 'te6ccgEBBgEATgABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AcAAUgAVVbW1tbQXIzAVQRYEBAc8AEoEBAc8AyEADAoEBAc8AgQEBzwAS9ADJAczJg=';
-    const __code = 'te6ccgEBCQEApQABFP8A9KQT9LzyyAsBAgFiAgMCAs0EBQIBIAYHAEXRBrpJjhD5hoaYGAuNhgAMi/yLhxAP0gESgiN4J8MO55YEFAAF0vgkAQ294sbZ54AkCABNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMAFTtRNDUAfhigQEB1wCBAQHXANQB0IEBAdcAgQEB1wBZAvQEMBA1EDQSbBU=';
-    const __system = 'te6cckEBCwEArwABAcABAQWghxUCART/APSkE/S88sgLAwIBYggEAgEgBgUATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAENveLG2eeAJAcAVO1E0NQB+GKBAQHXAIEBAdcA1AHQgQEB1wCBAQHXAFkC9AQwEDUQNBJsFQICzQoJAAXS+CQARdEGukmOEPmGhpgYC42GAAyL/IuHEA/SARKCI3gnww7nlgQUG+pv/w==';
+    const __code = 'te6ccgEBBwEAmwABFP8A9KQT9LzyyAsBAgFiAgMARtAg10kxwh8w0NMDAXGwwAGRf5Fw4gH6QCJQRG8E+GHc8sCCAgEgBAUBXb3ix2omhqAPwxQICA64BAgIDrgGoA6ECAgOuAQICA64AsgXoCGAgaiBoJNgrtnkBgBNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMAARfBA==';
+    const __system = 'te6cckEBCQEApQABAcABAQWghxUCART/APSkE/S88sgLAwIBYggEAgEgBgUATb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAFdveLHaiaGoA/DFAgIDrgECAgOuAagDoQICA64BAgIDrgCyBegIYCBqIGgk2Cu2eQHAARfBABG0CDXSTHCHzDQ0wMBcbDAAZF/kXDiAfpAIlBEbwT4YdzywIKeSmyX';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);

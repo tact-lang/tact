@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Payouts
-BOC Size: 1152 bytes
+BOC Size: 1188 bytes
 
 # Types
 Total Types: 6

@@ -106,7 +106,7 @@ PROGRAM{
     LDDICT
     5 -ROLL
   }>
-  __gen_load_DDDD PROCREF:<{
+  __gen_load_DDDD PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -115,7 +115,7 @@ PROGRAM{
     __gen_read_DDDD INLINECALLDICT
     1 5 BLKDROP2
   }>
-  __gen_store_DDDD PROCREF:<{
+  __gen_store_DDDD PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -125,7 +125,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_DDDD_mapData_addr1 PROC:<{
+  $__gen_DDDD_mapData_addr1 PROCREF:<{
     NIP
     s2 POP
     s3 POP
@@ -136,9 +136,9 @@ PROGRAM{
   $__gen_get_mapData_addr1 PROC:<{
     __gen_load_DDDD INLINECALLDICT
     5 ROLL
-    $__gen_DDDD_mapData_addr1 CALLDICT
+    $__gen_DDDD_mapData_addr1 INLINECALLDICT
   }>
-  $__gen_DDDD_mapData2_addr1 PROC:<{
+  $__gen_DDDD_mapData2_addr1 PROCREF:<{
     4 2 BLKDROP2
     267 PUSHINT
     SWAP
@@ -148,7 +148,7 @@ PROGRAM{
   $__gen_get_mapData2_addr1 PROC:<{
     __gen_load_DDDD INLINECALLDICT
     5 ROLL
-    $__gen_DDDD_mapData2_addr1 CALLDICT
+    $__gen_DDDD_mapData2_addr1 INLINECALLDICT
   }>
   $__gen_DDDD_receive PROCINLINE:<{
     SWAP

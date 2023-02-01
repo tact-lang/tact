@@ -164,7 +164,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_load_Echo PROCREF:<{
+  __gen_load_Echo PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -173,7 +173,7 @@ PROGRAM{
     __gen_read_Echo INLINECALLDICT
     NIP
   }>
-  __gen_store_Echo PROCREF:<{
+  __gen_store_Echo PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -183,7 +183,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -282,7 +282,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $reply PROC:<{
+  $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -293,21 +293,21 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_Slice_asCell PROC:<{
+  $__gen_Slice_asCell PROCREF:<{
     NEWC
     SWAP
     STSLICER
     ENDC
   }>
-  $__gen_String_asComment PROC:<{
+  $__gen_String_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_Echo_hello PROC:<{
+  $__gen_Echo_hello PROCREF:<{
     NIP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE
@@ -319,15 +319,15 @@ PROGRAM{
   $__gen_get_hello PROC:<{
     __gen_load_Echo INLINECALLDICT
     SWAP
-    $__gen_Echo_hello CALLDICT
+    $__gen_Echo_hello INLINECALLDICT
   }>
   $__gen_Echo_receive_comment PROCINLINE:<{
-    $__gen_String_asComment CALLDICT
-    $reply CALLDICT
+    $__gen_String_asComment INLINECALLDICT
+    $reply INLINECALLDICT
   }>
   $__gen_Echo_receive_fallback PROCINLINE:<{
-    $__gen_Slice_asCell CALLDICT
-    $reply CALLDICT
+    $__gen_Slice_asCell INLINECALLDICT
+    $reply INLINECALLDICT
   }>
   recv_internal PROC:<{
     c2 SAVE

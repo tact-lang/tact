@@ -39,7 +39,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_Vars_from_tuple PROC:<{
+  __gen_Vars_from_tuple PROCINLINE:<{
     5 UNTUPLE
   }>
   $__gen_SerializationTester2_init PROC:<{
@@ -52,9 +52,9 @@ PROGRAM{
   }>
   init PROC:<{
     SWAP
-    __gen_Vars_from_tuple CALLDICT
+    __gen_Vars_from_tuple INLINECALLDICT
     s0 s5 XCHG
-    __gen_Vars_from_tuple CALLDICT
+    __gen_Vars_from_tuple INLINECALLDICT
     s8 s9 XCHG
     s7 s8 XCHG
     s6 s7 XCHG

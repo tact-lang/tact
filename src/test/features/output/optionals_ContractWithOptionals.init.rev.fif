@@ -2,23 +2,6 @@ SETCP0
 (:methods
   recv_internal: 
 
-  10: 
-    5 UNTUPLE
-
-  13: 
-    5 UNTUPLE
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    <{
-      10 CALLDICT
-      5 TUPLE
-    }> PUSHCONT
-    IFELSE
-
   15: 
     s0 s6 XCHG
     NEWC
@@ -271,7 +254,7 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
-      10 CALLDICT
+      5 UNTUPLE
       5 TUPLE
     }> PUSHCONT
     IFELSE
@@ -283,7 +266,18 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
-      13 CALLDICT
+      5 UNTUPLE
+      s0 PUSH
+      ISNULL
+      <{
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      <{
+        5 UNTUPLE
+        5 TUPLE
+      }> PUSHCONT
+      IFELSE
       5 TUPLE
     }> PUSHCONT
     IFELSE

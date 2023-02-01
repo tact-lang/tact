@@ -65,7 +65,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_Request_from_tuple PROC:<{
+  __gen_Request_from_tuple PROCINLINE:<{
     7 UNTUPLE
   }>
   $__gen_MultisigSigner_init PROC:<{
@@ -85,7 +85,7 @@ PROGRAM{
     ENDC
   }>
   init PROC:<{
-    __gen_Request_from_tuple CALLDICT
+    __gen_Request_from_tuple INLINECALLDICT
     $__gen_MultisigSigner_init CALLDICT
   }>
   main PROC:<{

@@ -2,9 +2,6 @@ SETCP0
 (:methods
   recv_internal: 
 
-  5: 
-    7 UNTUPLE
-
   6: 
     0 PUSHINT
     0 PUSHINT
@@ -69,7 +66,7 @@ SETCP0
     ENDC
 
   107886: 
-    5 CALLDICT
+    7 UNTUPLE
     6 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ

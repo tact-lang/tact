@@ -27,13 +27,13 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     return (sc_0, (v'seqno, v'key, v'walletId));
 }
 
-(int, int, int) __gen_load_Wallet() inline_ref {
+(int, int, int) __gen_load_Wallet() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Wallet();
 }
 
-() __gen_store_Wallet((int, int, int) v) impure inline_ref {
+() __gen_store_Wallet((int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Wallet(b, v);

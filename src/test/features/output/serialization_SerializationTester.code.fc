@@ -54,20 +54,20 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
-(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline_ref {
+(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SerializationTester();
 }
 
-() __gen_store_SerializationTester((int, int, int, int, int, int, int, int, int) v) impure inline_ref {
+() __gen_store_SerializationTester((int, int, int, int, int, int, int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_SerializationTester(b, v);
     set_data(b.end_cell());
 }
 
-int $__gen_SerializationTester_getA((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getA((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'a;
 }
@@ -78,7 +78,7 @@ _ $__gen_get_getA() method_id(123932) {
     return res;
 }
 
-int $__gen_SerializationTester_getB((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getB((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'b;
 }
@@ -89,7 +89,7 @@ _ $__gen_get_getB() method_id(119935) {
     return res;
 }
 
-int $__gen_SerializationTester_getC((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getC((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'c;
 }
@@ -100,7 +100,7 @@ _ $__gen_get_getC() method_id(115806) {
     return res;
 }
 
-int $__gen_SerializationTester_getD((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getD((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'd;
 }
@@ -111,7 +111,7 @@ _ $__gen_get_getD() method_id(111801) {
     return res;
 }
 
-int $__gen_SerializationTester_getE((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getE((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'e;
 }
@@ -122,7 +122,7 @@ _ $__gen_get_getE() method_id(107672) {
     return res;
 }
 
-int $__gen_SerializationTester_getF((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getF((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'f;
 }
@@ -133,7 +133,7 @@ _ $__gen_get_getF() method_id(103675) {
     return res;
 }
 
-int $__gen_SerializationTester_getG((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getG((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'g;
 }
@@ -144,7 +144,7 @@ _ $__gen_get_getG() method_id(99546) {
     return res;
 }
 
-int $__gen_SerializationTester_getH((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getH((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'h;
 }
@@ -155,7 +155,7 @@ _ $__gen_get_getH() method_id(95541) {
     return res;
 }
 
-int $__gen_SerializationTester_getI((int, int, int, int, int, int, int, int, int) $self) impure {
+int $__gen_SerializationTester_getI((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = $self;
     return $self'i;
 }

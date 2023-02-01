@@ -25,7 +25,7 @@ builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, 
     return build_0;
 }
 
-(int, int, int, int, int) __gen_Vars_from_tuple(tuple v) {
+(int, int, int, int, int) __gen_Vars_from_tuple(tuple v) inline {
     var (int v'a, int v'b, int v'c, int v'd, int v'e) = __tact_tuple_destroy_5(v);
     return (v'a, v'b, v'c, v'd, v'e);
 }

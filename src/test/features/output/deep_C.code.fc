@@ -120,13 +120,13 @@ builder __gen_write_C(builder build_0, (int) v) inline {
     return (sc_0, (v'a));
 }
 
-(int) __gen_load_C() inline_ref {
+(int) __gen_load_C() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_C();
 }
 
-() __gen_store_C((int) v) impure inline_ref {
+() __gen_store_C((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_C(b, v);
@@ -136,12 +136,12 @@ builder __gen_write_C(builder build_0, (int) v) inline {
 ;; String "Message2"
 slice __gen_str_1801178584() asm "B{b5ee9c7241010101000a0000104d65737361676532cd775f6e} B>boc <s PUSHSLICE";
 
-slice $contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -184,7 +184,7 @@ slice $contractAddress((cell, cell) $s) impure {
     send_raw_message($c, $params'mode);
 }
 
-cell $__gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);

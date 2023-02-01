@@ -81,7 +81,7 @@ tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) inline 
     return __tact_tuple_create_5(v'value1, v'value2, v'value3, v'value4, v'value5);
 }
 
-(int, int, int, int, int) __gen_SomeGenericStruct_from_tuple(tuple v) {
+(int, int, int, int, int) __gen_SomeGenericStruct_from_tuple(tuple v) inline {
     var (int v'value1, int v'value2, int v'value3, int v'value4, int v'value5) = __tact_tuple_destroy_5(v);
     return (v'value1, v'value2, v'value3, v'value4, v'value5);
 }
@@ -96,7 +96,7 @@ tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) 
     return __tact_tuple_create_5(v'a, v'b, v'c, v'd, v'e);
 }
 
-(int, int, cell, slice, tuple) __gen_StructWithOptionals_from_tuple(tuple v) {
+(int, int, cell, slice, tuple) __gen_StructWithOptionals_from_tuple(tuple v) inline {
     var (int v'a, int v'b, cell v'c, slice v'd, tuple v'e) = __tact_tuple_destroy_5(v);
     return (v'a, v'b, v'c, v'd, __gen_SomeGenericStruct_from_opt_tuple(v'e));
 }

@@ -204,9 +204,9 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  __gen_StateInit_to_external PROC:<{
+  __gen_StateInit_to_external PROCINLINE:<{
   }>
-  __gen_load_B PROCREF:<{
+  __gen_load_B PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -215,7 +215,7 @@ PROGRAM{
     __gen_read_B INLINECALLDICT
     NIP
   }>
-  __gen_store_B PROCREF:<{
+  __gen_store_B PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -225,12 +225,12 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $contractAddress PROC:<{
+  $contractAddress PROCREF:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -329,7 +329,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_String_asComment PROC:<{
+  $__gen_String_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
@@ -361,29 +361,29 @@ PROGRAM{
     ENDC
     $__gen_C_init CALLDICT
   }>
-  $__gen_B_getNext PROC:<{
+  $__gen_B_getNext PROCREF:<{
     DROP
     __tact_context_sys GETGLOB
     $__gen_C_init_child CALLDICT
   }>
   $__gen_get_getNext PROC:<{
     __gen_load_B INLINECALLDICT
-    $__gen_B_getNext CALLDICT
-    __gen_StateInit_to_external CALLDICT
+    $__gen_B_getNext INLINECALLDICT
+    __gen_StateInit_to_external INLINECALLDICT
   }>
   $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
     $__gen_C_init_child CALLDICT
     2DUP
-    $contractAddress CALLDICT
+    $contractAddress INLINECALLDICT
     TRUE
     0 PUSHINT
     66 PUSHINT
     B{b5ee9c7241010101000900000e4d657373616765b15ae930} B>boc <s PUSHSLICE
-    $__gen_String_asComment CALLDICT
+    $__gen_String_asComment INLINECALLDICT
     4 3 REVERSE
     s0 s3 s4 XCHG3
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   recv_internal PROC:<{
     c2 SAVE

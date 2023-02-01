@@ -198,30 +198,30 @@ _ __gen_StateInit_get_code((cell, cell) v) inline {
     return v'code;
 }
 
-(int, slice, slice, cell) __gen_JettonWalletData_to_external(((int, slice, slice, cell)) v) {
+(int, slice, slice, cell) __gen_JettonWalletData_to_external(((int, slice, slice, cell)) v) inline {
     var (v'balance, v'owner, v'master, v'walletCode) = v; 
     return (v'balance, v'owner, v'master, v'walletCode);
 }
 
-(int, slice, slice) __gen_load_JettonDefaultWallet() inline_ref {
+(int, slice, slice) __gen_load_JettonDefaultWallet() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_JettonDefaultWallet();
 }
 
-() __gen_store_JettonDefaultWallet((int, slice, slice) v) impure inline_ref {
+() __gen_store_JettonDefaultWallet((int, slice, slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_JettonDefaultWallet(b, v);
     set_data(b.end_cell());
 }
 
-slice $contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -264,7 +264,7 @@ slice $contractAddress((cell, cell) $s) impure {
     send_raw_message($c, $params'mode);
 }
 
-int $__gen_Context_readForwardFee((int, slice, int, slice) $self) impure {
+int $__gen_Context_readForwardFee((int, slice, int, slice) $self) impure inline_ref {
     var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
     var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
     slice $sc = $self'raw;
@@ -297,7 +297,7 @@ cell $__gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
     return (mine, $__gen_JettonDefaultWallet_init(sys, $master, $owner));
 }
 
-(int, slice, slice, cell) $__gen_JettonDefaultWallet_get_wallet_data((int, slice, slice) $self) impure {
+(int, slice, slice, cell) $__gen_JettonDefaultWallet_get_wallet_data((int, slice, slice) $self) impure inline_ref {
     var (($self'balance, $self'owner, $self'master)) = $self;
     return ($self'balance, $self'owner, $self'master, __gen_StateInit_get_code($__gen_JettonDefaultWallet_init_child(__tact_context_sys, $self'master, $self'owner)));
 }

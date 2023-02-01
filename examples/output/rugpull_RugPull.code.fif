@@ -266,9 +266,9 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_RugParams_to_external PROC:<{
+  __gen_RugParams_to_external PROCINLINE:<{
   }>
-  __gen_load_RugPull PROCREF:<{
+  __gen_load_RugPull PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -277,7 +277,7 @@ PROGRAM{
     __gen_read_RugPull INLINECALLDICT
     1 10 BLKDROP2
   }>
-  __gen_store_RugPull PROCREF:<{
+  __gen_store_RugPull PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -287,7 +287,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -386,7 +386,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $reply PROC:<{
+  $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -397,62 +397,62 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_String_asComment PROC:<{
+  $__gen_String_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_RugPull_sendPayout PROC:<{
+  $__gen_RugPull_sendPayout PROCREF:<{
     TRUE
     -ROT
     2 PUSHINT
     PUSHNULL
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_RugPull_params PROC:<{
+  $__gen_RugPull_params PROCREF:<{
     6 BLKDROP
     1 3 BLKDROP2
   }>
   $__gen_get_params PROC:<{
     __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_params CALLDICT
-    __gen_RugParams_to_external CALLDICT
+    $__gen_RugPull_params INLINECALLDICT
+    __gen_RugParams_to_external INLINECALLDICT
   }>
-  $__gen_RugPull_requireOwner PROC:<{
+  $__gen_RugPull_requireOwner PROCREF:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_sender INLINECALLDICT
     s10 PUSH
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  $__gen_RugPull_owner PROC:<{
+  $__gen_RugPull_owner PROCREF:<{
     9 BLKDROP
   }>
   $__gen_get_owner PROC:<{
     __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_owner CALLDICT
+    $__gen_RugPull_owner INLINECALLDICT
   }>
-  $__gen_RugPull_requireNotStopped PROC:<{
+  $__gen_RugPull_requireNotStopped PROCREF:<{
     40368 PUSHINT
     s4 PUSH
     NOT
     THROWANYIFNOT
   }>
-  $__gen_RugPull_stopped PROC:<{
+  $__gen_RugPull_stopped PROCREF:<{
     s3 s9 XCHG
     9 BLKDROP
   }>
   $__gen_get_stopped PROC:<{
     __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_stopped CALLDICT
+    $__gen_RugPull_stopped INLINECALLDICT
   }>
   $__gen_RugPull_receive PROCINLINE:<{
-    $__gen_RugPull_requireNotStopped CALLDICT
+    $__gen_RugPull_requireNotStopped INLINECALLDICT
     s4 PUSH
     IF:<{
       TRUE
@@ -462,7 +462,7 @@ PROGRAM{
       PUSHNULL
       PUSHNULL
       PUSHNULL
-      $send CALLDICT
+      $send INLINECALLDICT
     }>ELSE<{
       __tact_context_get INLINECALLDICT
       DROP
@@ -501,14 +501,14 @@ PROGRAM{
         s3 s8 XCPU
         s1 s7 XCHG
         s3 s3 s0 XCHG3
-        $__gen_RugPull_sendPayout CALLDICT
+        $__gen_RugPull_sendPayout INLINECALLDICT
         s0 s5 XCHG2
       }>
       s5 s5 XCHG2
     }>
   }>
   $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROCINLINE:<{
-    $__gen_RugPull_requireOwner CALLDICT
+    $__gen_RugPull_requireOwner INLINECALLDICT
     s4 PUSH
     NOT
     IF:<{
@@ -523,7 +523,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROCINLINE:<{
     s4 POP
@@ -535,22 +535,22 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
     s0 s4 XCHG
   }>
   $__gen_RugPull_receive_ChangeOwner PROCINLINE:<{
     10 -ROLL
-    $__gen_RugPull_requireOwner CALLDICT
+    $__gen_RugPull_requireOwner INLINECALLDICT
     1 9 BLKDROP2
   }>
   $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 PROCINLINE:<{
-    $__gen_RugPull_requireOwner CALLDICT
-    $__gen_RugPull_requireNotStopped CALLDICT
+    $__gen_RugPull_requireOwner INLINECALLDICT
+    $__gen_RugPull_requireNotStopped INLINECALLDICT
     s3 POP
     TRUE
     B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE
-    $__gen_String_asComment CALLDICT
-    $reply CALLDICT
+    $__gen_String_asComment INLINECALLDICT
+    $reply INLINECALLDICT
     s0 s3 XCHG
   }>
   recv_internal PROC:<{

@@ -130,7 +130,7 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
-  __gen_load_SerializationTester PROCREF:<{
+  __gen_load_SerializationTester PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -139,7 +139,7 @@ PROGRAM{
     __gen_read_SerializationTester INLINECALLDICT
     1 9 BLKDROP2
   }>
-  __gen_store_SerializationTester PROCREF:<{
+  __gen_store_SerializationTester PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -149,75 +149,75 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_SerializationTester_getA PROC:<{
+  $__gen_SerializationTester_getA PROCREF:<{
     8 BLKDROP
   }>
   $__gen_get_getA PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getA CALLDICT
+    $__gen_SerializationTester_getA INLINECALLDICT
   }>
-  $__gen_SerializationTester_getB PROC:<{
+  $__gen_SerializationTester_getB PROCREF:<{
     s7 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getB PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getB CALLDICT
+    $__gen_SerializationTester_getB INLINECALLDICT
   }>
-  $__gen_SerializationTester_getC PROC:<{
+  $__gen_SerializationTester_getC PROCREF:<{
     s6 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getC PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getC CALLDICT
+    $__gen_SerializationTester_getC INLINECALLDICT
   }>
-  $__gen_SerializationTester_getD PROC:<{
+  $__gen_SerializationTester_getD PROCREF:<{
     s5 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getD PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getD CALLDICT
+    $__gen_SerializationTester_getD INLINECALLDICT
   }>
-  $__gen_SerializationTester_getE PROC:<{
+  $__gen_SerializationTester_getE PROCREF:<{
     s4 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getE PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getE CALLDICT
+    $__gen_SerializationTester_getE INLINECALLDICT
   }>
-  $__gen_SerializationTester_getF PROC:<{
+  $__gen_SerializationTester_getF PROCREF:<{
     s3 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getF PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getF CALLDICT
+    $__gen_SerializationTester_getF INLINECALLDICT
   }>
-  $__gen_SerializationTester_getG PROC:<{
+  $__gen_SerializationTester_getG PROCREF:<{
     s2 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getG PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getG CALLDICT
+    $__gen_SerializationTester_getG INLINECALLDICT
   }>
-  $__gen_SerializationTester_getH PROC:<{
+  $__gen_SerializationTester_getH PROCREF:<{
     s1 s8 XCHG
     8 BLKDROP
   }>
   $__gen_get_getH PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getH CALLDICT
+    $__gen_SerializationTester_getH INLINECALLDICT
   }>
-  $__gen_SerializationTester_getI PROC:<{
+  $__gen_SerializationTester_getI PROCREF:<{
     8 1 BLKDROP2
   }>
   $__gen_get_getI PROC:<{
     __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getI CALLDICT
+    $__gen_SerializationTester_getI INLINECALLDICT
   }>
   $__gen_SerializationTester_receive PROCINLINE:<{
   }>

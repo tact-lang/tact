@@ -112,25 +112,25 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return (sc_0, (v'master, v'members, v'weight, v'requiredWeight, v'completed, v'request));
 }
 
-(slice, slice, int, int, int, int, cell) __gen_Request_to_external(((slice, slice, int, int, int, int, cell)) v) {
+(slice, slice, int, int, int, int, cell) __gen_Request_to_external(((slice, slice, int, int, int, int, cell)) v) inline {
     var (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body) = v; 
     return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
 }
 
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) __gen_load_MultisigSigner() inline_ref {
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) __gen_load_MultisigSigner() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MultisigSigner();
 }
 
-() __gen_store_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline_ref {
+() __gen_store_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_MultisigSigner(b, v);
     set_data(b.end_cell());
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -173,7 +173,7 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     send_raw_message($c, $params'mode);
 }
 
-(slice, slice, int, int, int, int, cell) $__gen_MultisigSigner_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure {
+(slice, slice, int, int, int, int, cell) $__gen_MultisigSigner_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref {
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = $self;
     return ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body);
 }

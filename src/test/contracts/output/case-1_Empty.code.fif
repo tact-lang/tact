@@ -15,10 +15,10 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_Source_from_tuple PROC:<{
+  __gen_Source_from_tuple PROCINLINE:<{
     4 UNTUPLE
   }>
-  __gen_load_Empty PROCREF:<{
+  __gen_load_Empty PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -27,7 +27,7 @@ PROGRAM{
     __gen_read_Empty INLINECALLDICT
     NIP
   }>
-  $isZero PROC:<{
+  $isZero PROCREF:<{
     2DROP
     s4 s3 PUSH2
     ADD
@@ -52,15 +52,15 @@ PROGRAM{
     0 EQINT
     AND
   }>
-  $__gen_Empty_a PROC:<{
+  $__gen_Empty_a PROCREF:<{
     1 7 BLKDROP2
-    $isZero CALLDICT
+    $isZero INLINECALLDICT
   }>
   $__gen_get_a PROC:<{
-    __gen_Source_from_tuple CALLDICT
+    __gen_Source_from_tuple INLINECALLDICT
     __gen_load_Empty INLINECALLDICT
     7 -ROLL
-    $__gen_Empty_a CALLDICT
+    $__gen_Empty_a INLINECALLDICT
   }>
   recv_internal PROC:<{
     DUP

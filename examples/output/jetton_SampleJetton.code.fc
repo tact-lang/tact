@@ -166,43 +166,43 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(int, int, slice, cell, cell) __gen_JettonData_to_external(((int, int, slice, cell, cell)) v) {
+(int, int, slice, cell, cell) __gen_JettonData_to_external(((int, int, slice, cell, cell)) v) inline {
     var (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode) = v; 
     return (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode);
 }
 
-(int, slice, cell, int) __gen_load_SampleJetton() inline_ref {
+(int, slice, cell, int) __gen_load_SampleJetton() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleJetton();
 }
 
-() __gen_store_SampleJetton((int, slice, cell, int) v) impure inline_ref {
+() __gen_store_SampleJetton((int, slice, cell, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_SampleJetton(b, v);
     set_data(b.end_cell());
 }
 
-cell $emptyCell() impure {
+cell $emptyCell() impure inline_ref {
     return end_cell(begin_cell());
 }
 
-slice $__gen_Cell_asSlice(cell $self) impure {
+slice $__gen_Cell_asSlice(cell $self) impure inline_ref {
     var ($self) = $self;
     return begin_parse($self);
 }
 
-slice $emptySlice() impure {
+slice $emptySlice() impure inline_ref {
     return $__gen_Cell_asSlice($emptyCell());
 }
 
-slice $contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -268,12 +268,12 @@ cell $__gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
     return (mine, $__gen_JettonDefaultWallet_init(sys, $master, $owner));
 }
 
-((int, slice, cell, int), (cell, cell)) $__gen_SampleJetton_getJettonWalletInit((int, slice, cell, int) $self, slice $address) impure {
+((int, slice, cell, int), (cell, cell)) $__gen_SampleJetton_getJettonWalletInit((int, slice, cell, int) $self, slice $address) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), $__gen_JettonDefaultWallet_init_child(__tact_context_sys, my_address(), $address));
 }
 
-slice $__gen_SampleJetton_get_wallet_address((int, slice, cell, int) $self, slice $owner) impure {
+slice $__gen_SampleJetton_get_wallet_address((int, slice, cell, int) $self, slice $owner) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit($owner);
     return $contractAddress(($winit'code, $winit'data));
@@ -286,7 +286,7 @@ _ $__gen_get_get_wallet_address(slice $$owner) method_id(103289) {
     return res;
 }
 
-(int, int, slice, cell, cell) $__gen_SampleJetton_get_jetton_data((int, slice, cell, int) $self) impure {
+(int, int, slice, cell, cell) $__gen_SampleJetton_get_jetton_data((int, slice, cell, int) $self) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     cell $code = __gen_StateInit_get_code(($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit(my_address()));
     return ($self'totalSupply, $self'mintable, $self'owner, $self'content, $code);
@@ -298,7 +298,7 @@ _ $__gen_get_get_jetton_data() method_id(106029) {
     return __gen_JettonData_to_external(res);
 }
 
-((int, slice, cell, int), ()) $__gen_SampleJetton_mint((int, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure {
+((int, slice, cell, int), ()) $__gen_SampleJetton_mint((int, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     $self'totalSupply = ($self'totalSupply + $amount);
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit($to);
@@ -307,7 +307,7 @@ _ $__gen_get_get_jetton_data() method_id(106029) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-((int, slice, cell, int), ()) $__gen_SampleJetton_requireWallet((int, slice, cell, int) $self, slice $owner) impure {
+((int, slice, cell, int), ()) $__gen_SampleJetton_requireWallet((int, slice, cell, int) $self, slice $owner) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit($owner);
@@ -315,13 +315,13 @@ _ $__gen_get_get_jetton_data() method_id(106029) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-((int, slice, cell, int), ()) $__gen_SampleJetton_requireOwner((int, slice, cell, int) $self) impure {
+((int, slice, cell, int), ()) $__gen_SampleJetton_requireOwner((int, slice, cell, int) $self) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-slice $__gen_SampleJetton_owner((int, slice, cell, int) $self) impure {
+slice $__gen_SampleJetton_owner((int, slice, cell, int) $self) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     return $self'owner;
 }

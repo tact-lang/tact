@@ -2,9 +2,6 @@ SETCP0
 (:methods
   recv_internal: 
 
-  3: 
-    5 UNTUPLE
-
   4: 
     s0 s10 XCHG
     NEWC
@@ -60,9 +57,9 @@ SETCP0
 
   107886: 
     s0 s1 XCHG
-    3 CALLDICT
+    5 UNTUPLE
     s0 s5 XCHG
-    3 CALLDICT
+    5 UNTUPLE
     s8 s9 XCHG
     s7 s8 XCHG
     s6 s7 XCHG

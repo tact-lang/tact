@@ -492,7 +492,7 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  __gen_SomeGenericStruct_to_tuple PROC:<{
+  __gen_SomeGenericStruct_to_tuple PROCINLINE:<{
     5 TUPLE
   }>
   __gen_SomeGenericStruct_opt_to_tuple PROCINLINE:<{
@@ -503,10 +503,10 @@ PROGRAM{
       PUSHNULL
     }>ELSE<{
       __gen_SomeGenericStruct_not_null INLINECALLDICT
-      __gen_SomeGenericStruct_to_tuple CALLDICT
+      __gen_SomeGenericStruct_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_SomeGenericStruct_to_external PROC:<{
+  __gen_SomeGenericStruct_to_external PROCINLINE:<{
   }>
   __gen_SomeGenericStruct_opt_to_external PROCINLINE:<{
     __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
@@ -518,7 +518,7 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_StructWithOptionals_to_tuple PROC:<{
+  __gen_StructWithOptionals_to_tuple PROCINLINE:<{
     __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
     5 TUPLE
   }>
@@ -530,10 +530,10 @@ PROGRAM{
       PUSHNULL
     }>ELSE<{
       __gen_StructWithOptionals_not_null INLINECALLDICT
-      __gen_StructWithOptionals_to_tuple CALLDICT
+      __gen_StructWithOptionals_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_StructWithOptionals_to_external PROC:<{
+  __gen_StructWithOptionals_to_external PROCINLINE:<{
     __gen_SomeGenericStruct_opt_to_tuple INLINECALLDICT
   }>
   __gen_StructWithOptionals_opt_to_external PROCINLINE:<{
@@ -546,7 +546,7 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_load_ContractWithOptionals PROCREF:<{
+  __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -555,7 +555,7 @@ PROGRAM{
     __gen_read_ContractWithOptionals INLINECALLDICT
     1 6 BLKDROP2
   }>
-  __gen_store_ContractWithOptionals PROCREF:<{
+  __gen_store_ContractWithOptionals PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -565,16 +565,16 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_ContractWithOptionals_isNotNullA PROC:<{
+  $__gen_ContractWithOptionals_isNotNullA PROCREF:<{
     5 BLKDROP
     ISNULL
     NOT
   }>
   $__gen_get_isNotNullA PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullA CALLDICT
+    $__gen_ContractWithOptionals_isNotNullA INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_isNotNullB PROC:<{
+  $__gen_ContractWithOptionals_isNotNullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
     ISNULL
@@ -582,9 +582,9 @@ PROGRAM{
   }>
   $__gen_get_isNotNullB PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullB CALLDICT
+    $__gen_ContractWithOptionals_isNotNullB INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_isNotNullC PROC:<{
+  $__gen_ContractWithOptionals_isNotNullC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
     ISNULL
@@ -592,9 +592,9 @@ PROGRAM{
   }>
   $__gen_get_isNotNullC PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullC CALLDICT
+    $__gen_ContractWithOptionals_isNotNullC INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_isNotNullD PROC:<{
+  $__gen_ContractWithOptionals_isNotNullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
     ISNULL
@@ -602,9 +602,9 @@ PROGRAM{
   }>
   $__gen_get_isNotNullD PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullD CALLDICT
+    $__gen_ContractWithOptionals_isNotNullD INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_isNotNullE PROC:<{
+  $__gen_ContractWithOptionals_isNotNullE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
     ISNULL
@@ -612,120 +612,120 @@ PROGRAM{
   }>
   $__gen_get_isNotNullE PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullE CALLDICT
+    $__gen_ContractWithOptionals_isNotNullE INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_isNotNullF PROC:<{
+  $__gen_ContractWithOptionals_isNotNullF PROCREF:<{
     5 1 BLKDROP2
     ISNULL
     NOT
   }>
   $__gen_get_isNotNullF PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullF CALLDICT
+    $__gen_ContractWithOptionals_isNotNullF INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_nullA PROC:<{
+  $__gen_ContractWithOptionals_nullA PROCREF:<{
     5 BLKDROP
   }>
   $__gen_get_nullA PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullA CALLDICT
+    $__gen_ContractWithOptionals_nullA INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_nullB PROC:<{
+  $__gen_ContractWithOptionals_nullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
   }>
   $__gen_get_nullB PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullB CALLDICT
+    $__gen_ContractWithOptionals_nullB INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_nullC PROC:<{
+  $__gen_ContractWithOptionals_nullC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
   }>
   $__gen_get_nullC PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullC CALLDICT
+    $__gen_ContractWithOptionals_nullC INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_nullD PROC:<{
+  $__gen_ContractWithOptionals_nullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
   }>
   $__gen_get_nullD PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullD CALLDICT
+    $__gen_ContractWithOptionals_nullD INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_nullE PROC:<{
+  $__gen_ContractWithOptionals_nullE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
   }>
   $__gen_get_nullE PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullE CALLDICT
+    $__gen_ContractWithOptionals_nullE INLINECALLDICT
     __gen_SomeGenericStruct_opt_to_external INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_nullF PROC:<{
+  $__gen_ContractWithOptionals_nullF PROCREF:<{
     5 1 BLKDROP2
   }>
   $__gen_get_nullF PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullF CALLDICT
+    $__gen_ContractWithOptionals_nullF INLINECALLDICT
     __gen_StructWithOptionals_opt_to_external INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_notNullA PROC:<{
+  $__gen_ContractWithOptionals_notNullA PROCREF:<{
     5 BLKDROP
     __tact_not_null CALLDICT
   }>
   $__gen_get_notNullA PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullA CALLDICT
+    $__gen_ContractWithOptionals_notNullA INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_notNullB PROC:<{
+  $__gen_ContractWithOptionals_notNullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
     __tact_not_null CALLDICT
   }>
   $__gen_get_notNullB PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullB CALLDICT
+    $__gen_ContractWithOptionals_notNullB INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_notNullC PROC:<{
+  $__gen_ContractWithOptionals_notNullC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
     __tact_not_null CALLDICT
   }>
   $__gen_get_notNullC PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullC CALLDICT
+    $__gen_ContractWithOptionals_notNullC INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_notNullD PROC:<{
+  $__gen_ContractWithOptionals_notNullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
     __tact_not_null CALLDICT
   }>
   $__gen_get_notNullD PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullD CALLDICT
+    $__gen_ContractWithOptionals_notNullD INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_notNullE PROC:<{
+  $__gen_ContractWithOptionals_notNullE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
     __gen_SomeGenericStruct_not_null INLINECALLDICT
   }>
   $__gen_get_notNullE PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullE CALLDICT
-    __gen_SomeGenericStruct_to_external CALLDICT
+    $__gen_ContractWithOptionals_notNullE INLINECALLDICT
+    __gen_SomeGenericStruct_to_external INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_notNullF PROC:<{
+  $__gen_ContractWithOptionals_notNullF PROCREF:<{
     5 1 BLKDROP2
     __gen_StructWithOptionals_not_null INLINECALLDICT
   }>
   $__gen_get_notNullF PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullF CALLDICT
-    __gen_StructWithOptionals_to_external CALLDICT
+    $__gen_ContractWithOptionals_notNullF INLINECALLDICT
+    __gen_StructWithOptionals_to_external INLINECALLDICT
   }>
-  $__gen_ContractWithOptionals_testVariables PROC:<{
+  $__gen_ContractWithOptionals_testVariables PROCREF:<{
     6 BLKDROP
     1 PUSHINT
     2 PUSHINT
@@ -737,8 +737,8 @@ PROGRAM{
   }>
   $__gen_get_testVariables PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_testVariables CALLDICT
-    __gen_SomeGenericStruct_to_external CALLDICT
+    $__gen_ContractWithOptionals_testVariables INLINECALLDICT
+    __gen_SomeGenericStruct_to_external INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_receive PROCINLINE:<{
   }>

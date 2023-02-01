@@ -126,18 +126,18 @@ builder __gen_write_C(builder build_0, (int) v) inline {
     return build_0;
 }
 
-(cell, cell) __gen_StateInit_to_external(((cell, cell)) v) {
+(cell, cell) __gen_StateInit_to_external(((cell, cell)) v) inline {
     var (v'code, v'data) = v; 
     return (v'code, v'data);
 }
 
-(int) __gen_load_B() inline_ref {
+(int) __gen_load_B() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_B();
 }
 
-() __gen_store_B((int) v) impure inline_ref {
+() __gen_store_B((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_B(b, v);
@@ -147,12 +147,12 @@ builder __gen_write_C(builder build_0, (int) v) inline {
 ;; String "Message"
 slice __gen_str_796354186() asm "B{b5ee9c7241010101000900000e4d657373616765b15ae930} B>boc <s PUSHSLICE";
 
-slice $contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -195,7 +195,7 @@ slice $contractAddress((cell, cell) $s) impure {
     send_raw_message($c, $params'mode);
 }
 
-cell $__gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
@@ -222,7 +222,7 @@ cell $__gen_C_init(cell sys') {
     return (mine, $__gen_C_init(sys));
 }
 
-(cell, cell) $__gen_B_getNext((int) $self) impure {
+(cell, cell) $__gen_B_getNext((int) $self) impure inline_ref {
     var (($self'a)) = $self;
     return $__gen_C_init_child(__tact_context_sys);
 }

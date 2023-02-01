@@ -196,7 +196,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_load_C PROCREF:<{
+  __gen_load_C PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -205,7 +205,7 @@ PROGRAM{
     __gen_read_C INLINECALLDICT
     NIP
   }>
-  __gen_store_C PROCREF:<{
+  __gen_store_C PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -215,12 +215,12 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $contractAddress PROC:<{
+  $contractAddress PROCREF:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -319,7 +319,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_String_asComment PROC:<{
+  $__gen_String_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
@@ -355,15 +355,15 @@ PROGRAM{
     __tact_context_sys GETGLOB
     $__gen_C_init_child CALLDICT
     2DUP
-    $contractAddress CALLDICT
+    $contractAddress INLINECALLDICT
     TRUE
     0 PUSHINT
     66 PUSHINT
     B{b5ee9c7241010101000a0000104d65737361676532cd775f6e} B>boc <s PUSHSLICE
-    $__gen_String_asComment CALLDICT
+    $__gen_String_asComment INLINECALLDICT
     4 3 REVERSE
     s0 s3 s4 XCHG3
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   $__gen_C_receive_comment_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272 PROCINLINE:<{
   }>

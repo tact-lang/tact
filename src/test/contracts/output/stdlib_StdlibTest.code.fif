@@ -25,7 +25,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_load_StdlibTest PROCREF:<{
+  __gen_load_StdlibTest PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -34,7 +34,7 @@ PROGRAM{
     __gen_read_StdlibTest INLINECALLDICT
     NIP
   }>
-  __gen_store_StdlibTest PROCREF:<{
+  __gen_store_StdlibTest PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -44,32 +44,32 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_StdlibTest_sliceEmpty PROC:<{
+  $__gen_StdlibTest_sliceEmpty PROCREF:<{
     NIP
     SEMPTY
   }>
   $__gen_get_sliceEmpty PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    $__gen_StdlibTest_sliceEmpty CALLDICT
+    $__gen_StdlibTest_sliceEmpty INLINECALLDICT
   }>
-  $__gen_StdlibTest_sliceBits PROC:<{
+  $__gen_StdlibTest_sliceBits PROCREF:<{
     NIP
     SBITS
   }>
   $__gen_get_sliceBits PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    $__gen_StdlibTest_sliceBits CALLDICT
+    $__gen_StdlibTest_sliceBits INLINECALLDICT
   }>
-  $__gen_StdlibTest_sliceRefs PROC:<{
+  $__gen_StdlibTest_sliceRefs PROCREF:<{
     NIP
     SREFS
   }>
   $__gen_get_sliceRefs PROC:<{
     __gen_load_StdlibTest INLINECALLDICT
     SWAP
-    $__gen_StdlibTest_sliceRefs CALLDICT
+    $__gen_StdlibTest_sliceRefs INLINECALLDICT
   }>
   $__gen_StdlibTest_receive PROCINLINE:<{
   }>

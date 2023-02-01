@@ -372,7 +372,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline_ref {`); // NOTE: Inline function
+        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline {`); // NOTE: Inline function
         ctx.inIndent(() => {
 
             // Load data slice
@@ -391,7 +391,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline_ref {`); // NOTE: Impure inline function
+        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline {`); // NOTE: Impure inline function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
 

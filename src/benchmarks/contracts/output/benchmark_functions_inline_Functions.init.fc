@@ -8,7 +8,7 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     return build_0;
 }
 
-cell $__gen_Functions_init(cell sys') inline {
+cell $__gen_Functions_init(cell sys') {
     var (($self'value)) = (null());
     $self'value = 0;
     var b' = begin_cell();

@@ -107,7 +107,7 @@ PROGRAM{
     256 LDU
     4 -ROLL
   }>
-  __gen_load_MultisigContract PROCREF:<{
+  __gen_load_MultisigContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -116,7 +116,7 @@ PROGRAM{
     __gen_read_MultisigContract INLINECALLDICT
     1 4 BLKDROP2
   }>
-  __gen_store_MultisigContract PROCREF:<{
+  __gen_store_MultisigContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -126,7 +126,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -225,7 +225,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_MultisigContract_execute PROC:<{
+  $__gen_MultisigContract_execute PROCREF:<{
     TRUE
     s3 POP
     SWAP
@@ -233,37 +233,37 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_MultisigContract_key1 PROC:<{
+  $__gen_MultisigContract_key1 PROCREF:<{
     s2 s3 XCHG
     3 BLKDROP
   }>
   $__gen_get_key1 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key1 CALLDICT
+    $__gen_MultisigContract_key1 INLINECALLDICT
   }>
-  $__gen_MultisigContract_key2 PROC:<{
+  $__gen_MultisigContract_key2 PROCREF:<{
     s1 s3 XCHG
     3 BLKDROP
   }>
   $__gen_get_key2 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key2 CALLDICT
+    $__gen_MultisigContract_key2 INLINECALLDICT
   }>
-  $__gen_MultisigContract_key3 PROC:<{
+  $__gen_MultisigContract_key3 PROCREF:<{
     3 1 BLKDROP2
   }>
   $__gen_get_key3 PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key3 CALLDICT
+    $__gen_MultisigContract_key3 INLINECALLDICT
   }>
-  $__gen_MultisigContract_seqno PROC:<{
+  $__gen_MultisigContract_seqno PROCREF:<{
     3 BLKDROP
   }>
   $__gen_get_seqno PROC:<{
     __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_seqno CALLDICT
+    $__gen_MultisigContract_seqno INLINECALLDICT
   }>
   $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
@@ -290,7 +290,7 @@ PROGRAM{
     SWAP
     AND
     THROWANYIFNOT
-    $__gen_MultisigContract_execute CALLDICT
+    $__gen_MultisigContract_execute INLINECALLDICT
   }>
   recv_internal PROC:<{
     c2 SAVE

@@ -179,7 +179,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Resolve function descriptor
     let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
-    let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
+    let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure inline_ref';
     let args: string[] = [];
     if (self) {
         args.push(resolveFuncType(self, ctx) + ' ' + id('self'));
@@ -402,9 +402,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
 export function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
-
-        let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
-        ctx.append(`cell ${fn(`__gen_${t.name}_init`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
+        ctx.append(`cell ${fn(`__gen_${t.name}_init`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')}) {`);
         ctx.inIndent(() => {
 
             // Unpack args

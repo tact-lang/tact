@@ -8,7 +8,7 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  $__gen_Functions_init PROCINLINE:<{
+  $__gen_Functions_init PROC:<{
     0 PUSHINT
     SWAP
     NEWC
@@ -18,7 +18,7 @@ PROGRAM{
     ENDC
   }>
   init PROC:<{
-    $__gen_Functions_init INLINECALLDICT
+    $__gen_Functions_init CALLDICT
   }>
   main PROC:<{
   }>

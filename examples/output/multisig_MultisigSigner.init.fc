@@ -40,7 +40,7 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return build_0;
 }
 
-(slice, slice, int, int, int, int, cell) __gen_Request_from_tuple(tuple v) {
+(slice, slice, int, int, int, int, cell) __gen_Request_from_tuple(tuple v) inline {
     var (slice v'requested, slice v'to, int v'value, int v'timeout, int v'bounce, int v'mode, cell v'body) = __tact_tuple_destroy_7(v);
     return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
 }

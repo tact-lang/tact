@@ -90,20 +90,20 @@ _ __gen_Context_get_bounced((int, slice, int, slice) v) inline {
     return v'bounced;
 }
 
-(int, int, int) __gen_load_Wallet() inline_ref {
+(int, int, int) __gen_load_Wallet() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Wallet();
 }
 
-() __gen_store_Wallet((int, int, int) v) impure inline_ref {
+() __gen_store_Wallet((int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Wallet(b, v);
     set_data(b.end_cell());
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -168,7 +168,7 @@ cell $__gen_Wallet_init(cell sys', int $key, int $walletId) {
     return (mine, $__gen_Wallet_init(sys, $key, $walletId));
 }
 
-int $__gen_Wallet_publicKey((int, int, int) $self) impure {
+int $__gen_Wallet_publicKey((int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'key;
 }
@@ -179,7 +179,7 @@ _ $__gen_get_publicKey() method_id(86520) {
     return res;
 }
 
-int $__gen_Wallet_walletId((int, int, int) $self) impure {
+int $__gen_Wallet_walletId((int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'walletId;
 }
@@ -190,7 +190,7 @@ _ $__gen_get_walletId() method_id(114762) {
     return res;
 }
 
-int $__gen_Wallet_seqno((int, int, int) $self) impure {
+int $__gen_Wallet_seqno((int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'seqno;
 }

@@ -304,9 +304,9 @@ PROGRAM{
   __gen_StateInit_get_code PROCINLINE:<{
     DROP
   }>
-  __gen_JettonWalletData_to_external PROC:<{
+  __gen_JettonWalletData_to_external PROCINLINE:<{
   }>
-  __gen_load_JettonDefaultWallet PROCREF:<{
+  __gen_load_JettonDefaultWallet PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -315,7 +315,7 @@ PROGRAM{
     __gen_read_JettonDefaultWallet INLINECALLDICT
     1 3 BLKDROP2
   }>
-  __gen_store_JettonDefaultWallet PROCREF:<{
+  __gen_store_JettonDefaultWallet PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -325,12 +325,12 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $contractAddress PROC:<{
+  $contractAddress PROCREF:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -429,7 +429,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_Context_readForwardFee PROC:<{
+  $__gen_Context_readForwardFee PROCREF:<{
     3 1 BLKDROP2
     LDGRAMS
     NIP
@@ -470,7 +470,7 @@ PROGRAM{
     s0 s0 s3 XCHG3
     $__gen_JettonDefaultWallet_init CALLDICT
   }>
-  $__gen_JettonDefaultWallet_get_wallet_data PROC:<{
+  $__gen_JettonDefaultWallet_get_wallet_data PROCREF:<{
     __tact_context_sys GETGLOB
     s1 s2 PUSH2
     $__gen_JettonDefaultWallet_init_child CALLDICT
@@ -478,8 +478,8 @@ PROGRAM{
   }>
   $__gen_get_get_wallet_data PROC:<{
     __gen_load_JettonDefaultWallet INLINECALLDICT
-    $__gen_JettonDefaultWallet_get_wallet_data CALLDICT
-    __gen_JettonWalletData_to_external CALLDICT
+    $__gen_JettonDefaultWallet_get_wallet_data INLINECALLDICT
+    __gen_JettonWalletData_to_external INLINECALLDICT
   }>
   $__gen_JettonDefaultWallet_receive_TokenTransfer PROCINLINE:<{
     2 2 BLKDROP2
@@ -496,7 +496,7 @@ PROGRAM{
     THROWANYIFNOT
     s3 s3 s0 XCHG3
     s3 s11 PUXC
-    $__gen_Context_readForwardFee CALLDICT
+    $__gen_Context_readForwardFee INLINECALLDICT
     1 PUSHINT
     s4 PUSH
     0 GTINT
@@ -518,7 +518,7 @@ PROGRAM{
     s0 s6 s3 XCPUXC
     $__gen_JettonDefaultWallet_init_child CALLDICT
     2DUP
-    $contractAddress CALLDICT
+    $contractAddress INLINECALLDICT
     TRUE
     s7 s6 XCHG2
     0 PUSHINT
@@ -530,7 +530,7 @@ PROGRAM{
     s5 s6 XCHG
     s3 s4 XCHG
     -ROT
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   $__gen_JettonDefaultWallet_receive_TokenTransferInternal PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -543,7 +543,7 @@ PROGRAM{
       SWAP
       4429 PUSHINT
       s0 s2 XCHG
-      $contractAddress CALLDICT
+      $contractAddress INLINECALLDICT
       s4 PUSH
       __tact_address_eq INLINECALLDICT
       THROWANYIFNOT
@@ -570,7 +570,7 @@ PROGRAM{
     IF:<{
       s4 s13 XCHG2
       s3 s3 s0 XCHG3
-      $__gen_Context_readForwardFee CALLDICT
+      $__gen_Context_readForwardFee INLINECALLDICT
       s3 s(-1) PUXC
       ADD
       s1 s10 XCHG
@@ -587,7 +587,7 @@ PROGRAM{
       s5 s5 XCHG2
       PUSHNULL
       PUSHNULL
-      $send CALLDICT
+      $send INLINECALLDICT
       s0 s5 XCHG2
     }>ELSE<{
       s7 s13 XCHG
@@ -612,7 +612,7 @@ PROGRAM{
       s1 s7 XCHG
       PUSHNULL
       PUSHNULL
-      $send CALLDICT
+      $send INLINECALLDICT
     }>ELSE<{
       s5 POP
       2DROP
@@ -633,7 +633,7 @@ PROGRAM{
     THROWANYIFNOT
     s3 s3 s0 XCHG3
     s3 s8 PUXC
-    $__gen_Context_readForwardFee CALLDICT
+    $__gen_Context_readForwardFee INLINECALLDICT
     16059 PUSHINT
     SWAP
     20000000 PUSHINT
@@ -653,7 +653,7 @@ PROGRAM{
     s3 s3 XCHG2
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
   $__gen_JettonDefaultWallet_receive_bounced PROCINLINE:<{
     32 PUSHINT

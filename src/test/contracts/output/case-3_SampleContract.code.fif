@@ -29,7 +29,7 @@ PROGRAM{
     s2 s4 XCHG
     s3 s0 s0 XCHG3
   }>
-  __gen_load_SampleContract PROCREF:<{
+  __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -38,12 +38,12 @@ PROGRAM{
     __gen_read_SampleContract INLINECALLDICT
     1 4 BLKDROP2
   }>
-  $__gen_SampleContract_stake PROC:<{
+  $__gen_SampleContract_stake PROCREF:<{
     3 BLKDROP
   }>
   $__gen_get_stake PROC:<{
     __gen_load_SampleContract INLINECALLDICT
-    $__gen_SampleContract_stake CALLDICT
+    $__gen_SampleContract_stake INLINECALLDICT
   }>
   recv_internal PROC:<{
     DUP

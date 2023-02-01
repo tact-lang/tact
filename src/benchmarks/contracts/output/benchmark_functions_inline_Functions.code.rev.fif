@@ -41,17 +41,15 @@ SETCP0
     EQUAL
     <{
       s0 POP
-      <{
-        c4 PUSH
-        CTOS
-        LDREF
-        s0 s1 XCHG
-        2 SETGLOBVAR
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-        s1 POP
-      }> CALLREF
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
       s0 s1 XCHG
       32 LDU
       s0 s1 XCHG
@@ -67,34 +65,30 @@ SETCP0
       0 GTINT
       THROWANYIFNOT
       ADD
-      <{
-        NEWC
-        2 GETGLOBVAR
-        s0 s1 XCHG
-        STREF
-        s0 s1 XCHG
-        s0 s1 XCHG
-        257 PUSHINT
-        STIX
-        ENDC
-        c4 POP
-      }> CALLREF
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      STIX
+      ENDC
+      c4 POP
     }> PUSHCONT
     IFJMP
     2640337643 PUSHINT
     EQUAL
     <{
-      <{
-        c4 PUSH
-        CTOS
-        LDREF
-        s0 s1 XCHG
-        2 SETGLOBVAR
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-        s1 POP
-      }> CALLREF
+      c4 PUSH
+      CTOS
+      LDREF
+      s0 s1 XCHG
+      2 SETGLOBVAR
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
       s0 s1 XCHG
       32 LDU
       s0 s1 XCHG
@@ -111,18 +105,16 @@ SETCP0
       THROWANYIFNOT
       NEGATE
       ADD
-      <{
-        NEWC
-        2 GETGLOBVAR
-        s0 s1 XCHG
-        STREF
-        s0 s1 XCHG
-        s0 s1 XCHG
-        257 PUSHINT
-        STIX
-        ENDC
-        c4 POP
-      }> CALLREF
+      NEWC
+      2 GETGLOBVAR
+      s0 s1 XCHG
+      STREF
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      STIX
+      ENDC
+      c4 POP
     }> IFJMPREF
     s0 POP
     130 THROW

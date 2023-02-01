@@ -136,25 +136,25 @@ builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     return (sc_0, (v'seqno, v'members, v'totalWeight, v'requiredWeight));
 }
 
-(int, cell, int, int) __gen_load_Multisig() inline_ref {
+(int, cell, int, int) __gen_load_Multisig() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Multisig();
 }
 
-() __gen_store_Multisig((int, cell, int, int) v) impure inline_ref {
+() __gen_store_Multisig((int, cell, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Multisig(b, v);
     set_data(b.end_cell());
 }
 
-slice $contractAddress((cell, cell) $s) impure {
+slice $contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -223,7 +223,7 @@ cell $__gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $re
     return (mine, $__gen_MultisigSigner_init(sys, $master, $members, $requiredWeight, $request));
 }
 
-int $__gen_Multisig_member((int, cell, int, int) $self, slice $address) impure {
+int $__gen_Multisig_member((int, cell, int, int) $self, slice $address) impure inline_ref {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
     return __tact_dict_get_slice_int($self'members, 267, $address, 257);
 }
@@ -235,7 +235,7 @@ _ $__gen_get_member(slice $$address) method_id(70789) {
     return res;
 }
 
-cell $__gen_Multisig_members((int, cell, int, int) $self) impure {
+cell $__gen_Multisig_members((int, cell, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
     return $self'members;
 }

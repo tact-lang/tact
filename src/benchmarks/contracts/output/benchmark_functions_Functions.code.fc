@@ -28,20 +28,20 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     return (sc_0, (v'value));
 }
 
-(int) __gen_load_Functions() inline_ref {
+(int) __gen_load_Functions() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Functions();
 }
 
-() __gen_store_Functions((int) v) impure inline_ref {
+() __gen_store_Functions((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Functions(b, v);
     set_data(b.end_cell());
 }
 
-((int), ()) $__gen_Functions_update((int) $self, int $delta) impure {
+((int), ()) $__gen_Functions_update((int) $self, int $delta) impure inline_ref {
     var (($self'value)) = $self;
     $self'value = ($self'value + $delta);
     return (($self'value), ());

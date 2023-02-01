@@ -90,7 +90,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_load_RandomContract PROCREF:<{
+  __gen_load_RandomContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -99,7 +99,7 @@ PROGRAM{
     __gen_read_RandomContract INLINECALLDICT
     NIP
   }>
-  __gen_store_RandomContract PROCREF:<{
+  __gen_store_RandomContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -109,18 +109,18 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $randomInt PROC:<{
+  $randomInt PROCREF:<{
     __tact_prepare_random INLINECALLDICT
     RANDU256
   }>
-  $random PROC:<{
+  $random PROCREF:<{
     __tact_prepare_random INLINECALLDICT
     OVER
     SUB
     RAND
     ADD
   }>
-  $send PROC:<{
+  $send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -219,7 +219,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $reply PROC:<{
+  $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -230,28 +230,28 @@ PROGRAM{
     ROT
     PUSHNULL
     PUSHNULL
-    $send CALLDICT
+    $send INLINECALLDICT
   }>
-  $__gen_RandomContract_randomInt PROC:<{
+  $__gen_RandomContract_randomInt PROCREF:<{
     DROP
-    $randomInt CALLDICT
+    $randomInt INLINECALLDICT
   }>
   $__gen_get_randomInt PROC:<{
     __gen_load_RandomContract INLINECALLDICT
-    $__gen_RandomContract_randomInt CALLDICT
+    $__gen_RandomContract_randomInt INLINECALLDICT
   }>
-  $__gen_RandomContract_random PROC:<{
+  $__gen_RandomContract_random PROCREF:<{
     1 2 BLKDROP2
-    $random CALLDICT
+    $random INLINECALLDICT
   }>
   $__gen_get_random PROC:<{
     __gen_load_RandomContract INLINECALLDICT
     -ROT
-    $__gen_RandomContract_random CALLDICT
+    $__gen_RandomContract_random INLINECALLDICT
   }>
   $__gen_RandomContract_receive_Deploy PROCINLINE:<{
     __gen_writecell_DeployOk INLINECALLDICT
-    $reply CALLDICT
+    $reply INLINECALLDICT
   }>
   recv_internal PROC:<{
     0 PUSHINT

@@ -75,20 +75,20 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
 
 ((int, int, slice)) __gen_Operation_unpack((int, int, slice) v) asm "NOP";
 
-(int, int, int, int) __gen_load_MultisigContract() inline_ref {
+(int, int, int, int) __gen_load_MultisigContract() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MultisigContract();
 }
 
-() __gen_store_MultisigContract((int, int, int, int) v) impure inline_ref {
+() __gen_store_MultisigContract((int, int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_MultisigContract(b, v);
     set_data(b.end_cell());
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -131,14 +131,14 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
     send_raw_message($c, $params'mode);
 }
 
-((int, int, int, int), ()) $__gen_MultisigContract_execute((int, int, int, int) $self, (int, int, slice) $op) impure {
+((int, int, int, int), ()) $__gen_MultisigContract_execute((int, int, int, int) $self, (int, int, slice) $op) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     var (($op'seqno, $op'amount, $op'target)) = $op;
     $send((true, $op'target, $op'amount, 0, null(), null(), null()));
     return (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key), ());
 }
 
-int $__gen_MultisigContract_key1((int, int, int, int) $self) impure {
+int $__gen_MultisigContract_key1((int, int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     return $self'user1_key;
 }
@@ -149,7 +149,7 @@ _ $__gen_get_key1() method_id(107493) {
     return res;
 }
 
-int $__gen_MultisigContract_key2((int, int, int, int) $self) impure {
+int $__gen_MultisigContract_key2((int, int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     return $self'user2_key;
 }
@@ -160,7 +160,7 @@ _ $__gen_get_key2() method_id(103302) {
     return res;
 }
 
-int $__gen_MultisigContract_key3((int, int, int, int) $self) impure {
+int $__gen_MultisigContract_key3((int, int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     return $self'user3_key;
 }
@@ -171,7 +171,7 @@ _ $__gen_get_key3() method_id(99239) {
     return res;
 }
 
-int $__gen_MultisigContract_seqno((int, int, int, int) $self) impure {
+int $__gen_MultisigContract_seqno((int, int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     return $self'seqno;
 }

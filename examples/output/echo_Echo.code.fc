@@ -100,13 +100,13 @@ builder __gen_write_Echo(builder build_0, (int) v) inline {
     return (sc_0, (v'v));
 }
 
-(int) __gen_load_Echo() inline_ref {
+(int) __gen_load_Echo() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Echo();
 }
 
-() __gen_store_Echo((int) v) impure inline_ref {
+() __gen_store_Echo((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_Echo(b, v);
@@ -116,7 +116,7 @@ builder __gen_write_Echo(builder build_0, (int) v) inline {
 ;; String "Hello, "
 slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE";
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -159,24 +159,24 @@ slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d19
     send_raw_message($c, $params'mode);
 }
 
-() $reply(cell $body) impure {
+() $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell $__gen_Slice_asCell(slice $self) impure {
+cell $__gen_Slice_asCell(slice $self) impure inline_ref {
     var ($self) = $self;
     return end_cell(store_slice(begin_cell(), $self));
 }
 
-cell $__gen_String_asComment(slice $self) impure {
+cell $__gen_String_asComment(slice $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
 }
 
-slice $__gen_Echo_hello((int) $self, slice $src) impure {
+slice $__gen_Echo_hello((int) $self, slice $src) impure inline_ref {
     var (($self'v)) = $self;
     tuple $builder = __tact_string_builder_start_string();
     $builder~__tact_string_builder_append(__gen_str_591567833());

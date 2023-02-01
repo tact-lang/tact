@@ -166,20 +166,20 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(cell, cell, cell, cell, cell) __gen_load_IncrementContract() inline_ref {
+(cell, cell, cell, cell, cell) __gen_load_IncrementContract() inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_IncrementContract();
 }
 
-() __gen_store_IncrementContract((cell, cell, cell, cell, cell) v) impure inline_ref {
+() __gen_store_IncrementContract((cell, cell, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = __gen_write_IncrementContract(b, v);
     set_data(b.end_cell());
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure {
+() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -222,12 +222,12 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     send_raw_message($c, $params'mode);
 }
 
-() $reply(cell $body) impure {
+() $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure {
+cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters;
 }
@@ -238,7 +238,7 @@ _ $__gen_get_counters() method_id(95239) {
     return res;
 }
 
-cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure {
+cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters4;
 }
