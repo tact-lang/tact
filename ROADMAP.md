@@ -25,6 +25,7 @@ This version would include the following features:
 * Importing `func` files
 * `let` type inheritance when possible
 * Limited external messages support
+* Contract automatic optimisations
 
 ## ✍️ Version v3
 
