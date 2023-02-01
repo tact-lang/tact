@@ -1,0 +1,29 @@
+PROGRAM{
+  DECLPROC hello_world
+  DECLPROC __gen_write_Native
+  DECLPROC $__gen_Native_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  hello_world PROC:<{
+    1000 PUSHINT
+  }>
+  __gen_write_Native PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  $__gen_Native_init PROC:<{
+    0 PUSHINT
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_Native INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Native_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

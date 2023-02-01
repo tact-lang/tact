@@ -6,6 +6,11 @@
       "output": "./examples/output"
     },
     {
+      "name": "native",
+      "path": "./examples/native.tact",
+      "output": "./examples/output"
+    },
+    {
       "name": "maps",
       "path": "./examples/maps.tact",
       "output": "./examples/output"

@@ -1,0 +1,106 @@
+PROGRAM{
+  DECLPROC hello_world
+  DECLPROC __gen_write_Native
+  DECLPROC __gen_read_Native
+  DECLPROC __gen_load_Native
+  DECLPROC __gen_store_Native
+  DECLPROC $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  hello_world PROC:<{
+    1000 PUSHINT
+  }>
+  __gen_write_Native PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  __gen_read_Native PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  __gen_load_Native PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    __gen_read_Native INLINECALLDICT
+    NIP
+  }>
+  __gen_store_Native PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    SWAP
+    __gen_write_Native INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
+    hello_world CALLDICT
+    ADD
+  }>
+  recv_internal PROC:<{
+    c2 SAVE
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    s2 PUSH
+    s6 s6 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+    }>
+    0 EQINT
+    IF:<{
+      HASHSU
+      93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_Native INLINECALLDICT
+        $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 INLINECALLDICT
+        __gen_store_Native INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    130 THROW
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d525352726a426a44505a6e6b59473446726951726b74327a35367a4476377a52656a5a6e784371394b745958} PUSHSLICE
+  }>
+}END>c

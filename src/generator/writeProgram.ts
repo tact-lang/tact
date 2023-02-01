@@ -15,6 +15,7 @@ import { getAllStrings } from "../types/resolveStrings";
 import { writeString } from './writers/writeString';
 import { fn, id } from "./writers/id";
 import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
+import { getRawAST } from "../grammar/store";
 
 function writeInitContract(type: TypeDescription, ctx: WriterContext) {
     // Main field
@@ -283,6 +284,11 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     wctx.header(`#pragma version =0.4.1;`); // FunC version
     wctx.header(`#pragma allow-post-modification;`); // Allow post modification
     wctx.header(`#pragma compute-asm-ltr;`); // Compute asm left to right
+
+    // FunC imports
+    for (let fc of getRawAST(ctx).funcSources) {
+        wctx.header('\n' + fc);
+    }
 
     // Stdlib
     writeStdlib(wctx);

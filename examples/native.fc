@@ -1,0 +1,3 @@
+int hello_world() {
+    return 1000;
+}

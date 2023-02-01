@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- Importing `func` files
+
 ## Changed
 - Upgrade `func` to `0.4.1`
 - Enforce `func` version in generated files

@@ -28,7 +28,7 @@ function resolveLibraryPath(filePath: string, name: string): string {
 
     // Check relative path
     let t = name;
-    if (!t.endsWith('.tact')) {
+    if (!t.endsWith('.tact') && !t.endsWith('.fc')) {
         t = t + '.tact';
     }
     let targetPath = path.resolve(filePath, '..', t);
@@ -49,16 +49,25 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
     //
     // Process imports
     // 
+
     const imported: string[] = [];
-    let processed = new Set<string>();
-    let pending: string[] = [];
+    const processed = new Set<string>();
+    const funcImports: string[] = [];
+    const pending: string[] = [];
     function processImports(path: string, source: string) {
         let imp = parseImports(source);
         for (let i of imp) {
             let resolved = resolveLibraryPath(path, i);
-            if (!processed.has(resolved)) {
-                processed.add(resolved);
-                pending.push(resolved);
+            if (resolved.endsWith('.fc')) {
+                if (funcImports.find((v) => v === resolved)) {
+                    continue;
+                }
+                funcImports.push(resolved);
+            } else {
+                if (!processed.has(resolved)) {
+                    processed.add(resolved);
+                    pending.push(resolved);
+                }
             }
         }
     }
@@ -71,8 +80,14 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
         processImports(p, librarySource);
     }
 
+    // Load func
+    let fc: string[] = [];
+    for (let i of funcImports) {
+        fc.push(fs.readFileSync(i, 'utf8'));
+    }
+
     // Perform initial compiler steps
-    ctx = openContext(ctx, [stdlib, ...imported, code]);
+    ctx = openContext(ctx, [stdlib, ...imported, code], fc);
     ctx = resolveDescriptors(ctx);
     ctx = resolveSignatures(ctx);
     ctx = resolveAllocations(ctx);
