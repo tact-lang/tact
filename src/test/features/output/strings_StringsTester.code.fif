@@ -151,7 +151,7 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __tact_int_to_string PROC:<{
+  __tact_int_to_string PROCREF:<{
     NEWC
     OVER
     0 LESSINT
@@ -229,7 +229,7 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  __tact_float_to_string PROC:<{
+  __tact_float_to_string PROCREF:<{
     DUP
     1 LESSINT
     OVER
@@ -314,12 +314,12 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  __gen_write_StringsTester PROCREF:<{
+  __gen_write_StringsTester PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_StringsTester PROCREF:<{
+  __gen_read_StringsTester PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
@@ -522,7 +522,7 @@ PROGRAM{
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     123 PUSHINT
-    __tact_int_to_string CALLDICT
+    __tact_int_to_string INLINECALLDICT
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
@@ -536,7 +536,7 @@ PROGRAM{
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     -123 PUSHINT
-    __tact_int_to_string CALLDICT
+    __tact_int_to_string INLINECALLDICT
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
@@ -550,7 +550,7 @@ PROGRAM{
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     1000000000000000000000000000000000000000000000000000000000000 PUSHINTX
-    __tact_int_to_string CALLDICT
+    __tact_int_to_string INLINECALLDICT
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
@@ -562,7 +562,7 @@ PROGRAM{
     DROP
     95 PUSHINT
     1 PUSHINT
-    __tact_float_to_string CALLDICT
+    __tact_float_to_string INLINECALLDICT
   }>
   $__gen_get_stringWithFloat PROC:<{
     __gen_load_StringsTester INLINECALLDICT
@@ -586,7 +586,7 @@ PROGRAM{
     SWAP
     $__gen_StringsTester_processBase64 CALLDICT
   }>
-  $__gen_StringsTester_receive PROC:<{
+  $__gen_StringsTester_receive PROCINLINE:<{
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -627,7 +627,7 @@ PROGRAM{
     AND
     IFJMP:<{
       __gen_load_StringsTester INLINECALLDICT
-      $__gen_StringsTester_receive CALLDICT
+      $__gen_StringsTester_receive INLINECALLDICT
       __gen_store_StringsTester INLINECALLDICT
     }>
     130 THROW

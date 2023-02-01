@@ -220,7 +220,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_TokenNotification PROCREF:<{
+  __gen_write_TokenNotification PROCINLINE:<{
     1935855772 PUSHINT
     s0 s5 XCHG2
     32 STU
@@ -239,7 +239,7 @@ PROGRAM{
     __gen_write_TokenNotification INLINECALLDICT
     ENDC
   }>
-  __gen_read_TokenBurn PROCREF:<{
+  __gen_read_TokenBurn PROCINLINE:<{
     32 LDU
     SWAP
     1499400124 PUSHINT
@@ -253,7 +253,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_TokenBurnNotification PROCREF:<{
+  __gen_write_TokenBurnNotification PROCINLINE:<{
     2078119902 PUSHINT
     s0 s5 XCHG2
     32 STU
@@ -272,7 +272,7 @@ PROGRAM{
     __gen_write_TokenBurnNotification INLINECALLDICT
     ENDC
   }>
-  __gen_write_TokenExcesses PROCREF:<{
+  __gen_write_TokenExcesses PROCINLINE:<{
     3576854235 PUSHINT
     ROT
     32 STU
@@ -284,7 +284,7 @@ PROGRAM{
     __gen_write_TokenExcesses INLINECALLDICT
     ENDC
   }>
-  __gen_write_JettonDefaultWallet PROCREF:<{
+  __gen_write_JettonDefaultWallet PROCINLINE:<{
     s2 s3 XCHG2
     257 PUSHINT
     STIX
@@ -293,7 +293,7 @@ PROGRAM{
     SWAP
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_JettonDefaultWallet PROCREF:<{
+  __gen_read_JettonDefaultWallet PROCINLINE:<{
     257 PUSHINT
     LDIX
     __tact_load_address INLINECALLDICT
@@ -481,7 +481,7 @@ PROGRAM{
     $__gen_JettonDefaultWallet_get_wallet_data CALLDICT
     __gen_JettonWalletData_to_external CALLDICT
   }>
-  $__gen_JettonDefaultWallet_receive_TokenTransfer PROC:<{
+  $__gen_JettonDefaultWallet_receive_TokenTransfer PROCINLINE:<{
     2 2 BLKDROP2
     __tact_context_get INLINECALLDICT
     4429 PUSHINT
@@ -532,7 +532,7 @@ PROGRAM{
     -ROT
     $send CALLDICT
   }>
-  $__gen_JettonDefaultWallet_receive_TokenTransferInternal PROC:<{
+  $__gen_JettonDefaultWallet_receive_TokenTransferInternal PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s10 PUSH2
     __tact_address_neq INLINECALLDICT
@@ -618,7 +618,7 @@ PROGRAM{
       2DROP
     }>
   }>
-  $__gen_JettonDefaultWallet_receive_TokenBurn PROC:<{
+  $__gen_JettonDefaultWallet_receive_TokenBurn PROCINLINE:<{
     2DROP
     __tact_context_get INLINECALLDICT
     4429 PUSHINT
@@ -655,7 +655,7 @@ PROGRAM{
     PUSHNULL
     $send CALLDICT
   }>
-  $__gen_JettonDefaultWallet_receive_bounced PROC:<{
+  $__gen_JettonDefaultWallet_receive_bounced PROCINLINE:<{
     32 PUSHINT
     SDSKIPFIRST
     32 LDU
@@ -711,7 +711,7 @@ PROGRAM{
       DROP
       __gen_load_JettonDefaultWallet INLINECALLDICT
       3 ROLL
-      $__gen_JettonDefaultWallet_receive_bounced CALLDICT
+      $__gen_JettonDefaultWallet_receive_bounced INLINECALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DUP
@@ -726,7 +726,7 @@ PROGRAM{
       s8 s9 XCHG
       s7 s8 XCHG
       6 ROLL
-      $__gen_JettonDefaultWallet_receive_TokenTransfer CALLDICT
+      $__gen_JettonDefaultWallet_receive_TokenTransfer INLINECALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DUP
@@ -741,7 +741,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      $__gen_JettonDefaultWallet_receive_TokenTransferInternal CALLDICT
+      $__gen_JettonDefaultWallet_receive_TokenTransferInternal INLINECALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     1499400124 PUSHINT
@@ -754,7 +754,7 @@ PROGRAM{
       s5 s6 XCHG
       s4 s5 XCHG
       3 ROLL
-      $__gen_JettonDefaultWallet_receive_TokenBurn CALLDICT
+      $__gen_JettonDefaultWallet_receive_TokenBurn INLINECALLDICT
       __gen_store_JettonDefaultWallet INLINECALLDICT
     }>
     DROP

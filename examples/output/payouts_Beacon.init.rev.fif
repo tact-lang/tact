@@ -8,13 +8,11 @@ SETCP0
     NEWC
     STREF
     s0 s3 XCHG
-    <{
-      2SWAP
-      STSLICER
-      ROT
-      STSLICER
-      1 STI
-    }> CALLREF
+    2SWAP
+    STSLICER
+    ROT
+    STSLICER
+    1 STI
     ENDC
 
   107886: 

@@ -4,14 +4,14 @@ PROGRAM{
   DECLPROC $__gen_SampleContract_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Source PROCREF:<{
+  __gen_write_Source PROCINLINE:<{
     s0 s2 XCHG
     257 PUSHINT
     STIX
     257 PUSHINT
     STIX
   }>
-  __gen_write_SampleContract PROCREF:<{
+  __gen_write_SampleContract PROCINLINE:<{
     s3 s4 XCHG2
     257 PUSHINT
     STIX

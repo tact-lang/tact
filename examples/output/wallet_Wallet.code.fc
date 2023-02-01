@@ -40,7 +40,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) inline_ref {
+builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) inline {
     var (v'seqno, v'mode, v'to, v'amount, v'body) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'mode, 8);
@@ -54,7 +54,7 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline_ref {
     return __gen_write_Transfer(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice, int, cell))) __gen_read_Transfer(slice sc_0) inline_ref {
+(slice, ((int, int, slice, int, cell))) __gen_read_Transfer(slice sc_0) inline {
     var v'seqno = sc_0~load_uint(32);
     var v'mode = sc_0~load_uint(8);
     var v'to = sc_0~__tact_load_address();
@@ -63,14 +63,14 @@ cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline_ref {
     return (sc_0, (v'seqno, v'mode, v'to, v'amount, v'body));
 }
 
-(slice, ((slice, (int, int, slice, int, cell)))) __gen_read_TransferMessage(slice sc_0) inline_ref {
+(slice, ((slice, (int, int, slice, int, cell)))) __gen_read_TransferMessage(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 123);
     var v'signature = sc_0~load_ref().begin_parse();
     var v'transfer = sc_0~__gen_read_Transfer();
     return (sc_0, (v'signature, v'transfer));
 }
 
-builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
+builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     var (v'seqno, v'key, v'walletId) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'key, 256);
@@ -78,7 +78,7 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
     return build_0;
 }
 
-(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline_ref {
+(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
     var v'seqno = sc_0~load_uint(32);
     var v'key = sc_0~load_uint(256);
     var v'walletId = sc_0~load_uint(64);
@@ -201,12 +201,12 @@ _ $__gen_get_seqno() method_id(85143) {
     return res;
 }
 
-((int, int, int), ()) $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-(((int, int, int)), ()) $__gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure {
+(((int, int, int)), ()) $__gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, ($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)) = $msg;
     int $op_hash = cell_hash(__gen_writecell_Transfer(($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)));
@@ -217,7 +217,7 @@ _ $__gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $__gen_Wallet_receive_fallback((int, int, int) $self, slice $msg) impure {
+((int, int, int), ()) $__gen_Wallet_receive_fallback((int, int, int) $self, slice $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -225,7 +225,7 @@ _ $__gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-(((int, int, int)), ()) $__gen_Wallet_receive((int, int, int) $self) impure {
+(((int, int, int)), ()) $__gen_Wallet_receive((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -233,7 +233,7 @@ _ $__gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -241,7 +241,7 @@ _ $__gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     if ((~ __gen_Context_get_bounced(__tact_context_get()))) {
         $self'seqno = ($self'seqno + 1);
@@ -249,13 +249,13 @@ _ $__gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) $self) impure {
+((int, int, int), ()) $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($walletInit'code, $walletInit'data) = $__gen_Wallet_init_child(__tact_context_sys, $self'key, ($self'walletId + 1));
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $__gen_Wallet_receive_bounced((int, int, int) $self, slice $msg) impure {
+((int, int, int), ()) $__gen_Wallet_receive_bounced((int, int, int) $self, slice $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }

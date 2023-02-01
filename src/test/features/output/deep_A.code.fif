@@ -189,17 +189,17 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_write_A PROCREF:<{
+  __gen_write_A PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_A PROCREF:<{
+  __gen_read_A PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  __gen_write_B PROCREF:<{
+  __gen_write_B PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
@@ -378,7 +378,7 @@ PROGRAM{
     $__gen_A_getNext CALLDICT
     __gen_StateInit_to_external CALLDICT
   }>
-  $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROC:<{
+  $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
     $__gen_B_init_child CALLDICT
     2DUP
@@ -433,7 +433,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_A INLINECALLDICT
-        $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d CALLDICT
+        $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
         __gen_store_A INLINECALLDICT
         RETALT
       }>

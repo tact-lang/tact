@@ -34,13 +34,13 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-(slice, ((int))) __gen_read_CanPayout(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_CanPayout(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3289991647);
     var v'amount = sc_0~load_int(257);
     return (sc_0, (v'amount));
 }
 
-builder __gen_write_CanPayoutResponse(builder build_0, (int, slice, int) v) inline_ref {
+builder __gen_write_CanPayoutResponse(builder build_0, (int, slice, int) v) inline {
     var (v'amount, v'address, v'ok) = v;
     build_0 = store_uint(build_0, 4293607646, 32);
     build_0 = build_0.store_int(v'amount, 257);
@@ -53,7 +53,7 @@ cell __gen_writecell_CanPayoutResponse((int, slice, int) v) inline_ref {
     return __gen_write_CanPayoutResponse(begin_cell(), v).end_cell();
 }
 
-builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline_ref {
+builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     var (v'master, v'owner, v'completed) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -61,7 +61,7 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline_ref {
     return build_0;
 }
 
-(slice, ((slice, slice, int))) __gen_read_Beacon(slice sc_0) inline_ref {
+(slice, ((slice, slice, int))) __gen_read_Beacon(slice sc_0) inline {
     var v'master = sc_0~__tact_load_address();
     var v'owner = sc_0~__tact_load_address();
     var v'completed = sc_0~load_int(1);
@@ -140,7 +140,7 @@ _ $__gen_get_owner() method_id(83229) {
     return res;
 }
 
-(((slice, slice, int)), ()) $__gen_Beacon_receive_CanPayout((slice, slice, int) $self, (int) $msg) impure {
+(((slice, slice, int)), ()) $__gen_Beacon_receive_CanPayout((slice, slice, int) $self, (int) $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -155,7 +155,7 @@ _ $__gen_get_owner() method_id(83229) {
     return (($self'master, $self'owner, $self'completed), ());
 }
 
-((slice, slice, int), ()) $__gen_Beacon_receive_bounced((slice, slice, int) $self, slice $msg) impure {
+((slice, slice, int), ()) $__gen_Beacon_receive_bounced((slice, slice, int) $self, slice $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
     $self'completed = false;
     return (($self'master, $self'owner, $self'completed), ());

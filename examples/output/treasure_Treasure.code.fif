@@ -55,7 +55,7 @@ PROGRAM{
   __tact_address_eq PROCINLINE:<{
     SDEQ
   }>
-  __gen_read_ChangeOwner PROCREF:<{
+  __gen_read_ChangeOwner PROCINLINE:<{
     32 LDU
     SWAP
     256331011 PUSHINT
@@ -63,7 +63,7 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_read_Withdraw PROCREF:<{
+  __gen_read_Withdraw PROCINLINE:<{
     32 LDU
     SWAP
     1672521544 PUSHINT
@@ -73,10 +73,10 @@ PROGRAM{
     8 LDU
     -ROT
   }>
-  __gen_write_Treasure PROCREF:<{
+  __gen_write_Treasure PROCINLINE:<{
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_Treasure PROCREF:<{
+  __gen_read_Treasure PROCINLINE:<{
     __tact_load_address INLINECALLDICT
   }>
   __gen_Context_get_sender PROCINLINE:<{
@@ -226,15 +226,15 @@ PROGRAM{
     __gen_load_Treasure INLINECALLDICT
     $__gen_Treasure_owner CALLDICT
   }>
-  $__gen_Treasure_receive_Withdraw PROC:<{
+  $__gen_Treasure_receive_Withdraw PROCINLINE:<{
     $__gen_Treasure_doWithdraw CALLDICT
   }>
-  $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROC:<{
+  $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROCINLINE:<{
     0 PUSHINT
     160 PUSHINT
     $__gen_Treasure_doWithdraw CALLDICT
   }>
-  $__gen_Treasure_receive_ChangeOwner PROC:<{
+  $__gen_Treasure_receive_ChangeOwner PROCINLINE:<{
     SWAP
     $__gen_Treasure_requireOwner CALLDICT
     DROP
@@ -282,7 +282,7 @@ PROGRAM{
       SWAP
       __gen_read_Withdraw INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_Treasure_receive_Withdraw CALLDICT
+      $__gen_Treasure_receive_Withdraw INLINECALLDICT
       __gen_store_Treasure INLINECALLDICT
     }>
     DUP
@@ -294,7 +294,7 @@ PROGRAM{
       SWAP
       __gen_read_ChangeOwner INLINECALLDICT
       NIP
-      $__gen_Treasure_receive_ChangeOwner CALLDICT
+      $__gen_Treasure_receive_ChangeOwner INLINECALLDICT
       __gen_store_Treasure INLINECALLDICT
     }>
     0 EQINT
@@ -304,7 +304,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_Treasure INLINECALLDICT
-        $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d CALLDICT
+        $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
         __gen_store_Treasure INLINECALLDICT
         RETALT
       }>

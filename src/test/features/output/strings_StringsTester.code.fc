@@ -72,7 +72,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
-slice __tact_int_to_string(int src) {
+slice __tact_int_to_string(int src) inline_ref {
     var b = begin_cell();
     if (src < 0) {
         b = b.store_uint(45, 8);
@@ -111,7 +111,7 @@ slice __tact_int_to_string(int src) {
     return b.end_cell().begin_parse();
 }
 
-slice __tact_float_to_string(int src, int digits) {
+slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
 
@@ -159,13 +159,13 @@ slice __tact_float_to_string(int src, int digits) {
     return b.end_cell().begin_parse();
 }
 
-builder __gen_write_StringsTester(builder build_0, (int) v) inline_ref {
+builder __gen_write_StringsTester(builder build_0, (int) v) inline {
     var (v'fee) = v;
     build_0 = build_0.store_int(v'fee, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_StringsTester(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_StringsTester(slice sc_0) inline {
     var v'fee = sc_0~load_int(257);
     return (sc_0, (v'fee));
 }
@@ -408,7 +408,7 @@ _ $__gen_get_processBase64(slice $$src) method_id(128362) {
     return res;
 }
 
-(((int)), ()) $__gen_StringsTester_receive((int) $self) impure {
+(((int)), ()) $__gen_StringsTester_receive((int) $self) impure inline {
     var ($self'fee) = $self;
     return (($self'fee), ());
 }

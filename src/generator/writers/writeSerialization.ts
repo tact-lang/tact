@@ -7,15 +7,19 @@ import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 
+const SMALL_STRUCT_MAX_FIELDS = 5;
+
 //
 // Serializer
 //
 
 export function writeSerializer(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
+    let isSmall = type.fields.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
     ctx.fun(ops.writer(type.name, ctx), () => {
-        ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) inline_ref {`);
+        let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
+        ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) ${modifier} {`);
         ctx.inIndent(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(allocation.type, `v`, ctx)} = v;`)
             if (type.header) {
@@ -185,8 +189,11 @@ function writeSerializerField(f: AllocationOperation, type: TypeDescription, off
 //
 
 export function writeParser(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
+    let isSmall = type.fields.length <= SMALL_STRUCT_MAX_FIELDS;
+
     ctx.fun(`__gen_read_${type.name}`, () => {
-        ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${type.name}(slice sc_0) inline_ref {`);
+        let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
+        ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${type.name}(slice sc_0) ${modifier} {`);
         ctx.inIndent(() => {
 
             // Check prefix
@@ -384,7 +391,7 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline_ref {`); // NOTE: Impure function
+        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline_ref {`); // NOTE: Impure inline function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
 

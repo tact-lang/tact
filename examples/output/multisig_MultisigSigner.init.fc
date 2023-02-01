@@ -27,7 +27,7 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
     return build_0;
 }
 
-builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline_ref {
+builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline {
     var (v'master, v'members, v'weight, v'requiredWeight, v'completed, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = build_0.store_dict(v'members);

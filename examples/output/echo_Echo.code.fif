@@ -154,12 +154,12 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_write_Echo PROCREF:<{
+  __gen_write_Echo PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_Echo PROCREF:<{
+  __gen_read_Echo PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
@@ -321,11 +321,11 @@ PROGRAM{
     SWAP
     $__gen_Echo_hello CALLDICT
   }>
-  $__gen_Echo_receive_comment PROC:<{
+  $__gen_Echo_receive_comment PROCINLINE:<{
     $__gen_String_asComment CALLDICT
     $reply CALLDICT
   }>
-  $__gen_Echo_receive_fallback PROC:<{
+  $__gen_Echo_receive_fallback PROCINLINE:<{
     $__gen_Slice_asCell CALLDICT
     $reply CALLDICT
   }>
@@ -373,14 +373,14 @@ PROGRAM{
         SWAP
         32 PUSHINT
         SDSKIPFIRST
-        $__gen_Echo_receive_comment CALLDICT
+        $__gen_Echo_receive_comment INLINECALLDICT
         __gen_store_Echo INLINECALLDICT
         RETALT
       }>
     }>
     __gen_load_Echo INLINECALLDICT
     SWAP
-    $__gen_Echo_receive_fallback CALLDICT
+    $__gen_Echo_receive_fallback INLINECALLDICT
     __gen_store_Echo INLINECALLDICT
   }>
   supported_interfaces PROC:<{

@@ -48,25 +48,20 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          257 PUSHINT
-          LDI
-          s0 s1 XCHG
-        }> CALLREF
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
         s1 POP
       }> CALLREF
-      8 CALLDICT
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         s0 s1 XCHG
-        <{
-          s0 s1 XCHG
-          257 PUSHINT
-          STIX
-        }> CALLREF
+        s0 s1 XCHG
+        257 PUSHINT
+        STIX
         ENDC
         c4 POP
       }> CALLREF
@@ -86,8 +81,6 @@ SETCP0
     s1 POP
     SREFS
 
-  8: 
-
   73995: 
     <{
       c4 PUSH
@@ -95,11 +88,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     s0 s1 XCHG
@@ -112,11 +103,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     s0 s1 XCHG
@@ -129,11 +118,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     s0 s1 XCHG

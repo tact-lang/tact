@@ -51,7 +51,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_Operation PROCREF:<{
+  __gen_write_Operation PROCINLINE:<{
     s2 s3 XCHG2
     32 STU
     SWAP
@@ -65,13 +65,13 @@ PROGRAM{
     __gen_write_Operation INLINECALLDICT
     ENDC
   }>
-  __gen_read_Operation PROCREF:<{
+  __gen_read_Operation PROCINLINE:<{
     32 LDU
     LDGRAMS
     __tact_load_address INLINECALLDICT
     s3 s3 s0 XCHG3
   }>
-  __gen_read_Execute PROCREF:<{
+  __gen_read_Execute PROCINLINE:<{
     32 LDU
     SWAP
     520967536 PUSHINT
@@ -93,14 +93,14 @@ PROGRAM{
     s1 s6 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_MultisigContract PROCREF:<{
+  __gen_write_MultisigContract PROCINLINE:<{
     s3 s4 XCHG2
     32 STU
     256 STU
     256 STU
     256 STU
   }>
-  __gen_read_MultisigContract PROCREF:<{
+  __gen_read_MultisigContract PROCINLINE:<{
     32 LDU
     256 LDU
     256 LDU
@@ -265,9 +265,9 @@ PROGRAM{
     __gen_load_MultisigContract INLINECALLDICT
     $__gen_MultisigContract_seqno CALLDICT
   }>
-  $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROC:<{
+  $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $__gen_MultisigContract_receive_Execute PROC:<{
+  $__gen_MultisigContract_receive_Execute PROCINLINE:<{
     s5 s4 s3 PUSH3
     __gen_writecell_Operation INLINECALLDICT
     HASHCU
@@ -339,7 +339,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      $__gen_MultisigContract_receive_Execute CALLDICT
+      $__gen_MultisigContract_receive_Execute INLINECALLDICT
       __gen_store_MultisigContract INLINECALLDICT
     }>
     0 EQINT
@@ -349,7 +349,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_MultisigContract INLINECALLDICT
-        $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 CALLDICT
+        $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         __gen_store_MultisigContract INLINECALLDICT
         RETALT
       }>

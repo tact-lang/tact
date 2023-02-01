@@ -59,11 +59,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     6 CALLDICT
@@ -75,11 +73,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     7 CALLDICT
@@ -95,11 +91,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     8 CALLDICT
@@ -111,11 +105,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     3 CALLDICT
@@ -127,11 +119,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     4 CALLDICT
@@ -143,11 +133,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     5 CALLDICT

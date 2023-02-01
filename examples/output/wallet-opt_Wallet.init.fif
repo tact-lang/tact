@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_Wallet_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Wallet PROCREF:<{
+  __gen_write_Wallet PROCINLINE:<{
     s2 s3 XCHG2
     32 STU
     256 STU

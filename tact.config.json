@@ -126,6 +126,19 @@
       "experimental": {
         "debug": true
       }
+    },
+    {
+      "name": "benchmark_functions",
+      "path": "./src/benchmarks/contracts/functions.tact",
+      "output": "./src/benchmarks/contracts/output"
+    },
+    {
+      "name": "benchmark_functions_inline",
+      "path": "./src/benchmarks/contracts/functions.tact",
+      "output": "./src/benchmarks/contracts/output",
+      "experimental": {
+        "inline": true
+      }
     }
   ]
 }

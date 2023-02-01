@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_SerializationTester_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_SerializationTester PROCREF:<{
+  __gen_write_SerializationTester PROCINLINE:<{
     s8 s9 XCHG2
     257 PUSHINT
     STIX

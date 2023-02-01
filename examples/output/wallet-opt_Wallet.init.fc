@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
+builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     var (v'seqno, v'key, v'walletId) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'key, 256);

@@ -17,7 +17,7 @@ forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> tuple __tact_tuple_create_10((X
 
 forall X0, X1, X2, X3, X4, X5, X6, X7, X8, X9 -> (X0, X1, X2, X3, X4, X5, X6, X7, X8, X9) __tact_tuple_destroy_10(tuple v) asm "10 UNTUPLE";
 
-builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_ref {
+builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -29,7 +29,7 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_re
     return build_0;
 }
 
-(slice, ((int, int, int, int, int))) __gen_read_Vars(slice sc_0) inline_ref {
+(slice, ((int, int, int, int, int))) __gen_read_Vars(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
@@ -39,7 +39,7 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_re
     return (sc_0, (v'a, v'b, v'c, v'd, v'e));
 }
 
-(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_Update(slice sc_0) inline_ref {
+(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_Update(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2732768933);
     var v'a = sc_0~__gen_read_Vars();
     slice sc_1 = sc_0~load_ref().begin_parse();
@@ -47,7 +47,7 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_re
     return (sc_0, (v'a, v'b));
 }
 
-builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline_ref {
+builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline {
     var ((v'a'a, v'a'b, v'a'c, v'a'd, v'a'e), (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e)) = v;
     build_0 = __gen_write_Vars(build_0, (v'a'a, v'a'b, v'a'c, v'a'd, v'a'e));
     var build_1 = begin_cell();
@@ -56,7 +56,7 @@ builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, 
     return build_0;
 }
 
-(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_SerializationTester2(slice sc_0) inline_ref {
+(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_SerializationTester2(slice sc_0) inline {
     var v'a = sc_0~__gen_read_Vars();
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'b = sc_1~__gen_read_Vars();
@@ -244,12 +244,12 @@ _ $__gen_get_process(tuple $$src, tuple $$both, tuple $$both2) method_id(104435)
     return __gen_Vars_to_external(res);
 }
 
-((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive(((int, int, int, int, int), (int, int, int, int, int)) $self) impure {
+((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline {
     var (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)) = $self;
     return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), ());
 }
 
-((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive_Update(((int, int, int, int, int), (int, int, int, int, int)) $self, ((int, int, int, int, int), (int, int, int, int, int)) $msg) impure {
+((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive_Update(((int, int, int, int, int), (int, int, int, int, int)) $self, ((int, int, int, int, int), (int, int, int, int, int)) $msg) impure inline {
     var (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)) = $self;
     var (($msg'a'a, $msg'a'b, $msg'a'c, $msg'a'd, $msg'a'e), ($msg'b'a, $msg'b'b, $msg'b'c, $msg'b'd, $msg'b'e)) = $msg;
     ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($msg'a'a, $msg'a'b, $msg'a'c, $msg'a'd, $msg'a'e);

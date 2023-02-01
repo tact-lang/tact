@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade `func` to `0.4.1`
 - Enforce `func` version in generated files
 - Enable critical pragmas by default
+- Enable inlining in a lot of places thanks to fixed crashes in `func`
 
 ## [0.8.11] - 2023-01-28
 

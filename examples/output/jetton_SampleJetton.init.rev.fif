@@ -9,30 +9,28 @@ SETCP0
     NEWC
     STREF
     s3 s3 s4 XCHG3
+    s4 s3 XCHG2
+    STGRAMS
+    s0 s1 XCHG
+    STSLICER
+    s2 PUSH
+    ISNULL
+    NOT
     <{
-      s4 s3 XCHG2
-      STGRAMS
+      -1 PUSHINT
       s0 s1 XCHG
-      STSLICER
-      s2 PUSH
-      ISNULL
-      NOT
-      <{
-        -1 PUSHINT
-        s0 s1 XCHG
-        1 STI
-        s1 s2 XCHG
-        STREF
-      }> PUSHCONT
-      <{
-        s2 POP
-        0 PUSHINT
-        ROT
-        1 STI
-      }> PUSHCONT
-      IFELSE
       1 STI
-    }> CALLREF
+      s1 s2 XCHG
+      STREF
+    }> PUSHCONT
+    <{
+      s2 POP
+      0 PUSHINT
+      ROT
+      1 STI
+    }> PUSHCONT
+    IFELSE
+    1 STI
     ENDC
 
   107886: 

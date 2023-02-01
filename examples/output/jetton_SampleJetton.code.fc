@@ -99,7 +99,7 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) 
     return __gen_write_TokenTransferInternal(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int, slice, slice))) __gen_read_TokenBurnNotification(slice sc_0) inline_ref {
+(slice, ((int, int, slice, slice))) __gen_read_TokenBurnNotification(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2078119902);
     var v'queryId = sc_0~load_uint(64);
     var v'amount = sc_0~load_coins();
@@ -108,7 +108,7 @@ cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) 
     return (sc_0, (v'queryId, v'amount, v'owner, v'responseAddress));
 }
 
-builder __gen_write_TokenExcesses(builder build_0, (int) v) inline_ref {
+builder __gen_write_TokenExcesses(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 3576854235, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
@@ -119,19 +119,19 @@ cell __gen_writecell_TokenExcesses((int) v) inline_ref {
     return __gen_write_TokenExcesses(begin_cell(), v).end_cell();
 }
 
-(slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline_ref {
+(slice, ((cell))) __gen_read_TokenUpdateContent(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 201882270);
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'content));
 }
 
-(slice, ((int))) __gen_read_Mint(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_Mint(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 33240155);
     var v'amount = sc_0~load_int(257);
     return (sc_0, (v'amount));
 }
 
-builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline_ref {
+builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
     var (v'balance, v'owner, v'master) = v;
     build_0 = build_0.store_int(v'balance, 257);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -139,7 +139,7 @@ builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) 
     return build_0;
 }
 
-builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inline_ref {
+builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inline {
     var (v'totalSupply, v'owner, v'content, v'mintable) = v;
     build_0 = build_0.store_coins(v'totalSupply);
     build_0 = __tact_store_address(build_0, v'owner);
@@ -148,7 +148,7 @@ builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inl
     return build_0;
 }
 
-(slice, ((int, slice, cell, int))) __gen_read_SampleJetton(slice sc_0) inline_ref {
+(slice, ((int, slice, cell, int))) __gen_read_SampleJetton(slice sc_0) inline {
     var v'totalSupply = sc_0~load_coins();
     var v'owner = sc_0~__tact_load_address();
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
@@ -332,7 +332,7 @@ _ $__gen_get_owner() method_id(83229) {
     return res;
 }
 
-(((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_Mint((int, slice, cell, int) $self, (int) $msg) impure {
+(((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_Mint((int, slice, cell, int) $self, (int) $msg) impure inline {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -340,14 +340,14 @@ _ $__gen_get_owner() method_id(83229) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-((int, slice, cell, int), ()) $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2((int, slice, cell, int) $self) impure {
+((int, slice, cell, int), ()) $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2((int, slice, cell, int) $self) impure inline {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_mint($ctx'sender, 1000000000, $ctx'sender);
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-(((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_TokenUpdateContent((int, slice, cell, int) $self, (cell) $msg) impure {
+(((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_TokenUpdateContent((int, slice, cell, int) $self, (cell) $msg) impure inline {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'content) = $msg;
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_requireOwner();
@@ -355,7 +355,7 @@ _ $__gen_get_owner() method_id(83229) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-(((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_TokenBurnNotification((int, slice, cell, int) $self, (int, int, slice, slice) $msg) impure {
+(((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_TokenBurnNotification((int, slice, cell, int) $self, (int, int, slice, slice) $msg) impure inline {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'queryId, $msg'amount, $msg'owner, $msg'responseAddress) = $msg;
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_requireWallet($msg'owner);

@@ -8,12 +8,10 @@ SETCP0
     NEWC
     STREF
     3 1 BLKSWAP
-    <{
-      s2 s3 XCHG2
-      32 STU
-      256 STU
-      64 STU
-    }> CALLREF
+    s2 s3 XCHG2
+    32 STU
+    256 STU
+    64 STU
     ENDC
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ

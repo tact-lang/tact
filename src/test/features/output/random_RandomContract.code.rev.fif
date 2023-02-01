@@ -45,36 +45,39 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          257 PUSHINT
-          LDI
-          s0 s1 XCHG
-        }> CALLREF
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
         s1 POP
       }> CALLREF
       s0 s1 XCHG
-      <{
-        32 LDU
-        s0 s1 XCHG
-        2490013878 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        64 LDU
-        s0 s1 XCHG
-      }> CALLREF
+      32 LDU
+      s0 s1 XCHG
+      2490013878 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      64 LDU
+      s0 s1 XCHG
       s1 POP
-      20 CALLDICT
+      <{
+        NEWC
+        s0 s1 XCHG
+        2952335191 PUSHINT
+        ROT
+        32 STU
+        64 STU
+        ENDC
+      }> CALLREF
+      17 CALLDICT
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         s0 s1 XCHG
-        <{
-          s0 s1 XCHG
-          257 PUSHINT
-          STIX
-        }> CALLREF
+        s0 s1 XCHG
+        257 PUSHINT
+        STIX
         ENDC
         c4 POP
       }> CALLREF
@@ -254,20 +257,6 @@ SETCP0
     1 2 BLKDROP2
     15 CALLDICT
 
-  20: 
-    <{
-      NEWC
-      s0 s1 XCHG
-      <{
-        2952335191 PUSHINT
-        ROT
-        32 STU
-        64 STU
-      }> CALLREF
-      ENDC
-    }> CALLREF
-    17 CALLDICT
-
   92013: 
     <{
       c4 PUSH
@@ -275,11 +264,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     ROTREV
@@ -296,11 +283,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     18 CALLDICT

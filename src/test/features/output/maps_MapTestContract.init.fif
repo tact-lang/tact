@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_MapTestContract_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_MapTestContract PROCREF:<{
+  __gen_write_MapTestContract PROCINLINE:<{
     s7 s8 XCHG2
     STDICT
     s1 s5 XCHG

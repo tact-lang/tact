@@ -1,0 +1,115 @@
+#pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(slice, ((int))) __gen_read_Add(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 831841332);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+(slice, ((int))) __gen_read_Sub(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2640337643);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+builder __gen_write_Functions(builder build_0, (int) v) inline {
+    var (v'value) = v;
+    build_0 = build_0.store_int(v'value, 257);
+    return build_0;
+}
+
+(slice, ((int))) __gen_read_Functions(slice sc_0) inline {
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+(int) __gen_load_Functions() inline_ref {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_Functions();
+}
+
+() __gen_store_Functions((int) v) impure inline_ref {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = __gen_write_Functions(b, v);
+    set_data(b.end_cell());
+}
+
+((int), ()) $__gen_Functions_update((int) $self, int $delta) impure {
+    var (($self'value)) = $self;
+    $self'value = ($self'value + $delta);
+    return (($self'value), ());
+}
+
+(((int)), ()) $__gen_Functions_receive_Add((int) $self, (int) $msg) impure inline {
+    var ($self'value) = $self;
+    var ($msg'value) = $msg;
+    throw_unless(55789, ($msg'value > 0));
+    ($self'value)~$__gen_Functions_update($msg'value);
+    return (($self'value), ());
+}
+
+(((int)), ()) $__gen_Functions_receive_Sub((int) $self, (int) $msg) impure inline {
+    var ($self'value) = $self;
+    var ($msg'value) = $msg;
+    throw_unless(55789, ($msg'value > 0));
+    ($self'value)~$__gen_Functions_update((- $msg'value));
+    return (($self'value), ());
+}
+
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return ();
+    }
+    
+    ;; Receive Add message
+    if (op == 831841332) {
+        var self = __gen_load_Functions();
+        var msg = in_msg~__gen_read_Add();
+        self~$__gen_Functions_receive_Add(msg);
+        __gen_store_Functions(self);
+        return ();
+    }
+    
+    ;; Receive Sub message
+    if (op == 2640337643) {
+        var self = __gen_load_Functions();
+        var msg = in_msg~__gen_read_Sub();
+        self~$__gen_Functions_receive_Sub(msg);
+        __gen_store_Functions(self);
+        return ();
+    }
+    
+    throw(130);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmXyYE5KbZfk2wvaGSmThdEExcyWF1vqRRKZMzh3JcPcyG";
+}

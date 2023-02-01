@@ -14,7 +14,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_Treasure PROCREF:<{
+  __gen_write_Treasure PROCINLINE:<{
     __tact_store_address INLINECALLDICT
   }>
   $__gen_Treasure_init PROC:<{

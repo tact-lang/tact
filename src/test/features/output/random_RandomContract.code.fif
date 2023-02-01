@@ -59,7 +59,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_read_Deploy PROCREF:<{
+  __gen_read_Deploy PROCINLINE:<{
     32 LDU
     SWAP
     2490013878 PUSHINT
@@ -68,7 +68,7 @@ PROGRAM{
     64 LDU
     SWAP
   }>
-  __gen_write_DeployOk PROCREF:<{
+  __gen_write_DeployOk PROCINLINE:<{
     2952335191 PUSHINT
     ROT
     32 STU
@@ -80,12 +80,12 @@ PROGRAM{
     __gen_write_DeployOk INLINECALLDICT
     ENDC
   }>
-  __gen_write_RandomContract PROCREF:<{
+  __gen_write_RandomContract PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_RandomContract PROCREF:<{
+  __gen_read_RandomContract PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
@@ -249,7 +249,7 @@ PROGRAM{
     -ROT
     $__gen_RandomContract_random CALLDICT
   }>
-  $__gen_RandomContract_receive_Deploy PROC:<{
+  $__gen_RandomContract_receive_Deploy PROCINLINE:<{
     __gen_writecell_DeployOk INLINECALLDICT
     $reply CALLDICT
   }>
@@ -292,7 +292,7 @@ PROGRAM{
       SWAP
       __gen_read_Deploy INLINECALLDICT
       NIP
-      $__gen_RandomContract_receive_Deploy CALLDICT
+      $__gen_RandomContract_receive_Deploy INLINECALLDICT
       __gen_store_RandomContract INLINECALLDICT
     }>
     DROP

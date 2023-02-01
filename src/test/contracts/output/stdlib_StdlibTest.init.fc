@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_StdlibTest(builder build_0, (int) v) inline_ref {
+builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     var (v'v) = v;
     build_0 = build_0.store_int(v'v, 257);
     return build_0;

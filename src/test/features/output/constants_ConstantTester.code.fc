@@ -5,7 +5,7 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(slice, ((int))) __gen_read_ConstantTester(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_ConstantTester(slice sc_0) inline {
     var v'v = sc_0~load_int(257);
     return (sc_0, (v'v));
 }

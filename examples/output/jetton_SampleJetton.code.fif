@@ -173,7 +173,7 @@ PROGRAM{
     __gen_write_TokenTransferInternal INLINECALLDICT
     ENDC
   }>
-  __gen_read_TokenBurnNotification PROCREF:<{
+  __gen_read_TokenBurnNotification PROCINLINE:<{
     32 LDU
     SWAP
     2078119902 PUSHINT
@@ -187,7 +187,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_TokenExcesses PROCREF:<{
+  __gen_write_TokenExcesses PROCINLINE:<{
     3576854235 PUSHINT
     ROT
     32 STU
@@ -199,7 +199,7 @@ PROGRAM{
     __gen_write_TokenExcesses INLINECALLDICT
     ENDC
   }>
-  __gen_read_TokenUpdateContent PROCREF:<{
+  __gen_read_TokenUpdateContent PROCINLINE:<{
     32 LDU
     SWAP
     201882270 PUSHINT
@@ -215,7 +215,7 @@ PROGRAM{
     }>
     SWAP
   }>
-  __gen_read_Mint PROCREF:<{
+  __gen_read_Mint PROCINLINE:<{
     32 LDU
     SWAP
     33240155 PUSHINT
@@ -225,7 +225,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_write_JettonDefaultWallet PROCREF:<{
+  __gen_write_JettonDefaultWallet PROCINLINE:<{
     s2 s3 XCHG2
     257 PUSHINT
     STIX
@@ -234,7 +234,7 @@ PROGRAM{
     SWAP
     __tact_store_address INLINECALLDICT
   }>
-  __gen_write_SampleJetton PROCREF:<{
+  __gen_write_SampleJetton PROCINLINE:<{
     s4 s3 XCHG2
     STGRAMS
     SWAP
@@ -256,7 +256,7 @@ PROGRAM{
     }>
     1 STI
   }>
-  __gen_read_SampleJetton PROCREF:<{
+  __gen_read_SampleJetton PROCINLINE:<{
     LDGRAMS
     __tact_load_address INLINECALLDICT
     SWAP
@@ -526,14 +526,14 @@ PROGRAM{
     __gen_load_SampleJetton INLINECALLDICT
     $__gen_SampleJetton_owner CALLDICT
   }>
-  $__gen_SampleJetton_receive_Mint PROC:<{
+  $__gen_SampleJetton_receive_Mint PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
     TUCK
     $__gen_SampleJetton_mint CALLDICT
   }>
-  $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 PROC:<{
+  $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -541,13 +541,13 @@ PROGRAM{
     OVER
     $__gen_SampleJetton_mint CALLDICT
   }>
-  $__gen_SampleJetton_receive_TokenUpdateContent PROC:<{
+  $__gen_SampleJetton_receive_TokenUpdateContent PROCINLINE:<{
     4 -ROLL
     $__gen_SampleJetton_requireOwner CALLDICT
     NIP
     s1 s3 s0 XCHG3
   }>
-  $__gen_SampleJetton_receive_TokenBurnNotification PROC:<{
+  $__gen_SampleJetton_receive_TokenBurnNotification PROCINLINE:<{
     s4 s7 XCHG
     s3 s6 XCHG
     s5 s7 s7 XCHG3
@@ -622,7 +622,7 @@ PROGRAM{
       NIP
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      $__gen_SampleJetton_receive_Mint CALLDICT
+      $__gen_SampleJetton_receive_Mint INLINECALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DUP
@@ -636,7 +636,7 @@ PROGRAM{
       NIP
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      $__gen_SampleJetton_receive_TokenUpdateContent CALLDICT
+      $__gen_SampleJetton_receive_TokenUpdateContent INLINECALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
     DUP
@@ -652,7 +652,7 @@ PROGRAM{
       s5 s6 XCHG
       s4 s5 XCHG
       3 ROLL
-      $__gen_SampleJetton_receive_TokenBurnNotification CALLDICT
+      $__gen_SampleJetton_receive_TokenBurnNotification INLINECALLDICT
       __gen_store_SampleJetton INLINECALLDICT
     }>
     0 EQINT
@@ -662,7 +662,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_SampleJetton INLINECALLDICT
-        $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 CALLDICT
+        $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 INLINECALLDICT
         __gen_store_SampleJetton INLINECALLDICT
         RETALT
       }>

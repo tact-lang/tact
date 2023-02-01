@@ -49,34 +49,28 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          LDMSGADDR
-          s0 s1 XCHG
-        }> CALLREF
+        LDMSGADDR
+        s0 s1 XCHG
         s1 POP
       }> CALLREF
       s0 s1 XCHG
-      <{
-        32 LDU
-        s0 s1 XCHG
-        1672521544 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        LDGRAMS
-        8 LDU
-        ROTREV
-      }> CALLREF
+      32 LDU
+      s0 s1 XCHG
+      1672521544 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      LDGRAMS
+      8 LDU
+      ROTREV
       1 2 BLKDROP2
-      19 CALLDICT
+      17 CALLDICT
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         s0 s1 XCHG
-        <{
-          STSLICER
-        }> CALLREF
+        STSLICER
         ENDC
         c4 POP
       }> CALLREF
@@ -93,38 +87,33 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          LDMSGADDR
-          s0 s1 XCHG
-        }> CALLREF
+        LDMSGADDR
+        s0 s1 XCHG
         s1 POP
       }> CALLREF
       s0 s1 XCHG
-      <{
-        32 LDU
-        s0 s1 XCHG
-        256331011 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        LDMSGADDR
-        s0 s1 XCHG
-      }> CALLREF
+      32 LDU
+      s0 s1 XCHG
+      256331011 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      LDMSGADDR
+      s0 s1 XCHG
       s1 POP
-      21 CALLDICT
+      s0 s1 XCHG
+      16 CALLDICT
+      s0 POP
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         s0 s1 XCHG
-        <{
-          STSLICER
-        }> CALLREF
+        STSLICER
         ENDC
         c4 POP
       }> CALLREF
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     0 EQINT
     <{
       HASHSU
@@ -137,22 +126,20 @@ SETCP0
           LDREF
           s0 s1 XCHG
           2 SETGLOBVAR
-          <{
-            LDMSGADDR
-            s0 s1 XCHG
-          }> CALLREF
+          LDMSGADDR
+          s0 s1 XCHG
           s1 POP
         }> CALLREF
-        20 CALLDICT
+        0 PUSHINT
+        160 PUSHINT
+        17 CALLDICT
         <{
           NEWC
           2 GETGLOBVAR
           s0 s1 XCHG
           STREF
           s0 s1 XCHG
-          <{
-            STSLICER
-          }> CALLREF
+          STSLICER
           ENDC
           c4 POP
         }> CALLREF
@@ -311,19 +298,6 @@ SETCP0
 
   18: 
 
-  19: 
-    17 CALLDICT
-
-  20: 
-    0 PUSHINT
-    160 PUSHINT
-    17 CALLDICT
-
-  21: 
-    s0 s1 XCHG
-    16 CALLDICT
-    s0 POP
-
   owner: 
     <{
       c4 PUSH
@@ -331,10 +305,8 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        LDMSGADDR
-        s0 s1 XCHG
-      }> CALLREF
+      LDMSGADDR
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     18 CALLDICT

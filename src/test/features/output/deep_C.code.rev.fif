@@ -55,25 +55,32 @@ SETCP0
           LDREF
           s0 s1 XCHG
           2 SETGLOBVAR
-          <{
-            257 PUSHINT
-            LDI
-            s0 s1 XCHG
-          }> CALLREF
+          257 PUSHINT
+          LDI
+          s0 s1 XCHG
           s1 POP
         }> CALLREF
-        22 CALLDICT
+        2 GETGLOBVAR
+        21 CALLDICT
+        2DUP
+        17 CALLDICT
+        -1 PUSHINT
+        0 PUSHINT
+        66 PUSHINT
+        PUSHSLICE
+        19 CALLDICT
+        4 3 REVERSE
+        s0 s3 s4 XCHG3
+        18 CALLDICT
         <{
           NEWC
           2 GETGLOBVAR
           s0 s1 XCHG
           STREF
           s0 s1 XCHG
-          <{
-            s0 s1 XCHG
-            257 PUSHINT
-            STIX
-          }> CALLREF
+          s0 s1 XCHG
+          257 PUSHINT
+          STIX
           ENDC
           c4 POP
         }> CALLREF
@@ -89,25 +96,20 @@ SETCP0
           LDREF
           s0 s1 XCHG
           2 SETGLOBVAR
-          <{
-            257 PUSHINT
-            LDI
-            s0 s1 XCHG
-          }> CALLREF
+          257 PUSHINT
+          LDI
+          s0 s1 XCHG
           s1 POP
         }> CALLREF
-        23 CALLDICT
         <{
           NEWC
           2 GETGLOBVAR
           s0 s1 XCHG
           STREF
           s0 s1 XCHG
-          <{
-            s0 s1 XCHG
-            257 PUSHINT
-            STIX
-          }> CALLREF
+          s0 s1 XCHG
+          257 PUSHINT
+          STIX
           ENDC
           c4 POP
         }> CALLREF
@@ -377,11 +379,9 @@ SETCP0
     NEWC
     STREF
     s0 s1 XCHG
-    <{
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
-    }> CALLREF
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
     ENDC
 
   21: 
@@ -406,22 +406,6 @@ SETCP0
     STDICT
     ENDC
     20 CALLDICT
-
-  22: 
-    2 GETGLOBVAR
-    21 CALLDICT
-    2DUP
-    17 CALLDICT
-    -1 PUSHINT
-    0 PUSHINT
-    66 PUSHINT
-    PUSHSLICE
-    19 CALLDICT
-    4 3 REVERSE
-    s0 s3 s4 XCHG3
-    18 CALLDICT
-
-  23: 
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

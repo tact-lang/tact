@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_Multisig_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Multisig PROCREF:<{
+  __gen_write_Multisig PROCINLINE:<{
     s3 s4 XCHG2
     257 PUSHINT
     STIX

@@ -38,25 +38,21 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          ROTREV
-        }> CALLREF
-        s2 POP
-        s2 s4 XCHG
-        s3 s0 s0 XCHG3
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      ROTREV
+      s2 POP
+      s2 s4 XCHG
+      s3 s0 s0 XCHG3
       1 4 BLKDROP2
     }> CALLREF
     4 CALLDICT

@@ -21,7 +21,7 @@ global cell __tact_context_sys;
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
-builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline_ref {
+builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -39,7 +39,7 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return build_0;
 }
 
-(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_SerializationTester(slice sc_0) inline_ref {
+(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_SerializationTester(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
@@ -166,12 +166,12 @@ _ $__gen_get_getI() method_id(91412) {
     return res;
 }
 
-(((int, int, int, int, int, int, int, int, int)), ()) $__gen_SerializationTester_receive((int, int, int, int, int, int, int, int, int) $self) impure {
+(((int, int, int, int, int, int, int, int, int)), ()) $__gen_SerializationTester_receive((int, int, int, int, int, int, int, int, int) $self) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i), ());
 }
 
-(((int, int, int, int, int, int, int, int, int)), ()) $__gen_SerializationTester_receive_Update((int, int, int, int, int, int, int, int, int) $self, (int, int, int, int, int, int, int, int, int) $msg) impure {
+(((int, int, int, int, int, int, int, int, int)), ()) $__gen_SerializationTester_receive_Update((int, int, int, int, int, int, int, int, int) $self, (int, int, int, int, int, int, int, int, int) $msg) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i) = $self;
     var ($msg'a, $msg'b, $msg'c, $msg'd, $msg'e, $msg'f, $msg'g, $msg'h, $msg'i) = $msg;
     $self'a = $msg'a;

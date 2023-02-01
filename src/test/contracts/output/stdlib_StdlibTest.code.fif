@@ -15,12 +15,12 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_write_StdlibTest PROCREF:<{
+  __gen_write_StdlibTest PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_StdlibTest PROCREF:<{
+  __gen_read_StdlibTest PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
@@ -71,7 +71,7 @@ PROGRAM{
     SWAP
     $__gen_StdlibTest_sliceRefs CALLDICT
   }>
-  $__gen_StdlibTest_receive PROC:<{
+  $__gen_StdlibTest_receive PROCINLINE:<{
   }>
   recv_internal PROC:<{
     0 PUSHINT
@@ -112,7 +112,7 @@ PROGRAM{
     AND
     IFJMP:<{
       __gen_load_StdlibTest INLINECALLDICT
-      $__gen_StdlibTest_receive CALLDICT
+      $__gen_StdlibTest_receive INLINECALLDICT
       __gen_store_StdlibTest INLINECALLDICT
     }>
     130 THROW

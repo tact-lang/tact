@@ -84,7 +84,7 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  __gen_write_DDDD PROCREF:<{
+  __gen_write_DDDD PROCINLINE:<{
     s5 s4 XCHG2
     __tact_store_address INLINECALLDICT
     ROT
@@ -95,7 +95,7 @@ PROGRAM{
     STDICT
     STDICT
   }>
-  __gen_read_DDDD PROCREF:<{
+  __gen_read_DDDD PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     __tact_load_address INLINECALLDICT
@@ -150,7 +150,7 @@ PROGRAM{
     5 ROLL
     $__gen_DDDD_mapData2_addr1 CALLDICT
   }>
-  $__gen_DDDD_receive PROC:<{
+  $__gen_DDDD_receive PROCINLINE:<{
     SWAP
     257 PUSHINT
     0 PUSHINT
@@ -229,7 +229,7 @@ PROGRAM{
     AND
     IFJMP:<{
       __gen_load_DDDD INLINECALLDICT
-      $__gen_DDDD_receive CALLDICT
+      $__gen_DDDD_receive INLINECALLDICT
       __gen_store_DDDD INLINECALLDICT
     }>
     130 THROW

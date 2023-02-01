@@ -3,7 +3,7 @@ PROGRAM{
   DECLPROC $__gen_MultisigContract_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_MultisigContract PROCREF:<{
+  __gen_write_MultisigContract PROCINLINE:<{
     s3 s4 XCHG2
     32 STU
     256 STU

@@ -528,7 +528,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_int_to_string`, () => {
         ctx.write(`
-            slice __tact_int_to_string(int src) {
+            slice __tact_int_to_string(int src) inline_ref {
                 var b = begin_cell();
                 if (src < 0) {
                     b = b.store_uint(45, 8);
@@ -571,7 +571,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun(`__tact_float_to_string`, () => {
         ctx.write(`
-            slice __tact_float_to_string(int src, int digits) {
+            slice __tact_float_to_string(int src, int digits) inline_ref {
                 throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));
                 builder b = begin_cell();
 

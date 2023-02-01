@@ -549,7 +549,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
-slice __tact_int_to_string(int src) {
+slice __tact_int_to_string(int src) inline_ref {
     var b = begin_cell();
     if (src < 0) {
         b = b.store_uint(45, 8);
@@ -588,7 +588,7 @@ slice __tact_int_to_string(int src) {
     return b.end_cell().begin_parse();
 }
 
-slice __tact_float_to_string(int src, int digits) {
+slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
 
@@ -1482,7 +1482,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
-slice __tact_int_to_string(int src) {
+slice __tact_int_to_string(int src) inline_ref {
     var b = begin_cell();
     if (src < 0) {
         b = b.store_uint(45, 8);
@@ -1521,7 +1521,7 @@ slice __tact_int_to_string(int src) {
     return b.end_cell().begin_parse();
 }
 
-slice __tact_float_to_string(int src, int digits) {
+slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
 
@@ -2415,7 +2415,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
-slice __tact_int_to_string(int src) {
+slice __tact_int_to_string(int src) inline_ref {
     var b = begin_cell();
     if (src < 0) {
         b = b.store_uint(45, 8);
@@ -2454,7 +2454,7 @@ slice __tact_int_to_string(int src) {
     return b.end_cell().begin_parse();
 }
 
-slice __tact_float_to_string(int src, int digits) {
+slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
 

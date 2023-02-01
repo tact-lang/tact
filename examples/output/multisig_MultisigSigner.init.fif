@@ -43,7 +43,7 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_write_MultisigSigner PROCREF:<{
+  __gen_write_MultisigSigner PROCINLINE:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG

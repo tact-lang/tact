@@ -10,7 +10,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_Empty PROCREF:<{
+  __gen_read_Empty PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP

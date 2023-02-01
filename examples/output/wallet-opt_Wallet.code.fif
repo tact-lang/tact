@@ -16,7 +16,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_TransferMessage PROCREF:<{
+  __gen_read_TransferMessage PROCINLINE:<{
     32 LDU
     SWAP
     3548477446 PUSHINT
@@ -26,13 +26,13 @@ PROGRAM{
     LDSLICEX
     TUCK
   }>
-  __gen_write_Wallet PROCREF:<{
+  __gen_write_Wallet PROCINLINE:<{
     s2 s3 XCHG2
     32 STU
     256 STU
     64 STU
   }>
-  __gen_read_Wallet PROCREF:<{
+  __gen_read_Wallet PROCINLINE:<{
     32 LDU
     256 LDU
     64 LDU

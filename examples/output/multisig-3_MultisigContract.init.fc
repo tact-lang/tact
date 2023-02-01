@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline_ref {
+builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline {
     var (v'seqno, v'user1_key, v'user2_key, v'user3_key) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'user1_key, 256);

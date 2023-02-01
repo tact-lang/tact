@@ -109,13 +109,13 @@ cell __tact_string_builder_end(tuple builders) inline {
     return ((builders), ());
 }
 
-builder __gen_write_C(builder build_0, (int) v) inline_ref {
+builder __gen_write_C(builder build_0, (int) v) inline {
     var (v'a) = v;
     build_0 = build_0.store_int(v'a, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_C(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_C(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     return (sc_0, (v'a));
 }
@@ -211,7 +211,7 @@ cell $__gen_C_init(cell sys') {
     return (mine, $__gen_C_init(sys));
 }
 
-((int), ()) $__gen_C_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d((int) $self) impure {
+((int), ()) $__gen_C_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d((int) $self) impure inline {
     var ($self'a) = $self;
     var ($init'code, $init'data) = $__gen_C_init_child(__tact_context_sys);
     slice $address = $contractAddress(($init'code, $init'data));
@@ -219,7 +219,7 @@ cell $__gen_C_init(cell sys') {
     return (($self'a), ());
 }
 
-((int), ()) $__gen_C_receive_comment_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272((int) $self) impure {
+((int), ()) $__gen_C_receive_comment_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272((int) $self) impure inline {
     var ($self'a) = $self;
     return (($self'a), ());
 }

@@ -49,68 +49,91 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          32 LDU
-          256 LDU
-          256 LDU
-          256 LDU
-          4 1 BLKSWAP
-        }> CALLREF
+        32 LDU
+        256 LDU
+        256 LDU
+        256 LDU
+        4 1 BLKSWAP
         1 4 BLKDROP2
       }> CALLREF
       s0 s4 XCHG
-      <{
-        32 LDU
-        s0 s1 XCHG
-        520967536 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        <{
-          32 LDU
-          LDGRAMS
-          LDMSGADDR
-          s0 s1 XCHG
-          s3 s3 s0 XCHG3
-        }> CALLREF
-        s0 s3 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s6 XCHG
-        s3 s3 s0 XCHG3
-      }> CALLREF
+      32 LDU
+      s0 s1 XCHG
+      520967536 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      32 LDU
+      LDGRAMS
+      LDMSGADDR
+      s0 s1 XCHG
+      s3 s3 s0 XCHG3
+      s0 s3 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s0 s1 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s0 s1 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s1 s6 XCHG
+      s3 s3 s0 XCHG3
       s6 POP
       s8 s9 XCHG
       s7 s8 XCHG
       s6 s7 XCHG
       1 5 BLKSWAP
-      21 CALLDICT
+      5 4 3 PUSH3
+      <{
+        NEWC
+        3 1 BLKSWAP
+        s2 s3 XCHG2
+        32 STU
+        s0 s1 XCHG
+        STGRAMS
+        s0 s1 XCHG
+        STSLICER
+        ENDC
+      }> CALLREF
+      HASHCU
+      s0 s3 PUXC
+      s10 PUSH
+      CHKSIGNU
+      s3 s2 PUXC
+      s9 PUSH
+      CHKSIGNU
+      3 3 7 XC2PU
+      CHKSIGNU
+      17654 PUSHINT
+      s6 s10 PUSH2
+      EQUAL
+      THROWANYIFNOT
+      s0 s1 XCHG
+      48401 PUSHINT
+      s0 s3 XCHG
+      AND
+      s0 s1 XCHG
+      AND
+      THROWANYIFNOT
+      15 CALLDICT
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         4 1 BLKSWAP
-        <{
-          s3 s4 XCHG2
-          32 STU
-          256 STU
-          256 STU
-          256 STU
-        }> CALLREF
+        s3 s4 XCHG2
+        32 STU
+        256 STU
+        256 STU
+        256 STU
         ENDC
         c4 POP
       }> CALLREF
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     0 EQINT
     <{
       HASHSU
@@ -123,29 +146,24 @@ SETCP0
           LDREF
           s0 s1 XCHG
           2 SETGLOBVAR
-          <{
-            32 LDU
-            256 LDU
-            256 LDU
-            256 LDU
-            4 1 BLKSWAP
-          }> CALLREF
+          32 LDU
+          256 LDU
+          256 LDU
+          256 LDU
+          4 1 BLKSWAP
           1 4 BLKDROP2
         }> CALLREF
-        20 CALLDICT
         <{
           NEWC
           2 GETGLOBVAR
           s0 s1 XCHG
           STREF
           4 1 BLKSWAP
-          <{
-            s3 s4 XCHG2
-            32 STU
-            256 STU
-            256 STU
-            256 STU
-          }> CALLREF
+          s3 s4 XCHG2
+          32 STU
+          256 STU
+          256 STU
+          256 STU
           ENDC
           c4 POP
         }> CALLREF
@@ -305,45 +323,6 @@ SETCP0
   19: 
     3 BLKDROP
 
-  20: 
-
-  21: 
-    5 4 3 PUSH3
-    <{
-      NEWC
-      3 1 BLKSWAP
-      <{
-        s2 s3 XCHG2
-        32 STU
-        s0 s1 XCHG
-        STGRAMS
-        s0 s1 XCHG
-        STSLICER
-      }> CALLREF
-      ENDC
-    }> CALLREF
-    HASHCU
-    s0 s3 PUXC
-    s10 PUSH
-    CHKSIGNU
-    s3 s2 PUXC
-    s9 PUSH
-    CHKSIGNU
-    3 3 7 XC2PU
-    CHKSIGNU
-    17654 PUSHINT
-    s6 s10 PUSH2
-    EQUAL
-    THROWANYIFNOT
-    s0 s1 XCHG
-    48401 PUSHINT
-    s0 s3 XCHG
-    AND
-    s0 s1 XCHG
-    AND
-    THROWANYIFNOT
-    15 CALLDICT
-
   seqno: 
     <{
       c4 PUSH
@@ -351,13 +330,11 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        256 LDU
-        256 LDU
-        4 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> CALLREF
     19 CALLDICT
@@ -369,13 +346,11 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        256 LDU
-        256 LDU
-        4 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> CALLREF
     18 CALLDICT
@@ -387,13 +362,11 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        256 LDU
-        256 LDU
-        4 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> CALLREF
     17 CALLDICT
@@ -405,13 +378,11 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        256 LDU
-        256 LDU
-        4 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> CALLREF
     16 CALLDICT

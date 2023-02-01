@@ -45,25 +45,21 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          32 LDU
-          256 LDU
-          64 LDU
-          3 1 BLKSWAP
-        }> CALLREF
+        32 LDU
+        256 LDU
+        64 LDU
+        3 1 BLKSWAP
         1 3 BLKDROP2
       }> CALLREF
       s0 s3 XCHG
-      <{
-        32 LDU
-        s0 s1 XCHG
-        3548477446 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        9 PUSHPOW2
-        LDSLICEX
-        TUCK
-      }> CALLREF
+      32 LDU
+      s0 s1 XCHG
+      3548477446 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      9 PUSHPOW2
+      LDSLICEX
+      TUCK
       s2 POP
       s3 s4 XCHG
       s3 s0 s0 XCHG3
@@ -94,12 +90,10 @@ SETCP0
         s0 s1 XCHG
         STREF
         3 1 BLKSWAP
-        <{
-          s2 s3 XCHG2
-          32 STU
-          256 STU
-          64 STU
-        }> CALLREF
+        s2 s3 XCHG2
+        32 STU
+        256 STU
+        64 STU
         ENDC
         c4 POP
       }> CALLREF
@@ -115,12 +109,10 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        64 LDU
-        3 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      64 LDU
+      3 1 BLKSWAP
       1 3 BLKDROP2
     }> CALLREF
     2DROP
@@ -132,12 +124,10 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        64 LDU
-        3 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      64 LDU
+      3 1 BLKSWAP
       1 3 BLKDROP2
     }> CALLREF
     s0 POP
@@ -154,12 +144,10 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        32 LDU
-        256 LDU
-        64 LDU
-        3 1 BLKSWAP
-      }> CALLREF
+      32 LDU
+      256 LDU
+      64 LDU
+      3 1 BLKSWAP
       1 3 BLKDROP2
     }> CALLREF
     2 1 BLKDROP2

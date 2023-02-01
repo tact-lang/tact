@@ -64,7 +64,7 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
-  __gen_write_SerializationTester PROCREF:<{
+  __gen_write_SerializationTester PROCINLINE:<{
     s8 s9 XCHG2
     257 PUSHINT
     STIX
@@ -100,7 +100,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_SerializationTester PROCREF:<{
+  __gen_read_SerializationTester PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -219,9 +219,9 @@ PROGRAM{
     __gen_load_SerializationTester INLINECALLDICT
     $__gen_SerializationTester_getI CALLDICT
   }>
-  $__gen_SerializationTester_receive PROC:<{
+  $__gen_SerializationTester_receive PROCINLINE:<{
   }>
-  $__gen_SerializationTester_receive_Update PROC:<{
+  $__gen_SerializationTester_receive_Update PROCINLINE:<{
     s2 POP
     s8 POP
     s8 POP
@@ -274,7 +274,7 @@ PROGRAM{
     IFJMP:<{
       2DROP
       __gen_load_SerializationTester INLINECALLDICT
-      $__gen_SerializationTester_receive CALLDICT
+      $__gen_SerializationTester_receive INLINECALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
     849061239 PUSHINT
@@ -293,7 +293,7 @@ PROGRAM{
       s10 s11 XCHG
       s9 s10 XCHG
       8 ROLL
-      $__gen_SerializationTester_receive_Update CALLDICT
+      $__gen_SerializationTester_receive_Update INLINECALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
     DROP

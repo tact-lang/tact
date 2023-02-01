@@ -8,13 +8,11 @@ SETCP0
     NEWC
     STREF
     4 1 BLKSWAP
-    <{
-      s3 s4 XCHG2
-      32 STU
-      256 STU
-      256 STU
-      256 STU
-    }> CALLREF
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
     ENDC
 
   107886: 

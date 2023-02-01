@@ -3,6 +3,7 @@ PROGRAM{
   DECLPROC do_another
   DECLPROC get_first
   DECLPROC get_second
+  DECLPROC get_value
   DECLPROC do_mutate
   DECLPROC main
   do_something PROC:<{
@@ -17,6 +18,8 @@ PROGRAM{
   get_second PROCINLINE:<{
     NIP
   }>
+  get_value PROCINLINE:<{
+  }>
   do_mutate PROC:<{
     s2 s1 PUXC
     ADD
@@ -25,6 +28,7 @@ PROGRAM{
   }>
   main PROC:<{
     1 PUSHINT
+    get_value INLINECALLDICT
     do_something CALLDICT
     2DROP
   }>

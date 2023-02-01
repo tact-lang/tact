@@ -4,7 +4,7 @@
 
 forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
 
-builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_ref {
+builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -16,7 +16,7 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline_re
     return build_0;
 }
 
-builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline_ref {
+builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline {
     var ((v'a'a, v'a'b, v'a'c, v'a'd, v'a'e), (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e)) = v;
     build_0 = __gen_write_Vars(build_0, (v'a'a, v'a'b, v'a'c, v'a'd, v'a'e));
     var build_1 = begin_cell();

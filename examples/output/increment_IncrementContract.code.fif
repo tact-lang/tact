@@ -129,7 +129,7 @@ PROGRAM{
     s1 s3 s3 XCHG3
     DICTSETB
   }>
-  __gen_read_Deploy PROCREF:<{
+  __gen_read_Deploy PROCINLINE:<{
     32 LDU
     SWAP
     2490013878 PUSHINT
@@ -138,7 +138,7 @@ PROGRAM{
     64 LDU
     SWAP
   }>
-  __gen_write_DeployOk PROCREF:<{
+  __gen_write_DeployOk PROCINLINE:<{
     2952335191 PUSHINT
     ROT
     32 STU
@@ -150,7 +150,7 @@ PROGRAM{
     __gen_write_DeployOk INLINECALLDICT
     ENDC
   }>
-  __gen_read_Increment PROCREF:<{
+  __gen_read_Increment PROCINLINE:<{
     32 LDU
     SWAP
     537284411 PUSHINT
@@ -162,7 +162,7 @@ PROGRAM{
     LDIX
     -ROT
   }>
-  __gen_read_Toggle PROCREF:<{
+  __gen_read_Toggle PROCINLINE:<{
     32 LDU
     SWAP
     1081595080 PUSHINT
@@ -172,7 +172,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_read_Persist PROCREF:<{
+  __gen_read_Persist PROCINLINE:<{
     32 LDU
     SWAP
     3801943978 PUSHINT
@@ -190,7 +190,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_Reset PROCREF:<{
+  __gen_read_Reset PROCINLINE:<{
     32 LDU
     SWAP
     1718153138 PUSHINT
@@ -200,7 +200,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_write_Something PROCREF:<{
+  __gen_write_Something PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
@@ -227,7 +227,7 @@ PROGRAM{
     __gen_Something_not_null INLINECALLDICT
     __gen_writecell_Something INLINECALLDICT
   }>
-  __gen_write_IncrementContract PROCREF:<{
+  __gen_write_IncrementContract PROCINLINE:<{
     s4 s5 XCHG2
     STDICT
     s1 s2 XCHG
@@ -243,7 +243,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_IncrementContract PROCREF:<{
+  __gen_read_IncrementContract PROCINLINE:<{
     LDDICT
     LDDICT
     LDREF
@@ -406,7 +406,7 @@ PROGRAM{
     __gen_load_IncrementContract INLINECALLDICT
     $__gen_IncrementContract_counters2 CALLDICT
   }>
-  $__gen_IncrementContract_receive_Increment PROC:<{
+  $__gen_IncrementContract_receive_Increment PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -423,7 +423,7 @@ PROGRAM{
     __tact_dict_set_slice_int CALLDICT
     SWAP
   }>
-  $__gen_IncrementContract_receive_Toggle PROC:<{
+  $__gen_IncrementContract_receive_Toggle PROCINLINE:<{
     s4 PUSH
     257 PUSHINT
     s2 PUSH
@@ -451,7 +451,7 @@ PROGRAM{
     }>
     s0 s3 XCHG
   }>
-  $__gen_IncrementContract_receive_Persist PROC:<{
+  $__gen_IncrementContract_receive_Persist PROCINLINE:<{
     52777 PUSHINT
     s5 PUSH
     257 PUSHINT
@@ -465,7 +465,7 @@ PROGRAM{
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s2 XCHG
   }>
-  $__gen_IncrementContract_receive_Reset PROC:<{
+  $__gen_IncrementContract_receive_Reset PROCINLINE:<{
     257 PUSHINT
     PUSHNULL
     s1 s2 PUSH2
@@ -498,7 +498,7 @@ PROGRAM{
     s3 s4 XCHG
     s1 s3 s0 XCHG3
   }>
-  $__gen_IncrementContract_receive_Deploy PROC:<{
+  $__gen_IncrementContract_receive_Deploy PROCINLINE:<{
     __gen_writecell_DeployOk INLINECALLDICT
     $reply CALLDICT
   }>
@@ -547,7 +547,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      $__gen_IncrementContract_receive_Increment CALLDICT
+      $__gen_IncrementContract_receive_Increment INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DUP
@@ -562,7 +562,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      $__gen_IncrementContract_receive_Toggle CALLDICT
+      $__gen_IncrementContract_receive_Toggle INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DUP
@@ -578,7 +578,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s3 s0 s0 XCHG3
-      $__gen_IncrementContract_receive_Persist CALLDICT
+      $__gen_IncrementContract_receive_Persist INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DUP
@@ -593,7 +593,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      $__gen_IncrementContract_receive_Reset CALLDICT
+      $__gen_IncrementContract_receive_Reset INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     2490013878 PUSHINT
@@ -606,7 +606,7 @@ PROGRAM{
       s4 s5 XCHG
       s3 s4 XCHG
       s1 s3 s0 XCHG3
-      $__gen_IncrementContract_receive_Deploy CALLDICT
+      $__gen_IncrementContract_receive_Deploy INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
     DROP

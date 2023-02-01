@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: ConstantTester
-BOC Size: 305 bytes
+BOC Size: 300 bytes
 
 # Types
 Total Types: 3

@@ -14,10 +14,14 @@
     return b;
 }
 
+(int) get_value(int a) inline {
+    return a;
+}
+
 (int, int) do_mutate(int a, int b, int c) impure {
     return (a + b, a + c);
 }
 
 _ main() impure {
-    (int, int) x = do_something(1);
+    (int, int) x = do_something(get_value(1));
 }

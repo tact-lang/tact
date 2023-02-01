@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline_ref {
+builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
     var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
     build_0 = build_0.store_dict(v'counters);
     build_0 = build_0.store_dict(v'counters2);

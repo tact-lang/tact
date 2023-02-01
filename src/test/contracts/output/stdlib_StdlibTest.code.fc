@@ -5,13 +5,13 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-builder __gen_write_StdlibTest(builder build_0, (int) v) inline_ref {
+builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     var (v'v) = v;
     build_0 = build_0.store_int(v'v, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_StdlibTest(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_StdlibTest(slice sc_0) inline {
     var v'v = sc_0~load_int(257);
     return (sc_0, (v'v));
 }
@@ -65,7 +65,7 @@ _ $__gen_get_sliceRefs(slice $$sc) method_id(77445) {
     return res;
 }
 
-(((int)), ()) $__gen_StdlibTest_receive((int) $self) impure {
+(((int)), ()) $__gen_StdlibTest_receive((int) $self) impure inline {
     var ($self'v) = $self;
     return (($self'v), ());
 }

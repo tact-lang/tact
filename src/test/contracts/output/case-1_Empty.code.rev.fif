@@ -68,11 +68,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     7 1 BLKSWAP

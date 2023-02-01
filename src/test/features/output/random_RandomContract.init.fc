@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_RandomContract(builder build_0, (int) v) inline_ref {
+builder __gen_write_RandomContract(builder build_0, (int) v) inline {
     var (v'field) = v;
     build_0 = build_0.store_int(v'field, 257);
     return build_0;

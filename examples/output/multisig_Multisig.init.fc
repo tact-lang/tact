@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline_ref {
+builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;
     build_0 = build_0.store_int(v'seqno, 257);
     build_0 = build_0.store_dict(v'members);

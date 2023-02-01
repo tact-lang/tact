@@ -131,7 +131,7 @@ PROGRAM{
     }>
     7 -ROLL
   }>
-  __gen_write_Signed PROCREF:<{
+  __gen_write_Signed PROCINLINE:<{
     2213172633 PUSHINT
     s0 s8 XCHG2
     32 STU
@@ -144,7 +144,7 @@ PROGRAM{
     __gen_write_Signed INLINECALLDICT
     ENDC
   }>
-  __gen_write_MultisigSigner PROCREF:<{
+  __gen_write_MultisigSigner PROCINLINE:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG
@@ -166,7 +166,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_MultisigSigner PROCREF:<{
+  __gen_read_MultisigSigner PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     LDDICT
@@ -315,9 +315,9 @@ PROGRAM{
     $__gen_MultisigSigner_request CALLDICT
     __gen_Request_to_external CALLDICT
   }>
-  $__gen_MultisigSigner_receive PROC:<{
+  $__gen_MultisigSigner_receive PROCINLINE:<{
   }>
-  $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROC:<{
+  $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROCINLINE:<{
     4755 PUSHINT
     s4 PUSH
     NOW
@@ -408,7 +408,7 @@ PROGRAM{
     IFJMP:<{
       2DROP
       __gen_load_MultisigSigner INLINECALLDICT
-      $__gen_MultisigSigner_receive CALLDICT
+      $__gen_MultisigSigner_receive INLINECALLDICT
       __gen_store_MultisigSigner INLINECALLDICT
     }>
     0 EQINT
@@ -418,7 +418,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         __gen_load_MultisigSigner INLINECALLDICT
-        $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 CALLDICT
+        $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
         __gen_store_MultisigSigner INLINECALLDICT
         RETALT
       }>

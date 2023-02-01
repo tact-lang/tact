@@ -14,7 +14,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_RugPull PROCREF:<{
+  __gen_write_RugPull PROCINLINE:<{
     s10 s9 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s7 XCHG

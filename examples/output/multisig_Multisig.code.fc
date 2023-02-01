@@ -100,13 +100,13 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
     return (sc_0, (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body));
 }
 
-(slice, (((slice, slice, int, int, int, int, cell)))) __gen_read_Signed(slice sc_0) inline_ref {
+(slice, (((slice, slice, int, int, int, int, cell)))) __gen_read_Signed(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2213172633);
     var v'request = sc_0~__gen_read_Request();
     return (sc_0, (v'request));
 }
 
-builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline_ref {
+builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline {
     var (v'master, v'members, v'weight, v'requiredWeight, v'completed, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = build_0.store_dict(v'members);
@@ -119,7 +119,7 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return build_0;
 }
 
-builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline_ref {
+builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;
     build_0 = build_0.store_int(v'seqno, 257);
     build_0 = build_0.store_dict(v'members);
@@ -128,7 +128,7 @@ builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline_re
     return build_0;
 }
 
-(slice, ((int, cell, int, int))) __gen_read_Multisig(slice sc_0) inline_ref {
+(slice, ((int, cell, int, int))) __gen_read_Multisig(slice sc_0) inline {
     var v'seqno = sc_0~load_int(257);
     var v'members = sc_0~load_dict();
     var v'totalWeight = sc_0~load_int(257);
@@ -246,7 +246,7 @@ _ $__gen_get_members() method_id(104769) {
     return res;
 }
 
-(((int, cell, int, int)), ()) $__gen_Multisig_receive_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure {
+(((int, cell, int, int)), ()) $__gen_Multisig_receive_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure inline {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -258,7 +258,7 @@ _ $__gen_get_members() method_id(104769) {
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
 
-(((int, cell, int, int)), ()) $__gen_Multisig_receive_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure {
+(((int, cell, int, int)), ()) $__gen_Multisig_receive_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure inline {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var (($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body)) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();

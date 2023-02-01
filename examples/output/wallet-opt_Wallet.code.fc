@@ -5,14 +5,14 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline_ref {
+(slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3548477446);
     var v'signature = sc_0~load_bits(512);
     var v'transfer = sc_0;
     return (sc_0, (v'signature, v'transfer));
 }
 
-builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
+builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     var (v'seqno, v'key, v'walletId) = v;
     build_0 = build_0.store_uint(v'seqno, 32);
     build_0 = build_0.store_uint(v'key, 256);
@@ -20,7 +20,7 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
     return build_0;
 }
 
-(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline_ref {
+(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
     var v'seqno = sc_0~load_uint(32);
     var v'key = sc_0~load_uint(256);
     var v'walletId = sc_0~load_uint(64);

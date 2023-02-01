@@ -1,0 +1,25 @@
+#pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+builder __gen_write_Functions(builder build_0, (int) v) inline {
+    var (v'value) = v;
+    build_0 = build_0.store_int(v'value, 257);
+    return build_0;
+}
+
+cell $__gen_Functions_init(cell sys') inline {
+    var (($self'value)) = (null());
+    $self'value = 0;
+    var b' = begin_cell();
+    b' = b'.store_ref(sys');
+    b' = __gen_write_Functions(b', ($self'value));
+    return b'.end_cell();
+}
+
+cell init(cell sys') method_id {
+    return $__gen_Functions_init(sys');
+}
+
+() main() {
+}

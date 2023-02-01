@@ -108,7 +108,7 @@ PROGRAM{
       __tact_store_address INLINECALLDICT
     }>
   }>
-  __gen_write_SomeGenericStruct PROCREF:<{
+  __gen_write_SomeGenericStruct PROCINLINE:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -128,7 +128,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_SomeGenericStruct PROCREF:<{
+  __gen_read_SomeGenericStruct PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -153,7 +153,7 @@ PROGRAM{
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_StructWithOptionals PROCREF:<{
+  __gen_write_StructWithOptionals PROCINLINE:<{
     s4 PUSH
     ISNULL
     NOT
@@ -226,7 +226,7 @@ PROGRAM{
   __gen_SomeGenericStruct_as_optional PROCINLINE:<{
     5 TUPLE
   }>
-  __gen_read_StructWithOptionals PROCREF:<{
+  __gen_read_StructWithOptionals PROCINLINE:<{
     1 LDI
     SWAP
     IF:<{
@@ -343,7 +343,7 @@ PROGRAM{
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_ContractWithOptionals PROCREF:<{
+  __gen_write_ContractWithOptionals PROCINLINE:<{
     s5 PUSH
     ISNULL
     NOT
@@ -434,7 +434,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_ContractWithOptionals PROCREF:<{
+  __gen_read_ContractWithOptionals PROCINLINE:<{
     1 LDI
     SWAP
     IF:<{
@@ -740,9 +740,9 @@ PROGRAM{
     $__gen_ContractWithOptionals_testVariables CALLDICT
     __gen_SomeGenericStruct_to_external CALLDICT
   }>
-  $__gen_ContractWithOptionals_receive PROC:<{
+  $__gen_ContractWithOptionals_receive PROCINLINE:<{
   }>
-  $__gen_ContractWithOptionals_receive_Update PROC:<{
+  $__gen_ContractWithOptionals_receive_Update PROCINLINE:<{
     6 6 BLKDROP2
   }>
   recv_internal PROC:<{
@@ -786,7 +786,7 @@ PROGRAM{
     IFJMP:<{
       2DROP
       __gen_load_ContractWithOptionals INLINECALLDICT
-      $__gen_ContractWithOptionals_receive CALLDICT
+      $__gen_ContractWithOptionals_receive INLINECALLDICT
       __gen_store_ContractWithOptionals INLINECALLDICT
     }>
     357891325 PUSHINT
@@ -802,7 +802,7 @@ PROGRAM{
       s7 s8 XCHG
       s6 s7 XCHG
       5 ROLL
-      $__gen_ContractWithOptionals_receive_Update CALLDICT
+      $__gen_ContractWithOptionals_receive_Update INLINECALLDICT
       __gen_store_ContractWithOptionals INLINECALLDICT
     }>
     DROP

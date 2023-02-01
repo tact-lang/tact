@@ -14,7 +14,7 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_SampleJetton PROCREF:<{
+  __gen_write_SampleJetton PROCINLINE:<{
     s4 s3 XCHG2
     STGRAMS
     SWAP

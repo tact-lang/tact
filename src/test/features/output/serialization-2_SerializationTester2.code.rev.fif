@@ -50,114 +50,101 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          <{
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            LDREF
-            s0 s1 XCHG
-            CTOS
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            s0 POP
-            s2 s5 XCHG
-            s2 s4 XCHG
-            s2 s3 XCHG
-          }> CALLREF
-          s0 s5 XCHG
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          <{
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            LDREF
-            s0 s1 XCHG
-            CTOS
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            s0 POP
-            s2 s5 XCHG
-            s2 s4 XCHG
-            s2 s3 XCHG
-          }> CALLREF
-          s5 POP
-          s5 s10 XCHG
-          1 4 BLKSWAP
-        }> CALLREF
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        s0 s5 XCHG
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
+        s5 POP
+        s5 s10 XCHG
+        1 4 BLKSWAP
         1 10 BLKDROP2
       }> CALLREF
-      30 CALLDICT
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         10 1 BLKSWAP
-        <{
-          s5 s10 XCHG
-          s4 s9 XCHG
-          s3 s8 XCHG
-          s7 s6 s10 XCHG3
-          <{
-            s4 s5 XCHG2
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            257 PUSHINT
-            STIX
-            s0 s1 XCHG
-            NEWC
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            ENDC
-            s0 s1 XCHG
-            STREF
-          }> CALLREF
-          NEWC
-          5 1 BLKSWAP
-          s0 s6 XCHG
-          <{
-            s4 s5 XCHG2
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            257 PUSHINT
-            STIX
-            s0 s1 XCHG
-            NEWC
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            ENDC
-            s0 s1 XCHG
-            STREF
-          }> CALLREF
-          ENDC
-          s0 s1 XCHG
-          STREF
-        }> CALLREF
+        s5 s10 XCHG
+        s4 s9 XCHG
+        s3 s8 XCHG
+        s7 s6 s10 XCHG3
+        s4 s5 XCHG2
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
+        NEWC
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
+        s0 s1 XCHG
+        STREF
+        NEWC
+        5 1 BLKSWAP
+        s0 s6 XCHG
+        s4 s5 XCHG2
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
+        NEWC
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
+        s0 s1 XCHG
+        STREF
+        ENDC
+        s0 s1 XCHG
+        STREF
         ENDC
         c4 POP
       }> CALLREF
@@ -172,108 +159,96 @@ SETCP0
         LDREF
         s0 s1 XCHG
         2 SETGLOBVAR
-        <{
-          <{
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            LDREF
-            s0 s1 XCHG
-            CTOS
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            s0 POP
-            s2 s5 XCHG
-            s2 s4 XCHG
-            s2 s3 XCHG
-          }> CALLREF
-          s0 s5 XCHG
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          <{
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            LDREF
-            s0 s1 XCHG
-            CTOS
-            257 PUSHINT
-            LDI
-            257 PUSHINT
-            LDI
-            s0 POP
-            s2 s5 XCHG
-            s2 s4 XCHG
-            s2 s3 XCHG
-          }> CALLREF
-          s5 POP
-          s5 s10 XCHG
-          1 4 BLKSWAP
-        }> CALLREF
-        1 10 BLKDROP2
-      }> CALLREF
-      s0 s10 XCHG
-      <{
-        32 LDU
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
         s0 s1 XCHG
-        2732768933 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
         s0 s5 XCHG
         LDREF
         s0 s1 XCHG
         CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s2 s5 XCHG
+        s2 s4 XCHG
+        s2 s3 XCHG
         s5 POP
         s5 s10 XCHG
         1 4 BLKSWAP
+        1 10 BLKDROP2
       }> CALLREF
+      s0 s10 XCHG
+      32 LDU
+      s0 s1 XCHG
+      2732768933 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       s10 POP
       s0 s18 XCHG
       s0 s19 XCHG
@@ -293,65 +268,59 @@ SETCP0
       s11 s12 XCHG
       s10 s11 XCHG
       1 9 BLKSWAP
-      31 CALLDICT
+      10 10 BLKDROP2
       <{
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
         STREF
         10 1 BLKSWAP
-        <{
-          s5 s10 XCHG
-          s4 s9 XCHG
-          s3 s8 XCHG
-          s7 s6 s10 XCHG3
-          <{
-            s4 s5 XCHG2
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            257 PUSHINT
-            STIX
-            s0 s1 XCHG
-            NEWC
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            ENDC
-            s0 s1 XCHG
-            STREF
-          }> CALLREF
-          NEWC
-          5 1 BLKSWAP
-          s0 s6 XCHG
-          <{
-            s4 s5 XCHG2
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            257 PUSHINT
-            STIX
-            s0 s1 XCHG
-            NEWC
-            257 PUSHINT
-            STIX
-            s1 s2 XCHG
-            257 PUSHINT
-            STIX
-            ENDC
-            s0 s1 XCHG
-            STREF
-          }> CALLREF
-          ENDC
-          s0 s1 XCHG
-          STREF
-        }> CALLREF
+        s5 s10 XCHG
+        s4 s9 XCHG
+        s3 s8 XCHG
+        s7 s6 s10 XCHG3
+        s4 s5 XCHG2
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
+        NEWC
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
+        s0 s1 XCHG
+        STREF
+        NEWC
+        5 1 BLKSWAP
+        s0 s6 XCHG
+        s4 s5 XCHG2
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
+        NEWC
+        257 PUSHINT
+        STIX
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
+        s0 s1 XCHG
+        STREF
+        ENDC
+        s0 s1 XCHG
+        STREF
         ENDC
         c4 POP
       }> CALLREF
@@ -426,11 +395,6 @@ SETCP0
     s3 s4 XCHG
     s1 s3 s0 XCHG3
 
-  30: 
-
-  31: 
-    10 10 BLKDROP2
-
   69430: 
     <{
       c4 PUSH
@@ -438,53 +402,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     28 CALLDICT
@@ -517,53 +475,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     26 CALLDICT
@@ -596,53 +548,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     27 CALLDICT
@@ -671,53 +617,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     s0 s9 XCHG
@@ -773,53 +713,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     24 CALLDICT
@@ -852,53 +786,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     25 CALLDICT
@@ -911,53 +839,47 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        <{
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          LDREF
-          s0 s1 XCHG
-          CTOS
-          257 PUSHINT
-          LDI
-          257 PUSHINT
-          LDI
-          s0 POP
-          s2 s5 XCHG
-          s2 s4 XCHG
-          s2 s3 XCHG
-        }> CALLREF
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
       1 10 BLKDROP2
     }> CALLREF
     23 CALLDICT

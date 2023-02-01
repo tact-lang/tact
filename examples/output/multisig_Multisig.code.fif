@@ -171,7 +171,7 @@ PROGRAM{
     }>
     7 -ROLL
   }>
-  __gen_read_Signed PROCREF:<{
+  __gen_read_Signed PROCINLINE:<{
     32 LDU
     SWAP
     2213172633 PUSHINT
@@ -179,7 +179,7 @@ PROGRAM{
     129 THROWIFNOT
     __gen_read_Request INLINECALLDICT
   }>
-  __gen_write_MultisigSigner PROCREF:<{
+  __gen_write_MultisigSigner PROCINLINE:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG
@@ -201,7 +201,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_write_Multisig PROCREF:<{
+  __gen_write_Multisig PROCINLINE:<{
     s3 s4 XCHG2
     257 PUSHINT
     STIX
@@ -211,7 +211,7 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  __gen_read_Multisig PROCREF:<{
+  __gen_read_Multisig PROCINLINE:<{
     257 PUSHINT
     LDIX
     LDDICT
@@ -401,7 +401,7 @@ PROGRAM{
     __gen_load_Multisig INLINECALLDICT
     $__gen_Multisig_members CALLDICT
   }>
-  $__gen_Multisig_receive_Request PROC:<{
+  $__gen_Multisig_receive_Request PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -433,7 +433,7 @@ PROGRAM{
     s0 s2 XCHG
     $send CALLDICT
   }>
-  $__gen_Multisig_receive_Signed PROC:<{
+  $__gen_Multisig_receive_Signed PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -506,7 +506,7 @@ PROGRAM{
       s8 s9 XCHG
       s7 s8 XCHG
       6 ROLL
-      $__gen_Multisig_receive_Request CALLDICT
+      $__gen_Multisig_receive_Request INLINECALLDICT
       __gen_store_Multisig INLINECALLDICT
     }>
     2213172633 PUSHINT
@@ -520,7 +520,7 @@ PROGRAM{
       s8 s9 XCHG
       s7 s8 XCHG
       6 ROLL
-      $__gen_Multisig_receive_Signed CALLDICT
+      $__gen_Multisig_receive_Signed INLINECALLDICT
       __gen_store_Multisig INLINECALLDICT
     }>
     DROP

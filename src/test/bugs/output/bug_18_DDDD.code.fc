@@ -61,7 +61,7 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     }
 }
 
-builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline_ref {
+builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
     var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
     build_0 = __tact_store_address(build_0, v'addr1);
     build_0 = __tact_store_address(build_0, v'addr2);
@@ -71,7 +71,7 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     return build_0;
 }
 
-(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline_ref {
+(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline {
     var v'addr1 = sc_0~__tact_load_address();
     var v'addr2 = sc_0~__tact_load_address();
     var v'addr3 = sc_0~__tact_load_address();
@@ -117,7 +117,7 @@ _ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
     return res;
 }
 
-(((slice, slice, slice, cell, cell)), ()) $__gen_DDDD_receive((slice, slice, slice, cell, cell) $self) impure {
+(((slice, slice, slice, cell, cell)), ()) $__gen_DDDD_receive((slice, slice, slice, cell, cell) $self) impure inline {
     var ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2) = $self;
     $self'mapData~__tact_dict_set_int_slice(257, 0, $self'addr1);
     $self'mapData~__tact_dict_set_int_slice(257, 1, $self'addr2);

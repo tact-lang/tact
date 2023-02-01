@@ -89,13 +89,13 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
-builder __gen_write_Echo(builder build_0, (int) v) inline_ref {
+builder __gen_write_Echo(builder build_0, (int) v) inline {
     var (v'v) = v;
     build_0 = build_0.store_int(v'v, 257);
     return build_0;
 }
 
-(slice, ((int))) __gen_read_Echo(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_Echo(slice sc_0) inline {
     var v'v = sc_0~load_int(257);
     return (sc_0, (v'v));
 }
@@ -191,13 +191,13 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     return res;
 }
 
-((int), ()) $__gen_Echo_receive_comment((int) $self, slice $msg) impure {
+((int), ()) $__gen_Echo_receive_comment((int) $self, slice $msg) impure inline {
     var ($self'v) = $self;
     $reply($__gen_String_asComment($msg));
     return (($self'v), ());
 }
 
-((int), ()) $__gen_Echo_receive_fallback((int) $self, slice $msg) impure {
+((int), ()) $__gen_Echo_receive_fallback((int) $self, slice $msg) impure inline {
     var ($self'v) = $self;
     $reply($__gen_Slice_asCell($msg));
     return (($self'v), ());

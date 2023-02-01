@@ -37,7 +37,7 @@ PROGRAM{
       __tact_store_address INLINECALLDICT
     }>
   }>
-  __gen_write_SomeGenericStruct PROCREF:<{
+  __gen_write_SomeGenericStruct PROCINLINE:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -63,7 +63,7 @@ PROGRAM{
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_StructWithOptionals PROCREF:<{
+  __gen_write_StructWithOptionals PROCINLINE:<{
     s4 PUSH
     ISNULL
     NOT
@@ -139,7 +139,7 @@ PROGRAM{
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_ContractWithOptionals PROCREF:<{
+  __gen_write_ContractWithOptionals PROCINLINE:<{
     s5 PUSH
     ISNULL
     NOT

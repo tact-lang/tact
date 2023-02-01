@@ -11,28 +11,24 @@ SETCP0
     NEWC
     STREF
     s0 s5 XCHG
-    <{
-      s4 s5 XCHG2
-      257 PUSHINT
-      STIX
-      s1 s2 XCHG
-      257 PUSHINT
-      STIX
-      NEWC
-      s0 s0 s3 XCHG3
-      <{
-        s0 s2 XCHG
-        257 PUSHINT
-        STIX
-        257 PUSHINT
-        STIX
-      }> CALLREF
-      s1 s2 XCHG
-      STDICT
-      ENDC
-      s0 s1 XCHG
-      STREF
-    }> CALLREF
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s0 s3 XCHG3
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    s0 s1 XCHG
+    STREF
     ENDC
 
   107886: 

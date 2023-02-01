@@ -40,6 +40,9 @@ SETCP0
     IFJMP
     0 EQINT
     <{
+      s0 POP
+    }> PUSHCONT
+    <{
       HASHSU
       81463308115887082732985988965814941212607499737973399264699107294340141092189 PUSHINT
       EQUAL
@@ -50,36 +53,39 @@ SETCP0
           LDREF
           s0 s1 XCHG
           2 SETGLOBVAR
-          <{
-            257 PUSHINT
-            LDI
-            s0 s1 XCHG
-          }> CALLREF
+          257 PUSHINT
+          LDI
+          s0 s1 XCHG
           s1 POP
         }> CALLREF
-        25 CALLDICT
+        2 GETGLOBVAR
+        23 CALLDICT
+        2DUP
+        19 CALLDICT
+        -1 PUSHINT
+        0 PUSHINT
+        66 PUSHINT
+        PUSHSLICE
+        21 CALLDICT
+        4 3 REVERSE
+        s0 s3 s4 XCHG3
+        20 CALLDICT
         <{
           NEWC
           2 GETGLOBVAR
           s0 s1 XCHG
           STREF
           s0 s1 XCHG
-          <{
-            s0 s1 XCHG
-            257 PUSHINT
-            STIX
-          }> CALLREF
+          s0 s1 XCHG
+          257 PUSHINT
+          STIX
           ENDC
           c4 POP
         }> CALLREF
         RETALT
       }> PUSHCONT
       IFJMP
-    }> PUSHCONT
-    <{
-      s0 POP
-    }> PUSHCONT
-    IFELSE
+    }> IFREFELSE
     130 THROW
 
   1: 
@@ -345,11 +351,9 @@ SETCP0
     NEWC
     STREF
     s0 s1 XCHG
-    <{
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
-    }> CALLREF
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
     ENDC
 
   23: 
@@ -393,20 +397,6 @@ SETCP0
     2 GETGLOBVAR
     23 CALLDICT
 
-  25: 
-    2 GETGLOBVAR
-    23 CALLDICT
-    2DUP
-    19 CALLDICT
-    -1 PUSHINT
-    0 PUSHINT
-    66 PUSHINT
-    PUSHSLICE
-    21 CALLDICT
-    4 3 REVERSE
-    s0 s3 s4 XCHG3
-    20 CALLDICT
-
   74105: 
     <{
       c4 PUSH
@@ -414,11 +404,9 @@ SETCP0
       LDREF
       s0 s1 XCHG
       2 SETGLOBVAR
-      <{
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-      }> CALLREF
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
       s1 POP
     }> CALLREF
     24 CALLDICT

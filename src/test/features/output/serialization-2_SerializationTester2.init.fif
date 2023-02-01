@@ -5,7 +5,7 @@ PROGRAM{
   DECLPROC $__gen_SerializationTester2_init
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Vars PROCREF:<{
+  __gen_write_Vars PROCINLINE:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -25,7 +25,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_write_SerializationTester2 PROCREF:<{
+  __gen_write_SerializationTester2 PROCINLINE:<{
     s5 s10 XCHG
     s4 s9 XCHG
     s3 s8 XCHG

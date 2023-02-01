@@ -73,13 +73,13 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
 
 forall X0 -> (X0) __tact_tuple_destroy_1(tuple v) asm "1 UNTUPLE";
 
-(slice, ((int))) __gen_read_Deploy(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2490013878);
     var v'queryId = sc_0~load_uint(64);
     return (sc_0, (v'queryId));
 }
 
-builder __gen_write_DeployOk(builder build_0, (int) v) inline_ref {
+builder __gen_write_DeployOk(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 2952335191, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
@@ -90,33 +90,33 @@ cell __gen_writecell_DeployOk((int) v) inline_ref {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int))) __gen_read_Increment(slice sc_0) inline_ref {
+(slice, ((int, int))) __gen_read_Increment(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 537284411);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(257);
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((int))) __gen_read_Toggle(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_Toggle(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1081595080);
     var v'key = sc_0~load_int(257);
     return (sc_0, (v'key));
 }
 
-(slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline_ref {
+(slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3801943978);
     var v'key = sc_0~load_int(257);
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'content));
 }
 
-(slice, ((int))) __gen_read_Reset(slice sc_0) inline_ref {
+(slice, ((int))) __gen_read_Reset(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1718153138);
     var v'key = sc_0~load_int(257);
     return (sc_0, (v'key));
 }
 
-builder __gen_write_Something(builder build_0, (int) v) inline_ref {
+builder __gen_write_Something(builder build_0, (int) v) inline {
     var (v'value) = v;
     build_0 = build_0.store_int(v'value, 257);
     return build_0;
@@ -139,7 +139,7 @@ cell __gen_writecellopt_Something(tuple v) inline_ref {
     return __gen_writecell_Something(__gen_Something_not_null(v));
 }
 
-builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline_ref {
+builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
     var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
     build_0 = build_0.store_dict(v'counters);
     build_0 = build_0.store_dict(v'counters2);
@@ -151,7 +151,7 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
     return build_0;
 }
 
-(slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc_0) inline_ref {
+(slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc_0) inline {
     var v'counters = sc_0~load_dict();
     var v'counters2 = sc_0~load_dict();
     slice sc_1 = sc_0~load_ref().begin_parse();
@@ -249,7 +249,7 @@ _ $__gen_get_counters2() method_id(77570) {
     return res;
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'value) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -258,7 +258,7 @@ _ $__gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     int $ex = __tact_dict_get_int_int($self'counters2, 257, $msg'key, 1);
@@ -270,7 +270,7 @@ _ $__gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'content) = $msg;
     throw_unless(52777, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
@@ -278,7 +278,7 @@ _ $__gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     $self'counters~__tact_dict_set_int_int(257, $msg'key, null(), 257);
@@ -289,7 +289,7 @@ _ $__gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure {
+(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($deploy'queryId) = $deploy;
     $reply(__gen_writecell_DeployOk(($deploy'queryId)));

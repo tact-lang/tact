@@ -109,13 +109,13 @@ cell __tact_string_builder_end(tuple builders) inline {
     return ((builders), ());
 }
 
-(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline_ref {
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 256331011);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
 
-builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline_ref {
+builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
     var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_int(v'investment, 257);
@@ -134,7 +134,7 @@ builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, in
     return build_0;
 }
 
-(slice, ((slice, int, int, int, int, int, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline_ref {
+(slice, ((slice, int, int, int, int, int, int, int, int, cell))) __gen_read_RugPull(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'investment = sc_0~load_int(257);
     var v'returns = sc_0~load_int(257);
@@ -282,7 +282,7 @@ _ $__gen_get_stopped() method_id(74107) {
     return res;
 }
 
-(((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireNotStopped();
     if ($self'rugpulled) {
@@ -303,7 +303,7 @@ _ $__gen_get_stopped() method_id(74107) {
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireOwner();
     if ((~ $self'rugpulled)) {
@@ -313,14 +313,14 @@ _ $__gen_get_stopped() method_id(74107) {
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     $self'rugpulled = true;
     $send((true, $self'owner, 0, 128, null(), null(), null()));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-(((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (slice) $msg) impure {
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (slice) $msg) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     var ($msg'newOwner) = $msg;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireOwner();
@@ -328,7 +328,7 @@ _ $__gen_get_stopped() method_id(74107) {
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501((slice, int, int, int, int, int, int, int, int, cell) $self) impure {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireOwner();
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireNotStopped();
