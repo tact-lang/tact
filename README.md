@@ -4,6 +4,7 @@ A next-gen smart contract language for TON.
 
 * [Documentation](https://docs.tact-lang.org)
 * [Changelog](/CHANGELOG.md)
+* [Roadmap](/ROADMAP.md)
 * [Examples](/examples/)
 
 ## Getting started
