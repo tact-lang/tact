@@ -1,8 +1,9 @@
 # TACT Roadmap
 
->> This document is a living document and will be updated as the project evolves.
->> The roadmap is not set in stone and is subject to change.
->> The roadmap is not a commitment to deliver certain features by certain dates.
+> **Note**
+> This document is a living document and will be updated as the project evolves.
+> The roadmap is not set in stone and is subject to change.
+> The roadmap is not a commitment to deliver certain features by certain dates.
 
 ## ✍️ Version 2.0.0
 
