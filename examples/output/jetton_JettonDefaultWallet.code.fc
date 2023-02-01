@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 int __tact_my_balance() inline {
     return pair_first(get_balance());
 }

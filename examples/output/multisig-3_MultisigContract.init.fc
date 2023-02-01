@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline_ref {
     var (v'seqno, v'user1_key, v'user2_key, v'user3_key) = v;
     build_0 = build_0.store_uint(v'seqno, 32);

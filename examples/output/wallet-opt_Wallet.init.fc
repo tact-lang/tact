@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline_ref {
     var (v'seqno, v'key, v'walletId) = v;
     build_0 = build_0.store_uint(v'seqno, 32);

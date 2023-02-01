@@ -279,6 +279,9 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');
 
+    // Headers
+    wctx.header('#pragma version =0.4.1;'); // FunC version
+
     // Stdlib
     writeStdlib(wctx);
 

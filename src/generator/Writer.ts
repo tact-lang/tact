@@ -11,6 +11,7 @@ export class WriterContext {
     #pendingDepends: Set<string> | null = null;
     #pendingName: string | null = null;
     #nextId = 0;
+    #headers: string[] = [];
 
     constructor(ctx: CompilerContext) {
         this.ctx = ctx;
@@ -24,6 +25,7 @@ export class WriterContext {
         let res = new WriterContext(this.ctx);
         res.#functions = new Map(this.#functions);
         res.#nextId = this.#nextId;
+        res.#headers = [...this.#headers];
         return res;
     }
 
@@ -73,6 +75,12 @@ export class WriterContext {
 
         // Render
         let res = '';
+        for (let h of this.#headers) {
+            if (res !== '') {
+                res += '\n';
+            }
+            res += h;
+        }
         for (let f of sorted) {
             if (res !== '') {
                 res += '\n\n';
@@ -147,5 +155,13 @@ export class WriterContext {
                 this.append(`__tact_debug(${v});`);
             }
         }
+    }
+
+    //
+    // Headers
+    //
+
+    header(src: string) {
+        this.#headers.push(src);
     }
 }

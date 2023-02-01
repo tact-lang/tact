@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 

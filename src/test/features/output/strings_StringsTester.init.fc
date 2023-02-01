@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 builder __gen_write_StringsTester(builder build_0, (int) v) inline_ref {
     var (v'fee) = v;
     build_0 = build_0.store_int(v'fee, 257);

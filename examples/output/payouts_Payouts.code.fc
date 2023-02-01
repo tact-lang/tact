@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 slice __tact_str_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {

@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 builder __gen_write_MapTestContract(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline_ref {
     var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4) = v;
     build_0 = build_0.store_dict(v'intMap1);

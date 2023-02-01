@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 builder __gen_write_B(builder build_0, (int) v) inline_ref {
     var (v'a) = v;
     build_0 = build_0.store_int(v'a, 257);

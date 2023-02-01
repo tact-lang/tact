@@ -1,3 +1,5 @@
+#pragma version =0.4.1;
+
 forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
