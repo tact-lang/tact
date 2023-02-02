@@ -37,19 +37,19 @@ describe('wallet', () => {
             signature: beginCell().storeBuffer(signature).endCell()
         });
         await system.run();
-        expect(tracker.events()).toMatchSnapshot();
+        expect(tracker.collect()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(1n);
 
         // Send empty message
         await contract.send(treasure, { value: toNano(1) }, 'notify');
         await system.run();
-        expect(tracker.events()).toMatchSnapshot();
+        expect(tracker.collect()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(2n);
 
         // Send comment message
         await contract.send(treasure, { value: toNano(1) }, null);
         await system.run();
-        expect(tracker.events()).toMatchSnapshot();
+        expect(tracker.collect()).toMatchSnapshot();
         expect(await contract.getSeqno()).toBe(3n);
     });
 });

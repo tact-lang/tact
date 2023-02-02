@@ -8,7 +8,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_nop', () => {
-        ctx.write(`() __tact_nop() impure asm "NOP";`);
+        ctx.write(`() __tact_nop() asm "NOP";`);
     });
 
     ctx.fun('__tact_str_to_slice', () => {
@@ -19,7 +19,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_address_to_slice', () => {
-        ctx.write(`slice __tact_address_to_slice(slice s) impure asm "NOP";`);
+        ctx.write(`slice __tact_address_to_slice(slice s) asm "NOP";`);
     });
 
     ctx.fun(`__tact_my_balance`, () => {
@@ -31,7 +31,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_not_null', () => {
-        ctx.write(`forall X -> X __tact_not_null(X x) { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
+        ctx.write(`forall X -> X __tact_not_null(X x) inline { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
     });
 
     ctx.fun('__tact_dict_delete', () => {
@@ -51,11 +51,23 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_debug', () => {
-        ctx.write(`() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }`);
+        ctx.write(`forall X -> X __tact_debug(X value) impure asm "s0 DUMP"`);
     });
 
     ctx.fun('__tact_debug_str', () => {
         ctx.write(`forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";`);
+    });
+
+    ctx.fun('__tact_debug_bool', () => {
+        ctx.write(`
+            () __tact_debug_bool(int value) impure {
+                if (value) {
+                    ${ctx.used('__tact_debug_str')}("true");
+                } else {
+                    ${ctx.used('__tact_debug_str')}("false");
+                }
+            }
+        `);
     });
 
     ctx.fun('__tact_context', () => {

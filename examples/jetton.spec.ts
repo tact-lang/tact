@@ -14,7 +14,7 @@ describe('jetton', () => {
         // Mint
         await contract.send(owner, { value: toNano(1) }, { $$type: 'Mint', amount: toNano(1000000) });
         await system.run();
-        expect(tracker.events()).toMatchSnapshot();
+        expect(tracker.collect()).toMatchSnapshot();
 
         // Check owner
         expect((await contract.getOwner()).toString()).toEqual(owner.address.toString());

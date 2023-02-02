@@ -4457,10 +4457,10 @@ ton-crypto@^3.2.0:
     ton-crypto-primitives "2.0.0"
     tweetnacl "1.0.3"
 
-ton-emulator@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/ton-emulator/-/ton-emulator-1.3.0.tgz#62c408fd16c506e08190ec9281bef0ee60597dd1"
-  integrity sha512-g+RmOpfRtjCYaqJxv0xtGNWVMSab5FXS+TTTmxu7iOxUcNRee/B5CQJv8y5C7kwUfmuhqVY/wTsDFaDCoXusTQ==
+ton-emulator@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ton-emulator/-/ton-emulator-2.0.0.tgz#5b259d03dbec098feb1f9047132a6c0ddb115e48"
+  integrity sha512-mhLCF6H1HFAJEV4B+A08HeRqXdoV0zf8DOsndB1etU7YbK3IkyZ0k0WiEW4H8KRX7ttKeu7SmIFzCsVSHXpmRw==
   dependencies:
     prando "^6.0.1"
     teslabot "^1.5.0"

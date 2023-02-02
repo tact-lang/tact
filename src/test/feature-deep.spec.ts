@@ -33,8 +33,8 @@ describe('feature-random', () => {
         expect(nextB.data.equals(contractC.init!.data!)).toBe(true);
 
         // Check
-        expect(trackA.events()).toMatchSnapshot();
-        expect(trackB.events()).toMatchSnapshot();
-        expect(trackC.events()).toMatchSnapshot();
+        expect(trackA.collect()).toMatchSnapshot();
+        expect(trackB.collect()).toMatchSnapshot();
+        expect(trackC.collect()).toMatchSnapshot();
     });
 });

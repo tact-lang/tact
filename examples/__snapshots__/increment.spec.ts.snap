@@ -3,41 +3,46 @@
 exports[`increment should deploy 1`] = `
 [
   {
-    "type": "deploy",
-  },
-  {
-    "message": {
-      "body": {
-        "cell": "x{946A98B60000000000000000}",
-        "type": "cell",
-      },
-      "bounce": true,
-      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQButKTywmJKhKlqS4GdCQ9ifEAkdg5qMAiM_os-_Sr1M2UH",
-      "type": "internal",
-      "value": 10000000000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 7900n,
-    "type": "processed",
-  },
-  {
-    "messages": [
+    "$seq": 0,
+    "events": [
       {
-        "body": {
-          "cell": "x{AFF90F570000000000000000}",
-          "type": "cell",
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "cell": "x{946A98B60000000000000000}",
+            "type": "cell",
+          },
+          "bounce": true,
+          "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+          "to": "kQButKTywmJKhKlqS4GdCQ9ifEAkdg5qMAiM_os-_Sr1M2UH",
+          "type": "internal",
+          "value": 10000000000n,
         },
-        "bounce": true,
-        "from": "kQButKTywmJKhKlqS4GdCQ9ifEAkdg5qMAiM_os-_Sr1M2UH",
-        "to": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-        "type": "internal",
-        "value": 9990904000n,
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 7900n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "cell": "x{AFF90F570000000000000000}",
+              "type": "cell",
+            },
+            "bounce": true,
+            "from": "kQButKTywmJKhKlqS4GdCQ9ifEAkdg5qMAiM_os-_Sr1M2UH",
+            "to": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+            "type": "internal",
+            "value": 9990904000n,
+          },
+        ],
       },
     ],
-    "type": "sent",
   },
 ]
 `;
@@ -45,22 +50,27 @@ exports[`increment should deploy 1`] = `
 exports[`increment should deploy 2`] = `
 [
   {
-    "message": {
-      "body": {
-        "cell": "x{20064F3B00000000000000000000000000000000000000000000000000000000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECC2_}",
-        "type": "cell",
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "cell": "x{20064F3B00000000000000000000000000000000000000000000000000000000000000007FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECC2_}",
+            "type": "cell",
+          },
+          "bounce": true,
+          "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+          "to": "kQButKTywmJKhKlqS4GdCQ9ifEAkdg5qMAiM_os-_Sr1M2UH",
+          "type": "internal",
+          "value": 10000000000n,
+        },
       },
-      "bounce": true,
-      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQButKTywmJKhKlqS4GdCQ9ifEAkdg5qMAiM_os-_Sr1M2UH",
-      "type": "internal",
-      "value": 10000000000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 6096n,
-    "type": "processed",
+      {
+        "$type": "processed",
+        "gasUsed": 6096n,
+      },
+    ],
   },
 ]
 `;

@@ -10,6 +10,6 @@ describe('bugs', () => {
         let tracker = system.track(contract.address);
         await contract.send(treasure, { value: toNano('10') }, null);
         await system.run();
-        expect(tracker.events()).toMatchSnapshot();
+        expect(tracker.collect()).toMatchSnapshot();
     });
 });

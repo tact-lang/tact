@@ -3,19 +3,19 @@
 exports[`writeSerialization should write serializer for A 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
-() __tact_nop() impure asm "NOP";
+() __tact_nop() asm "NOP";
 
 slice __tact_str_to_slice(slice s) asm "NOP";
 
 slice __tact_slice_to_str(slice s) asm "NOP";
 
-slice __tact_address_to_slice(slice s) impure asm "NOP";
+slice __tact_address_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -25,9 +25,17 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
+forall X -> X __tact_debug(X value) impure asm "s0 DUMP"
 
 forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+
+() __tact_debug_bool(int value) impure {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
 
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
@@ -936,19 +944,19 @@ tuple __gen_readopt_A(cell cl) inline_ref {
 exports[`writeSerialization should write serializer for B 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
-() __tact_nop() impure asm "NOP";
+() __tact_nop() asm "NOP";
 
 slice __tact_str_to_slice(slice s) asm "NOP";
 
 slice __tact_slice_to_str(slice s) asm "NOP";
 
-slice __tact_address_to_slice(slice s) impure asm "NOP";
+slice __tact_address_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -958,9 +966,17 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
+forall X -> X __tact_debug(X value) impure asm "s0 DUMP"
 
 forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+
+() __tact_debug_bool(int value) impure {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
 
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
@@ -1869,19 +1885,19 @@ tuple __gen_readopt_B(cell cl) inline_ref {
 exports[`writeSerialization should write serializer for C 1`] = `
 "forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
 
-() __tact_nop() impure asm "NOP";
+() __tact_nop() asm "NOP";
 
 slice __tact_str_to_slice(slice s) asm "NOP";
 
 slice __tact_slice_to_str(slice s) asm "NOP";
 
-slice __tact_address_to_slice(slice s) impure asm "NOP";
+slice __tact_address_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -1891,9 +1907,17 @@ forall X -> X __tact_not_null(X x) { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-() __tact_debug(int msg) impure inline { int v = msg; v~dump(); }
+forall X -> X __tact_debug(X value) impure asm "s0 DUMP"
 
 forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+
+() __tact_debug_bool(int value) impure {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
 
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;

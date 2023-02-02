@@ -9,41 +9,46 @@ exports[`feature-random should implement random correctly 3`] = `"kQAKkggHuAOhfF
 exports[`feature-random should implement random correctly 4`] = `
 [
   {
-    "type": "deploy",
-  },
-  {
-    "message": {
-      "body": {
-        "text": "Message",
-        "type": "text",
-      },
-      "bounce": true,
-      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQBsdnzSK1ku1RZ0g6tp0pTvuwuMveMSI7Ron9xdITg732ZR",
-      "type": "internal",
-      "value": 10000000000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 17181n,
-    "type": "processed",
-  },
-  {
-    "messages": [
+    "$seq": 0,
+    "events": [
       {
-        "body": {
-          "text": "Message",
-          "type": "text",
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Message",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+          "to": "kQBsdnzSK1ku1RZ0g6tp0pTvuwuMveMSI7Ron9xdITg732ZR",
+          "type": "internal",
+          "value": 10000000000n,
         },
-        "bounce": true,
-        "from": "kQBsdnzSK1ku1RZ0g6tp0pTvuwuMveMSI7Ron9xdITg732ZR",
-        "to": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
-        "type": "internal",
-        "value": 9970565000n,
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 17181n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "Message",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBsdnzSK1ku1RZ0g6tp0pTvuwuMveMSI7Ron9xdITg732ZR",
+            "to": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
+            "type": "internal",
+            "value": 9970565000n,
+          },
+        ],
       },
     ],
-    "type": "sent",
   },
 ]
 `;
@@ -51,41 +56,46 @@ exports[`feature-random should implement random correctly 4`] = `
 exports[`feature-random should implement random correctly 5`] = `
 [
   {
-    "type": "deploy",
-  },
-  {
-    "message": {
-      "body": {
-        "text": "Message",
-        "type": "text",
-      },
-      "bounce": true,
-      "from": "kQBsdnzSK1ku1RZ0g6tp0pTvuwuMveMSI7Ron9xdITg732ZR",
-      "to": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
-      "type": "internal",
-      "value": 9970565000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 15009n,
-    "type": "processed",
-  },
-  {
-    "messages": [
+    "$seq": 0,
+    "events": [
       {
-        "body": {
-          "text": "Message",
-          "type": "text",
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Message",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kQBsdnzSK1ku1RZ0g6tp0pTvuwuMveMSI7Ron9xdITg732ZR",
+          "to": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
+          "type": "internal",
+          "value": 9970565000n,
         },
-        "bounce": true,
-        "from": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
-        "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
-        "type": "internal",
-        "value": 9946839000n,
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 15009n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "Message",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
+            "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
+            "type": "internal",
+            "value": 9946839000n,
+          },
+        ],
       },
     ],
-    "type": "sent",
   },
 ]
 `;
@@ -93,59 +103,69 @@ exports[`feature-random should implement random correctly 5`] = `
 exports[`feature-random should implement random correctly 6`] = `
 [
   {
-    "type": "deploy",
-  },
-  {
-    "message": {
-      "body": {
-        "text": "Message",
-        "type": "text",
-      },
-      "bounce": true,
-      "from": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
-      "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
-      "type": "internal",
-      "value": 9946839000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 14945n,
-    "type": "processed",
-  },
-  {
-    "messages": [
+    "$seq": 0,
+    "events": [
       {
-        "body": {
-          "text": "Message2",
-          "type": "text",
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Message",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kQBfr8kKOkyTsEW4URlQZQi0RmjdsKY1CgQFz7iDtZ84iRxm",
+          "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
+          "type": "internal",
+          "value": 9946839000n,
         },
-        "bounce": true,
-        "from": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
-        "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
-        "type": "internal",
-        "value": 9923169000n,
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 14945n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "Message2",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
+            "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
+            "type": "internal",
+            "value": 9923169000n,
+          },
+        ],
       },
     ],
-    "type": "sent",
   },
   {
-    "message": {
-      "body": {
-        "text": "Message2",
-        "type": "text",
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Message2",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
+          "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
+          "type": "internal",
+          "value": 9923169000n,
+        },
       },
-      "bounce": true,
-      "from": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
-      "to": "kQAKkggHuAOhfFYngH8JQQ37GJBgICKY3r56ZYzblKc7hH7Q",
-      "type": "internal",
-      "value": 9923169000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 3301n,
-    "type": "processed",
+      {
+        "$type": "processed",
+        "gasUsed": 3301n,
+      },
+    ],
   },
 ]
 `;

@@ -3,24 +3,29 @@
 exports[`bugs not have a bug #18 1`] = `
 [
   {
-    "type": "deploy",
-  },
-  {
-    "message": {
-      "body": {
-        "type": "empty",
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
       },
-      "bounce": true,
-      "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-      "to": "kQARnJNCQ56HZsvyfSutg-k3caXsVj6Alp0i231poHKqzqYA",
-      "type": "internal",
-      "value": 10000000000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 17078n,
-    "type": "processed",
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "type": "empty",
+          },
+          "bounce": true,
+          "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+          "to": "kQARnJNCQ56HZsvyfSutg-k3caXsVj6Alp0i231poHKqzqYA",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 17078n,
+      },
+    ],
   },
 ]
 `;

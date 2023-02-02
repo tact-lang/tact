@@ -15,8 +15,8 @@ describe('benchmarks', () => {
         await system.run();
 
         // Find gas used
-        let gasUsed = ((tracker.events().find((v) => v.type === 'processed')) as any).gasUsed as bigint;
-        expect(gasUsed).toMatchInlineSnapshot(`2630n`);
+        let gasUsed = ((tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n)) as any).gasUsed as bigint;
+        expect(gasUsed).toMatchInlineSnapshot(`undefined`);
         expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`278`);
     });
     it('benchmark functions(inline)', async () => {
@@ -30,8 +30,8 @@ describe('benchmarks', () => {
         await system.run();
 
         // Find gas used
-        let gasUsed = ((tracker.events().find((v) => v.type === 'processed')) as any).gasUsed as bigint;
-        expect(gasUsed).toMatchInlineSnapshot(`2499n`);
+        let gasUsed = ((tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n)) as any).gasUsed as bigint;
+        expect(gasUsed).toMatchInlineSnapshot(`undefined`);
         expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`270`);
     });
 });

@@ -3,41 +3,46 @@
 exports[`jetton should deploy 1`] = `
 [
   {
-    "type": "deploy",
-  },
-  {
-    "message": {
-      "body": {
-        "cell": "x{01FB345B0000000000000000000000000000000000000000000000000001C6BF526340004_}",
-        "type": "cell",
-      },
-      "bounce": true,
-      "from": "kQAI-3FJVc_ywSuY4vq0bYrzR7S4Och4y7bTU_i5yLOB3A6P",
-      "to": "kQDjZfqbMtoRCYt763mzVMiZZ8NoXOchBGH2Njn1Hn78gfSB",
-      "type": "internal",
-      "value": 1000000000n,
-    },
-    "type": "received",
-  },
-  {
-    "gasUsed": 15992n,
-    "type": "processed",
-  },
-  {
-    "messages": [
+    "$seq": 0,
+    "events": [
       {
-        "body": {
-          "cell": "x{178D451900000000000000007038D7EA4C68000801C6CBF53665B4221316F7D6F366A99132CF86D0B9CE4208C3EC6C73EA3CFDF90300023EDC525573FCB04AE638BEAD1B62BCD1ED2E0E721E32EDB4D4FE2E722CE07702_}",
-          "type": "cell",
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "cell": "x{01FB345B0000000000000000000000000000000000000000000000000001C6BF526340004_}",
+            "type": "cell",
+          },
+          "bounce": true,
+          "from": "kQAI-3FJVc_ywSuY4vq0bYrzR7S4Och4y7bTU_i5yLOB3A6P",
+          "to": "kQDjZfqbMtoRCYt763mzVMiZZ8NoXOchBGH2Njn1Hn78gfSB",
+          "type": "internal",
+          "value": 1000000000n,
         },
-        "bounce": false,
-        "from": "kQDjZfqbMtoRCYt763mzVMiZZ8NoXOchBGH2Njn1Hn78gfSB",
-        "to": "kQCPC3MRKf5IPXJYB8wvUZu-ruo3Bj_ztD_pNSlO26FLfxCj",
-        "type": "internal",
-        "value": 967641000n,
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 15992n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "cell": "x{178D451900000000000000007038D7EA4C68000801C6CBF53665B4221316F7D6F366A99132CF86D0B9CE4208C3EC6C73EA3CFDF90300023EDC525573FCB04AE638BEAD1B62BCD1ED2E0E721E32EDB4D4FE2E722CE07702_}",
+              "type": "cell",
+            },
+            "bounce": false,
+            "from": "kQDjZfqbMtoRCYt763mzVMiZZ8NoXOchBGH2Njn1Hn78gfSB",
+            "to": "kQCPC3MRKf5IPXJYB8wvUZu-ruo3Bj_ztD_pNSlO26FLfxCj",
+            "type": "internal",
+            "value": 967641000n,
+          },
+        ],
       },
     ],
-    "type": "sent",
   },
 ]
 `;
