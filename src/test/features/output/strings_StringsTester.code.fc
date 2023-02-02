@@ -446,7 +446,8 @@ _ $__gen_get_processBase64(slice $$src) method_id(128362) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128
     );
 }
 

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: RandomContract
-BOC Size: 474 bytes
+BOC Size: 492 bytes
 
 # Types
 Total Types: 5

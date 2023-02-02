@@ -163,7 +163,8 @@ _ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128
     );
 }
 

@@ -1,3 +1,4 @@
+import { enabledDebug } from "../../config";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 
@@ -6,10 +7,21 @@ export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
     ctx.inIndent(() => {
         ctx.append(`return (`);
         ctx.inIndent(() => {
-            ctx.append(`"org.ton.introspection.v0"H >> 128,`);
-            ctx.append(`"org.ton.abi.ipfs.v0"H >> 128${type.interfaces.length > 0 ? "," : ""}`);
+
+            // Build interfaces list
+            let interfaces: string[] = [];
+            interfaces.push('org.ton.introspection.v0');
+            interfaces.push('org.ton.abi.ipfs.v0');
+            if (enabledDebug(ctx.ctx)) {
+                interfaces.push('org.ton.debug.v0');
+            }
             for (let i = 0; i < type.interfaces.length; i++) {
-                ctx.append(`"${type.interfaces[i]}"H >> 128${i < type.interfaces.length - 1 ? "," : ""}`);
+                interfaces.push(type.interfaces[i]);
+            }
+
+            // Render interfaces
+            for (let i = 0; i < interfaces.length; i++) {
+                ctx.append(`"${interfaces[i]}"H >> 128${i < interfaces.length - 1 ? "," : ""}`);
             }
         });
         ctx.append(`);`);
