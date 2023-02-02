@@ -70,7 +70,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __tact_not_null PROC:<{
+  __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -673,7 +673,7 @@ PROGRAM{
   }>
   $__gen_ContractWithOptionals_notNullA PROCREF:<{
     5 BLKDROP
-    __tact_not_null CALLDICT
+    __tact_not_null INLINECALLDICT
   }>
   $__gen_get_notNullA PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
@@ -682,7 +682,7 @@ PROGRAM{
   $__gen_ContractWithOptionals_notNullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
-    __tact_not_null CALLDICT
+    __tact_not_null INLINECALLDICT
   }>
   $__gen_get_notNullB PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
@@ -691,7 +691,7 @@ PROGRAM{
   $__gen_ContractWithOptionals_notNullC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
-    __tact_not_null CALLDICT
+    __tact_not_null INLINECALLDICT
   }>
   $__gen_get_notNullC PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT
@@ -700,7 +700,7 @@ PROGRAM{
   $__gen_ContractWithOptionals_notNullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
-    __tact_not_null CALLDICT
+    __tact_not_null INLINECALLDICT
   }>
   $__gen_get_notNullD PROC:<{
     __gen_load_ContractWithOptionals INLINECALLDICT

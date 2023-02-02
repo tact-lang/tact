@@ -1,4 +1,3 @@
-import { abi } from "../../abi/abi";
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant } from "../../types/resolveDescriptors";
@@ -358,15 +357,6 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             if (src.optional) {
                 throwError(`Cannot call function of non - direct type: ${printTypeRef(src)} `, f.ref);
-            }
-
-            // Check ABI
-            if (src.name === '$ABI') {
-                let abf = abi[f.name];
-                if (!abf) {
-                    throwError(`ABI function "${f.name}" not found`, f.ref);
-                }
-                return abf.generate(ctx, f.args.map((v) => getExpType(ctx.ctx, v)), f.args, f.ref);
             }
 
             // Render function call

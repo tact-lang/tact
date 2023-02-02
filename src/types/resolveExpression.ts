@@ -1,4 +1,3 @@
-import { abi } from "../abi/abi";
 import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction, resolveTypeRef } from "./resolveDescriptors";
@@ -285,16 +284,6 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
 
         if (src.optional) {
             throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);
-        }
-
-        // Check ABI type
-        if (src.name === '$ABI') {
-            let abf = abi[exp.name];
-            if (!abf) {
-                throwError(`ABI function "${exp.name}" not found`, exp.ref);
-            }
-            let resolved = abf.resolve(ctx, exp.args.map((v) => getExpType(ctx, v)), exp.ref);
-            return registerExpType(ctx, exp, resolved);
         }
 
         // Register return type

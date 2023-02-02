@@ -27,7 +27,7 @@ PROGRAM{
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  __tact_not_null PROC:<{
+  __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
@@ -159,7 +159,7 @@ PROGRAM{
         TRUE
         __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
-        __tact_not_null CALLDICT
+        __tact_not_null INLINECALLDICT
         s0 s4 XCHG2
         STREF
       }>ELSE<{
@@ -175,7 +175,7 @@ PROGRAM{
         TRUE
         __tact_store_bool INLINECALLDICT
         s0 s4 XCHG
-        __tact_not_null CALLDICT
+        __tact_not_null INLINECALLDICT
         s0 s4 XCHG2
         STREF
       }>ELSE<{
@@ -207,7 +207,7 @@ PROGRAM{
       TRUE
       __tact_store_bool INLINECALLDICT
       SWAP
-      __tact_not_null CALLDICT
+      __tact_not_null INLINECALLDICT
       SWAP
       STREF
     }>ELSE<{

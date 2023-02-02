@@ -1077,11 +1077,6 @@ SETCP0
     s0 POP
     130 THROW
 
-  1: 
-    s0 PUSH
-    ISNULL
-    128 THROWIF
-
   66195: 
     <{
       c4 PUSH
@@ -2746,7 +2741,9 @@ SETCP0
     <{
       s4 s5 XCHG
       5 BLKDROP
-      1 CALLDICT
+      s0 PUSH
+      ISNULL
+      128 THROWIF
     }> CALLREF
 
   102504: 
@@ -3134,7 +3131,9 @@ SETCP0
     <{
       s3 s5 XCHG
       5 BLKDROP
-      1 CALLDICT
+      s0 PUSH
+      ISNULL
+      128 THROWIF
     }> CALLREF
 
   106507: 
@@ -3534,7 +3533,9 @@ SETCP0
     }> CALLREF
     <{
       5 BLKDROP
-      1 CALLDICT
+      s0 PUSH
+      ISNULL
+      128 THROWIF
     }> CALLREF
 
   113617: 
@@ -4287,7 +4288,9 @@ SETCP0
     <{
       s2 s5 XCHG
       5 BLKDROP
-      1 CALLDICT
+      s0 PUSH
+      ISNULL
+      128 THROWIF
     }> CALLREF
 
   127150: 

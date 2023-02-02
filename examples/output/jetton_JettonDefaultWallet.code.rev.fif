@@ -319,7 +319,9 @@ SETCP0
               s0 s1 XCHG
               1 STI
               s0 s4 XCHG
-              2 CALLDICT
+              s0 PUSH
+              ISNULL
+              128 THROWIF
               s0 s4 XCHG2
               STREF
             }> PUSHCONT
@@ -339,7 +341,9 @@ SETCP0
               s0 s1 XCHG
               1 STI
               s0 s4 XCHG
-              2 CALLDICT
+              s0 PUSH
+              ISNULL
+              128 THROWIF
               s0 s4 XCHG2
               STREF
             }> PUSHCONT
@@ -380,17 +384,22 @@ SETCP0
             s0 s1 XCHG
             1 STI
             s0 s1 XCHG
-            2 CALLDICT
+            s0 PUSH
+            ISNULL
+            128 THROWIF
             s0 s1 XCHG
             STREF
-          }> IFREFELSEREF
+          }> PUSHCONT
+          <{
+            s1 POP
+            0 PUSHINT
+            s0 s1 XCHG
+            1 STI
+          }> PUSHCONT
+          IFELSE
           ENDC
           s0 s1 XCHG
           SENDRAWMSG
-          s1 POP
-          0 PUSHINT
-          s0 s1 XCHG
-          1 STI
         }> CALLREF
       }> CALLREF
       NEWC
@@ -627,7 +636,9 @@ SETCP0
               s0 s1 XCHG
               1 STI
               s0 s4 XCHG
-              2 CALLDICT
+              s0 PUSH
+              ISNULL
+              128 THROWIF
               s0 s4 XCHG2
               STREF
             }> PUSHCONT
@@ -647,7 +658,9 @@ SETCP0
               s0 s1 XCHG
               1 STI
               s0 s4 XCHG
-              2 CALLDICT
+              s0 PUSH
+              ISNULL
+              128 THROWIF
               s0 s4 XCHG2
               STREF
             }> PUSHCONT
@@ -688,17 +701,22 @@ SETCP0
             s0 s1 XCHG
             1 STI
             s0 s1 XCHG
-            2 CALLDICT
+            s0 PUSH
+            ISNULL
+            128 THROWIF
             s0 s1 XCHG
             STREF
-          }> IFREFELSEREF
+          }> PUSHCONT
+          <{
+            s1 POP
+            0 PUSHINT
+            s0 s1 XCHG
+            1 STI
+          }> PUSHCONT
+          IFELSE
           ENDC
           s0 s1 XCHG
           SENDRAWMSG
-          s1 POP
-          0 PUSHINT
-          s0 s1 XCHG
-          1 STI
         }> CALLREF
         s0 s5 XCHG2
       }> IFREFELSE
@@ -715,7 +733,9 @@ SETCP0
       <{
         0 PUSHINT
         s0 s6 XCHG
-        2 CALLDICT
+        s0 PUSH
+        ISNULL
+        128 THROWIF
         0 PUSHINT
         s0 s4 XCHG
         <{
@@ -776,7 +796,9 @@ SETCP0
               s0 s1 XCHG
               1 STI
               s0 s4 XCHG
-              2 CALLDICT
+              s0 PUSH
+              ISNULL
+              128 THROWIF
               s0 s4 XCHG2
               STREF
             }> PUSHCONT
@@ -796,7 +818,9 @@ SETCP0
               s0 s1 XCHG
               1 STI
               s0 s4 XCHG
-              2 CALLDICT
+              s0 PUSH
+              ISNULL
+              128 THROWIF
               s0 s4 XCHG2
               STREF
             }> PUSHCONT
@@ -837,17 +861,22 @@ SETCP0
             s0 s1 XCHG
             1 STI
             s0 s1 XCHG
-            2 CALLDICT
+            s0 PUSH
+            ISNULL
+            128 THROWIF
             s0 s1 XCHG
             STREF
-          }> IFREFELSEREF
+          }> PUSHCONT
+          <{
+            s1 POP
+            0 PUSHINT
+            s0 s1 XCHG
+            1 STI
+          }> PUSHCONT
+          IFELSE
           ENDC
           s0 s1 XCHG
           SENDRAWMSG
-          s1 POP
-          0 PUSHINT
-          s0 s1 XCHG
-          1 STI
         }> CALLREF
       }> IFREFELSE
       NEWC
@@ -1029,7 +1058,9 @@ SETCP0
             s0 s1 XCHG
             1 STI
             s0 s4 XCHG
-            2 CALLDICT
+            s0 PUSH
+            ISNULL
+            128 THROWIF
             s0 s4 XCHG2
             STREF
           }> PUSHCONT
@@ -1049,7 +1080,9 @@ SETCP0
             s0 s1 XCHG
             1 STI
             s0 s4 XCHG
-            2 CALLDICT
+            s0 PUSH
+            ISNULL
+            128 THROWIF
             s0 s4 XCHG2
             STREF
           }> PUSHCONT
@@ -1090,17 +1123,22 @@ SETCP0
           s0 s1 XCHG
           1 STI
           s0 s1 XCHG
-          2 CALLDICT
+          s0 PUSH
+          ISNULL
+          128 THROWIF
           s0 s1 XCHG
           STREF
-        }> IFREFELSEREF
+        }> PUSHCONT
+        <{
+          s1 POP
+          0 PUSHINT
+          s0 s1 XCHG
+          1 STI
+        }> PUSHCONT
+        IFELSE
         ENDC
         s0 s1 XCHG
         SENDRAWMSG
-        s1 POP
-        0 PUSHINT
-        s0 s1 XCHG
-        1 STI
       }> CALLREF
       NEWC
       2 GETGLOBVAR
@@ -1120,11 +1158,6 @@ SETCP0
     IFJMP
     s0 POP
     130 THROW
-
-  2: 
-    s0 PUSH
-    ISNULL
-    128 THROWIF
 
   36: 
     0 PUSHINT
