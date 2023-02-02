@@ -1,4 +1,5 @@
 import { toNano } from "ton-core";
+import { enabledDebug } from "../config";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
@@ -65,6 +66,9 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             return { kind: 'void' };
         },
         generate: (ctx, args, resolved, ref) => {
+            if (!enabledDebug(ctx.ctx)) {
+                return `${ctx.used('__tact_nop')}()`;
+            }
             let arg = args[0];
             if (arg.kind === 'map') {
                 let exp = writeExpression(resolved[0], ctx);
