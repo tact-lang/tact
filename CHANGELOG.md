@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Update `dump` function to handle booleans and strings, better type checking or arguments
+- Report `org.ton.debug.v0` interface if debug mode is enabled
 
 ## [0.9.0] - 2023-02-02
 
