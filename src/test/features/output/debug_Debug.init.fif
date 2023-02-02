@@ -1,0 +1,25 @@
+PROGRAM{
+  DECLPROC __gen_write_Debug
+  DECLPROC $__gen_Debug_init
+  107886 DECLMETHOD init
+  DECLPROC main
+  __gen_write_Debug PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  $__gen_Debug_init PROC:<{
+    0 PUSHINT
+    SWAP
+    NEWC
+    STREF
+    SWAP
+    __gen_write_Debug INLINECALLDICT
+    ENDC
+  }>
+  init PROC:<{
+    $__gen_Debug_init CALLDICT
+  }>
+  main PROC:<{
+  }>
+}END>c

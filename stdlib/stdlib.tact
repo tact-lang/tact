@@ -4,7 +4,7 @@ import "./std/crypto";
 import "./std/text";
 import "./std/math";
 import "./std/contract";
-import "./std/exceptions";
+import "./std/debug";
 import "./std/context";
 import "./std/reserve";
 import "./std/send";

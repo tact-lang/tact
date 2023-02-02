@@ -51,11 +51,11 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_debug', () => {
-        ctx.write(`forall X -> X __tact_debug(X value) impure asm "s0 DUMP"`);
+        ctx.write(`forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";`);
     });
 
     ctx.fun('__tact_debug_str', () => {
-        ctx.write(`forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";`);
+        ctx.write(`() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";`);
     });
 
     ctx.fun('__tact_debug_bool', () => {
