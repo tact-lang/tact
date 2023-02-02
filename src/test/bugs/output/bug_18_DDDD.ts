@@ -187,9 +187,9 @@ async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (DDDD_errors[res.exitCode]) {
-            throw new ComputeError(DDDD_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError(DDDD_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
         } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
     

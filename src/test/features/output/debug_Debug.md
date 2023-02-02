@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Debug
-BOC Size: 520 bytes
+BOC Size: 713 bytes
 
 # Types
 Total Types: 5
@@ -26,4 +26,6 @@ TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
 
 # Get Methods
-Total Get Methods: 0
+Total Get Methods: 1
+
+## debug

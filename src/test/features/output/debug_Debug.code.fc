@@ -4,8 +4,6 @@
 
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
-forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
-
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
 () __tact_debug_bool(int value) impure {
@@ -34,6 +32,45 @@ builder __tact_store_address(builder b, slice address) inline {
     __tact_verify_address(address);
     b = b.store_slice(address);
     return b;
+}
+
+slice __tact_int_to_string(int src) inline_ref {
+    var b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+
+    if (src < 1000000000000000000000000000000) {
+        int len = 0;
+        int value = 0;
+        int mult = 1;
+        do {
+            (src, int res) = src.divmod(10);
+            value = value + (res + 48) * mult;
+            mult = mult * 256;
+            len = len + 1;
+        } until (src == 0);
+
+        b = b.store_uint(value, len * 8);
+    } else {
+        tuple t = empty_tuple();
+        int len = 0;
+        do {
+            int digit = src % 10;
+            t~tpush(digit);
+            len = len + 1;
+            src = src / 10;
+        } until (src == 0);
+
+        int c = len - 1;
+        repeat(len) {
+            int v = t.at(c);
+            b = b.store_uint(v + 48, 8);
+            c = c - 1;
+        }
+    }
+    return b.end_cell().begin_parse();
 }
 
 (slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
@@ -128,14 +165,30 @@ slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f72
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
+() $__gen_Debug_debug((int) $self) impure inline_ref {
+    var (($self'v)) = $self;
+    dump_stack();
+    __tact_debug_str(__gen_str_3226689099());
+    __tact_debug_str(__tact_int_to_string(123));
+    __tact_debug_bool(true);
+    __tact_debug_bool(false);
+    __tact_debug_str("null");
+}
+
+_ $__gen_get_debug() method_id(93099) {
+    var self = __gen_load_Debug();
+    var res = $__gen_Debug_debug(self);
+    return res;
+}
+
 ((int), ()) $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57((int) $self) impure inline {
     var ($self'v) = $self;
     dump_stack();
     __tact_debug_str(__gen_str_3226689099());
-    __tact_debug(123);
+    __tact_debug_str(__tact_int_to_string(123));
     __tact_debug_bool(true);
     __tact_debug_bool(false);
-    __tact_debug(null());
+    __tact_debug_str("null");
     return (($self'v), ());
 }
 
@@ -198,5 +251,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmNYzgEmDMsMkw9sohDkHE1xNwwkNf8ocjQqzaTQvSLr9y";
+    return "ipfs://QmeuCtEf9Rx6NCd5XMqrtg3a7pfpQUG5HmZNy71GaqeZ6N";
 }

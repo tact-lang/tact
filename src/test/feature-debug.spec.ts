@@ -17,13 +17,14 @@ describe('feature-debug', () => {
         await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
         await system.run();
 
-
         logger.reset();
         await contract.send(treasure, { value: toNano('10') }, 'Debug');
         await system.run();
 
-
-        let res = logger.collect() as string;
-        console.warn(res);
+        let res = logger.collect();
+        expect(res.indexOf('=== DEBUG LOGS ===')).toBeGreaterThan(-1);
+        expect(res.indexOf('Hello world!')).toBeGreaterThan(-1);
+        expect(res.indexOf('true')).toBeGreaterThan(-1);
+        expect(res.indexOf('false')).toBeGreaterThan(-1);
     });
 });

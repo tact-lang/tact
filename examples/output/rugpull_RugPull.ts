@@ -278,9 +278,9 @@ async function RugPull_init(owner: Address, investment: bigint, returns: bigint,
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (RugPull_errors[res.exitCode]) {
-            throw new ComputeError(RugPull_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError(RugPull_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
         } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
     

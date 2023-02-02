@@ -333,9 +333,9 @@ async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (MultisigContract_errors[res.exitCode]) {
-            throw new ComputeError(MultisigContract_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError(MultisigContract_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
         } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
     

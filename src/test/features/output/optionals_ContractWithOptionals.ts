@@ -409,9 +409,9 @@ async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (ContractWithOptionals_errors[res.exitCode]) {
-            throw new ComputeError(ContractWithOptionals_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError(ContractWithOptionals_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
         } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
     

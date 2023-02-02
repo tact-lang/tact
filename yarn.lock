@@ -4434,10 +4434,10 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-ton-core@>=0.44.0:
-  version "0.44.0"
-  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.44.0.tgz#5769fd2ebefdc147b3bc3bb83e2c3ae9fe1b8279"
-  integrity sha512-EnYKUHc4EUiL3BmppK+AQLqZaaw/BPBNmOC9xJRqiKRqs11gIn/LY3qzp4/23JWojBwXH7S7M6Rf8YN+In5Zhw==
+ton-core@>=0.47.0:
+  version "0.47.0"
+  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.47.0.tgz#1ce90a1abe3f05d0651e95962f2b9fdbd1b4e13c"
+  integrity sha512-v5JEhJG/EYtKaI8PtmV5lXAIveSK+Bb+yyukRFmUpJ1Y9YmkvBowZ1n4lubKCSDhlQy8JO7M5VKA5fj15qZjwQ==
   dependencies:
     symbol.inspect "1.0.1"
 
@@ -4457,10 +4457,10 @@ ton-crypto@^3.2.0:
     ton-crypto-primitives "2.0.0"
     tweetnacl "1.0.3"
 
-ton-emulator@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ton-emulator/-/ton-emulator-2.0.0.tgz#5b259d03dbec098feb1f9047132a6c0ddb115e48"
-  integrity sha512-mhLCF6H1HFAJEV4B+A08HeRqXdoV0zf8DOsndB1etU7YbK3IkyZ0k0WiEW4H8KRX7ttKeu7SmIFzCsVSHXpmRw==
+ton-emulator@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ton-emulator/-/ton-emulator-2.1.1.tgz#1ffdcc41fafcb062ba600f243ebe81e5f038764e"
+  integrity sha512-/k0tB7VPQhJEn2KUwcYlIsLrUgRLnxMGvTSsYk3zsKLbc2HR0d/K7azzmxq9BqBpKPeopL27J1IYNqpSLqMvdA==
   dependencies:
     prando "^6.0.1"
     teslabot "^1.5.0"

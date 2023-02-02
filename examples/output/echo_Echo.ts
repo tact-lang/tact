@@ -184,9 +184,9 @@ async function Echo_init() {
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Echo_errors[res.exitCode]) {
-            throw new ComputeError(Echo_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError(Echo_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
         } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
     

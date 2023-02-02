@@ -252,8 +252,8 @@ function dictValueParserDeployOk(): DictionaryValue<DeployOk> {
 }
 async function Debug_init() {
     const __init = 'te6ccgEBBgEAMAABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAGUcAHIzAEBgQEBzwDJg=';
-    const __code = 'te6ccgECCwEAAfwAART/APSkE/S88sgLAQIBYgIDAgLOBAUATaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwPrTtou37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCUapi2uo80MO1E0NQB+GKBAQHXAAExAdMfAYIQlGqYtrry4IHTPwEx2zzbPMj4QgHMAQGBAQHPAMntVODAAJEw4w3ywIKAYHCAAtSZi0dHJ1ZY/hQwmotWZhbHNlj+FDDigAHMgBghCv+Q9XWMsfyz/JAST4QW8kECNfA38CcIBCWG1t2zwJANL5AYLwriSRJjCP72Y5wHANIQPkRNizNc3oL9whyHw7e8G531e6jkHtRNDUAfhigQEB1wABMf4Ai8SGVsbG8gd29ybGQhj+FDCAe/4gMH/wAnDwAm3+IDDI+EIBzAEBgQEBzwDJ7VTbMeAB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswoAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AA==';
-    const __system = 'te6cckECDQEAAgYAAQHAAQEFoMY/AgEU/wD0pBP0vPLICwMCAWIFBABNoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzAgLOBwYALUmYtHRydWWP4UMJqLVmYWxzZY/hQw4oA+tO2i7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEJRqmLa6jzQw7UTQ1AH4YoEBAdcAATEB0x8BghCUapi2uvLggdM/ATHbPNs8yPhCAcwBAYEBAc8Aye1U4MAAkTDjDfLAgoDAkIANL5AYLwriSRJjCP72Y5wHANIQPkRNizNc3oL9whyHw7e8G531e6jkHtRNDUAfhigQEB1wABMf4Ai8SGVsbG8gd29ybGQhj+FDCAe/4gMH/wAnDwAm3+IDDI+EIBzAEBgQEBzwDJ7VTbMeABJPhBbyQQI18DfwJwgEJYbW3bPAoB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswsAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAAcyAGCEK/5D1dYyx/LP8kfnoam';
+    const __code = 'te6ccgECDwEAAr0AART/APSkE/S88sgLAQIBYgIDAgLOBAUCASALDAPrTtou37cCHXScIflTAg1wsf3gLQ0wMBcbDAAZF/kXDiAfpAIlBmbwT4YQKRW+AgghCUapi2uo80MO1E0NQB+GKBAQHXAAExAdMfAYIQlGqYtrry4IHTPwEx2zzbPMj4QgHMAQGBAQHPAMntVODAAJEw4w3ywIKAYHCAAtSZi0dHJ1ZY/hQwmotWZhbHNlj+FDDigAHMgBghCv+Q9XWMsfyz/JAST4QW8kECNfA38CcIBCWG1t2zwJAeD5AYLwriSRJjCP72Y5wHANIQPkRNizNc3oL9whyHw7e8G531e6jsjtRNDUAfhigQEB1wABMf4Ai8SGVsbG8gd29ybGQhj+FDCAe9s8/hQwf/ACcPACi0bnVsbI/hQwyPhCAcwBAYEBAc8Aye1U2zHgDgH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zCgAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAASW/XV9qJoagD8MUCAgOuAAJjtnkDQBNvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHMAVQw/gCLxIZWxsbyB3b3JsZCGP4UMIB72zz+FDB/8AJw8AKLRudWxsj+FDAOAN7IIcEAmIAtAcsHAaMB3iGCODJ8snNBGdO3qaoduY4gcCBxjhQEeqkMpjAlqBKgBKoHAqQhwABFMOYwM6oCzwGOK28AcI4RI3qpCBJvjAGkA3qpBCDAABTmMyKlA5xTAm+BpjBYywcCpVnkMDHiydA=';
+    const __system = 'te6cckECEQEAAscAAQHAAQEFoMY/AgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAE293owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwBJb9dX2omhqAPwxQICA64AAmO2eQHAVQw/gCLxIZWxsbyB3b3JsZCGP4UMIB72zz+FDB/8AJw8AKLRudWxsj+FDAMAgLOCgkALUmYtHRydWWP4UMJqLVmYWxzZY/hQw4oA+tO2i7ftwIddJwh+VMCDXCx/eAtDTAwFxsMABkX+RcOIB+kAiUGZvBPhhApFb4CCCEJRqmLa6jzQw7UTQ1AH4YoEBAdcAATEB0x8BghCUapi2uvLggdM/ATHbPNs8yPhCAcwBAYEBAc8Aye1U4MAAkTDjDfLAgoEA0LAeD5AYLwriSRJjCP72Y5wHANIQPkRNizNc3oL9whyHw7e8G531e6jsjtRNDUAfhigQEB1wABMf4Ai8SGVsbG8gd29ybGQhj+FDCAe9s8/hQwf/ACcPACi0bnVsbI/hQwyPhCAcwBAYEBAc8Aye1U2zHgDADeyCHBAJiALQHLBwGjAd4hgjgyfLJzQRnTt6mqHbmOIHAgcY4UBHqpDKYwJagSoASqBwKkIcAARTDmMDOqAs8BjitvAHCOESN6qQgSb4wBpAN6qQQgwAAU5jMipQOcUwJvgaYwWMsHAqVZ5DAx4snQAST4QW8kECNfA38CcIBCWG1t2zwOAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMPADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAAHMgBghCv+Q9XWMsfyz/J1HpXlg==';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);
@@ -266,9 +266,9 @@ async function Debug_init() {
     if (!res.success) { throw Error(res.error); }
     if (res.exitCode !== 0 && res.exitCode !== 1) {
         if (Debug_errors[res.exitCode]) {
-            throw new ComputeError(Debug_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError(Debug_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
         } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });
+            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
     
@@ -342,6 +342,11 @@ export class Debug implements Contract {
         
         await provider.internal(via, { ...args, body: body });
         
+    }
+    
+    async getDebug(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('debug', builder.build())).stack;
     }
     
 }

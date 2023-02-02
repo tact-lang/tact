@@ -66,15 +66,17 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
         },
         generate: (ctx, args, resolved, ref) => {
             let arg = args[0];
-            if (arg.kind === 'null' || arg.kind === 'map') {
+            if (arg.kind === 'map') {
                 let exp = writeExpression(resolved[0], ctx);
                 return `${ctx.used(`__tact_debug`)}(${exp})`;
-            } else if (arg.kind === 'void') {
+            } else if (arg.kind === 'null') {
                 return `${ctx.used(`__tact_debug_str`)}("null")`;
+            } else if (arg.kind === 'void') {
+                return `${ctx.used(`__tact_debug_str`)}("void")`;
             } else if (arg.kind === 'ref') {
                 if (arg.name === 'Int' || arg.name === 'Builder' || arg.name === 'Slice' || arg.name === 'Cell' || arg.name === 'StringBuilder') {
                     let exp = writeExpression(resolved[0], ctx);
-                    return `${ctx.used(`__tact_debug`)}(${exp})`;
+                    return `${ctx.used(`__tact_debug_str`)}(${ctx.used(`__tact_int_to_string`)}(${exp}))`;
                 } else if (arg.name === 'Bool') {
                     let exp = writeExpression(resolved[0], ctx);
                     return `${ctx.used(`__tact_debug_bool`)}(${exp})`;

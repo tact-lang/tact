@@ -100,11 +100,11 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             w.inIndent(() => {
                 w.append(`if (${abi.name}_errors[res.exitCode]) {`);
                 w.inIndent(() => {
-                    w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.vmLogs });`);
+                    w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.logs });`);
                 });
                 w.append(`} else {`);
                 w.inIndent(() => {
-                    w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.vmLogs });`);
+                    w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });`);
                 });
                 w.append(`}`);
             });
