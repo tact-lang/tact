@@ -25,9 +25,9 @@ forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-forall X -> X __tact_debug(X value) impure asm "s0 DUMP"
+forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
-forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
 () __tact_debug_bool(int value) impure {
     if (value) {
@@ -966,9 +966,9 @@ forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-forall X -> X __tact_debug(X value) impure asm "s0 DUMP"
+forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
-forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
 () __tact_debug_bool(int value) impure {
     if (value) {
@@ -1907,9 +1907,9 @@ forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-forall X -> X __tact_debug(X value) impure asm "s0 DUMP"
+forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
-forall X -> X __tact_debug_str(slice value) impure asm "STRDUMP";
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
 () __tact_debug_bool(int value) impure {
     if (value) {
