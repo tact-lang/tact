@@ -26,6 +26,7 @@ This version would include the following features:
 * `let` type inheritance when possible
 * Limited external messages support
 * Contract automatic optimisations
+* Auto-unpacking nullable variables to non-null one
 
 ## ✍️ Version v3
 
