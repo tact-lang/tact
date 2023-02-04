@@ -1,6 +1,6 @@
 {
   "name": "ton-tact",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "main": "./dist/main.js",
   "repository": "https://github.com/ton-core/tact.git",
   "homepage": "https://tact-lang.org",
