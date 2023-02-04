@@ -93,5 +93,17 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 throwError('dump() not supported for argument', ref);
             }
         }
+    },
+    emptyMap: {
+        name: 'emptyMap',
+        resolve: (ctx, args, ref) => {
+            if (args.length !== 0) {
+                throwError('emptyMap expects no arguments', ref);
+            }
+            return { kind: 'null' };
+        },
+        generate: (ctx, args, resolved, ref) => {
+            return 'null()';
+        }
     }
 }

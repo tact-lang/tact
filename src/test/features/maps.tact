@@ -152,6 +152,18 @@ contract MapTestContract {
         self.addrMap4.set(msg.key, msg.value);
     }
 
+    receive("reset") {
+        self.addrMap1 = emptyMap();
+        self.addrMap2 = emptyMap();
+        self.addrMap3 = emptyMap();
+        self.addrMap4 = emptyMap();
+
+        self.intMap1 = emptyMap();
+        self.intMap2 = emptyMap();
+        self.intMap3 = emptyMap();
+        self.intMap4 = emptyMap();
+    }
+
     get fun addrMap1(): map[Address]Int {
         return self.addrMap1;
     }

@@ -76,6 +76,7 @@ PROGRAM{
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap3
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap4
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap5
+  DECLPROC $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -744,7 +745,23 @@ PROGRAM{
     s1 s2 XCHG
     __tact_dict_set_slice_cell INLINECALLDICT
   }>
+  $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b PROCINLINE:<{
+    8 BLKDROP
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    s0 s4 XCHG
+    PUSHNULL
+    PUSHNULL
+    s5 s4 XCHG2
+    PUSHNULL
+    s0 s4 XCHG
+  }>
   recv_internal PROC:<{
+    c2 SAVE
+    SAMEALTSAVE
     0 PUSHINT
     OVER
     SBITS
@@ -959,9 +976,11 @@ PROGRAM{
       $__gen_MapTestContract_receive_SetAddrMap4 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
+    DUP
     1358519521 PUSHINT
     EQUAL
     IFJMP:<{
+      DROP
       __gen_load_MapTestContract INLINECALLDICT
       s0 s8 XCHG
       __gen_read_SetAddrMap5 INLINECALLDICT
@@ -976,7 +995,20 @@ PROGRAM{
       $__gen_MapTestContract_receive_SetAddrMap5 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DROP
+    0 EQINT
+    IF:<{
+      HASHSU
+      33891181464710156031034046061755617033497409731940287186959295655538839105307 PUSHINT
+      EQUAL
+      IFJMP:<{
+        __gen_load_MapTestContract INLINECALLDICT
+        $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b INLINECALLDICT
+        __gen_store_MapTestContract INLINECALLDICT
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
     130 THROW
   }>
   supported_interfaces PROC:<{
@@ -984,6 +1016,6 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d56395154613538544354514e73503533725975313861433673464664545076785a4e4c686a6f4e6438335041} PUSHSLICE
+    x{697066733a2f2f516d596a4a54786945614b41325558627261676637706b4e6464706e73514b62504143574b4176376d7731717a79} PUSHSLICE
   }>
 }END>c

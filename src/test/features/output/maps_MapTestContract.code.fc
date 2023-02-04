@@ -532,6 +532,19 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
+((cell, cell, cell, cell, cell, cell, cell, cell), ()) $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline {
+    var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4) = $self;
+    $self'addrMap1 = null();
+    $self'addrMap2 = null();
+    $self'addrMap3 = null();
+    $self'addrMap4 = null();
+    $self'intMap1 = null();
+    $self'intMap2 = null();
+    $self'intMap3 = null();
+    $self'intMap4 = null();
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -649,6 +662,19 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
         return ();
     }
     
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "reset" message
+        if (text_op == 0x4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b) {
+            var self = __gen_load_MapTestContract();
+            self~$__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b();
+            __gen_store_MapTestContract(self);
+            return ();
+        }
+    }
+    
     throw(130);
 }
 
@@ -660,5 +686,5 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmV9QTa58TCTQNsP53rYu18aC6sFFdTPvxZNLhjoNd83PA";
+    return "ipfs://QmYjJTxiEaKA2UXbragf7pkNddpnsQKbPACWKAv7mw1qzy";
 }

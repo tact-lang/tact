@@ -1,6 +1,8 @@
 SETCP0
 (:methods
   recv_internal: 
+    c2 SAVE
+    SAMEALTSAVE
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -1068,9 +1070,11 @@ SETCP0
       c4 POP
     }> PUSHCONT
     IFJMP
+    s0 PUSH
     1358519521 PUSHINT
     EQUAL
     <{
+      s0 POP
       c4 PUSH
       CTOS
       LDREF
@@ -1170,7 +1174,84 @@ SETCP0
       ENDC
       c4 POP
     }> IFJMPREF
-    s0 POP
+    0 EQINT
+    <{
+      HASHSU
+      33891181464710156031034046061755617033497409731940287186959295655538839105307 PUSHINT
+      EQUAL
+      <{
+        c4 PUSH
+        CTOS
+        LDREF
+        s0 s1 XCHG
+        2 SETGLOBVAR
+        LDDICT
+        LDDICT
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        LDDICT
+        LDDICT
+        LDDICT
+        LDREF
+        s0 POP
+        CTOS
+        LDDICT
+        LDDICT
+        LDDICT
+        s0 POP
+        s6 s8 XCHG
+        s6 s7 XCHG
+        1 8 BLKDROP2
+        8 BLKDROP
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        s0 s4 XCHG
+        PUSHNULL
+        PUSHNULL
+        s5 s4 XCHG2
+        PUSHNULL
+        s0 s4 XCHG
+        NEWC
+        2 GETGLOBVAR
+        s0 s1 XCHG
+        STREF
+        8 1 BLKSWAP
+        s7 s8 XCHG2
+        STDICT
+        s1 s5 XCHG
+        STDICT
+        s0 s3 XCHG
+        NEWC
+        STDICT
+        s1 s2 XCHG
+        STDICT
+        STDICT
+        s0 s2 XCHG
+        NEWC
+        STDICT
+        s1 s3 XCHG
+        STDICT
+        s1 s3 XCHG
+        STDICT
+        ENDC
+        ROT
+        STREF
+        ENDC
+        s0 s1 XCHG
+        STREF
+        ENDC
+        c4 POP
+        RETALT
+      }> IFJMPREF
+    }> PUSHCONT
+    <{
+      s0 POP
+    }> PUSHCONT
+    IFELSE
     130 THROW
 
   6: 

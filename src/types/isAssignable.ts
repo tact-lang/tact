@@ -19,6 +19,11 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
         return (src.key === to.key && src.value === to.value);
     }
 
+    // Allow assigning null to map
+    if (src.kind === 'null' && to.kind === 'map') {
+        return true;
+    }
+
     // If either is void
     if (src.kind === 'void' || to.kind === 'void') {
         return false; // Void is not assignable
