@@ -1,5 +1,6 @@
 import { toNano } from "ton-core";
 import { ContractSystem } from "ton-emulator";
+import { inspect } from "util";
 import { Functions } from './contracts/output/benchmark_functions_Functions';
 import { Functions as FunctionsInline } from './contracts/output/benchmark_functions_inline_Functions';
 
@@ -15,8 +16,8 @@ describe('benchmarks', () => {
         await system.run();
 
         // Find gas used
-        let gasUsed = ((tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n)) as any).gasUsed as bigint;
-        expect(gasUsed).toMatchInlineSnapshot(`undefined`);
+        let gasUsed = tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n);
+        expect(gasUsed).toMatchInlineSnapshot(`2630n`);
         expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`278`);
     });
     it('benchmark functions(inline)', async () => {
@@ -30,8 +31,8 @@ describe('benchmarks', () => {
         await system.run();
 
         // Find gas used
-        let gasUsed = ((tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n)) as any).gasUsed as bigint;
-        expect(gasUsed).toMatchInlineSnapshot(`undefined`);
+        let gasUsed = tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n);
+        expect(gasUsed).toMatchInlineSnapshot(`2499n`);
         expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`270`);
     });
 });
