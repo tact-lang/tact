@@ -33,10 +33,16 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     w.append();
     for (let t of abi.getters!) {
         w.write(`## ${t.name}`);
-        for(let arg of t.arguments!) {
+        for (let arg of t.arguments!) {
             w.write(`Argument: ${arg.name}`);
         }
         w.append();
+    }
+
+    // Error Codes
+    w.write(`# Error Codes`);
+    for (let t in abi.errors!) {
+        w.write(`${t}: ${abi.errors![parseInt(t, 10)].message}`);
     }
 
     return w.end();

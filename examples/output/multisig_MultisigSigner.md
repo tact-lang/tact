@@ -29,3 +29,32 @@ Signature: `Signed{request:Request{requested:address,to:address,value:coins,time
 Total Get Methods: 1
 
 ## request
+
+# Error Codes
+2: Stack undeflow
+3: Stack overflow
+4: Integer overflow
+5: Integer out of expected range
+6: Invalid opcode
+7: Type check error
+8: Cell overflow
+9: Cell underflow
+10: Dictionary error
+13: Out of gas error
+32: Method ID not found
+34: Action is invalid or not supported
+37: Not enough TON
+38: Not enough extra-currencies
+128: Null reference exception
+129: Invalid serialization prefix
+130: Invalid incoming message
+131: Constraints error
+132: Access denied
+133: Contract stopped
+134: Invalid argument
+135: Code of a contract was not found
+136: Invalid address
+4429: Invalid sender
+4755: Timeout
+40810: Completed
+46307: Not a member
