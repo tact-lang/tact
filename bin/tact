@@ -17,7 +17,7 @@ if (!args['--config']) {
     try {
         await main.compileProjects(args['--config'], args['--project'] ? args['--project'] : []);
     } catch (e) {
-        console.warn('Internal compiler error. Please, report it to https://github.com/ton-community/tact/issues.');
+        console.warn('Internal compiler error. Please, report it to https://github.com/tact-lang/tact/issues.');
         console.log(e);
     }
 })();
