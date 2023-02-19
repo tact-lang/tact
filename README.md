@@ -7,6 +7,11 @@ A next-gen smart contract language for TON.
 * [Roadmap](/ROADMAP.md)
 * [Examples](/examples/)
 
+
+# Communities
+* [Tact group](https://t.me/tactlang)
+* [Forum](https://forums.tact-lang.org/)
+
 ## Getting started
 
 The easiest way to start is to use our [project template](https://github.com/tact-lang/tact-template) and read [getting started](https://docs.tact-lang.org).
