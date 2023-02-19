@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -338,7 +355,6 @@ async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -374,11 +390,11 @@ const MultisigContract_errors: { [key: number]: { message: string } } = {
 export class MultisigContract implements Contract {
     
     static async init(key1: bigint, key2: bigint, key3: bigint) {
-        return await MultisigContract_init(key1,key2,key3);
+        return await MultisigContract_init(key1, key2, key3);
     }
     
     static async fromInit(key1: bigint, key2: bigint, key3: bigint) {
-        const init = await MultisigContract_init(key1,key2,key3);
+        const init = await MultisigContract_init(key1, key2, key3);
         const address = contractAddress(0, init);
         return new MultisigContract(address, init);
     }

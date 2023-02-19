@@ -56,6 +56,6 @@ export async function compileBindings(language: string, abiPath: string, outputP
         return;
     }
     let abi = JSON.parse(fs.readFileSync(abiPath, 'utf-8')) as ContractABI;
-    let output = writeTypescript(abi);
+    let output = writeTypescript(abi, 'server');
     fs.writeFileSync(outputPath, output, 'utf-8');
 }

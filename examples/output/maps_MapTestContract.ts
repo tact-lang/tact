@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -606,7 +623,6 @@ async function MapTestContract_init() {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }

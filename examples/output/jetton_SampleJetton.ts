@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -773,7 +790,6 @@ async function SampleJetton_init(owner: Address, content: Cell | null) {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -811,11 +827,11 @@ const SampleJetton_errors: { [key: number]: { message: string } } = {
 export class SampleJetton implements Contract {
     
     static async init(owner: Address, content: Cell | null) {
-        return await SampleJetton_init(owner,content);
+        return await SampleJetton_init(owner, content);
     }
     
     static async fromInit(owner: Address, content: Cell | null) {
-        const init = await SampleJetton_init(owner,content);
+        const init = await SampleJetton_init(owner, content);
         const address = contractAddress(0, init);
         return new SampleJetton(address, init);
     }

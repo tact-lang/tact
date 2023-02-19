@@ -823,6 +823,11 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
+"@tact-lang/runtime@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@tact-lang/runtime/-/runtime-0.2.0.tgz#dee48af1d177de1aa40946a6e8a6b92fa88046dd"
+  integrity sha512-pBVEG2Csi/YsDvEohs4GMv1nQ0gqOqiar69DLyLhCtWbYphd29Jc32WATy8D5sYV6njd9kA9BGotXgtP0+AaxA==
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
@@ -4434,10 +4439,10 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-ton-core@>=0.47.0:
-  version "0.47.0"
-  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.47.0.tgz#1ce90a1abe3f05d0651e95962f2b9fdbd1b4e13c"
-  integrity sha512-v5JEhJG/EYtKaI8PtmV5lXAIveSK+Bb+yyukRFmUpJ1Y9YmkvBowZ1n4lubKCSDhlQy8JO7M5VKA5fj15qZjwQ==
+ton-core@>=0.47.1:
+  version "0.47.1"
+  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.47.1.tgz#22298d79e345ea1a34825b4044dda5a7c5995474"
+  integrity sha512-XxcgLYH+Ngo3uh7O7jkzA0/O8nfG3WC3fgUmdvY9/IkGKpkO3Y/KHtrZgAOHYAkxJCmaXpi4aPf4JEnZEiPrWQ==
   dependencies:
     symbol.inspect "1.0.1"
 

@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -349,7 +366,6 @@ async function SerializationTester2_init(a: Vars, b: Vars) {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -383,11 +399,11 @@ const SerializationTester2_errors: { [key: number]: { message: string } } = {
 export class SerializationTester2 implements Contract {
     
     static async init(a: Vars, b: Vars) {
-        return await SerializationTester2_init(a,b);
+        return await SerializationTester2_init(a, b);
     }
     
     static async fromInit(a: Vars, b: Vars) {
-        const init = await SerializationTester2_init(a,b);
+        const init = await SerializationTester2_init(a, b);
         const address = contractAddress(0, init);
         return new SerializationTester2(address, init);
     }

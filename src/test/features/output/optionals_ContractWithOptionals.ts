@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -414,7 +431,6 @@ async function ContractWithOptionals_init(a: bigint | null, b: boolean | null, c
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -448,11 +464,11 @@ const ContractWithOptionals_errors: { [key: number]: { message: string } } = {
 export class ContractWithOptionals implements Contract {
     
     static async init(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-        return await ContractWithOptionals_init(a,b,c,d,e,f);
+        return await ContractWithOptionals_init(a, b, c, d, e, f);
     }
     
     static async fromInit(a: bigint | null, b: boolean | null, c: Cell | null, d: Address | null, e: SomeGenericStruct | null, f: StructWithOptionals | null) {
-        const init = await ContractWithOptionals_init(a,b,c,d,e,f);
+        const init = await ContractWithOptionals_init(a, b, c, d, e, f);
         const address = contractAddress(0, init);
         return new ContractWithOptionals(address, init);
     }

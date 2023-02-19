@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -285,7 +302,6 @@ async function SerializationTester_init(a: bigint, b: bigint, c: bigint, d: bigi
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -319,11 +335,11 @@ const SerializationTester_errors: { [key: number]: { message: string } } = {
 export class SerializationTester implements Contract {
     
     static async init(a: bigint, b: bigint, c: bigint, d: bigint, e: bigint, f: bigint, g: bigint, h: bigint, i: bigint) {
-        return await SerializationTester_init(a,b,c,d,e,f,g,h,i);
+        return await SerializationTester_init(a, b, c, d, e, f, g, h, i);
     }
     
     static async fromInit(a: bigint, b: bigint, c: bigint, d: bigint, e: bigint, f: bigint, g: bigint, h: bigint, i: bigint) {
-        const init = await SerializationTester_init(a,b,c,d,e,f,g,h,i);
+        const init = await SerializationTester_init(a, b, c, d, e, f, g, h, i);
         const address = contractAddress(0, init);
         return new SerializationTester(address, init);
     }

@@ -218,9 +218,18 @@ export async function build(project: ConfigProject, rootPath: string) {
             return false;
         }
         try {
-            let bindings = writeTypescript(JSON.parse(pkg.abi), { code: pkg.code, initCode: pkg.init.code, system: pkg.init.deployment.system, args: pkg.init.args });
-            let pathBindings = path.resolve(outputPath, project.name + '_' + pkg.name + ".ts");
-            fs.writeFileSync(pathBindings, bindings, 'utf-8');
+            let bindingsServer = writeTypescript(JSON.parse(pkg.abi), 'server', { code: pkg.code, initCode: pkg.init.code, system: pkg.init.deployment.system, args: pkg.init.args });
+            let bindingsClient = writeTypescript(JSON.parse(pkg.abi), 'client', { code: pkg.code, initCode: pkg.init.code, system: pkg.init.deployment.system, args: pkg.init.args });
+            fs.writeFileSync(
+                path.resolve(outputPath, project.name + '_' + pkg.name + ".ts"),
+                bindingsServer,
+                'utf-8'
+            );
+            fs.writeFileSync(
+                path.resolve(outputPath, project.name + '_' + pkg.name + ".client.ts"),
+                bindingsClient,
+                'utf-8'
+            );
         } catch (e) {
             console.warn('Bindings compiler crashed');
             console.warn(e);

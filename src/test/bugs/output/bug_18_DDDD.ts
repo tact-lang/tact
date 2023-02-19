@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -192,7 +209,6 @@ async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -226,11 +242,11 @@ const DDDD_errors: { [key: number]: { message: string } } = {
 export class DDDD implements Contract {
     
     static async init(addr1: Address, addr2: Address, addr3: Address) {
-        return await DDDD_init(addr1,addr2,addr3);
+        return await DDDD_init(addr1, addr2, addr3);
     }
     
     static async fromInit(addr1: Address, addr2: Address, addr3: Address) {
-        const init = await DDDD_init(addr1,addr2,addr3);
+        const init = await DDDD_init(addr1, addr2, addr3);
         const address = contractAddress(0, init);
         return new DDDD(address, init);
     }

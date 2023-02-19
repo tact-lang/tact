@@ -24,10 +24,34 @@ function writeArguments(args: ABIArgument[]) {
     return res;
 }
 
-export function writeTypescript(abi: ContractABI, init?: { code: string, initCode: string, system: string, args: ABIArgument[] }) {
+export function writeTypescript(abi: ContractABI, mode: 'server' | 'client', init?: { code: string, initCode: string, system: string, args: ABIArgument[] }) {
     let w = new Writer();
-    w.append(`import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';`);
-    w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
+
+    w.write(`
+        import { 
+            Cell,
+            Slice, 
+            Address, 
+            Builder, 
+            beginCell, 
+            ComputeError, 
+            TupleItem, 
+            TupleReader, 
+            Dictionary, 
+            contractAddress, 
+            ContractProvider, 
+            Sender, 
+            Contract, 
+            ContractABI, 
+            TupleBuilder,
+            DictionaryValue
+        } from 'ton-core';
+    `);
+    if (mode === 'client') {
+        w.append(`import { ExecutorEngine, getDefaultExecutorEngine } from '@tact-lang/runtime';`);
+    } else {
+        w.append(`import { ContractSystem, ContractExecutor } from 'ton-emulator';`);
+    }
     w.append();
 
     // Structs
@@ -72,7 +96,11 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
 
     // Init
     if (init) {
-        w.append(`async function ${abi.name}_init(${writeArguments(init.args).join(', ')}) {`);
+        if (mode === 'client') {
+            w.append(`async function ${abi.name}_init(${[...writeArguments(init.args), 'opts?: { engine?: ExecutorEngine }'].join(', ')}) {`);
+        } else {
+            w.append(`async function ${abi.name}_init(${writeArguments(init.args).join(', ')}) {`);
+        }
         w.inIndent(() => {
 
             // Code references
@@ -92,9 +120,14 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
             // Deploy
             w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
             w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
-            w.append(`let system = await ContractSystem.create();`);
-            w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
-            w.append(`let res = await executor.get('init', __stack);`);
+            if (mode === 'client') {
+                w.append(`let executor = opts && opts.engine ? opts.engine : getDefaultExecutorEngine();`);
+                w.append(`let res = await executor.get({ method: 'init', stack: __stack, code: initCell, data: new Cell() });`);
+            } else {
+                w.append(`let system = await ContractSystem.create();`);
+                w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
+                w.append(`let res = await executor.get('init', __stack);`);
+            }
             w.append(`if (!res.success) { throw Error(res.error); }`);
             w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
             w.inIndent(() => {
@@ -109,8 +142,11 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
                 w.append(`}`);
             });
             w.append(`}`);
-            w.append();
-            w.append(`let data = res.stack.readCell();`);
+            if (mode === 'client') {
+                w.append(`let data = new TupleReader(res.stack).readCell();`);
+            } else {
+                w.append(`let data = res.stack.readCell();`);
+            }
             w.append(`return { code: codeCell, data };`);
         });
         w.append(`}`);
@@ -135,16 +171,32 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, initCod
         w.append();
 
         if (init) {
-            w.append(`static async init(${writeArguments(init.args).join(', ')}) {`);
+            if (mode === 'client') {
+                w.append(`static async init(${[...writeArguments(init.args), 'opts?: { engine?: ExecutorEngine }'].join(', ')}) {`);
+            } else {
+                w.append(`static async init(${writeArguments(init.args).join(', ')}) {`);
+            }
             w.inIndent(() => {
-                w.append(`return await ${abi.name}_init(${init!.args.map((v) => v.name)});`);
+                if (mode === 'client') {
+                    w.append(`return await ${abi.name}_init(${[...init!.args.map((v) => v.name), 'opts'].join(', ')});`);
+                } else {
+                    w.append(`return await ${abi.name}_init(${init!.args.map((v) => v.name).join(', ')});`);
+                }
             });
             w.append(`}`);
             w.append();
 
-            w.append(`static async fromInit(${writeArguments(init.args).join(', ')}) {`);
+            if (mode === 'client') {
+                w.append(`static async fromInit(${[...writeArguments(init.args), 'opts?: { engine?: ExecutorEngine }'].join(', ')}) {`);
+            } else {
+                w.append(`static async fromInit(${writeArguments(init.args).join(', ')}) {`);
+            }
             w.inIndent(() => {
-                w.append(`const init = await ${abi.name}_init(${init!.args.map((v) => v.name)});`);
+                if (mode === 'client') {
+                    w.append(`const init = await ${abi.name}_init(${[...init!.args.map((v) => v.name), 'opts'].join(', ')});`);
+                } else {
+                    w.append(`const init = await ${abi.name}_init(${init!.args.map((v) => v.name).join(', ')});`);
+                }
                 w.append(`const address = contractAddress(0, init);`);
                 w.append(`return new ${abi.name}(address, init);`);
             });

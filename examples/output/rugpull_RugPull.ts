@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -283,7 +300,6 @@ async function RugPull_init(owner: Address, investment: bigint, returns: bigint,
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -320,11 +336,11 @@ const RugPull_errors: { [key: number]: { message: string } } = {
 export class RugPull implements Contract {
     
     static async init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
-        return await RugPull_init(owner,investment,returns,fee);
+        return await RugPull_init(owner, investment, returns, fee);
     }
     
     static async fromInit(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
-        const init = await RugPull_init(owner,investment,returns,fee);
+        const init = await RugPull_init(owner, investment, returns, fee);
         const address = contractAddress(0, init);
         return new RugPull(address, init);
     }

@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -324,7 +341,6 @@ async function Beacon_init(master: Address, owner: Address) {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -362,11 +378,11 @@ const Beacon_errors: { [key: number]: { message: string } } = {
 export class Beacon implements Contract {
     
     static async init(master: Address, owner: Address) {
-        return await Beacon_init(master,owner);
+        return await Beacon_init(master, owner);
     }
     
     static async fromInit(master: Address, owner: Address) {
-        const init = await Beacon_init(master,owner);
+        const init = await Beacon_init(master, owner);
         const address = contractAddress(0, init);
         return new Beacon(address, init);
     }

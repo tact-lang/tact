@@ -1,4 +1,21 @@
-import { Cell, Slice, Address, Builder, beginCell, ComputeError, TupleItem, TupleReader, Dictionary, contractAddress, ContractProvider, Sender, Contract, ContractABI, TupleBuilder, DictionaryValue } from 'ton-core';
+import { 
+    Cell,
+    Slice, 
+    Address, 
+    Builder, 
+    beginCell, 
+    ComputeError, 
+    TupleItem, 
+    TupleReader, 
+    Dictionary, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    Contract, 
+    ContractABI, 
+    TupleBuilder,
+    DictionaryValue
+} from 'ton-core';
 import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
@@ -296,7 +313,6 @@ async function Wallet_init(key: bigint, walletId: bigint) {
             throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
         }
     }
-    
     let data = res.stack.readCell();
     return { code: codeCell, data };
 }
@@ -332,11 +348,11 @@ const Wallet_errors: { [key: number]: { message: string } } = {
 export class Wallet implements Contract {
     
     static async init(key: bigint, walletId: bigint) {
-        return await Wallet_init(key,walletId);
+        return await Wallet_init(key, walletId);
     }
     
     static async fromInit(key: bigint, walletId: bigint) {
-        const init = await Wallet_init(key,walletId);
+        const init = await Wallet_init(key, walletId);
         const address = contractAddress(0, init);
         return new Wallet(address, init);
     }
