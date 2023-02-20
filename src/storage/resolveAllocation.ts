@@ -68,7 +68,7 @@ export function resolveAllocations(ctx: CompilerContext) {
         // Convert fields
         let ops: AllocationOperation[] = [];
         for (let f of s.fields) {
-            ops.push(getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size));
+            ops.push({ name: f.name, op: getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size) });
         }
 
         // Perform allocation

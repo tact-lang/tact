@@ -78,7 +78,7 @@ export function writeTypescript(abi: ContractABI, mode: 'server' | 'client', ini
         }
         let sortedTypes = topologicalSort(abi.types, refs);
         for (let f of sortedTypes) {
-            let ops = f.fields.map((v) => getAllocationOperationFromField(v.type, (s) => allocations[s].size));
+            let ops = f.fields.map((v) => ({ name: v.name, op: getAllocationOperationFromField(v.type, (s) => allocations[s].size) }));
             let headerBits = f.header ? 32 : 0;
             let allocation = allocate({ reserved: { bits: headerBits, refs: 0 }, ops });
             allocations[f.name] = { size: { bits: allocation.size.bits + headerBits, refs: allocation.size.refs }, root: allocation };

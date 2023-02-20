@@ -5,6 +5,11 @@ export type AllocationCell = {
 };
 
 export type AllocationOperation = {
+    name: string;
+    op: AllocationOperationType;
+}
+
+export type AllocationOperationType = {
     kind: 'int' | 'uint',
     bits: number,
     optional: boolean

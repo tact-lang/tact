@@ -8,14 +8,20 @@ exports[`resolveAllocation should write program 1`] = `
         "next": null,
         "ops": [
           {
-            "bits": 257,
-            "kind": "int",
-            "optional": false,
+            "name": "x",
+            "op": {
+              "bits": 257,
+              "kind": "int",
+              "optional": false,
+            },
           },
           {
-            "bits": 257,
-            "kind": "int",
-            "optional": false,
+            "name": "y",
+            "op": {
+              "bits": 257,
+              "kind": "int",
+              "optional": false,
+            },
           },
         ],
         "size": {
@@ -293,14 +299,17 @@ exports[`resolveAllocation should write program 1`] = `
         "next": null,
         "ops": [
           {
-            "kind": "struct",
-            "optional": false,
-            "ref": false,
-            "size": {
-              "bits": 514,
-              "refs": 0,
+            "name": "z",
+            "op": {
+              "kind": "struct",
+              "optional": false,
+              "ref": false,
+              "size": {
+                "bits": 514,
+                "refs": 0,
+              },
+              "type": "Point",
             },
-            "type": "Point",
           },
         ],
         "size": {
@@ -475,14 +484,17 @@ exports[`resolveAllocation should write program 1`] = `
           "next": null,
           "ops": [
             {
-              "kind": "struct",
-              "optional": false,
-              "ref": false,
-              "size": {
-                "bits": 514,
-                "refs": 0,
+              "name": "b",
+              "op": {
+                "kind": "struct",
+                "optional": false,
+                "ref": false,
+                "size": {
+                  "bits": 514,
+                  "refs": 0,
+                },
+                "type": "Point2",
               },
-              "type": "Point2",
             },
           ],
           "size": {
@@ -492,14 +504,17 @@ exports[`resolveAllocation should write program 1`] = `
         },
         "ops": [
           {
-            "kind": "struct",
-            "optional": false,
-            "ref": false,
-            "size": {
-              "bits": 514,
-              "refs": 0,
+            "name": "a",
+            "op": {
+              "kind": "struct",
+              "optional": false,
+              "ref": false,
+              "size": {
+                "bits": 514,
+                "refs": 0,
+              },
+              "type": "Point",
             },
-            "type": "Point",
           },
         ],
         "size": {
@@ -776,14 +791,20 @@ exports[`resolveAllocation should write program 1`] = `
               "next": null,
               "ops": [
                 {
-                  "bits": 257,
-                  "kind": "int",
-                  "optional": false,
+                  "name": "j",
+                  "op": {
+                    "bits": 257,
+                    "kind": "int",
+                    "optional": false,
+                  },
                 },
                 {
-                  "bits": 257,
-                  "kind": "int",
-                  "optional": false,
+                  "name": "k",
+                  "op": {
+                    "bits": 257,
+                    "kind": "int",
+                    "optional": false,
+                  },
                 },
               ],
               "size": {
@@ -793,19 +814,28 @@ exports[`resolveAllocation should write program 1`] = `
             },
             "ops": [
               {
-                "bits": 257,
-                "kind": "int",
-                "optional": false,
+                "name": "g",
+                "op": {
+                  "bits": 257,
+                  "kind": "int",
+                  "optional": false,
+                },
               },
               {
-                "bits": 257,
-                "kind": "int",
-                "optional": false,
+                "name": "h",
+                "op": {
+                  "bits": 257,
+                  "kind": "int",
+                  "optional": false,
+                },
               },
               {
-                "bits": 257,
-                "kind": "int",
-                "optional": false,
+                "name": "i",
+                "op": {
+                  "bits": 257,
+                  "kind": "int",
+                  "optional": false,
+                },
               },
             ],
             "size": {
@@ -815,19 +845,28 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "ops": [
             {
-              "bits": 257,
-              "kind": "int",
-              "optional": false,
+              "name": "d",
+              "op": {
+                "bits": 257,
+                "kind": "int",
+                "optional": false,
+              },
             },
             {
-              "bits": 257,
-              "kind": "int",
-              "optional": false,
+              "name": "e",
+              "op": {
+                "bits": 257,
+                "kind": "int",
+                "optional": false,
+              },
             },
             {
-              "bits": 257,
-              "kind": "int",
-              "optional": false,
+              "name": "f",
+              "op": {
+                "bits": 257,
+                "kind": "int",
+                "optional": false,
+              },
             },
           ],
           "size": {
@@ -837,19 +876,28 @@ exports[`resolveAllocation should write program 1`] = `
         },
         "ops": [
           {
-            "bits": 257,
-            "kind": "int",
-            "optional": false,
+            "name": "a",
+            "op": {
+              "bits": 257,
+              "kind": "int",
+              "optional": false,
+            },
           },
           {
-            "bits": 257,
-            "kind": "int",
-            "optional": false,
+            "name": "b",
+            "op": {
+              "bits": 257,
+              "kind": "int",
+              "optional": false,
+            },
           },
           {
-            "bits": 257,
-            "kind": "int",
-            "optional": false,
+            "name": "c",
+            "op": {
+              "bits": 257,
+              "kind": "int",
+              "optional": false,
+            },
           },
         ],
         "size": {
@@ -2047,14 +2095,17 @@ exports[`resolveAllocation should write program 1`] = `
             "next": null,
             "ops": [
               {
-                "kind": "struct",
-                "optional": false,
-                "ref": false,
-                "size": {
-                  "bits": 771,
-                  "refs": 0,
+                "name": "c",
+                "op": {
+                  "kind": "struct",
+                  "optional": false,
+                  "ref": false,
+                  "size": {
+                    "bits": 771,
+                    "refs": 0,
+                  },
+                  "type": "Deep",
                 },
-                "type": "Deep",
               },
             ],
             "size": {
@@ -2064,14 +2115,17 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "ops": [
             {
-              "kind": "struct",
-              "optional": false,
-              "ref": false,
-              "size": {
-                "bits": 771,
-                "refs": 0,
+              "name": "b",
+              "op": {
+                "kind": "struct",
+                "optional": false,
+                "ref": false,
+                "size": {
+                  "bits": 771,
+                  "refs": 0,
+                },
+                "type": "Deep",
               },
-              "type": "Deep",
             },
           ],
           "size": {
@@ -2081,14 +2135,17 @@ exports[`resolveAllocation should write program 1`] = `
         },
         "ops": [
           {
-            "kind": "struct",
-            "optional": false,
-            "ref": false,
-            "size": {
-              "bits": 771,
-              "refs": 0,
+            "name": "a",
+            "op": {
+              "kind": "struct",
+              "optional": false,
+              "ref": false,
+              "size": {
+                "bits": 771,
+                "refs": 0,
+              },
+              "type": "Deep",
             },
-            "type": "Deep",
           },
         ],
         "size": {
@@ -2462,9 +2519,12 @@ exports[`resolveAllocation should write program 1`] = `
         "next": null,
         "ops": [
           {
-            "bits": 257,
-            "kind": "int",
-            "optional": false,
+            "name": "v",
+            "op": {
+              "bits": 257,
+              "kind": "int",
+              "optional": false,
+            },
           },
         ],
         "size": {

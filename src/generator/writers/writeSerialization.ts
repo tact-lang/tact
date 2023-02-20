@@ -25,7 +25,7 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
             if (type.header) {
                 ctx.append(`build_0 = store_uint(build_0, ${type.header}, 32);`);
             }
-            writeSerializerCell(allocation.root, type, 0, 0, ctx);
+            writeSerializerCell(allocation.root, 0, ctx);
             ctx.append(`return build_0;`);
         });
         ctx.append(`}`);
@@ -53,59 +53,59 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
     });
 }
 
-function writeSerializerCell(cell: AllocationCell, type: TypeDescription, offset: number, gen: number, ctx: WriterContext) {
+function writeSerializerCell(cell: AllocationCell, gen: number, ctx: WriterContext) {
 
     // Write fields
     for (let f of cell.ops) {
-        writeSerializerField(f, type, offset++, gen, ctx);
+        writeSerializerField(f, gen, ctx);
     }
 
     // Tail
     if (cell.next) {
         ctx.append(`var build_${gen + 1} = begin_cell();`);
-        writeSerializerCell(cell.next, type, offset, gen + 1, ctx);
+        writeSerializerCell(cell.next, gen + 1, ctx);
         ctx.append(`build_${gen} = store_ref(build_${gen}, build_${gen + 1}.end_cell());`);
     }
 }
 
-function writeSerializerField(f: AllocationOperation, type: TypeDescription, offset: number, gen: number, ctx: WriterContext) {
-    let field = type.fields[offset];
-    let fieldName = `v'${field.name}`;
+function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterContext) {
+    const fieldName = `v'${f.name}`;
+    const op = f.op;
 
-    if (f.kind === 'int') {
-        if (f.optional) {
-            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_int(${fieldName}, ${f.bits}) : build_${gen}.store_int(false, 1);`);
+    if (op.kind === 'int') {
+        if (op.optional) {
+            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_int(${fieldName}, ${op.bits}) : build_${gen}.store_int(false, 1);`);
         } else {
-            ctx.append(`build_${gen} = build_${gen}.store_int(${fieldName}, ${f.bits});`);
+            ctx.append(`build_${gen} = build_${gen}.store_int(${fieldName}, ${op.bits});`);
         }
         return;
     }
-    if (f.kind === 'uint') {
-        if (f.optional) {
-            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_uint(${fieldName}, ${f.bits}) : build_${gen}.store_int(false, 1);`);
+    if (op.kind === 'uint') {
+        if (op.optional) {
+            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_uint(${fieldName}, ${op.bits}) : build_${gen}.store_int(false, 1);`);
         } else {
-            ctx.append(`build_${gen} = build_${gen}.store_uint(${fieldName}, ${f.bits});`);
+            ctx.append(`build_${gen} = build_${gen}.store_uint(${fieldName}, ${op.bits});`);
         }
         return;
     }
-    if (f.kind === 'coins') {
-        if (f.optional) {
+    if (op.kind === 'coins') {
+        if (op.optional) {
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_coins(${fieldName}) : build_${gen}.store_int(false, 1);`);
         } else {
             ctx.append(`build_${gen} = build_${gen}.store_coins(${fieldName});`);
         }
         return;
     }
-    if (f.kind === 'boolean') {
-        if (f.optional) {
+    if (op.kind === 'boolean') {
+        if (op.optional) {
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_int(${fieldName}, 1) : build_${gen}.store_int(false, 1);`);
         } else {
             ctx.append(`build_${gen} = build_${gen}.store_int(${fieldName}, 1);`);
         }
         return;
     }
-    if (f.kind === 'address') {
-        if (f.optional) {
+    if (op.kind === 'address') {
+        if (op.optional) {
             ctx.used(`__tact_store_address_opt`);
             ctx.append(`build_${gen} = __tact_store_address_opt(build_${gen}, ${fieldName});`);
         } else {
@@ -114,15 +114,15 @@ function writeSerializerField(f: AllocationOperation, type: TypeDescription, off
         }
         return;
     }
-    if (f.kind === 'cell') {
-        if (f.format === 'default') {
-            if (f.optional) {
+    if (op.kind === 'cell') {
+        if (op.format === 'default') {
+            if (op.optional) {
                 ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(${fieldName}) : build_${gen}.store_int(false, 1);`);
             } else {
                 ctx.append(`build_${gen} = build_${gen}.store_ref(${fieldName});`);
             }
-        } else if (f.format === 'remainder') {
-            if (f.optional) {
+        } else if (op.format === 'remainder') {
+            if (op.optional) {
                 throw Error('Impossible');
             }
             ctx.append(`build_${gen} = build_${gen}.store_slice(${fieldName}.begin_parse());`);
@@ -131,15 +131,15 @@ function writeSerializerField(f: AllocationOperation, type: TypeDescription, off
         }
         return;
     }
-    if (f.kind === 'slice') {
-        if (f.format === 'default') {
-            if (f.optional) {
+    if (op.kind === 'slice') {
+        if (op.format === 'default') {
+            if (op.optional) {
                 ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`);
             } else {
                 ctx.append(`build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}).end_cell());`);
             }
-        } else if (f.format === 'remainder') {
-            if (f.optional) {
+        } else if (op.format === 'remainder') {
+            if (op.optional) {
                 throw Error('Impossible');
             }
             ctx.append(`build_${gen} = build_${gen}.store_slice(${fieldName});`);
@@ -148,40 +148,40 @@ function writeSerializerField(f: AllocationOperation, type: TypeDescription, off
         }
         return;
     }
-    if (f.kind === 'string') {
-        if (f.optional) {
+    if (op.kind === 'string') {
+        if (op.optional) {
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`);
         } else {
             ctx.append(`build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}).end_cell());`);
         }
         return;
     }
-    if (f.kind === 'fixed-bytes') {
-        if (f.optional) {
+    if (op.kind === 'fixed-bytes') {
+        if (op.optional) {
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_slice(${fieldName}) : build_${gen}.store_int(false, 1);`);
         } else {
             ctx.append(`build_${gen} = build_${gen}.store_slice(${fieldName});`);
         }
         return;
     }
-    if (f.kind === 'map') {
+    if (op.kind === 'map') {
         ctx.append(`build_${gen} = build_${gen}.store_dict(${fieldName});`);
         return;
     }
-    if (f.kind === 'struct') {
-        if (f.ref) {
+    if (op.kind === 'struct') {
+        if (op.ref) {
             throw Error('Not implemented');
         }
-        if (f.optional) {
-            ctx.used(`__gen_${f.type}_not_null`);
-            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(f.type, ctx)}( __gen_${f.type}_not_null(${fieldName})) : build_${gen}.store_int(false, 1);`);
+        if (op.optional) {
+            ctx.used(`__gen_${op.type}_not_null`);
+            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type, ctx)}( __gen_${op.type}_not_null(${fieldName})) : build_${gen}.store_int(false, 1);`);
         } else {
-            ctx.append(`build_${gen} = ${ops.writer(f.type, ctx)}(build_${gen}, ${resolveFuncTypeUnpack(f.type, fieldName, ctx)});`);
+            ctx.append(`build_${gen} = ${ops.writer(op.type, ctx)}(build_${gen}, ${resolveFuncTypeUnpack(op.type, fieldName, ctx)});`);
         }
         return;
     }
 
-    throw Error('Unsupported field kind: ' + f.kind);
+    throw Error('Unsupported field kind: ' + op.kind);
 }
 
 //
@@ -202,7 +202,7 @@ export function writeParser(type: TypeDescription, allocation: StorageAllocation
             }
 
             // Write cell parser
-            writeCellParser(allocation.root, type, 0, 0, ctx);
+            writeCellParser(allocation.root, 0, ctx);
 
             // Compile tuple
             ctx.append(`return (sc_0, (${type.fields.map((v) => `v'${v.name}`).join(', ')}));`);
@@ -223,61 +223,61 @@ export function writeParser(type: TypeDescription, allocation: StorageAllocation
     });
 }
 
-function writeCellParser(cell: AllocationCell, type: TypeDescription, offset: number, gen: number, ctx: WriterContext): number {
+function writeCellParser(cell: AllocationCell, gen: number, ctx: WriterContext): number {
 
     // Write current fields
     for (let f of cell.ops) {
-        writeFieldParser(f, type, offset++, gen, ctx);
+        writeFieldParser(f, gen, ctx);
     }
 
     // Handle next cell
     if (cell.next) {
         ctx.append(`slice sc_${gen + 1} = sc_${gen}~load_ref().begin_parse();`);
-        return writeCellParser(cell.next, type, offset, gen + 1, ctx);
+        return writeCellParser(cell.next, gen + 1, ctx);
     } else {
         return gen;
     }
 }
 
-function writeFieldParser(f: AllocationOperation, type: TypeDescription, offset: number, gen: number, ctx: WriterContext) {
-    let field = type.fields[offset];
-    let varName = `var v'${field.name}`;
+function writeFieldParser(f: AllocationOperation, gen: number, ctx: WriterContext) {
+    const op = f.op;
+    const varName = `var v'${f.name}`;
 
     // Handle int
-    if (f.kind === 'int') {
-        if (f.optional) {
-            ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(${f.bits}) : null();`);
+    if (op.kind === 'int') {
+        if (op.optional) {
+            ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(${op.bits}) : null();`);
         } else {
-            ctx.append(`${varName} = sc_${gen}~load_int(${f.bits});`);
+            ctx.append(`${varName} = sc_${gen}~load_int(${op.bits});`);
         }
         return;
     }
-    if (f.kind === 'uint') {
-        if (f.optional) {
-            ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_uint(${f.bits}) : null();`);
+    if (op.kind === 'uint') {
+        if (op.optional) {
+            ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_uint(${op.bits}) : null();`);
         } else {
-            ctx.append(`${varName} = sc_${gen}~load_uint(${f.bits});`);
+            ctx.append(`${varName} = sc_${gen}~load_uint(${op.bits});`);
         }
         return;
     }
-    if (f.kind === 'coins') {
-        if (f.optional) {
+    if (op.kind === 'coins') {
+        if (op.optional) {
             ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_coins() : null();`);
         } else {
             ctx.append(`${varName} = sc_${gen}~load_coins();`);
         }
         return;
     }
-    if (f.kind === 'boolean') {
-        if (f.optional) {
+    if (op.kind === 'boolean') {
+        if (op.optional) {
             ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_int(1) : null();`);
         } else {
             ctx.append(`${varName} = sc_${gen}~load_int(1);`);
         }
         return;
     }
-    if (f.kind === 'address') {
-        if (f.optional) {
+    if (op.kind === 'address') {
+        if (op.optional) {
             ctx.used(`__tact_load_address_opt`);
             ctx.append(`${varName} = sc_${gen}~__tact_load_address_opt();`);
         } else {
@@ -286,16 +286,16 @@ function writeFieldParser(f: AllocationOperation, type: TypeDescription, offset:
         }
         return;
     }
-    if (f.kind === 'cell') {
-        if (f.optional) {
-            if (f.format !== 'default') {
+    if (op.kind === 'cell') {
+        if (op.optional) {
+            if (op.format !== 'default') {
                 throw new Error(`Impossible`);
             }
             ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref() : null();`);
         } else {
-            if (f.format === 'default') {
+            if (op.format === 'default') {
                 ctx.append(`${varName} = sc_${gen}~load_ref();`);
-            } else if (f.format === 'remainder') {
+            } else if (op.format === 'remainder') {
                 ctx.append(`${varName} = begin_cell().store_slice(sc_${gen}).end_cell();`);
             } else {
                 throw new Error(`Impossible`);
@@ -303,16 +303,16 @@ function writeFieldParser(f: AllocationOperation, type: TypeDescription, offset:
         }
         return;
     }
-    if (f.kind === 'slice') {
-        if (f.optional) {
-            if (f.format !== 'default') {
+    if (op.kind === 'slice') {
+        if (op.optional) {
+            if (op.format !== 'default') {
                 throw new Error(`Impossible`);
             }
             ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`);
         } else {
-            if (f.format === 'default') {
+            if (op.format === 'default') {
                 ctx.append(`${varName} = sc_${gen}~load_ref().begin_parse();`);
-            } else if (f.format === 'remainder') {
+            } else if (op.format === 'remainder') {
                 ctx.append(`${varName} = sc_${gen};`);
             } else {
                 throw new Error(`Impossible`);
@@ -320,48 +320,48 @@ function writeFieldParser(f: AllocationOperation, type: TypeDescription, offset:
         }
         return;
     }
-    if (f.kind === 'string') {
-        if (f.optional) {
+    if (op.kind === 'string') {
+        if (op.optional) {
             ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`);
         } else {
             ctx.append(`${varName} = sc_${gen}~load_ref().begin_parse();`);
         }
         return;
     }
-    if (f.kind === 'fixed-bytes') {
-        if (f.optional) {
-            ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_bits(${f.bytes * 8}) : null();`);
+    if (op.kind === 'fixed-bytes') {
+        if (op.optional) {
+            ctx.append(`${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_bits(${op.bytes * 8}) : null();`);
         } else {
-            ctx.append(`${varName} = sc_${gen}~load_bits(${f.bytes * 8});`);
+            ctx.append(`${varName} = sc_${gen}~load_bits(${op.bytes * 8});`);
         }
         return;
     }
-    if (f.kind === 'map') {
+    if (op.kind === 'map') {
         ctx.append(`${varName} = sc_${gen}~load_dict();`);
         return;
     }
-    if (f.kind === 'struct') {
-        ctx.used(`__gen_read_${f.type}`);
-        if (f.optional) {
-            ctx.used(`__gen_${f.type}_as_optional`);
-            if (f.ref) {
+    if (op.kind === 'struct') {
+        ctx.used(`__gen_read_${op.type}`);
+        if (op.optional) {
+            ctx.used(`__gen_${op.type}_as_optional`);
+            if (op.ref) {
                 // ctx.append(`${varName} = sc_${gen}~load_int(1) ? __gen_${f.type}_as_optional(second(__gen_read_${f.type}((sc_${gen}~load_ref().begin_parse()))) : null();`);
                 throw Error('Not implemented');
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_int(1) ? __gen_${f.type}_as_optional(sc_${gen}~__gen_read_${f.type}()) : null();`);
+                ctx.append(`${varName} = sc_${gen}~load_int(1) ? __gen_${op.type}_as_optional(sc_${gen}~__gen_read_${op.type}()) : null();`);
             }
         } else {
-            if (f.ref) {
+            if (op.ref) {
                 // ctx.append(`${varName} = second(__gen_read_${f.type}((sc_${gen}~load_ref().begin_parse()));`);
                 throw Error('Not implemented');
             } else {
-                ctx.append(`${varName} = sc_${gen}~__gen_read_${f.type}();`);
+                ctx.append(`${varName} = sc_${gen}~__gen_read_${op.type}();`);
             }
         }
         return;
     }
 
-    throw Error('Unsupported field kind: ' + f.kind);
+    throw Error('Unsupported field kind: ' + op.kind);
 }
 
 //

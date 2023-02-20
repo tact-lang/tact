@@ -1,10 +1,10 @@
 import { ABITypeRef } from "ton-core";
-import { AllocationCell, AllocationOperation } from "./operation";
+import { AllocationCell, AllocationOperation, AllocationOperationType } from "./operation";
 
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
 
-export function getOperationSize(src: AllocationOperation): { bits: number, refs: number } {
+export function getOperationSize(src: AllocationOperationType): { bits: number, refs: number } {
     if (src.kind === 'int' || src.kind === 'uint') {
         return { bits: src.bits + (src.optional ? 1 : 0), refs: 0 };
     } else if (src.kind === 'coins') {
@@ -56,7 +56,7 @@ export function getOperationSize(src: AllocationOperation): { bits: number, refs
     throw new Error('Unsupported operation');
 }
 
-export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (name: string) => { bits: number, refs: number }): AllocationOperation {
+export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (name: string) => { bits: number, refs: number }): AllocationOperationType {
 
     // Reference types
     if (src.kind === 'simple') {
@@ -173,7 +173,7 @@ function allocateSegment(ops: AllocationOperation[], bits: number, refs: number)
 
     for (let i = 0; i < ops.length; i++) {
         let op = ops[i];
-        let size = getOperationSize(op);
+        let size = getOperationSize(op.op);
 
         // Check if we can fit this operation
         if (size.bits > bits || size.refs > refs) {
