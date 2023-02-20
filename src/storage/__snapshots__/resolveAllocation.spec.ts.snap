@@ -31,6 +31,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 514,
+        "fields": 2,
         "refs": 0,
       },
       "type": {
@@ -306,6 +307,7 @@ exports[`resolveAllocation should write program 1`] = `
               "ref": false,
               "size": {
                 "bits": 514,
+                "fields": 2,
                 "refs": 0,
               },
               "type": "Point",
@@ -319,6 +321,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 514,
+        "fields": 1,
         "refs": 0,
       },
       "type": {
@@ -491,6 +494,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": false,
                 "size": {
                   "bits": 514,
+                  "fields": 1,
                   "refs": 0,
                 },
                 "type": "Point2",
@@ -511,6 +515,7 @@ exports[`resolveAllocation should write program 1`] = `
               "ref": false,
               "size": {
                 "bits": 514,
+                "fields": 2,
                 "refs": 0,
               },
               "type": "Point",
@@ -524,6 +529,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 514,
+        "fields": 2,
         "refs": 0,
       },
       "type": {
@@ -907,6 +913,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 771,
+        "fields": 11,
         "refs": 0,
       },
       "type": {
@@ -2102,6 +2109,7 @@ exports[`resolveAllocation should write program 1`] = `
                   "ref": false,
                   "size": {
                     "bits": 771,
+                    "fields": 11,
                     "refs": 0,
                   },
                   "type": "Deep",
@@ -2122,6 +2130,7 @@ exports[`resolveAllocation should write program 1`] = `
                 "ref": false,
                 "size": {
                   "bits": 771,
+                  "fields": 11,
                   "refs": 0,
                 },
                 "type": "Deep",
@@ -2142,6 +2151,7 @@ exports[`resolveAllocation should write program 1`] = `
               "ref": false,
               "size": {
                 "bits": 771,
+                "fields": 11,
                 "refs": 0,
               },
               "type": "Deep",
@@ -2155,6 +2165,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 771,
+        "fields": 3,
         "refs": 0,
       },
       "type": {
@@ -2534,6 +2545,7 @@ exports[`resolveAllocation should write program 1`] = `
       },
       "size": {
         "bits": 257,
+        "fields": 1,
         "refs": 1,
       },
       "type": {

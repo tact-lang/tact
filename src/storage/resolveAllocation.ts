@@ -80,7 +80,8 @@ export function resolveAllocations(ctx: CompilerContext) {
             root,
             size: {
                 bits: root.size.bits + reserveBits,
-                refs: root.size.refs + reserveRefs
+                refs: root.size.refs + reserveRefs,
+                fields: s.fields.length
             }
         };
         ctx = store.set(ctx, s.name, allocation);

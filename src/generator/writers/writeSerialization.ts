@@ -14,7 +14,7 @@ const SMALL_STRUCT_MAX_FIELDS = 5;
 //
 
 export function writeSerializer(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
-    let isSmall = type.fields.length <= SMALL_STRUCT_MAX_FIELDS;
+    let isSmall = allocation.size.fields <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
     ctx.fun(ops.writer(type.name, ctx), () => {
@@ -189,7 +189,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 //
 
 export function writeParser(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
-    let isSmall = type.fields.length <= SMALL_STRUCT_MAX_FIELDS;
+    let isSmall = allocation.size.fields <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(`__gen_read_${type.name}`, () => {
         let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
