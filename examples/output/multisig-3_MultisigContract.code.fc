@@ -214,6 +214,9 @@ _ $__gen_get_seqno() method_id(85143) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_MultisigContract();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -221,7 +224,6 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Receive Execute message
     if (op == 520967536) {
-        var self = __gen_load_MultisigContract();
         var msg = in_msg~__gen_read_Execute();
         self~$__gen_MultisigContract_receive_Execute(msg);
         __gen_store_MultisigContract(self);
@@ -234,7 +236,6 @@ _ $__gen_get_seqno() method_id(85143) {
         
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            var self = __gen_load_MultisigContract();
             self~$__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             __gen_store_MultisigContract(self);
             return ();

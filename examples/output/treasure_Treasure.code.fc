@@ -178,6 +178,9 @@ _ $__gen_get_owner() method_id(83229) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Treasure();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -185,7 +188,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive Withdraw message
     if (op == 1672521544) {
-        var self = __gen_load_Treasure();
         var msg = in_msg~__gen_read_Withdraw();
         self~$__gen_Treasure_receive_Withdraw(msg);
         __gen_store_Treasure(self);
@@ -194,7 +196,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive ChangeOwner message
     if (op == 256331011) {
-        var self = __gen_load_Treasure();
         var msg = in_msg~__gen_read_ChangeOwner();
         self~$__gen_Treasure_receive_ChangeOwner(msg);
         __gen_store_Treasure(self);
@@ -207,7 +208,6 @@ _ $__gen_get_owner() method_id(83229) {
         
         ;; Receive "Destroy" message
         if (text_op == 0x986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d) {
-            var self = __gen_load_Treasure();
             self~$__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
             __gen_store_Treasure(self);
             return ();

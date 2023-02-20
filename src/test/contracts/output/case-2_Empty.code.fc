@@ -5,6 +5,17 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
+(slice, ((int))) __gen_read_Empty(slice sc_0) inline {
+    var v'x = sc_0~load_int(257);
+    return (sc_0, (v'x));
+}
+
+(int) __gen_load_Empty() inline {
+    slice sc = get_data().begin_parse();
+    __tact_context_sys = sc~load_ref();
+    return sc~__gen_read_Empty();
+}
+
 
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
     
@@ -18,6 +29,9 @@ global cell __tact_context_sys;
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Load contract data
+    var self = __gen_load_Empty();
     
     ;; Handle bounced messages
     if (msg_bounced) {

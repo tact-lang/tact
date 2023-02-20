@@ -33,28 +33,28 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
+    4 1 BLKSWAP
+    1 4 BLKDROP2
+    s0 s6 XCHG
     <{
-      2DROP
+      6 BLKDROP
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    s4 PUSH
     520967536 PUSHINT
     EQUAL
     <{
-      s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      32 LDU
-      256 LDU
-      256 LDU
-      256 LDU
-      4 1 BLKSWAP
-      1 4 BLKDROP2
-      s0 s4 XCHG
+      s4 POP
+      s0 s2 XCHG
       32 LDU
       s0 s1 XCHG
       520967536 PUSHINT
@@ -80,9 +80,7 @@ SETCP0
       s1 s6 XCHG
       s3 s3 s0 XCHG3
       s6 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
+      4 6 REVERSE
       1 5 BLKSWAP
       5 4 3 PUSH3
       <{
@@ -264,26 +262,18 @@ SETCP0
       ENDC
       c4 POP
     }> IFJMPREF
+    s0 s4 XCHG
     0 EQINT
     <{
-      s0 POP
+      5 BLKDROP
     }> PUSHCONT
     <{
+      s0 s2 XCHG
       HASHSU
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       <{
-        c4 PUSH
-        CTOS
-        LDREF
-        s0 s1 XCHG
-        2 SETGLOBVAR
-        32 LDU
-        256 LDU
-        256 LDU
-        256 LDU
-        4 1 BLKSWAP
-        1 4 BLKDROP2
+        s2 s3 XCHG2
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -299,6 +289,7 @@ SETCP0
         RETALT
       }> PUSHCONT
       IFJMP
+      4 BLKDROP
     }> IFREFELSE
     130 THROW
 

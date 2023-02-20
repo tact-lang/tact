@@ -108,33 +108,31 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Functions INLINECALLDICT
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
     }>
-    DUP
+    OVER
     831841332 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Functions INLINECALLDICT
-      SWAP
+      NIP
       __gen_read_Add INLINECALLDICT
       NIP
       $__gen_Functions_receive_Add INLINECALLDICT
       __gen_store_Functions INLINECALLDICT
     }>
+    SWAP
     2640337643 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_Functions INLINECALLDICT
-      SWAP
       __gen_read_Sub INLINECALLDICT
       NIP
       $__gen_Functions_receive_Sub INLINECALLDICT
       __gen_store_Functions INLINECALLDICT
     }>
-    DROP
+    2DROP
     130 THROW
   }>
   supported_interfaces PROC:<{

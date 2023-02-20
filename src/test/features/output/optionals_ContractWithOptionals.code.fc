@@ -448,6 +448,9 @@ _ $__gen_get_testVariables() method_id(87190) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_ContractWithOptionals();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -455,7 +458,6 @@ _ $__gen_get_testVariables() method_id(87190) {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        var self = __gen_load_ContractWithOptionals();
         self~$__gen_ContractWithOptionals_receive();
         __gen_store_ContractWithOptionals(self);
         return ();
@@ -463,7 +465,6 @@ _ $__gen_get_testVariables() method_id(87190) {
     
     ;; Receive Update message
     if (op == 357891325) {
-        var self = __gen_load_ContractWithOptionals();
         var msg = in_msg~__gen_read_Update();
         self~$__gen_ContractWithOptionals_receive_Update(msg);
         __gen_store_ContractWithOptionals(self);

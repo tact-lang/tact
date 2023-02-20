@@ -394,6 +394,9 @@ _ $__gen_get_owner() method_id(83229) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Payouts();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -401,7 +404,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive CanPayoutResponse message
     if (op == 4293607646) {
-        var self = __gen_load_Payouts();
         var msg = in_msg~__gen_read_CanPayoutResponse();
         self~$__gen_Payouts_receive_CanPayoutResponse(msg);
         __gen_store_Payouts(self);
@@ -410,7 +412,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive ChangeOwner message
     if (op == 256331011) {
-        var self = __gen_load_Payouts();
         var msg = in_msg~__gen_read_ChangeOwner();
         self~$__gen_Payouts_receive_ChangeOwner(msg);
         __gen_store_Payouts(self);
@@ -420,7 +421,6 @@ _ $__gen_get_owner() method_id(83229) {
     ;; Text Receivers
     if (op == 0) {
         if (slice_bits(in_msg) >= 32) {
-            var self = __gen_load_Payouts();
             self~$__gen_Payouts_receive_comment(in_msg.skip_bits(32));
             __gen_store_Payouts(self);
             return ();

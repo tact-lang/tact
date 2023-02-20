@@ -418,50 +418,51 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Wallet INLINECALLDICT
+    s0 s5 XCHG
     IFJMP:<{
-      DROP
-      __gen_load_Wallet INLINECALLDICT
-      3 ROLL
+      s3 POP
+      s3 s3 XCHG2
       $__gen_Wallet_receive_bounced INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
-    DUP
+    s3 PUSH
     123 EQINT
     IFJMP:<{
-      DROP
-      __gen_load_Wallet INLINECALLDICT
-      s0 s3 XCHG
+      s3 POP
+      SWAP
       __gen_read_TransferMessage INLINECALLDICT
       s6 POP
-      s7 s8 XCHG
-      s6 s7 XCHG
+      s6 s8 XCHG
       5 ROLL
       $__gen_Wallet_receive_TransferMessage INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
-    DUP
+    s3 PUSH
     0 EQINT
-    s2 PUSH
+    s3 PUSH
     SBITS
     33 LESSINT
     AND
     IFJMP:<{
-      2DROP
-      __gen_load_Wallet INLINECALLDICT
+      s3 POP
+      NIP
+      s0 s2 XCHG
       $__gen_Wallet_receive INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
+    s0 s3 XCHG
     0 EQINT
     IF:<{
-      DUP
+      OVER
       HASHSU
       DUP
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       IFJMP:<{
-        2DROP
-        __gen_load_Wallet INLINECALLDICT
+        DROP
+        NIP
+        s0 s2 XCHG
         $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
@@ -470,8 +471,9 @@ PROGRAM{
       6394821005585434778314826493057958727299638479680279508357575356610368139954 PUSHINT
       EQUAL
       IFJMP:<{
-        2DROP
-        __gen_load_Wallet INLINECALLDICT
+        DROP
+        NIP
+        s0 s2 XCHG
         $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
@@ -480,8 +482,9 @@ PROGRAM{
       46658611495011906810868383899087668766225883541312498391907908162497651457218 PUSHINT
       EQUAL
       IFJMP:<{
-        2DROP
-        __gen_load_Wallet INLINECALLDICT
+        DROP
+        NIP
+        s0 s2 XCHG
         $__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2 INLINECALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
@@ -489,15 +492,14 @@ PROGRAM{
       70845166824474961660404539579183775280814018357735859006660992311266151320569 PUSHINT
       EQUAL
       IFJMP:<{
-        DROP
-        __gen_load_Wallet INLINECALLDICT
+        NIP
+        s0 s2 XCHG
         $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 INLINECALLDICT
         __gen_store_Wallet INLINECALLDICT
         RETALT
       }>
     }>
-    __gen_load_Wallet INLINECALLDICT
-    3 ROLL
+    s3 s3 XCHG2
     $__gen_Wallet_receive_fallback INLINECALLDICT
     __gen_store_Wallet INLINECALLDICT
   }>

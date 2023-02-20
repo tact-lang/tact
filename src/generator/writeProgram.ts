@@ -70,16 +70,18 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
             ctx.append();
 
+            // Load self
+            ctx.append(`;; Load contract data`);
+            ctx.used(`__gen_load_${type.name}`);
+            ctx.append(`var self = __gen_load_${type.name}();`);
+            ctx.append();
+
             // Handle bounced
             ctx.append(`;; Handle bounced messages`);
             ctx.append(`if (msg_bounced) {`);
             ctx.inIndent(() => {
                 let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
                 if (bouncedHandler) {
-
-                    // Load storage
-                    ctx.used(`__gen_load_${type.name}`);
-                    ctx.append(`var self = __gen_load_${type.name}();`);
 
                     // Execute function
                     ctx.used(`__gen_${type.name}_receive_bounced`);
@@ -110,10 +112,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
                     ctx.append(`if (op == ${allocation.header}) {`);
                     ctx.inIndent(() => {
 
-                        // Load storage
-                        ctx.used(`__gen_load_${type.name}`);
-                        ctx.append(`var self = __gen_load_${type.name}();`);
-
                         // Read message
                         ctx.used(`__gen_read_${selector.type}`);
                         ctx.append(`var msg = in_msg~__gen_read_${selector.type}();`);
@@ -137,10 +135,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
                     ctx.append(`;; Receive empty message`);
                     ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
                     ctx.inIndent(() => {
-
-                        // Load storage
-                        ctx.used(`__gen_load_${type.name}`);
-                        ctx.append(`var self = __gen_load_${type.name}();`);
 
                         // Execute function
                         ctx.used(`__gen_${type.name}_receive`);
@@ -180,10 +174,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
                                 ctx.append(`if (text_op == 0x${hash}) {`);
                                 ctx.inIndent(() => {
 
-                                    // Load storage
-                                    ctx.used(`__gen_load_${type.name}`);
-                                    ctx.append(`var self = __gen_load_${type.name}();`);
-
                                     // Execute function
                                     ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
                                     ctx.append(`self~${fn(`__gen_${type.name}_receive_comment_${hash}`)}();`);
@@ -206,10 +196,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                         ctx.append(`if (slice_bits(in_msg) >= 32) {`);
                         ctx.inIndent(() => {
-
-                            // Load storage
-                            ctx.used(`__gen_load_${type.name}`);
-                            ctx.append(`var self = __gen_load_${type.name}();`);
 
                             // Execute function
                             ctx.used(`__gen_${type.name}_receive_comment`);
@@ -235,10 +221,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 
                 ctx.append();
                 ctx.append(`;; Receiver fallback`);
-
-                // Load storage
-                ctx.used(`__gen_load_${type.name}`);
-                ctx.append(`var self = __gen_load_${type.name}();`);
 
                 // Execute function
                 ctx.used(`__gen_${type.name}_receive_fallback`);

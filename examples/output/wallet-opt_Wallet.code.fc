@@ -102,6 +102,9 @@ _ $__gen_get_seqno() method_id(85143) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Wallet();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -109,7 +112,6 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Receive TransferMessage message
     if (op == 3548477446) {
-        var self = __gen_load_Wallet();
         var msg = in_msg~__gen_read_TransferMessage();
         self~$__gen_Wallet_receive_TransferMessage(msg);
         __gen_store_Wallet(self);

@@ -274,9 +274,11 @@ _ $__gen_get_seqno() method_id(85143) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Wallet();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
-        var self = __gen_load_Wallet();
         self~$__gen_Wallet_receive_bounced(in_msg);
         __gen_store_Wallet(self);
         return ();
@@ -284,7 +286,6 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Receive TransferMessage message
     if (op == 123) {
-        var self = __gen_load_Wallet();
         var msg = in_msg~__gen_read_TransferMessage();
         self~$__gen_Wallet_receive_TransferMessage(msg);
         __gen_store_Wallet(self);
@@ -293,7 +294,6 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        var self = __gen_load_Wallet();
         self~$__gen_Wallet_receive();
         __gen_store_Wallet(self);
         return ();
@@ -305,7 +305,6 @@ _ $__gen_get_seqno() method_id(85143) {
         
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            var self = __gen_load_Wallet();
             self~$__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             __gen_store_Wallet(self);
             return ();
@@ -313,7 +312,6 @@ _ $__gen_get_seqno() method_id(85143) {
         
         ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
-            var self = __gen_load_Wallet();
             self~$__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
             __gen_store_Wallet(self);
             return ();
@@ -321,7 +319,6 @@ _ $__gen_get_seqno() method_id(85143) {
         
         ;; Receive "слава україни" message
         if (text_op == 0x6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2) {
-            var self = __gen_load_Wallet();
             self~$__gen_Wallet_receive_comment_6727d69765f8f22c75c581e356544397f5a00bb91bd32c4d0d96d4c92684bcc2();
             __gen_store_Wallet(self);
             return ();
@@ -329,7 +326,6 @@ _ $__gen_get_seqno() method_id(85143) {
         
         ;; Receive "duplicate" message
         if (text_op == 0x9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9) {
-            var self = __gen_load_Wallet();
             self~$__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9();
             __gen_store_Wallet(self);
             return ();
@@ -337,7 +333,6 @@ _ $__gen_get_seqno() method_id(85143) {
     }
     
     ;; Receiver fallback
-    var self = __gen_load_Wallet();
     self~$__gen_Wallet_receive_fallback(in_msg);
     __gen_store_Wallet(self);
 }

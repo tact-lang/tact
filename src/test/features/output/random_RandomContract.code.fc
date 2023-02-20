@@ -176,6 +176,9 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_RandomContract();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -183,7 +186,6 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     
     ;; Receive Deploy message
     if (op == 2490013878) {
-        var self = __gen_load_RandomContract();
         var msg = in_msg~__gen_read_Deploy();
         self~$__gen_RandomContract_receive_Deploy(msg);
         __gen_store_RandomContract(self);

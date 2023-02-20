@@ -213,6 +213,9 @@ _ $__gen_get_debug() method_id(93099) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Debug();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -220,7 +223,6 @@ _ $__gen_get_debug() method_id(93099) {
     
     ;; Receive Deploy message
     if (op == 2490013878) {
-        var self = __gen_load_Debug();
         var msg = in_msg~__gen_read_Deploy();
         self~$__gen_Debug_receive_Deploy(msg);
         __gen_store_Debug(self);
@@ -233,7 +235,6 @@ _ $__gen_get_debug() method_id(93099) {
         
         ;; Receive "Debug" message
         if (text_op == 0xae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57) {
-            var self = __gen_load_Debug();
             self~$__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57();
             __gen_store_Debug(self);
             return ();

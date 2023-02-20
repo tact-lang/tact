@@ -380,6 +380,9 @@ _ $__gen_get_owner() method_id(83229) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_SampleJetton();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -387,7 +390,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive Mint message
     if (op == 33240155) {
-        var self = __gen_load_SampleJetton();
         var msg = in_msg~__gen_read_Mint();
         self~$__gen_SampleJetton_receive_Mint(msg);
         __gen_store_SampleJetton(self);
@@ -396,7 +398,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive TokenUpdateContent message
     if (op == 201882270) {
-        var self = __gen_load_SampleJetton();
         var msg = in_msg~__gen_read_TokenUpdateContent();
         self~$__gen_SampleJetton_receive_TokenUpdateContent(msg);
         __gen_store_SampleJetton(self);
@@ -405,7 +406,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive TokenBurnNotification message
     if (op == 2078119902) {
-        var self = __gen_load_SampleJetton();
         var msg = in_msg~__gen_read_TokenBurnNotification();
         self~$__gen_SampleJetton_receive_TokenBurnNotification(msg);
         __gen_store_SampleJetton(self);
@@ -418,7 +418,6 @@ _ $__gen_get_owner() method_id(83229) {
         
         ;; Receive "Mint!" message
         if (text_op == 0xcd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2) {
-            var self = __gen_load_SampleJetton();
             self~$__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2();
             __gen_store_SampleJetton(self);
             return ();

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Refactoring of allocator
+- Moving contract's load function to the begining of the execution
 
 ## [0.9.3] - 2023-02-19
 

@@ -789,225 +789,214 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_MapTestContract INLINECALLDICT
+    s0 s10 XCHG
     IFJMP:<{
-      2DROP
+      10 BLKDROP
     }>
-    DUP
+    s8 PUSH
     0 EQINT
-    s2 PUSH
+    s8 PUSH
     SBITS
     33 LESSINT
     AND
     IFJMP:<{
-      2DROP
-      __gen_load_MapTestContract INLINECALLDICT
+      s7 POP
+      s7 POP
+      s4 s7 XCHG
+      3 4 BLKSWAP
       $__gen_MapTestContract_receive INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1510253336 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap1 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap1 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1629867766 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap2 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap2 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     3613954633 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap3 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap3 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     383013829 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap4 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap4 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     240710017 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap5 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap5 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1749966413 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap1 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap1 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     624157584 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap2 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap2 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     4276365062 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap3 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap3 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1683777913 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap4 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap4 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1358519521 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap5 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap5 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
+    s0 s8 XCHG
     0 EQINT
     IF:<{
+      s0 s6 XCHG
       HASHSU
       33891181464710156031034046061755617033497409731940287186959295655538839105307 PUSHINT
       EQUAL
       IFJMP:<{
-        __gen_load_MapTestContract INLINECALLDICT
+        s4 s7 XCHG
+        s3 s6 XCHG
+        s5 s3 s3 XCHG3
+        s0 s4 XCHG
         $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b INLINECALLDICT
         __gen_store_MapTestContract INLINECALLDICT
         RETALT
       }>
+      8 BLKDROP
     }>ELSE<{
-      DROP
+      9 BLKDROP
     }>
     130 THROW
   }>

@@ -76,23 +76,25 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Native INLINECALLDICT
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
     }>
+    SWAP
     0 EQINT
     IF:<{
       HASHSU
       93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
       EQUAL
       IFJMP:<{
-        __gen_load_Native INLINECALLDICT
         $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 INLINECALLDICT
         __gen_store_Native INLINECALLDICT
         RETALT
       }>
-    }>ELSE<{
       DROP
+    }>ELSE<{
+      2DROP
     }>
     130 THROW
   }>

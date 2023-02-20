@@ -62,6 +62,9 @@ _ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Empty();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();

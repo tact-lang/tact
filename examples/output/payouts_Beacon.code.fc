@@ -175,9 +175,11 @@ _ $__gen_get_owner() method_id(83229) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Beacon();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
-        var self = __gen_load_Beacon();
         self~$__gen_Beacon_receive_bounced(in_msg);
         __gen_store_Beacon(self);
         return ();
@@ -185,7 +187,6 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Receive CanPayout message
     if (op == 3289991647) {
-        var self = __gen_load_Beacon();
         var msg = in_msg~__gen_read_CanPayout();
         self~$__gen_Beacon_receive_CanPayout(msg);
         __gen_store_Beacon(self);

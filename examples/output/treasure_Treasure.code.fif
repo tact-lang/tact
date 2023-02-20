@@ -269,47 +269,45 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Treasure INLINECALLDICT
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
     }>
-    DUP
+    OVER
     1672521544 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Treasure INLINECALLDICT
-      SWAP
+      NIP
       __gen_read_Withdraw INLINECALLDICT
       1 2 BLKDROP2
       $__gen_Treasure_receive_Withdraw INLINECALLDICT
       __gen_store_Treasure INLINECALLDICT
     }>
-    DUP
+    OVER
     256331011 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Treasure INLINECALLDICT
-      SWAP
+      NIP
       __gen_read_ChangeOwner INLINECALLDICT
       NIP
       $__gen_Treasure_receive_ChangeOwner INLINECALLDICT
       __gen_store_Treasure INLINECALLDICT
     }>
+    SWAP
     0 EQINT
     IF:<{
       HASHSU
       68942673587165287250091431766268285359585855031594722650534428464957340454221 PUSHINT
       EQUAL
       IFJMP:<{
-        __gen_load_Treasure INLINECALLDICT
         $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
         __gen_store_Treasure INLINECALLDICT
         RETALT
       }>
-    }>ELSE<{
       DROP
+    }>ELSE<{
+      2DROP
     }>
     130 THROW
   }>

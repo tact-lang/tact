@@ -322,39 +322,40 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_MultisigContract INLINECALLDICT
+    s0 s6 XCHG
     IFJMP:<{
-      2DROP
+      6 BLKDROP
     }>
-    DUP
+    s4 PUSH
     520967536 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MultisigContract INLINECALLDICT
-      s0 s4 XCHG
+      s4 POP
+      s0 s2 XCHG
       __gen_read_Execute INLINECALLDICT
       s6 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
+      4 6 REVERSE
       5 ROLL
       $__gen_MultisigContract_receive_Execute INLINECALLDICT
       __gen_store_MultisigContract INLINECALLDICT
     }>
+    s0 s4 XCHG
     0 EQINT
     IF:<{
+      s0 s2 XCHG
       HASHSU
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       IFJMP:<{
-        __gen_load_MultisigContract INLINECALLDICT
+        s2 s3 XCHG2
         $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         __gen_store_MultisigContract INLINECALLDICT
         RETALT
       }>
+      4 BLKDROP
     }>ELSE<{
-      DROP
+      5 BLKDROP
     }>
     130 THROW
   }>

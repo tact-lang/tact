@@ -101,20 +101,22 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_StdlibTest INLINECALLDICT
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
     }>
+    SWAP
     0 EQINT
     SWAP
     SBITS
     33 LESSINT
     AND
     IFJMP:<{
-      __gen_load_StdlibTest INLINECALLDICT
       $__gen_StdlibTest_receive INLINECALLDICT
       __gen_store_StdlibTest INLINECALLDICT
     }>
+    DROP
     130 THROW
   }>
   supported_interfaces PROC:<{

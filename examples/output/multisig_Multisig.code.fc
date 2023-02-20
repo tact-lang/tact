@@ -284,6 +284,9 @@ _ $__gen_get_members() method_id(104769) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Multisig();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -291,7 +294,6 @@ _ $__gen_get_members() method_id(104769) {
     
     ;; Receive Request message
     if (op == 4266760323) {
-        var self = __gen_load_Multisig();
         var msg = in_msg~__gen_read_Request();
         self~$__gen_Multisig_receive_Request(msg);
         __gen_store_Multisig(self);
@@ -300,7 +302,6 @@ _ $__gen_get_members() method_id(104769) {
     
     ;; Receive Signed message
     if (op == 2213172633) {
-        var self = __gen_load_Multisig();
         var msg = in_msg~__gen_read_Signed();
         self~$__gen_Multisig_receive_Signed(msg);
         __gen_store_Multisig(self);

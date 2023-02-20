@@ -77,6 +77,9 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Functions();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -84,7 +87,6 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     
     ;; Receive Add message
     if (op == 831841332) {
-        var self = __gen_load_Functions();
         var msg = in_msg~__gen_read_Add();
         self~$__gen_Functions_receive_Add(msg);
         __gen_store_Functions(self);
@@ -93,7 +95,6 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     
     ;; Receive Sub message
     if (op == 2640337643) {
-        var self = __gen_load_Functions();
         var msg = in_msg~__gen_read_Sub();
         self~$__gen_Functions_receive_Sub(msg);
         __gen_store_Functions(self);

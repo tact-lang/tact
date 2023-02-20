@@ -727,161 +727,147 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_MapTestContract INLINECALLDICT
+    s0 s10 XCHG
     IFJMP:<{
-      2DROP
+      10 BLKDROP
     }>
-    DUP
+    s8 PUSH
     1510253336 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap1 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap1 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1629867766 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap2 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap2 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     3613954633 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap3 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap3 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     383013829 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetIntMap4 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetIntMap4 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     1749966413 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap1 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap1 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     624157584 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap2 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap2 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DUP
+    s8 PUSH
     4276365062 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s8 POP
+      s0 s6 XCHG
       __gen_read_SetAddrMap3 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap3 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
+    s0 s8 XCHG
     1683777913 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_MapTestContract INLINECALLDICT
-      s0 s8 XCHG
+      s0 s6 XCHG
       __gen_read_SetAddrMap4 INLINECALLDICT
       s2 POP
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_MapTestContract_receive_SetAddrMap4 INLINECALLDICT
       __gen_store_MapTestContract INLINECALLDICT
     }>
-    DROP
+    9 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

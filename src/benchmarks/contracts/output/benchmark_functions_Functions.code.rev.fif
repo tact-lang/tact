@@ -31,26 +31,25 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s3 XCHG
     <{
-      2DROP
+      3 BLKDROP
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    s1 PUSH
     831841332 PUSHINT
     EQUAL
     <{
-      s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
       s1 POP
-      s0 s1 XCHG
       32 LDU
       s0 s1 XCHG
       831841332 PUSHINT
@@ -79,19 +78,10 @@ SETCP0
       c4 POP
     }> PUSHCONT
     IFJMP
+    s0 s1 XCHG
     2640337643 PUSHINT
     EQUAL
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
-      s1 POP
-      s0 s1 XCHG
       32 LDU
       s0 s1 XCHG
       2640337643 PUSHINT
@@ -119,8 +109,9 @@ SETCP0
       STIX
       ENDC
       c4 POP
-    }> IFJMPREF
-    s0 POP
+    }> PUSHCONT
+    IFJMP
+    2DROP
     130 THROW
 
   113617: 

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: SampleJetton
-BOC Size: 1306 bytes
+BOC Size: 1217 bytes
 
 # Types
 Total Types: 14

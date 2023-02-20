@@ -31,31 +31,31 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    LDDICT
+    257 PUSHINT
+    LDI
+    257 PUSHINT
+    LDI
+    4 1 BLKSWAP
+    1 4 BLKDROP2
+    s0 s6 XCHG
     <{
-      2DROP
+      6 BLKDROP
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    s4 PUSH
     4266760323 PUSHINT
     EQUAL
     <{
-      s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      257 PUSHINT
-      LDI
-      LDDICT
-      257 PUSHINT
-      LDI
-      257 PUSHINT
-      LDI
-      4 1 BLKSWAP
-      1 4 BLKDROP2
-      s0 s4 XCHG
+      s4 POP
+      s0 s2 XCHG
       <{
         32 LDU
         s0 s1 XCHG
@@ -85,9 +85,7 @@ SETCP0
         7 1 BLKSWAP
       }> CALLREF
       s7 POP
-      s9 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
+      4 7 REVERSE
       1 6 BLKSWAP
       1 GETGLOBVAR
       4 UNTUPLE
@@ -305,24 +303,11 @@ SETCP0
       ENDC
       c4 POP
     }> IFJMPREF
+    s0 s4 XCHG
     2213172633 PUSHINT
     EQUAL
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      257 PUSHINT
-      LDI
-      LDDICT
-      257 PUSHINT
-      LDI
-      257 PUSHINT
-      LDI
-      4 1 BLKSWAP
-      1 4 BLKDROP2
-      s0 s4 XCHG
+      s0 s2 XCHG
       32 LDU
       s0 s1 XCHG
       2213172633 PUSHINT
@@ -357,9 +342,7 @@ SETCP0
         7 1 BLKSWAP
       }> CALLREF
       s7 POP
-      s9 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
+      4 7 REVERSE
       1 6 BLKSWAP
       1 GETGLOBVAR
       4 UNTUPLE
@@ -559,7 +542,7 @@ SETCP0
       ENDC
       c4 POP
     }> IFJMPREF
-    s0 POP
+    5 BLKDROP
     130 THROW
 
   23: 

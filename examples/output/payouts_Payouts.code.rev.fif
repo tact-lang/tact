@@ -33,29 +33,28 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 s1 XCHG
+    257 PUSHINT
+    LDI
+    ROTREV
+    1 2 BLKDROP2
+    s0 s4 XCHG
     <{
-      2DROP
+      4 BLKDROP
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    s2 PUSH
     4293607646 PUSHINT
     EQUAL
     <{
-      s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      LDI
-      ROTREV
-      1 2 BLKDROP2
-      s0 s2 XCHG
+      s2 POP
       32 LDU
       s0 s1 XCHG
       4293607646 PUSHINT
@@ -612,24 +611,11 @@ SETCP0
         SENDRAWMSG
       }> CALLREF
     }> IFJMPREF
-    s0 PUSH
+    s2 PUSH
     256331011 PUSHINT
     EQUAL
     <{
-      s0 POP
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      LDI
-      ROTREV
-      1 2 BLKDROP2
-      s0 s2 XCHG
+      s2 POP
       32 LDU
       s0 s1 XCHG
       256331011 PUSHINT
@@ -662,28 +648,16 @@ SETCP0
       ENDC
       c4 POP
     }> IFJMPREF
+    s0 s2 XCHG
     0 EQINT
     <{
-      s0 POP
+      3 BLKDROP
     }> PUSHCONT
     <{
       s0 PUSH
       SBITS
       31 GTINT
       <{
-        c4 PUSH
-        CTOS
-        LDREF
-        s0 s1 XCHG
-        2 SETGLOBVAR
-        LDMSGADDR
-        s0 s1 XCHG
-        s0 s1 XCHG
-        257 PUSHINT
-        LDI
-        ROTREV
-        1 2 BLKDROP2
-        s0 s2 XCHG
         32 PUSHINT
         SDSKIPFIRST
         s1 s2 XCHG
@@ -1022,7 +996,7 @@ SETCP0
         RETALT
       }> PUSHCONT
       IFJMP
-      s0 POP
+      3 BLKDROP
     }> IFREFELSE
     130 THROW
 

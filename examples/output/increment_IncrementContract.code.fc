@@ -310,6 +310,9 @@ _ $__gen_get_counters2() method_id(77570) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_IncrementContract();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -317,7 +320,6 @@ _ $__gen_get_counters2() method_id(77570) {
     
     ;; Receive Increment message
     if (op == 537284411) {
-        var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Increment();
         self~$__gen_IncrementContract_receive_Increment(msg);
         __gen_store_IncrementContract(self);
@@ -326,7 +328,6 @@ _ $__gen_get_counters2() method_id(77570) {
     
     ;; Receive Toggle message
     if (op == 1081595080) {
-        var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Toggle();
         self~$__gen_IncrementContract_receive_Toggle(msg);
         __gen_store_IncrementContract(self);
@@ -335,7 +336,6 @@ _ $__gen_get_counters2() method_id(77570) {
     
     ;; Receive Persist message
     if (op == 3801943978) {
-        var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Persist();
         self~$__gen_IncrementContract_receive_Persist(msg);
         __gen_store_IncrementContract(self);
@@ -344,7 +344,6 @@ _ $__gen_get_counters2() method_id(77570) {
     
     ;; Receive Reset message
     if (op == 1718153138) {
-        var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Reset();
         self~$__gen_IncrementContract_receive_Reset(msg);
         __gen_store_IncrementContract(self);
@@ -353,7 +352,6 @@ _ $__gen_get_counters2() method_id(77570) {
     
     ;; Receive Deploy message
     if (op == 2490013878) {
-        var self = __gen_load_IncrementContract();
         var msg = in_msg~__gen_read_Deploy();
         self~$__gen_IncrementContract_receive_Deploy(msg);
         __gen_store_IncrementContract(self);

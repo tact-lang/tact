@@ -31,24 +31,24 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s3 XCHG
     <{
-      2DROP
+      3 BLKDROP
     }> PUSHCONT
     IFJMP
+    s0 s1 XCHG
     2490013878 PUSHINT
     EQUAL
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
-      s1 POP
-      s0 s1 XCHG
       32 LDU
       s0 s1 XCHG
       2490013878 PUSHINT
@@ -217,7 +217,7 @@ SETCP0
       c4 POP
     }> PUSHCONT
     IFJMP
-    s0 POP
+    2DROP
     130 THROW
 
   92013: 

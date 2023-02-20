@@ -676,17 +676,16 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Payouts INLINECALLDICT
+    s0 s4 XCHG
     IFJMP:<{
-      2DROP
+      4 BLKDROP
     }>
-    DUP
+    s2 PUSH
     4293607646 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Payouts INLINECALLDICT
-      s0 s2 XCHG
+      s2 POP
       __gen_read_CanPayoutResponse INLINECALLDICT
       s3 POP
       s3 s4 XCHG
@@ -694,27 +693,24 @@ PROGRAM{
       $__gen_Payouts_receive_CanPayoutResponse INLINECALLDICT
       __gen_store_Payouts INLINECALLDICT
     }>
-    DUP
+    s2 PUSH
     256331011 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Payouts INLINECALLDICT
-      s0 s2 XCHG
+      s2 POP
       __gen_read_ChangeOwner INLINECALLDICT
       NIP
       s1 s2 XCHG
       $__gen_Payouts_receive_ChangeOwner INLINECALLDICT
       __gen_store_Payouts INLINECALLDICT
     }>
+    s0 s2 XCHG
     0 EQINT
     IF:<{
       DUP
       SBITS
       31 GTINT
       IFJMP:<{
-        __gen_load_Payouts INLINECALLDICT
-        s0 s2 XCHG
         32 PUSHINT
         SDSKIPFIRST
         s1 s2 XCHG
@@ -722,9 +718,9 @@ PROGRAM{
         __gen_store_Payouts INLINECALLDICT
         RETALT
       }>
-      DROP
+      3 BLKDROP
     }>ELSE<{
-      DROP
+      3 BLKDROP
     }>
     130 THROW
   }>

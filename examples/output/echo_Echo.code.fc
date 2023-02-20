@@ -217,6 +217,9 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_Echo();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -225,7 +228,6 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     ;; Text Receivers
     if (op == 0) {
         if (slice_bits(in_msg) >= 32) {
-            var self = __gen_load_Echo();
             self~$__gen_Echo_receive_comment(in_msg.skip_bits(32));
             __gen_store_Echo(self);
             return ();
@@ -233,7 +235,6 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     }
     
     ;; Receiver fallback
-    var self = __gen_load_Echo();
     self~$__gen_Echo_receive_fallback(in_msg);
     __gen_store_Echo(self);
 }

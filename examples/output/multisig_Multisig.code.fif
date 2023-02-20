@@ -489,41 +489,37 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Multisig INLINECALLDICT
+    s0 s6 XCHG
     IFJMP:<{
-      2DROP
+      6 BLKDROP
     }>
-    DUP
+    s4 PUSH
     4266760323 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Multisig INLINECALLDICT
-      s0 s4 XCHG
+      s4 POP
+      s0 s2 XCHG
       __gen_read_Request INLINECALLDICT
       s7 POP
-      s9 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
+      4 7 REVERSE
       6 ROLL
       $__gen_Multisig_receive_Request INLINECALLDICT
       __gen_store_Multisig INLINECALLDICT
     }>
+    s0 s4 XCHG
     2213172633 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_Multisig INLINECALLDICT
-      s0 s4 XCHG
+      s0 s2 XCHG
       __gen_read_Signed INLINECALLDICT
       s7 POP
-      s9 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
+      4 7 REVERSE
       6 ROLL
       $__gen_Multisig_receive_Signed INLINECALLDICT
       __gen_store_Multisig INLINECALLDICT
     }>
-    DROP
+    5 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

@@ -292,26 +292,26 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Beacon INLINECALLDICT
+    s0 s5 XCHG
     IFJMP:<{
-      DROP
-      __gen_load_Beacon INLINECALLDICT
-      3 ROLL
+      s3 POP
+      s3 s3 XCHG2
       $__gen_Beacon_receive_bounced INLINECALLDICT
       __gen_store_Beacon INLINECALLDICT
     }>
+    s0 s3 XCHG
     3289991647 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_Beacon INLINECALLDICT
-      s0 s3 XCHG
+      SWAP
       __gen_read_CanPayout INLINECALLDICT
       NIP
-      s1 s3 s0 XCHG3
+      s1 s3 XCHG
       $__gen_Beacon_receive_CanPayout INLINECALLDICT
       __gen_store_Beacon INLINECALLDICT
     }>
-    DROP
+    4 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

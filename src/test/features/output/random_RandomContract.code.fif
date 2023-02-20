@@ -281,21 +281,21 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_RandomContract INLINECALLDICT
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
     }>
+    SWAP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_RandomContract INLINECALLDICT
-      SWAP
       __gen_read_Deploy INLINECALLDICT
       NIP
       $__gen_RandomContract_receive_Deploy INLINECALLDICT
       __gen_store_RandomContract INLINECALLDICT
     }>
-    DROP
+    2DROP
     130 THROW
   }>
   supported_interfaces PROC:<{

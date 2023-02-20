@@ -773,39 +773,41 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    s0 s8 XCHG
     IFJMP:<{
-      2DROP
+      8 BLKDROP
     }>
-    DUP
+    s6 PUSH
     0 EQINT
-    s2 PUSH
+    s6 PUSH
     SBITS
     33 LESSINT
     AND
     IFJMP:<{
-      2DROP
-      __gen_load_ContractWithOptionals INLINECALLDICT
+      s5 POP
+      s5 POP
+      s5 s3 s3 XCHG3
+      s4 s1 s4 XCHG3
       $__gen_ContractWithOptionals_receive INLINECALLDICT
       __gen_store_ContractWithOptionals INLINECALLDICT
     }>
+    s0 s6 XCHG
     357891325 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_ContractWithOptionals INLINECALLDICT
-      s0 s6 XCHG
+      s0 s4 XCHG
       __gen_read_Update INLINECALLDICT
       s6 POP
-      s10 s11 XCHG
-      s9 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
+      s8 s11 XCHG
+      s7 s10 XCHG
+      s6 s9 XCHG
+      s6 s8 XCHG
       5 ROLL
       $__gen_ContractWithOptionals_receive_Update INLINECALLDICT
       __gen_store_ContractWithOptionals INLINECALLDICT
     }>
-    DROP
+    7 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

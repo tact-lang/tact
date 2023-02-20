@@ -427,6 +427,9 @@ _ $__gen_get_processBase64(slice $$src) method_id(128362) {
     slice msg_sender_addr = cs~load_msg_addr();
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
+    ;; Load contract data
+    var self = __gen_load_StringsTester();
+    
     ;; Handle bounced messages
     if (msg_bounced) {
         return ();
@@ -434,7 +437,6 @@ _ $__gen_get_processBase64(slice $$src) method_id(128362) {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        var self = __gen_load_StringsTester();
         self~$__gen_StringsTester_receive();
         __gen_store_StringsTester(self);
         return ();

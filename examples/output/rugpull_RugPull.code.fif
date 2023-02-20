@@ -583,51 +583,56 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_RugPull INLINECALLDICT
+    s0 s12 XCHG
     IFJMP:<{
-      2DROP
+      12 BLKDROP
     }>
-    DUP
+    s10 PUSH
     0 EQINT
-    s2 PUSH
+    s10 PUSH
     SBITS
     33 LESSINT
     AND
     IFJMP:<{
-      2DROP
-      __gen_load_RugPull INLINECALLDICT
+      s9 POP
+      s9 POP
+      s6 s9 XCHG
+      3 6 BLKSWAP
       $__gen_RugPull_receive INLINECALLDICT
       __gen_store_RugPull INLINECALLDICT
     }>
-    DUP
+    s10 PUSH
     256331011 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_RugPull INLINECALLDICT
-      s0 s10 XCHG
+      s10 POP
+      s0 s8 XCHG
       __gen_read_ChangeOwner INLINECALLDICT
       NIP
-      s9 s10 XCHG
-      s8 s9 XCHG
-      s7 s8 XCHG
-      s6 s7 XCHG
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
+      s7 s10 XCHG
+      s6 s9 XCHG
+      s5 s8 XCHG
+      s4 s7 XCHG
+      s3 s6 XCHG
+      s5 s4 s0 XCHG3
+      s2 s3 XCHG
       $__gen_RugPull_receive_ChangeOwner INLINECALLDICT
       __gen_store_RugPull INLINECALLDICT
     }>
+    s0 s10 XCHG
     0 EQINT
     IF:<{
+      s0 s8 XCHG
       HASHSU
       DUP
       4214924782860224305093503934954653493962198591343413308822612294567774196964 PUSHINT
       EQUAL
       IFJMP:<{
         DROP
-        __gen_load_RugPull INLINECALLDICT
+        s6 s9 XCHG
+        3 6 BLKSWAP
+        s1 s2 XCHG
         $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 INLINECALLDICT
         __gen_store_RugPull INLINECALLDICT
         RETALT
@@ -637,7 +642,9 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        __gen_load_RugPull INLINECALLDICT
+        s6 s9 XCHG
+        3 6 BLKSWAP
+        s1 s2 XCHG
         $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea INLINECALLDICT
         __gen_store_RugPull INLINECALLDICT
         RETALT
@@ -645,13 +652,16 @@ PROGRAM{
       85478235227686204299312064008631277118150318603456584517510472216578858763521 PUSHINT
       EQUAL
       IFJMP:<{
-        __gen_load_RugPull INLINECALLDICT
+        s6 s9 XCHG
+        3 6 BLKSWAP
+        s1 s2 XCHG
         $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 INLINECALLDICT
         __gen_store_RugPull INLINECALLDICT
         RETALT
       }>
+      10 BLKDROP
     }>ELSE<{
-      DROP
+      11 BLKDROP
     }>
     130 THROW
   }>

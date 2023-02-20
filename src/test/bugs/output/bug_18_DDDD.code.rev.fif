@@ -31,35 +31,39 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 s1 XCHG
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 s1 XCHG
+    LDDICT
+    LDDICT
+    5 1 BLKSWAP
+    1 5 BLKDROP2
+    s0 s7 XCHG
     <{
-      2DROP
+      7 BLKDROP
     }> PUSHCONT
     IFJMP
+    s0 s5 XCHG
     0 EQINT
-    s0 s1 XCHG
+    s0 s4 XCHG
     SBITS
     33 LESSINT
+    s1 s4 XCHG
     AND
     <{
-      c4 PUSH
-      CTOS
-      LDREF
-      s0 s1 XCHG
-      2 SETGLOBVAR
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDDICT
-      LDDICT
-      5 1 BLKSWAP
-      1 5 BLKDROP2
+      s3 s3 XCHG2
+      s0 s4 XCHG
       s0 s1 XCHG
       257 PUSHINT
       0 PUSHINT
@@ -162,8 +166,8 @@ SETCP0
       STDICT
       ENDC
       c4 POP
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
+    5 BLKDROP
     130 THROW
 
   6: 

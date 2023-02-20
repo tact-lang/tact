@@ -130,23 +130,23 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Wallet INLINECALLDICT
+    s0 s5 XCHG
     IFJMP:<{
-      2DROP
+      5 BLKDROP
     }>
+    s0 s3 XCHG
     3548477446 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_Wallet INLINECALLDICT
-      s0 s3 XCHG
+      SWAP
       __gen_read_TransferMessage INLINECALLDICT
       s2 POP
-      s3 s4 XCHG
-      s3 s0 s0 XCHG3
+      s4 s0 s0 XCHG3
       $__gen_Wallet_receive_TransferMessage INLINECALLDICT
       __gen_store_Wallet INLINECALLDICT
     }>
-    DROP
+    4 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

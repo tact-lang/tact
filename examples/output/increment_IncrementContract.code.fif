@@ -530,86 +530,78 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_IncrementContract INLINECALLDICT
+    s0 s7 XCHG
     IFJMP:<{
-      2DROP
+      7 BLKDROP
     }>
-    DUP
+    s5 PUSH
     537284411 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_IncrementContract INLINECALLDICT
-      s0 s5 XCHG
+      s5 POP
+      s0 s3 XCHG
       __gen_read_Increment INLINECALLDICT
       s2 POP
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_IncrementContract_receive_Increment INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
-    DUP
+    s5 PUSH
     1081595080 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_IncrementContract INLINECALLDICT
-      s0 s5 XCHG
+      s5 POP
+      s0 s3 XCHG
       __gen_read_Toggle INLINECALLDICT
       NIP
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
+      s5 s4 s0 XCHG3
+      s1 s2 XCHG
       $__gen_IncrementContract_receive_Toggle INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
-    DUP
+    s5 PUSH
     3801943978 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_IncrementContract INLINECALLDICT
-      s0 s5 XCHG
+      s5 POP
+      s0 s3 XCHG
       __gen_read_Persist INLINECALLDICT
       s2 POP
-      s5 s6 XCHG
-      s4 s5 XCHG
-      s3 s4 XCHG
+      s3 s6 XCHG
+      s2 s5 XCHG
       s3 s0 s0 XCHG3
       $__gen_IncrementContract_receive_Persist INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
-    DUP
+    s5 PUSH
     1718153138 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_IncrementContract INLINECALLDICT
-      s0 s5 XCHG
+      s5 POP
+      s0 s3 XCHG
       __gen_read_Reset INLINECALLDICT
       NIP
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
+      s5 s4 s0 XCHG3
+      s1 s2 XCHG
       $__gen_IncrementContract_receive_Reset INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
+    s0 s5 XCHG
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_IncrementContract INLINECALLDICT
-      s0 s5 XCHG
+      s0 s3 XCHG
       __gen_read_Deploy INLINECALLDICT
       NIP
-      s4 s5 XCHG
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
+      s5 s4 s0 XCHG3
+      s1 s2 XCHG
       $__gen_IncrementContract_receive_Deploy INLINECALLDICT
       __gen_store_IncrementContract INLINECALLDICT
     }>
-    DROP
+    6 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

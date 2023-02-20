@@ -370,35 +370,35 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_Debug INLINECALLDICT
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
     }>
-    DUP
+    OVER
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
-      DROP
-      __gen_load_Debug INLINECALLDICT
-      SWAP
+      NIP
       __gen_read_Deploy INLINECALLDICT
       NIP
       $__gen_Debug_receive_Deploy INLINECALLDICT
       __gen_store_Debug INLINECALLDICT
     }>
+    SWAP
     0 EQINT
     IF:<{
       HASHSU
       78767043930632832884184893608813340453083540642055662257146169686053766160215 PUSHINT
       EQUAL
       IFJMP:<{
-        __gen_load_Debug INLINECALLDICT
         $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
         __gen_store_Debug INLINECALLDICT
         RETALT
       }>
-    }>ELSE<{
       DROP
+    }>ELSE<{
+      2DROP
     }>
     130 THROW
   }>

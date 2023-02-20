@@ -261,42 +261,44 @@ PROGRAM{
     s6 s6 XCHG2
     4 TUPLE
     __tact_context SETGLOB
-    s0 s2 XCHG
+    __gen_load_SerializationTester INLINECALLDICT
+    s0 s11 XCHG
     IFJMP:<{
-      2DROP
+      11 BLKDROP
     }>
-    DUP
+    s9 PUSH
     0 EQINT
-    s2 PUSH
+    s9 PUSH
     SBITS
     33 LESSINT
     AND
     IFJMP:<{
-      2DROP
-      __gen_load_SerializationTester INLINECALLDICT
+      s8 POP
+      s8 POP
+      s5 s8 XCHG
+      3 5 BLKSWAP
       $__gen_SerializationTester_receive INLINECALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
+    s0 s9 XCHG
     849061239 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_load_SerializationTester INLINECALLDICT
-      s0 s9 XCHG
+      s0 s7 XCHG
       __gen_read_Update INLINECALLDICT
       s9 POP
-      16 s() 17 s() XCHG
-      s15 16 s() XCHG
-      s14 s15 XCHG
-      s13 s14 XCHG
-      s12 s13 XCHG
-      s11 s12 XCHG
-      s10 s11 XCHG
-      s9 s10 XCHG
+      s14 17 s() XCHG
+      s13 16 s() XCHG
+      s12 s15 XCHG
+      s11 s14 XCHG
+      s10 s13 XCHG
+      s9 s12 XCHG
+      s9 s11 XCHG
       8 ROLL
       $__gen_SerializationTester_receive_Update INLINECALLDICT
       __gen_store_SerializationTester INLINECALLDICT
     }>
-    DROP
+    10 BLKDROP
     130 THROW
   }>
   supported_interfaces PROC:<{

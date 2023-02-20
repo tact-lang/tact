@@ -33,14 +33,24 @@ SETCP0
     s6 s6 XCHG2
     4 TUPLE
     1 SETGLOBVAR
-    s0 s2 XCHG
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+    s1 POP
+    s0 s3 XCHG
     <{
-      2DROP
+      3 BLKDROP
     }> PUSHCONT
     IFJMP
+    s0 s1 XCHG
     0 EQINT
     <{
-      s0 POP
+      2DROP
     }> PUSHCONT
     <{
       HASHSU
@@ -49,15 +59,6 @@ SETCP0
       EQUAL
       <{
         s0 POP
-        c4 PUSH
-        CTOS
-        LDREF
-        s0 s1 XCHG
-        2 SETGLOBVAR
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-        s1 POP
         2 GETGLOBVAR
         21 CALLDICT
         2DUP
@@ -342,15 +343,6 @@ SETCP0
       114089746356047353508133676070720907146352136342213405975581125113545976697458 PUSHINT
       EQUAL
       <{
-        c4 PUSH
-        CTOS
-        LDREF
-        s0 s1 XCHG
-        2 SETGLOBVAR
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-        s1 POP
         NEWC
         2 GETGLOBVAR
         s0 s1 XCHG
@@ -364,6 +356,7 @@ SETCP0
         RETALT
       }> PUSHCONT
       IFJMP
+      s0 POP
     }> IFREFELSE
     130 THROW
 
