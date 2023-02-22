@@ -68,7 +68,10 @@ export function resolveAllocations(ctx: CompilerContext) {
         // Convert fields
         let ops: AllocationOperation[] = [];
         for (let f of s.fields) {
-            ops.push({ name: f.name, op: getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size) });
+            ops.push({
+                name: f.name,
+                op: getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size)
+            });
         }
 
         // Perform allocation
@@ -76,12 +79,11 @@ export function resolveAllocations(ctx: CompilerContext) {
 
         // Store allocation
         let allocation: StorageAllocation = {
-            type: s,
+            ops,
             root,
             size: {
                 bits: root.size.bits + reserveBits,
-                refs: root.size.refs + reserveRefs,
-                fields: s.fields.length
+                refs: root.size.refs + reserveRefs
             }
         };
         ctx = store.set(ctx, s.name, allocation);

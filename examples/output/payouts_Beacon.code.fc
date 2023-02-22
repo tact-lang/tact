@@ -49,7 +49,7 @@ builder __gen_write_CanPayoutResponse(builder build_0, (int, slice, int) v) inli
     return build_0;
 }
 
-cell __gen_writecell_CanPayoutResponse((int, slice, int) v) inline_ref {
+cell __gen_writecell_CanPayoutResponse((int, slice, int) v) inline {
     return __gen_write_CanPayoutResponse(begin_cell(), v).end_cell();
 }
 

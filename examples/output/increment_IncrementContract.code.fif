@@ -144,7 +144,7 @@ PROGRAM{
     32 STU
     64 STU
   }>
-  __gen_writecell_DeployOk PROCREF:<{
+  __gen_writecell_DeployOk PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_DeployOk INLINECALLDICT
@@ -205,7 +205,7 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_Something PROCREF:<{
+  __gen_writecell_Something PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_Something INLINECALLDICT
@@ -217,15 +217,16 @@ PROGRAM{
     128 THROWIF
     1 UNTUPLE
   }>
-  __gen_writecellopt_Something PROCREF:<{
+  __gen_writecellopt_Something PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      __gen_Something_not_null INLINECALLDICT
+      __gen_writecell_Something INLINECALLDICT
     }>
-    __gen_Something_not_null INLINECALLDICT
-    __gen_writecell_Something INLINECALLDICT
   }>
   __gen_write_IncrementContract PROCINLINE:<{
     s4 s5 XCHG2

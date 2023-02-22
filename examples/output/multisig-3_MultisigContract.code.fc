@@ -36,7 +36,7 @@ builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_Operation((int, int, slice) v) inline_ref {
+cell __gen_writecell_Operation((int, int, slice) v) inline {
     return __gen_write_Operation(begin_cell(), v).end_cell();
 }
 

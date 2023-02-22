@@ -842,16 +842,14 @@ SETCP0
           0 PUSHINT
           66 PUSHINT
           s0 s4 XCHG
-          <{
-            NEWC
-            s0 s1 XCHG
-            3289991647 PUSHINT
-            ROT
-            32 STU
-            257 PUSHINT
-            STIX
-            ENDC
-          }> CALLREF
+          NEWC
+          s0 s1 XCHG
+          3289991647 PUSHINT
+          ROT
+          32 STU
+          257 PUSHINT
+          STIX
+          ENDC
           s1 s4 s0 XCHG3
           PUSHNULL
           PUSHNULL

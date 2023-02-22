@@ -229,44 +229,42 @@ SETCP0
           9 8 7 PUSH3
           9 8 7 PUSH3
           s18 PUSH
+          NEWC
+          7 1 BLKSWAP
+          2213172633 PUSHINT
+          s0 s8 XCHG2
+          32 STU
+          s0 s7 XCHG
           <{
-            NEWC
-            7 1 BLKSWAP
-            2213172633 PUSHINT
+            4266760323 PUSHINT
             s0 s8 XCHG2
             32 STU
-            s0 s7 XCHG
+            s0 s6 XCHG2
+            STSLICER
+            s0 s4 XCHG2
+            STSLICER
+            ROT
+            STGRAMS
+            32 STU
+            1 STI
+            8 STU
+            s1 PUSH
+            ISNULL
+            NOT
             <{
-              4266760323 PUSHINT
-              s0 s8 XCHG2
-              32 STU
-              s0 s6 XCHG2
-              STSLICER
-              s0 s4 XCHG2
-              STSLICER
-              ROT
-              STGRAMS
-              32 STU
+              -1 PUSHINT
+              s0 s1 XCHG
               1 STI
-              8 STU
-              s1 PUSH
-              ISNULL
-              NOT
-              <{
-                -1 PUSHINT
-                s0 s1 XCHG
-                1 STI
-                STREF
-              }> PUSHCONT
-              <{
-                0 PUSHINT
-                s2 POP
-                1 STI
-              }> PUSHCONT
-              IFELSE
-            }> CALLREF
-            ENDC
+              STREF
+            }> PUSHCONT
+            <{
+              0 PUSHINT
+              s2 POP
+              1 STI
+            }> PUSHCONT
+            IFELSE
           }> CALLREF
+          ENDC
           s15 PUSH
           3 1 BLKSWAP
           PUSHNULL
@@ -457,7 +455,8 @@ SETCP0
         ENDC
         c4 POP
         RETALT
-      }> IFJMPREF
+      }> PUSHCONT
+      IFJMP
       12 BLKDROP
     }> IFREFELSE
     130 THROW

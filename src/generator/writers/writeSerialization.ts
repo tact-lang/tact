@@ -14,14 +14,14 @@ const SMALL_STRUCT_MAX_FIELDS = 5;
 //
 
 export function writeSerializer(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
-    let isSmall = allocation.size.fields <= SMALL_STRUCT_MAX_FIELDS;
+    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
     ctx.fun(ops.writer(type.name, ctx), () => {
         let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
-        ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(allocation.type, ctx)} v) ${modifier} {`);
+        ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(type, ctx)} v) ${modifier} {`);
         ctx.inIndent(() => {
-            ctx.append(`var ${resolveFuncTypeUnpack(allocation.type, `v`, ctx)} = v;`)
+            ctx.append(`var ${resolveFuncTypeUnpack(type, `v`, ctx)} = v;`)
             if (type.header) {
                 ctx.append(`build_0 = store_uint(build_0, ${type.header}, 32);`);
             }
@@ -34,7 +34,7 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
     // Write to cell
     ctx.fun(ops.writerCell(type.name, ctx), () => {
         ctx.write(`
-            cell ${ops.writerCell(type.name, ctx)}(${resolveFuncType(allocation.type, ctx)} v) inline_ref {
+            cell ${ops.writerCell(type.name, ctx)}(${resolveFuncType(type, ctx)} v) inline {
                 return ${ops.writer(type.name, ctx)}(begin_cell(), v).end_cell();
             }
         `);
@@ -43,7 +43,7 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
     // Write to opt cell
     ctx.fun(ops.writerCellOpt(type.name, ctx), () => {
         ctx.write(`
-            cell ${ops.writerCellOpt(type.name, ctx)}(tuple v) inline_ref {
+            cell ${ops.writerCellOpt(type.name, ctx)}(tuple v) inline {
                 if (null?(v)) {
                     return null();
                 }
@@ -189,11 +189,11 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 //
 
 export function writeParser(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
-    let isSmall = allocation.size.fields <= SMALL_STRUCT_MAX_FIELDS;
+    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(`__gen_read_${type.name}`, () => {
         let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
-        ctx.append(`(slice, (${resolveFuncType(allocation.type, ctx)})) __gen_read_${type.name}(slice sc_0) ${modifier} {`);
+        ctx.append(`(slice, (${resolveFuncType(type, ctx)})) __gen_read_${type.name}(slice sc_0) ${modifier} {`);
         ctx.inIndent(() => {
 
             // Check prefix
@@ -212,7 +212,7 @@ export function writeParser(type: TypeDescription, allocation: StorageAllocation
 
     ctx.fun(`__gen_readopt_${type.name}`, () => {
         ctx.write(`
-            tuple __gen_readopt_${type.name}(cell cl) inline_ref {
+            tuple __gen_readopt_${type.name}(cell cl) inline {
                 if (null?(cl)) {
                     return null();
                 }

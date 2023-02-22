@@ -93,22 +93,22 @@ SETCP0
       RAWRESERVE
       s1 PUSH
       <{
+        -1 PUSHINT
+        s2 POP
         s2 PUSH
-        0 PUSHINT
-        <{
-          NEWC
-          3 1 BLKSWAP
-          4293607646 PUSHINT
-          s0 s4 XCHG2
-          32 STU
-          s1 s2 XCHG
-          257 PUSHINT
-          STIX
-          s0 s1 XCHG
-          STSLICER
-          1 STI
-          ENDC
-        }> CALLREF
+        -1 PUSHINT
+        NEWC
+        3 1 BLKSWAP
+        4293607646 PUSHINT
+        s0 s4 XCHG2
+        32 STU
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
+        STSLICER
+        1 STI
+        ENDC
         <{
           1 GETGLOBVAR
           4 UNTUPLE
@@ -250,24 +250,20 @@ SETCP0
         }> CALLREF
       }> PUSHCONT
       <{
-        -1 PUSHINT
-        s2 POP
         s2 PUSH
-        -1 PUSHINT
-        <{
-          NEWC
-          3 1 BLKSWAP
-          4293607646 PUSHINT
-          s0 s4 XCHG2
-          32 STU
-          s1 s2 XCHG
-          257 PUSHINT
-          STIX
-          s0 s1 XCHG
-          STSLICER
-          1 STI
-          ENDC
-        }> CALLREF
+        0 PUSHINT
+        NEWC
+        3 1 BLKSWAP
+        4293607646 PUSHINT
+        s0 s4 XCHG2
+        32 STU
+        s1 s2 XCHG
+        257 PUSHINT
+        STIX
+        s0 s1 XCHG
+        STSLICER
+        1 STI
+        ENDC
         <{
           1 GETGLOBVAR
           4 UNTUPLE
@@ -407,7 +403,8 @@ SETCP0
             SENDRAWMSG
           }> CALLREF
         }> CALLREF
-      }> IFREFELSE
+      }> PUSHCONT
+      IFELSE
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG

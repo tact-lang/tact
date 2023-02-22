@@ -57,15 +57,13 @@ SETCP0
       64 LDU
       s0 s1 XCHG
       s1 POP
-      <{
-        NEWC
-        s0 s1 XCHG
-        2952335191 PUSHINT
-        ROT
-        32 STU
-        64 STU
-        ENDC
-      }> CALLREF
+      NEWC
+      s0 s1 XCHG
+      2952335191 PUSHINT
+      ROT
+      32 STU
+      64 STU
+      ENDC
       <{
         1 GETGLOBVAR
         4 UNTUPLE

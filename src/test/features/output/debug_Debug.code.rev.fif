@@ -60,15 +60,13 @@ SETCP0
       64 LDU
       s0 s1 XCHG
       s1 POP
-      <{
-        NEWC
-        s0 s1 XCHG
-        2952335191 PUSHINT
-        ROT
-        32 STU
-        64 STU
-        ENDC
-      }> CALLREF
+      NEWC
+      s0 s1 XCHG
+      2952335191 PUSHINT
+      ROT
+      32 STU
+      64 STU
+      ENDC
       <{
         1 GETGLOBVAR
         4 UNTUPLE
@@ -223,9 +221,6 @@ SETCP0
     s0 s1 XCHG
     0 EQINT
     <{
-      2DROP
-    }> PUSHCONT
-    <{
       HASHSU
       78767043930632832884184893608813340453083540642055662257146169686053766160215 PUSHINT
       EQUAL
@@ -343,7 +338,11 @@ SETCP0
       }> PUSHCONT
       IFJMP
       s0 POP
-    }> IFREFELSE
+    }> PUSHCONT
+    <{
+      2DROP
+    }> PUSHCONT
+    IFELSE
     130 THROW
 
   2: 

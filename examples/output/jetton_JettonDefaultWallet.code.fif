@@ -196,7 +196,7 @@ PROGRAM{
     SWAP
     STSLICER
   }>
-  __gen_writecell_TokenTransferInternal PROCREF:<{
+  __gen_writecell_TokenTransferInternal PROCINLINE:<{
     NEWC
     6 -ROLL
     __gen_write_TokenTransferInternal INLINECALLDICT
@@ -233,7 +233,7 @@ PROGRAM{
     SWAP
     STSLICER
   }>
-  __gen_writecell_TokenNotification PROCREF:<{
+  __gen_writecell_TokenNotification PROCINLINE:<{
     NEWC
     4 -ROLL
     __gen_write_TokenNotification INLINECALLDICT
@@ -266,7 +266,7 @@ PROGRAM{
     SWAP
     __tact_store_address_opt INLINECALLDICT
   }>
-  __gen_writecell_TokenBurnNotification PROCREF:<{
+  __gen_writecell_TokenBurnNotification PROCINLINE:<{
     NEWC
     4 -ROLL
     __gen_write_TokenBurnNotification INLINECALLDICT
@@ -278,7 +278,7 @@ PROGRAM{
     32 STU
     64 STU
   }>
-  __gen_writecell_TokenExcesses PROCREF:<{
+  __gen_writecell_TokenExcesses PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_TokenExcesses INLINECALLDICT

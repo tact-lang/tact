@@ -234,7 +234,7 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_CanPayout PROCREF:<{
+  __gen_writecell_CanPayout PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_CanPayout INLINECALLDICT

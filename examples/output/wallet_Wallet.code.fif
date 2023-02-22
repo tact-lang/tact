@@ -99,7 +99,7 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_writecell_Transfer PROCREF:<{
+  __gen_writecell_Transfer PROCINLINE:<{
     NEWC
     5 -ROLL
     __gen_write_Transfer INLINECALLDICT

@@ -74,7 +74,7 @@ PROGRAM{
     32 STU
     64 STU
   }>
-  __gen_writecell_DeployOk PROCREF:<{
+  __gen_writecell_DeployOk PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_DeployOk INLINECALLDICT

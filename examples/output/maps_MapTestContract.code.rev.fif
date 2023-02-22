@@ -340,27 +340,25 @@ SETCP0
       s3 s0 s0 XCHG3
       257 PUSHINT
       s0 s1 XCHG
+      s0 PUSH
+      ISNULL
       <{
-        s0 PUSH
-        ISNULL
-        <{
-          s0 POP
-          PUSHNULL
-        }> PUSHCONT
-        IFJMP
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      <{
         s0 PUSH
         ISNULL
         128 THROWIF
         1 UNTUPLE
-        <{
-          NEWC
-          s0 s1 XCHG
-          s0 s1 XCHG
-          257 PUSHINT
-          STIX
-          ENDC
-        }> CALLREF
-      }> CALLREF
+        NEWC
+        s0 s1 XCHG
+        s0 s1 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
+      }> PUSHCONT
+      IFELSE
       s3 s7 XCHG
       s1 s2 XCHG
       s0 PUSH
@@ -478,8 +476,7 @@ SETCP0
       STREF
       ENDC
       c4 POP
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     s8 PUSH
     624157584 PUSHINT
     EQUAL
@@ -628,7 +625,8 @@ SETCP0
       STREF
       ENDC
       c4 POP
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     s0 s8 XCHG
     1683777913 PUSHINT
     EQUAL
@@ -664,27 +662,25 @@ SETCP0
       s3 s0 s0 XCHG3
       267 PUSHINT
       s0 s1 XCHG
+      s0 PUSH
+      ISNULL
       <{
-        s0 PUSH
-        ISNULL
-        <{
-          s0 POP
-          PUSHNULL
-        }> PUSHCONT
-        IFJMP
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      <{
         s0 PUSH
         ISNULL
         128 THROWIF
         1 UNTUPLE
-        <{
-          NEWC
-          s0 s1 XCHG
-          s0 s1 XCHG
-          257 PUSHINT
-          STIX
-          ENDC
-        }> CALLREF
-      }> CALLREF
+        NEWC
+        s0 s1 XCHG
+        s0 s1 XCHG
+        257 PUSHINT
+        STIX
+        ENDC
+      }> PUSHCONT
+      IFELSE
       s1 s2 XCHG
       s0 PUSH
       ISNULL
@@ -729,8 +725,7 @@ SETCP0
       STREF
       ENDC
       c4 POP
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     9 BLKDROP
     130 THROW
 
@@ -1193,21 +1188,21 @@ SETCP0
         PUSHNULL
       }> PUSHCONT
       IFNOT
+      s0 PUSH
+      ISNULL
       <{
-        s0 PUSH
-        ISNULL
-        <{
-          s0 POP
-          PUSHNULL
-        }> PUSHCONT
-        IFJMP
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      <{
         CTOS
         257 PUSHINT
         LDI
         s0 s1 XCHG
         s1 POP
         SINGLE
-      }> CALLREF
+      }> PUSHCONT
+      IFELSE
     }> CALLREF
     s0 PUSH
     ISNULL
@@ -1359,21 +1354,21 @@ SETCP0
       257 PUSHINT
       s2 POP
       6 CALLDICT
+      s0 PUSH
+      ISNULL
       <{
-        s0 PUSH
-        ISNULL
-        <{
-          s0 POP
-          PUSHNULL
-        }> PUSHCONT
-        IFJMP
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      <{
         CTOS
         257 PUSHINT
         LDI
         s0 s1 XCHG
         s1 POP
         SINGLE
-      }> CALLREF
+      }> PUSHCONT
+      IFELSE
     }> CALLREF
     s0 PUSH
     ISNULL

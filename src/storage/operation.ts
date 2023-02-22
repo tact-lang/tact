@@ -1,3 +1,5 @@
+import { TypeRef } from "../types/types";
+
 export type AllocationCell = {
     ops: AllocationOperation[],
     size: { bits: number, refs: number }

@@ -138,7 +138,7 @@ PROGRAM{
     s0 s7 XCHG
     __gen_write_Request INLINECALLDICT
   }>
-  __gen_writecell_Signed PROCREF:<{
+  __gen_writecell_Signed PROCINLINE:<{
     NEWC
     7 -ROLL
     __gen_write_Signed INLINECALLDICT

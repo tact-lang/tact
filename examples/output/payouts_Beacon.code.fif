@@ -74,7 +74,7 @@ PROGRAM{
     __tact_store_address INLINECALLDICT
     1 STI
   }>
-  __gen_writecell_CanPayoutResponse PROCREF:<{
+  __gen_writecell_CanPayoutResponse PROCINLINE:<{
     NEWC
     3 -ROLL
     __gen_write_CanPayoutResponse INLINECALLDICT

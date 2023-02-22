@@ -224,39 +224,37 @@ SETCP0
         s11 PUSH
         12 2 8 PUXC2
         s1 s8 XCHG
+        NEWC
+        6 1 BLKSWAP
         <{
-          NEWC
-          6 1 BLKSWAP
+          395134233 PUSHINT
+          s0 s7 XCHG2
+          32 STU
+          s1 s5 XCHG
+          64 STU
+          s0 s3 XCHG2
+          STGRAMS
+          s0 s1 XCHG
+          STSLICER
+          s0 s1 XCHG
+          s0 PUSH
+          ISNULL
           <{
-            395134233 PUSHINT
-            s0 s7 XCHG2
-            32 STU
-            s1 s5 XCHG
-            64 STU
-            s0 s3 XCHG2
-            STGRAMS
+            s0 POP
+            0 PUSHINT
             s0 s1 XCHG
+            2 STU
+          }> PUSHCONT
+          <{
             STSLICER
-            s0 s1 XCHG
-            s0 PUSH
-            ISNULL
-            <{
-              s0 POP
-              0 PUSHINT
-              s0 s1 XCHG
-              2 STU
-            }> PUSHCONT
-            <{
-              STSLICER
-            }> PUSHCONT
-            IFELSE
-            s0 s1 XCHG
-            STGRAMS
-            s0 s1 XCHG
-            STSLICER
-          }> CALLREF
-          ENDC
+          }> PUSHCONT
+          IFELSE
+          s0 s1 XCHG
+          STGRAMS
+          s0 s1 XCHG
+          STSLICER
         }> CALLREF
+        ENDC
         s5 s6 XCHG
         s3 s4 XCHG
         ROTREV
@@ -540,22 +538,20 @@ SETCP0
         s8 PUSH
         s8 s1 s3 XCHG3
         s7 s4 XCHG2
-        <{
-          NEWC
-          4 1 BLKSWAP
-          1935855772 PUSHINT
-          s0 s5 XCHG2
-          32 STU
-          s1 s3 XCHG
-          64 STU
-          s0 s1 XCHG
-          STGRAMS
-          s0 s1 XCHG
-          STSLICER
-          s0 s1 XCHG
-          STSLICER
-          ENDC
-        }> CALLREF
+        NEWC
+        4 1 BLKSWAP
+        1935855772 PUSHINT
+        s0 s5 XCHG2
+        32 STU
+        s1 s3 XCHG
+        64 STU
+        s0 s1 XCHG
+        STGRAMS
+        s0 s1 XCHG
+        STSLICER
+        s0 s1 XCHG
+        STSLICER
+        ENDC
         s8 PUSH
         s4 s6 XCHG
         s3 s1 s3 XCHG3
@@ -697,10 +693,6 @@ SETCP0
       0 GTINT
       AND
       <{
-        s5 POP
-        2DROP
-      }> PUSHCONT
-      <{
         0 PUSHINT
         s0 s6 XCHG
         s0 PUSH
@@ -708,15 +700,13 @@ SETCP0
         128 THROWIF
         0 PUSHINT
         s0 s4 XCHG
-        <{
-          NEWC
-          s0 s1 XCHG
-          3576854235 PUSHINT
-          ROT
-          32 STU
-          64 STU
-          ENDC
-        }> CALLREF
+        NEWC
+        s0 s1 XCHG
+        3576854235 PUSHINT
+        ROT
+        32 STU
+        64 STU
+        ENDC
         s4 s7 XCHG
         s3 s3 s0 XCHG3
         s1 s7 XCHG
@@ -848,7 +838,12 @@ SETCP0
           s0 s1 XCHG
           SENDRAWMSG
         }> CALLREF
-      }> IFREFELSE
+      }> PUSHCONT
+      <{
+        s5 POP
+        2DROP
+      }> PUSHCONT
+      IFELSE
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -939,33 +934,31 @@ SETCP0
       s0 s3 XCHG
       64 PUSHINT
       3 6 6 XCPU2
+      NEWC
+      4 1 BLKSWAP
+      2078119902 PUSHINT
+      s0 s5 XCHG2
+      32 STU
+      s1 s3 XCHG
+      64 STU
+      s0 s1 XCHG
+      STGRAMS
+      s0 s1 XCHG
+      STSLICER
+      s0 s1 XCHG
+      s0 PUSH
+      ISNULL
       <{
-        NEWC
-        4 1 BLKSWAP
-        2078119902 PUSHINT
-        s0 s5 XCHG2
-        32 STU
-        s1 s3 XCHG
-        64 STU
+        s0 POP
+        0 PUSHINT
         s0 s1 XCHG
-        STGRAMS
-        s0 s1 XCHG
+        2 STU
+      }> PUSHCONT
+      <{
         STSLICER
-        s0 s1 XCHG
-        s0 PUSH
-        ISNULL
-        <{
-          s0 POP
-          0 PUSHINT
-          s0 s1 XCHG
-          2 STU
-        }> PUSHCONT
-        <{
-          STSLICER
-        }> PUSHCONT
-        IFELSE
-        ENDC
-      }> CALLREF
+      }> PUSHCONT
+      IFELSE
+      ENDC
       3 0 4 XC2PU
       s3 s3 XCHG2
       PUSHNULL
@@ -1110,7 +1103,8 @@ SETCP0
       STSLICER
       ENDC
       c4 POP
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     4 BLKDROP
     130 THROW
 

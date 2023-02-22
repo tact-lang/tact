@@ -97,34 +97,32 @@ SETCP0
       1 5 BLKSWAP
       4 3 2 PUSH3
       s4 s3 PUSH2
+      NEWC
+      5 1 BLKSWAP
+      s4 s5 XCHG2
+      32 STU
+      s1 s2 XCHG
+      8 STU
+      s0 s1 XCHG
+      STSLICER
+      s0 s1 XCHG
+      STGRAMS
+      s1 PUSH
+      ISNULL
+      NOT
       <{
-        NEWC
-        5 1 BLKSWAP
-        s4 s5 XCHG2
-        32 STU
-        s1 s2 XCHG
-        8 STU
+        -1 PUSHINT
         s0 s1 XCHG
-        STSLICER
-        s0 s1 XCHG
-        STGRAMS
-        s1 PUSH
-        ISNULL
-        NOT
-        <{
-          -1 PUSHINT
-          s0 s1 XCHG
-          1 STI
-          STREF
-        }> PUSHCONT
-        <{
-          0 PUSHINT
-          s2 POP
-          1 STI
-        }> PUSHCONT
-        IFELSE
-        ENDC
-      }> CALLREF
+        1 STI
+        STREF
+      }> PUSHCONT
+      <{
+        0 PUSHINT
+        s2 POP
+        1 STI
+      }> PUSHCONT
+      IFELSE
+      ENDC
       HASHCU
       48401 PUSHINT
       s7 s9 XCPU

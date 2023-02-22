@@ -1,8 +1,7 @@
-import { TypeDescription } from "../types/types";
-import { AllocationCell } from "./operation";
+import { AllocationCell, AllocationOperation } from "./operation";
 
 export type StorageAllocation = {
-    type: TypeDescription;
+    ops: AllocationOperation[];
+    size: { bits: number, refs: number };
     root: AllocationCell;
-    size: { bits: number, refs: number, fields: number };
 };

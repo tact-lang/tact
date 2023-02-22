@@ -50,7 +50,7 @@ builder __gen_write_Transfer(builder build_0, (int, int, slice, int, cell) v) in
     return build_0;
 }
 
-cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline_ref {
+cell __gen_writecell_Transfer((int, int, slice, int, cell) v) inline {
     return __gen_write_Transfer(begin_cell(), v).end_cell();
 }
 

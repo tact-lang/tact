@@ -328,113 +328,113 @@ SETCP0
       s1 POP
       s5 s4 s0 XCHG3
       s1 s2 XCHG
-      257 PUSHINT
-      PUSHNULL
-      s1 s2 PUSH2
-      s4 s9 XCHG
-      ROTREV
-      s1 PUSH
-      ISNULL
       <{
-        2DROP
+        257 PUSHINT
+        PUSHNULL
+        s1 s2 PUSH2
+        s4 s9 XCHG
         ROTREV
-        DICTIDEL
-        s0 POP
-      }> PUSHCONT
-      <{
-        NEWC
-        s0 s1 XCHG
-        STIX
-        s1 s3 s3 XCHG3
-        DICTISETB
-      }> PUSHCONT
-      IFELSE
-      s0 s4 XCHG
-      257 PUSHINT
-      s6 PUSH
-      PUSHNULL
-      1 PUSHINT
-      s1 PUSH
-      ISNULL
-      <{
-        2DROP
-        ROTREV
-        DICTIDEL
-        s0 POP
-      }> PUSHCONT
-      <{
-        NEWC
-        s0 s1 XCHG
-        STIX
-        s1 s3 s3 XCHG3
-        DICTISETB
-      }> PUSHCONT
-      IFELSE
-      s0 s3 XCHG
-      257 PUSHINT
-      s6 PUSH
-      PUSHNULL
-      s0 PUSH
-      ISNULL
-      <{
-        s0 POP
-        ROTREV
-        DICTIDEL
-        s0 POP
-      }> PUSHCONT
-      <{
-        s1 s3 s3 XCHG3
-        DICTISETREF
-      }> PUSHCONT
-      IFELSE
-      267 PUSHINT
-      1 GETGLOBVAR
-      4 UNTUPLE
-      s2 s3 XCHG
-      3 BLKDROP
-      s2 s4 XCHG
-      PUSHNULL
-      257 PUSHINT
-      10 CALLDICT
-      257 PUSHINT
-      PUSHNULL
-      <{
+        s1 PUSH
+        ISNULL
+        <{
+          2DROP
+          ROTREV
+          DICTIDEL
+          s0 POP
+        }> PUSHCONT
+        <{
+          NEWC
+          s0 s1 XCHG
+          STIX
+          s1 s3 s3 XCHG3
+          DICTISETB
+        }> PUSHCONT
+        IFELSE
+        s0 s4 XCHG
+        257 PUSHINT
+        s6 PUSH
+        PUSHNULL
+        1 PUSHINT
+        s1 PUSH
+        ISNULL
+        <{
+          2DROP
+          ROTREV
+          DICTIDEL
+          s0 POP
+        }> PUSHCONT
+        <{
+          NEWC
+          s0 s1 XCHG
+          STIX
+          s1 s3 s3 XCHG3
+          DICTISETB
+        }> PUSHCONT
+        IFELSE
+        s0 s3 XCHG
+        257 PUSHINT
+        s6 PUSH
+        PUSHNULL
+        s0 PUSH
+        ISNULL
+        <{
+          s0 POP
+          ROTREV
+          DICTIDEL
+          s0 POP
+        }> PUSHCONT
+        <{
+          s1 s3 s3 XCHG3
+          DICTISETREF
+        }> PUSHCONT
+        IFELSE
+        267 PUSHINT
+        1 GETGLOBVAR
+        4 UNTUPLE
+        s2 s3 XCHG
+        3 BLKDROP
+        s2 s4 XCHG
+        PUSHNULL
+        257 PUSHINT
+        10 CALLDICT
+        257 PUSHINT
+        PUSHNULL
         s0 PUSH
         ISNULL
         <{
           s0 POP
           PUSHNULL
         }> PUSHCONT
-        IFJMP
-        s0 PUSH
-        ISNULL
-        128 THROWIF
-        1 UNTUPLE
         <{
+          s0 PUSH
+          ISNULL
+          128 THROWIF
+          1 UNTUPLE
           NEWC
           s0 s1 XCHG
           s0 s1 XCHG
           257 PUSHINT
           STIX
           ENDC
-        }> CALLREF
+        }> PUSHCONT
+        IFELSE
+        s1 s7 s0 XCHG3
+        s0 PUSH
+        ISNULL
+        <{
+          s0 POP
+          ROTREV
+          DICTIDEL
+          s0 POP
+        }> PUSHCONT
+        <{
+          s1 s3 s3 XCHG3
+          DICTISETREF
+        }> PUSHCONT
+        IFELSE
+        s3 s4 XCHG
+        s1 s3 s0 XCHG3
       }> CALLREF
-      s1 s7 s0 XCHG3
-      s0 PUSH
-      ISNULL
-      <{
-        s0 POP
-        ROTREV
-        DICTIDEL
-        s0 POP
-      }> PUSHCONT
-      <{
-        s1 s3 s3 XCHG3
-        DICTISETREF
-      }> PUSHCONT
-      IFELSE
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
@@ -473,15 +473,13 @@ SETCP0
       s1 POP
       s5 s4 s0 XCHG3
       s1 s2 XCHG
-      <{
-        NEWC
-        s0 s1 XCHG
-        2952335191 PUSHINT
-        ROT
-        32 STU
-        64 STU
-        ENDC
-      }> CALLREF
+      NEWC
+      s0 s1 XCHG
+      2952335191 PUSHINT
+      ROT
+      32 STU
+      64 STU
+      ENDC
       <{
         1 GETGLOBVAR
         4 UNTUPLE
@@ -642,8 +640,7 @@ SETCP0
       STREF
       ENDC
       c4 POP
-    }> PUSHCONT
-    IFJMP
+    }> IFJMPREF
     6 BLKDROP
     130 THROW
 

@@ -658,7 +658,7 @@ builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v) in
     return build_0;
 }
 
-cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline_ref {
+cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline {
     return __gen_write_A(begin_cell(), v).end_cell();
 }
 
@@ -668,7 +668,7 @@ cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline_ref {
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
-cell __gen_writecellopt_A(tuple v) inline_ref {
+cell __gen_writecellopt_A(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -932,7 +932,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
-tuple __gen_readopt_A(cell cl) inline_ref {
+tuple __gen_readopt_A(cell cl) inline {
     if (null?(cl)) {
         return null();
     }
@@ -1599,7 +1599,7 @@ builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v) in
     return build_0;
 }
 
-cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline_ref {
+cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline {
     return __gen_write_B(begin_cell(), v).end_cell();
 }
 
@@ -1609,7 +1609,7 @@ cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline_ref {
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
 }
 
-cell __gen_writecellopt_B(tuple v) inline_ref {
+cell __gen_writecellopt_B(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -1873,7 +1873,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
 }
 
-tuple __gen_readopt_B(cell cl) inline_ref {
+tuple __gen_readopt_B(cell cl) inline {
     if (null?(cl)) {
         return null();
     }
@@ -2541,7 +2541,7 @@ builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int,
     return build_0;
 }
 
-cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inline_ref {
+cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inline {
     return __gen_write_C(begin_cell(), v).end_cell();
 }
 
@@ -2551,7 +2551,7 @@ cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inlin
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
 }
 
-cell __gen_writecellopt_C(tuple v) inline_ref {
+cell __gen_writecellopt_C(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -2816,7 +2816,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
 }
 
-tuple __gen_readopt_C(cell cl) inline_ref {
+tuple __gen_readopt_C(cell cl) inline {
     if (null?(cl)) {
         return null();
     }

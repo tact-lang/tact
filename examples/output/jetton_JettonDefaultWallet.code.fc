@@ -115,7 +115,7 @@ builder __gen_write_TokenTransferInternal(builder build_0, (int, int, slice, sli
     return build_0;
 }
 
-cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) v) inline_ref {
+cell __gen_writecell_TokenTransferInternal((int, int, slice, slice, int, slice) v) inline {
     return __gen_write_TokenTransferInternal(begin_cell(), v).end_cell();
 }
 
@@ -140,7 +140,7 @@ builder __gen_write_TokenNotification(builder build_0, (int, int, slice, slice) 
     return build_0;
 }
 
-cell __gen_writecell_TokenNotification((int, int, slice, slice) v) inline_ref {
+cell __gen_writecell_TokenNotification((int, int, slice, slice) v) inline {
     return __gen_write_TokenNotification(begin_cell(), v).end_cell();
 }
 
@@ -163,7 +163,7 @@ builder __gen_write_TokenBurnNotification(builder build_0, (int, int, slice, sli
     return build_0;
 }
 
-cell __gen_writecell_TokenBurnNotification((int, int, slice, slice) v) inline_ref {
+cell __gen_writecell_TokenBurnNotification((int, int, slice, slice) v) inline {
     return __gen_write_TokenBurnNotification(begin_cell(), v).end_cell();
 }
 
@@ -174,7 +174,7 @@ builder __gen_write_TokenExcesses(builder build_0, (int) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_TokenExcesses((int) v) inline_ref {
+cell __gen_writecell_TokenExcesses((int) v) inline {
     return __gen_write_TokenExcesses(begin_cell(), v).end_cell();
 }
 

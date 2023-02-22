@@ -140,7 +140,7 @@ builder __gen_write_CanPayout(builder build_0, (int) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_CanPayout((int) v) inline_ref {
+cell __gen_writecell_CanPayout((int) v) inline {
     return __gen_write_CanPayout(begin_cell(), v).end_cell();
 }
 

@@ -86,7 +86,7 @@ builder __gen_write_DeployOk(builder build_0, (int) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_DeployOk((int) v) inline_ref {
+cell __gen_writecell_DeployOk((int) v) inline {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
@@ -122,7 +122,7 @@ builder __gen_write_Something(builder build_0, (int) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_Something((int) v) inline_ref {
+cell __gen_writecell_Something((int) v) inline {
     return __gen_write_Something(begin_cell(), v).end_cell();
 }
 
@@ -132,7 +132,7 @@ cell __gen_writecell_Something((int) v) inline_ref {
     return (vvv'value);
 }
 
-cell __gen_writecellopt_Something(tuple v) inline_ref {
+cell __gen_writecellopt_Something(tuple v) inline {
     if (null?(v)) {
         return null();
     }

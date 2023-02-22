@@ -126,7 +126,7 @@ builder __gen_write_SomeStruct(builder build_0, (int) v) inline {
     return build_0;
 }
 
-cell __gen_writecell_SomeStruct((int) v) inline_ref {
+cell __gen_writecell_SomeStruct((int) v) inline {
     return __gen_write_SomeStruct(begin_cell(), v).end_cell();
 }
 
@@ -136,7 +136,7 @@ cell __gen_writecell_SomeStruct((int) v) inline_ref {
     return (vvv'value);
 }
 
-cell __gen_writecellopt_SomeStruct(tuple v) inline_ref {
+cell __gen_writecellopt_SomeStruct(tuple v) inline {
     if (null?(v)) {
         return null();
     }
@@ -153,7 +153,7 @@ tuple __gen_SomeStruct_as_optional(((int)) v) inline {
     return __tact_tuple_create_1(v'value);
 }
 
-tuple __gen_readopt_SomeStruct(cell cl) inline_ref {
+tuple __gen_readopt_SomeStruct(cell cl) inline {
     if (null?(cl)) {
         return null();
     }

@@ -254,7 +254,7 @@ PROGRAM{
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_SomeStruct PROCREF:<{
+  __gen_writecell_SomeStruct PROCINLINE:<{
     NEWC
     SWAP
     __gen_write_SomeStruct INLINECALLDICT
@@ -266,15 +266,16 @@ PROGRAM{
     128 THROWIF
     1 UNTUPLE
   }>
-  __gen_writecellopt_SomeStruct PROCREF:<{
+  __gen_writecellopt_SomeStruct PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      __gen_SomeStruct_not_null INLINECALLDICT
+      __gen_writecell_SomeStruct INLINECALLDICT
     }>
-    __gen_SomeStruct_not_null INLINECALLDICT
-    __gen_writecell_SomeStruct INLINECALLDICT
   }>
   __gen_read_SomeStruct PROCINLINE:<{
     257 PUSHINT
@@ -284,17 +285,18 @@ PROGRAM{
   __gen_SomeStruct_as_optional PROCINLINE:<{
     1 TUPLE
   }>
-  __gen_readopt_SomeStruct PROCREF:<{
+  __gen_readopt_SomeStruct PROCINLINE:<{
     DUP
     ISNULL
-    IFJMP:<{
+    IF:<{
       DROP
       PUSHNULL
+    }>ELSE<{
+      CTOS
+      __gen_read_SomeStruct INLINECALLDICT
+      NIP
+      __gen_SomeStruct_as_optional INLINECALLDICT
     }>
-    CTOS
-    __gen_read_SomeStruct INLINECALLDICT
-    NIP
-    __gen_SomeStruct_as_optional INLINECALLDICT
   }>
   __gen_read_SetIntMap4 PROCINLINE:<{
     32 LDU

@@ -83,17 +83,15 @@ SETCP0
       4 6 REVERSE
       1 5 BLKSWAP
       5 4 3 PUSH3
-      <{
-        NEWC
-        3 1 BLKSWAP
-        s2 s3 XCHG2
-        32 STU
-        s0 s1 XCHG
-        STGRAMS
-        s0 s1 XCHG
-        STSLICER
-        ENDC
-      }> CALLREF
+      NEWC
+      3 1 BLKSWAP
+      s2 s3 XCHG2
+      32 STU
+      s0 s1 XCHG
+      STGRAMS
+      s0 s1 XCHG
+      STSLICER
+      ENDC
       HASHCU
       s0 s3 PUXC
       s10 PUSH
