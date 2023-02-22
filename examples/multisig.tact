@@ -17,7 +17,7 @@ contract MultisigSigner {
     master: Address;
 
     // Voting state
-    members: map[Address]Int;
+    members: map<Address, Int>;
     weight: Int = 0;
     requiredWeight: Int;
     completed: Bool;
@@ -25,7 +25,7 @@ contract MultisigSigner {
     // Request
     request: Request;
 
-    init(master: Address, members: map[Address]Int, requiredWeight: Int, request: Request) {
+    init(master: Address, members: map<Address, Int>, requiredWeight: Int, request: Request) {
         self.master = master;
         self.members = members;
         self.requiredWeight = requiredWeight;
@@ -69,11 +69,11 @@ contract MultisigSigner {
 
 contract Multisig {
     seqno: Int;
-    members: map[Address]Int;
+    members: map<Address, Int>;
     totalWeight: Int;
     requiredWeight: Int;
 
-    init(members: map[Address]Int, totalWeight: Int, requiredWeight: Int) {
+    init(members: map<Address, Int>, totalWeight: Int, requiredWeight: Int) {
         self.members = members;
         self.requiredWeight = requiredWeight;
         self.totalWeight = totalWeight;
@@ -125,7 +125,7 @@ contract Multisig {
         return self.members.get(address);
     }
 
-    get fun members(): map[Address]Int {
+    get fun members(): map<Address, Int> {
         return self.members;
     }
 }

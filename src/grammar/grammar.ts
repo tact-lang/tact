@@ -456,7 +456,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     Type_required(arg0) {
         return createNode({ kind: 'type_ref_simple', name: arg0.sourceString, optional: false, ref: createRef(this) });
     },
-    Type_map(arg0, arg1, arg2, arg3, arg4) {
+    Type_map(arg0, arg1, arg2, arg3, arg4, arg5) {
         return createNode({ kind: 'type_ref_map', key: arg2.sourceString, value: arg4.sourceString, ref: createRef(this) });
     },
 

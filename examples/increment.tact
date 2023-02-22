@@ -23,11 +23,11 @@ struct Something {
 }
 
 contract IncrementContract with Deployable {
-    counters: map[Int]Int;
-    counters2: map[Int]Bool;
-    counters3: map[Int]Cell;
-    counters4: map[Address]Int;
-    counters5: map[Int]Something;
+    counters: map<Int, Int>;
+    counters2: map<Int, Bool>;
+    counters3: map<Int, Cell>;
+    counters4: map<Address, Int>;
+    counters5: map<Int, Something>;
 
     init() {
         // Nothing to do
@@ -61,11 +61,11 @@ contract IncrementContract with Deployable {
         self.counters5.set(msg.key, null);
     }
 
-    get fun counters(): map[Int]Int {
+    get fun counters(): map<Int, Int> {
         return self.counters;
     }
 
-    get fun counters2(): map[Address]Int {
+    get fun counters2(): map<Address, Int> {
         return self.counters4;
     }
 }

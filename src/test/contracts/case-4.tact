@@ -12,7 +12,7 @@ contract SampleContract {
     a: Int;
     b: Int;
     c: Source;
-    d: map[Int]Int;
+    d: map<Int, Int>;
 
     init() {
         // 

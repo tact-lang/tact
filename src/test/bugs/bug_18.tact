@@ -3,8 +3,8 @@ contract DDDD {
     addr2: Address;
     addr3: Address;
 
-    mapData: map[Int]Address;
-    mapData2: map[Address]Int;
+    mapData: map<Int, Address>;
+    mapData2: map<Address, Int>;
 
     init( addr1: Address, addr2: Address, addr3: Address) {
         self.addr1 = addr1;

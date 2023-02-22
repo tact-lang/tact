@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unknown fields in config are now considered an error
 - Allow contracts without fields
 - Typescript bindings are now working in browser and doesn't have `ton-emulator` dependency
+- `map` syntax now uses `<>` instead of `[]` for future compatibility with generics
 
 ## Added
 - Allow `Builder` type as a field type similar to `Cell` and `Slice`

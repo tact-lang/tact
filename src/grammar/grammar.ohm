@@ -23,7 +23,7 @@ Tact {
     // Field declarations
     Type = typeLiteral "?" --optional
          | typeLiteral --required
-         | "map" "[" typeLiteral "]" typeLiteral --map
+         | "map" "<" typeLiteral "," typeLiteral ">" --map
     Field = id ":" Type ";" --default
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization

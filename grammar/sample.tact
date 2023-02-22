@@ -31,6 +31,7 @@ contract MyContract with MyTrait, Ownable {
 
     value: Int as uint32 = 1230;
     owner: Address;
+    counters: map<Int, Address>;
 
     init(owner: Address) {
         self.owner = owner;

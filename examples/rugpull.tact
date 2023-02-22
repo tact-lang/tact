@@ -21,7 +21,7 @@ contract RugPull with OwnableTransferable, Stoppable {
     // Queue
     queueStart: Int;
     queueEnd: Int;
-    queue: map[Int]Address;
+    queue: map<Int, Address>;
     
     init(owner: Address, investment: Int, returns: Int, fee: Int) {
         self.owner = owner;

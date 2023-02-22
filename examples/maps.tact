@@ -50,10 +50,10 @@ contract MapTestContract {
     // Int Maps
     //
 
-    intMap1: map[Int]Int;
-    intMap2: map[Int]Bool;
-    intMap3: map[Int]Cell;
-    intMap4: map[Int]SomeStruct;
+    intMap1: map<Int, Int>;
+    intMap2: map<Int, Bool>;
+    intMap3: map<Int, Cell>;
+    intMap4: map<Int, SomeStruct>;
 
     receive(msg: SetIntMap1) {
         self.intMap1.set(msg.key, msg.value);
@@ -71,7 +71,7 @@ contract MapTestContract {
         self.intMap4.set(msg.key, msg.value);
     }
 
-    get fun intMap1(): map[Int]Int {
+    get fun intMap1(): map<Int, Int> {
         return self.intMap1;
     }
 
@@ -79,7 +79,7 @@ contract MapTestContract {
         return self.intMap1.get(key);
     }
 
-    get fun intMap2(): map[Int]Bool {
+    get fun intMap2(): map<Int, Bool> {
         return self.intMap2;
     }
 
@@ -87,7 +87,7 @@ contract MapTestContract {
         return self.intMap2.get(key);
     }
 
-    get fun intMap3(): map[Int]Cell {
+    get fun intMap3(): map<Int, Cell> {
         return self.intMap3;
     }
 
@@ -95,7 +95,7 @@ contract MapTestContract {
         return self.intMap3.get(key);
     }
 
-    get fun intMap4(): map[Int]SomeStruct {
+    get fun intMap4(): map<Int, SomeStruct> {
         return self.intMap4;
     }
 
@@ -107,10 +107,10 @@ contract MapTestContract {
     // Address Keys
     //
 
-    addrMap1: map[Address]Int;
-    addrMap2: map[Address]Bool;
-    addrMap3: map[Address]Cell;
-    addrMap4: map[Address]SomeStruct;
+    addrMap1: map<Address, Int>;
+    addrMap2: map<Address, Bool>;
+    addrMap3: map<Address, Cell>;
+    addrMap4: map<Address, SomeStruct>;
 
     receive(msg: SetAddrMap1) {
         self.addrMap1.set(msg.key, msg.value);
@@ -128,7 +128,7 @@ contract MapTestContract {
         self.addrMap4.set(msg.key, msg.value);
     }
 
-    get fun addrMap1(): map[Address]Int {
+    get fun addrMap1(): map<Address, Int> {
         return self.addrMap1;
     }
     
@@ -136,7 +136,7 @@ contract MapTestContract {
         return self.addrMap1.get(key);
     }
 
-    get fun addrMap2(): map[Address]Bool {
+    get fun addrMap2(): map<Address, Bool> {
         return self.addrMap2;
     }
 
@@ -144,7 +144,7 @@ contract MapTestContract {
         return self.addrMap2.get(key);
     }
 
-    get fun addrMap3(): map[Address]Cell {
+    get fun addrMap3(): map<Address, Cell> {
         return self.addrMap3;
     }
 
@@ -152,7 +152,7 @@ contract MapTestContract {
         return self.addrMap3.get(key);
     }
 
-    get fun addrMap4(): map[Address]SomeStruct {
+    get fun addrMap4(): map<Address, SomeStruct> {
         return self.addrMap4;
     }
 

@@ -2173,12 +2173,12 @@ exports[`grammar should parse case-20 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "y",
-          "ref": y: map[Int]Int;,
+          "ref": y: map<Int, Int>;,
           "type": {
             "id": 1,
             "key": "Int",
             "kind": "type_ref_map",
-            "ref": map[Int]Int,
+            "ref": map<Int, Int>,
             "value": "Int",
           },
         },
@@ -2189,7 +2189,7 @@ exports[`grammar should parse case-20 1`] = `
       "name": "A",
       "prefix": null,
       "ref": struct A {
-    y: map[Int]Int;
+    y: map<Int, Int>;
 },
     },
     {
@@ -2200,12 +2200,12 @@ exports[`grammar should parse case-20 1`] = `
           "init": null,
           "kind": "def_field",
           "name": "x",
-          "ref": x: map[Int]Int;,
+          "ref": x: map<Int, Int>;,
           "type": {
             "id": 4,
             "key": "Int",
             "kind": "type_ref_map",
-            "ref": map[Int]Int,
+            "ref": map<Int, Int>,
             "value": "Int",
           },
         },
@@ -2216,7 +2216,7 @@ exports[`grammar should parse case-20 1`] = `
       "name": "B",
       "prefix": null,
       "ref": message B {
-    x: map[Int]Int;
+    x: map<Int, Int>;
 },
     },
   ],

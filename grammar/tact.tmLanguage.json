@@ -484,8 +484,32 @@
           "include": "#type-as"
         },
         {
+          "include": "#type-generic"
+        },
+        {
           "name": "keyword.operator.optional.tact",
           "match": "\\?"
+        },
+        {
+          "match": "\\b[\\w]+\\b",
+          "name": "entity.name.type.tact"
+        }
+      ]
+    },
+    "type-generic": {
+      "name": "meta.type.generics.tact",
+      "begin": "<",
+      "end": ">",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#type-as"
+        },
+        {
+          "name": "punctuation.tact",
+          "match": ","
         },
         {
           "match": "\\b[\\w]+\\b",
