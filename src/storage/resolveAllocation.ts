@@ -5,6 +5,7 @@ import { topologicalSort } from "../utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
+import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 
 let store = createContextStore<StorageAllocation>();
 
@@ -20,7 +21,7 @@ export function getAllocations(ctx: CompilerContext) {
     return getSortedTypes(ctx).map((v) => ({ allocation: getAllocation(ctx, v.name), type: v }));
 }
 
-function getSortedTypes(ctx: CompilerContext) {
+export function getSortedTypes(ctx: CompilerContext) {
     let types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract');
     let structs = types.filter(t => t.kind === 'struct');
     let refs = (src: TypeDescription) => {
@@ -91,6 +92,48 @@ export function resolveAllocations(ctx: CompilerContext) {
             }
         };
         ctx = store.set(ctx, s.name, allocation);
+    }
+
+    // Generate init allocations
+    for (let s of types) {
+        if (s.kind === 'contract' && s.init) {
+
+            // Reserve bits and refs
+            let reserveBits = 0;
+            let reserveRefs = 0;
+            
+            // Reserve first bit for init state
+            reserveBits++;
+
+            // Reserve ref for system cell
+            reserveRefs++;
+
+            // Resolve opts
+            let ops: AllocationOperation[] = [];
+            for (let f of s.init.args) {
+                let abiType = createABITypeRefFromTypeRef(f.type);
+                ops.push({
+                    name: f.name,
+                    type: abiType,
+                    op: getAllocationOperationFromField(abiType, (name) => store.get(ctx, name)!.size)
+                });
+            }
+
+            // Perform allocation
+            let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } }); // Better allocation?
+
+            // Store allocation
+            let allocation: StorageAllocation = {
+                ops,
+                root,
+                header: null,
+                size: {
+                    bits: root.size.bits + reserveBits,
+                    refs: root.size.refs + reserveRefs
+                }
+            };
+            ctx = store.set(ctx, '$init$' + s.name, allocation);
+        }
     }
 
     return ctx;

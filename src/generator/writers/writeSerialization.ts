@@ -39,8 +39,9 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
             }
         `);
     });
+}
 
-    // Write to opt cell
+export function writeOptionalSerializer(name: string, ctx: WriterContext) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
         ctx.write(`
             cell ${ops.writerCellOpt(name, ctx)}(tuple v) inline {
@@ -210,7 +211,9 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
         });
         ctx.append("}");
     });
+}
 
+export function writeOptionalParser(name: string, ctx: WriterContext) {
     ctx.fun(`__gen_readopt_${name}`, () => {
         ctx.write(`
             tuple __gen_readopt_${name}(cell cl) inline {

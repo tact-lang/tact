@@ -1,9 +1,9 @@
 import { CompilerContext } from "../context";
-import { getAllocations } from "../storage/resolveAllocation";
+import { getAllocation, getAllocations, getSortedTypes } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { WriterContext } from "./Writer";
-import { writeParser, writeSerializer } from "./writers/writeSerialization";
+import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell, ContractABI } from "ton-core";
@@ -319,10 +319,15 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     writeStdlib(wctx);
 
     // Serializators
-    let allocations = getAllocations(ctx);
-    for (let k of allocations) {
-        writeSerializer(k.type.name, k.type.kind === 'contract', k.allocation, wctx);
-        writeParser(k.type.name, k.type.kind === 'contract', k.allocation, wctx);
+    let sortedTypes = getSortedTypes(ctx);
+    for (let t of sortedTypes) {
+        if (t.kind === 'contract' || t.kind === 'struct') {
+            let allocation = getAllocation(ctx, t.name);
+            writeSerializer(t.name, t.kind === 'contract', allocation, wctx);
+            writeOptionalSerializer(t.name, wctx);
+            writeParser(t.name, t.kind === 'contract', allocation, wctx);
+            writeOptionalParser(t.name, wctx);
+        }
     }
 
     // Accessors
@@ -332,10 +337,19 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
         }
     }
 
+    // Init serializers
+    for (let t of sortedTypes) {
+        if (t.kind === 'contract' && t.init) {
+            let allocation = getAllocation(ctx, '$init$' + t.name);
+            writeSerializer(`$init$${t.name}`, true, allocation, wctx);
+            writeParser(`$init$${t.name}`, false, allocation, wctx);
+        }
+    }
+
     // Storage Functions
-    for (let k of allocations) {
-        if (k.type.kind === 'contract') {
-            writeStorageOps(k.type, wctx);
+    for (let t of sortedTypes) {
+        if (t.kind === 'contract') {
+            writeStorageOps(t, wctx);
         }
     }
 
