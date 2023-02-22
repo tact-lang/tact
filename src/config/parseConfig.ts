@@ -5,15 +5,17 @@ const projectSchema = z.object({
     path: z.string(),
     output: z.string(),
     contracts: z.array(z.string()).optional(),
-    experimental: z.object({
-        inline: z.boolean().optional(),
+    parameters: z.object({
         debug: z.boolean().optional()
-    }).optional()
-});
+    }).strict().optional(),
+    experimental: z.object({
+        inline: z.boolean().optional()
+    }).strict().optional()
+}).strict();
 
 const configSchema = z.object({
     projects: z.array(projectSchema)
-});
+}).strict();
 
 export type Config = z.infer<typeof configSchema>;
 export type ConfigProject = z.infer<typeof projectSchema>;

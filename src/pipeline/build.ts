@@ -23,7 +23,7 @@ export async function build(project: ConfigProject, rootPath: string) {
         console.warn('   > 👀 Enabling inline');
         ctx = enable(ctx, 'inline');
     }
-    if (project.experimental && project.experimental.debug) {
+    if (project.parameters && project.parameters.debug) {
         console.warn('   > 👀 Enabling debug');
         ctx = enable(ctx, 'debug');
     }

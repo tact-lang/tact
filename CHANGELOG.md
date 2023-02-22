@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Refactoring of allocator
 - Moving contract's load function to the begining of the execution
+- moving `debug` flag from `experimental` to `parameters` in `tact.config.json`
+- Unknown fields in config are now considered an error
 
 ## [0.9.3] - 2023-02-19
 
