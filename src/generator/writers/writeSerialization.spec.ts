@@ -59,13 +59,13 @@ describe('writeSerialization', () => {
             ctx = resolveAllocations(ctx);
             let wctx = new WriterContext(ctx);
             writeStdlib(wctx);
-            writeSerializer(getType(ctx, s).name, getType(ctx, s), getAllocation(ctx, s), wctx);
+            writeSerializer(getType(ctx, s).name, false, getAllocation(ctx, s), wctx);
             for (let t of Object.values(getAllTypes(ctx))) {
                 if (t.kind === 'contract' || t.kind === 'struct') {
                     writeAccessors(t, wctx);
                 }
             }
-            writeParser(getType(ctx, s).name, getType(ctx, s), getAllocation(ctx, s), wctx);
+            writeParser(getType(ctx, s).name, false, getAllocation(ctx, s), wctx);
             expect(wctx.render(true)).toMatchSnapshot();
         });
     }
