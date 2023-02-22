@@ -1,13 +1,13 @@
 import { CompilerContext } from "../context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
-import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveDescriptors";
-import { TypeDescription } from "../types/types";
+import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
+import { InitDescription, TypeDescription } from "../types/types";
 import { WriterContext } from "./Writer";
 import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
-import { unwrapExternal, writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
+import { unwrapExternal, writeFunction, writeGetter, writeReceiver, writeStatement } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
@@ -19,6 +19,10 @@ import { getRawAST } from "../grammar/store";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { ops } from "./writers/ops";
 import { writeRouter } from "./writers/writeRouter";
+import { resolveFuncPrimitive } from "./writers/resolveFuncPrimitive";
+import { resolveFuncTypeUnpack } from "./writers/resolveFuncTypeUnpack";
+import { writeValue } from "./writers/writeExpression";
+import { enabledInline } from "../config";
 
 function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
@@ -28,19 +32,39 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
         ctx.inIndent(() => {
 
             // Load data slice
-            ctx.append(`slice sc = get_data().begin_parse();`);
+            ctx.append(`slice $sc = get_data().begin_parse();`);
 
             // Load context
             ctx.used(`__tact_context`);
-            ctx.append(`__tact_context_sys = sc~load_ref();`);
+            ctx.append(`__tact_context_sys = $sc~load_ref();`);
+            ctx.append(`int $loaded = $sc~load_int(1);`);
 
             // Load data
-            if (type.fields.length > 0) {
-                ctx.used(`__gen_read_${type.name}`);
-                ctx.append(`return sc~__gen_read_${type.name}();`);
-            } else {
-                ctx.append(`return null();`);
-            }
+            ctx.append(`if ($loaded) {`);
+            ctx.inIndent(() => {
+                if (type.fields.length > 0) {
+                    ctx.used(`__gen_read_${type.name}`);
+                    ctx.append(`return $sc~__gen_read_${type.name}();`);
+                } else {
+                    ctx.append(`return null();`);
+                }
+            });
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+
+                // Load arguments
+                if (type.init!.args.length > 0) {
+                    ctx.used(`__gen_read_$init$${type.name}`);
+                    ctx.append(`(${type.init!.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name).join(', ')}) = $sc~__gen_read_$init$${type.name}();`);
+                    ctx.append(`$sc.end_parse();`);
+                }
+
+                // Execute init function
+                ctx.used(`__gen_${type.name}_init`);
+                ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[...type.init!.args.map((v) => v.name)].join(', ')});`);
+            });
+
+            ctx.append(`}`);
         });
         ctx.append(`}`);
     });
@@ -55,6 +79,9 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             ctx.used(`__tact_context`);
             ctx.append(`b = b.store_ref(__tact_context_sys);`);
 
+            // Persist deployment flag
+            ctx.append(`b = b.store_int(true, 1);`);
+
             // Build data
             if (type.fields.length > 0) {
                 ctx.append(`b = ${ops.writer(type.name, ctx)}(b, v);`);
@@ -62,6 +89,85 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
             // Persist data
             ctx.append(`set_data(b.end_cell());`);
+        });
+        ctx.append(`}`);
+    });
+}
+
+function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
+    ctx.fun(`__gen_${t.name}_init`, () => {
+        ctx.append(`${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${[...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')}) impure inline_ref {`);
+        ctx.inIndent(() => {
+
+            // Unpack args
+            for (let a of init.args) {
+                if (!resolveFuncPrimitive(a.type, ctx)) {
+                    ctx.append(`var (${resolveFuncTypeUnpack(a.type, id(a.name), ctx)}) = ${id(a.name)};`);
+                }
+            }
+
+            // Generate self initial tensor
+            let initValues: string[] = [];
+            for (let i = 0; i < t.fields.length; i++) {
+                let init = 'null()';
+                if (t.fields[i].default !== undefined) {
+                    init = writeValue(t.fields[i].default!, ctx);
+                }
+                initValues.push(init);
+            }
+            if (initValues.length > 0) { // Special case for empty contracts
+                ctx.append(`var (${resolveFuncTypeUnpack(t, id('self'), ctx)}) = (${initValues.join(', ')});`);
+            } else {
+                ctx.append(`tuple ${id('self')} = null();`);
+            }
+
+            // Generate statements
+            let returns = resolveFuncTypeUnpack(t, id('self'), ctx);
+            for (let s of init.ast.statements) {
+                writeStatement(s, returns, null, ctx);
+            }
+
+            // Return result
+            if (init.ast.statements.length === 0 || init.ast.statements[init.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return ${returns};`);
+            }
+        });
+        ctx.append(`}`);
+    });
+
+    ctx.fun(`__gen_${t.name}_init_child`, () => {
+        let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
+        ctx.append(`(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
+        ctx.inIndent(() => {
+            ctx.write(`
+                slice sc' = sys'.begin_parse();
+                cell source = sc'~load_dict();
+                cell contracts = new_dict();
+
+                ;; Contract Code: ${t.name}
+                cell mine = ${ctx.used(`__tact_dict_get_code`)}(source, ${t.uid});
+                contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${t.uid}, mine);
+            `);
+
+            // Copy contracts code
+            for (let c of t.dependsOn) {
+                ctx.append();
+                ctx.write(`
+                    ;; Contract Code: ${c.name}
+                    cell code_${c.uid} = __tact_dict_get_code(source, ${c.uid});
+                    contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${c.uid}, code_${c.uid});
+                `);
+            }
+
+            // Build cell
+            ctx.append();
+            ctx.append(`;; Build cell`);
+            ctx.append(`builder b = begin_cell();`);
+            ctx.append(`b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`);
+            ctx.append(`b = b.store_int(false, 1);`);
+            let args = t.init!.args.length > 0 ? ['b', '(' + t.init!.args.map((a) => id(a.name)).join(', ') + ')'].join(', ') : 'b, null()';
+            ctx.append(`b = ${ops.writer(`$init$${t.name}`, ctx)}(${args});`);
+            ctx.append(`return (mine, b.end_cell());`);
         });
         ctx.append(`}`);
     });
@@ -79,8 +185,12 @@ function writeInitContract(type: TypeDescription, ctx: WriterContext) {
             }
 
             // Call init function
-            ctx.used(`__gen_${type.name}_init`);
-            ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[`sys'`, ...type.init!.args.map((a) => id(a.name))].join(', ')});`);
+            ctx.append(`builder b = begin_cell();`);
+            ctx.append(`b = b.store_ref(sys');`);
+            ctx.append(`b = b.store_int(false, 1);`);
+            let args = type.init!.args.length > 0 ? ['b', '(' + type.init!.args.map((a) => id(a.name)).join(', ') + ')'].join(', ') : 'b, null()';
+            ctx.append(`b = ${ops.writer(`$init$${type.name}`, ctx)}(${args});`);
+            ctx.append(`return b.end_cell();`);
         });
         ctx.append(`}`);
         ctx.append();
@@ -132,7 +242,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`;; Throw if not handled`);
             ctx.append(`throw_unless(handled, ${contractErrors.invalidMessage.id});`);
             ctx.append();
-            
+
             // Persist state
             ctx.append(`;; Persist state`);
             ctx.used(`__gen_store_${type.name}`);
@@ -157,6 +267,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`return "${abiLink}";`);
         });
         ctx.append(`}`);
+        ctx.append();
 
         // Deployed
         ctx.append(`_ lazy_deployment_completed() {`);
@@ -164,6 +275,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`return get_data().begin_parse().load_int(1);`);
         });
         ctx.append(`}`);
+        ctx.append();
     });
 }
 

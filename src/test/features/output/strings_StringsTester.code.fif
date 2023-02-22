@@ -7,6 +7,7 @@ PROGRAM{
   DECLPROC __tact_string_builder_append
   DECLPROC __tact_int_to_string
   DECLPROC __tact_float_to_string
+  DECLPROC $__gen_StringsTester_init
   DECLPROC __gen_load_StringsTester
   DECLPROC __gen_store_StringsTester
   DECLPROC $__gen_Builder_asSlice
@@ -314,13 +315,22 @@ PROGRAM{
     ENDC
     CTOS
   }>
+  $__gen_StringsTester_init PROCREF:<{
+    PUSHNULL
+  }>
   __gen_load_StringsTester PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    DROP
+    SWAP
     __tact_context_sys SETGLOB
-    PUSHNULL
+    1 LDI
+    DROP
+    IF:<{
+      PUSHNULL
+    }>ELSE<{
+      $__gen_StringsTester_init INLINECALLDICT
+    }>
   }>
   __gen_store_StringsTester PROCINLINE:<{
     DROP
@@ -328,6 +338,9 @@ PROGRAM{
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     ENDC
     c4 POP
   }>

@@ -148,15 +148,39 @@ tuple __gen_Both_opt_to_external(tuple v) inline {
     }
 }
 
+(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_$init$SerializationTester2(slice sc_0) inline {
+    var v'a = sc_0~__gen_read_Vars();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'b = sc_1~__gen_read_Vars();
+    return (sc_0, (v'a, v'b));
+}
+
+((int, int, int, int, int), (int, int, int, int, int)) $__gen_SerializationTester2_init((int, int, int, int, int) $a, (int, int, int, int, int) $b) impure inline_ref {
+    var (($a'a, $a'b, $a'c, $a'd, $a'e)) = $a;
+    var (($b'a, $b'b, $b'c, $b'd, $b'e)) = $b;
+    var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = (null(), null());
+    ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($a'a, $a'b, $a'c, $a'd, $a'e);
+    ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e) = ($b'a, $b'b, $b'c, $b'd, $b'e);
+    return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+}
+
 ((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_SerializationTester2();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_SerializationTester2();
+    } else {
+        ((int, int, int, int, int) a, (int, int, int, int, int) b) = $sc~__gen_read_$init$SerializationTester2();
+        $sc.end_parse();
+        return $__gen_SerializationTester2_init(a, b);
+    }
 }
 
 () __gen_store_SerializationTester2(((int, int, int, int, int), (int, int, int, int, int)) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_SerializationTester2(b, v);
     set_data(b.end_cell());
 }
@@ -320,6 +344,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmRdD5c1XT41KdVAY7fs7yYpLSUx59fxQPE3hk411bc9AS";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

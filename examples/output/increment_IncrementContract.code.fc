@@ -166,15 +166,26 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
+(cell, cell, cell, cell, cell) $__gen_IncrementContract_init() impure inline_ref {
+    var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = (null(), null(), null(), null(), null());
+    return ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5);
+}
+
 (cell, cell, cell, cell, cell) __gen_load_IncrementContract() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_IncrementContract();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_IncrementContract();
+    } else {
+        return $__gen_IncrementContract_init();
+    }
 }
 
 () __gen_store_IncrementContract((cell, cell, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_IncrementContract(b, v);
     set_data(b.end_cell());
 }
@@ -380,6 +391,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmZqb7ybhY2JQUBF6McGaRgBtjy6WHz3ENHzTRsLS13qk2";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

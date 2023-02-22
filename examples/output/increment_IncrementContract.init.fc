@@ -2,28 +2,16 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
-    var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
-    build_0 = build_0.store_dict(v'counters);
-    build_0 = build_0.store_dict(v'counters2);
-    var build_1 = begin_cell();
-    build_1 = build_1.store_dict(v'counters3);
-    build_1 = build_1.store_dict(v'counters4);
-    build_1 = build_1.store_dict(v'counters5);
-    build_0 = store_ref(build_0, build_1.end_cell());
+builder __gen_write_$init$IncrementContract(builder build_0, tuple v) inline {
     return build_0;
 }
 
-cell $__gen_IncrementContract_init(cell sys') {
-    var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = (null(), null(), null(), null(), null());
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_IncrementContract(b', ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5));
-    return b'.end_cell();
-}
-
 cell init(cell sys') method_id {
-    return $__gen_IncrementContract_init(sys');
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$IncrementContract(b, null());
+    return b.end_cell();
 }
 
 () main() {

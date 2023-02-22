@@ -14,6 +14,8 @@ PROGRAM{
   DECLPROC __gen_write_MultisigSigner
   DECLPROC __gen_read_MultisigSigner
   DECLPROC __gen_Request_to_external
+  DECLPROC __gen_read_$init$MultisigSigner
+  DECLPROC $__gen_MultisigSigner_init
   DECLPROC __gen_load_MultisigSigner
   DECLPROC __gen_store_MultisigSigner
   DECLPROC $send
@@ -191,20 +193,57 @@ PROGRAM{
   }>
   __gen_Request_to_external PROCINLINE:<{
   }>
+  __gen_read_$init$MultisigSigner PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDDICT
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    __gen_read_Request INLINECALLDICT
+    s7 POP
+    s7 s10 XCHG
+    s7 s9 XCHG
+    s7 s8 XCHG
+    6 ROLL
+  }>
+  $__gen_MultisigSigner_init PROCREF:<{
+    0 PUSHINT
+    s0 s8 XCHG
+    s0 s7 XCHG
+    FALSE
+    s0 s7 XCHG
+    5 2 BLKSWAP
+  }>
   __gen_load_MultisigSigner PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_MultisigSigner INLINECALLDICT
-    1 12 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_MultisigSigner INLINECALLDICT
+      1 12 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$MultisigSigner INLINECALLDICT
+      s0 s10 XCHG
+      ENDS
+      9 ROLL
+      $__gen_MultisigSigner_init INLINECALLDICT
+    }>
   }>
   __gen_store_MultisigSigner PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     12 -ROLL
     __gen_write_MultisigSigner INLINECALLDICT
     ENDC

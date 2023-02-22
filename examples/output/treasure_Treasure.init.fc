@@ -12,24 +12,19 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_Treasure(builder build_0, (slice) v) inline {
+builder __gen_write_$init$Treasure(builder build_0, (slice) v) inline {
     var (v'owner) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     return build_0;
 }
 
-cell $__gen_Treasure_init(cell sys', slice $owner) {
-    var (($self'owner)) = (null());
-    $self'owner = $owner;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_Treasure(b', ($self'owner));
-    return b'.end_cell();
-}
-
 cell init(cell sys', slice $$owner) method_id {
     slice $owner = $$owner;
-    return $__gen_Treasure_init(sys', $owner);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$Treasure(b, ($owner));
+    return b.end_cell();
 }
 
 () main() {

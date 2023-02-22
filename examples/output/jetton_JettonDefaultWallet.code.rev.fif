@@ -26,15 +26,35 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    LDMSGADDR
+    1 LDI
     s0 s1 XCHG
-    s0 s1 XCHG
-    LDMSGADDR
-    s0 s1 XCHG
-    s3 s3 s0 XCHG3
-    1 3 BLKDROP2
+    <{
+      257 PUSHINT
+      LDI
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s3 s3 s0 XCHG3
+      1 3 BLKDROP2
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 s2 XCHG
+      s0 s2 XCHG
+      ENDS
+      s0 s1 XCHG
+      <{
+        0 PUSHINT
+        s0 s2 XCHG
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     2 3 BLKSWAP
     <{
       0 PUSHINT
@@ -170,7 +190,7 @@ SETCP0
           THROWANYIFNOT
           2 GETGLOBVAR
           0 6 3 XCPUXC
-          37 CALLDICT
+          39 CALLDICT
           2DUP
           <{
             0 PUSHINT
@@ -418,7 +438,7 @@ SETCP0
         <{
           2 GETGLOBVAR
           s11 s8 PUSH2
-          37 CALLDICT
+          39 CALLDICT
           s0 s1 XCHG
           4429 PUSHINT
           s0 s2 XCHG
@@ -1053,6 +1073,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     3 1 BLKSWAP
     s2 s3 XCHG2
     257 PUSHINT
@@ -1064,22 +1087,7 @@ SETCP0
     ENDC
     c4 POP
 
-  36: 
-    0 PUSHINT
-    s0 s3 XCHG
-    NEWC
-    STREF
-    s3 s1 s3 XCHG3
-    s2 s3 XCHG2
-    257 PUSHINT
-    STIX
-    s0 s1 XCHG
-    STSLICER
-    s0 s1 XCHG
-    STSLICER
-    ENDC
-
-  37: 
+  39: 
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -1099,10 +1107,21 @@ SETCP0
     16 PUSHINT
     DICTUSETREF
     NEWC
+    s0 s1 XCHG
+    NEWC
     STDICT
     ENDC
+    s0 s1 XCHG
+    STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
     s0 s0 s3 XCHG3
-    36 CALLDICT
+    ROTREV
+    STSLICER
+    s0 s1 XCHG
+    STSLICER
+    ENDC
 
   get_wallet_data: 
     c4 PUSH
@@ -1110,19 +1129,39 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    LDMSGADDR
+    1 LDI
     s0 s1 XCHG
-    s0 s1 XCHG
-    LDMSGADDR
-    s0 s1 XCHG
-    s3 s3 s0 XCHG3
-    1 3 BLKDROP2
+    <{
+      257 PUSHINT
+      LDI
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s3 s3 s0 XCHG3
+      1 3 BLKDROP2
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 s2 XCHG
+      s0 s2 XCHG
+      ENDS
+      s0 s1 XCHG
+      <{
+        0 PUSHINT
+        s0 s2 XCHG
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       2 GETGLOBVAR
       s1 s2 PUSH2
-      37 CALLDICT
+      39 CALLDICT
       s0 POP
     }> CALLREF
 

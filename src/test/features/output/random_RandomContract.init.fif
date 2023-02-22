@@ -1,22 +1,19 @@
 PROGRAM{
-  DECLPROC __gen_write_RandomContract
-  DECLPROC $__gen_RandomContract_init
+  DECLPROC __gen_write_$init$RandomContract
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_RandomContract PROCINLINE:<{
+  __gen_write_$init$RandomContract PROCINLINE:<{
     DROP
   }>
-  $__gen_RandomContract_init PROC:<{
-    PUSHNULL
-    SWAP
+  init PROC:<{
     NEWC
     STREF
+    FALSE
     SWAP
-    __gen_write_RandomContract INLINECALLDICT
+    1 STI
+    PUSHNULL
+    __gen_write_$init$RandomContract INLINECALLDICT
     ENDC
-  }>
-  init PROC:<{
-    $__gen_RandomContract_init CALLDICT
   }>
   main PROC:<{
   }>

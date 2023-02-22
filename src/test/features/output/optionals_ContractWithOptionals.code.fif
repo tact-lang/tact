@@ -23,6 +23,8 @@ PROGRAM{
   DECLPROC __gen_StructWithOptionals_opt_to_tuple
   DECLPROC __gen_StructWithOptionals_to_external
   DECLPROC __gen_StructWithOptionals_opt_to_external
+  DECLPROC __gen_read_$init$ContractWithOptionals
+  DECLPROC $__gen_ContractWithOptionals_init
   DECLPROC __gen_load_ContractWithOptionals
   DECLPROC __gen_store_ContractWithOptionals
   DECLPROC $__gen_ContractWithOptionals_isNotNullA
@@ -548,20 +550,93 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
+  __gen_read_$init$ContractWithOptionals PROCREF:<{
+    1 LDI
+    SWAP
+    IF:<{
+      257 PUSHINT
+      LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    1 LDI
+    SWAP
+    IF:<{
+      1 LDI
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    1 LDI
+    SWAP
+    IF:<{
+      LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    __tact_load_address_opt INLINECALLDICT
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_SomeGenericStruct INLINECALLDICT
+      __gen_SomeGenericStruct_as_optional INLINECALLDICT
+    }>ELSE<{
+      PUSHNULL
+    }>
+    SWAP
+    LDREF
+    DROP
+    CTOS
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_StructWithOptionals INLINECALLDICT
+      1 5 BLKDROP2
+      __gen_StructWithOptionals_as_optional INLINECALLDICT
+    }>ELSE<{
+      DROP
+      PUSHNULL
+    }>
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
+  }>
+  $__gen_ContractWithOptionals_init PROCREF:<{
+  }>
   __gen_load_ContractWithOptionals PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_ContractWithOptionals INLINECALLDICT
-    1 6 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_ContractWithOptionals INLINECALLDICT
+      1 6 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$ContractWithOptionals INLINECALLDICT
+      s0 s6 XCHG
+      ENDS
+      5 ROLL
+      $__gen_ContractWithOptionals_init INLINECALLDICT
+    }>
   }>
   __gen_store_ContractWithOptionals PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     6 -ROLL
     __gen_write_ContractWithOptionals INLINECALLDICT
     ENDC

@@ -2,11 +2,22 @@ SETCP0
 (:methods
   recv_internal: 
 
-  4: 
+  107886: 
+    s0 s1 XCHG
+    5 UNTUPLE
+    s0 s5 XCHG
+    5 UNTUPLE
     s0 s10 XCHG
     NEWC
     STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
     s0 s10 XCHG
+    s8 s9 XCHG
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
     s5 s10 XCHG
     s4 s9 XCHG
     s3 s8 XCHG
@@ -54,17 +65,6 @@ SETCP0
     s0 s1 XCHG
     STREF
     ENDC
-
-  107886: 
-    s0 s1 XCHG
-    5 UNTUPLE
-    s0 s5 XCHG
-    5 UNTUPLE
-    s8 s9 XCHG
-    s7 s8 XCHG
-    s6 s7 XCHG
-    s5 s6 XCHG
-    4 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

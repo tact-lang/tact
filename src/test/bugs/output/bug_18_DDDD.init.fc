@@ -12,32 +12,23 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
-    var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
+builder __gen_write_$init$DDDD(builder build_0, (slice, slice, slice) v) inline {
+    var (v'addr1, v'addr2, v'addr3) = v;
     build_0 = __tact_store_address(build_0, v'addr1);
     build_0 = __tact_store_address(build_0, v'addr2);
     build_0 = __tact_store_address(build_0, v'addr3);
-    build_0 = build_0.store_dict(v'mapData);
-    build_0 = build_0.store_dict(v'mapData2);
     return build_0;
-}
-
-cell $__gen_DDDD_init(cell sys', slice $addr1, slice $addr2, slice $addr3) {
-    var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = (null(), null(), null(), null(), null());
-    $self'addr1 = $addr1;
-    $self'addr2 = $addr2;
-    $self'addr3 = $addr3;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_DDDD(b', ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2));
-    return b'.end_cell();
 }
 
 cell init(cell sys', slice $$addr1, slice $$addr2, slice $$addr3) method_id {
     slice $addr1 = $$addr1;
     slice $addr2 = $$addr2;
     slice $addr3 = $$addr3;
-    return $__gen_DDDD_init(sys', $addr1, $addr2, $addr3);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$DDDD(b, ($addr1, $addr2, $addr3));
+    return b.end_cell();
 }
 
 () main() {

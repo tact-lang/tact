@@ -26,12 +26,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 1 BLKSWAP
-    1 4 BLKDROP2
+    1 LDI
+    s0 s1 XCHG
+    <{
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
+      1 4 BLKDROP2
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
+      s0 s3 XCHG
+      ENDS
+      ROT
+      <{
+        0 PUSHINT
+        3 1 BLKSWAP
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     2 4 BLKSWAP
     <{
       c2 SAVE
@@ -272,6 +293,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     4 1 BLKSWAP
     s3 s4 XCHG2
     32 STU
@@ -287,12 +311,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 1 BLKSWAP
-    1 4 BLKDROP2
+    1 LDI
+    s0 s1 XCHG
+    <{
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
+      1 4 BLKDROP2
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
+      s0 s3 XCHG
+      ENDS
+      ROT
+      <{
+        0 PUSHINT
+        3 1 BLKSWAP
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       3 BLKDROP
     }> CALLREF
@@ -303,12 +348,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 1 BLKSWAP
-    1 4 BLKDROP2
+    1 LDI
+    s0 s1 XCHG
+    <{
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
+      1 4 BLKDROP2
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
+      s0 s3 XCHG
+      ENDS
+      ROT
+      <{
+        0 PUSHINT
+        3 1 BLKSWAP
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       3 1 BLKDROP2
     }> CALLREF
@@ -319,12 +385,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 1 BLKSWAP
-    1 4 BLKDROP2
+    1 LDI
+    s0 s1 XCHG
+    <{
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
+      1 4 BLKDROP2
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
+      s0 s3 XCHG
+      ENDS
+      ROT
+      <{
+        0 PUSHINT
+        3 1 BLKSWAP
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s1 s3 XCHG
       3 BLKDROP
@@ -336,12 +423,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 1 BLKSWAP
-    1 4 BLKDROP2
+    1 LDI
+    s0 s1 XCHG
+    <{
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
+      1 4 BLKDROP2
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
+      s0 s3 XCHG
+      ENDS
+      ROT
+      <{
+        0 PUSHINT
+        3 1 BLKSWAP
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s2 s3 XCHG
       3 BLKDROP

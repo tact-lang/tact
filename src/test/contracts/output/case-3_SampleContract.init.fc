@@ -2,35 +2,16 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_Source(builder build_0, (int, int) v) inline {
-    var (v'a, v'b) = v;
-    build_0 = build_0.store_int(v'a, 257);
-    build_0 = build_0.store_int(v'b, 257);
+builder __gen_write_$init$SampleContract(builder build_0, tuple v) inline {
     return build_0;
-}
-
-builder __gen_write_SampleContract(builder build_0, (int, int, (int, int)) v) inline {
-    var (v'a, v'b, (v'c'a, v'c'b)) = v;
-    build_0 = build_0.store_int(v'a, 257);
-    build_0 = build_0.store_int(v'b, 257);
-    var build_1 = begin_cell();
-    build_1 = __gen_write_Source(build_1, (v'c'a, v'c'b));
-    build_0 = store_ref(build_0, build_1.end_cell());
-    return build_0;
-}
-
-cell $__gen_SampleContract_init(cell sys') {
-    var (($self'a, $self'b, ($self'c'a, $self'c'b))) = (null(), null(), null());
-    $self'a = 0;
-    $self'b = 0;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_SampleContract(b', ($self'a, $self'b, ($self'c'a, $self'c'b)));
-    return b'.end_cell();
 }
 
 cell init(cell sys') method_id {
-    return $__gen_SampleContract_init(sys');
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$SampleContract(b, null());
+    return b.end_cell();
 }
 
 () main() {

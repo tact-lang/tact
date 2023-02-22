@@ -106,19 +106,6 @@ builder __gen_write_Request(builder build_0, (slice, slice, int, int, int, int, 
     return (sc_0, (v'request));
 }
 
-builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) inline {
-    var (v'master, v'members, v'weight, v'requiredWeight, v'completed, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
-    build_0 = __tact_store_address(build_0, v'master);
-    build_0 = build_0.store_dict(v'members);
-    build_0 = build_0.store_int(v'weight, 257);
-    build_0 = build_0.store_int(v'requiredWeight, 257);
-    build_0 = build_0.store_int(v'completed, 1);
-    var build_1 = begin_cell();
-    build_1 = __gen_write_Request(build_1, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body));
-    build_0 = store_ref(build_0, build_1.end_cell());
-    return build_0;
-}
-
 builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;
     build_0 = build_0.store_int(v'seqno, 257);
@@ -136,15 +123,50 @@ builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     return (sc_0, (v'seqno, v'members, v'totalWeight, v'requiredWeight));
 }
 
+builder __gen_write_$init$MultisigSigner(builder build_0, (slice, cell, int, (slice, slice, int, int, int, int, cell)) v) inline {
+    var (v'master, v'members, v'requiredWeight, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body)) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = build_0.store_dict(v'members);
+    build_0 = build_0.store_int(v'requiredWeight, 257);
+    var build_1 = begin_cell();
+    build_1 = __gen_write_Request(build_1, (v'request'requested, v'request'to, v'request'value, v'request'timeout, v'request'bounce, v'request'mode, v'request'body));
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((cell, int, int))) __gen_read_$init$Multisig(slice sc_0) inline {
+    var v'members = sc_0~load_dict();
+    var v'totalWeight = sc_0~load_int(257);
+    var v'requiredWeight = sc_0~load_int(257);
+    return (sc_0, (v'members, v'totalWeight, v'requiredWeight));
+}
+
+(int, cell, int, int) $__gen_Multisig_init(cell $members, int $totalWeight, int $requiredWeight) impure inline_ref {
+    var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = (null(), null(), null(), null());
+    $self'members = $members;
+    $self'requiredWeight = $requiredWeight;
+    $self'totalWeight = $totalWeight;
+    $self'totalWeight = 0;
+    return ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight);
+}
+
 (int, cell, int, int) __gen_load_Multisig() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Multisig();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_Multisig();
+    } else {
+        (cell members, int totalWeight, int requiredWeight) = $sc~__gen_read_$init$Multisig();
+        $sc.end_parse();
+        return $__gen_Multisig_init(members, totalWeight, requiredWeight);
+    }
 }
 
 () __gen_store_Multisig((int, cell, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_Multisig(b, v);
     set_data(b.end_cell());
 }
@@ -197,20 +219,6 @@ slice $contractAddress((cell, cell) $s) impure inline_ref {
     send_raw_message($c, $params'mode);
 }
 
-cell $__gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
-    var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
-    var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = (null(), null(), 0, null(), null(), null());
-    $self'master = $master;
-    $self'members = $members;
-    $self'requiredWeight = $requiredWeight;
-    $self'completed = false;
-    ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body) = ($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body);
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_MultisigSigner(b', ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)));
-    return b'.end_cell();
-}
-
 (cell, cell) $__gen_MultisigSigner_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
@@ -219,8 +227,13 @@ cell $__gen_MultisigSigner_init(cell sys', slice $master, cell $members, int $re
     ;; Contract Code: MultisigSigner
     cell mine = __tact_dict_get_code(source, 37817);
     contracts = __tact_dict_set_code(contracts, 37817, mine);
-    cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, $__gen_MultisigSigner_init(sys, $master, $members, $requiredWeight, $request));
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$MultisigSigner(b, ($master, $members, $requiredWeight, $request));
+    return (mine, b.end_cell());
 }
 
 int $__gen_Multisig_member((int, cell, int, int) $self, slice $address) impure inline_ref {
@@ -333,6 +346,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmQZ8u5QRBuCjdfqZYvyzFkDHG3Mh6TKszcybMKrkSi5WW";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

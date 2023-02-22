@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
+builder __gen_write_$init$SerializationTester(builder build_0, (int, int, int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -20,23 +20,6 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return build_0;
 }
 
-cell $__gen_SerializationTester_init(cell sys', int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) {
-    var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = (null(), null(), null(), null(), null(), null(), null(), null(), null());
-    $self'a = $a;
-    $self'b = $b;
-    $self'c = $c;
-    $self'd = $d;
-    $self'e = $e;
-    $self'f = $f;
-    $self'g = $g;
-    $self'h = $h;
-    $self'i = $i;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_SerializationTester(b', ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i));
-    return b'.end_cell();
-}
-
 cell init(cell sys', int $$a, int $$b, int $$c, int $$d, int $$e, int $$f, int $$g, int $$h, int $$i) method_id {
     int $a = $$a;
     int $b = $$b;
@@ -47,7 +30,11 @@ cell init(cell sys', int $$a, int $$b, int $$c, int $$d, int $$e, int $$f, int $
     int $g = $$g;
     int $h = $$h;
     int $i = $$i;
-    return $__gen_SerializationTester_init(sys', $a, $b, $c, $d, $e, $f, $g, $h, $i);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$SerializationTester(b, ($a, $b, $c, $d, $e, $f, $g, $h, $i));
+    return b.end_cell();
 }
 
 () main() {

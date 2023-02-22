@@ -55,27 +55,6 @@ builder __gen_write_StructWithOptionals(builder build_0, (int, int, cell, slice,
     return build_0;
 }
 
-((int, int, cell, slice, tuple)) __gen_StructWithOptionals_not_null(tuple v) inline {
-    throw_if(128, null?(v));
-    var (int vvv'a, int vvv'b, cell vvv'c, slice vvv'd, tuple vvv'e) = __tact_tuple_destroy_5(v);
-    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e);
-}
-
-builder __gen_write_ContractWithOptionals(builder build_0, (int, int, cell, slice, tuple, tuple) v) inline {
-    var (v'a, v'b, v'c, v'd, v'e, v'f) = v;
-    build_0 = ~ null?(v'a) ? build_0.store_int(true, 1).store_int(v'a, 257) : build_0.store_int(false, 1);
-    build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_int(v'b, 1) : build_0.store_int(false, 1);
-    build_0 = ~ null?(v'c) ? build_0.store_int(true, 1).store_ref(v'c) : build_0.store_int(false, 1);
-    build_0 = __tact_store_address_opt(build_0, v'd);
-    var build_1 = begin_cell();
-    build_1 = ~ null?(v'e) ? build_1.store_int(true, 1).__gen_write_SomeGenericStruct( __gen_SomeGenericStruct_not_null(v'e)) : build_1.store_int(false, 1);
-    var build_2 = begin_cell();
-    build_2 = ~ null?(v'f) ? build_2.store_int(true, 1).__gen_write_StructWithOptionals( __gen_StructWithOptionals_not_null(v'f)) : build_2.store_int(false, 1);
-    build_1 = store_ref(build_1, build_2.end_cell());
-    build_0 = store_ref(build_0, build_1.end_cell());
-    return build_0;
-}
-
 tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) inline {
     var (v'value1, v'value2, v'value3, v'value4, v'value5) = v;
     return __tact_tuple_create_5(v'value1, v'value2, v'value3, v'value4, v'value5);
@@ -89,6 +68,12 @@ tuple __gen_SomeGenericStruct_as_optional(((int, int, int, int, int)) v) inline 
 tuple __gen_SomeGenericStruct_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
     return __gen_SomeGenericStruct_as_optional(__gen_SomeGenericStruct_from_tuple(v));
+}
+
+((int, int, cell, slice, tuple)) __gen_StructWithOptionals_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (int vvv'a, int vvv'b, cell vvv'c, slice vvv'd, tuple vvv'e) = __tact_tuple_destroy_5(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e);
 }
 
 tuple __gen_StructWithOptionals_as_optional(((int, int, cell, slice, tuple)) v) inline {
@@ -106,20 +91,19 @@ tuple __gen_StructWithOptionals_from_opt_tuple(tuple v) inline {
     return __gen_StructWithOptionals_as_optional(__gen_StructWithOptionals_from_tuple(v));
 }
 
-cell $__gen_ContractWithOptionals_init(cell sys', int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) {
-    var ($e) = $e;
-    var ($f) = $f;
-    var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = (null(), null(), null(), null(), null(), null());
-    $self'a = $a;
-    $self'b = $b;
-    $self'c = $c;
-    $self'd = $d;
-    $self'e = $e;
-    $self'f = $f;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_ContractWithOptionals(b', ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f));
-    return b'.end_cell();
+builder __gen_write_$init$ContractWithOptionals(builder build_0, (int, int, cell, slice, tuple, tuple) v) inline {
+    var (v'a, v'b, v'c, v'd, v'e, v'f) = v;
+    build_0 = ~ null?(v'a) ? build_0.store_int(true, 1).store_int(v'a, 257) : build_0.store_int(false, 1);
+    build_0 = ~ null?(v'b) ? build_0.store_int(true, 1).store_int(v'b, 1) : build_0.store_int(false, 1);
+    build_0 = ~ null?(v'c) ? build_0.store_int(true, 1).store_ref(v'c) : build_0.store_int(false, 1);
+    build_0 = __tact_store_address_opt(build_0, v'd);
+    var build_1 = begin_cell();
+    build_1 = ~ null?(v'e) ? build_1.store_int(true, 1).__gen_write_SomeGenericStruct( __gen_SomeGenericStruct_not_null(v'e)) : build_1.store_int(false, 1);
+    var build_2 = begin_cell();
+    build_2 = ~ null?(v'f) ? build_2.store_int(true, 1).__gen_write_StructWithOptionals( __gen_StructWithOptionals_not_null(v'f)) : build_2.store_int(false, 1);
+    build_1 = store_ref(build_1, build_2.end_cell());
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
 }
 
 cell init(cell sys', int $$a, int $$b, cell $$c, slice $$d, tuple $$e, tuple $$f) method_id {
@@ -129,7 +113,11 @@ cell init(cell sys', int $$a, int $$b, cell $$c, slice $$d, tuple $$e, tuple $$f
     slice $d = $$d;
     tuple $e = __gen_SomeGenericStruct_from_opt_tuple($$e);
     tuple $f = __gen_StructWithOptionals_from_opt_tuple($$f);
-    return $__gen_ContractWithOptionals_init(sys', $a, $b, $c, $d, $e, $f);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$ContractWithOptionals(b, ($a, $b, $c, $d, $e, $f));
+    return b.end_cell();
 }
 
 () main() {

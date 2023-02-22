@@ -10,6 +10,8 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
+  DECLPROC __gen_read_$init$Echo
+  DECLPROC $__gen_Echo_init
   DECLPROC __gen_load_Echo
   DECLPROC __gen_store_Echo
   DECLPROC $send
@@ -154,13 +156,32 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
+  __gen_read_$init$Echo PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $__gen_Echo_init PROCREF:<{
+    DROP
+    PUSHNULL
+  }>
   __gen_load_Echo PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    DROP
+    SWAP
     __tact_context_sys SETGLOB
-    PUSHNULL
+    1 LDI
+    SWAP
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_read_$init$Echo INLINECALLDICT
+      SWAP
+      ENDS
+      $__gen_Echo_init INLINECALLDICT
+    }>
   }>
   __gen_store_Echo PROCINLINE:<{
     DROP
@@ -168,6 +189,9 @@ PROGRAM{
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     ENDC
     c4 POP
   }>

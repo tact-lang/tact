@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_bool
+  DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_create_address
   DECLPROC __tact_compute_contract_address
@@ -11,14 +12,17 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
-  DECLPROC __gen_write_C
+  DECLPROC __gen_write_B
+  DECLPROC __gen_read_B
   DECLPROC __gen_StateInit_to_external
+  DECLPROC __gen_read_$init$B
+  DECLPROC __gen_write_$init$C
+  DECLPROC $__gen_B_init
   DECLPROC __gen_load_B
   DECLPROC __gen_store_B
   DECLPROC $contractAddress
   DECLPROC $send
   DECLPROC $__gen_String_asComment
-  DECLPROC $__gen_C_init
   DECLPROC $__gen_C_init_child
   DECLPROC $__gen_B_getNext
   74105 DECLMETHOD $__gen_get_getNext
@@ -44,6 +48,10 @@ PROGRAM{
   __tact_store_bool PROCINLINE:<{
     SWAP
     1 STI
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
   }>
   __tact_store_address PROCINLINE:<{
     STSLICER
@@ -189,27 +197,50 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_write_C PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
+  __gen_write_B PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_B PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
   }>
   __gen_StateInit_to_external PROCINLINE:<{
+  }>
+  __gen_read_$init$B PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_write_$init$C PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  $__gen_B_init PROCREF:<{
   }>
   __gen_load_B PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    DROP
+    SWAP
     __tact_context_sys SETGLOB
-    PUSHNULL
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_B INLINECALLDICT
+      NIP
+    }>ELSE<{
+      __gen_read_$init$B INLINECALLDICT
+      SWAP
+      ENDS
+      $__gen_B_init INLINECALLDICT
+    }>
   }>
   __gen_store_B PROCINLINE:<{
-    DROP
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
+    SWAP
+    __gen_write_B INLINECALLDICT
     ENDC
     c4 POP
   }>
@@ -323,16 +354,8 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_C_init PROC:<{
-    0 PUSHINT
-    SWAP
-    NEWC
-    STREF
-    SWAP
-    __gen_write_C INLINECALLDICT
-    ENDC
-  }>
   $__gen_C_init_child PROC:<{
+    SWAP
     CTOS
     LDDICT
     DROP
@@ -345,13 +368,23 @@ PROGRAM{
     s2 PUSH
     __tact_dict_set_code INLINECALLDICT
     NEWC
+    SWAP
+    NEWC
     STDICT
     ENDC
-    $__gen_C_init CALLDICT
+    SWAP
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    ROT
+    __gen_write_$init$C INLINECALLDICT
+    ENDC
   }>
   $__gen_B_getNext PROCREF:<{
     DROP
     __tact_context_sys GETGLOB
+    MYADDR
     $__gen_C_init_child CALLDICT
   }>
   $__gen_get_getNext PROC:<{
@@ -361,6 +394,7 @@ PROGRAM{
   }>
   $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
+    MYADDR
     $__gen_C_init_child CALLDICT
     2DUP
     $contractAddress INLINECALLDICT

@@ -1,8 +1,7 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
-  DECLPROC __gen_write_DDDD
-  DECLPROC $__gen_DDDD_init
+  DECLPROC __gen_write_$init$DDDD
   107886 DECLMETHOD init
   DECLPROC main
   __tact_verify_address PROCINLINE:<{
@@ -14,29 +13,24 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_DDDD PROCINLINE:<{
-    s5 s4 XCHG2
+  __gen_write_$init$DDDD PROCINLINE:<{
+    2SWAP
     __tact_store_address INLINECALLDICT
     ROT
     __tact_store_address INLINECALLDICT
     SWAP
     __tact_store_address INLINECALLDICT
-    s1 s2 XCHG
-    STDICT
-    STDICT
-  }>
-  $__gen_DDDD_init PROC:<{
-    PUSHNULL
-    PUSHNULL
-    s0 s5 XCHG
-    NEWC
-    STREF
-    s0 s5 XCHG
-    __gen_write_DDDD INLINECALLDICT
-    ENDC
   }>
   init PROC:<{
-    $__gen_DDDD_init CALLDICT
+    s0 s3 XCHG
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s3 XCHG
+    __gen_write_$init$DDDD INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

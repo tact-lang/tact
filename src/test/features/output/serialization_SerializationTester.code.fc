@@ -54,15 +54,52 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
+(slice, ((int, int, int, int, int, int, int, int, int))) __gen_read_$init$SerializationTester(slice sc_0) inline_ref {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_int(257);
+    var v'c = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'd = sc_1~load_int(257);
+    var v'e = sc_1~load_int(257);
+    var v'f = sc_1~load_int(257);
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'g = sc_2~load_int(257);
+    var v'h = sc_2~load_int(257);
+    var v'i = sc_2~load_int(257);
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
+}
+
+(int, int, int, int, int, int, int, int, int) $__gen_SerializationTester_init(int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) impure inline_ref {
+    var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = (null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'a = $a;
+    $self'b = $b;
+    $self'c = $c;
+    $self'd = $d;
+    $self'e = $e;
+    $self'f = $f;
+    $self'g = $g;
+    $self'h = $h;
+    $self'i = $i;
+    return ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i);
+}
+
 (int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_SerializationTester();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_SerializationTester();
+    } else {
+        (int a, int b, int c, int d, int e, int f, int g, int h, int i) = $sc~__gen_read_$init$SerializationTester();
+        $sc.end_parse();
+        return $__gen_SerializationTester_init(a, b, c, d, e, f, g, h, i);
+    }
 }
 
 () __gen_store_SerializationTester((int, int, int, int, int, int, int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_SerializationTester(b, v);
     set_data(b.end_cell());
 }
@@ -248,6 +285,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmZTBEVbne3pyG2Jk289CjzqnhrstNXTwSE4Eny7Yk1pRq";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

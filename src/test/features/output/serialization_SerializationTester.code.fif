@@ -2,6 +2,8 @@ PROGRAM{
   DECLPROC __gen_read_Update
   DECLPROC __gen_write_SerializationTester
   DECLPROC __gen_read_SerializationTester
+  DECLPROC __gen_read_$init$SerializationTester
+  DECLPROC $__gen_SerializationTester_init
   DECLPROC __gen_load_SerializationTester
   DECLPROC __gen_store_SerializationTester
   DECLPROC $__gen_SerializationTester_getA
@@ -132,20 +134,65 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
+  __gen_read_$init$SerializationTester PROCREF:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    DROP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    DROP
+    s6 s9 XCHG
+    s6 s8 XCHG
+    s6 s7 XCHG
+  }>
+  $__gen_SerializationTester_init PROCREF:<{
+  }>
   __gen_load_SerializationTester PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_SerializationTester INLINECALLDICT
-    1 9 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_SerializationTester INLINECALLDICT
+      1 9 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$SerializationTester INLINECALLDICT
+      s0 s9 XCHG
+      ENDS
+      8 ROLL
+      $__gen_SerializationTester_init INLINECALLDICT
+    }>
   }>
   __gen_store_SerializationTester PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     9 -ROLL
     __gen_write_SerializationTester INLINECALLDICT
     ENDC

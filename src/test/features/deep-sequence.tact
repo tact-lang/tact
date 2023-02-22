@@ -5,7 +5,7 @@ contract A {
     }
 
     receive("Message") {
-        let init: StateInit = initOf B();
+        let init: StateInit = initOf B(myAddress());
         let address: Address = contractAddress(init);
         send(SendParameters{
             value: 0, 
@@ -19,18 +19,18 @@ contract A {
     }
 
     get fun getNext(): StateInit {
-        return initOf B();
+        return initOf B(myAddress());
     }
 }
 
 contract B {
-    
-    init() {
-
+    parent: Address;
+    init(parent: Address) {
+        self.parent = parent;
     }
 
     receive("Message") {
-        let init: StateInit = initOf C();
+        let init: StateInit = initOf C(myAddress());
         let address: Address = contractAddress(init);
         send(SendParameters{
             value: 0, 
@@ -44,18 +44,18 @@ contract B {
     }
 
     get fun getNext(): StateInit {
-        return initOf C();
+        return initOf C(myAddress());
     }
 }
 
 contract C {
-    a: Int = 0;
-    init() {
-
+    parent: Address;
+    init(parent: Address) {
+        self.parent = parent;
     }
 
     receive("Message") {
-        let init: StateInit = initOf C();
+        let init: StateInit = initOf C(self.parent);
         let address: Address = contractAddress(init);
         send(SendParameters{
             value: 0, 

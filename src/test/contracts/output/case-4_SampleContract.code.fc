@@ -38,15 +38,26 @@ builder __gen_write_SampleContract(builder build_0, (int, int, (int, int), cell)
     return (sc_0, (v'a, v'b, v'c, v'd));
 }
 
+(int, int, (int, int), cell) $__gen_SampleContract_init() impure inline_ref {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = (null(), null(), null(), null());
+    return ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd);
+}
+
 (int, int, (int, int), cell) __gen_load_SampleContract() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_SampleContract();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_SampleContract();
+    } else {
+        return $__gen_SampleContract_init();
+    }
 }
 
 () __gen_store_SampleContract((int, int, (int, int), cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_SampleContract(b, v);
     set_data(b.end_cell());
 }
@@ -111,6 +122,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmUJamsv9JwWkrLqdjLFJYgw1x1odBMn4FafXvNVceWaBF";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

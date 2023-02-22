@@ -1,22 +1,19 @@
 PROGRAM{
-  DECLPROC __gen_write_ConstantTester
-  DECLPROC $__gen_ConstantTester_init
+  DECLPROC __gen_write_$init$ConstantTester
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_ConstantTester PROCINLINE:<{
+  __gen_write_$init$ConstantTester PROCINLINE:<{
     DROP
   }>
-  $__gen_ConstantTester_init PROC:<{
-    PUSHNULL
-    SWAP
+  init PROC:<{
     NEWC
     STREF
+    FALSE
     SWAP
-    __gen_write_ConstantTester INLINECALLDICT
+    1 STI
+    PUSHNULL
+    __gen_write_$init$ConstantTester INLINECALLDICT
     ENDC
-  }>
-  init PROC:<{
-    $__gen_ConstantTester_init CALLDICT
   }>
   main PROC:<{
   }>

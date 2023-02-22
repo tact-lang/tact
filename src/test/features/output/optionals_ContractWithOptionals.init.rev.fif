@@ -2,10 +2,48 @@ SETCP0
 (:methods
   recv_internal: 
 
-  15: 
+  107886: 
+    s0 s1 XCHG
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      5 UNTUPLE
+      5 TUPLE
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      5 UNTUPLE
+      s0 PUSH
+      ISNULL
+      <{
+        s0 POP
+        PUSHNULL
+      }> PUSHCONT
+      <{
+        5 UNTUPLE
+        5 TUPLE
+      }> PUSHCONT
+      IFELSE
+      5 TUPLE
+    }> PUSHCONT
+    IFELSE
     s0 s6 XCHG
     NEWC
     STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
     s0 s6 XCHG
     s5 PUSH
     ISNULL
@@ -244,44 +282,6 @@ SETCP0
     s0 s1 XCHG
     STREF
     ENDC
-
-  107886: 
-    s0 s1 XCHG
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    <{
-      5 UNTUPLE
-      5 TUPLE
-    }> PUSHCONT
-    IFELSE
-    s0 s1 XCHG
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    <{
-      5 UNTUPLE
-      s0 PUSH
-      ISNULL
-      <{
-        s0 POP
-        PUSHNULL
-      }> PUSHCONT
-      <{
-        5 UNTUPLE
-        5 TUPLE
-      }> PUSHCONT
-      IFELSE
-      5 TUPLE
-    }> PUSHCONT
-    IFELSE
-    15 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

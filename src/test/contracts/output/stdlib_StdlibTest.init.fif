@@ -1,24 +1,19 @@
 PROGRAM{
-  DECLPROC __gen_write_StdlibTest
-  DECLPROC $__gen_StdlibTest_init
+  DECLPROC __gen_write_$init$StdlibTest
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_StdlibTest PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
-  }>
-  $__gen_StdlibTest_init PROC:<{
-    0 PUSHINT
-    SWAP
-    NEWC
-    STREF
-    SWAP
-    __gen_write_StdlibTest INLINECALLDICT
-    ENDC
+  __gen_write_$init$StdlibTest PROCINLINE:<{
+    DROP
   }>
   init PROC:<{
-    $__gen_StdlibTest_init CALLDICT
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    PUSHNULL
+    __gen_write_$init$StdlibTest INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

@@ -1,22 +1,22 @@
 PROGRAM{
-  DECLPROC __gen_write_Echo
-  DECLPROC $__gen_Echo_init
+  DECLPROC __gen_write_$init$Echo
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Echo PROCINLINE:<{
-    DROP
+  __gen_write_$init$Echo PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
   }>
-  $__gen_Echo_init PROC:<{
-    PUSHNULL
+  init PROC:<{
     SWAP
     NEWC
     STREF
+    FALSE
     SWAP
-    __gen_write_Echo INLINECALLDICT
+    1 STI
+    SWAP
+    __gen_write_$init$Echo INLINECALLDICT
     ENDC
-  }>
-  init PROC:<{
-    $__gen_Echo_init CALLDICT
   }>
   main PROC:<{
   }>

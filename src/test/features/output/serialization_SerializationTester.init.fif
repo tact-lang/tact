@@ -1,9 +1,8 @@
 PROGRAM{
-  DECLPROC __gen_write_SerializationTester
-  DECLPROC $__gen_SerializationTester_init
+  DECLPROC __gen_write_$init$SerializationTester
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_SerializationTester PROCINLINE:<{
+  __gen_write_$init$SerializationTester PROCINLINE:<{
     s8 s9 XCHG2
     257 PUSHINT
     STIX
@@ -39,16 +38,16 @@ PROGRAM{
     SWAP
     STREF
   }>
-  $__gen_SerializationTester_init PROC:<{
+  init PROC:<{
     s0 s9 XCHG
     NEWC
     STREF
+    FALSE
+    SWAP
+    1 STI
     s0 s9 XCHG
-    __gen_write_SerializationTester INLINECALLDICT
+    __gen_write_$init$SerializationTester INLINECALLDICT
     ENDC
-  }>
-  init PROC:<{
-    $__gen_SerializationTester_init CALLDICT
   }>
   main PROC:<{
   }>

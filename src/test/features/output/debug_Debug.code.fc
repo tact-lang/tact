@@ -90,15 +90,26 @@ cell __gen_writecell_DeployOk((int) v) inline {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
+tuple $__gen_Debug_init() impure inline_ref {
+    tuple $self = null();
+    return $self;
+}
+
 tuple __gen_load_Debug() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return null();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    } else {
+        return $__gen_Debug_init();
+    }
 }
 
 () __gen_store_Debug(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
@@ -255,6 +266,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmeuCtEf9Rx6NCd5XMqrtg3a7pfpQUG5HmZNy71GaqeZ6N";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

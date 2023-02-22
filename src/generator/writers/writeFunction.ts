@@ -37,7 +37,7 @@ export function unwrapExternal(targetName: string, sourceName: string, type: Typ
     ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${sourceName};`);
 }
 
-function writeStatement(f: ASTStatement, self: string | null, returns: TypeRef | null, ctx: WriterContext) {
+export function writeStatement(f: ASTStatement, self: string | null, returns: TypeRef | null, ctx: WriterContext) {
     if (f.kind === 'statement_return') {
         if (f.expression) {
 
@@ -395,81 +395,6 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
             // Return restult
             ctx.append(`return res;`);
-        });
-        ctx.append(`}`);
-    });
-}
-
-export function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
-    ctx.fun(`__gen_${t.name}_init`, () => {
-        ctx.append(`cell ${fn(`__gen_${t.name}_init`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')}) {`);
-        ctx.inIndent(() => {
-
-            // Unpack args
-            for (let a of init.args) {
-                if (!resolveFuncPrimitive(a.type, ctx)) {
-                    ctx.append(`var (${resolveFuncTypeUnpack(a.type, id(a.name), ctx)}) = ${id(a.name)};`);
-                }
-            }
-
-            // Generate self initial tensor
-            let initValues: string[] = [];
-            for (let i = 0; i < t.fields.length; i++) {
-                let init = 'null()';
-                if (t.fields[i].default !== undefined) {
-                    init = writeValue(t.fields[i].default!, ctx);
-                }
-                initValues.push(init);
-            }
-            if (initValues.length > 0) { // Special case for empty contracts
-                ctx.append(`var (${resolveFuncTypeUnpack(t, id('self'), ctx)}) = (${initValues.join(', ')});`);
-            } else {
-                ctx.append(`var ${id('self')} = null();`);
-            }
-
-            // Generate statements
-            let returns = resolveFuncTypeUnpack(t, id('self'), ctx);
-            for (let s of init.ast.statements) {
-                writeStatement(s, returns, null, ctx);
-            }
-
-            // Assemble result cell
-            ctx.append(`var b' = begin_cell();`)
-            ctx.append(`b' = b'.store_ref(sys');`)
-            ctx.append(`b' = ${ops.writer(t.name, ctx)}(${[`b'`, resolveFuncTypeUnpack(t, id('self'), ctx)].join(', ')});`);
-            ctx.append(`return b'.end_cell();`);
-        });
-        ctx.append(`}`);
-    });
-
-    ctx.fun(`__gen_${t.name}_init_child`, () => {
-        let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
-        ctx.append(`(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
-        ctx.inIndent(() => {
-            ctx.write(`
-                slice sc' = sys'.begin_parse();
-                cell source = sc'~load_dict();
-                cell contracts = new_dict();
-
-                ;; Contract Code: ${t.name}
-                cell mine = ${ctx.used(`__tact_dict_get_code`)}(source, ${t.uid});
-                contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${t.uid}, mine);
-            `);
-
-            // Copy contracts code
-            for (let c of t.dependsOn) {
-                ctx.write(`
-
-                    ;; Contract Code: ${c.name}
-                    cell code_${c.uid} = __tact_dict_get_code(source, ${c.uid});
-                    contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${c.uid}, code_${c.uid});
-                `);
-            }
-
-            // Build cell
-            ctx.append(`cell sys = begin_cell().store_dict(contracts).end_cell();`);
-            ctx.used(`__gen_${t.name}_init`);
-            ctx.append(`return (mine, ${fn(`__gen_${t.name}_init`)}(${['sys', ...init.args.map((v) => id(v.name))].join(', ')}));`);
         });
         ctx.append(`}`);
     });

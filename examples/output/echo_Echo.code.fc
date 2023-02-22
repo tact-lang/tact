@@ -89,15 +89,33 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
+(slice, ((int))) __gen_read_$init$Echo(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    return (sc_0, (v'a));
+}
+
+tuple $__gen_Echo_init(int $a) impure inline_ref {
+    tuple $self = null();
+    return $self;
+}
+
 tuple __gen_load_Echo() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return null();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    } else {
+        (int a) = $sc~__gen_read_$init$Echo();
+        $sc.end_parse();
+        return $__gen_Echo_init(a);
+    }
 }
 
 () __gen_store_Echo(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
@@ -250,6 +268,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmNwwt8aViq6vjWChXqWbFsvn6VMEFVio9g7XWi7be1PSA";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

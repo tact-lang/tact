@@ -12,29 +12,21 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
-    var (v'master, v'owner, v'completed) = v;
+builder __gen_write_$init$Beacon(builder build_0, (slice, slice) v) inline {
+    var (v'master, v'owner) = v;
     build_0 = __tact_store_address(build_0, v'master);
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = build_0.store_int(v'completed, 1);
     return build_0;
-}
-
-cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
-    var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
-    $self'master = $master;
-    $self'owner = $owner;
-    $self'completed = false;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_Beacon(b', ($self'master, $self'owner, $self'completed));
-    return b'.end_cell();
 }
 
 cell init(cell sys', slice $$master, slice $$owner) method_id {
     slice $master = $$master;
     slice $owner = $$owner;
-    return $__gen_Beacon_init(sys', $master, $owner);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$Beacon(b, ($master, $owner));
+    return b.end_cell();
 }
 
 () main() {

@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC $__gen_ConstantTester_init
   DECLPROC __gen_load_ConstantTester
   DECLPROC __gen_store_ConstantTester
   DECLPROC $__gen_ConstantTester_something1
@@ -20,13 +21,22 @@ PROGRAM{
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  $__gen_ConstantTester_init PROCREF:<{
+    PUSHNULL
+  }>
   __gen_load_ConstantTester PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    DROP
+    SWAP
     __tact_context_sys SETGLOB
-    PUSHNULL
+    1 LDI
+    DROP
+    IF:<{
+      PUSHNULL
+    }>ELSE<{
+      $__gen_ConstantTester_init INLINECALLDICT
+    }>
   }>
   __gen_store_ConstantTester PROCINLINE:<{
     DROP
@@ -34,6 +44,9 @@ PROGRAM{
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     ENDC
     c4 POP
   }>

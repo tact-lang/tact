@@ -26,18 +26,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    1 5 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s3 s5 XCHG
+      s3 s4 XCHG
+      1 5 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     2 5 BLKSWAP
     <{
       0 PUSHINT
@@ -537,6 +552,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     5 1 BLKSWAP
     s4 s5 XCHG2
     STDICT
@@ -585,18 +603,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    1 5 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s3 s5 XCHG
+      s3 s4 XCHG
+      1 5 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s1 s4 XCHG
       4 BLKDROP
@@ -608,18 +641,33 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    1 5 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s3 s5 XCHG
+      s3 s4 XCHG
+      1 5 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       4 BLKDROP
     }> CALLREF

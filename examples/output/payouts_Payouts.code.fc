@@ -152,14 +152,6 @@ cell __gen_writecell_CanPayout((int) v) inline {
     return (sc_0, (v'amount, v'address, v'ok));
 }
 
-builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
-    var (v'master, v'owner, v'completed) = v;
-    build_0 = __tact_store_address(build_0, v'master);
-    build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = build_0.store_int(v'completed, 1);
-    return build_0;
-}
-
 builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
     var (v'owner, v'publicKey) = v;
     build_0 = __tact_store_address(build_0, v'owner);
@@ -178,15 +170,43 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
+builder __gen_write_$init$Beacon(builder build_0, (slice, slice) v) inline {
+    var (v'master, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(slice, ((slice, int))) __gen_read_$init$Payouts(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'publicKey = sc_0~load_int(257);
+    return (sc_0, (v'owner, v'publicKey));
+}
+
+(slice, int) $__gen_Payouts_init(slice $owner, int $publicKey) impure inline_ref {
+    var (($self'owner, $self'publicKey)) = (null(), null());
+    $self'owner = $owner;
+    $self'publicKey = $publicKey;
+    return ($self'owner, $self'publicKey);
+}
+
 (slice, int) __gen_load_Payouts() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Payouts();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_Payouts();
+    } else {
+        (slice owner, int publicKey) = $sc~__gen_read_$init$Payouts();
+        $sc.end_parse();
+        return $__gen_Payouts_init(owner, publicKey);
+    }
 }
 
 () __gen_store_Payouts((slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_Payouts(b, v);
     set_data(b.end_cell());
 }
@@ -298,17 +318,6 @@ slice $__gen_String_fromBase64(slice $self) impure inline_ref {
     return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
 }
 
-cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
-    var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
-    $self'master = $master;
-    $self'owner = $owner;
-    $self'completed = false;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_Beacon(b', ($self'master, $self'owner, $self'completed));
-    return b'.end_cell();
-}
-
 (cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
@@ -317,8 +326,13 @@ cell $__gen_Beacon_init(cell sys', slice $master, slice $owner) {
     ;; Contract Code: Beacon
     cell mine = __tact_dict_get_code(source, 41210);
     contracts = __tact_dict_set_code(contracts, 41210, mine);
-    cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, $__gen_Beacon_init(sys, $master, $owner));
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$Beacon(b, ($master, $owner));
+    return (mine, b.end_cell());
 }
 
 ((slice, int), ()) $__gen_Payouts_requireOwner((slice, int) $self) impure inline_ref {
@@ -453,6 +467,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmQGyicLR8R8cw9umCwJgj2kiG5MbhDmRPu8LqcFxHJvuW";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

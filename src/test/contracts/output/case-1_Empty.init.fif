@@ -1,22 +1,19 @@
 PROGRAM{
-  DECLPROC __gen_write_Empty
-  DECLPROC $__gen_Empty_init
+  DECLPROC __gen_write_$init$Empty
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_Empty PROCINLINE:<{
+  __gen_write_$init$Empty PROCINLINE:<{
     DROP
   }>
-  $__gen_Empty_init PROC:<{
-    PUSHNULL
-    SWAP
+  init PROC:<{
     NEWC
     STREF
+    FALSE
     SWAP
-    __gen_write_Empty INLINECALLDICT
+    1 STI
+    PUSHNULL
+    __gen_write_$init$Empty INLINECALLDICT
     ENDC
-  }>
-  init PROC:<{
-    $__gen_Empty_init CALLDICT
   }>
   main PROC:<{
   }>

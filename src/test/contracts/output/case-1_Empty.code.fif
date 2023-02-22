@@ -1,5 +1,6 @@
 PROGRAM{
   DECLPROC __gen_Source_from_tuple
+  DECLPROC $__gen_Empty_init
   DECLPROC __gen_load_Empty
   DECLPROC __gen_store_Empty
   DECLPROC $isZero
@@ -15,13 +16,22 @@ PROGRAM{
   __gen_Source_from_tuple PROCINLINE:<{
     4 UNTUPLE
   }>
+  $__gen_Empty_init PROCREF:<{
+    PUSHNULL
+  }>
   __gen_load_Empty PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    DROP
+    SWAP
     __tact_context_sys SETGLOB
-    PUSHNULL
+    1 LDI
+    DROP
+    IF:<{
+      PUSHNULL
+    }>ELSE<{
+      $__gen_Empty_init INLINECALLDICT
+    }>
   }>
   __gen_store_Empty PROCINLINE:<{
     DROP
@@ -29,6 +39,9 @@ PROGRAM{
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     ENDC
     c4 POP
   }>

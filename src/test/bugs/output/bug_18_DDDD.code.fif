@@ -8,6 +8,8 @@ PROGRAM{
   DECLPROC __tact_dict_get_slice_int
   DECLPROC __gen_write_DDDD
   DECLPROC __gen_read_DDDD
+  DECLPROC __gen_read_$init$DDDD
+  DECLPROC $__gen_DDDD_init
   DECLPROC __gen_load_DDDD
   DECLPROC __gen_store_DDDD
   DECLPROC $__gen_DDDD_mapData_addr1
@@ -108,20 +110,45 @@ PROGRAM{
     LDDICT
     5 -ROLL
   }>
+  __gen_read_$init$DDDD PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    s3 s3 s0 XCHG3
+  }>
+  $__gen_DDDD_init PROCREF:<{
+    PUSHNULL
+    PUSHNULL
+  }>
   __gen_load_DDDD PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_DDDD INLINECALLDICT
-    1 5 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_DDDD INLINECALLDICT
+      1 5 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$DDDD INLINECALLDICT
+      s0 s3 XCHG
+      ENDS
+      ROT
+      $__gen_DDDD_init INLINECALLDICT
+    }>
   }>
   __gen_store_DDDD PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     5 -ROLL
     __gen_write_DDDD INLINECALLDICT
     ENDC

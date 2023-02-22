@@ -12,39 +12,15 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
-    var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
+builder __gen_write_$init$RugPull(builder build_0, (slice, int, int, int) v) inline {
+    var (v'owner, v'investment, v'returns, v'fee) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_int(v'investment, 257);
     build_0 = build_0.store_int(v'returns, 257);
     var build_1 = begin_cell();
     build_1 = build_1.store_int(v'fee, 257);
-    build_1 = build_1.store_int(v'balance, 257);
-    build_1 = build_1.store_int(v'rugpulled, 1);
-    build_1 = build_1.store_int(v'stopped, 1);
-    build_1 = build_1.store_int(v'queueStart, 257);
-    var build_2 = begin_cell();
-    build_2 = build_2.store_int(v'queueEnd, 257);
-    build_2 = build_2.store_dict(v'queue);
-    build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
-}
-
-cell $__gen_RugPull_init(cell sys', slice $owner, int $investment, int $returns, int $fee) {
-    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
-    $self'owner = $owner;
-    $self'rugpulled = false;
-    $self'queueStart = 0;
-    $self'queueEnd = 0;
-    $self'balance = 0;
-    $self'investment = $investment;
-    $self'returns = $returns;
-    $self'fee = $fee;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_RugPull(b', ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue));
-    return b'.end_cell();
 }
 
 cell init(cell sys', slice $$owner, int $$investment, int $$returns, int $$fee) method_id {
@@ -52,7 +28,11 @@ cell init(cell sys', slice $$owner, int $$investment, int $$returns, int $$fee) 
     int $investment = $$investment;
     int $returns = $$returns;
     int $fee = $$fee;
-    return $__gen_RugPull_init(sys', $owner, $investment, $returns, $fee);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$RugPull(b, ($owner, $investment, $returns, $fee));
+    return b.end_cell();
 }
 
 () main() {

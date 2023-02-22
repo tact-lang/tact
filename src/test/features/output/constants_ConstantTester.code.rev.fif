@@ -24,9 +24,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     ROTREV
     <{
       s0 PUSH
@@ -46,6 +56,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     ENDC
     c4 POP
 
@@ -53,9 +66,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       456000000000 PUSHINT
@@ -65,9 +88,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       PUSHSLICE
@@ -83,9 +116,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       100 PUSHINT
@@ -95,9 +138,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       -6 PUSHINT
@@ -107,9 +160,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       PUSHNULL
@@ -119,9 +182,19 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       123000000000 PUSHINT

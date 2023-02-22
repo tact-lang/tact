@@ -2,34 +2,15 @@ SETCP0
 (:methods
   recv_internal: 
 
-  2: 
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    s0 s5 XCHG
-    NEWC
-    STREF
-    s0 s5 XCHG
-    s4 s5 XCHG2
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    s0 s1 XCHG
-    NEWC
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    ENDC
-    s0 s1 XCHG
-    STREF
-    ENDC
-
   107886: 
-    2 CALLDICT
+    NEWC
+    STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    PUSHNULL
+    s0 POP
+    ENDC
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

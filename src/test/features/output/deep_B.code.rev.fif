@@ -24,9 +24,22 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 s1 XCHG
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+    }> PUSHCONT
+    IFELSE
     ROTREV
     <{
       c2 SAVE
@@ -55,7 +68,8 @@ SETCP0
         EQUAL
         <{
           2 GETGLOBVAR
-          21 CALLDICT
+          MYADDR
+          25 CALLDICT
           2DUP
           <{
             0 PUSHINT
@@ -334,26 +348,20 @@ SETCP0
       0 PUSHINT
     }> CALLREF
     s0 POP
-    s0 POP
     NEWC
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    s0 s1 XCHG
+    STSLICER
     ENDC
     c4 POP
 
-  20: 
-    0 PUSHINT
+  25: 
     s0 s1 XCHG
-    NEWC
-    STREF
-    s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    STIX
-    ENDC
-
-  21: 
     CTOS
     LDDICT
     s0 POP
@@ -372,21 +380,44 @@ SETCP0
     16 PUSHINT
     DICTUSETREF
     NEWC
+    s0 s1 XCHG
+    NEWC
     STDICT
     ENDC
-    20 CALLDICT
+    s0 s1 XCHG
+    STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    ROT
+    STSLICER
+    ENDC
 
   74105: 
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 s1 XCHG
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       2 GETGLOBVAR
-      21 CALLDICT
+      MYADDR
+      25 CALLDICT
     }> CALLREF
 
   113617: 

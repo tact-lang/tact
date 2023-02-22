@@ -19,10 +19,12 @@ PROGRAM{
   DECLPROC __gen_write_CanPayout
   DECLPROC __gen_writecell_CanPayout
   DECLPROC __gen_read_CanPayoutResponse
-  DECLPROC __gen_write_Beacon
   DECLPROC __gen_write_Payouts
   DECLPROC __gen_read_Payouts
   DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_write_$init$Beacon
+  DECLPROC __gen_read_$init$Payouts
+  DECLPROC $__gen_Payouts_init
   DECLPROC __gen_load_Payouts
   DECLPROC __gen_store_Payouts
   DECLPROC $contractAddress
@@ -32,7 +34,6 @@ PROGRAM{
   DECLPROC $__gen_Slice_fromBase64
   DECLPROC $__gen_String_asComment
   DECLPROC $__gen_String_fromBase64
-  DECLPROC $__gen_Beacon_init
   DECLPROC $__gen_Beacon_init_child
   DECLPROC $__gen_Payouts_requireOwner
   DECLPROC $__gen_Payouts_owner
@@ -255,13 +256,6 @@ PROGRAM{
     1 LDI
     3 -ROLL
   }>
-  __gen_write_Beacon PROCINLINE:<{
-    2SWAP
-    __tact_store_address INLINECALLDICT
-    ROT
-    __tact_store_address INLINECALLDICT
-    1 STI
-  }>
   __gen_write_Payouts PROCINLINE:<{
     -ROT
     __tact_store_address INLINECALLDICT
@@ -279,20 +273,48 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
+  __gen_write_$init$Beacon PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_$init$Payouts PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    257 PUSHINT
+    LDIX
+    -ROT
+  }>
+  $__gen_Payouts_init PROCREF:<{
+  }>
   __gen_load_Payouts PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_Payouts INLINECALLDICT
-    1 2 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_Payouts INLINECALLDICT
+      1 2 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$Payouts INLINECALLDICT
+      s0 s2 XCHG
+      ENDS
+      SWAP
+      $__gen_Payouts_init INLINECALLDICT
+    }>
   }>
   __gen_store_Payouts PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     -ROT
     __gen_write_Payouts INLINECALLDICT
     ENDC
@@ -512,15 +534,6 @@ PROGRAM{
   $__gen_String_fromBase64 PROCREF:<{
     $__gen_Slice_fromBase64 INLINECALLDICT
   }>
-  $__gen_Beacon_init PROC:<{
-    FALSE
-    s0 s3 XCHG
-    NEWC
-    STREF
-    s0 s3 XCHG
-    __gen_write_Beacon INLINECALLDICT
-    ENDC
-  }>
   $__gen_Beacon_init_child PROC:<{
     s0 s2 XCHG
     CTOS
@@ -535,10 +548,18 @@ PROGRAM{
     s2 PUSH
     __tact_dict_set_code INLINECALLDICT
     NEWC
+    SWAP
+    NEWC
     STDICT
     ENDC
+    SWAP
+    STREF
+    FALSE
+    SWAP
+    1 STI
     s0 s0 s3 XCHG3
-    $__gen_Beacon_init CALLDICT
+    __gen_write_$init$Beacon INLINECALLDICT
+    ENDC
   }>
   $__gen_Payouts_requireOwner PROCREF:<{
     __tact_context_get INLINECALLDICT

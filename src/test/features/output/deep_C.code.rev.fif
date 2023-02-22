@@ -26,10 +26,20 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+    }> PUSHCONT
+    IFELSE
     ROTREV
     <{
       c2 SAVE
@@ -63,7 +73,8 @@ SETCP0
         <{
           s0 POP
           2 GETGLOBVAR
-          21 CALLDICT
+          s1 PUSH
+          24 CALLDICT
           2DUP
           <{
             0 PUSHINT
@@ -349,25 +360,16 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
     s0 s1 XCHG
+    1 STI
     s0 s1 XCHG
-    257 PUSHINT
-    STIX
+    STSLICER
     ENDC
     c4 POP
 
-  20: 
-    0 PUSHINT
+  24: 
     s0 s1 XCHG
-    NEWC
-    STREF
-    s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    STIX
-    ENDC
-
-  21: 
     CTOS
     LDDICT
     s0 POP
@@ -386,9 +388,18 @@ SETCP0
     16 PUSHINT
     DICTUSETREF
     NEWC
+    s0 s1 XCHG
+    NEWC
     STDICT
     ENDC
-    20 CALLDICT
+    s0 s1 XCHG
+    STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    ROT
+    STSLICER
+    ENDC
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

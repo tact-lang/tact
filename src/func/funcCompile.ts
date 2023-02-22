@@ -66,7 +66,8 @@ export async function funcCompile(sourcePath: string): Promise<FuncCompilationRe
     };
 
     // Create module
-    let mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { } });
+    let logs: string[] = []
+    let mod = await CompilerModule({ wasmBinary: WasmBinary, printErr: (e: any) => { logs.push(e); } });
 
     // Execute
     try {
@@ -98,17 +99,19 @@ export async function funcCompile(sourcePath: string): Promise<FuncCompilationRe
         let retJson = readFromCString(mod, resultPointer);
         let result = JSON.parse(retJson) as CompileResult;
 
+        let msg = logs.join('\n');
+
         if (result.status === 'error') {
             return {
                 ok: false,
-                log: result.message ? result.message : 'Unknown error',
+                log: logs.length > 0 ? msg : (result.message ? result.message : 'Unknown error'),
                 fift: null,
                 output: null
             };
         } else if (result.status === 'ok') {
             return {
                 ok: true,
-                log: result.warnings ? result.warnings : '',
+                log: logs.length > 0 ? msg : (result.warnings ? result.warnings : ''),
                 fift: cutFirstLine(unescape(result.fiftCode)),
                 output: Buffer.from(result.codeBoc, 'base64')
             };

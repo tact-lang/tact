@@ -26,13 +26,29 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDMSGADDR
+    1 LDI
     s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    LDI
-    ROTREV
-    1 2 BLKDROP2
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      LDI
+      ROTREV
+      1 2 BLKDROP2
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      LDI
+      ROTREV
+      s0 s2 XCHG
+      ENDS
+      s0 s1 XCHG
+    }> PUSHCONT
+    IFELSE
     2SWAP
     <{
       c2 SAVE
@@ -78,7 +94,7 @@ SETCP0
         2 GETGLOBVAR
         MYADDR
         s5 PUSH
-        35 CALLDICT
+        36 CALLDICT
         <{
           0 PUSHINT
           ROTREV
@@ -784,7 +800,7 @@ SETCP0
             2 GETGLOBVAR
             MYADDR
             1 3 BLKSWAP
-            35 CALLDICT
+            36 CALLDICT
             <{
               0 PUSHINT
               ROTREV
@@ -975,6 +991,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     ROTREV
     ROTREV
     STSLICER
@@ -983,20 +1002,7 @@ SETCP0
     ENDC
     c4 POP
 
-  34: 
-    0 PUSHINT
-    s0 s3 XCHG
-    NEWC
-    STREF
-    s0 s3 XCHG
-    2SWAP
-    STSLICER
-    ROT
-    STSLICER
-    1 STI
-    ENDC
-
-  35: 
+  36: 
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -1016,10 +1022,21 @@ SETCP0
     16 PUSHINT
     DICTUSETREF
     NEWC
+    s0 s1 XCHG
+    NEWC
     STDICT
     ENDC
+    s0 s1 XCHG
+    STREF
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
     s0 s0 s3 XCHG3
-    34 CALLDICT
+    ROTREV
+    STSLICER
+    s0 s1 XCHG
+    STSLICER
+    ENDC
 
   owner: 
     c4 PUSH
@@ -1027,13 +1044,29 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDMSGADDR
+    1 LDI
     s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    LDI
-    ROTREV
-    1 2 BLKDROP2
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      LDI
+      ROTREV
+      1 2 BLKDROP2
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      257 PUSHINT
+      LDI
+      ROTREV
+      s0 s2 XCHG
+      ENDS
+      s0 s1 XCHG
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
     }> CALLREF

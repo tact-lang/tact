@@ -185,13 +185,14 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
-async function Echo_init(opts?: { engine?: ExecutorEngine }) {
-    const __init = 'te6ccgEBBgEAKwABFP8A9KQT9LzyyAsBAgFiAgMCAs4EBQAJoUrd4AUAAUgAD0bQHIzAEwyY';
-    const __code = 'te6ccgECDwEAAjYAART/APSkE/S88sgLAQIBYgIDAVzQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1DD4Ym1Z2zwwMMj4QgHMye1UBAIBWAsMA17tou37cCHXScIflTAg1wsf3gKSW3/gAcAAjxMg10nCH48LgCDXIds82zx/2zHg3gUIBgFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxDgIK2zzbPH8HCAAKyAHPFskBJPhBbyQQI18DfwJwgEJYbW3bPAkB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswoAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AABxu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4ARu4Ni7UTQ1DD4Ym0B2zyA0CVDHIbwABb4xtb4yLdIZWxsbywgjbPAHbPG8iAcmTIW6zlgFvIlnMyegx0A4OALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwM=';
-    const __system = 'te6cckECEQEAAkAAAQHAAQEFoB5RAgEU/wD0pBP0vPLICwMCAWIIBAIBWAcFARu4Ni7UTQ1DD4Ym0B2zyAYCVDHIbwABb4xtb4yLdIZWxsbywgjbPAHbPG8iAcmTIW6zlgFvIlnMyegx0BAQAHG7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgBXNAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUMPhibVnbPDAwyPhCAczJ7VQJA17tou37cCHXScIflTAg1wsf3gKSW3/gAcAAjxMg10nCH48LgCDXIds82zx/2zHg3g8MCgIK2zzbPH8LDAAKyAHPFskBJPhBbyQQI18DfwJwgEJYbW3bPA0B9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw4AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxEAC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8DLFGC2A==';
+async function Echo_init(a: bigint, opts?: { engine?: ExecutorEngine }) {
+    const __init = 'te6ccgEBBAEAKQABFP8A9KQT9LzyyAsBAgFiAgMAAtAAI6FK3AORmOADlAACAwICA54Bkw==';
+    const __code = 'te6ccgECEAEAAmQAART/APSkE/S88sgLAQIBYgIDAojQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZIwbY6KgQEB1wABAdHbPOJZ2zwwMMj4QgHMfwHKAMntVA0EAgFYCwwDXu2i7ftwIddJwh+VMCDXCx/eApJbf+ABwACPEyDXScIfjwuAINch2zzbPH/bMeDeBQgGAULIcAHLH28AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DEPAgrbPNs8fwcIAArIAc8WyQEk+EFvJBAjXwN/AnCAQlhtbds8CQH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zCgAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAHG7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgCP7g2LtRNDUAfhi0gABkjBtjoqBAQHXAAEB0ds84gHbPIDQ4ABDBtAlQxyG8AAW+MbW+Mi3SGVsbG8sII2zwB2zxvIgHJkyFus5YBbyJZzMnoMdAPDwC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8D';
+    const __system = 'te6cckECEgEAAm4AAQHAAQEFoB5RAgEU/wD0pBP0vPLICwMCAWIIBAIBWAcFAj+4Ni7UTQ1AH4YtIAAZIwbY6KgQEB1wABAdHbPOIB2zyBEGAlQxyG8AAW+MbW+Mi3SGVsbG8sII2zwB2zxvIgHJkyFus5YBbyJZzMnoMdAQEABxu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4AojQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZIwbY6KgQEB1wABAdHbPOJZ2zwwMMj4QgHMfwHKAMntVBEJA17tou37cCHXScIflTAg1wsf3gKSW3/gAcAAjxMg10nCH48LgCDXIds82zx/2zHg3g8MCgIK2zzbPH8LDAAKyAHPFskBJPhBbyQQI18DfwJwgEJYbW3bPA0B9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw4AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxEAC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8DAAQwba+7cmM=';
     let systemCell = Cell.fromBase64(__system);
     let builder = new TupleBuilder();
     builder.writeCell(systemCell);
+    builder.writeNumber(a);
     let __stack = builder.build();
     let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
     let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
@@ -237,12 +238,12 @@ const Echo_errors: { [key: number]: { message: string } } = {
 
 export class Echo implements Contract {
     
-    static async init(opts?: { engine?: ExecutorEngine }) {
-        return await Echo_init(opts);
+    static async init(a: bigint, opts?: { engine?: ExecutorEngine }) {
+        return await Echo_init(a, opts);
     }
     
-    static async fromInit(opts?: { engine?: ExecutorEngine }) {
-        const init = await Echo_init(opts);
+    static async fromInit(a: bigint, opts?: { engine?: ExecutorEngine }) {
+        const init = await Echo_init(a, opts);
         const address = contractAddress(0, init);
         return new Echo(address, init);
     }

@@ -80,15 +80,38 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     return (sc_0, (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2));
 }
 
+(slice, ((slice, slice, slice))) __gen_read_$init$DDDD(slice sc_0) inline {
+    var v'addr1 = sc_0~__tact_load_address();
+    var v'addr2 = sc_0~__tact_load_address();
+    var v'addr3 = sc_0~__tact_load_address();
+    return (sc_0, (v'addr1, v'addr2, v'addr3));
+}
+
+(slice, slice, slice, cell, cell) $__gen_DDDD_init(slice $addr1, slice $addr2, slice $addr3) impure inline_ref {
+    var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = (null(), null(), null(), null(), null());
+    $self'addr1 = $addr1;
+    $self'addr2 = $addr2;
+    $self'addr3 = $addr3;
+    return ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2);
+}
+
 (slice, slice, slice, cell, cell) __gen_load_DDDD() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_DDDD();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_DDDD();
+    } else {
+        (slice addr1, slice addr2, slice addr3) = $sc~__gen_read_$init$DDDD();
+        $sc.end_parse();
+        return $__gen_DDDD_init(addr1, addr2, addr3);
+    }
 }
 
 () __gen_store_DDDD((slice, slice, slice, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_DDDD(b, v);
     set_data(b.end_cell());
 }
@@ -186,6 +209,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmWoUimBUALteKWxzFaL4LfFz153kfBUbJRf3M7TvX64FF";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

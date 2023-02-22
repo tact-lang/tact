@@ -26,10 +26,21 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        0 PUSHINT
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     ROTREV
     <{
       0 PUSHINT
@@ -65,6 +76,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     s0 s1 XCHG
     s0 s1 XCHG
     257 PUSHINT
@@ -78,10 +92,21 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        0 PUSHINT
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     s0 s1 XCHG
     <{
       s1 POP
@@ -94,10 +119,21 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        0 PUSHINT
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     s0 s1 XCHG
     <{
       s1 POP
@@ -110,10 +146,21 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        0 PUSHINT
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     s0 s1 XCHG
     <{
       s1 POP

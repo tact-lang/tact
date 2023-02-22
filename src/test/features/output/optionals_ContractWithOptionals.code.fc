@@ -194,15 +194,48 @@ tuple __gen_StructWithOptionals_opt_to_external(tuple v) inline {
     }
 }
 
+(slice, ((int, int, cell, slice, tuple, tuple))) __gen_read_$init$ContractWithOptionals(slice sc_0) inline_ref {
+    var v'a = sc_0~load_int(1) ? sc_0~load_int(257) : null();
+    var v'b = sc_0~load_int(1) ? sc_0~load_int(1) : null();
+    var v'c = sc_0~load_int(1) ? sc_0~load_ref() : null();
+    var v'd = sc_0~__tact_load_address_opt();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'e = sc_1~load_int(1) ? __gen_SomeGenericStruct_as_optional(sc_1~__gen_read_SomeGenericStruct()) : null();
+    slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'f = sc_2~load_int(1) ? __gen_StructWithOptionals_as_optional(sc_2~__gen_read_StructWithOptionals()) : null();
+    return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
+}
+
+(int, int, cell, slice, tuple, tuple) $__gen_ContractWithOptionals_init(int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) impure inline_ref {
+    var ($e) = $e;
+    var ($f) = $f;
+    var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = (null(), null(), null(), null(), null(), null());
+    $self'a = $a;
+    $self'b = $b;
+    $self'c = $c;
+    $self'd = $d;
+    $self'e = $e;
+    $self'f = $f;
+    return ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f);
+}
+
 (int, int, cell, slice, tuple, tuple) __gen_load_ContractWithOptionals() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_ContractWithOptionals();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_ContractWithOptionals();
+    } else {
+        (int a, int b, cell c, slice d, tuple e, tuple f) = $sc~__gen_read_$init$ContractWithOptionals();
+        $sc.end_parse();
+        return $__gen_ContractWithOptionals_init(a, b, c, d, e, f);
+    }
 }
 
 () __gen_store_ContractWithOptionals((int, int, cell, slice, tuple, tuple) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_ContractWithOptionals(b, v);
     set_data(b.end_cell());
 }
@@ -497,6 +530,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmNjgNhcFmB5oHXyYe86Qxsm7WqTMd6Ej2iRp7iVsBkf9s";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

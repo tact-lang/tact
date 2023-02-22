@@ -5,15 +5,14 @@ PROGRAM{
   DECLPROC __gen_write_SomeGenericStruct
   DECLPROC __gen_SomeGenericStruct_not_null
   DECLPROC __gen_write_StructWithOptionals
-  DECLPROC __gen_StructWithOptionals_not_null
-  DECLPROC __gen_write_ContractWithOptionals
   DECLPROC __gen_SomeGenericStruct_as_optional
   DECLPROC __gen_SomeGenericStruct_from_tuple
   DECLPROC __gen_SomeGenericStruct_from_opt_tuple
+  DECLPROC __gen_StructWithOptionals_not_null
   DECLPROC __gen_StructWithOptionals_as_optional
   DECLPROC __gen_StructWithOptionals_from_tuple
   DECLPROC __gen_StructWithOptionals_from_opt_tuple
-  DECLPROC $__gen_ContractWithOptionals_init
+  DECLPROC __gen_write_$init$ContractWithOptionals
   107886 DECLMETHOD init
   DECLPROC main
   __tact_verify_address PROCINLINE:<{
@@ -133,13 +132,48 @@ PROGRAM{
     SWAP
     STREF
   }>
+  __gen_SomeGenericStruct_as_optional PROCINLINE:<{
+    5 TUPLE
+  }>
+  __gen_SomeGenericStruct_from_tuple PROCINLINE:<{
+    5 UNTUPLE
+  }>
+  __gen_SomeGenericStruct_from_opt_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_SomeGenericStruct_from_tuple INLINECALLDICT
+      __gen_SomeGenericStruct_as_optional INLINECALLDICT
+    }>
+  }>
   __gen_StructWithOptionals_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_write_ContractWithOptionals PROCINLINE:<{
+  __gen_StructWithOptionals_as_optional PROCINLINE:<{
+    5 TUPLE
+  }>
+  __gen_StructWithOptionals_from_tuple PROCINLINE:<{
+    5 UNTUPLE
+    __gen_SomeGenericStruct_from_opt_tuple INLINECALLDICT
+  }>
+  __gen_StructWithOptionals_from_opt_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      __gen_StructWithOptionals_from_tuple INLINECALLDICT
+      __gen_StructWithOptionals_as_optional INLINECALLDICT
+    }>
+  }>
+  __gen_write_$init$ContractWithOptionals PROCINLINE:<{
     s5 PUSH
     ISNULL
     NOT
@@ -230,55 +264,20 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_SomeGenericStruct_as_optional PROCINLINE:<{
-    5 TUPLE
-  }>
-  __gen_SomeGenericStruct_from_tuple PROCINLINE:<{
-    5 UNTUPLE
-  }>
-  __gen_SomeGenericStruct_from_opt_tuple PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-      __gen_SomeGenericStruct_from_tuple INLINECALLDICT
-      __gen_SomeGenericStruct_as_optional INLINECALLDICT
-    }>
-  }>
-  __gen_StructWithOptionals_as_optional PROCINLINE:<{
-    5 TUPLE
-  }>
-  __gen_StructWithOptionals_from_tuple PROCINLINE:<{
-    5 UNTUPLE
-    __gen_SomeGenericStruct_from_opt_tuple INLINECALLDICT
-  }>
-  __gen_StructWithOptionals_from_opt_tuple PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-      __gen_StructWithOptionals_from_tuple INLINECALLDICT
-      __gen_StructWithOptionals_as_optional INLINECALLDICT
-    }>
-  }>
-  $__gen_ContractWithOptionals_init PROC:<{
-    s0 s6 XCHG
-    NEWC
-    STREF
-    s0 s6 XCHG
-    __gen_write_ContractWithOptionals INLINECALLDICT
-    ENDC
-  }>
   init PROC:<{
     SWAP
     __gen_SomeGenericStruct_from_opt_tuple INLINECALLDICT
     SWAP
     __gen_StructWithOptionals_from_opt_tuple INLINECALLDICT
-    $__gen_ContractWithOptionals_init CALLDICT
+    s0 s6 XCHG
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s6 XCHG
+    __gen_write_$init$ContractWithOptionals INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

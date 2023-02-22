@@ -160,15 +160,45 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return (v'investment, v'returns, v'fee);
 }
 
+(slice, ((slice, int, int, int))) __gen_read_$init$RugPull(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'investment = sc_0~load_int(257);
+    var v'returns = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'fee = sc_1~load_int(257);
+    return (sc_0, (v'owner, v'investment, v'returns, v'fee));
+}
+
+(slice, int, int, int, int, int, int, int, int, cell) $__gen_RugPull_init(slice $owner, int $investment, int $returns, int $fee) impure inline_ref {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'owner = $owner;
+    $self'rugpulled = false;
+    $self'queueStart = 0;
+    $self'queueEnd = 0;
+    $self'balance = 0;
+    $self'investment = $investment;
+    $self'returns = $returns;
+    $self'fee = $fee;
+    return ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue);
+}
+
 (slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_RugPull();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_RugPull();
+    } else {
+        (slice owner, int investment, int returns, int fee) = $sc~__gen_read_$init$RugPull();
+        $sc.end_parse();
+        return $__gen_RugPull_init(owner, investment, returns, fee);
+    }
 }
 
 () __gen_store_RugPull((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_RugPull(b, v);
     set_data(b.end_cell());
 }
@@ -425,6 +455,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmXUuG5PNHPYUwAU7ZGCT1PraBxwzcHYxmxyH9oS23LeQr";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

@@ -16,6 +16,12 @@ builder __tact_store_bool(builder b, int v) inline {
     return b;
 }
 
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
+    return (cs, raw);
+}
+
 builder __tact_store_address(builder b, slice address) inline {
     __tact_verify_address(address);
     b = b.store_slice(address);
@@ -109,10 +115,15 @@ cell __tact_string_builder_end(tuple builders) inline {
     return ((builders), ());
 }
 
-builder __gen_write_C(builder build_0, (int) v) inline {
-    var (v'a) = v;
-    build_0 = build_0.store_int(v'a, 257);
+builder __gen_write_B(builder build_0, (slice) v) inline {
+    var (v'parent) = v;
+    build_0 = __tact_store_address(build_0, v'parent);
     return build_0;
+}
+
+(slice, ((slice))) __gen_read_B(slice sc_0) inline {
+    var v'parent = sc_0~__tact_load_address();
+    return (sc_0, (v'parent));
 }
 
 (cell, cell) __gen_StateInit_to_external(((cell, cell)) v) inline {
@@ -120,15 +131,41 @@ builder __gen_write_C(builder build_0, (int) v) inline {
     return (v'code, v'data);
 }
 
-tuple __gen_load_B() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return null();
+(slice, ((slice))) __gen_read_$init$B(slice sc_0) inline {
+    var v'parent = sc_0~__tact_load_address();
+    return (sc_0, (v'parent));
 }
 
-() __gen_store_B(tuple v) impure inline {
+builder __gen_write_$init$C(builder build_0, (slice) v) inline {
+    var (v'parent) = v;
+    build_0 = __tact_store_address(build_0, v'parent);
+    return build_0;
+}
+
+(slice) $__gen_B_init(slice $parent) impure inline_ref {
+    var (($self'parent)) = (null());
+    $self'parent = $parent;
+    return ($self'parent);
+}
+
+(slice) __gen_load_B() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_B();
+    } else {
+        (slice parent) = $sc~__gen_read_$init$B();
+        $sc.end_parse();
+        return $__gen_B_init(parent);
+    }
+}
+
+() __gen_store_B((slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = __gen_write_B(b, v);
     set_data(b.end_cell());
 }
 
@@ -190,15 +227,7 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return __tact_string_builder_end($b);
 }
 
-cell $__gen_C_init(cell sys') {
-    var (($self'a)) = (0);
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_C(b', ($self'a));
-    return b'.end_cell();
-}
-
-(cell, cell) $__gen_C_init_child(cell sys') {
+(cell, cell) $__gen_C_init_child(cell sys', slice $parent) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -206,13 +235,18 @@ cell $__gen_C_init(cell sys') {
     ;; Contract Code: C
     cell mine = __tact_dict_get_code(source, 30887);
     contracts = __tact_dict_set_code(contracts, 30887, mine);
-    cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, $__gen_C_init(sys));
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$C(b, ($parent));
+    return (mine, b.end_cell());
 }
 
-(cell, cell) $__gen_B_getNext(tuple $self) impure inline_ref {
-    var ($self) = $self;
-    return $__gen_C_init_child(__tact_context_sys);
+(cell, cell) $__gen_B_getNext((slice) $self) impure inline_ref {
+    var (($self'parent)) = $self;
+    return $__gen_C_init_child(__tact_context_sys, my_address());
 }
 
 _ $__gen_get_getNext() method_id(74105) {
@@ -221,15 +255,15 @@ _ $__gen_get_getNext() method_id(74105) {
     return __gen_StateInit_to_external(res);
 }
 
-(tuple, ()) $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d(tuple $self) impure inline {
-    var $self = $self;
-    var ($init'code, $init'data) = $__gen_C_init_child(__tact_context_sys);
+((slice), ()) $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d((slice) $self) impure inline {
+    var ($self'parent) = $self;
+    var ($init'code, $init'data) = $__gen_C_init_child(__tact_context_sys, my_address());
     slice $address = $contractAddress(($init'code, $init'data));
     $send((true, $address, 0, (64 + 2), $__gen_String_asComment(__gen_str_796354186()), $init'code, $init'data));
-    return ($self, ());
+    return (($self'parent), ());
 }
 
-(tuple, int) __gen_router_B(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice), int) __gen_router_B((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -290,6 +324,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmYwSbHs2usvgGeHTayJ7rjgt6hdcYvk8GV6WMTd4D2Exy";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

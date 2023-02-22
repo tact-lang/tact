@@ -12,15 +12,26 @@ forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4
     return (v'a, v'b, v'c, v'd);
 }
 
+tuple $__gen_Empty_init() impure inline_ref {
+    tuple $self = null();
+    return $self;
+}
+
 tuple __gen_load_Empty() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return null();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    } else {
+        return $__gen_Empty_init();
+    }
 }
 
 () __gen_store_Empty(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
@@ -98,6 +109,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmZoNHYT5oWSKEsLCS8ivJ7HkVE4TVZ4RagYpqpsGNeEvD";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

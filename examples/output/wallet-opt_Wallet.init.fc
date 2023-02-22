@@ -2,28 +2,21 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
-    var (v'seqno, v'key, v'walletId) = v;
-    build_0 = build_0.store_uint(v'seqno, 32);
-    build_0 = build_0.store_uint(v'key, 256);
-    build_0 = build_0.store_uint(v'walletId, 64);
+builder __gen_write_$init$Wallet(builder build_0, (int, int) v) inline {
+    var (v'key, v'walletId) = v;
+    build_0 = build_0.store_int(v'key, 257);
+    build_0 = build_0.store_int(v'walletId, 257);
     return build_0;
-}
-
-cell $__gen_Wallet_init(cell sys', int $key, int $walletId) {
-    var (($self'seqno, $self'key, $self'walletId)) = (0, null(), null());
-    $self'key = $key;
-    $self'walletId = $walletId;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_Wallet(b', ($self'seqno, $self'key, $self'walletId));
-    return b'.end_cell();
 }
 
 cell init(cell sys', int $$key, int $$walletId) method_id {
     int $key = $$key;
     int $walletId = $$walletId;
-    return $__gen_Wallet_init(sys', $key, $walletId);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$Wallet(b, ($key, $walletId));
+    return b.end_cell();
 }
 
 () main() {

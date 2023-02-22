@@ -68,15 +68,37 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     return (sc_0, (v'master, v'owner, v'completed));
 }
 
+(slice, ((slice, slice))) __gen_read_$init$Beacon(slice sc_0) inline {
+    var v'master = sc_0~__tact_load_address();
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'master, v'owner));
+}
+
+(slice, slice, int) $__gen_Beacon_init(slice $master, slice $owner) impure inline_ref {
+    var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
+    $self'master = $master;
+    $self'owner = $owner;
+    $self'completed = false;
+    return ($self'master, $self'owner, $self'completed);
+}
+
 (slice, slice, int) __gen_load_Beacon() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Beacon();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_Beacon();
+    } else {
+        (slice master, slice owner) = $sc~__gen_read_$init$Beacon();
+        $sc.end_parse();
+        return $__gen_Beacon_init(master, owner);
+    }
 }
 
 () __gen_store_Beacon((slice, slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_Beacon(b, v);
     set_data(b.end_cell());
 }
@@ -219,6 +241,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmPtZ3rEQGb7KtpKL5m5TwZ15QixzipqU6UTXFTGJ1gB2J";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

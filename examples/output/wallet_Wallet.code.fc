@@ -90,15 +90,43 @@ _ __gen_Context_get_bounced((int, slice, int, slice) v) inline {
     return v'bounced;
 }
 
+builder __gen_write_$init$Wallet(builder build_0, (int, int) v) inline {
+    var (v'key, v'walletId) = v;
+    build_0 = build_0.store_int(v'key, 257);
+    build_0 = build_0.store_int(v'walletId, 257);
+    return build_0;
+}
+
+(slice, ((int, int))) __gen_read_$init$Wallet(slice sc_0) inline {
+    var v'key = sc_0~load_int(257);
+    var v'walletId = sc_0~load_int(257);
+    return (sc_0, (v'key, v'walletId));
+}
+
+(int, int, int) $__gen_Wallet_init(int $key, int $walletId) impure inline_ref {
+    var (($self'seqno, $self'key, $self'walletId)) = (0, null(), null());
+    $self'key = $key;
+    $self'walletId = $walletId;
+    return ($self'seqno, $self'key, $self'walletId);
+}
+
 (int, int, int) __gen_load_Wallet() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Wallet();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_Wallet();
+    } else {
+        (int key, int walletId) = $sc~__gen_read_$init$Wallet();
+        $sc.end_parse();
+        return $__gen_Wallet_init(key, walletId);
+    }
 }
 
 () __gen_store_Wallet((int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_Wallet(b, v);
     set_data(b.end_cell());
 }
@@ -146,16 +174,6 @@ _ __gen_Context_get_bounced((int, slice, int, slice) v) inline {
     send_raw_message($c, $params'mode);
 }
 
-cell $__gen_Wallet_init(cell sys', int $key, int $walletId) {
-    var (($self'seqno, $self'key, $self'walletId)) = (0, null(), null());
-    $self'key = $key;
-    $self'walletId = $walletId;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_Wallet(b', ($self'seqno, $self'key, $self'walletId));
-    return b'.end_cell();
-}
-
 (cell, cell) $__gen_Wallet_init_child(cell sys', int $key, int $walletId) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
@@ -164,8 +182,13 @@ cell $__gen_Wallet_init(cell sys', int $key, int $walletId) {
     ;; Contract Code: Wallet
     cell mine = __tact_dict_get_code(source, 14718);
     contracts = __tact_dict_set_code(contracts, 14718, mine);
-    cell sys = begin_cell().store_dict(contracts).end_cell();
-    return (mine, $__gen_Wallet_init(sys, $key, $walletId));
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$Wallet(b, ($key, $walletId));
+    return (mine, b.end_cell());
 }
 
 int $__gen_Wallet_publicKey((int, int, int) $self) impure inline_ref {
@@ -354,6 +377,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmNikh6ZCk3Zm2bqtKzxnmkyzhFi7BRU7zp1TQGS5WhLVV";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

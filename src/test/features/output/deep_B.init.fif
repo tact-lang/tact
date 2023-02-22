@@ -1,22 +1,31 @@
 PROGRAM{
-  DECLPROC __gen_write_B
-  DECLPROC $__gen_B_init
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_$init$B
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_B PROCINLINE:<{
-    DROP
+  __tact_verify_address PROCINLINE:<{
+    SBITS
+    267 PUSHINT
+    NEQ
+    136 THROWIFNOT
   }>
-  $__gen_B_init PROC:<{
-    PUSHNULL
+  __tact_store_address PROCINLINE:<{
+    STSLICER
+  }>
+  __gen_write_$init$B PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  init PROC:<{
     SWAP
     NEWC
     STREF
+    FALSE
     SWAP
-    __gen_write_B INLINECALLDICT
+    1 STI
+    SWAP
+    __gen_write_$init$B INLINECALLDICT
     ENDC
-  }>
-  init PROC:<{
-    $__gen_B_init CALLDICT
   }>
   main PROC:<{
   }>

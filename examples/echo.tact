@@ -1,6 +1,6 @@
 contract Echo {
 
-    init() {
+    init(a: Int) {
         
     }
     

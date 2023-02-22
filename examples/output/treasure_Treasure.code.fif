@@ -11,6 +11,8 @@ PROGRAM{
   DECLPROC __gen_write_Treasure
   DECLPROC __gen_read_Treasure
   DECLPROC __gen_Context_get_sender
+  DECLPROC __gen_read_$init$Treasure
+  DECLPROC $__gen_Treasure_init
   DECLPROC __gen_load_Treasure
   DECLPROC __gen_store_Treasure
   DECLPROC $send
@@ -85,20 +87,37 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
+  __gen_read_$init$Treasure PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  $__gen_Treasure_init PROCREF:<{
+  }>
   __gen_load_Treasure PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_Treasure INLINECALLDICT
-    NIP
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_Treasure INLINECALLDICT
+      NIP
+    }>ELSE<{
+      __gen_read_$init$Treasure INLINECALLDICT
+      SWAP
+      ENDS
+      $__gen_Treasure_init INLINECALLDICT
+    }>
   }>
   __gen_store_Treasure PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     SWAP
     __gen_write_Treasure INLINECALLDICT
     ENDC

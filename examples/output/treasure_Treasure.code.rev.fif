@@ -26,9 +26,20 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDMSGADDR
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+    }> PUSHCONT
+    IFELSE
     ROTREV
     <{
       c2 SAVE
@@ -407,6 +418,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     s0 s1 XCHG
     STSLICER
     ENDC
@@ -418,9 +432,20 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDMSGADDR
+    1 LDI
     s0 s1 XCHG
-    s1 POP
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 POP
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+    }> PUSHCONT
+    IFELSE
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

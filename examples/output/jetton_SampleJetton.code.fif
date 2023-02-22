@@ -19,12 +19,14 @@ PROGRAM{
   DECLPROC __gen_writecell_TokenExcesses
   DECLPROC __gen_read_TokenUpdateContent
   DECLPROC __gen_read_Mint
-  DECLPROC __gen_write_JettonDefaultWallet
   DECLPROC __gen_write_SampleJetton
   DECLPROC __gen_read_SampleJetton
   DECLPROC __gen_StateInit_get_code
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_JettonData_to_external
+  DECLPROC __gen_write_$init$JettonDefaultWallet
+  DECLPROC __gen_read_$init$SampleJetton
+  DECLPROC $__gen_SampleJetton_init
   DECLPROC __gen_load_SampleJetton
   DECLPROC __gen_store_SampleJetton
   DECLPROC $emptyCell
@@ -32,7 +34,6 @@ PROGRAM{
   DECLPROC $emptySlice
   DECLPROC $contractAddress
   DECLPROC $send
-  DECLPROC $__gen_JettonDefaultWallet_init
   DECLPROC $__gen_JettonDefaultWallet_init_child
   DECLPROC $__gen_SampleJetton_getJettonWalletInit
   DECLPROC $__gen_SampleJetton_get_wallet_address
@@ -227,15 +228,6 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_write_JettonDefaultWallet PROCINLINE:<{
-    s2 s3 XCHG2
-    257 PUSHINT
-    STIX
-    SWAP
-    __tact_store_address INLINECALLDICT
-    SWAP
-    __tact_store_address INLINECALLDICT
-  }>
   __gen_write_SampleJetton PROCINLINE:<{
     s4 s3 XCHG2
     STGRAMS
@@ -282,20 +274,57 @@ PROGRAM{
   }>
   __gen_JettonData_to_external PROCINLINE:<{
   }>
+  __gen_write_$init$JettonDefaultWallet PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_$init$SampleJetton PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    -ROT
+  }>
+  $__gen_SampleJetton_init PROCREF:<{
+    0 PUSHINT
+    -ROT
+    TRUE
+  }>
   __gen_load_SampleJetton PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_SampleJetton INLINECALLDICT
-    1 4 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_SampleJetton INLINECALLDICT
+      1 4 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$SampleJetton INLINECALLDICT
+      s0 s2 XCHG
+      ENDS
+      SWAP
+      $__gen_SampleJetton_init INLINECALLDICT
+    }>
   }>
   __gen_store_SampleJetton PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     4 -ROLL
     __gen_write_SampleJetton INLINECALLDICT
     ENDC
@@ -416,15 +445,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_JettonDefaultWallet_init PROC:<{
-    0 PUSHINT
-    s0 s3 XCHG
-    NEWC
-    STREF
-    s3 s1 s3 XCHG3
-    __gen_write_JettonDefaultWallet INLINECALLDICT
-    ENDC
-  }>
   $__gen_JettonDefaultWallet_init_child PROC:<{
     s0 s2 XCHG
     CTOS
@@ -439,10 +459,18 @@ PROGRAM{
     s2 PUSH
     __tact_dict_set_code INLINECALLDICT
     NEWC
+    SWAP
+    NEWC
     STDICT
     ENDC
+    SWAP
+    STREF
+    FALSE
+    SWAP
+    1 STI
     s0 s0 s3 XCHG3
-    $__gen_JettonDefaultWallet_init CALLDICT
+    __gen_write_$init$JettonDefaultWallet INLINECALLDICT
+    ENDC
   }>
   $__gen_SampleJetton_getJettonWalletInit PROCREF:<{
     __tact_context_sys GETGLOB

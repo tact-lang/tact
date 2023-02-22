@@ -2,32 +2,23 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
-    var (v'seqno, v'members, v'totalWeight, v'requiredWeight) = v;
-    build_0 = build_0.store_int(v'seqno, 257);
+builder __gen_write_$init$Multisig(builder build_0, (cell, int, int) v) inline {
+    var (v'members, v'totalWeight, v'requiredWeight) = v;
     build_0 = build_0.store_dict(v'members);
     build_0 = build_0.store_int(v'totalWeight, 257);
     build_0 = build_0.store_int(v'requiredWeight, 257);
     return build_0;
 }
 
-cell $__gen_Multisig_init(cell sys', cell $members, int $totalWeight, int $requiredWeight) {
-    var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = (null(), null(), null(), null());
-    $self'members = $members;
-    $self'requiredWeight = $requiredWeight;
-    $self'totalWeight = $totalWeight;
-    $self'totalWeight = 0;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_Multisig(b', ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight));
-    return b'.end_cell();
-}
-
 cell init(cell sys', cell $$members, int $$totalWeight, int $$requiredWeight) method_id {
     cell $members = $$members;
     int $totalWeight = $$totalWeight;
     int $requiredWeight = $$requiredWeight;
-    return $__gen_Multisig_init(sys', $members, $totalWeight, $requiredWeight);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$Multisig(b, ($members, $totalWeight, $requiredWeight));
+    return b.end_cell();
 }
 
 () main() {

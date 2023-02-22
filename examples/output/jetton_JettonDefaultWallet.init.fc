@@ -12,29 +12,21 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_JettonDefaultWallet(builder build_0, (int, slice, slice) v) inline {
-    var (v'balance, v'owner, v'master) = v;
-    build_0 = build_0.store_int(v'balance, 257);
-    build_0 = __tact_store_address(build_0, v'owner);
+builder __gen_write_$init$JettonDefaultWallet(builder build_0, (slice, slice) v) inline {
+    var (v'master, v'owner) = v;
     build_0 = __tact_store_address(build_0, v'master);
+    build_0 = __tact_store_address(build_0, v'owner);
     return build_0;
-}
-
-cell $__gen_JettonDefaultWallet_init(cell sys', slice $master, slice $owner) {
-    var (($self'balance, $self'owner, $self'master)) = (null(), null(), null());
-    $self'balance = 0;
-    $self'owner = $owner;
-    $self'master = $master;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_JettonDefaultWallet(b', ($self'balance, $self'owner, $self'master));
-    return b'.end_cell();
 }
 
 cell init(cell sys', slice $$master, slice $$owner) method_id {
     slice $master = $$master;
     slice $owner = $$owner;
-    return $__gen_JettonDefaultWallet_init(sys', $master, $owner);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$JettonDefaultWallet(b, ($master, $owner));
+    return b.end_cell();
 }
 
 () main() {

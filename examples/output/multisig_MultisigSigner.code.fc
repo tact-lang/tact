@@ -117,15 +117,43 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
 }
 
+(slice, ((slice, cell, int, (slice, slice, int, int, int, int, cell)))) __gen_read_$init$MultisigSigner(slice sc_0) inline {
+    var v'master = sc_0~__tact_load_address();
+    var v'members = sc_0~load_dict();
+    var v'requiredWeight = sc_0~load_int(257);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'request = sc_1~__gen_read_Request();
+    return (sc_0, (v'master, v'members, v'requiredWeight, v'request));
+}
+
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $__gen_MultisigSigner_init(slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) impure inline_ref {
+    var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
+    var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = (null(), null(), 0, null(), null(), null());
+    $self'master = $master;
+    $self'members = $members;
+    $self'requiredWeight = $requiredWeight;
+    $self'completed = false;
+    ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body) = ($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body);
+    return ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body));
+}
+
 (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) __gen_load_MultisigSigner() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_MultisigSigner();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_MultisigSigner();
+    } else {
+        (slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) = $sc~__gen_read_$init$MultisigSigner();
+        $sc.end_parse();
+        return $__gen_MultisigSigner_init(master, members, requiredWeight, request);
+    }
 }
 
 () __gen_store_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_MultisigSigner(b, v);
     set_data(b.end_cell());
 }
@@ -270,6 +298,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmQvGD7HbByENqMK9Xvtc6EiCyUdorqkY8vWpGU1yKJ82p";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

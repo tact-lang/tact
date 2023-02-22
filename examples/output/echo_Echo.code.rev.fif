@@ -24,9 +24,26 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 s1 XCHG
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+      <{
+        s0 POP
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     ROTREV
     <{
       c2 SAVE
@@ -456,6 +473,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     ENDC
     c4 POP
 
@@ -468,9 +488,26 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 POP
+    s0 s1 XCHG
     2 SETGLOBVAR
-    PUSHNULL
+    1 LDI
+    s0 s1 XCHG
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s0 s1 XCHG
+      ENDS
+      <{
+        s0 POP
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     s0 s1 XCHG
     <{
       s1 POP

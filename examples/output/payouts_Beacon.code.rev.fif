@@ -26,15 +26,34 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDMSGADDR
-    s0 s1 XCHG
-    s0 s1 XCHG
-    LDMSGADDR
-    s0 s1 XCHG
-    s0 s1 XCHG
     1 LDI
-    3 1 BLKSWAP
-    1 3 BLKDROP2
+    s0 s1 XCHG
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      1 LDI
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 s2 XCHG
+      s0 s2 XCHG
+      ENDS
+      s0 s1 XCHG
+      <{
+        0 PUSHINT
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     2 3 BLKSWAP
     <{
       0 PUSHINT
@@ -403,6 +422,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     3 1 BLKSWAP
     2SWAP
     STSLICER
@@ -418,15 +440,34 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDMSGADDR
-    s0 s1 XCHG
-    s0 s1 XCHG
-    LDMSGADDR
-    s0 s1 XCHG
-    s0 s1 XCHG
     1 LDI
-    3 1 BLKSWAP
-    1 3 BLKDROP2
+    s0 s1 XCHG
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      1 LDI
+      3 1 BLKSWAP
+      1 3 BLKDROP2
+    }> PUSHCONT
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s1 s2 XCHG
+      s0 s2 XCHG
+      ENDS
+      s0 s1 XCHG
+      <{
+        0 PUSHINT
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s0 POP
       s1 POP

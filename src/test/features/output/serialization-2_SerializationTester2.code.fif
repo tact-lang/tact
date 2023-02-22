@@ -19,6 +19,8 @@ PROGRAM{
   DECLPROC __gen_Both_from_opt_tuple
   DECLPROC __gen_Both_to_external
   DECLPROC __gen_Both_opt_to_external
+  DECLPROC __gen_read_$init$SerializationTester2
+  DECLPROC $__gen_SerializationTester2_init
   DECLPROC __gen_load_SerializationTester2
   DECLPROC __gen_store_SerializationTester2
   DECLPROC $__gen_SerializationTester2_getA
@@ -227,20 +229,46 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
+  __gen_read_$init$SerializationTester2 PROCINLINE:<{
+    __gen_read_Vars INLINECALLDICT
+    s0 s5 XCHG
+    LDREF
+    SWAP
+    CTOS
+    __gen_read_Vars INLINECALLDICT
+    s5 POP
+    s5 s10 XCHG
+    4 ROLL
+  }>
+  $__gen_SerializationTester2_init PROCREF:<{
+  }>
   __gen_load_SerializationTester2 PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_SerializationTester2 INLINECALLDICT
-    1 10 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_SerializationTester2 INLINECALLDICT
+      1 10 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$SerializationTester2 INLINECALLDICT
+      s0 s10 XCHG
+      ENDS
+      9 ROLL
+      $__gen_SerializationTester2_init INLINECALLDICT
+    }>
   }>
   __gen_store_SerializationTester2 PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     10 -ROLL
     __gen_write_SerializationTester2 INLINECALLDICT
     ENDC

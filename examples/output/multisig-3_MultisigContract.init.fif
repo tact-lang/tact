@@ -1,26 +1,26 @@
 PROGRAM{
-  DECLPROC __gen_write_MultisigContract
-  DECLPROC $__gen_MultisigContract_init
+  DECLPROC __gen_write_$init$MultisigContract
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_MultisigContract PROCINLINE:<{
-    s3 s4 XCHG2
-    32 STU
-    256 STU
-    256 STU
-    256 STU
-  }>
-  $__gen_MultisigContract_init PROC:<{
-    0 PUSHINT
-    s0 s4 XCHG
-    NEWC
-    STREF
-    4 -ROLL
-    __gen_write_MultisigContract INLINECALLDICT
-    ENDC
+  __gen_write_$init$MultisigContract PROCINLINE:<{
+    s2 s3 XCHG2
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
   }>
   init PROC:<{
-    $__gen_MultisigContract_init CALLDICT
+    s0 s3 XCHG
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s3 XCHG
+    __gen_write_$init$MultisigContract INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

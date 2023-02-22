@@ -12,31 +12,21 @@ builder __tact_store_address(builder b, slice address) inline {
     return b;
 }
 
-builder __gen_write_SampleJetton(builder build_0, (int, slice, cell, int) v) inline {
-    var (v'totalSupply, v'owner, v'content, v'mintable) = v;
-    build_0 = build_0.store_coins(v'totalSupply);
+builder __gen_write_$init$SampleJetton(builder build_0, (slice, cell) v) inline {
+    var (v'owner, v'content) = v;
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = ~ null?(v'content) ? build_0.store_int(true, 1).store_ref(v'content) : build_0.store_int(false, 1);
-    build_0 = build_0.store_int(v'mintable, 1);
     return build_0;
-}
-
-cell $__gen_SampleJetton_init(cell sys', slice $owner, cell $content) {
-    var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = (null(), null(), null(), null());
-    $self'totalSupply = 0;
-    $self'owner = $owner;
-    $self'mintable = true;
-    $self'content = $content;
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_SampleJetton(b', ($self'totalSupply, $self'owner, $self'content, $self'mintable));
-    return b'.end_cell();
 }
 
 cell init(cell sys', slice $$owner, cell $$content) method_id {
     slice $owner = $$owner;
     cell $content = $$content;
-    return $__gen_SampleJetton_init(sys', $owner, $content);
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$SampleJetton(b, ($owner, $content));
+    return b.end_cell();
 }
 
 () main() {

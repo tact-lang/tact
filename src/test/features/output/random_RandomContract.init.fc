@@ -2,20 +2,16 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_RandomContract(builder build_0, tuple v) inline {
+builder __gen_write_$init$RandomContract(builder build_0, tuple v) inline {
     return build_0;
 }
 
-cell $__gen_RandomContract_init(cell sys') {
-    var $self = null();
-    var b' = begin_cell();
-    b' = b'.store_ref(sys');
-    b' = __gen_write_RandomContract(b', $self);
-    return b'.end_cell();
-}
-
 cell init(cell sys') method_id {
-    return $__gen_RandomContract_init(sys');
+    builder b = begin_cell();
+    b = b.store_ref(sys');
+    b = b.store_int(false, 1);
+    b = __gen_write_$init$RandomContract(b, null());
+    return b.end_cell();
 }
 
 () main() {

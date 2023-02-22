@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: ContractWithOptionals
-BOC Size: 1368 bytes
+BOC Size: 1860 bytes
 
 # Types
 Total Types: 6

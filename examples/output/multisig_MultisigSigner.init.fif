@@ -2,9 +2,8 @@ PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
   DECLPROC __gen_write_Request
-  DECLPROC __gen_write_MultisigSigner
   DECLPROC __gen_Request_from_tuple
-  DECLPROC $__gen_MultisigSigner_init
+  DECLPROC __gen_write_$init$MultisigSigner
   107886 DECLMETHOD init
   DECLPROC main
   __tact_verify_address PROCINLINE:<{
@@ -43,50 +42,38 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_write_MultisigSigner PROCINLINE:<{
-    s12 s11 XCHG2
+  __gen_Request_from_tuple PROCINLINE:<{
+    7 UNTUPLE
+  }>
+  __gen_write_$init$MultisigSigner PROCINLINE:<{
+    s10 s9 XCHG2
     __tact_store_address INLINECALLDICT
-    s1 s9 XCHG
-    STDICT
     s1 s7 XCHG
-    257 PUSHINT
-    STIX
+    STDICT
     s1 s5 XCHG
     257 PUSHINT
     STIX
-    s1 s3 XCHG
-    1 STI
     NEWC
-    s6 s1 s7 XCHG3
+    s0 s7 XCHG
+    s4 s6 XCHG
     s3 s5 XCHG
-    s1 s8 XCHG
+    s4 s8 s0 XCHG3
     __gen_write_Request INLINECALLDICT
     ENDC
     SWAP
     STREF
   }>
-  __gen_Request_from_tuple PROCINLINE:<{
-    7 UNTUPLE
-  }>
-  $__gen_MultisigSigner_init PROC:<{
-    0 PUSHINT
-    FALSE
-    s0 s12 XCHG
-    NEWC
-    STREF
-    s0 s12 XCHG
-    s0 s7 XCHG
-    s0 s5 XCHG
-    s9 s3 XCHG2
-    s0 s8 XCHG2
-    s0 s6 XCHG
-    s4 s1 s4 XCHG3
-    __gen_write_MultisigSigner INLINECALLDICT
-    ENDC
-  }>
   init PROC:<{
     __gen_Request_from_tuple INLINECALLDICT
-    $__gen_MultisigSigner_init CALLDICT
+    s0 s10 XCHG
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s10 XCHG
+    __gen_write_$init$MultisigSigner INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

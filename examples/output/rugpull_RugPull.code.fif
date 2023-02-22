@@ -17,6 +17,8 @@ PROGRAM{
   DECLPROC __gen_read_RugPull
   DECLPROC __gen_Context_get_sender
   DECLPROC __gen_RugParams_to_external
+  DECLPROC __gen_read_$init$RugPull
+  DECLPROC $__gen_RugPull_init
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
   DECLPROC $send
@@ -270,20 +272,58 @@ PROGRAM{
   }>
   __gen_RugParams_to_external PROCINLINE:<{
   }>
+  __gen_read_$init$RugPull PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    DROP
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
+  $__gen_RugPull_init PROCREF:<{
+    PUSHNULL
+    PUSHNULL
+    FALSE
+    0 PUSHINT
+    s0 s(-1) s3 PU2XC
+    s0 s3 XCHG
+    s0 s4 XCHG
+  }>
   __gen_load_RugPull PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_RugPull INLINECALLDICT
-    1 10 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_RugPull INLINECALLDICT
+      1 10 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$RugPull INLINECALLDICT
+      s0 s4 XCHG
+      ENDS
+      3 ROLL
+      $__gen_RugPull_init INLINECALLDICT
+    }>
   }>
   __gen_store_RugPull PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     10 -ROLL
     __gen_write_RugPull INLINECALLDICT
     ENDC

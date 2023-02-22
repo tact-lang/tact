@@ -26,24 +26,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     2 8 BLKSWAP
     <{
       c2 SAVE
@@ -578,6 +596,9 @@ SETCP0
     2 GETGLOBVAR
     s0 s1 XCHG
     STREF
+    -1 PUSHINT
+    s0 s1 XCHG
+    1 STI
     8 1 BLKSWAP
     s7 s8 XCHG2
     STDICT
@@ -635,24 +656,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       7 BLKDROP
     }> CALLREF
@@ -663,24 +702,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s4 POP
@@ -710,24 +767,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s7 POP
@@ -744,24 +819,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s5 s7 XCHG
       7 BLKDROP
@@ -773,24 +866,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s6 s7 XCHG
       7 BLKDROP
@@ -802,24 +913,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       7 1 BLKDROP2
     }> CALLREF
@@ -830,24 +959,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s1 s7 XCHG
       7 BLKDROP
@@ -859,24 +1006,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s1 POP
@@ -899,24 +1064,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s4 s7 XCHG
       7 BLKDROP
@@ -928,24 +1111,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s2 s7 XCHG
       7 BLKDROP
@@ -957,24 +1158,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s8 POP
@@ -1003,24 +1222,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     <{
       s3 s7 XCHG
       7 BLKDROP
@@ -1032,24 +1269,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s8 s6 XCHG2
@@ -1108,24 +1363,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       7 1 BLKDROP2
@@ -1157,24 +1430,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s5 POP
@@ -1205,24 +1496,42 @@ SETCP0
     LDREF
     s0 s1 XCHG
     2 SETGLOBVAR
-    LDDICT
-    LDDICT
-    LDREF
+    1 LDI
     s0 s1 XCHG
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    LDREF
-    s0 POP
-    CTOS
-    LDDICT
-    LDDICT
-    LDDICT
-    s0 POP
-    s6 s8 XCHG
-    s6 s7 XCHG
-    1 8 BLKDROP2
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      <{
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
     1 8 BLKSWAP
     <{
       s6 POP

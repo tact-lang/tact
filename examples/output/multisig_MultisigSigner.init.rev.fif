@@ -2,35 +2,27 @@ SETCP0
 (:methods
   recv_internal: 
 
-  6: 
-    0 PUSHINT
-    0 PUSHINT
-    s0 s12 XCHG
+  107886: 
+    7 UNTUPLE
+    s0 s10 XCHG
     NEWC
     STREF
-    s0 s12 XCHG
-    s0 s7 XCHG
-    s0 s5 XCHG
-    s9 s3 XCHG2
-    s0 s8 XCHG2
-    s0 s6 XCHG
-    s4 s1 s4 XCHG3
-    s12 s11 XCHG2
+    0 PUSHINT
+    s0 s1 XCHG
+    1 STI
+    s0 s10 XCHG
+    s10 s9 XCHG2
     STSLICER
-    s1 s9 XCHG
-    STDICT
     s1 s7 XCHG
-    257 PUSHINT
-    STIX
+    STDICT
     s1 s5 XCHG
     257 PUSHINT
     STIX
-    s1 s3 XCHG
-    1 STI
     NEWC
-    s6 s1 s7 XCHG3
+    s0 s7 XCHG
+    s4 s6 XCHG
     s3 s5 XCHG
-    s1 s8 XCHG
+    s4 s8 s0 XCHG3
     <{
       4266760323 PUSHINT
       s0 s8 XCHG2
@@ -64,10 +56,6 @@ SETCP0
     s0 s1 XCHG
     STREF
     ENDC
-
-  107886: 
-    7 UNTUPLE
-    6 CALLDICT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

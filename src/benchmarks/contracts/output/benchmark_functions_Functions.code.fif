@@ -3,6 +3,7 @@ PROGRAM{
   DECLPROC __gen_read_Sub
   DECLPROC __gen_write_Functions
   DECLPROC __gen_read_Functions
+  DECLPROC $__gen_Functions_init
   DECLPROC __gen_load_Functions
   DECLPROC __gen_store_Functions
   DECLPROC $__gen_Functions_update
@@ -45,20 +46,33 @@ PROGRAM{
     LDIX
     SWAP
   }>
+  $__gen_Functions_init PROCREF:<{
+    0 PUSHINT
+  }>
   __gen_load_Functions PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_Functions INLINECALLDICT
-    NIP
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_Functions INLINECALLDICT
+      NIP
+    }>ELSE<{
+      DROP
+      $__gen_Functions_init INLINECALLDICT
+    }>
   }>
   __gen_store_Functions PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     SWAP
     __gen_write_Functions INLINECALLDICT
     ENDC

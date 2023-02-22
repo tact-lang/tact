@@ -28,15 +28,27 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     return (sc_0, (v'value));
 }
 
+(int) $__gen_Functions_init() impure inline_ref {
+    var (($self'value)) = (null());
+    $self'value = 0;
+    return ($self'value);
+}
+
 (int) __gen_load_Functions() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Functions();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_Functions();
+    } else {
+        return $__gen_Functions_init();
+    }
 }
 
 () __gen_store_Functions((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_Functions(b, v);
     set_data(b.end_cell());
 }
@@ -126,6 +138,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmXyYE5KbZfk2wvaGSmThdEExcyWF1vqRRKZMzh3JcPcyG";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

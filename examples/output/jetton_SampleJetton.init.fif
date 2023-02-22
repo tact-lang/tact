@@ -1,8 +1,7 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
-  DECLPROC __gen_write_SampleJetton
-  DECLPROC $__gen_SampleJetton_init
+  DECLPROC __gen_write_$init$SampleJetton
   107886 DECLMETHOD init
   DECLPROC main
   __tact_verify_address PROCINLINE:<{
@@ -14,40 +13,33 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     STSLICER
   }>
-  __gen_write_SampleJetton PROCINLINE:<{
-    s4 s3 XCHG2
-    STGRAMS
-    SWAP
+  __gen_write_$init$SampleJetton PROCINLINE:<{
+    -ROT
     __tact_store_address INLINECALLDICT
-    s2 PUSH
+    OVER
     ISNULL
     NOT
     IF:<{
       TRUE
       SWAP
       1 STI
-      s1 s2 XCHG
       STREF
     }>ELSE<{
-      s2 POP
       FALSE
-      ROT
+      s2 POP
       1 STI
     }>
-    1 STI
-  }>
-  $__gen_SampleJetton_init PROC:<{
-    0 PUSHINT
-    TRUE
-    s0 s4 XCHG
-    NEWC
-    STREF
-    s3 s3 s4 XCHG3
-    __gen_write_SampleJetton INLINECALLDICT
-    ENDC
   }>
   init PROC:<{
-    $__gen_SampleJetton_init CALLDICT
+    s0 s2 XCHG
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s2 XCHG
+    __gen_write_$init$SampleJetton INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

@@ -1,39 +1,19 @@
 PROGRAM{
-  DECLPROC __gen_write_IncrementContract
-  DECLPROC $__gen_IncrementContract_init
+  DECLPROC __gen_write_$init$IncrementContract
   107886 DECLMETHOD init
   DECLPROC main
-  __gen_write_IncrementContract PROCINLINE:<{
-    s4 s5 XCHG2
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    SWAP
-    NEWC
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    s1 s2 XCHG
-    STDICT
-    ENDC
-    SWAP
-    STREF
-  }>
-  $__gen_IncrementContract_init PROC:<{
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    s0 s5 XCHG
-    NEWC
-    STREF
-    s0 s5 XCHG
-    __gen_write_IncrementContract INLINECALLDICT
-    ENDC
+  __gen_write_$init$IncrementContract PROCINLINE:<{
+    DROP
   }>
   init PROC:<{
-    $__gen_IncrementContract_init CALLDICT
+    NEWC
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    PUSHNULL
+    __gen_write_$init$IncrementContract INLINECALLDICT
+    ENDC
   }>
   main PROC:<{
   }>

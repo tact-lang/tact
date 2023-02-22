@@ -10,6 +10,8 @@ PROGRAM{
   DECLPROC __gen_read_Execute
   DECLPROC __gen_write_MultisigContract
   DECLPROC __gen_read_MultisigContract
+  DECLPROC __gen_read_$init$MultisigContract
+  DECLPROC $__gen_MultisigContract_init
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC $send
@@ -109,20 +111,46 @@ PROGRAM{
     256 LDU
     4 -ROLL
   }>
+  __gen_read_$init$MultisigContract PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    3 -ROLL
+  }>
+  $__gen_MultisigContract_init PROCREF:<{
+    0 PUSHINT
+    3 -ROLL
+  }>
   __gen_load_MultisigContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_MultisigContract INLINECALLDICT
-    1 4 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_MultisigContract INLINECALLDICT
+      1 4 BLKDROP2
+    }>ELSE<{
+      __gen_read_$init$MultisigContract INLINECALLDICT
+      s0 s3 XCHG
+      ENDS
+      ROT
+      $__gen_MultisigContract_init INLINECALLDICT
+    }>
   }>
   __gen_store_MultisigContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     4 -ROLL
     __gen_write_MultisigContract INLINECALLDICT
     ENDC

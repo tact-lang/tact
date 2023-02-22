@@ -9,14 +9,14 @@ describe('feature-random', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    it('should implement random correctly', async () => {
+    it('should chain deep sequences correctly', async () => {
 
         // Init
         let system = await ContractSystem.create();
         let treasure = system.treasure('treasure');
         let contractA = system.open(await A.fromInit());
-        let contractB = system.open(await B.fromInit());
-        let contractC = system.open(await C.fromInit());
+        let contractB = system.open(await B.fromInit(contractA.address));
+        let contractC = system.open(await C.fromInit(contractB.address));
         let trackA = system.track(contractA.address);
         let trackB = system.track(contractB.address);
         let trackC = system.track(contractC.address);

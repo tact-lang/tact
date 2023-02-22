@@ -23,6 +23,7 @@ PROGRAM{
   DECLPROC __gen_write_IncrementContract
   DECLPROC __gen_read_IncrementContract
   DECLPROC __gen_Context_get_sender
+  DECLPROC $__gen_IncrementContract_init
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
   DECLPROC $send
@@ -263,20 +264,37 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
+  $__gen_IncrementContract_init PROCREF:<{
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+  }>
   __gen_load_IncrementContract PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
     SWAP
     __tact_context_sys SETGLOB
-    __gen_read_IncrementContract INLINECALLDICT
-    1 5 BLKDROP2
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_IncrementContract INLINECALLDICT
+      1 5 BLKDROP2
+    }>ELSE<{
+      DROP
+      $__gen_IncrementContract_init INLINECALLDICT
+    }>
   }>
   __gen_store_IncrementContract PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
+    TRUE
+    SWAP
+    1 STI
     5 -ROLL
     __gen_write_IncrementContract INLINECALLDICT
     ENDC

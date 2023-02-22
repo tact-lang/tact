@@ -63,15 +63,34 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
+(slice, ((slice))) __gen_read_$init$Treasure(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'owner));
+}
+
+(slice) $__gen_Treasure_init(slice $owner) impure inline_ref {
+    var (($self'owner)) = (null());
+    $self'owner = $owner;
+    return ($self'owner);
+}
+
 (slice) __gen_load_Treasure() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Treasure();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_Treasure();
+    } else {
+        (slice owner) = $sc~__gen_read_$init$Treasure();
+        $sc.end_parse();
+        return $__gen_Treasure_init(owner);
+    }
 }
 
 () __gen_store_Treasure((slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_Treasure(b, v);
     set_data(b.end_cell());
 }
@@ -240,6 +259,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmSZriPPLDUQWqjYmMRWAqKkhCeq32L339Q2PQrBaYMAqT";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }

@@ -246,15 +246,26 @@ tuple __gen_SomeStruct_opt_to_external(tuple v) inline {
     }
 }
 
+(cell, cell, cell, cell, cell, cell, cell, cell) $__gen_MapTestContract_init() impure inline_ref {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = (null(), null(), null(), null(), null(), null(), null(), null());
+    return ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4);
+}
+
 (cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() impure inline {
-    slice sc = get_data().begin_parse();
-    __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_MapTestContract();
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_MapTestContract();
+    } else {
+        return $__gen_MapTestContract_init();
+    }
 }
 
 () __gen_store_MapTestContract((cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
     b = __gen_write_MapTestContract(b, v);
     set_data(b.end_cell());
 }
@@ -604,6 +615,7 @@ _ supported_interfaces() method_id {
 _ get_abi_ipfs() {
     return "ipfs://QmVmzQSudFJ3B1LEYUvRk86wLNZwXw7ZNgZXj8L2ET5ymw";
 }
+
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
 }
