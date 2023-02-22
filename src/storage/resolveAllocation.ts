@@ -55,8 +55,10 @@ export function resolveAllocations(ctx: CompilerContext) {
 
         // Reserve bits
         let reserveBits = 0;
+        let header: { value: number, bits: number } | null = null;
         if (s.header !== null) {
             reserveBits += 32; // Header size
+            header = { value: s.header, bits: 32 };
         }
 
         // Reserver refs
@@ -70,6 +72,7 @@ export function resolveAllocations(ctx: CompilerContext) {
         for (let f of s.fields) {
             ops.push({
                 name: f.name,
+                type: f.abi.type,
                 op: getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size)
             });
         }
@@ -81,6 +84,7 @@ export function resolveAllocations(ctx: CompilerContext) {
         let allocation: StorageAllocation = {
             ops,
             root,
+            header,
             size: {
                 bits: root.size.bits + reserveBits,
                 refs: root.size.refs + reserveRefs

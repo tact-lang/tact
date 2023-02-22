@@ -4,6 +4,7 @@ exports[`resolveAllocation should write program 1`] = `
 [
   {
     "allocation": {
+      "header": null,
       "ops": [
         {
           "name": "x",
@@ -12,6 +13,12 @@ exports[`resolveAllocation should write program 1`] = `
             "kind": "int",
             "optional": false,
           },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
         },
         {
           "name": "y",
@@ -19,6 +26,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
       ],
@@ -32,6 +45,12 @@ exports[`resolveAllocation should write program 1`] = `
               "kind": "int",
               "optional": false,
             },
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
           },
           {
             "name": "y",
@@ -39,6 +58,12 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 257,
               "kind": "int",
               "optional": false,
+            },
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
             },
           },
         ],
@@ -184,6 +209,7 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "header": null,
       "ops": [
         {
           "name": "z",
@@ -195,6 +221,11 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 514,
               "refs": 0,
             },
+            "type": "Point",
+          },
+          "type": {
+            "kind": "simple",
+            "optional": false,
             "type": "Point",
           },
         },
@@ -212,6 +243,11 @@ exports[`resolveAllocation should write program 1`] = `
                 "bits": 514,
                 "refs": 0,
               },
+              "type": "Point",
+            },
+            "type": {
+              "kind": "simple",
+              "optional": false,
               "type": "Point",
             },
           },
@@ -306,6 +342,7 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "header": null,
       "ops": [
         {
           "name": "a",
@@ -319,6 +356,11 @@ exports[`resolveAllocation should write program 1`] = `
             },
             "type": "Point",
           },
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "Point",
+          },
         },
         {
           "name": "b",
@@ -330,6 +372,11 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 514,
               "refs": 0,
             },
+            "type": "Point2",
+          },
+          "type": {
+            "kind": "simple",
+            "optional": false,
             "type": "Point2",
           },
         },
@@ -350,6 +397,11 @@ exports[`resolveAllocation should write program 1`] = `
                 },
                 "type": "Point2",
               },
+              "type": {
+                "kind": "simple",
+                "optional": false,
+                "type": "Point2",
+              },
             },
           ],
           "size": {
@@ -368,6 +420,11 @@ exports[`resolveAllocation should write program 1`] = `
                 "bits": 514,
                 "refs": 0,
               },
+              "type": "Point",
+            },
+            "type": {
+              "kind": "simple",
+              "optional": false,
               "type": "Point",
             },
           },
@@ -512,6 +569,7 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "header": null,
       "ops": [
         {
           "name": "a",
@@ -519,6 +577,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
         {
@@ -528,6 +592,12 @@ exports[`resolveAllocation should write program 1`] = `
             "kind": "int",
             "optional": false,
           },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
         },
         {
           "name": "c",
@@ -535,6 +605,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
         {
@@ -544,6 +620,12 @@ exports[`resolveAllocation should write program 1`] = `
             "kind": "int",
             "optional": false,
           },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
         },
         {
           "name": "e",
@@ -551,6 +633,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
         {
@@ -560,6 +648,12 @@ exports[`resolveAllocation should write program 1`] = `
             "kind": "int",
             "optional": false,
           },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
         },
         {
           "name": "g",
@@ -567,6 +661,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
         {
@@ -576,6 +676,12 @@ exports[`resolveAllocation should write program 1`] = `
             "kind": "int",
             "optional": false,
           },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
         },
         {
           "name": "i",
@@ -583,6 +689,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
         {
@@ -592,6 +704,12 @@ exports[`resolveAllocation should write program 1`] = `
             "kind": "int",
             "optional": false,
           },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
         },
         {
           "name": "k",
@@ -599,6 +717,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
       ],
@@ -615,6 +739,12 @@ exports[`resolveAllocation should write program 1`] = `
                     "kind": "int",
                     "optional": false,
                   },
+                  "type": {
+                    "format": 257,
+                    "kind": "simple",
+                    "optional": false,
+                    "type": "int",
+                  },
                 },
                 {
                   "name": "k",
@@ -622,6 +752,12 @@ exports[`resolveAllocation should write program 1`] = `
                     "bits": 257,
                     "kind": "int",
                     "optional": false,
+                  },
+                  "type": {
+                    "format": 257,
+                    "kind": "simple",
+                    "optional": false,
+                    "type": "int",
                   },
                 },
               ],
@@ -638,6 +774,12 @@ exports[`resolveAllocation should write program 1`] = `
                   "kind": "int",
                   "optional": false,
                 },
+                "type": {
+                  "format": 257,
+                  "kind": "simple",
+                  "optional": false,
+                  "type": "int",
+                },
               },
               {
                 "name": "h",
@@ -646,6 +788,12 @@ exports[`resolveAllocation should write program 1`] = `
                   "kind": "int",
                   "optional": false,
                 },
+                "type": {
+                  "format": 257,
+                  "kind": "simple",
+                  "optional": false,
+                  "type": "int",
+                },
               },
               {
                 "name": "i",
@@ -653,6 +801,12 @@ exports[`resolveAllocation should write program 1`] = `
                   "bits": 257,
                   "kind": "int",
                   "optional": false,
+                },
+                "type": {
+                  "format": 257,
+                  "kind": "simple",
+                  "optional": false,
+                  "type": "int",
                 },
               },
             ],
@@ -669,6 +823,12 @@ exports[`resolveAllocation should write program 1`] = `
                 "kind": "int",
                 "optional": false,
               },
+              "type": {
+                "format": 257,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
             },
             {
               "name": "e",
@@ -677,6 +837,12 @@ exports[`resolveAllocation should write program 1`] = `
                 "kind": "int",
                 "optional": false,
               },
+              "type": {
+                "format": 257,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
             },
             {
               "name": "f",
@@ -684,6 +850,12 @@ exports[`resolveAllocation should write program 1`] = `
                 "bits": 257,
                 "kind": "int",
                 "optional": false,
+              },
+              "type": {
+                "format": 257,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
               },
             },
           ],
@@ -700,6 +872,12 @@ exports[`resolveAllocation should write program 1`] = `
               "kind": "int",
               "optional": false,
             },
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
           },
           {
             "name": "b",
@@ -708,6 +886,12 @@ exports[`resolveAllocation should write program 1`] = `
               "kind": "int",
               "optional": false,
             },
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
+            },
           },
           {
             "name": "c",
@@ -715,6 +899,12 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 257,
               "kind": "int",
               "optional": false,
+            },
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
             },
           },
         ],
@@ -1319,6 +1509,7 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "header": null,
       "ops": [
         {
           "name": "a",
@@ -1330,6 +1521,11 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 771,
               "refs": 0,
             },
+            "type": "Deep",
+          },
+          "type": {
+            "kind": "simple",
+            "optional": false,
             "type": "Deep",
           },
         },
@@ -1345,6 +1541,11 @@ exports[`resolveAllocation should write program 1`] = `
             },
             "type": "Deep",
           },
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "Deep",
+          },
         },
         {
           "name": "c",
@@ -1356,6 +1557,11 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 771,
               "refs": 0,
             },
+            "type": "Deep",
+          },
+          "type": {
+            "kind": "simple",
+            "optional": false,
             "type": "Deep",
           },
         },
@@ -1375,6 +1581,11 @@ exports[`resolveAllocation should write program 1`] = `
                     "bits": 771,
                     "refs": 0,
                   },
+                  "type": "Deep",
+                },
+                "type": {
+                  "kind": "simple",
+                  "optional": false,
                   "type": "Deep",
                 },
               },
@@ -1397,6 +1608,11 @@ exports[`resolveAllocation should write program 1`] = `
                 },
                 "type": "Deep",
               },
+              "type": {
+                "kind": "simple",
+                "optional": false,
+                "type": "Deep",
+              },
             },
           ],
           "size": {
@@ -1415,6 +1631,11 @@ exports[`resolveAllocation should write program 1`] = `
                 "bits": 771,
                 "refs": 0,
               },
+              "type": "Deep",
+            },
+            "type": {
+              "kind": "simple",
+              "optional": false,
               "type": "Deep",
             },
           },
@@ -1609,6 +1830,7 @@ exports[`resolveAllocation should write program 1`] = `
   },
   {
     "allocation": {
+      "header": null,
       "ops": [
         {
           "name": "v",
@@ -1616,6 +1838,12 @@ exports[`resolveAllocation should write program 1`] = `
             "bits": 257,
             "kind": "int",
             "optional": false,
+          },
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
           },
         },
       ],
@@ -1628,6 +1856,12 @@ exports[`resolveAllocation should write program 1`] = `
               "bits": 257,
               "kind": "int",
               "optional": false,
+            },
+            "type": {
+              "format": 257,
+              "kind": "simple",
+              "optional": false,
+              "type": "int",
             },
           },
         ],

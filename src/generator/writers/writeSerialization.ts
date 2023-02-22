@@ -13,17 +13,17 @@ const SMALL_STRUCT_MAX_FIELDS = 5;
 // Serializer
 //
 
-export function writeSerializer(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
+export function writeSerializer(name: string, type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
-    ctx.fun(ops.writer(type.name, ctx), () => {
+    ctx.fun(ops.writer(name, ctx), () => {
         let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
-        ctx.append(`builder ${ops.writer(type.name, ctx)}(builder build_0, ${resolveFuncType(type, ctx)} v) ${modifier} {`);
+        ctx.append(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncType(type, ctx)} v) ${modifier} {`);
         ctx.inIndent(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, `v`, ctx)} = v;`)
-            if (type.header) {
-                ctx.append(`build_0 = store_uint(build_0, ${type.header}, 32);`);
+            if (allocation.header) {
+                ctx.append(`build_0 = store_uint(build_0, ${allocation.header.value}, ${allocation.header.bits});`);
             }
             writeSerializerCell(allocation.root, 0, ctx);
             ctx.append(`return build_0;`);
@@ -32,22 +32,22 @@ export function writeSerializer(type: TypeDescription, allocation: StorageAlloca
     });
 
     // Write to cell
-    ctx.fun(ops.writerCell(type.name, ctx), () => {
+    ctx.fun(ops.writerCell(name, ctx), () => {
         ctx.write(`
-            cell ${ops.writerCell(type.name, ctx)}(${resolveFuncType(type, ctx)} v) inline {
-                return ${ops.writer(type.name, ctx)}(begin_cell(), v).end_cell();
+            cell ${ops.writerCell(name, ctx)}(${resolveFuncType(type, ctx)} v) inline {
+                return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();
             }
         `);
     });
 
     // Write to opt cell
-    ctx.fun(ops.writerCellOpt(type.name, ctx), () => {
+    ctx.fun(ops.writerCellOpt(name, ctx), () => {
         ctx.write(`
-            cell ${ops.writerCellOpt(type.name, ctx)}(tuple v) inline {
+            cell ${ops.writerCellOpt(name, ctx)}(tuple v) inline {
                 if (null?(v)) {
                     return null();
                 }
-                return ${ops.writerCell(type.name, ctx)}(${ctx.used(`__gen_${type.name}_not_null`)}(v));
+                return ${ops.writerCell(name, ctx)}(${ctx.used(`__gen_${name}_not_null`)}(v));
             }
         `);
     });
@@ -188,17 +188,17 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 // Parser
 //
 
-export function writeParser(type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
+export function writeParser(name: string, type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
-    ctx.fun(`__gen_read_${type.name}`, () => {
+    ctx.fun(`__gen_read_${name}`, () => {
         let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
-        ctx.append(`(slice, (${resolveFuncType(type, ctx)})) __gen_read_${type.name}(slice sc_0) ${modifier} {`);
+        ctx.append(`(slice, (${resolveFuncType(type, ctx)})) __gen_read_${name}(slice sc_0) ${modifier} {`);
         ctx.inIndent(() => {
 
             // Check prefix
-            if (type.header) {
-                ctx.append(`throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(32) == ${type.header});`);
+            if (allocation.header) {
+                ctx.append(`throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`);
             }
 
             // Write cell parser
@@ -210,14 +210,14 @@ export function writeParser(type: TypeDescription, allocation: StorageAllocation
         ctx.append("}");
     });
 
-    ctx.fun(`__gen_readopt_${type.name}`, () => {
+    ctx.fun(`__gen_readopt_${name}`, () => {
         ctx.write(`
-            tuple __gen_readopt_${type.name}(cell cl) inline {
+            tuple __gen_readopt_${name}(cell cl) inline {
                 if (null?(cl)) {
                     return null();
                 }
                 var sc = cl.begin_parse();
-                return ${ctx.used(`__gen_${type.name}_as_optional`)}(sc~${ctx.used(`__gen_read_${type.name}`)}());
+                return ${ctx.used(`__gen_${name}_as_optional`)}(sc~${ctx.used(`__gen_read_${name}`)}());
             }
         `);
     });

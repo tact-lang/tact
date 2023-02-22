@@ -80,6 +80,7 @@ export function writeTypescript(abi: ContractABI, mode: 'server' | 'client', ini
         for (let f of sortedTypes) {
             let ops = f.fields.map((v) => ({
                 name: v.name,
+                type: v.type,
                 op: getAllocationOperationFromField(v.type, (s) => allocations[s].size)
             }));
             let headerBits = f.header ? 32 : 0;

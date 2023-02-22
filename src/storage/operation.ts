@@ -1,3 +1,4 @@
+import { ABITypeRef } from "ton-core";
 import { TypeRef } from "../types/types";
 
 export type AllocationCell = {
@@ -8,6 +9,7 @@ export type AllocationCell = {
 
 export type AllocationOperation = {
     name: string;
+    type: ABITypeRef;
     op: AllocationOperationType;
 }
 

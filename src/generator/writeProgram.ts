@@ -278,8 +278,8 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     // Serializators
     let allocations = getAllocations(ctx);
     for (let k of allocations) {
-        writeSerializer(k.type, k.allocation, wctx);
-        writeParser(k.type, k.allocation, wctx);
+        writeSerializer(k.type.name, k.type, k.allocation, wctx);
+        writeParser(k.type.name, k.type, k.allocation, wctx);
     }
 
     // Accessors
