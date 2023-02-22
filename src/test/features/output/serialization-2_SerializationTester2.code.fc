@@ -148,7 +148,7 @@ tuple __gen_Both_opt_to_external(tuple v) inline {
     }
 }
 
-((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() inline {
+((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SerializationTester2();
@@ -301,10 +301,14 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.debug.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmRdD5c1XT41KdVAY7fs7yYpLSUx59fxQPE3hk411bc9AS";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

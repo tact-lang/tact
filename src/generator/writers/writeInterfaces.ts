@@ -12,6 +12,7 @@ export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
             let interfaces: string[] = [];
             interfaces.push('org.ton.introspection.v0');
             interfaces.push('org.ton.abi.ipfs.v0');
+            interfaces.push('org.ton.deploy.lazy.v0');
             if (enabledDebug(ctx.ctx)) {
                 interfaces.push('org.ton.debug.v0');
             }

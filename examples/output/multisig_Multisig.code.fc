@@ -136,7 +136,7 @@ builder __gen_write_Multisig(builder build_0, (int, cell, int, int) v) inline {
     return (sc_0, (v'seqno, v'members, v'totalWeight, v'requiredWeight));
 }
 
-(int, cell, int, int) __gen_load_Multisig() inline {
+(int, cell, int, int) __gen_load_Multisig() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Multisig();
@@ -314,10 +314,14 @@ _ $__gen_get_members() method_id(104769) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmQZ8u5QRBuCjdfqZYvyzFkDHG3Mh6TKszcybMKrkSi5WW";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

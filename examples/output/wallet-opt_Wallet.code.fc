@@ -27,7 +27,7 @@ builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
     return (sc_0, (v'seqno, v'key, v'walletId));
 }
 
-(int, int, int) __gen_load_Wallet() inline {
+(int, int, int) __gen_load_Wallet() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Wallet();
@@ -124,10 +124,14 @@ _ $__gen_get_seqno() method_id(85143) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmVcBP2MhE1v1S1s1C8qS35HdSqBQQRpAibWVdrwsZSXty";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

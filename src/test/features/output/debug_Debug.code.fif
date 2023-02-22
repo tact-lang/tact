@@ -9,8 +9,6 @@ PROGRAM{
   DECLPROC __gen_read_Deploy
   DECLPROC __gen_write_DeployOk
   DECLPROC __gen_writecell_DeployOk
-  DECLPROC __gen_write_Debug
-  DECLPROC __gen_read_Debug
   DECLPROC __gen_load_Debug
   DECLPROC __gen_store_Debug
   DECLPROC $send
@@ -22,6 +20,7 @@ PROGRAM{
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
   __tact_not_null PROCINLINE:<{
@@ -156,32 +155,20 @@ PROGRAM{
     __gen_write_DeployOk INLINECALLDICT
     ENDC
   }>
-  __gen_write_Debug PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
-  }>
-  __gen_read_Debug PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
   __gen_load_Debug PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    SWAP
+    DROP
     __tact_context_sys SETGLOB
-    __gen_read_Debug INLINECALLDICT
-    NIP
+    PUSHNULL
   }>
   __gen_store_Debug PROCINLINE:<{
+    DROP
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
-    SWAP
-    __gen_write_Debug INLINECALLDICT
     ENDC
     c4 POP
   }>
@@ -405,9 +392,16 @@ PROGRAM{
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
   }>
   get_abi_ipfs PROC:<{
     x{697066733a2f2f516d657543744566395278364e436435584d7172746733613770667051554735486d5a4e793731476171655a364e} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
   }>
 }END>c

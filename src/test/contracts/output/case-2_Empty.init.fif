@@ -4,12 +4,10 @@ PROGRAM{
   107886 DECLMETHOD init
   DECLPROC main
   __gen_write_Empty PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
+    DROP
   }>
   $__gen_Empty_init PROC:<{
-    0 PUSHINT
+    PUSHNULL
     SWAP
     NEWC
     STREF

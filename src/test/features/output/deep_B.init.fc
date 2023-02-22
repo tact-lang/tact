@@ -2,17 +2,15 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_B(builder build_0, (int) v) inline {
-    var (v'a) = v;
-    build_0 = build_0.store_int(v'a, 257);
+builder __gen_write_B(builder build_0, tuple v) inline {
     return build_0;
 }
 
 cell $__gen_B_init(cell sys') {
-    var (($self'a)) = (0);
+    var $self = null();
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_B(b', ($self'a));
+    b' = __gen_write_B(b', $self);
     return b'.end_cell();
 }
 

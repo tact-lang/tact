@@ -423,6 +423,8 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             }
             if (initValues.length > 0) { // Special case for empty contracts
                 ctx.append(`var (${resolveFuncTypeUnpack(t, id('self'), ctx)}) = (${initValues.join(', ')});`);
+            } else {
+                ctx.append(`var ${id('self')} = null();`);
             }
 
             // Generate statements

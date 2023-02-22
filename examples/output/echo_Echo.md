@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Echo
-BOC Size: 584 bytes
+BOC Size: 578 bytes
 
 # Types
 Total Types: 3

@@ -3,6 +3,9 @@ import { getType } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 
 export function resolveFuncTypeFromAbi(fields: ABITypeRef[], ctx: WriterContext): string {
+    if (fields.length === 0) {
+        return 'tuple';
+    }
     let res: string[] = [];
     for (let f of fields) {
         if (f.kind === 'dict') {
@@ -27,7 +30,7 @@ export function resolveFuncTypeFromAbi(fields: ABITypeRef[], ctx: WriterContext)
                 if (t.kind !== 'struct') {
                     throw Error('Unsupported type: ' + t.kind);
                 }
-                if (f.optional) {
+                if (f.optional || t.fields.length === 0) {
                     res.push('tuple');
                 } else {
                     let loaded = t.fields.map((v) => v.abi.type);

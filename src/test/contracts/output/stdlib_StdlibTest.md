@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: StdlibTest
-BOC Size: 256 bytes
+BOC Size: 275 bytes
 
 # Types
 Total Types: 3

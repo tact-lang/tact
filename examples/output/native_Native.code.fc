@@ -20,7 +20,7 @@ builder __gen_write_Native(builder build_0, (int) v) inline {
     return (sc_0, (v'value));
 }
 
-(int) __gen_load_Native() inline {
+(int) __gen_load_Native() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Native();
@@ -79,10 +79,14 @@ builder __gen_write_Native(builder build_0, (int) v) inline {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmRSRrjBjDPZnkYG4FriQrkt2z56zDv7zRejZnxCq9KtYX";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

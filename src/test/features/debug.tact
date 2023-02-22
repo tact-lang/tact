@@ -1,9 +1,9 @@
 import "@stdlib/deploy";
 
 contract Debug with Deployable {
-    v: Int;
+
     init() {
-        self.v = 0;
+        
     }
 
     receive("Debug") {

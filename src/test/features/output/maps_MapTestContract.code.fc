@@ -260,7 +260,7 @@ tuple __gen_SomeStruct_opt_to_external(tuple v) inline {
     }
 }
 
-(cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() inline {
+(cell, cell, cell, cell, cell, cell, cell, cell) __gen_load_MapTestContract() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MapTestContract();
@@ -672,10 +672,14 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmYjJTxiEaKA2UXbragf7pkNddpnsQKbPACWKAv7mw1qzy";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

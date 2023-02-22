@@ -89,27 +89,15 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     return ((builders), ());
 }
 
-builder __gen_write_Echo(builder build_0, (int) v) inline {
-    var (v'v) = v;
-    build_0 = build_0.store_int(v'v, 257);
-    return build_0;
-}
-
-(slice, ((int))) __gen_read_Echo(slice sc_0) inline {
-    var v'v = sc_0~load_int(257);
-    return (sc_0, (v'v));
-}
-
-(int) __gen_load_Echo() inline {
+tuple __gen_load_Echo() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Echo();
+    return null();
 }
 
-() __gen_store_Echo((int) v) impure inline {
+() __gen_store_Echo(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_Echo(b, v);
     set_data(b.end_cell());
 }
 
@@ -176,8 +164,8 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return __tact_string_builder_end($b);
 }
 
-slice $__gen_Echo_hello((int) $self, slice $src) impure inline_ref {
-    var (($self'v)) = $self;
+slice $__gen_Echo_hello(tuple $self, slice $src) impure inline_ref {
+    var ($self) = $self;
     tuple $builder = __tact_string_builder_start_string();
     $builder~__tact_string_builder_append(__gen_str_591567833());
     $builder~__tact_string_builder_append($src);
@@ -191,16 +179,16 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     return res;
 }
 
-((int), ()) $__gen_Echo_receive_comment((int) $self, slice $msg) impure inline {
-    var ($self'v) = $self;
+(tuple, ()) $__gen_Echo_receive_comment(tuple $self, slice $msg) impure inline {
+    var $self = $self;
     $reply($__gen_String_asComment($msg));
-    return (($self'v), ());
+    return ($self, ());
 }
 
-((int), ()) $__gen_Echo_receive_fallback((int) $self, slice $msg) impure inline {
-    var ($self'v) = $self;
+(tuple, ()) $__gen_Echo_receive_fallback(tuple $self, slice $msg) impure inline {
+    var $self = $self;
     $reply($__gen_Slice_asCell($msg));
-    return (($self'v), ());
+    return ($self, ());
 }
 
 
@@ -242,10 +230,14 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmNwwt8aViq6vjWChXqWbFsvn6VMEFVio9g7XWi7be1PSA";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

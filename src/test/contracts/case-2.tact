@@ -9,9 +9,7 @@ fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
 }
 
 contract Empty {
-    x: Int;   
-
     init() {
-        self.x = 0;
+        
     }
 }

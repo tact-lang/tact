@@ -34,12 +34,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     s0 s3 XCHG
     <{
       3 BLKDROP
@@ -52,14 +49,11 @@ SETCP0
     33 LESSINT
     AND
     <{
+      s0 POP
       NEWC
       2 GETGLOBVAR
       s0 s1 XCHG
       STREF
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
       ENDC
       c4 POP
     }> PUSHCONT
@@ -71,12 +65,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       NEWC
@@ -342,12 +333,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       PUSHSLICE
@@ -475,12 +463,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       95 PUSHINT
@@ -583,12 +568,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       NEWC
@@ -854,12 +836,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       PUSHSLICE
@@ -869,12 +848,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       NEWC
@@ -1141,12 +1117,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       PUSHSLICE
@@ -1157,18 +1130,16 @@ SETCP0
   113617: 
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
 
   122225: 
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       NEWC
@@ -1274,12 +1245,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       NEWC
@@ -1388,12 +1356,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     s0 s1 XCHG
     <{
       s1 POP

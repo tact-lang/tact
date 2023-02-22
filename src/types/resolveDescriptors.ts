@@ -618,9 +618,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (let k in types) {
         let t = types[k];
-        if (t.kind === 'contract' || t.kind === 'struct') {
+        if (t.kind === 'struct') {
             if (t.fields.length === 0) {
-                throwError((t.kind === 'contract' ? 'Contract' : 'Struct') + ' ' + t.name + ' does not have any fields', t.ast.ref);
+                throwError('Struct' + ' ' + t.name + ' does not have any fields', t.ast.ref);
             }
         }
     }

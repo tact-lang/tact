@@ -21,7 +21,9 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
         let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
         ctx.append(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) ${modifier} {`);
         ctx.inIndent(() => {
-            ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
+            if (allocation.ops.length > 0) {
+                ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
+            }
             if (allocation.header) {
                 ctx.append(`build_0 = store_uint(build_0, ${allocation.header.value}, ${allocation.header.bits});`);
             }

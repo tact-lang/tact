@@ -7,8 +7,6 @@ PROGRAM{
   DECLPROC __tact_string_builder_append
   DECLPROC __tact_int_to_string
   DECLPROC __tact_float_to_string
-  DECLPROC __gen_write_StringsTester
-  DECLPROC __gen_read_StringsTester
   DECLPROC __gen_load_StringsTester
   DECLPROC __gen_store_StringsTester
   DECLPROC $__gen_Builder_asSlice
@@ -44,6 +42,7 @@ PROGRAM{
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
   __tact_string_builder_start PROCINLINE:<{
@@ -314,32 +313,20 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  __gen_write_StringsTester PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
-  }>
-  __gen_read_StringsTester PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
   __gen_load_StringsTester PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    SWAP
+    DROP
     __tact_context_sys SETGLOB
-    __gen_read_StringsTester INLINECALLDICT
-    NIP
+    PUSHNULL
   }>
   __gen_store_StringsTester PROCINLINE:<{
+    DROP
     NEWC
     __tact_context_sys GETGLOB
     SWAP
     STREF
-    SWAP
-    __gen_write_StringsTester INLINECALLDICT
     ENDC
     c4 POP
   }>
@@ -637,9 +624,16 @@ PROGRAM{
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
   }>
   get_abi_ipfs PROC:<{
     x{697066733a2f2f516d6255797464726a78744e7335576d59553548514b544b4a5a615a4a584179566f6d5776577631656a4758416b} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
   }>
 }END>c

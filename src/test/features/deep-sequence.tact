@@ -1,5 +1,5 @@
 contract A {
-    a: Int = 0;
+
     init() {
 
     }
@@ -24,7 +24,7 @@ contract A {
 }
 
 contract B {
-    a: Int = 0;
+    
     init() {
 
     }

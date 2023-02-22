@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { getAllocation, getAllocations, getSortedTypes } from "../storage/resolveAllocation";
+import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { WriterContext } from "./Writer";
@@ -23,7 +23,7 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() impure inline {`); // NOTE: Inline impure function
         ctx.inIndent(() => {
 
             // Load data slice
@@ -34,8 +34,12 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`__tact_context_sys = sc~load_ref();`);
 
             // Load data
-            ctx.used(`__gen_read_${type.name}`);
-            ctx.append(`return sc~__gen_read_${type.name}();`);
+            if (type.fields.length > 0) {
+                ctx.used(`__gen_read_${type.name}`);
+                ctx.append(`return sc~__gen_read_${type.name}();`);
+            } else {
+                ctx.append(`return null();`);
+            }
         });
         ctx.append(`}`);
     });
@@ -51,7 +55,9 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`b = b.store_ref(__tact_context_sys);`);
 
             // Build data
-            ctx.append(`b = ${ops.writer(type.name, ctx)}(b, v);`);
+            if (type.fields.length > 0) {
+                ctx.append(`b = ${ops.writer(type.name, ctx)}(b, v);`);
+            }
 
             // Persist data
             ctx.append(`set_data(b.end_cell());`);
@@ -295,6 +301,13 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
         ctx.append(`_ get_abi_ipfs() {`);
         ctx.inIndent(() => {
             ctx.append(`return "${abiLink}";`);
+        });
+        ctx.append(`}`);
+
+        // Deployed
+        ctx.append(`_ lazy_deployment_completed() {`);
+        ctx.inIndent(() => {
+            ctx.append(`return get_data().begin_parse().load_int(1);`);
         });
         ctx.append(`}`);
     });

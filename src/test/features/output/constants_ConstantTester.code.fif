@@ -1,5 +1,4 @@
 PROGRAM{
-  DECLPROC __gen_read_ConstantTester
   DECLPROC __gen_load_ConstantTester
   DECLPROC $__gen_ConstantTester_something1
   121234 DECLMETHOD $__gen_get_something1
@@ -16,21 +15,16 @@ PROGRAM{
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_ConstantTester PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
   __gen_load_ConstantTester PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    SWAP
+    DROP
     __tact_context_sys SETGLOB
-    __gen_read_ConstantTester INLINECALLDICT
-    NIP
+    PUSHNULL
   }>
   $__gen_ConstantTester_something1 PROCREF:<{
     DROP
@@ -104,6 +98,8 @@ PROGRAM{
     s4 s4 XCHG2
     4 TUPLE
     __tact_context SETGLOB
+    __gen_load_ConstantTester INLINECALLDICT
+    DROP
     IFJMP:<{
     }>
     130 THROW
@@ -111,9 +107,16 @@ PROGRAM{
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
   }>
   get_abi_ipfs PROC:<{
     x{697066733a2f2f516d625775694c756531747067526d7859634e6d456f57474172336b4872514b65375a516d6f5966567872373434} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
   }>
 }END>c

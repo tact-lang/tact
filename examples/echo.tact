@@ -1,7 +1,5 @@
 contract Echo {
 
-    v: Int = 0;
-
     init() {
         
     }

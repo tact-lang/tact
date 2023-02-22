@@ -24,13 +24,13 @@ export function resolveFuncFlatPack(descriptor: TypeRef | TypeDescription | stri
     if (descriptor.kind === 'primitive') {
         return [name];
     } else if (descriptor.kind === 'struct') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return [name];
         } else {
             return descriptor.fields.flatMap((v) => resolveFuncFlatPack(v.type, name + `'` + v.name, ctx));
         }
     } else if (descriptor.kind === 'contract') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return [name];
         } else {
             return descriptor.fields.flatMap((v) => resolveFuncFlatPack(v.type, name + `'` + v.name, ctx));

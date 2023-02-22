@@ -25,13 +25,13 @@ export function resolveFuncFlatTypes(descriptor: TypeRef | TypeDescription | str
     if (descriptor.kind === 'primitive') {
         return [resolveFuncType(descriptor, ctx)];
     } else if (descriptor.kind === 'struct') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return ['tuple'];
         } else {
             return descriptor.fields.flatMap((v) => resolveFuncFlatTypes(v.type, ctx));
         }
     } else if (descriptor.kind === 'contract') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return ['tuple'];
         } else {
             return descriptor.fields.flatMap((v) => resolveFuncFlatTypes(v.type, ctx));

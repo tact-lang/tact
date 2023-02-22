@@ -49,27 +49,15 @@ cell __gen_writecell_DeployOk((int) v) inline {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
-builder __gen_write_RandomContract(builder build_0, (int) v) inline {
-    var (v'field) = v;
-    build_0 = build_0.store_int(v'field, 257);
-    return build_0;
-}
-
-(slice, ((int))) __gen_read_RandomContract(slice sc_0) inline {
-    var v'field = sc_0~load_int(257);
-    return (sc_0, (v'field));
-}
-
-(int) __gen_load_RandomContract() inline {
+tuple __gen_load_RandomContract() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_RandomContract();
+    return null();
 }
 
-() __gen_store_RandomContract((int) v) impure inline {
+() __gen_store_RandomContract(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_RandomContract(b, v);
     set_data(b.end_cell());
 }
 
@@ -131,8 +119,8 @@ int $random(int $min, int $max) impure inline_ref {
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-int $__gen_RandomContract_randomInt((int) $self) impure inline_ref {
-    var (($self'field)) = $self;
+int $__gen_RandomContract_randomInt(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return $randomInt();
 }
 
@@ -142,8 +130,8 @@ _ $__gen_get_randomInt() method_id(128647) {
     return res;
 }
 
-int $__gen_RandomContract_random((int) $self, int $min, int $max) impure inline_ref {
-    var (($self'field)) = $self;
+int $__gen_RandomContract_random(tuple $self, int $min, int $max) impure inline_ref {
+    var ($self) = $self;
     return $random($min, $max);
 }
 
@@ -155,11 +143,11 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     return res;
 }
 
-(((int)), ()) $__gen_RandomContract_receive_Deploy((int) $self, (int) $deploy) impure inline {
-    var ($self'field) = $self;
+((tuple), ()) $__gen_RandomContract_receive_Deploy(tuple $self, (int) $deploy) impure inline {
+    var $self = $self;
     var ($deploy'queryId) = $deploy;
     $reply(__gen_writecell_DeployOk(($deploy'queryId)));
-    return (($self'field), ());
+    return ($self, ());
 }
 
 
@@ -199,10 +187,14 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.debug.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmZe4oSimLxFKWBZG6GNJT1Midhf7WtLWwnvHGqwPGjTqM";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

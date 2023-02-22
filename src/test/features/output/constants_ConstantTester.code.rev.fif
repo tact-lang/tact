@@ -25,6 +25,13 @@ SETCP0
     s4 s4 XCHG2
     4 TUPLE
     1 SETGLOBVAR
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 POP
+    2 SETGLOBVAR
+    PUSHNULL
+    s0 POP
     IFRET
     130 THROW
 
@@ -32,12 +39,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       456000000000 PUSHINT
@@ -47,12 +51,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       PUSHSLICE
@@ -61,18 +62,16 @@ SETCP0
   113617: 
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
 
   116577: 
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       100 PUSHINT
@@ -82,12 +81,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       -6 PUSHINT
@@ -97,12 +93,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       PUSHNULL
@@ -112,12 +105,9 @@ SETCP0
     c4 PUSH
     CTOS
     LDREF
-    s0 s1 XCHG
+    s0 POP
     2 SETGLOBVAR
-    257 PUSHINT
-    LDI
-    s0 s1 XCHG
-    s1 POP
+    PUSHNULL
     <{
       s0 POP
       123000000000 PUSHINT

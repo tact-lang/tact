@@ -7,20 +7,15 @@ global cell __tact_context_sys;
 
 forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4 UNTUPLE";
 
-(slice, ((int))) __gen_read_Empty(slice sc_0) inline {
-    var v'x = sc_0~load_int(257);
-    return (sc_0, (v'x));
-}
-
 (int, int, int, int) __gen_Source_from_tuple(tuple v) inline {
     var (int v'a, int v'b, int v'c, int v'd) = __tact_tuple_destroy_4(v);
     return (v'a, v'b, v'c, v'd);
 }
 
-(int) __gen_load_Empty() inline {
+tuple __gen_load_Empty() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Empty();
+    return null();
 }
 
 int $isZero(int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
@@ -32,8 +27,8 @@ int $isZero(int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
     return (((($b > 0) & $z) & ($c == 0)) & ($d == 0));
 }
 
-int $__gen_Empty_a((int) $self, int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
-    var (($self'x)) = $self;
+int $__gen_Empty_a(tuple $self, int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
+    var ($self) = $self;
     var (($m'a, $m'b, $m'c, $m'd)) = $m;
     return $isZero($x, $y, $z, ($m'a, $m'b, $m'c, $m'd));
 }
@@ -76,10 +71,14 @@ _ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmZoNHYT5oWSKEsLCS8ivJ7HkVE4TVZ4RagYpqpsGNeEvD";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

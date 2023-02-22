@@ -1,24 +1,18 @@
 PROGRAM{
-  DECLPROC __gen_read_Empty
   DECLPROC __gen_load_Empty
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
-  __gen_read_Empty PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
   __gen_load_Empty PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
-    SWAP
+    DROP
     __tact_context_sys SETGLOB
-    __gen_read_Empty INLINECALLDICT
-    NIP
+    PUSHNULL
   }>
   recv_internal PROC:<{
     DUP
@@ -44,6 +38,8 @@ PROGRAM{
     s4 s4 XCHG2
     4 TUPLE
     __tact_context SETGLOB
+    __gen_load_Empty INLINECALLDICT
+    DROP
     IFJMP:<{
     }>
     130 THROW
@@ -51,8 +47,15 @@ PROGRAM{
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
   }>
   get_abi_ipfs PROC:<{
     x{697066733a2f2f516d5a4c64784e726f376966436d4b7235785a747238665a334c7051396268433958546e68413639425052456239} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
   }>
 }END>c

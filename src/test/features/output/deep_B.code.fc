@@ -109,17 +109,6 @@ cell __tact_string_builder_end(tuple builders) inline {
     return ((builders), ());
 }
 
-builder __gen_write_B(builder build_0, (int) v) inline {
-    var (v'a) = v;
-    build_0 = build_0.store_int(v'a, 257);
-    return build_0;
-}
-
-(slice, ((int))) __gen_read_B(slice sc_0) inline {
-    var v'a = sc_0~load_int(257);
-    return (sc_0, (v'a));
-}
-
 builder __gen_write_C(builder build_0, (int) v) inline {
     var (v'a) = v;
     build_0 = build_0.store_int(v'a, 257);
@@ -131,16 +120,15 @@ builder __gen_write_C(builder build_0, (int) v) inline {
     return (v'code, v'data);
 }
 
-(int) __gen_load_B() inline {
+tuple __gen_load_B() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_B();
+    return null();
 }
 
-() __gen_store_B((int) v) impure inline {
+() __gen_store_B(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_B(b, v);
     set_data(b.end_cell());
 }
 
@@ -222,8 +210,8 @@ cell $__gen_C_init(cell sys') {
     return (mine, $__gen_C_init(sys));
 }
 
-(cell, cell) $__gen_B_getNext((int) $self) impure inline_ref {
-    var (($self'a)) = $self;
+(cell, cell) $__gen_B_getNext(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return $__gen_C_init_child(__tact_context_sys);
 }
 
@@ -233,12 +221,12 @@ _ $__gen_get_getNext() method_id(74105) {
     return __gen_StateInit_to_external(res);
 }
 
-((int), ()) $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d((int) $self) impure inline {
-    var ($self'a) = $self;
+(tuple, ()) $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d(tuple $self) impure inline {
+    var $self = $self;
     var ($init'code, $init'data) = $__gen_C_init_child(__tact_context_sys);
     slice $address = $contractAddress(($init'code, $init'data));
     $send((true, $address, 0, (64 + 2), $__gen_String_asComment(__gen_str_796354186()), $init'code, $init'data));
-    return (($self'a), ());
+    return ($self, ());
 }
 
 
@@ -282,10 +270,14 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.debug.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmYwSbHs2usvgGeHTayJ7rjgt6hdcYvk8GV6WMTd4D2Exy";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

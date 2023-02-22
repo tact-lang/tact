@@ -3,6 +3,9 @@ import { getType } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 
 export function resolveFuncTypeFromAbiUnpack(name: string, fields: { name: string, type: ABITypeRef }[], ctx: WriterContext): string {
+    if (fields.length === 0) {
+        return `${name}`;
+    }
     let res: string[] = [];
     for (let f of fields) {
         if (f.type.kind === 'dict') {
@@ -24,7 +27,7 @@ export function resolveFuncTypeFromAbiUnpack(name: string, fields: { name: strin
                 res.push(`${name}'${f.name}`);
             } else {
                 let t = getType(ctx.ctx, f.type.type);
-                if (f.type.optional) {
+                if (f.type.optional || t.fields.length === 0) {
                     res.push(`${name}'${f.name}`);
                 } else {
                     let loaded = t.fields.map((v) => v.abi);

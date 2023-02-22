@@ -24,13 +24,13 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
     if (descriptor.kind === 'primitive') {
         return name;
     } else if (descriptor.kind === 'struct') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return name;
         } else {
             return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return name;
         } else {
             return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx)).join(', ') + ')';

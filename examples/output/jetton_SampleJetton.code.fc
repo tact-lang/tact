@@ -171,7 +171,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return (v'totalSupply, v'mintable, v'owner, v'content, v'walletCode);
 }
 
-(int, slice, cell, int) __gen_load_SampleJetton() inline {
+(int, slice, cell, int) __gen_load_SampleJetton() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SampleJetton();
@@ -431,6 +431,7 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.jetton.master"H >> 128,
         "org.ton.ownable"H >> 128
     );
@@ -438,4 +439,7 @@ _ supported_interfaces() method_id {
 
 _ get_abi_ipfs() {
     return "ipfs://QmPfyoAvkPUqzx93gq8EBcVccAYXFEbjnqCMrHYtyPUHfE";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

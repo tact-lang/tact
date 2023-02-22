@@ -117,7 +117,7 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return (v'requested, v'to, v'value, v'timeout, v'bounce, v'mode, v'body);
 }
 
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) __gen_load_MultisigSigner() inline {
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) __gen_load_MultisigSigner() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_MultisigSigner();
@@ -251,10 +251,14 @@ _ $__gen_get_request() method_id(107262) {
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmQvGD7HbByENqMK9Xvtc6EiCyUdorqkY8vWpGU1yKJ82p";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

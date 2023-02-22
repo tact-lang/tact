@@ -90,27 +90,15 @@ cell __gen_writecell_DeployOk((int) v) inline {
     return __gen_write_DeployOk(begin_cell(), v).end_cell();
 }
 
-builder __gen_write_Debug(builder build_0, (int) v) inline {
-    var (v'v) = v;
-    build_0 = build_0.store_int(v'v, 257);
-    return build_0;
-}
-
-(slice, ((int))) __gen_read_Debug(slice sc_0) inline {
-    var v'v = sc_0~load_int(257);
-    return (sc_0, (v'v));
-}
-
-(int) __gen_load_Debug() inline {
+tuple __gen_load_Debug() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_Debug();
+    return null();
 }
 
-() __gen_store_Debug((int) v) impure inline {
+() __gen_store_Debug(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
-    b = __gen_write_Debug(b, v);
     set_data(b.end_cell());
 }
 
@@ -165,8 +153,8 @@ slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f72
     $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
 }
 
-() $__gen_Debug_debug((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+() $__gen_Debug_debug(tuple $self) impure inline_ref {
+    var ($self) = $self;
     dump_stack();
     __tact_debug_str(__gen_str_3226689099());
     __tact_debug_str(__tact_int_to_string(123));
@@ -181,22 +169,22 @@ _ $__gen_get_debug() method_id(93099) {
     return res;
 }
 
-((int), ()) $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57((int) $self) impure inline {
-    var ($self'v) = $self;
+(tuple, ()) $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
+    var $self = $self;
     dump_stack();
     __tact_debug_str(__gen_str_3226689099());
     __tact_debug_str(__tact_int_to_string(123));
     __tact_debug_bool(true);
     __tact_debug_bool(false);
     __tact_debug_str("null");
-    return (($self'v), ());
+    return ($self, ());
 }
 
-(((int)), ()) $__gen_Debug_receive_Deploy((int) $self, (int) $deploy) impure inline {
-    var ($self'v) = $self;
+((tuple), ()) $__gen_Debug_receive_Deploy(tuple $self, (int) $deploy) impure inline {
+    var $self = $self;
     var ($deploy'queryId) = $deploy;
     $reply(__gen_writecell_DeployOk(($deploy'queryId)));
-    return (($self'v), ());
+    return ($self, ());
 }
 
 
@@ -248,10 +236,14 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.debug.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmeuCtEf9Rx6NCd5XMqrtg3a7pfpQUG5HmZNy71GaqeZ6N";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

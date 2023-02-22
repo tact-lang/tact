@@ -662,19 +662,6 @@ cell __gen_writecell_A((int, int, int, int, int, int, int) v) inline {
     return __gen_write_A(begin_cell(), v).end_cell();
 }
 
-((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) inline {
-    throw_if(128, null?(v));
-    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
-    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
-}
-
-cell __gen_writecellopt_A(tuple v) inline {
-    if (null?(v)) {
-        return null();
-    }
-    return __gen_writecell_A(__gen_A_not_null(v));
-}
-
 _ __gen_A_get_a((int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     return v'a;
@@ -711,6 +698,12 @@ _ __gen_A_get_g((int, int, int, int, int, int, int) v) inline {
 }
 
 ((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
+}
 
 tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
@@ -930,14 +923,6 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
-}
-
-tuple __gen_readopt_A(cell cl) inline {
-    if (null?(cl)) {
-        return null();
-    }
-    var sc = cl.begin_parse();
-    return __gen_A_as_optional(sc~__gen_read_A());
 }"
 `;
 
@@ -1603,19 +1588,6 @@ cell __gen_writecell_B((int, int, int, int, int, int, int) v) inline {
     return __gen_write_B(begin_cell(), v).end_cell();
 }
 
-((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) inline {
-    throw_if(128, null?(v));
-    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
-    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
-}
-
-cell __gen_writecellopt_B(tuple v) inline {
-    if (null?(v)) {
-        return null();
-    }
-    return __gen_writecell_B(__gen_B_not_null(v));
-}
-
 _ __gen_A_get_a((int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     return v'a;
@@ -1734,6 +1706,12 @@ _ __gen_B_get_g((int, int, int, int, int, int, int) v) inline {
 }
 
 ((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v) asm "NOP";
+
+((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);
+}
 
 tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
@@ -1871,14 +1849,6 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     var v'f = sc_1~load_int(257);
     var v'g = sc_1~load_int(257);
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));
-}
-
-tuple __gen_readopt_B(cell cl) inline {
-    if (null?(cl)) {
-        return null();
-    }
-    var sc = cl.begin_parse();
-    return __gen_B_as_optional(sc~__gen_read_B());
 }"
 `;
 
@@ -2545,19 +2515,6 @@ cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v) inlin
     return __gen_write_C(begin_cell(), v).end_cell();
 }
 
-((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) inline {
-    throw_if(128, null?(v));
-    var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
-    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
-}
-
-cell __gen_writecellopt_C(tuple v) inline {
-    if (null?(v)) {
-        return null();
-    }
-    return __gen_writecell_C(__gen_C_not_null(v));
-}
-
 _ __gen_A_get_a((int, int, int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g) = v;
     return v'a;
@@ -2764,6 +2721,12 @@ _ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v) inline {
 
 ((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v) asm "NOP";
 
+((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+    return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);
+}
+
 tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h) = v;
     return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
@@ -2814,13 +2777,5 @@ tuple __gen_C_opt_to_external(tuple v) inline {
     var v'g = sc_1~load_int(257);
     var v'h = sc_1~__tact_load_address();
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));
-}
-
-tuple __gen_readopt_C(cell cl) inline {
-    if (null?(cl)) {
-        return null();
-    }
-    var sc = cl.begin_parse();
-    return __gen_C_as_optional(sc~__gen_read_C());
 }"
 `;

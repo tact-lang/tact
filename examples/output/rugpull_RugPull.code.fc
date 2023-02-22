@@ -160,7 +160,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return (v'investment, v'returns, v'fee);
 }
 
-(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() inline {
+(slice, int, int, int, int, int, int, int, int, cell) __gen_load_RugPull() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_RugPull();
@@ -407,6 +407,7 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.ownable.transferable"H >> 128,
         "org.ton.ownable"H >> 128,
         "org.ton.stoppable"H >> 128
@@ -415,4 +416,7 @@ _ supported_interfaces() method_id {
 
 _ get_abi_ipfs() {
     return "ipfs://QmXUuG5PNHPYUwAU7ZGCT1PraBxwzcHYxmxyH9oS23LeQr";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

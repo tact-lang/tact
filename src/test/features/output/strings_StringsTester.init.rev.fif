@@ -3,14 +3,12 @@ SETCP0
   recv_internal: 
 
   2: 
-    1200000000 PUSHINT
+    PUSHNULL
     s0 s1 XCHG
     NEWC
     STREF
     s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    STIX
+    s0 POP
     ENDC
 
   107886: 

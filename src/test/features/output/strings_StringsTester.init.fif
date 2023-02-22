@@ -4,12 +4,10 @@ PROGRAM{
   107886 DECLMETHOD init
   DECLPROC main
   __gen_write_StringsTester PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
+    DROP
   }>
   $__gen_StringsTester_init PROC:<{
-    1200000000 PUSHINT
+    PUSHNULL
     SWAP
     NEWC
     STREF

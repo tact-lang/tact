@@ -54,7 +54,7 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h, v'i));
 }
 
-(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() inline {
+(int, int, int, int, int, int, int, int, int) __gen_load_SerializationTester() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_SerializationTester();
@@ -229,10 +229,14 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.debug.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmZTBEVbne3pyG2Jk289CjzqnhrstNXTwSE4Eny7Yk1pRq";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

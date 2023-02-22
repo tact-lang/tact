@@ -5,22 +5,17 @@
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
-(slice, ((int))) __gen_read_ConstantTester(slice sc_0) inline {
-    var v'v = sc_0~load_int(257);
-    return (sc_0, (v'v));
-}
-
-(int) __gen_load_ConstantTester() inline {
+tuple __gen_load_ConstantTester() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
-    return sc~__gen_read_ConstantTester();
+    return null();
 }
 
 ;; String "Hello world!"
 slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
 
-int $__gen_ConstantTester_something1((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+int $__gen_ConstantTester_something1(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return 10;
 }
 
@@ -30,8 +25,8 @@ _ $__gen_get_something1() method_id(121234) {
     return res;
 }
 
-int $__gen_ConstantTester_something2((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+int $__gen_ConstantTester_something2(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return null();
 }
 
@@ -41,8 +36,8 @@ _ $__gen_get_something2() method_id(125425) {
     return res;
 }
 
-int $__gen_ConstantTester_something3((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+int $__gen_ConstantTester_something3(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return 123000000000;
 }
 
@@ -52,8 +47,8 @@ _ $__gen_get_something3() method_id(129488) {
     return res;
 }
 
-int $__gen_ConstantTester_something4((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+int $__gen_ConstantTester_something4(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return 456000000000;
 }
 
@@ -63,8 +58,8 @@ _ $__gen_get_something4() method_id(100663) {
     return res;
 }
 
-slice $__gen_ConstantTester_something5((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+slice $__gen_ConstantTester_something5(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return __gen_str_3226689099();
 }
 
@@ -74,8 +69,8 @@ _ $__gen_get_something5() method_id(104726) {
     return res;
 }
 
-int $__gen_ConstantTester_globalConst((int) $self) impure inline_ref {
-    var (($self'v)) = $self;
+int $__gen_ConstantTester_globalConst(tuple $self) impure inline_ref {
+    var ($self) = $self;
     return 100;
 }
 
@@ -114,10 +109,14 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.debug.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
     return "ipfs://QmbWuiLue1tpgRmxYcNmEoWGAr3kHrQKe7ZQmoYfVxr744";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

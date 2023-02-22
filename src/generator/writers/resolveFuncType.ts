@@ -42,13 +42,13 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
             throw Error('Unknown primitive type: ' + descriptor.name);
         }
     } else if (descriptor.kind === 'struct') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return 'tuple';
         } else {
             return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {
-        if (optional) {
+        if (optional || descriptor.fields.length === 0) {
             return 'tuple';
         } else {
             return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';

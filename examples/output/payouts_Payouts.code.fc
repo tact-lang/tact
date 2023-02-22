@@ -178,7 +178,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     return v'sender;
 }
 
-(slice, int) __gen_load_Payouts() inline {
+(slice, int) __gen_load_Payouts() impure inline {
     slice sc = get_data().begin_parse();
     __tact_context_sys = sc~load_ref();
     return sc~__gen_read_Payouts();
@@ -434,6 +434,7 @@ _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.ownable.transferable"H >> 128,
         "org.ton.ownable"H >> 128
     );
@@ -441,4 +442,7 @@ _ supported_interfaces() method_id {
 
 _ get_abi_ipfs() {
     return "ipfs://QmQGyicLR8R8cw9umCwJgj2kiG5MbhDmRPu8LqcFxHJvuW";
+}
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
 }

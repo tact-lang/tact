@@ -2,18 +2,15 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-builder __gen_write_Empty(builder build_0, (int) v) inline {
-    var (v'x) = v;
-    build_0 = build_0.store_int(v'x, 257);
+builder __gen_write_Empty(builder build_0, tuple v) inline {
     return build_0;
 }
 
 cell $__gen_Empty_init(cell sys') {
-    var (($self'x)) = (null());
-    $self'x = 0;
+    var $self = null();
     var b' = begin_cell();
     b' = b'.store_ref(sys');
-    b' = __gen_write_Empty(b', ($self'x));
+    b' = __gen_write_Empty(b', $self);
     return b'.end_cell();
 }
 
