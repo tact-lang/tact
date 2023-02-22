@@ -204,33 +204,23 @@ _ $__gen_get_request() method_id(107262) {
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), int) __gen_router_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    
-    ;; Load contract data
-    var self = __gen_load_MultisigSigner();
     
     ;; Handle bounced messages
     if (msg_bounced) {
-        return ();
+        return (self, true);
     }
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
         self~$__gen_MultisigSigner_receive();
-        __gen_store_MultisigSigner(self);
-        return ();
+        return (self, true);
     }
     
     ;; Text Receivers
@@ -240,12 +230,33 @@ _ $__gen_get_request() method_id(107262) {
         ;; Receive "YES" message
         if (text_op == 0x22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039) {
             self~$__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
-            __gen_store_MultisigSigner(self);
-            return ();
+            return (self, true);
         }
     }
     
-    throw(130);
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Load contract data
+    var self = __gen_load_MultisigSigner();
+    
+    ;; Handle operation
+    int handled = self~__gen_router_MultisigSigner(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_MultisigSigner(self);
 }
 
 _ supported_interfaces() method_id {

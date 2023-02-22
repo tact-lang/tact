@@ -1,5 +1,7 @@
 PROGRAM{
   DECLPROC __gen_load_Empty
+  DECLPROC __gen_store_Empty
+  DECLPROC __gen_router_Empty
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -14,13 +16,29 @@ PROGRAM{
     __tact_context_sys SETGLOB
     PUSHNULL
   }>
-  recv_internal PROC:<{
+  __gen_store_Empty PROCINLINE:<{
+    DROP
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    ENDC
+    c4 POP
+  }>
+  __gen_router_Empty PROCREF:<{
     DUP
     SBITS
     NIP
     31 GTINT
     IF:<{
     }>
+    IFJMP:<{
+      TRUE
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -35,14 +53,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s4 s4 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Empty INLINECALLDICT
+    -ROT
+    __gen_router_Empty INLINECALLDICT
     DROP
-    IFJMP:<{
-    }>
-    130 THROW
+    __gen_store_Empty INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

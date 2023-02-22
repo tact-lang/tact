@@ -17,6 +17,7 @@ PROGRAM{
   93099 DECLMETHOD $__gen_get_debug
   DECLPROC $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57
   DECLPROC $__gen_Debug_receive_Deploy
+  DECLPROC __gen_router_Debug
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -327,7 +328,7 @@ PROGRAM{
     __gen_writecell_DeployOk INLINECALLDICT
     $reply INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_Debug PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -340,6 +341,38 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    2490013878 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Deploy INLINECALLDICT
+      NIP
+      $__gen_Debug_receive_Deploy INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      78767043930632832884184893608813340453083540642055662257146169686053766160215 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -354,40 +387,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Debug INLINECALLDICT
-    s0 s3 XCHG
-    IFJMP:<{
-      3 BLKDROP
-    }>
-    OVER
-    2490013878 PUSHINT
-    EQUAL
-    IFJMP:<{
-      NIP
-      __gen_read_Deploy INLINECALLDICT
-      NIP
-      $__gen_Debug_receive_Deploy INLINECALLDICT
-      __gen_store_Debug INLINECALLDICT
-    }>
-    SWAP
-    0 EQINT
-    IF:<{
-      HASHSU
-      78767043930632832884184893608813340453083540642055662257146169686053766160215 PUSHINT
-      EQUAL
-      IFJMP:<{
-        $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
-        __gen_store_Debug INLINECALLDICT
-        RETALT
-      }>
-      DROP
-    }>ELSE<{
-      2DROP
-    }>
-    130 THROW
+    -ROT
+    __gen_router_Debug INLINECALLDICT
+    DROP
+    __gen_store_Debug INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -24,6 +24,7 @@ PROGRAM{
   85143 DECLMETHOD $__gen_get_seqno
   DECLPROC $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC $__gen_MultisigContract_receive_Execute
+  DECLPROC __gen_router_MultisigContract
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -293,7 +294,7 @@ PROGRAM{
     THROWANYIFNOT
     $__gen_MultisigContract_execute INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_MultisigContract PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -306,6 +307,38 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    520967536 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Execute INLINECALLDICT
+      1 6 BLKDROP2
+      $__gen_MultisigContract_receive_Execute INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -320,45 +353,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_MultisigContract INLINECALLDICT
-    s0 s6 XCHG
-    IFJMP:<{
-      6 BLKDROP
-    }>
-    s4 PUSH
-    520967536 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s4 POP
-      s0 s2 XCHG
-      __gen_read_Execute INLINECALLDICT
-      s6 POP
-      4 6 REVERSE
-      5 ROLL
-      $__gen_MultisigContract_receive_Execute INLINECALLDICT
-      __gen_store_MultisigContract INLINECALLDICT
-    }>
-    s0 s4 XCHG
-    0 EQINT
-    IF:<{
-      s0 s2 XCHG
-      HASHSU
-      60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
-      EQUAL
-      IFJMP:<{
-        s2 s3 XCHG2
-        $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
-        __gen_store_MultisigContract INLINECALLDICT
-        RETALT
-      }>
-      4 BLKDROP
-    }>ELSE<{
-      5 BLKDROP
-    }>
-    130 THROW
+    2 4 BLKSWAP
+    __gen_router_MultisigContract INLINECALLDICT
+    DROP
+    __gen_store_MultisigContract INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

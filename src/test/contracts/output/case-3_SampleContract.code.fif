@@ -1,21 +1,45 @@
 PROGRAM{
+  DECLPROC __gen_write_Source
   DECLPROC __gen_read_Source
+  DECLPROC __gen_write_SampleContract
   DECLPROC __gen_read_SampleContract
   DECLPROC __gen_load_SampleContract
+  DECLPROC __gen_store_SampleContract
   DECLPROC $__gen_SampleContract_stake
   80984 DECLMETHOD $__gen_get_stake
+  DECLPROC __gen_router_SampleContract
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __gen_write_Source PROCINLINE:<{
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
   __gen_read_Source PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
+  }>
+  __gen_write_SampleContract PROCINLINE:<{
+    s3 s4 XCHG2
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s0 s3 XCHG3
+    __gen_write_Source INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
   }>
   __gen_read_SampleContract PROCINLINE:<{
     257 PUSHINT
@@ -39,6 +63,16 @@ PROGRAM{
     __gen_read_SampleContract INLINECALLDICT
     1 4 BLKDROP2
   }>
+  __gen_store_SampleContract PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    4 -ROLL
+    __gen_write_SampleContract INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
   $__gen_SampleContract_stake PROCREF:<{
     3 BLKDROP
   }>
@@ -46,13 +80,20 @@ PROGRAM{
     __gen_load_SampleContract INLINECALLDICT
     $__gen_SampleContract_stake INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_SampleContract PROCREF:<{
     DUP
     SBITS
     NIP
     31 GTINT
     IF:<{
     }>
+    IFJMP:<{
+      TRUE
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -67,14 +108,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s4 s4 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_SampleContract INLINECALLDICT
-    4 BLKDROP
-    IFJMP:<{
-    }>
-    130 THROW
+    2 4 BLKSWAP
+    __gen_router_SampleContract INLINECALLDICT
+    DROP
+    __gen_store_SampleContract INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

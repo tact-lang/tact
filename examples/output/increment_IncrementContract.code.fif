@@ -36,6 +36,7 @@ PROGRAM{
   DECLPROC $__gen_IncrementContract_receive_Persist
   DECLPROC $__gen_IncrementContract_receive_Reset
   DECLPROC $__gen_IncrementContract_receive_Deploy
+  DECLPROC __gen_router_IncrementContract
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -504,7 +505,7 @@ PROGRAM{
     __gen_writecell_DeployOk INLINECALLDICT
     $reply INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_IncrementContract PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -515,6 +516,64 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    537284411 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Increment INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_IncrementContract_receive_Increment INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1081595080 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Toggle INLINECALLDICT
+      NIP
+      $__gen_IncrementContract_receive_Toggle INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    3801943978 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Persist INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_IncrementContract_receive_Persist INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1718153138 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Reset INLINECALLDICT
+      NIP
+      $__gen_IncrementContract_receive_Reset INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    2490013878 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_Deploy INLINECALLDICT
+      NIP
+      $__gen_IncrementContract_receive_Deploy INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -529,82 +588,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_IncrementContract INLINECALLDICT
-    s0 s7 XCHG
-    IFJMP:<{
-      7 BLKDROP
-    }>
-    s5 PUSH
-    537284411 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s5 POP
-      s0 s3 XCHG
-      __gen_read_Increment INLINECALLDICT
-      s2 POP
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_IncrementContract_receive_Increment INLINECALLDICT
-      __gen_store_IncrementContract INLINECALLDICT
-    }>
-    s5 PUSH
-    1081595080 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s5 POP
-      s0 s3 XCHG
-      __gen_read_Toggle INLINECALLDICT
-      NIP
-      s5 s4 s0 XCHG3
-      s1 s2 XCHG
-      $__gen_IncrementContract_receive_Toggle INLINECALLDICT
-      __gen_store_IncrementContract INLINECALLDICT
-    }>
-    s5 PUSH
-    3801943978 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s5 POP
-      s0 s3 XCHG
-      __gen_read_Persist INLINECALLDICT
-      s2 POP
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_IncrementContract_receive_Persist INLINECALLDICT
-      __gen_store_IncrementContract INLINECALLDICT
-    }>
-    s5 PUSH
-    1718153138 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s5 POP
-      s0 s3 XCHG
-      __gen_read_Reset INLINECALLDICT
-      NIP
-      s5 s4 s0 XCHG3
-      s1 s2 XCHG
-      $__gen_IncrementContract_receive_Reset INLINECALLDICT
-      __gen_store_IncrementContract INLINECALLDICT
-    }>
-    s0 s5 XCHG
-    2490013878 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s0 s3 XCHG
-      __gen_read_Deploy INLINECALLDICT
-      NIP
-      s5 s4 s0 XCHG3
-      s1 s2 XCHG
-      $__gen_IncrementContract_receive_Deploy INLINECALLDICT
-      __gen_store_IncrementContract INLINECALLDICT
-    }>
-    6 BLKDROP
-    130 THROW
+    2 5 BLKSWAP
+    __gen_router_IncrementContract INLINECALLDICT
+    DROP
+    __gen_store_IncrementContract INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

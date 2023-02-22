@@ -6,7 +6,7 @@ import { WriterContext } from "./Writer";
 import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
-import { beginCell, ContractABI } from "ton-core";
+import { ContractABI } from "ton-core";
 import { unwrapExternal, writeFunction, writeGetter, writeInit, writeReceiver } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
@@ -18,6 +18,7 @@ import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
 import { getRawAST } from "../grammar/store";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { ops } from "./writers/ops";
+import { writeRouter } from "./writers/writeRouter";
 
 function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
@@ -95,6 +96,9 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
     // Main field
     ctx.fun('$main', () => {
 
+        // Write router
+        writeRouter(type, ctx);
+
         // Render body
         ctx.append(``)
         ctx.append(`() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`);
@@ -103,15 +107,9 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             // Require context function
             ctx.used('__tact_context');
 
-            // Load operation
+            // Load context
             ctx.append();
-            ctx.append(`;; Parse incoming message`);
-            ctx.append(`int op = 0;`);
-            ctx.append(`if (slice_bits(in_msg) >= 32) {`);
-            ctx.inIndent(() => {
-                ctx.append(`op = in_msg.preload_uint(32);`);
-            });
-            ctx.append(`}`);
+            ctx.append(`;; Context`);
             ctx.append(`var cs = in_msg_cell.begin_parse();`);
             ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
             ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
@@ -125,164 +123,20 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`var self = __gen_load_${type.name}();`);
             ctx.append();
 
-            // Handle bounced
-            ctx.append(`;; Handle bounced messages`);
-            ctx.append(`if (msg_bounced) {`);
-            ctx.inIndent(() => {
-                let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
-                if (bouncedHandler) {
+            // Process operation
+            ctx.append(`;; Handle operation`);
+            ctx.append(`int handled = self~__gen_router_${type.name}(msg_bounced, in_msg);`);
+            ctx.append();
 
-                    // Execute function
-                    ctx.used(`__gen_${type.name}_receive_bounced`);
-                    ctx.append(`self~${fn(`__gen_${type.name}_receive_bounced`)}(in_msg);`);
-
-                    // Persist
-                    ctx.used(`__gen_store_${type.name}`);
-                    ctx.append(`__gen_store_${type.name}(self);`);
-                    ctx.append(`return ();`);
-                } else {
-                    ctx.append(`return ();`);
-                }
-            });
-            ctx.append(`}`);
-
-            // Non-empty receivers
-            for (const f of type.receivers) {
-                const selector = f.selector;
-
-                // Generic receiver
-                if (selector.kind === 'internal-binary') {
-                    let allocation = getType(ctx.ctx, selector.type);
-                    if (!allocation.header) {
-                        throw Error('Invalid allocation: ' + selector.type);
-                    }
-                    ctx.append();
-                    ctx.append(`;; Receive ${selector.type} message`);
-                    ctx.append(`if (op == ${allocation.header}) {`);
-                    ctx.inIndent(() => {
-
-                        // Read message
-                        ctx.used(`__gen_read_${selector.type}`);
-                        ctx.append(`var msg = in_msg~__gen_read_${selector.type}();`);
-
-                        // Execute function
-                        ctx.used(`__gen_${type.name}_receive_${selector.type}`);
-                        ctx.append(`self~${fn(`__gen_${type.name}_receive_${selector.type}`)}(msg);`);
-
-                        // Persist
-                        ctx.used(`__gen_store_${type.name}`);
-                        ctx.append(`__gen_store_${type.name}(self);`);
-
-                        // Exit
-                        ctx.append(`return ();`);
-                    })
-                    ctx.append(`}`);
-                }
-
-                if (selector.kind === 'internal-empty') {
-                    ctx.append();
-                    ctx.append(`;; Receive empty message`);
-                    ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
-                    ctx.inIndent(() => {
-
-                        // Execute function
-                        ctx.used(`__gen_${type.name}_receive`);
-                        ctx.append(`self~${fn(`__gen_${type.name}_receive`)}();`);
-
-                        // Persist
-                        ctx.used(`__gen_store_${type.name}`);
-                        ctx.append(`__gen_store_${type.name}(self);`);
-
-                        // Exit
-                        ctx.append(`return ();`);
-                    })
-                    ctx.append(`}`);
-                }
-            }
-
-            // Text resolvers
-            let hasComments = !!type.receivers.find((v) => v.selector.kind === 'internal-comment' || v.selector.kind === 'internal-comment-fallback');
-            if (hasComments) {
-                ctx.append();
-                ctx.append(`;; Text Receivers`);
-                ctx.append(`if (op == 0) {`);
-                ctx.inIndent(() => {
-                    if (!!type.receivers.find((v) => v.selector.kind === 'internal-comment')) {
-                        ctx.append(`var text_op = slice_hash(in_msg);`);
-                        for (const r of type.receivers) {
-                            const selector = r.selector;
-                            if (selector.kind === 'internal-comment') {
-                                let hash = beginCell()
-                                    .storeUint(0, 32)
-                                    .storeBuffer(Buffer.from(selector.comment, 'utf8'))
-                                    .endCell()
-                                    .hash()
-                                    .toString('hex', 0, 64);
-                                ctx.append();
-                                ctx.append(`;; Receive "${selector.comment}" message`);
-                                ctx.append(`if (text_op == 0x${hash}) {`);
-                                ctx.inIndent(() => {
-
-                                    // Execute function
-                                    ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
-                                    ctx.append(`self~${fn(`__gen_${type.name}_receive_comment_${hash}`)}();`);
-
-                                    // Persist
-                                    ctx.used(`__gen_store_${type.name}`);
-                                    ctx.append(`__gen_store_${type.name}(self);`);
-
-                                    // Exit
-                                    ctx.append(`return ();`);
-                                })
-                                ctx.append(`}`);
-                            }
-                        }
-                    }
-
-                    // Comment fallback resolver
-                    let fallback = type.receivers.find((v) => v.selector.kind === 'internal-comment-fallback');
-                    if (fallback) {
-
-                        ctx.append(`if (slice_bits(in_msg) >= 32) {`);
-                        ctx.inIndent(() => {
-
-                            // Execute function
-                            ctx.used(`__gen_${type.name}_receive_comment`);
-                            ctx.append(`self~${fn(`__gen_${type.name}_receive_comment`)}(in_msg.skip_bits(32));`);
-
-                            // Persist
-                            ctx.used(`__gen_store_${type.name}`);
-                            ctx.append(`__gen_store_${type.name}(self);`);
-
-                            // Exit
-                            ctx.append(`return ();`);
-                        });
-
-                        ctx.append(`}`);
-                    }
-                });
-                ctx.append(`}`);
-            }
-
-            // Fallback
-            let fallbackReceiver = type.receivers.find((v) => v.selector.kind === 'internal-fallback');
-            if (fallbackReceiver) {
-
-                ctx.append();
-                ctx.append(`;; Receiver fallback`);
-
-                // Execute function
-                ctx.used(`__gen_${type.name}_receive_fallback`);
-                ctx.append(`self~${fn(`__gen_${type.name}_receive_fallback`)}(in_msg);`);
-
-                // Persist
-                ctx.used(`__gen_store_${type.name}`);
-                ctx.append(`__gen_store_${type.name}(self);`);
-
-            } else {
-                ctx.append();
-                ctx.append(`throw(${contractErrors.invalidMessage.id});`);
-            }
+            // Throw if not handled
+            ctx.append(`;; Throw if not handled`);
+            ctx.append(`throw_unless(handled, ${contractErrors.invalidMessage.id});`);
+            ctx.append();
+            
+            // Persist state
+            ctx.append(`;; Persist state`);
+            ctx.used(`__gen_store_${type.name}`);
+            ctx.append(`__gen_store_${type.name}(self);`);
         });
         ctx.append('}');
         ctx.append();

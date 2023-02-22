@@ -1,19 +1,7 @@
 SETCP0
 (:methods
   recv_internal: 
-    c2 SAVE
-    SAMEALTSAVE
-    0 PUSHINT
-    s1 PUSH
-    SBITS
-    31 GTINT
-    <{
-      s0 POP
-      s0 PUSH
-      32 PLDU
-    }> PUSHCONT
-    IF
-    s0 s2 XCHG
+    s0 s1 XCHG
     CTOS
     4 LDU
     s0 s1 XCHG
@@ -30,7 +18,7 @@ SETCP0
     s0 s1 XCHG
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -42,39 +30,57 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 s3 XCHG
+    ROTREV
     <{
-      3 BLKDROP
-    }> PUSHCONT
-    IFJMP
-    s0 s1 XCHG
-    0 EQINT
-    <{
-      2DROP
-    }> PUSHCONT
-    <{
-      HASHSU
-      93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
-      EQUAL
+      c2 SAVE
+      SAMEALTSAVE
+      0 PUSHINT
+      s1 PUSH
+      SBITS
+      31 GTINT
       <{
-        1 CALLDICT
-        ADD
-        NEWC
-        2 GETGLOBVAR
-        s0 s1 XCHG
-        STREF
-        s0 s1 XCHG
-        s0 s1 XCHG
-        257 PUSHINT
-        STIX
-        ENDC
-        c4 POP
-        RETALT
+        s0 POP
+        s0 PUSH
+        32 PLDU
+      }> PUSHCONT
+      IF
+      s0 s2 XCHG
+      <{
+        2DROP
+        -1 PUSHINT
       }> PUSHCONT
       IFJMP
-      s0 POP
-    }> IFREFELSE
-    130 THROW
+      s0 s1 XCHG
+      0 EQINT
+      <{
+        HASHSU
+        93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
+        EQUAL
+        <{
+          1 CALLDICT
+          ADD
+          -1 PUSHINT
+          RETALT
+        }> PUSHCONT
+        IFJMP
+      }> PUSHCONT
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
+      0 PUSHINT
+    }> CALLREF
+    s0 POP
+    NEWC
+    2 GETGLOBVAR
+    s0 s1 XCHG
+    STREF
+    s0 s1 XCHG
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    c4 POP
 
   1: 
     1000 PUSHINT

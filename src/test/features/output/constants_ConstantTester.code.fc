@@ -11,6 +11,12 @@ tuple __gen_load_ConstantTester() impure inline {
     return null();
 }
 
+() __gen_store_ConstantTester(tuple v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    set_data(b.end_cell());
+}
+
 ;; String "Hello world!"
 slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
 
@@ -80,14 +86,25 @@ _ $__gen_get_globalConst() method_id(116577) {
     return res;
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+(tuple, int) __gen_router_ConstantTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -97,12 +114,14 @@ _ $__gen_get_globalConst() method_id(116577) {
     ;; Load contract data
     var self = __gen_load_ConstantTester();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_ConstantTester(msg_bounced, in_msg);
     
-    throw(130);
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_ConstantTester(self);
 }
 
 _ supported_interfaces() method_id {

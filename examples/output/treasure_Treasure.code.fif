@@ -21,6 +21,7 @@ PROGRAM{
   DECLPROC $__gen_Treasure_receive_Withdraw
   DECLPROC $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
   DECLPROC $__gen_Treasure_receive_ChangeOwner
+  DECLPROC __gen_router_Treasure
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -240,7 +241,7 @@ PROGRAM{
     $__gen_Treasure_requireOwner INLINECALLDICT
     DROP
   }>
-  recv_internal PROC:<{
+  __gen_router_Treasure PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -253,6 +254,48 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    1672521544 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Withdraw INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_Treasure_receive_Withdraw INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    256331011 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_ChangeOwner INLINECALLDICT
+      NIP
+      $__gen_Treasure_receive_ChangeOwner INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      68942673587165287250091431766268285359585855031594722650534428464957340454221 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -267,50 +310,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Treasure INLINECALLDICT
-    s0 s3 XCHG
-    IFJMP:<{
-      3 BLKDROP
-    }>
-    OVER
-    1672521544 PUSHINT
-    EQUAL
-    IFJMP:<{
-      NIP
-      __gen_read_Withdraw INLINECALLDICT
-      1 2 BLKDROP2
-      $__gen_Treasure_receive_Withdraw INLINECALLDICT
-      __gen_store_Treasure INLINECALLDICT
-    }>
-    OVER
-    256331011 PUSHINT
-    EQUAL
-    IFJMP:<{
-      NIP
-      __gen_read_ChangeOwner INLINECALLDICT
-      NIP
-      $__gen_Treasure_receive_ChangeOwner INLINECALLDICT
-      __gen_store_Treasure INLINECALLDICT
-    }>
-    SWAP
-    0 EQINT
-    IF:<{
-      HASHSU
-      68942673587165287250091431766268285359585855031594722650534428464957340454221 PUSHINT
-      EQUAL
-      IFJMP:<{
-        $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
-        __gen_store_Treasure INLINECALLDICT
-        RETALT
-      }>
-      DROP
-    }>ELSE<{
-      2DROP
-    }>
-    130 THROW
+    -ROT
+    __gen_router_Treasure INLINECALLDICT
+    DROP
+    __gen_store_Treasure INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

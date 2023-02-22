@@ -11,6 +11,7 @@ PROGRAM{
   DECLPROC $__gen_Wallet_seqno
   85143 DECLMETHOD $__gen_get_seqno
   DECLPROC $__gen_Wallet_receive_TransferMessage
+  DECLPROC __gen_router_Wallet
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -103,7 +104,7 @@ PROGRAM{
     s0 s4 XCHG
     SENDRAWMSG
   }>
-  recv_internal PROC:<{
+  __gen_router_Wallet PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -114,6 +115,24 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    3548477446 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_TransferMessage INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_Wallet_receive_TransferMessage INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -128,27 +147,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Wallet INLINECALLDICT
-    s0 s5 XCHG
-    IFJMP:<{
-      5 BLKDROP
-    }>
-    s0 s3 XCHG
-    3548477446 PUSHINT
-    EQUAL
-    IFJMP:<{
-      SWAP
-      __gen_read_TransferMessage INLINECALLDICT
-      s2 POP
-      s4 s0 s0 XCHG3
-      $__gen_Wallet_receive_TransferMessage INLINECALLDICT
-      __gen_store_Wallet INLINECALLDICT
-    }>
-    4 BLKDROP
-    130 THROW
+    2 3 BLKSWAP
+    __gen_router_Wallet INLINECALLDICT
+    DROP
+    __gen_store_Wallet INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

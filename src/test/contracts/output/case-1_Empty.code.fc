@@ -18,6 +18,12 @@ tuple __gen_load_Empty() impure inline {
     return null();
 }
 
+() __gen_store_Empty(tuple v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    set_data(b.end_cell());
+}
+
 int $isZero(int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
     var (($m'a, $m'b, $m'c, $m'd)) = $m;
     int $b = ($x + $y);
@@ -43,14 +49,25 @@ _ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
     return res;
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+(tuple, int) __gen_router_Empty(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -60,12 +77,14 @@ _ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
     ;; Load contract data
     var self = __gen_load_Empty();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_Empty(msg_bounced, in_msg);
     
-    throw(130);
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_Empty(self);
 }
 
 _ supported_interfaces() method_id {

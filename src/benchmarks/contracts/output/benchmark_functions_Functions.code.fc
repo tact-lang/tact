@@ -63,14 +63,39 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     return (($self'value), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((int), int) __gen_router_Functions((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Add message
+    if (op == 831841332) {
+        var msg = in_msg~__gen_read_Add();
+        self~$__gen_Functions_receive_Add(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Sub message
+    if (op == 2640337643) {
+        var msg = in_msg~__gen_read_Sub();
+        self~$__gen_Functions_receive_Sub(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -80,28 +105,14 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     ;; Load contract data
     var self = __gen_load_Functions();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_Functions(msg_bounced, in_msg);
     
-    ;; Receive Add message
-    if (op == 831841332) {
-        var msg = in_msg~__gen_read_Add();
-        self~$__gen_Functions_receive_Add(msg);
-        __gen_store_Functions(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    ;; Receive Sub message
-    if (op == 2640337643) {
-        var msg = in_msg~__gen_read_Sub();
-        self~$__gen_Functions_receive_Sub(msg);
-        __gen_store_Functions(self);
-        return ();
-    }
-    
-    throw(130);
+    ;; Persist state
+    __gen_store_Functions(self);
 }
 
 _ supported_interfaces() method_id {

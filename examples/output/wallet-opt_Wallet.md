@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Wallet
-BOC Size: 332 bytes
+BOC Size: 334 bytes
 
 # Types
 Total Types: 4

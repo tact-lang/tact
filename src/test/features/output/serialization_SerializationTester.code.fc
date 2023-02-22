@@ -185,14 +185,38 @@ _ $__gen_get_getI() method_id(91412) {
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((int, int, int, int, int, int, int, int, int), int) __gen_router_SerializationTester((int, int, int, int, int, int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~$__gen_SerializationTester_receive();
+        return (self, true);
+    }
+    
+    ;; Receive Update message
+    if (op == 849061239) {
+        var msg = in_msg~__gen_read_Update();
+        self~$__gen_SerializationTester_receive_Update(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -202,27 +226,14 @@ _ $__gen_get_getI() method_id(91412) {
     ;; Load contract data
     var self = __gen_load_SerializationTester();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_SerializationTester(msg_bounced, in_msg);
     
-    ;; Receive empty message
-    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_SerializationTester_receive();
-        __gen_store_SerializationTester(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    ;; Receive Update message
-    if (op == 849061239) {
-        var msg = in_msg~__gen_read_Update();
-        self~$__gen_SerializationTester_receive_Update(msg);
-        __gen_store_SerializationTester(self);
-        return ();
-    }
-    
-    throw(130);
+    ;; Persist state
+    __gen_store_SerializationTester(self);
 }
 
 _ supported_interfaces() method_id {

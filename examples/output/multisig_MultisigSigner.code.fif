@@ -21,6 +21,7 @@ PROGRAM{
   107262 DECLMETHOD $__gen_get_request
   DECLPROC $__gen_MultisigSigner_receive
   DECLPROC $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
+  DECLPROC __gen_router_MultisigSigner
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -366,7 +367,7 @@ PROGRAM{
     }>
     s0 s9 XCHG
   }>
-  recv_internal PROC:<{
+  __gen_router_MultisigSigner PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -379,6 +380,39 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    0 EQINT
+    OVER
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      $__gen_MultisigSigner_receive INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      15687661268003540618347676322063149294643333469463580674027607086437424345145 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -393,53 +427,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_MultisigSigner INLINECALLDICT
-    s0 s14 XCHG
-    IFJMP:<{
-      14 BLKDROP
-    }>
-    s12 PUSH
-    0 EQINT
-    s12 PUSH
-    SBITS
-    33 LESSINT
-    AND
-    IFJMP:<{
-      s11 POP
-      s11 POP
-      s8 s11 XCHG
-      3 8 BLKSWAP
-      $__gen_MultisigSigner_receive INLINECALLDICT
-      __gen_store_MultisigSigner INLINECALLDICT
-    }>
-    s0 s12 XCHG
-    0 EQINT
-    IF:<{
-      s0 s10 XCHG
-      HASHSU
-      15687661268003540618347676322063149294643333469463580674027607086437424345145 PUSHINT
-      EQUAL
-      IFJMP:<{
-        s8 s11 XCHG
-        s7 s10 XCHG
-        s6 s9 XCHG
-        s5 s8 XCHG
-        s4 s7 XCHG
-        s3 s6 XCHG
-        s5 s1 s3 XCHG3
-        s4 s2 XCHG2
-        $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
-        __gen_store_MultisigSigner INLINECALLDICT
-        RETALT
-      }>
-      12 BLKDROP
-    }>ELSE<{
-      13 BLKDROP
-    }>
-    130 THROW
+    2 12 BLKSWAP
+    __gen_router_MultisigSigner INLINECALLDICT
+    DROP
+    __gen_store_MultisigSigner INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

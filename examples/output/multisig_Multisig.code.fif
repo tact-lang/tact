@@ -29,6 +29,7 @@ PROGRAM{
   104769 DECLMETHOD $__gen_get_members
   DECLPROC $__gen_Multisig_receive_Request
   DECLPROC $__gen_Multisig_receive_Signed
+  DECLPROC __gen_router_Multisig
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -462,7 +463,7 @@ PROGRAM{
     PUSHNULL
     $send INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_Multisig PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -473,6 +474,34 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    4266760323 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Request INLINECALLDICT
+      1 7 BLKDROP2
+      $__gen_Multisig_receive_Request INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    2213172633 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_Signed INLINECALLDICT
+      1 7 BLKDROP2
+      $__gen_Multisig_receive_Signed INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -487,41 +516,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Multisig INLINECALLDICT
-    s0 s6 XCHG
-    IFJMP:<{
-      6 BLKDROP
-    }>
-    s4 PUSH
-    4266760323 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s4 POP
-      s0 s2 XCHG
-      __gen_read_Request INLINECALLDICT
-      s7 POP
-      4 7 REVERSE
-      6 ROLL
-      $__gen_Multisig_receive_Request INLINECALLDICT
-      __gen_store_Multisig INLINECALLDICT
-    }>
-    s0 s4 XCHG
-    2213172633 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s0 s2 XCHG
-      __gen_read_Signed INLINECALLDICT
-      s7 POP
-      4 7 REVERSE
-      6 ROLL
-      $__gen_Multisig_receive_Signed INLINECALLDICT
-      __gen_store_Multisig INLINECALLDICT
-    }>
-    5 BLKDROP
-    130 THROW
+    2 4 BLKSWAP
+    __gen_router_Multisig INLINECALLDICT
+    DROP
+    __gen_store_Multisig INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

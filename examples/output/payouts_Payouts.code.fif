@@ -40,6 +40,7 @@ PROGRAM{
   DECLPROC $__gen_Payouts_receive_comment
   DECLPROC $__gen_Payouts_receive_CanPayoutResponse
   DECLPROC $__gen_Payouts_receive_ChangeOwner
+  DECLPROC __gen_router_Payouts
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -647,7 +648,7 @@ PROGRAM{
     $__gen_Payouts_requireOwner INLINECALLDICT
     NIP
   }>
-  recv_internal PROC:<{
+  __gen_router_Payouts PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -660,6 +661,51 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    4293607646 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_CanPayoutResponse INLINECALLDICT
+      1 3 BLKDROP2
+      $__gen_Payouts_receive_CanPayoutResponse INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    256331011 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_ChangeOwner INLINECALLDICT
+      NIP
+      $__gen_Payouts_receive_ChangeOwner INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      DUP
+      SBITS
+      31 GTINT
+      IFJMP:<{
+        32 PUSHINT
+        SDSKIPFIRST
+        $__gen_Payouts_receive_comment INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+      DROP
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -674,56 +720,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Payouts INLINECALLDICT
-    s0 s4 XCHG
-    IFJMP:<{
-      4 BLKDROP
-    }>
-    s2 PUSH
-    4293607646 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s2 POP
-      __gen_read_CanPayoutResponse INLINECALLDICT
-      s3 POP
-      s3 s4 XCHG
-      ROT
-      $__gen_Payouts_receive_CanPayoutResponse INLINECALLDICT
-      __gen_store_Payouts INLINECALLDICT
-    }>
-    s2 PUSH
-    256331011 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s2 POP
-      __gen_read_ChangeOwner INLINECALLDICT
-      NIP
-      s1 s2 XCHG
-      $__gen_Payouts_receive_ChangeOwner INLINECALLDICT
-      __gen_store_Payouts INLINECALLDICT
-    }>
-    s0 s2 XCHG
-    0 EQINT
-    IF:<{
-      DUP
-      SBITS
-      31 GTINT
-      IFJMP:<{
-        32 PUSHINT
-        SDSKIPFIRST
-        s1 s2 XCHG
-        $__gen_Payouts_receive_comment INLINECALLDICT
-        __gen_store_Payouts INLINECALLDICT
-        RETALT
-      }>
-      3 BLKDROP
-    }>ELSE<{
-      3 BLKDROP
-    }>
-    130 THROW
+    2SWAP
+    __gen_router_Payouts INLINECALLDICT
+    DROP
+    __gen_store_Payouts INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

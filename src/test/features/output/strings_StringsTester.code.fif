@@ -39,6 +39,7 @@ PROGRAM{
   DECLPROC $__gen_StringsTester_processBase64
   128362 DECLMETHOD $__gen_get_processBase64
   DECLPROC $__gen_StringsTester_receive
+  DECLPROC __gen_router_StringsTester
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -575,7 +576,7 @@ PROGRAM{
   }>
   $__gen_StringsTester_receive PROCINLINE:<{
   }>
-  recv_internal PROC:<{
+  __gen_router_StringsTester PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -586,6 +587,24 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    SWAP
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      $__gen_StringsTester_receive INLINECALLDICT
+      TRUE
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -600,26 +619,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_StringsTester INLINECALLDICT
-    s0 s3 XCHG
-    IFJMP:<{
-      3 BLKDROP
-    }>
-    SWAP
-    0 EQINT
-    SWAP
-    SBITS
-    33 LESSINT
-    AND
-    IFJMP:<{
-      $__gen_StringsTester_receive INLINECALLDICT
-      __gen_store_StringsTester INLINECALLDICT
-    }>
+    -ROT
+    __gen_router_StringsTester INLINECALLDICT
     DROP
-    130 THROW
+    __gen_store_StringsTester INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

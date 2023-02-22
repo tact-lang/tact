@@ -150,14 +150,32 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     return ($self, ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+(tuple, int) __gen_router_RandomContract(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~__gen_read_Deploy();
+        self~$__gen_RandomContract_receive_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -167,20 +185,14 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     ;; Load contract data
     var self = __gen_load_RandomContract();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_RandomContract(msg_bounced, in_msg);
     
-    ;; Receive Deploy message
-    if (op == 2490013878) {
-        var msg = in_msg~__gen_read_Deploy();
-        self~$__gen_RandomContract_receive_Deploy(msg);
-        __gen_store_RandomContract(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    throw(130);
+    ;; Persist state
+    __gen_store_RandomContract(self);
 }
 
 _ supported_interfaces() method_id {

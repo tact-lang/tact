@@ -1,17 +1,7 @@
 SETCP0
 (:methods
   recv_internal: 
-    0 PUSHINT
-    s1 PUSH
-    SBITS
-    31 GTINT
-    <{
-      s0 POP
-      s0 PUSH
-      32 PLDU
-    }> PUSHCONT
-    IF
-    s0 s2 XCHG
+    s0 s1 XCHG
     CTOS
     4 LDU
     s0 s1 XCHG
@@ -28,7 +18,7 @@ SETCP0
     s0 s1 XCHG
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -40,79 +30,86 @@ SETCP0
     LDI
     s0 s1 XCHG
     s1 POP
-    s0 s3 XCHG
+    ROTREV
     <{
-      3 BLKDROP
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
-    831841332 PUSHINT
-    EQUAL
-    <{
-      s1 POP
-      32 LDU
-      s0 s1 XCHG
+      0 PUSHINT
+      s1 PUSH
+      SBITS
+      31 GTINT
+      <{
+        s0 POP
+        s0 PUSH
+        32 PLDU
+      }> PUSHCONT
+      IF
+      s0 s2 XCHG
+      <{
+        2DROP
+        -1 PUSHINT
+      }> PUSHCONT
+      IFJMP
+      s1 PUSH
       831841332 PUSHINT
       EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
-      s1 POP
-      55789 PUSHINT
-      s1 PUSH
-      0 GTINT
-      THROWANYIFNOT
       <{
-        ADD
-      }> CALLREF
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
-      ENDC
-      c4 POP
-    }> PUSHCONT
-    IFJMP
-    s0 s1 XCHG
-    2640337643 PUSHINT
-    EQUAL
-    <{
-      32 LDU
+        s1 POP
+        32 LDU
+        s0 s1 XCHG
+        831841332 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+        s1 POP
+        55789 PUSHINT
+        s1 PUSH
+        0 GTINT
+        THROWANYIFNOT
+        <{
+          ADD
+        }> CALLREF
+        -1 PUSHINT
+      }> PUSHCONT
+      IFJMP
       s0 s1 XCHG
       2640337643 PUSHINT
       EQUAL
-      129 THROWIFNOT
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
-      s1 POP
-      55789 PUSHINT
-      s1 PUSH
-      0 GTINT
-      THROWANYIFNOT
-      NEGATE
       <{
-        ADD
-      }> CALLREF
-      NEWC
-      2 GETGLOBVAR
-      s0 s1 XCHG
-      STREF
-      s0 s1 XCHG
-      s0 s1 XCHG
-      257 PUSHINT
-      STIX
-      ENDC
-      c4 POP
-    }> PUSHCONT
-    IFJMP
-    2DROP
-    130 THROW
+        32 LDU
+        s0 s1 XCHG
+        2640337643 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        257 PUSHINT
+        LDI
+        s0 s1 XCHG
+        s1 POP
+        55789 PUSHINT
+        s1 PUSH
+        0 GTINT
+        THROWANYIFNOT
+        NEGATE
+        <{
+          ADD
+        }> CALLREF
+        -1 PUSHINT
+      }> PUSHCONT
+      IFJMP
+      s0 POP
+      0 PUSHINT
+    }> CALLREF
+    s0 POP
+    NEWC
+    2 GETGLOBVAR
+    s0 s1 XCHG
+    STREF
+    s0 s1 XCHG
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    c4 POP
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

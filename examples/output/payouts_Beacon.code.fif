@@ -19,6 +19,7 @@ PROGRAM{
   83229 DECLMETHOD $__gen_get_owner
   DECLPROC $__gen_Beacon_receive_CanPayout
   DECLPROC $__gen_Beacon_receive_bounced
+  DECLPROC __gen_router_Beacon
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -265,7 +266,7 @@ PROGRAM{
     2DROP
     FALSE
   }>
-  recv_internal PROC:<{
+  __gen_router_Beacon PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -276,6 +277,25 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      NIP
+      $__gen_Beacon_receive_bounced INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    3289991647 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_CanPayout INLINECALLDICT
+      NIP
+      $__gen_Beacon_receive_CanPayout INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -290,30 +310,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Beacon INLINECALLDICT
-    s0 s5 XCHG
-    IFJMP:<{
-      s3 POP
-      s3 s3 XCHG2
-      $__gen_Beacon_receive_bounced INLINECALLDICT
-      __gen_store_Beacon INLINECALLDICT
-    }>
-    s0 s3 XCHG
-    3289991647 PUSHINT
-    EQUAL
-    IFJMP:<{
-      SWAP
-      __gen_read_CanPayout INLINECALLDICT
-      NIP
-      s1 s3 XCHG
-      $__gen_Beacon_receive_CanPayout INLINECALLDICT
-      __gen_store_Beacon INLINECALLDICT
-    }>
-    4 BLKDROP
-    130 THROW
+    2 3 BLKSWAP
+    __gen_router_Beacon INLINECALLDICT
+    DROP
+    __gen_store_Beacon INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

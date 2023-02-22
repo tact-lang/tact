@@ -39,26 +39,17 @@ builder __gen_write_Native(builder build_0, (int) v) inline {
     return (($self'value), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((int), int) __gen_router_Native((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    
-    ;; Load contract data
-    var self = __gen_load_Native();
     
     ;; Handle bounced messages
     if (msg_bounced) {
-        return ();
+        return (self, true);
     }
     
     ;; Text Receivers
@@ -68,12 +59,33 @@ builder __gen_write_Native(builder build_0, (int) v) inline {
         ;; Receive "Increment" message
         if (text_op == 0xcdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4) {
             self~$__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4();
-            __gen_store_Native(self);
-            return ();
+            return (self, true);
         }
     }
     
-    throw(130);
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Load contract data
+    var self = __gen_load_Native();
+    
+    ;; Handle operation
+    int handled = self~__gen_router_Native(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_Native(self);
 }
 
 _ supported_interfaces() method_id {

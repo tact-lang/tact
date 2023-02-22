@@ -366,50 +366,38 @@ _ $__gen_get_owner() method_id(83229) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((int, slice, cell, int), int) __gen_router_SampleJetton((int, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    
-    ;; Load contract data
-    var self = __gen_load_SampleJetton();
     
     ;; Handle bounced messages
     if (msg_bounced) {
-        return ();
+        return (self, true);
     }
     
     ;; Receive Mint message
     if (op == 33240155) {
         var msg = in_msg~__gen_read_Mint();
         self~$__gen_SampleJetton_receive_Mint(msg);
-        __gen_store_SampleJetton(self);
-        return ();
+        return (self, true);
     }
     
     ;; Receive TokenUpdateContent message
     if (op == 201882270) {
         var msg = in_msg~__gen_read_TokenUpdateContent();
         self~$__gen_SampleJetton_receive_TokenUpdateContent(msg);
-        __gen_store_SampleJetton(self);
-        return ();
+        return (self, true);
     }
     
     ;; Receive TokenBurnNotification message
     if (op == 2078119902) {
         var msg = in_msg~__gen_read_TokenBurnNotification();
         self~$__gen_SampleJetton_receive_TokenBurnNotification(msg);
-        __gen_store_SampleJetton(self);
-        return ();
+        return (self, true);
     }
     
     ;; Text Receivers
@@ -419,12 +407,33 @@ _ $__gen_get_owner() method_id(83229) {
         ;; Receive "Mint!" message
         if (text_op == 0xcd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2) {
             self~$__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2();
-            __gen_store_SampleJetton(self);
-            return ();
+            return (self, true);
         }
     }
     
-    throw(130);
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Load contract data
+    var self = __gen_load_SampleJetton();
+    
+    ;; Handle operation
+    int handled = self~__gen_router_SampleJetton(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_SampleJetton(self);
 }
 
 _ supported_interfaces() method_id {

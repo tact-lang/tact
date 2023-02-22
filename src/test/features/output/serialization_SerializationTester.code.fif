@@ -24,6 +24,7 @@ PROGRAM{
   91412 DECLMETHOD $__gen_get_getI
   DECLPROC $__gen_SerializationTester_receive
   DECLPROC $__gen_SerializationTester_receive_Update
+  DECLPROC __gen_router_SerializationTester
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -234,7 +235,7 @@ PROGRAM{
     s9 POP
     SWAP
   }>
-  recv_internal PROC:<{
+  __gen_router_SerializationTester PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -245,6 +246,35 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    0 EQINT
+    OVER
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      $__gen_SerializationTester_receive INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    849061239 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_Update INLINECALLDICT
+      1 9 BLKDROP2
+      $__gen_SerializationTester_receive_Update INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -259,48 +289,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_SerializationTester INLINECALLDICT
-    s0 s11 XCHG
-    IFJMP:<{
-      11 BLKDROP
-    }>
-    s9 PUSH
-    0 EQINT
-    s9 PUSH
-    SBITS
-    33 LESSINT
-    AND
-    IFJMP:<{
-      s8 POP
-      s8 POP
-      s5 s8 XCHG
-      3 5 BLKSWAP
-      $__gen_SerializationTester_receive INLINECALLDICT
-      __gen_store_SerializationTester INLINECALLDICT
-    }>
-    s0 s9 XCHG
-    849061239 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s0 s7 XCHG
-      __gen_read_Update INLINECALLDICT
-      s9 POP
-      s14 17 s() XCHG
-      s13 16 s() XCHG
-      s12 s15 XCHG
-      s11 s14 XCHG
-      s10 s13 XCHG
-      s9 s12 XCHG
-      s9 s11 XCHG
-      8 ROLL
-      $__gen_SerializationTester_receive_Update INLINECALLDICT
-      __gen_store_SerializationTester INLINECALLDICT
-    }>
-    10 BLKDROP
-    130 THROW
+    2 9 BLKSWAP
+    __gen_router_SerializationTester INLINECALLDICT
+    DROP
+    __gen_store_SerializationTester INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -1,11 +1,7 @@
 SETCP0
 (:methods
   recv_internal: 
-    s0 PUSH
-    SBITS
-    s1 POP
-    31 GTINT
-    s0 POP
+    s0 s1 XCHG
     CTOS
     4 LDU
     s0 s1 XCHG
@@ -22,7 +18,7 @@ SETCP0
     s0 s1 XCHG
     LDMSGADDR
     s2 PUSH
-    s4 s4 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -49,9 +45,45 @@ SETCP0
     s3 s4 XCHG
     s1 s2 XCHG
     1 5 BLKDROP2
-    5 BLKDROP
-    IFRET
-    130 THROW
+    2 5 BLKSWAP
+    <{
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
+      s0 POP
+      <{
+        -1 PUSHINT
+      }> PUSHCONT
+      IFJMP
+      0 PUSHINT
+    }> CALLREF
+    s0 POP
+    NEWC
+    2 GETGLOBVAR
+    s0 s1 XCHG
+    STREF
+    5 1 BLKSWAP
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s0 s3 XCHG3
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    s0 s1 XCHG
+    STREF
+    ENDC
+    c4 POP
 
   80984: 
     c4 PUSH

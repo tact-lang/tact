@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC $__gen_DDDD_mapData2_addr1
   66206 DECLMETHOD $__gen_get_mapData2_addr1
   DECLPROC $__gen_DDDD_receive
+  DECLPROC __gen_router_DDDD
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -191,7 +192,7 @@ PROGRAM{
     257 PUSHINT
     __tact_dict_set_slice_int CALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_DDDD PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -202,6 +203,24 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    SWAP
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      $__gen_DDDD_receive INLINECALLDICT
+      TRUE
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -216,29 +235,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_DDDD INLINECALLDICT
-    s0 s7 XCHG
-    IFJMP:<{
-      7 BLKDROP
-    }>
-    s0 s5 XCHG
-    0 EQINT
-    s0 s4 XCHG
-    SBITS
-    33 LESSINT
-    s1 s4 XCHG
-    AND
-    IFJMP:<{
-      s3 s3 XCHG2
-      s0 s4 XCHG
-      $__gen_DDDD_receive INLINECALLDICT
-      __gen_store_DDDD INLINECALLDICT
-    }>
-    5 BLKDROP
-    130 THROW
+    2 5 BLKSWAP
+    __gen_router_DDDD INLINECALLDICT
+    DROP
+    __gen_store_DDDD INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

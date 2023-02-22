@@ -499,14 +499,81 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((cell, cell, cell, cell, cell, cell, cell, cell), int) __gen_router_MapTestContract((cell, cell, cell, cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive SetIntMap1 message
+    if (op == 1510253336) {
+        var msg = in_msg~__gen_read_SetIntMap1();
+        self~$__gen_MapTestContract_receive_SetIntMap1(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetIntMap2 message
+    if (op == 1629867766) {
+        var msg = in_msg~__gen_read_SetIntMap2();
+        self~$__gen_MapTestContract_receive_SetIntMap2(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetIntMap3 message
+    if (op == 3613954633) {
+        var msg = in_msg~__gen_read_SetIntMap3();
+        self~$__gen_MapTestContract_receive_SetIntMap3(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetIntMap4 message
+    if (op == 383013829) {
+        var msg = in_msg~__gen_read_SetIntMap4();
+        self~$__gen_MapTestContract_receive_SetIntMap4(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetAddrMap1 message
+    if (op == 1749966413) {
+        var msg = in_msg~__gen_read_SetAddrMap1();
+        self~$__gen_MapTestContract_receive_SetAddrMap1(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetAddrMap2 message
+    if (op == 624157584) {
+        var msg = in_msg~__gen_read_SetAddrMap2();
+        self~$__gen_MapTestContract_receive_SetAddrMap2(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetAddrMap3 message
+    if (op == 4276365062) {
+        var msg = in_msg~__gen_read_SetAddrMap3();
+        self~$__gen_MapTestContract_receive_SetAddrMap3(msg);
+        return (self, true);
+    }
+    
+    ;; Receive SetAddrMap4 message
+    if (op == 1683777913) {
+        var msg = in_msg~__gen_read_SetAddrMap4();
+        self~$__gen_MapTestContract_receive_SetAddrMap4(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -516,76 +583,14 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     ;; Load contract data
     var self = __gen_load_MapTestContract();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_MapTestContract(msg_bounced, in_msg);
     
-    ;; Receive SetIntMap1 message
-    if (op == 1510253336) {
-        var msg = in_msg~__gen_read_SetIntMap1();
-        self~$__gen_MapTestContract_receive_SetIntMap1(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    ;; Receive SetIntMap2 message
-    if (op == 1629867766) {
-        var msg = in_msg~__gen_read_SetIntMap2();
-        self~$__gen_MapTestContract_receive_SetIntMap2(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    ;; Receive SetIntMap3 message
-    if (op == 3613954633) {
-        var msg = in_msg~__gen_read_SetIntMap3();
-        self~$__gen_MapTestContract_receive_SetIntMap3(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    ;; Receive SetIntMap4 message
-    if (op == 383013829) {
-        var msg = in_msg~__gen_read_SetIntMap4();
-        self~$__gen_MapTestContract_receive_SetIntMap4(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    ;; Receive SetAddrMap1 message
-    if (op == 1749966413) {
-        var msg = in_msg~__gen_read_SetAddrMap1();
-        self~$__gen_MapTestContract_receive_SetAddrMap1(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    ;; Receive SetAddrMap2 message
-    if (op == 624157584) {
-        var msg = in_msg~__gen_read_SetAddrMap2();
-        self~$__gen_MapTestContract_receive_SetAddrMap2(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    ;; Receive SetAddrMap3 message
-    if (op == 4276365062) {
-        var msg = in_msg~__gen_read_SetAddrMap3();
-        self~$__gen_MapTestContract_receive_SetAddrMap3(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    ;; Receive SetAddrMap4 message
-    if (op == 1683777913) {
-        var msg = in_msg~__gen_read_SetAddrMap4();
-        self~$__gen_MapTestContract_receive_SetAddrMap4(msg);
-        __gen_store_MapTestContract(self);
-        return ();
-    }
-    
-    throw(130);
+    ;; Persist state
+    __gen_store_MapTestContract(self);
 }
 
 _ supported_interfaces() method_id {

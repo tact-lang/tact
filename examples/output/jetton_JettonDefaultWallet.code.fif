@@ -42,6 +42,7 @@ PROGRAM{
   DECLPROC $__gen_JettonDefaultWallet_receive_TokenTransferInternal
   DECLPROC $__gen_JettonDefaultWallet_receive_TokenBurn
   DECLPROC $__gen_JettonDefaultWallet_receive_bounced
+  DECLPROC __gen_router_JettonDefaultWallet
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -679,7 +680,7 @@ PROGRAM{
     ADD
     s0 s2 XCHG
   }>
-  recv_internal PROC:<{
+  __gen_router_JettonDefaultWallet PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -690,6 +691,45 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      NIP
+      $__gen_JettonDefaultWallet_receive_bounced INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    260734629 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_TokenTransfer INLINECALLDICT
+      1 7 BLKDROP2
+      $__gen_JettonDefaultWallet_receive_TokenTransfer INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    395134233 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_TokenTransferInternal INLINECALLDICT
+      1 6 BLKDROP2
+      $__gen_JettonDefaultWallet_receive_TokenTransferInternal INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    1499400124 PUSHINT
+    EQUAL
+    IFJMP:<{
+      __gen_read_TokenBurn INLINECALLDICT
+      1 4 BLKDROP2
+      $__gen_JettonDefaultWallet_receive_TokenBurn INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -704,57 +744,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_JettonDefaultWallet INLINECALLDICT
-    s0 s5 XCHG
-    IFJMP:<{
-      s3 POP
-      s3 s3 XCHG2
-      $__gen_JettonDefaultWallet_receive_bounced INLINECALLDICT
-      __gen_store_JettonDefaultWallet INLINECALLDICT
-    }>
-    s3 PUSH
-    260734629 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s3 POP
-      SWAP
-      __gen_read_TokenTransfer INLINECALLDICT
-      s7 POP
-      s7 s9 XCHG
-      6 ROLL
-      $__gen_JettonDefaultWallet_receive_TokenTransfer INLINECALLDICT
-      __gen_store_JettonDefaultWallet INLINECALLDICT
-    }>
-    s3 PUSH
-    395134233 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s3 POP
-      SWAP
-      __gen_read_TokenTransferInternal INLINECALLDICT
-      s6 POP
-      s6 s8 XCHG
-      5 ROLL
-      $__gen_JettonDefaultWallet_receive_TokenTransferInternal INLINECALLDICT
-      __gen_store_JettonDefaultWallet INLINECALLDICT
-    }>
-    s0 s3 XCHG
-    1499400124 PUSHINT
-    EQUAL
-    IFJMP:<{
-      SWAP
-      __gen_read_TokenBurn INLINECALLDICT
-      s4 POP
-      s4 s6 XCHG
-      3 ROLL
-      $__gen_JettonDefaultWallet_receive_TokenBurn INLINECALLDICT
-      __gen_store_JettonDefaultWallet INLINECALLDICT
-    }>
-    4 BLKDROP
-    130 THROW
+    2 3 BLKSWAP
+    __gen_router_JettonDefaultWallet INLINECALLDICT
+    DROP
+    __gen_store_JettonDefaultWallet INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

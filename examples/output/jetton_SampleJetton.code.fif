@@ -48,6 +48,7 @@ PROGRAM{
   DECLPROC $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2
   DECLPROC $__gen_SampleJetton_receive_TokenUpdateContent
   DECLPROC $__gen_SampleJetton_receive_TokenBurnNotification
+  DECLPROC __gen_router_SampleJetton
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -578,7 +579,7 @@ PROGRAM{
     }>
     s3 s0 s0 XCHG3
   }>
-  recv_internal PROC:<{
+  __gen_router_SampleJetton PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -591,6 +592,58 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    33240155 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_Mint INLINECALLDICT
+      NIP
+      $__gen_SampleJetton_receive_Mint INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    201882270 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_TokenUpdateContent INLINECALLDICT
+      NIP
+      $__gen_SampleJetton_receive_TokenUpdateContent INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    2078119902 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_TokenBurnNotification INLINECALLDICT
+      1 4 BLKDROP2
+      $__gen_SampleJetton_receive_TokenBurnNotification INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      92748154967237992140665580847895802782213764542359950109876145449566260965554 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -605,69 +658,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_SampleJetton INLINECALLDICT
-    s0 s6 XCHG
-    IFJMP:<{
-      6 BLKDROP
-    }>
-    s4 PUSH
-    33240155 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s4 POP
-      s0 s2 XCHG
-      __gen_read_Mint INLINECALLDICT
-      NIP
-      4 1 REVERSE
-      $__gen_SampleJetton_receive_Mint INLINECALLDICT
-      __gen_store_SampleJetton INLINECALLDICT
-    }>
-    s4 PUSH
-    201882270 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s4 POP
-      s0 s2 XCHG
-      __gen_read_TokenUpdateContent INLINECALLDICT
-      NIP
-      4 1 REVERSE
-      $__gen_SampleJetton_receive_TokenUpdateContent INLINECALLDICT
-      __gen_store_SampleJetton INLINECALLDICT
-    }>
-    s4 PUSH
-    2078119902 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s4 POP
-      s0 s2 XCHG
-      __gen_read_TokenBurnNotification INLINECALLDICT
-      s4 POP
-      4 4 REVERSE
-      3 ROLL
-      $__gen_SampleJetton_receive_TokenBurnNotification INLINECALLDICT
-      __gen_store_SampleJetton INLINECALLDICT
-    }>
-    s0 s4 XCHG
-    0 EQINT
-    IF:<{
-      s0 s2 XCHG
-      HASHSU
-      92748154967237992140665580847895802782213764542359950109876145449566260965554 PUSHINT
-      EQUAL
-      IFJMP:<{
-        s2 s3 XCHG2
-        $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 INLINECALLDICT
-        __gen_store_SampleJetton INLINECALLDICT
-        RETALT
-      }>
-      4 BLKDROP
-    }>ELSE<{
-      5 BLKDROP
-    }>
-    130 THROW
+    2 4 BLKSWAP
+    __gen_router_SampleJetton INLINECALLDICT
+    DROP
+    __gen_store_SampleJetton INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

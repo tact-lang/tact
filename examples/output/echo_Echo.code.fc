@@ -191,14 +191,35 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     return ($self, ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+(tuple, int) __gen_router_Echo(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        if (slice_bits(in_msg) >= 32) {
+            self~$__gen_Echo_receive_comment(in_msg.skip_bits(32));
+            return (self, true);
+        }
+    }
+    
+    ;; Receiver fallback
+    self~$__gen_Echo_receive_fallback(in_msg);
+    return (self, true);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -208,22 +229,13 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     ;; Load contract data
     var self = __gen_load_Echo();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_Echo(msg_bounced, in_msg);
     
-    ;; Text Receivers
-    if (op == 0) {
-        if (slice_bits(in_msg) >= 32) {
-            self~$__gen_Echo_receive_comment(in_msg.skip_bits(32));
-            __gen_store_Echo(self);
-            return ();
-        }
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    ;; Receiver fallback
-    self~$__gen_Echo_receive_fallback(in_msg);
+    ;; Persist state
     __gen_store_Echo(self);
 }
 

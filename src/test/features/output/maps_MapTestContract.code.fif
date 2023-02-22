@@ -77,6 +77,7 @@ PROGRAM{
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap4
   DECLPROC $__gen_MapTestContract_receive_SetAddrMap5
   DECLPROC $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b
+  DECLPROC __gen_router_MapTestContract
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -762,7 +763,7 @@ PROGRAM{
     PUSHNULL
     s0 s4 XCHG
   }>
-  recv_internal PROC:<{
+  __gen_router_MapTestContract PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -775,6 +776,139 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    0 EQINT
+    OVER
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      $__gen_MapTestContract_receive INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1510253336 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetIntMap1 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetIntMap1 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1629867766 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetIntMap2 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetIntMap2 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    3613954633 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetIntMap3 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetIntMap3 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    383013829 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetIntMap4 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetIntMap4 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    240710017 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetIntMap5 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetIntMap5 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1749966413 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetAddrMap1 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetAddrMap1 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    624157584 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetAddrMap2 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetAddrMap2 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    4276365062 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetAddrMap3 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetAddrMap3 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1683777913 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetAddrMap4 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetAddrMap4 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1358519521 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_SetAddrMap5 INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MapTestContract_receive_SetAddrMap5 INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      33891181464710156031034046061755617033497409731940287186959295655538839105307 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -789,219 +923,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_MapTestContract INLINECALLDICT
-    s0 s10 XCHG
-    IFJMP:<{
-      10 BLKDROP
-    }>
-    s8 PUSH
-    0 EQINT
-    s8 PUSH
-    SBITS
-    33 LESSINT
-    AND
-    IFJMP:<{
-      s7 POP
-      s7 POP
-      s4 s7 XCHG
-      3 4 BLKSWAP
-      $__gen_MapTestContract_receive INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    1510253336 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetIntMap1 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetIntMap1 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    1629867766 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetIntMap2 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetIntMap2 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    3613954633 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetIntMap3 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetIntMap3 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    383013829 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetIntMap4 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetIntMap4 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    240710017 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetIntMap5 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetIntMap5 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    1749966413 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetAddrMap1 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetAddrMap1 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    624157584 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetAddrMap2 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetAddrMap2 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    4276365062 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetAddrMap3 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetAddrMap3 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    1683777913 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetAddrMap4 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetAddrMap4 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s8 PUSH
-    1358519521 PUSHINT
-    EQUAL
-    IFJMP:<{
-      s8 POP
-      s0 s6 XCHG
-      __gen_read_SetAddrMap5 INLINECALLDICT
-      s2 POP
-      s6 s9 XCHG
-      s5 s8 XCHG
-      s4 s7 XCHG
-      s3 s6 XCHG
-      s2 s5 XCHG
-      s3 s0 s0 XCHG3
-      $__gen_MapTestContract_receive_SetAddrMap5 INLINECALLDICT
-      __gen_store_MapTestContract INLINECALLDICT
-    }>
-    s0 s8 XCHG
-    0 EQINT
-    IF:<{
-      s0 s6 XCHG
-      HASHSU
-      33891181464710156031034046061755617033497409731940287186959295655538839105307 PUSHINT
-      EQUAL
-      IFJMP:<{
-        s4 s7 XCHG
-        s3 s6 XCHG
-        s5 s3 s3 XCHG3
-        s0 s4 XCHG
-        $__gen_MapTestContract_receive_comment_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b INLINECALLDICT
-        __gen_store_MapTestContract INLINECALLDICT
-        RETALT
-      }>
-      8 BLKDROP
-    }>ELSE<{
-      9 BLKDROP
-    }>
-    130 THROW
+    2 8 BLKSWAP
+    __gen_router_MapTestContract INLINECALLDICT
+    DROP
+    __gen_store_MapTestContract INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

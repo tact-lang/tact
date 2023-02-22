@@ -401,14 +401,31 @@ _ $__gen_get_processBase64(slice $$src) method_id(128362) {
     return ($self, ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+(tuple, int) __gen_router_StringsTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~$__gen_StringsTester_receive();
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -418,19 +435,14 @@ _ $__gen_get_processBase64(slice $$src) method_id(128362) {
     ;; Load contract data
     var self = __gen_load_StringsTester();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_StringsTester(msg_bounced, in_msg);
     
-    ;; Receive empty message
-    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_StringsTester_receive();
-        __gen_store_StringsTester(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    throw(130);
+    ;; Persist state
+    __gen_store_StringsTester(self);
 }
 
 _ supported_interfaces() method_id {

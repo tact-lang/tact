@@ -270,14 +270,39 @@ _ $__gen_get_members() method_id(104769) {
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((int, cell, int, int), int) __gen_router_Multisig((int, cell, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Request message
+    if (op == 4266760323) {
+        var msg = in_msg~__gen_read_Request();
+        self~$__gen_Multisig_receive_Request(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Signed message
+    if (op == 2213172633) {
+        var msg = in_msg~__gen_read_Signed();
+        self~$__gen_Multisig_receive_Signed(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -287,28 +312,14 @@ _ $__gen_get_members() method_id(104769) {
     ;; Load contract data
     var self = __gen_load_Multisig();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_Multisig(msg_bounced, in_msg);
     
-    ;; Receive Request message
-    if (op == 4266760323) {
-        var msg = in_msg~__gen_read_Request();
-        self~$__gen_Multisig_receive_Request(msg);
-        __gen_store_Multisig(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    ;; Receive Signed message
-    if (op == 2213172633) {
-        var msg = in_msg~__gen_read_Signed();
-        self~$__gen_Multisig_receive_Signed(msg);
-        __gen_store_Multisig(self);
-        return ();
-    }
-    
-    throw(130);
+    ;; Persist state
+    __gen_store_Multisig(self);
 }
 
 _ supported_interfaces() method_id {

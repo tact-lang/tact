@@ -23,6 +23,7 @@ PROGRAM{
   DECLPROC $__gen_B_getNext
   74105 DECLMETHOD $__gen_get_getNext
   DECLPROC $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
+  DECLPROC __gen_router_B
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -372,7 +373,7 @@ PROGRAM{
     s0 s3 s4 XCHG3
     $send INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_B PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -385,6 +386,28 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      81463308115887082732985988965814941212607499737973399264699107294340141092189 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -399,30 +422,14 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_B INLINECALLDICT
-    s0 s3 XCHG
-    IFJMP:<{
-      3 BLKDROP
-    }>
-    SWAP
-    0 EQINT
-    IF:<{
-      HASHSU
-      81463308115887082732985988965814941212607499737973399264699107294340141092189 PUSHINT
-      EQUAL
-      IFJMP:<{
-        $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
-        __gen_store_B INLINECALLDICT
-        RETALT
-      }>
-      DROP
-    }>ELSE<{
-      2DROP
-    }>
-    130 THROW
+    -ROT
+    __gen_router_B INLINECALLDICT
+    DROP
+    __gen_store_B INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

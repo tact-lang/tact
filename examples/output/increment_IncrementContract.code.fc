@@ -296,14 +296,60 @@ _ $__gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+((cell, cell, cell, cell, cell), int) __gen_router_IncrementContract((cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Increment message
+    if (op == 537284411) {
+        var msg = in_msg~__gen_read_Increment();
+        self~$__gen_IncrementContract_receive_Increment(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Toggle message
+    if (op == 1081595080) {
+        var msg = in_msg~__gen_read_Toggle();
+        self~$__gen_IncrementContract_receive_Toggle(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Persist message
+    if (op == 3801943978) {
+        var msg = in_msg~__gen_read_Persist();
+        self~$__gen_IncrementContract_receive_Persist(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Reset message
+    if (op == 1718153138) {
+        var msg = in_msg~__gen_read_Reset();
+        self~$__gen_IncrementContract_receive_Reset(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~__gen_read_Deploy();
+        self~$__gen_IncrementContract_receive_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
@@ -313,52 +359,14 @@ _ $__gen_get_counters2() method_id(77570) {
     ;; Load contract data
     var self = __gen_load_IncrementContract();
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return ();
-    }
+    ;; Handle operation
+    int handled = self~__gen_router_IncrementContract(msg_bounced, in_msg);
     
-    ;; Receive Increment message
-    if (op == 537284411) {
-        var msg = in_msg~__gen_read_Increment();
-        self~$__gen_IncrementContract_receive_Increment(msg);
-        __gen_store_IncrementContract(self);
-        return ();
-    }
+    ;; Throw if not handled
+    throw_unless(handled, 130);
     
-    ;; Receive Toggle message
-    if (op == 1081595080) {
-        var msg = in_msg~__gen_read_Toggle();
-        self~$__gen_IncrementContract_receive_Toggle(msg);
-        __gen_store_IncrementContract(self);
-        return ();
-    }
-    
-    ;; Receive Persist message
-    if (op == 3801943978) {
-        var msg = in_msg~__gen_read_Persist();
-        self~$__gen_IncrementContract_receive_Persist(msg);
-        __gen_store_IncrementContract(self);
-        return ();
-    }
-    
-    ;; Receive Reset message
-    if (op == 1718153138) {
-        var msg = in_msg~__gen_read_Reset();
-        self~$__gen_IncrementContract_receive_Reset(msg);
-        __gen_store_IncrementContract(self);
-        return ();
-    }
-    
-    ;; Receive Deploy message
-    if (op == 2490013878) {
-        var msg = in_msg~__gen_read_Deploy();
-        self~$__gen_IncrementContract_receive_Deploy(msg);
-        __gen_store_IncrementContract(self);
-        return ();
-    }
-    
-    throw(130);
+    ;; Persist state
+    __gen_store_IncrementContract(self);
 }
 
 _ supported_interfaces() method_id {

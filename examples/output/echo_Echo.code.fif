@@ -20,6 +20,7 @@ PROGRAM{
   115554 DECLMETHOD $__gen_get_hello
   DECLPROC $__gen_Echo_receive_comment
   DECLPROC $__gen_Echo_receive_fallback
+  DECLPROC __gen_router_Echo
   DECLPROC recv_internal
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -316,7 +317,7 @@ PROGRAM{
     $__gen_Slice_asCell INLINECALLDICT
     $reply INLINECALLDICT
   }>
-  recv_internal PROC:<{
+  __gen_router_Echo PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -329,6 +330,29 @@ PROGRAM{
       32 PLDU
     }>
     s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      DUP
+      SBITS
+      31 GTINT
+      IFJMP:<{
+        32 PUSHINT
+        SDSKIPFIRST
+        $__gen_Echo_receive_comment INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>
+    $__gen_Echo_receive_fallback INLINECALLDICT
+    TRUE
+  }>
+  recv_internal PROC:<{
+    SWAP
     CTOS
     4 LDU
     SWAP
@@ -343,29 +367,13 @@ PROGRAM{
     SWAP
     LDMSGADDR
     s2 PUSH
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_Echo INLINECALLDICT
-    s0 s3 XCHG
-    IFJMP:<{
-      3 BLKDROP
-    }>
-    SWAP
-    0 EQINT
-    IF:<{
-      DUP
-      SBITS
-      31 GTINT
-      IFJMP:<{
-        32 PUSHINT
-        SDSKIPFIRST
-        $__gen_Echo_receive_comment INLINECALLDICT
-        __gen_store_Echo INLINECALLDICT
-        RETALT
-      }>
-    }>
-    $__gen_Echo_receive_fallback INLINECALLDICT
+    -ROT
+    __gen_router_Echo INLINECALLDICT
+    DROP
     __gen_store_Echo INLINECALLDICT
   }>
   supported_interfaces PROC:<{
