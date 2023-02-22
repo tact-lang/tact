@@ -1,11 +1,11 @@
 import { contractErrors } from "../../abi/errors";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
-import { TypeDescription } from "../../types/types";
+import { getType } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
-import { resolveFuncType } from "./resolveFuncType";
-import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
+import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
+import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 
 const SMALL_STRUCT_MAX_FIELDS = 5;
 
@@ -13,15 +13,15 @@ const SMALL_STRUCT_MAX_FIELDS = 5;
 // Serializer
 //
 
-export function writeSerializer(name: string, type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
+export function writeSerializer(name: string, forceInline: boolean, allocation: StorageAllocation, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
     ctx.fun(ops.writer(name, ctx), () => {
-        let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
-        ctx.append(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncType(type, ctx)} v) ${modifier} {`);
+        let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
+        ctx.append(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) ${modifier} {`);
         ctx.inIndent(() => {
-            ctx.append(`var ${resolveFuncTypeUnpack(type, `v`, ctx)} = v;`)
+            ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
             if (allocation.header) {
                 ctx.append(`build_0 = store_uint(build_0, ${allocation.header.value}, ${allocation.header.bits});`);
             }
@@ -34,7 +34,7 @@ export function writeSerializer(name: string, type: TypeDescription, allocation:
     // Write to cell
     ctx.fun(ops.writerCell(name, ctx), () => {
         ctx.write(`
-            cell ${ops.writerCell(name, ctx)}(${resolveFuncType(type, ctx)} v) inline {
+            cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) inline {
                 return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();
             }
         `);
@@ -176,7 +176,8 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
             ctx.used(`__gen_${op.type}_not_null`);
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type, ctx)}( __gen_${op.type}_not_null(${fieldName})) : build_${gen}.store_int(false, 1);`);
         } else {
-            ctx.append(`build_${gen} = ${ops.writer(op.type, ctx)}(build_${gen}, ${resolveFuncTypeUnpack(op.type, fieldName, ctx)});`);
+            let ff = getType(ctx.ctx, op.type).fields.map((f) => f.abi);
+            ctx.append(`build_${gen} = ${ops.writer(op.type, ctx)}(build_${gen}, ${resolveFuncTypeFromAbiUnpack(fieldName, ff, ctx)});`);
         }
         return;
     }
@@ -188,12 +189,12 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 // Parser
 //
 
-export function writeParser(name: string, type: TypeDescription, allocation: StorageAllocation, ctx: WriterContext) {
+export function writeParser(name: string, forceInline: boolean, allocation: StorageAllocation, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(`__gen_read_${name}`, () => {
-        let modifier = (type.kind === 'struct' && !isSmall) ? 'inline_ref' : 'inline';
-        ctx.append(`(slice, (${resolveFuncType(type, ctx)})) __gen_read_${name}(slice sc_0) ${modifier} {`);
+        let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
+        ctx.append(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) __gen_read_${name}(slice sc_0) ${modifier} {`);
         ctx.inIndent(() => {
 
             // Check prefix
@@ -205,7 +206,7 @@ export function writeParser(name: string, type: TypeDescription, allocation: Sto
             writeCellParser(allocation.root, 0, ctx);
 
             // Compile tuple
-            ctx.append(`return (sc_0, (${type.fields.map((v) => `v'${v.name}`).join(', ')}));`);
+            ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
         });
         ctx.append("}");
     });
@@ -362,49 +363,4 @@ function writeFieldParser(f: AllocationOperation, gen: number, ctx: WriterContex
     }
 
     throw Error('Unsupported field kind: ' + op.kind);
-}
-
-//
-// Storage
-//
-
-export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
-
-    // Load function
-    ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline {`); // NOTE: Inline function
-        ctx.inIndent(() => {
-
-            // Load data slice
-            ctx.append(`slice sc = get_data().begin_parse();`);
-
-            // Load context
-            ctx.used(`__tact_context`);
-            ctx.append(`__tact_context_sys = sc~load_ref();`);
-
-            // Load data
-            ctx.used(`__gen_read_${type.name}`);
-            ctx.append(`return sc~__gen_read_${type.name}();`);
-        });
-        ctx.append(`}`);
-    });
-
-    // Store function
-    ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline {`); // NOTE: Impure inline function
-        ctx.inIndent(() => {
-            ctx.append(`builder b = begin_cell();`);
-
-            // Persist system cell
-            ctx.used(`__tact_context`);
-            ctx.append(`b = b.store_ref(__tact_context_sys);`);
-
-            // Build data
-            ctx.append(`b = ${ops.writer(type.name, ctx)}(b, v);`);
-
-            // Persist data
-            ctx.append(`set_data(b.end_cell());`);
-        });
-        ctx.append(`}`);
-    });
 }

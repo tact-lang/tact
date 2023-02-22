@@ -1,9 +1,9 @@
 import { CompilerContext } from "../context";
-import { getAllocation, getAllocations } from "../storage/resolveAllocation";
+import { getAllocations } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes, getType } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { WriterContext } from "./Writer";
-import { writeParser, writeSerializer, writeStorageOps } from "./writers/writeSerialization";
+import { writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { beginCell, ContractABI } from "ton-core";
@@ -16,6 +16,49 @@ import { writeString } from './writers/writeString';
 import { fn, id } from "./writers/id";
 import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
 import { getRawAST } from "../grammar/store";
+import { resolveFuncType } from "./writers/resolveFuncType";
+import { ops } from "./writers/ops";
+
+function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
+
+    // Load function
+    ctx.fun(`__gen_load_${type.name}`, () => {
+        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() inline {`); // NOTE: Inline function
+        ctx.inIndent(() => {
+
+            // Load data slice
+            ctx.append(`slice sc = get_data().begin_parse();`);
+
+            // Load context
+            ctx.used(`__tact_context`);
+            ctx.append(`__tact_context_sys = sc~load_ref();`);
+
+            // Load data
+            ctx.used(`__gen_read_${type.name}`);
+            ctx.append(`return sc~__gen_read_${type.name}();`);
+        });
+        ctx.append(`}`);
+    });
+
+    // Store function
+    ctx.fun(`__gen_store_${type.name}`, () => {
+        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline {`); // NOTE: Impure inline function
+        ctx.inIndent(() => {
+            ctx.append(`builder b = begin_cell();`);
+
+            // Persist system cell
+            ctx.used(`__tact_context`);
+            ctx.append(`b = b.store_ref(__tact_context_sys);`);
+
+            // Build data
+            ctx.append(`b = ${ops.writer(type.name, ctx)}(b, v);`);
+
+            // Persist data
+            ctx.append(`set_data(b.end_cell());`);
+        });
+        ctx.append(`}`);
+    });
+}
 
 function writeInitContract(type: TypeDescription, ctx: WriterContext) {
     // Main field
@@ -278,8 +321,8 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     // Serializators
     let allocations = getAllocations(ctx);
     for (let k of allocations) {
-        writeSerializer(k.type.name, k.type, k.allocation, wctx);
-        writeParser(k.type.name, k.type, k.allocation, wctx);
+        writeSerializer(k.type.name, k.type.kind === 'contract', k.allocation, wctx);
+        writeParser(k.type.name, k.type.kind === 'contract', k.allocation, wctx);
     }
 
     // Accessors
