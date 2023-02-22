@@ -13,7 +13,7 @@ export function getOperationSize(src: AllocationOperationType): { bits: number, 
         return { bits: 1 + (src.optional ? 1 : 0), refs: 0 };
     } else if (src.kind === 'address') {
         return { bits: 267, refs: 0 };
-    } else if (src.kind === 'cell' || src.kind === 'slice') {
+    } else if (src.kind === 'cell' || src.kind === 'slice' || src.kind === 'builder') {
         if (src.format === 'default') {
             if (src.optional) {
                 return { bits: 1, refs: 1 };
@@ -125,6 +125,14 @@ export function getAllocationOperationFromField(src: ABITypeRef, structLoader: (
                 throw Error('Unsupported slice format ' + src.format);
             }
             return { kind: 'slice', optional: src.optional ? src.optional : false, format: 'default' };
+        }
+        if (src.type === 'builder') {
+            if (src.format === 'remainder') {
+                return { kind: 'builder', optional: src.optional ? src.optional : false, format: 'remainder' };
+            } else if (src.format !== null && src.format !== undefined) {
+                throw Error('Unsupported slice format ' + src.format);
+            }
+            return { kind: 'builder', optional: src.optional ? src.optional : false, format: 'default' };
         }
         if (src.type === 'address') {
             return { kind: 'address', optional: src.optional ? src.optional : false };

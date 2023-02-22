@@ -41,6 +41,10 @@ export type AllocationOperationType = {
     optional: boolean,
     format: 'default' | 'remainder'
 } | {
+    kind: 'builder',
+    optional: boolean,
+    format: 'default' | 'remainder'
+} | {
     kind: 'map'
 } | {
     kind: 'string',

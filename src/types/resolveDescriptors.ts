@@ -10,17 +10,6 @@ import { resolveABIType } from "./resolveABITypeRef";
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
 let staticConstantsStore = createContextStore<ConstantDescription>();
-let allowedPrimitiveFields: { [key: string]: boolean } = {
-    ['Int']: true,
-    ['Bool']: true,
-    ['Cell']: true,
-    ['Slice']: true,
-    ['Address']: true,
-
-    ['String']: false,
-    ['StringBuilder']: false,
-    ['Builder']: false,
-}
 
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
@@ -191,15 +180,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
         let tr = buildTypeRef(src.type, types);
-
-        if (tr.kind === 'ref') {
-            let tt = types[tr.name];
-            if (tt.kind === 'primitive') {
-                if (!allowedPrimitiveFields[tt.name]) {
-                    throwError(`${tt.name} is not allowed to be used as field`, src.ref);
-                }
-            }
-        }
 
         // Resolve default value
         let d: bigint | boolean | string | null | undefined = undefined;

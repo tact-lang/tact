@@ -50,9 +50,23 @@ export function resolveSignatures(ctx: CompilerContext) {
             } else if (format === 'ref') {
                 return '^slice';
             } else if (format !== null) {
-                throw Error('Unsupported cell format ' + format);
+                throw Error('Unsupported slice format ' + format);
             }
             return '^slice';
+        } else if (type === 'builder') {
+            if (format === 'remainder') {
+                return 'remainder<builder>';
+            } else if (format === 'ref') {
+                return '^slice';
+            } else if (format !== null) {
+                throw Error('Unsupported builder format ' + format);
+            }
+            return '^builder';
+        } else if (type === 'string') {
+            if (format !== null) {
+                throw Error('Unsupported builder format ' + format);
+            }
+            return '^string';
         } else if (type === 'fixed-bytes') {
             if (typeof format === 'number') {
                 return `fixed_bytes${format}`;

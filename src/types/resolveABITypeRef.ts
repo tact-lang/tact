@@ -34,6 +34,10 @@ const sliceFormats: FormatDef = {
     'bytes64': { type: 'fixed-bytes', format: 64 }
 }
 
+const builderFormats: FormatDef = {
+    'remaining': { type: 'builder', format: 'remainder' }
+}
+
 export function resolveABIType(src: ASTField): ABITypeRef {
     if (src.type.kind === 'type_ref_simple') {
 
@@ -79,6 +83,18 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             }
             return { kind: 'simple', type: 'slice', optional: src.type.optional };
         }
+        if (src.type.name === 'Builder') {
+            if (src.as) {
+                if (src.as) {
+                    let fmt = builderFormats[src.as];
+                    if (!fmt) {
+                        throwError(`Unsupported format ${src.as}`, src.ref);
+                    }
+                    return { kind: 'simple', type: fmt.type, optional: src.type.optional, format: fmt.format };
+                }
+            }
+            return { kind: 'simple', type: 'builder', optional: src.type.optional };
+        }
         if (src.type.name === 'Address') {
             if (src.as) {
                 throwError(`Unsupported format ${src.as}`, src.ref);
@@ -91,7 +107,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
             }
             return { kind: 'simple', type: 'string', optional: src.type.optional };
         }
-        if (src.type.name === 'StringBuilder' || src.type.name === 'Builder') {
+        if (src.type.name === 'StringBuilder') {
             throwError(`Unsupported type ${src.type.name}`, src.ref);
         }
 
@@ -172,13 +188,16 @@ export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
         if (src.name === 'Slice') {
             return { kind: 'simple', type: 'slice', optional: src.optional };
         }
+        if (src.name === 'Builder') {
+            return { kind: 'simple', type: 'builder', optional: src.optional };
+        }
         if (src.name === 'Address') {
             return { kind: 'simple', type: 'address', optional: src.optional };
         }
         if (src.name === 'String') {
             return { kind: 'simple', type: 'string', optional: src.optional };
         }
-        if (src.name === 'StringBuilder' || src.name === 'Builder') {
+        if (src.name === 'StringBuilder') {
             throw Error(`Unsupported type ${src.name}`);
         }
 

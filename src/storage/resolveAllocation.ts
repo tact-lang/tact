@@ -74,7 +74,7 @@ export function resolveAllocations(ctx: CompilerContext) {
             ops.push({
                 name: f.name,
                 type: f.abi.type,
-                op: getAllocationOperationFromField(f.abi.type, (name) => store.get(ctx, name)!.size)
+                op: getAllocationOperationFromField(f.abi.type, (name) => getAllocation(ctx, name)!.size)
             });
         }
 
@@ -115,7 +115,7 @@ export function resolveAllocations(ctx: CompilerContext) {
                 ops.push({
                     name: f.name,
                     type: abiType,
-                    op: getAllocationOperationFromField(abiType, (name) => store.get(ctx, name)!.size)
+                    op: getAllocationOperationFromField(abiType, (name) => getAllocation(ctx, name)!.size)
                 });
             }
 

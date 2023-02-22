@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow contracts without fields
 - Typescript bindings are now working in browser and doesn't have `ton-emulator` dependency
 
+## Added
+- Allow `Builder` type as a field type similar to `Cell` and `Slice`
+- Allow `String` type as a field type
+
 ## [0.9.3] - 2023-02-19
 
 ## Added

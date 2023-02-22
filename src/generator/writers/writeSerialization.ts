@@ -151,6 +151,23 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
         }
         return;
     }
+    if (op.kind === 'builder') {
+        if (op.format === 'default') {
+            if (op.optional) {
+                ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}.end_cell().begin_parse()).end_cell()) : build_${gen}.store_int(false, 1);`);
+            } else {
+                ctx.append(`build_${gen} = build_${gen}.store_ref(begin_cell().store_slice(${fieldName}.end_cell().begin_parse()).end_cell());`);
+            }
+        } else if (op.format === 'remainder') {
+            if (op.optional) {
+                throw Error('Impossible');
+            }
+            ctx.append(`build_${gen} = build_${gen}.store_slice(${fieldName}.end_cell().begin_parse());`);
+        } else {
+            throw Error('Impossible');
+        }
+        return;
+    }
     if (op.kind === 'string') {
         if (op.optional) {
             ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_ref(begin_cell().store_slice(${fieldName}).end_cell()) : build_${gen}.store_int(false, 1);`);
@@ -320,6 +337,23 @@ function writeFieldParser(f: AllocationOperation, gen: number, ctx: WriterContex
                 ctx.append(`${varName} = sc_${gen}~load_ref().begin_parse();`);
             } else if (op.format === 'remainder') {
                 ctx.append(`${varName} = sc_${gen};`);
+            } else {
+                throw new Error(`Impossible`);
+            }
+        }
+        return;
+    }
+    if (op.kind === 'builder') {
+        if (op.optional) {
+            if (op.format !== 'default') {
+                throw new Error(`Impossible`);
+            }
+            ctx.append(`${varName} = sc_${gen}~load_int(1) ? begin_cell().store_slice(sc_${gen}~load_ref().begin_parse()) : null();`);
+        } else {
+            if (op.format === 'default') {
+                ctx.append(`${varName} = begin_cell().store_slice(sc_${gen}~load_ref().begin_parse());`);
+            } else if (op.format === 'remainder') {
+                ctx.append(`${varName} = begin_cell().store_slice(sc_${gen});`);
             } else {
                 throw new Error(`Impossible`);
             }

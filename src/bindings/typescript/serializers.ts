@@ -236,7 +236,7 @@ let addressSerializer: Serializer<{ optional: boolean }> = {
     }
 };
 
-let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = {
+let cellSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder', optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
             return 'Cell | null';
@@ -268,13 +268,15 @@ let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = 
     tsStoreTuple(v, to, field, w) {
         if (v.kind === 'cell') {
             w.append(`${to}.writeCell(${field});`);
-        } else {
+        } else if (v.kind === 'slice') {
             w.append(`${to}.writeSlice(${field});`);
+        } else {
+            w.append(`${to}.writeBuilder(${field});`);
         }
     },
     abiMatcher(src) {
         if (src.kind === 'simple') {
-            if (src.type === 'cell' || src.type === 'slice') {
+            if (src.type === 'cell' || src.type === 'slice' || src.type === 'builder') {
                 if (src.format === null || src.format === undefined || src.format === 'ref') {
                     return { optional: src.optional ? src.optional : false, kind: src.type };
                 }
@@ -284,7 +286,7 @@ let cellSerializer: Serializer<{ kind: 'cell' | 'slice', optional: boolean }> = 
     }
 }
 
-let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
+let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' | 'builder' }> = {
     tsType(v) {
         return 'Cell';
     },
@@ -300,13 +302,15 @@ let remainderSerializer: Serializer<{ kind: 'cell' | 'slice' }> = {
     tsStoreTuple(v, to, field, w) {
         if (v.kind === 'cell') {
             w.append(`${to}.writeCell(${field});`);
-        } else {
+        } else if (v.kind === 'slice') {
             w.append(`${to}.writeSlice(${field});`);
+        } else {
+            w.append(`${to}.writeBuilder(${field});`);
         }
     },
     abiMatcher(src) {
         if (src.kind === 'simple') {
-            if (src.type === 'cell' || src.type === 'slice') {
+            if (src.type === 'cell' || src.type === 'slice' || src.type === 'builder') {
                 if (src.format === 'remainder') {
                     return { kind: src.type };
                 }

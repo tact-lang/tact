@@ -93,6 +93,14 @@
       }
     },
     {
+      "name": "serialization-3",
+      "path": "./src/test/features/serialization-3.tact",
+      "output": "./src/test/features/output",
+      "parameters": {
+        "debug": true
+      }
+    },
+    {
       "name": "strings",
       "path": "./src/test/features/strings.tact",
       "output": "./src/test/features/output",
