@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type Add = {
     $$type: 'Add';
     value: bigint;
@@ -226,6 +228,7 @@ function dictValueParserAdd(): DictionaryValue<Add> {
         }
     }
 }
+
 export type Sub = {
     $$type: 'Sub';
     value: bigint;
@@ -267,29 +270,26 @@ function dictValueParserSub(): DictionaryValue<Sub> {
         }
     }
 }
+
+ type Functions_init_args = {
+    $$type: 'Functions_init_args';
+}
+
+function initFunctions_init_args(src: Functions_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+    };
+}
+
 async function Functions_init() {
-    const __init = 'te6ccgEBBAEAIwABFP8A9KQT9LzyyAsBAgFiAgMAAtAAF6FK3ZGY4AOUANphkw==';
-    const __code = 'te6ccgECBwEAAQ8AART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQEBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAAJwAthwIddJwh+VMCDXCx/eApJbf+AhghAxlOQ0uo6hMdMfAYIQMZTkNLry4IGBAQHXAAExggDZ7SHCAPL02zx/4AGCEJ1gWuu6jqHTHwGCEJ1gWuu68uCBgQEB1wABMYIA2e0hwgDy9KPbPH/gMHAGBgACoA==';
-    const __system = 'te6cckECCQEAARkAAQHAAQEFoARPAgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQIBgLYcCHXScIflTAg1wsf3gKSW3/gIYIQMZTkNLqOoTHTHwGCEDGU5DS68uCBgQEB1wABMYIA2e0hwgDy9Ns8f+ABghCdYFrruo6h0x8BghCdYFrruvLggYEBAdcAATGCANntIcIA8vSj2zx/4DBwBwcAAqAAAnCmcAM2';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (Functions_errors[res.exitCode]) {
-            throw new ComputeError(Functions_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECBwEAAQ8AART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQEBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAAJwAthwIddJwh+VMCDXCx/eApJbf+AhghAxlOQ0uo6hMdMfAYIQMZTkNLry4IGBAQHXAAExggDZ7SHCAPL02zx/4AGCEJ1gWuu6jqHTHwGCEJ1gWuu68uCBgQEB1wABMYIA2e0hwgDy9KPbPH/gMHAGBgACoA==');
+    const __system = Cell.fromBase64('te6cckECCQEAARkAAQHAAQEFoARPAgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQIBgLYcCHXScIflTAg1wsf3gKSW3/gIYIQMZTkNLqOoTHTHwGCEDGU5DS68uCBgQEB1wABMYIA2e0hwgDy9Ns8f+ABghCdYFrruo6h0x8BghCdYFrruvLggYEBAdcAATGCANntIcIA8vSj2zx/4DBwBwcAAqAAAnCmcAM2');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initFunctions_init_args({ $$type: 'Functions_init_args' })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const Functions_errors: { [key: number]: { message: string } } = {

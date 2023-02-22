@@ -48,13 +48,9 @@ export async function build(project: ConfigProject, rootPath: string) {
     let built: {
         [key: string]: {
             codeBoc: Buffer,
-            initBoc: Buffer,
             codeFunc: string,
-            initFunc: string,
             codeFift: string,
-            initFift: string,
             codeFiftDecompiled: string,
-            initFiftDecompiled: string,
             abi: string
         }
     } = {};
@@ -66,11 +62,6 @@ export async function build(project: ConfigProject, rootPath: string) {
         let pathCodeFif = path.resolve(outputPath, project.name + '_' + contract + ".code.fif");
         let pathCodeFifDec = path.resolve(outputPath, project.name + '_' + contract + ".code.rev.fif");
 
-        let pathInitFc = path.resolve(outputPath, project.name + '_' + contract + ".init.fc");
-        let pathInitBoc = path.resolve(outputPath, project.name + '_' + contract + ".init.boc");
-        let pathInitFif = path.resolve(outputPath, project.name + '_' + contract + ".init.fif");
-        let pathInitFifDec = path.resolve(outputPath, project.name + '_' + contract + ".init.rev.fif");
-
         // Compiling contract to func
         console.log('   > ' + contract + ': tact compiler');
         let abi: string;
@@ -79,7 +70,6 @@ export async function build(project: ConfigProject, rootPath: string) {
         try {
             let res = await compile(ctx, contract);
             fs.writeFileSync(pathCodeFc, res.output.output, 'utf-8');
-            fs.writeFileSync(pathInitFc, res.output.initOutput, 'utf-8');
             fs.writeFileSync(pathAbi, res.output.abi, 'utf-8');
             abi = res.output.abi;
             codeFunc = res.output.output;
@@ -95,8 +85,6 @@ export async function build(project: ConfigProject, rootPath: string) {
         console.log('   > ' + contract + ': func compiler');
         let codeBoc: Buffer;
         let codeFift: string;
-        let initBoc: Buffer;
-        let initFift: string;
         try {
             let c = await funcCompile(pathCodeFc);
             if (!c.ok) {
@@ -104,20 +92,10 @@ export async function build(project: ConfigProject, rootPath: string) {
                 ok = false;
                 continue;
             }
-            let c2 = await funcCompile(pathInitFc);
-            if (!c2.ok) {
-                console.warn(c2.log);
-                ok = false;
-                continue;
-            }
             fs.writeFileSync(pathCodeFif, c.fift, 'utf-8');
             fs.writeFileSync(pathCodeBoc, c.output);
-            fs.writeFileSync(pathInitFif, c2.fift, 'utf-8');
-            fs.writeFileSync(pathInitBoc, c2.output);
             codeFift = c.fift;
             codeBoc = c.output;
-            initFift = c2.fift;
-            initBoc = c2.output;
         } catch (e) {
             console.warn('FunC compiler crashed');
             console.warn(e);
@@ -128,12 +106,9 @@ export async function build(project: ConfigProject, rootPath: string) {
         // Fift decompiler for generated code debug
         console.log('   > ' + contract + ': fift decompiler');
         let codeFiftDecompiled: string;
-        let initFiftDecompiled: string;
         try {
             codeFiftDecompiled = fromBoc(codeBoc);
-            initFiftDecompiled = fromBoc(initBoc);
             fs.writeFileSync(pathCodeFifDec, codeFiftDecompiled, 'utf-8');
-            fs.writeFileSync(pathInitFifDec, initFiftDecompiled, 'utf-8');
         } catch (e) {
             console.warn('Fift decompiler crashed');
             console.warn(e);
@@ -147,10 +122,6 @@ export async function build(project: ConfigProject, rootPath: string) {
             codeBoc,
             codeFift,
             codeFiftDecompiled,
-            initFunc,
-            initBoc,
-            initFift,
-            initFiftDecompiled,
             abi
         };
     }
@@ -191,7 +162,6 @@ export async function build(project: ConfigProject, rootPath: string) {
             abi: artifacts.abi,
             code: artifacts.codeBoc.toString('base64'),
             init: {
-                code: artifacts.initBoc.toString('base64'),
                 args: getType(ctx, contract).init!.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type) })),
                 deployment: {
                     kind: 'system-cell',
@@ -218,16 +188,10 @@ export async function build(project: ConfigProject, rootPath: string) {
             return false;
         }
         try {
-            let bindingsServer = writeTypescript(JSON.parse(pkg.abi), 'server', { code: pkg.code, initCode: pkg.init.code, system: pkg.init.deployment.system, args: pkg.init.args });
-            let bindingsClient = writeTypescript(JSON.parse(pkg.abi), 'client', { code: pkg.code, initCode: pkg.init.code, system: pkg.init.deployment.system, args: pkg.init.args });
+            let bindingsServer = writeTypescript(JSON.parse(pkg.abi), { code: pkg.code, system: pkg.init.deployment.system, args: pkg.init.args });
             fs.writeFileSync(
                 path.resolve(outputPath, project.name + '_' + pkg.name + ".ts"),
                 bindingsServer,
-                'utf-8'
-            );
-            fs.writeFileSync(
-                path.resolve(outputPath, project.name + '_' + pkg.name + ".client.ts"),
-                bindingsClient,
                 'utf-8'
             );
         } catch (e) {

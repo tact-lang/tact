@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type TransferMessage = {
     $$type: 'TransferMessage';
     signature: Buffer;
@@ -231,31 +233,30 @@ function dictValueParserTransferMessage(): DictionaryValue<TransferMessage> {
         }
     }
 }
+
+ type Wallet_init_args = {
+    $$type: 'Wallet_init_args';
+    key: bigint;
+    walletId: bigint;
+}
+
+function initWallet_init_args(src: Wallet_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeInt(src.key, 257);
+        b_0.storeInt(src.walletId, 257);
+    };
+}
+
 async function Wallet_init(key: bigint, walletId: bigint) {
-    const __init = 'te6ccgEBBAEALgABFP8A9KQT9LzyyAsBAgFiAgMAAtAALaFK3AWRmOADlAAEBQICA54BAgIDngGT';
-    const __code = 'te6ccgECDAEAAaoAART/APSkE/S88sgLAQIBYgIDArjQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZrTH9P/0z9VIGwTjpCBAQHXAIEBAdcAWQLRAds84lUS2zwwyPhCAcx/AcoAVSBQI8sfy//LP8ntVAsEAgEgBQYAsnAh10nCH5UwINcLH94Cklt/4AGCENOBeAa6jjrTHwGCENOBeAa68uCBgwjXGGZsEiD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wB/4DBwAgFqBwgCASAJCgFXsyX7UTQ1AH4YtIAAZrTH9P/0z9VIGwTjpCBAQHXAIEBAdcAWQLRAds84luALAVmwfjtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziMDGALAHG7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgBWbgErtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zzibCGAsABHBZ';
-    const __system = 'te6cckECDgEAAbQAAQHAAQEFoHL9AgEU/wD0pBP0vPLICwMCAWILBAIBIAgFAgEgBwYBWbgErtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zzibCGA0Acbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOAIBagoJAVmwfjtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziMDGANAVezJftRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziW4A0CuNAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziVRLbPDDI+EIBzH8BygBVIFAjyx/L/8s/ye1UDQwAsnAh10nCH5UwINcLH94Cklt/4AGCENOBeAa6jjrTHwGCENOBeAa68uCBgwjXGGZsEiD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wB/4DBwAARwWTvbzPU=';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeNumber(key);
-    builder.writeNumber(walletId);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (Wallet_errors[res.exitCode]) {
-            throw new ComputeError(Wallet_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECDAEAAaoAART/APSkE/S88sgLAQIBYgIDArjQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZrTH9P/0z9VIGwTjpCBAQHXAIEBAdcAWQLRAds84lUS2zwwyPhCAcx/AcoAVSBQI8sfy//LP8ntVAsEAgEgBQYAsnAh10nCH5UwINcLH94Cklt/4AGCENOBeAa6jjrTHwGCENOBeAa68uCBgwjXGGZsEiD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wB/4DBwAgFqBwgCASAJCgFXsyX7UTQ1AH4YtIAAZrTH9P/0z9VIGwTjpCBAQHXAIEBAdcAWQLRAds84luALAVmwfjtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziMDGALAHG7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgBWbgErtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zzibCGAsABHBZ');
+    const __system = Cell.fromBase64('te6cckECDgEAAbQAAQHAAQEFoHL9AgEU/wD0pBP0vPLICwMCAWILBAIBIAgFAgEgBwYBWbgErtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zzibCGA0Acbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOAIBagoJAVmwfjtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziMDGANAVezJftRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziW4A0CuNAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziVRLbPDDI+EIBzH8BygBVIFAjyx/L/8s/ye1UDQwAsnAh10nCH5UwINcLH94Cklt/4AGCENOBeAa6jjrTHwGCENOBeAa68uCBgwjXGGZsEiD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wB/4DBwAARwWTvbzPU=');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initWallet_init_args({ $$type: 'Wallet_init_args', key, walletId })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const Wallet_errors: { [key: number]: { message: string } } = {

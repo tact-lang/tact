@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type Source = {
     $$type: 'Source';
     a: bigint;
@@ -229,29 +231,26 @@ function dictValueParserSource(): DictionaryValue<Source> {
         }
     }
 }
+
+ type SampleContract_init_args = {
+    $$type: 'SampleContract_init_args';
+}
+
+function initSampleContract_init_args(src: SampleContract_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+    };
+}
+
 async function SampleContract_init() {
-    const __init = 'te6ccgEBBAEAIwABFP8A9KQT9LzyyAsBAgFiAgMAAtAAF6FK3ZGY4AOUANphkw==';
-    const __code = 'te6ccgECCQEAASIAART/APSkE/S88sgLAQIBYgIDAvTQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAY4fgQEB1wCBAQHXANQB0IEBAdcAgQEB1wBZMhAkQwBsFI6DMNs84lUT2zwwyPhCAcx/AcoAVTBQNIEBAc8AgQEBzwDIQAMCgQEBzwCBAQHPAMkBzMntVAcEAgEgBQYAFiDXSTHCHzCRf+BwAmu94sdqJoagD8MWkAAMcPwICA64BAgIDrgGoA6ECAgOuAQICA64AsmQgSIYA2CkdBmG2ecW2eQHCABxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAAptcFICEwAEXwM=';
-    const __system = 'te6cckECCwEAASwAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCa73ix2omhqAPwxaQAAxw/AgIDrgECAgOuAagDoQICA64BAgIDrgCyZCBIhgDYKR0GYbZ5xbZ5AoHAARfAwL00AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGOH4EBAdcAgQEB1wDUAdCBAQHXAIEBAdcAWTIQJEMAbBSOgzDbPOJVE9s8MMj4QgHMfwHKAFUwUDSBAQHPAIEBAc8AyEADAoEBAc8AgQEBzwDJAczJ7VQKCQAWINdJMcIfMJF/4HAACm1wUgITGXltuw==';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (SampleContract_errors[res.exitCode]) {
-            throw new ComputeError(SampleContract_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECCQEAASIAART/APSkE/S88sgLAQIBYgIDAvTQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAY4fgQEB1wCBAQHXANQB0IEBAdcAgQEB1wBZMhAkQwBsFI6DMNs84lUT2zwwyPhCAcx/AcoAVTBQNIEBAc8AgQEBzwDIQAMCgQEBzwCBAQHPAMkBzMntVAcEAgEgBQYAFiDXSTHCHzCRf+BwAmu94sdqJoagD8MWkAAMcPwICA64BAgIDrgGoA6ECAgOuAQICA64AsmQgSIYA2CkdBmG2ecW2eQHCABxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAAptcFICEwAEXwM=');
+    const __system = Cell.fromBase64('te6cckECCwEAASwAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCa73ix2omhqAPwxaQAAxw/AgIDrgECAgOuAagDoQICA64BAgIDrgCyZCBIhgDYKR0GYbZ5xbZ5AoHAARfAwL00AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGOH4EBAdcAgQEB1wDUAdCBAQHXAIEBAdcAWTIQJEMAbBSOgzDbPOJVE9s8MMj4QgHMfwHKAFUwUDSBAQHPAIEBAc8AyEADAoEBAc8AgQEBzwDJAczJ7VQKCQAWINdJMcIfMJF/4HAACm1wUgITGXltuw==');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initSampleContract_init_args({ $$type: 'SampleContract_init_args' })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const SampleContract_errors: { [key: number]: { message: string } } = {

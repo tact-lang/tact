@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type Source = {
     $$type: 'Source';
     a: bigint;
@@ -229,29 +231,26 @@ function dictValueParserSource(): DictionaryValue<Source> {
         }
     }
 }
+
+ type Empty_init_args = {
+    $$type: 'Empty_init_args';
+}
+
+function initEmpty_init_args(src: Empty_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+    };
+}
+
 async function Empty_init() {
-    const __init = 'te6ccgEBBAEAIwABFP8A9KQT9LzyyAsBAgFiAgMAAtAAF6FK3ZGY4AOUANphkw==';
-    const __code = 'te6ccgEBBgEAnAABFP8A9KQT9LzyyAsBAgFiAgMCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBAUAcaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwACbQAWINdJMcIfMJF/4HA=';
-    const __system = 'te6cckEBCAEApgABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBwYAFiDXSTHCHzCRf+BwAAJtZbqcbQ==';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (Empty_errors[res.exitCode]) {
-            throw new ComputeError(Empty_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgEBBgEAnAABFP8A9KQT9LzyyAsBAgFiAgMCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBAUAcaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwACbQAWINdJMcIfMJF/4HA=');
+    const __system = Cell.fromBase64('te6cckEBCAEApgABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBwYAFiDXSTHCHzCRf+BwAAJtZbqcbQ==');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initEmpty_init_args({ $$type: 'Empty_init_args' })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const Empty_errors: { [key: number]: { message: string } } = {

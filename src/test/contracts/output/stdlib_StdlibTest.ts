@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,29 +186,26 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
+ type StdlibTest_init_args = {
+    $$type: 'StdlibTest_init_args';
+}
+
+function initStdlibTest_init_args(src: StdlibTest_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+    };
+}
+
 async function StdlibTest_init() {
-    const __init = 'te6ccgEBBAEAIwABFP8A9KQT9LzyyAsBAgFiAgMAAtAAF6FK3ZGY4AOUANphkw==';
-    const __code = 'te6ccgECDwEAAT8AART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQNBAIBIAUGAD5wIddJwh+VMCDXCx/eApJbf+ABwAAB10nBIbCRf+BwAgJyBwgAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAIBIAkKAjuvQvaiaGoA/DFpAADLwICA64AAmMdBmG2ecQDtnkANDgI6qQvtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNCwI6qVLtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNDAAGMccAAAYx10kAAnAABjHXSg==';
-    const __system = 'te6cckECEQEAAUkAAQHAAQEFocp9AgEU/wD0pBP0vPLICwMCAWIOBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCAnIJBwI7r0L2omhqAPwxaQAAy8CAgOuAAJjHQZhtnnEA7Z5AEAgABjHXSgIBIAwKAjqpUu1E0NQB+GLSAAGXgQEB1wABMY6DMNs84gHbPBALAAYx10kCOqkL7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziAds8EA0ABjHHAAKQ0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UEA8APnAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsJF/4HAAAnCxNyka';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (StdlibTest_errors[res.exitCode]) {
-            throw new ComputeError(StdlibTest_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECDwEAAT8AART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQNBAIBIAUGAD5wIddJwh+VMCDXCx/eApJbf+ABwAAB10nBIbCRf+BwAgJyBwgAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAIBIAkKAjuvQvaiaGoA/DFpAADLwICA64AAmMdBmG2ecQDtnkANDgI6qQvtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNCwI6qVLtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNDAAGMccAAAYx10kAAnAABjHXSg==');
+    const __system = Cell.fromBase64('te6cckECEQEAAUkAAQHAAQEFocp9AgEU/wD0pBP0vPLICwMCAWIOBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCAnIJBwI7r0L2omhqAPwxaQAAy8CAgOuAAJjHQZhtnnEA7Z5AEAgABjHXSgIBIAwKAjqpUu1E0NQB+GLSAAGXgQEB1wABMY6DMNs84gHbPBALAAYx10kCOqkL7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziAds8EA0ABjHHAAKQ0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UEA8APnAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsJF/4HAAAnCxNyka');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initStdlibTest_init_args({ $$type: 'StdlibTest_init_args' })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const StdlibTest_errors: { [key: number]: { message: string } } = {

@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type Deploy = {
     $$type: 'Deploy';
     queryId: bigint;
@@ -226,6 +228,7 @@ function dictValueParserDeploy(): DictionaryValue<Deploy> {
         }
     }
 }
+
 export type DeployOk = {
     $$type: 'DeployOk';
     queryId: bigint;
@@ -267,6 +270,7 @@ function dictValueParserDeployOk(): DictionaryValue<DeployOk> {
         }
     }
 }
+
 export type Increment = {
     $$type: 'Increment';
     key: bigint;
@@ -313,6 +317,7 @@ function dictValueParserIncrement(): DictionaryValue<Increment> {
         }
     }
 }
+
 export type Toggle = {
     $$type: 'Toggle';
     key: bigint;
@@ -354,6 +359,7 @@ function dictValueParserToggle(): DictionaryValue<Toggle> {
         }
     }
 }
+
 export type Persist = {
     $$type: 'Persist';
     key: bigint;
@@ -400,6 +406,7 @@ function dictValueParserPersist(): DictionaryValue<Persist> {
         }
     }
 }
+
 export type Reset = {
     $$type: 'Reset';
     key: bigint;
@@ -441,6 +448,7 @@ function dictValueParserReset(): DictionaryValue<Reset> {
         }
     }
 }
+
 export type Something = {
     $$type: 'Something';
     value: bigint;
@@ -480,29 +488,26 @@ function dictValueParserSomething(): DictionaryValue<Something> {
         }
     }
 }
+
+ type IncrementContract_init_args = {
+    $$type: 'IncrementContract_init_args';
+}
+
+function initIncrementContract_init_args(src: IncrementContract_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+    };
+}
+
 async function IncrementContract_init() {
-    const __init = 'te6ccgEBBAEAIwABFP8A9KQT9LzyyAsBAgFiAgMAAtAAF6FK3ZGY4AOUANphkw==';
-    const __code = 'te6ccgECGAEABCIAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAREgLL2A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp6AnoCagDoegJ6AnoCGAgaiBo2CsdBmG2ecSqKbZ4YZHwhAOY/gOUAKqAoIvoACXoAAOR6AAl6AAl6AGSA5mT2qkFgYCAUgPEAL2cCHXScIflTAg1wsf3gKSW3/gIYIQIAZPO7qOTTHTHwGCECAGTzu68uCBgQEB1wCBAQHXAFlsEvhBbyQQI18DgQEBIBA5QUBSkCFulVtZ9FowmMgBzwBBM/RC4hAjgQELQAeBAQHwCgF/4CGCEEB31Mi64wIhghDinQ+qBwgA2jHTHwGCEEB31Mi68uCBgQEB1wABMSSBAQEicUEz9AxvoZQB1wAwkltt4iBujhowFIEBAQF/cSFulVtZ9FowmMgBzwBBM/RC4o4ggQEBASBu8tCAsxA2EnEhbpVbWfRaMJjIAc8AQTP0QuLiA38C7LqOQzHTHwGCEOKdD6q68uCBgQEB1wDSAAGR1JJtAeJZbBKCAM4pJYEBASTwCW7y9BAkgQEBWSBulTBZ9FowlEEz9BXiAn/gIYIQZmjvsrqOmDHTHwGCEGZo77K68uCBgQEB1wABMds8f+ABghCUapi2uuMCMHAJCgHygQEBbVMSEElZIW6VW1n0WjCYyAHPAEEz9ELiBIEBASZtcSFulVtZ9FowmMgBzwBBM/RC4gOBAQEmbSBulTBZ9FowlEEz9BXigQEL+EFvJBAjXwMQJG2BAQHwCoEBAW0gbpIwbY4QIG7y0IBvIcgBAYEBAc8AyeJBcAsBRNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8nbPH8MACQgbpUwWfRaMJRBM/QV4hA0QTABJPhBbyQQI18DfwJwgEJYbW3bPA0B9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw4AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAARVZ9A1vodwwbYACNCFulVtZ9Fkw4MgBzwBBM/RBgCASATFABxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAlW68C7UTQ1AH4YtIAAY4U9AT0BNQB0PQE9AT0BDAQNRA0bBWOgzDbPOLbPIFhUCVbtAftRNDUAfhi0gABjhT0BPQE1AHQ9AT0BPQEMBA1EDRsFY6DMNs84ts8gWFwAGFF8EAAptbW1tbQAEXwQ=';
-    const __system = 'te6cckECGgEABCwAAQHAAQEFoXRDAgEU/wD0pBP0vPLICwMCAWILBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCASAJBwJVu0B+1E0NQB+GLSAAGOFPQE9ATUAdD0BPQE9AQwEDUQNGwVjoMw2zzi2zyBkIAARfBAJVuvAu1E0NQB+GLSAAGOFPQE9ATUAdD0BPQE9AQwEDUQNGwVjoMw2zzi2zyBkKAAYUXwQCAswPDAIBSA4NACNCFulVtZ9Fkw4MgBzwBBM/RBgAEVWfQNb6HcMG2ALL2A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp6AnoCagDoegJ6AnoCGAgaiBo2CsdBmG2ecSqKbZ4YZHwhAOY/gOUAKqAoIvoACXoAAOR6AAl6AAl6AGSA5mT2qkGRAC9nAh10nCH5UwINcLH94Cklt/4CGCECAGTzu6jk0x0x8BghAgBk87uvLggYEBAdcAgQEB1wBZbBL4QW8kECNfA4EBASAQOUFAUpAhbpVbWfRaMJjIAc8AQTP0QuIQI4EBC0AHgQEB8AoBf+AhghBAd9TIuuMCIYIQ4p0PqhgRAuy6jkMx0x8BghDinQ+quvLggYEBAdcA0gABkdSSbQHiWWwSggDOKSWBAQEk8Alu8vQQJIEBAVkgbpUwWfRaMJRBM/QV4gJ/4CGCEGZo77K6jpgx0x8BghBmaO+yuvLggYEBAdcAATHbPH/gAYIQlGqYtrrjAjBwFhIBRNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8nbPH8TAST4QW8kECNfA38CcIBCWG1t2zwUAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMVADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAB8oEBAW1TEhBJWSFulVtZ9FowmMgBzwBBM/RC4gSBAQEmbXEhbpVbWfRaMJjIAc8AQTP0QuIDgQEBJm0gbpUwWfRaMJRBM/QV4oEBC/hBbyQQI18DECRtgQEB8AqBAQFtIG6SMG2OECBu8tCAbyHIAQGBAQHPAMniQXAXACQgbpUwWfRaMJRBM/QV4hA0QTAA2jHTHwGCEEB31Mi68uCBgQEB1wABMSSBAQEicUEz9AxvoZQB1wAwkltt4iBujhowFIEBAQF/cSFulVtZ9FowmMgBzwBBM/RC4o4ggQEBASBu8tCAsxA2EnEhbpVbWfRaMJjIAc8AQTP0QuLiA38ACm1tbW1tSSkUbA==';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (IncrementContract_errors[res.exitCode]) {
-            throw new ComputeError(IncrementContract_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECGAEABCIAART/APSkE/S88sgLAQIBYgIDAgLMBAUCASAREgLL2A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp6AnoCagDoegJ6AnoCGAgaiBo2CsdBmG2ecSqKbZ4YZHwhAOY/gOUAKqAoIvoACXoAAOR6AAl6AAl6AGSA5mT2qkFgYCAUgPEAL2cCHXScIflTAg1wsf3gKSW3/gIYIQIAZPO7qOTTHTHwGCECAGTzu68uCBgQEB1wCBAQHXAFlsEvhBbyQQI18DgQEBIBA5QUBSkCFulVtZ9FowmMgBzwBBM/RC4hAjgQELQAeBAQHwCgF/4CGCEEB31Mi64wIhghDinQ+qBwgA2jHTHwGCEEB31Mi68uCBgQEB1wABMSSBAQEicUEz9AxvoZQB1wAwkltt4iBujhowFIEBAQF/cSFulVtZ9FowmMgBzwBBM/RC4o4ggQEBASBu8tCAsxA2EnEhbpVbWfRaMJjIAc8AQTP0QuLiA38C7LqOQzHTHwGCEOKdD6q68uCBgQEB1wDSAAGR1JJtAeJZbBKCAM4pJYEBASTwCW7y9BAkgQEBWSBulTBZ9FowlEEz9BXiAn/gIYIQZmjvsrqOmDHTHwGCEGZo77K68uCBgQEB1wABMds8f+ABghCUapi2uuMCMHAJCgHygQEBbVMSEElZIW6VW1n0WjCYyAHPAEEz9ELiBIEBASZtcSFulVtZ9FowmMgBzwBBM/RC4gOBAQEmbSBulTBZ9FowlEEz9BXigQEL+EFvJBAjXwMQJG2BAQHwCoEBAW0gbpIwbY4QIG7y0IBvIcgBAYEBAc8AyeJBcAsBRNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8nbPH8MACQgbpUwWfRaMJRBM/QV4hA0QTABJPhBbyQQI18DfwJwgEJYbW3bPA0B9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw4AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAARVZ9A1vodwwbYACNCFulVtZ9Fkw4MgBzwBBM/RBgCASATFABxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAlW68C7UTQ1AH4YtIAAY4U9AT0BNQB0PQE9AT0BDAQNRA0bBWOgzDbPOLbPIFhUCVbtAftRNDUAfhi0gABjhT0BPQE1AHQ9AT0BPQEMBA1EDRsFY6DMNs84ts8gWFwAGFF8EAAptbW1tbQAEXwQ=');
+    const __system = Cell.fromBase64('te6cckECGgEABCwAAQHAAQEFoXRDAgEU/wD0pBP0vPLICwMCAWILBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCASAJBwJVu0B+1E0NQB+GLSAAGOFPQE9ATUAdD0BPQE9AQwEDUQNGwVjoMw2zzi2zyBkIAARfBAJVuvAu1E0NQB+GLSAAGOFPQE9ATUAdD0BPQE9AQwEDUQNGwVjoMw2zzi2zyBkKAAYUXwQCAswPDAIBSA4NACNCFulVtZ9Fkw4MgBzwBBM/RBgAEVWfQNb6HcMG2ALL2A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp6AnoCagDoegJ6AnoCGAgaiBo2CsdBmG2ecSqKbZ4YZHwhAOY/gOUAKqAoIvoACXoAAOR6AAl6AAl6AGSA5mT2qkGRAC9nAh10nCH5UwINcLH94Cklt/4CGCECAGTzu6jk0x0x8BghAgBk87uvLggYEBAdcAgQEB1wBZbBL4QW8kECNfA4EBASAQOUFAUpAhbpVbWfRaMJjIAc8AQTP0QuIQI4EBC0AHgQEB8AoBf+AhghBAd9TIuuMCIYIQ4p0PqhgRAuy6jkMx0x8BghDinQ+quvLggYEBAdcA0gABkdSSbQHiWWwSggDOKSWBAQEk8Alu8vQQJIEBAVkgbpUwWfRaMJRBM/QV4gJ/4CGCEGZo77K6jpgx0x8BghBmaO+yuvLggYEBAdcAATHbPH/gAYIQlGqYtrrjAjBwFhIBRNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8nbPH8TAST4QW8kECNfA38CcIBCWG1t2zwUAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMVADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAB8oEBAW1TEhBJWSFulVtZ9FowmMgBzwBBM/RC4gSBAQEmbXEhbpVbWfRaMJjIAc8AQTP0QuIDgQEBJm0gbpUwWfRaMJRBM/QV4oEBC/hBbyQQI18DECRtgQEB8AqBAQFtIG6SMG2OECBu8tCAbyHIAQGBAQHPAMniQXAXACQgbpUwWfRaMJRBM/QV4hA0QTAA2jHTHwGCEEB31Mi68uCBgQEB1wABMSSBAQEicUEz9AxvoZQB1wAwkltt4iBujhowFIEBAQF/cSFulVtZ9FowmMgBzwBBM/RC4o4ggQEBASBu8tCAsxA2EnEhbpVbWfRaMJjIAc8AQTP0QuLiA38ACm1tbW1tSSkUbA==');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initIncrementContract_init_args({ $$type: 'IncrementContract_init_args' })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const IncrementContract_errors: { [key: number]: { message: string } } = {

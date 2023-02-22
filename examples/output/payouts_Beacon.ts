@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -226,6 +228,7 @@ function dictValueParserChangeOwner(): DictionaryValue<ChangeOwner> {
         }
     }
 }
+
 export type CanPayout = {
     $$type: 'CanPayout';
     amount: bigint;
@@ -267,6 +270,7 @@ function dictValueParserCanPayout(): DictionaryValue<CanPayout> {
         }
     }
 }
+
 export type CanPayoutResponse = {
     $$type: 'CanPayoutResponse';
     amount: bigint;
@@ -318,31 +322,30 @@ function dictValueParserCanPayoutResponse(): DictionaryValue<CanPayoutResponse> 
         }
     }
 }
+
+ type Beacon_init_args = {
+    $$type: 'Beacon_init_args';
+    master: Address;
+    owner: Address;
+}
+
+function initBeacon_init_args(src: Beacon_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeAddress(src.master);
+        b_0.storeAddress(src.owner);
+    };
+}
+
 async function Beacon_init(master: Address, owner: Address) {
-    const __init = 'te6ccgEBBAEAKQABFP8A9KQT9LzyyAsBAgFiAgMAAtAAI6FK3AWRmOADlAAEs54sA54tkw==';
-    const __code = 'te6ccgECDQEAAkAAART/APSkE/S88sgLAQIBYgIDArrQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZ76QAEB+kABAdIAVSBsE46N+kABAfpAARIC0QHbPOJVEts8MMj4QgHMfwHKAFUgWs8WWM8WygDJ7VQLBAIBIAkKAUBwIddJwh+VMCDXCx/eApQxW3B/4AGCEMQZSd+64wIwcAUC3NMfAYIQxBlJ37ry4IGBAQHXAAEx+EFvJFuBEU0yJccF8vSCEAX14QBw+wIhjp9/MiJ/yFUgghD/60DeUATLHxKBAQHPAAHPFsoAyds8jp0icMhVIIIQ/+tA3lAEyx8SgQEBzwABzxbKAMnbPOJ/BgYBJPhBbyQQI18DfwJwgEJYbW3bPAcB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswgAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAJbvijvaiaGoA/DFpAADPfSAAgP0gAIDpACqQNgnHRv0gAID9IACJAWiA7Z5xbZ5AsMAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTggZzq084r86ShYDrC3EyPZQAAnAABDAx';
-    const __system = 'te6cckECDwEAAkoAAQHAAQEFoUH1AgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTggZzq084r86ShYDrC3EyPZQCW74o72omhqAPwxaQAAz30gAID9IACA6QAqkDYJx0b9IACA/SAAiQFogO2ecW2eQOBwAEMDECutAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABnvpAAQH6QAEB0gBVIGwTjo36QAEB+kABEgLRAds84lUS2zwwyPhCAcx/AcoAVSBazxZYzxbKAMntVA4JAUBwIddJwh+VMCDXCx/eApQxW3B/4AGCEMQZSd+64wIwcAoC3NMfAYIQxBlJ37ry4IGBAQHXAAEx+EFvJFuBEU0yJccF8vSCEAX14QBw+wIhjp9/MiJ/yFUgghD/60DeUATLHxKBAQHPAAHPFsoAyds8jp0icMhVIIIQ/+tA3lAEyx8SgQEBzwABzxbKAMnbPOJ/CwsBJPhBbyQQI18DfwJwgEJYbW3bPAwB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw0AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAACcK0OY2U=';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeAddress(master);
-    builder.writeAddress(owner);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (Beacon_errors[res.exitCode]) {
-            throw new ComputeError(Beacon_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECDQEAAkAAART/APSkE/S88sgLAQIBYgIDArrQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZ76QAEB+kABAdIAVSBsE46N+kABAfpAARIC0QHbPOJVEts8MMj4QgHMfwHKAFUgWs8WWM8WygDJ7VQLBAIBIAkKAUBwIddJwh+VMCDXCx/eApQxW3B/4AGCEMQZSd+64wIwcAUC3NMfAYIQxBlJ37ry4IGBAQHXAAEx+EFvJFuBEU0yJccF8vSCEAX14QBw+wIhjp9/MiJ/yFUgghD/60DeUATLHxKBAQHPAAHPFsoAyds8jp0icMhVIIIQ/+tA3lAEyx8SgQEBzwABzxbKAMnbPOJ/BgYBJPhBbyQQI18DfwJwgEJYbW3bPAcB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswgAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAJbvijvaiaGoA/DFpAADPfSAAgP0gAIDpACqQNgnHRv0gAID9IACJAWiA7Z5xbZ5AsMAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTggZzq084r86ShYDrC3EyPZQAAnAABDAx');
+    const __system = Cell.fromBase64('te6cckECDwEAAkoAAQHAAQEFoUH1AgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTggZzq084r86ShYDrC3EyPZQCW74o72omhqAPwxaQAAz30gAID9IACA6QAqkDYJx0b9IACA/SAAiQFogO2ecW2eQOBwAEMDECutAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABnvpAAQH6QAEB0gBVIGwTjo36QAEB+kABEgLRAds84lUS2zwwyPhCAcx/AcoAVSBazxZYzxbKAMntVA4JAUBwIddJwh+VMCDXCx/eApQxW3B/4AGCEMQZSd+64wIwcAoC3NMfAYIQxBlJ37ry4IGBAQHXAAEx+EFvJFuBEU0yJccF8vSCEAX14QBw+wIhjp9/MiJ/yFUgghD/60DeUATLHxKBAQHPAAHPFsoAyds8jp0icMhVIIIQ/+tA3lAEyx8SgQEBzwABzxbKAMnbPOJ/CwsBJPhBbyQQI18DfwJwgEJYbW3bPAwB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw0AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAACcK0OY2U=');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initBeacon_init_args({ $$type: 'Beacon_init_args', master, owner })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const Beacon_errors: { [key: number]: { message: string } } = {

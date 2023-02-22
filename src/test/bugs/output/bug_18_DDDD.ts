@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,32 +186,32 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
+ type DDDD_init_args = {
+    $$type: 'DDDD_init_args';
+    addr1: Address;
+    addr2: Address;
+    addr3: Address;
+}
+
+function initDDDD_init_args(src: DDDD_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeAddress(src.addr1);
+        b_0.storeAddress(src.addr2);
+        b_0.storeAddress(src.addr3);
+    };
+}
+
 async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
-    const __init = 'te6ccgEBBAEALAABFP8A9KQT9LzyyAsBAgFiAgMAAtAAKaFK3AeRmOADlAAGtZ4ssZ4sA54tkw==';
-    const __code = 'te6ccgECDwEAAkAAART/APSkE/S88sgLAQIBYgIDAgLNBAUCASAICQLf0A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp9IACA/SAAgP0gAID6AnoCKqA2CsdJfSAAgP0gAID9IAChmAHorG2ecSqKbZ4YZHwhAOY/gOUAKqAoKmeLLGeLAOeLCXoAegBk9qpA0GACNohbpVbWfRZMODIAc8AQTP0QYBPHAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsOMCcAcA7gGBAQFwJiBulTBZ9FowlEEz9BTigQEBcSUgbpUwWfRaMJRBM/QU4oEBAXIkIG6VMFn0WjCUQTP0FOKBAQFzJiBulTBZ9FowlEEz9BTiAYEBCyVwgQEB8AaBAQskcYEBAfAGgQELI3KBAQHwBoEBCyVzgQEB8AZ/Ane8FPdqJoagD8MWkAAMcKfSAAgP0gAID9IACA+gJ6AiqgNgrHSX0gAID9IACA/SAAoZgB6KxtnnEqgm2eQNCgIBIAsMADBsQoEBCwGBAQFBM/QKb6GUAdcAMJJbbeIAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaAJ3uVw+1E0NQB+GLSAAGOFPpAAQH6QAEB+kABAfQE9ARVQGwVjpL6QAEB+kABAfpAAUMwA9FY2zziVQTbPIDQ4ABG1tACAxMjOBAQEyWfQMb6GSMG3f';
-    const __system = 'te6cckECEQEAAkoAAQHAAQEFoViRAgEU/wD0pBP0vPLICwMCAWILBAIBIAkFAgEgCAYCd7lcPtRNDUAfhi0gABjhT6QAEB+kABAfpAAQH0BPQEVUBsFY6S+kABAfpAAQH6QAFDMAPRWNs84lUE2zyBAHACAxMjOBAQEyWfQMb6GSMG3fAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgCd7wU92omhqAPwxaQAAxwp9IACA/SAAgP0gAID6AnoCKqA2CsdJfSAAgP0gAID9IAChmAHorG2ecSqCbZ5BAKADBsQoEBCwGBAQFBM/QKb6GUAdcAMJJbbeICAs0NDAAjaIW6VW1n0WTDgyAHPAEEz9EGAt/QDoaYGAuNhgAMi/yLhxAP0gESgqt4J8MPaiaGoA/DFpAADHCn0gAID9IACA/SAAgPoCegIqoDYKx0l9IACA/SAAgP0gAKGYAeisbZ5xKoptnhhkfCEA5j+A5QAqoCgqZ4ssZ4sA54sJegB6AGT2qkEA4BPHAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsOMCcA8A7gGBAQFwJiBulTBZ9FowlEEz9BTigQEBcSUgbpUwWfRaMJRBM/QU4oEBAXIkIG6VMFn0WjCUQTP0FOKBAQFzJiBulTBZ9FowlEEz9BTiAYEBCyVwgQEB8AaBAQskcYEBAfAGgQELI3KBAQHwBoEBCyVzgQEB8AZ/AARtbXiYz8k=';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeAddress(addr1);
-    builder.writeAddress(addr2);
-    builder.writeAddress(addr3);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (DDDD_errors[res.exitCode]) {
-            throw new ComputeError(DDDD_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECDwEAAkAAART/APSkE/S88sgLAQIBYgIDAgLNBAUCASAICQLf0A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp9IACA/SAAgP0gAID6AnoCKqA2CsdJfSAAgP0gAID9IAChmAHorG2ecSqKbZ4YZHwhAOY/gOUAKqAoKmeLLGeLAOeLCXoAegBk9qpA0GACNohbpVbWfRZMODIAc8AQTP0QYBPHAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsOMCcAcA7gGBAQFwJiBulTBZ9FowlEEz9BTigQEBcSUgbpUwWfRaMJRBM/QU4oEBAXIkIG6VMFn0WjCUQTP0FOKBAQFzJiBulTBZ9FowlEEz9BTiAYEBCyVwgQEB8AaBAQskcYEBAfAGgQELI3KBAQHwBoEBCyVzgQEB8AZ/Ane8FPdqJoagD8MWkAAMcKfSAAgP0gAID9IACA+gJ6AiqgNgrHSX0gAID9IACA/SAAoZgB6KxtnnEqgm2eQNCgIBIAsMADBsQoEBCwGBAQFBM/QKb6GUAdcAMJJbbeIAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaAJ3uVw+1E0NQB+GLSAAGOFPpAAQH6QAEB+kABAfQE9ARVQGwVjpL6QAEB+kABAfpAAUMwA9FY2zziVQTbPIDQ4ABG1tACAxMjOBAQEyWfQMb6GSMG3f');
+    const __system = Cell.fromBase64('te6cckECEQEAAkoAAQHAAQEFoViRAgEU/wD0pBP0vPLICwMCAWILBAIBIAkFAgEgCAYCd7lcPtRNDUAfhi0gABjhT6QAEB+kABAfpAAQH0BPQEVUBsFY6S+kABAfpAAQH6QAFDMAPRWNs84lUE2zyBAHACAxMjOBAQEyWfQMb6GSMG3fAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgCd7wU92omhqAPwxaQAAxwp9IACA/SAAgP0gAID6AnoCKqA2CsdJfSAAgP0gAID9IAChmAHorG2ecSqCbZ5BAKADBsQoEBCwGBAQFBM/QKb6GUAdcAMJJbbeICAs0NDAAjaIW6VW1n0WTDgyAHPAEEz9EGAt/QDoaYGAuNhgAMi/yLhxAP0gESgqt4J8MPaiaGoA/DFpAADHCn0gAID9IACA/SAAgPoCegIqoDYKx0l9IACA/SAAgP0gAKGYAeisbZ5xKoptnhhkfCEA5j+A5QAqoCgqZ4ssZ4sA54sJegB6AGT2qkEA4BPHAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsOMCcA8A7gGBAQFwJiBulTBZ9FowlEEz9BTigQEBcSUgbpUwWfRaMJRBM/QU4oEBAXIkIG6VMFn0WjCUQTP0FOKBAQFzJiBulTBZ9FowlEEz9BTiAYEBCyVwgQEB8AaBAQskcYEBAfAGgQELI3KBAQHwBoEBCyVzgQEB8AZ/AARtbXiYz8k=');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initDDDD_init_args({ $$type: 'DDDD_init_args', addr1, addr2, addr3 })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const DDDD_errors: { [key: number]: { message: string } } = {

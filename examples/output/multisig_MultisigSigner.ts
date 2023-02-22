@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type Request = {
     $$type: 'Request';
     requested: Address;
@@ -256,6 +258,7 @@ function dictValueParserRequest(): DictionaryValue<Request> {
         }
     }
 }
+
 export type Signed = {
     $$type: 'Signed';
     request: Request;
@@ -297,33 +300,36 @@ function dictValueParserSigned(): DictionaryValue<Signed> {
         }
     }
 }
+
+ type MultisigSigner_init_args = {
+    $$type: 'MultisigSigner_init_args';
+    master: Address;
+    members: Dictionary<Address, bigint>;
+    requiredWeight: bigint;
+    request: Request;
+}
+
+function initMultisigSigner_init_args(src: MultisigSigner_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeAddress(src.master);
+        b_0.storeDict(src.members, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257));
+        b_0.storeInt(src.requiredWeight, 257);
+        let b_1 = new Builder();
+        b_1.store(storeRequest(src.request));
+        b_0.storeRef(b_1.endCell());
+    };
+}
+
 async function MultisigSigner_init(master: Address, members: Dictionary<Address, bigint>, requiredWeight: bigint, request: Request) {
-    const __init = 'te6ccgEBBQEAbAABFP8A9KQT9LzyyAsBAgFiAgMAAtABT6FK3N5OFZGY4AOUABShU54sL+gAKwICA54BkA4gjCBqiQG2eZIDmZMEAFSCEP5RmINQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOI=';
-    const __code = 'te6ccgECEgEAA0MAART/APSkE/S88sgLAQIBYgIDAgLNBAUCAnUMDQTd0A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAx1N9IACA+gJAgIDrgECAgOuAaQBqAOhtnhuIPgg9iD0IPIg8KoK2DkeP/SAAgPoCQICA64BqAOhtnhuIPQg8iDwqgoVoqoRtnnEqjcDg4PBgAj8Qt0qtrPosmHBkAOeAIJn6IMAmTbPDDI+EIBzH8BygBVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRjbPMkBzMntVAcJAabtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGwklt/4AHAAI6n+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uuMCkTDicAgC7IESkyT4I7zy9IIAn2oos/L0+EFvJBAjXwMrgQELIoEBAUEz9ApvoZQB1wAwkltt4iBu8tCAHIEBC1ANbYEBAfAHUKugUwi+jyg3f3BwgQCCVHmHVHmHVhLIVWCCEIPqVZlQCMsfB9s8yS9VIG1t2zwH3gl/2zEJCgBUghD+UZiDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6zlX8BygDMlHAyygDiAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMLADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAErbC/u1E0NQB+GLSAAGOpvpAAQH0BIEBAdcAgQEB1wDSANQB0Ns8NxB8EHsQehB5EHhVBWwcjx/6QAEB9ASBAQHXANQB0Ns8NxB6EHkQeFUFCtFVCNs84oA4ODxAAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4ABQ0x8BghD+UZiDuvLggfpAAQH6QAEB+gDTH9IA0wfSAAGR1JJtAeJVYAAOcAgHcAdVQQEE2zwRAARsVw==';
-    const __system = 'te6cckECFAEAA00AAQHAAQEFoSdzAgEU/wD0pBP0vPLICwMCAWIJBAICdQYFAHGy9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOAErbC/u1E0NQB+GLSAAGOpvpAAQH0BIEBAdcAgQEB1wDSANQB0Ns8NxB8EHsQehB5EHhVBWwcjx/6QAEB9ASBAQHXANQB0Ns8NxB6EHkQeFUFCtFVCNs84oBMTEgcBBNs8CAAEbFcCAs0LCgAj8Qt0qtrPosmHBkAOeAIJn6IMBN3QDoaYGAuNhgAMi/yLhxAP0gESgqt4J8MPaiaGoA/DFpAADHU30gAID6AkCAgOuAQICA64BpAGoA6G2eG4g+CD2IPQg8iDwqgrYOR4/9IACA+gJAgIDrgGoA6G2eG4g9CDyIPCqChWiqhG2ecSqNwTExIMAmTbPDDI+EIBzH8BygBVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRjbPMkBzMntVA0RAabtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGwklt/4AHAAI6n+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uuMCkTDicA4C7IESkyT4I7zy9IIAn2oos/L0+EFvJBAjXwMrgQELIoEBAUEz9ApvoZQB1wAwkltt4iBu8tCAHIEBC1ANbYEBAfAHUKugUwi+jyg3f3BwgQCCVHmHVHmHVhLIVWCCEIPqVZlQCMsfB9s8yS9VIG1t2zwH3gl/2zERDwH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zEAAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAFSCEP5RmINQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIADnAIB3AHVUEAUNMfAYIQ/lGYg7ry4IH6QAEB+kABAfoA0x/SANMH0gABkdSSbQHiVWDzOcrm';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeAddress(master);
-    builder.writeCell(members.size > 0 ? beginCell().storeDictDirect(members, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257)).endCell() : null);
-    builder.writeNumber(requiredWeight);
-    builder.writeTuple(storeTupleRequest(request));
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (MultisigSigner_errors[res.exitCode]) {
-            throw new ComputeError(MultisigSigner_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECEgEAA0MAART/APSkE/S88sgLAQIBYgIDAgLNBAUCAnUMDQTd0A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAx1N9IACA+gJAgIDrgECAgOuAaQBqAOhtnhuIPgg9iD0IPIg8KoK2DkeP/SAAgPoCQICA64BqAOhtnhuIPQg8iDwqgoVoqoRtnnEqjcDg4PBgAj8Qt0qtrPosmHBkAOeAIJn6IMAmTbPDDI+EIBzH8BygBVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRjbPMkBzMntVAcJAabtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGwklt/4AHAAI6n+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uuMCkTDicAgC7IESkyT4I7zy9IIAn2oos/L0+EFvJBAjXwMrgQELIoEBAUEz9ApvoZQB1wAwkltt4iBu8tCAHIEBC1ANbYEBAfAHUKugUwi+jyg3f3BwgQCCVHmHVHmHVhLIVWCCEIPqVZlQCMsfB9s8yS9VIG1t2zwH3gl/2zEJCgBUghD+UZiDUAjLH1AGzxZQBM8WWPoCyx/KAMsHIW6zlX8BygDMlHAyygDiAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMLADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAErbC/u1E0NQB+GLSAAGOpvpAAQH0BIEBAdcAgQEB1wDSANQB0Ns8NxB8EHsQehB5EHhVBWwcjx/6QAEB9ASBAQHXANQB0Ns8NxB6EHkQeFUFCtFVCNs84oA4ODxAAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4ABQ0x8BghD+UZiDuvLggfpAAQH6QAEB+gDTH9IA0wfSAAGR1JJtAeJVYAAOcAgHcAdVQQEE2zwRAARsVw==');
+    const __system = Cell.fromBase64('te6cckECFAEAA00AAQHAAQEFoSdzAgEU/wD0pBP0vPLICwMCAWIJBAICdQYFAHGy9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOAErbC/u1E0NQB+GLSAAGOpvpAAQH0BIEBAdcAgQEB1wDSANQB0Ns8NxB8EHsQehB5EHhVBWwcjx/6QAEB9ASBAQHXANQB0Ns8NxB6EHkQeFUFCtFVCNs84oBMTEgcBBNs8CAAEbFcCAs0LCgAj8Qt0qtrPosmHBkAOeAIJn6IMBN3QDoaYGAuNhgAMi/yLhxAP0gESgqt4J8MPaiaGoA/DFpAADHU30gAID6AkCAgOuAQICA64BpAGoA6G2eG4g+CD2IPQg8iDwqgrYOR4/9IACA+gJAgIDrgGoA6G2eG4g9CDyIPCqChWiqhG2ecSqNwTExIMAmTbPDDI+EIBzH8BygBVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRjbPMkBzMntVA0RAabtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGwklt/4AHAAI6n+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uuMCkTDicA4C7IESkyT4I7zy9IIAn2oos/L0+EFvJBAjXwMrgQELIoEBAUEz9ApvoZQB1wAwkltt4iBu8tCAHIEBC1ANbYEBAfAHUKugUwi+jyg3f3BwgQCCVHmHVHmHVhLIVWCCEIPqVZlQCMsfB9s8yS9VIG1t2zwH3gl/2zERDwH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zEAAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAFSCEP5RmINQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIADnAIB3AHVUEAUNMfAYIQ/lGYg7ry4IH6QAEB+kABAfoA0x/SANMH0gABkdSSbQHiVWDzOcrm');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initMultisigSigner_init_args({ $$type: 'MultisigSigner_init_args', master, members, requiredWeight, request })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const MultisigSigner_errors: { [key: number]: { message: string } } = {

@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,30 +186,28 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
+ type C_init_args = {
+    $$type: 'C_init_args';
+    parent: Address;
+}
+
+function initC_init_args(src: C_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeAddress(src.parent);
+    };
+}
+
 async function C_init(parent: Address) {
-    const __init = 'te6ccgEBBAEAJQABFP8A9KQT9LzyyAsBAgFiAgMAAtAAG6FK3AORmOADlAADni2T';
-    const __code = 'te6ccgECDQEAArYAART/APSkE/S88sgLAQIBYgIDAgLLBAUAlaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQGD0AdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZT6QAExlfpAAQHR4lnbPDDI+EIBzH8BygABzxbJ7VSBgBfpADoegIYNoDAvFOAwAh6B7fQ+XBDgMC8U5EBQAh6C+QA5HoAZIDmOADlACxni2TAATztou37cCHXScIflTAg1wsf3gKSW3/gAcAAkTDjDXAHA+b5ASCC8LQamTMwHB1yjmTiNoX+Opx1QKuTWe9zGJQ8DuXgkQ1duo+iMPhCIfAYXNs8f3CAQouE1lc3NhZ2UyjbPF4jQDTbPH/bMeCC8Pw8ghEkZlgduiP5BM0aCXI8CGmt6gBFvWcz6k9229JyupN/2zHgCAkKAEpwWchwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQAULIcAHLH28AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DELAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMMALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AA==';
-    const __system = 'te6cckECDwEAAsAAAQHAAQEFoPFPAgEU/wD0pBP0vPLICwMCAWIFBACVoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNAgLLBwYAX6QA6HoCGDaAwLxTgMAIege30PlwQ4DAvFORAUAIegvkAOR6AGSA5jgA5QAsZ4tkwAGD0AdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZT6QAExlfpAAQHR4lnbPDDI+EIBzH8BygABzxbJ7VSCAE87aLt+3Ah10nCH5UwINcLH94Cklt/4AHAAJEw4w1wCQPm+QEggvC0GpkzMBwdco5k4jaF/jqcdUCrk1nvcxiUPA7l4JENXbqPojD4QiHwGFzbPH9wgEKLhNZXNzYWdlMo2zxeI0A02zx/2zHggvD8PIIRJGZYHboj+QTNGglyPAhpreoARb1nM+pPdtvScrqTf9sx4A4MCgH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zCwAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAULIcAHLH28AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DENALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMASnBZyHABywFzAcsBcAHLABLMzMn5AMhyAcsBcAHLABLKB8v/ydCMeotp';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeAddress(parent);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (C_errors[res.exitCode]) {
-            throw new ComputeError(C_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECDQEAArYAART/APSkE/S88sgLAQIBYgIDAgLLBAUAlaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQGD0AdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZT6QAExlfpAAQHR4lnbPDDI+EIBzH8BygABzxbJ7VSBgBfpADoegIYNoDAvFOAwAh6B7fQ+XBDgMC8U5EBQAh6C+QA5HoAZIDmOADlACxni2TAATztou37cCHXScIflTAg1wsf3gKSW3/gAcAAkTDjDXAHA+b5ASCC8LQamTMwHB1yjmTiNoX+Opx1QKuTWe9zGJQ8DuXgkQ1duo+iMPhCIfAYXNs8f3CAQouE1lc3NhZ2UyjbPF4jQDTbPH/bMeCC8Pw8ghEkZlgduiP5BM0aCXI8CGmt6gBFvWcz6k9229JyupN/2zHgCAkKAEpwWchwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQAULIcAHLH28AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DELAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMMALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AA==');
+    const __system = Cell.fromBase64('te6cckECDwEAAsAAAQHAAQEFoPFPAgEU/wD0pBP0vPLICwMCAWIFBACVoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNAgLLBwYAX6QA6HoCGDaAwLxTgMAIege30PlwQ4DAvFORAUAIegvkAOR6AGSA5jgA5QAsZ4tkwAGD0AdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZT6QAExlfpAAQHR4lnbPDDI+EIBzH8BygABzxbJ7VSCAE87aLt+3Ah10nCH5UwINcLH94Cklt/4AHAAJEw4w1wCQPm+QEggvC0GpkzMBwdco5k4jaF/jqcdUCrk1nvcxiUPA7l4JENXbqPojD4QiHwGFzbPH9wgEKLhNZXNzYWdlMo2zxeI0A02zx/2zHggvD8PIIRJGZYHboj+QTNGglyPAhpreoARb1nM+pPdtvScrqTf9sx4A4MCgH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zCwAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAULIcAHLH28AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DENALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMASnBZyHABywFzAcsBcAHLABLMzMn5AMhyAcsBcAHLABLKB8v/ydCMeotp');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initC_init_args({ $$type: 'C_init_args', parent })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const C_errors: { [key: number]: { message: string } } = {

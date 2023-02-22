@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type ChangeOwner = {
     $$type: 'ChangeOwner';
     newOwner: Address;
@@ -226,6 +228,7 @@ function dictValueParserChangeOwner(): DictionaryValue<ChangeOwner> {
         }
     }
 }
+
 export type RugParams = {
     $$type: 'RugParams';
     investment: bigint;
@@ -275,33 +278,36 @@ function dictValueParserRugParams(): DictionaryValue<RugParams> {
         }
     }
 }
+
+ type RugPull_init_args = {
+    $$type: 'RugPull_init_args';
+    owner: Address;
+    investment: bigint;
+    returns: bigint;
+    fee: bigint;
+}
+
+function initRugPull_init_args(src: RugPull_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeAddress(src.owner);
+        b_0.storeInt(src.investment, 257);
+        b_0.storeInt(src.returns, 257);
+        let b_1 = new Builder();
+        b_1.storeInt(src.fee, 257);
+        b_0.storeRef(b_1.endCell());
+    };
+}
+
 async function RugPull_init(owner: Address, investment: bigint, returns: bigint, fee: bigint) {
-    const __init = 'te6ccgEBBAEAPAABFP8A9KQT9LzyyAsBAgFiAgMAAtAASaFK3AmRmOADlAAIoIeeLQICA54AJQICA54AA5ECAgOeAZIDmZM=';
-    const __code = 'te6ccgECHgEABbEAART/APSkE/S88sgLAQIBYgIDATLQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhhBAIBIBQVA9btRNDUAfhi0gABjjf6QAEBgQEB1wCBAQHXANQB0IEBAdcAgQEB1wDSANIAgQEB1wDUMNCBAQHXAPQEMBB6EHkQeGwajqD6QAEBgQEB1wCBAQHXANQB0IEBAdcAMBRDMATRVQLbPOJVGds8MBwFBgOa7aLt+3Ah10nCH5UwINcLH94Cklt/4CHAACHXScEhsOMCIYIQD0dNA7qOmTHTHwGCEA9HTQO68uCB+kABMVWQ2zxsGX/gAcAAkTDjDXAHDAgAjMj4QgHMfwHKAFWQUKnPFheBAQHPABWBAQHPAAPIgQEBzwASgQEBzwDKABLKABKBAQHPAAPIgQEBzwAS9ADJWMzJAczJ7VQD2lvbPCSOin8qcIMGbW1t2zyO2fhBbyQwMoE+u1O5oBO+EvL0gQEBUjIgbpUwWfRaMJRBM/QU4gGkUVigmVMHvFNjocIAsI6hIYEBASRZ9AxvoZIwbd8gbvLQgFEYoQOkUTgXQzDbPFAF6FBV4n8NEgkE8vkBIILwCVGQGUruYRzolcVQOt+F/YZN55BXRhQvYI0+svqtFOS6jxgw2zwks5QlcPsC3n8qcIMGbW1t2zx/2zHgIILwzeJCxsrFYKmf8tJoPuD7FimoGK7A8RZlEc2CLPINpOq6jpEwNH9/KnCDBm1tbds8BH/bMeAMEhIKARB/WXJtbW3bPBIBVoLwvPr3dpB8cZzI03nY8ZSqqifoyihxzVkXgXIfIVpFRQG6joXbPH/bMeALBCLbPNs8M3+LdTdG9wcGVkjbPAwNDg8AHPhBbyQQI18DKscF8uCEABCCAJ2wJLPy9AFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxEAEG2zwDEQC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8DAST4QW8kECNfA38CcIBCWG1t2zwSAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMTADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wACASAWFwIBIBobAtW6F77UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyBwYAtW4Ud7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyBwZAAgQOV8JAARfCQDdu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwoBY90JlEubWqqQrClgAsBoJwQM51aecV+dJQsB1hbiZHsoJwkTBoZqbopDZ+4Ee+BVGPiYAtW4bV7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyBwdABJtbXBwVGAFAwQACF8GbBM=';
-    const __system = 'te6cckECIAEABbsAAQHAAQEFoK6fAgEU/wD0pBP0vPLICwMCAWIOBAIBIAkFAgEgCAYC1bhtXtRNDUAfhi0gABjjf6QAEBgQEB1wCBAQHXANQB0IEBAdcAgQEB1wDSANIAgQEB1wDUMNCBAQHXAPQEMBB6EHkQeGwajqD6QAEBgQEB1wCBAQHXANQB0IEBAdcAMBRDMATRVQLbPOLbPIHwcACF8GbBMA3bu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcKAWPdCZRLm1qqkKwpYALAaCcEDOdWnnFfnSULAdYW4mR7KCcJEwaGam6KQ2fuBHvgVRj4mAIBIAwKAtW4Ud7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyB8LAARfCQLVuhe+1E0NQB+GLSAAGON/pAAQGBAQHXAIEBAdcA1AHQgQEB1wCBAQHXANIA0gCBAQHXANQw0IEBAdcA9AQwEHoQeRB4bBqOoPpAAQGBAQHXAIEBAdcA1AHQgQEB1wAwFEMwBNFVAts84ts8gfDQAIEDlfCQEy0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4YQ8D1u1E0NQB+GLSAAGON/pAAQGBAQHXAIEBAdcA1AHQgQEB1wCBAQHXANIA0gCBAQHXANQw0IEBAdcA9AQwEHoQeRB4bBqOoPpAAQGBAQHXAIEBAdcA1AHQgQEB1wAwFEMwBNFVAts84lUZ2zwwHxEQAIzI+EIBzH8BygBVkFCpzxYXgQEBzwAVgQEBzwADyIEBAc8AEoEBAc8AygASygASgQEBzwADyIEBAc8AEvQAyVjMyQHMye1UA5rtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGw4wIhghAPR00Duo6ZMdMfAYIQD0dNA7ry4IH6QAExVZDbPGwZf+ABwACRMOMNcBoZEgTy+QEggvAJUZAZSu5hHOiVxVA634X9hk3nkFdGFC9gjT6y+q0U5LqPGDDbPCSzlCVw+wLefypwgwZtbW3bPH/bMeAggvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rqOkTA0f38qcIMGbW1t2zwEf9sx4BkcHBMBVoLwvPr3dpB8cZzI03nY8ZSqqifoyihxzVkXgXIfIVpFRQG6joXbPH/bMeAUBCLbPNs8M3+LdTdG9wcGVkjbPBkeFxUBBts8AxYBJPhBbyQQI18DfwJwgEJYbW3bPBwBQshwAcsfbwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMRgAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwAc+EFvJBAjXwMqxwXy4IQD2lvbPCSOin8qcIMGbW1t2zyO2fhBbyQwMoE+u1O5oBO+EvL0gQEBUjIgbpUwWfRaMJRBM/QU4gGkUVigmVMHvFNjocIAsI6hIYEBASRZ9AxvoZIwbd8gbvLQgFEYoQOkUTgXQzDbPFAF6FBV4n8eHBsBEH9Zcm1tbds8HAH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zHQAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAABCCAJ2wJLPy9AASbW1wcFRgBQMEpPH0JA==';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeAddress(owner);
-    builder.writeNumber(investment);
-    builder.writeNumber(returns);
-    builder.writeNumber(fee);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (RugPull_errors[res.exitCode]) {
-            throw new ComputeError(RugPull_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECHgEABbEAART/APSkE/S88sgLAQIBYgIDATLQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhhBAIBIBQVA9btRNDUAfhi0gABjjf6QAEBgQEB1wCBAQHXANQB0IEBAdcAgQEB1wDSANIAgQEB1wDUMNCBAQHXAPQEMBB6EHkQeGwajqD6QAEBgQEB1wCBAQHXANQB0IEBAdcAMBRDMATRVQLbPOJVGds8MBwFBgOa7aLt+3Ah10nCH5UwINcLH94Cklt/4CHAACHXScEhsOMCIYIQD0dNA7qOmTHTHwGCEA9HTQO68uCB+kABMVWQ2zxsGX/gAcAAkTDjDXAHDAgAjMj4QgHMfwHKAFWQUKnPFheBAQHPABWBAQHPAAPIgQEBzwASgQEBzwDKABLKABKBAQHPAAPIgQEBzwAS9ADJWMzJAczJ7VQD2lvbPCSOin8qcIMGbW1t2zyO2fhBbyQwMoE+u1O5oBO+EvL0gQEBUjIgbpUwWfRaMJRBM/QU4gGkUVigmVMHvFNjocIAsI6hIYEBASRZ9AxvoZIwbd8gbvLQgFEYoQOkUTgXQzDbPFAF6FBV4n8NEgkE8vkBIILwCVGQGUruYRzolcVQOt+F/YZN55BXRhQvYI0+svqtFOS6jxgw2zwks5QlcPsC3n8qcIMGbW1t2zx/2zHgIILwzeJCxsrFYKmf8tJoPuD7FimoGK7A8RZlEc2CLPINpOq6jpEwNH9/KnCDBm1tbds8BH/bMeAMEhIKARB/WXJtbW3bPBIBVoLwvPr3dpB8cZzI03nY8ZSqqifoyihxzVkXgXIfIVpFRQG6joXbPH/bMeALBCLbPNs8M3+LdTdG9wcGVkjbPAwNDg8AHPhBbyQQI18DKscF8uCEABCCAJ2wJLPy9AFCyHAByx9vAAFvjG1vjAHbPG8iAcmTIW6zlgFvIlnMyegxEAEG2zwDEQC6INdKIddJlyDCACLCALGOSgNvIoB/Is8xqwKhBasCUVW2CCDCAJwgqgIV1xhQM88WQBTeWW8CU0GhwgCZyAFvAlBEoaoCjhIxM8IAmdQw0CDXSiHXSZJwIOLi6F8DAST4QW8kECNfA38CcIBCWG1t2zwSAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMTADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wACASAWFwIBIBobAtW6F77UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyBwYAtW4Ud7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyBwZAAgQOV8JAARfCQDdu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwoBY90JlEubWqqQrClgAsBoJwQM51aecV+dJQsB1hbiZHsoJwkTBoZqbopDZ+4Ee+BVGPiYAtW4bV7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyBwdABJtbXBwVGAFAwQACF8GbBM=');
+    const __system = Cell.fromBase64('te6cckECIAEABbsAAQHAAQEFoK6fAgEU/wD0pBP0vPLICwMCAWIOBAIBIAkFAgEgCAYC1bhtXtRNDUAfhi0gABjjf6QAEBgQEB1wCBAQHXANQB0IEBAdcAgQEB1wDSANIAgQEB1wDUMNCBAQHXAPQEMBB6EHkQeGwajqD6QAEBgQEB1wCBAQHXANQB0IEBAdcAMBRDMATRVQLbPOLbPIHwcACF8GbBMA3bu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcKAWPdCZRLm1qqkKwpYALAaCcEDOdWnnFfnSULAdYW4mR7KCcJEwaGam6KQ2fuBHvgVRj4mAIBIAwKAtW4Ud7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyB8LAARfCQLVuhe+1E0NQB+GLSAAGON/pAAQGBAQHXAIEBAdcA1AHQgQEB1wCBAQHXANIA0gCBAQHXANQw0IEBAdcA9AQwEHoQeRB4bBqOoPpAAQGBAQHXAIEBAdcA1AHQgQEB1wAwFEMwBNFVAts84ts8gfDQAIEDlfCQEy0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4YQ8D1u1E0NQB+GLSAAGON/pAAQGBAQHXAIEBAdcA1AHQgQEB1wCBAQHXANIA0gCBAQHXANQw0IEBAdcA9AQwEHoQeRB4bBqOoPpAAQGBAQHXAIEBAdcA1AHQgQEB1wAwFEMwBNFVAts84lUZ2zwwHxEQAIzI+EIBzH8BygBVkFCpzxYXgQEBzwAVgQEBzwADyIEBAc8AEoEBAc8AygASygASgQEBzwADyIEBAc8AEvQAyVjMyQHMye1UA5rtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGw4wIhghAPR00Duo6ZMdMfAYIQD0dNA7ry4IH6QAExVZDbPGwZf+ABwACRMOMNcBoZEgTy+QEggvAJUZAZSu5hHOiVxVA634X9hk3nkFdGFC9gjT6y+q0U5LqPGDDbPCSzlCVw+wLefypwgwZtbW3bPH/bMeAggvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rqOkTA0f38qcIMGbW1t2zwEf9sx4BkcHBMBVoLwvPr3dpB8cZzI03nY8ZSqqifoyihxzVkXgXIfIVpFRQG6joXbPH/bMeAUBCLbPNs8M3+LdTdG9wcGVkjbPBkeFxUBBts8AxYBJPhBbyQQI18DfwJwgEJYbW3bPBwBQshwAcsfbwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMRgAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwAc+EFvJBAjXwMqxwXy4IQD2lvbPCSOin8qcIMGbW1t2zyO2fhBbyQwMoE+u1O5oBO+EvL0gQEBUjIgbpUwWfRaMJRBM/QU4gGkUVigmVMHvFNjocIAsI6hIYEBASRZ9AxvoZIwbd8gbvLQgFEYoQOkUTgXQzDbPFAF6FBV4n8eHBsBEH9Zcm1tbds8HAH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zHQAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAABCCAJ2wJLPy9AASbW1wcFRgBQMEpPH0JA==');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initRugPull_init_args({ $$type: 'RugPull_init_args', owner, investment, returns, fee })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const RugPull_errors: { [key: number]: { message: string } } = {

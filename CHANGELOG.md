@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - moving `debug` flag from `experimental` to `parameters` in `tact.config.json`
 - Unknown fields in config are now considered an error
 - Allow contracts without fields
+- Typescript bindings are now working in browser and doesn't have `ton-emulator` dependency
 
 ## [0.9.3] - 2023-02-19
 

@@ -16,7 +16,6 @@ import {
     TupleBuilder,
     DictionaryValue
 } from 'ton-core';
-import { ContractSystem, ContractExecutor } from 'ton-emulator';
 
 export type StateInit = {
     $$type: 'StateInit';
@@ -62,6 +61,7 @@ function dictValueParserStateInit(): DictionaryValue<StateInit> {
         }
     }
 }
+
 export type Context = {
     $$type: 'Context';
     bounced: boolean;
@@ -116,6 +116,7 @@ function dictValueParserContext(): DictionaryValue<Context> {
         }
     }
 }
+
 export type SendParameters = {
     $$type: 'SendParameters';
     bounce: boolean;
@@ -185,6 +186,7 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
         }
     }
 }
+
 export type Operation = {
     $$type: 'Operation';
     seqno: bigint;
@@ -234,6 +236,7 @@ function dictValueParserOperation(): DictionaryValue<Operation> {
         }
     }
 }
+
 export type Execute = {
     $$type: 'Execute';
     operation: Operation;
@@ -290,6 +293,7 @@ function dictValueParserExecute(): DictionaryValue<Execute> {
         }
     }
 }
+
 export type Executed = {
     $$type: 'Executed';
     seqno: bigint;
@@ -331,32 +335,32 @@ function dictValueParserExecuted(): DictionaryValue<Executed> {
         }
     }
 }
+
+ type MultisigContract_init_args = {
+    $$type: 'MultisigContract_init_args';
+    key1: bigint;
+    key2: bigint;
+    key3: bigint;
+}
+
+function initMultisigContract_init_args(src: MultisigContract_init_args) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(0, 1);
+        b_0.storeInt(src.key1, 257);
+        b_0.storeInt(src.key2, 257);
+        b_0.storeInt(src.key3, 257);
+    };
+}
+
 async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
-    const __init = 'te6ccgEBBAEANAABFP8A9KQT9LzyyAsBAgFiAgMAAtAAOaFK3AeRmOADlAAGoEcCAgOeAQICA54BAgIDngGT';
-    const __code = 'te6ccgECFgEAAyQAART/APSkE/S88sgLAQIBYgIDAszQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zziVRPbPDDI+EIBzH8BygBVMFA0yx/L/8v/y//J7VQUBAIBIAkKAabtou37cCHXScIflTAg1wsf3gKSW3/gIYIQHw1VcLrjAgHAAI4q+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGupN/2zHgkTDicAUBwDHTHwGCEB8NVXC68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwbBZUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9Ns8fwYBEn8zAXBtbW3bPAcB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswgAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAJpvmS/aiaGoA/DFpAADOaY/p/+n/6f+qmDYKR0tAgIDrgECAgOuAQICA64AqkAHorG2ecW2eQUCwIBSAwNAARfAwIBIA4PAgEgEhMCabDp+1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFBACabDhu1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFBEABGwxAAYTXwMCabD5e1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFBUAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4AAGcFUgAAgQI18D';
-    const __system = 'te6cckECGAEAAy4AAQHAAQEFobo9AgEU/wD0pBP0vPLICwMCAWIRBAIBIA8FAgFICgYCASAIBwBxsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgAmmw+XtRNDUAfhi0gABnNMf0//T/9P/VTBsFI6WgQEB1wCBAQHXAIEBAdcAVSAD0VjbPOLbPIBcJAAgQI18DAgEgDQsCabDhu1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFwwABhNfAwJpsOn7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zzi2zyAXDgAEbDECab5kv2omhqAPwxaQAAzmmP6f/p/+n/qpg2CkdLQICA64BAgIDrgECAgOuAKpAB6KxtnnFtnkFxAABF8DAszQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zziVRPbPDDI+EIBzH8BygBVMFA0yx/L/8v/y//J7VQXEgGm7aLt+3Ah10nCH5UwINcLH94Cklt/4CGCEB8NVXC64wIBwACOKvkBgvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqTf9sx4JEw4nATAcAx0x8BghAfDVVwuvLggdMf+gD6QAFDMAPUAdAB1AHQAdQB0BZDMGwWVHVDyFUgUCPLHwH6AgHPFsn5AFIEKvkQUjMp+RBUEzf5EIFE9lNquvL0AYIAvREDsAGw8vTbPH8UARJ/MwFwbW1t2zwVAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMWADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAABnBVILo7qkA=';
-    let systemCell = Cell.fromBase64(__system);
-    let builder = new TupleBuilder();
-    builder.writeCell(systemCell);
-    builder.writeNumber(key1);
-    builder.writeNumber(key2);
-    builder.writeNumber(key3);
-    let __stack = builder.build();
-    let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];
-    let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];
-    let system = await ContractSystem.create();
-    let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);
-    let res = await executor.get('init', __stack);
-    if (!res.success) { throw Error(res.error); }
-    if (res.exitCode !== 0 && res.exitCode !== 1) {
-        if (MultisigContract_errors[res.exitCode]) {
-            throw new ComputeError(MultisigContract_errors[res.exitCode].message, res.exitCode, { logs: res.logs });
-        } else {
-            throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });
-        }
-    }
-    let data = res.stack.readCell();
-    return { code: codeCell, data };
+    const __code = Cell.fromBase64('te6ccgECFgEAAyQAART/APSkE/S88sgLAQIBYgIDAszQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zziVRPbPDDI+EIBzH8BygBVMFA0yx/L/8v/y//J7VQUBAIBIAkKAabtou37cCHXScIflTAg1wsf3gKSW3/gIYIQHw1VcLrjAgHAAI4q+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGupN/2zHgkTDicAUBwDHTHwGCEB8NVXC68uCB0x/6APpAAUMwA9QB0AHUAdAB1AHQFkMwbBZUdUPIVSBQI8sfAfoCAc8WyfkAUgQq+RBSMyn5EFQTN/kQgUT2U2q68vQBggC9EQOwAbDy9Ns8fwYBEn8zAXBtbW3bPAcB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFuswgAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAJpvmS/aiaGoA/DFpAADOaY/p/+n/6f+qmDYKR0tAgIDrgECAgOuAQICA64AqkAHorG2ecW2eQUCwIBSAwNAARfAwIBIA4PAgEgEhMCabDp+1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFBACabDhu1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFBEABGwxAAYTXwMCabD5e1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFBUAcbL0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4AAGcFUgAAgQI18D');
+    const __system = Cell.fromBase64('te6cckECGAEAAy4AAQHAAQEFobo9AgEU/wD0pBP0vPLICwMCAWIRBAIBIA8FAgFICgYCASAIBwBxsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgAmmw+XtRNDUAfhi0gABnNMf0//T/9P/VTBsFI6WgQEB1wCBAQHXAIEBAdcAVSAD0VjbPOLbPIBcJAAgQI18DAgEgDQsCabDhu1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFwwABhNfAwJpsOn7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zzi2zyAXDgAEbDECab5kv2omhqAPwxaQAAzmmP6f/p/+n/qpg2CkdLQICA64BAgIDrgECAgOuAKpAB6KxtnnFtnkFxAABF8DAszQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zziVRPbPDDI+EIBzH8BygBVMFA0yx/L/8v/y//J7VQXEgGm7aLt+3Ah10nCH5UwINcLH94Cklt/4CGCEB8NVXC64wIBwACOKvkBgvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqTf9sx4JEw4nATAcAx0x8BghAfDVVwuvLggdMf+gD6QAFDMAPUAdAB1AHQAdQB0BZDMGwWVHVDyFUgUCPLHwH6AgHPFsn5AFIEKvkQUjMp+RBUEzf5EIFE9lNquvL0AYIAvREDsAGw8vTbPH8UARJ/MwFwbW1t2zwVAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMWADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAABnBVILo7qkA=');
+    let builder = beginCell();
+    builder.storeRef(__system);
+    initMultisigContract_init_args({ $$type: 'MultisigContract_init_args', key1, key2, key3 })(builder);
+    const __data = builder.endCell();
+    return { code: __code, data: __data };
 }
 
 const MultisigContract_errors: { [key: number]: { message: string } } = {

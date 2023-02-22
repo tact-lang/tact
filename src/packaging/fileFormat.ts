@@ -18,7 +18,6 @@ export const typeFormat = z.union([
 ]);
 
 export const initFormat = z.object({
-    code: z.string(),
     args: z.array(z.object({
         name: z.string(),
         type: typeFormat

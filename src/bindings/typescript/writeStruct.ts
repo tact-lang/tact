@@ -1,13 +1,13 @@
 import { ABIType, ABITypeRef } from "ton-core";
 import { serializers } from "./serializers";
-import { AllocationCell } from "../../storage/operation";
+import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { Writer } from "../../utils/Writer";
 
-export function writeStruct(s: ABIType, w: Writer) {
-    w.append(`export type ${s.name} = {`);
+export function writeStruct(name: string, fields: { name: string, type: ABITypeRef }[], exp: boolean, w: Writer) {
+    w.append(`${exp ? 'export ' : ' '}type ${name} = {`);
     w.inIndent(() => {
-        w.append(`$$type: '${s.name}';`);
-        outer: for (let f of s.fields) {
+        w.append(`$$type: '${name}';`);
+        outer: for (let f of fields) {
 
             for (let s of serializers) {
                 let v = s.abiMatcher(f.type);
@@ -70,7 +70,7 @@ export function writeSerializer(s: ABIType, allocation: AllocationCell, w: Write
             if (s.header) {
                 w.append(`b_0.storeUint(${s.header}, 32);`);
             }
-            writeSerializerCell(0, 0, allocation, s, w);
+            writeSerializerCell(0, allocation, w);
         });
         w.append(`};`);
     });
@@ -78,20 +78,35 @@ export function writeSerializer(s: ABIType, allocation: AllocationCell, w: Write
     w.append();
 }
 
-function writeSerializerCell(gen: number, offset: number, src: AllocationCell, s: ABIType, w: Writer) {
+export function writeInitSerializer(name: string, allocation: AllocationCell, w: Writer) {
+    w.append(`function init${name}(src: ${name}) {`);
+    w.inIndent(() => {
+        w.append(`return (builder: Builder) => {`)
+        w.inIndent(() => {
+            w.append(`let b_0 = builder;`);
+            w.append(`b_0.storeUint(0, 1);`);
+            writeSerializerCell(0, allocation, w);
+        });
+        w.append(`};`);
+    });
+    w.append(`}`);
+    w.append();
+}
+
+function writeSerializerCell(gen: number, src: AllocationCell, w: Writer) {
     for (let f of src.ops) {
-        writeSerializerField(gen, offset++, s, w);
+        writeSerializerField(gen, f, w);
     }
     if (src.next) {
         w.append(`let b_${gen + 1} = new Builder();`);
-        writeSerializerCell(gen + 1, offset, src.next, s, w);
+        writeSerializerCell(gen + 1, src.next, w);
         w.append(`b_${gen}.storeRef(b_${gen + 1}.endCell());`);
     }
 }
 
-function writeSerializerField(gen: number, offset: number, s: ABIType, w: Writer) {
-    let name = 'src.' + s.fields[offset].name;
-    let type = s.fields[offset].type;
+function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
+    let name = 'src.' + s.name;
+    let type = s.type;
     for (let s of serializers) {
         let v = s.abiMatcher(type);
         if (v) {
@@ -170,4 +185,5 @@ export function writeDictParser(s: ABIType, w: Writer) {
             }
         }
     `);
+    w.append();
 }
