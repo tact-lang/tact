@@ -16,6 +16,8 @@ This version will be the first stable release of TACT. It will be released when 
 * Ability to receive messages from other contracts
 * Limited Strings and Maps support
 * Importing `func` files
+* Arguments-addressable contracts
+* Typescript bindings for Node, Browser and React Native
 
 ## ✍️ Version v2
 
@@ -23,7 +25,7 @@ This version would include the following features:
 * Full String support
 * Full Maps support, including the ability to iterate over items
 * Typed tuples
-* `let` type inheritance when possible
+* `let` type inference when possible
 * Limited external messages support
 * Contract automatic optimisations
 * Auto-unpacking nullable variables to non-null one
