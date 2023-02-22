@@ -311,7 +311,6 @@ function dictValueParserSigned(): DictionaryValue<Signed> {
 function initMultisig_init_args(src: Multisig_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeDict(src.members, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257));
         b_0.storeInt(src.totalWeight, 257);
         b_0.storeInt(src.requiredWeight, 257);
@@ -323,6 +322,7 @@ async function Multisig_init(members: Dictionary<Address, bigint>, totalWeight: 
     const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initMultisig_init_args({ $$type: 'Multisig_init_args', members, totalWeight, requiredWeight })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

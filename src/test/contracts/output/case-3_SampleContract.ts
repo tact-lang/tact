@@ -239,7 +239,6 @@ function dictValueParserSource(): DictionaryValue<Source> {
 function initSampleContract_init_args(src: SampleContract_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -248,6 +247,7 @@ async function SampleContract_init() {
     const __system = Cell.fromBase64('te6cckECCwEAASwAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCa73ix2omhqAPwxaQAAxw/AgIDrgECAgOuAagDoQICA64BAgIDrgCyZCBIhgDYKR0GYbZ5xbZ5AoHAARfAwL00AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGOH4EBAdcAgQEB1wDUAdCBAQHXAIEBAdcAWTIQJEMAbBSOgzDbPOJVE9s8MMj4QgHMfwHKAFUwUDSBAQHPAIEBAc8AyEADAoEBAc8AgQEBzwDJAczJ7VQKCQAWINdJMcIfMJF/4HAACm1wUgITGXltuw==');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initSampleContract_init_args({ $$type: 'SampleContract_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

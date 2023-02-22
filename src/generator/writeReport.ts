@@ -1,7 +1,6 @@
 import { ContractABI } from "ton-core";
 import { CompilerContext } from "../context";
 import { PackageFileFormat } from "../packaging/fileFormat";
-import { getAllocation } from "../storage/resolveAllocation";
 import { getType } from "../types/resolveDescriptors";
 import { Writer } from "../utils/Writer";
 

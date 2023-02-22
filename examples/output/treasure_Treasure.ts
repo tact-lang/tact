@@ -284,7 +284,6 @@ function dictValueParserWithdraw(): DictionaryValue<Withdraw> {
 function initTreasure_init_args(src: Treasure_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.owner);
     };
 }
@@ -294,6 +293,7 @@ async function Treasure_init(owner: Address) {
     const __system = Cell.fromBase64('te6cckECDgEAAjcAAQHAAQEFoG7tAgEU/wD0pBP0vPLICwMCAWIHBAIBIAYFALm93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwThQCx7oTKJc2tVUhWFLABYDQTggZzq084r86ShYDrC3EyPZQAMb4o72omhqAPwxaQAAyn0gAJjK/SAAgOjxQBhNAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABlPpAATGV+kABAdHiWds8MMj4QgHMfwHKAAHPFsntVAgDxu2i7ftwIddJwh+VMCDXCx/eApJbf+AhghBjsKdIuo6YMdMfAYIQY7CnSLry4IH6ANMHWWwS2zx/4CGCEA9HTQO6jpcx0x8BghAPR00DuvLggfpAATEB2zwwf+ABwACRMOMNcAoNCQFi+QGC8JhsK6Eku5KH60oL2NMQThwAZ6PJOVLYicdNCBhb0w1Nuo6JcIEAoNs8f9sx4AoCHgLbPH/IyVQTAlBVbW3bPA0LAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMMADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAAHPhBbyQQI18DIccF8uCEy+DAbQ==');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initTreasure_init_args({ $$type: 'Treasure_init_args', owner })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

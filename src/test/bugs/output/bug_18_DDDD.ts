@@ -197,7 +197,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 function initDDDD_init_args(src: DDDD_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.addr1);
         b_0.storeAddress(src.addr2);
         b_0.storeAddress(src.addr3);
@@ -209,6 +208,7 @@ async function DDDD_init(addr1: Address, addr2: Address, addr3: Address) {
     const __system = Cell.fromBase64('te6cckECEQEAAkoAAQHAAQEFoViRAgEU/wD0pBP0vPLICwMCAWILBAIBIAkFAgEgCAYCd7lcPtRNDUAfhi0gABjhT6QAEB+kABAfpAAQH0BPQEVUBsFY6S+kABAfpAAQH6QAFDMAPRWNs84lUE2zyBAHACAxMjOBAQEyWfQMb6GSMG3fAJW7vRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgCd7wU92omhqAPwxaQAAxwp9IACA/SAAgP0gAID6AnoCKqA2CsdJfSAAgP0gAID9IAChmAHorG2ecSqCbZ5BAKADBsQoEBCwGBAQFBM/QKb6GUAdcAMJJbbeICAs0NDAAjaIW6VW1n0WTDgyAHPAEEz9EGAt/QDoaYGAuNhgAMi/yLhxAP0gESgqt4J8MPaiaGoA/DFpAADHCn0gAID9IACA/SAAgPoCegIqoDYKx0l9IACA/SAAgP0gAKGYAeisbZ5xKoptnhhkfCEA5j+A5QAqoCgqZ4ssZ4sA54sJegB6AGT2qkEA4BPHAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsOMCcA8A7gGBAQFwJiBulTBZ9FowlEEz9BTigQEBcSUgbpUwWfRaMJRBM/QU4oEBAXIkIG6VMFn0WjCUQTP0FOKBAQFzJiBulTBZ9FowlEEz9BTiAYEBCyVwgQEB8AaBAQskcYEBAfAGgQELI3KBAQHwBoEBCyVzgQEB8AZ/AARtbXiYz8k=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initDDDD_init_args({ $$type: 'DDDD_init_args', addr1, addr2, addr3 })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

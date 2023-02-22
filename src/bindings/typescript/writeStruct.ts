@@ -84,7 +84,6 @@ export function writeInitSerializer(name: string, allocation: AllocationCell, w:
         w.append(`return (builder: Builder) => {`)
         w.inIndent(() => {
             w.append(`let b_0 = builder;`);
-            w.append(`b_0.storeUint(0, 1);`);
             writeSerializerCell(0, allocation, w);
         });
         w.append(`};`);

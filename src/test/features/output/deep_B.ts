@@ -195,7 +195,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 function initB_init_args(src: B_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.parent);
     };
 }
@@ -205,6 +204,7 @@ async function B_init(parent: Address) {
     const __system = Cell.fromBase64('te6cckECGwEABD8AAQHAAQICcwsCAQWyKeADART/APSkE/S88sgLBAIBYgYFAJWhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcE4DepO98qiy3jjqenvAqzhk0CAssIBwBfpADoegIYNoDAvFOAwAh6B7fQ+XBDgMC8U5EBQAh6C+QA5HoAZIDmOADlACxni2TAAYPQB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABlPpAATGV+kABAdHiWds8MMj4QgHMfwHKAAHPFsntVIJATztou37cCHXScIflTAg1wsf3gKSW3/gAcAAkTDjDXAKA+b5ASCC8LQamTMwHB1yjmTiNoX+Opx1QKuTWe9zGJQ8DuXgkQ1duo+iMPhCIfAYXNs8f3CAQouE1lc3NhZ2UyjbPF4jQDTbPH/bMeCC8Pw8ghEkZlgduiP5BM0aCXI8CGmt6gBFvWcz6k9229JyupN/2zHgGhgWAQWyIaAMART/APSkE/S88sgLDQIBYhIOAgEgEA8Alb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNAE1vQvPaiaGoA/DFpAADKfSAAmMr9IACA6PFtnkEQAOMPhC+CjwGQICyxQTAF+kgOh6Ahg2gMC8U4DACHoHt9D5cEOAwLxTkQFACHoL5ADkegBkgOY4AOUALGeLZMABg9AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGU+kABMZX6QAEB0eJZ2zwwyPhCAcx/AcoAAc8Wye1UhUD0O2i7ftwIddJwh+VMCDXCx/eApJbf+ABwACPyfkBgvC0GpkzMBwdco5k4jaF/jqcdUCrk1nvcxiUPA7l4JENXbqPofhC+CjwGVzbPH9wgEKLdNZXNzYWdljbPF4jQDTbPH/bMeCRMOJwGhgWAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMXADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wABQshwAcsfbwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMRkAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwBKcFnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0M2s7ZQ=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initB_init_args({ $$type: 'B_init_args', parent })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

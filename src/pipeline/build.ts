@@ -163,6 +163,10 @@ export async function build(project: ConfigProject, rootPath: string) {
             code: artifacts.codeBoc.toString('base64'),
             init: {
                 args: getType(ctx, contract).init!.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type) })),
+                prefix: {
+                    bits: 1,
+                    value: 0,
+                },
                 deployment: {
                     kind: 'system-cell',
                     system: systemCell.toBoc().toString('base64')
@@ -188,7 +192,12 @@ export async function build(project: ConfigProject, rootPath: string) {
             return false;
         }
         try {
-            let bindingsServer = writeTypescript(JSON.parse(pkg.abi), { code: pkg.code, system: pkg.init.deployment.system, args: pkg.init.args });
+            let bindingsServer = writeTypescript(JSON.parse(pkg.abi), {
+                code: pkg.code,
+                prefix: pkg.init.prefix,
+                system: pkg.init.deployment.system,
+                args: pkg.init.args
+            });
             fs.writeFileSync(
                 path.resolve(outputPath, project.name + '_' + pkg.name + ".ts"),
                 bindingsServer,

@@ -789,7 +789,6 @@ function dictValueParserMint(): DictionaryValue<Mint> {
 function initJettonDefaultWallet_init_args(src: JettonDefaultWallet_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.master);
         b_0.storeAddress(src.owner);
     };
@@ -800,6 +799,7 @@ async function JettonDefaultWallet_init(master: Address, owner: Address) {
     const __system = Cell.fromBase64('te6cckECGwEABOsAAQHAAQEFobFfAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwThO6PAB8tmwHk/kHVks1lEJwCYb/YF2omhqAPwxaQAAxwhAgIDrgH0gAID9IAChmDYJx0b9IACA/SAAiQFogO2ecW2eQaBwAO+EJTEvAnMAICygoJAG2pwLQ9AQwbQGCANivAYAQ9A9vofLghwGCANivIgKAEPQXyAHI9ADJAcxwAcoAQANZzxYBzxbJgAsnUB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABjhCBAQHXAPpAAQH6QAFDMGwTjo36QAEB+kABEgLRAds84lUS2zwwyPhCAcx/AcoAVSBQI4EBAc8AAc8WAc8Wye1UhoLBL5wIddJwh+VMCDXCx/eAo4pMYAg1yHTH9M/MfoAMIE1UiKCEBeNRRm6A4IQe92X3roTsRLy9BOgAn/gIYIQD4p+pbqPCDHbPGwX2zx/4CGCEBeNRRm64wIBghBZXwe8uhkSDgwBWo6o0x8BghBZXwe8uvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeIUQzBsFOAwcA0C1Fv4QW8kgRFNUzjHBfL0UYShggD1/CHC//L0QzBSOds8gT67AYIJMS0AoIIImJaAoBK88vR/cAOAQFQzZshVMIIQe92X3lAFyx8Tyz8B+gIBzxYBIG6VMHABywGSzxbiyVQTBFAzbW3bPH8YFAIKMds8bBYRDwP2+EFvJFMqxwWzjpL4QlO48CcBgRFNAts8JMcF8vTeUcigggD1/CHC//L0IfgnbxAhoYIImJaAZrYIoYIImJaAoKEmwgCWEH1QiV8I4w0lbrMiwgCwjqBwBiBu8tCAcATIAYIQ1TJ221jLH8s/yRBHQzAXbW3bPJI1W+J/FxAUAnJQTUMw2zxSMKAaoXBwKEgTUHTIVTCCEHNi0JxQBcsfE8s/AfoCAc8WAc8WySgQRkMTUFVtbds8UAUYFABY0x8BghAXjUUZuvLggdM/+gD6QAEB+kAh1wsBwwCRAZIxbeIB+gBRVRUUQzAEvGwi+EFvJIERTVM7xwXy9FG3oYIA9fwhwv/y9EMwUjzbPHEkwgCSMHLegT67AqiCCTEtAKCCCJiWgKASvPL0+EJUIGTwJ1zbPH9QdnCAQCtUTDkYyFVQ2zzJEFYQNFkYFxYTAQTbPBQB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusxUAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AABOghAXjUUZUAfLHxXLP1AD+gIBzxYBIG6VMHABywGSzxbiAfoCAc8WAEpwWchwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQACRsMfoAMXHXIfoAMfoAMKcDqwAAbNMfAYIQD4p+pbry4IHTP/oA+kABAfpAIdcLAcMAkQGSMW3iAdIAAZHUkm0B4voAUWYWFRRDMAAEcAJKQnBp');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initJettonDefaultWallet_init_args({ $$type: 'JettonDefaultWallet_init_args', master, owner })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

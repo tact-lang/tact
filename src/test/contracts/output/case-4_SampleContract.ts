@@ -239,7 +239,6 @@ function dictValueParserSource(): DictionaryValue<Source> {
 function initSampleContract_init_args(src: SampleContract_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -248,6 +247,7 @@ async function SampleContract_init() {
     const __system = Cell.fromBase64('te6cckECDAEAAToAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCc73ix2omhqAPwxaQAAxxHAgIDrgECAgOuAagDoQICA64BAgIDrgCyBegIYCBqIGgk2CsdBmG2ecW2eQLBwAEXwQDptAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABjiOBAQHXAIEBAdcA1AHQgQEB1wCBAQHXAFkC9AQwEDUQNBJsFY6DMNs84lUU2zwwCwoJAF7I+EIBzH8BygBVQFBFgQEBzwASgQEBzwDIQAMCgQEBzwCBAQHPABL0AMkBzMntVAAWINdJMcIfMJF/4HAACG1tbW0jsNj6');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initSampleContract_init_args({ $$type: 'SampleContract_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

@@ -195,7 +195,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 function initC_init_args(src: C_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.parent);
     };
 }
@@ -205,6 +204,7 @@ async function C_init(parent: Address) {
     const __system = Cell.fromBase64('te6cckECDwEAAsAAAQHAAQEFoPFPAgEU/wD0pBP0vPLICwMCAWIFBACVoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNAgLLBwYAX6QA6HoCGDaAwLxTgMAIege30PlwQ4DAvFORAUAIegvkAOR6AGSA5jgA5QAsZ4tkwAGD0AdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZT6QAExlfpAAQHR4lnbPDDI+EIBzH8BygABzxbJ7VSCAE87aLt+3Ah10nCH5UwINcLH94Cklt/4AHAAJEw4w1wCQPm+QEggvC0GpkzMBwdco5k4jaF/jqcdUCrk1nvcxiUPA7l4JENXbqPojD4QiHwGFzbPH9wgEKLhNZXNzYWdlMo2zxeI0A02zx/2zHggvD8PIIRJGZYHboj+QTNGglyPAhpreoARb1nM+pPdtvScrqTf9sx4A4MCgH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zCwAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAULIcAHLH28AAW+MbW+MAds8byIByZMhbrOWAW8iWczJ6DENALog10oh10mXIMIAIsIAsY5KA28igH8izzGrAqEFqwJRVbYIIMIAnCCqAhXXGFAzzxZAFN5ZbwJTQaHCAJnIAW8CUEShqgKOEjEzwgCZ1DDQINdKIddJknAg4uLoXwMASnBZyHABywFzAcsBcAHLABLMzMn5AMhyAcsBcAHLABLKB8v/ydCMeotp');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initC_init_args({ $$type: 'C_init_args', parent })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

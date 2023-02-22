@@ -24,7 +24,15 @@ function writeArguments(args: ABIArgument[]) {
     return res;
 }
 
-export function writeTypescript(abi: ContractABI, init?: { code: string, system: string, args: ABIArgument[] }) {
+export function writeTypescript(abi: ContractABI, init?: {
+    code: string,
+    system: string,
+    args: ABIArgument[],
+    prefix?: {
+        value: number;
+        bits: number;
+    } | undefined
+}) {
     let w = new Writer();
 
     w.write(`
@@ -104,7 +112,7 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, system:
             type: v.type,
             op: getAllocationOperationFromField(v.type, (s) => allocations[s].size)
         }));
-        const allocation = allocate({ reserved: { bits: 1, refs: 1 }, ops });
+        const allocation = allocate({ reserved: { bits: init.prefix ? init.prefix.bits : 0, refs: 1 }, ops });
         writeStruct(argTypeName, init.args, false, w);
         writeInitSerializer(argTypeName, allocation, w);
 
@@ -119,39 +127,11 @@ export function writeTypescript(abi: ContractABI, init?: { code: string, system:
             // Stack
             w.append('let builder = beginCell();');
             w.append(`builder.storeRef(__system);`);
+            if (init.prefix) {
+                w.append(`builder.storeUint(${init.prefix.value}, ${init.prefix.bits});`);
+            }
             w.append(`init${argTypeName}({ ${[`$$type: '${argTypeName}'`, ...init.args.map((v) => v.name)].join(', ')} })(builder);`);
             w.append(`const __data = builder.endCell();`);
-
-            // Deploy
-            // w.append(`let codeCell = Cell.fromBoc(Buffer.from(__code, 'base64'))[0];`);
-            // w.append(`let initCell = Cell.fromBoc(Buffer.from(__init, 'base64'))[0];`);
-            // if (mode === 'client') {
-            //     w.append(`let executor = opts && opts.engine ? opts.engine : getDefaultExecutorEngine();`);
-            //     w.append(`let res = await executor.get({ method: 'init', stack: __stack, code: initCell, data: new Cell() });`);
-            // } else {
-            //     w.append(`let system = await ContractSystem.create();`);
-            //     w.append(`let executor = await ContractExecutor.create({ code: initCell, data: new Cell() }, system);`);
-            //     w.append(`let res = await executor.get('init', __stack);`);
-            // }
-            // w.append(`if (!res.success) { throw Error(res.error); }`);
-            // w.append(`if (res.exitCode !== 0 && res.exitCode !== 1) {`);
-            // w.inIndent(() => {
-            //     w.append(`if (${abi.name}_errors[res.exitCode]) {`);
-            //     w.inIndent(() => {
-            //         w.append(`throw new ComputeError(${abi.name}_errors[res.exitCode].message, res.exitCode, { logs: res.logs });`);
-            //     });
-            //     w.append(`} else {`);
-            //     w.inIndent(() => {
-            //         w.append(`throw new ComputeError('Exit code: ' + res.exitCode, res.exitCode, { logs: res.logs });`);
-            //     });
-            //     w.append(`}`);
-            // });
-            // w.append(`}`);
-            // if (mode === 'client') {
-            //     w.append(`let data = new TupleReader(res.stack).readCell();`);
-            // } else {
-            //     w.append(`let data = res.stack.readCell();`);
-            // }
             w.append(`return { code: __code, data: __data };`);
         });
         w.append(`}`);

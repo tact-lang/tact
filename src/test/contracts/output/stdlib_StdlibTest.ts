@@ -194,7 +194,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 function initStdlibTest_init_args(src: StdlibTest_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -203,6 +202,7 @@ async function StdlibTest_init() {
     const __system = Cell.fromBase64('te6cckECEQEAAUkAAQHAAQEFocp9AgEU/wD0pBP0vPLICwMCAWIOBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCAnIJBwI7r0L2omhqAPwxaQAAy8CAgOuAAJjHQZhtnnEA7Z5AEAgABjHXSgIBIAwKAjqpUu1E0NQB+GLSAAGXgQEB1wABMY6DMNs84gHbPBALAAYx10kCOqkL7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziAds8EA0ABjHHAAKQ0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UEA8APnAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsJF/4HAAAnCxNyka');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initStdlibTest_init_args({ $$type: 'StdlibTest_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

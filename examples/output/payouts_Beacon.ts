@@ -332,7 +332,6 @@ function dictValueParserCanPayoutResponse(): DictionaryValue<CanPayoutResponse> 
 function initBeacon_init_args(src: Beacon_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.master);
         b_0.storeAddress(src.owner);
     };
@@ -343,6 +342,7 @@ async function Beacon_init(master: Address, owner: Address) {
     const __system = Cell.fromBase64('te6cckECDwEAAkoAAQHAAQEFoUH1AgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAJW93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTggZzq084r86ShYDrC3EyPZQCW74o72omhqAPwxaQAAz30gAID9IACA6QAqkDYJx0b9IACA/SAAiQFogO2ecW2eQOBwAEMDECutAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABnvpAAQH6QAEB0gBVIGwTjo36QAEB+kABEgLRAds84lUS2zwwyPhCAcx/AcoAVSBazxZYzxbKAMntVA4JAUBwIddJwh+VMCDXCx/eApQxW3B/4AGCEMQZSd+64wIwcAoC3NMfAYIQxBlJ37ry4IGBAQHXAAEx+EFvJFuBEU0yJccF8vSCEAX14QBw+wIhjp9/MiJ/yFUgghD/60DeUATLHxKBAQHPAAHPFsoAyds8jp0icMhVIIIQ/+tA3lAEyx8SgQEBzwABzxbKAMnbPOJ/CwsBJPhBbyQQI18DfwJwgEJYbW3bPAwB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusw0AMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAACcK0OY2U=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initBeacon_init_args({ $$type: 'Beacon_init_args', master, owner })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

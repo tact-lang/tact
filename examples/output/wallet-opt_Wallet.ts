@@ -243,7 +243,6 @@ function dictValueParserTransferMessage(): DictionaryValue<TransferMessage> {
 function initWallet_init_args(src: Wallet_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeInt(src.key, 257);
         b_0.storeInt(src.walletId, 257);
     };
@@ -254,6 +253,7 @@ async function Wallet_init(key: bigint, walletId: bigint) {
     const __system = Cell.fromBase64('te6cckECDgEAAbQAAQHAAQEFoHL9AgEU/wD0pBP0vPLICwMCAWILBAIBIAgFAgEgBwYBWbgErtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zzibCGA0Acbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOAIBagoJAVmwfjtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziMDGANAVezJftRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziW4A0CuNAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziVRLbPDDI+EIBzH8BygBVIFAjyx/L/8s/ye1UDQwAsnAh10nCH5UwINcLH94Cklt/4AGCENOBeAa6jjrTHwGCENOBeAa68uCBgwjXGGZsEiD5AYIAvRFRNfkQEvL00h/SB9QwgUT2UTa6E/L0BKSpOA8E+wB/4DBwAARwWTvbzPU=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initWallet_init_args({ $$type: 'Wallet_init_args', key, walletId })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

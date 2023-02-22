@@ -346,7 +346,6 @@ function dictValueParserExecuted(): DictionaryValue<Executed> {
 function initMultisigContract_init_args(src: MultisigContract_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeInt(src.key1, 257);
         b_0.storeInt(src.key2, 257);
         b_0.storeInt(src.key3, 257);
@@ -358,6 +357,7 @@ async function MultisigContract_init(key1: bigint, key2: bigint, key3: bigint) {
     const __system = Cell.fromBase64('te6cckECGAEAAy4AAQHAAQEFobo9AgEU/wD0pBP0vPLICwMCAWIRBAIBIA8FAgFICgYCASAIBwBxsvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgAmmw+XtRNDUAfhi0gABnNMf0//T/9P/VTBsFI6WgQEB1wCBAQHXAIEBAdcAVSAD0VjbPOLbPIBcJAAgQI18DAgEgDQsCabDhu1E0NQB+GLSAAGc0x/T/9P/0/9VMGwUjpaBAQHXAIEBAdcAgQEB1wBVIAPRWNs84ts8gFwwABhNfAwJpsOn7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zzi2zyAXDgAEbDECab5kv2omhqAPwxaQAAzmmP6f/p/+n/qpg2CkdLQICA64BAgIDrgECAgOuAKpAB6KxtnnFtnkFxAABF8DAszQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZzTH9P/0//T/1UwbBSOloEBAdcAgQEB1wCBAQHXAFUgA9FY2zziVRPbPDDI+EIBzH8BygBVMFA0yx/L/8v/y//J7VQXEgGm7aLt+3Ah10nCH5UwINcLH94Cklt/4CGCEB8NVXC64wIBwACOKvkBgvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqTf9sx4JEw4nATAcAx0x8BghAfDVVwuvLggdMf+gD6QAFDMAPUAdAB1AHQAdQB0BZDMGwWVHVDyFUgUCPLHwH6AgHPFsn5AFIEKvkQUjMp+RBUEzf5EIFE9lNquvL0AYIAvREDsAGw8vTbPH8UARJ/MwFwbW1t2zwVAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMWADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAABnBVILo7qkA=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initMultisigContract_init_args({ $$type: 'MultisigContract_init_args', key1, key2, key3 })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

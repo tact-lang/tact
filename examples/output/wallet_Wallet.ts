@@ -303,7 +303,6 @@ function dictValueParserTransferMessage(): DictionaryValue<TransferMessage> {
 function initWallet_init_args(src: Wallet_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeInt(src.key, 257);
         b_0.storeInt(src.walletId, 257);
     };
@@ -314,6 +313,7 @@ async function Wallet_init(key: bigint, walletId: bigint) {
     const __system = Cell.fromBase64('te6cckECFgEAA4UAAQHAAQEFoHL9AgEU/wD0pBP0vPLICwMCAWIOBAIBIAkFAgEgCAYCWbgErtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zzi2zyBUHAARsIQBxu70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4AgFqDAoCWbB+O1E0NQB+GLSAAGa0x/T/9M/VSBsE46QgQEB1wCBAQHXAFkC0QHbPOLbPIBULAAQwMQJZsyX7UTQ1AH4YtIAAZrTH9P/0z9VIGwTjpCBAQHXAIEBAdcAWQLRAds84ts8gFQ0AAlsCuNAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gABmtMf0//TP1UgbBOOkIEBAdcAgQEB1wBZAtEB2zziVRLbPDDI+EIBzH8BygBVIFAjyx/L/8s/ye1UFQ8CkO2i7ftwIddJwh+VMCDXCx/eApMxMH/gIcB74wIhwAAh10nBIbCeW/hBbyRfA7OTAqQC3n/gAcAA4wAw+EFvJF8Ds5MCpALefxIQAcog+QEggvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqUW3/bMeAggvAOI1cmEItXANA2ndcWf2r/uAan4EBZN13Q4Psklx5ysrqOEFv4QW8kXwOzkwKkAt5/2zHgIBEAvoLwZyfWl2X48ix1xYHjVlRDl/WgC7kb0yxNDZbUySaEvMK6jhBb+EFvJF8Ds5MCpALef9sx4ILwnKDxhVF04y6P03jfVqbk9sQOTfy2CQ5JgS97HiYhS/m6lDB/2zHgAdox0x8BwHvy4IHUAdAB0x/TB/pAAQH6ANIAAZHUkm0B4lVAEFZsFlR0MlNDyFVAUEXLHxLLBwHPFgH6AiFus5V/AcoAzJRwMsoA4sn5AIIAvRFRefkQFvL0gUT2UUi6FPL0BqR/UHRDMG1t2zx/EwH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zFAAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAARwWSG7dRM=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initWallet_init_args({ $$type: 'Wallet_init_args', key, walletId })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

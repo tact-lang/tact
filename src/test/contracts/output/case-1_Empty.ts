@@ -252,7 +252,6 @@ function dictValueParserSource(): DictionaryValue<Source> {
 function initEmpty_init_args(src: Empty_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -261,6 +260,7 @@ async function Empty_init() {
     const __system = Cell.fromBase64('te6cckEBDAEA7wABAcABAQWhQoECART/APSkE/S88sgLAwIBYgkEAgEgBgUAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAIzv+Q7eSdqJoagD8MWkAGEi2x0FtnnEqsG2eQLBwEIbBfbPAgAOltTQ6CkWKABoAKregOqCQLCAAGwAsAAErABwACwAnbQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVAsKABYg10kxwh8wkX/gcAACbQBRA3A=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initEmpty_init_args({ $$type: 'Empty_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

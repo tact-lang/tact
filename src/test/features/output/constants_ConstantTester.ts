@@ -194,7 +194,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 function initConstantTester_init_args(src: ConstantTester_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -203,6 +202,7 @@ async function ConstantTester_init() {
     const __system = Cell.fromBase64('te6cckECGgEAAaQAAQHAAQEFoPkDAgEU/wD0pBP0vPLICwMCAWIXBAIBWBAFAgEgCwYCASAJBwIrsnQ7UTQ1AH4YtIAMJFtjoLbPOLbPIBkIABAwghgco18OAAIrsnx7UTQ1AH4YtIAMJFtjoLbPOLbPIBkKAAQwbQIBIA4MAiuyZLtRNDUAfhi0gAwkW2Ogts84ts8gGQ0ABDB6Aiux2HtRNDUAfhi0gAwkW2Ogts84ts8gGQ8ABjCAZAIBIBIRAJW3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNACASAVEwIrskW7UTQ1AH4YtIAMJFtjoLbPOLbPIBkUAB4wi8SGVsbG8gd29ybGQhgCK7JN+1E0NQB+GLSADCRbY6C2zzi2zyAZFgAQMIIYaiu30AACdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UGRgAFiDXSTHCHzCRf+BwAAJtKY3RGA==');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initConstantTester_init_args({ $$type: 'ConstantTester_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

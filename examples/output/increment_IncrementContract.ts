@@ -496,7 +496,6 @@ function dictValueParserSomething(): DictionaryValue<Something> {
 function initIncrementContract_init_args(src: IncrementContract_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -505,6 +504,7 @@ async function IncrementContract_init() {
     const __system = Cell.fromBase64('te6cckECGgEABCwAAQHAAQEFoXRDAgEU/wD0pBP0vPLICwMCAWILBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCASAJBwJVu0B+1E0NQB+GLSAAGOFPQE9ATUAdD0BPQE9AQwEDUQNGwVjoMw2zzi2zyBkIAARfBAJVuvAu1E0NQB+GLSAAGOFPQE9ATUAdD0BPQE9AQwEDUQNGwVjoMw2zzi2zyBkKAAYUXwQCAswPDAIBSA4NACNCFulVtZ9Fkw4MgBzwBBM/RBgAEVWfQNb6HcMG2ALL2A6GmBgLjYYADIv8i4cQD9IBEoKreCfDD2omhqAPwxaQAAxwp6AnoCagDoegJ6AnoCGAgaiBo2CsdBmG2ecSqKbZ4YZHwhAOY/gOUAKqAoIvoACXoAAOR6AAl6AAl6AGSA5mT2qkGRAC9nAh10nCH5UwINcLH94Cklt/4CGCECAGTzu6jk0x0x8BghAgBk87uvLggYEBAdcAgQEB1wBZbBL4QW8kECNfA4EBASAQOUFAUpAhbpVbWfRaMJjIAc8AQTP0QuIQI4EBC0AHgQEB8AoBf+AhghBAd9TIuuMCIYIQ4p0PqhgRAuy6jkMx0x8BghDinQ+quvLggYEBAdcA0gABkdSSbQHiWWwSggDOKSWBAQEk8Alu8vQQJIEBAVkgbpUwWfRaMJRBM/QV4gJ/4CGCEGZo77K6jpgx0x8BghBmaO+yuvLggYEBAdcAATHbPH/gAYIQlGqYtrrjAjBwFhIBRNMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8nbPH8TAST4QW8kECNfA38CcIBCWG1t2zwUAfbIcQHKAVAHAcoAcAHKAlAFzxZQA/oCcAHKaCNusyVus7GOTH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMyXMzMBcAHKAOIhbrMVADCcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAB8oEBAW1TEhBJWSFulVtZ9FowmMgBzwBBM/RC4gSBAQEmbXEhbpVbWfRaMJjIAc8AQTP0QuIDgQEBJm0gbpUwWfRaMJRBM/QV4oEBC/hBbyQQI18DECRtgQEB8AqBAQFtIG6SMG2OECBu8tCAbyHIAQGBAQHPAMniQXAXACQgbpUwWfRaMJRBM/QV4hA0QTAA2jHTHwGCEEB31Mi68uCBgQEB1wABMSSBAQEicUEz9AxvoZQB1wAwkltt4iBujhowFIEBAQF/cSFulVtZ9FowmMgBzwBBM/RC4o4ggQEBASBu8tCAsxA2EnEhbpVbWfRaMJjIAc8AQTP0QuLiA38ACm1tbW1tSSkUbA==');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initIncrementContract_init_args({ $$type: 'IncrementContract_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

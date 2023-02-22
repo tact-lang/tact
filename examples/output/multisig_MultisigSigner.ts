@@ -312,7 +312,6 @@ function dictValueParserSigned(): DictionaryValue<Signed> {
 function initMultisigSigner_init_args(src: MultisigSigner_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.master);
         b_0.storeDict(src.members, Dictionary.Keys.Address(), Dictionary.Values.BigInt(257));
         b_0.storeInt(src.requiredWeight, 257);
@@ -327,6 +326,7 @@ async function MultisigSigner_init(master: Address, members: Dictionary<Address,
     const __system = Cell.fromBase64('te6cckECFAEAA00AAQHAAQEFoSdzAgEU/wD0pBP0vPLICwMCAWIJBAICdQYFAHGy9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOAErbC/u1E0NQB+GLSAAGOpvpAAQH0BIEBAdcAgQEB1wDSANQB0Ns8NxB8EHsQehB5EHhVBWwcjx/6QAEB9ASBAQHXANQB0Ns8NxB6EHkQeFUFCtFVCNs84oBMTEgcBBNs8CAAEbFcCAs0LCgAj8Qt0qtrPosmHBkAOeAIJn6IMBN3QDoaYGAuNhgAMi/yLhxAP0gESgqt4J8MPaiaGoA/DFpAADHU30gAID6AkCAgOuAQICA64BpAGoA6G2eG4g+CD2IPQg8iDwqgrYOR4/9IACA+gJAgIDrgGoA6G2eG4g9CDyIPCqChWiqhG2ecSqNwTExIMAmTbPDDI+EIBzH8BygBVsFDLzxYZ9AAXgQEBzwAVgQEBzwATygDIRhcQNRjbPMkBzMntVA0RAabtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGwklt/4AHAAI6n+QGC8CKu5tCm3BRldyd91Y0GrjCQo83T2KiFYRhCCK5fbrA5uuMCkTDicA4C7IESkyT4I7zy9IIAn2oos/L0+EFvJBAjXwMrgQELIoEBAUEz9ApvoZQB1wAwkltt4iBu8tCAHIEBC1ANbYEBAfAHUKugUwi+jyg3f3BwgQCCVHmHVHmHVhLIVWCCEIPqVZlQCMsfB9s8yS9VIG1t2zwH3gl/2zERDwH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zEAAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAAFSCEP5RmINQCMsfUAbPFlAEzxZY+gLLH8oAywchbrOVfwHKAMyUcDLKAOIADnAIB3AHVUEAUNMfAYIQ/lGYg7ry4IH6QAEB+kABAfoA0x/SANMH0gABkdSSbQHiVWDzOcrm');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initMultisigSigner_init_args({ $$type: 'MultisigSigner_init_args', master, members, requiredWeight, request })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

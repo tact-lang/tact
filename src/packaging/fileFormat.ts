@@ -22,6 +22,10 @@ export const initFormat = z.object({
         name: z.string(),
         type: typeFormat
     })),
+    prefix: z.object({
+        bits: z.number(),
+        value: z.number()
+    }).optional(),
     deployment: z.union([z.object({
         kind: z.literal('direct'),
     }), z.object({

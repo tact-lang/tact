@@ -194,7 +194,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 function initNative_init_args(src: Native_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -203,6 +202,7 @@ async function Native_init() {
     const __system = Cell.fromBase64('te6cckEBCgEA/wABAcABAQWglXkCART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCAs8HBgAHIED6IAKPAHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UgCQgAmO2i7ftwIddJwh+VMCDXCx/eApJbf+ABwACOLfkBgvDN0PWWajeSIjimlU7pGKFizFkECe9l8JTO6B6dC8UrtLqW8AGgf9sx4JEw4nAAAnDs1vZd');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initNative_init_args({ $$type: 'Native_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

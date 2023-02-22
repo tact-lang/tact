@@ -278,7 +278,6 @@ function dictValueParserDeployOk(): DictionaryValue<DeployOk> {
 function initRandomContract_init_args(src: RandomContract_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
     };
 }
 
@@ -287,6 +286,7 @@ async function RandomContract_init() {
     const __system = Cell.fromBase64('te6cckECEwEAAgsAAQHAAQEFoUJ9AgEU/wD0pBP0vPLICwMCAWINBAIBIAoFAgEgCQYCK7toftRNDUAfhi0gAwkW2Ogts84ts8gSBwEGMNs8CAAc+ENul/gl+BV/+GPe+BAAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaAItvztvaiaGoA/DFpABhItsdBbZ5xLO2eQSCwEIbBLbPAwAIvhDbpf4JfgVf/hj3iGh+BGgAnbQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVBIOAYJwIddJwh+VMCDXCx/eApJbf+ABghCUapi2uo6i0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yds8f+AwcA8BJPhBbyQQI18DfwJwgEJYbW3bPBAB9shxAcoBUAcBygBwAcoCUAXPFlAD+gJwAcpoI26zJW6zsY5MfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzJczMwFwAcoA4iFusxEAMJx/AcoAASBu8tCAAcyVMXABygDiyQH7AAACbRUY/gE=');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initRandomContract_init_args({ $$type: 'RandomContract_init_args' })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };

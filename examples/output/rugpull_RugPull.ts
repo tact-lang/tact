@@ -290,7 +290,6 @@ function dictValueParserRugParams(): DictionaryValue<RugParams> {
 function initRugPull_init_args(src: RugPull_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(0, 1);
         b_0.storeAddress(src.owner);
         b_0.storeInt(src.investment, 257);
         b_0.storeInt(src.returns, 257);
@@ -305,6 +304,7 @@ async function RugPull_init(owner: Address, investment: bigint, returns: bigint,
     const __system = Cell.fromBase64('te6cckECIAEABbsAAQHAAQEFoK6fAgEU/wD0pBP0vPLICwMCAWIOBAIBIAkFAgEgCAYC1bhtXtRNDUAfhi0gABjjf6QAEBgQEB1wCBAQHXANQB0IEBAdcAgQEB1wDSANIAgQEB1wDUMNCBAQHXAPQEMBB6EHkQeGwajqD6QAEBgQEB1wCBAQHXANQB0IEBAdcAMBRDMATRVQLbPOLbPIHwcACF8GbBMA3bu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcKAWPdCZRLm1qqkKwpYALAaCcEDOdWnnFfnSULAdYW4mR7KCcJEwaGam6KQ2fuBHvgVRj4mAIBIAwKAtW4Ud7UTQ1AH4YtIAAY43+kABAYEBAdcAgQEB1wDUAdCBAQHXAIEBAdcA0gDSAIEBAdcA1DDQgQEB1wD0BDAQehB5EHhsGo6g+kABAYEBAdcAgQEB1wDUAdCBAQHXADAUQzAE0VUC2zzi2zyB8LAARfCQLVuhe+1E0NQB+GLSAAGON/pAAQGBAQHXAIEBAdcA1AHQgQEB1wCBAQHXANIA0gCBAQHXANQw0IEBAdcA9AQwEHoQeRB4bBqOoPpAAQGBAQHXAIEBAdcA1AHQgQEB1wAwFEMwBNFVAts84ts8gfDQAIEDlfCQEy0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4YQ8D1u1E0NQB+GLSAAGON/pAAQGBAQHXAIEBAdcA1AHQgQEB1wCBAQHXANIA0gCBAQHXANQw0IEBAdcA9AQwEHoQeRB4bBqOoPpAAQGBAQHXAIEBAdcA1AHQgQEB1wAwFEMwBNFVAts84lUZ2zwwHxEQAIzI+EIBzH8BygBVkFCpzxYXgQEBzwAVgQEBzwADyIEBAc8AEoEBAc8AygASygASgQEBzwADyIEBAc8AEvQAyVjMyQHMye1UA5rtou37cCHXScIflTAg1wsf3gKSW3/gIcAAIddJwSGw4wIhghAPR00Duo6ZMdMfAYIQD0dNA7ry4IH6QAExVZDbPGwZf+ABwACRMOMNcBoZEgTy+QEggvAJUZAZSu5hHOiVxVA634X9hk3nkFdGFC9gjT6y+q0U5LqPGDDbPCSzlCVw+wLefypwgwZtbW3bPH/bMeAggvDN4kLGysVgqZ/y0mg+4PsWKagYrsDxFmURzYIs8g2k6rqOkTA0f38qcIMGbW1t2zwEf9sx4BkcHBMBVoLwvPr3dpB8cZzI03nY8ZSqqifoyihxzVkXgXIfIVpFRQG6joXbPH/bMeAUBCLbPNs8M3+LdTdG9wcGVkjbPBkeFxUBBts8AxYBJPhBbyQQI18DfwJwgEJYbW3bPBwBQshwAcsfbwABb4xtb4wB2zxvIgHJkyFus5YBbyJZzMnoMRgAuiDXSiHXSZcgwgAiwgCxjkoDbyKAfyLPMasCoQWrAlFVtgggwgCcIKoCFdcYUDPPFkAU3llvAlNBocIAmcgBbwJQRKGqAo4SMTPCAJnUMNAg10oh10mScCDi4uhfAwAc+EFvJBAjXwMqxwXy4IQD2lvbPCSOin8qcIMGbW1t2zyO2fhBbyQwMoE+u1O5oBO+EvL0gQEBUjIgbpUwWfRaMJRBM/QU4gGkUVigmVMHvFNjocIAsI6hIYEBASRZ9AxvoZIwbd8gbvLQgFEYoQOkUTgXQzDbPFAF6FBV4n8eHBsBEH9Zcm1tbds8HAH2yHEBygFQBwHKAHABygJQBc8WUAP6AnABymgjbrMlbrOxjkx/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMlzMzAXABygDiIW6zHQAwnH8BygABIG7y0IABzJUxcAHKAOLJAfsAABCCAJ2wJLPy9AASbW1wcFRgBQMEpPH0JA==');
     let builder = beginCell();
     builder.storeRef(__system);
+    builder.storeUint(0, 1);
     initRugPull_init_args({ $$type: 'RugPull_init_args', owner, investment, returns, fee })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
