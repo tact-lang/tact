@@ -40,22 +40,24 @@ function resolveLibraryPath(filePath: string, name: string): string {
     throw Error('Unable to process import ' + name + ' from ' + filePath + ', checked: ' + checked.join(', '));
 }
 
-export function precompile(ctx: CompilerContext, sourceFile: string) {
+export function precompile(ctx: CompilerContext, root: string, sourceFile: string) {
 
     // Load stdlib
-    const stdlib = fs.readFileSync(__dirname + '/../../stdlib/stdlib.tact', 'utf-8');
-    const code = fs.readFileSync(sourceFile, 'utf8');
+    const stdlibPath = path.resolve(__dirname, '../../stdlib/stdlib.tact');
+    const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+    const codePath = path.resolve(root, sourceFile);
+    const code = fs.readFileSync(codePath, 'utf8');
 
     //
     // Process imports
     // 
 
-    const imported: string[] = [];
+    const imported: { code: string, path: string }[] = [];
     const processed = new Set<string>();
     const funcImports: string[] = [];
     const pending: string[] = [];
     function processImports(path: string, source: string) {
-        let imp = parseImports(source);
+        let imp = parseImports(source, path);
         for (let i of imp) {
             let resolved = resolveLibraryPath(path, i);
             if (resolved.endsWith('.fc')) {
@@ -72,11 +74,11 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
         }
     }
     processImports(path.resolve(__dirname, '..', '..', 'stdlib', 'stdlib.tact'), stdlib);
-    processImports(sourceFile, code);
+    processImports(codePath, code);
     while (pending.length > 0) {
         let p = pending.shift()!;
         let librarySource = fs.readFileSync(p, 'utf8');
-        imported.push(librarySource);
+        imported.push({ code: librarySource, path: p });
         processImports(p, librarySource);
     }
 
@@ -87,7 +89,7 @@ export function precompile(ctx: CompilerContext, sourceFile: string) {
     }
 
     // Perform initial compiler steps
-    ctx = openContext(ctx, [stdlib, ...imported, code], fc);
+    ctx = openContext(ctx, [{ code: stdlib, path: stdlibPath }, ...imported, { code, path: codePath }], fc);
     ctx = resolveDescriptors(ctx);
     ctx = resolveSignatures(ctx);
     ctx = resolveAllocations(ctx);

@@ -1,138 +1,153 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveStatements should fail statements for case-0 1`] = `
-"Line 5, col 5:
+"<unknown>:5:5: Type mismatch: Int is not assignable to Bool
+Line 5, col 5:
   4 | fun isZero(x: Int): Bool {
 > 5 |     return x;
           ^~~~~~~~~
   6 | }
-Type mismatch: Int is not assignable to Bool"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-1 1`] = `
-"Line 5, col 5:
+"<unknown>:5:5: Type mismatch: Bool is not assignable to Int
+Line 5, col 5:
   4 | fun isZero(x: Int): Bool {
 > 5 |     repeat(true) {
           ^~~~~~~~~~~~~~
   6 |         x = x + 1;
-Type mismatch: Bool is not assignable to Int"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-2 1`] = `
-"Line 5, col 5:
+"<unknown>:5:5: Type mismatch: Int is not assignable to bool
+Line 5, col 5:
   4 | fun isZero(x: Int): Bool {
 > 5 |     while(x) {
           ^~~~~~~~~~
   6 |         x = x + 1;
-Type mismatch: Int is not assignable to bool"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-3 1`] = `
-"Line 5, col 5:
+"<unknown>:5:5: Type mismatch: Int is not assignable to bool
+Line 5, col 5:
   4 | fun isZero(x: Int): Bool {
 > 5 |     do {
           ^~~~
   6 |         x = x + 1;
-Type mismatch: Int is not assignable to bool"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-4 1`] = `
-"Line 5, col 5:
+"<unknown>:5:5: Type mismatch: Int is not assignable to Bool
+Line 5, col 5:
   4 | fun isZero(x: Int): Bool {
 > 5 |     if (x) {
           ^~~~~~~~
   6 |         x = x + 1;
-Type mismatch: Int is not assignable to Bool"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-5 1`] = `
-"Line 5, col 5:
+"<unknown>:5:5: Type mismatch: String is not assignable to Int
+Line 5, col 5:
   4 | fun isZero(x: Int): Bool {
 > 5 |     x = "hello world";
           ^~~~~~~~~~~~~~~~~~
   6 |     return true;
-Type mismatch: String is not assignable to Int"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-6 1`] = `
-"Line 9, col 12:
+"<unknown>:9:12: Function "f1" expects 2 arguments, got 1
+Line 9, col 12:
    8 | fun f2(a: Int): Int {
 >  9 |     return f1(a);
                   ^~~~~
   10 | }
-Function "f1" expects 2 arguments, got 1"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-7 1`] = `
-"Line 16, col 16:
+"<unknown>:16:16: Function "f1" expects 2 arguments, got 1
+Line 16, col 16:
   15 |     fun f2(a: Int): Int {
 > 16 |         return self.f1(a);
                       ^~~~~~~~~~
   17 |     }
-Function "f1" expects 2 arguments, got 1"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-8 1`] = `
-"Line 9, col 18:
+"<unknown>:9:18: Invalid type "Bool" for argument "b"
+Line 9, col 18:
    8 | fun f2(a: Int): Int {
 >  9 |     return f1(a, true);
                         ^~~~
   10 | }
-Invalid type "Bool" for argument "b""
+"
 `;
 
 exports[`resolveStatements should fail statements for case-9 1`] = `
-"Line 16, col 27:
+"<unknown>:16:27: Invalid type "Bool" for argument "b"
+Line 16, col 27:
   15 |     fun f2(a: Int): Int {
 > 16 |         return self.f1(a, true);
                                  ^~~~
   17 |     }
-Invalid type "Bool" for argument "b""
+"
 `;
 
 exports[`resolveStatements should fail statements for case-10 1`] = `
-"Line 6, col 5:
+"<unknown>:6:5: Type mismatch: Int is not assignable to Bool
+Line 6, col 5:
   5 |     let a: Int = 0;
 > 6 |     let b: Bool = 0;
           ^~~~~~~~~~~~~~~~
   7 | }
-Type mismatch: Int is not assignable to Bool"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-11 1`] = `
-"Line 13, col 9:
+"<unknown>:13:9: Invalid type "Bool" for fields "b" with type Int in type SomeStruct
+Line 13, col 9:
   12 |         a: 1,
 > 13 |         b: false // Invalid type
                ^~~~~~~~
   14 |     };
-Invalid type "Bool" for fields "b" with type Int in type SomeStruct"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-12 1`] = `
-"Line 13, col 9:
+"<unknown>:13:9: Duplicate fields "a"
+Line 13, col 9:
   12 |         a: 1,
 > 13 |         a: 2,
                ^~~~
   14 |         b: 3
-Duplicate fields "a""
+"
 `;
 
 exports[`resolveStatements should fail statements for case-13 1`] = `
-"Line 12, col 25:
+"<unknown>:12:25: Missing fields "c" in type SomeStruct
+Line 12, col 25:
   11 | fun main() {
 > 12 |     let a: SomeStruct = SomeStruct{
                                ^~~~~~~~~~~
   13 |         a: 1,
-Missing fields "c" in type SomeStruct"
+"
 `;
 
 exports[`resolveStatements should fail statements for case-14 1`] = `
-"Line 22, col 25:
+"<unknown>:22:25: Invalid type "String" for argument "owner"
+Line 22, col 25:
   21 |     get fun newInit(): StateInit {
 > 22 |         return initOf A("hello");
                                ^~~~~~~
   23 |     }
-Invalid type "String" for argument "owner""
+"
 `;
 
 exports[`resolveStatements should resolve statements for case-0 1`] = `

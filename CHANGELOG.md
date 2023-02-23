@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- Display line and column numbers in error messages to be able to navigate to the error in the editor
+
 ## Fixed
 - Execution order of struct and message fields
 - `initOf` argument type checks

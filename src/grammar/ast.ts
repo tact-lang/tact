@@ -7,16 +7,23 @@ export class ASTRef {
             throw Error('Cannot merge 0 refs');
         }
         let r = refs[0].#interval;
+        let file = refs[0].#file;
         for (let i = 1; i < refs.length; i++) {
             r = r.coverageWith(r, refs[i].#interval);
         }
-        return new ASTRef(r);
+        return new ASTRef(r, file);
     }
 
     readonly #interval: RawInterval;
+    readonly #file: string | null;
 
-    constructor(interval: RawInterval) {
+    constructor(interval: RawInterval, file: string | null) {
         this.#interval = interval;
+        this.#file = file;
+    }
+
+    get file() {
+        return this.#file;
     }
 
     get contents() {
@@ -390,16 +397,30 @@ export function __DANGER_resetNodeId() {
     nextId = 1;
 }
 
+let currentFile: string | null = null;
+
+export function inFile<T>(path: string, callback: () => T) {
+    currentFile = path;
+    let r = callback();
+    currentFile = null;
+    return r;
+}
+
 export function createRef(s: RawNode, ...extra: RawNode[]): ASTRef {
     let i = s.source;
     if (extra.length > 0) {
         i = i.coverageWith(...extra.map((e) => e.source));
     }
-    return new ASTRef(i);
+    return new ASTRef(i, currentFile);
 }
 
 export function throwError(message: string, ref: ASTRef): never {
-    throw new Error(ref.interval.getLineAndColumnMessage() + message);
+    if (ref.file) {
+        let lc = (ref.interval as any).getLineAndColumn() as { lineNum: number, colNum: number };
+        throw new Error(ref.file + ':' + lc.lineNum + ':' + lc.colNum + ': ' + message + '\n' + ref.interval.getLineAndColumnMessage());
+    } else {
+        throw new Error(message + ref.interval.getLineAndColumnMessage());
+    }
 }
 
 export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {

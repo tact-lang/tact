@@ -1,87 +1,97 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`grammar should fail case-0 1`] = `
-"Line 1, col 20:
+"<unknown>:1:20: Syntax error: expected "{" 
+Line 1, col 20:
 > 1 | fun testFunc(): Int;
                          ^
-Expected "{""
+"
 `;
 
 exports[`grammar should fail case-1 1`] = `
-"Line 1, col 5:
+"<unknown>:1:5: Variable name cannot start with "__gen"
+Line 1, col 5:
 > 1 | fun __gen_hello(): Int {
           ^~~~~~~~~~~
   2 |     
-Variable name cannot start with "__gen""
+"
 `;
 
 exports[`grammar should fail case-2 1`] = `
-"Line 2, col 9:
+"<unknown>:2:9: Variable name cannot start with "__gen"
+Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let __gen_a: Int = 0;
               ^~~~~~~
   3 | }
-Variable name cannot start with "__gen""
+"
 `;
 
 exports[`grammar should fail case-3 1`] = `
-"Line 2, col 9:
+"<unknown>:2:9: Variable name cannot start with "__tact"
+Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let __tact_a: Int = 0;
               ^~~~~~~~
   3 | }
-Variable name cannot start with "__tact""
+"
 `;
 
 exports[`grammar should fail case-4 1`] = `
-"Line 2, col 9:
+"<unknown>:2:9: Syntax error: expected not a reservedWord 
+Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let if: Int = 0;
               ^
   3 | }
-Expected not a reservedWord"
+"
 `;
 
 exports[`grammar should fail case-5 1`] = `
-"Line 1, col 8:
+"<unknown>:1:8: Variable name cannot start with "__gen"
+Line 1, col 8:
 > 1 | struct __genA {
              ^~~~~~
   2 |     a: Int;
-Variable name cannot start with "__gen""
+"
 `;
 
 exports[`grammar should fail case-6 1`] = `
-"Line 1, col 10:
+"<unknown>:1:10: Variable name cannot start with "__gen"
+Line 1, col 10:
 > 1 | fun main(__gen: Int): Int {
                ^~~~~
   2 |     return 0;
-Variable name cannot start with "__gen""
+"
 `;
 
 exports[`grammar should fail case-7 1`] = `
-"Line 1, col 10:
+"<unknown>:1:10: Variable name cannot start with "__gen"
+Line 1, col 10:
 > 1 | contract __gen_a {
                ^~~~~~~
   2 | 
-Variable name cannot start with "__gen""
+"
 `;
 
 exports[`grammar should fail case-8 1`] = `
-"Line 2, col 10:
+"<unknown>:2:10: Variable name cannot start with "__tact"
+Line 2, col 10:
   1 | contract A {
 > 2 |     init(__tact: Int) {
                ^~~~~~
   3 |         
-Variable name cannot start with "__tact""
+"
 `;
 
 exports[`grammar should fail case-9 1`] = `
-"Line 2, col 11:
+"<unknown>:2:11: Variable name cannot start with "__tact"
+Line 2, col 11:
   1 | contract A {
 > 2 |     fun b(__tact: Int) {
                 ^~~~~~
   3 |         
-Variable name cannot start with "__tact""
+"
 `;
 
 exports[`grammar should parse case-0 1`] = `

@@ -12,7 +12,7 @@ describe('resolveStatements', () => {
     });
     for (let r of loadCases(__dirname + "/stmts/")) {
         it('should resolve statements for ' + r.name, () => {
-            let ctx = openContext(new CompilerContext(), [r.code], []);
+            let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>' }], []);
             ctx = resolveDescriptors(ctx);
             ctx = resolveStatements(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
@@ -20,7 +20,7 @@ describe('resolveStatements', () => {
     }
     for (let r of loadCases(__dirname + "/stmts-failed/")) {
         it('should fail statements for ' + r.name, () => {
-            let ctx = openContext(new CompilerContext(), [r.code], []);
+            let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>' }], []);
             ctx = resolveDescriptors(ctx);
             expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
         });

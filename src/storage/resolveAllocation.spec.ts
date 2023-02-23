@@ -6,8 +6,10 @@ import { openContext } from '../grammar/store';
 import { resolveStatements } from '../types/resolveStatements';
 import { CompilerContext } from '../context';
 import { resolveSignatures } from '../types/resolveSignatures';
+import path from 'path';
 
-const stdlib = fs.readFileSync(__dirname + '/../../stdlib/std/primitives.tact', 'utf-8');
+const stdlibPath = path.resolve(__dirname, '../../stdlib/std/primitives.tact');
+const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
 const src = `
 
 struct Point3 {
@@ -59,7 +61,7 @@ describe('resolveAllocation', () => {
         __DANGER_resetNodeId();
     });
     it('should write program', () => {
-        let ctx = openContext(new CompilerContext(), [stdlib, src], []);
+        let ctx = openContext(new CompilerContext(), [{ code: stdlib, path: stdlibPath }, { code: src, path: '<unknown>' }], []);
         ctx = resolveDescriptors(ctx);
         ctx = resolveSignatures(ctx);
         ctx = resolveStatements(ctx);

@@ -30,7 +30,7 @@ export async function build(project: ConfigProject, rootPath: string) {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project.path);
+        ctx = precompile(ctx, rootPath, project.path);
     } catch (e) {
         console.warn('Tact compilation failed');
         console.log(e);
@@ -66,14 +66,12 @@ export async function build(project: ConfigProject, rootPath: string) {
         console.log('   > ' + contract + ': tact compiler');
         let abi: string;
         let codeFunc: string;
-        let initFunc: string;
         try {
             let res = await compile(ctx, contract);
             fs.writeFileSync(pathCodeFc, res.output.output, 'utf-8');
             fs.writeFileSync(pathAbi, res.output.abi, 'utf-8');
             abi = res.output.abi;
             codeFunc = res.output.output;
-            initFunc = res.output.initOutput;
         } catch (e) {
             console.warn('Tact compilation failed');
             console.warn(e);

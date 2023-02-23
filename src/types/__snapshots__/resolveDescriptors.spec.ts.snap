@@ -1,190 +1,211 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveDescriptors should fail descriptors for case-0 1`] = `
-"Line 5, col 1:
+"<unknown>:5:1: Native functions cannot be getters
+Line 5, col 1:
   4 | @name(hello_world)
 > 5 | get native sample(a: Int): Int;
       ^~~
-Native functions cannot be getters"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-1 1`] = `
-"Line 5, col 1:
+"<unknown>:5:1: Native functions cannot be public
+Line 5, col 1:
   4 | @name(hello_world)
 > 5 | public native sample(a: Int): Int;
       ^~~~~~
-Native functions cannot be public"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-2 1`] = `
-"Line 4, col 1:
+"<unknown>:4:1: Public functions must be defined within a contract
+Line 4, col 1:
   3 | 
 > 4 | public fun sample(a: Int): Int {
       ^~~~~~
   5 |     return 0;
-Public functions must be defined within a contract"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-3 1`] = `
-"Line 4, col 1:
+"<unknown>:4:1: Getters must be defined within a contract
+Line 4, col 1:
   3 | 
 > 4 | get fun sample(a: Int): Int {
       ^~~
   5 |     return 0;
-Getters must be defined within a contract"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-4 1`] = `
-"Line 4, col 17:
+"<unknown>:4:17: Extend function must have first argument named "self"
+Line 4, col 17:
   3 | 
 > 4 | extends fun inc(a: Int): Int {
                       ^~~~~~
   5 |     return a + 1;
-Extend function must have first argument named "self""
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-5 1`] = `
-"Line 4, col 17:
+"<unknown>:4:17: Argument name "self" is reserved
+Line 4, col 17:
   3 | 
 > 4 | fun inc(a: Int, self: Int): Int {
                       ^~~~~~~~~
   5 |     return a + 1 + self;
-Argument name "self" is reserved"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-6 1`] = `
-"Line 7, col 3:
+"<unknown>:7:3: Field b already exists
+Line 7, col 3:
   6 |   b: Int;
 > 7 |   b: Int;
         ^~~~~~~
   8 | }
-Field b already exists"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-7 1`] = `
-"Line 7, col 3:
+"<unknown>:7:3: Field b already exists
+Line 7, col 3:
   6 |   b: Int;
 > 7 |   b: Int;
         ^~~~~~~
   8 | }
-Field b already exists"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-8 1`] = `
-"Line 9, col 3:
+"<unknown>:9:3: Receive function cannot have optional argument
+Line 9, col 3:
    8 | contract Pair {
 >  9 |   receive(src: B?) {
          ^~~~~~~~~~~~~~~~~~
   10 |     
-Receive function cannot have optional argument"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-9 1`] = `
-"Line 9, col 3:
+"<unknown>:9:3: Receive function can only accept message
+Line 9, col 3:
    8 | contract Pair {
 >  9 |   receive(src: B) {
          ^~~~~~~~~~~~~~~~~
   10 |     
-Receive function can only accept message"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-10 1`] = `
-"Line 9, col 3:
+"<unknown>:9:3: Receive function can only accept message, Slice or String
+Line 9, col 3:
    8 | contract Pair {
 >  9 |   receive(src: Int) {
          ^~~~~~~~~~~~~~~~~~~
   10 |     
-Receive function can only accept message, Slice or String"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-11 1`] = `
-"Line 8, col 23:
+"<unknown>:8:23: Type Point not found
+Line 8, col 23:
   7 |     }
 > 8 |     get fun hello2(): Point {
                             ^~~~~
   9 |         return 0;
-Type Point not found"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-12 1`] = `
-"Line 8, col 1:
+"<unknown>:8:1: Type Main already exists
+Line 8, col 1:
   7 | 
 > 8 | struct Main {
       ^~~~~~~~~~~~~
   9 |     
-Type Main already exists"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-13 1`] = `
-"Line 8, col 1:
+"<unknown>:8:1: Type Main already exists
+Line 8, col 1:
   7 | 
 > 8 | struct Main {
       ^~~~~~~~~~~~~
   9 |     
-Type Main already exists"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-14 1`] = `
-"Line 8, col 1:
+"<unknown>:8:1: Type Main already exists
+Line 8, col 1:
   7 | 
 > 8 | contract Main {
       ^~~~~~~~~~~~~~~
   9 |     
-Type Main already exists"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-15 1`] = `
-"Line 8, col 1:
+"<unknown>:8:1: Struct Main does not have any fields
+Line 8, col 1:
   7 | 
 > 8 | struct Main {
       ^~~~~~~~~~~~~
   9 |     
-Struct Main does not have any fields"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-16 1`] = `
-"Line 12, col 1:
+"<unknown>:12:1: Struct Main does not have any fields
+Line 12, col 1:
   11 | 
 > 12 | struct Main {
        ^~~~~~~~~~~~~
   13 |     
-Struct Main does not have any fields"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-17 1`] = `
-"Line 4, col 1:
+"<unknown>:4:1: Function hello already exists in type Main
+Line 4, col 1:
   3 | 
 > 4 | contract Main {
       ^~~~~~~~~~~~~~~
   5 |     fun hello(a: Main): Int {
-Function hello already exists in type Main"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-18 1`] = `
-"Line 5, col 24:
+"<unknown>:5:24: Argument name "a" is already used
+Line 5, col 24:
   4 | contract Main {
 > 5 |     fun hello(a: Bool, a: Int): Int {
                              ^~~~~~
   6 | 
-Argument name "a" is already used"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-19 1`] = `
-"Line 9, col 5:
+"<unknown>:9:5: Init function already exists
+Line 9, col 5:
    8 | 
 >  9 |     init(a: Bool) {
            ^~~~~~~~~~~~~~~
   10 | 
-Init function already exists"
+"
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-20 1`] = `
-"Line 8, col 1:
+"<unknown>:8:1: Function hello already exists in type Main
+Line 8, col 1:
   7 | 
 > 8 | extends fun hello(self: Main): Bool {
       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   9 |     return true;
-Function hello already exists in type Main"
+"
 `;
 
 exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `

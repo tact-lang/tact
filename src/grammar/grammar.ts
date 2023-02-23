@@ -1,8 +1,9 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, throwError } from './ast';
+import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 import { resolveTypeRef, resolveTypeRefUnsafe } from '../types/resolveDescriptors';
+import { MatchResult } from 'ohm-js';
 
 
 // Semantics
@@ -545,17 +546,27 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     },
 });
 
-export function parse(src: string): ASTProgram {
-    let matchResult = rawGrammar.match(src);
-    if (matchResult.failed()) {
-        throw new Error(matchResult.message);
-    }
-    let res = semantics(matchResult).resolve_program();
-    return res;
+function throwMatchError(matchResult: MatchResult, path: string): never {
+    let interval = (matchResult as any).getInterval();
+    let lc = interval.getLineAndColumn() as { lineNum: number, colNum: number };
+    let msg = interval.getLineAndColumnMessage();
+    let message = path + ':' + lc.lineNum + ':' + lc.colNum + ': Syntax error: expected ' + (matchResult as any).getExpectedText() + ' \n' + msg;
+    throw new Error(message);
 }
 
-export function parseImports(src: string): string[] {
-    let r = parse(src);
+export function parse(src: string, path: string): ASTProgram {
+    return inFile(path, () => {
+        let matchResult = rawGrammar.match(src);
+        if (matchResult.failed()) {
+            throwMatchError(matchResult, path);
+        }
+        let res = semantics(matchResult).resolve_program();
+        return res;
+    });
+}
+
+export function parseImports(src: string, path: string): string[] {
+    let r = parse(src, path);
     let imports: string[] = [];
     let hasExpression = false;
     for (let e of r.entries) {
