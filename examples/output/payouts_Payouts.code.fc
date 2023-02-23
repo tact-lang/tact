@@ -352,6 +352,14 @@ _ $__gen_get_owner() method_id(83229) {
     return res;
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+((int)) __gen_constructor_CanPayout$amount(int amount) inline {
+    return (amount);
+}
+
 ((slice, int), ()) $__gen_Payouts_receive_comment((slice, int) $self, slice $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -366,7 +374,7 @@ _ $__gen_get_owner() method_id(83229) {
     throw_unless(48401, check_signature($hash, $signature, $self'publicKey));
     var ($init'code, $init'data) = $__gen_Beacon_init_child(__tact_context_sys, my_address(), $ctx'sender);
     slice $address = $contractAddress(($init'code, $init'data));
-    $send((true, $address, 0, (64 + 2), __gen_writecell_CanPayout(($amount)), null(), null()));
+    $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($address, 0, (64 + 2), true, __gen_writecell_CanPayout(__gen_constructor_CanPayout$amount($amount))));
     return (($self'owner, $self'publicKey), ());
 }
 
@@ -379,9 +387,9 @@ _ $__gen_get_owner() method_id(83229) {
     throw_unless(4429, __tact_address_eq($ctx'sender, $address));
     if ($msg'ok) {
         throw_unless(62972, ((((__tact_my_balance() - $ctx'value) - 1000000000) - $msg'amount) > 0));
-        $send((false, $msg'address, $msg'amount, (64 + 2), $__gen_String_asComment(__gen_str_3364490128()), null(), null()));
+        $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($msg'address, $msg'amount, (64 + 2), false, $__gen_String_asComment(__gen_str_3364490128())));
     } else {
-        $send((false, $msg'address, 0, (64 + 2), $__gen_String_asComment(__gen_str_2620117026()), null(), null()));
+        $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($msg'address, 0, (64 + 2), false, $__gen_String_asComment(__gen_str_2620117026())));
     }
     return (($self'owner, $self'publicKey), ());
 }

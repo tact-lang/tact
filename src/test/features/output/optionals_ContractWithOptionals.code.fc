@@ -438,9 +438,13 @@ _ $__gen_get_notNullF() method_id(115160) {
     return __gen_StructWithOptionals_to_external(res);
 }
 
+((int, int, int, int, int)) __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5(int value1, int value2, int value3, int value4, int value5) inline {
+    return (value1, value2, value3, value4, value5);
+}
+
 (int, int, int, int, int) $__gen_ContractWithOptionals_testVariables((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    tuple $a = __gen_SomeGenericStruct_as_optional((1, 2, 3, 4, 5));
+    tuple $a = __gen_SomeGenericStruct_as_optional(__gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5(1, 2, 3, 4, 5));
     return __gen_SomeGenericStruct_not_null($a);
 }
 

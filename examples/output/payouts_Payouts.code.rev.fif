@@ -144,8 +144,8 @@ SETCP0
           SUB
           0 GTINT
           THROWANYIFNOT
-          0 PUSHINT
           66 PUSHINT
+          0 PUSHINT
           PUSHSLICE
           <{
             NEWC
@@ -249,7 +249,9 @@ SETCP0
             WHILE
             s1 POP
           }> CALLREF
-          s2 s4 XCHG
+          s3 s4 XCHG
+          s1 s4 XCHG
+          s3 s3 s0 XCHG3
           PUSHNULL
           PUSHNULL
           <{
@@ -383,8 +385,8 @@ SETCP0
         s0 POP
         s1 POP
         0 PUSHINT
-        0 PUSHINT
         66 PUSHINT
+        0 PUSHINT
         PUSHSLICE
         <{
           NEWC
@@ -488,7 +490,8 @@ SETCP0
           WHILE
           s1 POP
         }> CALLREF
-        s3 s4 XCHG
+        s1 s4 XCHG
+        s3 s3 s0 XCHG3
         PUSHNULL
         PUSHNULL
         <{
@@ -832,9 +835,9 @@ SETCP0
               ENDC
               CTOS
             }> CALLREF
-            -1 PUSHINT
             0 PUSHINT
             66 PUSHINT
+            -1 PUSHINT
             s0 s4 XCHG
             NEWC
             s0 s1 XCHG
@@ -844,7 +847,10 @@ SETCP0
             257 PUSHINT
             STIX
             ENDC
-            s1 s4 s0 XCHG3
+            s3 s4 XCHG
+            s1 s3 s0 XCHG3
+            s1 s4 XCHG
+            s3 s3 s0 XCHG3
             PUSHNULL
             PUSHNULL
             <{

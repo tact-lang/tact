@@ -23,6 +23,7 @@ PROGRAM{
   DECLPROC $contractAddress
   DECLPROC $send
   DECLPROC $__gen_String_asComment
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body
   DECLPROC $__gen_C_init_child
   DECLPROC $__gen_B_getNext
   74105 DECLMETHOD $__gen_get_getNext
@@ -354,6 +355,11 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
+  __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body PROCINLINE:<{
+    s3 s6 XCHG
+    s3 s4 XCHG
+    -ROT
+  }>
   $__gen_C_init_child PROC:<{
     SWAP
     CTOS
@@ -398,13 +404,15 @@ PROGRAM{
     $__gen_C_init_child CALLDICT
     2DUP
     $contractAddress INLINECALLDICT
-    TRUE
     0 PUSHINT
     66 PUSHINT
+    TRUE
     B{b5ee9c7241010101000900000e4d657373616765b15ae930} B>boc <s PUSHSLICE
     $__gen_String_asComment INLINECALLDICT
     4 3 REVERSE
-    s0 s3 s4 XCHG3
+    s4 s3 s0 XCHG3
+    s1 s2 XCHG
+    __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   __gen_router_B PROCREF:<{

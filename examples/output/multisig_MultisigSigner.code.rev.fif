@@ -219,8 +219,8 @@ SETCP0
             s7 POP
             -1 PUSHINT
             0 PUSHINT
-            0 PUSHINT
             130 PUSHINT
+            0 PUSHINT
             9 8 7 PUSH3
             9 8 7 PUSH3
             s18 PUSH
@@ -262,6 +262,7 @@ SETCP0
             ENDC
             s15 PUSH
             3 1 BLKSWAP
+            s4 s4 s0 XCHG3
             PUSHNULL
             PUSHNULL
             <{

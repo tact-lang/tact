@@ -7,11 +7,13 @@ export class WriterContext {
 
     readonly ctx: CompilerContext;
     #functions: Map<string, { name: string, code: string, depends: Set<string> }> = new Map();
+    #functionsRendering = new Set<string>();
     #pendingWriter: Writer | null = null;
     #pendingDepends: Set<string> | null = null;
     #pendingName: string | null = null;
     #nextId = 0;
     #headers: string[] = [];
+    #rendered = new Set<string>();
 
     constructor(ctx: CompilerContext) {
         this.ctx = ctx;
@@ -26,6 +28,7 @@ export class WriterContext {
         res.#functions = new Map(this.#functions);
         res.#nextId = this.#nextId;
         res.#headers = [...this.#headers];
+        res.#rendered = new Set(this.#rendered);
         return res;
     }
 
@@ -95,16 +98,38 @@ export class WriterContext {
     //
 
     fun(name: string, handler: () => void) {
+
+        //
+        // Duplicates check
+        //
+
         if (this.#functions.has(name)) {
             throw new Error(`Function ${name} already defined`); // Should not happen
         }
-        if (!!this.#pendingWriter || !!this.#pendingDepends) {
-            throw new Error(`Nested function definition is not supported`); // Should not happen
+        if (this.#functionsRendering.has(name)) {
+            throw new Error(`Function ${name} already rendering`); // Should not happen
         }
 
-        // console.log(`Rendering: "${name}"`);
+        //
+        // Nesting check
+        //
+
+        if (!!this.#pendingWriter || !!this.#pendingDepends) {
+            let w = this.#pendingWriter;
+            let d = this.#pendingDepends;
+            let n = this.#pendingName;
+            this.#pendingDepends = null;
+            this.#pendingWriter = null;
+            this.#pendingName = null;
+            this.fun(name, handler);
+            this.#pendingDepends = d;
+            this.#pendingWriter = w;
+            this.#pendingName = n;
+            return;
+        }
 
         // Write function
+        this.#functionsRendering.add(name);
         this.#pendingWriter = new Writer();
         this.#pendingDepends = new Set();
         this.#pendingName = name;
@@ -114,6 +139,7 @@ export class WriterContext {
         this.#pendingDepends = null;
         this.#pendingWriter = null;
         this.#pendingName = null;
+        this.#functionsRendering.delete(name);
         this.#functions.set(name, { name, code, depends });
     }
 
@@ -163,5 +189,20 @@ export class WriterContext {
 
     header(src: string) {
         this.#headers.push(src);
+    }
+
+    //
+    // Utils
+    //
+
+    isRendered(key: string) {
+        return this.#rendered.has(key);
+    }
+
+    markRendered(key: string) {
+        if (this.#rendered.has(key)) {
+            throw new Error(`Key ${key} already rendered`);
+        }
+        this.#rendered.add(key);
     }
 }

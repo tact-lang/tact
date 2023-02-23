@@ -138,6 +138,10 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     send_raw_message($c, $params'mode);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_body(int value, slice to, int mode, cell body) inline {
+    return (true, to, value, mode, body, null(), null());
+}
+
 ((slice), ()) $__gen_Treasure_requireOwner((slice) $self) impure inline_ref {
     var (($self'owner)) = $self;
     throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
@@ -147,7 +151,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
 ((slice), ()) $__gen_Treasure_doWithdraw((slice) $self, int $amount, int $mode) impure inline_ref {
     var (($self'owner)) = $self;
     ($self'owner)~$__gen_Treasure_requireOwner();
-    $send((true, $self'owner, $amount, $mode, end_cell(begin_cell()), null(), null()));
+    $send(__gen_constructor_SendParameters$value_to_mode_body($amount, $self'owner, $mode, end_cell(begin_cell())));
     return (($self'owner), ());
 }
 

@@ -229,9 +229,13 @@ _ $__gen_get_getBopt() method_id(73763) {
     return __gen_Vars_opt_to_external(res);
 }
 
+(((int, int, int, int, int), (int, int, int, int, int))) __gen_constructor_Both$a_b((int, int, int, int, int) a, (int, int, int, int, int) b) inline {
+    return (a, b);
+}
+
 ((int, int, int, int, int), (int, int, int, int, int)) $__gen_SerializationTester2_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+    return __gen_constructor_Both$a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
 _ $__gen_get_getBoth() method_id(81754) {
@@ -242,7 +246,7 @@ _ $__gen_get_getBoth() method_id(81754) {
 
 tuple $__gen_SerializationTester2_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return __gen_Both_as_optional((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
+    return __gen_Both_as_optional(__gen_constructor_Both$a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
 }
 
 _ $__gen_get_getBothOpt() method_id(69430) {
@@ -251,12 +255,16 @@ _ $__gen_get_getBothOpt() method_id(69430) {
     return __gen_Both_opt_to_external(res);
 }
 
+((int, int, int, int, int)) __gen_constructor_Vars$a_b_c_d_e(int a, int b, int c, int d, int e) inline {
+    return (a, b, c, d, e);
+}
+
 (int, int, int, int, int) $__gen_SerializationTester2_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     var (($src'a, $src'b, $src'c, $src'd, $src'e)) = $src;
     var ((($both'a'a, $both'a'b, $both'a'c, $both'a'd, $both'a'e), ($both'b'a, $both'b'b, $both'b'c, $both'b'd, $both'b'e))) = $both;
     var ($both2) = $both2;
-    return (($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5));
+    return __gen_constructor_Vars$a_b_c_d_e(($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5));
 }
 
 _ $__gen_get_process(tuple $$src, tuple $$both, tuple $$both2) method_id(104435) {

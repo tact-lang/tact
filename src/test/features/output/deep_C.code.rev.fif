@@ -74,7 +74,7 @@ SETCP0
           s0 POP
           2 GETGLOBVAR
           s1 PUSH
-          24 CALLDICT
+          25 CALLDICT
           2DUP
           <{
             0 PUSHINT
@@ -107,9 +107,9 @@ SETCP0
             ENDC
             CTOS
           }> CALLREF
-          -1 PUSHINT
           0 PUSHINT
           66 PUSHINT
+          -1 PUSHINT
           PUSHSLICE
           <{
             NEWC
@@ -214,7 +214,11 @@ SETCP0
             s1 POP
           }> CALLREF
           4 3 REVERSE
-          s0 s3 s4 XCHG3
+          s4 s3 s0 XCHG3
+          s1 s2 XCHG
+          s3 s6 XCHG
+          s3 s4 XCHG
+          ROTREV
           <{
             NEWC
             1 PUSHINT
@@ -368,7 +372,7 @@ SETCP0
     ENDC
     c4 POP
 
-  24: 
+  25: 
     s0 s1 XCHG
     CTOS
     LDDICT

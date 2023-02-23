@@ -233,9 +233,13 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     send_raw_message($c, $params'mode);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 () $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
 }
 
 cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
@@ -300,10 +304,14 @@ _ $__gen_get_counters2() method_id(77570) {
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
+((int)) __gen_constructor_DeployOk$queryId(int queryId) inline {
+    return (queryId);
+}
+
 (((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($deploy'queryId) = $deploy;
-    $reply(__gen_writecell_DeployOk(($deploy'queryId)));
+    $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 

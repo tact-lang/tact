@@ -100,10 +100,12 @@ SETCP0
         RAWRESERVE
         s1 PUSH
         <{
+          s1 POP
           -1 PUSHINT
-          s2 POP
-          s2 PUSH
           -1 PUSHINT
+          ROT
+          s3 PUSH
+          ROT
           NEWC
           3 1 BLKSWAP
           4293607646 PUSHINT
@@ -122,10 +124,10 @@ SETCP0
             s2 s3 XCHG
             3 BLKDROP
             -1 PUSHINT
-            s0 s2 XCHG
             0 PUSHINT
+            s0 s3 XCHG2
             66 PUSHINT
-            ROT
+            s0 s1 XCHG
             PUSHNULL
             PUSHNULL
             <{
@@ -257,8 +259,9 @@ SETCP0
           }> CALLREF
         }> PUSHCONT
         <{
-          s2 PUSH
           0 PUSHINT
+          s1 s3 XCPU
+          ROT
           NEWC
           3 1 BLKSWAP
           4293607646 PUSHINT
@@ -277,10 +280,10 @@ SETCP0
             s2 s3 XCHG
             3 BLKDROP
             -1 PUSHINT
-            s0 s2 XCHG
             0 PUSHINT
+            s0 s3 XCHG2
             66 PUSHINT
-            ROT
+            s0 s1 XCHG
             PUSHNULL
             PUSHNULL
             <{

@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC __gen_load_Echo
   DECLPROC __gen_store_Echo
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_Slice_asCell
   DECLPROC $__gen_String_asComment
@@ -294,17 +295,20 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
   $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
     TRUE
-    s0 s2 XCHG
     0 PUSHINT
+    s0 s3 XCHG2
     66 PUSHINT
-    ROT
-    PUSHNULL
-    PUSHNULL
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_Slice_asCell PROCREF:<{

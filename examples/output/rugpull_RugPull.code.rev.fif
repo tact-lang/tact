@@ -125,10 +125,11 @@ SETCP0
         }> CALLREF
         s4 PUSH
         <{
-          -1 PUSHINT
-          s10 PUSH
           0 PUSHINT
+          s10 PUSH
           7 PUSHPOW2
+          -1 PUSHINT
+          s3 s3 XCHG2
           PUSHNULL
           PUSHNULL
           PUSHNULL
@@ -321,9 +322,10 @@ SETCP0
             s1 s7 XCHG
             s3 s3 s0 XCHG3
             <{
-              -1 PUSHINT
-              ROTREV
+              s0 s1 XCHG
               2 PUSHINT
+              -1 PUSHINT
+              s3 s3 XCHG2
               PUSHNULL
               PUSHNULL
               PUSHNULL
@@ -518,10 +520,11 @@ SETCP0
             RAWRESERVE
           }> PUSHCONT
           IF
-          -1 PUSHINT
-          s10 PUSH
           0 PUSHINT
+          s10 PUSH
           7 PUSHPOW2
+          -1 PUSHINT
+          s3 s3 XCHG2
           PUSHNULL
           PUSHNULL
           PUSHNULL
@@ -662,10 +665,11 @@ SETCP0
           s0 POP
           s4 POP
           -1 PUSHINT
-          -1 PUSHINT
-          s10 PUSH
           0 PUSHINT
+          s10 PUSH
           7 PUSHPOW2
+          -1 PUSHINT
+          s3 s3 XCHG2
           PUSHNULL
           PUSHNULL
           PUSHNULL
@@ -930,10 +934,10 @@ SETCP0
               s2 s3 XCHG
               3 BLKDROP
               -1 PUSHINT
-              s0 s2 XCHG
               0 PUSHINT
+              s0 s3 XCHG2
               66 PUSHINT
-              ROT
+              s0 s1 XCHG
               PUSHNULL
               PUSHNULL
               <{

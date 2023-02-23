@@ -143,9 +143,10 @@ SETCP0
         THROWANYIFNOT
         s0 s6 XCHG
         INC
+        s3 s1 s6 XCHG3
+        s0 s2 XCHG
         -1 PUSHINT
-        s7 s4 XCHG2
-        s3 s3 s0 XCHG3
+        s4 s4 s4 XCHG3
         PUSHNULL
         PUSHNULL
         <{

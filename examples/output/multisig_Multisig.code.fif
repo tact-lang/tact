@@ -28,7 +28,9 @@ PROGRAM{
   70789 DECLMETHOD $__gen_get_member
   DECLPROC $__gen_Multisig_members
   104769 DECLMETHOD $__gen_get_members
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data
   DECLPROC $__gen_Multisig_receive_Request
+  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
   DECLPROC $__gen_Multisig_receive_Signed
   DECLPROC __gen_router_Multisig
   DECLPROC recv_internal
@@ -420,6 +422,12 @@ PROGRAM{
     __gen_load_Multisig INLINECALLDICT
     $__gen_Multisig_members INLINECALLDICT
   }>
+  __gen_constructor_SendParameters$value_to_mode_bounce_code_data PROCINLINE:<{
+    s2 s5 XCHG
+    s2 s3 XCHG
+    PUSHNULL
+    -ROT
+  }>
   $__gen_Multisig_receive_Request PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
@@ -443,14 +451,20 @@ PROGRAM{
     $__gen_MultisigSigner_init_child CALLDICT
     2DUP
     $contractAddress INLINECALLDICT
-    TRUE
     0 PUSHINT
-    s4 s2 XCHG2
+    s0 s3 XCHG
     66 PUSHINT
-    s4 s2 XCHG2
-    PUSHNULL
-    s0 s2 XCHG
+    s0 s1 s3 XCHG3
+    TRUE
+    -ROT
+    __gen_constructor_SendParameters$value_to_mode_bounce_code_data INLINECALLDICT
     $send INLINECALLDICT
+  }>
+  __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
   }>
   $__gen_Multisig_receive_Signed PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -475,9 +489,8 @@ PROGRAM{
     GREATER
     s1 s3 XCHG
     THROWANYIFNOT
-    s0 s4 XCHG
-    PUSHNULL
-    PUSHNULL
+    4 ROLL
+    __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   __gen_router_Multisig PROCREF:<{

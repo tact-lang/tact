@@ -15,6 +15,7 @@ PROGRAM{
   DECLPROC __gen_load_MultisigContract
   DECLPROC __gen_store_MultisigContract
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$to_value
   DECLPROC $__gen_MultisigContract_execute
   DECLPROC $__gen_MultisigContract_key1
   107493 DECLMETHOD $__gen_get_key1
@@ -255,14 +256,17 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_MultisigContract_execute PROCREF:<{
+  __gen_constructor_SendParameters$to_value PROCINLINE:<{
     TRUE
-    s3 POP
-    SWAP
+    -ROT
     0 PUSHINT
     PUSHNULL
     PUSHNULL
     PUSHNULL
+  }>
+  $__gen_MultisigContract_execute PROCREF:<{
+    s2 POP
+    __gen_constructor_SendParameters$to_value INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_MultisigContract_key1 PROCREF:<{

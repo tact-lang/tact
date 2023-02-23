@@ -156,7 +156,7 @@ SETCP0
           0 PUSHINT
           0 PUSHINT
           64 PUSHINT
-          s1 PUSH
+          s2 PUSH
           MYADDR
           s1 PUSH
           <{
@@ -168,10 +168,11 @@ SETCP0
               CTOS
             }> CALLREF
           }> CALLREF
-          s3 s5 XCHG
-          s4 s14 XCHG
+          s5 s14 XCHG
+          s3 s4 XCHG
           s2 s3 XCHG
           s2 s15 XCHG
+          s4 s5 XCHG
           NEWC
           6 1 BLKSWAP
           <{
@@ -203,10 +204,12 @@ SETCP0
             STSLICER
           }> CALLREF
           ENDC
-          s5 s6 s0 XCHG3
-          s4 s10 XCHG
-          s3 s9 XCHG
-          s0 s10 s9 XCHG3
+          s6 s5 s0 XCHG3
+          s4 s9 XCHG
+          s3 s10 XCHG
+          s0 s9 s10 XCHG3
+          s4 s6 XCHG
+          s4 s5 XCHG
           <{
             NEWC
             1 PUSHINT
@@ -466,11 +469,11 @@ SETCP0
         ISNULL
         NOT
         <{
-          0 PUSHINT
-          s0 s6 XCHG
+          s0 s5 XCHG
           s0 PUSH
           ISNULL
           128 THROWIF
+          0 PUSHINT
           0 PUSHINT
           66 PUSHINT
           s0 s7 XCHG
@@ -481,9 +484,11 @@ SETCP0
           32 STU
           64 STU
           ENDC
-          s4 s8 XCHG
+          s3 s4 XCHG
           s1 s3 s0 XCHG3
           s1 s7 XCHG
+          s2 s4 XCHG
+          s2 s3 XCHG
           PUSHNULL
           PUSHNULL
           <{
@@ -612,6 +617,7 @@ SETCP0
             s0 s1 XCHG
             SENDRAWMSG
           }> CALLREF
+          s2 s3 XCHG
         }> PUSHCONT
         <{
           s4 POP
@@ -679,7 +685,7 @@ SETCP0
             0 PUSHINT
             0 PUSHINT
             64 PUSHINT
-            s1 PUSH
+            s2 PUSH
             MYADDR
             s1 PUSH
             <{
@@ -691,10 +697,11 @@ SETCP0
                 CTOS
               }> CALLREF
             }> CALLREF
-            s3 s5 XCHG
-            s4 s14 XCHG
+            s5 s14 XCHG
+            s3 s4 XCHG
             s2 s3 XCHG
             s2 s15 XCHG
+            s4 s5 XCHG
             NEWC
             6 1 BLKSWAP
             <{
@@ -726,10 +733,12 @@ SETCP0
               STSLICER
             }> CALLREF
             ENDC
-            s5 s6 s0 XCHG3
-            s4 s10 XCHG
-            s3 s9 XCHG
-            s0 s10 s9 XCHG3
+            s6 s5 s0 XCHG3
+            s4 s9 XCHG
+            s3 s10 XCHG
+            s0 s9 s10 XCHG3
+            s4 s6 XCHG
+            s4 s5 XCHG
             <{
               NEWC
               1 PUSHINT

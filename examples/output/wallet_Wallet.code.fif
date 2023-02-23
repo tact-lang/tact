@@ -28,6 +28,7 @@ PROGRAM{
   DECLPROC $__gen_Wallet_seqno
   85143 DECLMETHOD $__gen_get_seqno
   DECLPROC $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_body
   DECLPROC $__gen_Wallet_receive_TransferMessage
   DECLPROC $__gen_Wallet_receive_fallback
   DECLPROC $__gen_Wallet_receive
@@ -352,6 +353,12 @@ PROGRAM{
   }>
   $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
+  __gen_constructor_SendParameters$value_to_mode_body PROCINLINE:<{
+    TRUE
+    s4 s4 s4 XCHG3
+    PUSHNULL
+    PUSHNULL
+  }>
   $__gen_Wallet_receive_TransferMessage PROCINLINE:<{
     s4 s3 s2 PUSH3
     s4 s3 PUSH2
@@ -369,11 +376,9 @@ PROGRAM{
     THROWANYIFNOT
     s0 s6 XCHG
     INC
-    TRUE
-    s7 s4 XCHG2
-    s3 s3 s0 XCHG3
-    PUSHNULL
-    PUSHNULL
+    s3 s1 s6 XCHG3
+    s0 s2 XCHG
+    __gen_constructor_SendParameters$value_to_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_Wallet_receive_fallback PROCINLINE:<{

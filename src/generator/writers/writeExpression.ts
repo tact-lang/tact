@@ -1,7 +1,7 @@
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant } from "../../types/resolveDescriptors";
-import { printTypeRef } from "../../types/types";
+import { printTypeRef, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
@@ -9,6 +9,7 @@ import { GlobalFunctions } from "../../abi/global";
 import { getStringId } from "../../types/resolveStrings";
 import { fn, id } from "./id";
 import { StructFunctions } from "../../abi/struct";
+import { resolveFuncType } from "./resolveFuncType";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -30,6 +31,40 @@ function tryExtractPath(f: ASTExpression): string[] | null {
         }
     }
     return null;
+}
+
+function writeStructConstructor(type: TypeDescription, args: string[], ctx: WriterContext) {
+
+    // Check for duplicates
+    let name = `__gen_constructor_${type.name}$${args.join('_')}`;
+    let renderKey = '$constructor$' + type.name + '$' + args.join(',');
+    if (ctx.isRendered(renderKey)) {
+        return name;
+    }
+    ctx.markRendered(renderKey);
+
+    // Generate constructor
+    ctx.fun(name, () => {
+        ctx.append(`(${resolveFuncType(type, ctx)}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + ' ' + v).join(', ')}) inline {`);
+        ctx.inIndent(() => {
+
+            // Create expressions
+            let expressions = type.fields.map((v) => {
+                let arg = args.find((v2) => v2 === v.name);
+                if (arg) {
+                    return arg;
+                } else if (v.default !== undefined) {
+                    return writeValue(v.default, ctx);
+                } else {
+                    throw Error(`Missing argument for field "${v.name}" in struct "${type.name}"`); // Must not happen
+                }
+            }, ctx);
+
+            ctx.append(`return (${expressions.join(', ')});`);
+        });
+        ctx.append(`}`);
+    });
+    return name;
 }
 
 export function writeValue(s: bigint | string | boolean | null, ctx: WriterContext): string {
@@ -327,17 +362,14 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     if (f.kind === 'op_new') {
         let src = getType(ctx.ctx, f.type);
-        let expressions = src.fields.map((v) => {
-            let arg = f.args.find((v2) => v2.name === v.name);
-            if (arg) {
-                return writeExpression(arg.exp, ctx);
-            } else if (v.default !== undefined) {
-                return writeValue(v.default, ctx);
-            } else {
-                throwError(`Missing argument for field "${v.name}" in struct "${src.name}"`, f.ref);
-            }
-        }, ctx);
-        return `(${expressions.join(', ')})`;
+
+        // Write a constructor
+        let id = writeStructConstructor(src, f.args.map((v) => v.name), ctx);
+        ctx.used(id);
+
+        // Write an expression
+        let expressions = f.args.map((v) => writeExpression(v.exp, ctx), ctx);
+        return `${id}(${expressions.join(', ')})`;
     }
 
     //

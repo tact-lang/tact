@@ -134,9 +134,9 @@ SETCP0
         AND
         THROWANYIFNOT
         <{
+          s2 POP
           -1 PUSHINT
-          s3 POP
-          s0 s1 XCHG
+          ROTREV
           0 PUSHINT
           PUSHNULL
           PUSHNULL

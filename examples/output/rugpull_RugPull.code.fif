@@ -22,9 +22,12 @@ PROGRAM{
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_String_asComment
+  DECLPROC __gen_constructor_SendParameters$value_to_mode
   DECLPROC $__gen_RugPull_sendPayout
+  DECLPROC __gen_constructor_RugParams$investment_returns_fee
   DECLPROC $__gen_RugPull_params
   116437 DECLMETHOD $__gen_get_params
   DECLPROC $__gen_RugPull_requireOwner
@@ -428,17 +431,20 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
   $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
     TRUE
-    s0 s2 XCHG
     0 PUSHINT
+    s0 s3 XCHG2
     66 PUSHINT
-    ROT
-    PUSHNULL
-    PUSHNULL
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_String_asComment PROCREF:<{
@@ -447,18 +453,25 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_RugPull_sendPayout PROCREF:<{
+  __gen_constructor_SendParameters$value_to_mode PROCINLINE:<{
     TRUE
-    -ROT
+    s3 s3 XCHG2
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+  }>
+  $__gen_RugPull_sendPayout PROCREF:<{
+    SWAP
     2 PUSHINT
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
+    __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
     $send INLINECALLDICT
+  }>
+  __gen_constructor_RugParams$investment_returns_fee PROCINLINE:<{
   }>
   $__gen_RugPull_params PROCREF:<{
     6 BLKDROP
     1 3 BLKDROP2
+    __gen_constructor_RugParams$investment_returns_fee INLINECALLDICT
   }>
   $__gen_get_params PROC:<{
     __gen_load_RugPull INLINECALLDICT
@@ -497,13 +510,10 @@ PROGRAM{
     $__gen_RugPull_requireNotStopped INLINECALLDICT
     s4 PUSH
     IF:<{
-      TRUE
-      s10 PUSH
       0 PUSHINT
+      s10 PUSH
       7 PUSHPOW2
-      PUSHNULL
-      PUSHNULL
-      PUSHNULL
+      __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
       $send INLINECALLDICT
     }>ELSE<{
       __tact_context_get INLINECALLDICT
@@ -558,25 +568,19 @@ PROGRAM{
       0 PUSHINT
       RAWRESERVE
     }>
-    TRUE
-    s10 PUSH
     0 PUSHINT
+    s10 PUSH
     7 PUSHPOW2
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
+    __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROCINLINE:<{
     s4 POP
     TRUE
-    TRUE
-    s10 PUSH
     0 PUSHINT
+    s10 PUSH
     7 PUSHPOW2
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
+    __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
     $send INLINECALLDICT
     s0 s4 XCHG
   }>

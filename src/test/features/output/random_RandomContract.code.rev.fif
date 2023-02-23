@@ -80,10 +80,10 @@ SETCP0
           s2 s3 XCHG
           3 BLKDROP
           -1 PUSHINT
-          s0 s2 XCHG
           0 PUSHINT
+          s0 s3 XCHG2
           66 PUSHINT
-          ROT
+          s0 s1 XCHG
           PUSHNULL
           PUSHNULL
           <{

@@ -35,11 +35,15 @@ PROGRAM{
   DECLPROC $contractAddress
   DECLPROC $send
   DECLPROC $__gen_JettonDefaultWallet_init_child
+  DECLPROC __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload
+  DECLPROC __gen_constructor_TokenExcesses$queryId
   DECLPROC $__gen_SampleJetton_getJettonWalletInit
   DECLPROC $__gen_SampleJetton_get_wallet_address
   103289 DECLMETHOD $__gen_get_get_wallet_address
+  DECLPROC __gen_constructor_JettonData$totalSupply_mintable_owner_content_walletCode
   DECLPROC $__gen_SampleJetton_get_jetton_data
   106029 DECLMETHOD $__gen_get_get_jetton_data
+  DECLPROC __gen_constructor_SendParameters$to_value_bounce_mode_body_code_data
   DECLPROC $__gen_SampleJetton_mint
   DECLPROC $__gen_SampleJetton_requireWallet
   DECLPROC $__gen_SampleJetton_requireOwner
@@ -48,6 +52,7 @@ PROGRAM{
   DECLPROC $__gen_SampleJetton_receive_Mint
   DECLPROC $__gen_SampleJetton_receive_comment_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2
   DECLPROC $__gen_SampleJetton_receive_TokenUpdateContent
+  DECLPROC __gen_constructor_SendParameters$to_value_bounce_mode_body
   DECLPROC $__gen_SampleJetton_receive_TokenBurnNotification
   DECLPROC __gen_router_SampleJetton
   DECLPROC recv_internal
@@ -472,6 +477,11 @@ PROGRAM{
     __gen_write_$init$JettonDefaultWallet INLINECALLDICT
     ENDC
   }>
+  __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload PROCINLINE:<{
+    s4 s5 XCHG
+  }>
+  __gen_constructor_TokenExcesses$queryId PROCINLINE:<{
+  }>
   $__gen_SampleJetton_getJettonWalletInit PROCREF:<{
     __tact_context_sys GETGLOB
     MYADDR
@@ -488,16 +498,23 @@ PROGRAM{
     4 ROLL
     $__gen_SampleJetton_get_wallet_address INLINECALLDICT
   }>
+  __gen_constructor_JettonData$totalSupply_mintable_owner_content_walletCode PROCINLINE:<{
+  }>
   $__gen_SampleJetton_get_jetton_data PROCREF:<{
     MYADDR
     $__gen_SampleJetton_getJettonWalletInit INLINECALLDICT
     __gen_StateInit_get_code INLINECALLDICT
     s3 s3 s0 XCHG3
+    __gen_constructor_JettonData$totalSupply_mintable_owner_content_walletCode INLINECALLDICT
   }>
   $__gen_get_get_jetton_data PROC:<{
     __gen_load_SampleJetton INLINECALLDICT
     $__gen_SampleJetton_get_jetton_data INLINECALLDICT
     __gen_JettonData_to_external INLINECALLDICT
+  }>
+  __gen_constructor_SendParameters$to_value_bounce_mode_body_code_data PROCINLINE:<{
+    s4 s6 XCHG
+    s4 s5 XCHG
   }>
   $__gen_SampleJetton_mint PROCREF:<{
     s6 s1 XCPU
@@ -506,22 +523,24 @@ PROGRAM{
     $__gen_SampleJetton_getJettonWalletInit INLINECALLDICT
     2DUP
     $contractAddress INLINECALLDICT
-    FALSE
     0 PUSHINT
+    FALSE
     64 PUSHINT
-    OVER
+    s2 PUSH
     MYADDR
     OVER
     $emptySlice INLINECALLDICT
-    s3 s5 XCHG
-    s4 s14 XCHG
+    s5 s14 XCHG
+    s3 s4 XCHG
     s2 s3 XCHG
     s2 s15 XCHG
+    __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload INLINECALLDICT
     __gen_writecell_TokenTransferInternal INLINECALLDICT
-    s5 s6 s0 XCHG3
-    s4 s10 XCHG
-    s3 s9 XCHG
-    s0 s10 s9 XCHG3
+    s6 s5 s0 XCHG3
+    s4 s9 XCHG
+    s3 s10 XCHG
+    s0 s9 s10 XCHG3
+    __gen_constructor_SendParameters$to_value_bounce_mode_body_code_data INLINECALLDICT
     $send INLINECALLDICT
     2SWAP
   }>
@@ -577,6 +596,12 @@ PROGRAM{
     NIP
     s1 s3 s0 XCHG3
   }>
+  __gen_constructor_SendParameters$to_value_bounce_mode_body PROCINLINE:<{
+    s2 s4 XCHG
+    s2 s3 XCHG
+    PUSHNULL
+    PUSHNULL
+  }>
   $__gen_SampleJetton_receive_TokenBurnNotification PROCINLINE:<{
     s4 s7 XCHG
     s3 s6 XCHG
@@ -588,19 +613,20 @@ PROGRAM{
     ISNULL
     NOT
     IF:<{
-      FALSE
-      s0 s6 XCHG
+      s0 s5 XCHG
       __tact_not_null INLINECALLDICT
       0 PUSHINT
+      FALSE
       66 PUSHINT
       s0 s7 XCHG
+      __gen_constructor_TokenExcesses$queryId INLINECALLDICT
       __gen_writecell_TokenExcesses INLINECALLDICT
-      s4 s8 XCHG
+      s3 s4 XCHG
       s1 s3 s0 XCHG3
       s1 s7 XCHG
-      PUSHNULL
-      PUSHNULL
+      __gen_constructor_SendParameters$to_value_bounce_mode_body INLINECALLDICT
       $send INLINECALLDICT
+      s2 s3 XCHG
     }>ELSE<{
       s4 POP
       s4 POP

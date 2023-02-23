@@ -16,6 +16,7 @@ PROGRAM{
   DECLPROC __gen_load_Treasure
   DECLPROC __gen_store_Treasure
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_body
   DECLPROC $__gen_Treasure_requireOwner
   DECLPROC $__gen_Treasure_doWithdraw
   DECLPROC $__gen_Treasure_owner
@@ -222,6 +223,12 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  __gen_constructor_SendParameters$value_to_mode_body PROCINLINE:<{
+    TRUE
+    s4 s4 s4 XCHG3
+    PUSHNULL
+    PUSHNULL
+  }>
   $__gen_Treasure_requireOwner PROCREF:<{
     __tact_context_get INLINECALLDICT
     __gen_Context_get_sender INLINECALLDICT
@@ -232,13 +239,10 @@ PROGRAM{
   $__gen_Treasure_doWithdraw PROCREF:<{
     s0 s2 XCHG
     $__gen_Treasure_requireOwner INLINECALLDICT
-    TRUE
     NEWC
     ENDC
-    s3 s0 s2 XC2PU
-    s5 s5 XCHG2
-    PUSHNULL
-    PUSHNULL
+    s1 s3 s3 PUXC2
+    __gen_constructor_SendParameters$value_to_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_Treasure_owner PROCREF:<{

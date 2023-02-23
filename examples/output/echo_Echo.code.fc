@@ -165,9 +165,13 @@ slice __gen_str_591567833() asm "B{b5ee9c7241010101000900000e48656c6c6f2c20e8d19
     send_raw_message($c, $params'mode);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 () $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
 }
 
 cell $__gen_Slice_asCell(slice $self) impure inline_ref {

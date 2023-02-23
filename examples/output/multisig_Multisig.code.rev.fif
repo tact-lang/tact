@@ -177,13 +177,16 @@ SETCP0
           ENDC
           CTOS
         }> CALLREF
-        -1 PUSHINT
         0 PUSHINT
-        s4 s2 XCHG2
+        s0 s3 XCHG
         66 PUSHINT
-        s4 s2 XCHG2
+        s0 s1 s3 XCHG3
+        -1 PUSHINT
+        ROTREV
+        s2 s5 XCHG
+        s2 s3 XCHG
         PUSHNULL
-        s0 s2 XCHG
+        ROTREV
         <{
           NEWC
           1 PUSHINT
@@ -404,7 +407,9 @@ SETCP0
         GREATER
         s1 s3 XCHG
         THROWANYIFNOT
-        s0 s4 XCHG
+        1 4 BLKSWAP
+        s1 s4 XCHG
+        s3 s3 s0 XCHG3
         PUSHNULL
         PUSHNULL
         <{

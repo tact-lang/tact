@@ -229,6 +229,10 @@ _ $__gen_get_seqno() method_id(85143) {
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_body(int value, slice to, int mode, cell body) inline {
+    return (true, to, value, mode, body, null(), null());
+}
+
 (((int, int, int)), ()) $__gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, ($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)) = $msg;
@@ -236,7 +240,7 @@ _ $__gen_get_seqno() method_id(85143) {
     throw_unless(48401, check_signature($op_hash, $msg'signature, $self'key));
     throw_unless(17654, ($msg'transfer'seqno == $self'seqno));
     $self'seqno = ($self'seqno + 1);
-    $send((true, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'mode, $msg'transfer'body, null(), null()));
+    $send(__gen_constructor_SendParameters$value_to_mode_body($msg'transfer'amount, $msg'transfer'to, $msg'transfer'mode, $msg'transfer'body));
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 

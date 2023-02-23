@@ -16,9 +16,11 @@ PROGRAM{
   DECLPROC __gen_load_Beacon
   DECLPROC __gen_store_Beacon
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_Beacon_owner
   83229 DECLMETHOD $__gen_get_owner
+  DECLPROC __gen_constructor_CanPayoutResponse$ok_amount_address
   DECLPROC $__gen_Beacon_receive_CanPayout
   DECLPROC $__gen_Beacon_receive_bounced
   DECLPROC __gen_router_Beacon
@@ -239,17 +241,20 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
   $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
     TRUE
-    s0 s2 XCHG
     0 PUSHINT
+    s0 s3 XCHG2
     66 PUSHINT
-    ROT
-    PUSHNULL
-    PUSHNULL
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_Beacon_owner PROCREF:<{
@@ -259,6 +264,9 @@ PROGRAM{
   $__gen_get_owner PROC:<{
     __gen_load_Beacon INLINECALLDICT
     $__gen_Beacon_owner INLINECALLDICT
+  }>
+  __gen_constructor_CanPayoutResponse$ok_amount_address PROCINLINE:<{
+    ROT
   }>
   $__gen_Beacon_receive_CanPayout PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -273,15 +281,18 @@ PROGRAM{
     RAWRESERVE
     OVER
     IF:<{
+      NIP
       TRUE
-      s2 POP
-      s2 PUSH
       TRUE
+      ROT
+      s3 PUSH
+      __gen_constructor_CanPayoutResponse$ok_amount_address INLINECALLDICT
       __gen_writecell_CanPayoutResponse INLINECALLDICT
       $reply INLINECALLDICT
     }>ELSE<{
-      s2 PUSH
       FALSE
+      s1 s3 XCPU
+      __gen_constructor_CanPayoutResponse$ok_amount_address INLINECALLDICT
       __gen_writecell_CanPayoutResponse INLINECALLDICT
       $reply INLINECALLDICT
     }>

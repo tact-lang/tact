@@ -348,6 +348,8 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
         ctx = resolveExpression(e, sctx, ctx);
     }
 
+    // TODO: Check argument types
+
     // Register return type
     return registerExpType(ctx, ast, { kind: 'ref', name: 'StateInit', optional: false });
 }

@@ -284,6 +284,14 @@ slice $contractAddress((cell, cell) $s) impure inline_ref {
     return (mine, b.end_cell());
 }
 
+((int, int, slice, slice, int, slice)) __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload(int amount, int queryId, slice from, slice responseAddress, int forwardTonAmount, slice forwardPayload) inline {
+    return (queryId, amount, from, responseAddress, forwardTonAmount, forwardPayload);
+}
+
+((int)) __gen_constructor_TokenExcesses$queryId(int queryId) inline {
+    return (queryId);
+}
+
 ((int, slice, cell, int), (cell, cell)) $__gen_SampleJetton_getJettonWalletInit((int, slice, cell, int) $self, slice $address) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), $__gen_JettonDefaultWallet_init_child(__tact_context_sys, my_address(), $address));
@@ -302,10 +310,14 @@ _ $__gen_get_get_wallet_address(slice $$owner) method_id(103289) {
     return res;
 }
 
+((int, int, slice, cell, cell)) __gen_constructor_JettonData$totalSupply_mintable_owner_content_walletCode(int totalSupply, int mintable, slice owner, cell content, cell walletCode) inline {
+    return (totalSupply, mintable, owner, content, walletCode);
+}
+
 (int, int, slice, cell, cell) $__gen_SampleJetton_get_jetton_data((int, slice, cell, int) $self) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     cell $code = __gen_StateInit_get_code(($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit(my_address()));
-    return ($self'totalSupply, $self'mintable, $self'owner, $self'content, $code);
+    return __gen_constructor_JettonData$totalSupply_mintable_owner_content_walletCode($self'totalSupply, $self'mintable, $self'owner, $self'content, $code);
 }
 
 _ $__gen_get_get_jetton_data() method_id(106029) {
@@ -314,12 +326,16 @@ _ $__gen_get_get_jetton_data() method_id(106029) {
     return __gen_JettonData_to_external(res);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_bounce_mode_body_code_data(slice to, int value, int bounce, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
 ((int, slice, cell, int), ()) $__gen_SampleJetton_mint((int, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref {
     var (($self'totalSupply, $self'owner, $self'content, $self'mintable)) = $self;
     $self'totalSupply = ($self'totalSupply + $amount);
     var ($winit'code, $winit'data) = ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_getJettonWalletInit($to);
     slice $walletAddress = $contractAddress(($winit'code, $winit'data));
-    $send((false, $walletAddress, 0, 64, __gen_writecell_TokenTransferInternal((0, $amount, my_address(), $responseAddress, 0, $emptySlice())), $winit'code, $winit'data));
+    $send(__gen_constructor_SendParameters$to_value_bounce_mode_body_code_data($walletAddress, 0, false, 64, __gen_writecell_TokenTransferInternal(__gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload($amount, 0, my_address(), $responseAddress, 0, $emptySlice())), $winit'code, $winit'data));
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
@@ -371,13 +387,17 @@ _ $__gen_get_owner() method_id(83229) {
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_bounce_mode_body(slice to, int value, int bounce, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 (((int, slice, cell, int)), ()) $__gen_SampleJetton_receive_TokenBurnNotification((int, slice, cell, int) $self, (int, int, slice, slice) $msg) impure inline {
     var ($self'totalSupply, $self'owner, $self'content, $self'mintable) = $self;
     var ($msg'queryId, $msg'amount, $msg'owner, $msg'responseAddress) = $msg;
     ($self'totalSupply, $self'owner, $self'content, $self'mintable)~$__gen_SampleJetton_requireWallet($msg'owner);
     $self'totalSupply = ($self'totalSupply - $msg'amount);
     if ((~ null?($msg'responseAddress))) {
-        $send((false, __tact_not_null($msg'responseAddress), 0, (64 + 2), __gen_writecell_TokenExcesses(($msg'queryId)), null(), null()));
+        $send(__gen_constructor_SendParameters$to_value_bounce_mode_body(__tact_not_null($msg'responseAddress), 0, false, (64 + 2), __gen_writecell_TokenExcesses(__gen_constructor_TokenExcesses$queryId($msg'queryId))));
     }
     return (($self'totalSupply, $self'owner, $self'content, $self'mintable), ());
 }

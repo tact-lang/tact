@@ -227,6 +227,10 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return __tact_string_builder_end($b);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body(int value, slice to, int mode, int bounce, cell code, cell data, cell body) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
 (cell, cell) $__gen_C_init_child(cell sys', slice $parent) {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
@@ -259,7 +263,7 @@ _ $__gen_get_getNext() method_id(74105) {
     var ($self'parent) = $self;
     var ($init'code, $init'data) = $__gen_C_init_child(__tact_context_sys, my_address());
     slice $address = $contractAddress(($init'code, $init'data));
-    $send((true, $address, 0, (64 + 2), $__gen_String_asComment(__gen_str_796354186()), $init'code, $init'data));
+    $send(__gen_constructor_SendParameters$value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, $__gen_String_asComment(__gen_str_796354186())));
     return (($self'parent), ());
 }
 

@@ -31,10 +31,12 @@ PROGRAM{
   119935 DECLMETHOD $__gen_get_getB
   DECLPROC $__gen_SerializationTester2_getBopt
   73763 DECLMETHOD $__gen_get_getBopt
+  DECLPROC __gen_constructor_Both$a_b
   DECLPROC $__gen_SerializationTester2_getBoth
   81754 DECLMETHOD $__gen_get_getBoth
   DECLPROC $__gen_SerializationTester2_getBothOpt
   69430 DECLMETHOD $__gen_get_getBothOpt
+  DECLPROC __gen_constructor_Vars$a_b_c_d_e
   DECLPROC $__gen_SerializationTester2_process
   104435 DECLMETHOD $__gen_get_process
   DECLPROC $__gen_SerializationTester2_receive
@@ -308,7 +310,10 @@ PROGRAM{
     $__gen_SerializationTester2_getBopt INLINECALLDICT
     __gen_Vars_opt_to_external INLINECALLDICT
   }>
+  __gen_constructor_Both$a_b PROCINLINE:<{
+  }>
   $__gen_SerializationTester2_getBoth PROCREF:<{
+    __gen_constructor_Both$a_b INLINECALLDICT
   }>
   $__gen_get_getBoth PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
@@ -316,12 +321,15 @@ PROGRAM{
     __gen_Both_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_getBothOpt PROCREF:<{
+    __gen_constructor_Both$a_b INLINECALLDICT
     __gen_Both_as_optional INLINECALLDICT
   }>
   $__gen_get_getBothOpt PROC:<{
     __gen_load_SerializationTester2 INLINECALLDICT
     $__gen_SerializationTester2_getBothOpt INLINECALLDICT
     __gen_Both_opt_to_external INLINECALLDICT
+  }>
+  __gen_constructor_Vars$a_b_c_d_e PROCINLINE:<{
   }>
   $__gen_SerializationTester2_process PROCREF:<{
     11 BLKDROP
@@ -338,6 +346,7 @@ PROGRAM{
     5 ADDCONST
     s3 s4 XCHG
     s1 s3 s0 XCHG3
+    __gen_constructor_Vars$a_b_c_d_e INLINECALLDICT
   }>
   $__gen_get_process PROC:<{
     s0 s2 XCHG

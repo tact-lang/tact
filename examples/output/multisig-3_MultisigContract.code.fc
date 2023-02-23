@@ -154,10 +154,14 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
     send_raw_message($c, $params'mode);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value(slice to, int value) inline {
+    return (true, to, value, 0, null(), null(), null());
+}
+
 ((int, int, int, int), ()) $__gen_MultisigContract_execute((int, int, int, int) $self, (int, int, slice) $op) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     var (($op'seqno, $op'amount, $op'target)) = $op;
-    $send((true, $op'target, $op'amount, 0, null(), null(), null()));
+    $send(__gen_constructor_SendParameters$to_value($op'target, $op'amount));
     return (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key), ());
 }
 

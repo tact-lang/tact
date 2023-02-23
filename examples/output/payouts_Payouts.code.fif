@@ -38,6 +38,8 @@ PROGRAM{
   DECLPROC $__gen_Payouts_requireOwner
   DECLPROC $__gen_Payouts_owner
   83229 DECLMETHOD $__gen_get_owner
+  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
+  DECLPROC __gen_constructor_CanPayout$amount
   DECLPROC $__gen_Payouts_receive_comment
   DECLPROC $__gen_Payouts_receive_CanPayoutResponse
   DECLPROC $__gen_Payouts_receive_ChangeOwner
@@ -575,6 +577,14 @@ PROGRAM{
     __gen_load_Payouts INLINECALLDICT
     $__gen_Payouts_owner INLINECALLDICT
   }>
+  __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
+  }>
+  __gen_constructor_CanPayout$amount PROCINLINE:<{
+  }>
   $__gen_Payouts_receive_comment PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     DROP
@@ -606,14 +616,15 @@ PROGRAM{
     3 ROLL
     $__gen_Beacon_init_child CALLDICT
     $contractAddress INLINECALLDICT
-    TRUE
     0 PUSHINT
     66 PUSHINT
+    TRUE
     s0 s4 XCHG
+    __gen_constructor_CanPayout$amount INLINECALLDICT
     __gen_writecell_CanPayout INLINECALLDICT
-    s1 s4 s0 XCHG3
-    PUSHNULL
-    PUSHNULL
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+    __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_Payouts_receive_CanPayoutResponse PROCINLINE:<{
@@ -642,25 +653,22 @@ PROGRAM{
       SUB
       0 GTINT
       THROWANYIFNOT
-      FALSE
       66 PUSHINT
+      FALSE
       B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE
       $__gen_String_asComment INLINECALLDICT
-      s2 s4 XCHG
-      PUSHNULL
-      PUSHNULL
+      s3 s4 XCHG
+      __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
       $send INLINECALLDICT
     }>ELSE<{
       DROP
       NIP
-      FALSE
       0 PUSHINT
       66 PUSHINT
+      FALSE
       B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE
       $__gen_String_asComment INLINECALLDICT
-      s3 s4 XCHG
-      PUSHNULL
-      PUSHNULL
+      __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
       $send INLINECALLDICT
     }>
   }>

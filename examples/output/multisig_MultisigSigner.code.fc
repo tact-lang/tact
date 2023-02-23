@@ -217,6 +217,14 @@ _ $__gen_get_request() method_id(107262) {
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_bounce_body(int value, slice to, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+(((slice, slice, int, int, int, int, cell))) __gen_constructor_Signed$request((slice, slice, int, int, int, int, cell) request) inline {
+    return (request);
+}
+
 ((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     throw_unless(4755, ($self'request'timeout > now()));
@@ -227,7 +235,7 @@ _ $__gen_get_request() method_id(107262) {
     $self'weight = ($self'weight + $weight);
     if (($self'weight >= $self'requiredWeight)) {
         $self'completed = true;
-        $send((false, $self'master, 0, (128 + 2), __gen_writecell_Signed((($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))), null(), null()));
+        $send(__gen_constructor_SendParameters$value_to_mode_bounce_body(0, $self'master, (128 + 2), false, __gen_writecell_Signed(__gen_constructor_Signed$request(($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)))));
     }
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }

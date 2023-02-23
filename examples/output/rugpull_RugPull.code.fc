@@ -249,9 +249,13 @@ slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09ba
     send_raw_message($c, $params'mode);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 () $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
 }
 
 cell $__gen_String_asComment(slice $self) impure inline_ref {
@@ -261,15 +265,23 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return __tact_string_builder_end($b);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode(int value, slice to, int mode) inline {
+    return (true, to, value, mode, null(), null(), null());
+}
+
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_sendPayout((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, int $value) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
-    $send((true, $to, $value, 2, null(), null(), null()));
+    $send(__gen_constructor_SendParameters$value_to_mode($value, $to, 2));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
+((int, int, int)) __gen_constructor_RugParams$investment_returns_fee(int investment, int returns, int fee) inline {
+    return (investment, returns, fee);
 }
 
 (int, int, int) $__gen_RugPull_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
-    return ($self'investment, $self'returns, $self'fee);
+    return __gen_constructor_RugParams$investment_returns_fee($self'investment, $self'returns, $self'fee);
 }
 
 _ $__gen_get_params() method_id(116437) {
@@ -316,7 +328,7 @@ _ $__gen_get_stopped() method_id(74107) {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$__gen_RugPull_requireNotStopped();
     if ($self'rugpulled) {
-        $send((true, $self'owner, 0, 128, null(), null(), null()));
+        $send(__gen_constructor_SendParameters$value_to_mode(0, $self'owner, 128));
         return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
     }
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -339,14 +351,14 @@ _ $__gen_get_stopped() method_id(74107) {
     if ((~ $self'rugpulled)) {
         raw_reserve($self'balance, 0);
     }
-    $send((true, $self'owner, 0, 128, null(), null(), null()));
+    $send(__gen_constructor_SendParameters$value_to_mode(0, $self'owner, 128));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     $self'rugpulled = true;
-    $send((true, $self'owner, 0, 128, null(), null(), null()));
+    $send(__gen_constructor_SendParameters$value_to_mode(0, $self'owner, 128));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 

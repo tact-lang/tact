@@ -146,9 +146,13 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     send_raw_message($c, $params'mode);
 }
 
+((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 () $reply(cell $body) impure inline_ref {
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send((true, $ctx'sender, 0, (64 + 2), $body, null(), null()));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
 }
 
 slice $__gen_Beacon_owner((slice, slice, int) $self) impure inline_ref {
@@ -162,6 +166,10 @@ _ $__gen_get_owner() method_id(83229) {
     return res;
 }
 
+((int, slice, int)) __gen_constructor_CanPayoutResponse$ok_amount_address(int ok, int amount, slice address) inline {
+    return (amount, address, ok);
+}
+
 (((slice, slice, int)), ()) $__gen_Beacon_receive_CanPayout((slice, slice, int) $self, (int) $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
     var ($msg'amount) = $msg;
@@ -170,9 +178,9 @@ _ $__gen_get_owner() method_id(83229) {
     raw_reserve(100000000, 0);
     if ($self'completed) {
         $self'completed = true;
-        $reply(__gen_writecell_CanPayoutResponse(($msg'amount, $self'owner, true)));
+        $reply(__gen_writecell_CanPayoutResponse(__gen_constructor_CanPayoutResponse$ok_amount_address(true, $msg'amount, $self'owner)));
     } else {
-        $reply(__gen_writecell_CanPayoutResponse(($msg'amount, $self'owner, false)));
+        $reply(__gen_writecell_CanPayoutResponse(__gen_constructor_CanPayoutResponse$ok_amount_address(false, $msg'amount, $self'owner)));
     }
     return (($self'master, $self'owner, $self'completed), ());
 }

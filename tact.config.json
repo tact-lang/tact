@@ -125,6 +125,14 @@
       }
     },
     {
+      "name": "ordering",
+      "path": "./src/test/features/ordering.tact",
+      "output": "./src/test/features/output",
+      "parameters": {
+        "debug": true
+      }
+    },
+    {
       "name": "deep",
       "path": "./src/test/features/deep-sequence.tact",
       "output": "./src/test/features/output",

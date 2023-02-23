@@ -223,13 +223,14 @@ SETCP0
             ENDC
             CTOS
           }> CALLREF
-          -1 PUSHINT
-          s7 s6 XCHG2
           0 PUSHINT
+          s6 s7 XCHG2
           64 PUSHINT
+          -1 PUSHINT
           s11 PUSH
           12 2 8 PUXC2
           s1 s8 XCHG
+          s4 s5 XCHG
           NEWC
           6 1 BLKSWAP
           <{
@@ -264,6 +265,9 @@ SETCP0
           s5 s6 XCHG
           s3 s4 XCHG
           ROTREV
+          s3 s6 XCHG
+          s3 s5 XCHG
+          s3 s4 XCHG
           <{
             NEWC
             1 PUSHINT
@@ -524,10 +528,8 @@ SETCP0
           s1 s10 XCHG
           SUB
           0 PUSHINT
-          0 PUSHINT
-          s8 PUSH
-          s8 s1 s3 XCHG3
-          s7 s4 XCHG2
+          s7 PUSH
+          s7 s6 s3 XCHG3
           NEWC
           4 1 BLKSWAP
           1935855772 PUSHINT
@@ -542,10 +544,12 @@ SETCP0
           s0 s1 XCHG
           STSLICER
           ENDC
-          s8 PUSH
-          s4 s6 XCHG
-          s3 s1 s3 XCHG3
-          s5 s5 XCHG2
+          s7 PUSH
+          s0 s3 XCHG
+          s4 s4 XCHG2
+          s3 s3 s0 XCHG3
+          0 PUSHINT
+          s0 s1 XCHG
           PUSHNULL
           PUSHNULL
           <{
@@ -674,7 +678,7 @@ SETCP0
             s0 s1 XCHG
             SENDRAWMSG
           }> CALLREF
-          s0 s5 XCHG2
+          s0 s5 XCHG
         }> IFREFELSE
         s5 PUSH
         ISNULL
@@ -683,13 +687,12 @@ SETCP0
         0 GTINT
         AND
         <{
-          0 PUSHINT
-          s0 s6 XCHG
+          s0 s5 XCHG
           s0 PUSH
           ISNULL
           128 THROWIF
           0 PUSHINT
-          s0 s4 XCHG
+          s0 s3 XCHG
           NEWC
           s0 s1 XCHG
           3576854235 PUSHINT
@@ -697,9 +700,10 @@ SETCP0
           32 STU
           64 STU
           ENDC
-          s4 s7 XCHG
+          s1 s3 XCHG
           s3 s3 s0 XCHG3
-          s1 s7 XCHG
+          0 PUSHINT
+          s0 s1 XCHG
           PUSHNULL
           PUSHNULL
           <{
@@ -902,10 +906,10 @@ SETCP0
         s1 s2 XCHG
         GREATER
         THROWANYIFNOT
-        -1 PUSHINT
         0 PUSHINT
-        s0 s3 XCHG
         64 PUSHINT
+        s0 s3 XCHG
+        -1 PUSHINT
         3 6 6 XCPU2
         NEWC
         4 1 BLKSWAP
@@ -932,8 +936,11 @@ SETCP0
         }> PUSHCONT
         IFELSE
         ENDC
-        3 0 4 XC2PU
+        s4 PUSH
+        s4 s1 s4 XCHG3
         s3 s3 XCHG2
+        s1 s4 XCHG
+        s3 s3 s0 XCHG3
         PUSHNULL
         PUSHNULL
         <{

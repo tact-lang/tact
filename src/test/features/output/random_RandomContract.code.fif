@@ -14,11 +14,13 @@ PROGRAM{
   DECLPROC $randomInt
   DECLPROC $random
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_RandomContract_randomInt
   128647 DECLMETHOD $__gen_get_randomInt
   DECLPROC $__gen_RandomContract_random
   92013 DECLMETHOD $__gen_get_random
+  DECLPROC __gen_constructor_DeployOk$queryId
   DECLPROC $__gen_RandomContract_receive_Deploy
   DECLPROC __gen_router_RandomContract
   DECLPROC recv_internal
@@ -220,17 +222,20 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
   $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
     TRUE
-    s0 s2 XCHG
     0 PUSHINT
+    s0 s3 XCHG2
     66 PUSHINT
-    ROT
-    PUSHNULL
-    PUSHNULL
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_RandomContract_randomInt PROCREF:<{
@@ -250,7 +255,10 @@ PROGRAM{
     -ROT
     $__gen_RandomContract_random INLINECALLDICT
   }>
+  __gen_constructor_DeployOk$queryId PROCINLINE:<{
+  }>
   $__gen_RandomContract_receive_Deploy PROCINLINE:<{
+    __gen_constructor_DeployOk$queryId INLINECALLDICT
     __gen_writecell_DeployOk INLINECALLDICT
     $reply INLINECALLDICT
   }>

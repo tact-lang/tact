@@ -22,6 +22,8 @@ PROGRAM{
   DECLPROC $__gen_MultisigSigner_request
   107262 DECLMETHOD $__gen_get_request
   DECLPROC $__gen_MultisigSigner_receive
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_body
+  DECLPROC __gen_constructor_Signed$request
   DECLPROC $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
   DECLPROC __gen_router_MultisigSigner
   DECLPROC recv_internal
@@ -358,6 +360,13 @@ PROGRAM{
   }>
   $__gen_MultisigSigner_receive PROCINLINE:<{
   }>
+  __gen_constructor_SendParameters$value_to_mode_bounce_body PROCINLINE:<{
+    s4 s4 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
+  }>
+  __gen_constructor_Signed$request PROCINLINE:<{
+  }>
   $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROCINLINE:<{
     4755 PUSHINT
     s4 PUSH
@@ -390,17 +399,17 @@ PROGRAM{
     IF:<{
       s7 POP
       TRUE
-      FALSE
       0 PUSHINT
       130 PUSHINT
+      FALSE
       s9 s8 s7 PUSH3
       s9 s8 s7 PUSH3
       18 s() PUSH
+      __gen_constructor_Signed$request INLINECALLDICT
       __gen_writecell_Signed INLINECALLDICT
       s15 PUSH
       3 -ROLL
-      PUSHNULL
-      PUSHNULL
+      __gen_constructor_SendParameters$value_to_mode_bounce_body INLINECALLDICT
       $send INLINECALLDICT
       s0 s7 XCHG
     }>

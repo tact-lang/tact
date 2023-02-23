@@ -63,6 +63,7 @@ PROGRAM{
   127419 DECLMETHOD $__gen_get_notNullE
   DECLPROC $__gen_ContractWithOptionals_notNullF
   115160 DECLMETHOD $__gen_get_notNullF
+  DECLPROC __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5
   DECLPROC $__gen_ContractWithOptionals_testVariables
   87190 DECLMETHOD $__gen_get_testVariables
   DECLPROC $__gen_ContractWithOptionals_receive
@@ -802,6 +803,8 @@ PROGRAM{
     $__gen_ContractWithOptionals_notNullF INLINECALLDICT
     __gen_StructWithOptionals_to_external INLINECALLDICT
   }>
+  __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5 PROCINLINE:<{
+  }>
   $__gen_ContractWithOptionals_testVariables PROCREF:<{
     6 BLKDROP
     1 PUSHINT
@@ -809,6 +812,7 @@ PROGRAM{
     3 PUSHINT
     4 PUSHINT
     5 PUSHINT
+    __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5 INLINECALLDICT
     __gen_SomeGenericStruct_as_optional INLINECALLDICT
     __gen_SomeGenericStruct_not_null INLINECALLDICT
   }>

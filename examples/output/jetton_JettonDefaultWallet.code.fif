@@ -38,10 +38,18 @@ PROGRAM{
   DECLPROC $send
   DECLPROC $__gen_Context_readForwardFee
   DECLPROC $__gen_JettonDefaultWallet_init_child
+  DECLPROC __gen_constructor_JettonWalletData$balance_owner_master_walletCode
   DECLPROC $__gen_JettonDefaultWallet_get_wallet_data
   97026 DECLMETHOD $__gen_get_get_wallet_data
+  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body_code_data
+  DECLPROC __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload
   DECLPROC $__gen_JettonDefaultWallet_receive_TokenTransfer
+  DECLPROC __gen_constructor_SendParameters$to_value_bounce_body
+  DECLPROC __gen_constructor_TokenNotification$queryId_amount_from_forwardPayload
+  DECLPROC __gen_constructor_TokenExcesses$queryId
   DECLPROC $__gen_JettonDefaultWallet_receive_TokenTransferInternal
+  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
+  DECLPROC __gen_constructor_TokenBurnNotification$queryId_amount_owner_responseAddress
   DECLPROC $__gen_JettonDefaultWallet_receive_TokenBurn
   DECLPROC $__gen_JettonDefaultWallet_receive_bounced
   DECLPROC __gen_router_JettonDefaultWallet
@@ -502,16 +510,27 @@ PROGRAM{
     __gen_write_$init$JettonDefaultWallet INLINECALLDICT
     ENDC
   }>
+  __gen_constructor_JettonWalletData$balance_owner_master_walletCode PROCINLINE:<{
+  }>
   $__gen_JettonDefaultWallet_get_wallet_data PROCREF:<{
     __tact_context_sys GETGLOB
     s1 s2 PUSH2
     $__gen_JettonDefaultWallet_init_child CALLDICT
     __gen_StateInit_get_code INLINECALLDICT
+    __gen_constructor_JettonWalletData$balance_owner_master_walletCode INLINECALLDICT
   }>
   $__gen_get_get_wallet_data PROC:<{
     __gen_load_JettonDefaultWallet INLINECALLDICT
     $__gen_JettonDefaultWallet_get_wallet_data INLINECALLDICT
     __gen_JettonWalletData_to_external INLINECALLDICT
+  }>
+  __gen_constructor_SendParameters$to_value_mode_bounce_body_code_data PROCINLINE:<{
+    s3 s6 XCHG
+    s3 s5 XCHG
+    s3 s4 XCHG
+  }>
+  __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload PROCINLINE:<{
+    s4 s5 XCHG
   }>
   $__gen_JettonDefaultWallet_receive_TokenTransfer PROCINLINE:<{
     2 2 BLKDROP2
@@ -551,18 +570,31 @@ PROGRAM{
     $__gen_JettonDefaultWallet_init_child CALLDICT
     2DUP
     $contractAddress INLINECALLDICT
-    TRUE
-    s7 s6 XCHG2
     0 PUSHINT
+    s6 s7 XCHG2
     64 PUSHINT
+    TRUE
     s11 PUSH
     s12 s2 s8 PUXC2
     s1 s8 XCHG
+    __gen_constructor_TokenTransferInternal$amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload INLINECALLDICT
     __gen_writecell_TokenTransferInternal INLINECALLDICT
     s5 s6 XCHG
     s3 s4 XCHG
     -ROT
+    __gen_constructor_SendParameters$to_value_mode_bounce_body_code_data INLINECALLDICT
     $send INLINECALLDICT
+  }>
+  __gen_constructor_SendParameters$to_value_bounce_body PROCINLINE:<{
+    s3 s3 s0 XCHG3
+    0 PUSHINT
+    SWAP
+    PUSHNULL
+    PUSHNULL
+  }>
+  __gen_constructor_TokenNotification$queryId_amount_from_forwardPayload PROCINLINE:<{
+  }>
+  __gen_constructor_TokenExcesses$queryId PROCINLINE:<{
   }>
   $__gen_JettonDefaultWallet_receive_TokenTransferInternal PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -608,19 +640,16 @@ PROGRAM{
       s1 s10 XCHG
       SUB
       FALSE
-      0 PUSHINT
-      s8 PUSH
-      s8 s1 s3 XCHG3
-      s7 s4 XCHG2
+      s7 PUSH
+      s7 s6 s3 XCHG3
+      __gen_constructor_TokenNotification$queryId_amount_from_forwardPayload INLINECALLDICT
       __gen_writecell_TokenNotification INLINECALLDICT
-      s8 PUSH
-      s4 s6 XCHG
-      s3 s1 s3 XCHG3
-      s5 s5 XCHG2
-      PUSHNULL
-      PUSHNULL
+      s7 PUSH
+      s0 s3 XCHG
+      s4 s4 XCHG2
+      __gen_constructor_SendParameters$to_value_bounce_body INLINECALLDICT
       $send INLINECALLDICT
-      s0 s5 XCHG2
+      s0 s5 XCHG
     }>ELSE<{
       s7 s13 XCHG
       s8 s9 XCHG2
@@ -633,22 +662,27 @@ PROGRAM{
     0 GTINT
     AND
     IF:<{
-      FALSE
-      s0 s6 XCHG
+      s0 s5 XCHG
       __tact_not_null INLINECALLDICT
-      0 PUSHINT
-      s0 s4 XCHG
+      FALSE
+      s0 s3 XCHG
+      __gen_constructor_TokenExcesses$queryId INLINECALLDICT
       __gen_writecell_TokenExcesses INLINECALLDICT
-      s4 s7 XCHG
-      s3 s3 s0 XCHG3
-      s1 s7 XCHG
-      PUSHNULL
-      PUSHNULL
+      s1 s3 XCHG
+      __gen_constructor_SendParameters$to_value_bounce_body INLINECALLDICT
       $send INLINECALLDICT
     }>ELSE<{
       s5 POP
       2DROP
     }>
+  }>
+  __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
+  }>
+  __gen_constructor_TokenBurnNotification$queryId_amount_owner_responseAddress PROCINLINE:<{
   }>
   $__gen_JettonDefaultWallet_receive_TokenBurn PROCINLINE:<{
     2DROP
@@ -675,16 +709,17 @@ PROGRAM{
     s1 s2 XCHG
     GREATER
     THROWANYIFNOT
-    TRUE
     0 PUSHINT
-    s0 s3 XCHG
     64 PUSHINT
+    s0 s3 XCHG
+    TRUE
     s3 s6 s6 XCPU2
+    __gen_constructor_TokenBurnNotification$queryId_amount_owner_responseAddress INLINECALLDICT
     __gen_writecell_TokenBurnNotification INLINECALLDICT
-    s3 s0 s4 XC2PU
+    s4 PUSH
+    s4 s1 s4 XCHG3
     s3 s3 XCHG2
-    PUSHNULL
-    PUSHNULL
+    __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_JettonDefaultWallet_receive_bounced PROCINLINE:<{

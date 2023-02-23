@@ -27,6 +27,7 @@ PROGRAM{
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
   DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_IncrementContract_counters
   95239 DECLMETHOD $__gen_get_counters
@@ -36,6 +37,7 @@ PROGRAM{
   DECLPROC $__gen_IncrementContract_receive_Toggle
   DECLPROC $__gen_IncrementContract_receive_Persist
   DECLPROC $__gen_IncrementContract_receive_Reset
+  DECLPROC __gen_constructor_DeployOk$queryId
   DECLPROC $__gen_IncrementContract_receive_Deploy
   DECLPROC __gen_router_IncrementContract
   DECLPROC recv_internal
@@ -399,17 +401,20 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
   $reply PROCREF:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
     TRUE
-    s0 s2 XCHG
     0 PUSHINT
+    s0 s3 XCHG2
     66 PUSHINT
-    ROT
-    PUSHNULL
-    PUSHNULL
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
     $send INLINECALLDICT
   }>
   $__gen_IncrementContract_counters PROCREF:<{
@@ -519,7 +524,10 @@ PROGRAM{
     s3 s4 XCHG
     s1 s3 s0 XCHG3
   }>
+  __gen_constructor_DeployOk$queryId PROCINLINE:<{
+  }>
   $__gen_IncrementContract_receive_Deploy PROCINLINE:<{
+    __gen_constructor_DeployOk$queryId INLINECALLDICT
     __gen_writecell_DeployOk INLINECALLDICT
     $reply INLINECALLDICT
   }>
