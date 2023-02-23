@@ -1,6 +1,6 @@
 {
   "name": "@tact-lang/compiler",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "main": "./dist/main.js",
   "repository": "https://github.com/tact-lang/tact.git",
   "homepage": "https://tact-lang.org",
