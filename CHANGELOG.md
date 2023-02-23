@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Execution order of struct and message fields
+- `initOf` argument type checks
 
 ## [0.10.0] - 2023-02-23
 

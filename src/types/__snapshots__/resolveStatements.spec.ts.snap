@@ -126,6 +126,15 @@ exports[`resolveStatements should fail statements for case-13 1`] = `
 Missing fields "c" in type SomeStruct"
 `;
 
+exports[`resolveStatements should fail statements for case-14 1`] = `
+"Line 22, col 25:
+  21 |     get fun newInit(): StateInit {
+> 22 |         return initOf A("hello");
+                               ^~~~~~~
+  23 |     }
+Invalid type "String" for argument "owner""
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

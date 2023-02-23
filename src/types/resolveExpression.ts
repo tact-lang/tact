@@ -348,7 +348,18 @@ export function resolveInitOf(ast: ASTInitOf, sctx: StatementContext, ctx: Compi
         ctx = resolveExpression(e, sctx, ctx);
     }
 
-    // TODO: Check argument types
+    // Check arguments
+    if (type.init.args.length !== ast.args.length) {
+        throwError(`Init function of "${type.name}" expects ${type.init.args.length} arguments, got ${ast.args.length}`, ast.ref);
+    }
+    for (let i = 0; i < type.init.args.length; i++) {
+        let a = type.init.args[i];
+        let e = ast.args[i];
+        let t = getExpType(ctx, e);
+        if (!isAssignable(t, a.type)) {
+            throwError(`Invalid type "${printTypeRef(t)}" for argument "${a.name}"`, e.ref);
+        }
+    }
 
     // Register return type
     return registerExpType(ctx, ast, { kind: 'ref', name: 'StateInit', optional: false });
