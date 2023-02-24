@@ -1,5 +1,6 @@
 export type VirtualFileSystem = {
     resolve(...path: string[]): string;
-    readFile(path: string): Buffer | null;
+    exists(path: string): boolean;
+    readFile(path: string): Buffer;
     writeFile(path: string, data: Buffer | string): void;
 };

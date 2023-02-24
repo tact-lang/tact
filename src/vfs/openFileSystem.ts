@@ -10,12 +10,11 @@ export function openFileSystem(root: string): VirtualFileSystem {
         resolve(...pathSegments: string[]): string {
             return pathNormalize(path.resolve(rootNormalized, ...pathSegments));
         },
+        exists(filePath) {
+            return fs.existsSync(filePath);
+        },
         readFile(filePath) {
-            if (fs.existsSync(filePath)) {
-                return fs.readFileSync(filePath);
-            } else {
-                return null;
-            }
+            return fs.readFileSync(filePath);
         },
         writeFile(filePath, data) {
             
