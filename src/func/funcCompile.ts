@@ -51,7 +51,7 @@ export async function funcCompile(sourcePath: string): Promise<FuncCompilationRe
 
     // Parameters
     let files: string[] = [];
-    files.push(path.resolve(__dirname, '..', '..', 'stdlib', 'stdlib.fc'));
+    files.push(path.resolve(__dirname, '..', 'stdlib', 'stdlib.fc'));
     files.push(sourcePath);
     let configStr = JSON.stringify({
         sources: files,

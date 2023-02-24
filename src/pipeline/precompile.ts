@@ -17,7 +17,7 @@ function resolveLibraryPath(filePath: string, name: string): string {
     // Check stdlib
     if (name.startsWith('@stdlib/')) {
         let p = name.substring('@stdlib/'.length);
-        let pp = path.resolve(__dirname, '..', '..', 'stdlib', 'libs', p + '.tact')
+        let pp = path.resolve(__dirname, '..', 'stdlib', 'libs', p + '.tact')
         checked.push(pp);
         if (fs.existsSync(pp)) {
             return pp;
@@ -43,7 +43,7 @@ function resolveLibraryPath(filePath: string, name: string): string {
 export function precompile(ctx: CompilerContext, root: string, sourceFile: string) {
 
     // Load stdlib
-    const stdlibPath = path.resolve(__dirname, '../../stdlib/stdlib.tact');
+    const stdlibPath = path.resolve(__dirname, '../stdlib/stdlib.tact');
     const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
     const codePath = path.resolve(root, sourceFile);
     const code = fs.readFileSync(codePath, 'utf8');
@@ -73,7 +73,7 @@ export function precompile(ctx: CompilerContext, root: string, sourceFile: strin
             }
         }
     }
-    processImports(path.resolve(__dirname, '..', '..', 'stdlib', 'stdlib.tact'), stdlib);
+    processImports(path.resolve(__dirname, '..', 'stdlib', 'stdlib.tact'), stdlib);
     processImports(codePath, code);
     while (pending.length > 0) {
         let p = pending.shift()!;
