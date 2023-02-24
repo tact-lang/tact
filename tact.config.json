@@ -54,11 +54,6 @@
       "output": "./examples/output"
     },
     {
-      "name": "jetton",
-      "path": "./examples/jetton.tact",
-      "output": "./examples/output"
-    },
-    {
       "name": "rugpull",
       "path": "./examples/rugpull.tact",
       "output": "./examples/output"
