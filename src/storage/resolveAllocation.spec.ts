@@ -8,7 +8,7 @@ import { CompilerContext } from '../context';
 import { resolveSignatures } from '../types/resolveSignatures';
 import path from 'path';
 
-const stdlibPath = path.resolve(__dirname, '../../stdlib/std/primitives.tact');
+const stdlibPath = path.resolve(__dirname, '../stdlib/std/primitives.tact');
 const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
 const src = `
 
