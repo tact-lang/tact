@@ -84,7 +84,15 @@ export async function build(project: ConfigProject, rootPath: string) {
         let codeBoc: Buffer;
         let codeFift: string;
         try {
-            let c = await funcCompile(pathCodeFc);
+            let stdlibPath = path.resolve(__dirname, '../stdlib/stdlib.fc');
+            let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+            let c = await funcCompile([{
+                path: stdlibPath,
+                content: stdlib
+            }, {
+                path: pathCodeFc,
+                content: codeFunc
+            }]);
             if (!c.ok) {
                 console.warn(c.log);
                 ok = false;

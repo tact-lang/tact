@@ -3,7 +3,7 @@ import { compileProjects } from '../src/main';
 import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton-core';
 import { build } from '../src/pipeline/build';
-import { funcCompile } from '../src/func/funcCompile';
+import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';
 
 // Read cases
@@ -34,9 +34,18 @@ import path from 'path';
 
             // Precompile
             console.log('Processing ' + p.path + r);
-            let c;
+            let c: FuncCompilationResult;
             try {
-                c = await funcCompile(p.path + r);
+                let stdlibPath = path.resolve(__dirname, '../src/stdlib/stdlib.fc');
+                let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+                let code = fs.readFileSync(p.path + r, 'utf-8');
+                c = await funcCompile([{
+                    path: stdlibPath,
+                    content: stdlib
+                }, {
+                    path: p.path + r,
+                    content: code
+                }]);
                 if (!c.ok) {
                     console.warn(c.log);
                     continue;

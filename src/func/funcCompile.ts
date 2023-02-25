@@ -1,6 +1,3 @@
-import path from 'path';
-import fs from 'fs';
-
 // Wasm Imports
 const CompilerModule = require('./funcfiftlib.js');
 const FuncFiftLibWasm = require('./funcfiftlib.wasm.js').FuncFiftLibWasm;
@@ -47,12 +44,10 @@ type CompileResult = {
     warnings: string
 };
 
-export async function funcCompile(sourcePath: string): Promise<FuncCompilationResult> {
+export async function funcCompile(sources: { path: string, content: string }[]): Promise<FuncCompilationResult> {
 
     // Parameters
-    let files: string[] = [];
-    files.push(path.resolve(__dirname, '..', 'stdlib', 'stdlib.fc'));
-    files.push(sourcePath);
+    let files: string[] = sources.map((v) => v.path);
     let configStr = JSON.stringify({
         sources: files,
         optLevel: 2 // compileConfig.optLevel || 2
@@ -83,8 +78,11 @@ export async function funcCompile(sourcePath: string): Promise<FuncCompilationRe
                 allocatedPointers.push(writeToCStringPtr(mod, data, contents));
             } else if (kind === 'source') {
                 try {
-                    let source: string = fs.readFileSync(data, 'utf-8');
-                    allocatedPointers.push(writeToCStringPtr(mod, source, contents));
+                    let fl = sources.find((v) => v.path === data);
+                    if (!fl) {
+                        throw Error('File not found: ' + data)
+                    }
+                    allocatedPointers.push(writeToCStringPtr(mod, fl.content, contents));
                 } catch (err) {
                     const e = err as any;
                     allocatedPointers.push(writeToCStringPtr(mod, 'message' in e ? e.message : e.toString(), error));
