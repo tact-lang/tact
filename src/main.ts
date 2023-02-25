@@ -1,61 +1,39 @@
-import fs from 'fs';
-import path from 'path';
-import { ContractABI } from 'ton-core';
-import { writeTypescript } from './bindings/writeTypescript';
-import { Config, parseConfig } from "./config/parseConfig";
+import { Config } from "./config/parseConfig";
 import { build } from './pipeline/build';
+import { VirtualFileSystem } from "./vfs/VirtualFileSystem";
 
-export async function compileProjects(configPath: string, projectNames: string[] = []) {
-
-    // Load config
-    let resolvedPath = path.resolve(configPath);
-    let rootPath = path.dirname(resolvedPath);
-    let config: Config;
-    if (!fs.existsSync(resolvedPath)) {
-        console.warn('Unable to find config file at ' + resolvedPath);
-        return;
-    }
-    try {
-        config = parseConfig(fs.readFileSync(resolvedPath, 'utf8'));
-    } catch (e) {
-        console.log(e);
-        console.warn('Unable to parse config file at ' + resolvedPath);
-        return;
-    }
+export async function compileProjects(args: {
+    config: Config,
+    configPath: string,
+    stdlibPath?: string,
+    projectNames?: string[]
+}) {
 
     // Resolve projects
-    let projects = config.projects;
-    if (projectNames.length > 0) {
+    let projects = args.config.projects;
+    if (args.projectNames && args.projectNames.length > 0) {
 
         // Check that all proejct names are valid
-        for (let pp of projectNames) {
+        for (let pp of args.projectNames) {
             if (!projects.find((v) => v.name === pp)) {
                 console.warn('Unable to find project ' + pp);
-                return;
+                return false;
             }
         }
 
         // Filter by names
-        projects = projects.filter((v) => projectNames.includes(v.name));
+        projects = projects.filter((v) => args.projectNames!.includes(v.name));
     }
     if (projects.length === 0) {
         console.warn('No projects to compile');
-        return;
+        return false;
     }
 
     // Compile projects
+    let success = true;
     for (let project of projects) {
         console.log('💼 Compiling project ' + project.name + '...');
-        await build(project, rootPath);
+        success = success && await build(project, args.configPath, args.stdlibPath || '@stdlib');
     }
-}
-
-export async function compileBindings(language: string, abiPath: string, outputPath: string) {
-    if (language !== 'typescript') {
-        console.warn('Unsupported language: ' + language);
-        return;
-    }
-    let abi = JSON.parse(fs.readFileSync(abiPath, 'utf-8')) as ContractABI;
-    let output = writeTypescript(abi);
-    fs.writeFileSync(outputPath, output, 'utf-8');
+    return success;
 }

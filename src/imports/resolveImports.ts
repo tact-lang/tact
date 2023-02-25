@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { parseImports } from '../grammar/grammar';
 
-function resolveLibraryPath(filePath: string, name: string): string {
+function resolveLibraryPath(filePath: string, name: string, stdlibPath: string): string {
 
     // Checked collection
     let checked: string[] = [];
@@ -10,7 +10,7 @@ function resolveLibraryPath(filePath: string, name: string): string {
     // Check stdlib
     if (name.startsWith('@stdlib/')) {
         let p = name.substring('@stdlib/'.length);
-        let pp = path.resolve(__dirname, '..', 'stdlib', 'libs', p + '.tact')
+        let pp = path.resolve(__dirname, '..', '..', 'stdlib', 'libs', p + '.tact')
         checked.push(pp);
         if (fs.existsSync(pp)) {
             return pp;
@@ -33,11 +33,11 @@ function resolveLibraryPath(filePath: string, name: string): string {
     throw Error('Unable to process import ' + name + ' from ' + filePath + ', checked: ' + checked.join(', '));
 }
 
-export function resolveImports(root: string, sourceFile: string) {
+export function resolveImports(root: string, sourceFile: string, stdlibPath: string) {
 
     // Load stdlib
-    const stdlibPath = path.resolve(__dirname, '../stdlib/stdlib.tact');
-    const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+    const stdlibRootPath = path.resolve(stdlibPath, 'stdlib.tact');
+    const stdlib = fs.readFileSync(stdlibRootPath, 'utf-8');
     const codePath = path.resolve(root, sourceFile);
     const code = fs.readFileSync(codePath, 'utf8');
 
@@ -48,7 +48,7 @@ export function resolveImports(root: string, sourceFile: string) {
     function processImports(path: string, source: string) {
         let imp = parseImports(source, path);
         for (let i of imp) {
-            let resolved = resolveLibraryPath(path, i);
+            let resolved = resolveLibraryPath(path, i, stdlibPath);
             if (resolved.endsWith('.fc')) {
                 if (funcImports.find((v) => v === resolved)) {
                     continue;
@@ -62,7 +62,7 @@ export function resolveImports(root: string, sourceFile: string) {
             }
         }
     }
-    processImports(path.resolve(__dirname, '..', 'stdlib', 'stdlib.tact'), stdlib);
+    processImports(stdlibRootPath, stdlib);
     processImports(codePath, code);
     while (pending.length > 0) {
         let p = pending.shift()!;

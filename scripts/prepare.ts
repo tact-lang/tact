@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { compileProjects } from '../src/main';
+import { run } from '../src/node';
 import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton-core';
 import { build } from '../src/pipeline/build';
@@ -10,7 +10,7 @@ import path from 'path';
 (async () => {
 
     // Compile projects
-    await compileProjects(__dirname + '/../tact.config.json');
+    await run(__dirname + '/../tact.config.json', []);
 
     // Compile test contracts
     for (let p of [{ path: path.resolve(__dirname, '..', 'src', 'test', 'contracts') }]) {
@@ -20,7 +20,11 @@ import path from 'path';
                 continue;
             }
 
-            await build({ name: r.slice(0, r.length - '.tact'.length), path: p.path + '/' + r, output: './output/' }, p.path);
+            await build({
+                name: r.slice(0, r.length - '.tact'.length),
+                path: p.path + '/' + r,
+                output: './output/',
+            }, p.path, path.resolve(__dirname, '..', 'stdlib'));
         }
     }
 

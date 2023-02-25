@@ -15,7 +15,11 @@ import { compile } from './compile';
 import { precompile } from "./precompile";
 const version = require('../../package.json').version;
 
-export async function build(project: ConfigProject, rootPath: string) {
+export async function build(
+    project: ConfigProject,
+    rootPath: string,
+    stdlibPath: string
+) {
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
@@ -30,7 +34,7 @@ export async function build(project: ConfigProject, rootPath: string) {
 
     // Precompile
     try {
-        ctx = precompile(ctx, rootPath, project.path);
+        ctx = precompile(ctx, rootPath, stdlibPath, project.path);
     } catch (e) {
         console.warn('Tact compilation failed');
         console.log(e);
@@ -84,7 +88,7 @@ export async function build(project: ConfigProject, rootPath: string) {
         let codeBoc: Buffer;
         let codeFift: string;
         try {
-            let stdlibPath = path.resolve(__dirname, '../stdlib/stdlib.fc');
+            let stdlibPath = path.resolve(__dirname, '../../stdlib/stdlib.fc');
             let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
             let c = await funcCompile([{
                 path: stdlibPath,

@@ -1,0 +1,9 @@
+{
+  "projects": [
+    {
+      "name": "echo",
+      "path": "./examples/echo.tact",
+      "output": "./examples/output"
+    }
+  ]
+}

@@ -7,10 +7,10 @@ import { resolveStrings } from "../types/resolveStrings";
 import { resolveSignatures } from '../types/resolveSignatures';
 import { resolveImports } from '../imports/resolveImports';
 
-export function precompile(ctx: CompilerContext, root: string, sourceFile: string) {
+export function precompile(ctx: CompilerContext, rootPath: string, stdlibPath: string, entrypoint: string) {
 
     // Load all sources
-    let imported = resolveImports(root, sourceFile);
+    let imported = resolveImports(rootPath, entrypoint, stdlibPath);
 
     // Perform initial compiler steps
     ctx = openContext(ctx, imported.tact, imported.func);
