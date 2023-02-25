@@ -1,5 +1,5 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
+import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { resolveConstantValue } from '../types/resolveConstantValue';
 import { resolveTypeRef, resolveTypeRefUnsafe } from '../types/resolveDescriptors';
@@ -22,6 +22,10 @@ semantics.addOperation<ASTNode>('resolve_program', {
 // Resolve program items
 semantics.addOperation<ASTNode>('resolve_program_item', {
     ProgramImport(arg0, arg1, arg2) {
+        let pp = arg1.resolve_expression() as ASTString;
+        if (pp.value.indexOf('\\') >= 0) {
+            throwError('Import path can\'t contain "\\"', createRef(arg1));
+        }
         return createNode({
             kind: 'program_import',
             path: arg1.resolve_expression(),
