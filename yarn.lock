@@ -3541,10 +3541,10 @@ object.assign@^4.1.4:
     has-symbols "^1.0.3"
     object-keys "^1.1.1"
 
-ohm-js@^16.0.0, ohm-js@^16.4.0:
-  version "16.4.0"
-  resolved "https://registry.yarnpkg.com/ohm-js/-/ohm-js-16.4.0.tgz#d0df8a2bcf32298e153b684a5630d4623e86a5de"
-  integrity sha512-u1QI5h2w29I4838+/m32rzqfNNH1Qej9L6O1MTZZMx7bVOu09orc/TO0HRVeYh5jStieZ3INszM7oqbCdx2x7A==
+ohm-js@16.5.0, ohm-js@^16.0.0:
+  version "16.5.0"
+  resolved "https://registry.yarnpkg.com/ohm-js/-/ohm-js-16.5.0.tgz#1e10343cc89b0338224f98dcbbd4e0282a4d959f"
+  integrity sha512-OXuB3g1cdP6vCyaGziLmihLkBrtfH9H9jmYp5nRqad093KVzkUSi062IVv5l+3SB/HIbMyDvBqhgR3Q3S+EEnw==
 
 once@^1.3.0, once@^1.4.0:
   version "1.4.0"

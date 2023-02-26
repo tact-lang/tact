@@ -8,8 +8,7 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "tm": "ts-node ./scripts/tm.ts",
-    "gen:grammar": "ohm generateBundles --withTypes src/grammar/*.ohm && yarn tm",
+    "gen:grammar": "ohm generateBundles --withTypes src/grammar/*.ohm && ts-node ./scripts/grammar.ts",
     "gen:pack": "ts-node ./scripts/pack.ts",
     "gen:compiler": "ts-node ./scripts/prepare.ts",
     "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:compiler",
@@ -40,7 +39,7 @@
     "change-case": "^4.1.2",
     "ipfs-unixfs-importer": "9.0.10",
     "multiformats": "9.9.0",
-    "ohm-js": "^16.4.0",
+    "ohm-js": "16.5.0",
     "path-normalize": "^6.0.10",
     "prando": "^6.0.1",
     "qs": "^6.11.0",

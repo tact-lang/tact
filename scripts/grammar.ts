@@ -1,10 +1,17 @@
 import { getHighlighter, BUNDLED_LANGUAGES, BUNDLED_THEMES } from 'shiki';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import path from 'path';
 
 (async () => {
 
-    // Load grammar
+    // Patch grammar bundler
+    let grammarBundlePath = path.resolve(__dirname, '..', 'src', 'grammar', 'grammar.ohm-bundle.js');
+    let src = fs.readFileSync(grammarBundlePath, 'utf-8');
+    src = src.replace(`require('ohm-js')`, `(require('ohm-js').default || require('ohm-js'))`);
+    fs.writeFileSync(grammarBundlePath, src, 'utf-8');
+
+    // Load textmate grammar
     let sourceGrammar = fs.readFileSync(require.resolve('../grammar/tact.tmLanguage.yaml'), 'utf-8');
     let loadedGrammar = yaml.load(sourceGrammar);
 
