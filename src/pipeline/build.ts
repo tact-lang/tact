@@ -1,10 +1,12 @@
 import { beginCell, Cell, Dictionary } from 'ton-core';
 import { fromBoc } from 'tvm-disassembler/dist/disassembler';
 import { writeTypescript } from '../bindings/writeTypescript';
+import { featureEnable } from '../config/features';
 import { ConfigProject } from "../config/parseConfig";
-import { CompilerContext, enable } from "../context";
+import { CompilerContext } from "../context";
 import { funcCompile } from '../func/funcCompile';
 import { writeReport } from '../generator/writeReport';
+import { getRawAST } from '../grammar/store';
 import files from '../imports/stdlib';
 import { PackageFileFormat } from '../packaging/fileFormat';
 import { packageCode } from '../packaging/packageCode';
@@ -27,16 +29,19 @@ export async function build(args: {
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
-    let cfg: any = {};
-    if (config.experimental && config.experimental.inline) {
-        console.warn('   > 👀 Enabling inline');
-        ctx = enable(ctx, 'inline');
-        cfg['inline'] = true;
-    }
-    if (config.parameters && config.parameters.debug) {
-        console.warn('   > 👀 Enabling debug');
-        ctx = enable(ctx, 'debug');
-        cfg['debug'] = true;
+    let cfg: string = JSON.stringify({
+        entrypoint: config.path,
+        options: (config.options || {})
+    });
+    if (config.options) {
+        if (config.options.debug) {
+            console.warn('   > 👀 Enabling debug');
+            ctx = featureEnable(ctx, 'debug');
+        }
+        if (config.options.experimental && config.options.experimental.inline) {
+            console.warn('   > 👀 Enabling inline');
+            ctx = featureEnable(ctx, 'inline');
+        }
     }
 
     // Precompile
@@ -148,7 +153,7 @@ export async function build(args: {
 
     // Package
     console.log('   > Packaging');
-    let contracts = config.contracts || getContracts(ctx);
+    let contracts = getContracts(ctx);
     let packages: PackageFileFormat[] = [];
     for (let contract of contracts) {
         console.log('   > ' + contract);
@@ -172,6 +177,15 @@ export async function build(args: {
         }
         const systemCell = beginCell().storeDict(depends).endCell();
 
+        // Collect sources
+        let sources: { [key: string]: string } = {};
+        let rawAst = getRawAST(ctx);
+        for (let source of [...rawAst.funcSources, ...rawAst.sources]) {
+            if (source.path.startsWith(project.root) && !source.path.startsWith(stdlib.root)) {
+                sources[source.path.slice(project.root.length)] = Buffer.from(source.code).toString('base64');
+            }
+        }
+
         // Package
         let pkg: PackageFileFormat = {
             name: contract,
@@ -189,10 +203,11 @@ export async function build(args: {
                     system: systemCell.toBoc().toString('base64')
                 },
             },
+            sources,
             compiler: {
                 name: 'tact',
                 version,
-                parameters: JSON.stringify(cfg)
+                parameters: cfg
             }
         };
         let pkgData = packageCode(pkg);

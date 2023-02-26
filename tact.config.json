@@ -29,8 +29,10 @@
       "name": "wallet-opt",
       "path": "./examples/wallet-opt.tact",
       "output": "./examples/output",
-      "experimental": {
-        "inline": true
+      "options": {
+        "experimental": {
+          "inline": true
+        }
       }
     },
     {
@@ -67,7 +69,7 @@
       "name": "optionals",
       "path": "./src/test/features/optionals.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -75,7 +77,7 @@
       "name": "serialization",
       "path": "./src/test/features/serialization.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -83,7 +85,7 @@
       "name": "serialization-2",
       "path": "./src/test/features/serialization-2.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -91,7 +93,7 @@
       "name": "serialization-3",
       "path": "./src/test/features/serialization-3.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -99,7 +101,7 @@
       "name": "strings",
       "path": "./src/test/features/strings.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -107,7 +109,7 @@
       "name": "constants",
       "path": "./src/test/features/constants.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -115,7 +117,7 @@
       "name": "random",
       "path": "./src/test/features/random.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -123,7 +125,7 @@
       "name": "ordering",
       "path": "./src/test/features/ordering.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -131,7 +133,7 @@
       "name": "deep",
       "path": "./src/test/features/deep-sequence.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -139,7 +141,7 @@
       "name": "debug",
       "path": "./src/test/features/debug.tact",
       "output": "./src/test/features/output",
-      "parameters": {
+      "options": {
         "debug": true
       }
     },
@@ -147,8 +149,11 @@
       "name": "bug_18",
       "path": "./src/test/bugs/bug_18.tact",
       "output": "./src/test/bugs/output",
-      "parameters": {
-        "debug": true
+      "options": {
+        "debug": true,
+        "experimental": {
+          "inline": true
+        }
       }
     },
     {
@@ -160,8 +165,10 @@
       "name": "benchmark_functions_inline",
       "path": "./src/benchmarks/contracts/functions.tact",
       "output": "./src/benchmarks/contracts/output",
-      "experimental": {
-        "inline": true
+      "options": {
+        "experimental": {
+          "inline": true
+        }
       }
     }
   ]

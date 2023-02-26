@@ -1,4 +1,4 @@
-import { enabledDebug } from "../../config";
+import { enabledDebug } from "../../config/features";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 

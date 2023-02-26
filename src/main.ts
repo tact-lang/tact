@@ -21,6 +21,5 @@ export {
     createVirtualFileSystem
 } from './vfs/createVirtualFileSystem';
 
-export {
-    run
-} from './browser';
+export * from './browser';
+export * from './verify';

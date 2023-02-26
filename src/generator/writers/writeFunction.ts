@@ -1,5 +1,5 @@
 import { beginCell } from "ton-core";
-import { enabledInline } from "../../config";
+import { enabledInline } from "../../config/features";
 import { ASTCondition, ASTExpression, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";

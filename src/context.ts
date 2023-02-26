@@ -44,17 +44,3 @@ export function createContextStore<T>() {
         }
     }
 }
-
-const featureStore = createContextStore<boolean>();
-
-export function enabled(ctx: CompilerContext, key: string) {
-    let r = featureStore.get(ctx, key);
-    if (r === null) {
-        return false;
-    }
-    return r;
-}
-
-export function enable(ctx: CompilerContext, key: string) {
-    return featureStore.set(ctx, key, true)
-}

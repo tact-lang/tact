@@ -1,16 +1,17 @@
 import { z } from "zod";
 
+const optionsSchema = z.object({
+    debug: z.boolean().optional(),
+    experimental: z.object({
+        inline: z.boolean().optional()
+    }).strict().optional()
+}).strict();
+
 const projectSchema = z.object({
     name: z.string(),
     path: z.string(),
     output: z.string(),
-    contracts: z.array(z.string()).optional(),
-    parameters: z.object({
-        debug: z.boolean().optional()
-    }).strict().optional(),
-    experimental: z.object({
-        inline: z.boolean().optional()
-    }).strict().optional()
+    options: optionsSchema.optional(),
 }).strict();
 
 const configSchema = z.object({
@@ -19,6 +20,7 @@ const configSchema = z.object({
 
 export type Config = z.infer<typeof configSchema>;
 export type ConfigProject = z.infer<typeof projectSchema>;
+export type Options = z.infer<typeof optionsSchema>;
 
 export function parseConfig(src: string) {
     let parsed = JSON.parse(src);

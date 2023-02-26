@@ -1,4 +1,4 @@
-import { enabledDebug } from "../config";
+import { enabledDebug } from "../config/features";
 import { CompilerContext } from "../context";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";

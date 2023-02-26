@@ -154,7 +154,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_DDDD_mapData_addr1 PROCREF:<{
+  $__gen_DDDD_mapData_addr1 PROCINLINE:<{
     NIP
     s2 POP
     s3 POP
@@ -167,7 +167,7 @@ PROGRAM{
     5 ROLL
     $__gen_DDDD_mapData_addr1 INLINECALLDICT
   }>
-  $__gen_DDDD_mapData2_addr1 PROCREF:<{
+  $__gen_DDDD_mapData2_addr1 PROCINLINE:<{
     4 2 BLKDROP2
     267 PUSHINT
     SWAP

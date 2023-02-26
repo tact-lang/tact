@@ -257,25 +257,23 @@ SETCP0
     }> PUSHCONT
     IFELSE
     1 5 BLKSWAP
+    4 2 BLKDROP2
+    267 PUSHINT
+    s0 s1 XCHG
+    257 PUSHINT
+    s1 s3 s3 XCHG3
+    DICTGET
+    NULLSWAPIFNOT
     <{
-      4 2 BLKDROP2
-      267 PUSHINT
       s0 s1 XCHG
-      257 PUSHINT
-      s1 s3 s3 XCHG3
-      DICTGET
-      NULLSWAPIFNOT
-      <{
-        s0 s1 XCHG
-        LDI
-        s0 POP
-      }> PUSHCONT
-      <{
-        2DROP
-        PUSHNULL
-      }> PUSHCONT
-      IFELSE
-    }> CALLREF
+      LDI
+      s0 POP
+    }> PUSHCONT
+    <{
+      2DROP
+      PUSHNULL
+    }> PUSHCONT
+    IFELSE
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -326,21 +324,19 @@ SETCP0
     }> PUSHCONT
     IFELSE
     1 5 BLKSWAP
+    s1 POP
+    s2 POP
+    s3 POP
+    257 PUSHINT
+    s2 POP
+    ROTREV
+    DICTIGET
+    NULLSWAPIFNOT
     <{
-      s1 POP
-      s2 POP
-      s3 POP
-      257 PUSHINT
-      s2 POP
-      ROTREV
-      DICTIGET
-      NULLSWAPIFNOT
-      <{
-        s0 POP
-        PUSHNULL
-      }> PUSHCONT
-      IFNOT
-    }> CALLREF
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    IFNOT
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

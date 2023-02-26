@@ -7,12 +7,22 @@ import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';
 import { ConfigProject } from '../src/config/parseConfig';
 import { createNodeFileSystem } from '../src/vfs/createNodeFileSystem';
+import { glob } from 'glob';
+import { verify } from '../src/verify';
 
 // Read cases
 (async () => {
 
     // Compile projects
     await run({ configPath: __dirname + '/../tact.config.json' });
+
+    // Verify projects
+    for (let pkgPath of glob.sync(path.normalize(path.resolve(__dirname, '..', 'examples', 'output', '*.pkg')))) {
+        let res = await verify(fs.readFileSync(pkgPath, 'utf-8'));
+        if (!res.ok) {
+            console.warn('Failed to verify ' + pkgPath + ': ' + res.error);
+        }
+    }
 
     // Compile test contracts
     for (let p of [{ path: path.resolve(__dirname, '..', 'src', 'test', 'contracts') }]) {

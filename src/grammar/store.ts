@@ -2,7 +2,13 @@ import { ASTConstant, ASTFunction, ASTNativeFunction, ASTType } from "./ast";
 import { CompilerContext, createContextStore } from "../context";
 import { parse } from "./grammar";
 
-type ASTStore = { funcSources: { code: string, path: string }[], functions: (ASTFunction | ASTNativeFunction)[], constants: ASTConstant[], types: ASTType[] };
+type ASTStore = {
+    sources: { code: string, path: string }[],
+    funcSources: { code: string, path: string }[],
+    functions: (ASTFunction | ASTNativeFunction)[],
+    constants: ASTConstant[],
+    types: ASTType[]
+};
 
 const store = createContextStore<ASTStore>();
 
@@ -33,6 +39,6 @@ export function openContext(ctx: CompilerContext,
             }
         }
     }
-    ctx = store.set(ctx, 'types', { funcSources, functions, constants, types });
+    ctx = store.set(ctx, 'types', { sources, funcSources, functions, constants, types });
     return ctx;
 }

@@ -22,7 +22,7 @@ import { writeRouter } from "./writers/writeRouter";
 import { resolveFuncPrimitive } from "./writers/resolveFuncPrimitive";
 import { resolveFuncTypeUnpack } from "./writers/resolveFuncTypeUnpack";
 import { writeValue } from "./writers/writeExpression";
-import { enabledInline } from "../config";
+import { enabledInline } from "../config/features";
 
 function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 

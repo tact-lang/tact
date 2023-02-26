@@ -1,5 +1,5 @@
 import { toNano } from "ton-core";
-import { enabledDebug } from "../config";
+import { enabledDebug } from "../config/features";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";

@@ -45,6 +45,9 @@ export const fileFormat = z.object({
     // Deployment
     init: initFormat,
 
+    // Sources
+    sources: z.record(z.string(), z.string()).optional(),
+
     // Compiler information
     compiler: z.object({
         name: z.string(),
