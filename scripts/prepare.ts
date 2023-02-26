@@ -6,8 +6,6 @@ import { build } from '../src/pipeline/build';
 import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';
 import { ConfigProject } from '../src/config/parseConfig';
-import { createVirtualFileSystem } from '../src/vfs/createVirtualFileSystem';
-import files from '../src/imports/stdlib';
 import { createNodeFileSystem } from '../src/vfs/createNodeFileSystem';
 
 // Read cases

@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-import { Config, parseConfig } from "../config/parseConfig";
-import { createNodeFileSystem } from '../vfs/createNodeFileSystem';
-import { build } from '../pipeline/build';
+import { Config, parseConfig } from "./config/parseConfig";
+import { createNodeFileSystem } from './vfs/createNodeFileSystem';
+import { build } from './pipeline/build';
 
 export async function run(args: { configPath: string, projectNames?: string[] }) {
 
@@ -54,4 +54,4 @@ export async function run(args: { configPath: string, projectNames?: string[] })
     return success;
 }
 
-export { createNodeFileSystem } from '../vfs/createNodeFileSystem';
+export { createNodeFileSystem } from './vfs/createNodeFileSystem';

@@ -22,11 +22,7 @@
     "bin/**/*",
     "stdlib/**/*"
   ],
-  "exports": {
-    ".": "./dist/main.js",
-    "./node": "./dist/node.js",
-    "./browser": "./dist/browser.js"
-  },
+  "main":"./dist/",
   "bin": {
     "tact": "./bin/tact",
     "tact-bindings": "./bin/tact-bindings"
