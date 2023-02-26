@@ -1,5 +1,4 @@
 import { Config, verifyConfig } from "./config/parseConfig";
-import files from "./imports/stdlib";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 
@@ -14,8 +13,8 @@ export async function run(args: {
     // Create project's writable fs
     let project = createVirtualFileSystem('/', args.files, false);
 
-    // Create stdlib fs
-    let stdlib = createVirtualFileSystem('@stdlib', files);
+    // Create stdlib path
+    let stdlib = '@stdlib';
 
     // Compile
     let success = true;

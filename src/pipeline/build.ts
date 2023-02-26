@@ -5,10 +5,12 @@ import { ConfigProject } from "../config/parseConfig";
 import { CompilerContext, enable } from "../context";
 import { funcCompile } from '../func/funcCompile';
 import { writeReport } from '../generator/writeReport';
+import files from '../imports/stdlib';
 import { PackageFileFormat } from '../packaging/fileFormat';
 import { packageCode } from '../packaging/packageCode';
 import { createABITypeRefFromTypeRef } from '../types/resolveABITypeRef';
 import { getContracts, getType } from '../types/resolveDescriptors';
+import { createVirtualFileSystem } from '../vfs/createVirtualFileSystem';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
 import { compile } from './compile';
 import { precompile } from "./precompile";
@@ -17,20 +19,24 @@ const version = require('../../package.json').version;
 export async function build(args: {
     config: ConfigProject,
     project: VirtualFileSystem,
-    stdlib: VirtualFileSystem
+    stdlib: string
 }) {
 
-    const { config, project, stdlib } = args;
+    const { config, project } = args;
+    const stdlib = createVirtualFileSystem(args.stdlib, files);
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
+    let cfg: any = {};
     if (config.experimental && config.experimental.inline) {
         console.warn('   > 👀 Enabling inline');
         ctx = enable(ctx, 'inline');
+        cfg['inline'] = true;
     }
     if (config.parameters && config.parameters.debug) {
         console.warn('   > 👀 Enabling debug');
         ctx = enable(ctx, 'debug');
+        cfg['debug'] = true;
     }
 
     // Precompile
@@ -167,6 +173,7 @@ export async function build(args: {
             abi: artifacts.abi,
             code: artifacts.codeBoc.toString('base64'),
             init: {
+                kind: 'direct',
                 args: getType(ctx, contract).init!.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type) })),
                 prefix: {
                     bits: 1,
@@ -179,7 +186,8 @@ export async function build(args: {
             },
             compiler: {
                 name: 'tact',
-                version
+                version,
+                parameters: JSON.stringify(cfg)
             }
         };
         let pkgData = packageCode(pkg);

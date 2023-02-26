@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs';
 import { Config, parseConfig } from "./config/parseConfig";
-import { compileProjects } from "./main";
 import { createNodeFileSystem } from './vfs/createNodeFileSystem';
+import { build } from './pipeline/build';
 
 export async function run(args: { configPath: string, projectNames?: string[] }) {
 
@@ -22,13 +22,36 @@ export async function run(args: { configPath: string, projectNames?: string[] })
         return false;
     }
 
-    // Compile 
-    let output = await compileProjects({
-        config,
-        project: createNodeFileSystem(rootPath, false),
-        projectNames: args.projectNames,
-        stdlibPath: path.resolve(__dirname, '..', 'stdlib') // Optional, but improves developer experience
-    });
+    // Resolve projects
+    let projects = config.projects;
+    if (args.projectNames && args.projectNames.length > 0) {
 
-    return output;
+        // Check that all proejct names are valid
+        for (let pp of args.projectNames) {
+            if (!projects.find((v) => v.name === pp)) {
+                console.warn('Unable to find project ' + pp);
+                return false;
+            }
+        }
+
+        // Filter by names
+        projects = projects.filter((v) => args.projectNames!.includes(v.name));
+    }
+    if (projects.length === 0) {
+        console.warn('No projects to compile');
+        return false;
+    }
+
+    // Compile 
+    let success = true;
+    let project = createNodeFileSystem(rootPath, false);
+    let stdlib = path.resolve(__dirname, '..', 'stdlib'); // Improves developer experience
+    for (let config of projects) {
+        console.log('💼 Compiling project ' + config.name + '...');
+        let built = await build({ config, project, stdlib });
+        success = success && built;
+    }
+    return success;
 }
+
+export { createNodeFileSystem } from './vfs/createNodeFileSystem';

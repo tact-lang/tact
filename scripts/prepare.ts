@@ -29,7 +29,7 @@ import { createNodeFileSystem } from '../src/vfs/createNodeFileSystem';
                 path: p.path + '/' + r,
                 output: './output/',
             };
-            let stdlib = createVirtualFileSystem('@stdlib', files);
+            let stdlib = '@stdlib';
             let project = createNodeFileSystem(p.path, false);
             await build({
                 config,
