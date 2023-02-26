@@ -1,88 +1,91 @@
-import fs from 'fs';
-import path from 'path';
 import { parseImports } from '../grammar/grammar';
+import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
+import { resolveLibrary } from './resolveLibrary';
 
-function resolveLibraryPath(filePath: string, name: string, stdlibPath: string): string {
+export function resolveImports(args: { entrypoint: string, project: VirtualFileSystem, stdlib: VirtualFileSystem }) {
 
-    // Checked collection
-    let checked: string[] = [];
+    //
+    // Load stdlib and entrypoint
+    //
 
-    // Check stdlib
-    if (name.startsWith('@stdlib/')) {
-        let p = name.substring('@stdlib/'.length);
-        let pp = path.resolve(__dirname, '..', '..', 'stdlib', 'libs', p + '.tact')
-        checked.push(pp);
-        if (fs.existsSync(pp)) {
-            return pp;
-        } else {
-            throw Error('Unable to process import ' + name + ' from ' + filePath + ', checked: ' + checked.join(', '));
-        }
-    }
+    // const stdlibFuncPath = args.stdlib.resolve('./stdlib.fc');
+    // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
 
-    // Check relative path
-    let t = name;
-    if (!t.endsWith('.tact') && !t.endsWith('.fc')) {
-        t = t + '.tact';
-    }
-    let targetPath = path.resolve(filePath, '..', t);
-    checked.push(targetPath);
-    if (fs.existsSync(targetPath)) {
-        return targetPath;
-    }
+    const stdlibTactPath = args.stdlib.resolve('./stdlib.tact');
+    const stdlibTact = args.stdlib.readFile(stdlibTactPath).toString();
 
-    throw Error('Unable to process import ' + name + ' from ' + filePath + ', checked: ' + checked.join(', '));
-}
+    const codePath = args.project.resolve(args.entrypoint);
+    const code = args.project.readFile(codePath).toString();
 
-export function resolveImports(root: string, sourceFile: string, stdlibPath: string) {
+    //
+    // Resolve all imports
+    //
 
-    // Load stdlib
-    const stdlibRootPath = path.resolve(stdlibPath, 'stdlib.tact');
-    const stdlib = fs.readFileSync(stdlibRootPath, 'utf-8');
-    const codePath = path.resolve(root, sourceFile);
-    const code = fs.readFileSync(codePath, 'utf8');
-
-    const imported: { code: string, path: string }[] = [];
+    const importedTact: { code: string, path: string }[] = [];
+    const importedFunc: { code: string, path: string }[] = [];
     const processed = new Set<string>();
-    const funcImports: string[] = [];
-    const pending: string[] = [];
-    function processImports(path: string, source: string) {
-        let imp = parseImports(source, path);
-        for (let i of imp) {
-            let resolved = resolveLibraryPath(path, i, stdlibPath);
-            if (resolved.endsWith('.fc')) {
-                if (funcImports.find((v) => v === resolved)) {
+    const pending: { code: string, path: string }[] = [];
+    function processImports(source: string, path: string) {
+        const imp = parseImports(source, path);
+        for (const i of imp) {
+
+            // Resolve library
+            const resolved = resolveLibrary({
+                path: path,
+                name: i,
+                project: args.project,
+                stdlib: args.stdlib
+            });
+            if (!resolved.ok) {
+                throw new Error(`Could not resolve import ${i} in ${path}`);
+            }
+
+            // Check if already imported
+            if (resolved.kind === 'func') {
+                if (importedFunc.find((v) => v.path === resolved.path)) {
                     continue;
                 }
-                funcImports.push(resolved);
             } else {
-                if (!processed.has(resolved)) {
-                    processed.add(resolved);
-                    pending.push(resolved);
+                if (importedTact.find((v) => v.path === resolved.path)) {
+                    continue;
+                }
+            }
+
+            // Load code
+            let vfs = resolved.source === 'project' ? args.project : args.stdlib;
+            let code: string = vfs.readFile(resolved.path).toString();
+
+            // Add to imports
+            if (resolved.kind === 'func') {
+                importedFunc.push({ code, path: resolved.path });
+            } else {
+                if (!processed.has(resolved.path)) {
+                    processed.add(resolved.path);
+                    pending.push({ path: resolved.path, code });
                 }
             }
         }
     }
-    processImports(stdlibRootPath, stdlib);
-    processImports(codePath, code);
+
+    // Run resolve
+    importedTact.push({ code: stdlibTact, path: stdlibTactPath });
+    processImports(stdlibTact, stdlibTactPath);
+    processImports(code, codePath);
     while (pending.length > 0) {
         let p = pending.shift()!;
-        let librarySource = fs.readFileSync(p, 'utf8');
-        imported.push({ code: librarySource, path: p });
-        processImports(p, librarySource);
+        importedTact.push(p);
+        processImports(p.code, p.path);
     }
+    importedTact.push({ code: code, path: codePath }); // To keep order same as before refactoring
 
-    // Load func
-    let fc: string[] = [];
-    for (let i of funcImports) {
-        fc.push(fs.readFileSync(i, 'utf8'));
-    }
-
+    // Assemble result
     return {
         tact: [
-            { code: stdlib, path: stdlibPath },
-            ...imported,
-            { code, path: codePath }
+            ...importedTact,
         ],
-        func: fc
+        func: [
+            // { code: stdlibFunc, path: stdlibFuncPath },
+            ...importedFunc
+        ]
     };
 }

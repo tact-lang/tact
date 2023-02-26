@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolveImports should resolve imports 1`] = `
+{
+  "func": [
+    {
+      "code": "",
+      "path": "/Users/steve/Develop/tact/src/imports/__testdata/stdlib/stdlib2.fc",
+    },
+  ],
+  "tact": [
+    {
+      "code": "import "./stdlib2.fc";",
+      "path": "/Users/steve/Develop/tact/src/imports/__testdata/stdlib/stdlib.tact",
+    },
+    {
+      "code": "",
+      "path": "/Users/steve/Develop/tact/src/imports/__testdata/project/imported.tact",
+    },
+    {
+      "code": "import "./imported";",
+      "path": "/Users/steve/Develop/tact/src/imports/__testdata/project/main.tact",
+    },
+  ],
+}
+`;

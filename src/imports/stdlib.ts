@@ -1,25 +1,25 @@
 let files: { [key: string]: string } = {};
-files['/libs/config.tact'] =
+files['libs/config.tact'] =
     'ZnVuIGdldENvbmZpZ0FkZHJlc3MoKTogQWRkcmVzcyB7CiAgICBsZXQgY2VsbDogQ2VsbCA9IGdldENvbmZpZ1BhcmFtKDApISE7CiAgICBsZXQgc2M6IFNsaWNlID0g' +
     'Y2VsbC5iZWdpblBhcnNlKCk7CiAgICByZXR1cm4gbmV3QWRkcmVzcygtMSwgc2MubG9hZFVpbnQoMjU2KSk7Cn0KCmZ1biBnZXRFbGVjdG9yQWRkcmVzcygpOiBBZGRy' +
     'ZXNzIHsKICAgIGxldCBjZWxsOiBDZWxsID0gZ2V0Q29uZmlnUGFyYW0oMSkhITsKICAgIGxldCBzYzogU2xpY2UgPSBjZWxsLmJlZ2luUGFyc2UoKTsKICAgIHJldHVy' +
     'biBuZXdBZGRyZXNzKC0xLCBzYy5sb2FkVWludCgyNTYpKTsKfQ==';
-files['/libs/content.tact'] =
+files['libs/content.tact'] =
     'ZnVuIGNyZWF0ZU9mZmNoYWluQ29udGVudChsaW5rOiBTdHJpbmcpOiBDZWxsIHsKICAgIGxldCBidWlsZGVyOiBTdHJpbmdCdWlsZGVyID0gYmVnaW5TdHJpbmdGcm9t' +
     'QnVpbGRlcihiZWdpbkNlbGwoKS5zdG9yZVVpbnQoMHgwMSwgOCkpOwogICAgYnVpbGRlci5hcHBlbmQobGluayk7CiAgICByZXR1cm4gYnVpbGRlci50b0NlbGwoKTsK' +
     'fQ==';
-files['/libs/deploy.tact'] =
+files['libs/deploy.tact'] =
     'Cm1lc3NhZ2UgRGVwbG95IHsKICAgIHF1ZXJ5SWQ6IEludCBhcyB1aW50NjQ7Cn0KCm1lc3NhZ2UgRGVwbG95T2sgewogICAgcXVlcnlJZDogSW50IGFzIHVpbnQ2NDsK' +
     'fQoKdHJhaXQgRGVwbG95YWJsZSB7CiAgICByZWNlaXZlKGRlcGxveTogRGVwbG95KSB7CiAgICAgICAgcmVwbHkoRGVwbG95T2t7cXVlcnlJZDogZGVwbG95LnF1ZXJ5' +
     'SWR9LnRvQ2VsbCgpKTsKICAgIH0KfQ==';
-files['/libs/ownable.tact'] =
+files['libs/ownable.tact'] =
     'bWVzc2FnZSBDaGFuZ2VPd25lciB7CiAgICBuZXdPd25lcjogQWRkcmVzczsKfQoKQGludGVyZmFjZSgib3JnLnRvbi5vd25hYmxlIikKdHJhaXQgT3duYWJsZSB7CiAg' +
     'ICBvd25lcjogQWRkcmVzczsKCiAgICBmdW4gcmVxdWlyZU93bmVyKCkgewogICAgICAgIG5hdGl2ZVRocm93VW5sZXNzKDEzMiwgY29udGV4dCgpLnNlbmRlciA9PSBz' +
     'ZWxmLm93bmVyKTsKICAgIH0KCiAgICBnZXQgZnVuIG93bmVyKCk6IEFkZHJlc3MgewogICAgICAgIHJldHVybiBzZWxmLm93bmVyOwogICAgfQp9CgpAaW50ZXJmYWNl' +
     'KCJvcmcudG9uLm93bmFibGUudHJhbnNmZXJhYmxlIikKdHJhaXQgT3duYWJsZVRyYW5zZmVyYWJsZSB3aXRoIE93bmFibGUgewoKICAgIG93bmVyOiBBZGRyZXNzOwoK' +
     'ICAgIHJlY2VpdmUobXNnOiBDaGFuZ2VPd25lcikgewogICAgICAgIAogICAgICAgIC8vIENoZWNrIGlmIHRoZSBzZW5kZXIgaXMgdGhlIG93bmVyCiAgICAgICAgc2Vs' +
     'Zi5yZXF1aXJlT3duZXIoKTsKCiAgICAgICAgLy8gVXBkYXRlIG93bmVyCiAgICAgICAgc2VsZi5vd25lciA9IG1zZy5uZXdPd25lcjsKICAgIH0KfQ==';
-files['/libs/stoppable.tact'] =
+files['libs/stoppable.tact'] =
     'QGludGVyZmFjZSgib3JnLnRvbi5zdG9wcGFibGUiKQp0cmFpdCBTdG9wcGFibGUgd2l0aCBPd25hYmxlIHsKICAgIAogICAgc3RvcHBlZDogQm9vbDsKICAgIG93bmVy' +
     'OiBBZGRyZXNzOwoKICAgIGZ1biByZXF1aXJlTm90U3RvcHBlZCgpIHsKICAgICAgICByZXF1aXJlKCFzZWxmLnN0b3BwZWQsICJDb250cmFjdCBzdG9wcGVkIik7CiAg' +
     'ICB9CgogICAgZnVuIHJlcXVpcmVTdG9wcGVkKCkgewogICAgICAgIHJlcXVpcmUoc2VsZi5zdG9wcGVkLCAiQ29udHJhY3Qgbm90IHN0b3BwZWQiKTsKICAgIH0KCiAg' +
@@ -29,7 +29,7 @@ files['/libs/stoppable.tact'] =
     'ewogICAgc3RvcHBlZDogQm9vbDsKICAgIG93bmVyOiBBZGRyZXNzOwoKICAgIHJlY2VpdmUoIlJlc3VtZSIpIHsKICAgICAgICBzZWxmLnJlcXVpcmVPd25lcigpOwog' +
     'ICAgICAgIHNlbGYucmVxdWlyZVN0b3BwZWQoKTsKICAgICAgICBzZWxmLnN0b3BwZWQgPSBmYWxzZTsKICAgICAgICByZXBseSgiUmVzdW1lZCIuYXNDb21tZW50KCkp' +
     'OwogICAgfQp9';
-files['/std/cells.tact'] =
+files['std/cells.tact'] =
     'Ly8KLy8gQnVpbGRlcgovLwoKQG5hbWUoYmVnaW5fY2VsbCkKbmF0aXZlIGJlZ2luQ2VsbCgpOiBCdWlsZGVyOwoKQG5hbWUoc3RvcmVfaW50KQpleHRlbmRzIG5hdGl2' +
     'ZSBzdG9yZUludChzZWxmOiBCdWlsZGVyLCB2YWx1ZTogSW50LCBiaXRzOiBJbnQpOiBCdWlsZGVyOwoKQG5hbWUoc3RvcmVfdWludCkKZXh0ZW5kcyBuYXRpdmUgc3Rv' +
     'cmVVaW50KHNlbGY6IEJ1aWxkZXIsIHZhbHVlOiBJbnQsIGJpdHM6IEludCk6IEJ1aWxkZXI7CgpAbmFtZShfX3RhY3Rfc3RvcmVfYm9vbCkKZXh0ZW5kcyBuYXRpdmUg' +
@@ -58,31 +58,31 @@ files['/std/cells.tact'] =
     'bGwgewogICAgcmV0dXJuIGJlZ2luQ2VsbCgpCiAgICAgICAgLnN0b3JlU2xpY2Uoc2VsZikKICAgICAgICAuZW5kQ2VsbCgpOwp9CgpleHRlbmRzIGZ1biBhc0NlbGwo' +
     'c2VsZjogQnVpbGRlcik6IENlbGwgewogICAgcmV0dXJuIHNlbGYuZW5kQ2VsbCgpOwp9CgpmdW4gZW1wdHlDZWxsKCk6IENlbGwgewogICAgcmV0dXJuIGJlZ2luQ2Vs' +
     'bCgpLmVuZENlbGwoKTsKfQoKZnVuIGVtcHR5U2xpY2UoKTogU2xpY2UgewogICAgcmV0dXJuIGVtcHR5Q2VsbCgpLmFzU2xpY2UoKTsKfQ==';
-files['/std/config.tact'] =
+files['std/config.tact'] =
     'QG5hbWUoY29uZmlnX3BhcmFtKQpuYXRpdmUgZ2V0Q29uZmlnUGFyYW0oaWQ6IEludCk6IENlbGw/Ow==';
-files['/std/context.tact'] =
+files['std/context.tact'] =
     'c3RydWN0IENvbnRleHQgewogICAgYm91bmNlZDogQm9vbDsKICAgIHNlbmRlcjogQWRkcmVzczsKICAgIHZhbHVlOiBJbnQ7CiAgICByYXc6IFNsaWNlOwp9CgpAbmFt' +
     'ZShfX3RhY3RfY29udGV4dF9nZXQpCm5hdGl2ZSBjb250ZXh0KCk6IENvbnRleHQ7CgpleHRlbmRzIGZ1biByZWFkRm9yd2FyZEZlZShzZWxmOiBDb250ZXh0KTogSW50' +
     'IHsKICAgIGxldCBzYzogU2xpY2UgPSBzZWxmLnJhdzsKICAgIHNjLmxvYWRDb2lucygpOyAvLyBTa2lwIHZhbHVlCiAgICBzYy5za2lwQml0cygxKTsgLy8gU2tpcCBl' +
     'eHRyYWN1cnJlbmN5IGNvbGxlY3Rpb24KICAgIHNjLmxvYWRDb2lucygpOyAvLyBTa2lwIGlocl9mZWUKICAgIHJldHVybiAoc2MubG9hZENvaW5zKCkgKiAzKSAvIDI7' +
     'Cn0=';
-files['/std/contract.tact'] =
+files['std/contract.tact'] =
     'c3RydWN0IFN0YXRlSW5pdCB7CiAgICBjb2RlOiBDZWxsOwogICAgZGF0YTogQ2VsbDsKfQoKQG5hbWUoX190YWN0X2NvbXB1dGVfY29udHJhY3RfYWRkcmVzcykKbmF0' +
     'aXZlIGNvbnRyYWN0QWRkcmVzc0V4dChjaGFpbjogSW50LCBjb2RlOiBDZWxsLCBkYXRhOiBDZWxsKTogQWRkcmVzczsKCmZ1biBjb250cmFjdEFkZHJlc3MoczogU3Rh' +
     'dGVJbml0KTogQWRkcmVzcyB7CiAgICByZXR1cm4gY29udHJhY3RBZGRyZXNzRXh0KDAsIHMuY29kZSwgcy5kYXRhKTsKfQoKQG5hbWUoX190YWN0X2FkZHJlc3NfdG9f' +
     'c2xpY2UpCmV4dGVuZHMgbmF0aXZlIGFzU2xpY2Uoc2VsZjogQWRkcmVzcyk6IFNsaWNlOwoKQG5hbWUoX190YWN0X2NyZWF0ZV9hZGRyZXNzKQpuYXRpdmUgbmV3QWRk' +
     'cmVzcyhjaGFpbjogSW50LCBoYXNoOiBJbnQpOiBBZGRyZXNzOwoKQG5hbWUobXlfYWRkcmVzcykKbmF0aXZlIG15QWRkcmVzcygpOiBBZGRyZXNzOwoKQG5hbWUoX190' +
     'YWN0X215X2JhbGFuY2UpCm5hdGl2ZSBteUJhbGFuY2UoKTogSW50Ow==';
-files['/std/crypto.tact'] =
+files['std/crypto.tact'] =
     'QG5hbWUoY2VsbF9oYXNoKQpleHRlbmRzIG5hdGl2ZSBoYXNoKHNlbGY6IENlbGwpOiBJbnQ7CgpAbmFtZShzbGljZV9oYXNoKQpleHRlbmRzIG5hdGl2ZSBoYXNoKHNl' +
     'bGY6IFNsaWNlKTogSW50OwoKQG5hbWUoY2hlY2tfc2lnbmF0dXJlKQpuYXRpdmUgY2hlY2tTaWduYXR1cmUoaGFzaDogSW50LCBzaWduYXR1cmU6IFNsaWNlLCBwdWJs' +
     'aWNfa2V5OiBJbnQpOiBCb29sOwoKQG5hbWUoY2hlY2tfZGF0YV9zaWduYXR1cmUpCm5hdGl2ZSBjaGVja0RhdGFTaWduYXR1cmUoaGFzaDogU2xpY2UsIHNpZ25hdHVy' +
     'ZTogU2xpY2UsIHB1YmxpY19rZXk6IFNsaWNlKTogQm9vbDs=';
-files['/std/debug.tact'] =
+files['std/debug.tact'] =
     'QG5hbWUodGhyb3cpCm5hdGl2ZSBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpOwoKQG5hbWUodGhyb3dfd2hlbikKbmF0aXZlIG5hdGl2ZVRocm93V2hlbihjb2RlOiBJbnQs' +
     'IGNvbmRpdGlvbjogQm9vbCk7CgpAbmFtZSh0aHJvdykKbmF0aXZlIHRocm93KGNvZGU6IEludCk7CgpAbmFtZSh0aHJvd191bmxlc3MpCm5hdGl2ZSBuYXRpdmVUaHJv' +
     'd1VubGVzcyhjb2RlOiBJbnQsIGNvbmRpdGlvbjogQm9vbCk7CgpAbmFtZShkdW1wX3N0YWNrKQpuYXRpdmUgZHVtcFN0YWNrKCk7';
-files['/std/math.tact'] =
+files['std/math.tact'] =
     'Ly8gUHJlcGFyZSByYW5kb20KCkBuYW1lKHJhbmRvbWl6ZSkKbmF0aXZlIG5hdGl2ZVJhbmRvbWl6ZSh4OiBJbnQpOwoKQG5hbWUocmFuZG9taXplX2x0KQpuYXRpdmUg' +
     'bmF0aXZlUmFuZG9taXplTHQoKTsKCkBuYW1lKF9fdGFjdF9wcmVwYXJlX3JhbmRvbSkKbmF0aXZlIG5hdGl2ZVByZXBhcmVSYW5kb20oKTsKCi8vIFJhbmRvbQoKQG5h' +
     'bWUocmFuZG9tKQpuYXRpdmUgbmF0aXZlUmFuZG9tKCk6IEludDsKCkBuYW1lKHJhbmQpCm5hdGl2ZSBuYXRpdmVSYW5kb21JbnRlcnZhbChtYXg6IEludCk6IEludDsK' +
@@ -90,12 +90,12 @@ files['/std/math.tact'] =
     'IEludCwgbWF4OiBJbnQpOiBJbnQgewogICAgbmF0aXZlUHJlcGFyZVJhbmRvbSgpOwogICAgcmV0dXJuIG1pbiArIG5hdGl2ZVJhbmRvbUludGVydmFsKG1heCAtIG1p' +
     'bik7Cn0KCi8vIE1hdGgKCkBuYW1lKG1pbikKbmF0aXZlIG1pbih4OiBJbnQsIHk6IEludCk6IEludDsKCkBuYW1lKG1heCkKbmF0aXZlIG1heCh4OiBJbnQsIHk6IElu' +
     'dCk6IEludDsKCkBuYW1lKGFicykKbmF0aXZlIGFicyh4OiBJbnQpOiBJbnQ7CgpAbmFtZShub3cpCm5hdGl2ZSBub3coKTogSW50Ow==';
-files['/std/primitives.tact'] =
+files['std/primitives.tact'] =
     'cHJpbWl0aXZlIEludDsKcHJpbWl0aXZlIEJvb2w7CnByaW1pdGl2ZSBCdWlsZGVyOwpwcmltaXRpdmUgU2xpY2U7CnByaW1pdGl2ZSBDZWxsOwpwcmltaXRpdmUgQWRk' +
     'cmVzczsKcHJpbWl0aXZlIFN0cmluZzsKcHJpbWl0aXZlIFN0cmluZ0J1aWxkZXI7';
-files['/std/reserve.tact'] =
+files['std/reserve.tact'] =
     'QG5hbWUocmF3X3Jlc2VydmUpCm5hdGl2ZSBuYXRpdmVSZXNlcnZlKGFtb3VudDogSW50LCBtb2RlOiBJbnQpOw==';
-files['/std/send.tact'] =
+files['std/send.tact'] =
     'QG5hbWUoc2VuZF9yYXdfbWVzc2FnZSkKbmF0aXZlIG5hdGl2ZVNlbmRNZXNzYWdlKGNlbGw6IENlbGwsIG1vZGU6IEludCk7Cgpjb25zdCBTZW5kUmVtYWluaW5nQmFs' +
     'YW5jZTogSW50ID0gMTI4Owpjb25zdCBTZW5kUmVtYWluaW5nVmFsdWU6IEludCA9IDY0Owpjb25zdCBTZW5kSWdub3JlRXJyb3JzOiBJbnQgPSAyOwpjb25zdCBTZW5k' +
     'UGF5R2FzU2VwYXJhdGVseTogSW50ID0gMTsKY29uc3QgU2VuZERlc3Ryb3lJZlplcm86IEludCA9IDMyOwoKc3RydWN0IFNlbmRQYXJhbWV0ZXJzIHsKICAgIGJvdW5j' +
@@ -120,7 +120,7 @@ files['/std/send.tact'] =
     'aXZlU2VuZE1lc3NhZ2UoYywgcGFyYW1zLm1vZGUpOwp9CgpmdW4gcmVwbHkoYm9keTogQ2VsbD8pIHsKICAgIGxldCBjdHg6IENvbnRleHQgPSBjb250ZXh0KCk7CiAg' +
     'ICBzZW5kKFNlbmRQYXJhbWV0ZXJzewogICAgICAgIGJvdW5jZTogdHJ1ZSwKICAgICAgICB0bzogY3R4LnNlbmRlciwKICAgICAgICB2YWx1ZTogMCwKICAgICAgICBt' +
     'b2RlOiBTZW5kUmVtYWluaW5nVmFsdWUgKyBTZW5kSWdub3JlRXJyb3JzLCAKICAgICAgICBib2R5OiBib2R5CiAgICB9KTsKfQ==';
-files['/std/text.tact'] =
+files['std/text.tact'] =
     'Ly8KLy8gU3RyaW5nIGJ1aWxkZXIKLy8KCkBuYW1lKF9fdGFjdF9zdHJpbmdfYnVpbGRlcl9zdGFydF9zdHJpbmcpCm5hdGl2ZSBiZWdpblN0cmluZygpOiBTdHJpbmdC' +
     'dWlsZGVyOwoKQG5hbWUoX190YWN0X3N0cmluZ19idWlsZGVyX3N0YXJ0X2NvbW1lbnQpCm5hdGl2ZSBiZWdpbkNvbW1lbnQoKTogU3RyaW5nQnVpbGRlcjsKCkBuYW1l' +
     'KF9fdGFjdF9zdHJpbmdfYnVpbGRlcl9zdGFydF90YWlsX3N0cmluZykKbmF0aXZlIGJlZ2luVGFpbFN0cmluZygpOiBTdHJpbmdCdWlsZGVyOwoKQG5hbWUoX190YWN0' +
@@ -147,7 +147,7 @@ files['/std/text.tact'] =
     'ICAgICB9CiAgICB9CgogICAgLy8gUGFkZGluZwogICAgbGV0IHRvdGFsOiBJbnQgPSByZXN1bHQuYml0cygpOwogICAgbGV0IHBhZGRpbmc6IEludCA9IHRvdGFsICUg' +
     'ODsKICAgIGlmIChwYWRkaW5nICE9IDApIHsKICAgICAgICBsZXQgczogU2xpY2UgPSByZXN1bHQuYXNTbGljZSgpOwogICAgICAgIHJldHVybiBzLmxvYWRCaXRzKHRv' +
     'dGFsIC0gcGFkZGluZyk7CiAgICB9IGVsc2UgewogICAgICAgIHJldHVybiByZXN1bHQuYXNTbGljZSgpOwogICAgfQp9';
-files['/stdlib.fc'] =
+files['stdlib.fc'] =
     'OzsgU3RhbmRhcmQgbGlicmFyeSBmb3IgZnVuQwo7OwoKey0KICAjIFR1cGxlIG1hbmlwdWxhdGlvbiBwcmltaXRpdmVzCiAgVGhlIG5hbWVzIGFuZCB0aGUgdHlwZXMg' +
     'YXJlIG1vc3RseSBzZWxmLWV4cGxhaW5pbmcuCiAgU2VlIFtwb2x5bW9yaGlzbSB3aXRoIGZvcmFsbF0oaHR0cHM6Ly90b24ub3JnL2RvY3MvIy9mdW5jL2Z1bmN0aW9u' +
     'cz9pZD1wb2x5bW9ycGhpc20td2l0aC1mb3JhbGwpCiAgZm9yIG1vcmUgaW5mbyBvbiB0aGUgcG9seW1vcnBoaWMgZnVuY3Rpb25zLgoKICBOb3RlIHRoYXQgY3VycmVu' +
@@ -517,7 +517,7 @@ files['/stdlib.fc'] =
     'aXplKGN1cl9sdCgpKTsuCigpIHJhbmRvbWl6ZV9sdCgpIGltcHVyZSBhc20gIkxUSU1FIiAiQUREUkFORCI7Cgo7OzsgQ2hlY2tzIHdoZXRoZXIgdGhlIGRhdGEgcGFy' +
     'dHMgb2YgdHdvIHNsaWNlcyBjb2luc2lkZQppbnQgZXF1YWxfc2xpY2VfYml0cyAoc2xpY2UgYSwgc2xpY2UgYikgYXNtICJTREVRIjsKCjs7OyBDb25jYXRlbmF0ZXMg' +
     'dHdvIGJ1aWxkZXJzCmJ1aWxkZXIgc3RvcmVfYnVpbGRlcihidWlsZGVyIHRvLCBidWlsZGVyIGZyb20pIGFzbSAiU1RCUiI7';
-files['/stdlib.tact'] =
+files['stdlib.tact'] =
     'aW1wb3J0ICIuL3N0ZC9wcmltaXRpdmVzIjsKaW1wb3J0ICIuL3N0ZC9jZWxscyI7CmltcG9ydCAiLi9zdGQvY3J5cHRvIjsKaW1wb3J0ICIuL3N0ZC90ZXh0IjsKaW1w' +
     'b3J0ICIuL3N0ZC9tYXRoIjsKaW1wb3J0ICIuL3N0ZC9jb250cmFjdCI7CmltcG9ydCAiLi9zdGQvZGVidWciOwppbXBvcnQgIi4vc3RkL2NvbnRleHQiOwppbXBvcnQg' +
     'Ii4vc3RkL3Jlc2VydmUiOwppbXBvcnQgIi4vc3RkL3NlbmQiOwppbXBvcnQgIi4vc3RkL2NvbmZpZyI7';

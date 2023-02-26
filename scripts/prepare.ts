@@ -10,7 +10,7 @@ import path from 'path';
 (async () => {
 
     // Compile projects
-    await run(__dirname + '/../tact.config.json', []);
+    await run({ configPath: __dirname + '/../tact.config.json' });
 
     // Compile test contracts
     for (let p of [{ path: path.resolve(__dirname, '..', 'src', 'test', 'contracts') }]) {

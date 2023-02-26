@@ -1,6 +1,5 @@
 import { Config } from "./config/parseConfig";
 import { build } from './pipeline/build';
-import { VirtualFileSystem } from "./vfs/VirtualFileSystem";
 
 export async function compileProjects(args: {
     config: Config,

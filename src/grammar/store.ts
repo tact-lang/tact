@@ -2,7 +2,7 @@ import { ASTConstant, ASTFunction, ASTNativeFunction, ASTType } from "./ast";
 import { CompilerContext, createContextStore } from "../context";
 import { parse } from "./grammar";
 
-type ASTStore = { funcSources: string[], functions: (ASTFunction | ASTNativeFunction)[], constants: ASTConstant[], types: ASTType[] };
+type ASTStore = { funcSources: { code: string, path: string }[], functions: (ASTFunction | ASTNativeFunction)[], constants: ASTConstant[], types: ASTType[] };
 
 const store = createContextStore<ASTStore>();
 
@@ -14,7 +14,10 @@ export function getRawAST(ctx: CompilerContext) {
     return r;
 }
 
-export function openContext(ctx: CompilerContext, sources: { code: string, path: string }[], funcSources: string[]) {
+export function openContext(ctx: CompilerContext,
+    sources: { code: string, path: string }[],
+    funcSources: { code: string, path: string }[]
+) {
     let asts = sources.map(source => parse(source.code, source.path));
     let types: ASTType[] = [];
     let functions: (ASTNativeFunction | ASTFunction)[] = [];

@@ -13,7 +13,7 @@ describe('integration', () => {
     for (let r of loadCases(__dirname + "/contracts/")) {
         it('should resolve expressions for ' + r.name, async () => {
             let ctx = new CompilerContext({ shared: {} });
-            ctx = precompile(ctx, __dirname + "/contracts/", r.name + '.tact');
+            ctx = precompile(ctx, __dirname + "/contracts/", __dirname + "/../../stdlib/", r.name + '.tact');
             let contract = getContracts(ctx)[0];
             let res = await compile(ctx, contract);
             expect(res.output.output).toEqual(fs.readFileSync(__dirname + "/contracts/output/" + r.name + '_' + contract + '.code.fc', 'utf8'));

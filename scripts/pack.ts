@@ -14,6 +14,7 @@ output = 'let files: { [key: string]: string } = {};\n';
 for (let f of t) {
     let code = fs.readFileSync(f).toString('base64');
     let name = f.replace(path.resolve(__dirname, '..', 'stdlib'), ''); // Thanks ChatGPT
+    name = name.slice(1); // Remove leading slash
     output += `files['${name}'] =\n`;
     let first = true;
     while (code.length > 0) {

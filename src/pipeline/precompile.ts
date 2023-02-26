@@ -6,11 +6,14 @@ import { resolveStatements } from "../types/resolveStatements";
 import { resolveStrings } from "../types/resolveStrings";
 import { resolveSignatures } from '../types/resolveSignatures';
 import { resolveImports } from '../imports/resolveImports';
+import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
 
 export function precompile(ctx: CompilerContext, rootPath: string, stdlibPath: string, entrypoint: string) {
 
     // Load all sources
-    let imported = resolveImports(rootPath, entrypoint, stdlibPath);
+    let project = createNodeFileSystem(rootPath);
+    let stdlib = createNodeFileSystem(stdlibPath);
+    let imported = resolveImports({ entrypoint, project, stdlib });
 
     // Perform initial compiler steps
     ctx = openContext(ctx, imported.tact, imported.func);

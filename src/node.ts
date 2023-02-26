@@ -2,12 +2,11 @@ import path from 'path';
 import fs from 'fs';
 import { Config, parseConfig } from "./config/parseConfig";
 import { compileProjects } from "./main";
-import { createNodeFileSystem } from './vfs/createNodeFileSystem';
 
-export async function run(configPath: string, projectNames?: string[]) {
+export async function run(args: { configPath: string, projectNames?: string[] }) {
 
     // Load config
-    let resolvedPath = path.resolve(configPath);
+    let resolvedPath = path.resolve(args.configPath);
     let rootPath = path.dirname(resolvedPath);
     let config: Config;
     if (!fs.existsSync(resolvedPath)) {
@@ -26,7 +25,7 @@ export async function run(configPath: string, projectNames?: string[]) {
     let output = await compileProjects({
         config,
         configPath: rootPath,
-        projectNames,
+        projectNames: args.projectNames,
         stdlibPath: path.resolve(__dirname, '..', 'stdlib')
     });
 

@@ -291,7 +291,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
 
     // FunC imports
     for (let fc of getRawAST(ctx).funcSources) {
-        wctx.header('\n' + fc);
+        wctx.header('\n' + fc.code);
     }
 
     // Stdlib
