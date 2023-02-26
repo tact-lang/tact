@@ -20,3 +20,7 @@ export {
 export {
     createVirtualFileSystem
 } from './vfs/createVirtualFileSystem';
+
+export {
+    run
+} from './browser';

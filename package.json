@@ -22,7 +22,7 @@
     "bin/**/*",
     "stdlib/**/*"
   ],
-  "main": "./dist/",
+  "main": "./dist/main.js",
   "bin": {
     "tact": "./bin/tact",
     "tact-bindings": "./bin/tact-bindings"
