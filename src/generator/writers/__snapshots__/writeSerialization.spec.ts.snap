@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeSerialization should write serializer for A 1`] = `
-"slice __tact_address_to_slice(slice s) asm "NOP";
-
-int __tact_my_balance() inline {
+"int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
@@ -21,7 +19,7 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure {
+() __tact_debug_bool(int value) impure inline_ref  {
     if (value) {
         __tact_debug_str("true");
     } else {
@@ -919,9 +917,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
-"slice __tact_address_to_slice(slice s) asm "NOP";
-
-int __tact_my_balance() inline {
+"int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
@@ -939,7 +935,7 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure {
+() __tact_debug_bool(int value) impure inline_ref  {
     if (value) {
         __tact_debug_str("true");
     } else {
@@ -1837,9 +1833,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
-"slice __tact_address_to_slice(slice s) asm "NOP";
-
-int __tact_my_balance() inline {
+"int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
@@ -1857,7 +1851,7 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure {
+() __tact_debug_bool(int value) impure inline_ref  {
     if (value) {
         __tact_debug_str("true");
     } else {
