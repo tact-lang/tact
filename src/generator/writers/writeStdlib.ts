@@ -3,15 +3,19 @@ import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
 
+    //
     // stdlib extension functions
+    //
+
     ctx.skip('__tact_set');
     ctx.skip('__tact_nop');
     ctx.skip('__tact_str_to_slice');
     ctx.skip('__tact_slice_to_str');
+    ctx.skip('__tact_address_to_slice');
 
-    ctx.fun('__tact_address_to_slice', () => {
-        ctx.write(`slice __tact_address_to_slice(slice s) asm "NOP";`);
-    });
+    //
+    // stdlib functions
+    //
 
     ctx.fun(`__tact_my_balance`, () => {
         ctx.write(`
@@ -51,7 +55,7 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun('__tact_debug_bool', () => {
         ctx.write(`
-            () __tact_debug_bool(int value) impure {
+            () __tact_debug_bool(int value) impure inline_ref  {
                 if (value) {
                     ${ctx.used('__tact_debug_str')}("true");
                 } else {

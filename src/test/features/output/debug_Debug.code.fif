@@ -32,7 +32,7 @@ PROGRAM{
     ISNULL
     128 THROWIF
   }>
-  __tact_debug_bool PROC:<{
+  __tact_debug_bool PROCREF:<{
     IF:<{
       x{74727565} PUSHSLICE
       STRDUMP
@@ -314,9 +314,9 @@ PROGRAM{
     STRDUMP
     DROP
     TRUE
-    __tact_debug_bool CALLDICT
+    __tact_debug_bool INLINECALLDICT
     FALSE
-    __tact_debug_bool CALLDICT
+    __tact_debug_bool INLINECALLDICT
     x{6e756c6c} PUSHSLICE
     STRDUMP
     DROP
@@ -335,9 +335,9 @@ PROGRAM{
     STRDUMP
     DROP
     TRUE
-    __tact_debug_bool CALLDICT
+    __tact_debug_bool INLINECALLDICT
     FALSE
-    __tact_debug_bool CALLDICT
+    __tact_debug_bool INLINECALLDICT
     x{6e756c6c} PUSHSLICE
     STRDUMP
     DROP

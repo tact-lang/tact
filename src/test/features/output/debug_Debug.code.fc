@@ -6,7 +6,7 @@ forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure {
+() __tact_debug_bool(int value) impure inline_ref  {
     if (value) {
         __tact_debug_str("true");
     } else {

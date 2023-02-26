@@ -322,9 +322,33 @@ SETCP0
           20 DEBUG
           s0 POP
           -1 PUSHINT
-          2 CALLDICT
+          <{
+            <{
+              PUSHSLICE
+              20 DEBUG
+              s0 POP
+            }> PUSHCONT
+            <{
+              PUSHSLICE
+              20 DEBUG
+              s0 POP
+            }> PUSHCONT
+            IFELSE
+          }> CALLREF
           0 PUSHINT
-          2 CALLDICT
+          <{
+            <{
+              PUSHSLICE
+              20 DEBUG
+              s0 POP
+            }> PUSHCONT
+            <{
+              PUSHSLICE
+              20 DEBUG
+              s0 POP
+            }> PUSHCONT
+            IFELSE
+          }> CALLREF
           PUSHSLICE
           20 DEBUG
           s0 POP
@@ -346,19 +370,6 @@ SETCP0
     1 STI
     ENDC
     c4 POP
-
-  2: 
-    <{
-      PUSHSLICE
-      20 DEBUG
-      s0 POP
-    }> PUSHCONT
-    <{
-      PUSHSLICE
-      20 DEBUG
-      s0 POP
-    }> PUSHCONT
-    IFELSE
 
   93099: 
     c4 PUSH
@@ -472,9 +483,33 @@ SETCP0
       20 DEBUG
       s0 POP
       -1 PUSHINT
-      2 CALLDICT
+      <{
+        <{
+          PUSHSLICE
+          20 DEBUG
+          s0 POP
+        }> PUSHCONT
+        <{
+          PUSHSLICE
+          20 DEBUG
+          s0 POP
+        }> PUSHCONT
+        IFELSE
+      }> CALLREF
       0 PUSHINT
-      2 CALLDICT
+      <{
+        <{
+          PUSHSLICE
+          20 DEBUG
+          s0 POP
+        }> PUSHCONT
+        <{
+          PUSHSLICE
+          20 DEBUG
+          s0 POP
+        }> PUSHCONT
+        IFELSE
+      }> CALLREF
       PUSHSLICE
       20 DEBUG
       s0 POP
