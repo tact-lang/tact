@@ -3,20 +3,11 @@ import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
 
-    ctx.fun('__tact_set', () => {
-        ctx.write(`forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";`);
-    });
-
-    ctx.fun('__tact_nop', () => {
-        ctx.write(`() __tact_nop() asm "NOP";`);
-    });
-
-    ctx.fun('__tact_str_to_slice', () => {
-        ctx.write(`slice __tact_str_to_slice(slice s) asm "NOP";`);
-    });
-    ctx.fun('__tact_slice_to_str', () => {
-        ctx.write(`slice __tact_slice_to_str(slice s) asm "NOP";`);
-    });
+    // stdlib extension functions
+    ctx.skip('__tact_set');
+    ctx.skip('__tact_nop');
+    ctx.skip('__tact_str_to_slice');
+    ctx.skip('__tact_slice_to_str');
 
     ctx.fun('__tact_address_to_slice', () => {
         ctx.write(`slice __tact_address_to_slice(slice s) asm "NOP";`);

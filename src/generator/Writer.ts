@@ -97,6 +97,10 @@ export class WriterContext {
     // Declaration
     //
 
+    skip(name: string) {
+        this.fun(name, () => { });
+    };
+
     fun(name: string, handler: () => void) {
 
         //

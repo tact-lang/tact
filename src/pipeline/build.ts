@@ -91,9 +91,14 @@ export async function build(args: {
         try {
             let stdlibPath = stdlib.resolve('stdlib.fc');
             let stdlibCode = stdlib.readFile(stdlibPath).toString();
+            let stdlibExPath = stdlib.resolve('stdlib_ex.fc');
+            let stdlibExCode = stdlib.readFile(stdlibExPath).toString();
             let c = await funcCompile([{
                 path: stdlibPath,
                 content: stdlibCode
+            }, {
+                path: stdlibExPath,
+                content: stdlibExCode,
             }, {
                 path: pathCodeFc,
                 content: codeFunc

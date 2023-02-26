@@ -1,0 +1,5 @@
+forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
+() __tact_nop() asm "NOP";
+slice __tact_str_to_slice(slice s) asm "NOP";
+slice __tact_slice_to_str(slice s) asm "NOP";
+slice __tact_address_to_slice(slice s) asm "NOP";

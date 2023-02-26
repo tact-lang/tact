@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-slice __tact_str_to_slice(slice s) asm "NOP";
+
 
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;

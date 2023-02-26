@@ -2,7 +2,7 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-slice __tact_str_to_slice(slice s) asm "NOP";
+
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());

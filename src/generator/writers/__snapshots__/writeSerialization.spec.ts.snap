@@ -1,15 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeSerialization should write serializer for A 1`] = `
-"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
-
-() __tact_nop() asm "NOP";
-
-slice __tact_str_to_slice(slice s) asm "NOP";
-
-slice __tact_slice_to_str(slice s) asm "NOP";
-
-slice __tact_address_to_slice(slice s) asm "NOP";
+"slice __tact_address_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());
@@ -927,15 +919,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
-"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
-
-() __tact_nop() asm "NOP";
-
-slice __tact_str_to_slice(slice s) asm "NOP";
-
-slice __tact_slice_to_str(slice s) asm "NOP";
-
-slice __tact_address_to_slice(slice s) asm "NOP";
+"slice __tact_address_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());
@@ -1853,15 +1837,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
-"forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
-
-() __tact_nop() asm "NOP";
-
-slice __tact_str_to_slice(slice s) asm "NOP";
-
-slice __tact_slice_to_str(slice s) asm "NOP";
-
-slice __tact_address_to_slice(slice s) asm "NOP";
+"slice __tact_address_to_slice(slice s) asm "NOP";
 
 int __tact_my_balance() inline {
     return pair_first(get_balance());
