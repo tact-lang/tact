@@ -1,7 +1,6 @@
 {
   "name": "@tact-lang/compiler",
   "version": "1.0.0-rc.2",
-  "main": "./dist/main.js",
   "repository": "https://github.com/tact-lang/tact.git",
   "homepage": "https://tact-lang.org",
   "description": "Tact is a next-gen smart contract language for TON",
