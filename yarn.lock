@@ -823,11 +823,6 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
-"@tact-lang/runtime@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@tact-lang/runtime/-/runtime-0.2.0.tgz#dee48af1d177de1aa40946a6e8a6b92fa88046dd"
-  integrity sha512-pBVEG2Csi/YsDvEohs4GMv1nQ0gqOqiar69DLyLhCtWbYphd29Jc32WATy8D5sYV6njd9kA9BGotXgtP0+AaxA==
-
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
