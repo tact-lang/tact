@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const main = require('../dist/node');
+const main = require('../dist/node/main');
 const arg = require('arg');
 
 // Resolve arguments

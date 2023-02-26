@@ -1,6 +1,6 @@
-import { Config, verifyConfig } from "./config/parseConfig";
-import { build } from "./pipeline/build";
-import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
+import { Config, verifyConfig } from "../config/parseConfig";
+import { build } from "../pipeline/build";
+import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
 
 export async function run(args: {
     config: Config,
