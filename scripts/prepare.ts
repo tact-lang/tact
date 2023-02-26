@@ -5,6 +5,10 @@ import { Cell } from 'ton-core';
 import { build } from '../src/pipeline/build';
 import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
 import path from 'path';
+import { ConfigProject } from '../src/config/parseConfig';
+import { createVirtualFileSystem } from '../src/vfs/createVirtualFileSystem';
+import files from '../src/imports/stdlib';
+import { createNodeFileSystem } from '../src/vfs/createNodeFileSystem';
 
 // Read cases
 (async () => {
@@ -20,11 +24,18 @@ import path from 'path';
                 continue;
             }
 
-            await build({
+            let config: ConfigProject = {
                 name: r.slice(0, r.length - '.tact'.length),
                 path: p.path + '/' + r,
                 output: './output/',
-            }, p.path, path.resolve(__dirname, '..', 'stdlib'));
+            };
+            let stdlib = createVirtualFileSystem('@stdlib', files);
+            let project = createNodeFileSystem(p.path, false);
+            await build({
+                config,
+                stdlib,
+                project
+            });
         }
     }
 

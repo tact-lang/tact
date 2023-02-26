@@ -6,13 +6,11 @@ import { resolveStatements } from "../types/resolveStatements";
 import { resolveStrings } from "../types/resolveStrings";
 import { resolveSignatures } from '../types/resolveSignatures';
 import { resolveImports } from '../imports/resolveImports';
-import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
+import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 
-export function precompile(ctx: CompilerContext, rootPath: string, stdlibPath: string, entrypoint: string) {
+export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, entrypoint: string) {
 
     // Load all sources
-    let project = createNodeFileSystem(rootPath);
-    let stdlib = createNodeFileSystem(stdlibPath);
     let imported = resolveImports({ entrypoint, project, stdlib });
 
     // Perform initial compiler steps

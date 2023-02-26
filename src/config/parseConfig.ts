@@ -24,3 +24,7 @@ export function parseConfig(src: string) {
     let parsed = JSON.parse(src);
     return configSchema.parse(parsed);
 }
+
+export function verifyConfig(config: Config) {
+    return configSchema.parse(config);
+}

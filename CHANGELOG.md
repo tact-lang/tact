@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- `@ton-lang/compiler/node` to invoke compiler from node similar how cli works
+- `@ton-lang/compiler/browser` to invoke compiler from browser
+
 ## Removed
 - Removed jetton library from stdlib. It would be re-introduced after 1.0 version with more thought put into it.
 

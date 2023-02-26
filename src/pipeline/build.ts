@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { beginCell, Cell, Dictionary } from 'ton-core';
 import { fromBoc } from 'tvm-disassembler/dist/disassembler';
 import { writeTypescript } from '../bindings/writeTypescript';
@@ -11,40 +9,37 @@ import { PackageFileFormat } from '../packaging/fileFormat';
 import { packageCode } from '../packaging/packageCode';
 import { createABITypeRefFromTypeRef } from '../types/resolveABITypeRef';
 import { getContracts, getType } from '../types/resolveDescriptors';
+import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
 import { compile } from './compile';
 import { precompile } from "./precompile";
 const version = require('../../package.json').version;
 
-export async function build(
-    project: ConfigProject,
-    rootPath: string,
-    stdlibPath: string
-) {
+export async function build(args: {
+    config: ConfigProject,
+    project: VirtualFileSystem,
+    stdlib: VirtualFileSystem
+}) {
+
+    const { config, project, stdlib } = args;
 
     // Configure context
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
-    if (project.experimental && project.experimental.inline) {
+    if (config.experimental && config.experimental.inline) {
         console.warn('   > 👀 Enabling inline');
         ctx = enable(ctx, 'inline');
     }
-    if (project.parameters && project.parameters.debug) {
+    if (config.parameters && config.parameters.debug) {
         console.warn('   > 👀 Enabling debug');
         ctx = enable(ctx, 'debug');
     }
 
     // Precompile
     try {
-        ctx = precompile(ctx, rootPath, stdlibPath, project.path);
+        ctx = precompile(ctx, project, stdlib, config.path);
     } catch (e) {
         console.warn('Tact compilation failed');
         console.log(e);
         return false;
-    }
-
-    // Resolve and create output directory
-    let outputPath = path.resolve(rootPath, project.output);
-    if (!fs.existsSync(outputPath)) {
-        fs.mkdirSync(outputPath);
     }
 
     // Compile contracts
@@ -59,12 +54,12 @@ export async function build(
         }
     } = {};
     for (let contract of getContracts(ctx)) {
-        let pathAbi = path.resolve(outputPath, project.name + '_' + contract + ".abi");
+        let pathAbi = project.resolve(config.output, config.name + '_' + contract + ".abi");
 
-        let pathCodeFc = path.resolve(outputPath, project.name + '_' + contract + ".code.fc");
-        let pathCodeBoc = path.resolve(outputPath, project.name + '_' + contract + ".code.boc");
-        let pathCodeFif = path.resolve(outputPath, project.name + '_' + contract + ".code.fif");
-        let pathCodeFifDec = path.resolve(outputPath, project.name + '_' + contract + ".code.rev.fif");
+        let pathCodeFc = project.resolve(config.output, config.name + '_' + contract + ".code.fc");
+        let pathCodeBoc = project.resolve(config.output, config.name + '_' + contract + ".code.boc");
+        let pathCodeFif = project.resolve(config.output, config.name + '_' + contract + ".code.fif");
+        let pathCodeFifDec = project.resolve(config.output, config.name + '_' + contract + ".code.rev.fif");
 
         // Compiling contract to func
         console.log('   > ' + contract + ': tact compiler');
@@ -72,8 +67,8 @@ export async function build(
         let codeFunc: string;
         try {
             let res = await compile(ctx, contract);
-            fs.writeFileSync(pathCodeFc, res.output.output, 'utf-8');
-            fs.writeFileSync(pathAbi, res.output.abi, 'utf-8');
+            project.writeFile(pathCodeFc, res.output.output);
+            project.writeFile(pathAbi, res.output.abi);
             abi = res.output.abi;
             codeFunc = res.output.output;
         } catch (e) {
@@ -88,11 +83,11 @@ export async function build(
         let codeBoc: Buffer;
         let codeFift: string;
         try {
-            let stdlibPath = path.resolve(__dirname, '../../stdlib/stdlib.fc');
-            let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
+            let stdlibPath = stdlib.resolve('stdlib.fc');
+            let stdlibCode = stdlib.readFile(stdlibPath).toString();
             let c = await funcCompile([{
                 path: stdlibPath,
-                content: stdlib
+                content: stdlibCode
             }, {
                 path: pathCodeFc,
                 content: codeFunc
@@ -102,8 +97,8 @@ export async function build(
                 ok = false;
                 continue;
             }
-            fs.writeFileSync(pathCodeFif, c.fift, 'utf-8');
-            fs.writeFileSync(pathCodeBoc, c.output);
+            project.writeFile(pathCodeFif, c.fift);
+            project.writeFile(pathCodeBoc, c.output);
             codeFift = c.fift;
             codeBoc = c.output;
         } catch (e) {
@@ -118,7 +113,7 @@ export async function build(
         let codeFiftDecompiled: string;
         try {
             codeFiftDecompiled = fromBoc(codeBoc);
-            fs.writeFileSync(pathCodeFifDec, codeFiftDecompiled, 'utf-8');
+            project.writeFile(pathCodeFifDec, codeFiftDecompiled);
         } catch (e) {
             console.warn('Fift decompiler crashed');
             console.warn(e);
@@ -142,7 +137,7 @@ export async function build(
 
     // Package
     console.log('   > Packaging');
-    let contracts = project.contracts || getContracts(ctx);
+    let contracts = config.contracts || getContracts(ctx);
     let packages: PackageFileFormat[] = [];
     for (let contract of contracts) {
         console.log('   > ' + contract);
@@ -188,8 +183,8 @@ export async function build(
             }
         };
         let pkgData = packageCode(pkg);
-        let pathPkg = path.resolve(outputPath, project.name + '_' + contract + ".pkg");
-        fs.writeFileSync(pathPkg, pkgData);
+        let pathPkg = project.resolve(config.output, config.name + '_' + contract + ".pkg");
+        project.writeFile(pathPkg, pkgData);
         packages.push(pkg);
     }
 
@@ -208,11 +203,7 @@ export async function build(
                 system: pkg.init.deployment.system,
                 args: pkg.init.args
             });
-            fs.writeFileSync(
-                path.resolve(outputPath, project.name + '_' + pkg.name + ".ts"),
-                bindingsServer,
-                'utf-8'
-            );
+            project.writeFile(project.resolve(config.output, config.name + '_' + pkg.name + ".ts"), bindingsServer);
         } catch (e) {
             console.warn('Bindings compiler crashed');
             console.warn(e);
@@ -226,8 +217,8 @@ export async function build(
         console.log('   > ' + pkg.name);
         try {
             let report = writeReport(ctx, pkg);
-            let pathBindings = path.resolve(outputPath, project.name + '_' + pkg.name + ".md");
-            fs.writeFileSync(pathBindings, report, 'utf-8');
+            let pathBindings = project.resolve(config.output, config.name + '_' + pkg.name + ".md");
+            project.writeFile(pathBindings, report);
         } catch (e) {
             console.warn('Report generation crashed');
             console.warn(e);

@@ -1,11 +1,14 @@
 import { Config } from "./config/parseConfig";
+import files from "./imports/stdlib";
 import { build } from './pipeline/build';
+import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
+import { VirtualFileSystem } from "./vfs/VirtualFileSystem";
 
 export async function compileProjects(args: {
     config: Config,
-    configPath: string,
+    projectNames?: string[],
+    project: VirtualFileSystem,
     stdlibPath?: string,
-    projectNames?: string[]
 }) {
 
     // Resolve projects
@@ -30,9 +33,11 @@ export async function compileProjects(args: {
 
     // Compile projects
     let success = true;
-    for (let project of projects) {
-        console.log('💼 Compiling project ' + project.name + '...');
-        success = success && await build(project, args.configPath, args.stdlibPath || '@stdlib');
+    let stdlib = createVirtualFileSystem(args.stdlibPath || '@stdlib', files);
+    for (let config of projects) {
+        console.log('💼 Compiling project ' + config.name + '...');
+        let built = await build({ config, project: args.project, stdlib });
+        success = success && built;
     }
     return success;
 }

@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { Config, parseConfig } from "./config/parseConfig";
 import { compileProjects } from "./main";
+import { createNodeFileSystem } from './vfs/createNodeFileSystem';
 
 export async function run(args: { configPath: string, projectNames?: string[] }) {
 
@@ -24,9 +25,9 @@ export async function run(args: { configPath: string, projectNames?: string[] })
     // Compile 
     let output = await compileProjects({
         config,
-        configPath: rootPath,
+        project: createNodeFileSystem(rootPath, false),
         projectNames: args.projectNames,
-        stdlibPath: path.resolve(__dirname, '..', 'stdlib')
+        stdlibPath: path.resolve(__dirname, '..', 'stdlib') // Optional, but improves developer experience
     });
 
     return output;
