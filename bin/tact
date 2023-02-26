@@ -15,7 +15,7 @@ if (!args['--config']) {
 // Perform compilation
 (async () => {
     try {
-        await main.run(args['--config'], args['--project'] ? args['--project'] : []);
+        await main.run({ configPath: args['--config'], projectNames: args['--project'] ? args['--project'] : [] });
     } catch (e) {
         console.warn('Internal compiler error. Please, report it to https://github.com/tact-lang/tact/issues.');
         console.log(e);
