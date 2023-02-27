@@ -9,6 +9,7 @@ import { ConfigProject } from '../src/config/parseConfig';
 import { createNodeFileSystem } from '../src/vfs/createNodeFileSystem';
 import { glob } from 'glob';
 import { verify } from '../src/verify';
+import { consoleLogger } from '../src/logger';
 
 // Read cases
 (async () => {
@@ -62,13 +63,16 @@ import { verify } from '../src/verify';
                 let stdlibPath = path.resolve(__dirname, '../src/stdlib/stdlib.fc');
                 let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
                 let code = fs.readFileSync(p.path + r, 'utf-8');
-                c = await funcCompile([{
-                    path: stdlibPath,
-                    content: stdlib
-                }, {
-                    path: p.path + r,
-                    content: code
-                }]);
+                c = await funcCompile({
+                    sources: [{
+                        path: stdlibPath,
+                        content: stdlib
+                    }, {
+                        path: p.path + r,
+                        content: code
+                    }],
+                    logger: consoleLogger
+                });
                 if (!c.ok) {
                     console.warn(c.log);
                     continue;

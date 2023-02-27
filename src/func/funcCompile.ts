@@ -1,3 +1,6 @@
+import { TactLogger } from "../logger";
+import { errorToString } from "../utils/errorToString";
+
 // Wasm Imports
 const CompilerModule = require('./funcfiftlib.js');
 const FuncFiftLibWasm = require('./funcfiftlib.wasm.js').FuncFiftLibWasm;
@@ -44,10 +47,10 @@ type CompileResult = {
     warnings: string
 };
 
-export async function funcCompile(sources: { path: string, content: string }[]): Promise<FuncCompilationResult> {
+export async function funcCompile(args: { sources: { path: string, content: string }[], logger: TactLogger }): Promise<FuncCompilationResult> {
 
     // Parameters
-    let files: string[] = sources.map((v) => v.path);
+    let files: string[] = args.sources.map((v) => v.path);
     let configStr = JSON.stringify({
         sources: files,
         optLevel: 2 // compileConfig.optLevel || 2
@@ -78,7 +81,7 @@ export async function funcCompile(sources: { path: string, content: string }[]):
                 allocatedPointers.push(writeToCStringPtr(mod, data, contents));
             } else if (kind === 'source') {
                 try {
-                    let fl = sources.find((v) => v.path === data);
+                    let fl = args.sources.find((v) => v.path === data);
                     if (!fl) {
                         throw Error('File not found: ' + data)
                     }
@@ -118,7 +121,7 @@ export async function funcCompile(sources: { path: string, content: string }[]):
         }
 
     } catch (e) {
-        console.warn(e);
+        args.logger.error(errorToString(e));
         throw Error('Unexpected compiler response');
     } finally {
         allocatedPointers.forEach((pointer) => mod._free(pointer));

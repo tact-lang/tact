@@ -23,3 +23,4 @@ export {
 
 export * from './browser';
 export * from './verify';
+export { TactLogger } from './logger';

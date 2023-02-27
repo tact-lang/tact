@@ -1,7 +1,8 @@
 import normalize from "path-normalize";
 import { Cell } from "ton-core";
 import { Config, Options } from "./config/parseConfig";
-import { PackageFileFormat, run } from "./main";
+import { consoleLogger } from "./logger";
+import { PackageFileFormat, run, TactLogger } from "./main";
 import { fileFormat } from "./packaging/fileFormat";
 const version = require('../package.json').version;
 
@@ -14,12 +15,13 @@ export type VerifyResult = {
     error: 'invalid-package-format' | 'invalid-compiler' | 'invalid-compiler-version' | 'compilation-failed' | 'verification-failed'
 };
 
-export async function verify(pkg: string): Promise<VerifyResult> {
+export async function verify(args: { pkg: string, logger?: TactLogger | null | undefined }): Promise<VerifyResult> {
+    const logger = args.logger || consoleLogger;
 
     // Loading package
     let unpacked: PackageFileFormat;
     try {
-        let data = JSON.parse(pkg);
+        let data = JSON.parse(args.pkg);
         unpacked = fileFormat.parse(data);
     } catch (e) {
         return { ok: false, error: 'invalid-package-format' };
@@ -60,7 +62,7 @@ export async function verify(pkg: string): Promise<VerifyResult> {
         files['contract/' + s] = unpacked.sources[s];
     }
 
-    let result = await run({ config, files });
+    let result = await run({ config, files, logger });
     if (!result) {
         return { ok: false, error: 'compilation-failed' };
     }
