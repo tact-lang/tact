@@ -17,6 +17,14 @@ export function writeStdlib(ctx: WriterContext) {
     // stdlib functions
     //
 
+    ctx.fun(`__tact_pow`,()=>{
+        ctx.write(`
+            int __tact_pow(int x, int y) inline {
+                return x ** y;
+            }
+        `);
+    })
+
     ctx.fun(`__tact_my_balance`, () => {
         ctx.write(`
             int __tact_my_balance() inline {

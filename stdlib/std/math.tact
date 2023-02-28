@@ -40,3 +40,6 @@ native abs(x: Int): Int;
 
 @name(now)
 native now(): Int;
+
+@name(__tact_pow)
+native pow(a: Int, b: Int): Int;
