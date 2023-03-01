@@ -17,12 +17,13 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -33,7 +34,7 @@ SETCP0
     OR
     136 THROWIFNOT
     s2 PUSH
-    s5 s5 XCHG2
+    s1 s5 s5 XCHG3
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -73,24 +74,23 @@ SETCP0
       }> PUSHCONT
       IFJMP
       s1 PUSH
-      50579687 PUSHINT
+      3679600542 PUSHINT
       EQUAL
       <{
         s1 POP
         32 LDU
         s0 s1 XCHG
-        50579687 PUSHINT
+        3679600542 PUSHINT
         EQUAL
         129 THROWIFNOT
-        257 PUSHINT
-        LDI
         LDMSGADDR
-        s1 PUSH
+        s0 s1 XCHG
         s0 PUSH
         SBITS
         267 PUSHINT
         EQUAL
         136 THROWIFNOT
+        s0 PUSH
         11 PLDU
         s0 PUSH
         10 PUSHPOW2
@@ -101,17 +101,40 @@ SETCP0
         OR
         136 THROWIFNOT
         s0 s1 XCHG
+        LDMSGADDR
+        s1 PUSH
+        2 PLDU
+        0 NEQINT
+        <{
+          s0 s1 XCHG
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          s0 PUSH
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s0 s1 XCHG
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+        }> PUSHCONT
+        <{
+          s1 POP
+          PUSHNULL
+        }> PUSHCONT
+        IFELSE
         s1 s2 XCHG
         1 2 BLKDROP2
         2DROP
         -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
+      }> IFJMPREF
       s0 s1 XCHG
       0 EQINT
-      <{
-        s0 POP
-      }> PUSHCONT
       <{
         HASHSU
         60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
@@ -121,7 +144,11 @@ SETCP0
           RETALT
         }> PUSHCONT
         IFJMP
-      }> IFREFELSE
+      }> PUSHCONT
+      <{
+        s0 POP
+      }> PUSHCONT
+      IFELSE
       0 PUSHINT
     }> CALLREF
     s0 POP
@@ -135,6 +162,109 @@ SETCP0
     1 STI
     ENDC
     c4 POP
+
+  67662: 
+    2 UNTUPLE
+    s0 s1 XCHG
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s0 s1 XCHG
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    s1 PUSH
+    ISNULL
+    <{
+      s1 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      s0 s1 XCHG
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      s0 PUSH
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s0 s1 XCHG
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+    }> PUSHCONT
+    IFELSE
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
+    ROTREV
+    <{
+      3 BLKDROP
+      -1 PUSHINT
+    }> CALLREF
+
+  73429: 
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s0 s1 XCHG
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    2 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      <{
+        PUSHNULL
+      }> CALLREF
+    }> PUSHCONT
+    IFELSE
+    s0 s1 XCHG
+    <{
+      2DROP
+      -1 PUSHINT
+    }> CALLREF
 
   102482: 
     c4 PUSH
@@ -157,12 +287,13 @@ SETCP0
     <{
       s1 POP
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -172,7 +303,6 @@ SETCP0
       EQUAL
       OR
       136 THROWIFNOT
-      s0 s1 XCHG
       s1 POP
     }> CALLREF
 
@@ -215,11 +345,11 @@ SETCP0
       ENDC
       CTOS
       s0 PUSH
-      s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MasterchainTester
-BOC Size: 485 bytes
+BOC Size: 692 bytes
 
 # Types
 Total Types: 4
@@ -18,17 +18,23 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 ## TestMessage
-TLB: `test_message#0303c8e7 to:int257 address:address = TestMessage`
-Signature: `TestMessage{to:int257,address:address}`
+TLB: `test_message#db523f9e address:address address2:Maybe address = TestMessage`
+Signature: `TestMessage{address:address,address2:Maybe address}`
 
 # Get Methods
-Total Get Methods: 2
+Total Get Methods: 4
 
 ## createAddress
 Argument: chain
 Argument: hash
 
 ## parseAddress
+Argument: src
+
+## serializeAddress
+Argument: src
+
+## handleStruct
 Argument: src
 
 # Error Codes

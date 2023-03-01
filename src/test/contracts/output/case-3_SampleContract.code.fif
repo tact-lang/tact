@@ -22,6 +22,7 @@ PROGRAM{
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    DUP
     11 PLDU
     DUP
     10 PUSHPOW2
@@ -144,10 +145,10 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    OVER
+    SWAP
     __tact_verify_address INLINECALLDICT
     s2 PUSH
-    s5 s5 XCHG2
+    s1 s5 s5 XCHG3
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_SampleContract INLINECALLDICT

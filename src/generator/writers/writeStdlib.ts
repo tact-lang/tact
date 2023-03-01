@@ -33,11 +33,12 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_verify_address', () => {
         // NOTE: IMPURE IS IMPORTANT
         ctx.write(`
-            () __tact_verify_address(slice address) impure inline {
+            slice __tact_verify_address(slice address) inline {
                 throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
                 var h = address.preload_uint(11);
                 throw_unless(${contractErrors.invalidAddress.id}, (h == 1024) | (h == 1279));
                 ${!enabledMaterchain(ctx.ctx) ? `throw_unless(${contractErrors.masterchainNotEnabled.id}, h == 1024);` : ''}
+                return address;
             }
         `);
     });
@@ -46,8 +47,7 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.write(`
             (slice, slice) __tact_load_address(slice cs) inline {
                 slice raw = cs~load_msg_addr();
-                ${ctx.used(`__tact_verify_address`)}(raw);
-                return (cs, raw);
+                return (cs, ${ctx.used(`__tact_verify_address`)}(raw));
             }
         `);
     });
@@ -57,8 +57,7 @@ export function writeStdlib(ctx: WriterContext) {
             (slice, slice) __tact_load_address_opt(slice cs) inline {
                 slice raw = cs~load_msg_addr();
                 if (raw.preload_uint(2) != 0) {
-                    ${ctx.used(`__tact_verify_address`)}(raw);
-                    return (cs, raw);
+                    return (cs, ${ctx.used(`__tact_verify_address`)}(raw));
                 } else {
                     return (cs, null());
                 }
@@ -69,9 +68,7 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.fun('__tact_store_address', () => {
         ctx.write(`
             builder __tact_store_address(builder b, slice address) inline {
-                ${ctx.used(`__tact_verify_address`)}(address);
-                b = b.store_slice(address);
-                return b;
+                return b.store_slice(${ctx.used(`__tact_verify_address`)}(address));
             }
         `);
     });
@@ -98,8 +95,7 @@ export function writeStdlib(ctx: WriterContext) {
                 b = b.store_int(chain, 8);
                 b = b.store_uint(hash, 256);
                 var addr = b.end_cell().begin_parse();
-                ${ctx.used(`__tact_verify_address`)}(addr);
-                return addr;
+                return ${ctx.used(`__tact_verify_address`)}(addr);
             }
         `);
     });

@@ -2,27 +2,25 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-() __tact_verify_address(slice address) impure inline {
+slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
 
+    return address;
 }
 
 (slice, slice) __tact_load_address_opt(slice cs) inline {
     slice raw = cs~load_msg_addr();
     if (raw.preload_uint(2) != 0) {
-        __tact_verify_address(raw);
-        return (cs, raw);
+        return (cs, __tact_verify_address(raw));
     } else {
         return (cs, null());
     }
 }
 
 builder __tact_store_address(builder b, slice address) inline {
-    __tact_verify_address(address);
-    b = b.store_slice(address);
-    return b;
+    return b.store_slice(__tact_verify_address(address));
 }
 
 builder __tact_store_address_opt(builder b, slice address) inline {
@@ -509,8 +507,7 @@ _ $__gen_get_testVariables() method_id(87190) {
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_verify_address(msg_sender_addr);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Load contract data

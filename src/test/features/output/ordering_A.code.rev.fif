@@ -17,12 +17,13 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -36,7 +37,7 @@ SETCP0
     EQUAL
     137 THROWIFNOT
     s2 PUSH
-    s5 s5 XCHG2
+    s1 s5 s5 XCHG3
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -48,12 +49,13 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -66,17 +68,17 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s1 POP
     }> PUSHCONT
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -89,7 +91,6 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       ENDS
     }> PUSHCONT
@@ -156,11 +157,11 @@ SETCP0
             3 STI
             s0 s5 XCHG2
             s0 PUSH
-            s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -303,11 +304,11 @@ SETCP0
     1 STI
     s0 s1 XCHG
     s0 PUSH
-    s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -334,12 +335,13 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -352,17 +354,17 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s1 POP
     }> PUSHCONT
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -375,7 +377,6 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       ENDS
     }> PUSHCONT

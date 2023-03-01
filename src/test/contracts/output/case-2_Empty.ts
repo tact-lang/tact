@@ -243,8 +243,8 @@ function initEmpty_init_args(src: Empty_init_args) {
 }
 
 async function Empty_init() {
-    const __code = Cell.fromBase64('te6ccgEBBgEAvQABFP8A9KQT9LzyyAsBAgFiAgMCuNAB0NMDAXGwwAGRf5Fw4gH6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBAUAcaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwACbQAWINdJMcIfMJF/4HA=');
-    const __system = Cell.fromBase64('te6cckEBCAEAxwABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCuNAB0NMDAXGwwAGRf5Fw4gH6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBwYAFiDXSTHCHzCRf+BwAAJt1Ekqrw==');
+    const __code = Cell.fromBase64('te6ccgEBBgEAvgABFP8A9KQT9LzyyAsBAgFiAgMCutAB0NMDAXGwwAGRf5Fw4gH6QAEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IkiQVVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVAQFAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAAm0AFiDXSTHCHzCRf+Bw');
+    const __system = Cell.fromBase64('te6cckEBCAEAyAABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCutAB0NMDAXGwwAGRf5Fw4gH6QAEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IkiQVVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVAcGABYg10kxwh8wkX/gcAACbZTiN10=');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);

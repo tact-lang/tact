@@ -17,12 +17,13 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -33,7 +34,7 @@ SETCP0
     OR
     136 THROWIFNOT
     s2 PUSH
-    s5 s5 XCHG2
+    s1 s5 s5 XCHG3
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -81,12 +82,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -96,7 +98,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -176,12 +177,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -191,7 +193,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -285,12 +286,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -300,7 +302,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -380,12 +381,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -395,7 +397,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -529,12 +530,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -544,7 +546,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -627,12 +628,13 @@ SETCP0
             2 PLDU
             0 NEQINT
             <{
-              s1 PUSH
+              s0 s1 XCHG
               s0 PUSH
               SBITS
               267 PUSHINT
               EQUAL
               136 THROWIFNOT
+              s0 PUSH
               11 PLDU
               s0 PUSH
               10 PUSHPOW2
@@ -642,7 +644,6 @@ SETCP0
               EQUAL
               OR
               136 THROWIFNOT
-              s0 s1 XCHG
             }> PUSHCONT
             <{
               s1 POP
@@ -771,11 +772,11 @@ SETCP0
       }> PUSHCONT
       <{
         s0 PUSH
-        s0 PUSH
         SBITS
         267 PUSHINT
         EQUAL
         136 THROWIFNOT
+        s0 PUSH
         11 PLDU
         s0 PUSH
         10 PUSHPOW2
@@ -903,11 +904,11 @@ SETCP0
         }> PUSHCONT
         <{
           s0 PUSH
-          s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -1022,12 +1023,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -1037,7 +1039,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -1117,12 +1118,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -1132,7 +1134,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -1226,12 +1227,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -1241,7 +1243,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -1321,12 +1322,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -1336,7 +1338,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -1448,12 +1449,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -1463,7 +1465,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -1543,12 +1544,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -1558,7 +1560,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -1652,12 +1653,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -1667,7 +1669,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -1747,12 +1748,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -1762,7 +1764,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -1874,12 +1875,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -1889,7 +1891,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -1969,12 +1970,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -1984,7 +1986,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -2078,12 +2079,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -2093,7 +2095,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -2173,12 +2174,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -2188,7 +2190,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -2299,12 +2300,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -2314,7 +2316,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -2394,12 +2395,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -2409,7 +2411,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -2503,12 +2504,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -2518,7 +2520,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -2598,12 +2599,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -2613,7 +2615,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -2724,12 +2725,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -2739,7 +2741,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -2819,12 +2820,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -2834,7 +2836,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -2928,12 +2929,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -2943,7 +2945,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -3023,12 +3024,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -3038,7 +3040,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -3157,12 +3158,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -3172,7 +3174,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -3252,12 +3253,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -3267,7 +3269,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -3361,12 +3362,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -3376,7 +3378,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -3456,12 +3457,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -3471,7 +3473,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -3583,12 +3584,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -3598,7 +3600,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -3678,12 +3679,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -3693,7 +3695,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -3787,12 +3788,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -3802,7 +3804,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -3882,12 +3883,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -3897,7 +3899,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -4009,12 +4010,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -4024,7 +4026,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -4104,12 +4105,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -4119,7 +4121,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -4213,12 +4214,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -4228,7 +4230,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -4308,12 +4309,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -4323,7 +4325,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -4433,12 +4434,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -4448,7 +4450,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -4528,12 +4529,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -4543,7 +4545,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -4637,12 +4638,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -4652,7 +4654,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -4732,12 +4733,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -4747,7 +4749,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -4860,12 +4861,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -4875,7 +4877,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -4955,12 +4956,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -4970,7 +4972,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -5064,12 +5065,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -5079,7 +5081,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -5159,12 +5160,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -5174,7 +5176,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -5305,12 +5306,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -5320,7 +5322,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -5400,12 +5401,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -5415,7 +5417,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -5509,12 +5510,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -5524,7 +5526,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -5604,12 +5605,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -5619,7 +5621,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -5732,12 +5733,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -5747,7 +5749,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -5827,12 +5828,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -5842,7 +5844,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -5936,12 +5937,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -5951,7 +5953,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -6031,12 +6032,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -6046,7 +6048,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -6190,12 +6191,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -6205,7 +6207,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -6285,12 +6286,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -6300,7 +6302,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -6394,12 +6395,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -6409,7 +6411,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -6489,12 +6490,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -6504,7 +6506,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -6622,12 +6623,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -6637,7 +6639,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -6717,12 +6718,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -6732,7 +6734,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -6826,12 +6827,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -6841,7 +6843,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -6921,12 +6922,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -6936,7 +6938,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -7063,12 +7064,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -7078,7 +7080,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -7158,12 +7159,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -7173,7 +7175,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -7267,12 +7268,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -7282,7 +7284,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -7362,12 +7363,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -7377,7 +7379,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -7486,12 +7487,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -7501,7 +7503,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -7581,12 +7582,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -7596,7 +7598,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -7690,12 +7691,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -7705,7 +7707,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -7785,12 +7786,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -7800,7 +7802,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -7910,12 +7911,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -7925,7 +7927,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -8005,12 +8006,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -8020,7 +8022,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -8114,12 +8115,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -8129,7 +8131,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -8209,12 +8210,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -8224,7 +8226,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -8337,12 +8338,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -8352,7 +8354,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -8432,12 +8433,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -8447,7 +8449,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -8541,12 +8542,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -8556,7 +8558,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -8636,12 +8637,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -8651,7 +8653,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -8761,12 +8762,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -8776,7 +8778,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -8856,12 +8857,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -8871,7 +8873,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP
@@ -8965,12 +8966,13 @@ SETCP0
         2 PLDU
         0 NEQINT
         <{
-          s1 PUSH
+          s0 s1 XCHG
           s0 PUSH
           SBITS
           267 PUSHINT
           EQUAL
           136 THROWIFNOT
+          s0 PUSH
           11 PLDU
           s0 PUSH
           10 PUSHPOW2
@@ -8980,7 +8982,6 @@ SETCP0
           EQUAL
           OR
           136 THROWIFNOT
-          s0 s1 XCHG
         }> PUSHCONT
         <{
           s1 POP
@@ -9060,12 +9061,13 @@ SETCP0
           2 PLDU
           0 NEQINT
           <{
-            s1 PUSH
+            s0 s1 XCHG
             s0 PUSH
             SBITS
             267 PUSHINT
             EQUAL
             136 THROWIFNOT
+            s0 PUSH
             11 PLDU
             s0 PUSH
             10 PUSHPOW2
@@ -9075,7 +9077,6 @@ SETCP0
             EQUAL
             OR
             136 THROWIFNOT
-            s0 s1 XCHG
           }> PUSHCONT
           <{
             s1 POP

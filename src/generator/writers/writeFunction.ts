@@ -32,6 +32,13 @@ export function unwrapExternal(targetName: string, sourceName: string, type: Typ
                 ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = __gen_${t.name}_from_tuple(${sourceName});`);
             }
             return;
+        } else if (t.kind === 'primitive' && t.name === 'Address') {
+            if (type.optional) {
+                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = null?(${sourceName}) ? null() : ${ctx.used(`__tact_verify_address`)}(${sourceName});`);
+            } else {
+                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${ctx.used(`__tact_verify_address`)}(${sourceName});`);
+            }
+            return;
         }
     }
     ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${sourceName};`);
@@ -390,6 +397,8 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
                         ctx.append(`return __gen_${t.name}_to_external(res);`);
                     }
                     return;
+                } else if (t.kind === 'primitive' && t.name === 'Address') {
+
                 }
             }
 

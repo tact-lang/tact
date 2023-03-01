@@ -2,11 +2,12 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-() __tact_verify_address(slice address) impure inline {
+slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
     throw_unless(137, h == 1024);
+    return address;
 }
 
 global (int, slice, int, slice) __tact_context;
@@ -102,8 +103,7 @@ _ $__gen_get_stake() method_id(80984) {
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_verify_address(msg_sender_addr);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Load contract data

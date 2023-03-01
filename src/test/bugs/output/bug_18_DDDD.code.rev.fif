@@ -17,12 +17,13 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -36,7 +37,7 @@ SETCP0
     EQUAL
     137 THROWIFNOT
     s2 PUSH
-    s5 s5 XCHG2
+    s1 s5 s5 XCHG3
     4 TUPLE
     1 SETGLOBVAR
     c4 PUSH
@@ -48,12 +49,13 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -66,15 +68,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -87,15 +89,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -108,7 +110,6 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDDICT
       LDDICT
@@ -118,12 +119,13 @@ SETCP0
     2 5 BLKSWAP
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -136,15 +138,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -157,15 +159,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -178,7 +180,6 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s3 s3 s0 XCHG3
       s0 s3 XCHG
       ENDS
@@ -319,6 +320,24 @@ SETCP0
     DICTSETB
 
   66206: 
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
     c4 PUSH
     CTOS
     LDREF
@@ -328,12 +347,13 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -346,15 +366,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -367,15 +387,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -388,7 +408,6 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDDICT
       LDDICT
@@ -414,12 +433,13 @@ SETCP0
     }> PUSHCONT
     IFELSE
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -432,15 +452,15 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s0 s1 XCHG
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -453,15 +473,15 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s0 s1 XCHG
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -474,7 +494,6 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s0 s1 XCHG
     s3 s3 s0 XCHG3
     s0 s3 XCHG
     ENDS
@@ -500,12 +519,13 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -518,15 +538,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -539,15 +559,15 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDMSGADDR
-      s1 PUSH
+      s0 s1 XCHG
       s0 PUSH
       SBITS
       267 PUSHINT
       EQUAL
       136 THROWIFNOT
+      s0 PUSH
       11 PLDU
       s0 PUSH
       10 PUSHPOW2
@@ -560,7 +580,6 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      s0 s1 XCHG
       s0 s1 XCHG
       LDDICT
       LDDICT
@@ -582,12 +601,13 @@ SETCP0
     }> PUSHCONT
     IFNOT
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -600,15 +620,15 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s0 s1 XCHG
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -621,15 +641,15 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s0 s1 XCHG
     s0 s1 XCHG
     LDMSGADDR
-    s1 PUSH
+    s0 s1 XCHG
     s0 PUSH
     SBITS
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    s0 PUSH
     11 PLDU
     s0 PUSH
     10 PUSHPOW2
@@ -642,7 +662,6 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s0 s1 XCHG
     s3 s3 s0 XCHG3
     s0 s3 XCHG
     ENDS

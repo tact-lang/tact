@@ -107,11 +107,18 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
                     if (t.kind === 'struct') {
                         vars.push(`tuple v'${f.name}`);
                         if (f.type.optional) {
-                            ctx.used(`__gen_${f.type.name}_from_opt_tuple`);
-                            out.push(`__gen_${f.type.name}_from_opt_tuple(v'${f.name})`);
+                            out.push(`${ctx.used(`__gen_${f.type.name}_from_opt_tuple`)}(v'${f.name})`);
                         } else {
-                            ctx.used(`__gen_${f.type.name}_from_tuple`);
-                            out.push(`__gen_${f.type.name}_from_tuple(v'${f.name})`);
+                            out.push(`${ctx.used(`__gen_${f.type.name}_from_tuple`)}(v'${f.name})`);
+                        }
+                        continue;
+                    } else if (t.kind === 'primitive' && t.name === 'Address') {
+                        if (f.type.optional) {
+                            vars.push(`${resolveFuncType(f.type, ctx)} v'${f.name}`);
+                            out.push(`null?(v'${f.name}) ? null() : ${ctx.used(`__tact_verify_address`)}(v'${f.name})`);
+                        } else {
+                            vars.push(`${resolveFuncType(f.type, ctx)} v'${f.name}`);
+                            out.push(`${ctx.used(`__tact_verify_address`)}(v'${f.name})`);
                         }
                         continue;
                     }

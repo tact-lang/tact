@@ -91,6 +91,7 @@ PROGRAM{
     267 PUSHINT
     EQUAL
     136 THROWIFNOT
+    DUP
     11 PLDU
     DUP
     10 PUSHPOW2
@@ -106,9 +107,8 @@ PROGRAM{
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
-    OVER
-    __tact_verify_address INLINECALLDICT
     SWAP
+    __tact_verify_address INLINECALLDICT
   }>
   __tact_dict_set_int_int PROCINLINE:<{
     OVER
@@ -638,6 +638,7 @@ PROGRAM{
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $__gen_get_addrMap1Value PROC:<{
+    __tact_verify_address INLINECALLDICT
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_addrMap1Value INLINECALLDICT
@@ -660,6 +661,7 @@ PROGRAM{
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $__gen_get_addrMap2Value PROC:<{
+    __tact_verify_address INLINECALLDICT
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_addrMap2Value INLINECALLDICT
@@ -680,6 +682,7 @@ PROGRAM{
     __tact_dict_get_slice_cell INLINECALLDICT
   }>
   $__gen_get_addrMap3Value PROC:<{
+    __tact_verify_address INLINECALLDICT
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_addrMap3Value INLINECALLDICT
@@ -700,6 +703,7 @@ PROGRAM{
     __gen_readopt_SomeStruct INLINECALLDICT
   }>
   $__gen_get_addrMap4Value PROC:<{
+    __tact_verify_address INLINECALLDICT
     __gen_load_MapTestContract INLINECALLDICT
     8 ROLL
     $__gen_MapTestContract_addrMap4Value INLINECALLDICT
@@ -958,10 +962,10 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
-    OVER
+    SWAP
     __tact_verify_address INLINECALLDICT
     s2 PUSH
-    s5 s5 XCHG2
+    s1 s5 s5 XCHG3
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_MapTestContract INLINECALLDICT

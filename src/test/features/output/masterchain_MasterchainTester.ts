@@ -189,37 +189,37 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
 
 export type TestMessage = {
     $$type: 'TestMessage';
-    to: bigint;
     address: Address;
+    address2: Address | null;
 }
 
 export function storeTestMessage(src: TestMessage) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(50579687, 32);
-        b_0.storeInt(src.to, 257);
+        b_0.storeUint(3679600542, 32);
         b_0.storeAddress(src.address);
+        b_0.storeAddress(src.address2);
     };
 }
 
 export function loadTestMessage(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 50579687) { throw Error('Invalid prefix'); }
-    let _to = sc_0.loadIntBig(257);
+    if (sc_0.loadUint(32) !== 3679600542) { throw Error('Invalid prefix'); }
     let _address = sc_0.loadAddress();
-    return { $$type: 'TestMessage' as const, to: _to, address: _address };
+    let _address2 = sc_0.loadMaybeAddress();
+    return { $$type: 'TestMessage' as const, address: _address, address2: _address2 };
 }
 
 function loadTupleTestMessage(source: TupleReader) {
-    let _to = source.readBigNumber();
     let _address = source.readAddress();
-    return { $$type: 'TestMessage' as const, to: _to, address: _address };
+    let _address2 = source.readAddressOpt();
+    return { $$type: 'TestMessage' as const, address: _address, address2: _address2 };
 }
 
 function storeTupleTestMessage(source: TestMessage) {
     let builder = new TupleBuilder();
-    builder.writeNumber(source.to);
     builder.writeAddress(source.address);
+    builder.writeAddress(source.address2);
     return builder.build();
 }
 
@@ -245,8 +245,8 @@ function initMasterchainTester_init_args(src: MasterchainTester_init_args) {
 }
 
 async function MasterchainTester_init() {
-    const __code = Cell.fromBase64('te6ccgECDQEAAfEAART/APSkE/S88sgLAQIBYgIDArjQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVAsEAgFYBgcBxu2i7ftwIddJwh+VMCDXCx/eApJbf+AhggsDyOe6jjsx0x8BggsDyOe68uCBgQEB1wD6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiQESbBJbf+ABwACRMOMNcAUAVPkBgvCF0og4TABDRYsCgDyyIFn2iAPFU8NlY0Q0ZGjayWHyRrqTf9sx4AIBIAgJAi26sQ7UTQ1AH4YtIAMJFtjoLbPOJZ2zyAsMAi22Cl2omhqAPwxaQAYSLbHQW2ecQDtnkAsKAJW3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNAATDH6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiQExAAJtAGZsEshyAcsBcAHLABLKB8v/ydAgINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4Ik=');
-    const __system = Cell.fromBase64('te6cckECDwEAAfsAAQHAAQEFoAxHAgEU/wD0pBP0vPLICwMCAWILBAIBWAcFAi26sQ7UTQ1AH4YtIAMJFtjoLbPOJZ2zyA4GAGZsEshyAcsBcAHLABLKB8v/ydAgINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkCASAJCACVt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQAi22Cl2omhqAPwxaQAYSLbHQW2ecQDtnkA4KAEwx+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkBMQK40AHQ0wMBcbDAAZF/kXDiAfpAISDXSYEBC7ry4IjXCwoggwm6IYEE/7qx8uCIgwm68uCJIlBVbwT4Ye1E0NQB+GLSADCRbY6C2zziWds8MDDI+EIBzH8BygDJ7VQODAHG7aLt+3Ah10nCH5UwINcLH94Cklt/4CGCCwPI57qOOzHTHwGCCwPI57ry4IGBAQHXAPpAISDXSYEBC7ry4IjXCwoggwm6IYEE/7qx8uCIgwm68uCJARJsElt/4AHAAJEw4w1wDQBU+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGupN/2zHgAAJtX0yIEw==');
+    const __code = Cell.fromBase64('te6ccgECEwEAAtgAART/APSkE/S88sgLAQIBYgIDArrQAdDTAwFxsMABkX+RcOIB+kABINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJIkFVbwT4Ye1E0NQB+GLSADCRbY6C2zziWds8MDDI+EIBzH8BygDJ7VQRBAIBIAYHAabtou37cCHXScIflTAg1wsf3gKSW3/gIYIQ21I/nrrjAgHAAI4q+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGupN/2zHgkTDicAUA0DHTHwGCENtSP5668uCB+kABINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJAfpAIdcLAcMAjiIBINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJkjFt4hJsElt/AgFiCAkCASAMDQLJshObyIBINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJIW6SMW2OIgEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4Ini7UTQ1AH4YtIAMJFtjoLbPOJZ2zyARCgJvs7VINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJ7UTQ1AH4YtIAMJFtjoLbPOIB2zyARCwAGXwN/AARbfwIBIA4PAi26sQ7UTQ1AH4YtIAMJFtjoLbPOJZ2zyBESAi22Cl2omhqAPwxaQAYSLbHQW2ecQDtnkBEQAJW3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNAATDH6QAEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IkxAAJtAGZsEshyAcsBcAHLABLKB8v/ydAg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4Ik=');
+    const __system = Cell.fromBase64('te6cckECFQEAAuIAAQHAAQEFoAxHAgEU/wD0pBP0vPLICwMCAWIRBAIBIAwFAgEgCAYCLbqxDtRNDUAfhi0gAwkW2Ogts84lnbPIFAcAZmwSyHIBywFwAcsAEsoHy//J0CDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgiQIBIAoJAJW3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOA3qTvfKost446np7wKs4ZNACLbYKXaiaGoA/DFpABhItsdBbZ5xAO2eQFAsATDH6QAEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IkxAgFiDw0Cb7O1SDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgie1E0NQB+GLSADCRbY6C2zziAds8gFA4ABFt/AsmyE5vIgEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IkhbpIxbY4iASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgieLtRNDUAfhi0gAwkW2Ogts84lnbPIBQQAAZfA38CutAB0NMDAXGwwAGRf5Fw4gH6QAEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IkiQVVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVBQSAabtou37cCHXScIflTAg1wsf3gKSW3/gIYIQ21I/nrrjAgHAAI4q+QGC8IXSiDhMAENFiwKAPLIgWfaIA8VTw2VjRDRkaNrJYfJGupN/2zHgkTDicBMA0DHTHwGCENtSP5668uCB+kABINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJAfpAIdcLAcMAjiIBINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJkjFt4hJsElt/AAJtF6EDrg==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -338,6 +338,22 @@ export class MasterchainTester implements Contract {
         builder.writeSlice(src);
         let source = (await provider.get('parseAddress', builder.build())).stack;
         let result = source.readAddress();
+        return result;
+    }
+    
+    async getSerializeAddress(provider: ContractProvider, src: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(src);
+        let source = (await provider.get('serializeAddress', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getHandleStruct(provider: ContractProvider, src: TestMessage) {
+        let builder = new TupleBuilder();
+        builder.writeTuple(storeTupleTestMessage(src));
+        let source = (await provider.get('handleStruct', builder.build())).stack;
+        let result = source.readBoolean();
         return result;
     }
     

@@ -2,17 +2,17 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-() __tact_verify_address(slice address) impure inline {
+slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
     throw_unless(137, h == 1024);
+    return address;
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    __tact_verify_address(raw);
-    return (cs, raw);
+    return (cs, __tact_verify_address(raw));
 }
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
@@ -382,7 +382,7 @@ int $__gen_MapTestContract_addrMap1Value((cell, cell, cell, cell, cell, cell, ce
 }
 
 _ $__gen_get_addrMap1Value(slice $$key) method_id(116148) {
-    slice $key = $$key;
+    slice $key = __tact_verify_address($$key);
     var self = __gen_load_MapTestContract();
     var res = $__gen_MapTestContract_addrMap1Value(self, $key);
     return res;
@@ -405,7 +405,7 @@ int $__gen_MapTestContract_addrMap2Value((cell, cell, cell, cell, cell, cell, ce
 }
 
 _ $__gen_get_addrMap2Value(slice $$key) method_id(68436) {
-    slice $key = $$key;
+    slice $key = __tact_verify_address($$key);
     var self = __gen_load_MapTestContract();
     var res = $__gen_MapTestContract_addrMap2Value(self, $key);
     return res;
@@ -428,7 +428,7 @@ cell $__gen_MapTestContract_addrMap3Value((cell, cell, cell, cell, cell, cell, c
 }
 
 _ $__gen_get_addrMap3Value(slice $$key) method_id(85748) {
-    slice $key = $$key;
+    slice $key = __tact_verify_address($$key);
     var self = __gen_load_MapTestContract();
     var res = $__gen_MapTestContract_addrMap3Value(self, $key);
     return res;
@@ -451,7 +451,7 @@ tuple $__gen_MapTestContract_addrMap4Value((cell, cell, cell, cell, cell, cell, 
 }
 
 _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
-    slice $key = $$key;
+    slice $key = __tact_verify_address($$key);
     var self = __gen_load_MapTestContract();
     var res = $__gen_MapTestContract_addrMap4Value(self, $key);
     return __gen_SomeStruct_opt_to_external(res);
@@ -591,8 +591,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = cs~load_msg_addr();
-    __tact_verify_address(msg_sender_addr);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Load contract data

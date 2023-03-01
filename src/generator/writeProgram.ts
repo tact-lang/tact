@@ -223,8 +223,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`var cs = in_msg_cell.begin_parse();`);
             ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
             ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
-            ctx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
-            ctx.append(`${ctx.used('__tact_verify_address')}(msg_sender_addr);`);
+            ctx.append(`slice msg_sender_addr = ${ctx.used('__tact_verify_address')}(cs~load_msg_addr());`);
             ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
             ctx.append();
 

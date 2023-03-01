@@ -1,6 +1,6 @@
 message TestMessage {
-    to: Int;
     address: Address;
+    address2: Address?;
 }
 
 contract MasterchainTester {
@@ -23,5 +23,13 @@ contract MasterchainTester {
 
     get fun parseAddress(src: Slice): Address {
         return src.loadAddress();
+    }
+
+    get fun serializeAddress(src: Address): Bool {
+        return true; // NOTE: src is unused but still have to be checked
+    }
+
+    get fun handleStruct(src: TestMessage): Bool {
+        return true; // NOTE: src is unused but still have to be checked
     }
 }

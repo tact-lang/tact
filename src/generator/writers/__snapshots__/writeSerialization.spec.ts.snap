@@ -5,33 +5,30 @@ exports[`writeSerialization should write serializer for A 1`] = `
     return x ** y;
 }
 
-() __tact_verify_address(slice address) impure inline {
+slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
-    throw_unless(136, (h != 1024) | (h != 1279));
-    throw_unless(137, h != 1279);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
+    return address;
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    __tact_verify_address(raw);
-    return (cs, raw);
+    return (cs, __tact_verify_address(raw));
 }
 
 (slice, slice) __tact_load_address_opt(slice cs) inline {
     slice raw = cs~load_msg_addr();
     if (raw.preload_uint(2) != 0) {
-        __tact_verify_address(raw);
-        return (cs, raw);
+        return (cs, __tact_verify_address(raw));
     } else {
         return (cs, null());
     }
 }
 
 builder __tact_store_address(builder b, slice address) inline {
-    __tact_verify_address(address);
-    b = b.store_slice(address);
-    return b;
+    return b.store_slice(__tact_verify_address(address));
 }
 
 builder __tact_store_address_opt(builder b, slice address) inline {
@@ -50,8 +47,7 @@ slice __tact_create_address(int chain, int hash) inline {
     b = b.store_int(chain, 8);
     b = b.store_uint(hash, 256);
     var addr = b.end_cell().begin_parse();
-    __tact_verify_address(addr);
-    return addr;
+    return __tact_verify_address(addr);
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
@@ -890,7 +886,7 @@ tuple __gen_C_opt_to_tuple(tuple v) inline {
 
 (cell, cell, slice, slice, int, int, int, slice) __gen_C_from_tuple(tuple v) inline {
     var (cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) = __tact_tuple_destroy_8(v);
-    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));
 }
 
 tuple __gen_C_from_opt_tuple(tuple v) inline {
@@ -930,33 +926,30 @@ exports[`writeSerialization should write serializer for B 1`] = `
     return x ** y;
 }
 
-() __tact_verify_address(slice address) impure inline {
+slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
-    throw_unless(136, (h != 1024) | (h != 1279));
-    throw_unless(137, h != 1279);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
+    return address;
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    __tact_verify_address(raw);
-    return (cs, raw);
+    return (cs, __tact_verify_address(raw));
 }
 
 (slice, slice) __tact_load_address_opt(slice cs) inline {
     slice raw = cs~load_msg_addr();
     if (raw.preload_uint(2) != 0) {
-        __tact_verify_address(raw);
-        return (cs, raw);
+        return (cs, __tact_verify_address(raw));
     } else {
         return (cs, null());
     }
 }
 
 builder __tact_store_address(builder b, slice address) inline {
-    __tact_verify_address(address);
-    b = b.store_slice(address);
-    return b;
+    return b.store_slice(__tact_verify_address(address));
 }
 
 builder __tact_store_address_opt(builder b, slice address) inline {
@@ -975,8 +968,7 @@ slice __tact_create_address(int chain, int hash) inline {
     b = b.store_int(chain, 8);
     b = b.store_uint(hash, 256);
     var addr = b.end_cell().begin_parse();
-    __tact_verify_address(addr);
-    return addr;
+    return __tact_verify_address(addr);
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
@@ -1815,7 +1807,7 @@ tuple __gen_C_opt_to_tuple(tuple v) inline {
 
 (cell, cell, slice, slice, int, int, int, slice) __gen_C_from_tuple(tuple v) inline {
     var (cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) = __tact_tuple_destroy_8(v);
-    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));
 }
 
 tuple __gen_C_from_opt_tuple(tuple v) inline {
@@ -1855,33 +1847,30 @@ exports[`writeSerialization should write serializer for C 1`] = `
     return x ** y;
 }
 
-() __tact_verify_address(slice address) impure inline {
+slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
-    throw_unless(136, (h != 1024) | (h != 1279));
-    throw_unless(137, h != 1279);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
+    return address;
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
     slice raw = cs~load_msg_addr();
-    __tact_verify_address(raw);
-    return (cs, raw);
+    return (cs, __tact_verify_address(raw));
 }
 
 (slice, slice) __tact_load_address_opt(slice cs) inline {
     slice raw = cs~load_msg_addr();
     if (raw.preload_uint(2) != 0) {
-        __tact_verify_address(raw);
-        return (cs, raw);
+        return (cs, __tact_verify_address(raw));
     } else {
         return (cs, null());
     }
 }
 
 builder __tact_store_address(builder b, slice address) inline {
-    __tact_verify_address(address);
-    b = b.store_slice(address);
-    return b;
+    return b.store_slice(__tact_verify_address(address));
 }
 
 builder __tact_store_address_opt(builder b, slice address) inline {
@@ -1900,8 +1889,7 @@ slice __tact_create_address(int chain, int hash) inline {
     b = b.store_int(chain, 8);
     b = b.store_uint(hash, 256);
     var addr = b.end_cell().begin_parse();
-    __tact_verify_address(addr);
-    return addr;
+    return __tact_verify_address(addr);
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
@@ -2741,7 +2729,7 @@ tuple __gen_C_opt_to_tuple(tuple v) inline {
 
 (cell, cell, slice, slice, int, int, int, slice) __gen_C_from_tuple(tuple v) inline {
     var (cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) = __tact_tuple_destroy_8(v);
-    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);
+    return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));
 }
 
 tuple __gen_C_from_opt_tuple(tuple v) inline {
