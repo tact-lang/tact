@@ -180,6 +180,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     $self'investment = $investment;
     $self'returns = $returns;
     $self'fee = $fee;
+    $self'stopped = false;
     return ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue);
 }
 

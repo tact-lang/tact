@@ -150,6 +150,76 @@ Line 22, col 25:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-15 1`] = `
+"<unknown>:6:5: Field value is not set
+Line 6, col 5:
+  5 |     value: Int;
+> 6 |     init() {
+          ^~~~~~~~
+  7 | 
+"
+`;
+
+exports[`resolveStatements should fail statements for case-16 1`] = `
+"<unknown>:6:5: Field value is not set
+Line 6, col 5:
+  5 |     value: Int;
+> 6 |     init(arg: Bool) {
+          ^~~~~~~~~~~~~~~~~
+  7 |         if (arg) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-17 1`] = `
+"<unknown>:6:5: Field value is not set
+Line 6, col 5:
+  5 |     value: Int;
+> 6 |     init(arg: Bool) {
+          ^~~~~~~~~~~~~~~~~
+  7 |         if (arg) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-18 1`] = `
+"<unknown>:6:5: Field value is not set
+Line 6, col 5:
+  5 |     value: Int;
+> 6 |     init(arg: Bool) {
+          ^~~~~~~~~~~~~~~~~
+  7 |         if (arg) {
+"
+`;
+
+exports[`resolveStatements should fail statements for case-19 1`] = `
+"<unknown>:8:22: Field "value2" is not initialized
+Line 8, col 22:
+  7 |     init(arg: Bool) {
+> 8 |         self.value = self.value2 + 1;
+                           ^~~~~~~~~~~
+  9 |         self.value2 = 10;
+"
+`;
+
+exports[`resolveStatements should fail statements for case-20 1`] = `
+"<unknown>:13:22: Field "value2" is not initialized
+Line 13, col 22:
+  12 |     init(arg: Bool) {
+> 13 |         self.value = self.value2.a + 1;
+                            ^~~~~~~~~~~
+  14 |         self.value2 = A{ a: 1, b: 2 };
+"
+`;
+
+exports[`resolveStatements should fail statements for case-21 1`] = `
+"<unknown>:13:35: Field "value" is not initialized
+Line 13, col 35:
+  12 |     init(arg: Bool) {
+> 13 |         self.value2 = A{ a: 1, b: self.value };
+                                         ^~~~~~~~~~
+  14 |         self.value = self.value2.a + 1;
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -505,6 +575,95 @@ exports[`resolveStatements should resolve statements for case-7 1`] = `
         b: 2
     }",
     "SomeStruct",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-8 1`] = `
+[
+  [
+    "arg",
+    "Bool",
+  ],
+  [
+    "self.value",
+    "Contract",
+  ],
+  [
+    "value",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "arg",
+    "Bool",
+  ],
+  [
+    "!arg",
+    "Bool",
+  ],
+  [
+    "self.value",
+    "Contract",
+  ],
+  [
+    "value",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "self.value",
+    "Contract",
+  ],
+  [
+    "value",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "self.value",
+    "Contract2",
+  ],
+  [
+    "value",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "self.value2",
+    "Contract2",
+  ],
+  [
+    "value2",
+    "S",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "self",
+    "Contract2",
+  ],
+  [
+    "self.value",
+    "Int",
+  ],
+  [
+    "S{ a: 1, b: self.value }",
+    "S",
   ],
 ]
 `;

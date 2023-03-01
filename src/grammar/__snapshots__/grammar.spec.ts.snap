@@ -1355,7 +1355,7 @@ exports[`grammar should parse case-12 1`] = `
               "ref": null,
             },
           },
-          "falseStatements": [],
+          "falseStatements": null,
           "id": 9,
           "kind": "statement_condition",
           "ref": if (src != null) {

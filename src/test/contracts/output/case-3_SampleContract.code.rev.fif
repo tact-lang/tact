@@ -73,10 +73,8 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       <{
-        PUSHNULL
         0 PUSHINT
-        s0 s1 PUXC
-        s1 s3 XCHG
+        0 0 0 PUSH3
       }> CALLREF
     }> PUSHCONT
     IFELSE
@@ -154,10 +152,8 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       <{
-        PUSHNULL
         0 PUSHINT
-        s0 s1 PUXC
-        s1 s3 XCHG
+        0 0 0 PUSH3
       }> CALLREF
     }> PUSHCONT
     IFELSE

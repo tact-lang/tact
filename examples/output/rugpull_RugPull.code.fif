@@ -309,12 +309,11 @@ PROGRAM{
   }>
   $__gen_RugPull_init PROCREF:<{
     PUSHNULL
-    PUSHNULL
     FALSE
     0 PUSHINT
-    s0 s(-1) s3 PU2XC
-    s0 s3 XCHG
-    s0 s4 XCHG
+    s0 s(-1) s2 PU2XC
+    FALSE
+    3 -ROLL
   }>
   __gen_load_RugPull PROCINLINE:<{
     c4 PUSH

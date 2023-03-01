@@ -4,6 +4,7 @@ PROGRAM{
   DECLPROC __gen_read_Source
   DECLPROC __gen_write_SampleContract
   DECLPROC __gen_read_SampleContract
+  DECLPROC __gen_constructor_Source$a_b
   DECLPROC $__gen_SampleContract_init
   DECLPROC __gen_load_SampleContract
   DECLPROC __gen_store_SampleContract
@@ -82,11 +83,14 @@ PROGRAM{
     s3 s4 XCHG
     s1 s2 XCHG
   }>
+  __gen_constructor_Source$a_b PROCINLINE:<{
+  }>
   $__gen_SampleContract_init PROCREF:<{
     PUSHNULL
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
+    0 PUSHINT
+    s0 s0 s0 PUSH3
+    __gen_constructor_Source$a_b INLINECALLDICT
+    4 ROLL
   }>
   __gen_load_SampleContract PROCINLINE:<{
     c4 PUSH

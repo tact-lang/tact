@@ -30,7 +30,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
             ...src,
             expression: cloneNode(src.expression),
             trueStatements: src.trueStatements.map(cloneNode),
-            falseStatements: src.falseStatements.map(cloneNode),
+            falseStatements: src.falseStatements ? src.falseStatements.map(cloneNode) : null,
             elseif: src.elseif ? cloneNode(src.elseif) : null,
         });
     } else if (src.kind === 'new_parameter') {

@@ -75,10 +75,8 @@ SETCP0
       ROT
       <{
         s1 POP
-        PUSHNULL
-        ROTREV
         0 PUSHINT
-        s0 s1 XCHG
+        2 0 2 XCPUXC
       }> CALLREF
     }> PUSHCONT
     IFELSE
@@ -915,10 +913,8 @@ SETCP0
       ROT
       <{
         s1 POP
-        PUSHNULL
-        ROTREV
         0 PUSHINT
-        s0 s1 XCHG
+        2 0 2 XCPUXC
       }> CALLREF
     }> PUSHCONT
     IFELSE
@@ -980,10 +976,8 @@ SETCP0
       ROT
       <{
         s1 POP
-        PUSHNULL
-        ROTREV
         0 PUSHINT
-        s0 s1 XCHG
+        2 0 2 XCPUXC
       }> CALLREF
     }> PUSHCONT
     IFELSE

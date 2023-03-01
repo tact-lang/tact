@@ -91,12 +91,11 @@ SETCP0
       1 3 BLKSWAP
       <{
         PUSHNULL
-        PUSHNULL
         0 PUSHINT
         0 PUSHINT
-        0 -1 3 PU2XC
-        s0 s3 XCHG
-        s0 s4 XCHG
+        0 -1 2 PU2XC
+        0 PUSHINT
+        3 1 BLKSWAP
       }> CALLREF
     }> PUSHCONT
     <{
@@ -1353,12 +1352,11 @@ SETCP0
       1 3 BLKSWAP
       <{
         PUSHNULL
-        PUSHNULL
         0 PUSHINT
         0 PUSHINT
-        0 -1 3 PU2XC
-        s0 s3 XCHG
-        s0 s4 XCHG
+        0 -1 2 PU2XC
+        0 PUSHINT
+        3 1 BLKSWAP
       }> CALLREF
     }> PUSHCONT
     <{
@@ -1467,12 +1465,11 @@ SETCP0
       1 3 BLKSWAP
       <{
         PUSHNULL
-        PUSHNULL
         0 PUSHINT
         0 PUSHINT
-        0 -1 3 PU2XC
-        s0 s3 XCHG
-        s0 s4 XCHG
+        0 -1 2 PU2XC
+        0 PUSHINT
+        3 1 BLKSWAP
       }> CALLREF
     }> PUSHCONT
     <{
@@ -1589,12 +1586,11 @@ SETCP0
       1 3 BLKSWAP
       <{
         PUSHNULL
-        PUSHNULL
         0 PUSHINT
         0 PUSHINT
-        0 -1 3 PU2XC
-        s0 s3 XCHG
-        s0 s4 XCHG
+        0 -1 2 PU2XC
+        0 PUSHINT
+        3 1 BLKSWAP
       }> CALLREF
     }> PUSHCONT
     <{

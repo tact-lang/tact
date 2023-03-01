@@ -149,6 +149,7 @@ builder __gen_write_$init$MultisigSigner(builder build_0, (slice, cell, int, (sl
     $self'requiredWeight = $requiredWeight;
     $self'totalWeight = $totalWeight;
     $self'totalWeight = 0;
+    $self'seqno = 0;
     return ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight);
 }
 

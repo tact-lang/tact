@@ -77,9 +77,9 @@ SETCP0
       137 THROWIFNOT
       <{
         PUSHNULL
-        PUSHNULL
-        PUSHNULL
-        PUSHNULL
+        0 PUSHINT
+        0 0 0 PUSH3
+        1 4 BLKSWAP
       }> CALLREF
     }> PUSHCONT
     IFELSE
@@ -164,9 +164,9 @@ SETCP0
       137 THROWIFNOT
       <{
         PUSHNULL
-        PUSHNULL
-        PUSHNULL
-        PUSHNULL
+        0 PUSHINT
+        0 0 0 PUSH3
+        1 4 BLKSWAP
       }> CALLREF
     }> PUSHCONT
     IFELSE

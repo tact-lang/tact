@@ -249,10 +249,8 @@ PROGRAM{
   }>
   $__gen_Multisig_init PROCREF:<{
     NIP
-    PUSHNULL
-    -ROT
     0 PUSHINT
-    SWAP
+    s2 s0 s2 XCPUXC
   }>
   __gen_load_Multisig PROCINLINE:<{
     c4 PUSH

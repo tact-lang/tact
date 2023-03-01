@@ -78,6 +78,7 @@ contract Multisig {
         self.requiredWeight = requiredWeight;
         self.totalWeight = totalWeight;
         self.totalWeight = 0;
+        self.seqno = 0;
     }
 
     // Request new pending transaction

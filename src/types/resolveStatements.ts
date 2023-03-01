@@ -1,19 +1,47 @@
 import { CompilerContext } from "../context";
-import { ASTCondition, ASTStatement, throwError } from "../grammar/ast";
+import { ASTCondition, ASTRef, ASTStatement, throwError } from "../grammar/ast";
 import { isAssignable } from "./isAssignable";
 import { getAllStaticFunctions, getAllTypes, resolveTypeRef } from "./resolveDescriptors";
 import { getExpType, resolveExpression, resolveLValueRef } from "./resolveExpression";
 import { printTypeRef, TypeRef } from "./types";
 
 export type StatementContext = {
+    root: ASTRef,
     returns: TypeRef,
     vars: { [name: string]: TypeRef };
+    requiredFields: string[];
 };
 
-function emptyContext(returns: TypeRef): StatementContext {
+function emptyContext(root: ASTRef, returns: TypeRef): StatementContext {
     return {
+        root,
         returns,
-        vars: {}
+        vars: {},
+        requiredFields: []
+    };
+}
+
+function addRequiredVariables(name: string, src: StatementContext): StatementContext {
+    if (src.requiredFields.find((v) => v === name)) {
+        throw Error('Variable already exists: ' + name); // Should happen earlier
+    }
+    return {
+        ...src,
+        requiredFields: [
+            ...src.requiredFields,
+            name
+        ]
+    };
+}
+
+function removeRequiredVariable(name: string, src: StatementContext): StatementContext {
+    if (!src.requiredFields.find((v) => v === name)) {
+        throw Error('Variable is not required: ' + name); // Should happen earlier
+    }
+    let filtered = src.requiredFields.filter((v) => v !== name);
+    return {
+        ...src,
+        requiredFields: filtered
     };
 }
 
@@ -30,26 +58,64 @@ function addVariable(name: string, ref: TypeRef, src: StatementContext): Stateme
     };
 }
 
-function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+function processCondition(condition: ASTCondition, sctx: StatementContext, ctx: CompilerContext): { ctx: CompilerContext, sctx: StatementContext } {
 
     // Process expression
     ctx = resolveExpression(condition.expression, sctx, ctx);
+    let initialCtx = sctx;
 
-    // Process branches
-    if (condition.trueStatements.length > 0) {
-        ctx = processStatements(condition.trueStatements, sctx, ctx);
-    }
-    if (condition.falseStatements.length > 0) {
-        ctx = processStatements(condition.falseStatements, sctx, ctx);
-    }
-    if (condition.elseif) {
-        ctx = processCondition(condition.elseif, sctx, ctx);
+    // Simple if
+    if (condition.falseStatements === null && condition.elseif === null) {
+        let r = processStatements(condition.trueStatements, initialCtx, ctx);
+        ctx = r.ctx;
+        return { ctx, sctx: initialCtx };
     }
 
-    return ctx;
+    // Simple if-else
+    let processedCtx: StatementContext[] = [];
+
+    // Process true branch
+    let r = processStatements(condition.trueStatements, initialCtx, ctx);
+    ctx = r.ctx;
+    processedCtx.push(r.sctx);
+
+    // Process else/elseif branch
+    if (condition.falseStatements !== null && condition.elseif === null) {
+        // if-else
+        let r = processStatements(condition.falseStatements, initialCtx, ctx);
+        ctx = r.ctx;
+        processedCtx.push(r.sctx);
+    } else if (condition.falseStatements === null && condition.elseif !== null) {
+        // if-else if
+        let r = processCondition(condition.elseif, initialCtx, ctx);
+        ctx = r.ctx;
+        processedCtx.push(r.sctx);
+    } else {
+        throw Error('Impossible');
+    }
+
+    // Merge statement contexts
+    let removed: string[] = [];
+    for (let f of initialCtx.requiredFields) {
+        let found = false;
+        for (let c of processedCtx) {
+            if (c.requiredFields.find((v) => v === f)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            removed.push(f);
+        }
+    }
+    for (let r of removed) {
+        initialCtx = removeRequiredVariable(r, initialCtx);
+    }
+
+    return { ctx, sctx: initialCtx };
 }
 
-function processStatements(statements: ASTStatement[], sctx: StatementContext, ctx: CompilerContext): CompilerContext {
+function processStatements(statements: ASTStatement[], sctx: StatementContext, ctx: CompilerContext): { ctx: CompilerContext, sctx: StatementContext } {
 
     // Process statements
 
@@ -95,6 +161,14 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
                 throwError(`Type mismatch: ${printTypeRef(expressionType)} is not assignable to ${printTypeRef(tailType)}`, s.ref);
             }
 
+            // Mark as assigned
+            if (s.path.length === 2 && s.path[0].name === 'self') {
+                const field = s.path[1].name;
+                if (sctx.requiredFields.findIndex((v) => v === field) >= 0) {
+                    sctx = removeRequiredVariable(field, sctx);
+                }
+            }
+
         } else if (s.kind === 'statement_expression') {
 
             // Process expression
@@ -103,7 +177,9 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
         } else if (s.kind === 'statement_condition') {
 
             // Process condition (expression resolved inside)
-            ctx = processCondition(s, sctx, ctx);
+            let r = processCondition(s, sctx, ctx);
+            ctx = r.ctx;
+            sctx = r.sctx;
 
             // Check type
             let expressionType = getExpType(ctx, s.expression);
@@ -129,6 +205,15 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
                 }
             }
 
+            // Check if all required variables are assigned
+            if (sctx.requiredFields.length > 0) {
+                if (sctx.requiredFields.length === 1) {
+                    throwError(`Field ${sctx.requiredFields[0]} is not set`, sctx.root);
+                } else {
+                    throwError(`Fields ${sctx.requiredFields.join(', ')} are not set`, sctx.root);
+                }
+            }
+
             // Mark as ended
             exited = true;
 
@@ -144,7 +229,9 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             }
 
             // Process inner statements
-            ctx = processStatements(s.statements, sctx, ctx);
+            let r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+            sctx = r.sctx;
 
         } else if (s.kind === 'statement_until') {
 
@@ -158,7 +245,9 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             }
 
             // Process inner statements
-            ctx = processStatements(s.statements, sctx, ctx);
+            let r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+            sctx = r.sctx;
 
         } else if (s.kind === 'statement_while') {
 
@@ -172,14 +261,31 @@ function processStatements(statements: ASTStatement[], sctx: StatementContext, c
             }
 
             // Process inner statements
-            ctx = processStatements(s.statements, sctx, ctx);
+            let r = processStatements(s.statements, sctx, ctx);
+            ctx = r.ctx;
+            sctx = r.sctx;
 
         } else {
             throw Error('Unknown statement');
         }
     }
 
-    return ctx;
+    return { ctx, sctx };
+}
+
+function processFunctionBody(statements: ASTStatement[], sctx: StatementContext, ctx: CompilerContext) {
+    let res = processStatements(statements, sctx, ctx);
+
+    // Check if all required variables are assigned
+    if (res.sctx.requiredFields.length > 0) {
+        if (res.sctx.requiredFields.length === 1) {
+            throwError(`Field ${res.sctx.requiredFields[0]} is not set`, res.sctx.root);
+        } else {
+            throwError(`Fields ${res.sctx.requiredFields.join(', ')} are not set`, res.sctx.root);
+        }
+    }
+
+    return res.ctx;
 }
 
 export function resolveStatements(ctx: CompilerContext) {
@@ -189,13 +295,13 @@ export function resolveStatements(ctx: CompilerContext) {
         if (f.ast.kind === 'def_function') {
 
             // Build statement context
-            let sctx = emptyContext(f.returns);
+            let sctx = emptyContext(f.ast.ref, f.returns);
             for (let p of f.args) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
             // Process
-            ctx = processStatements(f.ast.statements, sctx, ctx);
+            ctx = processFunctionBody(f.ast.statements, sctx, ctx);
         }
     }
 
@@ -206,21 +312,36 @@ export function resolveStatements(ctx: CompilerContext) {
         if (t.init) {
 
             // Build statement context
-            let sctx = emptyContext({ kind: 'void' });
+            let sctx = emptyContext(t.init.ast.ref, { kind: 'void' });
+
+            // Self
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
+
+            // Required variables
+            for (let f of t.fields) {
+                if (f.default !== undefined) { // NOTE: undefined is important here
+                    continue;
+                }
+                if (isAssignable({ kind: 'null' }, f.type)) {
+                    continue;
+                }
+                sctx = addRequiredVariables(f.name, sctx);
+            }
+
+            // Args
             for (let p of t.init.args) {
                 sctx = addVariable(p.name, p.type, sctx);
             }
 
             // Process
-            ctx = processStatements(t.init.ast.statements, sctx, ctx);
+            ctx = processFunctionBody(t.init.ast.statements, sctx, ctx);
         }
 
         // Process receivers
         for (const f of Object.values(t.receivers)) {
 
             // Build statement context
-            let sctx = emptyContext({ kind: 'void' });
+            let sctx = emptyContext(f.ast.ref, { kind: 'void' });
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
             if (f.selector.kind === 'internal-binary') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: f.selector.type, optional: false }, sctx);
@@ -235,7 +356,7 @@ export function resolveStatements(ctx: CompilerContext) {
             }
 
             // Process
-            ctx = processStatements(f.ast.statements, sctx, ctx);
+            ctx = processFunctionBody(f.ast.statements, sctx, ctx);
         }
 
         // Process functions
@@ -243,14 +364,14 @@ export function resolveStatements(ctx: CompilerContext) {
             if (f.ast.kind !== 'def_native_function') {
 
                 // Build statement context
-                let sctx = emptyContext(f.returns);
+                let sctx = emptyContext(f.ast.ref, f.returns);
                 sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
                 for (let a of f.args) {
                     sctx = addVariable(a.name, a.type, sctx);
                 }
 
                 // Process
-                ctx = processStatements(f.ast.statements, sctx, ctx);
+                ctx = processFunctionBody(f.ast.statements, sctx, ctx);
             }
         }
     }

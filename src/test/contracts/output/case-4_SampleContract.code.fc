@@ -46,8 +46,15 @@ builder __gen_write_SampleContract(builder build_0, (int, int, (int, int), cell)
     return (sc_0, (v'a, v'b, v'c, v'd));
 }
 
+((int, int)) __gen_constructor_Source$a_b(int a, int b) inline {
+    return (a, b);
+}
+
 (int, int, (int, int), cell) $__gen_SampleContract_init() impure inline_ref {
     var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = (null(), null(), null(), null());
+    $self'a = 0;
+    $self'b = 0;
+    ($self'c'a, $self'c'b) = __gen_constructor_Source$a_b(0, 0);
     return ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd);
 }
 

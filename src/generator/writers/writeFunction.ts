@@ -146,10 +146,10 @@ function writeCondition(f: ASTCondition, self: string | null, elseif: boolean, r
             writeStatement(s, self, returns, ctx);
         }
     });
-    if (f.falseStatements.length > 0) {
+    if (f.falseStatements && f.falseStatements.length > 0) {
         ctx.append(`} else {`);
         ctx.inIndent(() => {
-            for (let s of f.falseStatements) {
+            for (let s of f.falseStatements!) {
                 writeStatement(s, self, returns, ctx);
             }
         });

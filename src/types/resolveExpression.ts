@@ -199,6 +199,13 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
         throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
     }
 
+    // Check if field initialized
+    if (sctx.requiredFields.length > 0 && exp.src.kind === 'id' && exp.src.value === 'self') {
+        if (sctx.requiredFields.find((v) => v === exp.name)) {
+            throwError(`Field "${exp.name}" is not initialized`, exp.ref);
+        }
+    }
+
     // Find field
     let srcT = getType(ctx, src.name);
     const field = srcT.fields.find((v) => v.name === exp.name);
@@ -434,11 +441,6 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
     //
 
     if (exp.kind === 'id') {
-
-        // Work-around for "ABI"
-        if (exp.value === 'abi') {
-            return registerExpType(ctx, exp, { kind: 'ref', name: '$ABI', optional: false });
-        }
 
         // Find variable
         let v = sctx.vars[exp.value];

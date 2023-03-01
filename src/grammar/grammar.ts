@@ -360,7 +360,7 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             kind: 'statement_condition',
             expression: arg1.resolve_expression(),
             trueStatements: arg3.children.map((v: any) => v.resolve_statement()),
-            falseStatements: [],
+            falseStatements: null,
             elseif: null,
             ref: createRef(this)
         })
@@ -380,7 +380,7 @@ semantics.addOperation<ASTNode>('resolve_statement', {
             kind: 'statement_condition',
             expression: arg1.resolve_expression(),
             trueStatements: arg3.children.map((v: any) => v.resolve_statement()),
-            falseStatements: [],
+            falseStatements: null,
             elseif: arg6.resolve_statement(),
             ref: createRef(this)
         })

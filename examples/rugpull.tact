@@ -32,6 +32,7 @@ contract RugPull with OwnableTransferable, Stoppable {
         self.investment = investment;
         self.returns = returns;
         self.fee = fee;
+        self.stopped = false;
     }
 
     receive() {

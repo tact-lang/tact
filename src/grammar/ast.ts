@@ -343,7 +343,7 @@ export type ASTCondition = {
     id: number,
     expression: ASTExpression,
     trueStatements: ASTStatement[],
-    falseStatements: ASTStatement[];
+    falseStatements: ASTStatement[] | null;
     elseif: ASTCondition | null,
     ref: ASTRef,
 }
@@ -517,8 +517,10 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         for (let e of node.trueStatements) {
             traverse(e, callback);
         }
-        for (let e of node.falseStatements) {
-            traverse(e, callback);
+        if (node.falseStatements) {
+            for (let e of node.falseStatements) {
+                traverse(e, callback);
+            }
         }
         if (node.elseif) {
             traverse(node.elseif, callback);
