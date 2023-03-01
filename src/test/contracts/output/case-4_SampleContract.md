@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: SampleContract
-BOC Size: 368 bytes
+BOC Size: 390 bytes
 
 # Types
 Total Types: 4

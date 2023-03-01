@@ -520,6 +520,11 @@ PROGRAM{
       1 8 BLKDROP2
     }>ELSE<{
       DROP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       $__gen_MapTestContract_init INLINECALLDICT
     }>
   }>

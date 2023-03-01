@@ -188,6 +188,11 @@ PROGRAM{
     IF:<{
       PUSHNULL
     }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       $__gen_Debug_init INLINECALLDICT
     }>
   }>

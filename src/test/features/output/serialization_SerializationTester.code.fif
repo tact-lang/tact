@@ -199,6 +199,11 @@ PROGRAM{
       __gen_read_SerializationTester INLINECALLDICT
       1 9 BLKDROP2
     }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       __gen_read_$init$SerializationTester INLINECALLDICT
       s0 s9 XCHG
       ENDS

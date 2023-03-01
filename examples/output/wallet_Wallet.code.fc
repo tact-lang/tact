@@ -118,6 +118,8 @@ builder __gen_write_$init$Wallet(builder build_0, (int, int) v) inline {
     if ($loaded) {
         return $sc~__gen_read_Wallet();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (int key, int walletId) = $sc~__gen_read_$init$Wallet();
         $sc.end_parse();
         return $__gen_Wallet_init(key, walletId);

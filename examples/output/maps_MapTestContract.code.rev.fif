@@ -69,6 +69,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -642,6 +647,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -706,6 +716,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -771,6 +786,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -823,6 +843,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -870,6 +895,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -917,6 +947,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -963,6 +998,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1028,6 +1068,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1086,6 +1131,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1133,6 +1183,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1180,6 +1235,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1244,6 +1304,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1309,6 +1374,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1403,6 +1473,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1489,6 +1564,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL
@@ -1555,6 +1635,11 @@ SETCP0
     }> PUSHCONT
     <{
       s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
         PUSHNULL

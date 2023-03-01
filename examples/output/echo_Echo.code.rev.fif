@@ -52,6 +52,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       257 PUSHINT
       LDI
       s0 s1 XCHG
@@ -551,6 +556,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       257 PUSHINT
       LDI
       s0 s1 XCHG

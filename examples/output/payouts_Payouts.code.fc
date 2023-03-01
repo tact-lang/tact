@@ -199,6 +199,8 @@ builder __gen_write_$init$Beacon(builder build_0, (slice, slice) v) inline {
     if ($loaded) {
         return $sc~__gen_read_Payouts();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice owner, int publicKey) = $sc~__gen_read_$init$Payouts();
         $sc.end_parse();
         return $__gen_Payouts_init(owner, publicKey);

@@ -82,6 +82,8 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     if ($loaded) {
         return $sc~__gen_read_Treasure();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice owner) = $sc~__gen_read_$init$Treasure();
         $sc.end_parse();
         return $__gen_Treasure_init(owner);

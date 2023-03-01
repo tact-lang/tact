@@ -59,6 +59,11 @@ SETCP0
       1 4 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDDICT
       257 PUSHINT
       LDI
@@ -894,6 +899,11 @@ SETCP0
       1 4 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDDICT
       257 PUSHINT
       LDI
@@ -954,6 +964,11 @@ SETCP0
       1 4 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDDICT
       257 PUSHINT
       LDI

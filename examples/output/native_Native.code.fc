@@ -41,6 +41,8 @@ builder __gen_write_Native(builder build_0, (int) v) inline {
     if ($loaded) {
         return $sc~__gen_read_Native();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         return $__gen_Native_init();
     }
 }

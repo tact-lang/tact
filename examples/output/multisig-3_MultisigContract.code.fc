@@ -98,6 +98,8 @@ builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) in
     if ($loaded) {
         return $sc~__gen_read_MultisigContract();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (int key1, int key2, int key3) = $sc~__gen_read_$init$MultisigContract();
         $sc.end_parse();
         return $__gen_MultisigContract_init(key1, key2, key3);

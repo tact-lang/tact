@@ -261,6 +261,8 @@ tuple __gen_SomeStruct_opt_to_external(tuple v) inline {
     if ($loaded) {
         return $sc~__gen_read_MapTestContract();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         return $__gen_MapTestContract_init();
     }
 }

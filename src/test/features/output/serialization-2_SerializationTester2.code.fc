@@ -179,6 +179,8 @@ tuple __gen_Both_opt_to_external(tuple v) inline {
     if ($loaded) {
         return $sc~__gen_read_SerializationTester2();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         ((int, int, int, int, int) a, (int, int, int, int, int) b) = $sc~__gen_read_$init$SerializationTester2();
         $sc.end_parse();
         return $__gen_SerializationTester2_init(a, b);

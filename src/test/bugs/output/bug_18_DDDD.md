@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: DDDD
-BOC Size: 894 bytes
+BOC Size: 908 bytes
 
 # Types
 Total Types: 3

@@ -77,6 +77,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI
@@ -264,6 +269,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI
@@ -339,6 +349,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI
@@ -415,6 +430,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI
@@ -498,6 +518,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI
@@ -574,6 +599,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI
@@ -650,6 +680,11 @@ SETCP0
       1 6 BLKDROP2
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         257 PUSHINT
         LDI

@@ -239,6 +239,11 @@ PROGRAM{
       __gen_read_C INLINECALLDICT
       NIP
     }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       __gen_read_$init$C INLINECALLDICT
       SWAP
       ENDS

@@ -301,6 +301,11 @@ PROGRAM{
       1 5 BLKDROP2
     }>ELSE<{
       DROP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       $__gen_IncrementContract_init INLINECALLDICT
     }>
   }>

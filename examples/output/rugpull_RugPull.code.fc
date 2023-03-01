@@ -190,6 +190,8 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
     if ($loaded) {
         return $sc~__gen_read_RugPull();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice owner, int investment, int returns, int fee) = $sc~__gen_read_$init$RugPull();
         $sc.end_parse();
         return $__gen_RugPull_init(owner, investment, returns, fee);

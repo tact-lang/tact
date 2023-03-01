@@ -51,6 +51,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF
@@ -93,6 +98,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF
@@ -115,6 +125,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF
@@ -144,6 +159,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF
@@ -166,6 +186,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF
@@ -188,6 +213,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF
@@ -210,6 +240,11 @@ SETCP0
       PUSHNULL
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       <{
         PUSHNULL
       }> CALLREF

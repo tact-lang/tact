@@ -145,6 +145,8 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     if ($loaded) {
         return $sc~__gen_read_MultisigSigner();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) = $sc~__gen_read_$init$MultisigSigner();
         $sc.end_parse();
         return $__gen_MultisigSigner_init(master, members, requiredWeight, request);

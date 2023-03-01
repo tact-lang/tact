@@ -82,6 +82,8 @@ builder __gen_write_A(builder build_0, (slice) v) inline {
     if ($loaded) {
         return $sc~__gen_read_A();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice owner) = $sc~__gen_read_$init$A();
         $sc.end_parse();
         return $__gen_A_init(owner);

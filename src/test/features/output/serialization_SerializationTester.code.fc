@@ -98,6 +98,8 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, int, int, in
     if ($loaded) {
         return $sc~__gen_read_SerializationTester();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (int a, int b, int c, int d, int e, int f, int g, int h, int i) = $sc~__gen_read_$init$SerializationTester();
         $sc.end_parse();
         return $__gen_SerializationTester_init(a, b, c, d, e, f, g, h, i);

@@ -63,6 +63,8 @@ tuple __gen_load_RandomContract() impure inline {
     if ($loaded) {
         return null();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         return $__gen_RandomContract_init();
     }
 }

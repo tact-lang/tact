@@ -36,6 +36,8 @@ builder __gen_write_StdlibTest(builder build_0, (int) v) inline {
     if ($loaded) {
         return $sc~__gen_read_StdlibTest();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         return $__gen_StdlibTest_init();
     }
 }

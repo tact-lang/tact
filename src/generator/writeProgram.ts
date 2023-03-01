@@ -22,7 +22,7 @@ import { writeRouter } from "./writers/writeRouter";
 import { resolveFuncPrimitive } from "./writers/resolveFuncPrimitive";
 import { resolveFuncTypeUnpack } from "./writers/resolveFuncTypeUnpack";
 import { writeValue } from "./writers/writeExpression";
-import { enabledInline } from "../config/features";
+import { enabledInline, enabledMaterchain } from "../config/features";
 
 function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
@@ -51,6 +51,12 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             });
             ctx.append(`} else {`);
             ctx.inIndent(() => {
+
+                // Allow only workchain deployments
+                if (!enabledMaterchain(ctx.ctx)) {
+                    ctx.write(`;; Allow only workchain deployments`);
+                    ctx.write(`throw_unless(${contractErrors.masterchainNotEnabled.id}, my_address().preload_uint(11) == 1024);`);
+                }
 
                 // Load arguments
                 if (type.init!.args.length > 0) {

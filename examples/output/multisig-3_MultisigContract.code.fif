@@ -153,6 +153,11 @@ PROGRAM{
       __gen_read_MultisigContract INLINECALLDICT
       1 4 BLKDROP2
     }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       __gen_read_$init$MultisigContract INLINECALLDICT
       s0 s3 XCHG
       ENDS

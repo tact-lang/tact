@@ -71,6 +71,11 @@ SETCP0
       s1 POP
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
       s0 PUSH
@@ -357,6 +362,11 @@ SETCP0
       s1 POP
     }> PUSHCONT
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
       s0 PUSH

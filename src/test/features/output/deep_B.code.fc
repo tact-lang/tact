@@ -157,6 +157,8 @@ builder __gen_write_$init$C(builder build_0, (slice) v) inline {
     if ($loaded) {
         return $sc~__gen_read_B();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice parent) = $sc~__gen_read_$init$B();
         $sc.end_parse();
         return $__gen_B_init(parent);

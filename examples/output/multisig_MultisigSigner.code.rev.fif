@@ -48,6 +48,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
       s0 PUSH
@@ -723,6 +728,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       LDMSGADDR
       s0 s1 XCHG
       s0 PUSH

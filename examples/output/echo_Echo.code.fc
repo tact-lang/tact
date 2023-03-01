@@ -108,6 +108,8 @@ tuple __gen_load_Echo() impure inline {
     if ($loaded) {
         return null();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (int a) = $sc~__gen_read_$init$Echo();
         $sc.end_parse();
         return $__gen_Echo_init(a);

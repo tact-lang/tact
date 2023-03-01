@@ -95,6 +95,11 @@ PROGRAM{
       1 4 BLKDROP2
     }>ELSE<{
       DROP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       $__gen_SampleContract_init INLINECALLDICT
     }>
   }>

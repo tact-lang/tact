@@ -103,6 +103,8 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     if ($loaded) {
         return $sc~__gen_read_DDDD();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice addr1, slice addr2, slice addr3) = $sc~__gen_read_$init$DDDD();
         $sc.end_parse();
         return $__gen_DDDD_init(addr1, addr2, addr3);

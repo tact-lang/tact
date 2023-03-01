@@ -247,6 +247,11 @@ PROGRAM{
       __gen_read_MultisigSigner INLINECALLDICT
       1 12 BLKDROP2
     }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       __gen_read_$init$MultisigSigner INLINECALLDICT
       s0 s10 XCHG
       ENDS

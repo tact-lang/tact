@@ -58,6 +58,8 @@ builder __gen_write_SampleContract(builder build_0, (int, int, (int, int)) v) in
     if ($loaded) {
         return $sc~__gen_read_SampleContract();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         return $__gen_SampleContract_init();
     }
 }

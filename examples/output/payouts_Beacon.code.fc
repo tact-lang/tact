@@ -90,6 +90,8 @@ builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
     if ($loaded) {
         return $sc~__gen_read_Beacon();
     } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
         (slice master, slice owner) = $sc~__gen_read_$init$Beacon();
         $sc.end_parse();
         return $__gen_Beacon_init(master, owner);
