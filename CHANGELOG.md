@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Contracts now can be deployed only to the basic workchain unless `masterchain` set `true`
+- Checking field initialisation in init function
 
 ## [1.0.0-rc.9] - 2023-03-01
 
