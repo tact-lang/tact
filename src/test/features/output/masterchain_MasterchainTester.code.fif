@@ -1,0 +1,212 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_create_address
+  DECLPROC __gen_read_TestMessage
+  DECLPROC $__gen_MasterchainTester_init
+  DECLPROC __gen_load_MasterchainTester
+  DECLPROC __gen_store_MasterchainTester
+  DECLPROC $__gen_MasterchainTester_createAddress
+  125712 DECLMETHOD $__gen_get_createAddress
+  DECLPROC $__gen_MasterchainTester_parseAddress
+  102482 DECLMETHOD $__gen_get_parseAddress
+  DECLPROC $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $__gen_MasterchainTester_receive_TestMessage
+  DECLPROC __gen_router_MasterchainTester
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
+    SWAP
+  }>
+  __tact_create_address PROCINLINE:<{
+    NEWC
+    2 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+    DUP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __gen_read_TestMessage PROCINLINE:<{
+    32 LDU
+    SWAP
+    50579687 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $__gen_MasterchainTester_init PROCREF:<{
+    PUSHNULL
+  }>
+  __gen_load_MasterchainTester PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    DROP
+    IF:<{
+      PUSHNULL
+    }>ELSE<{
+      $__gen_MasterchainTester_init INLINECALLDICT
+    }>
+  }>
+  __gen_store_MasterchainTester PROCINLINE:<{
+    DROP
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    ENDC
+    c4 POP
+  }>
+  $__gen_MasterchainTester_createAddress PROCREF:<{
+    1 2 BLKDROP2
+    __tact_create_address INLINECALLDICT
+  }>
+  $__gen_get_createAddress PROC:<{
+    __gen_load_MasterchainTester INLINECALLDICT
+    -ROT
+    $__gen_MasterchainTester_createAddress INLINECALLDICT
+  }>
+  $__gen_MasterchainTester_parseAddress PROCREF:<{
+    NIP
+    __tact_load_address INLINECALLDICT
+    NIP
+  }>
+  $__gen_get_parseAddress PROC:<{
+    __gen_load_MasterchainTester INLINECALLDICT
+    SWAP
+    $__gen_MasterchainTester_parseAddress INLINECALLDICT
+  }>
+  $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  }>
+  $__gen_MasterchainTester_receive_TestMessage PROCINLINE:<{
+    2DROP
+  }>
+  __gen_router_MasterchainTester PROCREF:<{
+    c2 SAVE
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    OVER
+    50579687 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      __gen_read_TestMessage INLINECALLDICT
+      1 2 BLKDROP2
+      $__gen_MasterchainTester_receive_TestMessage INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
+    s2 PUSH
+    s5 s5 XCHG2
+    4 TUPLE
+    __tact_context SETGLOB
+    __gen_load_MasterchainTester INLINECALLDICT
+    -ROT
+    __gen_router_MasterchainTester INLINECALLDICT
+    DROP
+    __gen_store_MasterchainTester INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d665a365772625457503736377761544a717a39516475485a36684b446d5745506f365546713169426f764c66} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+}END>c

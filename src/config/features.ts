@@ -10,6 +10,10 @@ export function enabledDebug(ctx: CompilerContext) {
     return featureEnabled(ctx, 'debug');
 }
 
+export function enabledMaterchain(ctx: CompilerContext) {
+    return featureEnabled(ctx, 'masterchain');
+}
+
 export function featureEnabled(ctx: CompilerContext, key: string) {
     return featureStore.get(ctx, key) === true;
 }

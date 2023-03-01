@@ -70,7 +70,8 @@
       "path": "./src/test/features/optionals.tact",
       "output": "./src/test/features/output",
       "options": {
-        "debug": true
+        "debug": true,
+        "masterchain": true
       }
     },
     {
@@ -143,6 +144,23 @@
       "output": "./src/test/features/output",
       "options": {
         "debug": true
+      }
+    },
+    {
+      "name": "masterchain",
+      "path": "./src/test/features/masterchain.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "masterchain-allow",
+      "path": "./src/test/features/masterchain.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true,
+        "masterchain": true
       }
     },
     {

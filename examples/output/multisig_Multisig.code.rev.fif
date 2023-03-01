@@ -17,6 +17,24 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
+    s1 PUSH
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -88,9 +106,45 @@ SETCP0
           EQUAL
           129 THROWIFNOT
           LDMSGADDR
+          s1 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
           s0 s1 XCHG
           s0 s1 XCHG
           LDMSGADDR
+          s1 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
           s0 s1 XCHG
           s0 s1 XCHG
           LDGRAMS
@@ -176,6 +230,24 @@ SETCP0
           256 STU
           ENDC
           CTOS
+          s0 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
         }> CALLREF
         0 PUSHINT
         s0 s3 XCHG
@@ -199,6 +271,24 @@ SETCP0
           s0 s1 XCHG
           3 STI
           s0 s5 XCHG2
+          s0 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
           STSLICER
           s0 s3 XCHG2
           STGRAMS
@@ -212,6 +302,14 @@ SETCP0
           ISNULL
           NOT
           OR
+          <{
+            s3 POP
+            s3 POP
+            s0 s1 XCHG
+            0 PUSHINT
+            s0 s1 XCHG
+            1 STI
+          }> PUSHCONT
           <{
             -1 PUSHINT
             s0 s1 XCHG
@@ -278,16 +376,7 @@ SETCP0
             ENDC
             ROT
             STREF
-          }> PUSHCONT
-          <{
-            s3 POP
-            s3 POP
-            s0 s1 XCHG
-            0 PUSHINT
-            s0 s1 XCHG
-            1 STI
-          }> PUSHCONT
-          IFELSE
+          }> IFREFELSE
           s1 PUSH
           ISNULL
           NOT
@@ -332,9 +421,45 @@ SETCP0
           EQUAL
           129 THROWIFNOT
           LDMSGADDR
+          s1 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
           s0 s1 XCHG
           s0 s1 XCHG
           LDMSGADDR
+          s1 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
           s0 s1 XCHG
           s0 s1 XCHG
           LDGRAMS
@@ -395,6 +520,24 @@ SETCP0
           256 STU
           ENDC
           CTOS
+          s0 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
         }> CALLREF
         4429 PUSHINT
         s0 s8 XCHG
@@ -424,6 +567,24 @@ SETCP0
           s0 s1 XCHG
           3 STI
           s0 s5 XCHG2
+          s0 PUSH
+          s0 PUSH
+          SBITS
+          267 PUSHINT
+          EQUAL
+          136 THROWIFNOT
+          11 PLDU
+          s0 PUSH
+          10 PUSHPOW2
+          EQUAL
+          s1 PUSH
+          1279 PUSHINT
+          EQUAL
+          OR
+          136 THROWIFNOT
+          10 PUSHPOW2
+          EQUAL
+          137 THROWIFNOT
           STSLICER
           s0 s3 XCHG2
           STGRAMS
@@ -437,6 +598,14 @@ SETCP0
           ISNULL
           NOT
           OR
+          <{
+            s3 POP
+            s3 POP
+            s0 s1 XCHG
+            0 PUSHINT
+            s0 s1 XCHG
+            1 STI
+          }> PUSHCONT
           <{
             -1 PUSHINT
             s0 s1 XCHG
@@ -503,16 +672,7 @@ SETCP0
             ENDC
             ROT
             STREF
-          }> PUSHCONT
-          <{
-            s3 POP
-            s3 POP
-            s0 s1 XCHG
-            0 PUSHINT
-            s0 s1 XCHG
-            1 STI
-          }> PUSHCONT
-          IFELSE
+          }> IFREFELSE
           s1 PUSH
           ISNULL
           NOT
@@ -596,6 +756,24 @@ SETCP0
     10 1 BLKSWAP
     s0 s11 XCHG
     s10 s9 XCHG2
+    s0 PUSH
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
     STSLICER
     s1 s7 XCHG
     STDICT
@@ -612,8 +790,44 @@ SETCP0
       s0 s8 XCHG2
       32 STU
       s0 s6 XCHG2
+      s0 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       STSLICER
       s0 s4 XCHG2
+      s0 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       STSLICER
       ROT
       STGRAMS

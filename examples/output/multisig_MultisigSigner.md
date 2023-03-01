@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MultisigSigner
-BOC Size: 849 bytes
+BOC Size: 1144 bytes
 
 # Types
 Total Types: 5
@@ -54,6 +54,7 @@ Total Get Methods: 1
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract
 4429: Invalid sender
 4755: Timeout
 40810: Completed

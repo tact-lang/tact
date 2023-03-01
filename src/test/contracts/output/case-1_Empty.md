@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Empty
-BOC Size: 240 bytes
+BOC Size: 274 bytes
 
 # Types
 Total Types: 4
@@ -54,3 +54,4 @@ Argument: m
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

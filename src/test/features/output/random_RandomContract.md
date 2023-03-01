@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: RandomContract
-BOC Size: 526 bytes
+BOC Size: 591 bytes
 
 # Types
 Total Types: 5
@@ -58,3 +58,4 @@ Argument: max
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

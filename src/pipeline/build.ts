@@ -42,6 +42,10 @@ export async function build(args: {
             logger.error('   > 👀 Enabling debug');
             ctx = featureEnable(ctx, 'debug');
         }
+        if (config.options.masterchain) {
+            logger.error('   > 👀 Enabling masterchain');
+            ctx = featureEnable(ctx, 'masterchain');
+        }
         if (config.options.experimental && config.options.experimental.inline) {
             logger.error('   > 👀 Enabling inline');
             ctx = featureEnable(ctx, 'inline');

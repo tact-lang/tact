@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+- Contracts now work only with basic workchain. To enable masterchain support set `masterchain: true` in `tact.conf.json`
+
 ## Added
 - `pow` function for exponentiation
 

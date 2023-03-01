@@ -2,6 +2,13 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
+}
+
 global (int, slice, int, slice) __tact_context;
 global cell __tact_context_sys;
 
@@ -96,6 +103,7 @@ _ $__gen_get_stake() method_id(80984) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
+    __tact_verify_address(msg_sender_addr);
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Load contract data
@@ -120,7 +128,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmUJamsv9JwWkrLqdjLFJYgw1x1odBMn4FafXvNVceWaBF";
+    return "ipfs://Qmeqc94URzppdoP54dH4Gx8TpZSmcFMQNz72ZHePUUzhty";
 }
 
 _ lazy_deployment_completed() {

@@ -256,8 +256,8 @@ function initEmpty_init_args(src: Empty_init_args) {
 }
 
 async function Empty_init() {
-    const __code = Cell.fromBase64('te6ccgEBCgEA5QABFP8A9KQT9LzyyAsBAgFiAgMCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBwQCASAFBgAWINdJMcIfMJF/4HACM7/kO3knaiaGoA/DFpABhItsdBbZ5xKrBtnkBwgAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAACbQEIbBfbPAkAOltTQ6CkWKABoAKregOqCQLCAAGwAsAAErABwACw');
-    const __system = Cell.fromBase64('te6cckEBDAEA7wABAcABAQWhQoECART/APSkE/S88sgLAwIBYgkEAgEgBgUAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAIzv+Q7eSdqJoagD8MWkAGEi2x0FtnnEqsG2eQLBwEIbBfbPAgAOltTQ6CkWKABoAKregOqCQLCAAGwAsAAErABwACwAnbQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVAsKABYg10kxwh8wkX/gcAACbQBRA3A=');
+    const __code = Cell.fromBase64('te6ccgECCgEAAQYAART/APSkE/S88sgLAQIBYgIDArjQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAMJFtjoLbPOJZ2zwwMMj4QgHMfwHKAMntVAcEAgEgBQYAFiDXSTHCHzCRf+BwAjO/5Dt5J2omhqAPwxaQAYSLbHQW2ecSqwbZ5AcIAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwAAm0BCGwX2zwJADpbU0OgpFigAaACq3oDqgkCwgABsALAABKwAcAAsA==');
+    const __system = Cell.fromBase64('te6cckECDAEAARAAAQHAAQEFoUKBAgEU/wD0pBP0vPLICwMCAWIJBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCM7/kO3knaiaGoA/DFpABhItsdBbZ5xKrBtnkCwcBCGwX2zwIADpbU0OgpFigAaACq3oDqgkCwgABsALAABKwAcAAsAK40AHQ0wMBcbDAAZF/kXDiAfpAISDXSYEBC7ry4IjXCwoggwm6IYEE/7qx8uCIgwm68uCJIlBVbwT4Ye1E0NQB+GLSADCRbY6C2zziWds8MDDI+EIBzH8BygDJ7VQLCgAWINdJMcIfMJF/4HAAAm0rMrMF');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -290,6 +290,7 @@ const Empty_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
 }
 
 export class Empty implements Contract {

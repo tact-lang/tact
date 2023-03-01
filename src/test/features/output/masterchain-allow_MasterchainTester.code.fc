@@ -1,0 +1,170 @@
+#pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h == 1024) | (h == 1279));
+
+}
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    __tact_verify_address(raw);
+    return (cs, raw);
+}
+
+slice __tact_create_address(int chain, int hash) inline {
+    var b = begin_cell();
+    b = b.store_uint(2, 2);
+    b = b.store_uint(0, 1);
+    b = b.store_int(chain, 8);
+    b = b.store_uint(hash, 256);
+    var addr = b.end_cell().begin_parse();
+    __tact_verify_address(addr);
+    return addr;
+}
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(slice, ((int, slice))) __gen_read_TestMessage(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 50579687);
+    var v'to = sc_0~load_int(257);
+    var v'address = sc_0~__tact_load_address();
+    return (sc_0, (v'to, v'address));
+}
+
+tuple $__gen_MasterchainTester_init() impure inline_ref {
+    tuple $self = null();
+    return $self;
+}
+
+tuple __gen_load_MasterchainTester() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    } else {
+        return $__gen_MasterchainTester_init();
+    }
+}
+
+() __gen_store_MasterchainTester(tuple v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    set_data(b.end_cell());
+}
+
+slice $__gen_MasterchainTester_createAddress(tuple $self, int $chain, int $hash) impure inline_ref {
+    var ($self) = $self;
+    return __tact_create_address($chain, $hash);
+}
+
+_ $__gen_get_createAddress(int $$chain, int $$hash) method_id(125712) {
+    int $chain = $$chain;
+    int $hash = $$hash;
+    var self = __gen_load_MasterchainTester();
+    var res = $__gen_MasterchainTester_createAddress(self, $chain, $hash);
+    return res;
+}
+
+slice $__gen_MasterchainTester_parseAddress(tuple $self, slice $src) impure inline_ref {
+    var ($self) = $self;
+    return $src~__tact_load_address();
+}
+
+_ $__gen_get_parseAddress(slice $$src) method_id(102482) {
+    slice $src = $$src;
+    var self = __gen_load_MasterchainTester();
+    var res = $__gen_MasterchainTester_parseAddress(self, $src);
+    return res;
+}
+
+(tuple, ()) $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246(tuple $self) impure inline {
+    var $self = $self;
+    return ($self, ());
+}
+
+((tuple), ()) $__gen_MasterchainTester_receive_TestMessage(tuple $self, (int, slice) $message) impure inline {
+    var $self = $self;
+    var ($message'to, $message'address) = $message;
+    return ($self, ());
+}
+
+(tuple, int) __gen_router_MasterchainTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive TestMessage message
+    if (op == 50579687) {
+        var msg = in_msg~__gen_read_TestMessage();
+        self~$__gen_MasterchainTester_receive_TestMessage(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Deploy" message
+        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
+            self~$__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = cs~load_msg_addr();
+    __tact_verify_address(msg_sender_addr);
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Load contract data
+    var self = __gen_load_MasterchainTester();
+    
+    ;; Handle operation
+    int handled = self~__gen_router_MasterchainTester(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_MasterchainTester(self);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmfZ6WrbTWP767waTJqz9QduHZ6hKDmWEPo6UFq1iBovLf";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}

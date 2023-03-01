@@ -282,8 +282,8 @@ function initFunctions_init_args(src: Functions_init_args) {
 }
 
 async function Functions_init() {
-    const __code = Cell.fromBase64('te6ccgECBgEAAQgAART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQEBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAAJwANRwIddJwh+VMCDXCx/eApJbf+AhghAxlOQ0uo4gMdMfAYIQMZTkNLry4IGBAQHXAAExggDZ7SHCAPL0oH/gAYIQnWBa67qOINMfAYIQnWBa67ry4IGBAQHXAAExggDZ7SHCAPL0o6B/4DBw');
-    const __system = Cell.fromBase64('te6cckECCAEAARIAAQHAAQEFoARPAgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQHBgDUcCHXScIflTAg1wsf3gKSW3/gIYIQMZTkNLqOIDHTHwGCEDGU5DS68uCBgQEB1wABMYIA2e0hwgDy9KB/4AGCEJ1gWuu6jiDTHwGCEJ1gWuu68uCBgQEB1wABMYIA2e0hwgDy9KOgf+AwcAACcKg9I4I=');
+    const __code = Cell.fromBase64('te6ccgECBgEAASkAART/APSkE/S88sgLAQIBYgIDAtLQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQEBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAAJwANRwIddJwh+VMCDXCx/eApJbf+AhghAxlOQ0uo4gMdMfAYIQMZTkNLry4IGBAQHXAAExggDZ7SHCAPL0oH/gAYIQnWBa67qOINMfAYIQnWBa67ry4IGBAQHXAAExggDZ7SHCAPL0o6B/4DBw');
+    const __system = Cell.fromBase64('te6cckECCAEAATMAAQHAAQEFoARPAgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAtLQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQHBgDUcCHXScIflTAg1wsf3gKSW3/gIYIQMZTkNLqOIDHTHwGCEDGU5DS68uCBgQEB1wABMYIA2e0hwgDy9KB/4AGCEJ1gWuu6jiDTHwGCEJ1gWuu68uCBgQEB1wABMYIA2e0hwgDy9KOgf+AwcAACcATaN/o=');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -316,6 +316,7 @@ const Functions_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
     55789: { message: `Value must be greater than 0` },
 }
 

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Native
-BOC Size: 256 bytes
+BOC Size: 290 bytes
 
 # Types
 Total Types: 3
@@ -44,3 +44,4 @@ Total Get Methods: 0
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

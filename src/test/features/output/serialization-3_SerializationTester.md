@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: SerializationTester
-BOC Size: 855 bytes
+BOC Size: 888 bytes
 
 # Types
 Total Types: 4
@@ -60,3 +60,4 @@ Total Get Methods: 6
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

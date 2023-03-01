@@ -1,4 +1,4 @@
-import { toNano } from "ton-core";
+import { Address, toNano } from "ton-core";
 import { enabledDebug } from "../config/features";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
@@ -54,6 +54,29 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 throwError('require() expects two arguments', ref);
             }
             let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1]) as string;
+            return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
+        }
+    },
+    address: {
+        name: 'address',
+        resolve: (ctx, args, ref) => {
+            if (args.length !== 2) {
+                throwError('address() expects one arguments', ref);
+            }
+            if (args[0].kind !== 'ref') {
+                throwError('require() expects string argument', ref);
+            }
+            if (args[0].name !== 'String') {
+                throwError('require() expects string argument', ref);
+            }
+            return { kind: 'void' };
+        },
+        generate: (ctx, args, resolved, ref) => {
+            if (resolved.length !== 2) {
+                throwError('address() expects one argument', ref);
+            }
+            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0]) as string;
+            let address = Address.parse(str);
             return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
         }
     },

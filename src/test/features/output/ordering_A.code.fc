@@ -2,20 +2,11 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
-
-global (int, slice, int, slice) __tact_context;
-global cell __tact_context_sys;
-
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
-
-() __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() != 267);
-}
-
-builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -27,6 +18,18 @@ builder __tact_store_bool(builder b, int v) inline {
 builder __tact_store_address(builder b, slice address) inline {
     __tact_verify_address(address);
     b = b.store_slice(address);
+    return b;
+}
+
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
     return b;
 }
 
@@ -210,6 +213,7 @@ _ $__gen_get_create(int $$v) method_id(96687) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
+    __tact_verify_address(msg_sender_addr);
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Load contract data
@@ -235,7 +239,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmemrceifazYyo8sP7zpWVZk81h78FnqrYvqyxkn23fQim";
+    return "ipfs://Qma1YfxKg3ekrzrMiNWBSWSr74arqnXbT1j9FxN3QTzpg4";
 }
 
 _ lazy_deployment_completed() {

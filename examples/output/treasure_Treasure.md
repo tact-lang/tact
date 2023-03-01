@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Treasure
-BOC Size: 569 bytes
+BOC Size: 843 bytes
 
 # Types
 Total Types: 5
@@ -54,3 +54,4 @@ Total Get Methods: 1
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

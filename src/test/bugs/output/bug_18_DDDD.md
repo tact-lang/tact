@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: DDDD
-BOC Size: 578 bytes
+BOC Size: 842 bytes
 
 # Types
 Total Types: 3
@@ -50,3 +50,4 @@ Argument: key
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

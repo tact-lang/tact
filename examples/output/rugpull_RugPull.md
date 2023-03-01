@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: RugPull
-BOC Size: 1478 bytes
+BOC Size: 1611 bytes
 
 # Types
 Total Types: 5
@@ -58,6 +58,7 @@ Total Get Methods: 3
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract
 16059: Invalid value
 40368: Contract stopped
 53296: Contract not stopped

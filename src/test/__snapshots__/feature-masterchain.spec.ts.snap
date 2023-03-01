@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`feature-masterchain should deploy to the workchain 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Deploy",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+          "to": "kQCYtNcDR74PVNtGq_2UoYaVafpyrlbfWDExH-bCs8A7w2FN",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3786n,
+      },
+    ],
+  },
+]
+`;
+
+exports[`feature-masterchain should deploy to the workchain from masterchain when masterchain enabled 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Deploy",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kf9bjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQqq2",
+          "to": "kQD675th05sLJhaf7QeGNdyZF1uwXH_dtPLkvNx126hK_YnV",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3700n,
+      },
+    ],
+  },
+]
+`;
+
+exports[`feature-masterchain should deploy to the workchain when masterchain enabled 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Deploy",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
+          "to": "kQD675th05sLJhaf7QeGNdyZF1uwXH_dtPLkvNx126hK_YnV",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 3700n,
+      },
+    ],
+  },
+]
+`;
+
+exports[`feature-masterchain should not deploy to the workchain from masterchain 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Deploy",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "kf9bjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQqq2",
+          "to": "kQCYtNcDR74PVNtGq_2UoYaVafpyrlbfWDExH-bCs8A7w2FN",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "failed",
+        "errorCode": 137,
+        "errorMessage": "Masterchain support is not enabled for this contract",
+      },
+      {
+        "$type": "sent-bounced",
+        "message": {
+          "body": {
+            "type": "empty",
+          },
+          "bounce": false,
+          "from": "kQCYtNcDR74PVNtGq_2UoYaVafpyrlbfWDExH-bCs8A7w2FN",
+          "to": "kf9bjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQqq2",
+          "type": "internal",
+          "value": 9988849000n,
+        },
+      },
+    ],
+  },
+]
+`;

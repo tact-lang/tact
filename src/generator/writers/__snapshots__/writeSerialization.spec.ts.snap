@@ -1,52 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeSerialization should write serializer for A 1`] = `
-"int __tact_my_balance() inline {
-    return pair_first(get_balance());
+"int __tact_pow(int x, int y) inline {
+    return x ** y;
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
-
-(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
-
-((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
-
-(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
-
-(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
-
-forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
-
-() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
-
-() __tact_debug_bool(int value) impure inline_ref  {
-    if (value) {
-        __tact_debug_str("true");
-    } else {
-        __tact_debug_str("false");
-    }
-}
-
-global (int, slice, int, slice) __tact_context;
-global cell __tact_context_sys;
-
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
-
-() __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() != 267);
-}
-
-global int __tact_randomized;
-() __tact_prepare_random() impure inline {
-    if (null?(__tact_randomized)) {
-        randomize_lt();
-        __tact_randomized = true;
-    }
-}
-
-builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h != 1024) | (h != 1279));
+    throw_unless(137, h != 1279);
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -86,7 +49,9 @@ slice __tact_create_address(int chain, int hash) inline {
     b = b.store_uint(0, 1);
     b = b.store_int(chain, 8);
     b = b.store_uint(hash, 256);
-    return b.end_cell().begin_parse();
+    var addr = b.end_cell().begin_parse();
+    __tact_verify_address(addr);
+    return addr;
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
@@ -98,6 +63,50 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
     return __tact_create_address(chain, hash);
+}
+
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
+
+forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
+
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
+
+() __tact_debug_bool(int value) impure inline_ref  {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+global int __tact_randomized;
+() __tact_prepare_random() impure inline {
+    if (null?(__tact_randomized)) {
+        randomize_lt();
+        __tact_randomized = true;
+    }
+}
+
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
 }
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
@@ -917,52 +926,15 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
-"int __tact_my_balance() inline {
-    return pair_first(get_balance());
+"int __tact_pow(int x, int y) inline {
+    return x ** y;
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
-
-(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
-
-((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
-
-(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
-
-(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
-
-forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
-
-() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
-
-() __tact_debug_bool(int value) impure inline_ref  {
-    if (value) {
-        __tact_debug_str("true");
-    } else {
-        __tact_debug_str("false");
-    }
-}
-
-global (int, slice, int, slice) __tact_context;
-global cell __tact_context_sys;
-
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
-
-() __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() != 267);
-}
-
-global int __tact_randomized;
-() __tact_prepare_random() impure inline {
-    if (null?(__tact_randomized)) {
-        randomize_lt();
-        __tact_randomized = true;
-    }
-}
-
-builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h != 1024) | (h != 1279));
+    throw_unless(137, h != 1279);
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -1002,7 +974,9 @@ slice __tact_create_address(int chain, int hash) inline {
     b = b.store_uint(0, 1);
     b = b.store_int(chain, 8);
     b = b.store_uint(hash, 256);
-    return b.end_cell().begin_parse();
+    var addr = b.end_cell().begin_parse();
+    __tact_verify_address(addr);
+    return addr;
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
@@ -1014,6 +988,50 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
     return __tact_create_address(chain, hash);
+}
+
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
+
+forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
+
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
+
+() __tact_debug_bool(int value) impure inline_ref  {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+global int __tact_randomized;
+() __tact_prepare_random() impure inline {
+    if (null?(__tact_randomized)) {
+        randomize_lt();
+        __tact_randomized = true;
+    }
+}
+
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
 }
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
@@ -1833,52 +1851,15 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
-"int __tact_my_balance() inline {
-    return pair_first(get_balance());
+"int __tact_pow(int x, int y) inline {
+    return x ** y;
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
-
-(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
-
-((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
-
-(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
-
-(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
-
-forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
-
-() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
-
-() __tact_debug_bool(int value) impure inline_ref  {
-    if (value) {
-        __tact_debug_str("true");
-    } else {
-        __tact_debug_str("false");
-    }
-}
-
-global (int, slice, int, slice) __tact_context;
-global cell __tact_context_sys;
-
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
-
-() __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() != 267);
-}
-
-global int __tact_randomized;
-() __tact_prepare_random() impure inline {
-    if (null?(__tact_randomized)) {
-        randomize_lt();
-        __tact_randomized = true;
-    }
-}
-
-builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h != 1024) | (h != 1279));
+    throw_unless(137, h != 1279);
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -1918,7 +1899,9 @@ slice __tact_create_address(int chain, int hash) inline {
     b = b.store_uint(0, 1);
     b = b.store_int(chain, 8);
     b = b.store_uint(hash, 256);
-    return b.end_cell().begin_parse();
+    var addr = b.end_cell().begin_parse();
+    __tact_verify_address(addr);
+    return addr;
 }
 
 slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
@@ -1930,6 +1913,50 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
     b = b.store_ref(data);
     var hash = cell_hash(b.end_cell());
     return __tact_create_address(chain, hash);
+}
+
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
+forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
+
+forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
+
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
+
+() __tact_debug_bool(int value) impure inline_ref  {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+global int __tact_randomized;
+() __tact_prepare_random() impure inline {
+    if (null?(__tact_randomized)) {
+        randomize_lt();
+        __tact_randomized = true;
+    }
+}
+
+builder __tact_store_bool(builder b, int v) inline {
+    b = b.store_int(v, 1);
+    return b;
 }
 
 forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";

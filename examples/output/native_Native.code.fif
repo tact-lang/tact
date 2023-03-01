@@ -1,5 +1,6 @@
 PROGRAM{
   DECLPROC hello_world
+  DECLPROC __tact_verify_address
   DECLPROC __gen_write_Native
   DECLPROC __gen_read_Native
   DECLPROC $__gen_Native_init
@@ -15,6 +16,25 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sys
   hello_world PROC:<{
     1000 PUSHINT
+  }>
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
   }>
   __gen_write_Native PROCINLINE:<{
     SWAP
@@ -110,6 +130,8 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -126,7 +148,7 @@ PROGRAM{
     42980537499636128163026532310500881091 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d525352726a426a44505a6e6b59473446726951726b74327a35367a4476377a52656a5a6e784371394b745958} PUSHSLICE
+    x{697066733a2f2f516d5578644d46775351767141616f4441756a6f4365624470357079653265364d4a5131395855586e4132687271} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

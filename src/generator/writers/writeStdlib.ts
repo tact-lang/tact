@@ -1,4 +1,5 @@
 import { contractErrors } from "../../abi/errors";
+import { enabledMaterchain } from "../../config/features";
 import { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext) {
@@ -17,13 +18,106 @@ export function writeStdlib(ctx: WriterContext) {
     // stdlib functions
     //
 
-    ctx.fun(`__tact_pow`,()=>{
+    ctx.fun(`__tact_pow`, () => {
         ctx.write(`
             int __tact_pow(int x, int y) inline {
                 return x ** y;
             }
         `);
-    })
+    });
+
+    //
+    // Addresses
+    //
+
+    ctx.fun('__tact_verify_address', () => {
+        // NOTE: IMPURE IS IMPORTANT
+        ctx.write(`
+            () __tact_verify_address(slice address) impure inline {
+                throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
+                var h = address.preload_uint(11);
+                throw_unless(${contractErrors.invalidAddress.id}, (h == 1024) | (h == 1279));
+                ${!enabledMaterchain(ctx.ctx) ? `throw_unless(${contractErrors.masterchainNotEnabled.id}, h == 1024);` : ''}
+            }
+        `);
+    });
+
+    ctx.fun('__tact_load_address', () => {
+        ctx.write(`
+            (slice, slice) __tact_load_address(slice cs) inline {
+                slice raw = cs~load_msg_addr();
+                ${ctx.used(`__tact_verify_address`)}(raw);
+                return (cs, raw);
+            }
+        `);
+    });
+
+    ctx.fun('__tact_load_address_opt', () => {
+        ctx.write(`
+            (slice, slice) __tact_load_address_opt(slice cs) inline {
+                slice raw = cs~load_msg_addr();
+                if (raw.preload_uint(2) != 0) {
+                    ${ctx.used(`__tact_verify_address`)}(raw);
+                    return (cs, raw);
+                } else {
+                    return (cs, null());
+                }
+            }
+        `);
+    });
+
+    ctx.fun('__tact_store_address', () => {
+        ctx.write(`
+            builder __tact_store_address(builder b, slice address) inline {
+                ${ctx.used(`__tact_verify_address`)}(address);
+                b = b.store_slice(address);
+                return b;
+            }
+        `);
+    });
+
+    ctx.fun('__tact_store_address_opt', () => {
+        ctx.write(`
+            builder __tact_store_address_opt(builder b, slice address) inline {
+                if (null?(address)) {
+                    b = b.store_uint(0, 2);
+                    return b;
+                } else {
+                    return ${ctx.used(`__tact_store_address`)}(b, address);
+                }
+            }
+        `);
+    });
+
+    ctx.fun('__tact_create_address', () => {
+        ctx.write(`
+            slice __tact_create_address(int chain, int hash) inline {
+                var b = begin_cell();
+                b = b.store_uint(2, 2);
+                b = b.store_uint(0, 1);
+                b = b.store_int(chain, 8);
+                b = b.store_uint(hash, 256);
+                var addr = b.end_cell().begin_parse();
+                ${ctx.used(`__tact_verify_address`)}(addr);
+                return addr;
+            }
+        `);
+    });
+
+    ctx.fun('__tact_compute_contract_address', () => {
+        ctx.write(`
+            slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
+                var b = begin_cell();
+                b = b.store_uint(0, 2);
+                b = b.store_uint(3, 2);
+                b = b.store_uint(0, 1);
+                b = b.store_ref(code);
+                b = b.store_ref(data);
+                var hash = cell_hash(b.end_cell());
+                return ${ctx.used(`__tact_create_address`)}(chain, hash);
+            }
+        `);
+    });
 
     ctx.fun(`__tact_my_balance`, () => {
         ctx.write(`
@@ -85,14 +179,6 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.write(`(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }`);
     });
 
-    ctx.fun('__tact_verify_address', () => {
-        ctx.write(`
-            () __tact_verify_address(slice address) inline {
-                throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() != 267);
-            }
-        `);
-    });
-
     ctx.fun('__tact_prepare_random', () => {
         ctx.write(`
             global int __tact_randomized;
@@ -110,81 +196,6 @@ export function writeStdlib(ctx: WriterContext) {
             builder __tact_store_bool(builder b, int v) inline {
                 b = b.store_int(v, 1);
                 return b;
-            }
-        `);
-    });
-
-    ctx.fun('__tact_load_address', () => {
-        ctx.write(`
-            (slice, slice) __tact_load_address(slice cs) inline {
-                slice raw = cs~load_msg_addr();
-                ${ctx.used(`__tact_verify_address`)}(raw);
-                return (cs, raw);
-            }
-        `);
-    });
-
-    ctx.fun('__tact_load_address_opt', () => {
-        ctx.write(`
-            (slice, slice) __tact_load_address_opt(slice cs) inline {
-                slice raw = cs~load_msg_addr();
-                if (raw.preload_uint(2) != 0) {
-                    ${ctx.used(`__tact_verify_address`)}(raw);
-                    return (cs, raw);
-                } else {
-                    return (cs, null());
-                }
-            }
-        `);
-    });
-
-    ctx.fun('__tact_store_address', () => {
-        ctx.write(`
-            builder __tact_store_address(builder b, slice address) inline {
-                ${ctx.used(`__tact_verify_address`)}(address);
-                b = b.store_slice(address);
-                return b;
-            }
-        `);
-    });
-
-    ctx.fun('__tact_store_address_opt', () => {
-        ctx.write(`
-            builder __tact_store_address_opt(builder b, slice address) inline {
-                if (null?(address)) {
-                    b = b.store_uint(0, 2);
-                    return b;
-                } else {
-                    return ${ctx.used(`__tact_store_address`)}(b, address);
-                }
-            }
-        `);
-    });
-
-    ctx.fun('__tact_create_address', () => {
-        ctx.write(`
-            slice __tact_create_address(int chain, int hash) inline {
-                var b = begin_cell();
-                b = b.store_uint(2, 2);
-                b = b.store_uint(0, 1);
-                b = b.store_int(chain, 8);
-                b = b.store_uint(hash, 256);
-                return b.end_cell().begin_parse();
-            }
-        `);
-    });
-
-    ctx.fun('__tact_compute_contract_address', () => {
-        ctx.write(`
-            slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
-                var b = begin_cell();
-                b = b.store_uint(0, 2);
-                b = b.store_uint(3, 2);
-                b = b.store_uint(0, 1);
-                b = b.store_ref(code);
-                b = b.store_ref(data);
-                var hash = cell_hash(b.end_cell());
-                return ${ctx.used(`__tact_create_address`)}(chain, hash);
             }
         `);
     });

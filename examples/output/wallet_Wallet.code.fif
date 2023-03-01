@@ -1,10 +1,10 @@
 PROGRAM{
-  DECLPROC __tact_not_null
-  DECLPROC __tact_context_get
   DECLPROC __tact_verify_address
-  DECLPROC __tact_store_bool
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
+  DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
   DECLPROC __gen_write_Transfer
@@ -43,6 +43,36 @@ PROGRAM{
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
+    SWAP
+  }>
+  __tact_store_address PROCINLINE:<{
+    DUP
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
   __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
@@ -52,22 +82,9 @@ PROGRAM{
     __tact_context GETGLOB
     4 UNTUPLE
   }>
-  __tact_verify_address PROCINLINE:<{
-    SBITS
-    267 PUSHINT
-    NEQ
-    136 THROWIFNOT
-  }>
   __tact_store_bool PROCINLINE:<{
     SWAP
     1 STI
-  }>
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
-    SWAP
-  }>
-  __tact_store_address PROCINLINE:<{
-    STSLICER
   }>
   __tact_dict_set_code PROCINLINE:<{
     s0 s2 XCHG
@@ -524,6 +541,8 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -540,7 +559,7 @@ PROGRAM{
     42980537499636128163026532310500881091 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d4e696b68365a436b335a6d326271744b7a786e6d6b797a68466937425255377a7031545147533557684c5656} PUSHSLICE
+    x{697066733a2f2f516d5876717636587a6d61556a7743547536704e683835536668644833345339527176694143575551536a764b73} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

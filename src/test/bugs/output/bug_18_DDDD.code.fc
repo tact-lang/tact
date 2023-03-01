@@ -2,15 +2,11 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
-
-(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
-
-global (int, slice, int, slice) __tact_context;
-global cell __tact_context_sys;
-
-() __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() != 267);
+() __tact_verify_address(slice address) impure inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
 }
 
 (slice, slice) __tact_load_address(slice cs) inline {
@@ -24,6 +20,13 @@ builder __tact_store_address(builder b, slice address) inline {
     b = b.store_slice(address);
     return b;
 }
+
+(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
+
+(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
 
 (cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
@@ -182,6 +185,7 @@ _ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
     var msg_flags = cs~load_uint(4);
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = cs~load_msg_addr();
+    __tact_verify_address(msg_sender_addr);
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     
     ;; Load contract data
@@ -207,7 +211,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmWoUimBUALteKWxzFaL4LfFz153kfBUbJRf3M7TvX64FF";
+    return "ipfs://QmbwXGoRVijsB8EFeo1sEz2J48MxS4YsX4EPrRLXZnAzkH";
 }
 
 _ lazy_deployment_completed() {

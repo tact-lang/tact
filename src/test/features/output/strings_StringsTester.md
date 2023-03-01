@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: StringsTester
-BOC Size: 2354 bytes
+BOC Size: 2387 bytes
 
 # Types
 Total Types: 3
@@ -71,3 +71,4 @@ Argument: src
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract

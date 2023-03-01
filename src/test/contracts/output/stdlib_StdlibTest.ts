@@ -198,8 +198,8 @@ function initStdlibTest_init_args(src: StdlibTest_init_args) {
 }
 
 async function StdlibTest_init() {
-    const __code = Cell.fromBase64('te6ccgECDwEAAT8AART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQNBAIBIAUGAD5wIddJwh+VMCDXCx/eApJbf+ABwAAB10nBIbCRf+BwAgJyBwgAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAIBIAkKAjuvQvaiaGoA/DFpAADLwICA64AAmMdBmG2ecQDtnkANDgI6qQvtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNCwI6qVLtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNDAAGMccAAAYx10kAAnAABjHXSg==');
-    const __system = Cell.fromBase64('te6cckECEQEAAUkAAQHAAQEFocp9AgEU/wD0pBP0vPLICwMCAWIOBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCAnIJBwI7r0L2omhqAPwxaQAAy8CAgOuAAJjHQZhtnnEA7Z5AEAgABjHXSgIBIAwKAjqpUu1E0NQB+GLSAAGXgQEB1wABMY6DMNs84gHbPBALAAYx10kCOqkL7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziAds8EA0ABjHHAAKQ0AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UEA8APnAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsJF/4HAAAnCxNyka');
+    const __code = Cell.fromBase64('te6ccgECDwEAAWAAART/APSkE/S88sgLAQIBYgIDAtLQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQNBAIBIAUGAD5wIddJwh+VMCDXCx/eApJbf+ABwAAB10nBIbCRf+BwAgJyBwgAcb3ejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAIBIAkKAjuvQvaiaGoA/DFpAADLwICA64AAmMdBmG2ecQDtnkANDgI6qQvtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNCwI6qVLtRNDUAfhi0gABl4EBAdcAATGOgzDbPOIB2zwNDAAGMccAAAYx10kAAnAABjHXSg==');
+    const __system = Cell.fromBase64('te6cckECEQEAAWoAAQHAAQEFocp9AgEU/wD0pBP0vPLICwMCAWIOBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCAnIJBwI7r0L2omhqAPwxaQAAy8CAgOuAAJjHQZhtnnEA7Z5AEAgABjHXSgIBIAwKAjqpUu1E0NQB+GLSAAGXgQEB1wABMY6DMNs84gHbPBALAAYx10kCOqkL7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziAds8EA0ABjHHAALS0AHQ0wMBcbDAAZF/kXDiAfpAISDXSYEBC7ry4IjXCwoggwm6IYEE/7qx8uCIgwm68uCJIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UEA8APnAh10nCH5UwINcLH94Cklt/4AHAAAHXScEhsJF/4HAAAnAG4HJ5');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -232,6 +232,7 @@ const StdlibTest_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
 }
 
 export class StdlibTest implements Contract {

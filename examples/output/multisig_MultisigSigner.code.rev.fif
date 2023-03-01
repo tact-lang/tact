@@ -17,6 +17,24 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     LDMSGADDR
+    s1 PUSH
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -30,56 +48,24 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDDICT
-      257 PUSHINT
-      LDI
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      <{
-        32 LDU
-        s0 s1 XCHG
-        4266760323 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        LDMSGADDR
-        s0 s1 XCHG
-        s0 s1 XCHG
-        LDMSGADDR
-        s0 s1 XCHG
-        s0 s1 XCHG
-        LDGRAMS
-        32 LDU
-        1 LDI
-        8 LDU
-        1 LDI
-        s0 s1 XCHG
-        <{
-          LDREF
-        }> PUSHCONT
-        <{
-          PUSHNULL
-          s0 s1 XCHG
-        }> PUSHCONT
-        IFELSE
-        7 1 BLKSWAP
-      }> CALLREF
-      s7 POP
-      s7 s12 XCHG
-      s7 s11 XCHG
-      s7 s10 XCHG
-      s7 s9 XCHG
-      s7 s8 XCHG
-      1 6 BLKSWAP
-      1 12 BLKDROP2
-    }> PUSHCONT
-    <{
-      LDMSGADDR
+      s1 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       s0 s1 XCHG
       s0 s1 XCHG
       LDDICT
@@ -95,9 +81,45 @@ SETCP0
         EQUAL
         129 THROWIFNOT
         LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
         s0 s1 XCHG
         s0 s1 XCHG
         LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
         s0 s1 XCHG
         s0 s1 XCHG
         LDGRAMS
@@ -133,7 +155,110 @@ SETCP0
         5 2 BLKSWAP
       }> CALLREF
     }> PUSHCONT
-    IFELSE
+    <{
+      LDMSGADDR
+      s1 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      1 LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      <{
+        32 LDU
+        s0 s1 XCHG
+        4266760323 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
+        s0 s1 XCHG
+        s0 s1 XCHG
+        LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
+        s0 s1 XCHG
+        s0 s1 XCHG
+        LDGRAMS
+        32 LDU
+        1 LDI
+        8 LDU
+        1 LDI
+        s0 s1 XCHG
+        <{
+          LDREF
+        }> PUSHCONT
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
+        7 1 BLKSWAP
+      }> CALLREF
+      s7 POP
+      s7 s12 XCHG
+      s7 s11 XCHG
+      s7 s10 XCHG
+      s7 s9 XCHG
+      s7 s8 XCHG
+      1 6 BLKSWAP
+      1 12 BLKDROP2
+    }> IFREFELSE
     2 12 BLKSWAP
     <{
       c2 SAVE
@@ -235,8 +360,44 @@ SETCP0
               s0 s8 XCHG2
               32 STU
               s0 s6 XCHG2
+              s0 PUSH
+              s0 PUSH
+              SBITS
+              267 PUSHINT
+              EQUAL
+              136 THROWIFNOT
+              11 PLDU
+              s0 PUSH
+              10 PUSHPOW2
+              EQUAL
+              s1 PUSH
+              1279 PUSHINT
+              EQUAL
+              OR
+              136 THROWIFNOT
+              10 PUSHPOW2
+              EQUAL
+              137 THROWIFNOT
               STSLICER
               s0 s4 XCHG2
+              s0 PUSH
+              s0 PUSH
+              SBITS
+              267 PUSHINT
+              EQUAL
+              136 THROWIFNOT
+              11 PLDU
+              s0 PUSH
+              10 PUSHPOW2
+              EQUAL
+              s1 PUSH
+              1279 PUSHINT
+              EQUAL
+              OR
+              136 THROWIFNOT
+              10 PUSHPOW2
+              EQUAL
+              137 THROWIFNOT
               STSLICER
               ROT
               STGRAMS
@@ -277,6 +438,24 @@ SETCP0
               s0 s1 XCHG
               3 STI
               s0 s5 XCHG2
+              s0 PUSH
+              s0 PUSH
+              SBITS
+              267 PUSHINT
+              EQUAL
+              136 THROWIFNOT
+              11 PLDU
+              s0 PUSH
+              10 PUSHPOW2
+              EQUAL
+              s1 PUSH
+              1279 PUSHINT
+              EQUAL
+              OR
+              136 THROWIFNOT
+              10 PUSHPOW2
+              EQUAL
+              137 THROWIFNOT
               STSLICER
               s0 s3 XCHG2
               STGRAMS
@@ -290,6 +469,14 @@ SETCP0
               ISNULL
               NOT
               OR
+              <{
+                s3 POP
+                s3 POP
+                s0 s1 XCHG
+                0 PUSHINT
+                s0 s1 XCHG
+                1 STI
+              }> PUSHCONT
               <{
                 -1 PUSHINT
                 s0 s1 XCHG
@@ -356,16 +543,7 @@ SETCP0
                 ENDC
                 ROT
                 STREF
-              }> PUSHCONT
-              <{
-                s3 POP
-                s3 POP
-                s0 s1 XCHG
-                0 PUSHINT
-                s0 s1 XCHG
-                1 STI
-              }> PUSHCONT
-              IFELSE
+              }> IFREFELSE
               s1 PUSH
               ISNULL
               NOT
@@ -415,6 +593,24 @@ SETCP0
     1 STI
     12 1 BLKSWAP
     s12 s11 XCHG2
+    s0 PUSH
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
     STSLICER
     s1 s9 XCHG
     STDICT
@@ -435,8 +631,44 @@ SETCP0
       s0 s8 XCHG2
       32 STU
       s0 s6 XCHG2
+      s0 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       STSLICER
       s0 s4 XCHG2
+      s0 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       STSLICER
       ROT
       STGRAMS
@@ -491,56 +723,24 @@ SETCP0
     s0 s1 XCHG
     <{
       LDMSGADDR
-      s0 s1 XCHG
-      s0 s1 XCHG
-      LDDICT
-      257 PUSHINT
-      LDI
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      <{
-        32 LDU
-        s0 s1 XCHG
-        4266760323 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        LDMSGADDR
-        s0 s1 XCHG
-        s0 s1 XCHG
-        LDMSGADDR
-        s0 s1 XCHG
-        s0 s1 XCHG
-        LDGRAMS
-        32 LDU
-        1 LDI
-        8 LDU
-        1 LDI
-        s0 s1 XCHG
-        <{
-          LDREF
-        }> PUSHCONT
-        <{
-          PUSHNULL
-          s0 s1 XCHG
-        }> PUSHCONT
-        IFELSE
-        7 1 BLKSWAP
-      }> CALLREF
-      s7 POP
-      s7 s12 XCHG
-      s7 s11 XCHG
-      s7 s10 XCHG
-      s7 s9 XCHG
-      s7 s8 XCHG
-      1 6 BLKSWAP
-      1 12 BLKDROP2
-    }> PUSHCONT
-    <{
-      LDMSGADDR
+      s1 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
       s0 s1 XCHG
       s0 s1 XCHG
       LDDICT
@@ -556,9 +756,45 @@ SETCP0
         EQUAL
         129 THROWIFNOT
         LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
         s0 s1 XCHG
         s0 s1 XCHG
         LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
         s0 s1 XCHG
         s0 s1 XCHG
         LDGRAMS
@@ -594,7 +830,110 @@ SETCP0
         5 2 BLKSWAP
       }> CALLREF
     }> PUSHCONT
-    IFELSE
+    <{
+      LDMSGADDR
+      s1 PUSH
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      s0 s1 XCHG
+      s0 s1 XCHG
+      LDDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      1 LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      <{
+        32 LDU
+        s0 s1 XCHG
+        4266760323 PUSHINT
+        EQUAL
+        129 THROWIFNOT
+        LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
+        s0 s1 XCHG
+        s0 s1 XCHG
+        LDMSGADDR
+        s1 PUSH
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
+        s0 s1 XCHG
+        s0 s1 XCHG
+        LDGRAMS
+        32 LDU
+        1 LDI
+        8 LDU
+        1 LDI
+        s0 s1 XCHG
+        <{
+          LDREF
+        }> PUSHCONT
+        <{
+          PUSHNULL
+          s0 s1 XCHG
+        }> PUSHCONT
+        IFELSE
+        7 1 BLKSWAP
+      }> CALLREF
+      s7 POP
+      s7 s12 XCHG
+      s7 s11 XCHG
+      s7 s10 XCHG
+      s7 s9 XCHG
+      s7 s8 XCHG
+      1 6 BLKSWAP
+      1 12 BLKDROP2
+    }> IFREFELSE
     <{
       5 7 BLKDROP2
     }> CALLREF

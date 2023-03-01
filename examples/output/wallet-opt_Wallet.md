@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Wallet
-BOC Size: 438 bytes
+BOC Size: 474 bytes
 
 # Types
 Total Types: 4
@@ -54,5 +54,6 @@ Total Get Methods: 3
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract
 17654: Invalid seqno
 48401: Invalid signature

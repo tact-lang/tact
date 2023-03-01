@@ -243,8 +243,8 @@ function initEmpty_init_args(src: Empty_init_args) {
 }
 
 async function Empty_init() {
-    const __code = Cell.fromBase64('te6ccgEBBgEAnAABFP8A9KQT9LzyyAsBAgFiAgMCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBAUAcaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwACbQAWINdJMcIfMJF/4HA=');
-    const __system = Cell.fromBase64('te6cckEBCAEApgABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCdtAB0NMDAXGwwAGRf5Fw4gH6QCJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBwYAFiDXSTHCHzCRf+BwAAJtZbqcbQ==');
+    const __code = Cell.fromBase64('te6ccgEBBgEAvQABFP8A9KQT9LzyyAsBAgFiAgMCuNAB0NMDAXGwwAGRf5Fw4gH6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBAUAcaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwACbQAWINdJMcIfMJF/4HA=');
+    const __system = Cell.fromBase64('te6cckEBCAEAxwABAcABAQWhQoECART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCuNAB0NMDAXGwwAGRf5Fw4gH6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSJQVW8E+GHtRNDUAfhi0gAwkW2Ogts84lnbPDAwyPhCAcx/AcoAye1UBwYAFiDXSTHCHzCRf+BwAAJt1Ekqrw==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -277,6 +277,7 @@ const Empty_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
 }
 
 export class Empty implements Contract {

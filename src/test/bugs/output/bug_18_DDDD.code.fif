@@ -25,16 +25,33 @@ PROGRAM{
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
   __tact_verify_address PROCINLINE:<{
+    DUP
     SBITS
     267 PUSHINT
-    NEQ
+    EQUAL
     136 THROWIFNOT
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
     SWAP
   }>
   __tact_store_address PROCINLINE:<{
+    DUP
+    __tact_verify_address INLINECALLDICT
     STSLICER
   }>
   __tact_dict_set_int_slice PROCINLINE:<{
@@ -261,6 +278,8 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -278,7 +297,7 @@ PROGRAM{
     36993126140238121407019133875791708966 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d576f55696d4255414c74654b57787a46614c344c66467a3135336b664255624a5266334d3754765836344646} PUSHSLICE
+    x{697066733a2f2f516d627758476f5256696a7342384546656f3173457a324a34384d78533459735834455072524c585a6e417a6b48} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

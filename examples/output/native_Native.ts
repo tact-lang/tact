@@ -198,8 +198,8 @@ function initNative_init_args(src: Native_init_args) {
 }
 
 async function Native_init() {
-    const __code = Cell.fromBase64('te6ccgEBCAEA9QABFP8A9KQT9LzyyAsBAgFiAgMCAs8EBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAo8AdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VSAGBwAHIED6IAACcACY7aLt+3Ah10nCH5UwINcLH94Cklt/4AHAAI4t+QGC8M3Q9ZZqN5IiOKaVTukYoWLMWQQJ72XwlM7oHp0LxSu0upbwAaB/2zHgkTDicA==');
-    const __system = Cell.fromBase64('te6cckEBCgEA/wABAcABAQWglXkCART/APSkE/S88sgLAwIBYgUEAHGhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcCAs8HBgAHIED6IAKPAHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UgCQgAmO2i7ftwIddJwh+VMCDXCx/eApJbf+ABwACOLfkBgvDN0PWWajeSIjimlU7pGKFizFkECe9l8JTO6B6dC8UrtLqW8AGgf9sx4JEw4nAAAnDs1vZd');
+    const __code = Cell.fromBase64('te6ccgECCAEAARYAART/APSkE/S88sgLAQIBYgIDAgLPBAUAcaF3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwLRAHQ0wMBcbDAAZF/kXDiAfpAISDXSYEBC7ry4IjXCwoggwm6IYEE/7qx8uCIgwm68uCJIlBVbwT4Ye1E0NQB+GLSAAGXgQEB1wABMY6DMNs84lnbPDDI+EIBzH8BygABAYEBAc8Aye1UgBgcAByBA+iAAAnAAmO2i7ftwIddJwh+VMCDXCx/eApJbf+ABwACOLfkBgvDN0PWWajeSIjimlU7pGKFizFkECe9l8JTO6B6dC8UrtLqW8AGgf9sx4JEw4nA=');
+    const __system = Cell.fromBase64('te6cckECCgEAASAAAQHAAQEFoJV5AgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAgLPBwYAByBA+iAC0QB0NMDAXGwwAGRf5Fw4gH6QCEg10mBAQu68uCI1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSJQVW8E+GHtRNDUAfhi0gABl4EBAdcAATGOgzDbPOJZ2zwwyPhCAcx/AcoAAQGBAQHPAMntVIAkIAJjtou37cCHXScIflTAg1wsf3gKSW3/gAcAAji35AYLwzdD1lmo3kiI4ppVO6RihYsxZBAnvZfCUzugenQvFK7S6lvABoH/bMeCRMOJwAAJwLTuX2A==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -232,6 +232,7 @@ const Native_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
 }
 
 export class Native implements Contract {

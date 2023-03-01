@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_verify_address
   DECLPROC __gen_read_Add
   DECLPROC __gen_read_Sub
   DECLPROC __gen_write_Functions
@@ -16,6 +17,25 @@ PROGRAM{
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
   __gen_read_Add PROCINLINE:<{
     32 LDU
     SWAP
@@ -148,6 +168,8 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -164,7 +186,7 @@ PROGRAM{
     42980537499636128163026532310500881091 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d58795945354b625a666b3277766147536d5468644545786379574631767152524b5a4d7a68334a6350637947} PUSHSLICE
+    x{697066733a2f2f516d5661666e646b797a423269446a74797969546e58796879776f664a446e616277534865574734746756685170} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

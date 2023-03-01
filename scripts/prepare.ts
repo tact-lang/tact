@@ -19,7 +19,7 @@ import { consoleLogger } from '../src/logger';
 
     // Verify projects
     for (let pkgPath of glob.sync(path.normalize(path.resolve(__dirname, '..', 'examples', 'output', '*.pkg')))) {
-        let res = await verify(fs.readFileSync(pkgPath, 'utf-8'));
+        let res = await verify({ pkg: fs.readFileSync(pkgPath, 'utf-8') });
         if (!res.ok) {
             console.warn('Failed to verify ' + pkgPath + ': ' + res.error);
         }

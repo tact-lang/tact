@@ -243,8 +243,8 @@ function initSampleContract_init_args(src: SampleContract_init_args) {
 }
 
 async function SampleContract_init() {
-    const __code = Cell.fromBase64('te6ccgECCQEAASIAART/APSkE/S88sgLAQIBYgIDAvTQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAY4fgQEB1wCBAQHXANQB0IEBAdcAgQEB1wBZMhAkQwBsFI6DMNs84lUT2zwwyPhCAcx/AcoAVTBQNIEBAc8AgQEBzwDIQAMCgQEBzwCBAQHPAMkBzMntVAcEAgEgBQYAFiDXSTHCHzCRf+BwAmu94sdqJoagD8MWkAAMcPwICA64BAgIDrgGoA6ECAgOuAQICA64AsmQgSIYA2CkdBmG2ecW2eQHCABxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAAptcFICEwAEXwM=');
-    const __system = Cell.fromBase64('te6cckECCwEAASwAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCa73ix2omhqAPwxaQAAxw/AgIDrgECAgOuAagDoQICA64BAgIDrgCyZCBIhgDYKR0GYbZ5xbZ5AoHAARfAwL00AHQ0wMBcbDAAZF/kXDiAfpAIlBVbwT4Ye1E0NQB+GLSAAGOH4EBAdcAgQEB1wDUAdCBAQHXAIEBAdcAWTIQJEMAbBSOgzDbPOJVE9s8MMj4QgHMfwHKAFUwUDSBAQHPAIEBAc8AyEADAoEBAc8AgQEBzwDJAczJ7VQKCQAWINdJMcIfMJF/4HAACm1wUgITGXltuw==');
+    const __code = Cell.fromBase64('te6ccgECCgEAAUYAART/APSkE/S88sgLAQIBYgIDA+DQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAAY4fgQEB1wCBAQHXANQB0IEBAdcAgQEB1wBZMhAkQwBsFI6DMNs84lUT2zwwCAQFAgEgBgcAFiDXSTHCHzCRf+BwAFbI+EIBzH8BygBVMFA0gQEBzwCBAQHPAMhAAwKBAQHPAIEBAc8AyQHMye1UAmu94sdqJoagD8MWkAAMcPwICA64BAgIDrgGoA6ECAgOuAQICA64AsmQgSIYA2CkdBmG2ecW2eQICQBxvd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcAAptcFICEwAEXwM=');
+    const __system = Cell.fromBase64('te6cckECDAEAAVAAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIIBAIBIAYFAHG93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwCa73ix2omhqAPwxaQAAxw/AgIDrgECAgOuAagDoQICA64BAgIDrgCyZCBIhgDYKR0GYbZ5xbZ5AsHAARfAwPg0AHQ0wMBcbDAAZF/kXDiAfpAISDXSYEBC7ry4IjXCwoggwm6IYEE/7qx8uCIgwm68uCJIlBVbwT4Ye1E0NQB+GLSAAGOH4EBAdcAgQEB1wDUAdCBAQHXAIEBAdcAWTIQJEMAbBSOgzDbPOJVE9s8MAsKCQBWyPhCAcx/AcoAVTBQNIEBAc8AgQEBzwDIQAMCgQEBzwCBAQHPAMkBzMntVAAWINdJMcIfMJF/4HAACm1wUgIT1vtHaQ==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -277,6 +277,7 @@ const SampleContract_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
 }
 
 export class SampleContract implements Contract {

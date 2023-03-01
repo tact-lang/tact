@@ -1,4 +1,5 @@
 PROGRAM{
+  DECLPROC __tact_verify_address
   DECLPROC $__gen_ConstantTester_init
   DECLPROC __gen_load_ConstantTester
   DECLPROC __gen_store_ConstantTester
@@ -21,6 +22,25 @@ PROGRAM{
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sys
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
   $__gen_ConstantTester_init PROCREF:<{
     PUSHNULL
   }>
@@ -125,6 +145,8 @@ PROGRAM{
     }>
     SWAP
     LDMSGADDR
+    OVER
+    __tact_verify_address INLINECALLDICT
     s2 PUSH
     s5 s5 XCHG2
     4 TUPLE
@@ -142,7 +164,7 @@ PROGRAM{
     36993126140238121407019133875791708966 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d625775694c756531747067526d7859634e6d456f57474172336b4872514b65375a516d6f5966567872373434} PUSHSLICE
+    x{697066733a2f2f516d58443257513166456f794265744870795548544b61474b34324d7a35324132693337487a4854444150356d34} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

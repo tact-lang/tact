@@ -282,8 +282,8 @@ function initFunctions_init_args(src: Functions_init_args) {
 }
 
 async function Functions_init() {
-    const __code = Cell.fromBase64('te6ccgECBwEAAQ8AART/APSkE/S88sgLAQIBYgIDApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQEBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAAJwAthwIddJwh+VMCDXCx/eApJbf+AhghAxlOQ0uo6hMdMfAYIQMZTkNLry4IGBAQHXAAExggDZ7SHCAPL02zx/4AGCEJ1gWuu6jqHTHwGCEJ1gWuu68uCBgQEB1wABMYIA2e0hwgDy9KPbPH/gMHAGBgACoA==');
-    const __system = Cell.fromBase64('te6cckECCQEAARkAAQHAAQEFoARPAgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHApDQAdDTAwFxsMABkX+RcOIB+kAiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQIBgLYcCHXScIflTAg1wsf3gKSW3/gIYIQMZTkNLqOoTHTHwGCEDGU5DS68uCBgQEB1wABMYIA2e0hwgDy9Ns8f+ABghCdYFrruo6h0x8BghCdYFrruvLggYEBAdcAATGCANntIcIA8vSj2zx/4DBwBwcAAqAAAnCmcAM2');
+    const __code = Cell.fromBase64('te6ccgECBwEAATAAART/APSkE/S88sgLAQIBYgIDAtLQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQEBQBxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAAJwAthwIddJwh+VMCDXCx/eApJbf+AhghAxlOQ0uo6hMdMfAYIQMZTkNLry4IGBAQHXAAExggDZ7SHCAPL02zx/4AGCEJ1gWuu6jqHTHwGCEJ1gWuu68uCBgQEB1wABMYIA2e0hwgDy9KPbPH/gMHAGBgACoA==');
+    const __system = Cell.fromBase64('te6cckECCQEAAToAAQHAAQEFoARPAgEU/wD0pBP0vPLICwMCAWIFBABxoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHAtLQAdDTAwFxsMABkX+RcOIB+kAhINdJgQELuvLgiNcLCiCDCbohgQT/urHy4IiDCbry4IkiUFVvBPhh7UTQ1AH4YtIAAZeBAQHXAAExjoMw2zziWds8MMj4QgHMfwHKAAEBgQEBzwDJ7VQIBgLYcCHXScIflTAg1wsf3gKSW3/gIYIQMZTkNLqOoTHTHwGCEDGU5DS68uCBgQEB1wABMYIA2e0hwgDy9Ns8f+ABghCdYFrruo6h0x8BghCdYFrruvLggYEBAdcAATGCANntIcIA8vSj2zx/4DBwBwcAAqAAAnCZ0KSC');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -316,6 +316,7 @@ const Functions_errors: { [key: number]: { message: string } } = {
     134: { message: `Invalid argument` },
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
+    137: { message: `Masterchain support is not enabled for this contract` },
     55789: { message: `Value must be greater than 0` },
 }
 

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 2143 bytes
+BOC Size: 2312 bytes
 
 # Types
 Total Types: 12
@@ -120,3 +120,4 @@ Argument: key
 134: Invalid argument
 135: Code of a contract was not found
 136: Invalid address
+137: Masterchain support is not enabled for this contract
