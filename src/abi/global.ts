@@ -1,6 +1,6 @@
-import { Address, beginCell, toNano } from "ton-core";
+import { Address, Cell, toNano } from "ton-core";
 import { enabledDebug, enabledMaterchain } from "../config/features";
-import { writeAddress, writeSlice } from "../generator/writers/writeConstant";
+import { writeAddress, writeCell } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
@@ -91,6 +91,40 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             let res = writeAddress(address, ctx);
             ctx.used(res);
             return res + '()';
+        }
+    },
+    cell: {
+        name: 'cell',
+        resolve: (ctx, args, ref) => {
+            if (args.length !== 1) {
+                throwError('cell() expects one argument', ref);
+            }
+            if (args[0].kind !== 'ref') {
+                throwError('cell() expects string argument', ref);
+            }
+            if (args[0].name !== 'String') {
+                throwError('cell() expects string argument', ref);
+            }
+            return { kind: 'ref', name: 'Cell', optional: false };
+        },
+        generate: (ctx, args, resolved, ref) => {
+            if (resolved.length !== 1) {
+                throwError('cell() expects one argument', ref);
+            }
+
+            // Load cell data
+            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+            let c: Cell;
+            try {
+                c = Cell.fromBase64(str);
+            } catch (e) {
+                throwError(`Invalid cell ${str}`, ref);
+            }
+
+            // Generate address
+            let res = writeCell(c, ctx);
+            ctx.used(res);
+            return 'begin_cell().store_slice(' + res + '()).end_cell()';
         }
     },
     dump: {

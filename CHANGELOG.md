@@ -12,8 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - `pow` function for exponentiation
-- `address` compile-time function for creating addresses from strings
-- `interfaces` to ABI
+- `address()` compile-time function for creating addresses from strings
+- `cell()` compile-time function for creating cells from base64 strings
+- `interfaces` field to ABI
 - report workchain support in interfaces
 
 ## [1.0.0-rc.8] - 2023-02-27

@@ -3,6 +3,7 @@ contract IntrinsicsTester {
     a: Int = ton("10.1234");
     b: String = "Hello world";
     c: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
+    d: Cell = cell("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
     
     init() {
 
@@ -34,5 +35,13 @@ contract IntrinsicsTester {
 
     get fun getAddress2(): Address {
         return self.c;
+    }
+
+    get fun getCell(): Cell {
+        return cell("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+    }
+
+    get fun getCell2(): Cell {
+        return self.d;
     }
 }

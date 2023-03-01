@@ -10,8 +10,8 @@ import { getStringId } from "../../types/resolveStrings";
 import { fn, id } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
-import { Address } from "ton-core";
-import { writeAddress } from "./writeConstant";
+import { Address, Cell } from "ton-core";
+import { writeAddress, writeCell } from "./writeConstant";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -69,7 +69,7 @@ function writeStructConstructor(type: TypeDescription, args: string[], ctx: Writ
     return name;
 }
 
-export function writeValue(s: bigint | string | boolean | Address | null, ctx: WriterContext): string {
+export function writeValue(s: bigint | string | boolean | Address | Cell | null, ctx: WriterContext): string {
     if (typeof s === 'bigint') {
         return s.toString(10);
     }
@@ -85,6 +85,11 @@ export function writeValue(s: bigint | string | boolean | Address | null, ctx: W
         let res = writeAddress(s, ctx);
         ctx.used(res);
         return res + '()';
+    }
+    if (s instanceof Cell) {
+        let res = writeCell(s, ctx);
+        ctx.used(res);
+        return 'begin_cell().store_slice(' + res + '()).end_cell()';
     }
     if (s === null) {
         return 'null()';

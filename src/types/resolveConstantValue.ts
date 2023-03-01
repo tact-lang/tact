@@ -1,4 +1,4 @@
-import { Address, toNano } from "ton-core";
+import { Address, Cell, toNano } from "ton-core";
 import { enabledMaterchain } from "../config/features";
 import { CompilerContext } from "../context";
 import { ASTExpression, throwError } from "../grammar/ast";
@@ -86,6 +86,24 @@ function reduceAddress(ast: ASTExpression, ctx: CompilerContext): Address {
     throwError('Cannot reduce expression to a constant Address', ast.ref);
 }
 
+function reduceCell(ast: ASTExpression, ctx: CompilerContext): Cell {
+    if (ast.kind === 'op_static_call') {
+        if (ast.name === 'cell') {
+            if (ast.args.length === 1) {
+                const str = reduceString(ast.args[0]);
+                let c: Cell;
+                try {
+                    c = Cell.fromBase64(str);
+                } catch (e) {
+                    throwError(`Invalid cell ${str}`, ast.ref);
+                }
+                return c;
+            }
+        }
+    }
+    throwError('Cannot reduce expression to a constant Address', ast.ref);
+}
+
 export function resolveConstantValue(type: TypeRef, ast: ASTExpression, ctx: CompilerContext) {
 
     if (type.kind !== 'ref') {
@@ -114,8 +132,14 @@ export function resolveConstantValue(type: TypeRef, ast: ASTExpression, ctx: Com
         return reduceString(ast);
     }
 
+    // Handle Address
     if (type.name === 'Address') {
         return reduceAddress(ast, ctx);
+    }
+
+    // Handle Cell
+    if (type.name === 'Cell') {
+        return reduceCell(ast, ctx);
     }
 
     throwError(`Expected constant value, got ${printTypeRef(type)}`, ast.ref);

@@ -12,11 +12,16 @@ export function writeString(str: string, ctx: WriterContext) {
 }
 
 export function writeAddress(address: Address, ctx: WriterContext) {
-    return writeSlice('address', ';; ' + address.toString(), beginCell().storeAddress(address).endCell(), ctx);
+    return writeRawSlice('address', ';; ' + address.toString(), beginCell().storeAddress(address).endCell(), ctx);
 }
 
-export function writeSlice(prefix: string, comment: string, cell: Cell, ctx: WriterContext) {
+export function writeCell(cell: Cell, ctx: WriterContext) {
+    return writeRawSlice('cell', ';; Cell ' + cell.hash().toString('base64'), cell, ctx);
+}
+
+function writeRawSlice(prefix: string, comment: string, cell: Cell, ctx: WriterContext) {
     let h = cell.hash().toString('hex');
+    let t = cell.toBoc({ idx: false }).toString('hex');
     let k = prefix + ':' + h;
     if (ctx.isRendered(k)) {
         return `__gen_slice_${prefix}_${h}`;
@@ -24,7 +29,7 @@ export function writeSlice(prefix: string, comment: string, cell: Cell, ctx: Wri
     ctx.markRendered(k);
     ctx.fun(`__gen_slice_${prefix}_${h}`, () => {
         ctx.append(`;; ${comment}`);
-        ctx.append(`slice __gen_slice_${prefix}_${h}() asm "B{${cell.toBoc({ idx: false }).toString('hex')}} B>boc <s PUSHSLICE";`);
+        ctx.append(`slice __gen_slice_${prefix}_${h}() asm "B{${t}} B>boc <s PUSHSLICE";`);
     });
     return `__gen_slice_${prefix}_${h}`;
 }
