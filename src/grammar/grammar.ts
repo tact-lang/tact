@@ -424,7 +424,7 @@ semantics.addOperation<ASTNode[]>('resolve_lvalue', {
         return [createNode({
             kind: 'lvalue_ref',
             name: arg0.sourceString,
-            ref: createRef(this)
+            ref: createRef(arg0, arg1)
         }), ...arg2.resolve_lvalue()];
     }
 });

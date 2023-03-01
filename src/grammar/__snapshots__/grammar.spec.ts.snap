@@ -1579,7 +1579,7 @@ exports[`grammar should parse case-14 1`] = `
                   "id": 9,
                   "kind": "lvalue_ref",
                   "name": "self",
-                  "ref": self.a,
+                  "ref": self.,
                 },
                 {
                   "id": 10,
@@ -1604,7 +1604,7 @@ exports[`grammar should parse case-14 1`] = `
                   "id": 13,
                   "kind": "lvalue_ref",
                   "name": "self",
-                  "ref": self.b,
+                  "ref": self.,
                 },
                 {
                   "id": 14,

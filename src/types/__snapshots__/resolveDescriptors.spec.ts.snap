@@ -1477,7 +1477,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
                   "id": 10,
                   "kind": "lvalue_ref",
                   "name": "self",
-                  "ref": self.a,
+                  "ref": self.,
                 },
                 {
                   "id": 11,
@@ -1771,7 +1771,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
                 "id": 10,
                 "kind": "lvalue_ref",
                 "name": "self",
-                "ref": self.a,
+                "ref": self.,
               },
               {
                 "id": 11,

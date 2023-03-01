@@ -596,7 +596,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "Bool",
   ],
   [
-    "self.value",
+    "self.",
     "Contract",
   ],
   [
@@ -616,7 +616,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "Bool",
   ],
   [
-    "self.value",
+    "self.",
     "Contract",
   ],
   [
@@ -628,7 +628,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "Int",
   ],
   [
-    "self.value",
+    "self.",
     "Contract",
   ],
   [
@@ -640,7 +640,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "Int",
   ],
   [
-    "self.value",
+    "self.",
     "Contract2",
   ],
   [
@@ -652,7 +652,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "Int",
   ],
   [
-    "self.value2",
+    "self.",
     "Contract2",
   ],
   [
@@ -676,7 +676,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "S",
   ],
   [
-    "self.value",
+    "self.",
     "Contract3",
   ],
   [
@@ -696,7 +696,7 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
     "<void>",
   ],
   [
-    "self.value",
+    "self.",
     "Contract3",
   ],
   [
