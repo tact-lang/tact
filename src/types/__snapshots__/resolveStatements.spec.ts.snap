@@ -220,6 +220,16 @@ Line 13, col 35:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-22 1`] = `
+"<unknown>:12:9: Cannot access self before init
+Line 12, col 9:
+  11 |     init(arg: Bool) {
+> 12 |         self.update();
+               ^~~~~~~~~~~~~
+  13 |         self.value = 1;
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -664,6 +674,50 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
   [
     "S{ a: 1, b: self.value }",
     "S",
+  ],
+  [
+    "self.value",
+    "Contract3",
+  ],
+  [
+    "value",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "self",
+    "Contract3",
+  ],
+  [
+    "self.update()",
+    "<void>",
+  ],
+  [
+    "self.value",
+    "Contract3",
+  ],
+  [
+    "value",
+    "Int",
+  ],
+  [
+    "self",
+    "Contract3",
+  ],
+  [
+    "self.value",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "self.value + 1",
+    "Int",
   ],
 ]
 `;

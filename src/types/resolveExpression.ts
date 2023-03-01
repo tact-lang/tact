@@ -275,6 +275,11 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
     // Resolve expression
     ctx = resolveExpression(exp.src, sctx, ctx);
 
+    // Check if self is initialized
+    if (exp.src.kind === 'id' && exp.src.value === 'self' && (sctx.requiredFields.length > 0)) {
+        throwError('Cannot access self before init', exp.ref);
+    }
+
     // Resolve args
     for (let e of exp.args) {
         ctx = resolveExpression(e, sctx, ctx);
@@ -452,6 +457,7 @@ export function resolveExpression(exp: ASTExpression, sctx: StatementContext, ct
                 return registerExpType(ctx, exp, cc.type);
             }
         }
+
         return registerExpType(ctx, exp, v);
     }
 

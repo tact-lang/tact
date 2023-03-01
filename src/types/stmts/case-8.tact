@@ -27,3 +27,15 @@ contract Contract2 {
         self.value2 = S{ a: 1, b: self.value };
     }
 }
+
+contract Contract3 {
+    value: Int;
+    init(arg: Bool) {
+        self.value = 1;
+        self.update();
+    }
+
+    fun update() {
+        self.value = self.value + 1;
+    }
+}
