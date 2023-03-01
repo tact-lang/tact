@@ -1,0 +1,240 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __gen_write_IntrinsicsTester
+  DECLPROC __gen_read_IntrinsicsTester
+  DECLPROC $__gen_IntrinsicsTester_init
+  DECLPROC __gen_load_IntrinsicsTester
+  DECLPROC __gen_store_IntrinsicsTester
+  DECLPROC $__gen_IntrinsicsTester_getTons
+  85126 DECLMETHOD $__gen_get_getTons
+  DECLPROC $__gen_IntrinsicsTester_getTons2
+  72025 DECLMETHOD $__gen_get_getTons2
+  DECLPROC $__gen_IntrinsicsTester_getString
+  97624 DECLMETHOD $__gen_get_getString
+  DECLPROC $__gen_IntrinsicsTester_getString2
+  123179 DECLMETHOD $__gen_get_getString2
+  DECLPROC $__gen_IntrinsicsTester_getAddress
+  67571 DECLMETHOD $__gen_get_getAddress
+  DECLPROC $__gen_IntrinsicsTester_getAddress2
+  103926 DECLMETHOD $__gen_get_getAddress2
+  DECLPROC $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC __gen_router_IntrinsicsTester
+  DECLPROC recv_internal
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sys
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __gen_write_IntrinsicsTester PROCINLINE:<{
+    s2 s3 XCHG2
+    257 PUSHINT
+    STIX
+    NEWC
+    ROT
+    STSLICER
+    ENDC
+    SWAP
+    STREF
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_IntrinsicsTester PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    __tact_load_address INLINECALLDICT
+    s3 s3 s0 XCHG3
+  }>
+  $__gen_IntrinsicsTester_init PROCREF:<{
+    10123400000 PUSHINT
+    B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
+    B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
+  }>
+  __gen_load_IntrinsicsTester PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_IntrinsicsTester INLINECALLDICT
+      1 3 BLKDROP2
+    }>ELSE<{
+      DROP
+      $__gen_IntrinsicsTester_init INLINECALLDICT
+    }>
+  }>
+  __gen_store_IntrinsicsTester PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    3 -ROLL
+    __gen_write_IntrinsicsTester INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $__gen_IntrinsicsTester_getTons PROCREF:<{
+    3 BLKDROP
+    10123400000 PUSHINT
+  }>
+  $__gen_get_getTons PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getTons INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getTons2 PROCREF:<{
+    2DROP
+  }>
+  $__gen_get_getTons2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getTons2 INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getString PROCREF:<{
+    3 BLKDROP
+    B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
+  }>
+  $__gen_get_getString PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getString INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getString2 PROCREF:<{
+    DROP
+    NIP
+  }>
+  $__gen_get_getString2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getString2 INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getAddress PROCREF:<{
+    3 BLKDROP
+    B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
+  }>
+  $__gen_get_getAddress PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getAddress INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getAddress2 PROCREF:<{
+    2 1 BLKDROP2
+  }>
+  $__gen_get_getAddress2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getAddress2 INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  }>
+  __gen_router_IntrinsicsTester PROCREF:<{
+    c2 SAVE
+    SAMEALTSAVE
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    0 EQINT
+    IF:<{
+      HASHSU
+      60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+    s2 PUSH
+    s1 s5 s5 XCHG3
+    4 TUPLE
+    __tact_context SETGLOB
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    2 3 BLKSWAP
+    __gen_router_IntrinsicsTester INLINECALLDICT
+    DROP
+    __gen_store_IntrinsicsTester INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d61574454477a6768646e3933594855646a3375435a53727367374c7643695839444e6446517a7a526a614758} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+}END>c

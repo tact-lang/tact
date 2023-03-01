@@ -6,6 +6,7 @@ import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
+import { Address } from "ton-core";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -182,9 +183,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let tr = buildTypeRef(src.type, types);
 
         // Resolve default value
-        let d: bigint | boolean | string | null | undefined = undefined;
+        let d: bigint | boolean | string | null | Address | undefined = undefined;
         if (src.init) {
-            d = resolveConstantValue(tr, src.init);
+            d = resolveConstantValue(tr, src.init, ctx);
         }
 
         // Resolve abi type
@@ -195,7 +196,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     function buildConstantDescription(src: ASTConstant): ConstantDescription {
         let tr = buildTypeRef(src.type, types);
-        let d = resolveConstantValue(tr, src.value);
+        let d = resolveConstantValue(tr, src.value, ctx);
         return { name: src.name, type: tr, value: d, ref: src.ref, ast: src };
     }
 

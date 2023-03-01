@@ -1,4 +1,4 @@
-import { enabledDebug } from "../../config/features";
+import { getSupportedIntefaces } from "../../types/getSupportedInterfaces";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 
@@ -11,14 +11,7 @@ export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
             // Build interfaces list
             let interfaces: string[] = [];
             interfaces.push('org.ton.introspection.v0');
-            interfaces.push('org.ton.abi.ipfs.v0');
-            interfaces.push('org.ton.deploy.lazy.v0');
-            if (enabledDebug(ctx.ctx)) {
-                interfaces.push('org.ton.debug.v0');
-            }
-            for (let i = 0; i < type.interfaces.length; i++) {
-                interfaces.push(type.interfaces[i]);
-            }
+            interfaces.push(...getSupportedIntefaces(type, ctx.ctx));
 
             // Render interfaces
             for (let i = 0; i < interfaces.length; i++) {

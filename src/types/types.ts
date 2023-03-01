@@ -1,4 +1,4 @@
-import { ABIField } from "ton-core";
+import { ABIField, Address } from "ton-core";
 import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeDescription = {
@@ -38,7 +38,7 @@ export type FieldDescription = {
     index: number,
     type: TypeRef,
     as: string | null,
-    default: bigint | boolean | string | null | undefined,
+    default: bigint | boolean | string | null | Address | undefined,
     ref: ASTRef,
     ast: ASTNode,
     abi: ABIField
@@ -47,7 +47,7 @@ export type FieldDescription = {
 export type ConstantDescription = {
     name: string;
     type: TypeRef;
-    value: bigint | boolean | string | null;
+    value: bigint | boolean | string | Address | null;
     ref: ASTRef,
     ast: ASTNode
 }

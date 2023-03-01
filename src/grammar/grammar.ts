@@ -1,8 +1,6 @@
 import rawGrammar from './grammar.ohm-bundle';
 import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
-import { resolveConstantValue } from '../types/resolveConstantValue';
-import { resolveTypeRef, resolveTypeRefUnsafe } from '../types/resolveDescriptors';
 import { MatchResult } from 'ohm-js';
 
 

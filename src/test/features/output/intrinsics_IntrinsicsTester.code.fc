@@ -1,0 +1,206 @@
+#pragma version =0.4.1;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+slice __tact_verify_address(slice address) inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
+    return address;
+}
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, __tact_verify_address(raw));
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    return b.store_slice(__tact_verify_address(address));
+}
+
+global (int, slice, int, slice) __tact_context;
+global cell __tact_context_sys;
+
+builder __gen_write_IntrinsicsTester(builder build_0, (int, slice, slice) v) inline {
+    var (v'a, v'b, v'c) = v;
+    build_0 = build_0.store_int(v'a, 257);
+    build_0 = build_0.store_ref(begin_cell().store_slice(v'b).end_cell());
+    build_0 = __tact_store_address(build_0, v'c);
+    return build_0;
+}
+
+(slice, ((int, slice, slice))) __gen_read_IntrinsicsTester(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    var v'b = sc_0~load_ref().begin_parse();
+    var v'c = sc_0~__tact_load_address();
+    return (sc_0, (v'a, v'b, v'c));
+}
+
+;; String "Hello world"
+slice __gen_str_1693223114() asm "B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE";
+
+;; ;; EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
+slice __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc() asm "B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE";
+
+(int, slice, slice) $__gen_IntrinsicsTester_init() impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = (10123400000, __gen_str_1693223114(), __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc());
+    return ($self'a, $self'b, $self'c);
+}
+
+(int, slice, slice) __gen_load_IntrinsicsTester() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~__gen_read_IntrinsicsTester();
+    } else {
+        return $__gen_IntrinsicsTester_init();
+    }
+}
+
+() __gen_store_IntrinsicsTester((int, slice, slice) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = __gen_write_IntrinsicsTester(b, v);
+    set_data(b.end_cell());
+}
+
+int $__gen_IntrinsicsTester_getTons((int, slice, slice) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = $self;
+    return 10123400000;
+}
+
+_ $__gen_get_getTons() method_id(85126) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getTons(self);
+    return res;
+}
+
+int $__gen_IntrinsicsTester_getTons2((int, slice, slice) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = $self;
+    return $self'a;
+}
+
+_ $__gen_get_getTons2() method_id(72025) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getTons2(self);
+    return res;
+}
+
+slice $__gen_IntrinsicsTester_getString((int, slice, slice) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = $self;
+    return __gen_str_1693223114();
+}
+
+_ $__gen_get_getString() method_id(97624) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getString(self);
+    return res;
+}
+
+slice $__gen_IntrinsicsTester_getString2((int, slice, slice) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = $self;
+    return $self'b;
+}
+
+_ $__gen_get_getString2() method_id(123179) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getString2(self);
+    return res;
+}
+
+slice $__gen_IntrinsicsTester_getAddress((int, slice, slice) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = $self;
+    return __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc();
+}
+
+_ $__gen_get_getAddress() method_id(67571) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getAddress(self);
+    return res;
+}
+
+slice $__gen_IntrinsicsTester_getAddress2((int, slice, slice) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c)) = $self;
+    return $self'c;
+}
+
+_ $__gen_get_getAddress2() method_id(103926) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getAddress2(self);
+    return res;
+}
+
+((int, slice, slice), ()) $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, slice, slice) $self) impure inline {
+    var ($self'a, $self'b, $self'c) = $self;
+    return (($self'a, $self'b, $self'c), ());
+}
+
+((int, slice, slice), int) __gen_router_IntrinsicsTester((int, slice, slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Deploy" message
+        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
+            self~$__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    
+    ;; Load contract data
+    var self = __gen_load_IntrinsicsTester();
+    
+    ;; Handle operation
+    int handled = self~__gen_router_IntrinsicsTester(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    __gen_store_IntrinsicsTester(self);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmaWDTGzghdn93YHUdj3uCZSrsg7LvCiX9DNdFQzzRjaGX";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}

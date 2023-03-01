@@ -12,7 +12,7 @@ import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getAllStrings } from "../types/resolveStrings";
-import { writeString } from './writers/writeString';
+import { writeString } from './writers/writeConstant';
 import { fn, id } from "./writers/id";
 import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
 import { getRawAST } from "../grammar/store";

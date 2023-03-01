@@ -1,5 +1,6 @@
-import { Address, toNano } from "ton-core";
-import { enabledDebug } from "../config/features";
+import { Address, beginCell, toNano } from "ton-core";
+import { enabledDebug, enabledMaterchain } from "../config/features";
+import { writeAddress, writeSlice } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
@@ -25,7 +26,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (resolved.length !== 1) {
                 throwError('ton() expects single string argument', ref);
             }
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0]) as string;
+            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
             return toNano(str).toString(10);
         }
     },
@@ -53,33 +54,45 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             if (resolved.length !== 2) {
                 throwError('require() expects two arguments', ref);
             }
-            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1]) as string;
+            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[1], ctx.ctx) as string;
             return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
         }
     },
-    // address: {
-    //     name: 'address',
-    //     resolve: (ctx, args, ref) => {
-    //         if (args.length !== 2) {
-    //             throwError('address() expects one arguments', ref);
-    //         }
-    //         if (args[0].kind !== 'ref') {
-    //             throwError('require() expects string argument', ref);
-    //         }
-    //         if (args[0].name !== 'String') {
-    //             throwError('require() expects string argument', ref);
-    //         }
-    //         return { kind: 'void' };
-    //     },
-    //     generate: (ctx, args, resolved, ref) => {
-    //         if (resolved.length !== 2) {
-    //             throwError('address() expects one argument', ref);
-    //         }
-    //         let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0]) as string;
-    //         let address = Address.parse(str);
-    //         return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0], ctx)})`;
-    //     }
-    // },
+    address: {
+        name: 'address',
+        resolve: (ctx, args, ref) => {
+            if (args.length !== 1) {
+                throwError('address() expects one argument', ref);
+            }
+            if (args[0].kind !== 'ref') {
+                throwError('require() expects string argument', ref);
+            }
+            if (args[0].name !== 'String') {
+                throwError('require() expects string argument', ref);
+            }
+            return { kind: 'ref', name: 'Address', optional: false };
+        },
+        generate: (ctx, args, resolved, ref) => {
+            if (resolved.length !== 1) {
+                throwError('address() expects one argument', ref);
+            }
+            let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+            let address = Address.parse(str);
+            if (address.workChain !== 0 && address.workChain !== -1) {
+                throwError(`Address ${str} invalid address`, ref);
+            }
+            if (!enabledMaterchain(ctx.ctx)) {
+                if (address.workChain !== 0) {
+                    throwError(`Address ${str} from masterchain are not enabled for this contract`, ref);
+                }
+            }
+
+            // Generate address
+            let res = writeAddress(address, ctx);
+            ctx.used(res);
+            return res + '()';
+        }
+    },
     dump: {
         name: 'dump',
         resolve: (ctx, args, ref) => {

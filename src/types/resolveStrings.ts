@@ -31,7 +31,7 @@ function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
             if (node.args.length !== 2) {
                 return;
             }
-            let resolved = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, node.args[1]) as string;
+            let resolved = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, node.args[1], ctx) as string;
             if (!exceptions.get(ctx, resolved)) {
                 let id = exceptionId(resolved);
                 if (Object.values(exceptions.all(ctx)).find((v) => v.id === id)) {

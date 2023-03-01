@@ -459,6 +459,7 @@ _ supported_interfaces() method_id {
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
         "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128,
         "org.ton.ownable.transferable"H >> 128,
         "org.ton.ownable"H >> 128,
         "org.ton.stoppable"H >> 128
@@ -466,7 +467,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmUmm9ThdZMKLwp5Xv7tsdnHYkNEuQjifJmig8jRmpjRCG";
+    return "ipfs://QmdfhYvEv8AuZ49vUw8RmL1ZhyE64jgVqDKtdHCSiMX4ga";
 }
 
 _ lazy_deployment_completed() {

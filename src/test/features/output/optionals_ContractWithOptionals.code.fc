@@ -528,12 +528,13 @@ _ supported_interfaces() method_id {
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
         "org.ton.deploy.lazy.v0"H >> 128,
-        "org.ton.debug.v0"H >> 128
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.any.v0"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmNcwgeCRA2hv3q87DZXrbAYzonWjVNsiLdJmEkw9ikg4m";
+    return "ipfs://QmbE8GEUrQHcB95brTPbUkPa1BnUb5M7ELTMTVYdnXbhbs";
 }
 
 _ lazy_deployment_completed() {

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Functions
-BOC Size: 310 bytes
+BOC Size: 328 bytes
 
 # Types
 Total Types: 5

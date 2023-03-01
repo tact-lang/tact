@@ -147,6 +147,14 @@
       }
     },
     {
+      "name": "intrinsics",
+      "path": "./src/test/features/intrinsics.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "masterchain",
       "path": "./src/test/features/masterchain.tact",
       "output": "./src/test/features/output",

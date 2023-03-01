@@ -1,7 +1,7 @@
 import { ABIGetter, ABIReceiver, ABIType, ContractABI } from "ton-core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../context";
-import { getAllocation } from "../storage/resolveAllocation";
+import { getSupportedIntefaces } from "../types/getSupportedInterfaces";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveStrings";
@@ -110,11 +110,15 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         errors[c.id + ''] = { message: c.value };
     }
 
+    // Interfaces
+    let interfaces = ['org.ton.introspection.v0', ...getSupportedIntefaces(contract, ctx)];
+
     return {
         name: contract.name,
         types,
         receivers,
         getters,
-        errors
-    };
+        errors,
+        interfaces
+    } as any;
 }

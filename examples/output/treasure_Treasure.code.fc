@@ -256,13 +256,14 @@ _ supported_interfaces() method_id {
         "org.ton.introspection.v0"H >> 128,
         "org.ton.abi.ipfs.v0"H >> 128,
         "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128,
         "org.ton.ownable.transferable"H >> 128,
         "org.ton.ownable"H >> 128
     );
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmdchPNxNE6KyDKnvQUWHPbwtriQU6PJczW5KxbbPejGNK";
+    return "ipfs://QmT8hcgWSSoJ98BazuBLkc8eZEd5iLMfEHaMUWNZgwd69D";
 }
 
 _ lazy_deployment_completed() {
