@@ -23,4 +23,6 @@ export {
 
 export * from './browser';
 export * from './verify';
-export { TactLogger } from './logger';
+export * from './logger';
+export * from './errors';
+export * from './check';
