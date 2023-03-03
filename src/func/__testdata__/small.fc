@@ -1,0 +1,3 @@
+int main(int a, int b) impure {
+    return a + b;
+}

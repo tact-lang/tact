@@ -58,8 +58,13 @@ export async function funcCompile(args: { sources: { path: string, content: stri
 
     // Pointer tracking
     const allocatedPointers: Pointer[] = [];
+    const allocatedFunctions: Pointer[] = [];
     const trackPointer = (pointer: Pointer): Pointer => {
         allocatedPointers.push(pointer);
+        return pointer;
+    };
+    const trackFunctionPointer = (pointer: Pointer): Pointer => {
+        allocatedFunctions.push(pointer);
         return pointer;
     };
 
@@ -74,7 +79,7 @@ export async function funcCompile(args: { sources: { path: string, content: stri
         let configPointer = trackPointer(writeToCString(mod, configStr));
 
         // FS emulation callback
-        const callbackPtr = trackPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
+        const callbackPtr = trackFunctionPointer(mod.addFunction((_kind: any, _data: any, contents: any, error: any) => {
             const kind: string = readFromCString(mod, _kind);
             const data: string = readFromCString(mod, _data);
             if (kind === 'realpath') {
@@ -113,17 +118,21 @@ export async function funcCompile(args: { sources: { path: string, content: stri
             return {
                 ok: true,
                 log: logs.length > 0 ? msg : (result.warnings ? result.warnings : ''),
-                fift: cutFirstLine(unescape(result.fiftCode)),
+                fift: cutFirstLine(result.fiftCode.replaceAll('\\n', '\n')),
                 output: Buffer.from(result.codeBoc, 'base64')
             };
         } else {
             throw Error('Unexpected compiler response');
         }
-
     } catch (e) {
         args.logger.error(errorToString(e));
         throw Error('Unexpected compiler response');
     } finally {
-        allocatedPointers.forEach((pointer) => mod._free(pointer));
+        for (let i of allocatedFunctions) {
+            mod.removeFunction(i);
+        }
+        for (let i of allocatedPointers) {
+            mod._free(i);
+        }
     }
 }
