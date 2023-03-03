@@ -33,6 +33,11 @@ function reduceInt(ast: ASTExpression): bigint {
                 return BigInt(toNano(reduceString(ast.args[0])).toString(10));
             }
         }
+        if (ast.name ==='pow') {
+            if (ast.args.length === 2) {
+                return reduceInt(ast.args[0]) ** reduceInt(ast.args[1]);
+            }
+        }
     }
     throwError('Cannot reduce expression to a constant integer', ast.ref);
 }

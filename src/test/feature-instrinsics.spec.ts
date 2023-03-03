@@ -21,5 +21,7 @@ describe('feature-instrinsics', () => {
         expect((await contract.getGetAddress2()).equals(Address.parse('EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N'))).toBe(true);
         expect((await contract.getGetCell()).equals(Cell.fromBase64('te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw='))).toBe(true);
         expect((await contract.getGetCell2()).equals(Cell.fromBase64('te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw='))).toBe(true);
+        expect(await contract.getGetPow()).toBe(512n);
+        expect(await contract.getGetPow2()).toBe(512n);
     });
 });

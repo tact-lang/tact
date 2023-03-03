@@ -89,8 +89,7 @@ files['std/math.tact'] =
     'CmZ1biByYW5kb21JbnQoKTogSW50IHsKICAgIG5hdGl2ZVByZXBhcmVSYW5kb20oKTsKICAgIHJldHVybiBuYXRpdmVSYW5kb20oKTsKfQoKZnVuIHJhbmRvbShtaW46' +
     'IEludCwgbWF4OiBJbnQpOiBJbnQgewogICAgbmF0aXZlUHJlcGFyZVJhbmRvbSgpOwogICAgcmV0dXJuIG1pbiArIG5hdGl2ZVJhbmRvbUludGVydmFsKG1heCAtIG1p' +
     'bik7Cn0KCi8vIE1hdGgKCkBuYW1lKG1pbikKbmF0aXZlIG1pbih4OiBJbnQsIHk6IEludCk6IEludDsKCkBuYW1lKG1heCkKbmF0aXZlIG1heCh4OiBJbnQsIHk6IElu' +
-    'dCk6IEludDsKCkBuYW1lKGFicykKbmF0aXZlIGFicyh4OiBJbnQpOiBJbnQ7CgpAbmFtZShub3cpCm5hdGl2ZSBub3coKTogSW50OwoKQG5hbWUoX190YWN0X3BvdykK' +
-    'bmF0aXZlIHBvdyhhOiBJbnQsIGI6IEludCk6IEludDs=';
+    'dCk6IEludDsKCkBuYW1lKGFicykKbmF0aXZlIGFicyh4OiBJbnQpOiBJbnQ7CgpAbmFtZShub3cpCm5hdGl2ZSBub3coKTogSW50Ow==';
 files['std/primitives.tact'] =
     'cHJpbWl0aXZlIEludDsKcHJpbWl0aXZlIEJvb2w7CnByaW1pdGl2ZSBCdWlsZGVyOwpwcmltaXRpdmUgU2xpY2U7CnByaW1pdGl2ZSBDZWxsOwpwcmltaXRpdmUgQWRk' +
     'cmVzczsKcHJpbWl0aXZlIFN0cmluZzsKcHJpbWl0aXZlIFN0cmluZ0J1aWxkZXI7';

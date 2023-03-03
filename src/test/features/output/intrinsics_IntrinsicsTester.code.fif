@@ -23,6 +23,10 @@ PROGRAM{
   83057 DECLMETHOD $__gen_get_getCell
   DECLPROC $__gen_IntrinsicsTester_getCell2
   94033 DECLMETHOD $__gen_get_getCell2
+  DECLPROC $__gen_IntrinsicsTester_getPow
+  93948 DECLMETHOD $__gen_get_getPow
+  DECLPROC $__gen_IntrinsicsTester_getPow2
+  92025 DECLMETHOD $__gen_get_getPow2
   DECLPROC $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC __gen_router_IntrinsicsTester
   DECLPROC recv_internal
@@ -61,18 +65,20 @@ PROGRAM{
     STSLICER
   }>
   __gen_write_IntrinsicsTester PROCINLINE:<{
-    s3 s4 XCHG2
+    s4 s5 XCHG2
     257 PUSHINT
     STIX
     NEWC
-    ROT
+    s0 s3 XCHG2
     STSLICER
     ENDC
-    SWAP
+    ROT
     STREF
     SWAP
     __tact_store_address INLINECALLDICT
     STREF
+    257 PUSHINT
+    STIX
   }>
   __gen_read_IntrinsicsTester PROCINLINE:<{
     257 PUSHINT
@@ -84,7 +90,9 @@ PROGRAM{
     __tact_load_address INLINECALLDICT
     SWAP
     LDREF
-    4 -ROLL
+    257 PUSHINT
+    LDIX
+    5 -ROLL
   }>
   $__gen_IntrinsicsTester_init PROCREF:<{
     10123400000 PUSHINT
@@ -94,6 +102,7 @@ PROGRAM{
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
     STSLICER
     ENDC
+    9 PUSHPOW2
   }>
   __gen_load_IntrinsicsTester PROCINLINE:<{
     c4 PUSH
@@ -105,7 +114,7 @@ PROGRAM{
     SWAP
     IF:<{
       __gen_read_IntrinsicsTester INLINECALLDICT
-      1 4 BLKDROP2
+      1 5 BLKDROP2
     }>ELSE<{
       DROP
       MYADDR
@@ -124,13 +133,13 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    4 -ROLL
+    5 -ROLL
     __gen_write_IntrinsicsTester INLINECALLDICT
     ENDC
     c4 POP
   }>
   $__gen_IntrinsicsTester_getTons PROCREF:<{
-    4 BLKDROP
+    5 BLKDROP
     10123400000 PUSHINT
   }>
   $__gen_get_getTons PROC:<{
@@ -138,14 +147,14 @@ PROGRAM{
     $__gen_IntrinsicsTester_getTons INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getTons2 PROCREF:<{
-    3 BLKDROP
+    4 BLKDROP
   }>
   $__gen_get_getTons2 PROC:<{
     __gen_load_IntrinsicsTester INLINECALLDICT
     $__gen_IntrinsicsTester_getTons2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getString PROCREF:<{
-    4 BLKDROP
+    5 BLKDROP
     B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
   }>
   $__gen_get_getString PROC:<{
@@ -153,15 +162,15 @@ PROGRAM{
     $__gen_IntrinsicsTester_getString INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getString2 PROCREF:<{
-    s2 s3 XCHG
-    3 BLKDROP
+    s3 s4 XCHG
+    4 BLKDROP
   }>
   $__gen_get_getString2 PROC:<{
     __gen_load_IntrinsicsTester INLINECALLDICT
     $__gen_IntrinsicsTester_getString2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getAddress PROCREF:<{
-    4 BLKDROP
+    5 BLKDROP
     B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
   }>
   $__gen_get_getAddress PROC:<{
@@ -169,15 +178,15 @@ PROGRAM{
     $__gen_IntrinsicsTester_getAddress INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getAddress2 PROCREF:<{
-    s1 s3 XCHG
-    3 BLKDROP
+    s2 s4 XCHG
+    4 BLKDROP
   }>
   $__gen_get_getAddress2 PROC:<{
     __gen_load_IntrinsicsTester INLINECALLDICT
     $__gen_IntrinsicsTester_getAddress2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getCell PROCREF:<{
-    4 BLKDROP
+    5 BLKDROP
     NEWC
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
     STSLICER
@@ -188,11 +197,27 @@ PROGRAM{
     $__gen_IntrinsicsTester_getCell INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getCell2 PROCREF:<{
-    3 1 BLKDROP2
+    s1 s4 XCHG
+    4 BLKDROP
   }>
   $__gen_get_getCell2 PROC:<{
     __gen_load_IntrinsicsTester INLINECALLDICT
     $__gen_IntrinsicsTester_getCell2 INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getPow PROCREF:<{
+    5 BLKDROP
+    9 PUSHPOW2
+  }>
+  $__gen_get_getPow PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getPow INLINECALLDICT
+  }>
+  $__gen_IntrinsicsTester_getPow2 PROCREF:<{
+    4 1 BLKDROP2
+  }>
+  $__gen_get_getPow2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getPow2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
@@ -251,7 +276,7 @@ PROGRAM{
     4 TUPLE
     __tact_context SETGLOB
     __gen_load_IntrinsicsTester INLINECALLDICT
-    2 4 BLKSWAP
+    2 5 BLKSWAP
     __gen_router_IntrinsicsTester INLINECALLDICT
     DROP
     __gen_store_IntrinsicsTester INLINECALLDICT
@@ -264,7 +289,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d663378456168737359583558644a6150375a6f744e633434714274737357317948356e5768456246737a5373} PUSHSLICE
+    x{697066733a2f2f516d5072346431636d624c4d443354786b69473778747a64774d47766b777243426a39346667506b4a5070627262} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

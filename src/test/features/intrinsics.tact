@@ -4,6 +4,7 @@ contract IntrinsicsTester {
     b: String = "Hello world";
     c: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
     d: Cell = cell("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+    e: Int = pow(2, 9);
     
     init() {
 
@@ -43,5 +44,13 @@ contract IntrinsicsTester {
 
     get fun getCell2(): Cell {
         return self.d;
+    }
+
+    get fun getPow(): Int {
+        return pow(2, 9);
+    }
+
+    get fun getPow2(): Int {
+        return self.e;
     }
 }
