@@ -58,7 +58,7 @@ contract Wallet {
         }
     }
 
-    receive("слава україни") {
+    receive("Слава Україні") {
         if (!context().bounced) {
             self.seqno = self.seqno + 1;
         }
