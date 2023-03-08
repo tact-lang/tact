@@ -23,12 +23,12 @@ const version = require('../../package.json').version;
 export async function build(args: {
     config: ConfigProject,
     project: VirtualFileSystem,
-    stdlib: string,
+    stdlib: string | VirtualFileSystem,
     logger?: TactLogger | null | undefined
 }) {
 
     const { config, project } = args;
-    const stdlib = createVirtualFileSystem(args.stdlib, files);
+    const stdlib = (typeof args.stdlib === 'string') ? createVirtualFileSystem(args.stdlib, files) : args.stdlib;
     const logger: TactLogger = args.logger || consoleLogger;
 
     // Configure context

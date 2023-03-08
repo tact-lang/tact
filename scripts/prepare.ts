@@ -60,7 +60,7 @@ import { consoleLogger } from '../src/logger';
             console.log('Processing ' + p.path + r);
             let c: FuncCompilationResult;
             try {
-                let stdlibPath = path.resolve(__dirname, '../src/stdlib/stdlib.fc');
+                let stdlibPath = path.resolve(__dirname, '..', 'stdlib', 'stdlib.fc');
                 let stdlib = fs.readFileSync(stdlibPath, 'utf-8');
                 let code = fs.readFileSync(p.path + r, 'utf-8');
                 c = await funcCompile({
@@ -78,6 +78,7 @@ import { consoleLogger } from '../src/logger';
                     continue;
                 }
             } catch (e) {
+                console.warn(e);
                 console.warn('Failed');
                 continue;
             }
