@@ -69,10 +69,9 @@ fun send(params: SendParameters) {
 }
 
 fun reply(body: Cell?) {
-    let ctx: Context = context();
     send(SendParameters{
         bounce: true,
-        to: ctx.sender,
+        to: sender(),
         value: 0,
         mode: SendRemainingValue + SendIgnoreErrors, 
         body: body

@@ -36,15 +36,17 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    0 4 2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     1 SETGLOBVAR
+    s0 s2 XCHG
+    2 SETGLOBVAR
     c4 PUSH
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{
@@ -111,15 +113,11 @@ SETCP0
         LDI
         ROTREV
         1 2 BLKDROP2
-        1 GETGLOBVAR
-        4 UNTUPLE
-        s2 s3 XCHG
-        3 BLKDROP
         257 PUSHINT
         s0 PUSH
-        s3 s9 XCHG
-        s1 s4 s0 XCHG3
-        s9 s-1 PUXC
+        s3 s8 XCHG
+        s1 s8 s0 XCHG3
+        s8 s-1 PUXC
         s1 PUSH
         ISNULL
         <{
@@ -136,9 +134,10 @@ SETCP0
           DICTISETB
         }> PUSHCONT
         IFELSE
-        s2 s3 XCHG
         267 PUSHINT
-        s0 s0 s7 XCHG3
+        2 GETGLOBVAR
+        s3 s4 XCHG
+        s1 s0 s7 XCHG3
         257 PUSHINT
         10 CALLDICT
         s0 s1 XCHG
@@ -282,8 +281,7 @@ SETCP0
         IFELSE
         s0 s2 XCHG
         -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
+      }> IFJMPREF
       s1 PUSH
       1718153138 PUSHINT
       EQUAL
@@ -359,10 +357,7 @@ SETCP0
           }> PUSHCONT
           IFELSE
           267 PUSHINT
-          1 GETGLOBVAR
-          4 UNTUPLE
-          s2 s3 XCHG
-          3 BLKDROP
+          2 GETGLOBVAR
           s2 s4 XCHG
           PUSHNULL
           257 PUSHINT
@@ -428,13 +423,11 @@ SETCP0
         64 STU
         ENDC
         <{
-          1 GETGLOBVAR
-          4 UNTUPLE
-          s2 s3 XCHG
-          3 BLKDROP
           -1 PUSHINT
+          2 GETGLOBVAR
           0 PUSHINT
-          s0 s3 XCHG2
+          ROT
+          s0 s3 XCHG
           66 PUSHINT
           s0 s1 XCHG
           PUSHNULL
@@ -584,13 +577,14 @@ SETCP0
           }> CALLREF
         }> CALLREF
         -1 PUSHINT
-      }> IFJMPREF
+      }> PUSHCONT
+      IFJMP
       s0 POP
       0 PUSHINT
     }> CALLREF
     s0 POP
     NEWC
-    2 GETGLOBVAR
+    3 GETGLOBVAR
     s0 s1 XCHG
     STREF
     -1 PUSHINT
@@ -643,7 +637,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{
@@ -686,7 +680,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{

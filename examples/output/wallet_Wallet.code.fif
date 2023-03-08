@@ -3,7 +3,6 @@ PROGRAM{
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
   DECLPROC __tact_not_null
-  DECLPROC __tact_context_get
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
@@ -13,7 +12,6 @@ PROGRAM{
   DECLPROC __gen_read_TransferMessage
   DECLPROC __gen_write_Wallet
   DECLPROC __gen_read_Wallet
-  DECLPROC __gen_Context_get_bounced
   DECLPROC __gen_write_$init$Wallet
   DECLPROC __gen_read_$init$Wallet
   DECLPROC $__gen_Wallet_init
@@ -42,6 +40,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   __tact_verify_address PROCINLINE:<{
     DUP
@@ -76,10 +75,6 @@ PROGRAM{
     DUP
     ISNULL
     128 THROWIF
-  }>
-  __tact_context_get PROCINLINE:<{
-    __tact_context GETGLOB
-    4 UNTUPLE
   }>
   __tact_store_bool PROCINLINE:<{
     SWAP
@@ -165,9 +160,6 @@ PROGRAM{
     256 LDU
     64 LDU
     3 -ROLL
-  }>
-  __gen_Context_get_bounced PROCINLINE:<{
-    3 BLKDROP
   }>
   __gen_write_$init$Wallet PROCINLINE:<{
     s0 s2 XCHG
@@ -404,44 +396,24 @@ PROGRAM{
   }>
   $__gen_Wallet_receive_fallback PROCINLINE:<{
     DROP
-    __tact_context_get INLINECALLDICT
-    __gen_Context_get_bounced INLINECALLDICT
-    NOT
-    IF:<{
-      s0 s2 XCHG
-      INC
-      s0 s2 XCHG
-    }>
+    s0 s2 XCHG
+    INC
+    s0 s2 XCHG
   }>
   $__gen_Wallet_receive PROCINLINE:<{
-    __tact_context_get INLINECALLDICT
-    __gen_Context_get_bounced INLINECALLDICT
-    NOT
-    IF:<{
-      s0 s2 XCHG
-      INC
-      s0 s2 XCHG
-    }>
+    s0 s2 XCHG
+    INC
+    s0 s2 XCHG
   }>
   $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
-    __tact_context_get INLINECALLDICT
-    __gen_Context_get_bounced INLINECALLDICT
-    NOT
-    IF:<{
-      s0 s2 XCHG
-      INC
-      s0 s2 XCHG
-    }>
+    s0 s2 XCHG
+    INC
+    s0 s2 XCHG
   }>
   $__gen_Wallet_receive_comment_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 PROCINLINE:<{
-    __tact_context_get INLINECALLDICT
-    __gen_Context_get_bounced INLINECALLDICT
-    NOT
-    IF:<{
-      s0 s2 XCHG
-      INC
-      s0 s2 XCHG
-    }>
+    s0 s2 XCHG
+    INC
+    s0 s2 XCHG
   }>
   $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
   }>
@@ -547,10 +519,12 @@ PROGRAM{
     LDMSGADDR
     SWAP
     __tact_verify_address INLINECALLDICT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
     __gen_load_Wallet INLINECALLDICT
     2 3 BLKSWAP
     __gen_router_Wallet INLINECALLDICT

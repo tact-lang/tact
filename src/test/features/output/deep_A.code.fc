@@ -38,6 +38,7 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 builder __tact_store_bool(builder b, int v) inline {
@@ -285,6 +286,7 @@ _ $__gen_get_getNext() method_id(74105) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_A();

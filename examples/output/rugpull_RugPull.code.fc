@@ -22,9 +22,12 @@ builder __tact_store_address(builder b, slice address) inline {
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 builder __tact_store_bool(builder b, int v) inline {
     b = b.store_int(v, 1);
@@ -151,11 +154,6 @@ builder __gen_write_RugPull(builder build_0, (slice, int, int, int, int, int, in
     return (sc_0, (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue));
 }
 
-_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
-    var (v'bounced, v'sender, v'value, v'raw) = v;
-    return v'sender;
-}
-
 (int, int, int) __gen_RugParams_to_external(((int, int, int)) v) inline {
     var (v'investment, v'returns, v'fee) = v; 
     return (v'investment, v'returns, v'fee);
@@ -258,8 +256,7 @@ slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09ba
 }
 
 () $reply(cell $body) impure inline_ref {
-    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
 }
 
 cell $__gen_String_asComment(slice $self) impure inline_ref {
@@ -296,7 +293,7 @@ _ $__gen_get_params() method_id(116437) {
 
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
-    throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
+    throw_unless(132, __tact_address_eq(__tact_context_get_sender(), $self'owner));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
@@ -443,6 +440,7 @@ _ $__gen_get_stopped() method_id(74107) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_RugPull();

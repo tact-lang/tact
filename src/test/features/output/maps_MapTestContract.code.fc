@@ -24,6 +24,7 @@ slice __tact_verify_address(slice address) inline {
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
@@ -672,6 +673,7 @@ _ $__gen_get_addrMap4Value(slice $$key) method_id(100021) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_MapTestContract();

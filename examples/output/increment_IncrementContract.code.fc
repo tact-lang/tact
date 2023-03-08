@@ -19,9 +19,10 @@ forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 builder __tact_store_bool(builder b, int v) inline {
     b = b.store_int(v, 1);
@@ -163,11 +164,6 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
     return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
 }
 
-_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
-    var (v'bounced, v'sender, v'value, v'raw) = v;
-    return v'sender;
-}
-
 (cell, cell, cell, cell, cell) $__gen_IncrementContract_init() impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = (null(), null(), null(), null(), null());
     return ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5);
@@ -242,8 +238,7 @@ _ __gen_Context_get_sender((int, slice, int, slice) v) inline {
 }
 
 () $reply(cell $body) impure inline_ref {
-    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
 }
 
 cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
@@ -271,9 +266,8 @@ _ $__gen_get_counters2() method_id(77570) {
 (((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'value) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     $self'counters~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
-    $self'counters4~__tact_dict_set_slice_int(267, $ctx'sender, $msg'value, 257);
+    $self'counters4~__tact_dict_set_slice_int(267, __tact_context_get_sender(), $msg'value, 257);
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
@@ -303,7 +297,7 @@ _ $__gen_get_counters2() method_id(77570) {
     $self'counters~__tact_dict_set_int_int(257, $msg'key, null(), 257);
     $self'counters2~__tact_dict_set_int_int(257, $msg'key, null(), 1);
     $self'counters3~__tact_dict_set_int_cell(257, $msg'key, null());
-    $self'counters4~__tact_dict_set_slice_int(267, __gen_Context_get_sender(__tact_context_get()), null(), 257);
+    $self'counters4~__tact_dict_set_slice_int(267, __tact_context_get_sender(), null(), 257);
     $self'counters5~__tact_dict_set_int_cell(257, $msg'key, __gen_writecellopt_Something(null()));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
@@ -378,6 +372,7 @@ _ $__gen_get_counters2() method_id(77570) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_IncrementContract();

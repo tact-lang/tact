@@ -17,9 +17,10 @@ builder __tact_store_address(builder b, slice address) inline {
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 global int __tact_randomized;
 () __tact_prepare_random() impure inline {
@@ -134,8 +135,7 @@ int $random(int $min, int $max) impure inline_ref {
 }
 
 () $reply(cell $body) impure inline_ref {
-    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, $ctx'sender, 0, (64 + 2), $body));
+    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
 }
 
 int $__gen_RandomContract_randomInt(tuple $self) impure inline_ref {
@@ -204,6 +204,7 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_RandomContract();

@@ -4,6 +4,7 @@ PROGRAM{
   DECLPROC __tact_store_address
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
+  DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_address_eq
   DECLPROC __gen_read_CanPayout
@@ -29,6 +30,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   __tact_verify_address PROCINLINE:<{
     DUP
@@ -67,6 +69,9 @@ PROGRAM{
   __tact_context_get PROCINLINE:<{
     __tact_context GETGLOB
     4 UNTUPLE
+  }>
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
   }>
   __tact_store_bool PROCINLINE:<{
     SWAP
@@ -267,12 +272,11 @@ PROGRAM{
     PUSHNULL
   }>
   $reply PROCREF:<{
-    __tact_context_get INLINECALLDICT
-    s2 s3 XCHG
-    3 BLKDROP
     TRUE
+    __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
-    s0 s3 XCHG2
+    ROT
+    s0 s3 XCHG
     66 PUSHINT
     SWAP
     __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
@@ -367,10 +371,12 @@ PROGRAM{
     LDMSGADDR
     SWAP
     __tact_verify_address INLINECALLDICT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
     __gen_load_Beacon INLINECALLDICT
     2 3 BLKSWAP
     __gen_router_Beacon INLINECALLDICT

@@ -231,6 +231,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
             ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
             ctx.append(`slice msg_sender_addr = ${ctx.used('__tact_verify_address')}(cs~load_msg_addr());`);
             ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
+            ctx.append(`__tact_context_sender = msg_sender_addr;`);
             ctx.append();
 
             // Load self

@@ -8,6 +8,9 @@ struct Context {
 @name(__tact_context_get)
 native context(): Context;
 
+@name(__tact_context_get_sender)
+native sender(): Address;
+
 extends fun readForwardFee(self: Context): Int {
     let sc: Slice = self.raw;
     sc.loadCoins(); // Skip value

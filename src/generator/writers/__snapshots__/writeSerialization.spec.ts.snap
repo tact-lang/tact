@@ -88,9 +88,12 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 global int __tact_randomized;
 () __tact_prepare_random() impure inline {
@@ -1009,9 +1012,12 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 global int __tact_randomized;
 () __tact_prepare_random() impure inline {
@@ -1930,9 +1936,12 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 global int __tact_randomized;
 () __tact_prepare_random() impure inline {

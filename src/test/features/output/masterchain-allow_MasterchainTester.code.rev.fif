@@ -33,15 +33,17 @@ SETCP0
     EQUAL
     OR
     136 THROWIFNOT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    0 4 2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     1 SETGLOBVAR
+    s0 s2 XCHG
+    2 SETGLOBVAR
     c4 PUSH
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 POP
     <{
@@ -154,7 +156,7 @@ SETCP0
     s0 POP
     s0 POP
     NEWC
-    2 GETGLOBVAR
+    3 GETGLOBVAR
     s0 s1 XCHG
     STREF
     -1 PUSHINT
@@ -210,7 +212,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 POP
     <{
@@ -248,7 +250,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 POP
     <{
@@ -271,7 +273,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 POP
     <{
@@ -318,7 +320,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 POP
     <{

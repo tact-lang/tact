@@ -78,6 +78,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   __tact_verify_address PROCINLINE:<{
     DUP
@@ -862,10 +863,12 @@ PROGRAM{
     LDMSGADDR
     SWAP
     __tact_verify_address INLINECALLDICT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
     __gen_load_MapTestContract INLINECALLDICT
     2 8 BLKSWAP
     __gen_router_MapTestContract INLINECALLDICT

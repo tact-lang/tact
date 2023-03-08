@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MultisigContract
-BOC Size: 1027 bytes
+BOC Size: 1031 bytes
 
 # Types
 Total Types: 6

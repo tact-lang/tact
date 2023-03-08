@@ -34,9 +34,8 @@ contract IncrementContract with Deployable {
     }
 
     receive(msg: Increment) {
-        let ctx: Context = context();
         self.counters.set(msg.key, msg.value);
-        self.counters4.set(ctx.sender, msg.value);
+        self.counters4.set(sender(), msg.value);
     }
 
     receive(msg: Toggle) {
@@ -57,7 +56,7 @@ contract IncrementContract with Deployable {
         self.counters.set(msg.key, null);
         self.counters2.set(msg.key, null);
         self.counters3.set(msg.key, null);
-        self.counters4.set(context().sender, null);
+        self.counters4.set(sender(), null);
         self.counters5.set(msg.key, null);
     }
 

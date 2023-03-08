@@ -17,8 +17,8 @@ describe('benchmarks', () => {
 
         // Find gas used
         let gasUsed = tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n);
-        expect(gasUsed).toMatchInlineSnapshot(`3641n`);
-        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`350`);
+        expect(gasUsed).toMatchInlineSnapshot(`3697n`);
+        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`354`);
     });
     it('benchmark functions(inline)', async () => {
 
@@ -32,7 +32,7 @@ describe('benchmarks', () => {
 
         // Find gas used
         let gasUsed = tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n);
-        expect(gasUsed).toMatchInlineSnapshot(`3510n`);
-        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`343`);
+        expect(gasUsed).toMatchInlineSnapshot(`3566n`);
+        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`347`);
     });
 });

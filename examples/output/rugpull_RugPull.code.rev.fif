@@ -36,15 +36,17 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    0 4 2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     1 SETGLOBVAR
+    s0 s2 XCHG
+    2 SETGLOBVAR
     c4 PUSH
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{
@@ -589,10 +591,7 @@ SETCP0
         s1 POP
         10 1 BLKSWAP
         <{
-          1 GETGLOBVAR
-          4 UNTUPLE
-          s2 s3 XCHG
-          3 BLKDROP
+          2 GETGLOBVAR
           s10 PUSH
           SDEQ
           132 THROWIFNOT
@@ -614,10 +613,7 @@ SETCP0
         <{
           s0 POP
           <{
-            1 GETGLOBVAR
-            4 UNTUPLE
-            s2 s3 XCHG
-            3 BLKDROP
+            2 GETGLOBVAR
             s10 PUSH
             SDEQ
             132 THROWIFNOT
@@ -953,10 +949,7 @@ SETCP0
         <{
           <{
             <{
-              1 GETGLOBVAR
-              4 UNTUPLE
-              s2 s3 XCHG
-              3 BLKDROP
+              2 GETGLOBVAR
               s10 PUSH
               SDEQ
               132 THROWIFNOT
@@ -1073,13 +1066,11 @@ SETCP0
               s1 POP
             }> CALLREF
             <{
-              1 GETGLOBVAR
-              4 UNTUPLE
-              s2 s3 XCHG
-              3 BLKDROP
               -1 PUSHINT
+              2 GETGLOBVAR
               0 PUSHINT
-              s0 s3 XCHG2
+              ROT
+              s0 s3 XCHG
               66 PUSHINT
               s0 s1 XCHG
               PUSHNULL
@@ -1239,7 +1230,7 @@ SETCP0
     }> CALLREF
     s0 POP
     NEWC
-    2 GETGLOBVAR
+    3 GETGLOBVAR
     s0 s1 XCHG
     STREF
     -1 PUSHINT
@@ -1305,7 +1296,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{
@@ -1418,7 +1409,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{
@@ -1539,7 +1530,7 @@ SETCP0
     CTOS
     LDREF
     s0 s1 XCHG
-    2 SETGLOBVAR
+    3 SETGLOBVAR
     1 LDI
     s0 s1 XCHG
     <{

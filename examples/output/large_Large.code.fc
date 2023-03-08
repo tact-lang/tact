@@ -11,6 +11,7 @@ slice __tact_verify_address(slice address) inline {
 }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 builder __gen_write_Large(builder build_0, (cell, cell, cell, cell) v) inline {
@@ -95,6 +96,7 @@ slice __gen_slice_cell_001f65cdb7a3a2e0613601520ce3d65b14f08d94e33451ecd9f4dd3be
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_Large();

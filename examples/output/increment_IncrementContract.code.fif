@@ -2,7 +2,7 @@ PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
   DECLPROC __tact_not_null
-  DECLPROC __tact_context_get
+  DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_int_int
   DECLPROC __tact_dict_get_int_int
@@ -22,7 +22,6 @@ PROGRAM{
   DECLPROC __gen_writecellopt_Something
   DECLPROC __gen_write_IncrementContract
   DECLPROC __gen_read_IncrementContract
-  DECLPROC __gen_Context_get_sender
   DECLPROC $__gen_IncrementContract_init
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
@@ -45,6 +44,7 @@ PROGRAM{
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
   DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   __tact_verify_address PROCINLINE:<{
     DUP
@@ -75,9 +75,8 @@ PROGRAM{
     ISNULL
     128 THROWIF
   }>
-  __tact_context_get PROCINLINE:<{
-    __tact_context GETGLOB
-    4 UNTUPLE
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
   }>
   __tact_store_bool PROCINLINE:<{
     SWAP
@@ -277,10 +276,6 @@ PROGRAM{
     s3 s5 XCHG
     s3 s4 XCHG
   }>
-  __gen_Context_get_sender PROCINLINE:<{
-    s2 s3 XCHG
-    3 BLKDROP
-  }>
   $__gen_IncrementContract_init PROCREF:<{
     PUSHNULL
     PUSHNULL
@@ -426,12 +421,11 @@ PROGRAM{
     PUSHNULL
   }>
   $reply PROCREF:<{
-    __tact_context_get INLINECALLDICT
-    s2 s3 XCHG
-    3 BLKDROP
     TRUE
+    __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
-    s0 s3 XCHG2
+    ROT
+    s0 s3 XCHG
     66 PUSHINT
     SWAP
     __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
@@ -453,18 +447,16 @@ PROGRAM{
     $__gen_IncrementContract_counters2 INLINECALLDICT
   }>
   $__gen_IncrementContract_receive_Increment PROCINLINE:<{
-    __tact_context_get INLINECALLDICT
-    s2 s3 XCHG
-    3 BLKDROP
     257 PUSHINT
     DUP
-    s3 s9 XCHG
-    s1 s4 s0 XCHG3
-    s9 s(-1) PUXC
+    s3 s8 XCHG
+    s1 s8 s0 XCHG3
+    s8 s(-1) PUXC
     __tact_dict_set_int_int INLINECALLDICT
-    s2 s3 XCHG
     267 PUSHINT
-    s0 s0 s7 XCHG3
+    __tact_context_get_sender INLINECALLDICT
+    s3 s4 XCHG
+    s1 s0 s7 XCHG3
     257 PUSHINT
     __tact_dict_set_slice_int CALLDICT
     SWAP
@@ -530,8 +522,7 @@ PROGRAM{
     PUSHNULL
     __tact_dict_set_int_cell INLINECALLDICT
     267 PUSHINT
-    __tact_context_get INLINECALLDICT
-    __gen_Context_get_sender INLINECALLDICT
+    __tact_context_get_sender INLINECALLDICT
     s2 s4 XCHG
     PUSHNULL
     257 PUSHINT
@@ -635,10 +626,12 @@ PROGRAM{
     LDMSGADDR
     SWAP
     __tact_verify_address INLINECALLDICT
-    s2 PUSH
-    s1 s5 s5 XCHG3
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
     4 TUPLE
     __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
     __gen_load_IncrementContract INLINECALLDICT
     2 5 BLKSWAP
     __gen_router_IncrementContract INLINECALLDICT

@@ -24,6 +24,7 @@ builder __tact_store_address(builder b, slice address) inline {
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
@@ -186,6 +187,7 @@ _ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_DDDD();

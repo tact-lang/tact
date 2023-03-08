@@ -49,9 +49,12 @@ int __tact_my_balance() inline {
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
 global (int, slice, int, slice) __tact_context;
+global slice __tact_context_sender;
 global cell __tact_context_sys;
 
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+
+slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
 builder __tact_store_bool(builder b, int v) inline {
     b = b.store_int(v, 1);
@@ -165,11 +168,6 @@ builder __gen_write_Payouts(builder build_0, (slice, int) v) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'publicKey = sc_0~load_int(257);
     return (sc_0, (v'owner, v'publicKey));
-}
-
-_ __gen_Context_get_sender((int, slice, int, slice) v) inline {
-    var (v'bounced, v'sender, v'value, v'raw) = v;
-    return v'sender;
 }
 
 builder __gen_write_$init$Beacon(builder build_0, (slice, slice) v) inline {
@@ -341,7 +339,7 @@ slice $__gen_String_fromBase64(slice $self) impure inline_ref {
 
 ((slice, int), ()) $__gen_Payouts_requireOwner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
-    throw_unless(132, __tact_address_eq(__gen_Context_get_sender(__tact_context_get()), $self'owner));
+    throw_unless(132, __tact_address_eq(__tact_context_get_sender(), $self'owner));
     return (($self'owner, $self'publicKey), ());
 }
 
@@ -452,6 +450,7 @@ _ $__gen_get_owner() method_id(83229) {
     var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
     var self = __gen_load_Payouts();
