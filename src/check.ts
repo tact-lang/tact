@@ -25,7 +25,7 @@ export type CheckResult = {
 export function check(args: { project: VirtualFileSystem, entrypoint: string }): CheckResult {
 
     // Create context
-    let stdlib = createVirtualFileSystem('@stdlib', files);
+    let stdlib = createVirtualFileSystem('@stdlib/', files);
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
     ctx = featureEnable(ctx, 'debug'); // Enable debug flag (does not affect type checking in practice)
     ctx = featureEnable(ctx, 'masterchain'); // Enable masterchain flag to avoid masterchain-specific errors

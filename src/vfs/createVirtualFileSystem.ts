@@ -3,9 +3,6 @@ import { VirtualFileSystem } from "./VirtualFileSystem";
 
 export function createVirtualFileSystem(root: string, fs: { [key: string]: string }, readonly: boolean = true): VirtualFileSystem {
     let normalizedRoot = normalize(root);
-    if (!normalizedRoot.endsWith('/')) {
-        normalizedRoot += '/';
-    }
     return {
         root: normalizedRoot,
         exists(filePath: string): boolean {
@@ -25,7 +22,7 @@ export function createVirtualFileSystem(root: string, fs: { [key: string]: strin
             let name = filePath.slice(normalizedRoot.length);
             let content = fs[name];
             if (typeof content !== 'string') {
-                throw Error('File not found: ' + filePath);
+                throw Error(`File ${name} not found at ${filePath}`);
             } else {
                 return Buffer.from(content, 'base64');
             }

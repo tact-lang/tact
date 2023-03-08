@@ -46,7 +46,7 @@ export async function run(args: { configPath: string, projectNames?: string[] })
     // Compile 
     let success = true;
     let project = createNodeFileSystem(rootPath, false);
-    let stdlib = path.resolve(__dirname, '..', 'stdlib'); // Improves developer experience
+    let stdlib = path.resolve(__dirname, '..', 'stdlib') + path.sep; // Improves developer experience
     for (let config of projects) {
         console.log('💼 Compiling project ' + config.name + '...');
         let built = await build({ config, project, stdlib, logger: consoleLogger });
