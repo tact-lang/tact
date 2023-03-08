@@ -11,6 +11,27 @@ describe('resolveImports', () => {
             stdlib,
             entrypoint: './main.tact'
         });
-        expect(resolved).toMatchSnapshot();
+        expect(resolved).toMatchObject({
+            "func": [
+                {
+                    "code": "",
+                    "path": path.resolve(__dirname, '__testdata', 'stdlib', 'stdlib2.fc'),
+                },
+            ],
+            "tact": [
+                {
+                    "code": "import \"./stdlib2.fc\";",
+                    "path": path.resolve(__dirname, '__testdata', 'stdlib', 'stdlib.tact'),
+                },
+                {
+                    "code": "",
+                    "path": path.resolve(__dirname, '__testdata', 'project', 'imported.tact'),
+                },
+                {
+                    "code": "import \"./imported\";",
+                    "path": path.resolve(__dirname, '__testdata', 'project', 'main.tact'),
+                },
+            ],
+        });
     });
 });
