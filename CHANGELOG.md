@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Upgrade `func` to `0.4.2`
 
+## Fixed
+- Windows paths support
+
 ## [1.0.0-rc.12] - 2023-03-03
 
 ## Fixed

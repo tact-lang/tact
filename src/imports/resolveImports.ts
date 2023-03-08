@@ -1,5 +1,6 @@
 import { parseImports } from '../grammar/grammar';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
+import { parseImportPath } from './parseImportPath';
 import { resolveLibrary } from './resolveLibrary';
 
 export function resolveImports(args: { entrypoint: string, project: VirtualFileSystem, stdlib: VirtualFileSystem }) {
@@ -11,7 +12,7 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
     // const stdlibFuncPath = args.stdlib.resolve('./stdlib.fc');
     // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
 
-    const stdlibTactPath = args.stdlib.resolve('./stdlib.tact');
+    const stdlibTactPath = args.stdlib.resolve('stdlib.tact');
     const stdlibTact = args.stdlib.readFile(stdlibTactPath).toString();
 
     const codePath = args.project.resolve(args.entrypoint);

@@ -1,4 +1,5 @@
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { parseImportPath } from "./parseImportPath";
 
 export type ResolveLibraryArgs = {
     path: string,
@@ -23,7 +24,11 @@ export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
     //       to avoid hijacking the stdlib imports
     if (args.name.startsWith('@stdlib/')) {
         let libraryName = args.name.substring('@stdlib/'.length);
-        let tactFile = args.stdlib.resolve('libs', libraryName + '.tact');
+        let libraryPath = parseImportPath('./' + libraryName + '.tact');
+        if (!libraryPath) {
+            return { ok: false };
+        }
+        let tactFile = args.stdlib.resolve('libs', ...libraryPath);
         if (args.stdlib.exists(tactFile)) {
             return { ok: true, path: tactFile, source: 'stdlib', kind: 'tact' };
         } else {
@@ -51,7 +56,13 @@ export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
     if (!importName.endsWith('.tact') && !importName.endsWith('.fc')) {
         importName = importName + '.tact';
     }
-    let resolvedPath = vfs.resolve(workingDirectory, '..', importName);
+
+    // Resolve import
+    let parsedImport = parseImportPath(importName);
+    if (!parsedImport) {
+        return { ok: false };
+    }
+    let resolvedPath = vfs.resolve(workingDirectory, '..', ...parsedImport);
     if (vfs.exists(resolvedPath)) {
         return { ok: true, path: resolvedPath, source, kind };
     }

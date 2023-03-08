@@ -5,8 +5,8 @@ import mkdirp from "mkdirp";
 
 export function createNodeFileSystem(root: string, readonly: boolean = true): VirtualFileSystem {
     let normalizedRoot = path.normalize(root);
-    if (!normalizedRoot.endsWith('/')) {
-        normalizedRoot += '/';
+    if (!normalizedRoot.endsWith(path.sep)) {
+        normalizedRoot += path.sep;
     }
     return {
         root: normalizedRoot,
