@@ -1,6 +1,5 @@
 import { parseImports } from '../grammar/grammar';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
-import { parseImportPath } from './parseImportPath';
 import { resolveLibrary } from './resolveLibrary';
 
 export function resolveImports(args: { entrypoint: string, project: VirtualFileSystem, stdlib: VirtualFileSystem }) {
