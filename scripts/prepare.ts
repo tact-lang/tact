@@ -35,7 +35,7 @@ import { consoleLogger } from '../src/logger';
 
             let config: ConfigProject = {
                 name: r.slice(0, r.length - '.tact'.length),
-                path: p.path + '/' + r,
+                path: './' + r,
                 output: './output/',
             };
             let stdlib = '@stdlib';
