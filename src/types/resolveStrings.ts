@@ -8,7 +8,7 @@ let store = createContextStore<{ value: string, id: number }>();
 let exceptions = createContextStore<{ value: string, id: number }>();
 
 function stringId(src: string): number {
-    return sha256_sync(src).readUint32BE(0);
+    return sha256_sync(src).readUInt32BE(0);
 }
 
 function exceptionId(src: string): number {
