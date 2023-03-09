@@ -79,6 +79,12 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
         }
     }
 
+    if (items.length > 0) {
+        return {
+            ok: false,
+            messages: items
+        };
+    }
     return {
         ok: true
     };
