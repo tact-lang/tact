@@ -28,6 +28,8 @@ TACT is distributed via NPM, to install tact into your project, you need:
 yarn add @tact-lang/compiler
 ```
 
+*For Visual Studio Syntax Support: Please Click [Here](https://marketplace.visualstudio.com/items?itemName=ton-community.tact-vscode) to install on https://marketplace.visualstudio.com/
+
 TACT doesn't have development environment dependencies and has everything built in. TACT's stdlib also distributed together with a compiler.
 
 ## 10 Commandments of Tact
