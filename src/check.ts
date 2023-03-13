@@ -35,7 +35,6 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
     try {
         precompile(ctx, args.project, stdlib, args.entrypoint);
     } catch (e) {
-        console.warn(e);
         if (e instanceof TactSourceError) {
             items.push({
                 type: 'error',
