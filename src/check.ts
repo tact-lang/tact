@@ -44,7 +44,7 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
                     file: e.ref.file,
                     line: e.ref.interval.getLineAndColumn().lineNum,
                     column: e.ref.interval.getLineAndColumn().colNum,
-                    length: e.ref.interval.startIdx - e.ref.interval.endIdx
+                    length: e.ref.interval.endIdx - e.ref.interval.startIdx
                 } : {
                     file: args.entrypoint,
                     line: 0,
