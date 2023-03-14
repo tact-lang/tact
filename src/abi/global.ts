@@ -94,10 +94,10 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
                 throwError('address() expects one argument', ref);
             }
             if (args[0].kind !== 'ref') {
-                throwError('require() expects string argument', ref);
+                throwError('address() expects string argument', ref);
             }
             if (args[0].name !== 'String') {
-                throwError('require() expects string argument', ref);
+                throwError('address() expects string argument', ref);
             }
             return { kind: 'ref', name: 'Address', optional: false };
         },
