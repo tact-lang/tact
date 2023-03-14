@@ -1,6 +1,7 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
+import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTRef, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
+import { TactSyntaxError } from './../errors';
 import { MatchResult } from 'ohm-js';
 
 
@@ -547,13 +548,13 @@ semantics.addOperation<ASTNode>('resolve_expression', {
         return createNode({ kind: 'init_of', name: arg1.sourceString, args: arg3.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
 });
-
+ 
 function throwMatchError(matchResult: MatchResult, path: string): never {
     let interval = (matchResult as any).getInterval();
     let lc = interval.getLineAndColumn() as { lineNum: number, colNum: number };
     let msg = interval.getLineAndColumnMessage();
     let message = path + ':' + lc.lineNum + ':' + lc.colNum + ': Syntax error: expected ' + (matchResult as any).getExpectedText() + ' \n' + msg;
-    throw new Error(message);
+    throw new TactSyntaxError(message, new ASTRef(interval, path));
 }
 
 export function parse(src: string, path: string): ASTProgram {
