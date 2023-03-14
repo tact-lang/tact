@@ -283,7 +283,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let isMutating = a.attributes.find(a => a.type === 'mutates');
         let isExtends = a.attributes.find(a => a.type === 'extends');
         let isVirtual = a.attributes.find(a => a.type === 'virtual');
-        let isOverwrites = a.attributes.find(a => a.type === 'overwrites');
+        let isOverrides = a.attributes.find(a => a.type === 'overrides');
 
         // Check for native
         if (a.kind === 'def_native_function') {
@@ -299,23 +299,23 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (isVirtual) {
                 throwError('Native functions cannot be virtual', isVirtual.ref);
             }
-            if (isOverwrites) {
-                throwError('Native functions cannot be overwrites', isOverwrites.ref);
+            if (isOverrides) {
+                throwError('Native functions cannot be overrides', isOverrides.ref);
             }
         }
 
-        // Check virtual and overwrites
+        // Check virtual and overrides
         if (isVirtual && isExtends) {
             throwError('Extend functions cannot be virtual', isVirtual.ref);
         }
-        if (isOverwrites && isExtends) {
-            throwError('Extend functions cannot be overwrites', isOverwrites.ref);
+        if (isOverrides && isExtends) {
+            throwError('Extend functions cannot be overrides', isOverrides.ref);
         }
         if (!self && isVirtual) {
             throwError('Virtual functions must be defined within a contract or a trait', isVirtual.ref);
         }
-        if (!self && isOverwrites) {
-            throwError('Overwrites functions must be defined within a contract or a trait', isOverwrites.ref);
+        if (!self && isOverrides) {
+            throwError('Overrides functions must be defined within a contract or a trait', isOverrides.ref);
         }
 
         // Check virtual
@@ -326,11 +326,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
         }
 
-        // Check overwrites
-        if (isOverwrites) {
+        // Check overrides
+        if (isOverrides) {
             let t = types[self!]!;
             if (t.kind !== 'contract') {
-                throwError('Overwrites functions must be defined within a contract', isOverwrites.ref);
+                throwError('Overrides functions must be defined within a contract', isOverrides.ref);
             }
         }
 
@@ -405,7 +405,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             isPublic: !!isPublic,
             isGetter: !!isGetter,
             isVirtual: !!isVirtual,
-            isOverwrites: !!isOverwrites,
+            isOverrides: !!isOverrides,
         };
     }
 
@@ -694,28 +694,28 @@ export function resolveDescriptors(ctx: CompilerContext) {
             for (let f of tr.functions.values()) {
                 let ex = t.functions.get(f.name);
 
-                // Check overwrites
-                if (ex && ex.isOverwrites) {
+                // Check overrides
+                if (ex && ex.isOverrides) {
                     if (f.isGetter) {
-                        throwError(`Overwritten function ${f.name} can not be a getter`, ex.ast.ref);
+                        throwError(`Overridden function ${f.name} can not be a getter`, ex.ast.ref);
                     }
                     if (f.isMutating !== ex.isMutating) {
-                        throwError(`Overwritten function ${f.name} should have same mutability`, ex.ast.ref);
+                        throwError(`Overridden function ${f.name} should have same mutability`, ex.ast.ref);
                     }
                     if (!typeRefEquals(f.returns, ex.returns)) {
-                        throwError(`Overwritten function ${f.name} should have same return type`, ex.ast.ref);
+                        throwError(`Overridden function ${f.name} should have same return type`, ex.ast.ref);
                     }
                     if (f.args.length !== ex.args.length) {
-                        throwError(`Overwritten function ${f.name} should have same number of arguments`, ex.ast.ref);
+                        throwError(`Overridden function ${f.name} should have same number of arguments`, ex.ast.ref);
                     }
                     for (let i = 0; i < f.args.length; i++) {
                         let a = ex.args[i];
                         let b = f.args[i];
                         if (!typeRefEquals(a.type, b.type)) {
-                            throwError(`Overwritten function ${f.name} should have same argument types`, ex.ast.ref);
+                            throwError(`Overridden function ${f.name} should have same argument types`, ex.ast.ref);
                         }
                     }
-                    continue; // Ignore overwritten functions
+                    continue; // Ignore overridden functions
                 }
 
                 // Check duplicates

@@ -64,7 +64,7 @@ export type FunctionDescription = {
     isPublic: boolean,
     isGetter: boolean,
     isMutating: boolean,
-    isOverwrites: boolean,
+    isOverrides: boolean,
     isVirtual: boolean,
     self: string | null,
     returns: TypeRef,

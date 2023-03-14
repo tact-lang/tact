@@ -2447,14 +2447,14 @@ exports[`grammar should parse case-23 1`] = `
           "args": [],
           "attributes": [
             {
-              "ref": overwrites,
-              "type": "overwrites",
+              "ref": overrides,
+              "type": "overrides",
             },
           ],
           "id": 14,
           "kind": "def_function",
           "name": "a",
-          "ref": overwrites fun a(): Int {
+          "ref": overrides fun a(): Int {
         return b;
     },
           "return": {
@@ -2485,7 +2485,7 @@ exports[`grammar should parse case-23 1`] = `
       "ref": contract Main with SomeTrait {
     b: Int;
 
-    overwrites fun a(): Int {
+    overrides fun a(): Int {
         return b;
     }
 },
@@ -2601,14 +2601,14 @@ exports[`grammar should parse case-24 1`] = `
           "args": [],
           "attributes": [
             {
-              "ref": overwrites,
-              "type": "overwrites",
+              "ref": overrides,
+              "type": "overrides",
             },
           ],
           "id": 14,
           "kind": "def_function",
           "name": "a",
-          "ref": overwrites fun a(): Int {
+          "ref": overrides fun a(): Int {
         return "hello world!";
     },
           "return": {
@@ -2639,7 +2639,7 @@ exports[`grammar should parse case-24 1`] = `
       "ref": contract Main with SomeTrait {
     b: Int;
 
-    overwrites fun a(): Int {
+    overrides fun a(): Int {
         return "hello world!";
     }
 },

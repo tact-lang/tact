@@ -147,8 +147,8 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
     FunctionAttribute_mutates(arg0) {
         return { type: 'mutates', ref: createRef(this) };
     },
-    FunctionAttribute_overwrites(arg0) {
-        return { type: 'overwrites', ref: createRef(this) };
+    FunctionAttribute_overrides(arg0) {
+        return { type: 'overrides', ref: createRef(this) };
     },
     FunctionAttribute_virtual(arg0) {
         return { type: 'virtual', ref: createRef(this) };

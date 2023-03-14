@@ -62,7 +62,7 @@ Tact {
                       | mutates --mutates
                       | extends --extends
                       | virtual --virtual
-                      | overwrites --overwrites
+                      | overrides --overrides
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
@@ -205,7 +205,7 @@ Tact {
             | with
             | trait
             | initOf
-            | overwrites
+            | overrides
             | virtual
     contract = "contract" ~idPart
     let = "let" ~idPart
@@ -229,7 +229,7 @@ Tact {
     trait = "trait" ~idPart
     initOf = "initOf" ~idPart
     virtual = "virtual" ~idPart
-    overwrites = "overwrites" ~idPart
+    overrides = "overrides" ~idPart
 
     // Attributes
     nameAttribute = "@name"
