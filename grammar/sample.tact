@@ -1,5 +1,7 @@
 import "@stdlib/ownable" /* Some Comment */;
 
+const GlobalConst1: Int = 1000;
+
 extends fun add(self: Int, b: Int): Int {
     return self * b;
 }
@@ -25,6 +27,9 @@ trait MyTrait {
     fun get extends traitState(): Int {
         return 0;
     }
+    virtual fun overrideMe() {
+        // nothing
+    }
 }
 
 contract MyContract with MyTrait, Ownable {
@@ -32,6 +37,7 @@ contract MyContract with MyTrait, Ownable {
     value: Int as uint32 = 1230;
     owner: Address;
     counters: map<Int, Address>;
+    const ConstInt: Int = 4000;
 
     init(owner: Address) {
         self.owner = owner;
@@ -58,5 +64,9 @@ contract MyContract with MyTrait, Ownable {
             value2: 1 + 2,
             value3: 2 != 3
         }.asCell());
+    }
+
+    overrides fun overrideMe() {
+        // nothing
     }
 }
