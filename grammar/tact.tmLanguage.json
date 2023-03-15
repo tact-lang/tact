@@ -172,6 +172,9 @@
           "include": "#fun-declaration"
         },
         {
+          "include": "#const-declaration"
+        },
+        {
           "include": "#field-declaration"
         }
       ]
@@ -181,6 +184,35 @@
       "begin": "(\\b[\\w]+\\b)",
       "beginCaptures": {
         "1": {
+          "name": "variable.object.property.tact"
+        }
+      },
+      "end": "(;)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.terminator.tact"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#type-annotation"
+        },
+        {
+          "include": "#variable-init"
+        }
+      ]
+    },
+    "const-declaration": {
+      "name": "meta.struct.field.tact",
+      "begin": "(const)\\s*(\\b[\\w]+\\b)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.const.tact"
+        },
+        "2": {
           "name": "variable.object.property.tact"
         }
       },
@@ -267,7 +299,7 @@
     },
     "fun-declaration": {
       "name": "meta.function.tact",
-      "begin": "\\b(get|native|extends|mutates|fun)\\b",
+      "begin": "\\b(get|native|extends|mutates|virtual|overrides|fun)\\b",
       "beginCaptures": {
         "1": {
           "name": "storage.modifier.tact"
@@ -296,7 +328,7 @@
         },
         {
           "name": "storage.modifier.tact",
-          "match": "\\b(get|native|extends|mutates|fun)\\b"
+          "match": "\\b(get|native|extends|mutates|virtual|overrides|fun)\\b"
         },
         {
           "name": "meta.definition.function.tact entity.name.function.tact",
@@ -540,7 +572,7 @@
       "patterns": [
         {
           "name": "keyword.control.tact",
-          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|native|let|fun|self|is|initOf|map|get|as)\\b"
+          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|virtual|overrides|native|let|const|fun|self|is|initOf|map|get|as)\\b"
         },
         {
           "name": "keyword.operator",
