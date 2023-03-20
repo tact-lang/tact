@@ -30,6 +30,9 @@ yarn add @tact-lang/compiler
 
 TACT doesn't have development environment dependencies and has everything built in. TACT's stdlib also distributed together with a compiler.
 
+For Visual Studio Code syntax support, please download the [tact extension](https://marketplace.visualstudio.com/items?itemName=ton-community.tact-vscode).
+
+
 ## 10 Commandments of Tact
 
 We have formed a large-scale vision for the philosophy of Tact to make sure that community has something to refer to.
