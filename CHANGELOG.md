@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## Fixed
-- Deep structure with optionals not emitted in some cases
+- Some functions for deep structures with optionals not emitted
+- Crash in bindings generator on boolean value in dictionary
 
 ## [1.1.0-beta.0] - 2023-03-14
 

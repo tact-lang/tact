@@ -617,6 +617,8 @@ let map: Serializer<MapSerializerDescr> = {
         let valueT: string;
         if (v.value.kind === 'int' || v.value.kind === 'uint') {
             valueT = `bigint`;
+        } else if (v.value.kind === 'boolean') {
+            valueT = `boolean`;
         } else if (v.value.kind === 'address') {
             valueT = `Address`;
         } else if (v.value.kind === 'cell') {
