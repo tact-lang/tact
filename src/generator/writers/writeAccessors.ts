@@ -68,9 +68,9 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
                     let t = getType(ctx.ctx, f.type.name);
                     if (t.kind === 'struct') {
                         if (f.type.optional) {
-                            vars.push(`__gen_${f.type.name}_opt_to_tuple(v'${f.name})`);
+                            vars.push(`${ctx.used(`__gen_${f.type.name}_opt_to_tuple`)}(v'${f.name})`);
                         } else {
-                            vars.push(`__gen_${f.type.name}_to_tuple(v'${f.name})`);
+                            vars.push(`${ctx.used(`__gen_${f.type.name}_to_tuple`)}(v'${f.name})`);
                         }
                         continue;
                     }

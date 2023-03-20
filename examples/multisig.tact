@@ -50,7 +50,7 @@ contract MultisigSigner {
 
         // Update weight
         self.weight = self.weight + weight;
-        if self.weight >= self.requiredWeight {
+        if (self.weight >= self.requiredWeight) {
             self.completed = true;
             send(SendParameters{
                 value: 0, 
