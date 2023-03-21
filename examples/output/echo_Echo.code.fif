@@ -10,24 +10,24 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
-  DECLPROC $__gen_Slice_asCell
-  DECLPROC $__gen_String_asComment
-  DECLPROC __gen_read_$init$Echo
-  DECLPROC $__gen_Echo_init
-  DECLPROC __gen_load_Echo
-  DECLPROC __gen_store_Echo
-  DECLPROC $__gen_Echo_hello
-  DECLPROC $__gen_Echo_receive_comment
-  DECLPROC $__gen_Echo_receive_fallback
-  DECLPROC __gen_router_Echo
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $global_reply
+  DECLPROC $Slice$_fun_asCell
+  DECLPROC $String$_fun_asComment
+  DECLPROC $Echo$init$_load
+  DECLPROC $Echo$_contract_init
+  DECLPROC $Echo$_contract_load
+  DECLPROC $Echo$_contract_store
+  DECLPROC $Echo$_fun_hello
+  DECLPROC $Echo$_receive_any_text
+  DECLPROC $Echo$_receive_any
   115554 DECLMETHOD %hello
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Echo$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -173,7 +173,7 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -272,11 +272,11 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
   }>
-  $reply PROCREF:<{
+  $global_reply PROCREF:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -284,31 +284,31 @@ PROGRAM{
     s0 s3 XCHG
     66 PUSHINT
     SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_Slice_asCell PROCREF:<{
+  $Slice$_fun_asCell PROCREF:<{
     NEWC
     SWAP
     STSLICER
     ENDC
   }>
-  $__gen_String_asComment PROCREF:<{
+  $String$_fun_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  __gen_read_$init$Echo PROCINLINE:<{
+  $Echo$init$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  $__gen_Echo_init PROCREF:<{
+  $Echo$_contract_init PROCREF:<{
     DROP
     PUSHNULL
   }>
-  __gen_load_Echo PROCINLINE:<{
+  $Echo$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -325,13 +325,13 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$Echo INLINECALLDICT
+      $Echo$init$_load INLINECALLDICT
       SWAP
       ENDS
-      $__gen_Echo_init INLINECALLDICT
+      $Echo$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Echo PROCINLINE:<{
+  $Echo$_contract_store PROCINLINE:<{
     DROP
     NEWC
     __tact_context_sys GETGLOB
@@ -343,7 +343,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_Echo_hello PROCREF:<{
+  $Echo$_fun_hello PROCREF:<{
     NIP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE
@@ -352,15 +352,35 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_Echo_receive_comment PROCINLINE:<{
-    $__gen_String_asComment INLINECALLDICT
-    $reply INLINECALLDICT
+  $Echo$_receive_any_text PROCINLINE:<{
+    $String$_fun_asComment INLINECALLDICT
+    $global_reply INLINECALLDICT
   }>
-  $__gen_Echo_receive_fallback PROCINLINE:<{
-    $__gen_Slice_asCell INLINECALLDICT
-    $reply INLINECALLDICT
+  $Echo$_receive_any PROCINLINE:<{
+    $Slice$_fun_asCell INLINECALLDICT
+    $global_reply INLINECALLDICT
   }>
-  __gen_router_Echo PROCREF:<{
+  %hello PROC:<{
+    $Echo$_contract_load INLINECALLDICT
+    SWAP
+    $Echo$_fun_hello INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d65786546787a63323552363667567732596a396f6966386f47643569764b6958416331506b6e5846574e546d} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Echo$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -386,12 +406,12 @@ PROGRAM{
       IFJMP:<{
         32 PUSHINT
         SDSKIPFIRST
-        $__gen_Echo_receive_comment INLINECALLDICT
+        $Echo$_receive_any_text INLINECALLDICT
         TRUE
         RETALT
       }>
     }>
-    $__gen_Echo_receive_fallback INLINECALLDICT
+    $Echo$_receive_any INLINECALLDICT
     TRUE
   }>
   recv_internal PROC:<{
@@ -417,30 +437,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Echo INLINECALLDICT
+    $Echo$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_Echo INLINECALLDICT
+    $Echo$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Echo INLINECALLDICT
-  }>
-  %hello PROC:<{
-    __gen_load_Echo INLINECALLDICT
-    SWAP
-    $__gen_Echo_hello INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d65786546787a63323552363667567732596a396f6966386f47643569764b6958416331506b6e5846574e546d} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Echo$_contract_store INLINECALLDICT
   }>
 }END>c

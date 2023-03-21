@@ -3,19 +3,17 @@ PROGRAM{
   DECLPROC __tact_load_address
   DECLPROC __tact_load_address_opt
   DECLPROC __tact_create_address
-  DECLPROC __gen_read_TestMessage
-  DECLPROC __gen_TestMessage_from_tuple
-  DECLPROC $__gen_MasterchainTester_init
-  DECLPROC __gen_load_MasterchainTester
-  DECLPROC __gen_store_MasterchainTester
-  DECLPROC $__gen_MasterchainTester_createAddress
-  DECLPROC $__gen_MasterchainTester_parseAddress
-  DECLPROC $__gen_MasterchainTester_serializeAddress
-  DECLPROC $__gen_MasterchainTester_handleStruct
-  DECLPROC $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC $__gen_MasterchainTester_receive_TestMessage
-  DECLPROC __gen_router_MasterchainTester
-  DECLPROC recv_internal
+  DECLPROC $TestMessage$_load
+  DECLPROC $TestMessage$_from_tuple
+  DECLPROC $MasterchainTester$_contract_init
+  DECLPROC $MasterchainTester$_contract_load
+  DECLPROC $MasterchainTester$_contract_store
+  DECLPROC $MasterchainTester$_fun_createAddress
+  DECLPROC $MasterchainTester$_fun_parseAddress
+  DECLPROC $MasterchainTester$_fun_serializeAddress
+  DECLPROC $MasterchainTester$_fun_handleStruct
+  DECLPROC $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $MasterchainTester$_receive_binary_TestMessage
   125712 DECLMETHOD %createAddress
   102482 DECLMETHOD %parseAddress
   73429 DECLMETHOD %serializeAddress
@@ -23,6 +21,8 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $MasterchainTester$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -80,7 +80,7 @@ PROGRAM{
     CTOS
     __tact_verify_address INLINECALLDICT
   }>
-  __gen_read_TestMessage PROCINLINE:<{
+  $TestMessage$_load PROCINLINE:<{
     32 LDU
     SWAP
     3679600542 PUSHINT
@@ -91,7 +91,7 @@ PROGRAM{
     __tact_load_address_opt INLINECALLDICT
     s1 s2 XCHG
   }>
-  __gen_TestMessage_from_tuple PROCINLINE:<{
+  $TestMessage$_from_tuple PROCINLINE:<{
     2 UNTUPLE
     SWAP
     __tact_verify_address INLINECALLDICT
@@ -105,10 +105,10 @@ PROGRAM{
       __tact_verify_address INLINECALLDICT
     }>
   }>
-  $__gen_MasterchainTester_init PROCREF:<{
+  $MasterchainTester$_contract_init PROCREF:<{
     PUSHNULL
   }>
-  __gen_load_MasterchainTester PROCINLINE:<{
+  $MasterchainTester$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -124,10 +124,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_MasterchainTester_init INLINECALLDICT
+      $MasterchainTester$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_MasterchainTester PROCINLINE:<{
+  $MasterchainTester$_contract_store PROCINLINE:<{
     DROP
     NEWC
     __tact_context_sys GETGLOB
@@ -139,29 +139,67 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_MasterchainTester_createAddress PROCREF:<{
+  $MasterchainTester$_fun_createAddress PROCREF:<{
     1 2 BLKDROP2
     __tact_create_address INLINECALLDICT
   }>
-  $__gen_MasterchainTester_parseAddress PROCREF:<{
+  $MasterchainTester$_fun_parseAddress PROCREF:<{
     NIP
     __tact_load_address INLINECALLDICT
     NIP
   }>
-  $__gen_MasterchainTester_serializeAddress PROCREF:<{
+  $MasterchainTester$_fun_serializeAddress PROCREF:<{
     2DROP
     TRUE
   }>
-  $__gen_MasterchainTester_handleStruct PROCREF:<{
+  $MasterchainTester$_fun_handleStruct PROCREF:<{
     3 BLKDROP
     TRUE
   }>
-  $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $__gen_MasterchainTester_receive_TestMessage PROCINLINE:<{
+  $MasterchainTester$_receive_binary_TestMessage PROCINLINE:<{
     2DROP
   }>
-  __gen_router_MasterchainTester PROCREF:<{
+  %createAddress PROC:<{
+    $MasterchainTester$_contract_load INLINECALLDICT
+    -ROT
+    $MasterchainTester$_fun_createAddress INLINECALLDICT
+  }>
+  %parseAddress PROC:<{
+    $MasterchainTester$_contract_load INLINECALLDICT
+    SWAP
+    $MasterchainTester$_fun_parseAddress INLINECALLDICT
+  }>
+  %serializeAddress PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MasterchainTester$_contract_load INLINECALLDICT
+    SWAP
+    $MasterchainTester$_fun_serializeAddress INLINECALLDICT
+  }>
+  %handleStruct PROC:<{
+    $TestMessage$_from_tuple INLINECALLDICT
+    $MasterchainTester$_contract_load INLINECALLDICT
+    -ROT
+    $MasterchainTester$_fun_handleStruct INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5a5664537a445a524a55377946716a433141354a75645a37544c483173515061426765436863487159516957} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $MasterchainTester$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -183,9 +221,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_TestMessage INLINECALLDICT
+      $TestMessage$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MasterchainTester_receive_TestMessage INLINECALLDICT
+      $MasterchainTester$_receive_binary_TestMessage INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -195,7 +233,7 @@ PROGRAM{
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -227,48 +265,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_MasterchainTester INLINECALLDICT
+    $MasterchainTester$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_MasterchainTester INLINECALLDICT
+    $MasterchainTester$_contract_router INLINECALLDICT
     DROP
-    __gen_store_MasterchainTester INLINECALLDICT
-  }>
-  %createAddress PROC:<{
-    __gen_load_MasterchainTester INLINECALLDICT
-    -ROT
-    $__gen_MasterchainTester_createAddress INLINECALLDICT
-  }>
-  %parseAddress PROC:<{
-    __gen_load_MasterchainTester INLINECALLDICT
-    SWAP
-    $__gen_MasterchainTester_parseAddress INLINECALLDICT
-  }>
-  %serializeAddress PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_MasterchainTester INLINECALLDICT
-    SWAP
-    $__gen_MasterchainTester_serializeAddress INLINECALLDICT
-  }>
-  %handleStruct PROC:<{
-    __gen_TestMessage_from_tuple INLINECALLDICT
-    __gen_load_MasterchainTester INLINECALLDICT
-    -ROT
-    $__gen_MasterchainTester_handleStruct INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    36993126140238121407019133875791708966 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a5664537a445a524a55377946716a433141354a75645a37544c483173515061426765436863487159516957} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $MasterchainTester$_contract_store INLINECALLDICT
   }>
 }END>c

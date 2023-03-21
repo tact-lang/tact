@@ -2,12 +2,12 @@
 #include "deep_A.constants.fc";
 #include "deep_A.storage.fc";
 
-tuple $__gen_A_init() impure inline_ref {
+tuple $A$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_A() impure inline {
+tuple $A$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -16,18 +16,18 @@ tuple __gen_load_A() impure inline {
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_A_init();
+        return $A$_contract_init();
     }
 }
 
-() __gen_store_A(tuple v) impure inline {
+() $A$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
-(cell, cell) $__gen_B_init_child(cell sys', slice $parent) inline_ref {
+(cell, cell) $B$_init_child(cell sys', slice $parent) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -44,81 +44,35 @@ tuple __gen_load_A() impure inline {
     builder b = begin_cell();
     b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
     b = b.store_int(false, 1);
-    b = __gen_write_$init$B(b, ($parent));
+    b = $B$init$_store(b, ($parent));
     return (mine, b.end_cell());
 }
 
-(cell, cell) $__gen_A_getNext(tuple $self) impure inline_ref {
+(cell, cell) $A$_fun_getNext(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return $__gen_B_init_child(__tact_context_sys, my_address());
+    return $B$_init_child(__tact_context_sys, my_address());
 }
 
-(tuple, ()) $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d(tuple $self) impure inline {
+;;
+;; Receivers of a Contract A
+;;
+
+(tuple, ()) $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d(tuple $self) impure inline {
     var $self = $self;
-    var ($init'code, $init'data) = $__gen_B_init_child(__tact_context_sys, my_address());
-    slice $address = $contractAddress(($init'code, $init'data));
-    $send(__gen_constructor_SendParameters$value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, $__gen_String_asComment(__gen_str_796354186())));
+    var ($init'code, $init'data) = $B$_init_child(__tact_context_sys, my_address());
+    slice $address = $global_contractAddress(($init'code, $init'data));
+    $global_send($SendParameters$_constructor_value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, $String$_fun_asComment(__gen_str_796354186())));
     return ($self, ());
 }
 
 ;;
-;; Public Interface of a Contract A
+;; Get methods of a Contract A
 ;;
 
-(tuple, int) __gen_router_A(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        var text_op = slice_hash(in_msg);
-        
-        ;; Receive "Message" message
-        if (text_op == 0xb41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d) {
-            self~$__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d();
-            return (self, true);
-        }
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_A();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_A(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_A(self);
-}
-
 _ %getNext() method_id(74105) {
-    var self = __gen_load_A();
-    var res = $__gen_A_getNext(self);
-    return __gen_StateInit_to_external(res);
+    var self = $A$_contract_load();
+    var res = $A$_fun_getNext(self);
+    return $StateInit$_to_external(res);
 }
 
 _ supported_interfaces() method_id {
@@ -137,4 +91,58 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract A
+;;
+
+(tuple, int) $A$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Message" message
+        if (text_op == 0xb41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d) {
+            self~$A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $A$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$A$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $A$_contract_store(self);
 }

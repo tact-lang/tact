@@ -2,37 +2,37 @@
 #include "payouts_Payouts.constants.fc";
 #include "payouts_Payouts.storage.fc";
 
-(slice, int) $__gen_Payouts_init(slice $owner, int $publicKey) impure inline_ref {
+(slice, int) $Payouts$_contract_init(slice $owner, int $publicKey) impure inline_ref {
     var (($self'owner, $self'publicKey)) = (null(), null());
     $self'owner = $owner;
     $self'publicKey = $publicKey;
     return ($self'owner, $self'publicKey);
 }
 
-(slice, int) __gen_load_Payouts() impure inline {
+(slice, int) $Payouts$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_Payouts();
+        return $sc~$Payouts$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner, int publicKey) = $sc~__gen_read_$init$Payouts();
+        (slice owner, int publicKey) = $sc~$Payouts$init$_load();
         $sc.end_parse();
-        return $__gen_Payouts_init(owner, publicKey);
+        return $Payouts$_contract_init(owner, publicKey);
     }
 }
 
-() __gen_store_Payouts((slice, int) v) impure inline {
+() $Payouts$_contract_store((slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_Payouts(b, v);
+    b = $Payouts$_store(b, v);
     set_data(b.end_cell());
 }
 
-(cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) inline_ref {
+(cell, cell) $Beacon$_init_child(cell sys', slice $master, slice $owner) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -45,135 +45,78 @@
     builder b = begin_cell();
     b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
     b = b.store_int(false, 1);
-    b = __gen_write_$init$Beacon(b, ($master, $owner));
+    b = $Beacon$init$_store(b, ($master, $owner));
     return (mine, b.end_cell());
 }
 
-((slice, int), ()) $__gen_Payouts_requireOwner((slice, int) $self) impure inline_ref {
+((slice, int), ()) $Payouts$_fun_requireOwner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     throw_unless(132, __tact_address_eq(__tact_context_get_sender(), $self'owner));
     return (($self'owner, $self'publicKey), ());
 }
 
-slice $__gen_Payouts_owner((slice, int) $self) impure inline_ref {
+slice $Payouts$_fun_owner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     return $self'owner;
 }
 
-((int)) __gen_constructor_CanPayout$amount(int amount) inline {
+((int)) $CanPayout$_constructor_amount(int amount) inline {
     return (amount);
 }
 
-((slice, int), ()) $__gen_Payouts_receive_comment((slice, int) $self, slice $msg) impure inline {
+;;
+;; Receivers of a Contract Payouts
+;;
+
+((slice, int), ()) $Payouts$_receive_any_text((slice, int) $self, slice $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(16059, ($ctx'value >= 1000000000));
-    slice $data = $__gen_String_fromBase64($msg);
+    slice $data = $String$_fun_fromBase64($msg);
     int $amount = $data~load_coins();
     slice $signature = $data~load_bits(512);
     builder $dataToSign = begin_cell();
     $dataToSign = __tact_store_address($dataToSign, $ctx'sender);
     $dataToSign = store_coins($dataToSign, $amount);
-    int $hash = cell_hash($__gen_Builder_asCell($dataToSign));
+    int $hash = cell_hash($Builder$_fun_asCell($dataToSign));
     throw_unless(48401, check_signature($hash, $signature, $self'publicKey));
-    var ($init'code, $init'data) = $__gen_Beacon_init_child(__tact_context_sys, my_address(), $ctx'sender);
-    slice $address = $contractAddress(($init'code, $init'data));
-    $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($address, 0, (64 + 2), true, __gen_writecell_CanPayout(__gen_constructor_CanPayout$amount($amount))));
+    var ($init'code, $init'data) = $Beacon$_init_child(__tact_context_sys, my_address(), $ctx'sender);
+    slice $address = $global_contractAddress(($init'code, $init'data));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($address, 0, (64 + 2), true, $CanPayout$_store_cell($CanPayout$_constructor_amount($amount))));
     return (($self'owner, $self'publicKey), ());
 }
 
-(((slice, int)), ()) $__gen_Payouts_receive_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure inline {
+(((slice, int)), ()) $Payouts$_receive_binary_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'amount, $msg'address, $msg'ok) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    var ($init'code, $init'data) = $__gen_Beacon_init_child(__tact_context_sys, my_address(), $msg'address);
-    slice $address = $contractAddress(($init'code, $init'data));
+    var ($init'code, $init'data) = $Beacon$_init_child(__tact_context_sys, my_address(), $msg'address);
+    slice $address = $global_contractAddress(($init'code, $init'data));
     throw_unless(4429, __tact_address_eq($ctx'sender, $address));
     if ($msg'ok) {
         throw_unless(62972, ((((__tact_my_balance() - $ctx'value) - 1000000000) - $msg'amount) > 0));
-        $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($msg'address, $msg'amount, (64 + 2), false, $__gen_String_asComment(__gen_str_3364490128())));
+        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'address, $msg'amount, (64 + 2), false, $String$_fun_asComment(__gen_str_3364490128())));
     } else {
-        $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($msg'address, 0, (64 + 2), false, $__gen_String_asComment(__gen_str_2620117026())));
+        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'address, 0, (64 + 2), false, $String$_fun_asComment(__gen_str_2620117026())));
     }
     return (($self'owner, $self'publicKey), ());
 }
 
-(((slice, int)), ()) $__gen_Payouts_receive_ChangeOwner((slice, int) $self, (slice) $msg) impure inline {
+(((slice, int)), ()) $Payouts$_receive_binary_ChangeOwner((slice, int) $self, (slice) $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'newOwner) = $msg;
-    ($self'owner, $self'publicKey)~$__gen_Payouts_requireOwner();
+    ($self'owner, $self'publicKey)~$Payouts$_fun_requireOwner();
     $self'owner = $msg'newOwner;
     return (($self'owner, $self'publicKey), ());
 }
 
 ;;
-;; Public Interface of a Contract Payouts
+;; Get methods of a Contract Payouts
 ;;
 
-((slice, int), int) __gen_router_Payouts((slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive CanPayoutResponse message
-    if (op == 4293607646) {
-        var msg = in_msg~__gen_read_CanPayoutResponse();
-        self~$__gen_Payouts_receive_CanPayoutResponse(msg);
-        return (self, true);
-    }
-    
-    ;; Receive ChangeOwner message
-    if (op == 256331011) {
-        var msg = in_msg~__gen_read_ChangeOwner();
-        self~$__gen_Payouts_receive_ChangeOwner(msg);
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        if (slice_bits(in_msg) >= 32) {
-            self~$__gen_Payouts_receive_comment(in_msg.skip_bits(32));
-            return (self, true);
-        }
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_Payouts();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_Payouts(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_Payouts(self);
-}
-
 _ %owner() method_id(83229) {
-    var self = __gen_load_Payouts();
-    var res = $__gen_Payouts_owner(self);
+    var self = $Payouts$_contract_load();
+    var res = $Payouts$_fun_owner(self);
     return res;
 }
 
@@ -194,4 +137,69 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Payouts
+;;
+
+((slice, int), int) $Payouts$_contract_router((slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive CanPayoutResponse message
+    if (op == 4293607646) {
+        var msg = in_msg~$CanPayoutResponse$_load();
+        self~$Payouts$_receive_binary_CanPayoutResponse(msg);
+        return (self, true);
+    }
+    
+    ;; Receive ChangeOwner message
+    if (op == 256331011) {
+        var msg = in_msg~$ChangeOwner$_load();
+        self~$Payouts$_receive_binary_ChangeOwner(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        if (slice_bits(in_msg) >= 32) {
+            self~$Payouts$_receive_any_text(in_msg.skip_bits(32));
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Payouts$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Payouts$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $Payouts$_contract_store(self);
 }

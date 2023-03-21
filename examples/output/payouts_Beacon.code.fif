@@ -7,28 +7,28 @@ PROGRAM{
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_address_eq
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
-  DECLPROC __gen_read_CanPayout
-  DECLPROC __gen_write_CanPayoutResponse
-  DECLPROC __gen_writecell_CanPayoutResponse
-  DECLPROC __gen_write_Beacon
-  DECLPROC __gen_read_Beacon
-  DECLPROC __gen_read_$init$Beacon
-  DECLPROC $__gen_Beacon_init
-  DECLPROC __gen_load_Beacon
-  DECLPROC __gen_store_Beacon
-  DECLPROC $__gen_Beacon_owner
-  DECLPROC __gen_constructor_CanPayoutResponse$ok_amount_address
-  DECLPROC $__gen_Beacon_receive_CanPayout
-  DECLPROC $__gen_Beacon_receive_bounced
-  DECLPROC __gen_router_Beacon
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $global_reply
+  DECLPROC $CanPayout$_load
+  DECLPROC $CanPayoutResponse$_store
+  DECLPROC $CanPayoutResponse$_store_cell
+  DECLPROC $Beacon$_store
+  DECLPROC $Beacon$_load
+  DECLPROC $Beacon$init$_load
+  DECLPROC $Beacon$_contract_init
+  DECLPROC $Beacon$_contract_load
+  DECLPROC $Beacon$_contract_store
+  DECLPROC $Beacon$_fun_owner
+  DECLPROC $CanPayoutResponse$_constructor_ok_amount_address
+  DECLPROC $Beacon$_receive_binary_CanPayout
+  DECLPROC $Beacon$_receive_bounce
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Beacon$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -81,7 +81,7 @@ PROGRAM{
   __tact_address_eq PROCINLINE:<{
     SDEQ
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -180,11 +180,11 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
   }>
-  $reply PROCREF:<{
+  $global_reply PROCREF:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -192,10 +192,10 @@ PROGRAM{
     s0 s3 XCHG
     66 PUSHINT
     SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  __gen_read_CanPayout PROCINLINE:<{
+  $CanPayout$_load PROCINLINE:<{
     32 LDU
     SWAP
     3289991647 PUSHINT
@@ -205,7 +205,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_write_CanPayoutResponse PROCINLINE:<{
+  $CanPayoutResponse$_store PROCINLINE:<{
     4293607646 PUSHINT
     s0 s4 XCHG2
     32 STU
@@ -216,20 +216,20 @@ PROGRAM{
     __tact_store_address INLINECALLDICT
     1 STI
   }>
-  __gen_writecell_CanPayoutResponse PROCINLINE:<{
+  $CanPayoutResponse$_store_cell PROCINLINE:<{
     NEWC
     3 -ROLL
-    __gen_write_CanPayoutResponse INLINECALLDICT
+    $CanPayoutResponse$_store INLINECALLDICT
     ENDC
   }>
-  __gen_write_Beacon PROCINLINE:<{
+  $Beacon$_store PROCINLINE:<{
     2SWAP
     __tact_store_address INLINECALLDICT
     ROT
     __tact_store_address INLINECALLDICT
     1 STI
   }>
-  __gen_read_Beacon PROCINLINE:<{
+  $Beacon$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     __tact_load_address INLINECALLDICT
@@ -237,16 +237,16 @@ PROGRAM{
     1 LDI
     3 -ROLL
   }>
-  __gen_read_$init$Beacon PROCINLINE:<{
+  $Beacon$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     __tact_load_address INLINECALLDICT
     s1 s2 XCHG
   }>
-  $__gen_Beacon_init PROCREF:<{
+  $Beacon$_contract_init PROCREF:<{
     FALSE
   }>
-  __gen_load_Beacon PROCINLINE:<{
+  $Beacon$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -255,7 +255,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_Beacon INLINECALLDICT
+      $Beacon$_load INLINECALLDICT
       1 3 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -263,14 +263,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$Beacon INLINECALLDICT
+      $Beacon$init$_load INLINECALLDICT
       s0 s2 XCHG
       ENDS
       SWAP
-      $__gen_Beacon_init INLINECALLDICT
+      $Beacon$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Beacon PROCINLINE:<{
+  $Beacon$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -279,18 +279,18 @@ PROGRAM{
     SWAP
     1 STI
     3 -ROLL
-    __gen_write_Beacon INLINECALLDICT
+    $Beacon$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_Beacon_owner PROCREF:<{
+  $Beacon$_fun_owner PROCREF:<{
     DROP
     NIP
   }>
-  __gen_constructor_CanPayoutResponse$ok_amount_address PROCINLINE:<{
+  $CanPayoutResponse$_constructor_ok_amount_address PROCINLINE:<{
     ROT
   }>
-  $__gen_Beacon_receive_CanPayout PROCINLINE:<{
+  $Beacon$_receive_binary_CanPayout PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     2DROP
     4429 PUSHINT
@@ -308,22 +308,42 @@ PROGRAM{
       TRUE
       ROT
       s3 PUSH
-      __gen_constructor_CanPayoutResponse$ok_amount_address INLINECALLDICT
-      __gen_writecell_CanPayoutResponse INLINECALLDICT
-      $reply INLINECALLDICT
+      $CanPayoutResponse$_constructor_ok_amount_address INLINECALLDICT
+      $CanPayoutResponse$_store_cell INLINECALLDICT
+      $global_reply INLINECALLDICT
     }>ELSE<{
       FALSE
       s1 s3 XCPU
-      __gen_constructor_CanPayoutResponse$ok_amount_address INLINECALLDICT
-      __gen_writecell_CanPayoutResponse INLINECALLDICT
-      $reply INLINECALLDICT
+      $CanPayoutResponse$_constructor_ok_amount_address INLINECALLDICT
+      $CanPayoutResponse$_store_cell INLINECALLDICT
+      $global_reply INLINECALLDICT
     }>
   }>
-  $__gen_Beacon_receive_bounced PROCINLINE:<{
+  $Beacon$_receive_bounce PROCINLINE:<{
     2DROP
     FALSE
   }>
-  __gen_router_Beacon PROCREF:<{
+  %owner PROC:<{
+    $Beacon$_contract_load INLINECALLDICT
+    $Beacon$_fun_owner INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d563246787742766975345a31435152476175623954755a7164673667684c687a643551446b48596636416247} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Beacon$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -336,16 +356,16 @@ PROGRAM{
     s0 s2 XCHG
     IFJMP:<{
       NIP
-      $__gen_Beacon_receive_bounced INLINECALLDICT
+      $Beacon$_receive_bounce INLINECALLDICT
       TRUE
     }>
     SWAP
     3289991647 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_read_CanPayout INLINECALLDICT
+      $CanPayout$_load INLINECALLDICT
       NIP
-      $__gen_Beacon_receive_CanPayout INLINECALLDICT
+      $Beacon$_receive_binary_CanPayout INLINECALLDICT
       TRUE
     }>
     DROP
@@ -374,30 +394,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Beacon INLINECALLDICT
+    $Beacon$_contract_load INLINECALLDICT
     2 3 BLKSWAP
-    __gen_router_Beacon INLINECALLDICT
+    $Beacon$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Beacon INLINECALLDICT
-  }>
-  %owner PROC:<{
-    __gen_load_Beacon INLINECALLDICT
-    $__gen_Beacon_owner INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-    86142586315491086060343270784266291122 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d563246787742766975345a31435152476175623954755a7164673667684c687a643551446b48596636416247} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Beacon$_contract_store INLINECALLDICT
   }>
 }END>c

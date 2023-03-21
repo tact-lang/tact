@@ -6,39 +6,39 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_body
-  DECLPROC __gen_write_Transfer
-  DECLPROC __gen_writecell_Transfer
-  DECLPROC __gen_read_Transfer
-  DECLPROC __gen_read_TransferMessage
-  DECLPROC __gen_write_Wallet
-  DECLPROC __gen_read_Wallet
-  DECLPROC __gen_write_$init$Wallet
-  DECLPROC __gen_read_$init$Wallet
-  DECLPROC $__gen_Wallet_init
-  DECLPROC __gen_load_Wallet
-  DECLPROC __gen_store_Wallet
-  DECLPROC $__gen_Wallet_init_child
-  DECLPROC $__gen_Wallet_publicKey
-  DECLPROC $__gen_Wallet_walletId
-  DECLPROC $__gen_Wallet_seqno
-  DECLPROC $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC $__gen_Wallet_receive_TransferMessage
-  DECLPROC $__gen_Wallet_receive_fallback
-  DECLPROC $__gen_Wallet_receive
-  DECLPROC $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
-  DECLPROC $__gen_Wallet_receive_comment_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439
-  DECLPROC $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
-  DECLPROC $__gen_Wallet_receive_bounced
-  DECLPROC __gen_router_Wallet
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_value_to_mode_body
+  DECLPROC $Transfer$_store
+  DECLPROC $Transfer$_store_cell
+  DECLPROC $Transfer$_load
+  DECLPROC $TransferMessage$_load
+  DECLPROC $Wallet$_store
+  DECLPROC $Wallet$_load
+  DECLPROC $Wallet$init$_store
+  DECLPROC $Wallet$init$_load
+  DECLPROC $Wallet$_contract_init
+  DECLPROC $Wallet$_contract_load
+  DECLPROC $Wallet$_contract_store
+  DECLPROC $Wallet$_init_child
+  DECLPROC $Wallet$_fun_publicKey
+  DECLPROC $Wallet$_fun_walletId
+  DECLPROC $Wallet$_fun_seqno
+  DECLPROC $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $Wallet$_receive_binary_TransferMessage
+  DECLPROC $Wallet$_receive_any
+  DECLPROC %$Wallet$_receive_empty
+  DECLPROC $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
+  DECLPROC $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439
+  DECLPROC $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
+  DECLPROC $Wallet$_receive_bounce
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
   85143 DECLMETHOD %seqno
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Wallet$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -93,7 +93,7 @@ PROGRAM{
     NULLSWAPIFNOT
     135 THROWIFNOT
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -192,13 +192,13 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$value_to_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_value_to_mode_body PROCINLINE:<{
     TRUE
     s4 s4 s4 XCHG3
     PUSHNULL
     PUSHNULL
   }>
-  __gen_write_Transfer PROCINLINE:<{
+  $Transfer$_store PROCINLINE:<{
     s4 s5 XCHG2
     32 STU
     s1 s2 XCHG
@@ -221,13 +221,13 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_writecell_Transfer PROCINLINE:<{
+  $Transfer$_store_cell PROCINLINE:<{
     NEWC
     5 -ROLL
-    __gen_write_Transfer INLINECALLDICT
+    $Transfer$_store INLINECALLDICT
     ENDC
   }>
-  __gen_read_Transfer PROCINLINE:<{
+  $Transfer$_load PROCINLINE:<{
     32 LDU
     8 LDU
     __tact_load_address INLINECALLDICT
@@ -243,7 +243,7 @@ PROGRAM{
     }>
     5 -ROLL
   }>
-  __gen_read_TransferMessage PROCINLINE:<{
+  $TransferMessage$_load PROCINLINE:<{
     32 LDU
     SWAP
     123 EQINT
@@ -252,40 +252,40 @@ PROGRAM{
     SWAP
     CTOS
     SWAP
-    __gen_read_Transfer INLINECALLDICT
+    $Transfer$_load INLINECALLDICT
     s5 s6 XCHG
   }>
-  __gen_write_Wallet PROCINLINE:<{
+  $Wallet$_store PROCINLINE:<{
     s2 s3 XCHG2
     32 STU
     256 STU
     64 STU
   }>
-  __gen_read_Wallet PROCINLINE:<{
+  $Wallet$_load PROCINLINE:<{
     32 LDU
     256 LDU
     64 LDU
     3 -ROLL
   }>
-  __gen_write_$init$Wallet PROCINLINE:<{
+  $Wallet$init$_store PROCINLINE:<{
     s0 s2 XCHG
     257 PUSHINT
     STIX
     257 PUSHINT
     STIX
   }>
-  __gen_read_$init$Wallet PROCINLINE:<{
+  $Wallet$init$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
   }>
-  $__gen_Wallet_init PROCREF:<{
+  $Wallet$_contract_init PROCREF:<{
     0 PUSHINT
     -ROT
   }>
-  __gen_load_Wallet PROCINLINE:<{
+  $Wallet$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -294,7 +294,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_Wallet INLINECALLDICT
+      $Wallet$_load INLINECALLDICT
       1 3 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -302,14 +302,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$Wallet INLINECALLDICT
+      $Wallet$init$_load INLINECALLDICT
       s0 s2 XCHG
       ENDS
       SWAP
-      $__gen_Wallet_init INLINECALLDICT
+      $Wallet$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Wallet PROCINLINE:<{
+  $Wallet$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -318,11 +318,11 @@ PROGRAM{
     SWAP
     1 STI
     3 -ROLL
-    __gen_write_Wallet INLINECALLDICT
+    $Wallet$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_Wallet_init_child PROCREF:<{
+  $Wallet$_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -346,25 +346,25 @@ PROGRAM{
     SWAP
     1 STI
     s0 s0 s3 XCHG3
-    __gen_write_$init$Wallet INLINECALLDICT
+    $Wallet$init$_store INLINECALLDICT
     ENDC
   }>
-  $__gen_Wallet_publicKey PROCREF:<{
+  $Wallet$_fun_publicKey PROCREF:<{
     DROP
     NIP
   }>
-  $__gen_Wallet_walletId PROCREF:<{
+  $Wallet$_fun_walletId PROCREF:<{
     2 1 BLKDROP2
   }>
-  $__gen_Wallet_seqno PROCREF:<{
+  $Wallet$_fun_seqno PROCREF:<{
     2DROP
   }>
-  $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $__gen_Wallet_receive_TransferMessage PROCINLINE:<{
+  $Wallet$_receive_binary_TransferMessage PROCINLINE:<{
     s4 s3 s2 PUSH3
     s4 s3 PUSH2
-    __gen_writecell_Transfer INLINECALLDICT
+    $Transfer$_store_cell INLINECALLDICT
     HASHCU
     48401 PUSHINT
     s7 s9 XCPU
@@ -380,36 +380,63 @@ PROGRAM{
     INC
     s3 s1 s6 XCHG3
     s0 s2 XCHG
-    __gen_constructor_SendParameters$value_to_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_value_to_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_Wallet_receive_fallback PROCINLINE:<{
+  $Wallet$_receive_any PROCINLINE:<{
     DROP
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $__gen_Wallet_receive PROCINLINE:<{
+  %$Wallet$_receive_empty PROCINLINE:<{
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
+  $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $__gen_Wallet_receive_comment_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 PROCINLINE:<{
+  $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 PROCINLINE:<{
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
+  $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
   }>
-  $__gen_Wallet_receive_bounced PROCINLINE:<{
+  $Wallet$_receive_bounce PROCINLINE:<{
     DROP
   }>
-  __gen_router_Wallet PROCREF:<{
+  %publicKey PROC:<{
+    $Wallet$_contract_load INLINECALLDICT
+    $Wallet$_fun_publicKey INLINECALLDICT
+  }>
+  %walletId PROC:<{
+    $Wallet$_contract_load INLINECALLDICT
+    $Wallet$_fun_walletId INLINECALLDICT
+  }>
+  %seqno PROC:<{
+    $Wallet$_contract_load INLINECALLDICT
+    $Wallet$_fun_seqno INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d51684e53316e434e45473451487458324c593754717655375a313145755038425767676567476a706b466243} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Wallet$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -424,16 +451,16 @@ PROGRAM{
     s0 s2 XCHG
     IFJMP:<{
       NIP
-      $__gen_Wallet_receive_bounced INLINECALLDICT
+      $Wallet$_receive_bounce INLINECALLDICT
       TRUE
     }>
     OVER
     123 EQINT
     IFJMP:<{
       NIP
-      __gen_read_TransferMessage INLINECALLDICT
+      $TransferMessage$_load INLINECALLDICT
       1 6 BLKDROP2
-      $__gen_Wallet_receive_TransferMessage INLINECALLDICT
+      $Wallet$_receive_binary_TransferMessage INLINECALLDICT
       TRUE
     }>
     OVER
@@ -444,7 +471,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      $__gen_Wallet_receive INLINECALLDICT
+      %$Wallet$_receive_empty INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -457,7 +484,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         2DROP
-        $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -466,7 +493,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         2DROP
-        $__gen_Wallet_receive_comment_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
+        $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -475,7 +502,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         2DROP
-        $__gen_Wallet_receive_comment_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 INLINECALLDICT
+        $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -483,12 +510,12 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $__gen_Wallet_receive_comment_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 INLINECALLDICT
+        $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 INLINECALLDICT
         TRUE
         RETALT
       }>
     }>
-    $__gen_Wallet_receive_fallback INLINECALLDICT
+    $Wallet$_receive_any INLINECALLDICT
     TRUE
   }>
   recv_internal PROC:<{
@@ -514,37 +541,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Wallet INLINECALLDICT
+    $Wallet$_contract_load INLINECALLDICT
     2 3 BLKSWAP
-    __gen_router_Wallet INLINECALLDICT
+    $Wallet$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Wallet INLINECALLDICT
-  }>
-  %publicKey PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_publicKey INLINECALLDICT
-  }>
-  %walletId PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_walletId INLINECALLDICT
-  }>
-  %seqno PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_seqno INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d51684e53316e434e45473451487458324c593754717655375a313145755038425767676567476a706b466243} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Wallet$_contract_store INLINECALLDICT
   }>
 }END>c

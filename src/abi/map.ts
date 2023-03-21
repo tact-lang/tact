@@ -188,9 +188,8 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                         throwError(`Trait can't be value of a map`, ref);
                     }
                     if (t.kind === 'struct') {
-                        ctx.used(`__tact_dict_get_int_cell`);
-                        ctx.used(`__gen_readopt_${t.name}`)
-                        return `__gen_readopt_${t.name}(__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]}))`;
+                        ctx.used(`__tact_dict_get_int_cell`);                        
+                        return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]}))`;
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }
@@ -218,8 +217,7 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                     }
                     if (t.kind === 'struct') {
                         ctx.used(`__tact_dict_get_slice_cell`);
-                        ctx.used(`__gen_readopt_${t.name}`)
-                        return `__gen_readopt_${t.name}(__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]}))`;
+                        return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_slice_cell(${resolved[0]}, 267, ${resolved[1]}))`;
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }

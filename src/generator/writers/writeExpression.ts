@@ -7,11 +7,12 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
 import { getStringId } from "../../types/resolveStrings";
-import { fn, id } from "./id";
+import { id } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
 import { Address, Cell } from "ton-core";
 import { writeAddress, writeCell } from "./writeConstant";
+import { ops } from "./ops";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -38,7 +39,7 @@ function tryExtractPath(f: ASTExpression): string[] | null {
 function writeStructConstructor(type: TypeDescription, args: string[], ctx: WriterContext) {
 
     // Check for duplicates
-    let name = `__gen_constructor_${type.name}$${args.join('_')}`;
+    let name = ops.typeContsturctor(type.name, args, ctx);
     let renderKey = '$constructor$' + type.name + '$' + args.join(',');
     if (ctx.isRendered(renderKey)) {
         return name;
@@ -279,13 +280,12 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (t.kind === 'ref') {
                 let tt = getType(ctx.ctx, t.name);
                 if (tt.kind === 'struct') {
-                    ctx.used(`__gen_${tt.name}_not_null`);
-                    return `__gen_${tt.name}_not_null(${writeExpression(f.right, ctx)})`;
+                    return `${ops.typeNotNull(tt.name, ctx)}(${writeExpression(f.right, ctx)})`;
                 }
             }
 
             ctx.used('__tact_not_null');
-            return '__tact_not_null(' + writeExpression(f.right, ctx) + ')';
+            return `${ctx.used('__tact_not_null')}(${writeExpression(f.right, ctx)})`;
         }
 
         throwError('Unknown unary operator: ' + f.op, f.ref);
@@ -336,8 +336,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
 
             // Getter instead of direct field access
-            ctx.used(`__gen_${srcT.name}_get_${field.name}`);
-            return `__gen_${srcT.name}_get_${field.name}(${writeExpression(f.src, ctx)})`;
+            return `${ops.typeField(srcT.name, field.name, ctx)}(${writeExpression(f.src, ctx)})`;
         } else {
             return writeValue(cst.value, ctx);
         }
@@ -358,7 +357,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         }
 
         let sf = getStaticFunction(ctx.ctx, f.name);
-        let n = f.name;
+        let n = ops.global(f.name);
         if (sf.ast.kind === 'def_native_function') {
             n = sf.ast.nativeName;
             if (n.startsWith('__tact')) {
@@ -366,7 +365,6 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
         } else {
             ctx.used(n);
-            n = fn(n);
         }
         return n + '(' + f.args.map((a) => writeExpression(a, ctx)).join(', ') + ')';
     }
@@ -419,10 +417,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
             // Resolve function
             let ff = t.functions.get(f.name)!;
-            let name = `__gen_${src.name}_${f.name}`;
+            let name = ops.extension(src.name, f.name);
             if (ff.ast.kind === 'def_function') {
                 ctx.used(name);
-                name = fn(name);
             } else {
                 name = ff.ast.nativeName;
                 if (name.startsWith('__tact')) {
@@ -438,8 +435,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                     if (t.kind === 'ref') {
                         let tt = getType(ctx.ctx, t.name);
                         if (tt.kind === 'contract' || tt.kind === 'struct') {
-                            ctx.used(`__gen_${tt.name}_unpack`);
-                            return `${s}~${name}(__gen_${tt.name}_unpack(${writeExpression(f.args[0], ctx)}))`;
+                            return `${s}~${name}(${ops.typeTensorCast(tt.name, ctx)}(${writeExpression(f.args[0], ctx)}))`;
                         }
                     }
                 }
@@ -467,8 +463,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'init_of') {
-        ctx.used(`__gen_${f.name}_init_child`);
-        return `${fn(`__gen_${f.name}_init_child`)}(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
+        return `${ops.contractInitChild(f.name, ctx)}(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
     }
 
     //

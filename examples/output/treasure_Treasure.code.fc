@@ -1,145 +1,85 @@
 #include "treasure_Treasure.stdlib.fc";
 #include "treasure_Treasure.storage.fc";
 
-(slice) $__gen_Treasure_init(slice $owner) impure inline_ref {
+(slice) $Treasure$_contract_init(slice $owner) impure inline_ref {
     var (($self'owner)) = (null());
     $self'owner = $owner;
     return ($self'owner);
 }
 
-(slice) __gen_load_Treasure() impure inline {
+(slice) $Treasure$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_Treasure();
+        return $sc~$Treasure$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner) = $sc~__gen_read_$init$Treasure();
+        (slice owner) = $sc~$Treasure$init$_load();
         $sc.end_parse();
-        return $__gen_Treasure_init(owner);
+        return $Treasure$_contract_init(owner);
     }
 }
 
-() __gen_store_Treasure((slice) v) impure inline {
+() $Treasure$_contract_store((slice) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_Treasure(b, v);
+    b = $Treasure$_store(b, v);
     set_data(b.end_cell());
 }
 
-((slice), ()) $__gen_Treasure_requireOwner((slice) $self) impure inline_ref {
+((slice), ()) $Treasure$_fun_requireOwner((slice) $self) impure inline_ref {
     var (($self'owner)) = $self;
     throw_unless(132, __tact_address_eq(__tact_context_get_sender(), $self'owner));
     return (($self'owner), ());
 }
 
-((slice), ()) $__gen_Treasure_doWithdraw((slice) $self, int $amount, int $mode) impure inline_ref {
+((slice), ()) $Treasure$_fun_doWithdraw((slice) $self, int $amount, int $mode) impure inline_ref {
     var (($self'owner)) = $self;
-    ($self'owner)~$__gen_Treasure_requireOwner();
-    $send(__gen_constructor_SendParameters$value_to_mode_body($amount, $self'owner, $mode, end_cell(begin_cell())));
+    ($self'owner)~$Treasure$_fun_requireOwner();
+    $global_send($SendParameters$_constructor_value_to_mode_body($amount, $self'owner, $mode, end_cell(begin_cell())));
     return (($self'owner), ());
 }
 
-slice $__gen_Treasure_owner((slice) $self) impure inline_ref {
+slice $Treasure$_fun_owner((slice) $self) impure inline_ref {
     var (($self'owner)) = $self;
     return $self'owner;
 }
 
-(((slice)), ()) $__gen_Treasure_receive_Withdraw((slice) $self, (int, int) $msg) impure inline {
+;;
+;; Receivers of a Contract Treasure
+;;
+
+(((slice)), ()) $Treasure$_receive_binary_Withdraw((slice) $self, (int, int) $msg) impure inline {
     var ($self'owner) = $self;
     var ($msg'amount, $msg'mode) = $msg;
-    ($self'owner)~$__gen_Treasure_doWithdraw($msg'amount, $msg'mode);
+    ($self'owner)~$Treasure$_fun_doWithdraw($msg'amount, $msg'mode);
     return (($self'owner), ());
 }
 
-((slice), ()) $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) $self) impure inline {
+((slice), ()) $Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) $self) impure inline {
     var ($self'owner) = $self;
-    ($self'owner)~$__gen_Treasure_doWithdraw(0, (32 + 128));
+    ($self'owner)~$Treasure$_fun_doWithdraw(0, (32 + 128));
     return (($self'owner), ());
 }
 
-(((slice)), ()) $__gen_Treasure_receive_ChangeOwner((slice) $self, (slice) $msg) impure inline {
+(((slice)), ()) $Treasure$_receive_binary_ChangeOwner((slice) $self, (slice) $msg) impure inline {
     var ($self'owner) = $self;
     var ($msg'newOwner) = $msg;
-    ($self'owner)~$__gen_Treasure_requireOwner();
+    ($self'owner)~$Treasure$_fun_requireOwner();
     $self'owner = $msg'newOwner;
     return (($self'owner), ());
 }
 
 ;;
-;; Public Interface of a Contract Treasure
+;; Get methods of a Contract Treasure
 ;;
 
-((slice), int) __gen_router_Treasure((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive Withdraw message
-    if (op == 1672521544) {
-        var msg = in_msg~__gen_read_Withdraw();
-        self~$__gen_Treasure_receive_Withdraw(msg);
-        return (self, true);
-    }
-    
-    ;; Receive ChangeOwner message
-    if (op == 256331011) {
-        var msg = in_msg~__gen_read_ChangeOwner();
-        self~$__gen_Treasure_receive_ChangeOwner(msg);
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        var text_op = slice_hash(in_msg);
-        
-        ;; Receive "Destroy" message
-        if (text_op == 0x986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d) {
-            self~$__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
-            return (self, true);
-        }
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_Treasure();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_Treasure(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_Treasure(self);
-}
-
 _ %owner() method_id(83229) {
-    var self = __gen_load_Treasure();
-    var res = $__gen_Treasure_owner(self);
+    var self = $Treasure$_contract_load();
+    var res = $Treasure$_fun_owner(self);
     return res;
 }
 
@@ -160,4 +100,72 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Treasure
+;;
+
+((slice), int) $Treasure$_contract_router((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Withdraw message
+    if (op == 1672521544) {
+        var msg = in_msg~$Withdraw$_load();
+        self~$Treasure$_receive_binary_Withdraw(msg);
+        return (self, true);
+    }
+    
+    ;; Receive ChangeOwner message
+    if (op == 256331011) {
+        var msg = in_msg~$ChangeOwner$_load();
+        self~$Treasure$_receive_binary_ChangeOwner(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Destroy" message
+        if (text_op == 0x986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d) {
+            self~$Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Treasure$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Treasure$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $Treasure$_contract_store(self);
 }

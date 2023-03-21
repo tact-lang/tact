@@ -1,17 +1,17 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC hello_world
-  DECLPROC __gen_write_Native
-  DECLPROC __gen_read_Native
-  DECLPROC $__gen_Native_init
-  DECLPROC __gen_load_Native
-  DECLPROC __gen_store_Native
-  DECLPROC $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
-  DECLPROC __gen_router_Native
-  DECLPROC recv_internal
+  DECLPROC $Native$_store
+  DECLPROC $Native$_load
+  DECLPROC $Native$_contract_init
+  DECLPROC $Native$_contract_load
+  DECLPROC $Native$_contract_store
+  DECLPROC $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Native$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -39,20 +39,20 @@ PROGRAM{
   hello_world PROC:<{
     1000 PUSHINT
   }>
-  __gen_write_Native PROCINLINE:<{
+  $Native$_store PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_Native PROCINLINE:<{
+  $Native$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  $__gen_Native_init PROCREF:<{
+  $Native$_contract_init PROCREF:<{
     0 PUSHINT
   }>
-  __gen_load_Native PROCINLINE:<{
+  $Native$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -61,7 +61,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_Native INLINECALLDICT
+      $Native$_load INLINECALLDICT
       NIP
     }>ELSE<{
       DROP
@@ -70,10 +70,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_Native_init INLINECALLDICT
+      $Native$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Native PROCINLINE:<{
+  $Native$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -82,15 +82,30 @@ PROGRAM{
     SWAP
     1 STI
     SWAP
-    __gen_write_Native INLINECALLDICT
+    $Native$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
+  $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
     hello_world CALLDICT
     ADD
   }>
-  __gen_router_Native PROCREF:<{
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5473444d6d586362354a45416269377575464573674c634a506f47696435383873466652426d3447394d7576} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Native$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -114,7 +129,7 @@ PROGRAM{
       93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_Native_receive_comment_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 INLINECALLDICT
+        $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -146,25 +161,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Native INLINECALLDICT
+    $Native$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_Native INLINECALLDICT
+    $Native$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Native INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5473444d6d586362354a45416269377575464573674c634a506f47696435383873466652426d3447394d7576} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Native$_contract_store INLINECALLDICT
   }>
 }END>c

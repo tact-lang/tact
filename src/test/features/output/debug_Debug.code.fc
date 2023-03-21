@@ -2,12 +2,12 @@
 #include "debug_Debug.constants.fc";
 #include "debug_Debug.storage.fc";
 
-tuple $__gen_Debug_init() impure inline_ref {
+tuple $Debug$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_Debug() impure inline {
+tuple $Debug$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -16,18 +16,18 @@ tuple __gen_load_Debug() impure inline {
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_Debug_init();
+        return $Debug$_contract_init();
     }
 }
 
-() __gen_store_Debug(tuple v) impure inline {
+() $Debug$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
-() $__gen_Debug_debug(tuple $self) impure inline_ref {
+() $Debug$_fun_debug(tuple $self) impure inline_ref {
     var ($self) = $self;
     dump_stack();
     __tact_debug_str(__gen_str_3226689099());
@@ -37,7 +37,15 @@ tuple __gen_load_Debug() impure inline {
     __tact_debug_str("null");
 }
 
-(tuple, ()) $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Receivers of a Contract Debug
+;;
+
+(tuple, ()) $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
     var $self = $self;
     dump_stack();
     __tact_debug_str(__gen_str_3226689099());
@@ -48,81 +56,20 @@ tuple __gen_load_Debug() impure inline {
     return ($self, ());
 }
 
-((int)) __gen_constructor_DeployOk$queryId(int queryId) inline {
-    return (queryId);
-}
-
-((tuple), ()) $__gen_Debug_receive_Deploy(tuple $self, (int) $deploy) impure inline {
+((tuple), ()) $Debug$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
-    $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
+    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return ($self, ());
 }
 
 ;;
-;; Public Interface of a Contract Debug
+;; Get methods of a Contract Debug
 ;;
 
-(tuple, int) __gen_router_Debug(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive Deploy message
-    if (op == 2490013878) {
-        var msg = in_msg~__gen_read_Deploy();
-        self~$__gen_Debug_receive_Deploy(msg);
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        var text_op = slice_hash(in_msg);
-        
-        ;; Receive "Debug" message
-        if (text_op == 0xae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57) {
-            self~$__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57();
-            return (self, true);
-        }
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_Debug();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_Debug(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_Debug(self);
-}
-
 _ %debug() method_id(93099) {
-    var self = __gen_load_Debug();
-    var res = $__gen_Debug_debug(self);
+    var self = $Debug$_contract_load();
+    var res = $Debug$_fun_debug(self);
     return res;
 }
 
@@ -142,4 +89,65 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Debug
+;;
+
+(tuple, int) $Debug$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Debug$_receive_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Debug" message
+        if (text_op == 0xae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57) {
+            self~$Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Debug$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Debug$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $Debug$_contract_store(self);
 }

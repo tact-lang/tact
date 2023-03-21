@@ -1,20 +1,20 @@
-builder __gen_write_B(builder build_0, (slice) v) inline {
+builder $B$_store(builder build_0, (slice) v) inline {
     var (v'parent) = v;
     build_0 = __tact_store_address(build_0, v'parent);
     return build_0;
 }
 
-(slice, ((slice))) __gen_read_B(slice sc_0) inline {
+(slice, ((slice))) $B$_load(slice sc_0) inline {
     var v'parent = sc_0~__tact_load_address();
     return (sc_0, (v'parent));
 }
 
-(slice, ((slice))) __gen_read_$init$B(slice sc_0) inline {
+(slice, ((slice))) $B$init$_load(slice sc_0) inline {
     var v'parent = sc_0~__tact_load_address();
     return (sc_0, (v'parent));
 }
 
-builder __gen_write_$init$C(builder build_0, (slice) v) inline {
+builder $C$init$_store(builder build_0, (slice) v) inline {
     var (v'parent) = v;
     build_0 = __tact_store_address(build_0, v'parent);
     return build_0;

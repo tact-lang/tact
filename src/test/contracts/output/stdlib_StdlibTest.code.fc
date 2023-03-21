@@ -1,119 +1,78 @@
 #include "stdlib_StdlibTest.stdlib.fc";
 #include "stdlib_StdlibTest.storage.fc";
 
-(int) $__gen_StdlibTest_init() impure inline_ref {
+(int) $StdlibTest$_contract_init() impure inline_ref {
     var (($self'v)) = (0);
     return ($self'v);
 }
 
-(int) __gen_load_StdlibTest() impure inline {
+(int) $StdlibTest$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_StdlibTest();
+        return $sc~$StdlibTest$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_StdlibTest_init();
+        return $StdlibTest$_contract_init();
     }
 }
 
-() __gen_store_StdlibTest((int) v) impure inline {
+() $StdlibTest$_contract_store((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_StdlibTest(b, v);
+    b = $StdlibTest$_store(b, v);
     set_data(b.end_cell());
 }
 
-int $__gen_StdlibTest_sliceEmpty((int) $self, slice $sc) impure inline_ref {
+int $StdlibTest$_fun_sliceEmpty((int) $self, slice $sc) impure inline_ref {
     var (($self'v)) = $self;
     return slice_empty?($sc);
 }
 
-int $__gen_StdlibTest_sliceBits((int) $self, slice $sc) impure inline_ref {
+int $StdlibTest$_fun_sliceBits((int) $self, slice $sc) impure inline_ref {
     var (($self'v)) = $self;
     return slice_bits($sc);
 }
 
-int $__gen_StdlibTest_sliceRefs((int) $self, slice $sc) impure inline_ref {
+int $StdlibTest$_fun_sliceRefs((int) $self, slice $sc) impure inline_ref {
     var (($self'v)) = $self;
     return slice_refs($sc);
 }
 
-(((int)), ()) $__gen_StdlibTest_receive((int) $self) impure inline {
+;;
+;; Receivers of a Contract StdlibTest
+;;
+
+(((int)), ()) %$StdlibTest$_receive_empty((int) $self) impure inline {
     var ($self'v) = $self;
     return (($self'v), ());
 }
 
 ;;
-;; Public Interface of a Contract StdlibTest
+;; Get methods of a Contract StdlibTest
 ;;
-
-((int), int) __gen_router_StdlibTest((int) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive empty message
-    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_StdlibTest_receive();
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_StdlibTest();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_StdlibTest(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_StdlibTest(self);
-}
 
 _ %sliceEmpty(slice $$sc) method_id(73995) {
     slice $sc = $$sc;
-    var self = __gen_load_StdlibTest();
-    var res = $__gen_StdlibTest_sliceEmpty(self, $sc);
+    var self = $StdlibTest$_contract_load();
+    var res = $StdlibTest$_fun_sliceEmpty(self, $sc);
     return res;
 }
 
 _ %sliceBits(slice $$sc) method_id(75090) {
     slice $sc = $$sc;
-    var self = __gen_load_StdlibTest();
-    var res = $__gen_StdlibTest_sliceBits(self, $sc);
+    var self = $StdlibTest$_contract_load();
+    var res = $StdlibTest$_fun_sliceBits(self, $sc);
     return res;
 }
 
 _ %sliceRefs(slice $$sc) method_id(77445) {
     slice $sc = $$sc;
-    var self = __gen_load_StdlibTest();
-    var res = $__gen_StdlibTest_sliceRefs(self, $sc);
+    var self = $StdlibTest$_contract_load();
+    var res = $StdlibTest$_fun_sliceRefs(self, $sc);
     return res;
 }
 
@@ -132,4 +91,53 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract StdlibTest
+;;
+
+((int), int) $StdlibTest$_contract_router((int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$StdlibTest$_receive_empty();
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $StdlibTest$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$StdlibTest$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $StdlibTest$_contract_store(self);
 }

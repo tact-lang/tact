@@ -1,17 +1,17 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC __gen_Source_from_tuple
-  DECLPROC $__gen_Empty_init
-  DECLPROC __gen_load_Empty
-  DECLPROC __gen_store_Empty
-  DECLPROC $isZero
-  DECLPROC $__gen_Empty_a
-  DECLPROC __gen_router_Empty
-  DECLPROC recv_internal
+  DECLPROC $Source$_from_tuple
+  DECLPROC $Empty$_contract_init
+  DECLPROC $Empty$_contract_load
+  DECLPROC $Empty$_contract_store
+  DECLPROC $global_isZero
+  DECLPROC $Empty$_fun_a
   97415 DECLMETHOD %a
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Empty$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -36,13 +36,13 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __gen_Source_from_tuple PROCINLINE:<{
+  $Source$_from_tuple PROCINLINE:<{
     4 UNTUPLE
   }>
-  $__gen_Empty_init PROCREF:<{
+  $Empty$_contract_init PROCREF:<{
     PUSHNULL
   }>
-  __gen_load_Empty PROCINLINE:<{
+  $Empty$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -58,10 +58,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_Empty_init INLINECALLDICT
+      $Empty$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Empty PROCINLINE:<{
+  $Empty$_contract_store PROCINLINE:<{
     DROP
     NEWC
     __tact_context_sys GETGLOB
@@ -73,7 +73,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $isZero PROCREF:<{
+  $global_isZero PROCREF:<{
     2DROP
     s4 s3 PUSH2
     ADD
@@ -98,11 +98,32 @@ PROGRAM{
     0 EQINT
     AND
   }>
-  $__gen_Empty_a PROCREF:<{
+  $Empty$_fun_a PROCREF:<{
     1 7 BLKDROP2
-    $isZero INLINECALLDICT
+    $global_isZero INLINECALLDICT
   }>
-  __gen_router_Empty PROCREF:<{
+  %a PROC:<{
+    $Source$_from_tuple INLINECALLDICT
+    $Empty$_contract_load INLINECALLDICT
+    7 -ROLL
+    $Empty$_fun_a INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d65764a634175667659596161667a4d7a70773677484a4e6d665668794244676f46616833556e4d38484e7878} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Empty$_contract_router PROCREF:<{
     DUP
     SBITS
     NIP
@@ -137,31 +158,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Empty INLINECALLDICT
+    $Empty$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_Empty INLINECALLDICT
+    $Empty$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Empty INLINECALLDICT
-  }>
-  %a PROC:<{
-    __gen_Source_from_tuple INLINECALLDICT
-    __gen_load_Empty INLINECALLDICT
-    7 -ROLL
-    $__gen_Empty_a INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d65764a634175667659596161667a4d7a70773677484a4e6d665668794244676f46616833556e4d38484e7878} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Empty$_contract_store INLINECALLDICT
   }>
 }END>c

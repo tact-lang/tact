@@ -1,70 +1,70 @@
-(slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2490013878);
     var v'queryId = sc_0~load_uint(64);
     return (sc_0, (v'queryId));
 }
 
-builder __gen_write_DeployOk(builder build_0, (int) v) inline {
+builder $DeployOk$_store(builder build_0, (int) v) inline {
     var (v'queryId) = v;
     build_0 = store_uint(build_0, 2952335191, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
     return build_0;
 }
 
-cell __gen_writecell_DeployOk((int) v) inline {
-    return __gen_write_DeployOk(begin_cell(), v).end_cell();
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
 }
 
-(slice, ((int, int))) __gen_read_Increment(slice sc_0) inline {
+(slice, ((int, int))) $Increment$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 537284411);
     var v'key = sc_0~load_int(257);
     var v'value = sc_0~load_int(257);
     return (sc_0, (v'key, v'value));
 }
 
-(slice, ((int))) __gen_read_Toggle(slice sc_0) inline {
+(slice, ((int))) $Toggle$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1081595080);
     var v'key = sc_0~load_int(257);
     return (sc_0, (v'key));
 }
 
-(slice, ((int, cell))) __gen_read_Persist(slice sc_0) inline {
+(slice, ((int, cell))) $Persist$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3801943978);
     var v'key = sc_0~load_int(257);
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
     return (sc_0, (v'key, v'content));
 }
 
-(slice, ((int))) __gen_read_Reset(slice sc_0) inline {
+(slice, ((int))) $Reset$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 1718153138);
     var v'key = sc_0~load_int(257);
     return (sc_0, (v'key));
 }
 
-builder __gen_write_Something(builder build_0, (int) v) inline {
+builder $Something$_store(builder build_0, (int) v) inline {
     var (v'value) = v;
     build_0 = build_0.store_int(v'value, 257);
     return build_0;
 }
 
-cell __gen_writecell_Something((int) v) inline {
-    return __gen_write_Something(begin_cell(), v).end_cell();
+cell $Something$_store_cell((int) v) inline {
+    return $Something$_store(begin_cell(), v).end_cell();
 }
 
-((int)) __gen_Something_not_null(tuple v) inline {
+((int)) $Something$_not_null(tuple v) inline {
     throw_if(128, null?(v));
     var (int vvv'value) = __tact_tuple_destroy_1(v);
     return (vvv'value);
 }
 
-cell __gen_writecellopt_Something(tuple v) inline {
+cell $Something$_store_opt(tuple v) inline {
     if (null?(v)) {
         return null();
     }
-    return __gen_writecell_Something(__gen_Something_not_null(v));
+    return $Something$_store_cell($Something$_not_null(v));
 }
 
-builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, cell) v) inline {
+builder $IncrementContract$_store(builder build_0, (cell, cell, cell, cell, cell) v) inline {
     var (v'counters, v'counters2, v'counters3, v'counters4, v'counters5) = v;
     build_0 = build_0.store_dict(v'counters);
     build_0 = build_0.store_dict(v'counters2);
@@ -76,7 +76,7 @@ builder __gen_write_IncrementContract(builder build_0, (cell, cell, cell, cell, 
     return build_0;
 }
 
-(slice, ((cell, cell, cell, cell, cell))) __gen_read_IncrementContract(slice sc_0) inline {
+(slice, ((cell, cell, cell, cell, cell))) $IncrementContract$_load(slice sc_0) inline {
     var v'counters = sc_0~load_dict();
     var v'counters2 = sc_0~load_dict();
     slice sc_1 = sc_0~load_ref().begin_parse();

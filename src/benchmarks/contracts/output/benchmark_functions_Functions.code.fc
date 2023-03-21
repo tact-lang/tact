@@ -1,60 +1,85 @@
 #include "benchmark_functions_Functions.stdlib.fc";
 #include "benchmark_functions_Functions.storage.fc";
 
-(int) $__gen_Functions_init() impure inline_ref {
+(int) $Functions$_contract_init() impure inline_ref {
     var (($self'value)) = (null());
     $self'value = 0;
     return ($self'value);
 }
 
-(int) __gen_load_Functions() impure inline {
+(int) $Functions$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_Functions();
+        return $sc~$Functions$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_Functions_init();
+        return $Functions$_contract_init();
     }
 }
 
-() __gen_store_Functions((int) v) impure inline {
+() $Functions$_contract_store((int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_Functions(b, v);
+    b = $Functions$_store(b, v);
     set_data(b.end_cell());
 }
 
-((int), ()) $__gen_Functions_update((int) $self, int $delta) impure inline_ref {
+((int), ()) $Functions$_fun_update((int) $self, int $delta) impure inline_ref {
     var (($self'value)) = $self;
     $self'value = ($self'value + $delta);
     return (($self'value), ());
 }
 
-(((int)), ()) $__gen_Functions_receive_Add((int) $self, (int) $msg) impure inline {
+;;
+;; Receivers of a Contract Functions
+;;
+
+(((int)), ()) $Functions$_receive_binary_Add((int) $self, (int) $msg) impure inline {
     var ($self'value) = $self;
     var ($msg'value) = $msg;
     throw_unless(55789, ($msg'value > 0));
-    ($self'value)~$__gen_Functions_update($msg'value);
+    ($self'value)~$Functions$_fun_update($msg'value);
     return (($self'value), ());
 }
 
-(((int)), ()) $__gen_Functions_receive_Sub((int) $self, (int) $msg) impure inline {
+(((int)), ()) $Functions$_receive_binary_Sub((int) $self, (int) $msg) impure inline {
     var ($self'value) = $self;
     var ($msg'value) = $msg;
     throw_unless(55789, ($msg'value > 0));
-    ($self'value)~$__gen_Functions_update((- $msg'value));
+    ($self'value)~$Functions$_fun_update((- $msg'value));
     return (($self'value), ());
 }
 
 ;;
-;; Public Interface of a Contract Functions
+;; Get methods of a Contract Functions
 ;;
 
-((int), int) __gen_router_Functions((int) self, int msg_bounced, slice in_msg) impure inline_ref {
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmbrNSJxkNtoDR4k2Zhm1FPEao2cDRKJEuSXnXiAUbxAoA";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Functions
+;;
+
+((int), int) $Functions$_contract_router((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -69,15 +94,15 @@
     
     ;; Receive Add message
     if (op == 831841332) {
-        var msg = in_msg~__gen_read_Add();
-        self~$__gen_Functions_receive_Add(msg);
+        var msg = in_msg~$Add$_load();
+        self~$Functions$_receive_binary_Add(msg);
         return (self, true);
     }
     
     ;; Receive Sub message
     if (op == 2640337643) {
-        var msg = in_msg~__gen_read_Sub();
-        self~$__gen_Functions_receive_Sub(msg);
+        var msg = in_msg~$Sub$_load();
+        self~$Functions$_receive_binary_Sub(msg);
         return (self, true);
     }
     
@@ -95,31 +120,14 @@
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var self = __gen_load_Functions();
+    var self = $Functions$_contract_load();
     
     ;; Handle operation
-    int handled = self~__gen_router_Functions(msg_bounced, in_msg);
+    int handled = self~$Functions$_contract_router(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);
     
     ;; Persist state
-    __gen_store_Functions(self);
-}
-
-_ supported_interfaces() method_id {
-    return (
-        "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128,
-        "org.ton.deploy.lazy.v0"H >> 128,
-        "org.ton.chain.workchain.v0"H >> 128
-    );
-}
-
-_ get_abi_ipfs() {
-    return "ipfs://QmbrNSJxkNtoDR4k2Zhm1FPEao2cDRKJEuSXnXiAUbxAoA";
-}
-
-_ lazy_deployment_completed() {
-    return get_data().begin_parse().load_int(1);
+    $Functions$_contract_store(self);
 }

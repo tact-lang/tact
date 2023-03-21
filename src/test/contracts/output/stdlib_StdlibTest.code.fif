@@ -1,22 +1,22 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC __gen_write_StdlibTest
-  DECLPROC __gen_read_StdlibTest
-  DECLPROC $__gen_StdlibTest_init
-  DECLPROC __gen_load_StdlibTest
-  DECLPROC __gen_store_StdlibTest
-  DECLPROC $__gen_StdlibTest_sliceEmpty
-  DECLPROC $__gen_StdlibTest_sliceBits
-  DECLPROC $__gen_StdlibTest_sliceRefs
-  DECLPROC $__gen_StdlibTest_receive
-  DECLPROC __gen_router_StdlibTest
-  DECLPROC recv_internal
+  DECLPROC $StdlibTest$_store
+  DECLPROC $StdlibTest$_load
+  DECLPROC $StdlibTest$_contract_init
+  DECLPROC $StdlibTest$_contract_load
+  DECLPROC $StdlibTest$_contract_store
+  DECLPROC $StdlibTest$_fun_sliceEmpty
+  DECLPROC $StdlibTest$_fun_sliceBits
+  DECLPROC $StdlibTest$_fun_sliceRefs
+  DECLPROC %$StdlibTest$_receive_empty
   73995 DECLMETHOD %sliceEmpty
   75090 DECLMETHOD %sliceBits
   77445 DECLMETHOD %sliceRefs
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $StdlibTest$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -41,20 +41,20 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __gen_write_StdlibTest PROCINLINE:<{
+  $StdlibTest$_store PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_read_StdlibTest PROCINLINE:<{
+  $StdlibTest$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  $__gen_StdlibTest_init PROCREF:<{
+  $StdlibTest$_contract_init PROCREF:<{
     0 PUSHINT
   }>
-  __gen_load_StdlibTest PROCINLINE:<{
+  $StdlibTest$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -63,7 +63,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_StdlibTest INLINECALLDICT
+      $StdlibTest$_load INLINECALLDICT
       NIP
     }>ELSE<{
       DROP
@@ -72,10 +72,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_StdlibTest_init INLINECALLDICT
+      $StdlibTest$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_StdlibTest PROCINLINE:<{
+  $StdlibTest$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -84,25 +84,55 @@ PROGRAM{
     SWAP
     1 STI
     SWAP
-    __gen_write_StdlibTest INLINECALLDICT
+    $StdlibTest$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_StdlibTest_sliceEmpty PROCREF:<{
+  $StdlibTest$_fun_sliceEmpty PROCREF:<{
     NIP
     SEMPTY
   }>
-  $__gen_StdlibTest_sliceBits PROCREF:<{
+  $StdlibTest$_fun_sliceBits PROCREF:<{
     NIP
     SBITS
   }>
-  $__gen_StdlibTest_sliceRefs PROCREF:<{
+  $StdlibTest$_fun_sliceRefs PROCREF:<{
     NIP
     SREFS
   }>
-  $__gen_StdlibTest_receive PROCINLINE:<{
+  %$StdlibTest$_receive_empty PROCINLINE:<{
   }>
-  __gen_router_StdlibTest PROCREF:<{
+  %sliceEmpty PROC:<{
+    $StdlibTest$_contract_load INLINECALLDICT
+    SWAP
+    $StdlibTest$_fun_sliceEmpty INLINECALLDICT
+  }>
+  %sliceBits PROC:<{
+    $StdlibTest$_contract_load INLINECALLDICT
+    SWAP
+    $StdlibTest$_fun_sliceBits INLINECALLDICT
+  }>
+  %sliceRefs PROC:<{
+    $StdlibTest$_contract_load INLINECALLDICT
+    SWAP
+    $StdlibTest$_fun_sliceRefs INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d57687074666f38356a66694e794777626a6142385377344b316252397632577169326e617859716570436644} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $StdlibTest$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -124,7 +154,7 @@ PROGRAM{
     33 LESSINT
     AND
     IFJMP:<{
-      $__gen_StdlibTest_receive INLINECALLDICT
+      %$StdlibTest$_receive_empty INLINECALLDICT
       TRUE
     }>
     FALSE
@@ -152,40 +182,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_StdlibTest INLINECALLDICT
+    $StdlibTest$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_StdlibTest INLINECALLDICT
+    $StdlibTest$_contract_router INLINECALLDICT
     DROP
-    __gen_store_StdlibTest INLINECALLDICT
-  }>
-  %sliceEmpty PROC:<{
-    __gen_load_StdlibTest INLINECALLDICT
-    SWAP
-    $__gen_StdlibTest_sliceEmpty INLINECALLDICT
-  }>
-  %sliceBits PROC:<{
-    __gen_load_StdlibTest INLINECALLDICT
-    SWAP
-    $__gen_StdlibTest_sliceBits INLINECALLDICT
-  }>
-  %sliceRefs PROC:<{
-    __gen_load_StdlibTest INLINECALLDICT
-    SWAP
-    $__gen_StdlibTest_sliceRefs INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d57687074666f38356a66694e794777626a6142385377344b316252397632577169326e617859716570436644} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $StdlibTest$_contract_store INLINECALLDICT
   }>
 }END>c

@@ -136,12 +136,12 @@ cell __tact_string_builder_end(tuple builders) inline {
     return ((builders), ());
 }
 
-slice $contractAddress((cell, cell) $s) impure inline_ref {
+slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
+() $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -184,17 +184,17 @@ slice $contractAddress((cell, cell) $s) impure inline_ref {
     send_raw_message($c, $params'mode);
 }
 
-slice $__gen_Builder_asSlice(builder $self) impure inline_ref {
+slice $Builder$_fun_asSlice(builder $self) impure inline_ref {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
 
-cell $__gen_Builder_asCell(builder $self) impure inline_ref {
+cell $Builder$_fun_asCell(builder $self) impure inline_ref {
     var ($self) = $self;
     return end_cell($self);
 }
 
-slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
+slice $Slice$_fun_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     int $size = (slice_bits($self) / 8);
     builder $result = begin_cell();
@@ -218,25 +218,25 @@ slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
     int $total = builder_bits($result);
     int $padding = ($total % 8);
     if (($padding != 0)) {
-        slice $s = $__gen_Builder_asSlice($result);
+        slice $s = $Builder$_fun_asSlice($result);
         return $s~load_bits(($total - $padding));
     } else {
-        return $__gen_Builder_asSlice($result);
+        return $Builder$_fun_asSlice($result);
     }
 }
 
-cell $__gen_String_asComment(slice $self) impure inline_ref {
+cell $String$_fun_asComment(slice $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
 }
 
-slice $__gen_String_fromBase64(slice $self) impure inline_ref {
+slice $String$_fun_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
-    return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
+    return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }
 
-((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
     return (bounce, to, value, mode, body, null(), null());
 }

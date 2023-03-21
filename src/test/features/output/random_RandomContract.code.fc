@@ -1,12 +1,12 @@
 #include "random_RandomContract.stdlib.fc";
 #include "random_RandomContract.storage.fc";
 
-tuple $__gen_RandomContract_init() impure inline_ref {
+tuple $RandomContract$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_RandomContract() impure inline {
+tuple $RandomContract$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -15,99 +15,57 @@ tuple __gen_load_RandomContract() impure inline {
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_RandomContract_init();
+        return $RandomContract$_contract_init();
     }
 }
 
-() __gen_store_RandomContract(tuple v) impure inline {
+() $RandomContract$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
-int $__gen_RandomContract_randomInt(tuple $self) impure inline_ref {
+int $RandomContract$_fun_randomInt(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return $randomInt();
+    return $global_randomInt();
 }
 
-int $__gen_RandomContract_random(tuple $self, int $min, int $max) impure inline_ref {
+int $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_ref {
     var ($self) = $self;
-    return $random($min, $max);
+    return $global_random($min, $max);
 }
 
-((int)) __gen_constructor_DeployOk$queryId(int queryId) inline {
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
     return (queryId);
 }
 
-((tuple), ()) $__gen_RandomContract_receive_Deploy(tuple $self, (int) $deploy) impure inline {
+;;
+;; Receivers of a Contract RandomContract
+;;
+
+((tuple), ()) $RandomContract$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
-    $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
+    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return ($self, ());
 }
 
 ;;
-;; Public Interface of a Contract RandomContract
+;; Get methods of a Contract RandomContract
 ;;
 
-(tuple, int) __gen_router_RandomContract(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive Deploy message
-    if (op == 2490013878) {
-        var msg = in_msg~__gen_read_Deploy();
-        self~$__gen_RandomContract_receive_Deploy(msg);
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_RandomContract();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_RandomContract(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_RandomContract(self);
-}
-
 _ %randomInt() method_id(128647) {
-    var self = __gen_load_RandomContract();
-    var res = $__gen_RandomContract_randomInt(self);
+    var self = $RandomContract$_contract_load();
+    var res = $RandomContract$_fun_randomInt(self);
     return res;
 }
 
 _ %random(int $$min, int $$max) method_id(92013) {
     int $min = $$min;
     int $max = $$max;
-    var self = __gen_load_RandomContract();
-    var res = $__gen_RandomContract_random(self, $min, $max);
+    var self = $RandomContract$_contract_load();
+    var res = $RandomContract$_fun_random(self, $min, $max);
     return res;
 }
 
@@ -127,4 +85,54 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract RandomContract
+;;
+
+(tuple, int) $RandomContract$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$RandomContract$_receive_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $RandomContract$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$RandomContract$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $RandomContract$_contract_store(self);
 }

@@ -69,7 +69,7 @@ export function writeOptionalSerializer(name: string, origin: TypeOrigin, ctx: W
                 if (null?(v)) {
                     return null();
                 }
-                return ${ops.writerCell(name, ctx)}(${ctx.used(`__gen_${name}_not_null`)}(v));
+                return ${ops.writerCell(name, ctx)}(${ops.typeNotNull(name, ctx)}(v));
             `);
         });
     });
@@ -212,8 +212,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
             throw Error('Not implemented');
         }
         if (op.optional) {
-            ctx.used(`__gen_${op.type}_not_null`);
-            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type, ctx)}( __gen_${op.type}_not_null(${fieldName})) : build_${gen}.store_int(false, 1);`);
+            ctx.append(`build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).${ops.writer(op.type, ctx)}(${ops.typeNotNull(op.type, ctx)}(${fieldName})) : build_${gen}.store_int(false, 1);`);
         } else {
             let ff = getType(ctx.ctx, op.type).fields.map((f) => f.abi);
             ctx.append(`build_${gen} = ${ops.writer(op.type, ctx)}(build_${gen}, ${resolveFuncTypeFromAbiUnpack(fieldName, ff, ctx)});`);
@@ -231,8 +230,8 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 export function writeParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
-    ctx.fun(`__gen_read_${name}`, () => {
-        ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) __gen_read_${name}(slice sc_0)`);
+    ctx.fun(ops.reader(name, ctx), () => {
+        ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.reader(name, ctx)}(slice sc_0)`);
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
@@ -258,8 +257,8 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
 }
 
 export function writeOptionalParser(name: string, origin: TypeOrigin, ctx: WriterContext) {
-    ctx.fun(`__gen_readopt_${name}`, () => {
-        ctx.signature(`tuple __gen_readopt_${name}(cell cl)`);
+    ctx.fun(ops.readerOpt(name, ctx), () => {
+        ctx.signature(`tuple ${ops.readerOpt(name, ctx)}(cell cl)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -272,7 +271,7 @@ export function writeOptionalParser(name: string, origin: TypeOrigin, ctx: Write
                     return null();
                 }
                 var sc = cl.begin_parse();
-                return ${ctx.used(`__gen_${name}_as_optional`)}(sc~${ctx.used(`__gen_read_${name}`)}());
+                return ${ops.typeAsOptional(name, ctx)}(sc~${ops.reader(name, ctx)}());
             `);
         });
     });
@@ -413,21 +412,17 @@ function writeFieldParser(f: AllocationOperation, gen: number, ctx: WriterContex
         return;
     }
     if (op.kind === 'struct') {
-        ctx.used(`__gen_read_${op.type}`);
         if (op.optional) {
-            ctx.used(`__gen_${op.type}_as_optional`);
             if (op.ref) {
-                // ctx.append(`${varName} = sc_${gen}~load_int(1) ? __gen_${f.type}_as_optional(second(__gen_read_${f.type}((sc_${gen}~load_ref().begin_parse()))) : null();`);
                 throw Error('Not implemented');
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_int(1) ? __gen_${op.type}_as_optional(sc_${gen}~__gen_read_${op.type}()) : null();`);
+                ctx.append(`${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(sc_${gen}~${ops.reader(op.type, ctx)}()) : null();`);
             }
         } else {
             if (op.ref) {
-                // ctx.append(`${varName} = second(__gen_read_${f.type}((sc_${gen}~load_ref().begin_parse()));`);
                 throw Error('Not implemented');
             } else {
-                ctx.append(`${varName} = sc_${gen}~__gen_read_${op.type}();`);
+                ctx.append(`${varName} = sc_${gen}~${ops.reader(op.type, ctx)}();`);
             }
         }
         return;

@@ -9,40 +9,40 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_cell
   DECLPROC __tact_dict_get_int_cell
   DECLPROC __tact_dict_set_slice_int
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
-  DECLPROC __gen_read_Deploy
-  DECLPROC __gen_write_DeployOk
-  DECLPROC __gen_writecell_DeployOk
-  DECLPROC __gen_read_Increment
-  DECLPROC __gen_read_Toggle
-  DECLPROC __gen_read_Persist
-  DECLPROC __gen_read_Reset
-  DECLPROC __gen_write_Something
-  DECLPROC __gen_writecell_Something
-  DECLPROC __gen_Something_not_null
-  DECLPROC __gen_writecellopt_Something
-  DECLPROC __gen_write_IncrementContract
-  DECLPROC __gen_read_IncrementContract
-  DECLPROC $__gen_IncrementContract_init
-  DECLPROC __gen_load_IncrementContract
-  DECLPROC __gen_store_IncrementContract
-  DECLPROC $__gen_IncrementContract_counters
-  DECLPROC $__gen_IncrementContract_counters2
-  DECLPROC $__gen_IncrementContract_receive_Increment
-  DECLPROC $__gen_IncrementContract_receive_Toggle
-  DECLPROC $__gen_IncrementContract_receive_Persist
-  DECLPROC $__gen_IncrementContract_receive_Reset
-  DECLPROC __gen_constructor_DeployOk$queryId
-  DECLPROC $__gen_IncrementContract_receive_Deploy
-  DECLPROC __gen_router_IncrementContract
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $global_reply
+  DECLPROC $Deploy$_load
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
+  DECLPROC $Increment$_load
+  DECLPROC $Toggle$_load
+  DECLPROC $Persist$_load
+  DECLPROC $Reset$_load
+  DECLPROC $Something$_store
+  DECLPROC $Something$_store_cell
+  DECLPROC $Something$_not_null
+  DECLPROC $Something$_store_opt
+  DECLPROC $IncrementContract$_store
+  DECLPROC $IncrementContract$_load
+  DECLPROC $IncrementContract$_contract_init
+  DECLPROC $IncrementContract$_contract_load
+  DECLPROC $IncrementContract$_contract_store
+  DECLPROC $IncrementContract$_fun_counters
+  DECLPROC $IncrementContract$_fun_counters2
+  DECLPROC $DeployOk$_constructor_queryId
+  DECLPROC $IncrementContract$_receive_binary_Increment
+  DECLPROC $IncrementContract$_receive_binary_Toggle
+  DECLPROC $IncrementContract$_receive_binary_Persist
+  DECLPROC $IncrementContract$_receive_binary_Reset
+  DECLPROC $IncrementContract$_receive_binary_Deploy
   95239 DECLMETHOD %counters
   77570 DECLMETHOD %counters2
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $IncrementContract$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -151,7 +151,7 @@ PROGRAM{
       DICTSETB
     }>
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -250,11 +250,11 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
   }>
-  $reply PROCREF:<{
+  $global_reply PROCREF:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -262,10 +262,10 @@ PROGRAM{
     s0 s3 XCHG
     66 PUSHINT
     SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  __gen_read_Deploy PROCINLINE:<{
+  $Deploy$_load PROCINLINE:<{
     32 LDU
     SWAP
     2490013878 PUSHINT
@@ -274,19 +274,19 @@ PROGRAM{
     64 LDU
     SWAP
   }>
-  __gen_write_DeployOk PROCINLINE:<{
+  $DeployOk$_store PROCINLINE:<{
     2952335191 PUSHINT
     ROT
     32 STU
     64 STU
   }>
-  __gen_writecell_DeployOk PROCINLINE:<{
+  $DeployOk$_store_cell PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_DeployOk INLINECALLDICT
+    $DeployOk$_store INLINECALLDICT
     ENDC
   }>
-  __gen_read_Increment PROCINLINE:<{
+  $Increment$_load PROCINLINE:<{
     32 LDU
     SWAP
     537284411 PUSHINT
@@ -298,7 +298,7 @@ PROGRAM{
     LDIX
     -ROT
   }>
-  __gen_read_Toggle PROCINLINE:<{
+  $Toggle$_load PROCINLINE:<{
     32 LDU
     SWAP
     1081595080 PUSHINT
@@ -308,7 +308,7 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_read_Persist PROCINLINE:<{
+  $Persist$_load PROCINLINE:<{
     32 LDU
     SWAP
     3801943978 PUSHINT
@@ -326,7 +326,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_Reset PROCINLINE:<{
+  $Reset$_load PROCINLINE:<{
     32 LDU
     SWAP
     1718153138 PUSHINT
@@ -336,35 +336,35 @@ PROGRAM{
     LDIX
     SWAP
   }>
-  __gen_write_Something PROCINLINE:<{
+  $Something$_store PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_Something PROCINLINE:<{
+  $Something$_store_cell PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_Something INLINECALLDICT
+    $Something$_store INLINECALLDICT
     ENDC
   }>
-  __gen_Something_not_null PROCINLINE:<{
+  $Something$_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
     1 UNTUPLE
   }>
-  __gen_writecellopt_Something PROCINLINE:<{
+  $Something$_store_opt PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_Something_not_null INLINECALLDICT
-      __gen_writecell_Something INLINECALLDICT
+      $Something$_not_null INLINECALLDICT
+      $Something$_store_cell INLINECALLDICT
     }>
   }>
-  __gen_write_IncrementContract PROCINLINE:<{
+  $IncrementContract$_store PROCINLINE:<{
     s4 s5 XCHG2
     STDICT
     s1 s2 XCHG
@@ -380,7 +380,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_IncrementContract PROCINLINE:<{
+  $IncrementContract$_load PROCINLINE:<{
     LDDICT
     LDDICT
     LDREF
@@ -393,14 +393,14 @@ PROGRAM{
     s3 s5 XCHG
     s3 s4 XCHG
   }>
-  $__gen_IncrementContract_init PROCREF:<{
+  $IncrementContract$_contract_init PROCREF:<{
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
   }>
-  __gen_load_IncrementContract PROCINLINE:<{
+  $IncrementContract$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -409,7 +409,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_IncrementContract INLINECALLDICT
+      $IncrementContract$_load INLINECALLDICT
       1 5 BLKDROP2
     }>ELSE<{
       DROP
@@ -418,10 +418,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_IncrementContract_init INLINECALLDICT
+      $IncrementContract$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_IncrementContract PROCINLINE:<{
+  $IncrementContract$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -430,18 +430,20 @@ PROGRAM{
     SWAP
     1 STI
     5 -ROLL
-    __gen_write_IncrementContract INLINECALLDICT
+    $IncrementContract$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_IncrementContract_counters PROCREF:<{
+  $IncrementContract$_fun_counters PROCREF:<{
     4 BLKDROP
   }>
-  $__gen_IncrementContract_counters2 PROCREF:<{
+  $IncrementContract$_fun_counters2 PROCREF:<{
     s1 s4 XCHG
     4 BLKDROP
   }>
-  $__gen_IncrementContract_receive_Increment PROCINLINE:<{
+  $DeployOk$_constructor_queryId PROCINLINE:<{
+  }>
+  $IncrementContract$_receive_binary_Increment PROCINLINE:<{
     257 PUSHINT
     DUP
     s3 s8 XCHG
@@ -456,7 +458,7 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     SWAP
   }>
-  $__gen_IncrementContract_receive_Toggle PROCINLINE:<{
+  $IncrementContract$_receive_binary_Toggle PROCINLINE:<{
     s4 PUSH
     257 PUSHINT
     s2 PUSH
@@ -484,7 +486,7 @@ PROGRAM{
     }>
     s0 s3 XCHG
   }>
-  $__gen_IncrementContract_receive_Persist PROCINLINE:<{
+  $IncrementContract$_receive_binary_Persist PROCINLINE:<{
     52777 PUSHINT
     s5 PUSH
     257 PUSHINT
@@ -498,7 +500,7 @@ PROGRAM{
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s2 XCHG
   }>
-  $__gen_IncrementContract_receive_Reset PROCINLINE:<{
+  $IncrementContract$_receive_binary_Reset PROCINLINE:<{
     257 PUSHINT
     PUSHNULL
     s1 s2 PUSH2
@@ -524,20 +526,41 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     257 PUSHINT
     PUSHNULL
-    __gen_writecellopt_Something INLINECALLDICT
+    $Something$_store_opt INLINECALLDICT
     s1 s7 s0 XCHG3
     __tact_dict_set_int_cell INLINECALLDICT
     s3 s4 XCHG
     s1 s3 s0 XCHG3
   }>
-  __gen_constructor_DeployOk$queryId PROCINLINE:<{
+  $IncrementContract$_receive_binary_Deploy PROCINLINE:<{
+    $DeployOk$_constructor_queryId INLINECALLDICT
+    $DeployOk$_store_cell INLINECALLDICT
+    $global_reply INLINECALLDICT
   }>
-  $__gen_IncrementContract_receive_Deploy PROCINLINE:<{
-    __gen_constructor_DeployOk$queryId INLINECALLDICT
-    __gen_writecell_DeployOk INLINECALLDICT
-    $reply INLINECALLDICT
+  %counters PROC:<{
+    $IncrementContract$_contract_load INLINECALLDICT
+    $IncrementContract$_fun_counters INLINECALLDICT
   }>
-  __gen_router_IncrementContract PROCREF:<{
+  %counters2 PROC:<{
+    $IncrementContract$_contract_load INLINECALLDICT
+    $IncrementContract$_fun_counters2 INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d544e434344516a5a7036634b474a4868794d744e626b75387972624447324644714b6664597366564c6b4d55} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $IncrementContract$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -557,9 +580,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Increment INLINECALLDICT
+      $Increment$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_IncrementContract_receive_Increment INLINECALLDICT
+      $IncrementContract$_receive_binary_Increment INLINECALLDICT
       TRUE
     }>
     OVER
@@ -567,9 +590,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Toggle INLINECALLDICT
+      $Toggle$_load INLINECALLDICT
       NIP
-      $__gen_IncrementContract_receive_Toggle INLINECALLDICT
+      $IncrementContract$_receive_binary_Toggle INLINECALLDICT
       TRUE
     }>
     OVER
@@ -577,9 +600,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Persist INLINECALLDICT
+      $Persist$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_IncrementContract_receive_Persist INLINECALLDICT
+      $IncrementContract$_receive_binary_Persist INLINECALLDICT
       TRUE
     }>
     OVER
@@ -587,18 +610,18 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Reset INLINECALLDICT
+      $Reset$_load INLINECALLDICT
       NIP
-      $__gen_IncrementContract_receive_Reset INLINECALLDICT
+      $IncrementContract$_receive_binary_Reset INLINECALLDICT
       TRUE
     }>
     SWAP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_read_Deploy INLINECALLDICT
+      $Deploy$_load INLINECALLDICT
       NIP
-      $__gen_IncrementContract_receive_Deploy INLINECALLDICT
+      $IncrementContract$_receive_binary_Deploy INLINECALLDICT
       TRUE
     }>
     DROP
@@ -627,33 +650,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_IncrementContract INLINECALLDICT
+    $IncrementContract$_contract_load INLINECALLDICT
     2 5 BLKSWAP
-    __gen_router_IncrementContract INLINECALLDICT
+    $IncrementContract$_contract_router INLINECALLDICT
     DROP
-    __gen_store_IncrementContract INLINECALLDICT
-  }>
-  %counters PROC:<{
-    __gen_load_IncrementContract INLINECALLDICT
-    $__gen_IncrementContract_counters INLINECALLDICT
-  }>
-  %counters2 PROC:<{
-    __gen_load_IncrementContract INLINECALLDICT
-    $__gen_IncrementContract_counters2 INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d544e434344516a5a7036634b474a4868794d744e626b75387972624447324644714b6664597366564c6b4d55} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $IncrementContract$_contract_store INLINECALLDICT
   }>
 }END>c

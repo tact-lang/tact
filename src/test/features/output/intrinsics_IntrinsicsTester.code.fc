@@ -2,198 +2,152 @@
 #include "intrinsics_IntrinsicsTester.constants.fc";
 #include "intrinsics_IntrinsicsTester.storage.fc";
 
-(int, slice, slice, cell, int) $__gen_IntrinsicsTester_init() impure inline_ref {
+(int, slice, slice, cell, int) $IntrinsicsTester$_contract_init() impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = (10123400000, __gen_str_1693223114(), __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc(), begin_cell().store_slice(__gen_slice_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36()).end_cell(), 512);
     return ($self'a, $self'b, $self'c, $self'd, $self'e);
 }
 
-(int, slice, slice, cell, int) __gen_load_IntrinsicsTester() impure inline {
+(int, slice, slice, cell, int) $IntrinsicsTester$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_IntrinsicsTester();
+        return $sc~$IntrinsicsTester$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_IntrinsicsTester_init();
+        return $IntrinsicsTester$_contract_init();
     }
 }
 
-() __gen_store_IntrinsicsTester((int, slice, slice, cell, int) v) impure inline {
+() $IntrinsicsTester$_contract_store((int, slice, slice, cell, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_IntrinsicsTester(b, v);
+    b = $IntrinsicsTester$_store(b, v);
     set_data(b.end_cell());
 }
 
-int $__gen_IntrinsicsTester_getTons((int, slice, slice, cell, int) $self) impure inline_ref {
+int $IntrinsicsTester$_fun_getTons((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return 10123400000;
 }
 
-int $__gen_IntrinsicsTester_getTons2((int, slice, slice, cell, int) $self) impure inline_ref {
+int $IntrinsicsTester$_fun_getTons2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'a;
 }
 
-slice $__gen_IntrinsicsTester_getString((int, slice, slice, cell, int) $self) impure inline_ref {
+slice $IntrinsicsTester$_fun_getString((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return __gen_str_1693223114();
 }
 
-slice $__gen_IntrinsicsTester_getString2((int, slice, slice, cell, int) $self) impure inline_ref {
+slice $IntrinsicsTester$_fun_getString2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'b;
 }
 
-slice $__gen_IntrinsicsTester_getAddress((int, slice, slice, cell, int) $self) impure inline_ref {
+slice $IntrinsicsTester$_fun_getAddress((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc();
 }
 
-slice $__gen_IntrinsicsTester_getAddress2((int, slice, slice, cell, int) $self) impure inline_ref {
+slice $IntrinsicsTester$_fun_getAddress2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'c;
 }
 
-cell $__gen_IntrinsicsTester_getCell((int, slice, slice, cell, int) $self) impure inline_ref {
+cell $IntrinsicsTester$_fun_getCell((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return begin_cell().store_slice(__gen_slice_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36()).end_cell();
 }
 
-cell $__gen_IntrinsicsTester_getCell2((int, slice, slice, cell, int) $self) impure inline_ref {
+cell $IntrinsicsTester$_fun_getCell2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'd;
 }
 
-int $__gen_IntrinsicsTester_getPow((int, slice, slice, cell, int) $self) impure inline_ref {
+int $IntrinsicsTester$_fun_getPow((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return 512;
 }
 
-int $__gen_IntrinsicsTester_getPow2((int, slice, slice, cell, int) $self) impure inline_ref {
+int $IntrinsicsTester$_fun_getPow2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'e;
 }
 
-((int, slice, slice, cell, int), ()) $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, slice, slice, cell, int) $self) impure inline {
+;;
+;; Receivers of a Contract IntrinsicsTester
+;;
+
+((int, slice, slice, cell, int), ()) $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, slice, slice, cell, int) $self) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e), ());
 }
 
 ;;
-;; Public Interface of a Contract IntrinsicsTester
+;; Get methods of a Contract IntrinsicsTester
 ;;
 
-((int, slice, slice, cell, int), int) __gen_router_IntrinsicsTester((int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        var text_op = slice_hash(in_msg);
-        
-        ;; Receive "Deploy" message
-        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            self~$__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
-            return (self, true);
-        }
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_IntrinsicsTester();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_IntrinsicsTester(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_IntrinsicsTester(self);
-}
-
 _ %getTons() method_id(85126) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getTons(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getTons(self);
     return res;
 }
 
 _ %getTons2() method_id(72025) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getTons2(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getTons2(self);
     return res;
 }
 
 _ %getString() method_id(97624) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getString(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getString(self);
     return res;
 }
 
 _ %getString2() method_id(123179) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getString2(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getString2(self);
     return res;
 }
 
 _ %getAddress() method_id(67571) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getAddress(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getAddress(self);
     return res;
 }
 
 _ %getAddress2() method_id(103926) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getAddress2(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getAddress2(self);
     return res;
 }
 
 _ %getCell() method_id(83057) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getCell(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getCell(self);
     return res;
 }
 
 _ %getCell2() method_id(94033) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getCell2(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getCell2(self);
     return res;
 }
 
 _ %getPow() method_id(93948) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getPow(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getPow(self);
     return res;
 }
 
 _ %getPow2() method_id(92025) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getPow2(self);
+    var self = $IntrinsicsTester$_contract_load();
+    var res = $IntrinsicsTester$_fun_getPow2(self);
     return res;
 }
 
@@ -213,4 +167,58 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract IntrinsicsTester
+;;
+
+((int, slice, slice, cell, int), int) $IntrinsicsTester$_contract_router((int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Deploy" message
+        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
+            self~$IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $IntrinsicsTester$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$IntrinsicsTester$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $IntrinsicsTester$_contract_store(self);
 }

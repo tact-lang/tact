@@ -1,22 +1,20 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC __gen_read_Update
-  DECLPROC __gen_write_SerializationTester
-  DECLPROC __gen_read_SerializationTester
-  DECLPROC __gen_read_$init$SerializationTester
-  DECLPROC $__gen_SerializationTester_init
-  DECLPROC __gen_load_SerializationTester
-  DECLPROC __gen_store_SerializationTester
-  DECLPROC $__gen_SerializationTester_getA
-  DECLPROC $__gen_SerializationTester_getB
-  DECLPROC $__gen_SerializationTester_getC
-  DECLPROC $__gen_SerializationTester_getD
-  DECLPROC $__gen_SerializationTester_getE
-  DECLPROC $__gen_SerializationTester_getF
-  DECLPROC $__gen_SerializationTester_receive
-  DECLPROC $__gen_SerializationTester_receive_Update
-  DECLPROC __gen_router_SerializationTester
-  DECLPROC recv_internal
+  DECLPROC $Update$_load
+  DECLPROC $SerializationTester$_store
+  DECLPROC $SerializationTester$_load
+  DECLPROC $SerializationTester$init$_load
+  DECLPROC $SerializationTester$_contract_init
+  DECLPROC $SerializationTester$_contract_load
+  DECLPROC $SerializationTester$_contract_store
+  DECLPROC $SerializationTester$_fun_getA
+  DECLPROC $SerializationTester$_fun_getB
+  DECLPROC $SerializationTester$_fun_getC
+  DECLPROC $SerializationTester$_fun_getD
+  DECLPROC $SerializationTester$_fun_getE
+  DECLPROC $SerializationTester$_fun_getF
+  DECLPROC %$SerializationTester$_receive_empty
+  DECLPROC $SerializationTester$_receive_binary_Update
   123932 DECLMETHOD %getA
   119935 DECLMETHOD %getB
   115806 DECLMETHOD %getC
@@ -26,6 +24,8 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $SerializationTester$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -50,7 +50,7 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __gen_read_Update PROCREF:<{
+  $Update$_load PROCREF:<{
     32 LDU
     SWAP
     2217298645 PUSHINT
@@ -82,7 +82,7 @@ PROGRAM{
     s1 s4 XCHG
     s1 s3 XCHG
   }>
-  __gen_write_SerializationTester PROCINLINE:<{
+  $SerializationTester$_store PROCINLINE:<{
     s5 s6 XCHG2
     257 PUSHINT
     STIX
@@ -115,7 +115,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_SerializationTester PROCINLINE:<{
+  $SerializationTester$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     1 LDI
@@ -143,7 +143,7 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  __gen_read_$init$SerializationTester PROCREF:<{
+  $SerializationTester$init$_load PROCREF:<{
     257 PUSHINT
     LDIX
     1 LDI
@@ -171,9 +171,9 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  $__gen_SerializationTester_init PROCREF:<{
+  $SerializationTester$_contract_init PROCREF:<{
   }>
-  __gen_load_SerializationTester PROCINLINE:<{
+  $SerializationTester$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -182,7 +182,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_SerializationTester INLINECALLDICT
+      $SerializationTester$_load INLINECALLDICT
       1 6 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -190,14 +190,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$SerializationTester INLINECALLDICT
+      $SerializationTester$init$_load INLINECALLDICT
       s0 s6 XCHG
       ENDS
       5 ROLL
-      $__gen_SerializationTester_init INLINECALLDICT
+      $SerializationTester$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_SerializationTester PROCINLINE:<{
+  $SerializationTester$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -206,38 +206,78 @@ PROGRAM{
     SWAP
     1 STI
     6 -ROLL
-    __gen_write_SerializationTester INLINECALLDICT
+    $SerializationTester$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_SerializationTester_getA PROCREF:<{
+  $SerializationTester$_fun_getA PROCREF:<{
     5 BLKDROP
   }>
-  $__gen_SerializationTester_getB PROCREF:<{
+  $SerializationTester$_fun_getB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_SerializationTester_getC PROCREF:<{
+  $SerializationTester$_fun_getC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_SerializationTester_getD PROCREF:<{
+  $SerializationTester$_fun_getD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_SerializationTester_getE PROCREF:<{
+  $SerializationTester$_fun_getE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_SerializationTester_getF PROCREF:<{
+  $SerializationTester$_fun_getF PROCREF:<{
     5 1 BLKDROP2
   }>
-  $__gen_SerializationTester_receive PROCINLINE:<{
+  %$SerializationTester$_receive_empty PROCINLINE:<{
   }>
-  $__gen_SerializationTester_receive_Update PROCINLINE:<{
+  $SerializationTester$_receive_binary_Update PROCINLINE:<{
     6 6 BLKDROP2
   }>
-  __gen_router_SerializationTester PROCREF:<{
+  %getA PROC:<{
+    $SerializationTester$_contract_load INLINECALLDICT
+    $SerializationTester$_fun_getA INLINECALLDICT
+  }>
+  %getB PROC:<{
+    $SerializationTester$_contract_load INLINECALLDICT
+    $SerializationTester$_fun_getB INLINECALLDICT
+  }>
+  %getC PROC:<{
+    $SerializationTester$_contract_load INLINECALLDICT
+    $SerializationTester$_fun_getC INLINECALLDICT
+  }>
+  %getD PROC:<{
+    $SerializationTester$_contract_load INLINECALLDICT
+    $SerializationTester$_fun_getD INLINECALLDICT
+  }>
+  %getE PROC:<{
+    $SerializationTester$_contract_load INLINECALLDICT
+    $SerializationTester$_fun_getE INLINECALLDICT
+  }>
+  %getF PROC:<{
+    $SerializationTester$_contract_load INLINECALLDICT
+    $SerializationTester$_fun_getF INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5469716754774a6f45533276426d7747704a373332386e67346d4b336339655739656861417a484b36717132} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $SerializationTester$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -260,16 +300,16 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      $__gen_SerializationTester_receive INLINECALLDICT
+      %$SerializationTester$_receive_empty INLINECALLDICT
       TRUE
     }>
     SWAP
     2217298645 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_read_Update INLINECALLDICT
+      $Update$_load INLINECALLDICT
       1 6 BLKDROP2
-      $__gen_SerializationTester_receive_Update INLINECALLDICT
+      $SerializationTester$_receive_binary_Update INLINECALLDICT
       TRUE
     }>
     DROP
@@ -298,50 +338,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_SerializationTester INLINECALLDICT
+    $SerializationTester$_contract_load INLINECALLDICT
     2 6 BLKSWAP
-    __gen_router_SerializationTester INLINECALLDICT
+    $SerializationTester$_contract_router INLINECALLDICT
     DROP
-    __gen_store_SerializationTester INLINECALLDICT
-  }>
-  %getA PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getA INLINECALLDICT
-  }>
-  %getB PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getB INLINECALLDICT
-  }>
-  %getC PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getC INLINECALLDICT
-  }>
-  %getD PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getD INLINECALLDICT
-  }>
-  %getE PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getE INLINECALLDICT
-  }>
-  %getF PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getF INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    36993126140238121407019133875791708966 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5469716754774a6f45533276426d7747704a373332386e67346d4b336339655739656861417a484b36717132} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $SerializationTester$_contract_store INLINECALLDICT
   }>
 }END>c

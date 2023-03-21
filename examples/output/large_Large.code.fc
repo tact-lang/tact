@@ -2,37 +2,62 @@
 #include "large_Large.constants.fc";
 #include "large_Large.storage.fc";
 
-(cell, cell, cell, cell) $__gen_Large_init() impure inline_ref {
+(cell, cell, cell, cell) $Large$_contract_init() impure inline_ref {
     var (($self'cell1, $self'cell2, $self'cell3, $self'cell4)) = (begin_cell().store_slice(__gen_slice_cell_1a028cccfdce37fa38acc68cb1824bfc64d3e0c250de39f381d40e0ab1d5bf93()).end_cell(), begin_cell().store_slice(__gen_slice_cell_8c91d2cb30a59176d5f4d71521469fdf65e8078136026cc79623aa9cfe22013c()).end_cell(), begin_cell().store_slice(__gen_slice_cell_31c99d25866a6b12f8f377ae17fa9d6803535f07f0e0e052fe2f016b9e9fa839()).end_cell(), begin_cell().store_slice(__gen_slice_cell_001f65cdb7a3a2e0613601520ce3d65b14f08d94e33451ecd9f4dd3be61b65af()).end_cell());
     return ($self'cell1, $self'cell2, $self'cell3, $self'cell4);
 }
 
-(cell, cell, cell, cell) __gen_load_Large() impure inline {
+(cell, cell, cell, cell) $Large$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_Large();
+        return $sc~$Large$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_Large_init();
+        return $Large$_contract_init();
     }
 }
 
-() __gen_store_Large((cell, cell, cell, cell) v) impure inline {
+() $Large$_contract_store((cell, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_Large(b, v);
+    b = $Large$_store(b, v);
     set_data(b.end_cell());
 }
 
 ;;
-;; Public Interface of a Contract Large
+;; Receivers of a Contract Large
 ;;
 
-((cell, cell, cell, cell), int) __gen_router_Large((cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+;;
+;; Get methods of a Contract Large
+;;
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmW2onh6JiawfU8GGYFDkSKDY6G3GWLYKeDM51XSFV6rK5";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Large
+;;
+
+((cell, cell, cell, cell), int) $Large$_contract_router((cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -59,31 +84,14 @@
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var self = __gen_load_Large();
+    var self = $Large$_contract_load();
     
     ;; Handle operation
-    int handled = self~__gen_router_Large(msg_bounced, in_msg);
+    int handled = self~$Large$_contract_router(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);
     
     ;; Persist state
-    __gen_store_Large(self);
-}
-
-_ supported_interfaces() method_id {
-    return (
-        "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128,
-        "org.ton.deploy.lazy.v0"H >> 128,
-        "org.ton.chain.workchain.v0"H >> 128
-    );
-}
-
-_ get_abi_ipfs() {
-    return "ipfs://QmW2onh6JiawfU8GGYFDkSKDY6G3GWLYKeDM51XSFV6rK5";
-}
-
-_ lazy_deployment_completed() {
-    return get_data().begin_parse().load_int(1);
+    $Large$_contract_store(self);
 }

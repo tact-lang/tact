@@ -1,12 +1,12 @@
 #include "strings_StringsTester.stdlib.fc";
 #include "strings_StringsTester.constants.fc";
 
-tuple $__gen_StringsTester_init() impure inline_ref {
+tuple $StringsTester$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_StringsTester() impure inline {
+tuple $StringsTester$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -15,47 +15,47 @@ tuple __gen_load_StringsTester() impure inline {
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_StringsTester_init();
+        return $StringsTester$_contract_init();
     }
 }
 
-() __gen_store_StringsTester(tuple v) impure inline {
+() $StringsTester$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
-slice $__gen_StringsTester_constantString(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_constantString(tuple $self) impure inline_ref {
     var ($self) = $self;
     return __gen_str_3579288646();
 }
 
-slice $__gen_StringsTester_constantStringUnicode(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_constantStringUnicode(tuple $self) impure inline_ref {
     var ($self) = $self;
     return __gen_str_3070532033();
 }
 
-slice $__gen_StringsTester_constantStringUnicodeLong(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_constantStringUnicodeLong(tuple $self) impure inline_ref {
     var ($self) = $self;
     return __gen_str_3872846997();
 }
 
-cell $__gen_StringsTester_dynamicStringCell(tuple $self) impure inline_ref {
+cell $StringsTester$_fun_dynamicStringCell(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_860684655());
     return __tact_string_builder_end($b);
 }
 
-cell $__gen_StringsTester_dynamicCommentCell(tuple $self) impure inline_ref {
+cell $StringsTester$_fun_dynamicCommentCell(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append(__gen_str_2498516892());
     return __tact_string_builder_end($b);
 }
 
-cell $__gen_StringsTester_dynamicCommentCellLarge(tuple $self) impure inline_ref {
+cell $StringsTester$_fun_dynamicCommentCellLarge(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_860684655());
@@ -63,7 +63,7 @@ cell $__gen_StringsTester_dynamicCommentCellLarge(tuple $self) impure inline_ref
     return __tact_string_builder_end($b);
 }
 
-slice $__gen_StringsTester_dynamicCommentStringLarge(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_dynamicCommentStringLarge(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_860684655());
@@ -71,7 +71,7 @@ slice $__gen_StringsTester_dynamicCommentStringLarge(tuple $self) impure inline_
     return __tact_string_builder_end_slice($b);
 }
 
-slice $__gen_StringsTester_stringWithNumber(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_stringWithNumber(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_519161862());
@@ -79,7 +79,7 @@ slice $__gen_StringsTester_stringWithNumber(tuple $self) impure inline_ref {
     return __tact_string_builder_end_slice($b);
 }
 
-slice $__gen_StringsTester_stringWithNegativeNumber(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_stringWithNegativeNumber(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_519161862());
@@ -87,7 +87,7 @@ slice $__gen_StringsTester_stringWithNegativeNumber(tuple $self) impure inline_r
     return __tact_string_builder_end_slice($b);
 }
 
-slice $__gen_StringsTester_stringWithLargeNumber(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_stringWithLargeNumber(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
     $b~__tact_string_builder_append(__gen_str_519161862());
@@ -95,151 +95,110 @@ slice $__gen_StringsTester_stringWithLargeNumber(tuple $self) impure inline_ref 
     return __tact_string_builder_end_slice($b);
 }
 
-slice $__gen_StringsTester_stringWithFloat(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_stringWithFloat(tuple $self) impure inline_ref {
     var ($self) = $self;
     return __tact_float_to_string(95, 1);
 }
 
-slice $__gen_StringsTester_base64(tuple $self) impure inline_ref {
+slice $StringsTester$_fun_base64(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return $__gen_String_fromBase64(__gen_str_1560934365());
+    return $String$_fun_fromBase64(__gen_str_1560934365());
 }
 
-slice $__gen_StringsTester_processBase64(tuple $self, slice $src) impure inline_ref {
+slice $StringsTester$_fun_processBase64(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
-    return $__gen_String_fromBase64($src);
+    return $String$_fun_fromBase64($src);
 }
 
-((tuple), ()) $__gen_StringsTester_receive(tuple $self) impure inline {
+;;
+;; Receivers of a Contract StringsTester
+;;
+
+((tuple), ()) %$StringsTester$_receive_empty(tuple $self) impure inline {
     var $self = $self;
     return ($self, ());
 }
 
 ;;
-;; Public Interface of a Contract StringsTester
+;; Get methods of a Contract StringsTester
 ;;
 
-(tuple, int) __gen_router_StringsTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive empty message
-    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_StringsTester_receive();
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_StringsTester();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_StringsTester(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_StringsTester(self);
-}
-
 _ %constantString() method_id(93932) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_constantString(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_constantString(self);
     return res;
 }
 
 _ %constantStringUnicode() method_id(94939) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_constantStringUnicode(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_constantStringUnicode(self);
     return res;
 }
 
 _ %constantStringUnicodeLong() method_id(104680) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_constantStringUnicodeLong(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_constantStringUnicodeLong(self);
     return res;
 }
 
 _ %dynamicStringCell() method_id(122225) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_dynamicStringCell(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_dynamicStringCell(self);
     return res;
 }
 
 _ %dynamicCommentCell() method_id(122531) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_dynamicCommentCell(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_dynamicCommentCell(self);
     return res;
 }
 
 _ %dynamicCommentCellLarge() method_id(74771) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_dynamicCommentCellLarge(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_dynamicCommentCellLarge(self);
     return res;
 }
 
 _ %dynamicCommentStringLarge() method_id(74191) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_dynamicCommentStringLarge(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_dynamicCommentStringLarge(self);
     return res;
 }
 
 _ %stringWithNumber() method_id(68752) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_stringWithNumber(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_stringWithNumber(self);
     return res;
 }
 
 _ %stringWithNegativeNumber() method_id(82914) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_stringWithNegativeNumber(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_stringWithNegativeNumber(self);
     return res;
 }
 
 _ %stringWithLargeNumber() method_id(94811) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_stringWithLargeNumber(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_stringWithLargeNumber(self);
     return res;
 }
 
 _ %stringWithFloat() method_id(80064) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_stringWithFloat(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_stringWithFloat(self);
     return res;
 }
 
 _ %base64() method_id(71427) {
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_base64(self);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_base64(self);
     return res;
 }
 
 _ %processBase64(slice $$src) method_id(128362) {
     slice $src = $$src;
-    var self = __gen_load_StringsTester();
-    var res = $__gen_StringsTester_processBase64(self, $src);
+    var self = $StringsTester$_contract_load();
+    var res = $StringsTester$_fun_processBase64(self, $src);
     return res;
 }
 
@@ -259,4 +218,53 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract StringsTester
+;;
+
+(tuple, int) $StringsTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$StringsTester$_receive_empty();
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $StringsTester$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$StringsTester$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $StringsTester$_contract_store(self);
 }

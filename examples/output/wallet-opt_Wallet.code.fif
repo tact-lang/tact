@@ -1,24 +1,24 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC __gen_read_TransferMessage
-  DECLPROC __gen_write_Wallet
-  DECLPROC __gen_read_Wallet
-  DECLPROC __gen_read_$init$Wallet
-  DECLPROC $__gen_Wallet_init
-  DECLPROC __gen_load_Wallet
-  DECLPROC __gen_store_Wallet
-  DECLPROC $__gen_Wallet_publicKey
-  DECLPROC $__gen_Wallet_walletId
-  DECLPROC $__gen_Wallet_seqno
-  DECLPROC $__gen_Wallet_receive_TransferMessage
-  DECLPROC __gen_router_Wallet
-  DECLPROC recv_internal
+  DECLPROC $TransferMessage$_load
+  DECLPROC $Wallet$_store
+  DECLPROC $Wallet$_load
+  DECLPROC $Wallet$init$_load
+  DECLPROC $Wallet$_contract_init
+  DECLPROC $Wallet$_contract_load
+  DECLPROC $Wallet$_contract_store
+  DECLPROC $Wallet$_fun_publicKey
+  DECLPROC $Wallet$_fun_walletId
+  DECLPROC $Wallet$_fun_seqno
+  DECLPROC $Wallet$_receive_binary_TransferMessage
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
   85143 DECLMETHOD %seqno
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Wallet$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -43,7 +43,7 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __gen_read_TransferMessage PROCINLINE:<{
+  $TransferMessage$_load PROCINLINE:<{
     32 LDU
     SWAP
     3548477446 PUSHINT
@@ -53,30 +53,30 @@ PROGRAM{
     LDSLICEX
     TUCK
   }>
-  __gen_write_Wallet PROCINLINE:<{
+  $Wallet$_store PROCINLINE:<{
     s2 s3 XCHG2
     32 STU
     256 STU
     64 STU
   }>
-  __gen_read_Wallet PROCINLINE:<{
+  $Wallet$_load PROCINLINE:<{
     32 LDU
     256 LDU
     64 LDU
     3 -ROLL
   }>
-  __gen_read_$init$Wallet PROCINLINE:<{
+  $Wallet$init$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
   }>
-  $__gen_Wallet_init PROCREF:<{
+  $Wallet$_contract_init PROCREF:<{
     0 PUSHINT
     -ROT
   }>
-  __gen_load_Wallet PROCINLINE:<{
+  $Wallet$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -85,7 +85,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_Wallet INLINECALLDICT
+      $Wallet$_load INLINECALLDICT
       1 3 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -93,14 +93,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$Wallet INLINECALLDICT
+      $Wallet$init$_load INLINECALLDICT
       s0 s2 XCHG
       ENDS
       SWAP
-      $__gen_Wallet_init INLINECALLDICT
+      $Wallet$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Wallet PROCINLINE:<{
+  $Wallet$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -109,21 +109,21 @@ PROGRAM{
     SWAP
     1 STI
     3 -ROLL
-    __gen_write_Wallet INLINECALLDICT
+    $Wallet$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_Wallet_publicKey PROCINLINE:<{
+  $Wallet$_fun_publicKey PROCINLINE:<{
     DROP
     NIP
   }>
-  $__gen_Wallet_walletId PROCINLINE:<{
+  $Wallet$_fun_walletId PROCINLINE:<{
     2 1 BLKDROP2
   }>
-  $__gen_Wallet_seqno PROCINLINE:<{
+  $Wallet$_fun_seqno PROCINLINE:<{
     2DROP
   }>
-  $__gen_Wallet_receive_TransferMessage PROCINLINE:<{
+  $Wallet$_receive_binary_TransferMessage PROCINLINE:<{
     DUP
     HASHSU
     48401 PUSHINT
@@ -146,7 +146,34 @@ PROGRAM{
     s0 s4 XCHG
     SENDRAWMSG
   }>
-  __gen_router_Wallet PROCREF:<{
+  %publicKey PROC:<{
+    $Wallet$_contract_load INLINECALLDICT
+    $Wallet$_fun_publicKey INLINECALLDICT
+  }>
+  %walletId PROC:<{
+    $Wallet$_contract_load INLINECALLDICT
+    $Wallet$_fun_walletId INLINECALLDICT
+  }>
+  %seqno PROC:<{
+    $Wallet$_contract_load INLINECALLDICT
+    $Wallet$_fun_seqno INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d58787778373667723254726f616438384a4d5167747564795a565536465a656f7568546e656b776f756d696b} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Wallet$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -165,9 +192,9 @@ PROGRAM{
     3548477446 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_read_TransferMessage INLINECALLDICT
+      $TransferMessage$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_Wallet_receive_TransferMessage INLINECALLDICT
+      $Wallet$_receive_binary_TransferMessage INLINECALLDICT
       TRUE
     }>
     DROP
@@ -196,37 +223,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Wallet INLINECALLDICT
+    $Wallet$_contract_load INLINECALLDICT
     2 3 BLKSWAP
-    __gen_router_Wallet INLINECALLDICT
+    $Wallet$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Wallet INLINECALLDICT
-  }>
-  %publicKey PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_publicKey INLINECALLDICT
-  }>
-  %walletId PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_walletId INLINECALLDICT
-  }>
-  %seqno PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_seqno INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d58787778373667723254726f616438384a4d5167747564795a565536465a656f7568546e656b776f756d696b} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Wallet$_contract_store INLINECALLDICT
   }>
 }END>c

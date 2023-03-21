@@ -40,7 +40,7 @@ int __tact_address_eq(slice a, slice b) inline {
     return equal_slice_bits(a, b);
 }
 
-() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
+() $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();
     $b = store_int($b, 1, 2);
@@ -83,6 +83,6 @@ int __tact_address_eq(slice a, slice b) inline {
     send_raw_message($c, $params'mode);
 }
 
-((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_body(int value, slice to, int mode, cell body) inline {
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode_body(int value, slice to, int mode, cell body) inline {
     return (true, to, value, mode, body, null(), null());
 }

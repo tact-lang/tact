@@ -1,4 +1,4 @@
-(slice, ((int, int, cell, slice, builder, slice))) __gen_read_Update(slice sc_0) inline_ref {
+(slice, ((int, int, cell, slice, builder, slice))) $Update$_load(slice sc_0) inline_ref {
     throw_unless(129, sc_0~load_uint(32) == 2217298645);
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(1);
@@ -10,7 +10,7 @@
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
 }
 
-builder __gen_write_SerializationTester(builder build_0, (int, int, cell, slice, builder, slice) v) inline {
+builder $SerializationTester$_store(builder build_0, (int, int, cell, slice, builder, slice) v) inline {
     var (v'a, v'b, v'c, v'd, v'e, v'f) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 1);
@@ -23,7 +23,7 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, cell, slice,
     return build_0;
 }
 
-(slice, ((int, int, cell, slice, builder, slice))) __gen_read_SerializationTester(slice sc_0) inline {
+(slice, ((int, int, cell, slice, builder, slice))) $SerializationTester$_load(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(1);
     var v'c = sc_0~load_ref();
@@ -34,7 +34,7 @@ builder __gen_write_SerializationTester(builder build_0, (int, int, cell, slice,
     return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f));
 }
 
-(slice, ((int, int, cell, slice, builder, slice))) __gen_read_$init$SerializationTester(slice sc_0) inline_ref {
+(slice, ((int, int, cell, slice, builder, slice))) $SerializationTester$init$_load(slice sc_0) inline_ref {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(1);
     var v'c = sc_0~load_ref();

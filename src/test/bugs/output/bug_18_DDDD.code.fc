@@ -1,7 +1,7 @@
 #include "bug_18_DDDD.stdlib.fc";
 #include "bug_18_DDDD.storage.fc";
 
-(slice, slice, slice, cell, cell) $__gen_DDDD_init(slice $addr1, slice $addr2, slice $addr3) impure inline_ref {
+(slice, slice, slice, cell, cell) $DDDD$_contract_init(slice $addr1, slice $addr2, slice $addr3) impure inline_ref {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = (null(), null(), null(), null(), null());
     $self'addr1 = $addr1;
     $self'addr2 = $addr2;
@@ -9,40 +9,44 @@
     return ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2);
 }
 
-(slice, slice, slice, cell, cell) __gen_load_DDDD() impure inline {
+(slice, slice, slice, cell, cell) $DDDD$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_DDDD();
+        return $sc~$DDDD$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice addr1, slice addr2, slice addr3) = $sc~__gen_read_$init$DDDD();
+        (slice addr1, slice addr2, slice addr3) = $sc~$DDDD$init$_load();
         $sc.end_parse();
-        return $__gen_DDDD_init(addr1, addr2, addr3);
+        return $DDDD$_contract_init(addr1, addr2, addr3);
     }
 }
 
-() __gen_store_DDDD((slice, slice, slice, cell, cell) v) impure inline {
+() $DDDD$_contract_store((slice, slice, slice, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_DDDD(b, v);
+    b = $DDDD$_store(b, v);
     set_data(b.end_cell());
 }
 
-slice $__gen_DDDD_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline {
+slice $DDDD$_fun_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
     return __tact_dict_get_int_slice($self'mapData, 257, $key);
 }
 
-int $__gen_DDDD_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline {
+int $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
     return __tact_dict_get_slice_int($self'mapData2, 267, $key, 257);
 }
 
-(((slice, slice, slice, cell, cell)), ()) $__gen_DDDD_receive((slice, slice, slice, cell, cell) $self) impure inline {
+;;
+;; Receivers of a Contract DDDD
+;;
+
+(((slice, slice, slice, cell, cell)), ()) %$DDDD$_receive_empty((slice, slice, slice, cell, cell) $self) impure inline {
     var ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2) = $self;
     $self'mapData~__tact_dict_set_int_slice(257, 0, $self'addr1);
     $self'mapData~__tact_dict_set_int_slice(257, 1, $self'addr2);
@@ -56,65 +60,20 @@ int $__gen_DDDD_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $k
 }
 
 ;;
-;; Public Interface of a Contract DDDD
+;; Get methods of a Contract DDDD
 ;;
-
-((slice, slice, slice, cell, cell), int) __gen_router_DDDD((slice, slice, slice, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive empty message
-    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_DDDD_receive();
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_DDDD();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_DDDD(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_DDDD(self);
-}
 
 _ %mapData_addr1(int $$key) method_id(120259) {
     int $key = $$key;
-    var self = __gen_load_DDDD();
-    var res = $__gen_DDDD_mapData_addr1(self, $key);
+    var self = $DDDD$_contract_load();
+    var res = $DDDD$_fun_mapData_addr1(self, $key);
     return res;
 }
 
 _ %mapData2_addr1(slice $$key) method_id(66206) {
     slice $key = __tact_verify_address($$key);
-    var self = __gen_load_DDDD();
-    var res = $__gen_DDDD_mapData2_addr1(self, $key);
+    var self = $DDDD$_contract_load();
+    var res = $DDDD$_fun_mapData2_addr1(self, $key);
     return res;
 }
 
@@ -134,4 +93,53 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract DDDD
+;;
+
+((slice, slice, slice, cell, cell), int) $DDDD$_contract_router((slice, slice, slice, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$DDDD$_receive_empty();
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $DDDD$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$DDDD$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $DDDD$_contract_store(self);
 }

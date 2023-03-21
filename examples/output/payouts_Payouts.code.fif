@@ -16,38 +16,38 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
-  DECLPROC $contractAddress
-  DECLPROC $send
-  DECLPROC $__gen_Builder_asSlice
-  DECLPROC $__gen_Builder_asCell
-  DECLPROC $__gen_Slice_fromBase64
-  DECLPROC $__gen_String_asComment
-  DECLPROC $__gen_String_fromBase64
-  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
-  DECLPROC __gen_read_ChangeOwner
-  DECLPROC __gen_write_CanPayout
-  DECLPROC __gen_writecell_CanPayout
-  DECLPROC __gen_read_CanPayoutResponse
-  DECLPROC __gen_write_Payouts
-  DECLPROC __gen_read_Payouts
-  DECLPROC __gen_write_$init$Beacon
-  DECLPROC __gen_read_$init$Payouts
-  DECLPROC $__gen_Payouts_init
-  DECLPROC __gen_load_Payouts
-  DECLPROC __gen_store_Payouts
-  DECLPROC $__gen_Beacon_init_child
-  DECLPROC $__gen_Payouts_requireOwner
-  DECLPROC $__gen_Payouts_owner
-  DECLPROC __gen_constructor_CanPayout$amount
-  DECLPROC $__gen_Payouts_receive_comment
-  DECLPROC $__gen_Payouts_receive_CanPayoutResponse
-  DECLPROC $__gen_Payouts_receive_ChangeOwner
-  DECLPROC __gen_router_Payouts
-  DECLPROC recv_internal
+  DECLPROC $global_contractAddress
+  DECLPROC $global_send
+  DECLPROC $Builder$_fun_asSlice
+  DECLPROC $Builder$_fun_asCell
+  DECLPROC $Slice$_fun_fromBase64
+  DECLPROC $String$_fun_asComment
+  DECLPROC $String$_fun_fromBase64
+  DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
+  DECLPROC $ChangeOwner$_load
+  DECLPROC $CanPayout$_store
+  DECLPROC $CanPayout$_store_cell
+  DECLPROC $CanPayoutResponse$_load
+  DECLPROC $Payouts$_store
+  DECLPROC $Payouts$_load
+  DECLPROC $Beacon$init$_store
+  DECLPROC $Payouts$init$_load
+  DECLPROC $Payouts$_contract_init
+  DECLPROC $Payouts$_contract_load
+  DECLPROC $Payouts$_contract_store
+  DECLPROC $Beacon$_init_child
+  DECLPROC $Payouts$_fun_requireOwner
+  DECLPROC $Payouts$_fun_owner
+  DECLPROC $CanPayout$_constructor_amount
+  DECLPROC $Payouts$_receive_any_text
+  DECLPROC $Payouts$_receive_binary_CanPayoutResponse
+  DECLPROC $Payouts$_receive_binary_ChangeOwner
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Payouts$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -246,12 +246,12 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  $contractAddress PROCREF:<{
+  $global_contractAddress PROCREF:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -350,14 +350,14 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_Builder_asSlice PROCREF:<{
+  $Builder$_fun_asSlice PROCREF:<{
     ENDC
     CTOS
   }>
-  $__gen_Builder_asCell PROCREF:<{
+  $Builder$_fun_asCell PROCREF:<{
     ENDC
   }>
-  $__gen_Slice_fromBase64 PROCREF:<{
+  $Slice$_fun_fromBase64 PROCREF:<{
     DUP
     SBITS
     3 RSHIFT#
@@ -442,31 +442,31 @@ PROGRAM{
     0 NEQINT
     IFJMP:<{
       s0 s2 XCHG
-      $__gen_Builder_asSlice INLINECALLDICT
+      $Builder$_fun_asSlice INLINECALLDICT
       s0 s2 XCHG
       SUB
       LDSLICEX
       DROP
     }>
     2DROP
-    $__gen_Builder_asSlice INLINECALLDICT
+    $Builder$_fun_asSlice INLINECALLDICT
   }>
-  $__gen_String_asComment PROCREF:<{
+  $String$_fun_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_String_fromBase64 PROCREF:<{
-    $__gen_Slice_fromBase64 INLINECALLDICT
+  $String$_fun_fromBase64 PROCREF:<{
+    $Slice$_fun_fromBase64 INLINECALLDICT
   }>
-  __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
+  $SendParameters$_constructor_to_value_mode_bounce_body PROCINLINE:<{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
     PUSHNULL
     PUSHNULL
   }>
-  __gen_read_ChangeOwner PROCINLINE:<{
+  $ChangeOwner$_load PROCINLINE:<{
     32 LDU
     SWAP
     256331011 PUSHINT
@@ -474,20 +474,20 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_write_CanPayout PROCINLINE:<{
+  $CanPayout$_store PROCINLINE:<{
     3289991647 PUSHINT
     ROT
     32 STU
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_CanPayout PROCINLINE:<{
+  $CanPayout$_store_cell PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_CanPayout INLINECALLDICT
+    $CanPayout$_store INLINECALLDICT
     ENDC
   }>
-  __gen_read_CanPayoutResponse PROCINLINE:<{
+  $CanPayoutResponse$_load PROCINLINE:<{
     32 LDU
     SWAP
     4293607646 PUSHINT
@@ -500,35 +500,35 @@ PROGRAM{
     1 LDI
     3 -ROLL
   }>
-  __gen_write_Payouts PROCINLINE:<{
+  $Payouts$_store PROCINLINE:<{
     -ROT
     __tact_store_address INLINECALLDICT
     257 PUSHINT
     STIX
   }>
-  __gen_read_Payouts PROCINLINE:<{
+  $Payouts$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
     LDIX
     -ROT
   }>
-  __gen_write_$init$Beacon PROCINLINE:<{
+  $Beacon$init$_store PROCINLINE:<{
     -ROT
     __tact_store_address INLINECALLDICT
     SWAP
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_$init$Payouts PROCINLINE:<{
+  $Payouts$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
     LDIX
     -ROT
   }>
-  $__gen_Payouts_init PROCREF:<{
+  $Payouts$_contract_init PROCREF:<{
   }>
-  __gen_load_Payouts PROCINLINE:<{
+  $Payouts$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -537,7 +537,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_Payouts INLINECALLDICT
+      $Payouts$_load INLINECALLDICT
       1 2 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -545,14 +545,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$Payouts INLINECALLDICT
+      $Payouts$init$_load INLINECALLDICT
       s0 s2 XCHG
       ENDS
       SWAP
-      $__gen_Payouts_init INLINECALLDICT
+      $Payouts$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Payouts PROCINLINE:<{
+  $Payouts$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -561,11 +561,11 @@ PROGRAM{
     SWAP
     1 STI
     -ROT
-    __gen_write_Payouts INLINECALLDICT
+    $Payouts$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_Beacon_init_child PROCREF:<{
+  $Beacon$_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -589,21 +589,21 @@ PROGRAM{
     SWAP
     1 STI
     s0 s0 s3 XCHG3
-    __gen_write_$init$Beacon INLINECALLDICT
+    $Beacon$init$_store INLINECALLDICT
     ENDC
   }>
-  $__gen_Payouts_requireOwner PROCREF:<{
+  $Payouts$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
     s2 PUSH
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  $__gen_Payouts_owner PROCREF:<{
+  $Payouts$_fun_owner PROCREF:<{
     DROP
   }>
-  __gen_constructor_CanPayout$amount PROCINLINE:<{
+  $CanPayout$_constructor_amount PROCINLINE:<{
   }>
-  $__gen_Payouts_receive_comment PROCINLINE:<{
+  $Payouts$_receive_any_text PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     DROP
     16059 PUSHINT
@@ -613,7 +613,7 @@ PROGRAM{
     s1 s2 XCHG
     THROWANYIFNOT
     SWAP
-    $__gen_String_fromBase64 INLINECALLDICT
+    $String$_fun_fromBase64 INLINECALLDICT
     LDGRAMS
     9 PUSHPOW2
     LDSLICEX
@@ -623,7 +623,7 @@ PROGRAM{
     __tact_store_address INLINECALLDICT
     s2 PUSH
     STGRAMS
-    $__gen_Builder_asCell INLINECALLDICT
+    $Builder$_fun_asCell INLINECALLDICT
     HASHCU
     48401 PUSHINT
     s2 s5 XCPU
@@ -632,28 +632,28 @@ PROGRAM{
     __tact_context_sys GETGLOB
     MYADDR
     3 ROLL
-    $__gen_Beacon_init_child INLINECALLDICT
-    $contractAddress INLINECALLDICT
+    $Beacon$_init_child INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
     0 PUSHINT
     66 PUSHINT
     TRUE
     s0 s4 XCHG
-    __gen_constructor_CanPayout$amount INLINECALLDICT
-    __gen_writecell_CanPayout INLINECALLDICT
+    $CanPayout$_constructor_amount INLINECALLDICT
+    $CanPayout$_store_cell INLINECALLDICT
     s3 s4 XCHG
     s1 s3 s0 XCHG3
-    __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_Payouts_receive_CanPayoutResponse PROCINLINE:<{
+  $Payouts$_receive_binary_CanPayoutResponse PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     DROP
     s2 POP
     __tact_context_sys GETGLOB
     MYADDR
     s5 PUSH
-    $__gen_Beacon_init_child INLINECALLDICT
-    $contractAddress INLINECALLDICT
+    $Beacon$_init_child INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
     SWAP
     4429 PUSHINT
     s0 s2 XCHG
@@ -674,10 +674,10 @@ PROGRAM{
       66 PUSHINT
       FALSE
       B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE
-      $__gen_String_asComment INLINECALLDICT
+      $String$_fun_asComment INLINECALLDICT
       s3 s4 XCHG
-      __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
-      $send INLINECALLDICT
+      $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+      $global_send INLINECALLDICT
     }>ELSE<{
       DROP
       NIP
@@ -685,17 +685,38 @@ PROGRAM{
       66 PUSHINT
       FALSE
       B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE
-      $__gen_String_asComment INLINECALLDICT
-      __gen_constructor_SendParameters$to_value_mode_bounce_body INLINECALLDICT
-      $send INLINECALLDICT
+      $String$_fun_asComment INLINECALLDICT
+      $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+      $global_send INLINECALLDICT
     }>
   }>
-  $__gen_Payouts_receive_ChangeOwner PROCINLINE:<{
+  $Payouts$_receive_binary_ChangeOwner PROCINLINE:<{
     -ROT
-    $__gen_Payouts_requireOwner INLINECALLDICT
+    $Payouts$_fun_requireOwner INLINECALLDICT
     NIP
   }>
-  __gen_router_Payouts PROCREF:<{
+  %owner PROC:<{
+    $Payouts$_contract_load INLINECALLDICT
+    $Payouts$_fun_owner INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+    212791963610352222038671851416501365766 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5438527574705056654c59623433376e707431587535464b7647775341574138733459373436425831434635} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Payouts$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -717,9 +738,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_CanPayoutResponse INLINECALLDICT
+      $CanPayoutResponse$_load INLINECALLDICT
       1 3 BLKDROP2
-      $__gen_Payouts_receive_CanPayoutResponse INLINECALLDICT
+      $Payouts$_receive_binary_CanPayoutResponse INLINECALLDICT
       TRUE
     }>
     OVER
@@ -727,9 +748,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_ChangeOwner INLINECALLDICT
+      $ChangeOwner$_load INLINECALLDICT
       NIP
-      $__gen_Payouts_receive_ChangeOwner INLINECALLDICT
+      $Payouts$_receive_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -741,7 +762,7 @@ PROGRAM{
       IFJMP:<{
         32 PUSHINT
         SDSKIPFIRST
-        $__gen_Payouts_receive_comment INLINECALLDICT
+        $Payouts$_receive_any_text INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -774,31 +795,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Payouts INLINECALLDICT
+    $Payouts$_contract_load INLINECALLDICT
     2SWAP
-    __gen_router_Payouts INLINECALLDICT
+    $Payouts$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Payouts INLINECALLDICT
-  }>
-  %owner PROC:<{
-    __gen_load_Payouts INLINECALLDICT
-    $__gen_Payouts_owner INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-    212791963610352222038671851416501365766 PUSHINT
-    86142586315491086060343270784266291122 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5438527574705056654c59623433376e707431587535464b7647775341574138733459373436425831434635} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Payouts$_contract_store INLINECALLDICT
   }>
 }END>c

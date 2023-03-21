@@ -1,20 +1,20 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC __gen_write_Source
-  DECLPROC __gen_read_Source
-  DECLPROC __gen_write_SampleContract
-  DECLPROC __gen_read_SampleContract
-  DECLPROC __gen_constructor_Source$a_b
-  DECLPROC $__gen_SampleContract_init
-  DECLPROC __gen_load_SampleContract
-  DECLPROC __gen_store_SampleContract
-  DECLPROC $__gen_SampleContract_stake
-  DECLPROC __gen_router_SampleContract
-  DECLPROC recv_internal
+  DECLPROC $Source$_store
+  DECLPROC $Source$_load
+  DECLPROC $SampleContract$_store
+  DECLPROC $SampleContract$_load
+  DECLPROC $Source$_constructor_a_b
+  DECLPROC $SampleContract$_contract_init
+  DECLPROC $SampleContract$_contract_load
+  DECLPROC $SampleContract$_contract_store
+  DECLPROC $SampleContract$_fun_stake
   80984 DECLMETHOD %stake
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $SampleContract$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -39,21 +39,21 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __gen_write_Source PROCINLINE:<{
+  $Source$_store PROCINLINE:<{
     s0 s2 XCHG
     257 PUSHINT
     STIX
     257 PUSHINT
     STIX
   }>
-  __gen_read_Source PROCINLINE:<{
+  $Source$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
     LDIX
     -ROT
   }>
-  __gen_write_SampleContract PROCINLINE:<{
+  $SampleContract$_store PROCINLINE:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -62,14 +62,14 @@ PROGRAM{
     STIX
     NEWC
     s0 s0 s3 XCHG3
-    __gen_write_Source INLINECALLDICT
+    $Source$_store INLINECALLDICT
     s1 s2 XCHG
     STDICT
     ENDC
     SWAP
     STREF
   }>
-  __gen_read_SampleContract PROCINLINE:<{
+  $SampleContract$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -77,7 +77,7 @@ PROGRAM{
     LDREF
     SWAP
     CTOS
-    __gen_read_Source INLINECALLDICT
+    $Source$_load INLINECALLDICT
     s0 s2 XCHG
     LDDICT
     DROP
@@ -85,16 +85,16 @@ PROGRAM{
     s3 s4 XCHG
     s1 s2 XCHG
   }>
-  __gen_constructor_Source$a_b PROCINLINE:<{
+  $Source$_constructor_a_b PROCINLINE:<{
   }>
-  $__gen_SampleContract_init PROCREF:<{
+  $SampleContract$_contract_init PROCREF:<{
     PUSHNULL
     0 PUSHINT
     s0 s0 s0 PUSH3
-    __gen_constructor_Source$a_b INLINECALLDICT
+    $Source$_constructor_a_b INLINECALLDICT
     4 ROLL
   }>
-  __gen_load_SampleContract PROCINLINE:<{
+  $SampleContract$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -103,7 +103,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_SampleContract INLINECALLDICT
+      $SampleContract$_load INLINECALLDICT
       1 5 BLKDROP2
     }>ELSE<{
       DROP
@@ -112,10 +112,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_SampleContract_init INLINECALLDICT
+      $SampleContract$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_SampleContract PROCINLINE:<{
+  $SampleContract$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -124,14 +124,33 @@ PROGRAM{
     SWAP
     1 STI
     5 -ROLL
-    __gen_write_SampleContract INLINECALLDICT
+    $SampleContract$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_SampleContract_stake PROCREF:<{
+  $SampleContract$_fun_stake PROCREF:<{
     4 BLKDROP
   }>
-  __gen_router_SampleContract PROCREF:<{
+  %stake PROC:<{
+    $SampleContract$_contract_load INLINECALLDICT
+    $SampleContract$_fun_stake INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5a346a4d72317965574a7078525132587a706f6e7478746b73336337524a7a5447635a32763947724b557932} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $SampleContract$_contract_router PROCREF:<{
     DUP
     SBITS
     NIP
@@ -166,29 +185,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_SampleContract INLINECALLDICT
+    $SampleContract$_contract_load INLINECALLDICT
     2 5 BLKSWAP
-    __gen_router_SampleContract INLINECALLDICT
+    $SampleContract$_contract_router INLINECALLDICT
     DROP
-    __gen_store_SampleContract INLINECALLDICT
-  }>
-  %stake PROC:<{
-    __gen_load_SampleContract INLINECALLDICT
-    $__gen_SampleContract_stake INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a346a4d72317965574a7078525132587a706f6e7478746b73336337524a7a5447635a32763947724b557932} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $SampleContract$_contract_store INLINECALLDICT
   }>
 }END>c

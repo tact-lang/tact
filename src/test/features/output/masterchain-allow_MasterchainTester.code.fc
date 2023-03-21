@@ -1,148 +1,95 @@
 #include "masterchain-allow_MasterchainTester.stdlib.fc";
 #include "masterchain-allow_MasterchainTester.storage.fc";
 
-tuple $__gen_MasterchainTester_init() impure inline_ref {
+tuple $MasterchainTester$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_MasterchainTester() impure inline {
+tuple $MasterchainTester$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
         return null();
     } else {
-        return $__gen_MasterchainTester_init();
+        return $MasterchainTester$_contract_init();
     }
 }
 
-() __gen_store_MasterchainTester(tuple v) impure inline {
+() $MasterchainTester$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
-slice $__gen_MasterchainTester_createAddress(tuple $self, int $chain, int $hash) impure inline_ref {
+slice $MasterchainTester$_fun_createAddress(tuple $self, int $chain, int $hash) impure inline_ref {
     var ($self) = $self;
     return __tact_create_address($chain, $hash);
 }
 
-slice $__gen_MasterchainTester_parseAddress(tuple $self, slice $src) impure inline_ref {
+slice $MasterchainTester$_fun_parseAddress(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     return $src~__tact_load_address();
 }
 
-int $__gen_MasterchainTester_serializeAddress(tuple $self, slice $src) impure inline_ref {
+int $MasterchainTester$_fun_serializeAddress(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     return true;
 }
 
-int $__gen_MasterchainTester_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref {
+int $MasterchainTester$_fun_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref {
     var ($self) = $self;
     var (($src'address, $src'address2)) = $src;
     return true;
 }
 
-(tuple, ()) $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246(tuple $self) impure inline {
+;;
+;; Receivers of a Contract MasterchainTester
+;;
+
+(tuple, ()) $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246(tuple $self) impure inline {
     var $self = $self;
     return ($self, ());
 }
 
-((tuple), ()) $__gen_MasterchainTester_receive_TestMessage(tuple $self, (slice, slice) $message) impure inline {
+((tuple), ()) $MasterchainTester$_receive_binary_TestMessage(tuple $self, (slice, slice) $message) impure inline {
     var $self = $self;
     var ($message'address, $message'address2) = $message;
     return ($self, ());
 }
 
 ;;
-;; Public Interface of a Contract MasterchainTester
+;; Get methods of a Contract MasterchainTester
 ;;
-
-(tuple, int) __gen_router_MasterchainTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive TestMessage message
-    if (op == 3679600542) {
-        var msg = in_msg~__gen_read_TestMessage();
-        self~$__gen_MasterchainTester_receive_TestMessage(msg);
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        var text_op = slice_hash(in_msg);
-        
-        ;; Receive "Deploy" message
-        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            self~$__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
-            return (self, true);
-        }
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_MasterchainTester();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_MasterchainTester(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_MasterchainTester(self);
-}
 
 _ %createAddress(int $$chain, int $$hash) method_id(125712) {
     int $chain = $$chain;
     int $hash = $$hash;
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_createAddress(self, $chain, $hash);
+    var self = $MasterchainTester$_contract_load();
+    var res = $MasterchainTester$_fun_createAddress(self, $chain, $hash);
     return res;
 }
 
 _ %parseAddress(slice $$src) method_id(102482) {
     slice $src = $$src;
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_parseAddress(self, $src);
+    var self = $MasterchainTester$_contract_load();
+    var res = $MasterchainTester$_fun_parseAddress(self, $src);
     return res;
 }
 
 _ %serializeAddress(slice $$src) method_id(73429) {
     slice $src = __tact_verify_address($$src);
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_serializeAddress(self, $src);
+    var self = $MasterchainTester$_contract_load();
+    var res = $MasterchainTester$_fun_serializeAddress(self, $src);
     return res;
 }
 
 _ %handleStruct(tuple $$src) method_id(67662) {
-    (slice, slice) $src = __gen_TestMessage_from_tuple($$src);
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_handleStruct(self, $src);
+    (slice, slice) $src = $TestMessage$_from_tuple($$src);
+    var self = $MasterchainTester$_contract_load();
+    var res = $MasterchainTester$_fun_handleStruct(self, $src);
     return res;
 }
 
@@ -162,4 +109,65 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract MasterchainTester
+;;
+
+(tuple, int) $MasterchainTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive TestMessage message
+    if (op == 3679600542) {
+        var msg = in_msg~$TestMessage$_load();
+        self~$MasterchainTester$_receive_binary_TestMessage(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Deploy" message
+        if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
+            self~$MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $MasterchainTester$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$MasterchainTester$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $MasterchainTester$_contract_store(self);
 }

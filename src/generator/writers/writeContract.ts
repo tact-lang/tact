@@ -2,7 +2,7 @@ import { contractErrors } from "../../abi/errors";
 import { enabledInline, enabledMaterchain } from "../../config/features";
 import { InitDescription, TypeDescription, TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { fn, id } from "./id";
+import { fn, id, initId } from "./id";
 import { ops } from "./ops";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
@@ -10,13 +10,13 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeValue } from "./writeExpression";
 import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
-import { writeRouter } from "./writeRouter";
+import { writeReceiver, writeRouter } from "./writeRouter";
 
 export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: WriterContext) {
 
     // Load function
-    ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.signature(`${resolveFuncType(type, ctx)} __gen_load_${type.name}()`);
+    ctx.fun(ops.contractLoad(type.name, ctx), () => {
+        ctx.signature(`${resolveFuncType(type, ctx)} ${ops.contractLoad(type.name, ctx)}()`);
         ctx.flag('impure');
         ctx.flag('inline');
         if (origin === 'stdlib') {
@@ -35,8 +35,7 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
             ctx.append(`if ($loaded) {`);
             ctx.inIndent(() => {
                 if (type.fields.length > 0) {
-                    ctx.used(`__gen_read_${type.name}`);
-                    ctx.append(`return $sc~__gen_read_${type.name}();`);
+                    ctx.append(`return $sc~${ops.reader(type.name, ctx)}();`);
                 } else {
                     ctx.append(`return null();`);
                 }
@@ -52,14 +51,12 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
 
                 // Load arguments
                 if (type.init!.args.length > 0) {
-                    ctx.used(`__gen_read_$init$${type.name}`);
-                    ctx.append(`(${type.init!.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name).join(', ')}) = $sc~__gen_read_$init$${type.name}();`);
+                    ctx.append(`(${type.init!.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + v.name).join(', ')}) = $sc~${ops.reader(initId(type.name), ctx)}();`);
                     ctx.append(`$sc.end_parse();`);
                 }
 
                 // Execute init function
-                ctx.used(`__gen_${type.name}_init`);
-                ctx.append(`return ${fn(`__gen_${type.name}_init`)}(${[...type.init!.args.map((v) => v.name)].join(', ')});`);
+                ctx.append(`return ${ops.contractInit(type.name, ctx)}(${[...type.init!.args.map((v) => v.name)].join(', ')});`);
             });
 
             ctx.append(`}`);
@@ -67,8 +64,8 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
     });
 
     // Store function
-    ctx.fun(`__gen_store_${type.name}`, () => {
-        const sig = `() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v)`;
+    ctx.fun(ops.contractStore(type.name, ctx), () => {
+        const sig = `() ${ops.contractStore(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`;
         ctx.signature(sig);
         ctx.flag('impure');
         ctx.flag('inline');
@@ -96,9 +93,9 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
 }
 
 export function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
-    ctx.fun(`__gen_${t.name}_init`, () => {
+    ctx.fun(ops.contractInit(t.name, ctx), () => {
         const args = init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name));
-        const sig = `${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${args.join(', ')})`;
+        const sig = `${resolveFuncType(t, ctx)} ${ops.contractInit(t.name, ctx)}(${args.join(', ')})`;
         ctx.signature(sig);
         ctx.flag('impure');
         if (t.origin === 'stdlib') {
@@ -140,9 +137,9 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         });
     });
 
-    ctx.fun(`__gen_${t.name}_init_child`, () => {
+    ctx.fun(ops.contractInitChild(t.name, ctx), () => {
         const args = [`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))];
-        const sig = `(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${args.join(', ')})`;
+        const sig = `(cell, cell) ${ops.contractInitChild(t.name, ctx)}(${args.join(', ')})`;
         ctx.signature(sig);
         if (enabledInline(ctx.ctx)) {
             ctx.flag('inline');
@@ -175,7 +172,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
             ctx.append(`b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`);
             ctx.append(`b = b.store_int(false, 1);`);
             let args = t.init!.args.length > 0 ? ['b', '(' + t.init!.args.map((a) => id(a.name)).join(', ') + ')'].join(', ') : 'b, null()';
-            ctx.append(`b = ${ops.writer(`$init$${t.name}`, ctx)}(${args});`);
+            ctx.append(`b = ${ops.writer(initId(t.name), ctx)}(${args});`);
             ctx.append(`return (mine, b.end_cell());`);
         });
     });
@@ -188,52 +185,20 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
 
         // Comments
         ctx.append(`;;`);
-        ctx.append(`;; Public Interface of a Contract ${type.name}`);
+        ctx.append(`;; Receivers of a Contract ${type.name}`);
         ctx.append(`;;`);
         ctx.append(``);
 
-        // Write router
-        writeRouter(type, ctx);
+        // Write receivers
+        for (let r of Object.values(type.receivers)) {
+            writeReceiver(type, r, ctx);
+        }
 
-        // Render body
-        ctx.append(``)
-        ctx.append(`() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`);
-        ctx.inIndent(() => {
-
-            // Load context
-            ctx.append();
-            ctx.append(`;; Context`);
-            ctx.append(`var cs = in_msg_cell.begin_parse();`);
-            ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-            ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
-            ctx.append(`slice msg_sender_addr = ${ctx.used('__tact_verify_address')}(cs~load_msg_addr());`);
-            ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
-            ctx.append(`__tact_context_sender = msg_sender_addr;`);
-            ctx.append();
-
-            // Load self
-            ctx.append(`;; Load contract data`);
-            ctx.used(`__gen_load_${type.name}`);
-            ctx.append(`var self = __gen_load_${type.name}();`);
-            ctx.append();
-
-            // Process operation
-            ctx.append(`;; Handle operation`);
-            ctx.append(`int handled = self~__gen_router_${type.name}(msg_bounced, in_msg);`);
-            ctx.append();
-
-            // Throw if not handled
-            ctx.append(`;; Throw if not handled`);
-            ctx.append(`throw_unless(handled, ${contractErrors.invalidMessage.id});`);
-            ctx.append();
-
-            // Persist state
-            ctx.append(`;; Persist state`);
-            ctx.used(`__gen_store_${type.name}`);
-            ctx.append(`__gen_store_${type.name}(self);`);
-        });
-        ctx.append('}');
-        ctx.append();
+        // Comments
+        ctx.append(`;;`);
+        ctx.append(`;; Get methods of a Contract ${type.name}`);
+        ctx.append(`;;`);
+        ctx.append(``);
 
         // Getters
         for (let f of type.functions.values()) {
@@ -259,6 +224,52 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
             ctx.append(`return get_data().begin_parse().load_int(1);`);
         });
         ctx.append(`}`);
+        ctx.append();
+
+        // Comments
+        ctx.append(`;;`);
+        ctx.append(`;; Routing of a Contract ${type.name}`);
+        ctx.append(`;;`);
+        ctx.append(``);
+
+        // Render body
+        writeRouter(type, ctx);
+
+        // Render internal receiver
+        ctx.append(`() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`);
+        ctx.inIndent(() => {
+
+            // Load context
+            ctx.append();
+            ctx.append(`;; Context`);
+            ctx.append(`var cs = in_msg_cell.begin_parse();`);
+            ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+            ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
+            ctx.append(`slice msg_sender_addr = ${ctx.used('__tact_verify_address')}(cs~load_msg_addr());`);
+            ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
+            ctx.append(`__tact_context_sender = msg_sender_addr;`);
+            ctx.append();
+
+            // Load self
+            ctx.append(`;; Load contract data`);
+            ctx.append(`var self = ${ops.contractLoad(type.name, ctx)}();`);
+            ctx.append();
+
+            // Process operation
+            ctx.append(`;; Handle operation`);
+            ctx.append(`int handled = self~${ops.contractRouter(type.name)}(msg_bounced, in_msg);`);
+            ctx.append();
+
+            // Throw if not handled
+            ctx.append(`;; Throw if not handled`);
+            ctx.append(`throw_unless(handled, ${contractErrors.invalidMessage.id});`);
+            ctx.append();
+
+            // Persist state
+            ctx.append(`;; Persist state`);
+            ctx.append(`${ops.contractStore(type.name, ctx)}(self);`);
+        });
+        ctx.append('}');
         ctx.append();
     });
 }

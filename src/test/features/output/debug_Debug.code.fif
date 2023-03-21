@@ -6,25 +6,25 @@ PROGRAM{
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_int_to_string
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
-  DECLPROC __gen_read_Deploy
-  DECLPROC __gen_write_DeployOk
-  DECLPROC __gen_writecell_DeployOk
-  DECLPROC $__gen_Debug_init
-  DECLPROC __gen_load_Debug
-  DECLPROC __gen_store_Debug
-  DECLPROC $__gen_Debug_debug
-  DECLPROC $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57
-  DECLPROC __gen_constructor_DeployOk$queryId
-  DECLPROC $__gen_Debug_receive_Deploy
-  DECLPROC __gen_router_Debug
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $global_reply
+  DECLPROC $Deploy$_load
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
+  DECLPROC $Debug$_contract_init
+  DECLPROC $Debug$_contract_load
+  DECLPROC $Debug$_contract_store
+  DECLPROC $Debug$_fun_debug
+  DECLPROC $DeployOk$_constructor_queryId
+  DECLPROC $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57
+  DECLPROC $Debug$_receive_binary_Deploy
   93099 DECLMETHOD %debug
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Debug$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -154,7 +154,7 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -253,11 +253,11 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
   }>
-  $reply PROCREF:<{
+  $global_reply PROCREF:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -265,10 +265,10 @@ PROGRAM{
     s0 s3 XCHG
     66 PUSHINT
     SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  __gen_read_Deploy PROCINLINE:<{
+  $Deploy$_load PROCINLINE:<{
     32 LDU
     SWAP
     2490013878 PUSHINT
@@ -277,22 +277,22 @@ PROGRAM{
     64 LDU
     SWAP
   }>
-  __gen_write_DeployOk PROCINLINE:<{
+  $DeployOk$_store PROCINLINE:<{
     2952335191 PUSHINT
     ROT
     32 STU
     64 STU
   }>
-  __gen_writecell_DeployOk PROCINLINE:<{
+  $DeployOk$_store_cell PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_DeployOk INLINECALLDICT
+    $DeployOk$_store INLINECALLDICT
     ENDC
   }>
-  $__gen_Debug_init PROCREF:<{
+  $Debug$_contract_init PROCREF:<{
     PUSHNULL
   }>
-  __gen_load_Debug PROCINLINE:<{
+  $Debug$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -308,10 +308,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_Debug_init INLINECALLDICT
+      $Debug$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Debug PROCINLINE:<{
+  $Debug$_contract_store PROCINLINE:<{
     DROP
     NEWC
     __tact_context_sys GETGLOB
@@ -323,7 +323,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_Debug_debug PROCREF:<{
+  $Debug$_fun_debug PROCREF:<{
     DROP
     DUMPSTK
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
@@ -341,7 +341,9 @@ PROGRAM{
     STRDUMP
     DROP
   }>
-  $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 PROCINLINE:<{
+  $DeployOk$_constructor_queryId PROCINLINE:<{
+  }>
+  $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 PROCINLINE:<{
     DUMPSTK
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
     STRDUMP
@@ -358,14 +360,32 @@ PROGRAM{
     STRDUMP
     DROP
   }>
-  __gen_constructor_DeployOk$queryId PROCINLINE:<{
+  $Debug$_receive_binary_Deploy PROCINLINE:<{
+    $DeployOk$_constructor_queryId INLINECALLDICT
+    $DeployOk$_store_cell INLINECALLDICT
+    $global_reply INLINECALLDICT
   }>
-  $__gen_Debug_receive_Deploy PROCINLINE:<{
-    __gen_constructor_DeployOk$queryId INLINECALLDICT
-    __gen_writecell_DeployOk INLINECALLDICT
-    $reply INLINECALLDICT
+  %debug PROC:<{
+    $Debug$_contract_load INLINECALLDICT
+    $Debug$_fun_debug INLINECALLDICT
   }>
-  __gen_router_Debug PROCREF:<{
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d625575635a676544625933355664586d5345504e793377433664767a776a396b57746238767877454c686859} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Debug$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -387,9 +407,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Deploy INLINECALLDICT
+      $Deploy$_load INLINECALLDICT
       NIP
-      $__gen_Debug_receive_Deploy INLINECALLDICT
+      $Debug$_receive_binary_Deploy INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -399,7 +419,7 @@ PROGRAM{
       78767043930632832884184893608813340453083540642055662257146169686053766160215 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
+        $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -431,30 +451,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Debug INLINECALLDICT
+    $Debug$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_Debug INLINECALLDICT
+    $Debug$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Debug INLINECALLDICT
-  }>
-  %debug PROC:<{
-    __gen_load_Debug INLINECALLDICT
-    $__gen_Debug_debug INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    36993126140238121407019133875791708966 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d625575635a676544625933355664586d5345504e793377433664767a776a396b57746238767877454c686859} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Debug$_contract_store INLINECALLDICT
   }>
 }END>c

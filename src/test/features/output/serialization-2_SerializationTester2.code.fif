@@ -1,42 +1,40 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC __gen_write_Vars
-  DECLPROC __gen_read_Vars
-  DECLPROC __gen_read_Update
-  DECLPROC __gen_write_SerializationTester2
-  DECLPROC __gen_read_SerializationTester2
-  DECLPROC __gen_Vars_not_null
-  DECLPROC __gen_Vars_as_optional
-  DECLPROC __gen_Vars_to_tuple
-  DECLPROC __gen_Vars_opt_to_tuple
-  DECLPROC __gen_Vars_from_tuple
-  DECLPROC __gen_Vars_to_external
-  DECLPROC __gen_Vars_opt_to_external
-  DECLPROC __gen_Both_not_null
-  DECLPROC __gen_Both_as_optional
-  DECLPROC __gen_Both_to_tuple
-  DECLPROC __gen_Both_opt_to_tuple
-  DECLPROC __gen_Both_from_tuple
-  DECLPROC __gen_Both_from_opt_tuple
-  DECLPROC __gen_Both_to_external
-  DECLPROC __gen_Both_opt_to_external
-  DECLPROC __gen_read_$init$SerializationTester2
-  DECLPROC $__gen_SerializationTester2_init
-  DECLPROC __gen_load_SerializationTester2
-  DECLPROC __gen_store_SerializationTester2
-  DECLPROC $__gen_SerializationTester2_getA
-  DECLPROC $__gen_SerializationTester2_getAopt
-  DECLPROC $__gen_SerializationTester2_getB
-  DECLPROC $__gen_SerializationTester2_getBopt
-  DECLPROC __gen_constructor_Both$a_b
-  DECLPROC $__gen_SerializationTester2_getBoth
-  DECLPROC $__gen_SerializationTester2_getBothOpt
-  DECLPROC __gen_constructor_Vars$a_b_c_d_e
-  DECLPROC $__gen_SerializationTester2_process
-  DECLPROC $__gen_SerializationTester2_receive
-  DECLPROC $__gen_SerializationTester2_receive_Update
-  DECLPROC __gen_router_SerializationTester2
-  DECLPROC recv_internal
+  DECLPROC $Vars$_store
+  DECLPROC $Vars$_load
+  DECLPROC $Update$_load
+  DECLPROC $SerializationTester2$_store
+  DECLPROC $SerializationTester2$_load
+  DECLPROC $Vars$_not_null
+  DECLPROC $Vars$_as_optional
+  DECLPROC $Vars$_to_tuple
+  DECLPROC $Vars$_to_opt_tuple
+  DECLPROC $Vars$_from_tuple
+  DECLPROC $Vars$_to_external
+  DECLPROC $Vars$_to_opt_external
+  DECLPROC $Both$_not_null
+  DECLPROC $Both$_as_optional
+  DECLPROC $Both$_to_tuple
+  DECLPROC $Both$_to_opt_tuple
+  DECLPROC $Both$_from_tuple
+  DECLPROC $Both$_from_opt_tuple
+  DECLPROC $Both$_to_external
+  DECLPROC $Both$_to_opt_external
+  DECLPROC $SerializationTester2$init$_load
+  DECLPROC $SerializationTester2$_contract_init
+  DECLPROC $SerializationTester2$_contract_load
+  DECLPROC $SerializationTester2$_contract_store
+  DECLPROC $SerializationTester2$_fun_getA
+  DECLPROC $SerializationTester2$_fun_getAopt
+  DECLPROC $SerializationTester2$_fun_getB
+  DECLPROC $SerializationTester2$_fun_getBopt
+  DECLPROC $Both$_constructor_a_b
+  DECLPROC $SerializationTester2$_fun_getBoth
+  DECLPROC $SerializationTester2$_fun_getBothOpt
+  DECLPROC $Vars$_constructor_a_b_c_d_e
+  DECLPROC $SerializationTester2$_fun_process
+  DECLPROC %$SerializationTester2$_receive_empty
+  DECLPROC $SerializationTester2$_receive_binary_Update
   123932 DECLMETHOD %getA
   113663 DECLMETHOD %getAopt
   119935 DECLMETHOD %getB
@@ -47,6 +45,8 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $SerializationTester2$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -71,7 +71,7 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __gen_write_Vars PROCINLINE:<{
+  $Vars$_store PROCINLINE:<{
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -91,7 +91,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_Vars PROCINLINE:<{
+  $Vars$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -110,77 +110,77 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
-  __gen_read_Update PROCINLINE:<{
+  $Update$_load PROCINLINE:<{
     32 LDU
     SWAP
     2732768933 PUSHINT
     EQUAL
     129 THROWIFNOT
-    __gen_read_Vars INLINECALLDICT
+    $Vars$_load INLINECALLDICT
     s0 s5 XCHG
     LDREF
     SWAP
     CTOS
-    __gen_read_Vars INLINECALLDICT
+    $Vars$_load INLINECALLDICT
     s5 POP
     s5 s10 XCHG
     4 ROLL
   }>
-  __gen_write_SerializationTester2 PROCINLINE:<{
+  $SerializationTester2$_store PROCINLINE:<{
     s5 s10 XCHG
     s4 s9 XCHG
     s3 s8 XCHG
     s7 s6 s10 XCHG3
-    __gen_write_Vars INLINECALLDICT
+    $Vars$_store INLINECALLDICT
     NEWC
     5 -ROLL
     s0 s6 XCHG
-    __gen_write_Vars INLINECALLDICT
+    $Vars$_store INLINECALLDICT
     ENDC
     SWAP
     STREF
   }>
-  __gen_read_SerializationTester2 PROCINLINE:<{
-    __gen_read_Vars INLINECALLDICT
+  $SerializationTester2$_load PROCINLINE:<{
+    $Vars$_load INLINECALLDICT
     s0 s5 XCHG
     LDREF
     SWAP
     CTOS
-    __gen_read_Vars INLINECALLDICT
+    $Vars$_load INLINECALLDICT
     s5 POP
     s5 s10 XCHG
     4 ROLL
   }>
-  __gen_Vars_not_null PROCINLINE:<{
+  $Vars$_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
     5 UNTUPLE
   }>
-  __gen_Vars_as_optional PROCINLINE:<{
+  $Vars$_as_optional PROCINLINE:<{
     5 TUPLE
   }>
-  __gen_Vars_to_tuple PROCINLINE:<{
+  $Vars$_to_tuple PROCINLINE:<{
     5 TUPLE
   }>
-  __gen_Vars_opt_to_tuple PROCINLINE:<{
+  $Vars$_to_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_Vars_not_null INLINECALLDICT
-      __gen_Vars_to_tuple INLINECALLDICT
+      $Vars$_not_null INLINECALLDICT
+      $Vars$_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_Vars_from_tuple PROCINLINE:<{
+  $Vars$_from_tuple PROCINLINE:<{
     5 UNTUPLE
   }>
-  __gen_Vars_to_external PROCINLINE:<{
+  $Vars$_to_external PROCINLINE:<{
   }>
-  __gen_Vars_opt_to_external PROCINLINE:<{
-    __gen_Vars_opt_to_tuple INLINECALLDICT
+  $Vars$_to_opt_external PROCINLINE:<{
+    $Vars$_to_opt_tuple INLINECALLDICT
     DUP
     ISNULL
     IF:<{
@@ -189,63 +189,63 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_Both_not_null PROCINLINE:<{
+  $Both$_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
     10 UNTUPLE
   }>
-  __gen_Both_as_optional PROCINLINE:<{
+  $Both$_as_optional PROCINLINE:<{
     10 TUPLE
   }>
-  __gen_Both_to_tuple PROCINLINE:<{
+  $Both$_to_tuple PROCINLINE:<{
     5 5 BLKSWAP
-    __gen_Vars_to_tuple INLINECALLDICT
+    $Vars$_to_tuple INLINECALLDICT
     5 -ROLL
-    __gen_Vars_to_tuple INLINECALLDICT
+    $Vars$_to_tuple INLINECALLDICT
     2 TUPLE
   }>
-  __gen_Both_opt_to_tuple PROCINLINE:<{
+  $Both$_to_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_Both_not_null INLINECALLDICT
-      __gen_Both_to_tuple INLINECALLDICT
+      $Both$_not_null INLINECALLDICT
+      $Both$_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_Both_from_tuple PROCINLINE:<{
+  $Both$_from_tuple PROCINLINE:<{
     2 UNTUPLE
     SWAP
-    __gen_Vars_from_tuple INLINECALLDICT
+    $Vars$_from_tuple INLINECALLDICT
     s0 s5 XCHG
-    __gen_Vars_from_tuple INLINECALLDICT
+    $Vars$_from_tuple INLINECALLDICT
     s8 s9 XCHG
     s7 s8 XCHG
     s6 s7 XCHG
     s5 s6 XCHG
   }>
-  __gen_Both_from_opt_tuple PROCINLINE:<{
+  $Both$_from_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_Both_from_tuple INLINECALLDICT
-      __gen_Both_as_optional INLINECALLDICT
+      $Both$_from_tuple INLINECALLDICT
+      $Both$_as_optional INLINECALLDICT
     }>
   }>
-  __gen_Both_to_external PROCINLINE:<{
+  $Both$_to_external PROCINLINE:<{
     5 5 BLKSWAP
-    __gen_Vars_to_tuple INLINECALLDICT
+    $Vars$_to_tuple INLINECALLDICT
     5 -ROLL
-    __gen_Vars_to_tuple INLINECALLDICT
+    $Vars$_to_tuple INLINECALLDICT
   }>
-  __gen_Both_opt_to_external PROCINLINE:<{
-    __gen_Both_opt_to_tuple INLINECALLDICT
+  $Both$_to_opt_external PROCINLINE:<{
+    $Both$_to_opt_tuple INLINECALLDICT
     DUP
     ISNULL
     IF:<{
@@ -254,20 +254,20 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  __gen_read_$init$SerializationTester2 PROCINLINE:<{
-    __gen_read_Vars INLINECALLDICT
+  $SerializationTester2$init$_load PROCINLINE:<{
+    $Vars$_load INLINECALLDICT
     s0 s5 XCHG
     LDREF
     SWAP
     CTOS
-    __gen_read_Vars INLINECALLDICT
+    $Vars$_load INLINECALLDICT
     s5 POP
     s5 s10 XCHG
     4 ROLL
   }>
-  $__gen_SerializationTester2_init PROCREF:<{
+  $SerializationTester2$_contract_init PROCREF:<{
   }>
-  __gen_load_SerializationTester2 PROCINLINE:<{
+  $SerializationTester2$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -276,7 +276,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_SerializationTester2 INLINECALLDICT
+      $SerializationTester2$_load INLINECALLDICT
       1 10 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -284,14 +284,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$SerializationTester2 INLINECALLDICT
+      $SerializationTester2$init$_load INLINECALLDICT
       s0 s10 XCHG
       ENDS
       9 ROLL
-      $__gen_SerializationTester2_init INLINECALLDICT
+      $SerializationTester2$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_SerializationTester2 PROCINLINE:<{
+  $SerializationTester2$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -300,36 +300,36 @@ PROGRAM{
     SWAP
     1 STI
     10 -ROLL
-    __gen_write_SerializationTester2 INLINECALLDICT
+    $SerializationTester2$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_SerializationTester2_getA PROCREF:<{
+  $SerializationTester2$_fun_getA PROCREF:<{
     5 BLKDROP
   }>
-  $__gen_SerializationTester2_getAopt PROCREF:<{
+  $SerializationTester2$_fun_getAopt PROCREF:<{
     5 BLKDROP
-    __gen_Vars_as_optional INLINECALLDICT
+    $Vars$_as_optional INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getB PROCREF:<{
+  $SerializationTester2$_fun_getB PROCREF:<{
     5 5 BLKDROP2
   }>
-  $__gen_SerializationTester2_getBopt PROCREF:<{
+  $SerializationTester2$_fun_getBopt PROCREF:<{
     5 5 BLKDROP2
-    __gen_Vars_as_optional INLINECALLDICT
+    $Vars$_as_optional INLINECALLDICT
   }>
-  __gen_constructor_Both$a_b PROCINLINE:<{
+  $Both$_constructor_a_b PROCINLINE:<{
   }>
-  $__gen_SerializationTester2_getBoth PROCREF:<{
-    __gen_constructor_Both$a_b INLINECALLDICT
+  $SerializationTester2$_fun_getBoth PROCREF:<{
+    $Both$_constructor_a_b INLINECALLDICT
   }>
-  $__gen_SerializationTester2_getBothOpt PROCREF:<{
-    __gen_constructor_Both$a_b INLINECALLDICT
-    __gen_Both_as_optional INLINECALLDICT
+  $SerializationTester2$_fun_getBothOpt PROCREF:<{
+    $Both$_constructor_a_b INLINECALLDICT
+    $Both$_as_optional INLINECALLDICT
   }>
-  __gen_constructor_Vars$a_b_c_d_e PROCINLINE:<{
+  $Vars$_constructor_a_b_c_d_e PROCINLINE:<{
   }>
-  $__gen_SerializationTester2_process PROCREF:<{
+  $SerializationTester2$_fun_process PROCREF:<{
     11 BLKDROP
     10 5 BLKDROP2
     s0 s4 XCHG
@@ -344,14 +344,92 @@ PROGRAM{
     5 ADDCONST
     s3 s4 XCHG
     s1 s3 s0 XCHG3
-    __gen_constructor_Vars$a_b_c_d_e INLINECALLDICT
+    $Vars$_constructor_a_b_c_d_e INLINECALLDICT
   }>
-  $__gen_SerializationTester2_receive PROCINLINE:<{
+  %$SerializationTester2$_receive_empty PROCINLINE:<{
   }>
-  $__gen_SerializationTester2_receive_Update PROCINLINE:<{
+  $SerializationTester2$_receive_binary_Update PROCINLINE:<{
     10 10 BLKDROP2
   }>
-  __gen_router_SerializationTester2 PROCREF:<{
+  %getA PROC:<{
+    $SerializationTester2$_contract_load INLINECALLDICT
+    $SerializationTester2$_fun_getA INLINECALLDICT
+    $Vars$_to_external INLINECALLDICT
+  }>
+  %getAopt PROC:<{
+    $SerializationTester2$_contract_load INLINECALLDICT
+    $SerializationTester2$_fun_getAopt INLINECALLDICT
+    $Vars$_to_opt_external INLINECALLDICT
+  }>
+  %getB PROC:<{
+    $SerializationTester2$_contract_load INLINECALLDICT
+    $SerializationTester2$_fun_getB INLINECALLDICT
+    $Vars$_to_external INLINECALLDICT
+  }>
+  %getBopt PROC:<{
+    $SerializationTester2$_contract_load INLINECALLDICT
+    $SerializationTester2$_fun_getBopt INLINECALLDICT
+    $Vars$_to_opt_external INLINECALLDICT
+  }>
+  %getBoth PROC:<{
+    $SerializationTester2$_contract_load INLINECALLDICT
+    $SerializationTester2$_fun_getBoth INLINECALLDICT
+    $Both$_to_external INLINECALLDICT
+  }>
+  %getBothOpt PROC:<{
+    $SerializationTester2$_contract_load INLINECALLDICT
+    $SerializationTester2$_fun_getBothOpt INLINECALLDICT
+    $Both$_to_opt_external INLINECALLDICT
+  }>
+  %process PROC:<{
+    s0 s2 XCHG
+    $Vars$_from_tuple INLINECALLDICT
+    s0 s5 XCHG
+    $Both$_from_tuple INLINECALLDICT
+    s0 s15 XCHG
+    $Both$_from_opt_tuple INLINECALLDICT
+    $SerializationTester2$_contract_load INLINECALLDICT
+    s9 25 s() XCHG
+    s8 24 s() XCHG
+    s7 23 s() XCHG
+    s6 22 s() XCHG
+    s5 21 s() XCHG
+    s4 20 s() XCHG
+    s3 19 s() XCHG
+    s2 18 s() XCHG
+    s1 17 s() XCHG
+    s0 16 s() XCHG
+    s7 s15 XCHG
+    s6 s14 XCHG
+    s5 s13 XCHG
+    s4 s12 XCHG
+    s8 s11 XCHG
+    s3 s10 XCHG
+    s9 s1 s7 XCHG3
+    s0 s6 XCHG
+    s0 s5 XCHG
+    s0 s4 XCHG
+    s8 s8 s3 XCHG3
+    $SerializationTester2$_fun_process INLINECALLDICT
+    $Vars$_to_external INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5177744263533851386e31426848424c5454764d546e57524d576754664b6d34504736686544316b43554455} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $SerializationTester2$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -374,16 +452,16 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      $__gen_SerializationTester2_receive INLINECALLDICT
+      %$SerializationTester2$_receive_empty INLINECALLDICT
       TRUE
     }>
     SWAP
     2732768933 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_read_Update INLINECALLDICT
+      $Update$_load INLINECALLDICT
       1 10 BLKDROP2
-      $__gen_SerializationTester2_receive_Update INLINECALLDICT
+      $SerializationTester2$_receive_binary_Update INLINECALLDICT
       TRUE
     }>
     DROP
@@ -412,88 +490,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_SerializationTester2 INLINECALLDICT
+    $SerializationTester2$_contract_load INLINECALLDICT
     2 10 BLKSWAP
-    __gen_router_SerializationTester2 INLINECALLDICT
+    $SerializationTester2$_contract_router INLINECALLDICT
     DROP
-    __gen_store_SerializationTester2 INLINECALLDICT
-  }>
-  %getA PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getA INLINECALLDICT
-    __gen_Vars_to_external INLINECALLDICT
-  }>
-  %getAopt PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getAopt INLINECALLDICT
-    __gen_Vars_opt_to_external INLINECALLDICT
-  }>
-  %getB PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getB INLINECALLDICT
-    __gen_Vars_to_external INLINECALLDICT
-  }>
-  %getBopt PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBopt INLINECALLDICT
-    __gen_Vars_opt_to_external INLINECALLDICT
-  }>
-  %getBoth PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBoth INLINECALLDICT
-    __gen_Both_to_external INLINECALLDICT
-  }>
-  %getBothOpt PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBothOpt INLINECALLDICT
-    __gen_Both_opt_to_external INLINECALLDICT
-  }>
-  %process PROC:<{
-    s0 s2 XCHG
-    __gen_Vars_from_tuple INLINECALLDICT
-    s0 s5 XCHG
-    __gen_Both_from_tuple INLINECALLDICT
-    s0 s15 XCHG
-    __gen_Both_from_opt_tuple INLINECALLDICT
-    __gen_load_SerializationTester2 INLINECALLDICT
-    s9 25 s() XCHG
-    s8 24 s() XCHG
-    s7 23 s() XCHG
-    s6 22 s() XCHG
-    s5 21 s() XCHG
-    s4 20 s() XCHG
-    s3 19 s() XCHG
-    s2 18 s() XCHG
-    s1 17 s() XCHG
-    s0 16 s() XCHG
-    s7 s15 XCHG
-    s6 s14 XCHG
-    s5 s13 XCHG
-    s4 s12 XCHG
-    s8 s11 XCHG
-    s3 s10 XCHG
-    s9 s1 s7 XCHG3
-    s0 s6 XCHG
-    s0 s5 XCHG
-    s0 s4 XCHG
-    s8 s8 s3 XCHG3
-    $__gen_SerializationTester2_process INLINECALLDICT
-    __gen_Vars_to_external INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    36993126140238121407019133875791708966 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5177744263533851386e31426848424c5454764d546e57524d576754664b6d34504736686544316b43554455} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $SerializationTester2$_contract_store INLINECALLDICT
   }>
 }END>c

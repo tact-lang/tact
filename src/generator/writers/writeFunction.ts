@@ -13,6 +13,7 @@ import { fn, id } from "./id";
 import { writeExpression, writeValue } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
+import { ops } from "./ops";
 
 export function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
     let expr = getExpType(ctx.ctx, expression);
@@ -24,11 +25,9 @@ export function unwrapExternal(targetName: string, sourceName: string, type: Typ
         let t = getType(ctx.ctx, type.name);
         if (t.kind === 'struct') {
             if (type.optional) {
-                ctx.used(`__gen_${t.name}_from_opt_tuple`);
-                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = __gen_${t.name}_from_opt_tuple(${sourceName});`);
+                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${ops.typeFromOptTuple(t.name, ctx)}(${sourceName});`);
             } else {
-                ctx.used(`__gen_${t.name}_from_tuple`);
-                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = __gen_${t.name}_from_tuple(${sourceName});`);
+                ctx.append(`${resolveFuncType(type, ctx)} ${targetName} = ${ops.typeFromTuple(t.name, ctx)}(${sourceName});`);
             }
             return;
         } else if (t.kind === 'primitive' && t.name === 'Address') {
@@ -184,7 +183,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     }
 
     // Resolve function descriptor
-    let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
+    let name = self ? ops.extension(self.name, f.name) : ops.global(f.name);
     let args: string[] = [];
     if (self) {
         args.push(resolveFuncType(self, ctx) + ' ' + id('self'));
@@ -195,7 +194,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
-        ctx.signature(`${returns} ${fn(name)}(${args.join(', ')})`);
+        ctx.signature(`${returns} ${name}(${args.join(', ')})`);
         ctx.flag('impure');
         if (enabledInline(ctx.ctx)) {
             ctx.flag('inline');
@@ -229,145 +228,6 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     });
 }
 
-export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
-    const selector = f.selector;
-
-    // Binary receiver
-    if (selector.kind === 'internal-binary') {
-        ctx.fun(`__gen_${self.name}_receive_${selector.type}`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-            ctx.signature(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive_${selector.type}`)}(${[resolveFuncType(self, ctx) + ' ' + id('self'), resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)].join(', ')})`);
-            ctx.flag('impure');
-            ctx.flag('inline');
-            ctx.body(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
-                ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
-
-                for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, null, ctx);
-                }
-
-                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (${selfRes}, ());`);
-                }
-            });
-        });
-        return;
-    }
-
-    // Empty receiver
-    if (selector.kind === 'internal-empty') {
-        ctx.fun(`__gen_${self.name}_receive`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-            ctx.signature(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))})`);
-            ctx.flag('impure');
-            ctx.flag('inline');
-            ctx.body(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
-
-                for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, null, ctx);
-                }
-
-                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (${selfRes}, ());`);
-                }
-            });
-        });
-    }
-
-    // Comment receiver
-    if (selector.kind === 'internal-comment') {
-        let hash = beginCell()
-            .storeUint(0, 32)
-            .storeBuffer(Buffer.from(selector.comment, 'utf8'))
-            .endCell()
-            .hash()
-            .toString('hex', 0, 64);
-        ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment_${hash}`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))})`);
-            ctx.flag('impure');
-            ctx.flag('inline');
-            ctx.body(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
-
-                for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, null, ctx);
-                }
-
-                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (${selfRes}, ());`);
-                }
-            });
-        });
-    }
-
-
-    // Fallback
-    if (selector.kind === 'internal-comment-fallback') {
-        ctx.fun(`__gen_${self.name}_receive_comment`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment`)}(${([resolveFuncType(self, ctx) + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')})`);
-            ctx.flag('impure');
-            ctx.flag('inline');
-            ctx.body(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
-
-                for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, null, ctx);
-                }
-
-                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (${selfRes}, ());`);
-                }
-            });
-        });
-    }
-
-    // Fallback
-    if (selector.kind === 'internal-fallback') {
-        ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_fallback`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)})`);
-            ctx.flag('impure');
-            ctx.flag('inline');
-            ctx.body(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
-
-                for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, null, ctx);
-                }
-
-                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (${selfRes}, ());`);
-                }
-            });
-        });
-    }
-
-    // Bounced
-    if (selector.kind === 'internal-bounce') {
-        ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
-            let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
-            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_bounced`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)})`);
-            ctx.flag('impure');
-            ctx.flag('inline');
-            ctx.body(() => {
-                ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
-
-                for (let s of f.ast.statements) {
-                    writeStatement(s, selfRes, null, ctx);
-                }
-
-                if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
-                    ctx.append(`return (${selfRes}, ());`);
-                }
-            });
-        });
-    }
-}
-
 export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
 
     // Render tensors
@@ -384,23 +244,19 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         }
 
         // Load contract state
-        ctx.used(`__gen_load_${self.name}`);
-        ctx.append(`var self = __gen_load_${self.name}();`);
+        ctx.append(`var self = ${ops.contractLoad(self.name, ctx)}();`);
 
         // Execute get method
-        ctx.used(`__gen_${self.name}_${f.name}`);
-        ctx.append(`var res = ${fn(`__gen_${self.name}_${f.name}`)}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
+        ctx.append(`var res = ${ctx.used(ops.extension(self.name, f.name))}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
 
         // Pack if needed
         if (f.returns.kind === 'ref') {
             let t = getType(ctx.ctx, f.returns.name);
             if (t.kind === 'struct') {
                 if (f.returns.optional) {
-                    ctx.used(`__gen_${t.name}_opt_to_external`);
-                    ctx.append(`return __gen_${t.name}_opt_to_external(res);`);
+                    ctx.append(`return ${ops.typeToOptExternal(t.name, ctx)}(res);`);
                 } else {
-                    ctx.used(`__gen_${t.name}_to_external`);
-                    ctx.append(`return __gen_${t.name}_to_external(res);`);
+                    ctx.append(`return ${ops.typeToExternal(t.name, ctx)}(res);`);
                 }
                 return;
             }

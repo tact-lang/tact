@@ -1,7 +1,7 @@
 #include "multisig_MultisigSigner.stdlib.fc";
 #include "multisig_MultisigSigner.storage.fc";
 
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $__gen_MultisigSigner_init(slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) impure inline_ref {
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_init(slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) impure inline_ref {
     var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = (null(), null(), 0, null(), null(), null());
     $self'master = $master;
@@ -12,44 +12,48 @@
     return ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body));
 }
 
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) __gen_load_MultisigSigner() impure inline {
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_MultisigSigner();
+        return $sc~$MultisigSigner$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) = $sc~__gen_read_$init$MultisigSigner();
+        (slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) = $sc~$MultisigSigner$init$_load();
         $sc.end_parse();
-        return $__gen_MultisigSigner_init(master, members, requiredWeight, request);
+        return $MultisigSigner$_contract_init(master, members, requiredWeight, request);
     }
 }
 
-() __gen_store_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline {
+() $MultisigSigner$_contract_store((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_MultisigSigner(b, v);
+    b = $MultisigSigner$_store(b, v);
     set_data(b.end_cell());
 }
 
-(slice, slice, int, int, int, int, cell) $__gen_MultisigSigner_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref {
+(slice, slice, int, int, int, int, cell) $MultisigSigner$_fun_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref {
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = $self;
     return ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body);
 }
 
-(((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) $__gen_MultisigSigner_receive((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
+(((slice, slice, int, int, int, int, cell))) $Signed$_constructor_request((slice, slice, int, int, int, int, cell) request) inline {
+    return (request);
+}
+
+;;
+;; Receivers of a Contract MultisigSigner
+;;
+
+(((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) %$MultisigSigner$_receive_empty((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
 
-(((slice, slice, int, int, int, int, cell))) __gen_constructor_Signed$request((slice, slice, int, int, int, int, cell) request) inline {
-    return (request);
-}
-
-((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     throw_unless(4755, ($self'request'timeout > now()));
     throw_unless(40810, (~ $self'completed));
@@ -59,16 +63,43 @@
     $self'weight = ($self'weight + $weight);
     if (($self'weight >= $self'requiredWeight)) {
         $self'completed = true;
-        $send(__gen_constructor_SendParameters$value_to_mode_bounce_body(0, $self'master, (128 + 2), false, __gen_writecell_Signed(__gen_constructor_Signed$request(($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)))));
+        $global_send($SendParameters$_constructor_value_to_mode_bounce_body(0, $self'master, (128 + 2), false, $Signed$_store_cell($Signed$_constructor_request(($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)))));
     }
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
 
 ;;
-;; Public Interface of a Contract MultisigSigner
+;; Get methods of a Contract MultisigSigner
 ;;
 
-((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), int) __gen_router_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
+_ %request() method_id(107262) {
+    var self = $MultisigSigner$_contract_load();
+    var res = $MultisigSigner$_fun_request(self);
+    return $Request$_to_external(res);
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmUFsGQE6VCxREmmb7qoPx758xaju7ukVYgLSwMfTT5AcJ";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract MultisigSigner
+;;
+
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), int) $MultisigSigner$_contract_router((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -83,7 +114,7 @@
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_MultisigSigner_receive();
+        self~%$MultisigSigner$_receive_empty();
         return (self, true);
     }
     
@@ -93,7 +124,7 @@
         
         ;; Receive "YES" message
         if (text_op == 0x22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039) {
-            self~$__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
+            self~$MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
             return (self, true);
         }
     }
@@ -112,37 +143,14 @@
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var self = __gen_load_MultisigSigner();
+    var self = $MultisigSigner$_contract_load();
     
     ;; Handle operation
-    int handled = self~__gen_router_MultisigSigner(msg_bounced, in_msg);
+    int handled = self~$MultisigSigner$_contract_router(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);
     
     ;; Persist state
-    __gen_store_MultisigSigner(self);
-}
-
-_ %request() method_id(107262) {
-    var self = __gen_load_MultisigSigner();
-    var res = $__gen_MultisigSigner_request(self);
-    return __gen_Request_to_external(res);
-}
-
-_ supported_interfaces() method_id {
-    return (
-        "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128,
-        "org.ton.deploy.lazy.v0"H >> 128,
-        "org.ton.chain.workchain.v0"H >> 128
-    );
-}
-
-_ get_abi_ipfs() {
-    return "ipfs://QmUFsGQE6VCxREmmb7qoPx758xaju7ukVYgLSwMfTT5AcJ";
-}
-
-_ lazy_deployment_completed() {
-    return get_data().begin_parse().load_int(1);
+    $MultisigSigner$_contract_store(self);
 }

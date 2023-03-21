@@ -167,12 +167,12 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
     return b.end_cell().begin_parse();
 }
 
-slice $__gen_Builder_asSlice(builder $self) impure inline_ref {
+slice $Builder$_fun_asSlice(builder $self) impure inline_ref {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
 
-slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
+slice $Slice$_fun_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     int $size = (slice_bits($self) / 8);
     builder $result = begin_cell();
@@ -196,14 +196,14 @@ slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
     int $total = builder_bits($result);
     int $padding = ($total % 8);
     if (($padding != 0)) {
-        slice $s = $__gen_Builder_asSlice($result);
+        slice $s = $Builder$_fun_asSlice($result);
         return $s~load_bits(($total - $padding));
     } else {
-        return $__gen_Builder_asSlice($result);
+        return $Builder$_fun_asSlice($result);
     }
 }
 
-slice $__gen_String_fromBase64(slice $self) impure inline_ref {
+slice $String$_fun_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
-    return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
+    return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }

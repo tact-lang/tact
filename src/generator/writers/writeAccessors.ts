@@ -2,6 +2,7 @@ import { contractErrors } from "../../abi/errors";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
 import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
@@ -12,8 +13,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
 
     // Getters
     for (let f of type.fields) {
-        ctx.fun(`__gen_${type.name}_get_${f.name}`, () => {
-            ctx.signature(`_ __gen_${type.name}_get_${f.name}(${resolveFuncType(type, ctx)} v)`);
+        ctx.fun(ops.typeField(type.name, f.name, ctx), () => {
+            ctx.signature(`_ ${ops.typeField(type.name, f.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
             ctx.flag('inline');
             if (origin === 'user') {
                 ctx.context('storage');
@@ -27,9 +28,9 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         });
     }
 
-    // Unpack
-    ctx.fun(`__gen_${type.name}_unpack`, () => {
-        ctx.signature(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v)`);
+    // Tensor cast
+    ctx.fun(ops.typeTensorCast(type.name, ctx), () => {
+        ctx.signature(`(${resolveFuncType(type, ctx)}) ${ops.typeTensorCast(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
         if (origin === 'user') {
             ctx.context('storage');
         } else {
@@ -39,8 +40,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     });
 
     // Not null
-    ctx.fun(`__gen_${type.name}_not_null`, () => {
-        ctx.signature(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v)`);
+    ctx.fun(ops.typeNotNull(type.name, ctx), () => {
+        ctx.signature(`(${resolveFuncType(type, ctx)}) ${ops.typeNotNull(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -59,8 +60,9 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         });
     });
 
-    ctx.fun(`__gen_${type.name}_as_optional`, () => {
-        ctx.signature(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v)`);
+    // As optional
+    ctx.fun(ops.typeAsOptional(type.name, ctx), () => {
+        ctx.signature(`tuple ${ops.typeAsOptional(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -79,8 +81,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     // Convert to and from tupled representation
     //
 
-    ctx.fun(`__gen_${type.name}_to_tuple`, () => {
-        ctx.signature(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v)`);
+    ctx.fun(ops.typeToTuple(type.name, ctx), () => {
+        ctx.signature(`tuple ${ops.typeToTuple(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -95,9 +97,9 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
                     let t = getType(ctx.ctx, f.type.name);
                     if (t.kind === 'struct') {
                         if (f.type.optional) {
-                            vars.push(`${ctx.used(`__gen_${f.type.name}_opt_to_tuple`)}(v'${f.name})`);
+                            vars.push(`${ops.typeToOptTuple(f.type.name, ctx)}(v'${f.name})`);
                         } else {
-                            vars.push(`${ctx.used(`__gen_${f.type.name}_to_tuple`)}(v'${f.name})`);
+                            vars.push(`${ops.typeToTuple(f.type.name, ctx)}(v'${f.name})`);
                         }
                         continue;
                     }
@@ -109,8 +111,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         });
     });
 
-    ctx.fun(`__gen_${type.name}_opt_to_tuple`, () => {
-        ctx.signature(`tuple __gen_${type.name}_opt_to_tuple(tuple v)`);
+    ctx.fun(ops.typeToOptTuple(type.name, ctx), () => {
+        ctx.signature(`tuple ${ops.typeToOptTuple(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -119,14 +121,12 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         }
         ctx.body(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
-            ctx.used(`__gen_${type.name}_not_null`);
-            ctx.used(`__gen_${type.name}_to_tuple`);
-            ctx.append(`return __gen_${type.name}_to_tuple(__gen_${type.name}_not_null(v)); `);
+            ctx.append(`return ${ops.typeToTuple(type.name, ctx)}(${ops.typeNotNull(type.name, ctx)}(v)); `);
         });
     });
 
-    ctx.fun(`__gen_${type.name}_from_tuple`, () => {
-        ctx.signature(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v)`);
+    ctx.fun(ops.typeFromTuple(type.name, ctx), () => {
+        ctx.signature(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) ${ops.typeFromTuple(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -143,9 +143,9 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
                     if (t.kind === 'struct') {
                         vars.push(`tuple v'${f.name}`);
                         if (f.type.optional) {
-                            out.push(`${ctx.used(`__gen_${f.type.name}_from_opt_tuple`)}(v'${f.name})`);
+                            out.push(`${ops.typeFromOptTuple(f.type.name, ctx)}(v'${f.name})`);
                         } else {
-                            out.push(`${ctx.used(`__gen_${f.type.name}_from_tuple`)}(v'${f.name})`);
+                            out.push(`${ops.typeFromTuple(f.type.name, ctx)}(v'${f.name})`);
                         }
                         continue;
                     } else if (t.kind === 'primitive' && t.name === 'Address') {
@@ -168,8 +168,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         });
     });
 
-    ctx.fun(`__gen_${type.name}_from_opt_tuple`, () => {
-        ctx.signature(`tuple __gen_${type.name}_from_opt_tuple(tuple v)`);
+    ctx.fun(ops.typeFromOptTuple(type.name, ctx), () => {
+        ctx.signature(`tuple ${ops.typeFromOptTuple(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -178,9 +178,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         }
         ctx.body(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
-            ctx.used(`__gen_${type.name}_as_optional`);
-            ctx.used(`__gen_${type.name}_from_tuple`);
-            ctx.append(`return __gen_${type.name}_as_optional(__gen_${type.name}_from_tuple(v));`);
+            ctx.append(`return ${ops.typeAsOptional(type.name, ctx)}(${ops.typeFromTuple(type.name, ctx)}(v));`);
         });
     });
 
@@ -188,8 +186,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     // Convert to and from external representation
     //
 
-    ctx.fun(`__gen_${type.name}_to_external`, () => {
-        ctx.signature(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v)`);
+    ctx.fun(ops.typeToExternal(type.name, ctx), () => {
+        ctx.signature(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -204,11 +202,9 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
                     let t = getType(ctx.ctx, f.type.name);
                     if (t.kind === 'struct') {
                         if (f.type.optional) {
-                            ctx.used(`__gen_${f.type.name}_opt_to_tuple`);
-                            vars.push(`__gen_${f.type.name}_opt_to_tuple(v'${f.name})`);
+                            vars.push(`${ops.typeToOptTuple(f.type.name, ctx)}(v'${f.name})`);
                         } else {
-                            ctx.used(`__gen_${f.type.name}_to_tuple`);
-                            vars.push(`__gen_${f.type.name}_to_tuple(v'${f.name})`);
+                            vars.push(`${ops.typeToTuple(f.type.name, ctx)}(v'${f.name})`);
                         }
                         continue;
                     }
@@ -219,8 +215,8 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         });
     });
 
-    ctx.fun(`__gen_${type.name}_opt_to_external`, () => {
-        ctx.signature(`tuple __gen_${type.name}_opt_to_external(tuple v)`);
+    ctx.fun(ops.typeToOptExternal(type.name, ctx), () => {
+        ctx.signature(`tuple ${ops.typeToOptExternal(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
         if (origin === 'user') {
             ctx.context('storage');
@@ -228,8 +224,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
             ctx.context('stdlib');
         }
         ctx.body(() => {
-            ctx.used(`__gen_${type.name}_opt_to_tuple`);
-            ctx.append(`var loaded = __gen_${type.name}_opt_to_tuple(v);`);
+            ctx.append(`var loaded = ${ops.typeToOptTuple(type.name, ctx)}(v);`);
             ctx.append(`if (null?(loaded)) {`);
             ctx.inIndent(() => {
                 ctx.append(`return null();`);

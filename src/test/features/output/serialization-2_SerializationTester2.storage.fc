@@ -1,4 +1,4 @@
-builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
+builder $Vars$_store(builder build_0, (int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = build_0.store_int(v'a, 257);
     build_0 = build_0.store_int(v'b, 257);
@@ -10,7 +10,7 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     return build_0;
 }
 
-(slice, ((int, int, int, int, int))) __gen_read_Vars(slice sc_0) inline {
+(slice, ((int, int, int, int, int))) $Vars$_load(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     var v'b = sc_0~load_int(257);
     var v'c = sc_0~load_int(257);
@@ -20,63 +20,63 @@ builder __gen_write_Vars(builder build_0, (int, int, int, int, int) v) inline {
     return (sc_0, (v'a, v'b, v'c, v'd, v'e));
 }
 
-(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_Update(slice sc_0) inline {
+(slice, (((int, int, int, int, int), (int, int, int, int, int)))) $Update$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 2732768933);
-    var v'a = sc_0~__gen_read_Vars();
+    var v'a = sc_0~$Vars$_load();
     slice sc_1 = sc_0~load_ref().begin_parse();
-    var v'b = sc_1~__gen_read_Vars();
+    var v'b = sc_1~$Vars$_load();
     return (sc_0, (v'a, v'b));
 }
 
-builder __gen_write_SerializationTester2(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline {
+builder $SerializationTester2$_store(builder build_0, ((int, int, int, int, int), (int, int, int, int, int)) v) inline {
     var ((v'a'a, v'a'b, v'a'c, v'a'd, v'a'e), (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e)) = v;
-    build_0 = __gen_write_Vars(build_0, (v'a'a, v'a'b, v'a'c, v'a'd, v'a'e));
+    build_0 = $Vars$_store(build_0, (v'a'a, v'a'b, v'a'c, v'a'd, v'a'e));
     var build_1 = begin_cell();
-    build_1 = __gen_write_Vars(build_1, (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e));
+    build_1 = $Vars$_store(build_1, (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e));
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_SerializationTester2(slice sc_0) inline {
-    var v'a = sc_0~__gen_read_Vars();
+(slice, (((int, int, int, int, int), (int, int, int, int, int)))) $SerializationTester2$_load(slice sc_0) inline {
+    var v'a = sc_0~$Vars$_load();
     slice sc_1 = sc_0~load_ref().begin_parse();
-    var v'b = sc_1~__gen_read_Vars();
+    var v'b = sc_1~$Vars$_load();
     return (sc_0, (v'a, v'b));
 }
 
-((int, int, int, int, int)) __gen_Vars_not_null(tuple v) inline {
+((int, int, int, int, int)) $Vars$_not_null(tuple v) inline {
     throw_if(128, null?(v));
     var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e) = __tact_tuple_destroy_5(v);
     return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e);
 }
 
-tuple __gen_Vars_as_optional(((int, int, int, int, int)) v) inline {
+tuple $Vars$_as_optional((int, int, int, int, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     return __tact_tuple_create_5(v'a, v'b, v'c, v'd, v'e);
 }
 
-tuple __gen_Vars_to_tuple(((int, int, int, int, int)) v) inline {
+tuple $Vars$_to_tuple(((int, int, int, int, int)) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     return __tact_tuple_create_5(v'a, v'b, v'c, v'd, v'e);
 }
 
-tuple __gen_Vars_opt_to_tuple(tuple v) inline {
+tuple $Vars$_to_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
-    return __gen_Vars_to_tuple(__gen_Vars_not_null(v)); 
+    return $Vars$_to_tuple($Vars$_not_null(v)); 
 }
 
-(int, int, int, int, int) __gen_Vars_from_tuple(tuple v) inline {
+(int, int, int, int, int) $Vars$_from_tuple(tuple v) inline {
     var (int v'a, int v'b, int v'c, int v'd, int v'e) = __tact_tuple_destroy_5(v);
     return (v'a, v'b, v'c, v'd, v'e);
 }
 
-(int, int, int, int, int) __gen_Vars_to_external(((int, int, int, int, int)) v) inline {
+(int, int, int, int, int) $Vars$_to_external(((int, int, int, int, int)) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v; 
     return (v'a, v'b, v'c, v'd, v'e);
 }
 
-tuple __gen_Vars_opt_to_external(tuple v) inline {
-    var loaded = __gen_Vars_opt_to_tuple(v);
+tuple $Vars$_to_opt_external(tuple v) inline {
+    var loaded = $Vars$_to_opt_tuple(v);
     if (null?(loaded)) {
         return null();
     } else {
@@ -84,44 +84,44 @@ tuple __gen_Vars_opt_to_external(tuple v) inline {
     }
 }
 
-(((int, int, int, int, int), (int, int, int, int, int))) __gen_Both_not_null(tuple v) inline {
+(((int, int, int, int, int), (int, int, int, int, int))) $Both$_not_null(tuple v) inline {
     throw_if(128, null?(v));
     var (int vvv'a'a, int vvv'a'b, int vvv'a'c, int vvv'a'd, int vvv'a'e, int vvv'b'a, int vvv'b'b, int vvv'b'c, int vvv'b'd, int vvv'b'e) = __tact_tuple_destroy_10(v);
     return ((vvv'a'a, vvv'a'b, vvv'a'c, vvv'a'd, vvv'a'e), (vvv'b'a, vvv'b'b, vvv'b'c, vvv'b'd, vvv'b'e));
 }
 
-tuple __gen_Both_as_optional((((int, int, int, int, int), (int, int, int, int, int))) v) inline {
+tuple $Both$_as_optional(((int, int, int, int, int), (int, int, int, int, int)) v) inline {
     var ((v'a'a, v'a'b, v'a'c, v'a'd, v'a'e), (v'b'a, v'b'b, v'b'c, v'b'd, v'b'e)) = v;
     return __tact_tuple_create_10(v'a'a, v'a'b, v'a'c, v'a'd, v'a'e, v'b'a, v'b'b, v'b'c, v'b'd, v'b'e);
 }
 
-tuple __gen_Both_to_tuple((((int, int, int, int, int), (int, int, int, int, int))) v) inline {
+tuple $Both$_to_tuple((((int, int, int, int, int), (int, int, int, int, int))) v) inline {
     var (v'a, v'b) = v;
-    return __tact_tuple_create_2(__gen_Vars_to_tuple(v'a), __gen_Vars_to_tuple(v'b));
+    return __tact_tuple_create_2($Vars$_to_tuple(v'a), $Vars$_to_tuple(v'b));
 }
 
-tuple __gen_Both_opt_to_tuple(tuple v) inline {
+tuple $Both$_to_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
-    return __gen_Both_to_tuple(__gen_Both_not_null(v)); 
+    return $Both$_to_tuple($Both$_not_null(v)); 
 }
 
-((int, int, int, int, int), (int, int, int, int, int)) __gen_Both_from_tuple(tuple v) inline {
+((int, int, int, int, int), (int, int, int, int, int)) $Both$_from_tuple(tuple v) inline {
     var (tuple v'a, tuple v'b) = __tact_tuple_destroy_2(v);
-    return (__gen_Vars_from_tuple(v'a), __gen_Vars_from_tuple(v'b));
+    return ($Vars$_from_tuple(v'a), $Vars$_from_tuple(v'b));
 }
 
-tuple __gen_Both_from_opt_tuple(tuple v) inline {
+tuple $Both$_from_opt_tuple(tuple v) inline {
     if (null?(v)) { return null(); } 
-    return __gen_Both_as_optional(__gen_Both_from_tuple(v));
+    return $Both$_as_optional($Both$_from_tuple(v));
 }
 
-(tuple, tuple) __gen_Both_to_external((((int, int, int, int, int), (int, int, int, int, int))) v) inline {
+(tuple, tuple) $Both$_to_external((((int, int, int, int, int), (int, int, int, int, int))) v) inline {
     var (v'a, v'b) = v; 
-    return (__gen_Vars_to_tuple(v'a), __gen_Vars_to_tuple(v'b));
+    return ($Vars$_to_tuple(v'a), $Vars$_to_tuple(v'b));
 }
 
-tuple __gen_Both_opt_to_external(tuple v) inline {
-    var loaded = __gen_Both_opt_to_tuple(v);
+tuple $Both$_to_opt_external(tuple v) inline {
+    var loaded = $Both$_to_opt_tuple(v);
     if (null?(loaded)) {
         return null();
     } else {
@@ -129,9 +129,9 @@ tuple __gen_Both_opt_to_external(tuple v) inline {
     }
 }
 
-(slice, (((int, int, int, int, int), (int, int, int, int, int)))) __gen_read_$init$SerializationTester2(slice sc_0) inline {
-    var v'a = sc_0~__gen_read_Vars();
+(slice, (((int, int, int, int, int), (int, int, int, int, int)))) $SerializationTester2$init$_load(slice sc_0) inline {
+    var v'a = sc_0~$Vars$_load();
     slice sc_1 = sc_0~load_ref().begin_parse();
-    var v'b = sc_1~__gen_read_Vars();
+    var v'b = sc_1~$Vars$_load();
     return (sc_0, (v'a, v'b));
 }

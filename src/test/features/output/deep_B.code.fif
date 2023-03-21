@@ -12,27 +12,27 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
-  DECLPROC __gen_StateInit_to_external
-  DECLPROC $contractAddress
-  DECLPROC $send
-  DECLPROC $__gen_String_asComment
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body
-  DECLPROC __gen_write_B
-  DECLPROC __gen_read_B
-  DECLPROC __gen_read_$init$B
-  DECLPROC __gen_write_$init$C
-  DECLPROC $__gen_B_init
-  DECLPROC __gen_load_B
-  DECLPROC __gen_store_B
-  DECLPROC $__gen_C_init_child
-  DECLPROC $__gen_B_getNext
-  DECLPROC $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
-  DECLPROC __gen_router_B
-  DECLPROC recv_internal
+  DECLPROC $StateInit$_to_external
+  DECLPROC $global_contractAddress
+  DECLPROC $global_send
+  DECLPROC $String$_fun_asComment
+  DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data_body
+  DECLPROC $B$_store
+  DECLPROC $B$_load
+  DECLPROC $B$init$_load
+  DECLPROC $C$init$_store
+  DECLPROC $B$_contract_init
+  DECLPROC $B$_contract_load
+  DECLPROC $B$_contract_store
+  DECLPROC $C$_init_child
+  DECLPROC $B$_fun_getNext
+  DECLPROC $B$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   74105 DECLMETHOD %getNext
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $B$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -217,14 +217,14 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_StateInit_to_external PROCINLINE:<{
+  $StateInit$_to_external PROCINLINE:<{
   }>
-  $contractAddress PROCREF:<{
+  $global_contractAddress PROCREF:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -323,32 +323,32 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_String_asComment PROCREF:<{
+  $String$_fun_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body PROCINLINE:<{
+  $SendParameters$_constructor_value_to_mode_bounce_code_data_body PROCINLINE:<{
     s3 s6 XCHG
     s3 s4 XCHG
     -ROT
   }>
-  __gen_write_B PROCINLINE:<{
+  $B$_store PROCINLINE:<{
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_B PROCINLINE:<{
+  $B$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
   }>
-  __gen_read_$init$B PROCINLINE:<{
+  $B$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
   }>
-  __gen_write_$init$C PROCINLINE:<{
+  $C$init$_store PROCINLINE:<{
     __tact_store_address INLINECALLDICT
   }>
-  $__gen_B_init PROCREF:<{
+  $B$_contract_init PROCREF:<{
   }>
-  __gen_load_B PROCINLINE:<{
+  $B$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -357,7 +357,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_B INLINECALLDICT
+      $B$_load INLINECALLDICT
       NIP
     }>ELSE<{
       MYADDR
@@ -365,13 +365,13 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$B INLINECALLDICT
+      $B$init$_load INLINECALLDICT
       SWAP
       ENDS
-      $__gen_B_init INLINECALLDICT
+      $B$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_B PROCINLINE:<{
+  $B$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -380,11 +380,11 @@ PROGRAM{
     SWAP
     1 STI
     SWAP
-    __gen_write_B INLINECALLDICT
+    $B$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_C_init_child PROCREF:<{
+  $C$_init_child PROCREF:<{
     SWAP
     CTOS
     LDDICT
@@ -408,33 +408,54 @@ PROGRAM{
     SWAP
     1 STI
     ROT
-    __gen_write_$init$C INLINECALLDICT
+    $C$init$_store INLINECALLDICT
     ENDC
   }>
-  $__gen_B_getNext PROCREF:<{
+  $B$_fun_getNext PROCREF:<{
     DROP
     __tact_context_sys GETGLOB
     MYADDR
-    $__gen_C_init_child INLINECALLDICT
+    $C$_init_child INLINECALLDICT
   }>
-  $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
+  $B$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
     MYADDR
-    $__gen_C_init_child INLINECALLDICT
+    $C$_init_child INLINECALLDICT
     2DUP
-    $contractAddress INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
     0 PUSHINT
     66 PUSHINT
     TRUE
     B{b5ee9c7241010101000900000e4d657373616765b15ae930} B>boc <s PUSHSLICE
-    $__gen_String_asComment INLINECALLDICT
+    $String$_fun_asComment INLINECALLDICT
     4 3 REVERSE
     s4 s3 s0 XCHG3
     s1 s2 XCHG
-    __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_value_to_mode_bounce_code_data_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  __gen_router_B PROCREF:<{
+  %getNext PROC:<{
+    $B$_contract_load INLINECALLDICT
+    $B$_fun_getNext INLINECALLDICT
+    $StateInit$_to_external INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d55366d4d38796156466451433648365a6b42374e7a7a4d62726a39324167314465594b4c36686d6555783648} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $B$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -458,7 +479,7 @@ PROGRAM{
       81463308115887082732985988965814941212607499737973399264699107294340141092189 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
+        $B$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -490,31 +511,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_B INLINECALLDICT
+    $B$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_B INLINECALLDICT
+    $B$_contract_router INLINECALLDICT
     DROP
-    __gen_store_B INLINECALLDICT
-  }>
-  %getNext PROC:<{
-    __gen_load_B INLINECALLDICT
-    $__gen_B_getNext INLINECALLDICT
-    __gen_StateInit_to_external INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    36993126140238121407019133875791708966 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d55366d4d38796156466451433648365a6b42374e7a7a4d62726a39324167314465594b4c36686d6555783648} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $B$_contract_store INLINECALLDICT
   }>
 }END>c

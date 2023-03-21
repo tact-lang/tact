@@ -8,28 +8,26 @@ PROGRAM{
   DECLPROC __tact_string_builder_append
   DECLPROC __tact_int_to_string
   DECLPROC __tact_float_to_string
-  DECLPROC $__gen_Builder_asSlice
-  DECLPROC $__gen_Slice_fromBase64
-  DECLPROC $__gen_String_fromBase64
-  DECLPROC $__gen_StringsTester_init
-  DECLPROC __gen_load_StringsTester
-  DECLPROC __gen_store_StringsTester
-  DECLPROC $__gen_StringsTester_constantString
-  DECLPROC $__gen_StringsTester_constantStringUnicode
-  DECLPROC $__gen_StringsTester_constantStringUnicodeLong
-  DECLPROC $__gen_StringsTester_dynamicStringCell
-  DECLPROC $__gen_StringsTester_dynamicCommentCell
-  DECLPROC $__gen_StringsTester_dynamicCommentCellLarge
-  DECLPROC $__gen_StringsTester_dynamicCommentStringLarge
-  DECLPROC $__gen_StringsTester_stringWithNumber
-  DECLPROC $__gen_StringsTester_stringWithNegativeNumber
-  DECLPROC $__gen_StringsTester_stringWithLargeNumber
-  DECLPROC $__gen_StringsTester_stringWithFloat
-  DECLPROC $__gen_StringsTester_base64
-  DECLPROC $__gen_StringsTester_processBase64
-  DECLPROC $__gen_StringsTester_receive
-  DECLPROC __gen_router_StringsTester
-  DECLPROC recv_internal
+  DECLPROC $Builder$_fun_asSlice
+  DECLPROC $Slice$_fun_fromBase64
+  DECLPROC $String$_fun_fromBase64
+  DECLPROC $StringsTester$_contract_init
+  DECLPROC $StringsTester$_contract_load
+  DECLPROC $StringsTester$_contract_store
+  DECLPROC $StringsTester$_fun_constantString
+  DECLPROC $StringsTester$_fun_constantStringUnicode
+  DECLPROC $StringsTester$_fun_constantStringUnicodeLong
+  DECLPROC $StringsTester$_fun_dynamicStringCell
+  DECLPROC $StringsTester$_fun_dynamicCommentCell
+  DECLPROC $StringsTester$_fun_dynamicCommentCellLarge
+  DECLPROC $StringsTester$_fun_dynamicCommentStringLarge
+  DECLPROC $StringsTester$_fun_stringWithNumber
+  DECLPROC $StringsTester$_fun_stringWithNegativeNumber
+  DECLPROC $StringsTester$_fun_stringWithLargeNumber
+  DECLPROC $StringsTester$_fun_stringWithFloat
+  DECLPROC $StringsTester$_fun_base64
+  DECLPROC $StringsTester$_fun_processBase64
+  DECLPROC %$StringsTester$_receive_empty
   93932 DECLMETHOD %constantString
   94939 DECLMETHOD %constantStringUnicode
   104680 DECLMETHOD %constantStringUnicodeLong
@@ -46,6 +44,8 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $StringsTester$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -338,11 +338,11 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  $__gen_Builder_asSlice PROCREF:<{
+  $Builder$_fun_asSlice PROCREF:<{
     ENDC
     CTOS
   }>
-  $__gen_Slice_fromBase64 PROCREF:<{
+  $Slice$_fun_fromBase64 PROCREF:<{
     DUP
     SBITS
     3 RSHIFT#
@@ -427,22 +427,22 @@ PROGRAM{
     0 NEQINT
     IFJMP:<{
       s0 s2 XCHG
-      $__gen_Builder_asSlice INLINECALLDICT
+      $Builder$_fun_asSlice INLINECALLDICT
       s0 s2 XCHG
       SUB
       LDSLICEX
       DROP
     }>
     2DROP
-    $__gen_Builder_asSlice INLINECALLDICT
+    $Builder$_fun_asSlice INLINECALLDICT
   }>
-  $__gen_String_fromBase64 PROCREF:<{
-    $__gen_Slice_fromBase64 INLINECALLDICT
+  $String$_fun_fromBase64 PROCREF:<{
+    $Slice$_fun_fromBase64 INLINECALLDICT
   }>
-  $__gen_StringsTester_init PROCREF:<{
+  $StringsTester$_contract_init PROCREF:<{
     PUSHNULL
   }>
-  __gen_load_StringsTester PROCINLINE:<{
+  $StringsTester$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -458,10 +458,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_StringsTester_init INLINECALLDICT
+      $StringsTester$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_StringsTester PROCINLINE:<{
+  $StringsTester$_contract_store PROCINLINE:<{
     DROP
     NEWC
     __tact_context_sys GETGLOB
@@ -473,33 +473,33 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $__gen_StringsTester_constantString PROCREF:<{
+  $StringsTester$_fun_constantString PROCREF:<{
     DROP
     B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE
   }>
-  $__gen_StringsTester_constantStringUnicode PROCREF:<{
+  $StringsTester$_fun_constantStringUnicode PROCREF:<{
     DROP
     B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE
   }>
-  $__gen_StringsTester_constantStringUnicodeLong PROCREF:<{
+  $StringsTester$_fun_constantStringUnicodeLong PROCREF:<{
     DROP
     B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE
   }>
-  $__gen_StringsTester_dynamicStringCell PROCREF:<{
+  $StringsTester$_fun_dynamicStringCell PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_StringsTester_dynamicCommentCell PROCREF:<{
+  $StringsTester$_fun_dynamicCommentCell PROCREF:<{
     DROP
     __tact_string_builder_start_comment INLINECALLDICT
     B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_StringsTester_dynamicCommentCellLarge PROCREF:<{
+  $StringsTester$_fun_dynamicCommentCellLarge PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
@@ -508,7 +508,7 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_StringsTester_dynamicCommentStringLarge PROCREF:<{
+  $StringsTester$_fun_dynamicCommentStringLarge PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
@@ -517,7 +517,7 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_StringsTester_stringWithNumber PROCREF:<{
+  $StringsTester$_fun_stringWithNumber PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
@@ -527,7 +527,7 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_StringsTester_stringWithNegativeNumber PROCREF:<{
+  $StringsTester$_fun_stringWithNegativeNumber PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
@@ -537,7 +537,7 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_StringsTester_stringWithLargeNumber PROCREF:<{
+  $StringsTester$_fun_stringWithLargeNumber PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
@@ -547,24 +547,93 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_StringsTester_stringWithFloat PROCREF:<{
+  $StringsTester$_fun_stringWithFloat PROCREF:<{
     DROP
     95 PUSHINT
     1 PUSHINT
     __tact_float_to_string INLINECALLDICT
   }>
-  $__gen_StringsTester_base64 PROCREF:<{
+  $StringsTester$_fun_base64 PROCREF:<{
     DROP
     B{b5ee9c72410101010026000048545746756553426f5957356b637942745957746c494778705a32683049486476636d7375ff762436} B>boc <s PUSHSLICE
-    $__gen_String_fromBase64 INLINECALLDICT
+    $String$_fun_fromBase64 INLINECALLDICT
   }>
-  $__gen_StringsTester_processBase64 PROCREF:<{
+  $StringsTester$_fun_processBase64 PROCREF:<{
     NIP
-    $__gen_String_fromBase64 INLINECALLDICT
+    $String$_fun_fromBase64 INLINECALLDICT
   }>
-  $__gen_StringsTester_receive PROCINLINE:<{
+  %$StringsTester$_receive_empty PROCINLINE:<{
   }>
-  __gen_router_StringsTester PROCREF:<{
+  %constantString PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_constantString INLINECALLDICT
+  }>
+  %constantStringUnicode PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_constantStringUnicode INLINECALLDICT
+  }>
+  %constantStringUnicodeLong PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_constantStringUnicodeLong INLINECALLDICT
+  }>
+  %dynamicStringCell PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_dynamicStringCell INLINECALLDICT
+  }>
+  %dynamicCommentCell PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_dynamicCommentCell INLINECALLDICT
+  }>
+  %dynamicCommentCellLarge PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_dynamicCommentCellLarge INLINECALLDICT
+  }>
+  %dynamicCommentStringLarge PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_dynamicCommentStringLarge INLINECALLDICT
+  }>
+  %stringWithNumber PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_stringWithNumber INLINECALLDICT
+  }>
+  %stringWithNegativeNumber PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_stringWithNegativeNumber INLINECALLDICT
+  }>
+  %stringWithLargeNumber PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_stringWithLargeNumber INLINECALLDICT
+  }>
+  %stringWithFloat PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_stringWithFloat INLINECALLDICT
+  }>
+  %base64 PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    $StringsTester$_fun_base64 INLINECALLDICT
+  }>
+  %processBase64 PROC:<{
+    $StringsTester$_contract_load INLINECALLDICT
+    SWAP
+    $StringsTester$_fun_processBase64 INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d62346e695769384165784e51653633767a35546f546f684555377568336b47736d5a436b6472505241456d38} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $StringsTester$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -586,7 +655,7 @@ PROGRAM{
     33 LESSINT
     AND
     IFJMP:<{
-      $__gen_StringsTester_receive INLINECALLDICT
+      %$StringsTester$_receive_empty INLINECALLDICT
       TRUE
     }>
     FALSE
@@ -614,79 +683,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_StringsTester INLINECALLDICT
+    $StringsTester$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_StringsTester INLINECALLDICT
+    $StringsTester$_contract_router INLINECALLDICT
     DROP
-    __gen_store_StringsTester INLINECALLDICT
-  }>
-  %constantString PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_constantString INLINECALLDICT
-  }>
-  %constantStringUnicode PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_constantStringUnicode INLINECALLDICT
-  }>
-  %constantStringUnicodeLong PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_constantStringUnicodeLong INLINECALLDICT
-  }>
-  %dynamicStringCell PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicStringCell INLINECALLDICT
-  }>
-  %dynamicCommentCell PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicCommentCell INLINECALLDICT
-  }>
-  %dynamicCommentCellLarge PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicCommentCellLarge INLINECALLDICT
-  }>
-  %dynamicCommentStringLarge PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicCommentStringLarge INLINECALLDICT
-  }>
-  %stringWithNumber PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithNumber INLINECALLDICT
-  }>
-  %stringWithNegativeNumber PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithNegativeNumber INLINECALLDICT
-  }>
-  %stringWithLargeNumber PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithLargeNumber INLINECALLDICT
-  }>
-  %stringWithFloat PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithFloat INLINECALLDICT
-  }>
-  %base64 PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_base64 INLINECALLDICT
-  }>
-  %processBase64 PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    SWAP
-    $__gen_StringsTester_processBase64 INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    36993126140238121407019133875791708966 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d62346e695769384165784e51653633767a35546f546f684555377568336b47736d5a436b6472505241456d38} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $StringsTester$_contract_store INLINECALLDICT
   }>
 }END>c

@@ -9,55 +9,53 @@ PROGRAM{
   DECLPROC __tact_dict_get_slice_int
   DECLPROC __tact_dict_set_slice_cell
   DECLPROC __tact_dict_get_slice_cell
-  DECLPROC __gen_read_SetIntMap1
-  DECLPROC __gen_read_SetIntMap2
-  DECLPROC __gen_read_SetIntMap3
-  DECLPROC __gen_write_SomeStruct
-  DECLPROC __gen_writecell_SomeStruct
-  DECLPROC __gen_SomeStruct_not_null
-  DECLPROC __gen_writecellopt_SomeStruct
-  DECLPROC __gen_read_SomeStruct
-  DECLPROC __gen_SomeStruct_as_optional
-  DECLPROC __gen_readopt_SomeStruct
-  DECLPROC __gen_read_SetIntMap4
-  DECLPROC __gen_read_SetAddrMap1
-  DECLPROC __gen_read_SetAddrMap2
-  DECLPROC __gen_read_SetAddrMap3
-  DECLPROC __gen_read_SetAddrMap4
-  DECLPROC __gen_write_MapTestContract
-  DECLPROC __gen_read_MapTestContract
-  DECLPROC __gen_SomeStruct_to_tuple
-  DECLPROC __gen_SomeStruct_opt_to_tuple
-  DECLPROC __gen_SomeStruct_opt_to_external
-  DECLPROC $__gen_MapTestContract_init
-  DECLPROC __gen_load_MapTestContract
-  DECLPROC __gen_store_MapTestContract
-  DECLPROC $__gen_MapTestContract_intMap1
-  DECLPROC $__gen_MapTestContract_intMap1Value
-  DECLPROC $__gen_MapTestContract_intMap2
-  DECLPROC $__gen_MapTestContract_intMap2Value
-  DECLPROC $__gen_MapTestContract_intMap3
-  DECLPROC $__gen_MapTestContract_intMap3Value
-  DECLPROC $__gen_MapTestContract_intMap4
-  DECLPROC $__gen_MapTestContract_intMap4Value
-  DECLPROC $__gen_MapTestContract_addrMap1
-  DECLPROC $__gen_MapTestContract_addrMap1Value
-  DECLPROC $__gen_MapTestContract_addrMap2
-  DECLPROC $__gen_MapTestContract_addrMap2Value
-  DECLPROC $__gen_MapTestContract_addrMap3
-  DECLPROC $__gen_MapTestContract_addrMap3Value
-  DECLPROC $__gen_MapTestContract_addrMap4
-  DECLPROC $__gen_MapTestContract_addrMap4Value
-  DECLPROC $__gen_MapTestContract_receive_SetIntMap1
-  DECLPROC $__gen_MapTestContract_receive_SetIntMap2
-  DECLPROC $__gen_MapTestContract_receive_SetIntMap3
-  DECLPROC $__gen_MapTestContract_receive_SetIntMap4
-  DECLPROC $__gen_MapTestContract_receive_SetAddrMap1
-  DECLPROC $__gen_MapTestContract_receive_SetAddrMap2
-  DECLPROC $__gen_MapTestContract_receive_SetAddrMap3
-  DECLPROC $__gen_MapTestContract_receive_SetAddrMap4
-  DECLPROC __gen_router_MapTestContract
-  DECLPROC recv_internal
+  DECLPROC $SetIntMap1$_load
+  DECLPROC $SetIntMap2$_load
+  DECLPROC $SetIntMap3$_load
+  DECLPROC $SomeStruct$_store
+  DECLPROC $SomeStruct$_store_cell
+  DECLPROC $SomeStruct$_not_null
+  DECLPROC $SomeStruct$_store_opt
+  DECLPROC $SomeStruct$_load
+  DECLPROC $SomeStruct$_as_optional
+  DECLPROC $SomeStruct$_load_opt
+  DECLPROC $SetIntMap4$_load
+  DECLPROC $SetAddrMap1$_load
+  DECLPROC $SetAddrMap2$_load
+  DECLPROC $SetAddrMap3$_load
+  DECLPROC $SetAddrMap4$_load
+  DECLPROC $MapTestContract$_store
+  DECLPROC $MapTestContract$_load
+  DECLPROC $SomeStruct$_to_tuple
+  DECLPROC $SomeStruct$_to_opt_tuple
+  DECLPROC $SomeStruct$_to_opt_external
+  DECLPROC $MapTestContract$_contract_init
+  DECLPROC $MapTestContract$_contract_load
+  DECLPROC $MapTestContract$_contract_store
+  DECLPROC $MapTestContract$_fun_intMap1
+  DECLPROC $MapTestContract$_fun_intMap1Value
+  DECLPROC $MapTestContract$_fun_intMap2
+  DECLPROC $MapTestContract$_fun_intMap2Value
+  DECLPROC $MapTestContract$_fun_intMap3
+  DECLPROC $MapTestContract$_fun_intMap3Value
+  DECLPROC $MapTestContract$_fun_intMap4
+  DECLPROC $MapTestContract$_fun_intMap4Value
+  DECLPROC $MapTestContract$_fun_addrMap1
+  DECLPROC $MapTestContract$_fun_addrMap1Value
+  DECLPROC $MapTestContract$_fun_addrMap2
+  DECLPROC $MapTestContract$_fun_addrMap2Value
+  DECLPROC $MapTestContract$_fun_addrMap3
+  DECLPROC $MapTestContract$_fun_addrMap3Value
+  DECLPROC $MapTestContract$_fun_addrMap4
+  DECLPROC $MapTestContract$_fun_addrMap4Value
+  DECLPROC $MapTestContract$_receive_binary_SetIntMap1
+  DECLPROC $MapTestContract$_receive_binary_SetIntMap2
+  DECLPROC $MapTestContract$_receive_binary_SetIntMap3
+  DECLPROC $MapTestContract$_receive_binary_SetIntMap4
+  DECLPROC $MapTestContract$_receive_binary_SetAddrMap1
+  DECLPROC $MapTestContract$_receive_binary_SetAddrMap2
+  DECLPROC $MapTestContract$_receive_binary_SetAddrMap3
+  DECLPROC $MapTestContract$_receive_binary_SetAddrMap4
   67207 DECLMETHOD %intMap1
   103396 DECLMETHOD %intMap1Value
   79588 DECLMETHOD %intMap2
@@ -77,6 +75,8 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $MapTestContract$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -210,7 +210,7 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  __gen_read_SetIntMap1 PROCINLINE:<{
+  $SetIntMap1$_load PROCINLINE:<{
     32 LDU
     SWAP
     1510253336 PUSHINT
@@ -229,7 +229,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetIntMap2 PROCINLINE:<{
+  $SetIntMap2$_load PROCINLINE:<{
     32 LDU
     SWAP
     1629867766 PUSHINT
@@ -247,7 +247,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetIntMap3 PROCINLINE:<{
+  $SetIntMap3$_load PROCINLINE:<{
     32 LDU
     SWAP
     3613954633 PUSHINT
@@ -265,43 +265,43 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_write_SomeStruct PROCINLINE:<{
+  $SomeStruct$_store PROCINLINE:<{
     SWAP
     257 PUSHINT
     STIX
   }>
-  __gen_writecell_SomeStruct PROCINLINE:<{
+  $SomeStruct$_store_cell PROCINLINE:<{
     NEWC
     SWAP
-    __gen_write_SomeStruct INLINECALLDICT
+    $SomeStruct$_store INLINECALLDICT
     ENDC
   }>
-  __gen_SomeStruct_not_null PROCINLINE:<{
+  $SomeStruct$_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
     1 UNTUPLE
   }>
-  __gen_writecellopt_SomeStruct PROCINLINE:<{
+  $SomeStruct$_store_opt PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_SomeStruct_not_null INLINECALLDICT
-      __gen_writecell_SomeStruct INLINECALLDICT
+      $SomeStruct$_not_null INLINECALLDICT
+      $SomeStruct$_store_cell INLINECALLDICT
     }>
   }>
-  __gen_read_SomeStruct PROCINLINE:<{
+  $SomeStruct$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
   }>
-  __gen_SomeStruct_as_optional PROCINLINE:<{
+  $SomeStruct$_as_optional PROCINLINE:<{
     1 TUPLE
   }>
-  __gen_readopt_SomeStruct PROCINLINE:<{
+  $SomeStruct$_load_opt PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
@@ -309,12 +309,12 @@ PROGRAM{
       PUSHNULL
     }>ELSE<{
       CTOS
-      __gen_read_SomeStruct INLINECALLDICT
+      $SomeStruct$_load INLINECALLDICT
       NIP
-      __gen_SomeStruct_as_optional INLINECALLDICT
+      $SomeStruct$_as_optional INLINECALLDICT
     }>
   }>
-  __gen_read_SetIntMap4 PROCINLINE:<{
+  $SetIntMap4$_load PROCINLINE:<{
     32 LDU
     SWAP
     383013829 PUSHINT
@@ -325,14 +325,14 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_SomeStruct INLINECALLDICT
-      __gen_SomeStruct_as_optional INLINECALLDICT
+      $SomeStruct$_load INLINECALLDICT
+      $SomeStruct$_as_optional INLINECALLDICT
     }>ELSE<{
       PUSHNULL
     }>
     s1 s2 XCHG
   }>
-  __gen_read_SetAddrMap1 PROCINLINE:<{
+  $SetAddrMap1$_load PROCINLINE:<{
     32 LDU
     SWAP
     1749966413 PUSHINT
@@ -351,7 +351,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetAddrMap2 PROCINLINE:<{
+  $SetAddrMap2$_load PROCINLINE:<{
     32 LDU
     SWAP
     624157584 PUSHINT
@@ -369,7 +369,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetAddrMap3 PROCINLINE:<{
+  $SetAddrMap3$_load PROCINLINE:<{
     32 LDU
     SWAP
     4276365062 PUSHINT
@@ -387,7 +387,7 @@ PROGRAM{
     }>
     -ROT
   }>
-  __gen_read_SetAddrMap4 PROCINLINE:<{
+  $SetAddrMap4$_load PROCINLINE:<{
     32 LDU
     SWAP
     1683777913 PUSHINT
@@ -398,14 +398,14 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_SomeStruct INLINECALLDICT
-      __gen_SomeStruct_as_optional INLINECALLDICT
+      $SomeStruct$_load INLINECALLDICT
+      $SomeStruct$_as_optional INLINECALLDICT
     }>ELSE<{
       PUSHNULL
     }>
     s1 s2 XCHG
   }>
-  __gen_write_MapTestContract PROCINLINE:<{
+  $MapTestContract$_store PROCINLINE:<{
     s7 s8 XCHG2
     STDICT
     s1 s5 XCHG
@@ -430,7 +430,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_MapTestContract PROCINLINE:<{
+  $MapTestContract$_load PROCINLINE:<{
     LDDICT
     LDDICT
     LDREF
@@ -449,22 +449,22 @@ PROGRAM{
     s6 s8 XCHG
     s6 s7 XCHG
   }>
-  __gen_SomeStruct_to_tuple PROCINLINE:<{
+  $SomeStruct$_to_tuple PROCINLINE:<{
     1 TUPLE
   }>
-  __gen_SomeStruct_opt_to_tuple PROCINLINE:<{
+  $SomeStruct$_to_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      __gen_SomeStruct_not_null INLINECALLDICT
-      __gen_SomeStruct_to_tuple INLINECALLDICT
+      $SomeStruct$_not_null INLINECALLDICT
+      $SomeStruct$_to_tuple INLINECALLDICT
     }>
   }>
-  __gen_SomeStruct_opt_to_external PROCINLINE:<{
-    __gen_SomeStruct_opt_to_tuple INLINECALLDICT
+  $SomeStruct$_to_opt_external PROCINLINE:<{
+    $SomeStruct$_to_opt_tuple INLINECALLDICT
     DUP
     ISNULL
     IF:<{
@@ -473,7 +473,7 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  $__gen_MapTestContract_init PROCREF:<{
+  $MapTestContract$_contract_init PROCREF:<{
     PUSHNULL
     PUSHNULL
     PUSHNULL
@@ -483,7 +483,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  __gen_load_MapTestContract PROCINLINE:<{
+  $MapTestContract$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -492,7 +492,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_MapTestContract INLINECALLDICT
+      $MapTestContract$_load INLINECALLDICT
       1 8 BLKDROP2
     }>ELSE<{
       DROP
@@ -501,10 +501,10 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      $__gen_MapTestContract_init INLINECALLDICT
+      $MapTestContract$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_MapTestContract PROCINLINE:<{
+  $MapTestContract$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -513,24 +513,24 @@ PROGRAM{
     SWAP
     1 STI
     8 -ROLL
-    __gen_write_MapTestContract INLINECALLDICT
+    $MapTestContract$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_MapTestContract_intMap1 PROCREF:<{
+  $MapTestContract$_fun_intMap1 PROCREF:<{
     7 BLKDROP
   }>
-  $__gen_MapTestContract_intMap1Value PROCREF:<{
+  $MapTestContract$_fun_intMap1Value PROCREF:<{
     7 1 BLKDROP2
     257 PUSHINT
     TUCK
     __tact_dict_get_int_int INLINECALLDICT
   }>
-  $__gen_MapTestContract_intMap2 PROCREF:<{
+  $MapTestContract$_fun_intMap2 PROCREF:<{
     s6 s7 XCHG
     7 BLKDROP
   }>
-  $__gen_MapTestContract_intMap2Value PROCREF:<{
+  $MapTestContract$_fun_intMap2Value PROCREF:<{
     s8 POP
     6 BLKDROP
     257 PUSHINT
@@ -538,11 +538,11 @@ PROGRAM{
     1 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
-  $__gen_MapTestContract_intMap3 PROCREF:<{
+  $MapTestContract$_fun_intMap3 PROCREF:<{
     s5 s7 XCHG
     7 BLKDROP
   }>
-  $__gen_MapTestContract_intMap3Value PROCREF:<{
+  $MapTestContract$_fun_intMap3Value PROCREF:<{
     s7 POP
     5 BLKDROP
     s2 POP
@@ -550,24 +550,24 @@ PROGRAM{
     SWAP
     __tact_dict_get_int_cell INLINECALLDICT
   }>
-  $__gen_MapTestContract_intMap4 PROCREF:<{
+  $MapTestContract$_fun_intMap4 PROCREF:<{
     s4 s7 XCHG
     7 BLKDROP
   }>
-  $__gen_MapTestContract_intMap4Value PROCREF:<{
+  $MapTestContract$_fun_intMap4Value PROCREF:<{
     s6 POP
     4 BLKDROP
     s3 POP
     257 PUSHINT
     s2 POP
     __tact_dict_get_int_cell INLINECALLDICT
-    __gen_readopt_SomeStruct INLINECALLDICT
+    $SomeStruct$_load_opt INLINECALLDICT
   }>
-  $__gen_MapTestContract_addrMap1 PROCREF:<{
+  $MapTestContract$_fun_addrMap1 PROCREF:<{
     s3 s7 XCHG
     7 BLKDROP
   }>
-  $__gen_MapTestContract_addrMap1Value PROCREF:<{
+  $MapTestContract$_fun_addrMap1Value PROCREF:<{
     s5 POP
     3 BLKDROP
     2 2 BLKDROP2
@@ -577,11 +577,11 @@ PROGRAM{
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
-  $__gen_MapTestContract_addrMap2 PROCREF:<{
+  $MapTestContract$_fun_addrMap2 PROCREF:<{
     s2 s7 XCHG
     7 BLKDROP
   }>
-  $__gen_MapTestContract_addrMap2Value PROCREF:<{
+  $MapTestContract$_fun_addrMap2Value PROCREF:<{
     s4 POP
     2DROP
     4 2 BLKDROP2
@@ -590,29 +590,29 @@ PROGRAM{
     1 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
-  $__gen_MapTestContract_addrMap3 PROCREF:<{
+  $MapTestContract$_fun_addrMap3 PROCREF:<{
     s1 s7 XCHG
     7 BLKDROP
   }>
-  $__gen_MapTestContract_addrMap3Value PROCREF:<{
+  $MapTestContract$_fun_addrMap3Value PROCREF:<{
     NIP
     6 2 BLKDROP2
     267 PUSHINT
     SWAP
     __tact_dict_get_slice_cell INLINECALLDICT
   }>
-  $__gen_MapTestContract_addrMap4 PROCREF:<{
+  $MapTestContract$_fun_addrMap4 PROCREF:<{
     7 1 BLKDROP2
   }>
-  $__gen_MapTestContract_addrMap4Value PROCREF:<{
+  $MapTestContract$_fun_addrMap4Value PROCREF:<{
     s8 s6 XCHG2
     6 BLKDROP
     267 PUSHINT
     s2 POP
     __tact_dict_get_slice_cell INLINECALLDICT
-    __gen_readopt_SomeStruct INLINECALLDICT
+    $SomeStruct$_load_opt INLINECALLDICT
   }>
-  $__gen_MapTestContract_receive_SetIntMap1 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetIntMap1 PROCINLINE:<{
     257 PUSHINT
     DUP
     s4 s11 XCHG
@@ -620,7 +620,7 @@ PROGRAM{
     __tact_dict_set_int_int INLINECALLDICT
     s0 s7 XCHG
   }>
-  $__gen_MapTestContract_receive_SetIntMap2 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetIntMap2 PROCINLINE:<{
     s2 s8 XCHG
     257 PUSHINT
     -ROT
@@ -628,23 +628,23 @@ PROGRAM{
     __tact_dict_set_int_int INLINECALLDICT
     s0 s6 XCHG
   }>
-  $__gen_MapTestContract_receive_SetIntMap3 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetIntMap3 PROCINLINE:<{
     s2 s7 XCHG
     257 PUSHINT
     -ROT
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s5 XCHG
   }>
-  $__gen_MapTestContract_receive_SetIntMap4 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetIntMap4 PROCINLINE:<{
     257 PUSHINT
     SWAP
-    __gen_writecellopt_SomeStruct INLINECALLDICT
+    $SomeStruct$_store_opt INLINECALLDICT
     s3 s7 XCHG
     s1 s2 XCHG
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s4 XCHG
   }>
-  $__gen_MapTestContract_receive_SetAddrMap1 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetAddrMap1 PROCINLINE:<{
     s2 s5 XCHG
     267 PUSHINT
     -ROT
@@ -652,7 +652,7 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     s0 s3 XCHG
   }>
-  $__gen_MapTestContract_receive_SetAddrMap2 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetAddrMap2 PROCINLINE:<{
     s2 s4 XCHG
     267 PUSHINT
     -ROT
@@ -660,21 +660,114 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     s0 s2 XCHG
   }>
-  $__gen_MapTestContract_receive_SetAddrMap3 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetAddrMap3 PROCINLINE:<{
     s2 s3 XCHG
     267 PUSHINT
     -ROT
     __tact_dict_set_slice_cell INLINECALLDICT
     SWAP
   }>
-  $__gen_MapTestContract_receive_SetAddrMap4 PROCINLINE:<{
+  $MapTestContract$_receive_binary_SetAddrMap4 PROCINLINE:<{
     267 PUSHINT
     SWAP
-    __gen_writecellopt_SomeStruct INLINECALLDICT
+    $SomeStruct$_store_opt INLINECALLDICT
     s1 s2 XCHG
     __tact_dict_set_slice_cell INLINECALLDICT
   }>
-  __gen_router_MapTestContract PROCREF:<{
+  %intMap1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap1 INLINECALLDICT
+  }>
+  %intMap1Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_intMap1Value INLINECALLDICT
+  }>
+  %intMap2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap2 INLINECALLDICT
+  }>
+  %intMap2Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_intMap2Value INLINECALLDICT
+  }>
+  %intMap3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap3 INLINECALLDICT
+  }>
+  %intMap3Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_intMap3Value INLINECALLDICT
+  }>
+  %intMap4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap4 INLINECALLDICT
+  }>
+  %intMap4Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_intMap4Value INLINECALLDICT
+    $SomeStruct$_to_opt_external INLINECALLDICT
+  }>
+  %addrMap1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap1 INLINECALLDICT
+  }>
+  %addrMap1Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_addrMap1Value INLINECALLDICT
+  }>
+  %addrMap2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap2 INLINECALLDICT
+  }>
+  %addrMap2Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_addrMap2Value INLINECALLDICT
+  }>
+  %addrMap3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap3 INLINECALLDICT
+  }>
+  %addrMap3Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_addrMap3Value INLINECALLDICT
+  }>
+  %addrMap4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap4 INLINECALLDICT
+  }>
+  %addrMap4Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    8 ROLL
+    $MapTestContract$_fun_addrMap4Value INLINECALLDICT
+    $SomeStruct$_to_opt_external INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5a41696677436b46746a34595666395375456a6f566676546d5048714c375748474b33487869376268783154} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $MapTestContract$_contract_router PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -694,9 +787,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetIntMap1 INLINECALLDICT
+      $SetIntMap1$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetIntMap1 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetIntMap1 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -704,9 +797,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetIntMap2 INLINECALLDICT
+      $SetIntMap2$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetIntMap2 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetIntMap2 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -714,9 +807,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetIntMap3 INLINECALLDICT
+      $SetIntMap3$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetIntMap3 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetIntMap3 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -724,9 +817,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetIntMap4 INLINECALLDICT
+      $SetIntMap4$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetIntMap4 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetIntMap4 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -734,9 +827,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetAddrMap1 INLINECALLDICT
+      $SetAddrMap1$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetAddrMap1 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetAddrMap1 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -744,9 +837,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetAddrMap2 INLINECALLDICT
+      $SetAddrMap2$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetAddrMap2 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetAddrMap2 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -754,18 +847,18 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_SetAddrMap3 INLINECALLDICT
+      $SetAddrMap3$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetAddrMap3 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetAddrMap3 INLINECALLDICT
       TRUE
     }>
     SWAP
     1683777913 PUSHINT
     EQUAL
     IFJMP:<{
-      __gen_read_SetAddrMap4 INLINECALLDICT
+      $SetAddrMap4$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_MapTestContract_receive_SetAddrMap4 INLINECALLDICT
+      $MapTestContract$_receive_binary_SetAddrMap4 INLINECALLDICT
       TRUE
     }>
     DROP
@@ -794,103 +887,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_MapTestContract INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
     2 8 BLKSWAP
-    __gen_router_MapTestContract INLINECALLDICT
+    $MapTestContract$_contract_router INLINECALLDICT
     DROP
-    __gen_store_MapTestContract INLINECALLDICT
-  }>
-  %intMap1 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_intMap1 INLINECALLDICT
-  }>
-  %intMap1Value PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_intMap1Value INLINECALLDICT
-  }>
-  %intMap2 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_intMap2 INLINECALLDICT
-  }>
-  %intMap2Value PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_intMap2Value INLINECALLDICT
-  }>
-  %intMap3 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_intMap3 INLINECALLDICT
-  }>
-  %intMap3Value PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_intMap3Value INLINECALLDICT
-  }>
-  %intMap4 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_intMap4 INLINECALLDICT
-  }>
-  %intMap4Value PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_intMap4Value INLINECALLDICT
-    __gen_SomeStruct_opt_to_external INLINECALLDICT
-  }>
-  %addrMap1 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_addrMap1 INLINECALLDICT
-  }>
-  %addrMap1Value PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_addrMap1Value INLINECALLDICT
-  }>
-  %addrMap2 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_addrMap2 INLINECALLDICT
-  }>
-  %addrMap2Value PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_addrMap2Value INLINECALLDICT
-  }>
-  %addrMap3 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_addrMap3 INLINECALLDICT
-  }>
-  %addrMap3Value PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_addrMap3Value INLINECALLDICT
-  }>
-  %addrMap4 PROC:<{
-    __gen_load_MapTestContract INLINECALLDICT
-    $__gen_MapTestContract_addrMap4 INLINECALLDICT
-  }>
-  %addrMap4Value PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_MapTestContract INLINECALLDICT
-    8 ROLL
-    $__gen_MapTestContract_addrMap4Value INLINECALLDICT
-    __gen_SomeStruct_opt_to_external INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a41696677436b46746a34595666395375456a6f566676546d5048714c375748474b33487869376268783154} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $MapTestContract$_contract_store INLINECALLDICT
   }>
 }END>c

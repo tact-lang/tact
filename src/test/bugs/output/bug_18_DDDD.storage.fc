@@ -1,4 +1,4 @@
-builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
+builder $DDDD$_store(builder build_0, (slice, slice, slice, cell, cell) v) inline {
     var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
     build_0 = __tact_store_address(build_0, v'addr1);
     build_0 = __tact_store_address(build_0, v'addr2);
@@ -8,7 +8,7 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     return build_0;
 }
 
-(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline {
+(slice, ((slice, slice, slice, cell, cell))) $DDDD$_load(slice sc_0) inline {
     var v'addr1 = sc_0~__tact_load_address();
     var v'addr2 = sc_0~__tact_load_address();
     var v'addr3 = sc_0~__tact_load_address();
@@ -17,7 +17,7 @@ builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) i
     return (sc_0, (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2));
 }
 
-(slice, ((slice, slice, slice))) __gen_read_$init$DDDD(slice sc_0) inline {
+(slice, ((slice, slice, slice))) $DDDD$init$_load(slice sc_0) inline {
     var v'addr1 = sc_0~__tact_load_address();
     var v'addr2 = sc_0~__tact_load_address();
     var v'addr3 = sc_0~__tact_load_address();

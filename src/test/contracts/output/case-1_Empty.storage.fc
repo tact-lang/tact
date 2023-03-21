@@ -1,4 +1,4 @@
-(int, int, int, int) __gen_Source_from_tuple(tuple v) inline {
+(int, int, int, int) $Source$_from_tuple(tuple v) inline {
     var (int v'a, int v'b, int v'c, int v'd) = __tact_tuple_destroy_4(v);
     return (v'a, v'b, v'c, v'd);
 }

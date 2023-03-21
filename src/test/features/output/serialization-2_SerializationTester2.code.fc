@@ -1,7 +1,7 @@
 #include "serialization-2_SerializationTester2.stdlib.fc";
 #include "serialization-2_SerializationTester2.storage.fc";
 
-((int, int, int, int, int), (int, int, int, int, int)) $__gen_SerializationTester2_init((int, int, int, int, int) $a, (int, int, int, int, int) $b) impure inline_ref {
+((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_init((int, int, int, int, int) $a, (int, int, int, int, int) $b) impure inline_ref {
     var (($a'a, $a'b, $a'c, $a'd, $a'e)) = $a;
     var (($b'a, $b'b, $b'c, $b'd, $b'e)) = $b;
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = (null(), null());
@@ -10,81 +10,85 @@
     return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
-((int, int, int, int, int), (int, int, int, int, int)) __gen_load_SerializationTester2() impure inline {
+((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_SerializationTester2();
+        return $sc~$SerializationTester2$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        ((int, int, int, int, int) a, (int, int, int, int, int) b) = $sc~__gen_read_$init$SerializationTester2();
+        ((int, int, int, int, int) a, (int, int, int, int, int) b) = $sc~$SerializationTester2$init$_load();
         $sc.end_parse();
-        return $__gen_SerializationTester2_init(a, b);
+        return $SerializationTester2$_contract_init(a, b);
     }
 }
 
-() __gen_store_SerializationTester2(((int, int, int, int, int), (int, int, int, int, int)) v) impure inline {
+() $SerializationTester2$_contract_store(((int, int, int, int, int), (int, int, int, int, int)) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_SerializationTester2(b, v);
+    b = $SerializationTester2$_store(b, v);
     set_data(b.end_cell());
 }
 
-(int, int, int, int, int) $__gen_SerializationTester2_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(int, int, int, int, int) $SerializationTester2$_fun_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     return ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e);
 }
 
-tuple $__gen_SerializationTester2_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+tuple $SerializationTester2$_fun_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return __gen_Vars_as_optional(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e));
+    return $Vars$_as_optional(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e));
 }
 
-(int, int, int, int, int) $__gen_SerializationTester2_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(int, int, int, int, int) $SerializationTester2$_fun_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     return ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e);
 }
 
-tuple $__gen_SerializationTester2_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+tuple $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return __gen_Vars_as_optional(($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+    return $Vars$_as_optional(($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
-(((int, int, int, int, int), (int, int, int, int, int))) __gen_constructor_Both$a_b((int, int, int, int, int) a, (int, int, int, int, int) b) inline {
+(((int, int, int, int, int), (int, int, int, int, int))) $Both$_constructor_a_b((int, int, int, int, int) a, (int, int, int, int, int) b) inline {
     return (a, b);
 }
 
-((int, int, int, int, int), (int, int, int, int, int)) $__gen_SerializationTester2_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_fun_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return __gen_constructor_Both$a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+    return $Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
-tuple $__gen_SerializationTester2_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+tuple $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return __gen_Both_as_optional(__gen_constructor_Both$a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
+    return $Both$_as_optional($Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
 }
 
-((int, int, int, int, int)) __gen_constructor_Vars$a_b_c_d_e(int a, int b, int c, int d, int e) inline {
+((int, int, int, int, int)) $Vars$_constructor_a_b_c_d_e(int a, int b, int c, int d, int e) inline {
     return (a, b, c, d, e);
 }
 
-(int, int, int, int, int) $__gen_SerializationTester2_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref {
+(int, int, int, int, int) $SerializationTester2$_fun_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     var (($src'a, $src'b, $src'c, $src'd, $src'e)) = $src;
     var ((($both'a'a, $both'a'b, $both'a'c, $both'a'd, $both'a'e), ($both'b'a, $both'b'b, $both'b'c, $both'b'd, $both'b'e))) = $both;
     var ($both2) = $both2;
-    return __gen_constructor_Vars$a_b_c_d_e(($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5));
+    return $Vars$_constructor_a_b_c_d_e(($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5));
 }
 
-((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline {
+;;
+;; Receivers of a Contract SerializationTester2
+;;
+
+((((int, int, int, int, int), (int, int, int, int, int))), ()) %$SerializationTester2$_receive_empty(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline {
     var (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)) = $self;
     return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), ());
 }
 
-((((int, int, int, int, int), (int, int, int, int, int))), ()) $__gen_SerializationTester2_receive_Update(((int, int, int, int, int), (int, int, int, int, int)) $self, ((int, int, int, int, int), (int, int, int, int, int)) $msg) impure inline {
+((((int, int, int, int, int), (int, int, int, int, int))), ()) $SerializationTester2$_receive_binary_Update(((int, int, int, int, int), (int, int, int, int, int)) $self, ((int, int, int, int, int), (int, int, int, int, int)) $msg) impure inline {
     var (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)) = $self;
     var (($msg'a'a, $msg'a'b, $msg'a'c, $msg'a'd, $msg'a'e), ($msg'b'a, $msg'b'b, $msg'b'c, $msg'b'd, $msg'b'e)) = $msg;
     ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($msg'a'a, $msg'a'b, $msg'a'c, $msg'a'd, $msg'a'e);
@@ -93,104 +97,52 @@ tuple $__gen_SerializationTester2_getBothOpt(((int, int, int, int, int), (int, i
 }
 
 ;;
-;; Public Interface of a Contract SerializationTester2
+;; Get methods of a Contract SerializationTester2
 ;;
 
-(((int, int, int, int, int), (int, int, int, int, int)), int) __gen_router_SerializationTester2(((int, int, int, int, int), (int, int, int, int, int)) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive empty message
-    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~$__gen_SerializationTester2_receive();
-        return (self, true);
-    }
-    
-    ;; Receive Update message
-    if (op == 2732768933) {
-        var msg = in_msg~__gen_read_Update();
-        self~$__gen_SerializationTester2_receive_Update(msg);
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_SerializationTester2();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_SerializationTester2(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_SerializationTester2(self);
-}
-
 _ %getA() method_id(123932) {
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_getA(self);
-    return __gen_Vars_to_external(res);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_getA(self);
+    return $Vars$_to_external(res);
 }
 
 _ %getAopt() method_id(113663) {
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_getAopt(self);
-    return __gen_Vars_opt_to_external(res);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_getAopt(self);
+    return $Vars$_to_opt_external(res);
 }
 
 _ %getB() method_id(119935) {
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_getB(self);
-    return __gen_Vars_to_external(res);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_getB(self);
+    return $Vars$_to_external(res);
 }
 
 _ %getBopt() method_id(73763) {
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_getBopt(self);
-    return __gen_Vars_opt_to_external(res);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_getBopt(self);
+    return $Vars$_to_opt_external(res);
 }
 
 _ %getBoth() method_id(81754) {
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_getBoth(self);
-    return __gen_Both_to_external(res);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_getBoth(self);
+    return $Both$_to_external(res);
 }
 
 _ %getBothOpt() method_id(69430) {
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_getBothOpt(self);
-    return __gen_Both_opt_to_external(res);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_getBothOpt(self);
+    return $Both$_to_opt_external(res);
 }
 
 _ %process(tuple $$src, tuple $$both, tuple $$both2) method_id(104435) {
-    (int, int, int, int, int) $src = __gen_Vars_from_tuple($$src);
-    ((int, int, int, int, int), (int, int, int, int, int)) $both = __gen_Both_from_tuple($$both);
-    tuple $both2 = __gen_Both_from_opt_tuple($$both2);
-    var self = __gen_load_SerializationTester2();
-    var res = $__gen_SerializationTester2_process(self, $src, $both, $both2);
-    return __gen_Vars_to_external(res);
+    (int, int, int, int, int) $src = $Vars$_from_tuple($$src);
+    ((int, int, int, int, int), (int, int, int, int, int)) $both = $Both$_from_tuple($$both);
+    tuple $both2 = $Both$_from_opt_tuple($$both2);
+    var self = $SerializationTester2$_contract_load();
+    var res = $SerializationTester2$_fun_process(self, $src, $both, $both2);
+    return $Vars$_to_external(res);
 }
 
 _ supported_interfaces() method_id {
@@ -209,4 +161,60 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract SerializationTester2
+;;
+
+(((int, int, int, int, int), (int, int, int, int, int)), int) $SerializationTester2$_contract_router(((int, int, int, int, int), (int, int, int, int, int)) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$SerializationTester2$_receive_empty();
+        return (self, true);
+    }
+    
+    ;; Receive Update message
+    if (op == 2732768933) {
+        var msg = in_msg~$Update$_load();
+        self~$SerializationTester2$_receive_binary_Update(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $SerializationTester2$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$SerializationTester2$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $SerializationTester2$_contract_store(self);
 }

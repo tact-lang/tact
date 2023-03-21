@@ -1,11 +1,11 @@
 #include "case-2_Empty.stdlib.fc";
 
-tuple $__gen_Empty_init() impure inline_ref {
+tuple $Empty$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_Empty() impure inline {
+tuple $Empty$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -14,11 +14,11 @@ tuple __gen_load_Empty() impure inline {
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_Empty_init();
+        return $Empty$_contract_init();
     }
 }
 
-() __gen_store_Empty(tuple v) impure inline {
+() $Empty$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
@@ -26,10 +26,35 @@ tuple __gen_load_Empty() impure inline {
 }
 
 ;;
-;; Public Interface of a Contract Empty
+;; Receivers of a Contract Empty
 ;;
 
-(tuple, int) __gen_router_Empty(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+;;
+;; Get methods of a Contract Empty
+;;
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmaN2DbnguNSSYwdokKyXtX1ebWLYAksEDEfCdE3XuhtLa";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Empty
+;;
+
+(tuple, int) $Empty$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -56,31 +81,14 @@ tuple __gen_load_Empty() impure inline {
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var self = __gen_load_Empty();
+    var self = $Empty$_contract_load();
     
     ;; Handle operation
-    int handled = self~__gen_router_Empty(msg_bounced, in_msg);
+    int handled = self~$Empty$_contract_router(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);
     
     ;; Persist state
-    __gen_store_Empty(self);
-}
-
-_ supported_interfaces() method_id {
-    return (
-        "org.ton.introspection.v0"H >> 128,
-        "org.ton.abi.ipfs.v0"H >> 128,
-        "org.ton.deploy.lazy.v0"H >> 128,
-        "org.ton.chain.workchain.v0"H >> 128
-    );
-}
-
-_ get_abi_ipfs() {
-    return "ipfs://QmaN2DbnguNSSYwdokKyXtX1ebWLYAksEDEfCdE3XuhtLa";
-}
-
-_ lazy_deployment_completed() {
-    return get_data().begin_parse().load_int(1);
+    $Empty$_contract_store(self);
 }

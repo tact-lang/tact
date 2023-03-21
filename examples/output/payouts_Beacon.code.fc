@@ -1,7 +1,7 @@
 #include "payouts_Beacon.stdlib.fc";
 #include "payouts_Beacon.storage.fc";
 
-(slice, slice, int) $__gen_Beacon_init(slice $master, slice $owner) impure inline_ref {
+(slice, slice, int) $Beacon$_contract_init(slice $master, slice $owner) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
     $self'master = $master;
     $self'owner = $owner;
@@ -9,39 +9,43 @@
     return ($self'master, $self'owner, $self'completed);
 }
 
-(slice, slice, int) __gen_load_Beacon() impure inline {
+(slice, slice, int) $Beacon$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_Beacon();
+        return $sc~$Beacon$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice master, slice owner) = $sc~__gen_read_$init$Beacon();
+        (slice master, slice owner) = $sc~$Beacon$init$_load();
         $sc.end_parse();
-        return $__gen_Beacon_init(master, owner);
+        return $Beacon$_contract_init(master, owner);
     }
 }
 
-() __gen_store_Beacon((slice, slice, int) v) impure inline {
+() $Beacon$_contract_store((slice, slice, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_Beacon(b, v);
+    b = $Beacon$_store(b, v);
     set_data(b.end_cell());
 }
 
-slice $__gen_Beacon_owner((slice, slice, int) $self) impure inline_ref {
+slice $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = $self;
     return $self'owner;
 }
 
-((int, slice, int)) __gen_constructor_CanPayoutResponse$ok_amount_address(int ok, int amount, slice address) inline {
+((int, slice, int)) $CanPayoutResponse$_constructor_ok_amount_address(int ok, int amount, slice address) inline {
     return (amount, address, ok);
 }
 
-(((slice, slice, int)), ()) $__gen_Beacon_receive_CanPayout((slice, slice, int) $self, (int) $msg) impure inline {
+;;
+;; Receivers of a Contract Beacon
+;;
+
+(((slice, slice, int)), ()) $Beacon$_receive_binary_CanPayout((slice, slice, int) $self, (int) $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -49,73 +53,26 @@ slice $__gen_Beacon_owner((slice, slice, int) $self) impure inline_ref {
     raw_reserve(100000000, 0);
     if ($self'completed) {
         $self'completed = true;
-        $reply(__gen_writecell_CanPayoutResponse(__gen_constructor_CanPayoutResponse$ok_amount_address(true, $msg'amount, $self'owner)));
+        $global_reply($CanPayoutResponse$_store_cell($CanPayoutResponse$_constructor_ok_amount_address(true, $msg'amount, $self'owner)));
     } else {
-        $reply(__gen_writecell_CanPayoutResponse(__gen_constructor_CanPayoutResponse$ok_amount_address(false, $msg'amount, $self'owner)));
+        $global_reply($CanPayoutResponse$_store_cell($CanPayoutResponse$_constructor_ok_amount_address(false, $msg'amount, $self'owner)));
     }
     return (($self'master, $self'owner, $self'completed), ());
 }
 
-((slice, slice, int), ()) $__gen_Beacon_receive_bounced((slice, slice, int) $self, slice $msg) impure inline {
+((slice, slice, int), ()) $Beacon$_receive_bounce((slice, slice, int) $self, slice $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
     $self'completed = false;
     return (($self'master, $self'owner, $self'completed), ());
 }
 
 ;;
-;; Public Interface of a Contract Beacon
+;; Get methods of a Contract Beacon
 ;;
 
-((slice, slice, int), int) __gen_router_Beacon((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        self~$__gen_Beacon_receive_bounced(in_msg);
-        return (self, true);
-    }
-    
-    ;; Receive CanPayout message
-    if (op == 3289991647) {
-        var msg = in_msg~__gen_read_CanPayout();
-        self~$__gen_Beacon_receive_CanPayout(msg);
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_Beacon();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_Beacon(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_Beacon(self);
-}
-
 _ %owner() method_id(83229) {
-    var self = __gen_load_Beacon();
-    var res = $__gen_Beacon_owner(self);
+    var self = $Beacon$_contract_load();
+    var res = $Beacon$_fun_owner(self);
     return res;
 }
 
@@ -135,4 +92,55 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Beacon
+;;
+
+((slice, slice, int), int) $Beacon$_contract_router((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        self~$Beacon$_receive_bounce(in_msg);
+        return (self, true);
+    }
+    
+    ;; Receive CanPayout message
+    if (op == 3289991647) {
+        var msg = in_msg~$CanPayout$_load();
+        self~$Beacon$_receive_binary_CanPayout(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Beacon$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Beacon$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $Beacon$_contract_store(self);
 }

@@ -13,39 +13,39 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
-  DECLPROC $__gen_String_asComment
-  DECLPROC __gen_constructor_SendParameters$value_to_mode
-  DECLPROC __gen_read_ChangeOwner
-  DECLPROC __gen_write_RugPull
-  DECLPROC __gen_read_RugPull
-  DECLPROC __gen_RugParams_to_external
-  DECLPROC __gen_read_$init$RugPull
-  DECLPROC $__gen_RugPull_init
-  DECLPROC __gen_load_RugPull
-  DECLPROC __gen_store_RugPull
-  DECLPROC $__gen_RugPull_sendPayout
-  DECLPROC __gen_constructor_RugParams$investment_returns_fee
-  DECLPROC $__gen_RugPull_params
-  DECLPROC $__gen_RugPull_requireOwner
-  DECLPROC $__gen_RugPull_owner
-  DECLPROC $__gen_RugPull_requireNotStopped
-  DECLPROC $__gen_RugPull_stopped
-  DECLPROC $__gen_RugPull_receive
-  DECLPROC $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4
-  DECLPROC $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea
-  DECLPROC $__gen_RugPull_receive_ChangeOwner
-  DECLPROC $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501
-  DECLPROC __gen_router_RugPull
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $global_reply
+  DECLPROC $String$_fun_asComment
+  DECLPROC $SendParameters$_constructor_value_to_mode
+  DECLPROC $ChangeOwner$_load
+  DECLPROC $RugPull$_store
+  DECLPROC $RugPull$_load
+  DECLPROC $RugParams$_to_external
+  DECLPROC $RugPull$init$_load
+  DECLPROC $RugPull$_contract_init
+  DECLPROC $RugPull$_contract_load
+  DECLPROC $RugPull$_contract_store
+  DECLPROC $RugPull$_fun_sendPayout
+  DECLPROC $RugParams$_constructor_investment_returns_fee
+  DECLPROC $RugPull$_fun_params
+  DECLPROC $RugPull$_fun_requireOwner
+  DECLPROC $RugPull$_fun_owner
+  DECLPROC $RugPull$_fun_requireNotStopped
+  DECLPROC $RugPull$_fun_stopped
+  DECLPROC %$RugPull$_receive_empty
+  DECLPROC $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4
+  DECLPROC $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea
+  DECLPROC $RugPull$_receive_binary_ChangeOwner
+  DECLPROC $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501
   116437 DECLMETHOD %params
   83229 DECLMETHOD %owner
   74107 DECLMETHOD %stopped
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $RugPull$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -218,7 +218,7 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -317,11 +317,11 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
   }>
-  $reply PROCREF:<{
+  $global_reply PROCREF:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -329,23 +329,23 @@ PROGRAM{
     s0 s3 XCHG
     66 PUSHINT
     SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_String_asComment PROCREF:<{
+  $String$_fun_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  __gen_constructor_SendParameters$value_to_mode PROCINLINE:<{
+  $SendParameters$_constructor_value_to_mode PROCINLINE:<{
     TRUE
     s3 s3 XCHG2
     PUSHNULL
     PUSHNULL
     PUSHNULL
   }>
-  __gen_read_ChangeOwner PROCINLINE:<{
+  $ChangeOwner$_load PROCINLINE:<{
     32 LDU
     SWAP
     256331011 PUSHINT
@@ -353,7 +353,7 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_write_RugPull PROCINLINE:<{
+  $RugPull$_store PROCINLINE:<{
     s10 s9 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s7 XCHG
@@ -388,7 +388,7 @@ PROGRAM{
     SWAP
     STREF
   }>
-  __gen_read_RugPull PROCINLINE:<{
+  $RugPull$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
@@ -417,9 +417,9 @@ PROGRAM{
     s7 s9 XCHG
     s7 s8 XCHG
   }>
-  __gen_RugParams_to_external PROCINLINE:<{
+  $RugParams$_to_external PROCINLINE:<{
   }>
-  __gen_read_$init$RugPull PROCINLINE:<{
+  $RugPull$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     257 PUSHINT
@@ -435,7 +435,7 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
-  $__gen_RugPull_init PROCREF:<{
+  $RugPull$_contract_init PROCREF:<{
     PUSHNULL
     FALSE
     0 PUSHINT
@@ -443,7 +443,7 @@ PROGRAM{
     FALSE
     3 -ROLL
   }>
-  __gen_load_RugPull PROCINLINE:<{
+  $RugPull$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -452,7 +452,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_RugPull INLINECALLDICT
+      $RugPull$_load INLINECALLDICT
       1 10 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -460,14 +460,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$RugPull INLINECALLDICT
+      $RugPull$init$_load INLINECALLDICT
       s0 s4 XCHG
       ENDS
       3 ROLL
-      $__gen_RugPull_init INLINECALLDICT
+      $RugPull$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_RugPull PROCINLINE:<{
+  $RugPull$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -476,51 +476,51 @@ PROGRAM{
     SWAP
     1 STI
     10 -ROLL
-    __gen_write_RugPull INLINECALLDICT
+    $RugPull$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_RugPull_sendPayout PROCREF:<{
+  $RugPull$_fun_sendPayout PROCREF:<{
     SWAP
     2 PUSHINT
-    __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_value_to_mode INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  __gen_constructor_RugParams$investment_returns_fee PROCINLINE:<{
+  $RugParams$_constructor_investment_returns_fee PROCINLINE:<{
   }>
-  $__gen_RugPull_params PROCREF:<{
+  $RugPull$_fun_params PROCREF:<{
     6 BLKDROP
     1 3 BLKDROP2
-    __gen_constructor_RugParams$investment_returns_fee INLINECALLDICT
+    $RugParams$_constructor_investment_returns_fee INLINECALLDICT
   }>
-  $__gen_RugPull_requireOwner PROCREF:<{
+  $RugPull$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
     s10 PUSH
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  $__gen_RugPull_owner PROCREF:<{
+  $RugPull$_fun_owner PROCREF:<{
     9 BLKDROP
   }>
-  $__gen_RugPull_requireNotStopped PROCREF:<{
+  $RugPull$_fun_requireNotStopped PROCREF:<{
     40368 PUSHINT
     s4 PUSH
     NOT
     THROWANYIFNOT
   }>
-  $__gen_RugPull_stopped PROCREF:<{
+  $RugPull$_fun_stopped PROCREF:<{
     s3 s9 XCHG
     9 BLKDROP
   }>
-  $__gen_RugPull_receive PROCINLINE:<{
-    $__gen_RugPull_requireNotStopped INLINECALLDICT
+  %$RugPull$_receive_empty PROCINLINE:<{
+    $RugPull$_fun_requireNotStopped INLINECALLDICT
     s4 PUSH
     IF:<{
       0 PUSHINT
       s10 PUSH
       7 PUSHPOW2
-      __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
-      $send INLINECALLDICT
+      $SendParameters$_constructor_value_to_mode INLINECALLDICT
+      $global_send INLINECALLDICT
     }>ELSE<{
       __tact_context_get INLINECALLDICT
       DROP
@@ -559,14 +559,14 @@ PROGRAM{
         s3 s8 XCPU
         s1 s7 XCHG
         s3 s3 s0 XCHG3
-        $__gen_RugPull_sendPayout INLINECALLDICT
+        $RugPull$_fun_sendPayout INLINECALLDICT
         s0 s5 XCHG2
       }>
       s5 s5 XCHG2
     }>
   }>
-  $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROCINLINE:<{
-    $__gen_RugPull_requireOwner INLINECALLDICT
+  $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROCINLINE:<{
+    $RugPull$_fun_requireOwner INLINECALLDICT
     s4 PUSH
     NOT
     IF:<{
@@ -577,35 +577,66 @@ PROGRAM{
     0 PUSHINT
     s10 PUSH
     7 PUSHPOW2
-    __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_value_to_mode INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROCINLINE:<{
+  $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROCINLINE:<{
     s4 POP
     TRUE
     0 PUSHINT
     s10 PUSH
     7 PUSHPOW2
-    __gen_constructor_SendParameters$value_to_mode INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_value_to_mode INLINECALLDICT
+    $global_send INLINECALLDICT
     s0 s4 XCHG
   }>
-  $__gen_RugPull_receive_ChangeOwner PROCINLINE:<{
+  $RugPull$_receive_binary_ChangeOwner PROCINLINE:<{
     10 -ROLL
-    $__gen_RugPull_requireOwner INLINECALLDICT
+    $RugPull$_fun_requireOwner INLINECALLDICT
     1 9 BLKDROP2
   }>
-  $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 PROCINLINE:<{
-    $__gen_RugPull_requireOwner INLINECALLDICT
-    $__gen_RugPull_requireNotStopped INLINECALLDICT
+  $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 PROCINLINE:<{
+    $RugPull$_fun_requireOwner INLINECALLDICT
+    $RugPull$_fun_requireNotStopped INLINECALLDICT
     s3 POP
     TRUE
     B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE
-    $__gen_String_asComment INLINECALLDICT
-    $reply INLINECALLDICT
+    $String$_fun_asComment INLINECALLDICT
+    $global_reply INLINECALLDICT
     s0 s3 XCHG
   }>
-  __gen_router_RugPull PROCREF:<{
+  %params PROC:<{
+    $RugPull$_contract_load INLINECALLDICT
+    $RugPull$_fun_params INLINECALLDICT
+    $RugParams$_to_external INLINECALLDICT
+  }>
+  %owner PROC:<{
+    $RugPull$_contract_load INLINECALLDICT
+    $RugPull$_fun_owner INLINECALLDICT
+  }>
+  %stopped PROC:<{
+    $RugPull$_contract_load INLINECALLDICT
+    $RugPull$_fun_stopped INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+    212791963610352222038671851416501365766 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+    192989407141549587419771644724066226057 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d646668597645763841755a343976557738526d4c315a68794536346a675671444b7464484353694d58346761} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $RugPull$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -630,7 +661,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      $__gen_RugPull_receive INLINECALLDICT
+      %$RugPull$_receive_empty INLINECALLDICT
       TRUE
     }>
     OVER
@@ -638,9 +669,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_ChangeOwner INLINECALLDICT
+      $ChangeOwner$_load INLINECALLDICT
       NIP
-      $__gen_RugPull_receive_ChangeOwner INLINECALLDICT
+      $RugPull$_receive_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -652,7 +683,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 INLINECALLDICT
+        $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -661,14 +692,14 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea INLINECALLDICT
+        $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea INLINECALLDICT
         TRUE
         RETALT
       }>
       85478235227686204299312064008631277118150318603456584517510472216578858763521 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 INLINECALLDICT
+        $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -700,41 +731,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_RugPull INLINECALLDICT
+    $RugPull$_contract_load INLINECALLDICT
     2 10 BLKSWAP
-    __gen_router_RugPull INLINECALLDICT
+    $RugPull$_contract_router INLINECALLDICT
     DROP
-    __gen_store_RugPull INLINECALLDICT
-  }>
-  %params PROC:<{
-    __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_params INLINECALLDICT
-    __gen_RugParams_to_external INLINECALLDICT
-  }>
-  %owner PROC:<{
-    __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_owner INLINECALLDICT
-  }>
-  %stopped PROC:<{
-    __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_stopped INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-    212791963610352222038671851416501365766 PUSHINT
-    86142586315491086060343270784266291122 PUSHINT
-    192989407141549587419771644724066226057 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d646668597645763841755a343976557738526d4c315a68794536346a675671444b7464484353694d58346761} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $RugPull$_contract_store INLINECALLDICT
   }>
 }END>c

@@ -54,14 +54,14 @@ const golden: string[] = [
     'false',
     '((($a > 1) | (($b < 2) & ($c == 3))) | (~ ((($d != 4) & true) & (~ false))))',
     '$f1($a)',
-    '__gen_constructor_A$a_b(1, 2)',
+    '$A$_constructor_a_b(1, 2)',
     `$j'a`,
-    '__gen_A_get_b(__gen_constructor_A$a_b(1, 2))',
+    '$A$_get_b($A$_constructor_a_b(1, 2))',
     `((- $j'b) + $a)`,
     `(((- $j'b) + $a) + (+ $b))`,
     'null()',
     '(__tact_not_null($o) + 1)',
-    `__gen_writecell_A(($j'a, $j'b))`
+    `$A$_store_cell(($j'a, $j'b))`
 ]
 
 describe('writeExpression', () => {

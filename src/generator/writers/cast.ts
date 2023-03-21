@@ -1,6 +1,7 @@
 import { getType } from "../../types/resolveDescriptors";
 import { TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { ops } from "./ops";
 
 export function cast(from: TypeRef, to: TypeRef, expression: string, ctx: WriterContext) {
     if (from.kind === 'ref' && to.kind === 'ref') {
@@ -10,8 +11,7 @@ export function cast(from: TypeRef, to: TypeRef, expression: string, ctx: Writer
         if (!from.optional && to.optional) {
             let type = getType(ctx.ctx, from.name);
             if (type.kind === 'struct') {
-                ctx.used(`__gen_${type.name}_as_optional`);
-                return `__gen_${type.name}_as_optional(${expression})`;
+                return `${ops.typeAsOptional(type.name, ctx)}(${expression})`;
             }
         }
     }

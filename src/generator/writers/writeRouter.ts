@@ -1,12 +1,15 @@
 import { beginCell } from "ton-core";
 import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription } from "../../types/types";
+import { ReceiverDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
-import { fn } from "./id";
+import { id } from "./id";
+import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
+import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
+import { writeStatement } from "./writeFunction";
 
 export function writeRouter(type: TypeDescription, ctx: WriterContext) {
-    ctx.append(`(${resolveFuncType(type, ctx)}, int) __gen_router_${type.name}(${resolveFuncType(type, ctx)} self, int msg_bounced, slice in_msg) impure inline_ref {`);
+    ctx.append(`(${resolveFuncType(type, ctx)}, int) ${ops.contractRouter(type.name)}(${resolveFuncType(type, ctx)} self, int msg_bounced, slice in_msg) impure inline_ref {`);
     ctx.inIndent(() => {
 
         // Parse incoming message
@@ -26,9 +29,9 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
         ctx.inIndent(() => {
             let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
             if (bouncedHandler) {
-                ctx.used(`__gen_${type.name}_receive_bounced`);
-                ctx.append(`self~${fn(`__gen_${type.name}_receive_bounced`)}(in_msg);`);
-                
+
+                ctx.append(`self~${ops.receiveBounce(type.name)}(in_msg);`);
+
                 // Exit
                 ctx.append('return (self, true);');
             } else {
@@ -55,12 +58,10 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 ctx.inIndent(() => {
 
                     // Read message
-                    ctx.used(`__gen_read_${selector.type}`);
-                    ctx.append(`var msg = in_msg~__gen_read_${selector.type}();`);
+                    ctx.append(`var msg = in_msg~${ops.reader(selector.type, ctx)}();`);
 
                     // Execute function
-                    ctx.used(`__gen_${type.name}_receive_${selector.type}`);
-                    ctx.append(`self~${fn(`__gen_${type.name}_receive_${selector.type}`)}(msg);`);
+                    ctx.append(`self~${ops.receiveType(type.name, selector.type)}(msg);`);
 
                     // Exit
                     ctx.append('return (self, true);');
@@ -75,8 +76,7 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 ctx.inIndent(() => {
 
                     // Execute function
-                    ctx.used(`__gen_${type.name}_receive`);
-                    ctx.append(`self~${fn(`__gen_${type.name}_receive`)}();`);
+                    ctx.append(`self~${ops.receiveEmpty(type.name)}();`);
 
                     // Exit
                     ctx.append('return (self, true);');
@@ -109,8 +109,7 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                             ctx.inIndent(() => {
 
                                 // Execute function
-                                ctx.used(`__gen_${type.name}_receive_comment_${hash}`);
-                                ctx.append(`self~${fn(`__gen_${type.name}_receive_comment_${hash}`)}();`);
+                                ctx.append(`self~${ops.receiveText(type.name, hash)}();`);
 
                                 // Exit
                                 ctx.append('return (self, true);');
@@ -128,8 +127,7 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                     ctx.inIndent(() => {
 
                         // Execute function
-                        ctx.used(`__gen_${type.name}_receive_comment`);
-                        ctx.append(`self~${fn(`__gen_${type.name}_receive_comment`)}(in_msg.skip_bits(32));`);
+                        ctx.append(`self~${ops.receiveAnyText(type.name)}(in_msg.skip_bits(32));`);
 
                         // Exit
                         ctx.append('return (self, true);');
@@ -149,8 +147,7 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`;; Receiver fallback`);
 
             // Execute function
-            ctx.used(`__gen_${type.name}_receive_fallback`);
-            ctx.append(`self~${fn(`__gen_${type.name}_receive_fallback`)}(in_msg);`);
+            ctx.append(`self~${ops.receiveAny(type.name)}(in_msg);`);
 
             ctx.append('return (self, true);');
         } else {
@@ -159,4 +156,138 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
         }
     });
     ctx.append(`}`);
+    ctx.append();
+}
+
+export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
+    const selector = f.selector;
+    let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+    let selfType = resolveFuncType(self, ctx);
+    let selfUnpack = `var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`;
+
+    // Binary receiver
+    if (selector.kind === 'internal-binary') {
+        let args = [
+            selfType + ' ' + id('self'),
+            resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)
+        ];
+        ctx.append(`((${selfType}), ()) ${ops.receiveType(self.name, selector.type)}(${args.join(', ')}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+            ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+
+    // Empty receiver
+    if (selector.kind === 'internal-empty') {
+        ctx.append(`((${selfType}), ()) ${ops.receiveEmpty(self.name)}(${(selfType + ' ' + id('self'))}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+
+    // Comment receiver
+    if (selector.kind === 'internal-comment') {
+        let hash = beginCell()
+            .storeUint(0, 32)
+            .storeBuffer(Buffer.from(selector.comment, 'utf8'))
+            .endCell()
+            .hash()
+            .toString('hex', 0, 64);
+        ctx.append(`(${selfType}, ()) ${ops.receiveText(self.name, hash)}(${(selfType + ' ' + id('self'))}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+
+
+    // Fallback
+    if (selector.kind === 'internal-comment-fallback') {
+        ctx.append(`(${selfType}, ()) ${ops.receiveAnyText(self.name)}(${([selfType + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')}) impure inline {`)
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+
+    // Fallback
+    if (selector.kind === 'internal-fallback') {
+        ctx.append(`(${selfType}, ()) ${ops.receiveAny(self.name)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+
+    // Bounced
+    if (selector.kind === 'internal-bounce') {
+        ctx.append(`(${selfType}, ()) ${ops.receiveBounce(self.name)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
 }

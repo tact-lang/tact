@@ -6,28 +6,28 @@ PROGRAM{
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_address_eq
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_body
-  DECLPROC __gen_read_ChangeOwner
-  DECLPROC __gen_read_Withdraw
-  DECLPROC __gen_write_Treasure
-  DECLPROC __gen_read_Treasure
-  DECLPROC __gen_read_$init$Treasure
-  DECLPROC $__gen_Treasure_init
-  DECLPROC __gen_load_Treasure
-  DECLPROC __gen_store_Treasure
-  DECLPROC $__gen_Treasure_requireOwner
-  DECLPROC $__gen_Treasure_doWithdraw
-  DECLPROC $__gen_Treasure_owner
-  DECLPROC $__gen_Treasure_receive_Withdraw
-  DECLPROC $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
-  DECLPROC $__gen_Treasure_receive_ChangeOwner
-  DECLPROC __gen_router_Treasure
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_value_to_mode_body
+  DECLPROC $ChangeOwner$_load
+  DECLPROC $Withdraw$_load
+  DECLPROC $Treasure$_store
+  DECLPROC $Treasure$_load
+  DECLPROC $Treasure$init$_load
+  DECLPROC $Treasure$_contract_init
+  DECLPROC $Treasure$_contract_load
+  DECLPROC $Treasure$_contract_store
+  DECLPROC $Treasure$_fun_requireOwner
+  DECLPROC $Treasure$_fun_doWithdraw
+  DECLPROC $Treasure$_fun_owner
+  DECLPROC $Treasure$_receive_binary_Withdraw
+  DECLPROC $Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
+  DECLPROC $Treasure$_receive_binary_ChangeOwner
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $Treasure$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -76,7 +76,7 @@ PROGRAM{
   __tact_address_eq PROCINLINE:<{
     SDEQ
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -175,13 +175,13 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$value_to_mode_body PROCINLINE:<{
+  $SendParameters$_constructor_value_to_mode_body PROCINLINE:<{
     TRUE
     s4 s4 s4 XCHG3
     PUSHNULL
     PUSHNULL
   }>
-  __gen_read_ChangeOwner PROCINLINE:<{
+  $ChangeOwner$_load PROCINLINE:<{
     32 LDU
     SWAP
     256331011 PUSHINT
@@ -189,7 +189,7 @@ PROGRAM{
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
   }>
-  __gen_read_Withdraw PROCINLINE:<{
+  $Withdraw$_load PROCINLINE:<{
     32 LDU
     SWAP
     1672521544 PUSHINT
@@ -199,18 +199,18 @@ PROGRAM{
     8 LDU
     -ROT
   }>
-  __gen_write_Treasure PROCINLINE:<{
+  $Treasure$_store PROCINLINE:<{
     __tact_store_address INLINECALLDICT
   }>
-  __gen_read_Treasure PROCINLINE:<{
+  $Treasure$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
   }>
-  __gen_read_$init$Treasure PROCINLINE:<{
+  $Treasure$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
   }>
-  $__gen_Treasure_init PROCREF:<{
+  $Treasure$_contract_init PROCREF:<{
   }>
-  __gen_load_Treasure PROCINLINE:<{
+  $Treasure$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -219,7 +219,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_Treasure INLINECALLDICT
+      $Treasure$_load INLINECALLDICT
       NIP
     }>ELSE<{
       MYADDR
@@ -227,13 +227,13 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$Treasure INLINECALLDICT
+      $Treasure$init$_load INLINECALLDICT
       SWAP
       ENDS
-      $__gen_Treasure_init INLINECALLDICT
+      $Treasure$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_Treasure PROCINLINE:<{
+  $Treasure$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -242,41 +242,62 @@ PROGRAM{
     SWAP
     1 STI
     SWAP
-    __gen_write_Treasure INLINECALLDICT
+    $Treasure$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_Treasure_requireOwner PROCREF:<{
+  $Treasure$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
     OVER
     __tact_address_eq INLINECALLDICT
     132 THROWIFNOT
   }>
-  $__gen_Treasure_doWithdraw PROCREF:<{
+  $Treasure$_fun_doWithdraw PROCREF:<{
     s0 s2 XCHG
-    $__gen_Treasure_requireOwner INLINECALLDICT
+    $Treasure$_fun_requireOwner INLINECALLDICT
     NEWC
     ENDC
     s1 s3 s3 PUXC2
-    __gen_constructor_SendParameters$value_to_mode_body INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_value_to_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_Treasure_owner PROCREF:<{
+  $Treasure$_fun_owner PROCREF:<{
   }>
-  $__gen_Treasure_receive_Withdraw PROCINLINE:<{
-    $__gen_Treasure_doWithdraw INLINECALLDICT
+  $Treasure$_receive_binary_Withdraw PROCINLINE:<{
+    $Treasure$_fun_doWithdraw INLINECALLDICT
   }>
-  $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROCINLINE:<{
+  $Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d PROCINLINE:<{
     0 PUSHINT
     160 PUSHINT
-    $__gen_Treasure_doWithdraw INLINECALLDICT
+    $Treasure$_fun_doWithdraw INLINECALLDICT
   }>
-  $__gen_Treasure_receive_ChangeOwner PROCINLINE:<{
+  $Treasure$_receive_binary_ChangeOwner PROCINLINE:<{
     SWAP
-    $__gen_Treasure_requireOwner INLINECALLDICT
+    $Treasure$_fun_requireOwner INLINECALLDICT
     DROP
   }>
-  __gen_router_Treasure PROCREF:<{
+  %owner PROC:<{
+    $Treasure$_contract_load INLINECALLDICT
+    $Treasure$_fun_owner INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+    212791963610352222038671851416501365766 PUSHINT
+    86142586315491086060343270784266291122 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d54386863675753536f4a393842617a75424c6b6338655a456435694c4d664548614d55574e5a677764363944} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Treasure$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -298,9 +319,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Withdraw INLINECALLDICT
+      $Withdraw$_load INLINECALLDICT
       1 2 BLKDROP2
-      $__gen_Treasure_receive_Withdraw INLINECALLDICT
+      $Treasure$_receive_binary_Withdraw INLINECALLDICT
       TRUE
     }>
     OVER
@@ -308,9 +329,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_ChangeOwner INLINECALLDICT
+      $ChangeOwner$_load INLINECALLDICT
       NIP
-      $__gen_Treasure_receive_ChangeOwner INLINECALLDICT
+      $Treasure$_receive_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -320,7 +341,7 @@ PROGRAM{
       68942673587165287250091431766268285359585855031594722650534428464957340454221 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
+        $Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -352,31 +373,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_Treasure INLINECALLDICT
+    $Treasure$_contract_load INLINECALLDICT
     -ROT
-    __gen_router_Treasure INLINECALLDICT
+    $Treasure$_contract_router INLINECALLDICT
     DROP
-    __gen_store_Treasure INLINECALLDICT
-  }>
-  %owner PROC:<{
-    __gen_load_Treasure INLINECALLDICT
-    $__gen_Treasure_owner INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-    212791963610352222038671851416501365766 PUSHINT
-    86142586315491086060343270784266291122 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d54386863675753536f4a393842617a75424c6b6338655a456435694c4d664548614d55574e5a677764363944} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $Treasure$_contract_store INLINECALLDICT
   }>
 }END>c

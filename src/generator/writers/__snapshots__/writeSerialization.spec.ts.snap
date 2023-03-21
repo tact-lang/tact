@@ -2493,24 +2493,24 @@ return build_0;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_write_A",
-    "signature": "builder __gen_write_A(builder build_0, (int, int, int, int, int, int, int) v)",
+    "name": "$A$_store",
+    "signature": "builder $A$_store(builder build_0, (int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
-      "code": "return __gen_write_A(begin_cell(), v).end_cell();",
+      "code": "return $A$_store(begin_cell(), v).end_cell();",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_write_A",
+      "$A$_store",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_writecell_A",
-    "signature": "cell __gen_writecell_A((int, int, int, int, int, int, int) v)",
+    "name": "$A$_store_cell",
+    "signature": "cell $A$_store_cell((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2524,8 +2524,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_a",
-    "signature": "_ __gen_A_get_a((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_a",
+    "signature": "_ $A$_get_a((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2539,8 +2539,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_b",
-    "signature": "_ __gen_A_get_b((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_b",
+    "signature": "_ $A$_get_b((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2554,8 +2554,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_c",
-    "signature": "_ __gen_A_get_c((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_c",
+    "signature": "_ $A$_get_c((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2569,8 +2569,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_d",
-    "signature": "_ __gen_A_get_d((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_d",
+    "signature": "_ $A$_get_d((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2584,8 +2584,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_e",
-    "signature": "_ __gen_A_get_e((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_e",
+    "signature": "_ $A$_get_e((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2599,8 +2599,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_f",
-    "signature": "_ __gen_A_get_f((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_f",
+    "signature": "_ $A$_get_f((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2614,8 +2614,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_g",
-    "signature": "_ __gen_A_get_g((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_g",
+    "signature": "_ $A$_get_g((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2626,8 +2626,8 @@ return v'g;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_A_unpack",
-    "signature": "((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v)",
+    "name": "$A$_tensor_cast",
+    "signature": "((int, int, int, int, int, int, int)) $A$_tensor_cast((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2644,8 +2644,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_not_null",
-    "signature": "((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v)",
+    "name": "$A$_not_null",
+    "signature": "((int, int, int, int, int, int, int)) $A$_not_null(tuple v)",
   },
   {
     "code": {
@@ -2661,8 +2661,8 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_as_optional",
-    "signature": "tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_as_optional",
+    "signature": "tuple $A$_as_optional((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2678,26 +2678,26 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_to_tuple",
-    "signature": "tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_to_tuple",
+    "signature": "tuple $A$_to_tuple(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_A_to_tuple(__gen_A_not_null(v)); ",
+return $A$_to_tuple($A$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_not_null",
-      "__gen_A_to_tuple",
+      "$A$_to_tuple",
+      "$A$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_opt_to_tuple",
-    "signature": "tuple __gen_A_opt_to_tuple(tuple v)",
+    "name": "$A$_to_opt_tuple",
+    "signature": "tuple $A$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -2713,26 +2713,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_from_tuple",
-    "signature": "(int, int, int, int, int, int, int) __gen_A_from_tuple(tuple v)",
+    "name": "$A$_from_tuple",
+    "signature": "(int, int, int, int, int, int, int) $A$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_A_as_optional(__gen_A_from_tuple(v));",
+return $A$_as_optional($A$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_as_optional",
-      "__gen_A_from_tuple",
+      "$A$_as_optional",
+      "$A$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_from_opt_tuple",
-    "signature": "tuple __gen_A_from_opt_tuple(tuple v)",
+    "name": "$A$_from_opt_tuple",
+    "signature": "tuple $A$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -2746,12 +2746,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_to_external",
-    "signature": "(int, int, int, int, int, int, int) __gen_A_to_external(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_to_external",
+    "signature": "(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_A_opt_to_tuple(v);
+      "code": "var loaded = $A$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -2762,13 +2762,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_opt_to_tuple",
+      "$A$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_opt_to_external",
-    "signature": "tuple __gen_A_opt_to_external(tuple v)",
+    "name": "$A$_to_opt_external",
+    "signature": "tuple $A$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -2782,8 +2782,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_a",
-    "signature": "_ __gen_B_get_a((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_a",
+    "signature": "_ $B$_get_a((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2797,8 +2797,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_b",
-    "signature": "_ __gen_B_get_b((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_b",
+    "signature": "_ $B$_get_b((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2812,8 +2812,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_c",
-    "signature": "_ __gen_B_get_c((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_c",
+    "signature": "_ $B$_get_c((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2827,8 +2827,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_d",
-    "signature": "_ __gen_B_get_d((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_d",
+    "signature": "_ $B$_get_d((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2842,8 +2842,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_e",
-    "signature": "_ __gen_B_get_e((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_e",
+    "signature": "_ $B$_get_e((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2857,8 +2857,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_f",
-    "signature": "_ __gen_B_get_f((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_f",
+    "signature": "_ $B$_get_f((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2872,8 +2872,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_g",
-    "signature": "_ __gen_B_get_g((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_g",
+    "signature": "_ $B$_get_g((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2884,8 +2884,8 @@ return v'g;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_B_unpack",
-    "signature": "((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v)",
+    "name": "$B$_tensor_cast",
+    "signature": "((int, int, int, int, int, int, int)) $B$_tensor_cast((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2902,8 +2902,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_not_null",
-    "signature": "((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v)",
+    "name": "$B$_not_null",
+    "signature": "((int, int, int, int, int, int, int)) $B$_not_null(tuple v)",
   },
   {
     "code": {
@@ -2919,8 +2919,8 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_as_optional",
-    "signature": "tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_as_optional",
+    "signature": "tuple $B$_as_optional((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -2936,26 +2936,26 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_to_tuple",
-    "signature": "tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_to_tuple",
+    "signature": "tuple $B$_to_tuple(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_B_to_tuple(__gen_B_not_null(v)); ",
+return $B$_to_tuple($B$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_not_null",
-      "__gen_B_to_tuple",
+      "$B$_to_tuple",
+      "$B$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_opt_to_tuple",
-    "signature": "tuple __gen_B_opt_to_tuple(tuple v)",
+    "name": "$B$_to_opt_tuple",
+    "signature": "tuple $B$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -2971,26 +2971,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_from_tuple",
-    "signature": "(int, int, int, int, int, int, int) __gen_B_from_tuple(tuple v)",
+    "name": "$B$_from_tuple",
+    "signature": "(int, int, int, int, int, int, int) $B$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_B_as_optional(__gen_B_from_tuple(v));",
+return $B$_as_optional($B$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_as_optional",
-      "__gen_B_from_tuple",
+      "$B$_as_optional",
+      "$B$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_from_opt_tuple",
-    "signature": "tuple __gen_B_from_opt_tuple(tuple v)",
+    "name": "$B$_from_opt_tuple",
+    "signature": "tuple $B$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -3004,12 +3004,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_to_external",
-    "signature": "(int, int, int, int, int, int, int) __gen_B_to_external(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_to_external",
+    "signature": "(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_B_opt_to_tuple(v);
+      "code": "var loaded = $B$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -3020,13 +3020,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_opt_to_tuple",
+      "$B$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_opt_to_external",
-    "signature": "tuple __gen_B_opt_to_external(tuple v)",
+    "name": "$B$_to_opt_external",
+    "signature": "tuple $B$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -3040,8 +3040,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_a",
-    "signature": "_ __gen_C_get_a((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_a",
+    "signature": "_ $C$_get_a((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3055,8 +3055,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_b",
-    "signature": "_ __gen_C_get_b((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_b",
+    "signature": "_ $C$_get_b((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3070,8 +3070,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_c",
-    "signature": "_ __gen_C_get_c((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_c",
+    "signature": "_ $C$_get_c((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3085,8 +3085,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_d",
-    "signature": "_ __gen_C_get_d((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_d",
+    "signature": "_ $C$_get_d((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3100,8 +3100,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_e",
-    "signature": "_ __gen_C_get_e((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_e",
+    "signature": "_ $C$_get_e((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3115,8 +3115,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_f",
-    "signature": "_ __gen_C_get_f((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_f",
+    "signature": "_ $C$_get_f((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3130,8 +3130,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_g",
-    "signature": "_ __gen_C_get_g((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_g",
+    "signature": "_ $C$_get_g((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3145,8 +3145,8 @@ return v'h;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_h",
-    "signature": "_ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_h",
+    "signature": "_ $C$_get_h((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3157,8 +3157,8 @@ return v'h;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_C_unpack",
-    "signature": "((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_tensor_cast",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_tensor_cast((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3175,8 +3175,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_not_null",
-    "signature": "((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v)",
+    "name": "$C$_not_null",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_not_null(tuple v)",
   },
   {
     "code": {
@@ -3192,8 +3192,8 @@ return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_as_optional",
-    "signature": "tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_as_optional",
+    "signature": "tuple $C$_as_optional((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -3209,26 +3209,26 @@ return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_to_tuple",
-    "signature": "tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_to_tuple",
+    "signature": "tuple $C$_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_C_to_tuple(__gen_C_not_null(v)); ",
+return $C$_to_tuple($C$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_not_null",
-      "__gen_C_to_tuple",
+      "$C$_to_tuple",
+      "$C$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_opt_to_tuple",
-    "signature": "tuple __gen_C_opt_to_tuple(tuple v)",
+    "name": "$C$_to_opt_tuple",
+    "signature": "tuple $C$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -3245,26 +3245,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_from_tuple",
-    "signature": "(cell, cell, slice, slice, int, int, int, slice) __gen_C_from_tuple(tuple v)",
+    "name": "$C$_from_tuple",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_C_as_optional(__gen_C_from_tuple(v));",
+return $C$_as_optional($C$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_as_optional",
-      "__gen_C_from_tuple",
+      "$C$_as_optional",
+      "$C$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_from_opt_tuple",
-    "signature": "tuple __gen_C_from_opt_tuple(tuple v)",
+    "name": "$C$_from_opt_tuple",
+    "signature": "tuple $C$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -3278,12 +3278,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_to_external",
-    "signature": "(cell, cell, slice, slice, int, int, int, slice) __gen_C_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_to_external",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_C_opt_to_tuple(v);
+      "code": "var loaded = $C$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -3294,13 +3294,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_opt_to_tuple",
+      "$C$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_opt_to_external",
-    "signature": "tuple __gen_C_opt_to_external(tuple v)",
+    "name": "$C$_to_opt_external",
+    "signature": "tuple $C$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -3319,8 +3319,8 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_read_A",
-    "signature": "(slice, ((int, int, int, int, int, int, int))) __gen_read_A(slice sc_0)",
+    "name": "$A$_load",
+    "signature": "(slice, ((int, int, int, int, int, int, int))) $A$_load(slice sc_0)",
   },
 ]
 `;
@@ -5818,24 +5818,24 @@ return build_0;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_write_B",
-    "signature": "builder __gen_write_B(builder build_0, (int, int, int, int, int, int, int) v)",
+    "name": "$B$_store",
+    "signature": "builder $B$_store(builder build_0, (int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
-      "code": "return __gen_write_B(begin_cell(), v).end_cell();",
+      "code": "return $B$_store(begin_cell(), v).end_cell();",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_write_B",
+      "$B$_store",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_writecell_B",
-    "signature": "cell __gen_writecell_B((int, int, int, int, int, int, int) v)",
+    "name": "$B$_store_cell",
+    "signature": "cell $B$_store_cell((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5849,8 +5849,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_a",
-    "signature": "_ __gen_A_get_a((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_a",
+    "signature": "_ $A$_get_a((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5864,8 +5864,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_b",
-    "signature": "_ __gen_A_get_b((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_b",
+    "signature": "_ $A$_get_b((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5879,8 +5879,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_c",
-    "signature": "_ __gen_A_get_c((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_c",
+    "signature": "_ $A$_get_c((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5894,8 +5894,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_d",
-    "signature": "_ __gen_A_get_d((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_d",
+    "signature": "_ $A$_get_d((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5909,8 +5909,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_e",
-    "signature": "_ __gen_A_get_e((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_e",
+    "signature": "_ $A$_get_e((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5924,8 +5924,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_f",
-    "signature": "_ __gen_A_get_f((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_f",
+    "signature": "_ $A$_get_f((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5939,8 +5939,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_g",
-    "signature": "_ __gen_A_get_g((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_g",
+    "signature": "_ $A$_get_g((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5951,8 +5951,8 @@ return v'g;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_A_unpack",
-    "signature": "((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v)",
+    "name": "$A$_tensor_cast",
+    "signature": "((int, int, int, int, int, int, int)) $A$_tensor_cast((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -5969,8 +5969,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_not_null",
-    "signature": "((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v)",
+    "name": "$A$_not_null",
+    "signature": "((int, int, int, int, int, int, int)) $A$_not_null(tuple v)",
   },
   {
     "code": {
@@ -5986,8 +5986,8 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_as_optional",
-    "signature": "tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_as_optional",
+    "signature": "tuple $A$_as_optional((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6003,26 +6003,26 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_to_tuple",
-    "signature": "tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_to_tuple",
+    "signature": "tuple $A$_to_tuple(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_A_to_tuple(__gen_A_not_null(v)); ",
+return $A$_to_tuple($A$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_not_null",
-      "__gen_A_to_tuple",
+      "$A$_to_tuple",
+      "$A$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_opt_to_tuple",
-    "signature": "tuple __gen_A_opt_to_tuple(tuple v)",
+    "name": "$A$_to_opt_tuple",
+    "signature": "tuple $A$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -6038,26 +6038,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_from_tuple",
-    "signature": "(int, int, int, int, int, int, int) __gen_A_from_tuple(tuple v)",
+    "name": "$A$_from_tuple",
+    "signature": "(int, int, int, int, int, int, int) $A$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_A_as_optional(__gen_A_from_tuple(v));",
+return $A$_as_optional($A$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_as_optional",
-      "__gen_A_from_tuple",
+      "$A$_as_optional",
+      "$A$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_from_opt_tuple",
-    "signature": "tuple __gen_A_from_opt_tuple(tuple v)",
+    "name": "$A$_from_opt_tuple",
+    "signature": "tuple $A$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -6071,12 +6071,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_to_external",
-    "signature": "(int, int, int, int, int, int, int) __gen_A_to_external(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_to_external",
+    "signature": "(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_A_opt_to_tuple(v);
+      "code": "var loaded = $A$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -6087,13 +6087,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_opt_to_tuple",
+      "$A$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_opt_to_external",
-    "signature": "tuple __gen_A_opt_to_external(tuple v)",
+    "name": "$A$_to_opt_external",
+    "signature": "tuple $A$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -6107,8 +6107,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_a",
-    "signature": "_ __gen_B_get_a((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_a",
+    "signature": "_ $B$_get_a((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6122,8 +6122,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_b",
-    "signature": "_ __gen_B_get_b((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_b",
+    "signature": "_ $B$_get_b((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6137,8 +6137,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_c",
-    "signature": "_ __gen_B_get_c((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_c",
+    "signature": "_ $B$_get_c((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6152,8 +6152,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_d",
-    "signature": "_ __gen_B_get_d((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_d",
+    "signature": "_ $B$_get_d((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6167,8 +6167,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_e",
-    "signature": "_ __gen_B_get_e((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_e",
+    "signature": "_ $B$_get_e((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6182,8 +6182,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_f",
-    "signature": "_ __gen_B_get_f((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_f",
+    "signature": "_ $B$_get_f((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6197,8 +6197,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_g",
-    "signature": "_ __gen_B_get_g((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_g",
+    "signature": "_ $B$_get_g((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6209,8 +6209,8 @@ return v'g;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_B_unpack",
-    "signature": "((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v)",
+    "name": "$B$_tensor_cast",
+    "signature": "((int, int, int, int, int, int, int)) $B$_tensor_cast((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6227,8 +6227,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_not_null",
-    "signature": "((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v)",
+    "name": "$B$_not_null",
+    "signature": "((int, int, int, int, int, int, int)) $B$_not_null(tuple v)",
   },
   {
     "code": {
@@ -6244,8 +6244,8 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_as_optional",
-    "signature": "tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_as_optional",
+    "signature": "tuple $B$_as_optional((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -6261,26 +6261,26 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_to_tuple",
-    "signature": "tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_to_tuple",
+    "signature": "tuple $B$_to_tuple(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_B_to_tuple(__gen_B_not_null(v)); ",
+return $B$_to_tuple($B$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_not_null",
-      "__gen_B_to_tuple",
+      "$B$_to_tuple",
+      "$B$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_opt_to_tuple",
-    "signature": "tuple __gen_B_opt_to_tuple(tuple v)",
+    "name": "$B$_to_opt_tuple",
+    "signature": "tuple $B$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -6296,26 +6296,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_from_tuple",
-    "signature": "(int, int, int, int, int, int, int) __gen_B_from_tuple(tuple v)",
+    "name": "$B$_from_tuple",
+    "signature": "(int, int, int, int, int, int, int) $B$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_B_as_optional(__gen_B_from_tuple(v));",
+return $B$_as_optional($B$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_as_optional",
-      "__gen_B_from_tuple",
+      "$B$_as_optional",
+      "$B$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_from_opt_tuple",
-    "signature": "tuple __gen_B_from_opt_tuple(tuple v)",
+    "name": "$B$_from_opt_tuple",
+    "signature": "tuple $B$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -6329,12 +6329,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_to_external",
-    "signature": "(int, int, int, int, int, int, int) __gen_B_to_external(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_to_external",
+    "signature": "(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_B_opt_to_tuple(v);
+      "code": "var loaded = $B$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -6345,13 +6345,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_opt_to_tuple",
+      "$B$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_opt_to_external",
-    "signature": "tuple __gen_B_opt_to_external(tuple v)",
+    "name": "$B$_to_opt_external",
+    "signature": "tuple $B$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -6365,8 +6365,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_a",
-    "signature": "_ __gen_C_get_a((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_a",
+    "signature": "_ $C$_get_a((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6380,8 +6380,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_b",
-    "signature": "_ __gen_C_get_b((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_b",
+    "signature": "_ $C$_get_b((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6395,8 +6395,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_c",
-    "signature": "_ __gen_C_get_c((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_c",
+    "signature": "_ $C$_get_c((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6410,8 +6410,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_d",
-    "signature": "_ __gen_C_get_d((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_d",
+    "signature": "_ $C$_get_d((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6425,8 +6425,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_e",
-    "signature": "_ __gen_C_get_e((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_e",
+    "signature": "_ $C$_get_e((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6440,8 +6440,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_f",
-    "signature": "_ __gen_C_get_f((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_f",
+    "signature": "_ $C$_get_f((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6455,8 +6455,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_g",
-    "signature": "_ __gen_C_get_g((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_g",
+    "signature": "_ $C$_get_g((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6470,8 +6470,8 @@ return v'h;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_h",
-    "signature": "_ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_h",
+    "signature": "_ $C$_get_h((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6482,8 +6482,8 @@ return v'h;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_C_unpack",
-    "signature": "((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_tensor_cast",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_tensor_cast((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6500,8 +6500,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_not_null",
-    "signature": "((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v)",
+    "name": "$C$_not_null",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_not_null(tuple v)",
   },
   {
     "code": {
@@ -6517,8 +6517,8 @@ return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_as_optional",
-    "signature": "tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_as_optional",
+    "signature": "tuple $C$_as_optional((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -6534,26 +6534,26 @@ return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_to_tuple",
-    "signature": "tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_to_tuple",
+    "signature": "tuple $C$_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_C_to_tuple(__gen_C_not_null(v)); ",
+return $C$_to_tuple($C$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_not_null",
-      "__gen_C_to_tuple",
+      "$C$_to_tuple",
+      "$C$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_opt_to_tuple",
-    "signature": "tuple __gen_C_opt_to_tuple(tuple v)",
+    "name": "$C$_to_opt_tuple",
+    "signature": "tuple $C$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -6570,26 +6570,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_from_tuple",
-    "signature": "(cell, cell, slice, slice, int, int, int, slice) __gen_C_from_tuple(tuple v)",
+    "name": "$C$_from_tuple",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_C_as_optional(__gen_C_from_tuple(v));",
+return $C$_as_optional($C$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_as_optional",
-      "__gen_C_from_tuple",
+      "$C$_as_optional",
+      "$C$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_from_opt_tuple",
-    "signature": "tuple __gen_C_from_opt_tuple(tuple v)",
+    "name": "$C$_from_opt_tuple",
+    "signature": "tuple $C$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -6603,12 +6603,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_to_external",
-    "signature": "(cell, cell, slice, slice, int, int, int, slice) __gen_C_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_to_external",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_C_opt_to_tuple(v);
+      "code": "var loaded = $C$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -6619,13 +6619,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_opt_to_tuple",
+      "$C$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_opt_to_external",
-    "signature": "tuple __gen_C_opt_to_external(tuple v)",
+    "name": "$C$_to_opt_external",
+    "signature": "tuple $C$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -6644,8 +6644,8 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g));",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_read_B",
-    "signature": "(slice, ((int, int, int, int, int, int, int))) __gen_read_B(slice sc_0)",
+    "name": "$B$_load",
+    "signature": "(slice, ((int, int, int, int, int, int, int))) $B$_load(slice sc_0)",
   },
 ]
 `;
@@ -9146,24 +9146,24 @@ return build_0;",
       "__tact_store_address",
     },
     "flags": Set {},
-    "name": "__gen_write_C",
-    "signature": "builder __gen_write_C(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_store",
+    "signature": "builder $C$_store(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
-      "code": "return __gen_write_C(begin_cell(), v).end_cell();",
+      "code": "return $C$_store(begin_cell(), v).end_cell();",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_write_C",
+      "$C$_store",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_writecell_C",
-    "signature": "cell __gen_writecell_C((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_store_cell",
+    "signature": "cell $C$_store_cell((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9177,8 +9177,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_a",
-    "signature": "_ __gen_A_get_a((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_a",
+    "signature": "_ $A$_get_a((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9192,8 +9192,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_b",
-    "signature": "_ __gen_A_get_b((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_b",
+    "signature": "_ $A$_get_b((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9207,8 +9207,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_c",
-    "signature": "_ __gen_A_get_c((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_c",
+    "signature": "_ $A$_get_c((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9222,8 +9222,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_d",
-    "signature": "_ __gen_A_get_d((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_d",
+    "signature": "_ $A$_get_d((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9237,8 +9237,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_e",
-    "signature": "_ __gen_A_get_e((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_e",
+    "signature": "_ $A$_get_e((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9252,8 +9252,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_f",
-    "signature": "_ __gen_A_get_f((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_f",
+    "signature": "_ $A$_get_f((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9267,8 +9267,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_get_g",
-    "signature": "_ __gen_A_get_g((int, int, int, int, int, int, int) v)",
+    "name": "$A$_get_g",
+    "signature": "_ $A$_get_g((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9279,8 +9279,8 @@ return v'g;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_A_unpack",
-    "signature": "((int, int, int, int, int, int, int)) __gen_A_unpack((int, int, int, int, int, int, int) v)",
+    "name": "$A$_tensor_cast",
+    "signature": "((int, int, int, int, int, int, int)) $A$_tensor_cast((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9297,8 +9297,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_not_null",
-    "signature": "((int, int, int, int, int, int, int)) __gen_A_not_null(tuple v)",
+    "name": "$A$_not_null",
+    "signature": "((int, int, int, int, int, int, int)) $A$_not_null(tuple v)",
   },
   {
     "code": {
@@ -9314,8 +9314,8 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_as_optional",
-    "signature": "tuple __gen_A_as_optional(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_as_optional",
+    "signature": "tuple $A$_as_optional((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9331,26 +9331,26 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_to_tuple",
-    "signature": "tuple __gen_A_to_tuple(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_to_tuple",
+    "signature": "tuple $A$_to_tuple(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_A_to_tuple(__gen_A_not_null(v)); ",
+return $A$_to_tuple($A$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_not_null",
-      "__gen_A_to_tuple",
+      "$A$_to_tuple",
+      "$A$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_opt_to_tuple",
-    "signature": "tuple __gen_A_opt_to_tuple(tuple v)",
+    "name": "$A$_to_opt_tuple",
+    "signature": "tuple $A$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -9366,26 +9366,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_from_tuple",
-    "signature": "(int, int, int, int, int, int, int) __gen_A_from_tuple(tuple v)",
+    "name": "$A$_from_tuple",
+    "signature": "(int, int, int, int, int, int, int) $A$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_A_as_optional(__gen_A_from_tuple(v));",
+return $A$_as_optional($A$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_as_optional",
-      "__gen_A_from_tuple",
+      "$A$_as_optional",
+      "$A$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_from_opt_tuple",
-    "signature": "tuple __gen_A_from_opt_tuple(tuple v)",
+    "name": "$A$_from_opt_tuple",
+    "signature": "tuple $A$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -9399,12 +9399,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_to_external",
-    "signature": "(int, int, int, int, int, int, int) __gen_A_to_external(((int, int, int, int, int, int, int)) v)",
+    "name": "$A$_to_external",
+    "signature": "(int, int, int, int, int, int, int) $A$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_A_opt_to_tuple(v);
+      "code": "var loaded = $A$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -9415,13 +9415,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_A_opt_to_tuple",
+      "$A$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_A_opt_to_external",
-    "signature": "tuple __gen_A_opt_to_external(tuple v)",
+    "name": "$A$_to_opt_external",
+    "signature": "tuple $A$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -9435,8 +9435,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_a",
-    "signature": "_ __gen_B_get_a((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_a",
+    "signature": "_ $B$_get_a((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9450,8 +9450,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_b",
-    "signature": "_ __gen_B_get_b((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_b",
+    "signature": "_ $B$_get_b((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9465,8 +9465,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_c",
-    "signature": "_ __gen_B_get_c((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_c",
+    "signature": "_ $B$_get_c((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9480,8 +9480,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_d",
-    "signature": "_ __gen_B_get_d((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_d",
+    "signature": "_ $B$_get_d((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9495,8 +9495,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_e",
-    "signature": "_ __gen_B_get_e((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_e",
+    "signature": "_ $B$_get_e((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9510,8 +9510,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_f",
-    "signature": "_ __gen_B_get_f((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_f",
+    "signature": "_ $B$_get_f((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9525,8 +9525,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_get_g",
-    "signature": "_ __gen_B_get_g((int, int, int, int, int, int, int) v)",
+    "name": "$B$_get_g",
+    "signature": "_ $B$_get_g((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9537,8 +9537,8 @@ return v'g;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_B_unpack",
-    "signature": "((int, int, int, int, int, int, int)) __gen_B_unpack((int, int, int, int, int, int, int) v)",
+    "name": "$B$_tensor_cast",
+    "signature": "((int, int, int, int, int, int, int)) $B$_tensor_cast((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9555,8 +9555,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_not_null",
-    "signature": "((int, int, int, int, int, int, int)) __gen_B_not_null(tuple v)",
+    "name": "$B$_not_null",
+    "signature": "((int, int, int, int, int, int, int)) $B$_not_null(tuple v)",
   },
   {
     "code": {
@@ -9572,8 +9572,8 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_as_optional",
-    "signature": "tuple __gen_B_as_optional(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_as_optional",
+    "signature": "tuple $B$_as_optional((int, int, int, int, int, int, int) v)",
   },
   {
     "code": {
@@ -9589,26 +9589,26 @@ return __tact_tuple_create_7(v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_to_tuple",
-    "signature": "tuple __gen_B_to_tuple(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_to_tuple",
+    "signature": "tuple $B$_to_tuple(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_B_to_tuple(__gen_B_not_null(v)); ",
+return $B$_to_tuple($B$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_not_null",
-      "__gen_B_to_tuple",
+      "$B$_to_tuple",
+      "$B$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_opt_to_tuple",
-    "signature": "tuple __gen_B_opt_to_tuple(tuple v)",
+    "name": "$B$_to_opt_tuple",
+    "signature": "tuple $B$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -9624,26 +9624,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_from_tuple",
-    "signature": "(int, int, int, int, int, int, int) __gen_B_from_tuple(tuple v)",
+    "name": "$B$_from_tuple",
+    "signature": "(int, int, int, int, int, int, int) $B$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_B_as_optional(__gen_B_from_tuple(v));",
+return $B$_as_optional($B$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_as_optional",
-      "__gen_B_from_tuple",
+      "$B$_as_optional",
+      "$B$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_from_opt_tuple",
-    "signature": "tuple __gen_B_from_opt_tuple(tuple v)",
+    "name": "$B$_from_opt_tuple",
+    "signature": "tuple $B$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -9657,12 +9657,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_to_external",
-    "signature": "(int, int, int, int, int, int, int) __gen_B_to_external(((int, int, int, int, int, int, int)) v)",
+    "name": "$B$_to_external",
+    "signature": "(int, int, int, int, int, int, int) $B$_to_external(((int, int, int, int, int, int, int)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_B_opt_to_tuple(v);
+      "code": "var loaded = $B$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -9673,13 +9673,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_B_opt_to_tuple",
+      "$B$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_B_opt_to_external",
-    "signature": "tuple __gen_B_opt_to_external(tuple v)",
+    "name": "$B$_to_opt_external",
+    "signature": "tuple $B$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -9693,8 +9693,8 @@ return v'a;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_a",
-    "signature": "_ __gen_C_get_a((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_a",
+    "signature": "_ $C$_get_a((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9708,8 +9708,8 @@ return v'b;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_b",
-    "signature": "_ __gen_C_get_b((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_b",
+    "signature": "_ $C$_get_b((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9723,8 +9723,8 @@ return v'c;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_c",
-    "signature": "_ __gen_C_get_c((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_c",
+    "signature": "_ $C$_get_c((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9738,8 +9738,8 @@ return v'd;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_d",
-    "signature": "_ __gen_C_get_d((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_d",
+    "signature": "_ $C$_get_d((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9753,8 +9753,8 @@ return v'e;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_e",
-    "signature": "_ __gen_C_get_e((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_e",
+    "signature": "_ $C$_get_e((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9768,8 +9768,8 @@ return v'f;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_f",
-    "signature": "_ __gen_C_get_f((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_f",
+    "signature": "_ $C$_get_f((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9783,8 +9783,8 @@ return v'g;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_g",
-    "signature": "_ __gen_C_get_g((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_g",
+    "signature": "_ $C$_get_g((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9798,8 +9798,8 @@ return v'h;",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_get_h",
-    "signature": "_ __gen_C_get_h((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_get_h",
+    "signature": "_ $C$_get_h((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9810,8 +9810,8 @@ return v'h;",
     "context": "storage",
     "depends": Set {},
     "flags": Set {},
-    "name": "__gen_C_unpack",
-    "signature": "((cell, cell, slice, slice, int, int, int, slice)) __gen_C_unpack((cell, cell, slice, slice, int, int, int, slice) v)",
+    "name": "$C$_tensor_cast",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_tensor_cast((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9828,8 +9828,8 @@ return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_not_null",
-    "signature": "((cell, cell, slice, slice, int, int, int, slice)) __gen_C_not_null(tuple v)",
+    "name": "$C$_not_null",
+    "signature": "((cell, cell, slice, slice, int, int, int, slice)) $C$_not_null(tuple v)",
   },
   {
     "code": {
@@ -9845,8 +9845,8 @@ return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_as_optional",
-    "signature": "tuple __gen_C_as_optional(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_as_optional",
+    "signature": "tuple $C$_as_optional((cell, cell, slice, slice, int, int, int, slice) v)",
   },
   {
     "code": {
@@ -9862,26 +9862,26 @@ return __tact_tuple_create_8(v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_to_tuple",
-    "signature": "tuple __gen_C_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_to_tuple",
+    "signature": "tuple $C$_to_tuple(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_C_to_tuple(__gen_C_not_null(v)); ",
+return $C$_to_tuple($C$_not_null(v)); ",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_not_null",
-      "__gen_C_to_tuple",
+      "$C$_to_tuple",
+      "$C$_not_null",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_opt_to_tuple",
-    "signature": "tuple __gen_C_opt_to_tuple(tuple v)",
+    "name": "$C$_to_opt_tuple",
+    "signature": "tuple $C$_to_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -9898,26 +9898,26 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_from_tuple",
-    "signature": "(cell, cell, slice, slice, int, int, int, slice) __gen_C_from_tuple(tuple v)",
+    "name": "$C$_from_tuple",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_from_tuple(tuple v)",
   },
   {
     "code": {
       "code": "if (null?(v)) { return null(); } 
-return __gen_C_as_optional(__gen_C_from_tuple(v));",
+return $C$_as_optional($C$_from_tuple(v));",
       "kind": "generic",
     },
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_as_optional",
-      "__gen_C_from_tuple",
+      "$C$_as_optional",
+      "$C$_from_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_from_opt_tuple",
-    "signature": "tuple __gen_C_from_opt_tuple(tuple v)",
+    "name": "$C$_from_opt_tuple",
+    "signature": "tuple $C$_from_opt_tuple(tuple v)",
   },
   {
     "code": {
@@ -9931,12 +9931,12 @@ return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_to_external",
-    "signature": "(cell, cell, slice, slice, int, int, int, slice) __gen_C_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
+    "name": "$C$_to_external",
+    "signature": "(cell, cell, slice, slice, int, int, int, slice) $C$_to_external(((cell, cell, slice, slice, int, int, int, slice)) v)",
   },
   {
     "code": {
-      "code": "var loaded = __gen_C_opt_to_tuple(v);
+      "code": "var loaded = $C$_to_opt_tuple(v);
 if (null?(loaded)) {
     return null();
 } else {
@@ -9947,13 +9947,13 @@ if (null?(loaded)) {
     "comment": null,
     "context": "storage",
     "depends": Set {
-      "__gen_C_opt_to_tuple",
+      "$C$_to_opt_tuple",
     },
     "flags": Set {
       "inline",
     },
-    "name": "__gen_C_opt_to_external",
-    "signature": "tuple __gen_C_opt_to_external(tuple v)",
+    "name": "$C$_to_opt_external",
+    "signature": "tuple $C$_to_opt_external(tuple v)",
   },
   {
     "code": {
@@ -9975,8 +9975,8 @@ return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));",
       "__tact_load_address",
     },
     "flags": Set {},
-    "name": "__gen_read_C",
-    "signature": "(slice, ((cell, cell, slice, slice, int, int, int, slice))) __gen_read_C(slice sc_0)",
+    "name": "$C$_load",
+    "signature": "(slice, ((cell, cell, slice, slice, int, int, int, slice))) $C$_load(slice sc_0)",
   },
 ]
 `;

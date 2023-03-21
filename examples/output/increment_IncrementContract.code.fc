@@ -1,43 +1,51 @@
 #include "increment_IncrementContract.stdlib.fc";
 #include "increment_IncrementContract.storage.fc";
 
-(cell, cell, cell, cell, cell) $__gen_IncrementContract_init() impure inline_ref {
+(cell, cell, cell, cell, cell) $IncrementContract$_contract_init() impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = (null(), null(), null(), null(), null());
     return ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5);
 }
 
-(cell, cell, cell, cell, cell) __gen_load_IncrementContract() impure inline {
+(cell, cell, cell, cell, cell) $IncrementContract$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~__gen_read_IncrementContract();
+        return $sc~$IncrementContract$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $__gen_IncrementContract_init();
+        return $IncrementContract$_contract_init();
     }
 }
 
-() __gen_store_IncrementContract((cell, cell, cell, cell, cell) v) impure inline {
+() $IncrementContract$_contract_store((cell, cell, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = __gen_write_IncrementContract(b, v);
+    b = $IncrementContract$_store(b, v);
     set_data(b.end_cell());
 }
 
-cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
+cell $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters;
 }
 
-cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
+cell $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters4;
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Receivers of a Contract IncrementContract
+;;
+
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'counters~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
@@ -45,7 +53,7 @@ cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) im
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     int $ex = __tact_dict_get_int_int($self'counters2, 257, $msg'key, 1);
@@ -57,7 +65,7 @@ cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) im
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'content) = $msg;
     throw_unless(52777, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
@@ -65,115 +73,37 @@ cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) im
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     $self'counters~__tact_dict_set_int_int(257, $msg'key, null(), 257);
     $self'counters2~__tact_dict_set_int_int(257, $msg'key, null(), 1);
     $self'counters3~__tact_dict_set_int_cell(257, $msg'key, null());
     $self'counters4~__tact_dict_set_slice_int(267, __tact_context_get_sender(), null(), 257);
-    $self'counters5~__tact_dict_set_int_cell(257, $msg'key, __gen_writecellopt_Something(null()));
+    $self'counters5~__tact_dict_set_int_cell(257, $msg'key, $Something$_store_opt(null()));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-((int)) __gen_constructor_DeployOk$queryId(int queryId) inline {
-    return (queryId);
-}
-
-(((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($deploy'queryId) = $deploy;
-    $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
+    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
 ;;
-;; Public Interface of a Contract IncrementContract
+;; Get methods of a Contract IncrementContract
 ;;
 
-((cell, cell, cell, cell, cell), int) __gen_router_IncrementContract((cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Receive Increment message
-    if (op == 537284411) {
-        var msg = in_msg~__gen_read_Increment();
-        self~$__gen_IncrementContract_receive_Increment(msg);
-        return (self, true);
-    }
-    
-    ;; Receive Toggle message
-    if (op == 1081595080) {
-        var msg = in_msg~__gen_read_Toggle();
-        self~$__gen_IncrementContract_receive_Toggle(msg);
-        return (self, true);
-    }
-    
-    ;; Receive Persist message
-    if (op == 3801943978) {
-        var msg = in_msg~__gen_read_Persist();
-        self~$__gen_IncrementContract_receive_Persist(msg);
-        return (self, true);
-    }
-    
-    ;; Receive Reset message
-    if (op == 1718153138) {
-        var msg = in_msg~__gen_read_Reset();
-        self~$__gen_IncrementContract_receive_Reset(msg);
-        return (self, true);
-    }
-    
-    ;; Receive Deploy message
-    if (op == 2490013878) {
-        var msg = in_msg~__gen_read_Deploy();
-        self~$__gen_IncrementContract_receive_Deploy(msg);
-        return (self, true);
-    }
-    
-    return (self, false);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_IncrementContract();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_IncrementContract(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_IncrementContract(self);
-}
-
 _ %counters() method_id(95239) {
-    var self = __gen_load_IncrementContract();
-    var res = $__gen_IncrementContract_counters(self);
+    var self = $IncrementContract$_contract_load();
+    var res = $IncrementContract$_fun_counters(self);
     return res;
 }
 
 _ %counters2() method_id(77570) {
-    var self = __gen_load_IncrementContract();
-    var res = $__gen_IncrementContract_counters2(self);
+    var self = $IncrementContract$_contract_load();
+    var res = $IncrementContract$_fun_counters2(self);
     return res;
 }
 
@@ -192,4 +122,82 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract IncrementContract
+;;
+
+((cell, cell, cell, cell, cell), int) $IncrementContract$_contract_router((cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Increment message
+    if (op == 537284411) {
+        var msg = in_msg~$Increment$_load();
+        self~$IncrementContract$_receive_binary_Increment(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Toggle message
+    if (op == 1081595080) {
+        var msg = in_msg~$Toggle$_load();
+        self~$IncrementContract$_receive_binary_Toggle(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Persist message
+    if (op == 3801943978) {
+        var msg = in_msg~$Persist$_load();
+        self~$IncrementContract$_receive_binary_Persist(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Reset message
+    if (op == 1718153138) {
+        var msg = in_msg~$Reset$_load();
+        self~$IncrementContract$_receive_binary_Reset(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$IncrementContract$_receive_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $IncrementContract$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$IncrementContract$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $IncrementContract$_contract_store(self);
 }

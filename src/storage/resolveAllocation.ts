@@ -6,6 +6,7 @@ import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
+import { initId } from "../generator/writers/id";
 
 let store = createContextStore<StorageAllocation>();
 
@@ -101,7 +102,7 @@ export function resolveAllocations(ctx: CompilerContext) {
             // Reserve bits and refs
             let reserveBits = 0;
             let reserveRefs = 0;
-            
+
             // Reserve first bit for init state
             reserveBits++;
 
@@ -132,7 +133,7 @@ export function resolveAllocations(ctx: CompilerContext) {
                     refs: root.size.refs + reserveRefs
                 }
             };
-            ctx = store.set(ctx, '$init$' + s.name, allocation);
+            ctx = store.set(ctx, initId(s.name), allocation);
         }
     }
 

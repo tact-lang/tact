@@ -2,12 +2,12 @@
 #include "echo_Echo.constants.fc";
 #include "echo_Echo.storage.fc";
 
-tuple $__gen_Echo_init(int $a) impure inline_ref {
+tuple $Echo$_contract_init(int $a) impure inline_ref {
     tuple $self = null();
     return $self;
 }
 
-tuple __gen_load_Echo() impure inline {
+tuple $Echo$_contract_load() impure inline {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -16,20 +16,20 @@ tuple __gen_load_Echo() impure inline {
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (int a) = $sc~__gen_read_$init$Echo();
+        (int a) = $sc~$Echo$init$_load();
         $sc.end_parse();
-        return $__gen_Echo_init(a);
+        return $Echo$_contract_init(a);
     }
 }
 
-() __gen_store_Echo(tuple v) impure inline {
+() $Echo$_contract_store(tuple v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
 
-slice $__gen_Echo_hello(tuple $self, slice $src) impure inline_ref {
+slice $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     tuple $builder = __tact_string_builder_start_string();
     $builder~__tact_string_builder_append(__gen_str_591567833());
@@ -37,75 +37,30 @@ slice $__gen_Echo_hello(tuple $self, slice $src) impure inline_ref {
     return __tact_string_builder_end_slice($builder);
 }
 
-(tuple, ()) $__gen_Echo_receive_comment(tuple $self, slice $msg) impure inline {
+;;
+;; Receivers of a Contract Echo
+;;
+
+(tuple, ()) $Echo$_receive_any_text(tuple $self, slice $msg) impure inline {
     var $self = $self;
-    $reply($__gen_String_asComment($msg));
+    $global_reply($String$_fun_asComment($msg));
     return ($self, ());
 }
 
-(tuple, ()) $__gen_Echo_receive_fallback(tuple $self, slice $msg) impure inline {
+(tuple, ()) $Echo$_receive_any(tuple $self, slice $msg) impure inline {
     var $self = $self;
-    $reply($__gen_Slice_asCell($msg));
+    $global_reply($Slice$_fun_asCell($msg));
     return ($self, ());
 }
 
 ;;
-;; Public Interface of a Contract Echo
+;; Get methods of a Contract Echo
 ;;
-
-(tuple, int) __gen_router_Echo(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
-    
-    ;; Parse incoming message
-    int op = 0;
-    if (slice_bits(in_msg) >= 32) {
-        op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
-    
-    ;; Text Receivers
-    if (op == 0) {
-        if (slice_bits(in_msg) >= 32) {
-            self~$__gen_Echo_receive_comment(in_msg.skip_bits(32));
-            return (self, true);
-        }
-    }
-    
-    ;; Receiver fallback
-    self~$__gen_Echo_receive_fallback(in_msg);
-    return (self, true);
-}
-
-() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    
-    ;; Context
-    var cs = in_msg_cell.begin_parse();
-    var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
-    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
-    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
-    __tact_context_sender = msg_sender_addr;
-    
-    ;; Load contract data
-    var self = __gen_load_Echo();
-    
-    ;; Handle operation
-    int handled = self~__gen_router_Echo(msg_bounced, in_msg);
-    
-    ;; Throw if not handled
-    throw_unless(handled, 130);
-    
-    ;; Persist state
-    __gen_store_Echo(self);
-}
 
 _ %hello(slice $$src) method_id(115554) {
     slice $src = $$src;
-    var self = __gen_load_Echo();
-    var res = $__gen_Echo_hello(self, $src);
+    var self = $Echo$_contract_load();
+    var res = $Echo$_fun_hello(self, $src);
     return res;
 }
 
@@ -124,4 +79,57 @@ _ get_abi_ipfs() {
 
 _ lazy_deployment_completed() {
     return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Echo
+;;
+
+(tuple, int) $Echo$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        if (slice_bits(in_msg) >= 32) {
+            self~$Echo$_receive_any_text(in_msg.skip_bits(32));
+            return (self, true);
+        }
+    }
+    
+    ;; Receiver fallback
+    self~$Echo$_receive_any(in_msg);
+    return (self, true);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Echo$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Echo$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $Echo$_contract_store(self);
 }

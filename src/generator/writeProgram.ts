@@ -6,13 +6,15 @@ import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSeriali
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
-import { writeFunction, writeReceiver } from "./writers/writeFunction";
+import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getAllStrings } from "../types/resolveStrings";
 import { writeString } from './writers/writeConstant';
 import { getRawAST } from "../grammar/store";
 import { emit } from "./emitter/emit";
 import { writeInit, writeMainContract, writeStorageOps } from "./writers/writeContract";
+import { initId } from "./writers/id";
+import { writeReceiver } from "./writers/writeRouter";
 
 
 export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, basename: string, debug: boolean = false) {
@@ -204,9 +206,9 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     // Init serializers
     for (let t of sortedTypes) {
         if (t.kind === 'contract' && t.init) {
-            let allocation = getAllocation(ctx, '$init$' + t.name);
-            writeSerializer(`$init$${t.name}`, true, allocation, t.origin, wctx);
-            writeParser(`$init$${t.name}`, false, allocation, t.origin, wctx);
+            let allocation = getAllocation(ctx, initId(t.name));
+            writeSerializer(initId(t.name), true, allocation, t.origin, wctx);
+            writeParser(initId(t.name), false, allocation, t.origin, wctx);
         }
     }
 
@@ -249,11 +251,6 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
         // Functions
         for (let f of c.functions.values()) {
             writeFunction(f, wctx);
-        }
-
-        // Receivers
-        for (let r of Object.values(c.receivers)) {
-            writeReceiver(c, r, wctx);
         }
     }
 

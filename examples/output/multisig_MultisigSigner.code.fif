@@ -7,29 +7,29 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_dict_get_slice_int
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_body
-  DECLPROC __gen_write_Request
-  DECLPROC __gen_read_Request
-  DECLPROC __gen_write_Signed
-  DECLPROC __gen_writecell_Signed
-  DECLPROC __gen_write_MultisigSigner
-  DECLPROC __gen_read_MultisigSigner
-  DECLPROC __gen_Request_to_external
-  DECLPROC __gen_read_$init$MultisigSigner
-  DECLPROC $__gen_MultisigSigner_init
-  DECLPROC __gen_load_MultisigSigner
-  DECLPROC __gen_store_MultisigSigner
-  DECLPROC $__gen_MultisigSigner_request
-  DECLPROC $__gen_MultisigSigner_receive
-  DECLPROC __gen_constructor_Signed$request
-  DECLPROC $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
-  DECLPROC __gen_router_MultisigSigner
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_value_to_mode_bounce_body
+  DECLPROC $Request$_store
+  DECLPROC $Request$_load
+  DECLPROC $Signed$_store
+  DECLPROC $Signed$_store_cell
+  DECLPROC $MultisigSigner$_store
+  DECLPROC $MultisigSigner$_load
+  DECLPROC $Request$_to_external
+  DECLPROC $MultisigSigner$init$_load
+  DECLPROC $MultisigSigner$_contract_init
+  DECLPROC $MultisigSigner$_contract_load
+  DECLPROC $MultisigSigner$_contract_store
+  DECLPROC $MultisigSigner$_fun_request
+  DECLPROC $Signed$_constructor_request
+  DECLPROC %$MultisigSigner$_receive_empty
+  DECLPROC $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
   107262 DECLMETHOD %request
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $MultisigSigner$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -104,7 +104,7 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -203,12 +203,12 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$value_to_mode_bounce_body PROCINLINE:<{
+  $SendParameters$_constructor_value_to_mode_bounce_body PROCINLINE:<{
     s4 s4 s0 XCHG3
     PUSHNULL
     PUSHNULL
   }>
-  __gen_write_Request PROCREF:<{
+  $Request$_store PROCREF:<{
     4266760323 PUSHINT
     s0 s8 XCHG2
     32 STU
@@ -235,7 +235,7 @@ PROGRAM{
       1 STI
     }>
   }>
-  __gen_read_Request PROCREF:<{
+  $Request$_load PROCREF:<{
     32 LDU
     SWAP
     4266760323 PUSHINT
@@ -259,20 +259,20 @@ PROGRAM{
     }>
     7 -ROLL
   }>
-  __gen_write_Signed PROCINLINE:<{
+  $Signed$_store PROCINLINE:<{
     2213172633 PUSHINT
     s0 s8 XCHG2
     32 STU
     s0 s7 XCHG
-    __gen_write_Request INLINECALLDICT
+    $Request$_store INLINECALLDICT
   }>
-  __gen_writecell_Signed PROCINLINE:<{
+  $Signed$_store_cell PROCINLINE:<{
     NEWC
     7 -ROLL
-    __gen_write_Signed INLINECALLDICT
+    $Signed$_store INLINECALLDICT
     ENDC
   }>
-  __gen_write_MultisigSigner PROCINLINE:<{
+  $MultisigSigner$_store PROCINLINE:<{
     s12 s11 XCHG2
     __tact_store_address INLINECALLDICT
     s1 s9 XCHG
@@ -289,12 +289,12 @@ PROGRAM{
     s6 s1 s7 XCHG3
     s3 s5 XCHG
     s1 s8 XCHG
-    __gen_write_Request INLINECALLDICT
+    $Request$_store INLINECALLDICT
     ENDC
     SWAP
     STREF
   }>
-  __gen_read_MultisigSigner PROCINLINE:<{
+  $MultisigSigner$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     LDDICT
@@ -306,7 +306,7 @@ PROGRAM{
     LDREF
     SWAP
     CTOS
-    __gen_read_Request INLINECALLDICT
+    $Request$_load INLINECALLDICT
     s7 POP
     s7 s12 XCHG
     s7 s11 XCHG
@@ -315,9 +315,9 @@ PROGRAM{
     s7 s8 XCHG
     6 ROLL
   }>
-  __gen_Request_to_external PROCINLINE:<{
+  $Request$_to_external PROCINLINE:<{
   }>
-  __gen_read_$init$MultisigSigner PROCINLINE:<{
+  $MultisigSigner$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
     LDDICT
@@ -326,14 +326,14 @@ PROGRAM{
     LDREF
     SWAP
     CTOS
-    __gen_read_Request INLINECALLDICT
+    $Request$_load INLINECALLDICT
     s7 POP
     s7 s10 XCHG
     s7 s9 XCHG
     s7 s8 XCHG
     6 ROLL
   }>
-  $__gen_MultisigSigner_init PROCREF:<{
+  $MultisigSigner$_contract_init PROCREF:<{
     0 PUSHINT
     s0 s8 XCHG
     s0 s7 XCHG
@@ -341,7 +341,7 @@ PROGRAM{
     s0 s7 XCHG
     5 2 BLKSWAP
   }>
-  __gen_load_MultisigSigner PROCINLINE:<{
+  $MultisigSigner$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -350,7 +350,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_MultisigSigner INLINECALLDICT
+      $MultisigSigner$_load INLINECALLDICT
       1 12 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -358,14 +358,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$MultisigSigner INLINECALLDICT
+      $MultisigSigner$init$_load INLINECALLDICT
       s0 s10 XCHG
       ENDS
       9 ROLL
-      $__gen_MultisigSigner_init INLINECALLDICT
+      $MultisigSigner$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_MultisigSigner PROCINLINE:<{
+  $MultisigSigner$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -374,18 +374,18 @@ PROGRAM{
     SWAP
     1 STI
     12 -ROLL
-    __gen_write_MultisigSigner INLINECALLDICT
+    $MultisigSigner$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_MultisigSigner_request PROCREF:<{
+  $MultisigSigner$_fun_request PROCREF:<{
     5 7 BLKDROP2
   }>
-  $__gen_MultisigSigner_receive PROCINLINE:<{
+  $Signed$_constructor_request PROCINLINE:<{
   }>
-  __gen_constructor_Signed$request PROCINLINE:<{
+  %$MultisigSigner$_receive_empty PROCINLINE:<{
   }>
-  $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROCINLINE:<{
+  $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROCINLINE:<{
     4755 PUSHINT
     s4 PUSH
     NOW
@@ -421,17 +421,37 @@ PROGRAM{
       s9 s8 s7 PUSH3
       s9 s8 s7 PUSH3
       18 s() PUSH
-      __gen_constructor_Signed$request INLINECALLDICT
-      __gen_writecell_Signed INLINECALLDICT
+      $Signed$_constructor_request INLINECALLDICT
+      $Signed$_store_cell INLINECALLDICT
       s15 PUSH
       3 -ROLL
-      __gen_constructor_SendParameters$value_to_mode_bounce_body INLINECALLDICT
-      $send INLINECALLDICT
+      $SendParameters$_constructor_value_to_mode_bounce_body INLINECALLDICT
+      $global_send INLINECALLDICT
       s0 s7 XCHG
     }>
     s0 s9 XCHG
   }>
-  __gen_router_MultisigSigner PROCREF:<{
+  %request PROC:<{
+    $MultisigSigner$_contract_load INLINECALLDICT
+    $MultisigSigner$_fun_request INLINECALLDICT
+    $Request$_to_external INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5546734751453656437852456d6d6237716f507837353878616a7537756b5659674c53774d6654543541634a} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $MultisigSigner$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -456,7 +476,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      $__gen_MultisigSigner_receive INLINECALLDICT
+      %$MultisigSigner$_receive_empty INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -466,7 +486,7 @@ PROGRAM{
       15687661268003540618347676322063149294643333469463580674027607086437424345145 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
+        $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -498,30 +518,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_MultisigSigner INLINECALLDICT
+    $MultisigSigner$_contract_load INLINECALLDICT
     2 12 BLKSWAP
-    __gen_router_MultisigSigner INLINECALLDICT
+    $MultisigSigner$_contract_router INLINECALLDICT
     DROP
-    __gen_store_MultisigSigner INLINECALLDICT
-  }>
-  %request PROC:<{
-    __gen_load_MultisigSigner INLINECALLDICT
-    $__gen_MultisigSigner_request INLINECALLDICT
-    __gen_Request_to_external INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5546734751453656437852456d6d6237716f507837353878616a7537756b5659674c53774d6654543541634a} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $MultisigSigner$_contract_store INLINECALLDICT
   }>
 }END>c

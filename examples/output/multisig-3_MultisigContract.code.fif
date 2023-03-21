@@ -4,27 +4,25 @@ PROGRAM{
   DECLPROC __tact_store_address
   DECLPROC __tact_not_null
   DECLPROC __tact_store_bool
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$to_value
-  DECLPROC __gen_write_Operation
-  DECLPROC __gen_writecell_Operation
-  DECLPROC __gen_read_Operation
-  DECLPROC __gen_read_Execute
-  DECLPROC __gen_write_MultisigContract
-  DECLPROC __gen_read_MultisigContract
-  DECLPROC __gen_read_$init$MultisigContract
-  DECLPROC $__gen_MultisigContract_init
-  DECLPROC __gen_load_MultisigContract
-  DECLPROC __gen_store_MultisigContract
-  DECLPROC $__gen_MultisigContract_execute
-  DECLPROC $__gen_MultisigContract_key1
-  DECLPROC $__gen_MultisigContract_key2
-  DECLPROC $__gen_MultisigContract_key3
-  DECLPROC $__gen_MultisigContract_seqno
-  DECLPROC $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC $__gen_MultisigContract_receive_Execute
-  DECLPROC __gen_router_MultisigContract
-  DECLPROC recv_internal
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_to_value
+  DECLPROC $Operation$_store
+  DECLPROC $Operation$_store_cell
+  DECLPROC $Operation$_load
+  DECLPROC $Execute$_load
+  DECLPROC $MultisigContract$_store
+  DECLPROC $MultisigContract$_load
+  DECLPROC $MultisigContract$init$_load
+  DECLPROC $MultisigContract$_contract_init
+  DECLPROC $MultisigContract$_contract_load
+  DECLPROC $MultisigContract$_contract_store
+  DECLPROC $MultisigContract$_fun_execute
+  DECLPROC $MultisigContract$_fun_key1
+  DECLPROC $MultisigContract$_fun_key2
+  DECLPROC $MultisigContract$_fun_key3
+  DECLPROC $MultisigContract$_fun_seqno
+  DECLPROC $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $MultisigContract$_receive_binary_Execute
   107493 DECLMETHOD %key1
   103302 DECLMETHOD %key2
   99239 DECLMETHOD %key3
@@ -32,6 +30,8 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
+  DECLPROC $MultisigContract$_contract_router
+  DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
@@ -74,7 +74,7 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  $send PROCREF:<{
+  $global_send PROCREF:<{
     NEWC
     1 PUSHINT
     SWAP
@@ -173,7 +173,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  __gen_constructor_SendParameters$to_value PROCINLINE:<{
+  $SendParameters$_constructor_to_value PROCINLINE:<{
     TRUE
     -ROT
     0 PUSHINT
@@ -181,7 +181,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  __gen_write_Operation PROCINLINE:<{
+  $Operation$_store PROCINLINE:<{
     s2 s3 XCHG2
     32 STU
     SWAP
@@ -189,25 +189,25 @@ PROGRAM{
     SWAP
     __tact_store_address INLINECALLDICT
   }>
-  __gen_writecell_Operation PROCINLINE:<{
+  $Operation$_store_cell PROCINLINE:<{
     NEWC
     3 -ROLL
-    __gen_write_Operation INLINECALLDICT
+    $Operation$_store INLINECALLDICT
     ENDC
   }>
-  __gen_read_Operation PROCINLINE:<{
+  $Operation$_load PROCINLINE:<{
     32 LDU
     LDGRAMS
     __tact_load_address INLINECALLDICT
     s3 s3 s0 XCHG3
   }>
-  __gen_read_Execute PROCINLINE:<{
+  $Execute$_load PROCINLINE:<{
     32 LDU
     SWAP
     520967536 PUSHINT
     EQUAL
     129 THROWIFNOT
-    __gen_read_Operation INLINECALLDICT
+    $Operation$_load INLINECALLDICT
     s0 s3 XCHG
     LDREF
     SWAP
@@ -223,21 +223,21 @@ PROGRAM{
     s1 s6 XCHG
     s3 s3 s0 XCHG3
   }>
-  __gen_write_MultisigContract PROCINLINE:<{
+  $MultisigContract$_store PROCINLINE:<{
     s3 s4 XCHG2
     32 STU
     256 STU
     256 STU
     256 STU
   }>
-  __gen_read_MultisigContract PROCINLINE:<{
+  $MultisigContract$_load PROCINLINE:<{
     32 LDU
     256 LDU
     256 LDU
     256 LDU
     4 -ROLL
   }>
-  __gen_read_$init$MultisigContract PROCINLINE:<{
+  $MultisigContract$init$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     257 PUSHINT
@@ -246,11 +246,11 @@ PROGRAM{
     LDIX
     3 -ROLL
   }>
-  $__gen_MultisigContract_init PROCREF:<{
+  $MultisigContract$_contract_init PROCREF:<{
     0 PUSHINT
     3 -ROLL
   }>
-  __gen_load_MultisigContract PROCINLINE:<{
+  $MultisigContract$_contract_load PROCINLINE:<{
     c4 PUSH
     CTOS
     LDREF
@@ -259,7 +259,7 @@ PROGRAM{
     1 LDI
     SWAP
     IF:<{
-      __gen_read_MultisigContract INLINECALLDICT
+      $MultisigContract$_load INLINECALLDICT
       1 4 BLKDROP2
     }>ELSE<{
       MYADDR
@@ -267,14 +267,14 @@ PROGRAM{
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      __gen_read_$init$MultisigContract INLINECALLDICT
+      $MultisigContract$init$_load INLINECALLDICT
       s0 s3 XCHG
       ENDS
       ROT
-      $__gen_MultisigContract_init INLINECALLDICT
+      $MultisigContract$_contract_init INLINECALLDICT
     }>
   }>
-  __gen_store_MultisigContract PROCINLINE:<{
+  $MultisigContract$_contract_store PROCINLINE:<{
     NEWC
     __tact_context_sys GETGLOB
     SWAP
@@ -283,34 +283,34 @@ PROGRAM{
     SWAP
     1 STI
     4 -ROLL
-    __gen_write_MultisigContract INLINECALLDICT
+    $MultisigContract$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
-  $__gen_MultisigContract_execute PROCREF:<{
+  $MultisigContract$_fun_execute PROCREF:<{
     s2 POP
-    __gen_constructor_SendParameters$to_value INLINECALLDICT
-    $send INLINECALLDICT
+    $SendParameters$_constructor_to_value INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
-  $__gen_MultisigContract_key1 PROCREF:<{
+  $MultisigContract$_fun_key1 PROCREF:<{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  $__gen_MultisigContract_key2 PROCREF:<{
+  $MultisigContract$_fun_key2 PROCREF:<{
     s1 s3 XCHG
     3 BLKDROP
   }>
-  $__gen_MultisigContract_key3 PROCREF:<{
+  $MultisigContract$_fun_key3 PROCREF:<{
     3 1 BLKDROP2
   }>
-  $__gen_MultisigContract_seqno PROCREF:<{
+  $MultisigContract$_fun_seqno PROCREF:<{
     3 BLKDROP
   }>
-  $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $__gen_MultisigContract_receive_Execute PROCINLINE:<{
+  $MultisigContract$_receive_binary_Execute PROCINLINE:<{
     s5 s4 s3 PUSH3
-    __gen_writecell_Operation INLINECALLDICT
+    $Operation$_store_cell INLINECALLDICT
     HASHCU
     s0 s3 PUXC
     s10 PUSH
@@ -331,9 +331,40 @@ PROGRAM{
     SWAP
     AND
     THROWANYIFNOT
-    $__gen_MultisigContract_execute INLINECALLDICT
+    $MultisigContract$_fun_execute INLINECALLDICT
   }>
-  __gen_router_MultisigContract PROCREF:<{
+  %key1 PROC:<{
+    $MultisigContract$_contract_load INLINECALLDICT
+    $MultisigContract$_fun_key1 INLINECALLDICT
+  }>
+  %key2 PROC:<{
+    $MultisigContract$_contract_load INLINECALLDICT
+    $MultisigContract$_fun_key2 INLINECALLDICT
+  }>
+  %key3 PROC:<{
+    $MultisigContract$_contract_load INLINECALLDICT
+    $MultisigContract$_fun_key3 INLINECALLDICT
+  }>
+  %seqno PROC:<{
+    $MultisigContract$_contract_load INLINECALLDICT
+    $MultisigContract$_fun_seqno INLINECALLDICT
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5a6751426b7050594b376f594d4e565a78556665346373447341586442356e59394445487370426636476f39} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $MultisigContract$_contract_router PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -355,9 +386,9 @@ PROGRAM{
     EQUAL
     IFJMP:<{
       NIP
-      __gen_read_Execute INLINECALLDICT
+      $Execute$_load INLINECALLDICT
       1 6 BLKDROP2
-      $__gen_MultisigContract_receive_Execute INLINECALLDICT
+      $MultisigContract$_receive_binary_Execute INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -367,7 +398,7 @@ PROGRAM{
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       IFJMP:<{
-        $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -399,41 +430,10 @@ PROGRAM{
     __tact_context SETGLOB
     s0 s2 XCHG
     __tact_context_sender SETGLOB
-    __gen_load_MultisigContract INLINECALLDICT
+    $MultisigContract$_contract_load INLINECALLDICT
     2 4 BLKSWAP
-    __gen_router_MultisigContract INLINECALLDICT
+    $MultisigContract$_contract_router INLINECALLDICT
     DROP
-    __gen_store_MultisigContract INLINECALLDICT
-  }>
-  %key1 PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key1 INLINECALLDICT
-  }>
-  %key2 PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key2 INLINECALLDICT
-  }>
-  %key3 PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key3 INLINECALLDICT
-  }>
-  %seqno PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_seqno INLINECALLDICT
-  }>
-  supported_interfaces PROC:<{
-    123515602279859691144772641439386770278 PUSHINT
-    209801025412363888721030803524359905849 PUSHINT
-    42980537499636128163026532310500881091 PUSHINT
-    209474421377847335869795010607481022628 PUSHINT
-  }>
-  get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a6751426b7050594b376f594d4e565a78556665346373447341586442356e59394445487370426636476f39} PUSHSLICE
-  }>
-  lazy_deployment_completed PROC:<{
-    c4 PUSH
-    CTOS
-    1 LDI
-    SWAP
+    $MultisigContract$_contract_store INLINECALLDICT
   }>
 }END>c

@@ -1,4 +1,4 @@
-builder __gen_write_Large(builder build_0, (cell, cell, cell, cell) v) inline {
+builder $Large$_store(builder build_0, (cell, cell, cell, cell) v) inline {
     var (v'cell1, v'cell2, v'cell3, v'cell4) = v;
     build_0 = build_0.store_ref(v'cell1);
     build_0 = build_0.store_ref(v'cell2);
@@ -9,7 +9,7 @@ builder __gen_write_Large(builder build_0, (cell, cell, cell, cell) v) inline {
     return build_0;
 }
 
-(slice, ((cell, cell, cell, cell))) __gen_read_Large(slice sc_0) inline {
+(slice, ((cell, cell, cell, cell))) $Large$_load(slice sc_0) inline {
     var v'cell1 = sc_0~load_ref();
     var v'cell2 = sc_0~load_ref();
     slice sc_1 = sc_0~load_ref().begin_parse();
