@@ -1,11 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`writeSerialization should write serializer for A 1`] = `
-"int __tact_pow(int x, int y) inline {
-    return x ** y;
-}
-
-slice __tact_verify_address(slice address) inline {
+"slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
@@ -87,15 +83,10 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
     }
 }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
-global int __tact_randomized;
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
         randomize_lt();
@@ -925,11 +916,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for B 1`] = `
-"int __tact_pow(int x, int y) inline {
-    return x ** y;
-}
-
-slice __tact_verify_address(slice address) inline {
+"slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
@@ -1011,15 +998,10 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
     }
 }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
-global int __tact_randomized;
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
         randomize_lt();
@@ -1849,11 +1831,7 @@ tuple __gen_C_opt_to_external(tuple v) inline {
 `;
 
 exports[`writeSerialization should write serializer for C 1`] = `
-"int __tact_pow(int x, int y) inline {
-    return x ** y;
-}
-
-slice __tact_verify_address(slice address) inline {
+"slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
@@ -1935,15 +1913,10 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
     }
 }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 (int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
 
 slice __tact_context_get_sender() inline { return __tact_context_sender; }
 
-global int __tact_randomized;
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
         randomize_lt();

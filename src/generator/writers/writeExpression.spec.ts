@@ -82,7 +82,7 @@ describe('writeExpression', () => {
                 throw Error('Unexpected statement kind');
             }
             let wctx = new WriterContext(ctx);
-            wctx.fun('main', () => {
+            wctx.fun('$main', () => {
                 expect(writeExpression(s.expression, wctx)).toBe(golden[i]);
             });
             i++

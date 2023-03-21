@@ -197,6 +197,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Write function body
     ctx.fun(name, () => {
+        ctx.signature(`${returns} ${fn(name)}(${args.join(', ')})`);
         ctx.append(`${returns} ${fn(name)}(${args.join(', ')}) ${modifier} {`);
         ctx.inIndent(() => {
 
@@ -234,6 +235,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-binary') {
         ctx.fun(`__gen_${self.name}_receive_${selector.type}`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            ctx.signature(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive_${selector.type}`)}(${[resolveFuncType(self, ctx) + ' ' + id('self'), resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)].join(', ')})`);
             ctx.append(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive_${selector.type}`)}(${[resolveFuncType(self, ctx) + ' ' + id('self'), resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)].join(', ')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
@@ -256,6 +258,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-empty') {
         ctx.fun(`__gen_${self.name}_receive`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            ctx.signature(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))})`);
             ctx.append(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
@@ -282,6 +285,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
             .toString('hex', 0, 64);
         ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment_${hash}`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))})`);
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment_${hash}`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
@@ -303,6 +307,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-comment-fallback') {
         ctx.fun(`__gen_${self.name}_receive_comment`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment`)}(${([resolveFuncType(self, ctx) + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')})`);
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment`)}(${([resolveFuncType(self, ctx) + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
@@ -323,6 +328,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-fallback') {
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_fallback`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)})`);
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_fallback`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
@@ -343,6 +349,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
     if (selector.kind === 'internal-bounce') {
         ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
+            ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_bounced`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)})`);
             ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_bounced`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)}) ${modifier} {`);
             ctx.inIndent(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
@@ -369,6 +376,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
             throw new Error(`No self type for getter ${f.name}`); // Impossible
         }
 
+        ctx.signature(`_ ${fn(`__gen_get_${f.name}`)}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + ' ' + id('$' + v.name)).join(', ')})`);
         ctx.append(`_ ${fn(`__gen_get_${f.name}`)}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + ' ' + id('$' + v.name)).join(', ')}) method_id(${getMethodId(f.name)}) {`);
         ctx.inIndent(() => {
 

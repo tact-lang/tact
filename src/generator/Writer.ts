@@ -6,11 +6,13 @@ import { Writer } from "../utils/Writer";
 export class WriterContext {
 
     readonly ctx: CompilerContext;
-    #functions: Map<string, { name: string, code: string, depends: Set<string> }> = new Map();
+    #skipped = new Set<string>();
+    #functions: Map<string, { name: string, code: string, signature: string, depends: Set<string> }> = new Map();
     #functionsRendering = new Set<string>();
     #pendingWriter: Writer | null = null;
     #pendingDepends: Set<string> | null = null;
     #pendingName: string | null = null;
+    #pendingSignature: string | null = null;
     #nextId = 0;
     #headers: string[] = [];
     #rendered = new Set<string>();
@@ -26,6 +28,7 @@ export class WriterContext {
     clone() {
         let res = new WriterContext(this.ctx);
         res.#functions = new Map(this.#functions);
+        res.#skipped = new Set(this.#skipped);
         res.#nextId = this.#nextId;
         res.#headers = [...this.#headers];
         res.#rendered = new Set(this.#rendered);
@@ -42,6 +45,9 @@ export class WriterContext {
         let missing = new Map<string, string[]>();
         for (let f of this.#functions.values()) {
             for (let d of f.depends) {
+                if (this.#skipped.has(d)) {
+                    continue;
+                }
                 if (!this.#functions.has(d)) {
                     if (!missing.has(d)) {
                         missing.set(d, [f.name]);
@@ -64,6 +70,9 @@ export class WriterContext {
             let used = new Set<string>();
             let visit = (name: string) => {
                 used.add(name);
+                if (this.#skipped.has(name)) {
+                    return;
+                }
                 let f = this.#functions.get(name)!!;
                 for (let d of f.depends) {
                     visit(d);
@@ -74,7 +83,7 @@ export class WriterContext {
         }
 
         // Sort functions
-        let sorted = topologicalSort(all, (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!!));
+        let sorted = topologicalSort(all, (f) => Array.from(f.depends).filter((v) => !this.#skipped.has(v)).map((v) => this.#functions.get(v)!!));
 
         // Render
         let res = '';
@@ -98,7 +107,7 @@ export class WriterContext {
     //
 
     skip(name: string) {
-        this.fun(name, () => { });
+        this.#skipped.add(name);
     };
 
     fun(name: string, handler: () => void) {
@@ -122,10 +131,13 @@ export class WriterContext {
             let w = this.#pendingWriter;
             let d = this.#pendingDepends;
             let n = this.#pendingName;
+            let s = this.#pendingSignature;
             this.#pendingDepends = null;
             this.#pendingWriter = null;
             this.#pendingName = null;
+            this.#pendingSignature = null;
             this.fun(name, handler);
+            this.#pendingSignature = s;
             this.#pendingDepends = d;
             this.#pendingWriter = w;
             this.#pendingName = n;
@@ -137,14 +149,28 @@ export class WriterContext {
         this.#pendingWriter = new Writer();
         this.#pendingDepends = new Set();
         this.#pendingName = name;
+        this.#pendingSignature = null;
         handler();
         let code = this.#pendingWriter.end();
         let depends = this.#pendingDepends;
+        let signature = this.#pendingSignature!;
+        if (!signature && name !== '$main') {
+            throw new Error(`Function ${name} signature not set`);
+        }
         this.#pendingDepends = null;
         this.#pendingWriter = null;
         this.#pendingName = null;
+        this.#pendingSignature = null;
         this.#functionsRendering.delete(name);
-        this.#functions.set(name, { name, code, depends });
+        this.#functions.set(name, { name, code, depends, signature });
+    }
+
+    signature(sig: string) {
+        if (this.#pendingWriter) {
+            this.#pendingSignature = sig;
+        } else {
+            throw new Error(`Signature can be set only inside function`);
+        }
     }
 
     used(name: string) {

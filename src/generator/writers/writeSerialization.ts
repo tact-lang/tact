@@ -19,6 +19,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
     // Write to builder
     ctx.fun(ops.writer(name, ctx), () => {
         let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
+        ctx.signature(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
         ctx.append(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) ${modifier} {`);
         ctx.inIndent(() => {
             if (allocation.ops.length > 0) {
@@ -35,6 +36,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
 
     // Write to cell
     ctx.fun(ops.writerCell(name, ctx), () => {
+        ctx.signature(`cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
         ctx.write(`
             cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) inline {
                 return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();
@@ -45,6 +47,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
 
 export function writeOptionalSerializer(name: string, ctx: WriterContext) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
+        ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
         ctx.write(`
             cell ${ops.writerCellOpt(name, ctx)}(tuple v) inline {
                 if (null?(v)) {
@@ -214,6 +217,7 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
 
     ctx.fun(`__gen_read_${name}`, () => {
         let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
+        ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) __gen_read_${name}(slice sc_0)`);
         ctx.append(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) __gen_read_${name}(slice sc_0) ${modifier} {`);
         ctx.inIndent(() => {
 
@@ -234,6 +238,7 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
 
 export function writeOptionalParser(name: string, ctx: WriterContext) {
     ctx.fun(`__gen_readopt_${name}`, () => {
+        ctx.signature(`tuple __gen_readopt_${name}(cell cl)`);
         ctx.write(`
             tuple __gen_readopt_${name}(cell cl) inline {
                 if (null?(cl)) {

@@ -13,6 +13,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     // Getters
     for (let f of type.fields) {
         ctx.fun(`__gen_${type.name}_get_${f.name}`, () => {
+            ctx.signature(`_ __gen_${type.name}_get_${f.name}(${resolveFuncType(type, ctx)} v)`);
             ctx.append(`_ __gen_${type.name}_get_${f.name}(${resolveFuncType(type, ctx)} v) inline {`);
             ctx.inIndent(() => {
                 ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
@@ -24,11 +25,13 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
 
     // Unpack
     ctx.fun(`__gen_${type.name}_unpack`, () => {
+        ctx.signature(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v)`);
         ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v) asm "NOP";`);
     });
 
     // Not null
     ctx.fun(`__gen_${type.name}_not_null`, () => {
+        ctx.signature(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v)`);
         ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`)
@@ -44,6 +47,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_as_optional`, () => {
+        ctx.signature(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v)`);
         ctx.append(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, 'v', ctx)} = v;`);
@@ -59,6 +63,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     //
 
     ctx.fun(`__gen_${type.name}_to_tuple`, () => {
+        ctx.signature(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v)`);
         ctx.append(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
@@ -84,6 +89,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_opt_to_tuple`, () => {
+        ctx.signature(`tuple __gen_${type.name}_opt_to_tuple(tuple v)`);
         ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
@@ -95,6 +101,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_from_tuple`, () => {
+        ctx.signature(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v)`);
         ctx.append(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
 
@@ -134,6 +141,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_from_opt_tuple`, () => {
+        ctx.signature(`tuple __gen_${type.name}_from_opt_tuple(tuple v)`);
         ctx.append(`tuple __gen_${type.name}_from_opt_tuple(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
@@ -149,6 +157,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     //
 
     ctx.fun(`__gen_${type.name}_to_external`, () => {
+        ctx.signature(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v)`);
         ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v) inline {`);
         ctx.inIndent(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v; `);
@@ -175,6 +184,7 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     });
 
     ctx.fun(`__gen_${type.name}_opt_to_external`, () => {
+        ctx.signature(`tuple __gen_${type.name}_opt_to_external(tuple v)`);
         ctx.append(`tuple __gen_${type.name}_opt_to_external(tuple v) inline {`);
         ctx.inIndent(() => {
             ctx.used(`__gen_${type.name}_opt_to_tuple`);

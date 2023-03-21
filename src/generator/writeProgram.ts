@@ -27,7 +27,9 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
-        ctx.append(`${resolveFuncType(type, ctx)} __gen_load_${type.name}() impure inline {`); // NOTE: Inline impure function
+        const sig = `${resolveFuncType(type, ctx)} __gen_load_${type.name}()`;
+        ctx.signature(sig);
+        ctx.append(`${sig} impure inline {`); // NOTE: Inline impure function
         ctx.inIndent(() => {
 
             // Load data slice
@@ -75,7 +77,9 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
-        ctx.append(`() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v) impure inline {`); // NOTE: Impure inline function
+        const sig = `() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v)`;
+        ctx.signature(sig);
+        ctx.append(`${sig} impure inline {`); // NOTE: Impure inline function
         ctx.inIndent(() => {
             ctx.append(`builder b = begin_cell();`);
 
@@ -99,7 +103,9 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
-        ctx.append(`${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${[...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')}) impure inline_ref {`);
+        const sig = `${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${[...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})`;
+        ctx.signature(sig);
+        ctx.append(`${sig} impure inline_ref {`);
         ctx.inIndent(() => {
 
             // Unpack args
@@ -139,8 +145,10 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
     });
 
     ctx.fun(`__gen_${t.name}_init_child`, () => {
+        const sig = `(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})`;
         let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
-        ctx.append(`(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})${modifier}{`);
+        ctx.signature(sig);
+        ctx.append(`${sig}${modifier}{`);
         ctx.inIndent(() => {
             ctx.write(`
                 slice sc' = sys'.begin_parse();

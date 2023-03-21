@@ -6,6 +6,7 @@ export function writeString(str: string, ctx: WriterContext) {
     let id = getStringId(str, ctx.ctx);
     ctx.fun(`__gen_str_${id}`, () => {
         let boc = beginCell().storeStringTail(str).endCell().toBoc({ idx: false }).toString('hex');
+        ctx.signature(`slice __gen_str_${id}()`);
         ctx.append(`;; String "${str}"`);
         ctx.append(`slice __gen_str_${id}() asm "B{${boc}} B>boc <s PUSHSLICE";`);
     });
@@ -28,6 +29,7 @@ function writeRawSlice(prefix: string, comment: string, cell: Cell, ctx: WriterC
     }
     ctx.markRendered(k);
     ctx.fun(`__gen_slice_${prefix}_${h}`, () => {
+        ctx.signature(`slice __gen_slice_${prefix}_${h}()`);
         ctx.append(`;; ${comment}`);
         ctx.append(`slice __gen_slice_${prefix}_${h}() asm "B{${t}} B>boc <s PUSHSLICE";`);
     });

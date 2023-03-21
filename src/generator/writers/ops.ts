@@ -12,5 +12,6 @@ function used(name: string, ctx: WriterContext) {
 export const ops = {
     writer: (type: string, ctx: WriterContext) => used(`__gen_write_${type}`, ctx),
     writerCell: (type: string, ctx: WriterContext) => used(`__gen_writecell_${type}`, ctx),
-    writerCellOpt: (type: string, ctx: WriterContext) => used(`__gen_writecellopt_${type}`, ctx)
+    writerCellOpt: (type: string, ctx: WriterContext) => used(`__gen_writecellopt_${type}`, ctx),
+    str: (id: string, ctx: WriterContext) => used(`__gen_str_${id}`, ctx)
 };

@@ -15,23 +15,11 @@ export function writeStdlib(ctx: WriterContext) {
     ctx.skip('__tact_address_to_slice');
 
     //
-    // stdlib functions
-    //
-
-    ctx.fun(`__tact_pow`, () => {
-        ctx.write(`
-            int __tact_pow(int x, int y) inline {
-                return x ** y;
-            }
-        `);
-    });
-
-    //
     // Addresses
     //
 
     ctx.fun('__tact_verify_address', () => {
-        // NOTE: IMPURE IS IMPORTANT
+        ctx.signature(`slice __tact_verify_address(slice address)`);
         ctx.write(`
             slice __tact_verify_address(slice address) inline {
                 throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
@@ -44,6 +32,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_load_address', () => {
+        ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
         ctx.write(`
             (slice, slice) __tact_load_address(slice cs) inline {
                 slice raw = cs~load_msg_addr();
@@ -53,6 +42,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_load_address_opt', () => {
+        ctx.signature(`(slice, slice) __tact_load_address_opt(slice cs)`);
         ctx.write(`
             (slice, slice) __tact_load_address_opt(slice cs) inline {
                 slice raw = cs~load_msg_addr();
@@ -66,6 +56,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_store_address', () => {
+        ctx.signature(`builder __tact_store_address(builder b, slice address)`);
         ctx.write(`
             builder __tact_store_address(builder b, slice address) inline {
                 return b.store_slice(${ctx.used(`__tact_verify_address`)}(address));
@@ -74,6 +65,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_store_address_opt', () => {
+        ctx.signature(`builder __tact_store_address_opt(builder b, slice address)`);
         ctx.write(`
             builder __tact_store_address_opt(builder b, slice address) inline {
                 if (null?(address)) {
@@ -87,6 +79,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_create_address', () => {
+        ctx.signature(`slice __tact_create_address(int chain, int hash)`);
         ctx.write(`
             slice __tact_create_address(int chain, int hash) inline {
                 var b = begin_cell();
@@ -101,6 +94,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_compute_contract_address', () => {
+        ctx.signature(`slice __tact_compute_contract_address(int chain, cell code, cell data)`);
         ctx.write(`
             slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
                 var b = begin_cell();
@@ -116,6 +110,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_my_balance`, () => {
+        ctx.signature(`int __tact_my_balance()`);
         ctx.write(`
             int __tact_my_balance() inline {
                 return pair_first(get_balance());
@@ -124,34 +119,42 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_not_null', () => {
+        ctx.signature(`forall X -> X __tact_not_null(X x)`);
         ctx.write(`forall X -> X __tact_not_null(X x) inline { throw_if(${contractErrors.null.id}, null?(x)); return x; }`);
     });
 
     ctx.fun('__tact_dict_delete', () => {
+        ctx.signature(`(cell, int) __tact_dict_delete(cell dict, int key_len, slice index)`);
         ctx.write(`(cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";`)
     });
 
     ctx.fun('__tact_dict_set_ref', () => {
+        ctx.signature(`((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value)`);
         ctx.write(`((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";`)
     });
 
     ctx.fun('__tact_dict_get', () => {
+        ctx.signature(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index)`);
         ctx.write(`(slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";`);
     });
 
     ctx.fun('__tact_dict_get_ref', () => {
+        ctx.signature(`(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index)`);
         ctx.write(`(cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";`);
     });
 
     ctx.fun('__tact_debug', () => {
+        ctx.signature(`forall X -> () __tact_debug(X value)`);
         ctx.write(`forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";`);
     });
 
     ctx.fun('__tact_debug_str', () => {
+        ctx.signature(`() __tact_debug_str(slice value)`);
         ctx.write(`() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";`);
     });
 
     ctx.fun('__tact_debug_bool', () => {
+        ctx.signature(`() __tact_debug_bool(int value)`);
         ctx.write(`
             () __tact_debug_bool(int value) impure inline_ref  {
                 if (value) {
@@ -164,14 +167,17 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_context_get', () => {
+        ctx.signature(`(int, slice, int, slice) __tact_context_get()`);
         ctx.write(`(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }`);
     });
 
     ctx.fun('__tact_context_get_sender', () => {
+        ctx.signature(`slice __tact_context_get_sender()`);
         ctx.write(`slice __tact_context_get_sender() inline { return __tact_context_sender; }`);
     });
 
     ctx.fun('__tact_prepare_random', () => {
+        ctx.signature(`() __tact_prepare_random()`);
         ctx.write(`
             () __tact_prepare_random() impure inline {
                 if (null?(__tact_randomized)) {
@@ -183,6 +189,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_store_bool', () => {
+        ctx.signature(`builder __tact_store_bool(builder b, int v)`);
         ctx.write(`
             builder __tact_store_bool(builder b, int v) inline {
                 b = b.store_int(v, 1);
@@ -192,10 +199,12 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_to_tuple', () => {
+        ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
         ctx.write(`forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";`);
     });
 
     ctx.fun('__tact_from_tuple', () => {
+        ctx.signature(`forall X -> X __tact_from_tuple(tuple x)`);
         ctx.write(`forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";`);
     });
 
@@ -204,6 +213,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_int_int', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl)`);
         ctx.write(`
             (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
                 if (null?(v)) {
@@ -217,6 +227,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_dict_get_int_int', () => {
+        ctx.signature(`int __tact_dict_get_int_int(cell d, int kl, int k, int vl)`);
         ctx.write(`
             int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
                 var (r, ok) = idict_get?(d, kl, k);
@@ -234,6 +245,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_int_cell', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v)`);
         ctx.write(`
             (cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
                 if (null?(v)) {
@@ -247,6 +259,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_dict_get_int_cell', () => {
+        ctx.signature(`cell __tact_dict_get_int_cell(cell d, int kl, int k)`);
         ctx.write(`
             cell __tact_dict_get_int_cell(cell d, int kl, int k) {
                 var (r, ok) = idict_get_ref?(d, kl, k);
@@ -264,6 +277,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_int_slice', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v)`);
         ctx.write(`
             (cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
                 if (null?(v)) {
@@ -277,6 +291,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_dict_get_int_slice', () => {
+        ctx.signature(`slice __tact_dict_get_int_slice(cell d, int kl, int k)`);
         ctx.write(`
             slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
                 var (r, ok) = idict_get?(d, kl, k);
@@ -294,6 +309,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_slice_int', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl)`);
         ctx.write(`
             (cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
                 if (null?(v)) {
@@ -307,6 +323,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun('__tact_dict_get_slice_int', () => {
+        ctx.signature(`int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl)`);
         ctx.write(`
             int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
                 var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
@@ -324,6 +341,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun('__tact_dict_set_slice_cell', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v)`);
         ctx.write(`
             (cell, ()) __tact_dict_set_slice_cell(cell d, int kl, slice k, cell v) inline {
                 if (null?(v)) {
@@ -337,6 +355,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_dict_get_slice_cell`, () => {
+        ctx.signature(`cell __tact_dict_get_slice_cell(cell d, int kl, slice k)`);
         ctx.write(`
             cell __tact_dict_get_slice_cell(cell d, int kl, slice k) inline {
                 var (r, ok) = ${ctx.used(`__tact_dict_get_ref`)}(d, kl, k);
@@ -354,6 +373,7 @@ export function writeStdlib(ctx: WriterContext) {
     // 
 
     ctx.fun(`__tact_address_eq`, () => {
+        ctx.signature(`int __tact_address_eq(slice a, slice b)`);
         ctx.write(`
             int __tact_address_eq(slice a, slice b) inline {
                 return equal_slice_bits(a, b);
@@ -362,6 +382,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_address_neq`, () => {
+        ctx.signature(`int __tact_address_neq(slice a, slice b)`);
         ctx.write(`
             int __tact_address_neq(slice a, slice b) inline {
                 return ~ equal_slice_bits(a, b);
@@ -374,6 +395,7 @@ export function writeStdlib(ctx: WriterContext) {
     // 
 
     ctx.fun(`__tact_cell_eq`, () => {
+        ctx.signature(`int __tact_cell_eq(cell a, cell b)`);
         ctx.write(`
             int __tact_cell_eq(cell a, cell b) inline {
                 return (a.cell_hash() ==  b.cell_hash());
@@ -381,6 +403,7 @@ export function writeStdlib(ctx: WriterContext) {
         `);
     });
     ctx.fun(`__tact_cell_neq`, () => {
+        ctx.signature(`int __tact_cell_neq(slice a, slice b)`);
         ctx.write(`
             int __tact_cell_neq(slice a, slice b) inline {
                 return (a.cell_hash() !=  b.cell_hash());
@@ -393,6 +416,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_dict_set_code`, () => {
+        ctx.signature(`cell __tact_dict_set_code(cell dict, int id, cell code)`);
         ctx.write(`
             cell __tact_dict_set_code(cell dict, int id, cell code) inline {
                 return udict_set_ref(dict, 16, id, code);
@@ -401,6 +425,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_dict_get_code`, () => {
+        ctx.signature(`cell __tact_dict_get_code(cell dict, int id)`);
         ctx.write(`
             cell __tact_dict_get_code(cell dict, int id) inline {
                 var (data, ok) = udict_get_ref?(dict, 16, id);
@@ -415,9 +440,11 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_tuple_create_0`, () => {
+        ctx.signature(`tuple __tact_tuple_create_0()`);
         ctx.append(`tuple __tact_tuple_create_0() asm "NIL";`);
     });
     ctx.fun(`__tact_tuple_destroy_0`, () => {
+        ctx.signature(`() __tact_tuple_destroy_0()`);
         ctx.append(`() __tact_tuple_destroy_0() inline {`);
         ctx.inIndent(() => {
             ctx.append(`return ();`)
@@ -431,6 +458,7 @@ export function writeStdlib(ctx: WriterContext) {
             for (let j = 0; j < i; j++) {
                 args.push(`X${j}`);
             }
+            ctx.signature(`forall ${args.join(', ')} -> tuple __tact_tuple_create_${i}((${args.join(', ')}) v)`);
             ctx.append(`forall ${args.join(', ')} -> tuple __tact_tuple_create_${i}((${args.join(', ')}) v) asm "${i} TUPLE";`);
         });
         ctx.fun(`__tact_tuple_destroy_${i}`, () => {
@@ -438,6 +466,7 @@ export function writeStdlib(ctx: WriterContext) {
             for (let j = 0; j < i; j++) {
                 args.push(`X${j}`);
             }
+            ctx.signature(`forall ${args.join(', ')} -> (${args.join(', ')}) __tact_tuple_destroy_${i}(tuple v)`);
             ctx.append(`forall ${args.join(', ')} -> (${args.join(', ')}) __tact_tuple_destroy_${i}(tuple v) asm "${i} UNTUPLE";`);
         });
     }
@@ -447,6 +476,7 @@ export function writeStdlib(ctx: WriterContext) {
     //
 
     ctx.fun(`__tact_string_builder_start_comment`, () => {
+        ctx.signature(`tuple __tact_string_builder_start_comment()`);
         ctx.write(`
             tuple __tact_string_builder_start_comment() inline {
                 return ${ctx.used('__tact_string_builder_start')}(begin_cell().store_uint(0, 32));
@@ -455,6 +485,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_start_tail_string`, () => {
+        ctx.signature(`tuple __tact_string_builder_start_tail_string()`);
         ctx.write(`
             tuple __tact_string_builder_start_tail_string() inline {
                 return ${ctx.used('__tact_string_builder_start')}(begin_cell().store_uint(0, 8));
@@ -463,6 +494,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_start_string`, () => {
+        ctx.signature(`tuple __tact_string_builder_start_string()`);
         ctx.write(`
             tuple __tact_string_builder_start_string() inline {
                 return ${ctx.used('__tact_string_builder_start')}(begin_cell());
@@ -471,6 +503,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_start`, () => {
+        ctx.signature(`tuple __tact_string_builder_start(builder b)`);
         ctx.write(`
             tuple __tact_string_builder_start(builder b) inline {
                 return tpush(tpush(empty_tuple(), b), null());
@@ -479,6 +512,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_end`, () => {
+        ctx.signature(`cell __tact_string_builder_end(tuple builders)`);
         ctx.write(`
             cell __tact_string_builder_end(tuple builders) inline {
                 (builder b, tuple tail) = uncons(builders);
@@ -493,6 +527,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_end_slice`, () => {
+        ctx.signature(`slice __tact_string_builder_end_slice(tuple builders)`);
         ctx.write(`
             slice __tact_string_builder_end_slice(tuple builders) inline {
                 return ${ctx.used('__tact_string_builder_end')}(builders).begin_parse();
@@ -501,6 +536,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_string_builder_append`, () => {
+        ctx.signature(`((tuple), ()) __tact_string_builder_append(tuple builders, slice sc)`);
         ctx.write(`
             ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
                 int sliceRefs = slice_refs(sc);
@@ -544,6 +580,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_int_to_string`, () => {
+        ctx.signature(`slice __tact_int_to_string(int src)`);
         ctx.write(`
             slice __tact_int_to_string(int src) inline_ref {
                 var b = begin_cell();
@@ -587,6 +624,7 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     ctx.fun(`__tact_float_to_string`, () => {
+        ctx.signature(`slice __tact_float_to_string(int src, int digits)`);
         ctx.write(`
             slice __tact_float_to_string(int src, int digits) inline_ref {
                 throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));

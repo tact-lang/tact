@@ -1,7 +1,5 @@
 #include "payouts_Payouts.stdlib.fc";
 
-
-
 slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
