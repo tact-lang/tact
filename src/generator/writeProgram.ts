@@ -7,14 +7,13 @@ import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSeriali
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
-import { unwrapExternal, writeFunction, writeGetter, writeReceiver, writeStatement } from "./writers/writeFunction";
+import { writeFunction, writeGetter, writeReceiver, writeStatement } from "./writers/writeFunction";
 import { contractErrors } from "../abi/errors";
 import { writeInterfaces } from "./writers/writeInterfaces";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getAllStrings } from "../types/resolveStrings";
 import { writeString } from './writers/writeConstant';
 import { fn, id } from "./writers/id";
-import { resolveFuncTupledType } from "./writers/resolveFuncTupledType";
 import { getRawAST } from "../grammar/store";
 import { resolveFuncType } from "./writers/resolveFuncType";
 import { ops } from "./writers/ops";
@@ -179,34 +178,6 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
     });
 }
 
-function writeInitContract(type: TypeDescription, ctx: WriterContext) {
-    // Main field
-    ctx.fun('$main', () => {
-        ctx.append(`cell init(${[`cell sys'`, ...type.init!.args.map((a) => resolveFuncTupledType(a.type, ctx) + ' ' + id('$' + a.name))].join(', ')}) method_id {`);
-        ctx.inIndent(() => {
-
-            // Unpack arguments
-            for (let arg of type.init!.args) {
-                unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
-            }
-
-            // Call init function
-            ctx.append(`builder b = begin_cell();`);
-            ctx.append(`b = b.store_ref(sys');`);
-            ctx.append(`b = b.store_int(false, 1);`);
-            let args = type.init!.args.length > 0 ? ['b', '(' + type.init!.args.map((a) => id(a.name)).join(', ') + ')'].join(', ') : 'b, null()';
-            ctx.append(`b = ${ops.writer(`$init$${type.name}`, ctx)}(${args});`);
-            ctx.append(`return b.end_cell();`);
-        });
-        ctx.append(`}`);
-        ctx.append();
-
-        // To to avoid compiler crash
-        ctx.append(`() main() {`);
-        ctx.append(`}`);
-    });
-}
-
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
     // Main field
@@ -286,7 +257,7 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
     });
 }
 
-export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, debug: boolean = false) {
+export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, basename: string, debug: boolean = false) {
     const wctx = new WriterContext(ctx);
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');
@@ -401,10 +372,10 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, de
     writeMainContract(c, abiLink, mainCtx);
     let output = mainCtx.render(debug);
 
-    // Write init
-    let initCtx = wctx.clone();
-    writeInitContract(c, initCtx);
-    let initOutput = initCtx.render(debug);
-
-    return { output, initOutput, abi };
+    return {
+        output: [{
+            name: basename + '.code.fc',
+            code: output
+        }], abi
+    };
 }

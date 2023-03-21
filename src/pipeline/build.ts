@@ -66,30 +66,33 @@ export async function build(args: {
     let built: {
         [key: string]: {
             codeBoc: Buffer,
-            codeFunc: string,
-            codeFift: string,
-            codeFiftDecompiled: string,
+            // codeFunc: string,
+            // codeFift: string,
+            // codeFiftDecompiled: string,
             abi: string
         }
     } = {};
     for (let contract of getContracts(ctx)) {
         let pathAbi = project.resolve(config.output, config.name + '_' + contract + ".abi");
 
-        let pathCodeFc = project.resolve(config.output, config.name + '_' + contract + ".code.fc");
+
         let pathCodeBoc = project.resolve(config.output, config.name + '_' + contract + ".code.boc");
         let pathCodeFif = project.resolve(config.output, config.name + '_' + contract + ".code.fif");
         let pathCodeFifDec = project.resolve(config.output, config.name + '_' + contract + ".code.rev.fif");
+        let codeFc: { path: string, content: string }[];
 
         // Compiling contract to func
         logger.log('   > ' + contract + ': tact compiler');
         let abi: string;
-        let codeFunc: string;
         try {
-            let res = await compile(ctx, contract);
-            project.writeFile(pathCodeFc, res.output.output);
+            let res = await compile(ctx, contract, config.name + '_' + contract);
+            for (let files of res.output.output) {
+                let ffc = project.resolve(config.output, files.name);
+                project.writeFile(ffc, files.code);
+            }
             project.writeFile(pathAbi, res.output.abi);
             abi = res.output.abi;
-            codeFunc = res.output.output;
+            codeFc = res.output.output.map((v) => ({ path: project.resolve(config.output, v.name), content: v.code }));
         } catch (e) {
             logger.error('Tact compilation failed');
             logger.error(errorToString(e));
@@ -100,7 +103,6 @@ export async function build(args: {
         // Compiling contract to TVM
         logger.log('   > ' + contract + ': func compiler');
         let codeBoc: Buffer;
-        let codeFift: string;
         try {
             let stdlibPath = stdlib.resolve('stdlib.fc');
             let stdlibCode = stdlib.readFile(stdlibPath).toString();
@@ -113,10 +115,9 @@ export async function build(args: {
                 }, {
                     path: stdlibExPath,
                     content: stdlibExCode,
-                }, {
-                    path: pathCodeFc,
-                    content: codeFunc
-                }],
+                },
+                ...codeFc
+                ],
                 logger
             });
             if (!c.ok) {
@@ -126,7 +127,6 @@ export async function build(args: {
             }
             project.writeFile(pathCodeFif, c.fift);
             project.writeFile(pathCodeBoc, c.output);
-            codeFift = c.fift;
             codeBoc = c.output;
         } catch (e) {
             logger.error('FunC compiler crashed');
@@ -150,10 +150,10 @@ export async function build(args: {
 
         // Add to built map
         built[contract] = {
-            codeFunc,
+            // codeFunc,
             codeBoc,
-            codeFift,
-            codeFiftDecompiled,
+            // codeFift,
+            // codeFiftDecompiled,
             abi
         };
     }
