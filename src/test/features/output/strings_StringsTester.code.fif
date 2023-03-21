@@ -8,12 +8,12 @@ PROGRAM{
   DECLPROC __tact_string_builder_append
   DECLPROC __tact_int_to_string
   DECLPROC __tact_float_to_string
-  DECLPROC $__gen_StringsTester_init
-  DECLPROC __gen_load_StringsTester
-  DECLPROC __gen_store_StringsTester
   DECLPROC $__gen_Builder_asSlice
   DECLPROC $__gen_Slice_fromBase64
   DECLPROC $__gen_String_fromBase64
+  DECLPROC $__gen_StringsTester_init
+  DECLPROC __gen_load_StringsTester
+  DECLPROC __gen_store_StringsTester
   DECLPROC $__gen_StringsTester_constantString
   DECLPROC $__gen_StringsTester_constantStringUnicode
   DECLPROC $__gen_StringsTester_constantStringUnicodeLong
@@ -338,40 +338,6 @@ PROGRAM{
     ENDC
     CTOS
   }>
-  $__gen_StringsTester_init PROCREF:<{
-    PUSHNULL
-  }>
-  __gen_load_StringsTester PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    DROP
-    IF:<{
-      PUSHNULL
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $__gen_StringsTester_init INLINECALLDICT
-    }>
-  }>
-  __gen_store_StringsTester PROCINLINE:<{
-    DROP
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
-    TRUE
-    SWAP
-    1 STI
-    ENDC
-    c4 POP
-  }>
   $__gen_Builder_asSlice PROCREF:<{
     ENDC
     CTOS
@@ -472,6 +438,40 @@ PROGRAM{
   }>
   $__gen_String_fromBase64 PROCREF:<{
     $__gen_Slice_fromBase64 INLINECALLDICT
+  }>
+  $__gen_StringsTester_init PROCREF:<{
+    PUSHNULL
+  }>
+  __gen_load_StringsTester PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    DROP
+    IF:<{
+      PUSHNULL
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      $__gen_StringsTester_init INLINECALLDICT
+    }>
+  }>
+  __gen_store_StringsTester PROCINLINE:<{
+    DROP
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    ENDC
+    c4 POP
   }>
   $__gen_StringsTester_constantString PROCREF:<{
     DROP

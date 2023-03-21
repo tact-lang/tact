@@ -1,4 +1,5 @@
 import { parseImports } from '../grammar/grammar';
+import { TypeOrigin } from '../types/types';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
 import { resolveLibrary } from './resolveLibrary';
 
@@ -21,12 +22,12 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
     // Resolve all imports
     //
 
-    const importedTact: { code: string, path: string }[] = [];
-    const importedFunc: { code: string, path: string }[] = [];
+    const importedTact: { code: string, path: string, origin: TypeOrigin }[] = [];
+    const importedFunc: { code: string, path: string, origin: TypeOrigin }[] = [];
     const processed = new Set<string>();
-    const pending: { code: string, path: string }[] = [];
-    function processImports(source: string, path: string) {
-        const imp = parseImports(source, path);
+    const pending: { code: string, path: string, origin: TypeOrigin }[] = [];
+    function processImports(source: string, path: string, origin: TypeOrigin) {
+        const imp = parseImports(source, path, origin);
         for (const i of imp) {
 
             // Resolve library
@@ -57,26 +58,26 @@ export function resolveImports(args: { entrypoint: string, project: VirtualFileS
 
             // Add to imports
             if (resolved.kind === 'func') {
-                importedFunc.push({ code, path: resolved.path });
+                importedFunc.push({ code, path: resolved.path, origin });
             } else {
                 if (!processed.has(resolved.path)) {
                     processed.add(resolved.path);
-                    pending.push({ path: resolved.path, code });
+                    pending.push({ path: resolved.path, code, origin });
                 }
             }
         }
     }
 
     // Run resolve
-    importedTact.push({ code: stdlibTact, path: stdlibTactPath });
-    processImports(stdlibTact, stdlibTactPath);
-    processImports(code, codePath);
+    importedTact.push({ code: stdlibTact, path: stdlibTactPath, origin: 'stdlib' });
+    processImports(stdlibTact, stdlibTactPath, 'stdlib');
+    processImports(code, codePath, 'user');
     while (pending.length > 0) {
         let p = pending.shift()!;
         importedTact.push(p);
-        processImports(p.code, p.path);
+        processImports(p.code, p.path, p.origin);
     }
-    importedTact.push({ code: code, path: codePath }); // To keep order same as before refactoring
+    importedTact.push({ code: code, path: codePath, origin: 'user' }); // To keep order same as before refactoring
 
     // Assemble result
     return {

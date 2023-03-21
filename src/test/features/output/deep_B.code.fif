@@ -12,18 +12,18 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
+  DECLPROC __gen_StateInit_to_external
+  DECLPROC $contractAddress
+  DECLPROC $send
+  DECLPROC $__gen_String_asComment
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body
   DECLPROC __gen_write_B
   DECLPROC __gen_read_B
-  DECLPROC __gen_StateInit_to_external
   DECLPROC __gen_read_$init$B
   DECLPROC __gen_write_$init$C
   DECLPROC $__gen_B_init
   DECLPROC __gen_load_B
   DECLPROC __gen_store_B
-  DECLPROC $contractAddress
-  DECLPROC $send
-  DECLPROC $__gen_String_asComment
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body
   DECLPROC $__gen_C_init_child
   DECLPROC $__gen_B_getNext
   DECLPROC $__gen_B_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
@@ -217,57 +217,7 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_write_B PROCINLINE:<{
-    __tact_store_address INLINECALLDICT
-  }>
-  __gen_read_B PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-  }>
   __gen_StateInit_to_external PROCINLINE:<{
-  }>
-  __gen_read_$init$B PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-  }>
-  __gen_write_$init$C PROCINLINE:<{
-    __tact_store_address INLINECALLDICT
-  }>
-  $__gen_B_init PROCREF:<{
-  }>
-  __gen_load_B PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    SWAP
-    IF:<{
-      __gen_read_B INLINECALLDICT
-      NIP
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      __gen_read_$init$B INLINECALLDICT
-      SWAP
-      ENDS
-      $__gen_B_init INLINECALLDICT
-    }>
-  }>
-  __gen_store_B PROCINLINE:<{
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
-    TRUE
-    SWAP
-    1 STI
-    SWAP
-    __gen_write_B INLINECALLDICT
-    ENDC
-    c4 POP
   }>
   $contractAddress PROCREF:<{
     0 PUSHINT
@@ -383,6 +333,56 @@ PROGRAM{
     s3 s6 XCHG
     s3 s4 XCHG
     -ROT
+  }>
+  __gen_write_B PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_B PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_read_$init$B PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_write_$init$C PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  $__gen_B_init PROCREF:<{
+  }>
+  __gen_load_B PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_B INLINECALLDICT
+      NIP
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      __gen_read_$init$B INLINECALLDICT
+      SWAP
+      ENDS
+      $__gen_B_init INLINECALLDICT
+    }>
+  }>
+  __gen_store_B PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    SWAP
+    __gen_write_B INLINECALLDICT
+    ENDC
+    c4 POP
   }>
   $__gen_C_init_child PROCREF:<{
     SWAP

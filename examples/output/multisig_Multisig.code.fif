@@ -11,6 +11,10 @@ PROGRAM{
   DECLPROC __tact_address_eq
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
+  DECLPROC $contractAddress
+  DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data
+  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
   DECLPROC __gen_write_Request
   DECLPROC __gen_read_Request
   DECLPROC __gen_read_Signed
@@ -21,14 +25,10 @@ PROGRAM{
   DECLPROC $__gen_Multisig_init
   DECLPROC __gen_load_Multisig
   DECLPROC __gen_store_Multisig
-  DECLPROC $contractAddress
-  DECLPROC $send
   DECLPROC $__gen_MultisigSigner_init_child
   DECLPROC $__gen_Multisig_member
   DECLPROC $__gen_Multisig_members
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data
   DECLPROC $__gen_Multisig_receive_Request
-  DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
   DECLPROC $__gen_Multisig_receive_Signed
   DECLPROC __gen_router_Multisig
   DECLPROC recv_internal
@@ -142,6 +142,122 @@ PROGRAM{
     DICTUGETREF
     NULLSWAPIFNOT
     135 THROWIFNOT
+  }>
+  $contractAddress PROCREF:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address INLINECALLDICT
+  }>
+  $send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_constructor_SendParameters$value_to_mode_bounce_code_data PROCINLINE:<{
+    s2 s5 XCHG
+    s2 s3 XCHG
+    PUSHNULL
+    -ROT
+  }>
+  __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
   }>
   __gen_write_Request PROCREF:<{
     4266760323 PUSHINT
@@ -290,110 +406,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $contractAddress PROCREF:<{
-    0 PUSHINT
-    -ROT
-    __tact_compute_contract_address INLINECALLDICT
-  }>
-  $send PROCREF:<{
-    NEWC
-    1 PUSHINT
-    SWAP
-    2 STI
-    s0 s7 XCHG2
-    __tact_store_bool INLINECALLDICT
-    0 PUSHINT
-    SWAP
-    3 STI
-    s0 s5 XCHG2
-    __tact_store_address INLINECALLDICT
-    s0 s3 XCHG2
-    STGRAMS
-    0 PUSHINT
-    SWAP
-    105 STI
-    s3 PUSH
-    ISNULL
-    NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      NEWC
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      ENDC
-      ROT
-      STREF
-    }>ELSE<{
-      s3 POP
-      s3 POP
-      SWAP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    OVER
-    ISNULL
-    NOT
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      SWAP
-      __tact_not_null INLINECALLDICT
-      SWAP
-      STREF
-    }>ELSE<{
-      NIP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    ENDC
-    SWAP
-    SENDRAWMSG
-  }>
   $__gen_MultisigSigner_init_child PROCREF:<{
     s0 s10 XCHG
     CTOS
@@ -434,12 +446,6 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  __gen_constructor_SendParameters$value_to_mode_bounce_code_data PROCINLINE:<{
-    s2 s5 XCHG
-    s2 s3 XCHG
-    PUSHNULL
-    -ROT
-  }>
   $__gen_Multisig_receive_Request PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     267 PUSHINT
@@ -469,12 +475,6 @@ PROGRAM{
     -ROT
     __gen_constructor_SendParameters$value_to_mode_bounce_code_data INLINECALLDICT
     $send INLINECALLDICT
-  }>
-  __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
-    s1 s4 XCHG
-    s3 s3 s0 XCHG3
-    PUSHNULL
-    PUSHNULL
   }>
   $__gen_Multisig_receive_Signed PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT

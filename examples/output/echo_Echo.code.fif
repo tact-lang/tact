@@ -10,15 +10,15 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
-  DECLPROC __gen_read_$init$Echo
-  DECLPROC $__gen_Echo_init
-  DECLPROC __gen_load_Echo
-  DECLPROC __gen_store_Echo
   DECLPROC $send
   DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_Slice_asCell
   DECLPROC $__gen_String_asComment
+  DECLPROC __gen_read_$init$Echo
+  DECLPROC $__gen_Echo_init
+  DECLPROC __gen_load_Echo
+  DECLPROC __gen_store_Echo
   DECLPROC $__gen_Echo_hello
   DECLPROC $__gen_Echo_receive_comment
   DECLPROC $__gen_Echo_receive_fallback
@@ -173,50 +173,6 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __gen_read_$init$Echo PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
-  $__gen_Echo_init PROCREF:<{
-    DROP
-    PUSHNULL
-  }>
-  __gen_load_Echo PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    SWAP
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      __gen_read_$init$Echo INLINECALLDICT
-      SWAP
-      ENDS
-      $__gen_Echo_init INLINECALLDICT
-    }>
-  }>
-  __gen_store_Echo PROCINLINE:<{
-    DROP
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
-    TRUE
-    SWAP
-    1 STI
-    ENDC
-    c4 POP
-  }>
   $send PROCREF:<{
     NEWC
     1 PUSHINT
@@ -342,6 +298,50 @@ PROGRAM{
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
+  }>
+  __gen_read_$init$Echo PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $__gen_Echo_init PROCREF:<{
+    DROP
+    PUSHNULL
+  }>
+  __gen_load_Echo PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      __gen_read_$init$Echo INLINECALLDICT
+      SWAP
+      ENDS
+      $__gen_Echo_init INLINECALLDICT
+    }>
+  }>
+  __gen_store_Echo PROCINLINE:<{
+    DROP
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    ENDC
+    c4 POP
   }>
   $__gen_Echo_hello PROCREF:<{
     NIP

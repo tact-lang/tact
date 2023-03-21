@@ -1,5 +1,6 @@
 import { Interval as RawInterval, Node as RawNode } from 'ohm-js';
 import { TactSyntaxError } from '../errors';
+import { TypeOrigin } from '../types/types';
 
 export class ASTRef {
 
@@ -38,6 +39,7 @@ export class ASTRef {
 
 export type ASTPrimitive = {
     kind: 'primitive',
+    origin: TypeOrigin,
     id: number,
     name: string,
     ref: ASTRef
@@ -199,6 +201,7 @@ export type ASTProgramImport = {
 
 export type ASTStruct = {
     kind: 'def_struct',
+    origin: TypeOrigin,
     id: number,
     name: string,
     message: boolean,
@@ -209,6 +212,7 @@ export type ASTStruct = {
 
 export type ASTTrait = {
     kind: 'def_trait',
+    origin: TypeOrigin,
     id: number,
     name: string,
     traits: ASTString[],
@@ -240,6 +244,7 @@ export type ASTContractAttribute = { type: 'interface', name: ASTString, ref: AS
 
 export type ASTContract = {
     kind: 'def_contract',
+    origin: TypeOrigin,
     id: number,
     name: string,
     traits: ASTString[],
@@ -260,6 +265,7 @@ export type ASTFunctionAttribute = { type: 'public', ref: ASTRef } | { type: 'ge
 
 export type ASTFunction = {
     kind: 'def_function',
+    origin: TypeOrigin,
     id: number,
     attributes: ASTFunctionAttribute[],
     name: string,
@@ -287,6 +293,7 @@ export type ASTReceive = {
 
 export type ASTNativeFunction = {
     kind: 'def_native_function',
+    origin: TypeOrigin,
     id: number,
     attributes: ASTFunctionAttribute[],
     name: string,

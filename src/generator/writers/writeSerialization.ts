@@ -2,6 +2,7 @@ import { contractErrors } from "../../abi/errors";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
+import { TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
@@ -13,7 +14,7 @@ const SMALL_STRUCT_MAX_FIELDS = 5;
 // Serializer
 //
 
-export function writeSerializer(name: string, forceInline: boolean, allocation: StorageAllocation, ctx: WriterContext) {
+export function writeSerializer(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     // Write to builder
@@ -22,7 +23,11 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
-        ctx.context('storage');
+        if (origin === 'user') {
+            ctx.context('storage');
+        } else {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             if (allocation.ops.length > 0) {
                 ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
@@ -39,18 +44,26 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
     ctx.fun(ops.writerCell(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
         ctx.flag('inline');
-        ctx.context('storage');
+        if (origin === 'user') {
+            ctx.context('storage');
+        } else {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             ctx.append(`return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();`);
         })
     });
 }
 
-export function writeOptionalSerializer(name: string, ctx: WriterContext) {
+export function writeOptionalSerializer(name: string, origin: TypeOrigin, ctx: WriterContext) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        ctx.context('storage');
+        if (origin === 'user') {
+            ctx.context('storage');
+        } else {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -215,7 +228,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
 // Parser
 //
 
-export function writeParser(name: string, forceInline: boolean, allocation: StorageAllocation, ctx: WriterContext) {
+export function writeParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(`__gen_read_${name}`, () => {
@@ -223,7 +236,11 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
-        ctx.context('storage');
+        if (origin === 'user') {
+            ctx.context('storage');
+        } else {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
 
             // Check prefix
@@ -240,11 +257,15 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
     });
 }
 
-export function writeOptionalParser(name: string, ctx: WriterContext) {
+export function writeOptionalParser(name: string, origin: TypeOrigin, ctx: WriterContext) {
     ctx.fun(`__gen_readopt_${name}`, () => {
         ctx.signature(`tuple __gen_readopt_${name}(cell cl)`);
         ctx.flag('inline');
-        ctx.context('storage');
+        if (origin === 'user') {
+            ctx.context('storage');
+        } else {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             ctx.write(`
                 if (null?(cl)) {

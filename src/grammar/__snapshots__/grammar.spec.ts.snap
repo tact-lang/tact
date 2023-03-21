@@ -103,6 +103,7 @@ exports[`grammar should parse case-0 1`] = `
       "id": 4,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -142,6 +143,7 @@ exports[`grammar should parse case-1 1`] = `
       "id": 10,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20;
 },
@@ -217,6 +219,7 @@ exports[`grammar should parse case-2 1`] = `
       "id": 12,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10;
 },
@@ -304,6 +307,7 @@ exports[`grammar should parse case-3 1`] = `
       "id": 14,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId;
 },
@@ -403,6 +407,7 @@ exports[`grammar should parse case-4 1`] = `
       "id": 22,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 10;
 },
@@ -550,6 +555,7 @@ exports[`grammar should parse case-5 1`] = `
       "id": 24,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);
 },
@@ -711,6 +717,7 @@ exports[`grammar should parse case-6 1`] = `
       "id": 25,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));
 },
@@ -880,6 +887,7 @@ exports[`grammar should parse case-7 1`] = `
       "id": 3,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc() {
     return 0;
 },
@@ -904,6 +912,7 @@ exports[`grammar should parse case-7 1`] = `
       "id": 7,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -934,6 +943,7 @@ exports[`grammar should parse case-7 1`] = `
       "id": 11,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Bool {
     return 0;
 },
@@ -974,6 +984,7 @@ exports[`grammar should parse case-8 1`] = `
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_1",
+      "origin": "user",
       "ref": @name(native_name_1)
 native testFunc();,
       "return": null,
@@ -985,6 +996,7 @@ native testFunc();,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_2",
+      "origin": "user",
       "ref": @name(native_name_2)
 native testFunc(): Int;,
       "return": {
@@ -1002,6 +1014,7 @@ native testFunc(): Int;,
       "kind": "def_native_function",
       "name": "testFunc",
       "nativeName": "native_name_3",
+      "origin": "user",
       "ref": @name(native_name_3)
 native testFunc(): Bool;,
       "return": {
@@ -1027,6 +1040,7 @@ exports[`grammar should parse case-9 1`] = `
       "id": 11,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return 1 + 2 + 3!! > 123;
 },
@@ -1108,6 +1122,7 @@ exports[`grammar should parse case-10 1`] = `
       "id": 13,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return 1 + 2 + (123 + 3)!! > 123;
 },
@@ -1215,6 +1230,7 @@ exports[`grammar should parse case-11 1`] = `
       "id": 15,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(src: Int?): Int {
     return 1 + 2 + (123 + 3)!! > 123;
 },
@@ -1322,6 +1338,7 @@ exports[`grammar should parse case-12 1`] = `
       "id": 12,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(src: Int?): Int {
     if (src != null) {
         return src;
@@ -1417,6 +1434,7 @@ exports[`grammar should parse case-13 1`] = `
       "id": 12,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(src: Int?): Int {
     if (src != null) {
         return src;
@@ -1621,6 +1639,7 @@ exports[`grammar should parse case-14 1`] = `
       "id": 18,
       "kind": "def_contract",
       "name": "Sample",
+      "origin": "user",
       "ref": contract Sample {
     a: Int;
     b: Int;
@@ -1647,6 +1666,7 @@ exports[`grammar should parse case-15 1`] = `
       "id": 25,
       "kind": "def_function",
       "name": "main",
+      "origin": "user",
       "ref": fun main() {
     let i: Int = 1;
     while(true) {
@@ -1835,6 +1855,7 @@ exports[`grammar should parse case-16 1`] = `
       "id": 17,
       "kind": "def_function",
       "name": "main",
+      "origin": "user",
       "ref": fun main() {
     let i: Int = 1;
     while(i >= 10 || i <= 100) {
@@ -1977,6 +1998,7 @@ exports[`grammar should parse case-17 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int;
@@ -2004,6 +2026,7 @@ exports[`grammar should parse case-17 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: Int;
@@ -2040,6 +2063,7 @@ exports[`grammar should parse case-18 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int;
@@ -2067,6 +2091,7 @@ exports[`grammar should parse case-18 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: Int as coin;
@@ -2108,6 +2133,7 @@ exports[`grammar should parse case-19 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "origin": "user",
       "prefix": null,
       "ref": struct A {
     x: Int = 1000;
@@ -2160,6 +2186,7 @@ exports[`grammar should parse case-19 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: Int as coins = 1000;
@@ -2197,6 +2224,7 @@ exports[`grammar should parse case-20 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "A",
+      "origin": "user",
       "prefix": null,
       "ref": struct A {
     y: map<Int, Int>;
@@ -2224,6 +2252,7 @@ exports[`grammar should parse case-20 1`] = `
       "kind": "def_struct",
       "message": true,
       "name": "B",
+      "origin": "user",
       "prefix": null,
       "ref": message B {
     x: map<Int, Int>;
@@ -2244,6 +2273,7 @@ exports[`grammar should parse case-21 1`] = `
       "id": 4,
       "kind": "def_function",
       "name": "main",
+      "origin": "user",
       "ref": fun main(): Int {
     return 1;
 },
@@ -2281,6 +2311,7 @@ exports[`grammar should parse case-22 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     {
@@ -2305,6 +2336,7 @@ exports[`grammar should parse case-22 1`] = `
       "id": 4,
       "kind": "def_trait",
       "name": "SomeTrait",
+      "origin": "user",
       "ref": trait SomeTrait {
     a: Int;
 },
@@ -2332,6 +2364,7 @@ exports[`grammar should parse case-22 1`] = `
       "id": 8,
       "kind": "def_contract",
       "name": "Main",
+      "origin": "user",
       "ref": contract Main with SomeTrait {
     b: Int;
 },
@@ -2357,6 +2390,7 @@ exports[`grammar should parse case-23 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     {
@@ -2388,6 +2422,7 @@ exports[`grammar should parse case-23 1`] = `
           "id": 7,
           "kind": "def_function",
           "name": "a",
+          "origin": "user",
           "ref": virtual fun a(): Int {
         return a;
     },
@@ -2416,6 +2451,7 @@ exports[`grammar should parse case-23 1`] = `
       "id": 8,
       "kind": "def_trait",
       "name": "SomeTrait",
+      "origin": "user",
       "ref": trait SomeTrait {
     a: Int;
 
@@ -2454,6 +2490,7 @@ exports[`grammar should parse case-23 1`] = `
           "id": 14,
           "kind": "def_function",
           "name": "a",
+          "origin": "user",
           "ref": overrides fun a(): Int {
         return b;
     },
@@ -2482,6 +2519,7 @@ exports[`grammar should parse case-23 1`] = `
       "id": 16,
       "kind": "def_contract",
       "name": "Main",
+      "origin": "user",
       "ref": contract Main with SomeTrait {
     b: Int;
 
@@ -2511,6 +2549,7 @@ exports[`grammar should parse case-24 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     {
@@ -2542,6 +2581,7 @@ exports[`grammar should parse case-24 1`] = `
           "id": 7,
           "kind": "def_function",
           "name": "a",
+          "origin": "user",
           "ref": virtual fun a(): Int {
         return a;
     },
@@ -2570,6 +2610,7 @@ exports[`grammar should parse case-24 1`] = `
       "id": 8,
       "kind": "def_trait",
       "name": "SomeTrait",
+      "origin": "user",
       "ref": trait SomeTrait {
     a: Int;
 
@@ -2608,6 +2649,7 @@ exports[`grammar should parse case-24 1`] = `
           "id": 14,
           "kind": "def_function",
           "name": "a",
+          "origin": "user",
           "ref": overrides fun a(): Int {
         return "hello world!";
     },
@@ -2636,6 +2678,7 @@ exports[`grammar should parse case-24 1`] = `
       "id": 16,
       "kind": "def_contract",
       "name": "Main",
+      "origin": "user",
       "ref": contract Main with SomeTrait {
     b: Int;
 
@@ -2694,6 +2737,7 @@ exports[`grammar should parse case-25 1`] = `
       "id": 16,
       "kind": "def_function",
       "name": "function",
+      "origin": "user",
       "ref": fun function(a: Int, b: Int): Int {
     return (a >> b) || (a << (32 - b));
 },

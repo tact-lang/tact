@@ -1,6 +1,6 @@
 import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTTypeRef, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeRef, typeRefEquals } from "./types";
+import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
@@ -103,6 +103,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (a.kind === 'primitive') {
             types[a.name] = {
                 kind: 'primitive',
+                origin: a.origin,
                 name: a.name,
                 uid,
                 fields: [],
@@ -121,6 +122,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
                 kind: 'contract',
+                origin: a.origin,
                 name: a.name,
                 uid,
                 header: null,
@@ -139,6 +141,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
                 kind: 'struct',
+                origin: a.origin,
                 name: a.name,
                 uid,
                 header: null,
@@ -157,6 +160,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
                 kind: 'trait',
+                origin: a.origin,
                 name: a.name,
                 uid,
                 header: null,
@@ -256,7 +260,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Resolve contract functions
     //
 
-    function resolveFunctionDescriptor(sself: string | null, a: ASTFunction | ASTNativeFunction): FunctionDescription {
+    function resolveFunctionDescriptor(sself: string | null, a: ASTFunction | ASTNativeFunction, origin: TypeOrigin): FunctionDescription {
 
         let self = sself;
 
@@ -398,6 +402,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         return {
             name: a.name,
             self: self,
+            origin,
             args,
             returns,
             ast: a,
@@ -431,7 +436,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             const s = types[a.name];
             for (const d of a.declarations) {
                 if (d.kind === 'def_function') {
-                    let f = resolveFunctionDescriptor(s.name, d);
+                    let f = resolveFunctionDescriptor(s.name, d, s.origin);
                     if (f.self !== s.name) {
                         throw Error('Function self must be ' + s.name); // Impossible
                     }
@@ -867,7 +872,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     for (let a of ast.functions) {
-        let r = resolveFunctionDescriptor(null, a);
+        let r = resolveFunctionDescriptor(null, a, a.origin);
         if (r.self) {
             if (types[r.self].functions.has(r.name)) {
                 throwError(`Function ${r.name} already exists in type ${r.self}`, r.ast.ref);

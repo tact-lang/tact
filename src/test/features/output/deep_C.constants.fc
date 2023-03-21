@@ -1,0 +1,2 @@
+;; String "Message2"
+slice __gen_str_1801178584() asm "B{b5ee9c7241010101000a0000104d65737361676532cd775f6e} B>boc <s PUSHSLICE";

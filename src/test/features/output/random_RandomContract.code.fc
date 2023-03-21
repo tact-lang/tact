@@ -26,67 +26,6 @@ tuple __gen_load_RandomContract() impure inline {
     set_data(b.end_cell());
 }
 
-int $randomInt() impure inline_ref {
-    __tact_prepare_random();
-    return random();
-}
-
-int $random(int $min, int $max) impure inline_ref {
-    __tact_prepare_random();
-    return ($min + rand(($max - $min)));
-}
-
-() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
-    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
-    builder $b = begin_cell();
-    $b = store_int($b, 1, 2);
-    $b = __tact_store_bool($b, $params'bounce);
-    $b = store_int($b, 0, 3);
-    $b = __tact_store_address($b, $params'to);
-    $b = store_coins($b, $params'value);
-    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = __tact_store_bool($b, true);
-        builder $bc = begin_cell();
-        $bc = __tact_store_bool($bc, false);
-        $bc = __tact_store_bool($bc, false);
-        if ((~ null?($params'code))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'code));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        if ((~ null?($params'data))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'data));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        $bc = __tact_store_bool($bc, false);
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, end_cell($bc));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $body = $params'body;
-    if ((~ null?($body))) {
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, __tact_not_null($body));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $c = end_cell($b);
-    send_raw_message($c, $params'mode);
-}
-
-((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
-    return (bounce, to, value, mode, body, null(), null());
-}
-
-() $reply(cell $body) impure inline_ref {
-    $send(__gen_constructor_SendParameters$bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
-}
-
 int $__gen_RandomContract_randomInt(tuple $self) impure inline_ref {
     var ($self) = $self;
     return $randomInt();

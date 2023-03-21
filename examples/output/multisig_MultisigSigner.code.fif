@@ -7,6 +7,8 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_dict_get_slice_int
+  DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_body
   DECLPROC __gen_write_Request
   DECLPROC __gen_read_Request
   DECLPROC __gen_write_Signed
@@ -18,10 +20,8 @@ PROGRAM{
   DECLPROC $__gen_MultisigSigner_init
   DECLPROC __gen_load_MultisigSigner
   DECLPROC __gen_store_MultisigSigner
-  DECLPROC $send
   DECLPROC $__gen_MultisigSigner_request
   DECLPROC $__gen_MultisigSigner_receive
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_body
   DECLPROC __gen_constructor_Signed$request
   DECLPROC $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
   DECLPROC __gen_router_MultisigSigner
@@ -103,6 +103,110 @@ PROGRAM{
       2DROP
       PUSHNULL
     }>
+  }>
+  $send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_constructor_SendParameters$value_to_mode_bounce_body PROCINLINE:<{
+    s4 s4 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
   }>
   __gen_write_Request PROCREF:<{
     4266760323 PUSHINT
@@ -274,114 +378,10 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROCREF:<{
-    NEWC
-    1 PUSHINT
-    SWAP
-    2 STI
-    s0 s7 XCHG2
-    __tact_store_bool INLINECALLDICT
-    0 PUSHINT
-    SWAP
-    3 STI
-    s0 s5 XCHG2
-    __tact_store_address INLINECALLDICT
-    s0 s3 XCHG2
-    STGRAMS
-    0 PUSHINT
-    SWAP
-    105 STI
-    s3 PUSH
-    ISNULL
-    NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      NEWC
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      ENDC
-      ROT
-      STREF
-    }>ELSE<{
-      s3 POP
-      s3 POP
-      SWAP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    OVER
-    ISNULL
-    NOT
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      SWAP
-      __tact_not_null INLINECALLDICT
-      SWAP
-      STREF
-    }>ELSE<{
-      NIP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    ENDC
-    SWAP
-    SENDRAWMSG
-  }>
   $__gen_MultisigSigner_request PROCREF:<{
     5 7 BLKDROP2
   }>
   $__gen_MultisigSigner_receive PROCINLINE:<{
-  }>
-  __gen_constructor_SendParameters$value_to_mode_bounce_body PROCINLINE:<{
-    s4 s4 s0 XCHG3
-    PUSHNULL
-    PUSHNULL
   }>
   __gen_constructor_Signed$request PROCINLINE:<{
   }>

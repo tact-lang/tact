@@ -47,7 +47,7 @@ describe('resolveFuncType', () => {
     });
 
     it('should process primitive types', () => {
-        let ctx = openContext(new CompilerContext(), [{ code: primitiveCode, path: '<unknown>' }], []);
+        let ctx = openContext(new CompilerContext(), [{ code: primitiveCode, path: '<unknown>', origin: 'user' }], []);
         ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
         expect(resolveFuncType({ kind: 'ref', name: 'Int', optional: false }, wctx)).toBe('int');
@@ -63,7 +63,7 @@ describe('resolveFuncType', () => {
     });
 
     it('should process contract and struct types', () => {
-        let ctx = openContext(new CompilerContext(), [{ code: primitiveCode, path: '<unknown>' }], []);
+        let ctx = openContext(new CompilerContext(), [{ code: primitiveCode, path: '<unknown>', origin: 'user' }], []);
         ctx = resolveDescriptors(ctx);
         let wctx = new WriterContext(ctx);
         expect(resolveFuncType({ kind: 'ref', name: 'Struct1', optional: false }, wctx)).toBe('(int, int)');

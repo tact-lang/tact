@@ -1,0 +1,2 @@
+;; String "Stopped"
+slice __gen_str_441410314() asm "B{b5ee9c7241010101000900000e53746f70706564f09baa70} B>boc <s PUSHSLICE";

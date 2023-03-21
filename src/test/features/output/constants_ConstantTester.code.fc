@@ -1,4 +1,5 @@
 #include "constants_ConstantTester.stdlib.fc";
+#include "constants_ConstantTester.constants.fc";
 
 tuple $__gen_ConstantTester_init() impure inline_ref {
     tuple $self = null();
@@ -24,9 +25,6 @@ tuple __gen_load_ConstantTester() impure inline {
     b = b.store_int(true, 1);
     set_data(b.end_cell());
 }
-
-;; String "Hello world!"
-slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
 
 int $__gen_ConstantTester_something1(tuple $self) impure inline_ref {
     var ($self) = $self;

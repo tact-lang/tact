@@ -1,4 +1,5 @@
 #include "payouts_Payouts.stdlib.fc";
+#include "payouts_Payouts.constants.fc";
 #include "payouts_Payouts.storage.fc";
 
 (slice, int) $__gen_Payouts_init(slice $owner, int $publicKey) impure inline_ref {
@@ -31,113 +32,6 @@
     set_data(b.end_cell());
 }
 
-;; String "Success"
-slice __gen_str_3364490128() asm "B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE";
-
-;; String "Already paid"
-slice __gen_str_2620117026() asm "B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE";
-
-slice $contractAddress((cell, cell) $s) impure inline_ref {
-    var (($s'code, $s'data)) = $s;
-    return __tact_compute_contract_address(0, $s'code, $s'data);
-}
-
-() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
-    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
-    builder $b = begin_cell();
-    $b = store_int($b, 1, 2);
-    $b = __tact_store_bool($b, $params'bounce);
-    $b = store_int($b, 0, 3);
-    $b = __tact_store_address($b, $params'to);
-    $b = store_coins($b, $params'value);
-    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = __tact_store_bool($b, true);
-        builder $bc = begin_cell();
-        $bc = __tact_store_bool($bc, false);
-        $bc = __tact_store_bool($bc, false);
-        if ((~ null?($params'code))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'code));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        if ((~ null?($params'data))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'data));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        $bc = __tact_store_bool($bc, false);
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, end_cell($bc));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $body = $params'body;
-    if ((~ null?($body))) {
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, __tact_not_null($body));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $c = end_cell($b);
-    send_raw_message($c, $params'mode);
-}
-
-slice $__gen_Builder_asSlice(builder $self) impure inline_ref {
-    var ($self) = $self;
-    return begin_parse(end_cell($self));
-}
-
-cell $__gen_Builder_asCell(builder $self) impure inline_ref {
-    var ($self) = $self;
-    return end_cell($self);
-}
-
-slice $__gen_Slice_fromBase64(slice $self) impure inline_ref {
-    var ($self) = $self;
-    int $size = (slice_bits($self) / 8);
-    builder $result = begin_cell();
-    repeat ($size) {
-        int $code = $self~load_uint(8);
-        if ((($code >= 65) & ($code <= 90))) {
-            $result = store_uint($result, ($code - 65), 6);
-        } elseif ((($code >= 97) & ($code <= 122))) {
-            $result = store_uint($result, ($code - (97 - 26)), 6);
-        } elseif ((($code >= 48) & ($code <= 57))) {
-            $result = store_uint($result, ($code + (52 - 48)), 6);
-        } elseif ((($code == 45) | ($code == 43))) {
-            $result = store_uint($result, 62, 6);
-        } elseif ((($code == 95) | ($code == 47))) {
-            $result = store_uint($result, 63, 6);
-        } elseif (($code == 61)) {
-        } else {
-            throw(134);
-        }
-    }
-    int $total = builder_bits($result);
-    int $padding = ($total % 8);
-    if (($padding != 0)) {
-        slice $s = $__gen_Builder_asSlice($result);
-        return $s~load_bits(($total - $padding));
-    } else {
-        return $__gen_Builder_asSlice($result);
-    }
-}
-
-cell $__gen_String_asComment(slice $self) impure inline_ref {
-    var ($self) = $self;
-    tuple $b = __tact_string_builder_start_comment();
-    $b~__tact_string_builder_append($self);
-    return __tact_string_builder_end($b);
-}
-
-slice $__gen_String_fromBase64(slice $self) impure inline_ref {
-    var ($self) = $self;
-    return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
-}
-
 (cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
@@ -164,10 +58,6 @@ slice $__gen_String_fromBase64(slice $self) impure inline_ref {
 slice $__gen_Payouts_owner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     return $self'owner;
-}
-
-((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
-    return (bounce, to, value, mode, body, null(), null());
 }
 
 ((int)) __gen_constructor_CanPayout$amount(int amount) inline {

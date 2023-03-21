@@ -6,6 +6,8 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
+  DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$value_to_mode_body
   DECLPROC __gen_write_Transfer
   DECLPROC __gen_writecell_Transfer
   DECLPROC __gen_read_Transfer
@@ -17,13 +19,11 @@ PROGRAM{
   DECLPROC $__gen_Wallet_init
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
-  DECLPROC $send
   DECLPROC $__gen_Wallet_init_child
   DECLPROC $__gen_Wallet_publicKey
   DECLPROC $__gen_Wallet_walletId
   DECLPROC $__gen_Wallet_seqno
   DECLPROC $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC __gen_constructor_SendParameters$value_to_mode_body
   DECLPROC $__gen_Wallet_receive_TransferMessage
   DECLPROC $__gen_Wallet_receive_fallback
   DECLPROC $__gen_Wallet_receive
@@ -92,6 +92,111 @@ PROGRAM{
     DICTUGETREF
     NULLSWAPIFNOT
     135 THROWIFNOT
+  }>
+  $send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_constructor_SendParameters$value_to_mode_body PROCINLINE:<{
+    TRUE
+    s4 s4 s4 XCHG3
+    PUSHNULL
+    PUSHNULL
   }>
   __gen_write_Transfer PROCINLINE:<{
     s4 s5 XCHG2
@@ -217,105 +322,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $send PROCREF:<{
-    NEWC
-    1 PUSHINT
-    SWAP
-    2 STI
-    s0 s7 XCHG2
-    __tact_store_bool INLINECALLDICT
-    0 PUSHINT
-    SWAP
-    3 STI
-    s0 s5 XCHG2
-    __tact_store_address INLINECALLDICT
-    s0 s3 XCHG2
-    STGRAMS
-    0 PUSHINT
-    SWAP
-    105 STI
-    s3 PUSH
-    ISNULL
-    NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      NEWC
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      ENDC
-      ROT
-      STREF
-    }>ELSE<{
-      s3 POP
-      s3 POP
-      SWAP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    OVER
-    ISNULL
-    NOT
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      SWAP
-      __tact_not_null INLINECALLDICT
-      SWAP
-      STREF
-    }>ELSE<{
-      NIP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    ENDC
-    SWAP
-    SENDRAWMSG
-  }>
   $__gen_Wallet_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
@@ -354,12 +360,6 @@ PROGRAM{
     2DROP
   }>
   $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
-  }>
-  __gen_constructor_SendParameters$value_to_mode_body PROCINLINE:<{
-    TRUE
-    s4 s4 s4 XCHG3
-    PUSHNULL
-    PUSHNULL
   }>
   $__gen_Wallet_receive_TransferMessage PROCINLINE:<{
     s4 s3 s2 PUSH3

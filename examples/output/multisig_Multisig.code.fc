@@ -34,54 +34,6 @@
     set_data(b.end_cell());
 }
 
-slice $contractAddress((cell, cell) $s) impure inline_ref {
-    var (($s'code, $s'data)) = $s;
-    return __tact_compute_contract_address(0, $s'code, $s'data);
-}
-
-() $send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
-    var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
-    builder $b = begin_cell();
-    $b = store_int($b, 1, 2);
-    $b = __tact_store_bool($b, $params'bounce);
-    $b = store_int($b, 0, 3);
-    $b = __tact_store_address($b, $params'to);
-    $b = store_coins($b, $params'value);
-    $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?($params'code)) | (~ null?($params'data)))) {
-        $b = __tact_store_bool($b, true);
-        builder $bc = begin_cell();
-        $bc = __tact_store_bool($bc, false);
-        $bc = __tact_store_bool($bc, false);
-        if ((~ null?($params'code))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'code));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        if ((~ null?($params'data))) {
-            $bc = __tact_store_bool($bc, true);
-            $bc = store_ref($bc, __tact_not_null($params'data));
-        } else {
-            $bc = __tact_store_bool($bc, false);
-        }
-        $bc = __tact_store_bool($bc, false);
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, end_cell($bc));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $body = $params'body;
-    if ((~ null?($body))) {
-        $b = __tact_store_bool($b, true);
-        $b = store_ref($b, __tact_not_null($body));
-    } else {
-        $b = __tact_store_bool($b, false);
-    }
-    cell $c = end_cell($b);
-    send_raw_message($c, $params'mode);
-}
-
 (cell, cell) $__gen_MultisigSigner_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
@@ -109,10 +61,6 @@ cell $__gen_Multisig_members((int, cell, int, int) $self) impure inline_ref {
     return $self'members;
 }
 
-((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_bounce_code_data(int value, slice to, int mode, int bounce, cell code, cell data) inline {
-    return (bounce, to, value, mode, null(), code, data);
-}
-
 (((int, cell, int, int)), ()) $__gen_Multisig_receive_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure inline {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body) = $msg;
@@ -123,10 +71,6 @@ cell $__gen_Multisig_members((int, cell, int, int) $self) impure inline_ref {
     slice $opAddress = $contractAddress(($opInit'code, $opInit'data));
     $send(__gen_constructor_SendParameters$value_to_mode_bounce_code_data(0, $opAddress, (64 + 2), true, $opInit'code, $opInit'data));
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
-}
-
-((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
-    return (bounce, to, value, mode, body, null(), null());
 }
 
 (((int, cell, int, int)), ()) $__gen_Multisig_receive_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure inline {

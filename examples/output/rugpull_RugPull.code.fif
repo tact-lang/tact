@@ -13,6 +13,11 @@ PROGRAM{
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_append
+  DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
+  DECLPROC $reply
+  DECLPROC $__gen_String_asComment
+  DECLPROC __gen_constructor_SendParameters$value_to_mode
   DECLPROC __gen_read_ChangeOwner
   DECLPROC __gen_write_RugPull
   DECLPROC __gen_read_RugPull
@@ -21,11 +26,6 @@ PROGRAM{
   DECLPROC $__gen_RugPull_init
   DECLPROC __gen_load_RugPull
   DECLPROC __gen_store_RugPull
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
-  DECLPROC $__gen_String_asComment
-  DECLPROC __gen_constructor_SendParameters$value_to_mode
   DECLPROC $__gen_RugPull_sendPayout
   DECLPROC __gen_constructor_RugParams$investment_returns_fee
   DECLPROC $__gen_RugPull_params
@@ -218,6 +218,133 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
+  $send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $reply PROCREF:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
+    $send INLINECALLDICT
+  }>
+  $__gen_String_asComment PROCREF:<{
+    __tact_string_builder_start_comment INLINECALLDICT
+    SWAP
+    __tact_string_builder_append INLINECALLDICT
+    __tact_string_builder_end INLINECALLDICT
+  }>
+  __gen_constructor_SendParameters$value_to_mode PROCINLINE:<{
+    TRUE
+    s3 s3 XCHG2
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+  }>
   __gen_read_ChangeOwner PROCINLINE:<{
     32 LDU
     SWAP
@@ -352,133 +479,6 @@ PROGRAM{
     __gen_write_RugPull INLINECALLDICT
     ENDC
     c4 POP
-  }>
-  $send PROCREF:<{
-    NEWC
-    1 PUSHINT
-    SWAP
-    2 STI
-    s0 s7 XCHG2
-    __tact_store_bool INLINECALLDICT
-    0 PUSHINT
-    SWAP
-    3 STI
-    s0 s5 XCHG2
-    __tact_store_address INLINECALLDICT
-    s0 s3 XCHG2
-    STGRAMS
-    0 PUSHINT
-    SWAP
-    105 STI
-    s3 PUSH
-    ISNULL
-    NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      NEWC
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      ENDC
-      ROT
-      STREF
-    }>ELSE<{
-      s3 POP
-      s3 POP
-      SWAP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    OVER
-    ISNULL
-    NOT
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      SWAP
-      __tact_not_null INLINECALLDICT
-      SWAP
-      STREF
-    }>ELSE<{
-      NIP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    ENDC
-    SWAP
-    SENDRAWMSG
-  }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $reply PROCREF:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
-  }>
-  $__gen_String_asComment PROCREF:<{
-    __tact_string_builder_start_comment INLINECALLDICT
-    SWAP
-    __tact_string_builder_append INLINECALLDICT
-    __tact_string_builder_end INLINECALLDICT
-  }>
-  __gen_constructor_SendParameters$value_to_mode PROCINLINE:<{
-    TRUE
-    s3 s3 XCHG2
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
   }>
   $__gen_RugPull_sendPayout PROCREF:<{
     SWAP

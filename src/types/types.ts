@@ -1,8 +1,11 @@
 import { ABIField, Address, Cell } from "ton-core";
 import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
+export type TypeOrigin = 'stdlib' | 'user';
+
 export type TypeDescription = {
     kind: 'struct' | 'primitive' | 'contract' | 'trait';
+    origin: TypeOrigin;
     name: string;
     uid: number;
     header: number | null;
@@ -61,6 +64,7 @@ export type FunctionArgument = {
 
 export type FunctionDescription = {
     name: string,
+    origin: TypeOrigin,
     isPublic: boolean,
     isGetter: boolean,
     isMutating: boolean,

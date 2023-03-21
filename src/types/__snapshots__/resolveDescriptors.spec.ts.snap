@@ -215,6 +215,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -226,6 +227,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -237,6 +239,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -248,6 +251,7 @@ exports[`resolveDescriptors should resolve descriptors for case-0 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -266,6 +270,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -277,6 +282,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -288,6 +294,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -299,6 +306,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -343,6 +351,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Struct1",
+      "origin": "user",
       "prefix": null,
       "ref": struct Struct1 {
     a: Int;
@@ -430,6 +439,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "interfaces": [],
     "kind": "struct",
     "name": "Struct1",
+    "origin": "user",
     "receivers": [],
     "signature": "Struct1{a:int257,b:bool}",
     "tlb": "_ a:int257 b:bool = Struct1",
@@ -459,6 +469,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Struct2",
+      "origin": "user",
       "prefix": null,
       "ref": struct Struct2 {
     a: Struct1;
@@ -509,6 +520,7 @@ exports[`resolveDescriptors should resolve descriptors for case-1 1`] = `
     "interfaces": [],
     "kind": "struct",
     "name": "Struct2",
+    "origin": "user",
     "receivers": [],
     "signature": "Struct2{a:Struct1{a:int257,b:bool}}",
     "tlb": "_ a:Struct1{a:int257,b:bool} = Struct2",
@@ -527,6 +539,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -538,6 +551,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -549,6 +563,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -560,6 +575,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -579,6 +595,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
       "id": 6,
       "kind": "def_function",
       "name": "testFunc",
+      "origin": "user",
       "ref": fun testFunc(): Int {
     return 0;
 },
@@ -609,6 +626,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
     "isPublic": false,
     "isVirtual": false,
     "name": "testFunc",
+    "origin": "user",
     "returns": {
       "kind": "ref",
       "name": "Int",
@@ -624,6 +642,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
       "id": 9,
       "kind": "def_function",
       "name": "testFunc2",
+      "origin": "user",
       "ref": fun testFunc2() {
     return 0;
 },
@@ -648,6 +667,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
     "isPublic": false,
     "isVirtual": false,
     "name": "testFunc2",
+    "origin": "user",
     "returns": {
       "kind": "void",
     },
@@ -709,6 +729,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
       "id": 16,
       "kind": "def_function",
       "name": "testFunc3",
+      "origin": "user",
       "ref": fun testFunc3(a: Int, b: Bool) {
     return 0;
 },
@@ -733,6 +754,7 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
     "isPublic": false,
     "isVirtual": false,
     "name": "testFunc3",
+    "origin": "user",
     "returns": {
       "kind": "void",
     },
@@ -748,6 +770,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -759,6 +782,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -814,6 +838,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "id": 8,
           "kind": "def_function",
           "name": "hello",
+          "origin": "user",
           "ref": fun hello() {
         
     },
@@ -826,6 +851,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "id": 9,
           "kind": "def_function",
           "name": "hello2",
+          "origin": "user",
           "ref": fun hello2() {
         
     },
@@ -836,6 +862,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
       "id": 10,
       "kind": "def_contract",
       "name": "HelloWorld",
+      "origin": "user",
       "ref": contract HelloWorld {
     a: Int;
     b: Bool;
@@ -938,6 +965,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "id": 8,
           "kind": "def_function",
           "name": "hello",
+          "origin": "user",
           "ref": fun hello() {
         
     },
@@ -950,6 +978,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "isPublic": false,
         "isVirtual": false,
         "name": "hello",
+        "origin": "user",
         "returns": {
           "kind": "void",
         },
@@ -963,6 +992,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "id": 9,
           "kind": "def_function",
           "name": "hello2",
+          "origin": "user",
           "ref": fun hello2() {
         
     },
@@ -975,6 +1005,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
         "isPublic": false,
         "isVirtual": false,
         "name": "hello2",
+        "origin": "user",
         "returns": {
           "kind": "void",
         },
@@ -997,6 +1028,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "interfaces": [],
     "kind": "contract",
     "name": "HelloWorld",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1008,6 +1040,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1019,6 +1052,7 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1037,6 +1071,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -1048,6 +1083,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1059,6 +1095,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1070,6 +1107,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1115,6 +1153,7 @@ exports[`resolveDescriptors should resolve descriptors for case-4 2`] = `
       "kind": "def_native_function",
       "name": "sample",
       "nativeName": "hello_world",
+      "origin": "user",
       "ref": @name(hello_world)
 native sample(a: Int): Int;,
       "return": {
@@ -1131,6 +1170,7 @@ native sample(a: Int): Int;,
     "isPublic": false,
     "isVirtual": false,
     "name": "sample",
+    "origin": "user",
     "returns": {
       "kind": "ref",
       "name": "Int",
@@ -1148,6 +1188,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -1159,6 +1200,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1170,6 +1212,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1208,6 +1251,7 @@ exports[`resolveDescriptors should resolve descriptors for case-5 1`] = `
           "kind": "def_native_function",
           "name": "inc",
           "nativeName": "inc",
+          "origin": "user",
           "ref": @name(inc)
 mutates extends native inc(self: Int): Int;,
           "return": {
@@ -1224,6 +1268,7 @@ mutates extends native inc(self: Int): Int;,
         "isPublic": false,
         "isVirtual": false,
         "name": "inc",
+        "origin": "user",
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -1237,6 +1282,7 @@ mutates extends native inc(self: Int): Int;,
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1255,6 +1301,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -1266,6 +1313,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1277,6 +1325,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1310,6 +1359,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
           "id": 10,
           "kind": "def_function",
           "name": "inc",
+          "origin": "user",
           "ref": extends fun inc(self: Int): Int {
     return self + 1;
 },
@@ -1352,6 +1402,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
         "isPublic": false,
         "isVirtual": false,
         "name": "inc",
+        "origin": "user",
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -1365,6 +1416,7 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1383,6 +1435,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
       "id": 2,
       "kind": "primitive",
       "name": "Bool",
+      "origin": "user",
       "ref": primitive Bool;,
     },
     "constants": [],
@@ -1394,6 +1447,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Bool",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1405,6 +1459,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
       "id": 1,
       "kind": "primitive",
       "name": "Int",
+      "origin": "user",
       "ref": primitive Int;,
     },
     "constants": [],
@@ -1416,6 +1471,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "interfaces": [],
     "kind": "primitive",
     "name": "Int",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1501,6 +1557,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "id": 18,
           "kind": "def_function",
           "name": "hello",
+          "origin": "user",
           "ref": get fun hello(): Int {
         return 0;
     },
@@ -1536,6 +1593,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "id": 22,
           "kind": "def_function",
           "name": "hello2",
+          "origin": "user",
           "ref": get fun hello2(): Point {
         return 0;
     },
@@ -1564,6 +1622,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
       "id": 23,
       "kind": "def_contract",
       "name": "Main",
+      "origin": "user",
       "ref": contract Main {
     a: Int;
     init(a: Int) {
@@ -1633,6 +1692,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "id": 18,
           "kind": "def_function",
           "name": "hello",
+          "origin": "user",
           "ref": get fun hello(): Int {
         return 0;
     },
@@ -1663,6 +1723,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "isPublic": false,
         "isVirtual": false,
         "name": "hello",
+        "origin": "user",
         "returns": {
           "kind": "ref",
           "name": "Int",
@@ -1683,6 +1744,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
           "id": 22,
           "kind": "def_function",
           "name": "hello2",
+          "origin": "user",
           "ref": get fun hello2(): Point {
         return 0;
     },
@@ -1713,6 +1775,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
         "isPublic": false,
         "isVirtual": false,
         "name": "hello2",
+        "origin": "user",
         "returns": {
           "kind": "ref",
           "name": "Point",
@@ -1788,6 +1851,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "interfaces": [],
     "kind": "contract",
     "name": "Main",
+    "origin": "user",
     "receivers": [],
     "signature": null,
     "tlb": null,
@@ -1817,6 +1881,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
       "kind": "def_struct",
       "message": false,
       "name": "Point",
+      "origin": "user",
       "prefix": null,
       "ref": struct Point {
     p: Int;
@@ -1868,6 +1933,7 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
     "interfaces": [],
     "kind": "struct",
     "name": "Point",
+    "origin": "user",
     "receivers": [],
     "signature": "Point{p:int257}",
     "tlb": "_ p:int257 = Point",

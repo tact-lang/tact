@@ -1,6 +1,6 @@
 import { contractErrors } from "../../abi/errors";
 import { enabledInline, enabledMaterchain } from "../../config/features";
-import { InitDescription, TypeDescription } from "../../types/types";
+import { InitDescription, TypeDescription, TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { fn, id } from "./id";
 import { ops } from "./ops";
@@ -12,13 +12,16 @@ import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
 import { writeRouter } from "./writeRouter";
 
-export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
+export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
         ctx.signature(`${resolveFuncType(type, ctx)} __gen_load_${type.name}()`);
         ctx.flag('impure');
         ctx.flag('inline');
+        if (origin === 'stdlib') {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
 
             // Load data slice
@@ -69,6 +72,9 @@ export function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
         ctx.signature(sig);
         ctx.flag('impure');
         ctx.flag('inline');
+        if (origin === 'stdlib') {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             ctx.append(`builder b = begin_cell();`);
 
@@ -95,6 +101,9 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         const sig = `${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${args.join(', ')})`;
         ctx.signature(sig);
         ctx.flag('impure');
+        if (t.origin === 'stdlib') {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             // Unpack args
             for (let a of init.args) {

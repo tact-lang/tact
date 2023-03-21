@@ -1,0 +1,24 @@
+tuple $__gen_StringsTester_init() impure inline_ref {
+    tuple $self = null();
+    return $self;
+}
+
+tuple __gen_load_StringsTester() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        return $__gen_StringsTester_init();
+    }
+}
+
+() __gen_store_StringsTester(tuple v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    set_data(b.end_cell());
+}

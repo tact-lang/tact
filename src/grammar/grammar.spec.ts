@@ -15,13 +15,13 @@ describe('grammar', () => {
 
     for (let r of loadCases(__dirname + "/test/")) {
         it('should parse ' + r.name, () => {
-            expect(parse(r.code, '<unknown>')).toMatchSnapshot();
+            expect(parse(r.code, '<unknown>', 'user')).toMatchSnapshot();
         });
     }
 
     for (let r of loadCases(__dirname + "/test-failed/")) {
         it('should fail ' + r.name, () => {
-            expect(() => parse(r.code, '<unknown>')).toThrowErrorMatchingSnapshot();
+            expect(() => parse(r.code, '<unknown>', 'user')).toThrowErrorMatchingSnapshot();
         });
     }
 });

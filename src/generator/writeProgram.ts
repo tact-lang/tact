@@ -83,6 +83,19 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     }
 
     // 
+    // constants
+    //
+
+    const constantsFunctions = tryExtractModule(functions, 'constants', imported);
+    if (constantsFunctions) {
+        imported.push('constants');
+        files.push({
+            name: basename + '.constants.fc',
+            code: emit({ functions: constantsFunctions })
+        });
+    }
+
+    // 
     // storage
     //
 
@@ -142,9 +155,11 @@ function tryExtractModule(functions: WrittenFunction[], context: string | null, 
             for (let d of f.depends) {
                 let c = maps.get(d)!.context;
                 if (!c) {
+                    console.warn(`Function ${f.name} depends on ${d} with generic context, but ${context} is needed`);
                     return null; // Found dependency to unknown function
                 }
                 if (c !== context && (c !== null && !imported.includes(c))) {
+                    console.warn(`Function ${f.name} depends on ${d} with ${context} context, but ${context} is needed`);
                     return null; // Found dependency to another context
                 }
             }
@@ -172,17 +187,17 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     for (let t of sortedTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
             let allocation = getAllocation(ctx, t.name);
-            writeSerializer(t.name, t.kind === 'contract', allocation, wctx);
-            writeOptionalSerializer(t.name, wctx);
-            writeParser(t.name, t.kind === 'contract', allocation, wctx);
-            writeOptionalParser(t.name, wctx);
+            writeSerializer(t.name, t.kind === 'contract', allocation, t.origin, wctx);
+            writeOptionalSerializer(t.name, t.origin, wctx);
+            writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
+            writeOptionalParser(t.name, t.origin, wctx);
         }
     }
 
     // Accessors
     for (let t of allTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
-            writeAccessors(t, wctx);
+            writeAccessors(t, t.origin, wctx);
         }
     }
 
@@ -190,15 +205,15 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     for (let t of sortedTypes) {
         if (t.kind === 'contract' && t.init) {
             let allocation = getAllocation(ctx, '$init$' + t.name);
-            writeSerializer(`$init$${t.name}`, true, allocation, wctx);
-            writeParser(`$init$${t.name}`, false, allocation, wctx);
+            writeSerializer(`$init$${t.name}`, true, allocation, t.origin, wctx);
+            writeParser(`$init$${t.name}`, false, allocation, t.origin, wctx);
         }
     }
 
     // Storage Functions
     for (let t of sortedTypes) {
         if (t.kind === 'contract') {
-            writeStorageOps(t, wctx);
+            writeStorageOps(t, t.origin, wctx);
         }
     }
 

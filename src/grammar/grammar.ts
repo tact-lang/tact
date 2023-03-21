@@ -3,7 +3,9 @@ import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTRef
 import { checkVariableName } from './checkVariableName';
 import { TactSyntaxError } from './../errors';
 import { MatchResult } from 'ohm-js';
+import { TypeOrigin } from '../types/types';
 
+let ctx: { origin: TypeOrigin } | null;
 
 // Semantics
 const semantics = rawGrammar.createSemantics();
@@ -35,6 +37,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'primitive',
+            origin: ctx!.origin,
             name: arg1.sourceString,
             ref: createRef(this)
         });
@@ -43,6 +46,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_struct',
+            origin: ctx!.origin,
             name: arg1.sourceString,
             fields: arg3.children.map((v) => v.resolve_declaration()),
             prefix: null,
@@ -54,6 +58,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_struct',
+            origin: ctx!.origin,
             name: arg1.sourceString,
             fields: arg3.children.map((v) => v.resolve_declaration()),
             prefix: null,
@@ -65,6 +70,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg1.sourceString, createRef(arg1));
         return createNode({
             kind: 'def_struct',
+            origin: ctx!.origin,
             name: arg4.sourceString,
             fields: arg6.children.map((v) => v.resolve_declaration()),
             prefix: parseInt(arg2.sourceString),
@@ -76,6 +82,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_contract',
+            origin: ctx!.origin,
             name: arg2.sourceString,
             attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg4.children.map((v) => v.resolve_declaration()),
@@ -87,6 +94,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_contract',
+            origin: ctx!.origin,
             name: arg2.sourceString,
             attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg6.children.map((v) => v.resolve_declaration()),
@@ -98,6 +106,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_trait',
+            origin: ctx!.origin,
             name: arg2.sourceString,
             attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg4.children.map((v) => v.resolve_declaration()),
@@ -109,6 +118,7 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_trait',
+            origin: ctx!.origin,
             name: arg2.sourceString,
             attributes: arg0.children.map((v: any) => v.resolve_contract_attributes()),
             declarations: arg6.children.map((v) => v.resolve_declaration()),
@@ -228,6 +238,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
+            origin: ctx!.origin,
             attributes: arg0.children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
             return: arg7.resolve_expression(),
@@ -240,6 +251,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg2.sourceString, createRef(arg2));
         return createNode({
             kind: 'def_function',
+            origin: ctx!.origin,
             attributes: arg0.children.map((v: any) => v.resolve_attributes()),
             name: arg2.sourceString,
             return: null,
@@ -252,6 +264,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
+            origin: ctx!.origin,
             attributes: arg4.children.map((v: any) => v.resolve_attributes()),
             name: arg6.sourceString,
             nativeName: arg2.sourceString,
@@ -264,6 +277,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         checkVariableName(arg5.sourceString, createRef(arg5));
         return createNode({
             kind: 'def_native_function',
+            origin: ctx!.origin,
             attributes: arg4.children.map((v: any) => v.resolve_attributes()),
             name: arg6.sourceString,
             nativeName: arg2.sourceString,
@@ -548,7 +562,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
         return createNode({ kind: 'init_of', name: arg1.sourceString, args: arg3.asIteration().children.map((v: any) => v.resolve_expression()), ref: createRef(this) });
     },
 });
- 
+
 function throwMatchError(matchResult: MatchResult, path: string): never {
     let interval = (matchResult as any).getInterval();
     let lc = interval.getLineAndColumn() as { lineNum: number, colNum: number };
@@ -557,19 +571,23 @@ function throwMatchError(matchResult: MatchResult, path: string): never {
     throw new TactSyntaxError(message, new ASTRef(interval, path));
 }
 
-export function parse(src: string, path: string): ASTProgram {
+export function parse(src: string, path: string, origin: TypeOrigin): ASTProgram {
     return inFile(path, () => {
         let matchResult = rawGrammar.match(src);
         if (matchResult.failed()) {
             throwMatchError(matchResult, path);
         }
-        let res = semantics(matchResult).resolve_program();
-        return res;
+        ctx = { origin };
+        try {
+            return semantics(matchResult).resolve_program();
+        } finally {
+            ctx = null;
+        }
     });
 }
 
-export function parseImports(src: string, path: string): string[] {
-    let r = parse(src, path);
+export function parseImports(src: string, path: string, origin: TypeOrigin): string[] {
+    let r = parse(src, path, origin);
     let imports: string[] = [];
     let hasExpression = false;
     for (let e of r.entries) {

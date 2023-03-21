@@ -61,7 +61,7 @@ describe('resolveAllocation', () => {
         __DANGER_resetNodeId();
     });
     it('should write program', () => {
-        let ctx = openContext(new CompilerContext(), [{ code: stdlib, path: stdlibPath }, { code: src, path: '<unknown>' }], []);
+        let ctx = openContext(new CompilerContext(), [{ code: stdlib, path: stdlibPath, origin: 'stdlib' }, { code: src, path: '<unknown>', origin: 'user' }], []);
         ctx = resolveDescriptors(ctx);
         ctx = resolveSignatures(ctx);
         ctx = resolveStatements(ctx);

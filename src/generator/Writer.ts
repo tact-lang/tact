@@ -114,6 +114,7 @@ export class WriterContext {
     skip(name: string) {
         this.fun(name, () => {
             this.signature('<unknown>');
+            this.context('stdlib');
             this.#pendingCode = { kind: 'skip' };
         });
     };

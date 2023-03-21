@@ -1,0 +1,5 @@
+;; String "Success"
+slice __gen_str_3364490128() asm "B{b5ee9c7241010101000900000e5375636365737315355de8} B>boc <s PUSHSLICE";
+
+;; String "Already paid"
+slice __gen_str_2620117026() asm "B{b5ee9c7241010101000e000018416c72656164792070616964d417bf7a} B>boc <s PUSHSLICE";

@@ -9,6 +9,9 @@ PROGRAM{
   DECLPROC __tact_dict_set_int_cell
   DECLPROC __tact_dict_get_int_cell
   DECLPROC __tact_dict_set_slice_int
+  DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
+  DECLPROC $reply
   DECLPROC __gen_read_Deploy
   DECLPROC __gen_write_DeployOk
   DECLPROC __gen_writecell_DeployOk
@@ -25,9 +28,6 @@ PROGRAM{
   DECLPROC $__gen_IncrementContract_init
   DECLPROC __gen_load_IncrementContract
   DECLPROC __gen_store_IncrementContract
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
   DECLPROC $__gen_IncrementContract_counters
   DECLPROC $__gen_IncrementContract_counters2
   DECLPROC $__gen_IncrementContract_receive_Increment
@@ -150,6 +150,120 @@ PROGRAM{
       s1 s3 s3 XCHG3
       DICTSETB
     }>
+  }>
+  $send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $reply PROCREF:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
+    $send INLINECALLDICT
   }>
   __gen_read_Deploy PROCINLINE:<{
     32 LDU
@@ -319,120 +433,6 @@ PROGRAM{
     __gen_write_IncrementContract INLINECALLDICT
     ENDC
     c4 POP
-  }>
-  $send PROCREF:<{
-    NEWC
-    1 PUSHINT
-    SWAP
-    2 STI
-    s0 s7 XCHG2
-    __tact_store_bool INLINECALLDICT
-    0 PUSHINT
-    SWAP
-    3 STI
-    s0 s5 XCHG2
-    __tact_store_address INLINECALLDICT
-    s0 s3 XCHG2
-    STGRAMS
-    0 PUSHINT
-    SWAP
-    105 STI
-    s3 PUSH
-    ISNULL
-    NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      NEWC
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      s4 PUSH
-      ISNULL
-      NOT
-      IF:<{
-        TRUE
-        __tact_store_bool INLINECALLDICT
-        s0 s4 XCHG
-        __tact_not_null INLINECALLDICT
-        s0 s4 XCHG2
-        STREF
-      }>ELSE<{
-        s4 POP
-        s0 s3 XCHG
-        FALSE
-        __tact_store_bool INLINECALLDICT
-      }>
-      FALSE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      s0 s2 XCHG
-      ENDC
-      ROT
-      STREF
-    }>ELSE<{
-      s3 POP
-      s3 POP
-      SWAP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    OVER
-    ISNULL
-    NOT
-    IF:<{
-      TRUE
-      __tact_store_bool INLINECALLDICT
-      SWAP
-      __tact_not_null INLINECALLDICT
-      SWAP
-      STREF
-    }>ELSE<{
-      NIP
-      FALSE
-      __tact_store_bool INLINECALLDICT
-    }>
-    ENDC
-    SWAP
-    SENDRAWMSG
-  }>
-  __gen_constructor_SendParameters$bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $reply PROCREF:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
-    $send INLINECALLDICT
   }>
   $__gen_IncrementContract_counters PROCREF:<{
     4 BLKDROP

@@ -200,6 +200,9 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
         if (enabledInline(ctx.ctx)) {
             ctx.flag('inline');
         }
+        if (f.origin === 'stdlib') {
+            ctx.context('stdlib');
+        }
         ctx.body(() => {
             // Unpack self
             if (self) {

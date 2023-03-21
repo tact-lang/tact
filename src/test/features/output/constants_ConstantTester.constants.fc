@@ -1,0 +1,2 @@
+;; String "Hello world!"
+slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";

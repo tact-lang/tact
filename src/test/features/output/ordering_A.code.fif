@@ -5,6 +5,9 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
+  DECLPROC $send
+  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
+  DECLPROC $reply
   DECLPROC __gen_read_Deploy
   DECLPROC __gen_write_DeployOk
   DECLPROC __gen_writecell_DeployOk
@@ -15,9 +18,6 @@ PROGRAM{
   DECLPROC $__gen_A_init
   DECLPROC __gen_load_A
   DECLPROC __gen_store_A
-  DECLPROC $send
-  DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
-  DECLPROC $reply
   DECLPROC $__gen_Int_inc
   DECLPROC __gen_constructor_S$v3_v2_v1
   DECLPROC $__gen_A_create
@@ -73,76 +73,6 @@ PROGRAM{
   __tact_store_bool PROCINLINE:<{
     SWAP
     1 STI
-  }>
-  __gen_read_Deploy PROCINLINE:<{
-    32 LDU
-    SWAP
-    2490013878 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    64 LDU
-    SWAP
-  }>
-  __gen_write_DeployOk PROCINLINE:<{
-    2952335191 PUSHINT
-    ROT
-    32 STU
-    64 STU
-  }>
-  __gen_writecell_DeployOk PROCINLINE:<{
-    NEWC
-    SWAP
-    __gen_write_DeployOk INLINECALLDICT
-    ENDC
-  }>
-  __gen_write_A PROCINLINE:<{
-    __tact_store_address INLINECALLDICT
-  }>
-  __gen_read_A PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-  }>
-  __gen_S_to_external PROCINLINE:<{
-  }>
-  __gen_read_$init$A PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-  }>
-  $__gen_A_init PROCREF:<{
-  }>
-  __gen_load_A PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    SWAP
-    IF:<{
-      __gen_read_A INLINECALLDICT
-      NIP
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      __gen_read_$init$A INLINECALLDICT
-      SWAP
-      ENDS
-      $__gen_A_init INLINECALLDICT
-    }>
-  }>
-  __gen_store_A PROCINLINE:<{
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
-    TRUE
-    SWAP
-    1 STI
-    SWAP
-    __gen_write_A INLINECALLDICT
-    ENDC
-    c4 POP
   }>
   $send PROCREF:<{
     NEWC
@@ -257,6 +187,76 @@ PROGRAM{
     SWAP
     __gen_constructor_SendParameters$bounce_to_value_mode_body INLINECALLDICT
     $send INLINECALLDICT
+  }>
+  __gen_read_Deploy PROCINLINE:<{
+    32 LDU
+    SWAP
+    2490013878 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    SWAP
+  }>
+  __gen_write_DeployOk PROCINLINE:<{
+    2952335191 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  __gen_writecell_DeployOk PROCINLINE:<{
+    NEWC
+    SWAP
+    __gen_write_DeployOk INLINECALLDICT
+    ENDC
+  }>
+  __gen_write_A PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
+  }>
+  __gen_read_A PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  __gen_S_to_external PROCINLINE:<{
+  }>
+  __gen_read_$init$A PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+  }>
+  $__gen_A_init PROCREF:<{
+  }>
+  __gen_load_A PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      __gen_read_A INLINECALLDICT
+      NIP
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      __gen_read_$init$A INLINECALLDICT
+      SWAP
+      ENDS
+      $__gen_A_init INLINECALLDICT
+    }>
+  }>
+  __gen_store_A PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    SWAP
+    __gen_write_A INLINECALLDICT
+    ENDC
+    c4 POP
   }>
   $__gen_Int_inc PROCREF:<{
     INC
