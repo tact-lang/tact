@@ -1,6 +1,4 @@
-#pragma version =0.4.2;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
+#include "strings_StringsTester.stdlib.fc";
 
 
 

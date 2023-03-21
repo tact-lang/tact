@@ -1,6 +1,4 @@
-#pragma version =0.4.2;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
+#include "wallet_Wallet.stdlib.fc";
 
 slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);

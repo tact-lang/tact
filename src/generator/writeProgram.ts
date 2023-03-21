@@ -258,19 +258,46 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
 }
 
 export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, basename: string, debug: boolean = false) {
-    const wctx = new WriterContext(ctx);
+
+    //
+    // Prepare stdlib file
+    //
+
+    let wctx = new WriterContext(ctx);
+    wctx.header(`#pragma version =0.4.2;`); // FunC version
+    wctx.header(`#pragma allow-post-modification;`); // Allow post modification
+    wctx.header(`#pragma compute-asm-ltr;`); // Compute asm left to right
+    wctx.fun('$main', () => { });
+    let stdlib = wctx.render();
+
+    //
+    // Prepare native file
+    //
+
+    let nativeLib: string | null = null;
+    let nativeSources = getRawAST(ctx).funcSources;
+    if (nativeSources.length > 0) {
+        wctx = new WriterContext(ctx);
+        for (let fc of getRawAST(ctx).funcSources) {
+            wctx.header('\n' + fc.code);
+            wctx.fun('$main', () => { });
+            nativeLib = wctx.render();
+        }
+    }
+
+    //
+    // Prepare contract file
+    // 
+
+    wctx = new WriterContext(ctx);
     let allTypes = Object.values(getAllTypes(ctx));
     let contracts = allTypes.filter((v) => v.kind === 'contract');
 
     // Headers
-    wctx.header(`#pragma version =0.4.2;`); // FunC version
-    wctx.header(`#pragma allow-post-modification;`); // Allow post modification
-    wctx.header(`#pragma compute-asm-ltr;`); // Compute asm left to right
-
-    // FunC imports
-    for (let fc of getRawAST(ctx).funcSources) {
-        wctx.header('\n' + fc.code);
+    if (nativeLib) {
+        wctx.header(`#include "${basename}.native.fc";`);
     }
+    wctx.header(`#include "${basename}.stdlib.fc";`);
 
     // Stdlib
     writeStdlib(wctx);
@@ -372,10 +399,27 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     writeMainContract(c, abiLink, mainCtx);
     let output = mainCtx.render(debug);
 
+    //
+    // Build output
+    //
+
+    let files: { name: string, code: string }[] = [];
+    files.push({
+        name: basename + '.code.fc',
+        code: output
+    });
+    files.push({
+        name: basename + '.stdlib.fc',
+        code: stdlib
+    });
+    if (nativeLib) {
+        files.push({
+            name: basename + '.native.fc',
+            code: nativeLib
+        });
+    }
+
     return {
-        output: [{
-            name: basename + '.code.fc',
-            code: output
-        }], abi
+        files, abi
     };
 }

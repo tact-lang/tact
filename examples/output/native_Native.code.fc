@@ -1,10 +1,5 @@
-#pragma version =0.4.2;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
-
-int hello_world() {
-    return 1000;
-}
+#include "native_Native.native.fc";
+#include "native_Native.stdlib.fc";
 
 slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);

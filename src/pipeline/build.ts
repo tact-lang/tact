@@ -86,13 +86,13 @@ export async function build(args: {
         let abi: string;
         try {
             let res = await compile(ctx, contract, config.name + '_' + contract);
-            for (let files of res.output.output) {
+            for (let files of res.output.files) {
                 let ffc = project.resolve(config.output, files.name);
                 project.writeFile(ffc, files.code);
             }
             project.writeFile(pathAbi, res.output.abi);
             abi = res.output.abi;
-            codeFc = res.output.output.map((v) => ({ path: project.resolve(config.output, v.name), content: v.code }));
+            codeFc = res.output.files.map((v) => ({ path: project.resolve(config.output, v.name), content: v.code }));
         } catch (e) {
             logger.error('Tact compilation failed');
             logger.error(errorToString(e));
