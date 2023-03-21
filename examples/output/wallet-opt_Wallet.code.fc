@@ -71,32 +71,14 @@ int $__gen_Wallet_publicKey((int, int, int) $self) impure inline {
     return $self'key;
 }
 
-_ $__gen_get_publicKey() method_id(86520) {
-    var self = __gen_load_Wallet();
-    var res = $__gen_Wallet_publicKey(self);
-    return res;
-}
-
 int $__gen_Wallet_walletId((int, int, int) $self) impure inline {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'walletId;
 }
 
-_ $__gen_get_walletId() method_id(114762) {
-    var self = __gen_load_Wallet();
-    var res = $__gen_Wallet_walletId(self);
-    return res;
-}
-
 int $__gen_Wallet_seqno((int, int, int) $self) impure inline {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'seqno;
-}
-
-_ $__gen_get_seqno() method_id(85143) {
-    var self = __gen_load_Wallet();
-    var res = $__gen_Wallet_seqno(self);
-    return res;
 }
 
 (((int, int, int)), ()) $__gen_Wallet_receive_TransferMessage((int, int, int) $self, (slice, slice) $msg) impure inline {
@@ -113,6 +95,10 @@ _ $__gen_get_seqno() method_id(85143) {
     send_raw_message($body, $mode);
     return (($self'seqno, $self'key, $self'walletId), ());
 }
+
+;;
+;; Public Interface of a Contract Wallet
+;;
 
 ((int, int, int), int) __gen_router_Wallet((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -158,6 +144,24 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Persist state
     __gen_store_Wallet(self);
+}
+
+_ %publicKey() method_id(86520) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_publicKey(self);
+    return res;
+}
+
+_ %walletId() method_id(114762) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_walletId(self);
+    return res;
+}
+
+_ %seqno() method_id(85143) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_seqno(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

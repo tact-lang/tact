@@ -6,9 +6,9 @@ PROGRAM{
   DECLPROC __gen_store_Empty
   DECLPROC $isZero
   DECLPROC $__gen_Empty_a
-  97415 DECLMETHOD $__gen_get_a
   DECLPROC __gen_router_Empty
   DECLPROC recv_internal
+  97415 DECLMETHOD %a
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -102,12 +102,6 @@ PROGRAM{
     1 7 BLKDROP2
     $isZero INLINECALLDICT
   }>
-  $__gen_get_a PROC:<{
-    __gen_Source_from_tuple INLINECALLDICT
-    __gen_load_Empty INLINECALLDICT
-    7 -ROLL
-    $__gen_Empty_a INLINECALLDICT
-  }>
   __gen_router_Empty PROCREF:<{
     DUP
     SBITS
@@ -148,6 +142,12 @@ PROGRAM{
     __gen_router_Empty INLINECALLDICT
     DROP
     __gen_store_Empty INLINECALLDICT
+  }>
+  %a PROC:<{
+    __gen_Source_from_tuple INLINECALLDICT
+    __gen_load_Empty INLINECALLDICT
+    7 -ROLL
+    $__gen_Empty_a INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

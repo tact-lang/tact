@@ -17,11 +17,12 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
@@ -168,21 +169,9 @@ int $__gen_MultisigContract_key1((int, int, int, int) $self) impure inline_ref {
     return $self'user1_key;
 }
 
-_ $__gen_get_key1() method_id(107493) {
-    var self = __gen_load_MultisigContract();
-    var res = $__gen_MultisigContract_key1(self);
-    return res;
-}
-
 int $__gen_MultisigContract_key2((int, int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     return $self'user2_key;
-}
-
-_ $__gen_get_key2() method_id(103302) {
-    var self = __gen_load_MultisigContract();
-    var res = $__gen_MultisigContract_key2(self);
-    return res;
 }
 
 int $__gen_MultisigContract_key3((int, int, int, int) $self) impure inline_ref {
@@ -190,21 +179,9 @@ int $__gen_MultisigContract_key3((int, int, int, int) $self) impure inline_ref {
     return $self'user3_key;
 }
 
-_ $__gen_get_key3() method_id(99239) {
-    var self = __gen_load_MultisigContract();
-    var res = $__gen_MultisigContract_key3(self);
-    return res;
-}
-
 int $__gen_MultisigContract_seqno((int, int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = $self;
     return $self'seqno;
-}
-
-_ $__gen_get_seqno() method_id(85143) {
-    var self = __gen_load_MultisigContract();
-    var res = $__gen_MultisigContract_seqno(self);
-    return res;
 }
 
 ((int, int, int, int), ()) $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int, int) $self) impure inline {
@@ -224,6 +201,10 @@ _ $__gen_get_seqno() method_id(85143) {
     ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)~$__gen_MultisigContract_execute(__gen_Operation_unpack(($msg'operation'seqno, $msg'operation'amount, $msg'operation'target)));
     return (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key), ());
 }
+
+;;
+;; Public Interface of a Contract MultisigContract
+;;
 
 ((int, int, int, int), int) __gen_router_MultisigContract((int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -280,6 +261,30 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Persist state
     __gen_store_MultisigContract(self);
+}
+
+_ %key1() method_id(107493) {
+    var self = __gen_load_MultisigContract();
+    var res = $__gen_MultisigContract_key1(self);
+    return res;
+}
+
+_ %key2() method_id(103302) {
+    var self = __gen_load_MultisigContract();
+    var res = $__gen_MultisigContract_key2(self);
+    return res;
+}
+
+_ %key3() method_id(99239) {
+    var self = __gen_load_MultisigContract();
+    var res = $__gen_MultisigContract_key3(self);
+    return res;
+}
+
+_ %seqno() method_id(85143) {
+    var self = __gen_load_MultisigContract();
+    var res = $__gen_MultisigContract_seqno(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

@@ -37,7 +37,6 @@ PROGRAM{
   DECLPROC $__gen_Beacon_init_child
   DECLPROC $__gen_Payouts_requireOwner
   DECLPROC $__gen_Payouts_owner
-  83229 DECLMETHOD $__gen_get_owner
   DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
   DECLPROC __gen_constructor_CanPayout$amount
   DECLPROC $__gen_Payouts_receive_comment
@@ -45,6 +44,7 @@ PROGRAM{
   DECLPROC $__gen_Payouts_receive_ChangeOwner
   DECLPROC __gen_router_Payouts
   DECLPROC recv_internal
+  83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -559,7 +559,7 @@ PROGRAM{
   $__gen_String_fromBase64 PROCREF:<{
     $__gen_Slice_fromBase64 INLINECALLDICT
   }>
-  $__gen_Beacon_init_child PROC:<{
+  $__gen_Beacon_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -594,10 +594,6 @@ PROGRAM{
   }>
   $__gen_Payouts_owner PROCREF:<{
     DROP
-  }>
-  $__gen_get_owner PROC:<{
-    __gen_load_Payouts INLINECALLDICT
-    $__gen_Payouts_owner INLINECALLDICT
   }>
   __gen_constructor_SendParameters$to_value_mode_bounce_body PROCINLINE:<{
     s1 s4 XCHG
@@ -636,7 +632,7 @@ PROGRAM{
     __tact_context_sys GETGLOB
     MYADDR
     3 ROLL
-    $__gen_Beacon_init_child CALLDICT
+    $__gen_Beacon_init_child INLINECALLDICT
     $contractAddress INLINECALLDICT
     0 PUSHINT
     66 PUSHINT
@@ -656,7 +652,7 @@ PROGRAM{
     __tact_context_sys GETGLOB
     MYADDR
     s5 PUSH
-    $__gen_Beacon_init_child CALLDICT
+    $__gen_Beacon_init_child INLINECALLDICT
     $contractAddress INLINECALLDICT
     SWAP
     4429 PUSHINT
@@ -783,6 +779,10 @@ PROGRAM{
     __gen_router_Payouts INLINECALLDICT
     DROP
     __gen_store_Payouts INLINECALLDICT
+  }>
+  %owner PROC:<{
+    __gen_load_Payouts INLINECALLDICT
+    $__gen_Payouts_owner INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

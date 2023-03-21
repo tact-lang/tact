@@ -15,34 +15,34 @@ PROGRAM{
   DECLPROC $__gen_Slice_fromBase64
   DECLPROC $__gen_String_fromBase64
   DECLPROC $__gen_StringsTester_constantString
-  93932 DECLMETHOD $__gen_get_constantString
   DECLPROC $__gen_StringsTester_constantStringUnicode
-  94939 DECLMETHOD $__gen_get_constantStringUnicode
   DECLPROC $__gen_StringsTester_constantStringUnicodeLong
-  104680 DECLMETHOD $__gen_get_constantStringUnicodeLong
   DECLPROC $__gen_StringsTester_dynamicStringCell
-  122225 DECLMETHOD $__gen_get_dynamicStringCell
   DECLPROC $__gen_StringsTester_dynamicCommentCell
-  122531 DECLMETHOD $__gen_get_dynamicCommentCell
   DECLPROC $__gen_StringsTester_dynamicCommentCellLarge
-  74771 DECLMETHOD $__gen_get_dynamicCommentCellLarge
   DECLPROC $__gen_StringsTester_dynamicCommentStringLarge
-  74191 DECLMETHOD $__gen_get_dynamicCommentStringLarge
   DECLPROC $__gen_StringsTester_stringWithNumber
-  68752 DECLMETHOD $__gen_get_stringWithNumber
   DECLPROC $__gen_StringsTester_stringWithNegativeNumber
-  82914 DECLMETHOD $__gen_get_stringWithNegativeNumber
   DECLPROC $__gen_StringsTester_stringWithLargeNumber
-  94811 DECLMETHOD $__gen_get_stringWithLargeNumber
   DECLPROC $__gen_StringsTester_stringWithFloat
-  80064 DECLMETHOD $__gen_get_stringWithFloat
   DECLPROC $__gen_StringsTester_base64
-  71427 DECLMETHOD $__gen_get_base64
   DECLPROC $__gen_StringsTester_processBase64
-  128362 DECLMETHOD $__gen_get_processBase64
   DECLPROC $__gen_StringsTester_receive
   DECLPROC __gen_router_StringsTester
   DECLPROC recv_internal
+  93932 DECLMETHOD %constantString
+  94939 DECLMETHOD %constantStringUnicode
+  104680 DECLMETHOD %constantStringUnicodeLong
+  122225 DECLMETHOD %dynamicStringCell
+  122531 DECLMETHOD %dynamicCommentCell
+  74771 DECLMETHOD %dynamicCommentCellLarge
+  74191 DECLMETHOD %dynamicCommentStringLarge
+  68752 DECLMETHOD %stringWithNumber
+  82914 DECLMETHOD %stringWithNegativeNumber
+  94811 DECLMETHOD %stringWithLargeNumber
+  80064 DECLMETHOD %stringWithFloat
+  71427 DECLMETHOD %base64
+  128362 DECLMETHOD %processBase64
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -477,25 +477,13 @@ PROGRAM{
     DROP
     B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE
   }>
-  $__gen_get_constantString PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_constantString INLINECALLDICT
-  }>
   $__gen_StringsTester_constantStringUnicode PROCREF:<{
     DROP
     B{b5ee9c7241010101001a000030d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d8d539ad} B>boc <s PUSHSLICE
   }>
-  $__gen_get_constantStringUnicode PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_constantStringUnicode INLINECALLDICT
-  }>
   $__gen_StringsTester_constantStringUnicodeLong PROCREF:<{
     DROP
     B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE
-  }>
-  $__gen_get_constantStringUnicodeLong PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_constantStringUnicodeLong INLINECALLDICT
   }>
   $__gen_StringsTester_dynamicStringCell PROCREF:<{
     DROP
@@ -504,20 +492,12 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_get_dynamicStringCell PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicStringCell INLINECALLDICT
-  }>
   $__gen_StringsTester_dynamicCommentCell PROCREF:<{
     DROP
     __tact_string_builder_start_comment INLINECALLDICT
     B{b5ee9c7241010101001c000034536f6d657468696e6720736f6d657468696e6720776f726c64212a90ca7f} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
-  }>
-  $__gen_get_dynamicCommentCell PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicCommentCell INLINECALLDICT
   }>
   $__gen_StringsTester_dynamicCommentCellLarge PROCREF:<{
     DROP
@@ -528,10 +508,6 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_get_dynamicCommentCellLarge PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicCommentCellLarge INLINECALLDICT
-  }>
   $__gen_StringsTester_dynamicCommentStringLarge PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
@@ -540,10 +516,6 @@ PROGRAM{
     B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
-  }>
-  $__gen_get_dynamicCommentStringLarge PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_dynamicCommentStringLarge INLINECALLDICT
   }>
   $__gen_StringsTester_stringWithNumber PROCREF:<{
     DROP
@@ -555,10 +527,6 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_get_stringWithNumber PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithNumber INLINECALLDICT
-  }>
   $__gen_StringsTester_stringWithNegativeNumber PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
@@ -568,10 +536,6 @@ PROGRAM{
     __tact_int_to_string INLINECALLDICT
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
-  }>
-  $__gen_get_stringWithNegativeNumber PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithNegativeNumber INLINECALLDICT
   }>
   $__gen_StringsTester_stringWithLargeNumber PROCREF:<{
     DROP
@@ -583,37 +547,20 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_get_stringWithLargeNumber PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithLargeNumber INLINECALLDICT
-  }>
   $__gen_StringsTester_stringWithFloat PROCREF:<{
     DROP
     95 PUSHINT
     1 PUSHINT
     __tact_float_to_string INLINECALLDICT
   }>
-  $__gen_get_stringWithFloat PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_stringWithFloat INLINECALLDICT
-  }>
   $__gen_StringsTester_base64 PROCREF:<{
     DROP
     B{b5ee9c72410101010026000048545746756553426f5957356b637942745957746c494778705a32683049486476636d7375ff762436} B>boc <s PUSHSLICE
     $__gen_String_fromBase64 INLINECALLDICT
   }>
-  $__gen_get_base64 PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    $__gen_StringsTester_base64 INLINECALLDICT
-  }>
   $__gen_StringsTester_processBase64 PROCREF:<{
     NIP
     $__gen_String_fromBase64 INLINECALLDICT
-  }>
-  $__gen_get_processBase64 PROC:<{
-    __gen_load_StringsTester INLINECALLDICT
-    SWAP
-    $__gen_StringsTester_processBase64 INLINECALLDICT
   }>
   $__gen_StringsTester_receive PROCINLINE:<{
   }>
@@ -672,6 +619,59 @@ PROGRAM{
     __gen_router_StringsTester INLINECALLDICT
     DROP
     __gen_store_StringsTester INLINECALLDICT
+  }>
+  %constantString PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_constantString INLINECALLDICT
+  }>
+  %constantStringUnicode PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_constantStringUnicode INLINECALLDICT
+  }>
+  %constantStringUnicodeLong PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_constantStringUnicodeLong INLINECALLDICT
+  }>
+  %dynamicStringCell PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_dynamicStringCell INLINECALLDICT
+  }>
+  %dynamicCommentCell PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_dynamicCommentCell INLINECALLDICT
+  }>
+  %dynamicCommentCellLarge PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_dynamicCommentCellLarge INLINECALLDICT
+  }>
+  %dynamicCommentStringLarge PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_dynamicCommentStringLarge INLINECALLDICT
+  }>
+  %stringWithNumber PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_stringWithNumber INLINECALLDICT
+  }>
+  %stringWithNegativeNumber PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_stringWithNegativeNumber INLINECALLDICT
+  }>
+  %stringWithLargeNumber PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_stringWithLargeNumber INLINECALLDICT
+  }>
+  %stringWithFloat PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_stringWithFloat INLINECALLDICT
+  }>
+  %base64 PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    $__gen_StringsTester_base64 INLINECALLDICT
+  }>
+  %processBase64 PROC:<{
+    __gen_load_StringsTester INLINECALLDICT
+    SWAP
+    $__gen_StringsTester_processBase64 INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

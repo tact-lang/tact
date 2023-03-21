@@ -18,10 +18,11 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
 
     // Write to builder
     ctx.fun(ops.writer(name, ctx), () => {
-        let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
         ctx.signature(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
-        ctx.append(`builder ${ops.writer(name, ctx)}(builder build_0, ${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) ${modifier} {`);
-        ctx.inIndent(() => {
+        if (forceInline || isSmall) {
+            ctx.flag('inline');
+        }
+        ctx.body(() => {
             if (allocation.ops.length > 0) {
                 ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
             }
@@ -31,31 +32,30 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
             writeSerializerCell(allocation.root, 0, ctx);
             ctx.append(`return build_0;`);
         });
-        ctx.append(`}`);
     });
 
     // Write to cell
     ctx.fun(ops.writerCell(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
-        ctx.write(`
-            cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v) inline {
-                return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();
-            }
-        `);
+        ctx.flag('inline');
+        ctx.body(() => {
+            ctx.append(`return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();`);
+        })
     });
 }
 
 export function writeOptionalSerializer(name: string, ctx: WriterContext) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
-        ctx.write(`
-            cell ${ops.writerCellOpt(name, ctx)}(tuple v) inline {
+        ctx.flag('inline');
+        ctx.body(() => {
+            ctx.write(`
                 if (null?(v)) {
                     return null();
                 }
                 return ${ops.writerCell(name, ctx)}(${ctx.used(`__gen_${name}_not_null`)}(v));
-            }
-        `);
+            `);
+        });
     });
 }
 
@@ -216,10 +216,11 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
     ctx.fun(`__gen_read_${name}`, () => {
-        let modifier = (!forceInline && !isSmall) ? 'inline_ref' : 'inline';
         ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) __gen_read_${name}(slice sc_0)`);
-        ctx.append(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) __gen_read_${name}(slice sc_0) ${modifier} {`);
-        ctx.inIndent(() => {
+        if (forceInline || isSmall) {
+            ctx.flag('inline');
+        }
+        ctx.body(() => {
 
             // Check prefix
             if (allocation.header) {
@@ -232,22 +233,22 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
             // Compile tuple
             ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
         });
-        ctx.append("}");
     });
 }
 
 export function writeOptionalParser(name: string, ctx: WriterContext) {
     ctx.fun(`__gen_readopt_${name}`, () => {
         ctx.signature(`tuple __gen_readopt_${name}(cell cl)`);
-        ctx.write(`
-            tuple __gen_readopt_${name}(cell cl) inline {
+        ctx.flag('inline');
+        ctx.body(() => {
+            ctx.write(`
                 if (null?(cl)) {
                     return null();
                 }
                 var sc = cl.begin_parse();
                 return ${ctx.used(`__gen_${name}_as_optional`)}(sc~${ctx.used(`__gen_read_${name}`)}());
-            }
-        `);
+            `);
+        });
     });
 }
 

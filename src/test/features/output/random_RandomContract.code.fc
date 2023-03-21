@@ -12,9 +12,13 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
@@ -24,8 +28,7 @@ slice __tact_context_get_sender() inline { return __tact_context_sender; }
 }
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 (slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
@@ -136,23 +139,9 @@ int $__gen_RandomContract_randomInt(tuple $self) impure inline_ref {
     return $randomInt();
 }
 
-_ $__gen_get_randomInt() method_id(128647) {
-    var self = __gen_load_RandomContract();
-    var res = $__gen_RandomContract_randomInt(self);
-    return res;
-}
-
 int $__gen_RandomContract_random(tuple $self, int $min, int $max) impure inline_ref {
     var ($self) = $self;
     return $random($min, $max);
-}
-
-_ $__gen_get_random(int $$min, int $$max) method_id(92013) {
-    int $min = $$min;
-    int $max = $$max;
-    var self = __gen_load_RandomContract();
-    var res = $__gen_RandomContract_random(self, $min, $max);
-    return res;
 }
 
 ((int)) __gen_constructor_DeployOk$queryId(int queryId) inline {
@@ -165,6 +154,10 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
     return ($self, ());
 }
+
+;;
+;; Public Interface of a Contract RandomContract
+;;
 
 (tuple, int) __gen_router_RandomContract(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -210,6 +203,20 @@ _ $__gen_get_random(int $$min, int $$max) method_id(92013) {
     
     ;; Persist state
     __gen_store_RandomContract(self);
+}
+
+_ %randomInt() method_id(128647) {
+    var self = __gen_load_RandomContract();
+    var res = $__gen_RandomContract_randomInt(self);
+    return res;
+}
+
+_ %random(int $$min, int $$max) method_id(92013) {
+    int $min = $$min;
+    int $max = $$max;
+    var self = __gen_load_RandomContract();
+    var res = $__gen_RandomContract_random(self, $min, $max);
+    return res;
 }
 
 _ supported_interfaces() method_id {

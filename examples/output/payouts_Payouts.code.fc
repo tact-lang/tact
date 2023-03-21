@@ -42,15 +42,20 @@ int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 int __tact_address_eq(slice a, slice b) inline {
@@ -88,24 +93,24 @@ cell __tact_string_builder_end(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -120,7 +125,7 @@ cell __tact_string_builder_end(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -312,7 +317,7 @@ slice $__gen_String_fromBase64(slice $self) impure inline_ref {
     return $__gen_Slice_fromBase64(__tact_str_to_slice($self));
 }
 
-(cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) {
+(cell, cell) $__gen_Beacon_init_child(cell sys', slice $master, slice $owner) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -338,12 +343,6 @@ slice $__gen_String_fromBase64(slice $self) impure inline_ref {
 slice $__gen_Payouts_owner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     return $self'owner;
-}
-
-_ $__gen_get_owner() method_id(83229) {
-    var self = __gen_load_Payouts();
-    var res = $__gen_Payouts_owner(self);
-    return res;
 }
 
 ((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
@@ -395,6 +394,10 @@ _ $__gen_get_owner() method_id(83229) {
     $self'owner = $msg'newOwner;
     return (($self'owner, $self'publicKey), ());
 }
+
+;;
+;; Public Interface of a Contract Payouts
+;;
 
 ((slice, int), int) __gen_router_Payouts((slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -455,6 +458,12 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Persist state
     __gen_store_Payouts(self);
+}
+
+_ %owner() method_id(83229) {
+    var self = __gen_load_Payouts();
+    var res = $__gen_Payouts_owner(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

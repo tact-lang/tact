@@ -4,7 +4,7 @@ slice __tact_verify_address(slice address) inline {
     throw_unless(136, address.slice_bits() == 267);
     var h = address.preload_uint(11);
     throw_unless(136, (h == 1024) | (h == 1279));
-
+    
     return address;
 }
 
@@ -74,24 +74,9 @@ slice $__gen_MasterchainTester_createAddress(tuple $self, int $chain, int $hash)
     return __tact_create_address($chain, $hash);
 }
 
-_ $__gen_get_createAddress(int $$chain, int $$hash) method_id(125712) {
-    int $chain = $$chain;
-    int $hash = $$hash;
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_createAddress(self, $chain, $hash);
-    return res;
-}
-
 slice $__gen_MasterchainTester_parseAddress(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     return $src~__tact_load_address();
-}
-
-_ $__gen_get_parseAddress(slice $$src) method_id(102482) {
-    slice $src = $$src;
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_parseAddress(self, $src);
-    return res;
 }
 
 int $__gen_MasterchainTester_serializeAddress(tuple $self, slice $src) impure inline_ref {
@@ -99,24 +84,10 @@ int $__gen_MasterchainTester_serializeAddress(tuple $self, slice $src) impure in
     return true;
 }
 
-_ $__gen_get_serializeAddress(slice $$src) method_id(73429) {
-    slice $src = __tact_verify_address($$src);
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_serializeAddress(self, $src);
-    return res;
-}
-
 int $__gen_MasterchainTester_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref {
     var ($self) = $self;
     var (($src'address, $src'address2)) = $src;
     return true;
-}
-
-_ $__gen_get_handleStruct(tuple $$src) method_id(67662) {
-    (slice, slice) $src = __gen_TestMessage_from_tuple($$src);
-    var self = __gen_load_MasterchainTester();
-    var res = $__gen_MasterchainTester_handleStruct(self, $src);
-    return res;
 }
 
 (tuple, ()) $__gen_MasterchainTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246(tuple $self) impure inline {
@@ -129,6 +100,10 @@ _ $__gen_get_handleStruct(tuple $$src) method_id(67662) {
     var ($message'address, $message'address2) = $message;
     return ($self, ());
 }
+
+;;
+;; Public Interface of a Contract MasterchainTester
+;;
 
 (tuple, int) __gen_router_MasterchainTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -185,6 +160,35 @@ _ $__gen_get_handleStruct(tuple $$src) method_id(67662) {
     
     ;; Persist state
     __gen_store_MasterchainTester(self);
+}
+
+_ %createAddress(int $$chain, int $$hash) method_id(125712) {
+    int $chain = $$chain;
+    int $hash = $$hash;
+    var self = __gen_load_MasterchainTester();
+    var res = $__gen_MasterchainTester_createAddress(self, $chain, $hash);
+    return res;
+}
+
+_ %parseAddress(slice $$src) method_id(102482) {
+    slice $src = $$src;
+    var self = __gen_load_MasterchainTester();
+    var res = $__gen_MasterchainTester_parseAddress(self, $src);
+    return res;
+}
+
+_ %serializeAddress(slice $$src) method_id(73429) {
+    slice $src = __tact_verify_address($$src);
+    var self = __gen_load_MasterchainTester();
+    var res = $__gen_MasterchainTester_serializeAddress(self, $src);
+    return res;
+}
+
+_ %handleStruct(tuple $$src) method_id(67662) {
+    (slice, slice) $src = __gen_TestMessage_from_tuple($$src);
+    var self = __gen_load_MasterchainTester();
+    var res = $__gen_MasterchainTester_handleStruct(self, $src);
+    return res;
 }
 
 _ supported_interfaces() method_id {

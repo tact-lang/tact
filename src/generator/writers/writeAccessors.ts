@@ -14,26 +14,25 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
     for (let f of type.fields) {
         ctx.fun(`__gen_${type.name}_get_${f.name}`, () => {
             ctx.signature(`_ __gen_${type.name}_get_${f.name}(${resolveFuncType(type, ctx)} v)`);
-            ctx.append(`_ __gen_${type.name}_get_${f.name}(${resolveFuncType(type, ctx)} v) inline {`);
-            ctx.inIndent(() => {
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
                 ctx.append(`return v'${f.name};`);
             });
-            ctx.append(`}`);
         });
     }
 
     // Unpack
     ctx.fun(`__gen_${type.name}_unpack`, () => {
         ctx.signature(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v)`);
-        ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_unpack(${resolveFuncType(type, ctx)} v) asm "NOP";`);
+        ctx.asm('asm "NOP"');
     });
 
     // Not null
     ctx.fun(`__gen_${type.name}_not_null`, () => {
         ctx.signature(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v)`);
-        ctx.append(`(${resolveFuncType(type, ctx)}) __gen_${type.name}_not_null(tuple v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`)
             let flatPack = resolveFuncFlatPack(type, 'vvv', ctx);
             let flatTypes = resolveFuncFlatTypes(type, ctx);
@@ -43,19 +42,17 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`var (${pairs.join(', ')}) = __tact_tuple_destroy_${flatPack.length}(v);`);
             ctx.append(`return ${resolveFuncTypeUnpack(type, 'vvv', ctx)};`);
         });
-        ctx.append(`}`);
     });
 
     ctx.fun(`__gen_${type.name}_as_optional`, () => {
         ctx.signature(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v)`);
-        ctx.append(`tuple __gen_${type.name}_as_optional((${resolveFuncType(type, ctx)}) v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, 'v', ctx)} = v;`);
             let flatPack = resolveFuncFlatPack(type, 'v', ctx);
             ctx.used(`__tact_tuple_create_${flatPack.length}`);
             ctx.append(`return __tact_tuple_create_${flatPack.length}(${flatPack.join(', ')});`);
         });
-        ctx.append(`}`);
     });
 
     //
@@ -64,8 +61,8 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
 
     ctx.fun(`__gen_${type.name}_to_tuple`, () => {
         ctx.signature(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v)`);
-        ctx.append(`tuple __gen_${type.name}_to_tuple((${resolveFuncType(type, ctx)}) v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
             let vars: string[] = [];
             for (let f of type.fields) {
@@ -85,26 +82,23 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
             ctx.used(`__tact_tuple_create_${vars.length}`);
             ctx.append(`return __tact_tuple_create_${vars.length}(${vars.join(', ')});`);
         });
-        ctx.append(`}`);
     });
 
     ctx.fun(`__gen_${type.name}_opt_to_tuple`, () => {
         ctx.signature(`tuple __gen_${type.name}_opt_to_tuple(tuple v)`);
-        ctx.append(`tuple __gen_${type.name}_opt_to_tuple(tuple v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
             ctx.used(`__gen_${type.name}_not_null`);
             ctx.used(`__gen_${type.name}_to_tuple`);
             ctx.append(`return __gen_${type.name}_to_tuple(__gen_${type.name}_not_null(v)); `);
         });
-        ctx.append(`}`);
     });
 
     ctx.fun(`__gen_${type.name}_from_tuple`, () => {
         ctx.signature(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v)`);
-        ctx.append(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) __gen_${type.name}_from_tuple(tuple v) inline {`);
-        ctx.inIndent(() => {
-
+        ctx.flag('inline');
+        ctx.body(() => {
             // Resolve vars
             let vars: string[] = [];
             let out: string[] = [];
@@ -137,19 +131,17 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`var (${vars.join(', ')}) = __tact_tuple_destroy_${vars.length}(v);`);
             ctx.append(`return (${out.join(', ')});`);
         });
-        ctx.append(`}`);
     });
 
     ctx.fun(`__gen_${type.name}_from_opt_tuple`, () => {
         ctx.signature(`tuple __gen_${type.name}_from_opt_tuple(tuple v)`);
-        ctx.append(`tuple __gen_${type.name}_from_opt_tuple(tuple v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
             ctx.used(`__gen_${type.name}_as_optional`);
             ctx.used(`__gen_${type.name}_from_tuple`);
             ctx.append(`return __gen_${type.name}_as_optional(__gen_${type.name}_from_tuple(v));`);
         });
-        ctx.append(`}`);
     });
 
     //
@@ -158,8 +150,8 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
 
     ctx.fun(`__gen_${type.name}_to_external`, () => {
         ctx.signature(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v)`);
-        ctx.append(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) __gen_${type.name}_to_external((${resolveFuncType(type, ctx)}) v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v; `);
             let vars: string[] = [];
             for (let f of type.fields) {
@@ -180,13 +172,12 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
             }
             ctx.append(`return (${vars.join(', ')});`);
         });
-        ctx.append(`}`);
     });
 
     ctx.fun(`__gen_${type.name}_opt_to_external`, () => {
         ctx.signature(`tuple __gen_${type.name}_opt_to_external(tuple v)`);
-        ctx.append(`tuple __gen_${type.name}_opt_to_external(tuple v) inline {`);
-        ctx.inIndent(() => {
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.used(`__gen_${type.name}_opt_to_tuple`);
             ctx.append(`var loaded = __gen_${type.name}_opt_to_tuple(v);`);
             ctx.append(`if (null?(loaded)) {`);
@@ -199,6 +190,5 @@ export function writeAccessors(type: TypeDescription, ctx: WriterContext) {
             });
             ctx.append(`}`);
         });
-        ctx.append(`}`);
     });
 }

@@ -1,18 +1,41 @@
-import { enabledDebug } from "../config/features";
 import { CompilerContext } from "../context";
+import { trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
+import { createPadded } from "./utils/createPadded";
+
+type Flag = 'inline' | 'impure';
+
+type Body = {
+    kind: 'generic',
+    code: string
+} | {
+    kind: 'asm',
+    code: string
+}
 
 export class WriterContext {
 
     readonly ctx: CompilerContext;
     #skipped = new Set<string>();
-    #functions: Map<string, { name: string, code: string, signature: string, depends: Set<string> }> = new Map();
+    #functions: Map<string, {
+        name: string,
+        code: Body,
+        signature: string,
+        flags: Set<Flag>,
+        depends: Set<string>,
+        comment: string | null,
+        context: string | null
+    }> = new Map();
     #functionsRendering = new Set<string>();
     #pendingWriter: Writer | null = null;
+    #pendingCode: Body | null = null;
     #pendingDepends: Set<string> | null = null;
     #pendingName: string | null = null;
     #pendingSignature: string | null = null;
+    #pendingFlags: Set<Flag> | null = null;
+    #pendingComment: string | null = null;
+    #pendingContext: string | null = null;
     #nextId = 0;
     #headers: string[] = [];
     #rendered = new Set<string>();
@@ -85,7 +108,7 @@ export class WriterContext {
         // Sort functions
         let sorted = topologicalSort(all, (f) => Array.from(f.depends).filter((v) => !this.#skipped.has(v)).map((v) => this.#functions.get(v)!!));
 
-        // Render
+        // Headers
         let res = '';
         for (let h of this.#headers) {
             if (res !== '') {
@@ -93,12 +116,57 @@ export class WriterContext {
             }
             res += h;
         }
+
+        // Dependencies
         for (let f of sorted) {
+            if (f.name === '$main') {
+                continue;
+            } else {
+                if (res !== '') {
+                    res += '\n\n';
+                }
+                if (f.comment) {
+                    for (let s of f.comment.split('\n')) {
+                        res += `;; ${s}\n`;
+                    }
+                }
+                if (f.code.kind === 'generic') {
+
+                    let sig = f.signature;
+                    if (f.flags.has('impure')) {
+                        sig = `${sig} impure`;
+                    }
+                    if (f.flags.has('inline')) {
+                        sig = `${sig} inline`;
+                    } else {
+                        sig = `${sig} inline_ref`;
+                    }
+
+                    res += `${sig} {\n${createPadded(f.code.code)}\n}`;
+                } else if (f.code.kind === 'asm') {
+                    let sig = f.signature;
+                    if (f.flags.has('impure')) {
+                        sig = `${sig} impure`;
+                    }
+                    res += `${sig} ${f.code.code};`;
+                } else {
+                    throw new Error(`Unknown function body kind`);
+                }
+            }
+        }
+
+        // Main
+        let m = this.#functions.get('$main')!!;
+        if (m) {
+            if (m.code.kind !== 'generic') {
+                throw new Error(`Main function should have generic body`);
+            }
             if (res !== '') {
                 res += '\n\n';
             }
-            res += f.code;
+            res += m.code.code;
         }
+
         return res;
     }
 
@@ -127,49 +195,119 @@ export class WriterContext {
         // Nesting check
         //
 
-        if (!!this.#pendingWriter || !!this.#pendingDepends) {
+        if (!!this.#pendingName) {
             let w = this.#pendingWriter;
             let d = this.#pendingDepends;
             let n = this.#pendingName;
             let s = this.#pendingSignature;
+            let f = this.#pendingFlags;
+            let c = this.#pendingCode;
+            let cc = this.#pendingComment;
+            let cs = this.#pendingContext;
             this.#pendingDepends = null;
             this.#pendingWriter = null;
             this.#pendingName = null;
             this.#pendingSignature = null;
+            this.#pendingFlags = null;
+            this.#pendingCode = null;
+            this.#pendingComment = null;
+            this.#pendingContext = null;
             this.fun(name, handler);
             this.#pendingSignature = s;
             this.#pendingDepends = d;
             this.#pendingWriter = w;
             this.#pendingName = n;
+            this.#pendingFlags = f;
+            this.#pendingCode = c;
+            this.#pendingComment = cc;
+            this.#pendingContext = cs;
             return;
         }
 
         // Write function
         this.#functionsRendering.add(name);
-        this.#pendingWriter = new Writer();
+        this.#pendingWriter = null;
         this.#pendingDepends = new Set();
         this.#pendingName = name;
         this.#pendingSignature = null;
+        this.#pendingFlags = new Set();
+        this.#pendingCode = null;
+        this.#pendingComment = null;
+        this.#pendingContext = null;
         handler();
-        let code = this.#pendingWriter.end();
         let depends = this.#pendingDepends;
         let signature = this.#pendingSignature!;
+        let flags = this.#pendingFlags;
+        let code = this.#pendingCode;
+        let comment = this.#pendingComment;
+        let context = this.#pendingContext;
         if (!signature && name !== '$main') {
             throw new Error(`Function ${name} signature not set`);
+        }
+        if (!code) {
+            throw new Error(`Function ${name} body not set`);
         }
         this.#pendingDepends = null;
         this.#pendingWriter = null;
         this.#pendingName = null;
         this.#pendingSignature = null;
+        this.#pendingFlags = null;
         this.#functionsRendering.delete(name);
-        this.#functions.set(name, { name, code, depends, signature });
+        this.#functions.set(name, {
+            name,
+            code,
+            depends,
+            signature,
+            flags,
+            comment,
+            context
+        });
     }
 
-    signature(sig: string) {
+    asm(code: string) {
+        if (this.#pendingName) {
+            this.#pendingCode = {
+                kind: 'asm',
+                code
+            }
+        } else {
+            throw new Error(`ASM can be set only inside function`);
+        }
+    }
+
+    body(handler: () => void) {
         if (this.#pendingWriter) {
+            throw new Error(`Body can be set only once`);
+        }
+        this.#pendingWriter = new Writer();
+        handler();
+        this.#pendingCode = {
+            kind: 'generic',
+            code: this.#pendingWriter!.end()
+        }
+    };
+
+    main(handler: () => void) {
+        this.fun('$main', () => {
+            this.body(() => {
+                handler();
+            });
+        });
+    };
+
+    signature(sig: string) {
+        if (this.#pendingName) {
             this.#pendingSignature = sig;
         } else {
             throw new Error(`Signature can be set only inside function`);
+        }
+    }
+
+    flag(flag: Flag) {
+        if (this.#pendingName) {
+            this.#pendingFlags!.add(flag);
+        } else {
+            throw new Error(`Flag can be set only inside function`);
         }
     }
 
@@ -178,6 +316,22 @@ export class WriterContext {
             this.#pendingDepends!!.add(name);
         }
         return name;
+    }
+
+    comment(src: string) {
+        if (this.#pendingName) {
+            this.#pendingComment = trimIndent(src);
+        } else {
+            throw new Error(`Comment can be set only inside function`);
+        }
+    }
+
+    context(src: string) {
+        if (this.#pendingName) {
+            this.#pendingContext = src;
+        } else {
+            throw new Error(`Context can be set only inside function`);
+        }
     }
 
     currentContext() {
@@ -198,19 +352,6 @@ export class WriterContext {
 
     write(src: string = '') {
         this.#pendingWriter!.write(src);
-    }
-
-    debug(id?: number | undefined | null | string) {
-        if (enabledDebug(this.ctx)) {
-            if (typeof id === 'string') {
-                this.used('__tact_debug_str');
-                this.append(`__tact_debug_str("${id}");`);
-            } else {
-                this.used('__tact_debug');
-                let v = (id === undefined || id === null) ? (this.#nextId++) : id;
-                this.append(`__tact_debug(${v});`);
-            }
-        }
     }
 
     //

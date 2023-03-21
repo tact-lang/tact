@@ -12,11 +12,13 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
+() __tact_debug_str(slice value) asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure inline_ref  {
+() __tact_debug_bool(int value) impure inline_ref {
     if (value) {
         __tact_debug_str("true");
     } else {
@@ -24,11 +26,12 @@ forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
     }
 }
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 slice __tact_int_to_string(int src) inline_ref {
@@ -37,7 +40,7 @@ slice __tact_int_to_string(int src) inline_ref {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -48,7 +51,7 @@ slice __tact_int_to_string(int src) inline_ref {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-
+    
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -59,7 +62,7 @@ slice __tact_int_to_string(int src) inline_ref {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-
+    
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -176,12 +179,6 @@ slice __gen_str_3226689099() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f72
     __tact_debug_str("null");
 }
 
-_ $__gen_get_debug() method_id(93099) {
-    var self = __gen_load_Debug();
-    var res = $__gen_Debug_debug(self);
-    return res;
-}
-
 (tuple, ()) $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
     var $self = $self;
     dump_stack();
@@ -203,6 +200,10 @@ _ $__gen_get_debug() method_id(93099) {
     $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
     return ($self, ());
 }
+
+;;
+;; Public Interface of a Contract Debug
+;;
 
 (tuple, int) __gen_router_Debug(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -259,6 +260,12 @@ _ $__gen_get_debug() method_id(93099) {
     
     ;; Persist state
     __gen_store_Debug(self);
+}
+
+_ %debug() method_id(93099) {
+    var self = __gen_load_Debug();
+    var res = $__gen_Debug_debug(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

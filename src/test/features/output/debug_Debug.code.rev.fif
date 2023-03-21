@@ -271,128 +271,14 @@ SETCP0
         EQUAL
         <{
           0 DEBUG
-          PUSHSLICE
-          20 DEBUG
-          s0 POP
-          123 PUSHINT
-          <{
-            NEWC
-            s1 PUSH
-            0 LESSINT
-            <{
-              45 PUSHINT
-              s0 s1 XCHG
-              8 STU
-              s0 s1 XCHG
-              NEGATE
-              s0 s1 XCHG
-            }> PUSHCONT
-            IF
-            s1 PUSH
-            931322574615478515625 PUSHINT
-            30 LSHIFT
-            LESS
-            <{
-              0 PUSHINT
-              s0 PUSH
-              1 PUSHINT
-              <{
-                s0 s4 XCHG
-                -6 PUSHINT
-                DIV BOTH
-                48 ADDCONST
-                s5 PUSH
-                MUL
-                s1 s2 XCHG
-                ADD
-                s0 s4 XCHG
-                8 LSHIFT
-                s0 s2 XCHG
-                INC
-                s1 PUSH
-                0 EQINT
-                s5 s3 s0 XCHG3
-              }> PUSHCONT
-              UNTIL
-              s0 POP
-              s3 POP
-              3 LSHIFT
-              STUX
-            }> PUSHCONT
-            <{
-              NIL
-              0 PUSHINT
-              <{
-                s3 PUSH
-                -6 PUSHINT
-                DIV REM
-                s1 s2 XCHG
-                TPUSH
-                s0 s1 XCHG
-                INC
-                s0 s3 XCHG
-                -6 PUSHINT
-                DIV QOUT
-                s0 PUSH
-                0 EQINT
-                s1 s4 XCHG
-              }> PUSHCONT
-              UNTIL
-              s3 POP
-              s2 PUSH
-              DEC
-              s0 s3 XCHG
-              <{
-                s0 s2 PUSH2
-                INDEXVAR
-                48 ADDCONST
-                ROT
-                8 STU
-                s0 s2 XCHG
-                DEC
-                ROTREV
-              }> PUSHCONT
-              REPEAT
-              s0 POP
-              s1 POP
-            }> PUSHCONT
-            IFELSE
-            ENDC
-            CTOS
-          }> CALLREF
-          20 DEBUG
-          s0 POP
           -1 PUSHINT
           <{
-            <{
-              PUSHSLICE
-              20 DEBUG
-              s0 POP
-            }> PUSHCONT
-            <{
-              PUSHSLICE
-              20 DEBUG
-              s0 POP
-            }> PUSHCONT
-            IFELSE
+            s0 POP
           }> CALLREF
           0 PUSHINT
           <{
-            <{
-              PUSHSLICE
-              20 DEBUG
-              s0 POP
-            }> PUSHCONT
-            <{
-              PUSHSLICE
-              20 DEBUG
-              s0 POP
-            }> PUSHCONT
-            IFELSE
+            s0 POP
           }> CALLREF
-          PUSHSLICE
-          20 DEBUG
-          s0 POP
           -1 PUSHINT
           RETALT
         }> PUSHCONT
@@ -437,128 +323,14 @@ SETCP0
     <{
       s0 POP
       0 DEBUG
-      PUSHSLICE
-      20 DEBUG
-      s0 POP
-      123 PUSHINT
-      <{
-        NEWC
-        s1 PUSH
-        0 LESSINT
-        <{
-          45 PUSHINT
-          s0 s1 XCHG
-          8 STU
-          s0 s1 XCHG
-          NEGATE
-          s0 s1 XCHG
-        }> PUSHCONT
-        IF
-        s1 PUSH
-        931322574615478515625 PUSHINT
-        30 LSHIFT
-        LESS
-        <{
-          0 PUSHINT
-          s0 PUSH
-          1 PUSHINT
-          <{
-            s0 s4 XCHG
-            -6 PUSHINT
-            DIV BOTH
-            48 ADDCONST
-            s5 PUSH
-            MUL
-            s1 s2 XCHG
-            ADD
-            s0 s4 XCHG
-            8 LSHIFT
-            s0 s2 XCHG
-            INC
-            s1 PUSH
-            0 EQINT
-            s5 s3 s0 XCHG3
-          }> PUSHCONT
-          UNTIL
-          s0 POP
-          s3 POP
-          3 LSHIFT
-          STUX
-        }> PUSHCONT
-        <{
-          NIL
-          0 PUSHINT
-          <{
-            s3 PUSH
-            -6 PUSHINT
-            DIV REM
-            s1 s2 XCHG
-            TPUSH
-            s0 s1 XCHG
-            INC
-            s0 s3 XCHG
-            -6 PUSHINT
-            DIV QOUT
-            s0 PUSH
-            0 EQINT
-            s1 s4 XCHG
-          }> PUSHCONT
-          UNTIL
-          s3 POP
-          s2 PUSH
-          DEC
-          s0 s3 XCHG
-          <{
-            s0 s2 PUSH2
-            INDEXVAR
-            48 ADDCONST
-            ROT
-            8 STU
-            s0 s2 XCHG
-            DEC
-            ROTREV
-          }> PUSHCONT
-          REPEAT
-          s0 POP
-          s1 POP
-        }> PUSHCONT
-        IFELSE
-        ENDC
-        CTOS
-      }> CALLREF
-      20 DEBUG
-      s0 POP
       -1 PUSHINT
       <{
-        <{
-          PUSHSLICE
-          20 DEBUG
-          s0 POP
-        }> PUSHCONT
-        <{
-          PUSHSLICE
-          20 DEBUG
-          s0 POP
-        }> PUSHCONT
-        IFELSE
+        s0 POP
       }> CALLREF
       0 PUSHINT
       <{
-        <{
-          PUSHSLICE
-          20 DEBUG
-          s0 POP
-        }> PUSHCONT
-        <{
-          PUSHSLICE
-          20 DEBUG
-          s0 POP
-        }> PUSHCONT
-        IFELSE
+        s0 POP
       }> CALLREF
-      PUSHSLICE
-      20 DEBUG
-      s0 POP
     }> CALLREF
 
   113617: 

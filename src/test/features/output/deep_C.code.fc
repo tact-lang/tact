@@ -38,11 +38,12 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
     return __tact_create_address(chain, hash);
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 cell __tact_dict_set_code(cell dict, int id, cell code) inline {
@@ -76,24 +77,24 @@ cell __tact_string_builder_end(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -108,7 +109,7 @@ cell __tact_string_builder_end(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -225,7 +226,7 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return (bounce, to, value, mode, body, code, data);
 }
 
-(cell, cell) $__gen_C_init_child(cell sys', slice $parent) {
+(cell, cell) $__gen_C_init_child(cell sys', slice $parent) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -254,6 +255,10 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     var ($self'parent) = $self;
     return (($self'parent), ());
 }
+
+;;
+;; Public Interface of a Contract C
+;;
 
 ((slice), int) __gen_router_C((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     

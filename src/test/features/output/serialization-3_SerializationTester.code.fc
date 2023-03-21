@@ -94,21 +94,9 @@ int $__gen_SerializationTester_getA((int, int, cell, slice, builder, slice) $sel
     return $self'a;
 }
 
-_ $__gen_get_getA() method_id(123932) {
-    var self = __gen_load_SerializationTester();
-    var res = $__gen_SerializationTester_getA(self);
-    return res;
-}
-
 int $__gen_SerializationTester_getB((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'b;
-}
-
-_ $__gen_get_getB() method_id(119935) {
-    var self = __gen_load_SerializationTester();
-    var res = $__gen_SerializationTester_getB(self);
-    return res;
 }
 
 cell $__gen_SerializationTester_getC((int, int, cell, slice, builder, slice) $self) impure inline_ref {
@@ -116,21 +104,9 @@ cell $__gen_SerializationTester_getC((int, int, cell, slice, builder, slice) $se
     return $self'c;
 }
 
-_ $__gen_get_getC() method_id(115806) {
-    var self = __gen_load_SerializationTester();
-    var res = $__gen_SerializationTester_getC(self);
-    return res;
-}
-
 slice $__gen_SerializationTester_getD((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'd;
-}
-
-_ $__gen_get_getD() method_id(111801) {
-    var self = __gen_load_SerializationTester();
-    var res = $__gen_SerializationTester_getD(self);
-    return res;
 }
 
 builder $__gen_SerializationTester_getE((int, int, cell, slice, builder, slice) $self) impure inline_ref {
@@ -138,21 +114,9 @@ builder $__gen_SerializationTester_getE((int, int, cell, slice, builder, slice) 
     return $self'e;
 }
 
-_ $__gen_get_getE() method_id(107672) {
-    var self = __gen_load_SerializationTester();
-    var res = $__gen_SerializationTester_getE(self);
-    return res;
-}
-
 slice $__gen_SerializationTester_getF((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $self'f;
-}
-
-_ $__gen_get_getF() method_id(103675) {
-    var self = __gen_load_SerializationTester();
-    var res = $__gen_SerializationTester_getF(self);
-    return res;
 }
 
 (((int, int, cell, slice, builder, slice)), ()) $__gen_SerializationTester_receive((int, int, cell, slice, builder, slice) $self) impure inline {
@@ -171,6 +135,10 @@ _ $__gen_get_getF() method_id(103675) {
     $self'f = $msg'f;
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), ());
 }
+
+;;
+;; Public Interface of a Contract SerializationTester
+;;
 
 ((int, int, cell, slice, builder, slice), int) __gen_router_SerializationTester((int, int, cell, slice, builder, slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -222,6 +190,42 @@ _ $__gen_get_getF() method_id(103675) {
     
     ;; Persist state
     __gen_store_SerializationTester(self);
+}
+
+_ %getA() method_id(123932) {
+    var self = __gen_load_SerializationTester();
+    var res = $__gen_SerializationTester_getA(self);
+    return res;
+}
+
+_ %getB() method_id(119935) {
+    var self = __gen_load_SerializationTester();
+    var res = $__gen_SerializationTester_getB(self);
+    return res;
+}
+
+_ %getC() method_id(115806) {
+    var self = __gen_load_SerializationTester();
+    var res = $__gen_SerializationTester_getC(self);
+    return res;
+}
+
+_ %getD() method_id(111801) {
+    var self = __gen_load_SerializationTester();
+    var res = $__gen_SerializationTester_getD(self);
+    return res;
+}
+
+_ %getE() method_id(107672) {
+    var self = __gen_load_SerializationTester();
+    var res = $__gen_SerializationTester_getE(self);
+    return res;
+}
+
+_ %getF() method_id(103675) {
+    var self = __gen_load_SerializationTester();
+    var res = $__gen_SerializationTester_getF(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

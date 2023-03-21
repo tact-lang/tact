@@ -139,7 +139,22 @@ SETCP0
         s3 s4 XCHG
         s1 s0 s7 XCHG3
         257 PUSHINT
-        10 CALLDICT
+        s1 PUSH
+        ISNULL
+        <{
+          2DROP
+          ROTREV
+          DICTDEL
+          s0 POP
+        }> PUSHCONT
+        <{
+          NEWC
+          s0 s1 XCHG
+          STIX
+          s1 s3 s3 XCHG3
+          DICTSETB
+        }> PUSHCONT
+        IFELSE
         s0 s1 XCHG
         -1 PUSHINT
       }> PUSHCONT
@@ -231,7 +246,8 @@ SETCP0
         IFELSE
         s0 s3 XCHG
         -1 PUSHINT
-      }> IFJMPREF
+      }> PUSHCONT
+      IFJMP
       s1 PUSH
       3801943978 PUSHINT
       EQUAL
@@ -260,7 +276,14 @@ SETCP0
         s5 PUSH
         257 PUSHINT
         s4 PUSH
-        9 CALLDICT
+        ROTREV
+        DICTIGETREF
+        NULLSWAPIFNOT
+        <{
+          s0 POP
+          PUSHNULL
+        }> PUSHCONT
+        IFNOT
         ISNULL
         THROWANYIFNOT
         s2 s4 XCHG
@@ -361,7 +384,22 @@ SETCP0
           s2 s4 XCHG
           PUSHNULL
           257 PUSHINT
-          10 CALLDICT
+          s1 PUSH
+          ISNULL
+          <{
+            2DROP
+            ROTREV
+            DICTDEL
+            s0 POP
+          }> PUSHCONT
+          <{
+            NEWC
+            s0 s1 XCHG
+            STIX
+            s1 s3 s3 XCHG3
+            DICTSETB
+          }> PUSHCONT
+          IFELSE
           257 PUSHINT
           PUSHNULL
           s0 PUSH
@@ -607,30 +645,6 @@ SETCP0
     STREF
     ENDC
     c4 POP
-
-  9: 
-    ROTREV
-    DICTIGETREF
-    NULLSWAPIFNOT
-    IFRET
-    s0 POP
-    PUSHNULL
-
-  10: 
-    s1 PUSH
-    ISNULL
-    <{
-      2DROP
-      ROTREV
-      DICTDEL
-      s0 POP
-    }> PUSHCONT
-    IFJMP
-    NEWC
-    s0 s1 XCHG
-    STIX
-    s1 s3 s3 XCHG3
-    DICTSETB
 
   77570: 
     c4 PUSH

@@ -12,15 +12,18 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
@@ -50,7 +53,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     }
 }
 
-cell __tact_dict_get_int_cell(cell d, int kl, int k) {
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
     var (r, ok) = idict_get_ref?(d, kl, k);
     if (ok) {
         return r;
@@ -59,7 +62,7 @@ cell __tact_dict_get_int_cell(cell d, int kl, int k) {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -240,21 +243,9 @@ cell $__gen_IncrementContract_counters((cell, cell, cell, cell, cell) $self) imp
     return $self'counters;
 }
 
-_ $__gen_get_counters() method_id(95239) {
-    var self = __gen_load_IncrementContract();
-    var res = $__gen_IncrementContract_counters(self);
-    return res;
-}
-
 cell $__gen_IncrementContract_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters4;
-}
-
-_ $__gen_get_counters2() method_id(77570) {
-    var self = __gen_load_IncrementContract();
-    var res = $__gen_IncrementContract_counters2(self);
-    return res;
 }
 
 (((cell, cell, cell, cell, cell)), ()) $__gen_IncrementContract_receive_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
@@ -306,6 +297,10 @@ _ $__gen_get_counters2() method_id(77570) {
     $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
+
+;;
+;; Public Interface of a Contract IncrementContract
+;;
 
 ((cell, cell, cell, cell, cell), int) __gen_router_IncrementContract((cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -379,6 +374,18 @@ _ $__gen_get_counters2() method_id(77570) {
     
     ;; Persist state
     __gen_store_IncrementContract(self);
+}
+
+_ %counters() method_id(95239) {
+    var self = __gen_load_IncrementContract();
+    var res = $__gen_IncrementContract_counters(self);
+    return res;
+}
+
+_ %counters2() method_id(77570) {
+    var self = __gen_load_IncrementContract();
+    var res = $__gen_IncrementContract_counters2(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

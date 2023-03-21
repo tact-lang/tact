@@ -29,13 +29,10 @@ PROGRAM{
   DECLPROC $__gen_RugPull_sendPayout
   DECLPROC __gen_constructor_RugParams$investment_returns_fee
   DECLPROC $__gen_RugPull_params
-  116437 DECLMETHOD $__gen_get_params
   DECLPROC $__gen_RugPull_requireOwner
   DECLPROC $__gen_RugPull_owner
-  83229 DECLMETHOD $__gen_get_owner
   DECLPROC $__gen_RugPull_requireNotStopped
   DECLPROC $__gen_RugPull_stopped
-  74107 DECLMETHOD $__gen_get_stopped
   DECLPROC $__gen_RugPull_receive
   DECLPROC $__gen_RugPull_receive_comment_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4
   DECLPROC $__gen_RugPull_receive_comment_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea
@@ -43,6 +40,9 @@ PROGRAM{
   DECLPROC $__gen_RugPull_receive_comment_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501
   DECLPROC __gen_router_RugPull
   DECLPROC recv_internal
+  116437 DECLMETHOD %params
+  83229 DECLMETHOD %owner
+  74107 DECLMETHOD %stopped
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -493,11 +493,6 @@ PROGRAM{
     1 3 BLKDROP2
     __gen_constructor_RugParams$investment_returns_fee INLINECALLDICT
   }>
-  $__gen_get_params PROC:<{
-    __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_params INLINECALLDICT
-    __gen_RugParams_to_external INLINECALLDICT
-  }>
   $__gen_RugPull_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
     s10 PUSH
@@ -506,10 +501,6 @@ PROGRAM{
   }>
   $__gen_RugPull_owner PROCREF:<{
     9 BLKDROP
-  }>
-  $__gen_get_owner PROC:<{
-    __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_owner INLINECALLDICT
   }>
   $__gen_RugPull_requireNotStopped PROCREF:<{
     40368 PUSHINT
@@ -520,10 +511,6 @@ PROGRAM{
   $__gen_RugPull_stopped PROCREF:<{
     s3 s9 XCHG
     9 BLKDROP
-  }>
-  $__gen_get_stopped PROC:<{
-    __gen_load_RugPull INLINECALLDICT
-    $__gen_RugPull_stopped INLINECALLDICT
   }>
   $__gen_RugPull_receive PROCINLINE:<{
     $__gen_RugPull_requireNotStopped INLINECALLDICT
@@ -718,6 +705,19 @@ PROGRAM{
     __gen_router_RugPull INLINECALLDICT
     DROP
     __gen_store_RugPull INLINECALLDICT
+  }>
+  %params PROC:<{
+    __gen_load_RugPull INLINECALLDICT
+    $__gen_RugPull_params INLINECALLDICT
+    __gen_RugParams_to_external INLINECALLDICT
+  }>
+  %owner PROC:<{
+    __gen_load_RugPull INLINECALLDICT
+    $__gen_RugPull_owner INLINECALLDICT
+  }>
+  %stopped PROC:<{
+    __gen_load_RugPull INLINECALLDICT
+    $__gen_RugPull_stopped INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

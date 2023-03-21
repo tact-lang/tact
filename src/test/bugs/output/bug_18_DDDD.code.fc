@@ -39,7 +39,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -119,23 +119,9 @@ slice $__gen_DDDD_mapData_addr1((slice, slice, slice, cell, cell) $self, int $ke
     return __tact_dict_get_int_slice($self'mapData, 257, $key);
 }
 
-_ $__gen_get_mapData_addr1(int $$key) method_id(120259) {
-    int $key = $$key;
-    var self = __gen_load_DDDD();
-    var res = $__gen_DDDD_mapData_addr1(self, $key);
-    return res;
-}
-
 int $__gen_DDDD_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
     return __tact_dict_get_slice_int($self'mapData2, 267, $key, 257);
-}
-
-_ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
-    slice $key = __tact_verify_address($$key);
-    var self = __gen_load_DDDD();
-    var res = $__gen_DDDD_mapData2_addr1(self, $key);
-    return res;
 }
 
 (((slice, slice, slice, cell, cell)), ()) $__gen_DDDD_receive((slice, slice, slice, cell, cell) $self) impure inline {
@@ -150,6 +136,10 @@ _ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
     $self'mapData2~__tact_dict_set_slice_int(267, $self'addr1, 3, 257);
     return (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2), ());
 }
+
+;;
+;; Public Interface of a Contract DDDD
+;;
 
 ((slice, slice, slice, cell, cell), int) __gen_router_DDDD((slice, slice, slice, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -194,6 +184,20 @@ _ $__gen_get_mapData2_addr1(slice $$key) method_id(66206) {
     
     ;; Persist state
     __gen_store_DDDD(self);
+}
+
+_ %mapData_addr1(int $$key) method_id(120259) {
+    int $key = $$key;
+    var self = __gen_load_DDDD();
+    var res = $__gen_DDDD_mapData_addr1(self, $key);
+    return res;
+}
+
+_ %mapData2_addr1(slice $$key) method_id(66206) {
+    slice $key = __tact_verify_address($$key);
+    var self = __gen_load_DDDD();
+    var res = $__gen_DDDD_mapData2_addr1(self, $key);
+    return res;
 }
 
 _ supported_interfaces() method_id {

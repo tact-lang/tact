@@ -17,11 +17,12 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 cell __tact_dict_set_code(cell dict, int id, cell code) inline {
@@ -165,7 +166,7 @@ builder __gen_write_$init$Wallet(builder build_0, (int, int) v) inline {
     send_raw_message($c, $params'mode);
 }
 
-(cell, cell) $__gen_Wallet_init_child(cell sys', int $key, int $walletId) {
+(cell, cell) $__gen_Wallet_init_child(cell sys', int $key, int $walletId) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -187,32 +188,14 @@ int $__gen_Wallet_publicKey((int, int, int) $self) impure inline_ref {
     return $self'key;
 }
 
-_ $__gen_get_publicKey() method_id(86520) {
-    var self = __gen_load_Wallet();
-    var res = $__gen_Wallet_publicKey(self);
-    return res;
-}
-
 int $__gen_Wallet_walletId((int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'walletId;
 }
 
-_ $__gen_get_walletId() method_id(114762) {
-    var self = __gen_load_Wallet();
-    var res = $__gen_Wallet_walletId(self);
-    return res;
-}
-
 int $__gen_Wallet_seqno((int, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
     return $self'seqno;
-}
-
-_ $__gen_get_seqno() method_id(85143) {
-    var self = __gen_load_Wallet();
-    var res = $__gen_Wallet_seqno(self);
-    return res;
 }
 
 ((int, int, int), ()) $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure inline {
@@ -269,6 +252,10 @@ _ $__gen_get_seqno() method_id(85143) {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
+
+;;
+;; Public Interface of a Contract Wallet
+;;
 
 ((int, int, int), int) __gen_router_Wallet((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -352,6 +339,24 @@ _ $__gen_get_seqno() method_id(85143) {
     
     ;; Persist state
     __gen_store_Wallet(self);
+}
+
+_ %publicKey() method_id(86520) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_publicKey(self);
+    return res;
+}
+
+_ %walletId() method_id(114762) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_walletId(self);
+    return res;
+}
+
+_ %seqno() method_id(85143) {
+    var self = __gen_load_Wallet();
+    var res = $__gen_Wallet_seqno(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

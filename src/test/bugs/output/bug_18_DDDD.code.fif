@@ -13,12 +13,12 @@ PROGRAM{
   DECLPROC __gen_load_DDDD
   DECLPROC __gen_store_DDDD
   DECLPROC $__gen_DDDD_mapData_addr1
-  120259 DECLMETHOD $__gen_get_mapData_addr1
   DECLPROC $__gen_DDDD_mapData2_addr1
-  66206 DECLMETHOD $__gen_get_mapData2_addr1
   DECLPROC $__gen_DDDD_receive
   DECLPROC __gen_router_DDDD
   DECLPROC recv_internal
+  120259 DECLMETHOD %mapData_addr1
+  66206 DECLMETHOD %mapData2_addr1
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -78,20 +78,21 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  __tact_dict_set_slice_int PROC:<{
+  __tact_dict_set_slice_int PROCINLINE:<{
     OVER
     ISNULL
-    IFJMP:<{
+    IF:<{
       2DROP
       -ROT
       DICTDEL
       DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTSETB
     }>
-    NEWC
-    SWAP
-    STIX
-    s1 s3 s3 XCHG3
-    DICTSETB
   }>
   __tact_dict_get_slice_int PROCINLINE:<{
     s1 s3 s3 XCHG3
@@ -185,23 +186,12 @@ PROGRAM{
     s2 POP
     __tact_dict_get_int_slice INLINECALLDICT
   }>
-  $__gen_get_mapData_addr1 PROC:<{
-    __gen_load_DDDD INLINECALLDICT
-    5 ROLL
-    $__gen_DDDD_mapData_addr1 INLINECALLDICT
-  }>
   $__gen_DDDD_mapData2_addr1 PROCINLINE:<{
     4 2 BLKDROP2
     267 PUSHINT
     SWAP
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
-  }>
-  $__gen_get_mapData2_addr1 PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_DDDD INLINECALLDICT
-    5 ROLL
-    $__gen_DDDD_mapData2_addr1 INLINECALLDICT
   }>
   $__gen_DDDD_receive PROCINLINE:<{
     SWAP
@@ -226,22 +216,22 @@ PROGRAM{
     s5 PUSH
     0 PUSHINT
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
     267 PUSHINT
     s4 PUSH
     1 PUSHINT
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
     267 PUSHINT
     s3 PUSH
     2 PUSHINT
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
     267 PUSHINT
     s5 PUSH
     3 PUSHINT
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
   }>
   __gen_router_DDDD PROCREF:<{
     0 PUSHINT
@@ -298,6 +288,17 @@ PROGRAM{
     __gen_router_DDDD INLINECALLDICT
     DROP
     __gen_store_DDDD INLINECALLDICT
+  }>
+  %mapData_addr1 PROC:<{
+    __gen_load_DDDD INLINECALLDICT
+    5 ROLL
+    $__gen_DDDD_mapData_addr1 INLINECALLDICT
+  }>
+  %mapData2_addr1 PROC:<{
+    __tact_verify_address INLINECALLDICT
+    __gen_load_DDDD INLINECALLDICT
+    5 ROLL
+    $__gen_DDDD_mapData2_addr1 INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

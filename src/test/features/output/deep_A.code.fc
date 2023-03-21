@@ -33,11 +33,12 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
     return __tact_create_address(chain, hash);
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 cell __tact_dict_set_code(cell dict, int id, cell code) inline {
@@ -71,24 +72,24 @@ cell __tact_string_builder_end(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -103,7 +104,7 @@ cell __tact_string_builder_end(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -201,7 +202,7 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return __tact_string_builder_end($b);
 }
 
-(cell, cell) $__gen_B_init_child(cell sys', slice $parent) {
+(cell, cell) $__gen_B_init_child(cell sys', slice $parent) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -227,12 +228,6 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return $__gen_B_init_child(__tact_context_sys, my_address());
 }
 
-_ $__gen_get_getNext() method_id(74105) {
-    var self = __gen_load_A();
-    var res = $__gen_A_getNext(self);
-    return __gen_StateInit_to_external(res);
-}
-
 ((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body(int value, slice to, int mode, int bounce, cell code, cell data, cell body) inline {
     return (bounce, to, value, mode, body, code, data);
 }
@@ -244,6 +239,10 @@ _ $__gen_get_getNext() method_id(74105) {
     $send(__gen_constructor_SendParameters$value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, $__gen_String_asComment(__gen_str_796354186())));
     return ($self, ());
 }
+
+;;
+;; Public Interface of a Contract A
+;;
 
 (tuple, int) __gen_router_A(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -293,6 +292,12 @@ _ $__gen_get_getNext() method_id(74105) {
     
     ;; Persist state
     __gen_store_A(self);
+}
+
+_ %getNext() method_id(74105) {
+    var self = __gen_load_A();
+    var res = $__gen_A_getNext(self);
+    return __gen_StateInit_to_external(res);
 }
 
 _ supported_interfaces() method_id {

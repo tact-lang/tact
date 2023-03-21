@@ -20,13 +20,13 @@ PROGRAM{
   DECLPROC __gen_store_MultisigSigner
   DECLPROC $send
   DECLPROC $__gen_MultisigSigner_request
-  107262 DECLMETHOD $__gen_get_request
   DECLPROC $__gen_MultisigSigner_receive
   DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_body
   DECLPROC __gen_constructor_Signed$request
   DECLPROC $__gen_MultisigSigner_receive_comment_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
   DECLPROC __gen_router_MultisigSigner
   DECLPROC recv_internal
+  107262 DECLMETHOD %request
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -75,20 +75,21 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  __tact_dict_set_slice_int PROC:<{
+  __tact_dict_set_slice_int PROCINLINE:<{
     OVER
     ISNULL
-    IFJMP:<{
+    IF:<{
       2DROP
       -ROT
       DICTDEL
       DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTSETB
     }>
-    NEWC
-    SWAP
-    STIX
-    s1 s3 s3 XCHG3
-    DICTSETB
   }>
   __tact_dict_get_slice_int PROCINLINE:<{
     s1 s3 s3 XCHG3
@@ -375,11 +376,6 @@ PROGRAM{
   $__gen_MultisigSigner_request PROCREF:<{
     5 7 BLKDROP2
   }>
-  $__gen_get_request PROC:<{
-    __gen_load_MultisigSigner INLINECALLDICT
-    $__gen_MultisigSigner_request INLINECALLDICT
-    __gen_Request_to_external INLINECALLDICT
-  }>
   $__gen_MultisigSigner_receive PROCINLINE:<{
   }>
   __gen_constructor_SendParameters$value_to_mode_bounce_body PROCINLINE:<{
@@ -411,7 +407,7 @@ PROGRAM{
     s0 s13 XCHG2
     PUSHNULL
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
     s10 s11 XCHG2
     ADD
     s0 s8 PUSH2
@@ -507,6 +503,11 @@ PROGRAM{
     __gen_router_MultisigSigner INLINECALLDICT
     DROP
     __gen_store_MultisigSigner INLINECALLDICT
+  }>
+  %request PROC:<{
+    __gen_load_MultisigSigner INLINECALLDICT
+    $__gen_MultisigSigner_request INLINECALLDICT
+    __gen_Request_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

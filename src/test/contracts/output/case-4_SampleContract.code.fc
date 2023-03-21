@@ -79,11 +79,9 @@ int $__gen_SampleContract_stake((int, int, (int, int), cell) $self) impure inlin
     return $self'a;
 }
 
-_ $__gen_get_stake() method_id(80984) {
-    var self = __gen_load_SampleContract();
-    var res = $__gen_SampleContract_stake(self);
-    return res;
-}
+;;
+;; Public Interface of a Contract SampleContract
+;;
 
 ((int, int, (int, int), cell), int) __gen_router_SampleContract((int, int, (int, int), cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -122,6 +120,12 @@ _ $__gen_get_stake() method_id(80984) {
     
     ;; Persist state
     __gen_store_SampleContract(self);
+}
+
+_ %stake() method_id(80984) {
+    var self = __gen_load_SampleContract();
+    var res = $__gen_SampleContract_stake(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

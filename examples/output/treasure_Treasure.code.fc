@@ -17,13 +17,16 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 int __tact_address_eq(slice a, slice b) inline {
@@ -153,12 +156,6 @@ slice $__gen_Treasure_owner((slice) $self) impure inline_ref {
     return $self'owner;
 }
 
-_ $__gen_get_owner() method_id(83229) {
-    var self = __gen_load_Treasure();
-    var res = $__gen_Treasure_owner(self);
-    return res;
-}
-
 (((slice)), ()) $__gen_Treasure_receive_Withdraw((slice) $self, (int, int) $msg) impure inline {
     var ($self'owner) = $self;
     var ($msg'amount, $msg'mode) = $msg;
@@ -179,6 +176,10 @@ _ $__gen_get_owner() method_id(83229) {
     $self'owner = $msg'newOwner;
     return (($self'owner), ());
 }
+
+;;
+;; Public Interface of a Contract Treasure
+;;
 
 ((slice), int) __gen_router_Treasure((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -242,6 +243,12 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Persist state
     __gen_store_Treasure(self);
+}
+
+_ %owner() method_id(83229) {
+    var self = __gen_load_Treasure();
+    var res = $__gen_Treasure_owner(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

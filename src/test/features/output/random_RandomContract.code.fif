@@ -17,13 +17,13 @@ PROGRAM{
   DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_RandomContract_randomInt
-  128647 DECLMETHOD $__gen_get_randomInt
   DECLPROC $__gen_RandomContract_random
-  92013 DECLMETHOD $__gen_get_random
   DECLPROC __gen_constructor_DeployOk$queryId
   DECLPROC $__gen_RandomContract_receive_Deploy
   DECLPROC __gen_router_RandomContract
   DECLPROC recv_internal
+  128647 DECLMETHOD %randomInt
+  92013 DECLMETHOD %random
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -261,18 +261,9 @@ PROGRAM{
     DROP
     $randomInt INLINECALLDICT
   }>
-  $__gen_get_randomInt PROC:<{
-    __gen_load_RandomContract INLINECALLDICT
-    $__gen_RandomContract_randomInt INLINECALLDICT
-  }>
   $__gen_RandomContract_random PROCREF:<{
     1 2 BLKDROP2
     $random INLINECALLDICT
-  }>
-  $__gen_get_random PROC:<{
-    __gen_load_RandomContract INLINECALLDICT
-    -ROT
-    $__gen_RandomContract_random INLINECALLDICT
   }>
   __gen_constructor_DeployOk$queryId PROCINLINE:<{
   }>
@@ -336,6 +327,15 @@ PROGRAM{
     __gen_router_RandomContract INLINECALLDICT
     DROP
     __gen_store_RandomContract INLINECALLDICT
+  }>
+  %randomInt PROC:<{
+    __gen_load_RandomContract INLINECALLDICT
+    $__gen_RandomContract_randomInt INLINECALLDICT
+  }>
+  %random PROC:<{
+    __gen_load_RandomContract INLINECALLDICT
+    -ROT
+    $__gen_RandomContract_random INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

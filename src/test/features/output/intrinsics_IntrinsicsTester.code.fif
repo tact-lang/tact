@@ -8,28 +8,28 @@ PROGRAM{
   DECLPROC __gen_load_IntrinsicsTester
   DECLPROC __gen_store_IntrinsicsTester
   DECLPROC $__gen_IntrinsicsTester_getTons
-  85126 DECLMETHOD $__gen_get_getTons
   DECLPROC $__gen_IntrinsicsTester_getTons2
-  72025 DECLMETHOD $__gen_get_getTons2
   DECLPROC $__gen_IntrinsicsTester_getString
-  97624 DECLMETHOD $__gen_get_getString
   DECLPROC $__gen_IntrinsicsTester_getString2
-  123179 DECLMETHOD $__gen_get_getString2
   DECLPROC $__gen_IntrinsicsTester_getAddress
-  67571 DECLMETHOD $__gen_get_getAddress
   DECLPROC $__gen_IntrinsicsTester_getAddress2
-  103926 DECLMETHOD $__gen_get_getAddress2
   DECLPROC $__gen_IntrinsicsTester_getCell
-  83057 DECLMETHOD $__gen_get_getCell
   DECLPROC $__gen_IntrinsicsTester_getCell2
-  94033 DECLMETHOD $__gen_get_getCell2
   DECLPROC $__gen_IntrinsicsTester_getPow
-  93948 DECLMETHOD $__gen_get_getPow
   DECLPROC $__gen_IntrinsicsTester_getPow2
-  92025 DECLMETHOD $__gen_get_getPow2
   DECLPROC $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC __gen_router_IntrinsicsTester
   DECLPROC recv_internal
+  85126 DECLMETHOD %getTons
+  72025 DECLMETHOD %getTons2
+  97624 DECLMETHOD %getString
+  123179 DECLMETHOD %getString2
+  67571 DECLMETHOD %getAddress
+  103926 DECLMETHOD %getAddress2
+  83057 DECLMETHOD %getCell
+  94033 DECLMETHOD %getCell2
+  93948 DECLMETHOD %getPow
+  92025 DECLMETHOD %getPow2
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -144,48 +144,24 @@ PROGRAM{
     5 BLKDROP
     10123400000 PUSHINT
   }>
-  $__gen_get_getTons PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getTons INLINECALLDICT
-  }>
   $__gen_IntrinsicsTester_getTons2 PROCREF:<{
     4 BLKDROP
-  }>
-  $__gen_get_getTons2 PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getTons2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getString PROCREF:<{
     5 BLKDROP
     B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
   }>
-  $__gen_get_getString PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getString INLINECALLDICT
-  }>
   $__gen_IntrinsicsTester_getString2 PROCREF:<{
     s3 s4 XCHG
     4 BLKDROP
-  }>
-  $__gen_get_getString2 PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getString2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getAddress PROCREF:<{
     5 BLKDROP
     B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
   }>
-  $__gen_get_getAddress PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getAddress INLINECALLDICT
-  }>
   $__gen_IntrinsicsTester_getAddress2 PROCREF:<{
     s2 s4 XCHG
     4 BLKDROP
-  }>
-  $__gen_get_getAddress2 PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getAddress2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getCell PROCREF:<{
     5 BLKDROP
@@ -194,32 +170,16 @@ PROGRAM{
     STSLICER
     ENDC
   }>
-  $__gen_get_getCell PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getCell INLINECALLDICT
-  }>
   $__gen_IntrinsicsTester_getCell2 PROCREF:<{
     s1 s4 XCHG
     4 BLKDROP
-  }>
-  $__gen_get_getCell2 PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getCell2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_getPow PROCREF:<{
     5 BLKDROP
     9 PUSHPOW2
   }>
-  $__gen_get_getPow PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getPow INLINECALLDICT
-  }>
   $__gen_IntrinsicsTester_getPow2 PROCREF:<{
     4 1 BLKDROP2
-  }>
-  $__gen_get_getPow2 PROC:<{
-    __gen_load_IntrinsicsTester INLINECALLDICT
-    $__gen_IntrinsicsTester_getPow2 INLINECALLDICT
   }>
   $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
@@ -284,6 +244,46 @@ PROGRAM{
     __gen_router_IntrinsicsTester INLINECALLDICT
     DROP
     __gen_store_IntrinsicsTester INLINECALLDICT
+  }>
+  %getTons PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getTons INLINECALLDICT
+  }>
+  %getTons2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getTons2 INLINECALLDICT
+  }>
+  %getString PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getString INLINECALLDICT
+  }>
+  %getString2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getString2 INLINECALLDICT
+  }>
+  %getAddress PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getAddress INLINECALLDICT
+  }>
+  %getAddress2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getAddress2 INLINECALLDICT
+  }>
+  %getCell PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getCell INLINECALLDICT
+  }>
+  %getCell2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getCell2 INLINECALLDICT
+  }>
+  %getPow PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getPow INLINECALLDICT
+  }>
+  %getPow2 PROC:<{
+    __gen_load_IntrinsicsTester INLINECALLDICT
+    $__gen_IntrinsicsTester_getPow2 INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -80,6 +80,10 @@ builder __gen_write_Functions(builder build_0, (int) v) inline {
     return (($self'value), ());
 }
 
+;;
+;; Public Interface of a Contract Functions
+;;
+
 ((int), int) __gen_router_Functions((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message

@@ -29,9 +29,7 @@ PROGRAM{
   DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_IncrementContract_counters
-  95239 DECLMETHOD $__gen_get_counters
   DECLPROC $__gen_IncrementContract_counters2
-  77570 DECLMETHOD $__gen_get_counters2
   DECLPROC $__gen_IncrementContract_receive_Increment
   DECLPROC $__gen_IncrementContract_receive_Toggle
   DECLPROC $__gen_IncrementContract_receive_Persist
@@ -40,6 +38,8 @@ PROGRAM{
   DECLPROC $__gen_IncrementContract_receive_Deploy
   DECLPROC __gen_router_IncrementContract
   DECLPROC recv_internal
+  95239 DECLMETHOD %counters
+  77570 DECLMETHOD %counters2
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -125,29 +125,31 @@ PROGRAM{
       DICTISETREF
     }>
   }>
-  __tact_dict_get_int_cell PROC:<{
+  __tact_dict_get_int_cell PROCINLINE:<{
     -ROT
     DICTIGETREF
     NULLSWAPIFNOT
-    IFJMP:<{
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
     }>
-    DROP
-    PUSHNULL
   }>
-  __tact_dict_set_slice_int PROC:<{
+  __tact_dict_set_slice_int PROCINLINE:<{
     OVER
     ISNULL
-    IFJMP:<{
+    IF:<{
       2DROP
       -ROT
       DICTDEL
       DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTSETB
     }>
-    NEWC
-    SWAP
-    STIX
-    s1 s3 s3 XCHG3
-    DICTSETB
   }>
   __gen_read_Deploy PROCINLINE:<{
     32 LDU
@@ -435,17 +437,9 @@ PROGRAM{
   $__gen_IncrementContract_counters PROCREF:<{
     4 BLKDROP
   }>
-  $__gen_get_counters PROC:<{
-    __gen_load_IncrementContract INLINECALLDICT
-    $__gen_IncrementContract_counters INLINECALLDICT
-  }>
   $__gen_IncrementContract_counters2 PROCREF:<{
     s1 s4 XCHG
     4 BLKDROP
-  }>
-  $__gen_get_counters2 PROC:<{
-    __gen_load_IncrementContract INLINECALLDICT
-    $__gen_IncrementContract_counters2 INLINECALLDICT
   }>
   $__gen_IncrementContract_receive_Increment PROCINLINE:<{
     257 PUSHINT
@@ -459,7 +453,7 @@ PROGRAM{
     s3 s4 XCHG
     s1 s0 s7 XCHG3
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
     SWAP
   }>
   $__gen_IncrementContract_receive_Toggle PROCINLINE:<{
@@ -495,7 +489,7 @@ PROGRAM{
     s5 PUSH
     257 PUSHINT
     s4 PUSH
-    __tact_dict_get_int_cell CALLDICT
+    __tact_dict_get_int_cell INLINECALLDICT
     ISNULL
     THROWANYIFNOT
     s2 s4 XCHG
@@ -527,7 +521,7 @@ PROGRAM{
     s2 s4 XCHG
     PUSHNULL
     257 PUSHINT
-    __tact_dict_set_slice_int CALLDICT
+    __tact_dict_set_slice_int INLINECALLDICT
     257 PUSHINT
     PUSHNULL
     __gen_writecellopt_Something INLINECALLDICT
@@ -638,6 +632,14 @@ PROGRAM{
     __gen_router_IncrementContract INLINECALLDICT
     DROP
     __gen_store_IncrementContract INLINECALLDICT
+  }>
+  %counters PROC:<{
+    __gen_load_IncrementContract INLINECALLDICT
+    $__gen_IncrementContract_counters INLINECALLDICT
+  }>
+  %counters2 PROC:<{
+    __gen_load_IncrementContract INLINECALLDICT
+    $__gen_IncrementContract_counters2 INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

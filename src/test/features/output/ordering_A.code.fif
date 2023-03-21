@@ -21,11 +21,11 @@ PROGRAM{
   DECLPROC $__gen_Int_inc
   DECLPROC __gen_constructor_S$v3_v2_v1
   DECLPROC $__gen_A_create
-  96687 DECLMETHOD $__gen_get_create
   DECLPROC __gen_constructor_DeployOk$queryId
   DECLPROC $__gen_A_receive_Deploy
   DECLPROC __gen_router_A
   DECLPROC recv_internal
+  96687 DECLMETHOD %create
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -275,12 +275,6 @@ PROGRAM{
     NIP
     __gen_constructor_S$v3_v2_v1 INLINECALLDICT
   }>
-  $__gen_get_create PROC:<{
-    __gen_load_A INLINECALLDICT
-    SWAP
-    $__gen_A_create INLINECALLDICT
-    __gen_S_to_external INLINECALLDICT
-  }>
   __gen_constructor_DeployOk$queryId PROCINLINE:<{
   }>
   $__gen_A_receive_Deploy PROCINLINE:<{
@@ -343,6 +337,12 @@ PROGRAM{
     __gen_router_A INLINECALLDICT
     DROP
     __gen_store_A INLINECALLDICT
+  }>
+  %create PROC:<{
+    __gen_load_A INLINECALLDICT
+    SWAP
+    $__gen_A_create INLINECALLDICT
+    __gen_S_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

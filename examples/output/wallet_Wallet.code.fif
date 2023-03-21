@@ -20,11 +20,8 @@ PROGRAM{
   DECLPROC $send
   DECLPROC $__gen_Wallet_init_child
   DECLPROC $__gen_Wallet_publicKey
-  86520 DECLMETHOD $__gen_get_publicKey
   DECLPROC $__gen_Wallet_walletId
-  114762 DECLMETHOD $__gen_get_walletId
   DECLPROC $__gen_Wallet_seqno
-  85143 DECLMETHOD $__gen_get_seqno
   DECLPROC $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC __gen_constructor_SendParameters$value_to_mode_body
   DECLPROC $__gen_Wallet_receive_TransferMessage
@@ -36,6 +33,9 @@ PROGRAM{
   DECLPROC $__gen_Wallet_receive_bounced
   DECLPROC __gen_router_Wallet
   DECLPROC recv_internal
+  86520 DECLMETHOD %publicKey
+  114762 DECLMETHOD %walletId
+  85143 DECLMETHOD %seqno
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -316,7 +316,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_Wallet_init_child PROC:<{
+  $__gen_Wallet_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -347,23 +347,11 @@ PROGRAM{
     DROP
     NIP
   }>
-  $__gen_get_publicKey PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_publicKey INLINECALLDICT
-  }>
   $__gen_Wallet_walletId PROCREF:<{
     2 1 BLKDROP2
   }>
-  $__gen_get_walletId PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_walletId INLINECALLDICT
-  }>
   $__gen_Wallet_seqno PROCREF:<{
     2DROP
-  }>
-  $__gen_get_seqno PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_seqno INLINECALLDICT
   }>
   $__gen_Wallet_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
@@ -531,6 +519,18 @@ PROGRAM{
     __gen_router_Wallet INLINECALLDICT
     DROP
     __gen_store_Wallet INLINECALLDICT
+  }>
+  %publicKey PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    $__gen_Wallet_publicKey INLINECALLDICT
+  }>
+  %walletId PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    $__gen_Wallet_walletId INLINECALLDICT
+  }>
+  %seqno PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    $__gen_Wallet_seqno INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

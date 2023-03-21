@@ -39,10 +39,10 @@ builder __gen_write_IntrinsicsTester(builder build_0, (int, slice, slice, cell, 
 ;; String "Hello world"
 slice __gen_str_1693223114() asm "B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE";
 
-;; ;; EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
+;; EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
 slice __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc() asm "B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE";
 
-;; ;; Cell vgMxOKjihLPaHO5W6SRH3iNo9kMdZKPG/k2zGDrrnDY=
+;; Cell vgMxOKjihLPaHO5W6SRH3iNo9kMdZKPG/k2zGDrrnDY=
 slice __gen_slice_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36() asm "B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE";
 
 (int, slice, slice, cell, int) $__gen_IntrinsicsTester_init() impure inline_ref {
@@ -76,21 +76,9 @@ int $__gen_IntrinsicsTester_getTons((int, slice, slice, cell, int) $self) impure
     return 10123400000;
 }
 
-_ $__gen_get_getTons() method_id(85126) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getTons(self);
-    return res;
-}
-
 int $__gen_IntrinsicsTester_getTons2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'a;
-}
-
-_ $__gen_get_getTons2() method_id(72025) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getTons2(self);
-    return res;
 }
 
 slice $__gen_IntrinsicsTester_getString((int, slice, slice, cell, int) $self) impure inline_ref {
@@ -98,21 +86,9 @@ slice $__gen_IntrinsicsTester_getString((int, slice, slice, cell, int) $self) im
     return __gen_str_1693223114();
 }
 
-_ $__gen_get_getString() method_id(97624) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getString(self);
-    return res;
-}
-
 slice $__gen_IntrinsicsTester_getString2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'b;
-}
-
-_ $__gen_get_getString2() method_id(123179) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getString2(self);
-    return res;
 }
 
 slice $__gen_IntrinsicsTester_getAddress((int, slice, slice, cell, int) $self) impure inline_ref {
@@ -120,21 +96,9 @@ slice $__gen_IntrinsicsTester_getAddress((int, slice, slice, cell, int) $self) i
     return __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc();
 }
 
-_ $__gen_get_getAddress() method_id(67571) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getAddress(self);
-    return res;
-}
-
 slice $__gen_IntrinsicsTester_getAddress2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'c;
-}
-
-_ $__gen_get_getAddress2() method_id(103926) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getAddress2(self);
-    return res;
 }
 
 cell $__gen_IntrinsicsTester_getCell((int, slice, slice, cell, int) $self) impure inline_ref {
@@ -142,21 +106,9 @@ cell $__gen_IntrinsicsTester_getCell((int, slice, slice, cell, int) $self) impur
     return begin_cell().store_slice(__gen_slice_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36()).end_cell();
 }
 
-_ $__gen_get_getCell() method_id(83057) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getCell(self);
-    return res;
-}
-
 cell $__gen_IntrinsicsTester_getCell2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'd;
-}
-
-_ $__gen_get_getCell2() method_id(94033) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getCell2(self);
-    return res;
 }
 
 int $__gen_IntrinsicsTester_getPow((int, slice, slice, cell, int) $self) impure inline_ref {
@@ -164,27 +116,19 @@ int $__gen_IntrinsicsTester_getPow((int, slice, slice, cell, int) $self) impure 
     return 512;
 }
 
-_ $__gen_get_getPow() method_id(93948) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getPow(self);
-    return res;
-}
-
 int $__gen_IntrinsicsTester_getPow2((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
     return $self'e;
-}
-
-_ $__gen_get_getPow2() method_id(92025) {
-    var self = __gen_load_IntrinsicsTester();
-    var res = $__gen_IntrinsicsTester_getPow2(self);
-    return res;
 }
 
 ((int, slice, slice, cell, int), ()) $__gen_IntrinsicsTester_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, slice, slice, cell, int) $self) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e), ());
 }
+
+;;
+;; Public Interface of a Contract IntrinsicsTester
+;;
 
 ((int, slice, slice, cell, int), int) __gen_router_IntrinsicsTester((int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -234,6 +178,66 @@ _ $__gen_get_getPow2() method_id(92025) {
     
     ;; Persist state
     __gen_store_IntrinsicsTester(self);
+}
+
+_ %getTons() method_id(85126) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getTons(self);
+    return res;
+}
+
+_ %getTons2() method_id(72025) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getTons2(self);
+    return res;
+}
+
+_ %getString() method_id(97624) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getString(self);
+    return res;
+}
+
+_ %getString2() method_id(123179) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getString2(self);
+    return res;
+}
+
+_ %getAddress() method_id(67571) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getAddress(self);
+    return res;
+}
+
+_ %getAddress2() method_id(103926) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getAddress2(self);
+    return res;
+}
+
+_ %getCell() method_id(83057) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getCell(self);
+    return res;
+}
+
+_ %getCell2() method_id(94033) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getCell2(self);
+    return res;
+}
+
+_ %getPow() method_id(93948) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getPow(self);
+    return res;
+}
+
+_ %getPow2() method_id(92025) {
+    var self = __gen_load_IntrinsicsTester();
+    var res = $__gen_IntrinsicsTester_getPow2(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

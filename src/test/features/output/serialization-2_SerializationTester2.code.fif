@@ -25,25 +25,25 @@ PROGRAM{
   DECLPROC __gen_load_SerializationTester2
   DECLPROC __gen_store_SerializationTester2
   DECLPROC $__gen_SerializationTester2_getA
-  123932 DECLMETHOD $__gen_get_getA
   DECLPROC $__gen_SerializationTester2_getAopt
-  113663 DECLMETHOD $__gen_get_getAopt
   DECLPROC $__gen_SerializationTester2_getB
-  119935 DECLMETHOD $__gen_get_getB
   DECLPROC $__gen_SerializationTester2_getBopt
-  73763 DECLMETHOD $__gen_get_getBopt
   DECLPROC __gen_constructor_Both$a_b
   DECLPROC $__gen_SerializationTester2_getBoth
-  81754 DECLMETHOD $__gen_get_getBoth
   DECLPROC $__gen_SerializationTester2_getBothOpt
-  69430 DECLMETHOD $__gen_get_getBothOpt
   DECLPROC __gen_constructor_Vars$a_b_c_d_e
   DECLPROC $__gen_SerializationTester2_process
-  104435 DECLMETHOD $__gen_get_process
   DECLPROC $__gen_SerializationTester2_receive
   DECLPROC $__gen_SerializationTester2_receive_Update
   DECLPROC __gen_router_SerializationTester2
   DECLPROC recv_internal
+  123932 DECLMETHOD %getA
+  113663 DECLMETHOD %getAopt
+  119935 DECLMETHOD %getB
+  73763 DECLMETHOD %getBopt
+  81754 DECLMETHOD %getBoth
+  69430 DECLMETHOD %getBothOpt
+  104435 DECLMETHOD %process
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -307,55 +307,25 @@ PROGRAM{
   $__gen_SerializationTester2_getA PROCREF:<{
     5 BLKDROP
   }>
-  $__gen_get_getA PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getA INLINECALLDICT
-    __gen_Vars_to_external INLINECALLDICT
-  }>
   $__gen_SerializationTester2_getAopt PROCREF:<{
     5 BLKDROP
     __gen_Vars_as_optional INLINECALLDICT
   }>
-  $__gen_get_getAopt PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getAopt INLINECALLDICT
-    __gen_Vars_opt_to_external INLINECALLDICT
-  }>
   $__gen_SerializationTester2_getB PROCREF:<{
     5 5 BLKDROP2
-  }>
-  $__gen_get_getB PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getB INLINECALLDICT
-    __gen_Vars_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_getBopt PROCREF:<{
     5 5 BLKDROP2
     __gen_Vars_as_optional INLINECALLDICT
-  }>
-  $__gen_get_getBopt PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBopt INLINECALLDICT
-    __gen_Vars_opt_to_external INLINECALLDICT
   }>
   __gen_constructor_Both$a_b PROCINLINE:<{
   }>
   $__gen_SerializationTester2_getBoth PROCREF:<{
     __gen_constructor_Both$a_b INLINECALLDICT
   }>
-  $__gen_get_getBoth PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBoth INLINECALLDICT
-    __gen_Both_to_external INLINECALLDICT
-  }>
   $__gen_SerializationTester2_getBothOpt PROCREF:<{
     __gen_constructor_Both$a_b INLINECALLDICT
     __gen_Both_as_optional INLINECALLDICT
-  }>
-  $__gen_get_getBothOpt PROC:<{
-    __gen_load_SerializationTester2 INLINECALLDICT
-    $__gen_SerializationTester2_getBothOpt INLINECALLDICT
-    __gen_Both_opt_to_external INLINECALLDICT
   }>
   __gen_constructor_Vars$a_b_c_d_e PROCINLINE:<{
   }>
@@ -375,38 +345,6 @@ PROGRAM{
     s3 s4 XCHG
     s1 s3 s0 XCHG3
     __gen_constructor_Vars$a_b_c_d_e INLINECALLDICT
-  }>
-  $__gen_get_process PROC:<{
-    s0 s2 XCHG
-    __gen_Vars_from_tuple INLINECALLDICT
-    s0 s5 XCHG
-    __gen_Both_from_tuple INLINECALLDICT
-    s0 s15 XCHG
-    __gen_Both_from_opt_tuple INLINECALLDICT
-    __gen_load_SerializationTester2 INLINECALLDICT
-    s9 25 s() XCHG
-    s8 24 s() XCHG
-    s7 23 s() XCHG
-    s6 22 s() XCHG
-    s5 21 s() XCHG
-    s4 20 s() XCHG
-    s3 19 s() XCHG
-    s2 18 s() XCHG
-    s1 17 s() XCHG
-    s0 16 s() XCHG
-    s7 s15 XCHG
-    s6 s14 XCHG
-    s5 s13 XCHG
-    s4 s12 XCHG
-    s8 s11 XCHG
-    s3 s10 XCHG
-    s9 s1 s7 XCHG3
-    s0 s6 XCHG
-    s0 s5 XCHG
-    s0 s4 XCHG
-    s8 s8 s3 XCHG3
-    $__gen_SerializationTester2_process INLINECALLDICT
-    __gen_Vars_to_external INLINECALLDICT
   }>
   $__gen_SerializationTester2_receive PROCINLINE:<{
   }>
@@ -479,6 +417,68 @@ PROGRAM{
     __gen_router_SerializationTester2 INLINECALLDICT
     DROP
     __gen_store_SerializationTester2 INLINECALLDICT
+  }>
+  %getA PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getA INLINECALLDICT
+    __gen_Vars_to_external INLINECALLDICT
+  }>
+  %getAopt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getAopt INLINECALLDICT
+    __gen_Vars_opt_to_external INLINECALLDICT
+  }>
+  %getB PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getB INLINECALLDICT
+    __gen_Vars_to_external INLINECALLDICT
+  }>
+  %getBopt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBopt INLINECALLDICT
+    __gen_Vars_opt_to_external INLINECALLDICT
+  }>
+  %getBoth PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBoth INLINECALLDICT
+    __gen_Both_to_external INLINECALLDICT
+  }>
+  %getBothOpt PROC:<{
+    __gen_load_SerializationTester2 INLINECALLDICT
+    $__gen_SerializationTester2_getBothOpt INLINECALLDICT
+    __gen_Both_opt_to_external INLINECALLDICT
+  }>
+  %process PROC:<{
+    s0 s2 XCHG
+    __gen_Vars_from_tuple INLINECALLDICT
+    s0 s5 XCHG
+    __gen_Both_from_tuple INLINECALLDICT
+    s0 s15 XCHG
+    __gen_Both_from_opt_tuple INLINECALLDICT
+    __gen_load_SerializationTester2 INLINECALLDICT
+    s9 25 s() XCHG
+    s8 24 s() XCHG
+    s7 23 s() XCHG
+    s6 22 s() XCHG
+    s5 21 s() XCHG
+    s4 20 s() XCHG
+    s3 19 s() XCHG
+    s2 18 s() XCHG
+    s1 17 s() XCHG
+    s0 16 s() XCHG
+    s7 s15 XCHG
+    s6 s14 XCHG
+    s5 s13 XCHG
+    s4 s12 XCHG
+    s8 s11 XCHG
+    s3 s10 XCHG
+    s9 s1 s7 XCHG3
+    s0 s6 XCHG
+    s0 s5 XCHG
+    s0 s4 XCHG
+    s8 s8 s3 XCHG3
+    $__gen_SerializationTester2_process INLINECALLDICT
+    __gen_Vars_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

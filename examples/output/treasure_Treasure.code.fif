@@ -19,12 +19,12 @@ PROGRAM{
   DECLPROC $__gen_Treasure_requireOwner
   DECLPROC $__gen_Treasure_doWithdraw
   DECLPROC $__gen_Treasure_owner
-  83229 DECLMETHOD $__gen_get_owner
   DECLPROC $__gen_Treasure_receive_Withdraw
   DECLPROC $__gen_Treasure_receive_comment_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d
   DECLPROC $__gen_Treasure_receive_ChangeOwner
   DECLPROC __gen_router_Treasure
   DECLPROC recv_internal
+  83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -263,10 +263,6 @@ PROGRAM{
   }>
   $__gen_Treasure_owner PROCREF:<{
   }>
-  $__gen_get_owner PROC:<{
-    __gen_load_Treasure INLINECALLDICT
-    $__gen_Treasure_owner INLINECALLDICT
-  }>
   $__gen_Treasure_receive_Withdraw PROCINLINE:<{
     $__gen_Treasure_doWithdraw INLINECALLDICT
   }>
@@ -361,6 +357,10 @@ PROGRAM{
     __gen_router_Treasure INLINECALLDICT
     DROP
     __gen_store_Treasure INLINECALLDICT
+  }>
+  %owner PROC:<{
+    __gen_load_Treasure INLINECALLDICT
+    $__gen_Treasure_owner INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

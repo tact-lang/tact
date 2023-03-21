@@ -301,6 +301,9 @@ SETCP0
       s0 s1 XCHG
       0 EQINT
       <{
+        s0 POP
+      }> PUSHCONT
+      <{
         HASHSU
         15687661268003540618347676322063149294643333469463580674027607086437424345145 PUSHINT
         EQUAL
@@ -340,7 +343,22 @@ SETCP0
           s0 s13 XCHG2
           PUSHNULL
           257 PUSHINT
-          7 CALLDICT
+          s1 PUSH
+          ISNULL
+          <{
+            2DROP
+            ROTREV
+            DICTDEL
+            s0 POP
+          }> PUSHCONT
+          <{
+            NEWC
+            s0 s1 XCHG
+            STIX
+            s1 s3 s3 XCHG3
+            DICTSETB
+          }> PUSHCONT
+          IFELSE
           s10 s11 XCHG2
           ADD
           s0 s8 PUSH2
@@ -575,17 +593,13 @@ SETCP0
               SENDRAWMSG
             }> CALLREF
             s0 s7 XCHG
-          }> PUSHCONT
-          IF
+          }> IFREF
           s0 s9 XCHG
           -1 PUSHINT
           RETALT
-        }> IFJMPREF
-      }> PUSHCONT
-      <{
-        s0 POP
-      }> PUSHCONT
-      IFELSE
+        }> PUSHCONT
+        IFJMP
+      }> IFREFELSE
       0 PUSHINT
     }> CALLREF
     s0 POP
@@ -701,22 +715,6 @@ SETCP0
     STREF
     ENDC
     c4 POP
-
-  7: 
-    s1 PUSH
-    ISNULL
-    <{
-      2DROP
-      ROTREV
-      DICTDEL
-      s0 POP
-    }> PUSHCONT
-    IFJMP
-    NEWC
-    s0 s1 XCHG
-    STIX
-    s1 s3 s3 XCHG3
-    DICTSETB
 
   107262: 
     c4 PUSH

@@ -6,14 +6,14 @@ PROGRAM{
   DECLPROC __gen_load_StdlibTest
   DECLPROC __gen_store_StdlibTest
   DECLPROC $__gen_StdlibTest_sliceEmpty
-  73995 DECLMETHOD $__gen_get_sliceEmpty
   DECLPROC $__gen_StdlibTest_sliceBits
-  75090 DECLMETHOD $__gen_get_sliceBits
   DECLPROC $__gen_StdlibTest_sliceRefs
-  77445 DECLMETHOD $__gen_get_sliceRefs
   DECLPROC $__gen_StdlibTest_receive
   DECLPROC __gen_router_StdlibTest
   DECLPROC recv_internal
+  73995 DECLMETHOD %sliceEmpty
+  75090 DECLMETHOD %sliceBits
+  77445 DECLMETHOD %sliceRefs
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -92,28 +92,13 @@ PROGRAM{
     NIP
     SEMPTY
   }>
-  $__gen_get_sliceEmpty PROC:<{
-    __gen_load_StdlibTest INLINECALLDICT
-    SWAP
-    $__gen_StdlibTest_sliceEmpty INLINECALLDICT
-  }>
   $__gen_StdlibTest_sliceBits PROCREF:<{
     NIP
     SBITS
   }>
-  $__gen_get_sliceBits PROC:<{
-    __gen_load_StdlibTest INLINECALLDICT
-    SWAP
-    $__gen_StdlibTest_sliceBits INLINECALLDICT
-  }>
   $__gen_StdlibTest_sliceRefs PROCREF:<{
     NIP
     SREFS
-  }>
-  $__gen_get_sliceRefs PROC:<{
-    __gen_load_StdlibTest INLINECALLDICT
-    SWAP
-    $__gen_StdlibTest_sliceRefs INLINECALLDICT
   }>
   $__gen_StdlibTest_receive PROCINLINE:<{
   }>
@@ -172,6 +157,21 @@ PROGRAM{
     __gen_router_StdlibTest INLINECALLDICT
     DROP
     __gen_store_StdlibTest INLINECALLDICT
+  }>
+  %sliceEmpty PROC:<{
+    __gen_load_StdlibTest INLINECALLDICT
+    SWAP
+    $__gen_StdlibTest_sliceEmpty INLINECALLDICT
+  }>
+  %sliceBits PROC:<{
+    __gen_load_StdlibTest INLINECALLDICT
+    SWAP
+    $__gen_StdlibTest_sliceBits INLINECALLDICT
+  }>
+  %sliceRefs PROC:<{
+    __gen_load_StdlibTest INLINECALLDICT
+    SWAP
+    $__gen_StdlibTest_sliceRefs INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

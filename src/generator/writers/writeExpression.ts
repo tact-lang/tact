@@ -49,9 +49,8 @@ function writeStructConstructor(type: TypeDescription, args: string[], ctx: Writ
     ctx.fun(name, () => {
         const sig = `(${resolveFuncType(type, ctx)}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + ' ' + v).join(', ')})`;
         ctx.signature(sig);
-        ctx.append(`${sig} inline {`);
-        ctx.inIndent(() => {
-
+        ctx.flag('inline');
+        ctx.body(() => {
             // Create expressions
             let expressions = type.fields.map((v) => {
                 let arg = args.find((v2) => v2 === v.name);
@@ -66,7 +65,6 @@ function writeStructConstructor(type: TypeDescription, args: string[], ctx: Writ
 
             ctx.append(`return (${expressions.join(', ')});`);
         });
-        ctx.append(`}`);
     });
     return name;
 }

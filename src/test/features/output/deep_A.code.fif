@@ -21,11 +21,11 @@ PROGRAM{
   DECLPROC $__gen_String_asComment
   DECLPROC $__gen_B_init_child
   DECLPROC $__gen_A_getNext
-  74105 DECLMETHOD $__gen_get_getNext
   DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body
   DECLPROC $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   DECLPROC __gen_router_A
   DECLPROC recv_internal
+  74105 DECLMETHOD %getNext
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -357,7 +357,7 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
   }>
-  $__gen_B_init_child PROC:<{
+  $__gen_B_init_child PROCREF:<{
     SWAP
     CTOS
     LDDICT
@@ -395,12 +395,7 @@ PROGRAM{
     DROP
     __tact_context_sys GETGLOB
     MYADDR
-    $__gen_B_init_child CALLDICT
-  }>
-  $__gen_get_getNext PROC:<{
-    __gen_load_A INLINECALLDICT
-    $__gen_A_getNext INLINECALLDICT
-    __gen_StateInit_to_external INLINECALLDICT
+    $__gen_B_init_child INLINECALLDICT
   }>
   __gen_constructor_SendParameters$value_to_mode_bounce_code_data_body PROCINLINE:<{
     s3 s6 XCHG
@@ -410,7 +405,7 @@ PROGRAM{
   $__gen_A_receive_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
     MYADDR
-    $__gen_B_init_child CALLDICT
+    $__gen_B_init_child INLINECALLDICT
     2DUP
     $contractAddress INLINECALLDICT
     0 PUSHINT
@@ -485,6 +480,11 @@ PROGRAM{
     __gen_router_A INLINECALLDICT
     DROP
     __gen_store_A INLINECALLDICT
+  }>
+  %getNext PROC:<{
+    __gen_load_A INLINECALLDICT
+    $__gen_A_getNext INLINECALLDICT
+    __gen_StateInit_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -17,15 +17,20 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 int __tact_address_eq(slice a, slice b) inline {
@@ -159,12 +164,6 @@ slice $__gen_Beacon_owner((slice, slice, int) $self) impure inline_ref {
     return $self'owner;
 }
 
-_ $__gen_get_owner() method_id(83229) {
-    var self = __gen_load_Beacon();
-    var res = $__gen_Beacon_owner(self);
-    return res;
-}
-
 ((int, slice, int)) __gen_constructor_CanPayoutResponse$ok_amount_address(int ok, int amount, slice address) inline {
     return (amount, address, ok);
 }
@@ -189,6 +188,10 @@ _ $__gen_get_owner() method_id(83229) {
     $self'completed = false;
     return (($self'master, $self'owner, $self'completed), ());
 }
+
+;;
+;; Public Interface of a Contract Beacon
+;;
 
 ((slice, slice, int), int) __gen_router_Beacon((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -235,6 +238,12 @@ _ $__gen_get_owner() method_id(83229) {
     
     ;; Persist state
     __gen_store_Beacon(self);
+}
+
+_ %owner() method_id(83229) {
+    var self = __gen_load_Beacon();
+    var res = $__gen_Beacon_owner(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

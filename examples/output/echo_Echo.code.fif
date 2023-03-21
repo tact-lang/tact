@@ -20,11 +20,11 @@ PROGRAM{
   DECLPROC $__gen_Slice_asCell
   DECLPROC $__gen_String_asComment
   DECLPROC $__gen_Echo_hello
-  115554 DECLMETHOD $__gen_get_hello
   DECLPROC $__gen_Echo_receive_comment
   DECLPROC $__gen_Echo_receive_fallback
   DECLPROC __gen_router_Echo
   DECLPROC recv_internal
+  115554 DECLMETHOD %hello
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -352,11 +352,6 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $__gen_get_hello PROC:<{
-    __gen_load_Echo INLINECALLDICT
-    SWAP
-    $__gen_Echo_hello INLINECALLDICT
-  }>
   $__gen_Echo_receive_comment PROCINLINE:<{
     $__gen_String_asComment INLINECALLDICT
     $reply INLINECALLDICT
@@ -427,6 +422,11 @@ PROGRAM{
     __gen_router_Echo INLINECALLDICT
     DROP
     __gen_store_Echo INLINECALLDICT
+  }>
+  %hello PROC:<{
+    __gen_load_Echo INLINECALLDICT
+    SWAP
+    $__gen_Echo_hello INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

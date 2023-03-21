@@ -27,10 +27,10 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
     // Load function
     ctx.fun(`__gen_load_${type.name}`, () => {
-        const sig = `${resolveFuncType(type, ctx)} __gen_load_${type.name}()`;
-        ctx.signature(sig);
-        ctx.append(`${sig} impure inline {`); // NOTE: Inline impure function
-        ctx.inIndent(() => {
+        ctx.signature(`${resolveFuncType(type, ctx)} __gen_load_${type.name}()`);
+        ctx.flag('impure');
+        ctx.flag('inline');
+        ctx.body(() => {
 
             // Load data slice
             ctx.append(`slice $sc = get_data().begin_parse();`);
@@ -72,15 +72,15 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
 
             ctx.append(`}`);
         });
-        ctx.append(`}`);
     });
 
     // Store function
     ctx.fun(`__gen_store_${type.name}`, () => {
         const sig = `() __gen_store_${type.name}(${resolveFuncType(type, ctx)} v)`;
         ctx.signature(sig);
-        ctx.append(`${sig} impure inline {`); // NOTE: Impure inline function
-        ctx.inIndent(() => {
+        ctx.flag('impure');
+        ctx.flag('inline');
+        ctx.body(() => {
             ctx.append(`builder b = begin_cell();`);
 
             // Persist system cell
@@ -97,17 +97,16 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             // Persist data
             ctx.append(`set_data(b.end_cell());`);
         });
-        ctx.append(`}`);
     });
 }
 
 function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext) {
     ctx.fun(`__gen_${t.name}_init`, () => {
-        const sig = `${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${[...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})`;
+        const args = init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name));
+        const sig = `${resolveFuncType(t, ctx)} ${fn(`__gen_${t.name}_init`)}(${args.join(', ')})`;
         ctx.signature(sig);
-        ctx.append(`${sig} impure inline_ref {`);
-        ctx.inIndent(() => {
-
+        ctx.flag('impure');
+        ctx.body(() => {
             // Unpack args
             for (let a of init.args) {
                 if (!resolveFuncPrimitive(a.type, ctx)) {
@@ -141,15 +140,16 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
                 ctx.append(`return ${returns};`);
             }
         });
-        ctx.append(`}`);
     });
 
     ctx.fun(`__gen_${t.name}_init_child`, () => {
-        const sig = `(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${[`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))].join(', ')})`;
-        let modifier = enabledInline(ctx.ctx) ? ' inline ' : ' ';
+        const args = [`cell sys'`, ...init.args.map((v) => resolveFuncType(v.type, ctx) + ' ' + id(v.name))];
+        const sig = `(cell, cell) ${fn(`__gen_${t.name}_init_child`)}(${args.join(', ')})`;
         ctx.signature(sig);
-        ctx.append(`${sig}${modifier}{`);
-        ctx.inIndent(() => {
+        if (enabledInline(ctx.ctx)) {
+            ctx.flag('inline');
+        }
+        ctx.body(() => {
             ctx.write(`
                 slice sc' = sys'.begin_parse();
                 cell source = sc'~load_dict();
@@ -164,10 +164,10 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
             for (let c of t.dependsOn) {
                 ctx.append();
                 ctx.write(`
-                    ;; Contract Code: ${c.name}
-                    cell code_${c.uid} = __tact_dict_get_code(source, ${c.uid});
-                    contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${c.uid}, code_${c.uid});
-                `);
+                ;; Contract Code: ${c.name}
+                cell code_${c.uid} = __tact_dict_get_code(source, ${c.uid});
+                contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${c.uid}, code_${c.uid});
+            `);
             }
 
             // Build cell
@@ -180,14 +180,19 @@ function writeInit(t: TypeDescription, init: InitDescription, ctx: WriterContext
             ctx.append(`b = ${ops.writer(`$init$${t.name}`, ctx)}(${args});`);
             ctx.append(`return (mine, b.end_cell());`);
         });
-        ctx.append(`}`);
     });
 }
 
 function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterContext) {
 
     // Main field
-    ctx.fun('$main', () => {
+    ctx.main(() => {
+
+        // Comments
+        ctx.append(`;;`);
+        ctx.append(`;; Public Interface of a Contract ${type.name}`);
+        ctx.append(`;;`);
+        ctx.append(``);
 
         // Write router
         writeRouter(type, ctx);
@@ -232,10 +237,10 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
         ctx.append('}');
         ctx.append();
 
-        // Implicit dependencies
+        // Getters
         for (let f of type.functions.values()) {
             if (f.isGetter) {
-                ctx.used(`__gen_get_${f.name}`);
+                writeGetter(f, ctx)
             }
         }
 
@@ -270,11 +275,13 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     wctx.header(`#pragma version =0.4.2;`); // FunC version
     wctx.header(`#pragma allow-post-modification;`); // Allow post modification
     wctx.header(`#pragma compute-asm-ltr;`); // Compute asm left to right
-    wctx.fun('$main', () => {
-        wctx.append(`global (int, slice, int, slice) __tact_context;`);
-        wctx.append(`global slice __tact_context_sender;`);
-        wctx.append(`global cell __tact_context_sys;`);
-        wctx.append(`global int __tact_randomized;`);
+    wctx.header(``);
+    wctx.header(`global (int, slice, int, slice) __tact_context;`);
+    wctx.header(`global slice __tact_context_sender;`);
+    wctx.header(`global cell __tact_context_sys;`);
+    wctx.header(`global int __tact_randomized;`);
+    wctx.main(() => {
+
     });
     let stdlib = wctx.render();
 
@@ -288,7 +295,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         wctx = new WriterContext(ctx);
         for (let fc of getRawAST(ctx).funcSources) {
             wctx.header('\n' + fc.code);
-            wctx.fun('$main', () => { });
+            wctx.main(() => { });
             nativeLib = wctx.render();
         }
     }
@@ -377,13 +384,6 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         // Functions
         for (let f of c.functions.values()) {
             writeFunction(f, wctx);
-
-            // Render only needed getter
-            if (c.name === abiSrc.name) {
-                if (f.isGetter) {
-                    writeGetter(f, wctx);
-                }
-            }
         }
 
         // Receivers

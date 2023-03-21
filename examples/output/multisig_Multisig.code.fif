@@ -25,15 +25,15 @@ PROGRAM{
   DECLPROC $send
   DECLPROC $__gen_MultisigSigner_init_child
   DECLPROC $__gen_Multisig_member
-  70789 DECLMETHOD $__gen_get_member
   DECLPROC $__gen_Multisig_members
-  104769 DECLMETHOD $__gen_get_members
   DECLPROC __gen_constructor_SendParameters$value_to_mode_bounce_code_data
   DECLPROC $__gen_Multisig_receive_Request
   DECLPROC __gen_constructor_SendParameters$to_value_mode_bounce_body
   DECLPROC $__gen_Multisig_receive_Signed
   DECLPROC __gen_router_Multisig
   DECLPROC recv_internal
+  70789 DECLMETHOD %member
+  104769 DECLMETHOD %members
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -394,7 +394,7 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $__gen_MultisigSigner_init_child PROC:<{
+  $__gen_MultisigSigner_init_child PROCREF:<{
     s0 s10 XCHG
     CTOS
     LDDICT
@@ -430,19 +430,9 @@ PROGRAM{
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
-  $__gen_get_member PROC:<{
-    __tact_verify_address INLINECALLDICT
-    __gen_load_Multisig INLINECALLDICT
-    4 ROLL
-    $__gen_Multisig_member INLINECALLDICT
-  }>
   $__gen_Multisig_members PROCREF:<{
     s2 s3 XCHG
     3 BLKDROP
-  }>
-  $__gen_get_members PROC:<{
-    __gen_load_Multisig INLINECALLDICT
-    $__gen_Multisig_members INLINECALLDICT
   }>
   __gen_constructor_SendParameters$value_to_mode_bounce_code_data PROCINLINE:<{
     s2 s5 XCHG
@@ -468,7 +458,7 @@ PROGRAM{
     s7 s10 XCPU
     s0 s7 XCHG
     3 4 BLKSWAP
-    $__gen_MultisigSigner_init_child CALLDICT
+    $__gen_MultisigSigner_init_child INLINECALLDICT
     2DUP
     $contractAddress INLINECALLDICT
     0 PUSHINT
@@ -494,7 +484,7 @@ PROGRAM{
     s11 s10 s9 PUXCPU
     s10 s9 s8 PUSH3
     s10 s9 PUSH2
-    $__gen_MultisigSigner_init_child CALLDICT
+    $__gen_MultisigSigner_init_child INLINECALLDICT
     $contractAddress INLINECALLDICT
     4429 PUSHINT
     s0 s8 XCHG
@@ -576,6 +566,16 @@ PROGRAM{
     __gen_router_Multisig INLINECALLDICT
     DROP
     __gen_store_Multisig INLINECALLDICT
+  }>
+  %member PROC:<{
+    __tact_verify_address INLINECALLDICT
+    __gen_load_Multisig INLINECALLDICT
+    4 ROLL
+    $__gen_Multisig_member INLINECALLDICT
+  }>
+  %members PROC:<{
+    __gen_load_Multisig INLINECALLDICT
+    $__gen_Multisig_members INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

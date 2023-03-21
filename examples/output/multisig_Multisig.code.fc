@@ -38,15 +38,18 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
     return __tact_create_address(chain, hash);
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
@@ -219,7 +222,7 @@ slice $contractAddress((cell, cell) $s) impure inline_ref {
     send_raw_message($c, $params'mode);
 }
 
-(cell, cell) $__gen_MultisigSigner_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) {
+(cell, cell) $__gen_MultisigSigner_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
@@ -241,22 +244,9 @@ int $__gen_Multisig_member((int, cell, int, int) $self, slice $address) impure i
     return __tact_dict_get_slice_int($self'members, 267, $address, 257);
 }
 
-_ $__gen_get_member(slice $$address) method_id(70789) {
-    slice $address = __tact_verify_address($$address);
-    var self = __gen_load_Multisig();
-    var res = $__gen_Multisig_member(self, $address);
-    return res;
-}
-
 cell $__gen_Multisig_members((int, cell, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
     return $self'members;
-}
-
-_ $__gen_get_members() method_id(104769) {
-    var self = __gen_load_Multisig();
-    var res = $__gen_Multisig_members(self);
-    return res;
 }
 
 ((int, slice, int, int, cell, cell, cell)) __gen_constructor_SendParameters$value_to_mode_bounce_code_data(int value, slice to, int mode, int bounce, cell code, cell data) inline {
@@ -290,6 +280,10 @@ _ $__gen_get_members() method_id(104769) {
     $send(__gen_constructor_SendParameters$to_value_mode_bounce_body($msg'request'to, $msg'request'value, $msg'request'mode, $msg'request'bounce, $msg'request'body));
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
+
+;;
+;; Public Interface of a Contract Multisig
+;;
 
 ((int, cell, int, int), int) __gen_router_Multisig((int, cell, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -342,6 +336,19 @@ _ $__gen_get_members() method_id(104769) {
     
     ;; Persist state
     __gen_store_Multisig(self);
+}
+
+_ %member(slice $$address) method_id(70789) {
+    slice $address = __tact_verify_address($$address);
+    var self = __gen_load_Multisig();
+    var res = $__gen_Multisig_member(self, $address);
+    return res;
+}
+
+_ %members() method_id(104769) {
+    var self = __gen_load_Multisig();
+    var res = $__gen_Multisig_members(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

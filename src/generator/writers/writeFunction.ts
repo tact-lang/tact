@@ -13,7 +13,6 @@ import { fn, id } from "./id";
 import { writeExpression, writeValue } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
-import { ops } from "./ops";
 
 export function writeCastedExpression(expression: ASTExpression, to: TypeRef, ctx: WriterContext) {
     let expr = getExpType(ctx.ctx, expression);
@@ -186,7 +185,6 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
     // Resolve function descriptor
     let name = (self ? '__gen_' + self.name + '_' : '') + f.name;
-    let modifier = enabledInline(ctx.ctx) ? 'impure inline' : 'impure inline_ref';
     let args: string[] = [];
     if (self) {
         args.push(resolveFuncType(self, ctx) + ' ' + id('self'));
@@ -198,9 +196,11 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     // Write function body
     ctx.fun(name, () => {
         ctx.signature(`${returns} ${fn(name)}(${args.join(', ')})`);
-        ctx.append(`${returns} ${fn(name)}(${args.join(', ')}) ${modifier} {`);
-        ctx.inIndent(() => {
-
+        ctx.flag('impure');
+        if (enabledInline(ctx.ctx)) {
+            ctx.flag('inline');
+        }
+        ctx.body(() => {
             // Unpack self
             if (self) {
                 ctx.append(`var (${resolveFuncTypeUnpack(self, id('self'), ctx)}) = ${id('self')};`);
@@ -223,21 +223,20 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
             }
         });
-        ctx.append(`}`);
     });
 }
 
 export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx: WriterContext) {
     const selector = f.selector;
-    const modifier = 'impure inline';// enabledInline(ctx.ctx) ? 'impure inline' : 'impure';
 
     // Binary receiver
     if (selector.kind === 'internal-binary') {
         ctx.fun(`__gen_${self.name}_receive_${selector.type}`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             ctx.signature(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive_${selector.type}`)}(${[resolveFuncType(self, ctx) + ' ' + id('self'), resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)].join(', ')})`);
-            ctx.append(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive_${selector.type}`)}(${[resolveFuncType(self, ctx) + ' ' + id('self'), resolveFuncType(selector.type, ctx) + ' ' + id(selector.name)].join(', ')}) ${modifier} {`);
-            ctx.inIndent(() => {
+            ctx.flag('impure');
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
                 ctx.append(`var ${resolveFuncTypeUnpack(selector.type, id(selector.name), ctx)} = ${id(selector.name)};`);
 
@@ -249,7 +248,6 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                     ctx.append(`return (${selfRes}, ());`);
                 }
             });
-            ctx.append(`}`);
         });
         return;
     }
@@ -259,8 +257,9 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.fun(`__gen_${self.name}_receive`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             ctx.signature(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))})`);
-            ctx.append(`((${resolveFuncType(self, ctx)}), ()) ${fn(`__gen_${self.name}_receive`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))}) ${modifier} {`);
-            ctx.inIndent(() => {
+            ctx.flag('impure');
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
@@ -271,7 +270,6 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                     ctx.append(`return (${selfRes}, ());`);
                 }
             });
-            ctx.append(`}`);
         });
     }
 
@@ -286,8 +284,9 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.fun(`__gen_${self.name}_receive_comment_${hash}`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment_${hash}`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))})`);
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment_${hash}`)}(${(resolveFuncType(self, ctx) + ' ' + id('self'))}) ${modifier} {`);
-            ctx.inIndent(() => {
+            ctx.flag('impure');
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
@@ -298,7 +297,6 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                     ctx.append(`return (${selfRes}, ());`);
                 }
             });
-            ctx.append(`}`);
         });
     }
 
@@ -308,8 +306,9 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.fun(`__gen_${self.name}_receive_comment`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment`)}(${([resolveFuncType(self, ctx) + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')})`);
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_comment`)}(${([resolveFuncType(self, ctx) + ' ' + id('self'), 'slice ' + id(selector.name)]).join(', ')}) ${modifier} {`);
-            ctx.inIndent(() => {
+            ctx.flag('impure');
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
@@ -320,7 +319,6 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                     ctx.append(`return (${selfRes}, ());`);
                 }
             });
-            ctx.append(`}`);
         });
     }
 
@@ -329,8 +327,9 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.fun(`__gen_${self.name}_receive_fallback`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_fallback`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)})`);
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_fallback`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)}) ${modifier} {`);
-            ctx.inIndent(() => {
+            ctx.flag('impure');
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
@@ -341,7 +340,6 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                     ctx.append(`return (${selfRes}, ());`);
                 }
             });
-            ctx.append(`}`);
         });
     }
 
@@ -350,8 +348,9 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
         ctx.fun(`__gen_${self.name}_receive_bounced`, () => {
             let selfRes = resolveFuncTypeUnpack(self, id('self'), ctx);
             ctx.signature(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_bounced`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)})`);
-            ctx.append(`(${resolveFuncType(self, ctx)}, ()) ${fn(`__gen_${self.name}_receive_bounced`)}(${resolveFuncType(self, ctx)} ${id('self')}, slice ${id(selector.name)}) ${modifier} {`);
-            ctx.inIndent(() => {
+            ctx.flag('impure');
+            ctx.flag('inline');
+            ctx.body(() => {
                 ctx.append(`var ${resolveFuncTypeUnpack(self, id('self'), ctx)} = ${id('self')};`);
 
                 for (let s of f.ast.statements) {
@@ -362,57 +361,51 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
                     ctx.append(`return (${selfRes}, ());`);
                 }
             });
-            ctx.append(`}`);
         });
     }
 }
 
 export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
-    ctx.fun(`__gen_get_${f.name}`, () => {
 
-        // Render tensors
-        const self = f.self ? getType(ctx.ctx, f.self) : null;
-        if (!self) {
-            throw new Error(`No self type for getter ${f.name}`); // Impossible
+    // Render tensors
+    const self = f.self ? getType(ctx.ctx, f.self) : null;
+    if (!self) {
+        throw new Error(`No self type for getter ${f.name}`); // Impossible
+    }
+    ctx.append(`_ %${f.name}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + ' ' + id('$' + v.name)).join(', ')}) method_id(${getMethodId(f.name)}) {`);
+    ctx.inIndent(() => {
+
+        // Unpack arguments
+        for (let arg of f.args) {
+            unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
         }
 
-        ctx.signature(`_ ${fn(`__gen_get_${f.name}`)}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + ' ' + id('$' + v.name)).join(', ')})`);
-        ctx.append(`_ ${fn(`__gen_get_${f.name}`)}(${f.args.map((v) => resolveFuncTupledType(v.type, ctx) + ' ' + id('$' + v.name)).join(', ')}) method_id(${getMethodId(f.name)}) {`);
-        ctx.inIndent(() => {
+        // Load contract state
+        ctx.used(`__gen_load_${self.name}`);
+        ctx.append(`var self = __gen_load_${self.name}();`);
 
-            // Unpack arguments
-            for (let arg of f.args) {
-                unwrapExternal(id(arg.name), id('$' + arg.name), arg.type, ctx);
-            }
+        // Execute get method
+        ctx.used(`__gen_${self.name}_${f.name}`);
+        ctx.append(`var res = ${fn(`__gen_${self.name}_${f.name}`)}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
 
-            // Load contract state
-            ctx.used(`__gen_load_${self.name}`);
-            ctx.append(`var self = __gen_load_${self.name}();`);
-
-            // Execute get method
-            ctx.used(`__gen_${self.name}_${f.name}`);
-            ctx.append(`var res = ${fn(`__gen_${self.name}_${f.name}`)}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
-
-            // Pack if needed
-            if (f.returns.kind === 'ref') {
-                let t = getType(ctx.ctx, f.returns.name);
-                if (t.kind === 'struct') {
-                    if (f.returns.optional) {
-                        ctx.used(`__gen_${t.name}_opt_to_external`);
-                        ctx.append(`return __gen_${t.name}_opt_to_external(res);`);
-                    } else {
-                        ctx.used(`__gen_${t.name}_to_external`);
-                        ctx.append(`return __gen_${t.name}_to_external(res);`);
-                    }
-                    return;
-                } else if (t.kind === 'primitive' && t.name === 'Address') {
-
+        // Pack if needed
+        if (f.returns.kind === 'ref') {
+            let t = getType(ctx.ctx, f.returns.name);
+            if (t.kind === 'struct') {
+                if (f.returns.optional) {
+                    ctx.used(`__gen_${t.name}_opt_to_external`);
+                    ctx.append(`return __gen_${t.name}_opt_to_external(res);`);
+                } else {
+                    ctx.used(`__gen_${t.name}_to_external`);
+                    ctx.append(`return __gen_${t.name}_to_external(res);`);
                 }
+                return;
             }
+        }
 
-            // Return restult
-            ctx.append(`return res;`);
-        });
-        ctx.append(`}`);
+        // Return restult
+        ctx.append(`return res;`);
     });
+    ctx.append(`}`);
+    ctx.append();
 }

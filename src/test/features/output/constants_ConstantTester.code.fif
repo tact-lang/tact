@@ -4,19 +4,19 @@ PROGRAM{
   DECLPROC __gen_load_ConstantTester
   DECLPROC __gen_store_ConstantTester
   DECLPROC $__gen_ConstantTester_something1
-  121234 DECLMETHOD $__gen_get_something1
   DECLPROC $__gen_ConstantTester_something2
-  125425 DECLMETHOD $__gen_get_something2
   DECLPROC $__gen_ConstantTester_something3
-  129488 DECLMETHOD $__gen_get_something3
   DECLPROC $__gen_ConstantTester_something4
-  100663 DECLMETHOD $__gen_get_something4
   DECLPROC $__gen_ConstantTester_something5
-  104726 DECLMETHOD $__gen_get_something5
   DECLPROC $__gen_ConstantTester_globalConst
-  116577 DECLMETHOD $__gen_get_globalConst
   DECLPROC __gen_router_ConstantTester
   DECLPROC recv_internal
+  121234 DECLMETHOD %something1
+  125425 DECLMETHOD %something2
+  129488 DECLMETHOD %something3
+  100663 DECLMETHOD %something4
+  104726 DECLMETHOD %something5
+  116577 DECLMETHOD %globalConst
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -82,49 +82,25 @@ PROGRAM{
     DROP
     10 PUSHINT
   }>
-  $__gen_get_something1 PROC:<{
-    __gen_load_ConstantTester INLINECALLDICT
-    $__gen_ConstantTester_something1 INLINECALLDICT
-  }>
   $__gen_ConstantTester_something2 PROCREF:<{
     DROP
     PUSHNULL
-  }>
-  $__gen_get_something2 PROC:<{
-    __gen_load_ConstantTester INLINECALLDICT
-    $__gen_ConstantTester_something2 INLINECALLDICT
   }>
   $__gen_ConstantTester_something3 PROCREF:<{
     DROP
     123000000000 PUSHINT
   }>
-  $__gen_get_something3 PROC:<{
-    __gen_load_ConstantTester INLINECALLDICT
-    $__gen_ConstantTester_something3 INLINECALLDICT
-  }>
   $__gen_ConstantTester_something4 PROCREF:<{
     DROP
     456000000000 PUSHINT
-  }>
-  $__gen_get_something4 PROC:<{
-    __gen_load_ConstantTester INLINECALLDICT
-    $__gen_ConstantTester_something4 INLINECALLDICT
   }>
   $__gen_ConstantTester_something5 PROCREF:<{
     DROP
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
   }>
-  $__gen_get_something5 PROC:<{
-    __gen_load_ConstantTester INLINECALLDICT
-    $__gen_ConstantTester_something5 INLINECALLDICT
-  }>
   $__gen_ConstantTester_globalConst PROCREF:<{
     DROP
     100 PUSHINT
-  }>
-  $__gen_get_globalConst PROC:<{
-    __gen_load_ConstantTester INLINECALLDICT
-    $__gen_ConstantTester_globalConst INLINECALLDICT
   }>
   __gen_router_ConstantTester PROCREF:<{
     DUP
@@ -166,6 +142,30 @@ PROGRAM{
     __gen_router_ConstantTester INLINECALLDICT
     DROP
     __gen_store_ConstantTester INLINECALLDICT
+  }>
+  %something1 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    $__gen_ConstantTester_something1 INLINECALLDICT
+  }>
+  %something2 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    $__gen_ConstantTester_something2 INLINECALLDICT
+  }>
+  %something3 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    $__gen_ConstantTester_something3 INLINECALLDICT
+  }>
+  %something4 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    $__gen_ConstantTester_something4 INLINECALLDICT
+  }>
+  %something5 PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    $__gen_ConstantTester_something5 INLINECALLDICT
+  }>
+  %globalConst PROC:<{
+    __gen_load_ConstantTester INLINECALLDICT
+    $__gen_ConstantTester_globalConst INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -9,9 +9,9 @@ PROGRAM{
   DECLPROC __gen_load_SampleContract
   DECLPROC __gen_store_SampleContract
   DECLPROC $__gen_SampleContract_stake
-  80984 DECLMETHOD $__gen_get_stake
   DECLPROC __gen_router_SampleContract
   DECLPROC recv_internal
+  80984 DECLMETHOD %stake
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -131,10 +131,6 @@ PROGRAM{
   $__gen_SampleContract_stake PROCREF:<{
     4 BLKDROP
   }>
-  $__gen_get_stake PROC:<{
-    __gen_load_SampleContract INLINECALLDICT
-    $__gen_SampleContract_stake INLINECALLDICT
-  }>
   __gen_router_SampleContract PROCREF:<{
     DUP
     SBITS
@@ -175,6 +171,10 @@ PROGRAM{
     __gen_router_SampleContract INLINECALLDICT
     DROP
     __gen_store_SampleContract INLINECALLDICT
+  }>
+  %stake PROC:<{
+    __gen_load_SampleContract INLINECALLDICT
+    $__gen_SampleContract_stake INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -17,15 +17,20 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 (cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
@@ -71,24 +76,24 @@ cell __tact_string_builder_end(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -103,7 +108,7 @@ cell __tact_string_builder_end(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -279,12 +284,6 @@ cell $__gen_String_asComment(slice $self) impure inline_ref {
     return __gen_constructor_RugParams$investment_returns_fee($self'investment, $self'returns, $self'fee);
 }
 
-_ $__gen_get_params() method_id(116437) {
-    var self = __gen_load_RugPull();
-    var res = $__gen_RugPull_params(self);
-    return __gen_RugParams_to_external(res);
-}
-
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireOwner((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     throw_unless(132, __tact_address_eq(__tact_context_get_sender(), $self'owner));
@@ -296,12 +295,6 @@ slice $__gen_RugPull_owner((slice, int, int, int, int, int, int, int, int, cell)
     return $self'owner;
 }
 
-_ $__gen_get_owner() method_id(83229) {
-    var self = __gen_load_RugPull();
-    var res = $__gen_RugPull_owner(self);
-    return res;
-}
-
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $__gen_RugPull_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     throw_unless(40368, (~ $self'stopped));
@@ -311,12 +304,6 @@ _ $__gen_get_owner() method_id(83229) {
 int $__gen_RugPull_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     return $self'stopped;
-}
-
-_ $__gen_get_stopped() method_id(74107) {
-    var self = __gen_load_RugPull();
-    var res = $__gen_RugPull_stopped(self);
-    return res;
 }
 
 (((slice, int, int, int, int, int, int, int, int, cell)), ()) $__gen_RugPull_receive((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
@@ -373,6 +360,10 @@ _ $__gen_get_stopped() method_id(74107) {
     $reply($__gen_String_asComment(__gen_str_441410314()));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
+
+;;
+;; Public Interface of a Contract RugPull
+;;
 
 ((slice, int, int, int, int, int, int, int, int, cell), int) __gen_router_RugPull((slice, int, int, int, int, int, int, int, int, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -447,6 +438,24 @@ _ $__gen_get_stopped() method_id(74107) {
     
     ;; Persist state
     __gen_store_RugPull(self);
+}
+
+_ %params() method_id(116437) {
+    var self = __gen_load_RugPull();
+    var res = $__gen_RugPull_params(self);
+    return __gen_RugParams_to_external(res);
+}
+
+_ %owner() method_id(83229) {
+    var self = __gen_load_RugPull();
+    var res = $__gen_RugPull_owner(self);
+    return res;
+}
+
+_ %stopped() method_id(74107) {
+    var self = __gen_load_RugPull();
+    var res = $__gen_RugPull_stopped(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

@@ -18,17 +18,17 @@ PROGRAM{
   DECLPROC __gen_constructor_SendParameters$to_value
   DECLPROC $__gen_MultisigContract_execute
   DECLPROC $__gen_MultisigContract_key1
-  107493 DECLMETHOD $__gen_get_key1
   DECLPROC $__gen_MultisigContract_key2
-  103302 DECLMETHOD $__gen_get_key2
   DECLPROC $__gen_MultisigContract_key3
-  99239 DECLMETHOD $__gen_get_key3
   DECLPROC $__gen_MultisigContract_seqno
-  85143 DECLMETHOD $__gen_get_seqno
   DECLPROC $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC $__gen_MultisigContract_receive_Execute
   DECLPROC __gen_router_MultisigContract
   DECLPROC recv_internal
+  107493 DECLMETHOD %key1
+  103302 DECLMETHOD %key2
+  99239 DECLMETHOD %key3
+  85143 DECLMETHOD %seqno
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -296,31 +296,15 @@ PROGRAM{
     s2 s3 XCHG
     3 BLKDROP
   }>
-  $__gen_get_key1 PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key1 INLINECALLDICT
-  }>
   $__gen_MultisigContract_key2 PROCREF:<{
     s1 s3 XCHG
     3 BLKDROP
   }>
-  $__gen_get_key2 PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key2 INLINECALLDICT
-  }>
   $__gen_MultisigContract_key3 PROCREF:<{
     3 1 BLKDROP2
   }>
-  $__gen_get_key3 PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_key3 INLINECALLDICT
-  }>
   $__gen_MultisigContract_seqno PROCREF:<{
     3 BLKDROP
-  }>
-  $__gen_get_seqno PROC:<{
-    __gen_load_MultisigContract INLINECALLDICT
-    $__gen_MultisigContract_seqno INLINECALLDICT
   }>
   $__gen_MultisigContract_receive_comment_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
@@ -420,6 +404,22 @@ PROGRAM{
     __gen_router_MultisigContract INLINECALLDICT
     DROP
     __gen_store_MultisigContract INLINECALLDICT
+  }>
+  %key1 PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    $__gen_MultisigContract_key1 INLINECALLDICT
+  }>
+  %key2 PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    $__gen_MultisigContract_key2 INLINECALLDICT
+  }>
+  %key3 PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    $__gen_MultisigContract_key3 INLINECALLDICT
+  }>
+  %seqno PROC:<{
+    __gen_load_MultisigContract INLINECALLDICT
+    $__gen_MultisigContract_seqno INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

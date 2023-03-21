@@ -20,12 +20,12 @@ PROGRAM{
   DECLPROC __gen_constructor_SendParameters$bounce_to_value_mode_body
   DECLPROC $reply
   DECLPROC $__gen_Beacon_owner
-  83229 DECLMETHOD $__gen_get_owner
   DECLPROC __gen_constructor_CanPayoutResponse$ok_amount_address
   DECLPROC $__gen_Beacon_receive_CanPayout
   DECLPROC $__gen_Beacon_receive_bounced
   DECLPROC __gen_router_Beacon
   DECLPROC recv_internal
+  83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -287,10 +287,6 @@ PROGRAM{
     DROP
     NIP
   }>
-  $__gen_get_owner PROC:<{
-    __gen_load_Beacon INLINECALLDICT
-    $__gen_Beacon_owner INLINECALLDICT
-  }>
   __gen_constructor_CanPayoutResponse$ok_amount_address PROCINLINE:<{
     ROT
   }>
@@ -383,6 +379,10 @@ PROGRAM{
     __gen_router_Beacon INLINECALLDICT
     DROP
     __gen_store_Beacon INLINECALLDICT
+  }>
+  %owner PROC:<{
+    __gen_load_Beacon INLINECALLDICT
+    $__gen_Beacon_owner INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

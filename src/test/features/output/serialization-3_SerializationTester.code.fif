@@ -8,21 +8,21 @@ PROGRAM{
   DECLPROC __gen_load_SerializationTester
   DECLPROC __gen_store_SerializationTester
   DECLPROC $__gen_SerializationTester_getA
-  123932 DECLMETHOD $__gen_get_getA
   DECLPROC $__gen_SerializationTester_getB
-  119935 DECLMETHOD $__gen_get_getB
   DECLPROC $__gen_SerializationTester_getC
-  115806 DECLMETHOD $__gen_get_getC
   DECLPROC $__gen_SerializationTester_getD
-  111801 DECLMETHOD $__gen_get_getD
   DECLPROC $__gen_SerializationTester_getE
-  107672 DECLMETHOD $__gen_get_getE
   DECLPROC $__gen_SerializationTester_getF
-  103675 DECLMETHOD $__gen_get_getF
   DECLPROC $__gen_SerializationTester_receive
   DECLPROC $__gen_SerializationTester_receive_Update
   DECLPROC __gen_router_SerializationTester
   DECLPROC recv_internal
+  123932 DECLMETHOD %getA
+  119935 DECLMETHOD %getB
+  115806 DECLMETHOD %getC
+  111801 DECLMETHOD %getD
+  107672 DECLMETHOD %getE
+  103675 DECLMETHOD %getF
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -213,48 +213,24 @@ PROGRAM{
   $__gen_SerializationTester_getA PROCREF:<{
     5 BLKDROP
   }>
-  $__gen_get_getA PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getA INLINECALLDICT
-  }>
   $__gen_SerializationTester_getB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
-  }>
-  $__gen_get_getB PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getB INLINECALLDICT
   }>
   $__gen_SerializationTester_getC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_get_getC PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getC INLINECALLDICT
-  }>
   $__gen_SerializationTester_getD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
-  }>
-  $__gen_get_getD PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getD INLINECALLDICT
   }>
   $__gen_SerializationTester_getE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_get_getE PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getE INLINECALLDICT
-  }>
   $__gen_SerializationTester_getF PROCREF:<{
     5 1 BLKDROP2
-  }>
-  $__gen_get_getF PROC:<{
-    __gen_load_SerializationTester INLINECALLDICT
-    $__gen_SerializationTester_getF INLINECALLDICT
   }>
   $__gen_SerializationTester_receive PROCINLINE:<{
   }>
@@ -327,6 +303,30 @@ PROGRAM{
     __gen_router_SerializationTester INLINECALLDICT
     DROP
     __gen_store_SerializationTester INLINECALLDICT
+  }>
+  %getA PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    $__gen_SerializationTester_getA INLINECALLDICT
+  }>
+  %getB PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    $__gen_SerializationTester_getB INLINECALLDICT
+  }>
+  %getC PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    $__gen_SerializationTester_getC INLINECALLDICT
+  }>
+  %getD PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    $__gen_SerializationTester_getD INLINECALLDICT
+  }>
+  %getE PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    $__gen_SerializationTester_getE INLINECALLDICT
+  }>
+  %getF PROC:<{
+    __gen_load_SerializationTester INLINECALLDICT
+    $__gen_SerializationTester_getF INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -12,13 +12,16 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 tuple __tact_string_builder_start(builder b) inline {
@@ -50,24 +53,24 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -82,7 +85,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -192,13 +195,6 @@ slice $__gen_Echo_hello(tuple $self, slice $src) impure inline_ref {
     return __tact_string_builder_end_slice($builder);
 }
 
-_ $__gen_get_hello(slice $$src) method_id(115554) {
-    slice $src = $$src;
-    var self = __gen_load_Echo();
-    var res = $__gen_Echo_hello(self, $src);
-    return res;
-}
-
 (tuple, ()) $__gen_Echo_receive_comment(tuple $self, slice $msg) impure inline {
     var $self = $self;
     $reply($__gen_String_asComment($msg));
@@ -210,6 +206,10 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     $reply($__gen_Slice_asCell($msg));
     return ($self, ());
 }
+
+;;
+;; Public Interface of a Contract Echo
+;;
 
 (tuple, int) __gen_router_Echo(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -258,6 +258,13 @@ _ $__gen_get_hello(slice $$src) method_id(115554) {
     
     ;; Persist state
     __gen_store_Echo(self);
+}
+
+_ %hello(slice $$src) method_id(115554) {
+    slice $src = $$src;
+    var self = __gen_load_Echo();
+    var res = $__gen_Echo_hello(self, $src);
+    return res;
 }
 
 _ supported_interfaces() method_id {

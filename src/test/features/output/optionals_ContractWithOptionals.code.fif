@@ -28,48 +28,48 @@ PROGRAM{
   DECLPROC __gen_load_ContractWithOptionals
   DECLPROC __gen_store_ContractWithOptionals
   DECLPROC $__gen_ContractWithOptionals_isNotNullA
-  74449 DECLMETHOD $__gen_get_isNotNullA
   DECLPROC $__gen_ContractWithOptionals_isNotNullB
-  70322 DECLMETHOD $__gen_get_isNotNullB
   DECLPROC $__gen_ContractWithOptionals_isNotNullC
-  66195 DECLMETHOD $__gen_get_isNotNullC
   DECLPROC $__gen_ContractWithOptionals_isNotNullD
-  94836 DECLMETHOD $__gen_get_isNotNullD
   DECLPROC $__gen_ContractWithOptionals_isNotNullE
-  90709 DECLMETHOD $__gen_get_isNotNullE
   DECLPROC $__gen_ContractWithOptionals_isNotNullF
-  86582 DECLMETHOD $__gen_get_isNotNullF
   DECLPROC $__gen_ContractWithOptionals_nullA
-  119020 DECLMETHOD $__gen_get_nullA
   DECLPROC $__gen_ContractWithOptionals_nullB
-  123023 DECLMETHOD $__gen_get_nullB
   DECLPROC $__gen_ContractWithOptionals_nullC
-  127150 DECLMETHOD $__gen_get_nullC
   DECLPROC $__gen_ContractWithOptionals_nullD
-  98377 DECLMETHOD $__gen_get_nullD
   DECLPROC $__gen_ContractWithOptionals_nullE
-  102504 DECLMETHOD $__gen_get_nullE
   DECLPROC $__gen_ContractWithOptionals_nullF
-  106507 DECLMETHOD $__gen_get_nullF
   DECLPROC $__gen_ContractWithOptionals_notNullA
-  110911 DECLMETHOD $__gen_get_notNullA
   DECLPROC $__gen_ContractWithOptionals_notNullB
-  98652 DECLMETHOD $__gen_get_notNullB
   DECLPROC $__gen_ContractWithOptionals_notNullC
-  102781 DECLMETHOD $__gen_get_notNullC
   DECLPROC $__gen_ContractWithOptionals_notNullD
-  123290 DECLMETHOD $__gen_get_notNullD
   DECLPROC $__gen_ContractWithOptionals_notNullE
-  127419 DECLMETHOD $__gen_get_notNullE
   DECLPROC $__gen_ContractWithOptionals_notNullF
-  115160 DECLMETHOD $__gen_get_notNullF
   DECLPROC __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5
   DECLPROC $__gen_ContractWithOptionals_testVariables
-  87190 DECLMETHOD $__gen_get_testVariables
   DECLPROC $__gen_ContractWithOptionals_receive
   DECLPROC $__gen_ContractWithOptionals_receive_Update
   DECLPROC __gen_router_ContractWithOptionals
   DECLPROC recv_internal
+  74449 DECLMETHOD %isNotNullA
+  70322 DECLMETHOD %isNotNullB
+  66195 DECLMETHOD %isNotNullC
+  94836 DECLMETHOD %isNotNullD
+  90709 DECLMETHOD %isNotNullE
+  86582 DECLMETHOD %isNotNullF
+  119020 DECLMETHOD %nullA
+  123023 DECLMETHOD %nullB
+  127150 DECLMETHOD %nullC
+  98377 DECLMETHOD %nullD
+  102504 DECLMETHOD %nullE
+  106507 DECLMETHOD %nullF
+  110911 DECLMETHOD %notNullA
+  98652 DECLMETHOD %notNullB
+  102781 DECLMETHOD %notNullC
+  123290 DECLMETHOD %notNullD
+  127419 DECLMETHOD %notNullE
+  115160 DECLMETHOD %notNullF
+  87190 DECLMETHOD %testVariables
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -663,19 +663,11 @@ PROGRAM{
     ISNULL
     NOT
   }>
-  $__gen_get_isNotNullA PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullA INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_isNotNullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
     ISNULL
     NOT
-  }>
-  $__gen_get_isNotNullB PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullB INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_isNotNullC PROCREF:<{
     s3 s5 XCHG
@@ -683,19 +675,11 @@ PROGRAM{
     ISNULL
     NOT
   }>
-  $__gen_get_isNotNullC PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullC INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_isNotNullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
     ISNULL
     NOT
-  }>
-  $__gen_get_isNotNullD PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullD INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_isNotNullE PROCREF:<{
     s1 s5 XCHG
@@ -703,120 +687,60 @@ PROGRAM{
     ISNULL
     NOT
   }>
-  $__gen_get_isNotNullE PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullE INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_isNotNullF PROCREF:<{
     5 1 BLKDROP2
     ISNULL
     NOT
   }>
-  $__gen_get_isNotNullF PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_isNotNullF INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_nullA PROCREF:<{
     5 BLKDROP
-  }>
-  $__gen_get_nullA PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullA INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_nullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_get_nullB PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullB INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_nullC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
-  }>
-  $__gen_get_nullC PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullC INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_nullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_get_nullD PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullD INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_nullE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
   }>
-  $__gen_get_nullE PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullE INLINECALLDICT
-    __gen_SomeGenericStruct_opt_to_external INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_nullF PROCREF:<{
     5 1 BLKDROP2
-  }>
-  $__gen_get_nullF PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_nullF INLINECALLDICT
-    __gen_StructWithOptionals_opt_to_external INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_notNullA PROCREF:<{
     5 BLKDROP
     __tact_not_null INLINECALLDICT
-  }>
-  $__gen_get_notNullA PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullA INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_notNullB PROCREF:<{
     s4 s5 XCHG
     5 BLKDROP
     __tact_not_null INLINECALLDICT
   }>
-  $__gen_get_notNullB PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullB INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_notNullC PROCREF:<{
     s3 s5 XCHG
     5 BLKDROP
     __tact_not_null INLINECALLDICT
-  }>
-  $__gen_get_notNullC PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullC INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_notNullD PROCREF:<{
     s2 s5 XCHG
     5 BLKDROP
     __tact_not_null INLINECALLDICT
   }>
-  $__gen_get_notNullD PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullD INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_notNullE PROCREF:<{
     s1 s5 XCHG
     5 BLKDROP
     __gen_SomeGenericStruct_not_null INLINECALLDICT
   }>
-  $__gen_get_notNullE PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullE INLINECALLDICT
-    __gen_SomeGenericStruct_to_external INLINECALLDICT
-  }>
   $__gen_ContractWithOptionals_notNullF PROCREF:<{
     5 1 BLKDROP2
     __gen_StructWithOptionals_not_null INLINECALLDICT
-  }>
-  $__gen_get_notNullF PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_notNullF INLINECALLDICT
-    __gen_StructWithOptionals_to_external INLINECALLDICT
   }>
   __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5 PROCINLINE:<{
   }>
@@ -830,11 +754,6 @@ PROGRAM{
     __gen_constructor_SomeGenericStruct$value1_value2_value3_value4_value5 INLINECALLDICT
     __gen_SomeGenericStruct_as_optional INLINECALLDICT
     __gen_SomeGenericStruct_not_null INLINECALLDICT
-  }>
-  $__gen_get_testVariables PROC:<{
-    __gen_load_ContractWithOptionals INLINECALLDICT
-    $__gen_ContractWithOptionals_testVariables INLINECALLDICT
-    __gen_SomeGenericStruct_to_external INLINECALLDICT
   }>
   $__gen_ContractWithOptionals_receive PROCINLINE:<{
   }>
@@ -907,6 +826,87 @@ PROGRAM{
     __gen_router_ContractWithOptionals INLINECALLDICT
     DROP
     __gen_store_ContractWithOptionals INLINECALLDICT
+  }>
+  %isNotNullA PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_isNotNullA INLINECALLDICT
+  }>
+  %isNotNullB PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_isNotNullB INLINECALLDICT
+  }>
+  %isNotNullC PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_isNotNullC INLINECALLDICT
+  }>
+  %isNotNullD PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_isNotNullD INLINECALLDICT
+  }>
+  %isNotNullE PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_isNotNullE INLINECALLDICT
+  }>
+  %isNotNullF PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_isNotNullF INLINECALLDICT
+  }>
+  %nullA PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_nullA INLINECALLDICT
+  }>
+  %nullB PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_nullB INLINECALLDICT
+  }>
+  %nullC PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_nullC INLINECALLDICT
+  }>
+  %nullD PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_nullD INLINECALLDICT
+  }>
+  %nullE PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_nullE INLINECALLDICT
+    __gen_SomeGenericStruct_opt_to_external INLINECALLDICT
+  }>
+  %nullF PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_nullF INLINECALLDICT
+    __gen_StructWithOptionals_opt_to_external INLINECALLDICT
+  }>
+  %notNullA PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_notNullA INLINECALLDICT
+  }>
+  %notNullB PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_notNullB INLINECALLDICT
+  }>
+  %notNullC PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_notNullC INLINECALLDICT
+  }>
+  %notNullD PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_notNullD INLINECALLDICT
+  }>
+  %notNullE PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_notNullE INLINECALLDICT
+    __gen_SomeGenericStruct_to_external INLINECALLDICT
+  }>
+  %notNullF PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_notNullF INLINECALLDICT
+    __gen_StructWithOptionals_to_external INLINECALLDICT
+  }>
+  %testVariables PROC:<{
+    __gen_load_ContractWithOptionals INLINECALLDICT
+    $__gen_ContractWithOptionals_testVariables INLINECALLDICT
+    __gen_SomeGenericStruct_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -17,20 +17,23 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
-
-builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
 }
 
-(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+builder __tact_store_bool(builder b, int v) inline {
+    return b.store_int(v, 1);
+}
+
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -204,12 +207,6 @@ builder __gen_write_MultisigSigner(builder build_0, (slice, cell, int, int, int,
     return ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body);
 }
 
-_ $__gen_get_request() method_id(107262) {
-    var self = __gen_load_MultisigSigner();
-    var res = $__gen_MultisigSigner_request(self);
-    return __gen_Request_to_external(res);
-}
-
 (((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) $__gen_MultisigSigner_receive((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
@@ -237,6 +234,10 @@ _ $__gen_get_request() method_id(107262) {
     }
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
+
+;;
+;; Public Interface of a Contract MultisigSigner
+;;
 
 ((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), int) __gen_router_MultisigSigner((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -292,6 +293,12 @@ _ $__gen_get_request() method_id(107262) {
     
     ;; Persist state
     __gen_store_MultisigSigner(self);
+}
+
+_ %request() method_id(107262) {
+    var self = __gen_load_MultisigSigner();
+    var res = $__gen_MultisigSigner_request(self);
+    return __gen_Request_to_external(res);
 }
 
 _ supported_interfaces() method_id {

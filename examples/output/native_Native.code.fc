@@ -53,6 +53,10 @@ builder __gen_write_Native(builder build_0, (int) v) inline {
     return (($self'value), ());
 }
 
+;;
+;; Public Interface of a Contract Native
+;;
+
 ((int), int) __gen_router_Native((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message

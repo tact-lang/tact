@@ -8,14 +8,14 @@ PROGRAM{
   DECLPROC __gen_load_Wallet
   DECLPROC __gen_store_Wallet
   DECLPROC $__gen_Wallet_publicKey
-  86520 DECLMETHOD $__gen_get_publicKey
   DECLPROC $__gen_Wallet_walletId
-  114762 DECLMETHOD $__gen_get_walletId
   DECLPROC $__gen_Wallet_seqno
-  85143 DECLMETHOD $__gen_get_seqno
   DECLPROC $__gen_Wallet_receive_TransferMessage
   DECLPROC __gen_router_Wallet
   DECLPROC recv_internal
+  86520 DECLMETHOD %publicKey
+  114762 DECLMETHOD %walletId
+  85143 DECLMETHOD %seqno
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -117,23 +117,11 @@ PROGRAM{
     DROP
     NIP
   }>
-  $__gen_get_publicKey PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_publicKey INLINECALLDICT
-  }>
   $__gen_Wallet_walletId PROCINLINE:<{
     2 1 BLKDROP2
   }>
-  $__gen_get_walletId PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_walletId INLINECALLDICT
-  }>
   $__gen_Wallet_seqno PROCINLINE:<{
     2DROP
-  }>
-  $__gen_get_seqno PROC:<{
-    __gen_load_Wallet INLINECALLDICT
-    $__gen_Wallet_seqno INLINECALLDICT
   }>
   $__gen_Wallet_receive_TransferMessage PROCINLINE:<{
     DUP
@@ -213,6 +201,18 @@ PROGRAM{
     __gen_router_Wallet INLINECALLDICT
     DROP
     __gen_store_Wallet INLINECALLDICT
+  }>
+  %publicKey PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    $__gen_Wallet_publicKey INLINECALLDICT
+  }>
+  %walletId PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    $__gen_Wallet_walletId INLINECALLDICT
+  }>
+  %seqno PROC:<{
+    __gen_load_Wallet INLINECALLDICT
+    $__gen_Wallet_seqno INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -41,21 +41,9 @@ int $__gen_ConstantTester_something1(tuple $self) impure inline_ref {
     return 10;
 }
 
-_ $__gen_get_something1() method_id(121234) {
-    var self = __gen_load_ConstantTester();
-    var res = $__gen_ConstantTester_something1(self);
-    return res;
-}
-
 int $__gen_ConstantTester_something2(tuple $self) impure inline_ref {
     var ($self) = $self;
     return null();
-}
-
-_ $__gen_get_something2() method_id(125425) {
-    var self = __gen_load_ConstantTester();
-    var res = $__gen_ConstantTester_something2(self);
-    return res;
 }
 
 int $__gen_ConstantTester_something3(tuple $self) impure inline_ref {
@@ -63,21 +51,9 @@ int $__gen_ConstantTester_something3(tuple $self) impure inline_ref {
     return 123000000000;
 }
 
-_ $__gen_get_something3() method_id(129488) {
-    var self = __gen_load_ConstantTester();
-    var res = $__gen_ConstantTester_something3(self);
-    return res;
-}
-
 int $__gen_ConstantTester_something4(tuple $self) impure inline_ref {
     var ($self) = $self;
     return 456000000000;
-}
-
-_ $__gen_get_something4() method_id(100663) {
-    var self = __gen_load_ConstantTester();
-    var res = $__gen_ConstantTester_something4(self);
-    return res;
 }
 
 slice $__gen_ConstantTester_something5(tuple $self) impure inline_ref {
@@ -85,22 +61,14 @@ slice $__gen_ConstantTester_something5(tuple $self) impure inline_ref {
     return __gen_str_3226689099();
 }
 
-_ $__gen_get_something5() method_id(104726) {
-    var self = __gen_load_ConstantTester();
-    var res = $__gen_ConstantTester_something5(self);
-    return res;
-}
-
 int $__gen_ConstantTester_globalConst(tuple $self) impure inline_ref {
     var ($self) = $self;
     return 100;
 }
 
-_ $__gen_get_globalConst() method_id(116577) {
-    var self = __gen_load_ConstantTester();
-    var res = $__gen_ConstantTester_globalConst(self);
-    return res;
-}
+;;
+;; Public Interface of a Contract ConstantTester
+;;
 
 (tuple, int) __gen_router_ConstantTester(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -139,6 +107,42 @@ _ $__gen_get_globalConst() method_id(116577) {
     
     ;; Persist state
     __gen_store_ConstantTester(self);
+}
+
+_ %something1() method_id(121234) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something1(self);
+    return res;
+}
+
+_ %something2() method_id(125425) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something2(self);
+    return res;
+}
+
+_ %something3() method_id(129488) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something3(self);
+    return res;
+}
+
+_ %something4() method_id(100663) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something4(self);
+    return res;
+}
+
+_ %something5() method_id(104726) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_something5(self);
+    return res;
+}
+
+_ %globalConst() method_id(116577) {
+    var self = __gen_load_ConstantTester();
+    var res = $__gen_ConstantTester_globalConst(self);
+    return res;
 }
 
 _ supported_interfaces() method_id {

@@ -17,13 +17,16 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
 (slice, ((int))) __gen_read_Deploy(slice sc_0) inline {
@@ -159,13 +162,6 @@ builder __gen_write_A(builder build_0, (slice) v) inline {
     return __gen_constructor_S$v3_v2_v1($v~$__gen_Int_inc(), $v~$__gen_Int_inc(), $v~$__gen_Int_inc());
 }
 
-_ $__gen_get_create(int $$v) method_id(96687) {
-    int $v = $$v;
-    var self = __gen_load_A();
-    var res = $__gen_A_create(self, $v);
-    return __gen_S_to_external(res);
-}
-
 ((int)) __gen_constructor_DeployOk$queryId(int queryId) inline {
     return (queryId);
 }
@@ -176,6 +172,10 @@ _ $__gen_get_create(int $$v) method_id(96687) {
     $reply(__gen_writecell_DeployOk(__gen_constructor_DeployOk$queryId($deploy'queryId)));
     return (($self'owner), ());
 }
+
+;;
+;; Public Interface of a Contract A
+;;
 
 ((slice), int) __gen_router_A((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -221,6 +221,13 @@ _ $__gen_get_create(int $$v) method_id(96687) {
     
     ;; Persist state
     __gen_store_A(self);
+}
+
+_ %create(int $$v) method_id(96687) {
+    int $v = $$v;
+    var self = __gen_load_A();
+    var res = $__gen_A_create(self, $v);
+    return __gen_S_to_external(res);
 }
 
 _ supported_interfaces() method_id {

@@ -33,6 +33,10 @@ tuple __gen_load_Empty() impure inline {
     set_data(b.end_cell());
 }
 
+;;
+;; Public Interface of a Contract Empty
+;;
+
 (tuple, int) __gen_router_Empty(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message

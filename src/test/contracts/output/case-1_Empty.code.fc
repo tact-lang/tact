@@ -55,15 +55,9 @@ int $__gen_Empty_a(tuple $self, int $x, int $y, int $z, (int, int, int, int) $m)
     return $isZero($x, $y, $z, ($m'a, $m'b, $m'c, $m'd));
 }
 
-_ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
-    int $x = $$x;
-    int $y = $$y;
-    int $z = $$z;
-    (int, int, int, int) $m = __gen_Source_from_tuple($$m);
-    var self = __gen_load_Empty();
-    var res = $__gen_Empty_a(self, $x, $y, $z, $m);
-    return res;
-}
+;;
+;; Public Interface of a Contract Empty
+;;
 
 (tuple, int) __gen_router_Empty(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
@@ -102,6 +96,16 @@ _ $__gen_get_a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
     
     ;; Persist state
     __gen_store_Empty(self);
+}
+
+_ %a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
+    int $x = $$x;
+    int $y = $$y;
+    int $z = $$z;
+    (int, int, int, int) $m = __gen_Source_from_tuple($$m);
+    var self = __gen_load_Empty();
+    var res = $__gen_Empty_a(self, $x, $y, $z, $m);
+    return res;
 }
 
 _ supported_interfaces() method_id {
