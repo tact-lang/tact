@@ -157,11 +157,13 @@ export function writeStdlib(ctx: WriterContext) {
 
     ctx.fun('__tact_debug', () => {
         ctx.signature(`forall X -> () __tact_debug(X value)`);
+        ctx.flag('impure');
         ctx.asm(`asm "s0 DUMP" "DROP"`);
     });
 
     ctx.fun('__tact_debug_str', () => {
         ctx.signature(`() __tact_debug_str(slice value)`);
+        ctx.flag('impure');
         ctx.asm(`asm "STRDUMP" "DROP"`);
     });
 

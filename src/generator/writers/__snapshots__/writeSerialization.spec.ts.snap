@@ -61,7 +61,9 @@ int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -75,7 +77,7 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure inline_ref  {
+() __tact_debug_bool(int value) impure inline_ref {
     if (value) {
         __tact_debug_str("true");
     } else {
@@ -83,9 +85,13 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
     }
 }
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
@@ -95,13 +101,12 @@ slice __tact_context_get_sender() inline { return __tact_context_sender; }
 }
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
-forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
+forall X -> tuple __tact_to_tuple(X x) asm "NOP";
 
-forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+forall X -> X __tact_from_tuple(tuple x) asm "NOP";
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
@@ -130,7 +135,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     }
 }
 
-cell __tact_dict_get_int_cell(cell d, int kl, int k) {
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
     var (r, ok) = idict_get_ref?(d, kl, k);
     if (ok) {
         return r;
@@ -157,7 +162,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -510,24 +515,24 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -542,7 +547,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -552,7 +557,7 @@ slice __tact_int_to_string(int src) inline_ref {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -563,7 +568,7 @@ slice __tact_int_to_string(int src) inline_ref {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-
+    
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -574,7 +579,7 @@ slice __tact_int_to_string(int src) inline_ref {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-
+    
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -588,12 +593,12 @@ slice __tact_int_to_string(int src) inline_ref {
 slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-
+    
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -607,20 +612,20 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
             len = len + 1;
         }
     }
-
+    
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-
+    
     ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-
+    
     ;; Assemble
     int c = len - 1;
     repeat(len) {
@@ -628,7 +633,7 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
         b = b.store_uint(v, 8);
         c = c - 1;
     }
-
+    
     ;; Result
     return b.end_cell().begin_parse();
 }
@@ -976,7 +981,9 @@ int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -990,7 +997,7 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure inline_ref  {
+() __tact_debug_bool(int value) impure inline_ref {
     if (value) {
         __tact_debug_str("true");
     } else {
@@ -998,9 +1005,13 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
     }
 }
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
@@ -1010,13 +1021,12 @@ slice __tact_context_get_sender() inline { return __tact_context_sender; }
 }
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
-forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
+forall X -> tuple __tact_to_tuple(X x) asm "NOP";
 
-forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+forall X -> X __tact_from_tuple(tuple x) asm "NOP";
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
@@ -1045,7 +1055,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     }
 }
 
-cell __tact_dict_get_int_cell(cell d, int kl, int k) {
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
     var (r, ok) = idict_get_ref?(d, kl, k);
     if (ok) {
         return r;
@@ -1072,7 +1082,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -1425,24 +1435,24 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -1457,7 +1467,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -1467,7 +1477,7 @@ slice __tact_int_to_string(int src) inline_ref {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -1478,7 +1488,7 @@ slice __tact_int_to_string(int src) inline_ref {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-
+    
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -1489,7 +1499,7 @@ slice __tact_int_to_string(int src) inline_ref {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-
+    
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -1503,12 +1513,12 @@ slice __tact_int_to_string(int src) inline_ref {
 slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-
+    
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -1522,20 +1532,20 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
             len = len + 1;
         }
     }
-
+    
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-
+    
     ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-
+    
     ;; Assemble
     int c = len - 1;
     repeat(len) {
@@ -1543,7 +1553,7 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
         b = b.store_uint(v, 8);
         c = c - 1;
     }
-
+    
     ;; Result
     return b.end_cell().begin_parse();
 }
@@ -1891,7 +1901,9 @@ int __tact_my_balance() inline {
     return pair_first(get_balance());
 }
 
-forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
 
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
@@ -1905,7 +1917,7 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
 
 () __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
 
-() __tact_debug_bool(int value) impure inline_ref  {
+() __tact_debug_bool(int value) impure inline_ref {
     if (value) {
         __tact_debug_str("true");
     } else {
@@ -1913,9 +1925,13 @@ forall X -> () __tact_debug(X value) impure asm "s0 DUMP" "DROP";
     }
 }
 
-(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
-slice __tact_context_get_sender() inline { return __tact_context_sender; }
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
 
 () __tact_prepare_random() impure inline {
     if (null?(__tact_randomized)) {
@@ -1925,13 +1941,12 @@ slice __tact_context_get_sender() inline { return __tact_context_sender; }
 }
 
 builder __tact_store_bool(builder b, int v) inline {
-    b = b.store_int(v, 1);
-    return b;
+    return b.store_int(v, 1);
 }
 
-forall X -> tuple __tact_to_tuple(X x) impure asm "NOP";
+forall X -> tuple __tact_to_tuple(X x) asm "NOP";
 
-forall X -> X __tact_from_tuple(tuple x) impure asm "NOP";
+forall X -> X __tact_from_tuple(tuple x) asm "NOP";
 
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
@@ -1960,7 +1975,7 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     }
 }
 
-cell __tact_dict_get_int_cell(cell d, int kl, int k) {
+cell __tact_dict_get_int_cell(cell d, int kl, int k) inline {
     var (r, ok) = idict_get_ref?(d, kl, k);
     if (ok) {
         return r;
@@ -1987,7 +2002,7 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline {
     }
 }
 
-(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) {
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = __tact_dict_delete(d, kl, k);
         return (r, ());
@@ -2340,24 +2355,24 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
     int sliceRefs = slice_refs(sc);
     int sliceBits = slice_bits(sc);
-
+    
     while((sliceBits > 0) | (sliceRefs > 0)) {
-
+    
         ;; Load the current builder
         (builder b, tuple tail) = uncons(builders);
         int remBytes = 127 - (builder_bits(b) / 8);
         int exBytes = sliceBits / 8;
-
+    
         ;; Append bits
         int amount = min(remBytes, exBytes);
         if (amount > 0) {
             slice read = sc~load_bits(amount * 8);
             b = b.store_slice(read);
         }
-
+    
         ;; Update builders
         builders = cons(b, tail);
-
+    
         ;; Check if we need to add a new cell and continue
         if (exBytes - amount > 0) {
             var bb = begin_cell();
@@ -2372,7 +2387,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
             sliceRefs = 0;
         }
     }
-
+    
     return ((builders), ());
 }
 
@@ -2382,7 +2397,7 @@ slice __tact_int_to_string(int src) inline_ref {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     if (src < 1000000000000000000000000000000) {
         int len = 0;
         int value = 0;
@@ -2393,7 +2408,7 @@ slice __tact_int_to_string(int src) inline_ref {
             mult = mult * 256;
             len = len + 1;
         } until (src == 0);
-
+    
         b = b.store_uint(value, len * 8);
     } else {
         tuple t = empty_tuple();
@@ -2404,7 +2419,7 @@ slice __tact_int_to_string(int src) inline_ref {
             len = len + 1;
             src = src / 10;
         } until (src == 0);
-
+    
         int c = len - 1;
         repeat(len) {
             int v = t.at(c);
@@ -2418,12 +2433,12 @@ slice __tact_int_to_string(int src) inline_ref {
 slice __tact_float_to_string(int src, int digits) inline_ref {
     throw_if(134, (digits <= 0) | (digits > 77));
     builder b = begin_cell();
-
+    
     if (src < 0) {
         b = b.store_uint(45, 8);
         src = - src;
     }
-
+    
     ;; Process rem part
     int skip = true;
     int len = 0;
@@ -2437,20 +2452,20 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
             len = len + 1;
         }
     }
-
+    
     ;; Process dot
     if (~ skip) {
         t~tpush(46);
         len = len + 1;
     }
-
+    
     ;; Main
     do {
         (src, rem) = src.divmod(10);
         t~tpush(rem + 48);
         len = len + 1;
     } until (src == 0);
-
+    
     ;; Assemble
     int c = len - 1;
     repeat(len) {
@@ -2458,7 +2473,7 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
         b = b.store_uint(v, 8);
         c = c - 1;
     }
-
+    
     ;; Result
     return b.end_cell().begin_parse();
 }

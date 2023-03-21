@@ -60,7 +60,13 @@ PROGRAM{
   }>
   __tact_debug_bool PROCREF:<{
     IF:<{
+      x{74727565} PUSHSLICE
+      STRDUMP
+      DROP
     }>ELSE<{
+      x{66616c7365} PUSHSLICE
+      STRDUMP
+      DROP
     }>
   }>
   __tact_context_get_sender PROCINLINE:<{
@@ -320,17 +326,37 @@ PROGRAM{
   $__gen_Debug_debug PROCREF:<{
     DROP
     DUMPSTK
+    B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
+    STRDUMP
+    DROP
+    123 PUSHINT
+    __tact_int_to_string INLINECALLDICT
+    STRDUMP
+    DROP
     TRUE
     __tact_debug_bool INLINECALLDICT
     FALSE
     __tact_debug_bool INLINECALLDICT
+    x{6e756c6c} PUSHSLICE
+    STRDUMP
+    DROP
   }>
   $__gen_Debug_receive_comment_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 PROCINLINE:<{
     DUMPSTK
+    B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
+    STRDUMP
+    DROP
+    123 PUSHINT
+    __tact_int_to_string INLINECALLDICT
+    STRDUMP
+    DROP
     TRUE
     __tact_debug_bool INLINECALLDICT
     FALSE
     __tact_debug_bool INLINECALLDICT
+    x{6e756c6c} PUSHSLICE
+    STRDUMP
+    DROP
   }>
   __gen_constructor_DeployOk$queryId PROCINLINE:<{
   }>

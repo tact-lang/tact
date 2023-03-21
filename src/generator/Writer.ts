@@ -14,19 +14,21 @@ type Body = {
     code: string
 }
 
+export type WrittenFunction = {
+    name: string;
+    code: Body;
+    signature: string;
+    flags: Set<Flag>;
+    depends: Set<string>;
+    comment: string | null;
+    context: string | null;
+};
+
 export class WriterContext {
 
     readonly ctx: CompilerContext;
     #skipped = new Set<string>();
-    #functions: Map<string, {
-        name: string,
-        code: Body,
-        signature: string,
-        flags: Set<Flag>,
-        depends: Set<string>,
-        comment: string | null,
-        context: string | null
-    }> = new Map();
+    #functions: Map<string, WrittenFunction> = new Map();
     #functionsRendering = new Set<string>();
     #pendingWriter: Writer | null = null;
     #pendingCode: Body | null = null;
@@ -62,7 +64,7 @@ export class WriterContext {
     // Rendering
     //
 
-    render(debug: boolean = false) {
+    extract(debug: boolean = false) {
 
         // Check dependencies
         let missing = new Map<string, string[]>();
@@ -104,6 +106,14 @@ export class WriterContext {
             visit('$main');
             all = all.filter((v) => used.has(v.name));
         }
+
+        return all;
+    }
+
+    render(debug: boolean = false) {
+
+        // All functions
+        let all = this.extract(debug);
 
         // Sort functions
         let sorted = topologicalSort(all, (f) => Array.from(f.depends).filter((v) => !this.#skipped.has(v)).map((v) => this.#functions.get(v)!!));

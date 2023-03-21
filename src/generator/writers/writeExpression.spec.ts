@@ -83,7 +83,9 @@ describe('writeExpression', () => {
             }
             let wctx = new WriterContext(ctx);
             wctx.fun('$main', () => {
-                expect(writeExpression(s.expression, wctx)).toBe(golden[i]);
+                wctx.body(() => {
+                    expect(writeExpression(s.expression, wctx)).toBe(golden[i]);
+                });
             });
             i++
         }
