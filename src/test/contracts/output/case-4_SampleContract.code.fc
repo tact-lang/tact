@@ -1,13 +1,5 @@
 #include "case-4_SampleContract.stdlib.fc";
 
-slice __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() == 267);
-    var h = address.preload_uint(11);
-    throw_unless(136, (h == 1024) | (h == 1279));
-    throw_unless(137, h == 1024);
-    return address;
-}
-
 builder __gen_write_Source(builder build_0, (int, int) v) inline {
     var (v'a, v'b) = v;
     build_0 = build_0.store_int(v'a, 257);

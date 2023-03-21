@@ -1,13 +1,5 @@
 #include "wallet-opt_Wallet.stdlib.fc";
 
-slice __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() == 267);
-    var h = address.preload_uint(11);
-    throw_unless(136, (h == 1024) | (h == 1279));
-    throw_unless(137, h == 1024);
-    return address;
-}
-
 (slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 3548477446);
     var v'signature = sc_0~load_bits(512);

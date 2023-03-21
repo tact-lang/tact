@@ -7,3 +7,75 @@ global slice __tact_context_sender;
 global cell __tact_context_sys;
 global int __tact_randomized;
 
+slice __tact_verify_address(slice address) inline {
+    throw_unless(136, address.slice_bits() == 267);
+    var h = address.preload_uint(11);
+    throw_unless(136, (h == 1024) | (h == 1279));
+    throw_unless(137, h == 1024);
+    return address;
+}
+
+builder __tact_store_address(builder b, slice address) inline {
+    return b.store_slice(__tact_verify_address(address));
+}
+
+forall X -> X __tact_not_null(X x) inline {
+    throw_if(128, null?(x)); return x;
+}
+
+() __tact_debug_str(slice value) impure asm "STRDUMP" "DROP";
+
+() __tact_debug_bool(int value) impure inline_ref {
+    if (value) {
+        __tact_debug_str("true");
+    } else {
+        __tact_debug_str("false");
+    }
+}
+
+slice __tact_context_get_sender() inline {
+    return __tact_context_sender;
+}
+
+builder __tact_store_bool(builder b, int v) inline {
+    return b.store_int(v, 1);
+}
+
+slice __tact_int_to_string(int src) inline_ref {
+    var b = begin_cell();
+    if (src < 0) {
+        b = b.store_uint(45, 8);
+        src = - src;
+    }
+    
+    if (src < 1000000000000000000000000000000) {
+        int len = 0;
+        int value = 0;
+        int mult = 1;
+        do {
+            (src, int res) = src.divmod(10);
+            value = value + (res + 48) * mult;
+            mult = mult * 256;
+            len = len + 1;
+        } until (src == 0);
+    
+        b = b.store_uint(value, len * 8);
+    } else {
+        tuple t = empty_tuple();
+        int len = 0;
+        do {
+            int digit = src % 10;
+            t~tpush(digit);
+            len = len + 1;
+            src = src / 10;
+        } until (src == 0);
+    
+        int c = len - 1;
+        repeat(len) {
+            int v = t.at(c);
+            b = b.store_uint(v + 48, 8);
+            c = c - 1;
+        }
+    }
+    return b.end_cell().begin_parse();
+}

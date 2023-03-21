@@ -1,6 +1,6 @@
 PROGRAM{
-  DECLPROC hello_world
   DECLPROC __tact_verify_address
+  DECLPROC hello_world
   DECLPROC __gen_write_Native
   DECLPROC __gen_read_Native
   DECLPROC $__gen_Native_init
@@ -16,9 +16,6 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  hello_world PROC:<{
-    1000 PUSHINT
-  }>
   __tact_verify_address PROCINLINE:<{
     DUP
     SBITS
@@ -38,6 +35,9 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  hello_world PROC:<{
+    1000 PUSHINT
   }>
   __gen_write_Native PROCINLINE:<{
     SWAP

@@ -2,7 +2,7 @@ import { CompilerContext } from "../context";
 import { trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
-import { createPadded } from "./utils/createPadded";
+import { createPadded } from "./emitter/createPadded";
 
 type Flag = 'inline' | 'impure';
 
@@ -12,6 +12,8 @@ type Body = {
 } | {
     kind: 'asm',
     code: string
+} | {
+    kind: 'skip'
 }
 
 export type WrittenFunction = {
@@ -27,7 +29,6 @@ export type WrittenFunction = {
 export class WriterContext {
 
     readonly ctx: CompilerContext;
-    #skipped = new Set<string>();
     #functions: Map<string, WrittenFunction> = new Map();
     #functionsRendering = new Set<string>();
     #pendingWriter: Writer | null = null;
@@ -39,7 +40,7 @@ export class WriterContext {
     #pendingComment: string | null = null;
     #pendingContext: string | null = null;
     #nextId = 0;
-    #headers: string[] = [];
+    // #headers: string[] = [];
     #rendered = new Set<string>();
 
     constructor(ctx: CompilerContext) {
@@ -53,9 +54,8 @@ export class WriterContext {
     clone() {
         let res = new WriterContext(this.ctx);
         res.#functions = new Map(this.#functions);
-        res.#skipped = new Set(this.#skipped);
         res.#nextId = this.#nextId;
-        res.#headers = [...this.#headers];
+        // res.#headers = [...this.#headers];
         res.#rendered = new Set(this.#rendered);
         return res;
     }
@@ -70,9 +70,6 @@ export class WriterContext {
         let missing = new Map<string, string[]>();
         for (let f of this.#functions.values()) {
             for (let d of f.depends) {
-                if (this.#skipped.has(d)) {
-                    continue;
-                }
                 if (!this.#functions.has(d)) {
                     if (!missing.has(d)) {
                         missing.set(d, [f.name]);
@@ -95,9 +92,6 @@ export class WriterContext {
             let used = new Set<string>();
             let visit = (name: string) => {
                 used.add(name);
-                if (this.#skipped.has(name)) {
-                    return;
-                }
                 let f = this.#functions.get(name)!!;
                 for (let d of f.depends) {
                     visit(d);
@@ -107,77 +101,10 @@ export class WriterContext {
             all = all.filter((v) => used.has(v.name));
         }
 
-        return all;
-    }
-
-    render(debug: boolean = false) {
-
-        // All functions
-        let all = this.extract(debug);
-
         // Sort functions
-        let sorted = topologicalSort(all, (f) => Array.from(f.depends).filter((v) => !this.#skipped.has(v)).map((v) => this.#functions.get(v)!!));
+        let sorted = topologicalSort(all, (f) => Array.from(f.depends).map((v) => this.#functions.get(v)!!));
 
-        // Headers
-        let res = '';
-        for (let h of this.#headers) {
-            if (res !== '') {
-                res += '\n';
-            }
-            res += h;
-        }
-
-        // Dependencies
-        for (let f of sorted) {
-            if (f.name === '$main') {
-                continue;
-            } else {
-                if (res !== '') {
-                    res += '\n\n';
-                }
-                if (f.comment) {
-                    for (let s of f.comment.split('\n')) {
-                        res += `;; ${s}\n`;
-                    }
-                }
-                if (f.code.kind === 'generic') {
-
-                    let sig = f.signature;
-                    if (f.flags.has('impure')) {
-                        sig = `${sig} impure`;
-                    }
-                    if (f.flags.has('inline')) {
-                        sig = `${sig} inline`;
-                    } else {
-                        sig = `${sig} inline_ref`;
-                    }
-
-                    res += `${sig} {\n${createPadded(f.code.code)}\n}`;
-                } else if (f.code.kind === 'asm') {
-                    let sig = f.signature;
-                    if (f.flags.has('impure')) {
-                        sig = `${sig} impure`;
-                    }
-                    res += `${sig} ${f.code.code};`;
-                } else {
-                    throw new Error(`Unknown function body kind`);
-                }
-            }
-        }
-
-        // Main
-        let m = this.#functions.get('$main')!!;
-        if (m) {
-            if (m.code.kind !== 'generic') {
-                throw new Error(`Main function should have generic body`);
-            }
-            if (res !== '') {
-                res += '\n\n';
-            }
-            res += m.code.code;
-        }
-
-        return res;
+        return sorted;
     }
 
     //
@@ -185,7 +112,10 @@ export class WriterContext {
     //
 
     skip(name: string) {
-        this.#skipped.add(name);
+        this.fun(name, () => {
+            this.signature('<unknown>');
+            this.#pendingCode = { kind: 'skip' };
+        });
     };
 
     fun(name: string, handler: () => void) {
@@ -368,9 +298,9 @@ export class WriterContext {
     // Headers
     //
 
-    header(src: string) {
-        this.#headers.push(src);
-    }
+    // header(src: string) {
+    //     this.#headers.push(src);
+    // }
 
     //
     // Utils

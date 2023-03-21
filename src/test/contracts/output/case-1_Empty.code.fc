@@ -1,15 +1,5 @@
 #include "case-1_Empty.stdlib.fc";
 
-slice __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() == 267);
-    var h = address.preload_uint(11);
-    throw_unless(136, (h == 1024) | (h == 1279));
-    throw_unless(137, h == 1024);
-    return address;
-}
-
-forall X0, X1, X2, X3 -> (X0, X1, X2, X3) __tact_tuple_destroy_4(tuple v) asm "4 UNTUPLE";
-
 (int, int, int, int) __gen_Source_from_tuple(tuple v) inline {
     var (int v'a, int v'b, int v'c, int v'd) = __tact_tuple_destroy_4(v);
     return (v'a, v'b, v'c, v'd);

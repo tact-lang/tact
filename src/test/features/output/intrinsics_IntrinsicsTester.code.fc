@@ -1,22 +1,5 @@
 #include "intrinsics_IntrinsicsTester.stdlib.fc";
 
-slice __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() == 267);
-    var h = address.preload_uint(11);
-    throw_unless(136, (h == 1024) | (h == 1279));
-    throw_unless(137, h == 1024);
-    return address;
-}
-
-(slice, slice) __tact_load_address(slice cs) inline {
-    slice raw = cs~load_msg_addr();
-    return (cs, __tact_verify_address(raw));
-}
-
-builder __tact_store_address(builder b, slice address) inline {
-    return b.store_slice(__tact_verify_address(address));
-}
-
 builder __gen_write_IntrinsicsTester(builder build_0, (int, slice, slice, cell, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = build_0.store_int(v'a, 257);

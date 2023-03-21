@@ -1,43 +1,5 @@
 #include "optionals_ContractWithOptionals.stdlib.fc";
 
-slice __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() == 267);
-    var h = address.preload_uint(11);
-    throw_unless(136, (h == 1024) | (h == 1279));
-    
-    return address;
-}
-
-(slice, slice) __tact_load_address_opt(slice cs) inline {
-    slice raw = cs~load_msg_addr();
-    if (raw.preload_uint(2) != 0) {
-        return (cs, __tact_verify_address(raw));
-    } else {
-        return (cs, null());
-    }
-}
-
-builder __tact_store_address(builder b, slice address) inline {
-    return b.store_slice(__tact_verify_address(address));
-}
-
-builder __tact_store_address_opt(builder b, slice address) inline {
-    if (null?(address)) {
-        b = b.store_uint(0, 2);
-        return b;
-    } else {
-        return __tact_store_address(b, address);
-    }
-}
-
-forall X -> X __tact_not_null(X x) inline {
-    throw_if(128, null?(x)); return x;
-}
-
-forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
-
-forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";
-
 builder __gen_write_SomeGenericStruct(builder build_0, (int, int, int, int, int) v) inline {
     var (v'value1, v'value2, v'value3, v'value4, v'value5) = v;
     build_0 = build_0.store_int(v'value1, 257);

@@ -1,30 +1,5 @@
 #include "multisig-3_MultisigContract.stdlib.fc";
 
-slice __tact_verify_address(slice address) inline {
-    throw_unless(136, address.slice_bits() == 267);
-    var h = address.preload_uint(11);
-    throw_unless(136, (h == 1024) | (h == 1279));
-    throw_unless(137, h == 1024);
-    return address;
-}
-
-(slice, slice) __tact_load_address(slice cs) inline {
-    slice raw = cs~load_msg_addr();
-    return (cs, __tact_verify_address(raw));
-}
-
-builder __tact_store_address(builder b, slice address) inline {
-    return b.store_slice(__tact_verify_address(address));
-}
-
-forall X -> X __tact_not_null(X x) inline {
-    throw_if(128, null?(x)); return x;
-}
-
-builder __tact_store_bool(builder b, int v) inline {
-    return b.store_int(v, 1);
-}
-
 builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
     var (v'seqno, v'amount, v'target) = v;
     build_0 = build_0.store_uint(v'seqno, 32);

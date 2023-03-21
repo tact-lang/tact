@@ -66,7 +66,8 @@ describe('writeSerialization', () => {
                 }
             }
             writeParser(getType(ctx, s).name, false, getAllocation(ctx, s), wctx);
-            expect(wctx.render(true)).toMatchSnapshot();
+            let extracted = wctx.extract(true);
+            expect(extracted).toMatchSnapshot();
         });
     }
 });
