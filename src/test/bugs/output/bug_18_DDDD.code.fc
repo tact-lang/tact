@@ -21,10 +21,6 @@ builder __tact_store_address(builder b, slice address) inline {
 
 (slice, int) __tact_dict_get(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGET" "NULLSWAPIFNOT";
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 (cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);

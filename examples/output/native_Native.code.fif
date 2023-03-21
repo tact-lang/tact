@@ -15,6 +15,7 @@ PROGRAM{
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
+  DECLGLOBVAR __tact_randomized
   hello_world PROC:<{
     1000 PUSHINT
   }>

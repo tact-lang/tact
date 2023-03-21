@@ -8,10 +8,6 @@ slice __tact_verify_address(slice address) inline {
     return address;
 }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 (slice, ((int))) __gen_read_Add(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 831841332);
     var v'value = sc_0~load_int(257);

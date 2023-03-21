@@ -17,10 +17,6 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 builder __gen_write_IntrinsicsTester(builder build_0, (int, slice, slice, cell, int) v) inline {
     var (v'a, v'b, v'c, v'd, v'e) = v;
     build_0 = build_0.store_int(v'a, 257);

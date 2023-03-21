@@ -32,10 +32,6 @@ builder __tact_store_address_opt(builder b, slice address) inline {
 
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 forall X0, X1, X2, X3, X4 -> tuple __tact_tuple_create_5((X0, X1, X2, X3, X4) v) asm "5 TUPLE";
 
 forall X0, X1, X2, X3, X4 -> (X0, X1, X2, X3, X4) __tact_tuple_destroy_5(tuple v) asm "5 UNTUPLE";

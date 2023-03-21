@@ -10,10 +10,6 @@ slice __tact_verify_address(slice address) inline {
     return address;
 }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 tuple __tact_string_builder_start(builder b) inline {
     return tpush(tpush(empty_tuple(), b), null());
 }

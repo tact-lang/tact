@@ -40,10 +40,6 @@ slice __tact_compute_contract_address(int chain, cell code, cell data) inline {
 
 forall X -> X __tact_not_null(X x) inline { throw_if(128, null?(x)); return x; }
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 builder __tact_store_bool(builder b, int v) inline {
     b = b.store_int(v, 1);
     return b;

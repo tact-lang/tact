@@ -34,7 +34,6 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`slice $sc = get_data().begin_parse();`);
 
             // Load context
-            ctx.used(`__tact_context`);
             ctx.append(`__tact_context_sys = $sc~load_ref();`);
             ctx.append(`int $loaded = $sc~load_int(1);`);
 
@@ -81,7 +80,6 @@ function writeStorageOps(type: TypeDescription, ctx: WriterContext) {
             ctx.append(`builder b = begin_cell();`);
 
             // Persist system cell
-            ctx.used(`__tact_context`);
             ctx.append(`b = b.store_ref(__tact_context_sys);`);
 
             // Persist deployment flag
@@ -191,9 +189,6 @@ function writeMainContract(type: TypeDescription, abiLink: string, ctx: WriterCo
         ctx.append(`() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`);
         ctx.inIndent(() => {
 
-            // Require context function
-            ctx.used('__tact_context');
-
             // Load context
             ctx.append();
             ctx.append(`;; Context`);
@@ -267,7 +262,12 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     wctx.header(`#pragma version =0.4.2;`); // FunC version
     wctx.header(`#pragma allow-post-modification;`); // Allow post modification
     wctx.header(`#pragma compute-asm-ltr;`); // Compute asm left to right
-    wctx.fun('$main', () => { });
+    wctx.fun('$main', () => {
+        wctx.append(`global (int, slice, int, slice) __tact_context;`);
+        wctx.append(`global slice __tact_context_sender;`);
+        wctx.append(`global cell __tact_context_sys;`);
+        wctx.append(`global int __tact_randomized;`);
+    });
     let stdlib = wctx.render();
 
     //

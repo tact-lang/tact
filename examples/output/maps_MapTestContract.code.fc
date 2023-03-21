@@ -21,10 +21,6 @@ slice __tact_verify_address(slice address) inline {
 
 (cell, int) __tact_dict_get_ref(cell dict, int key_len, slice index) asm(index dict key_len) "DICTGETREF" "NULLSWAPIFNOT";
 
-global (int, slice, int, slice) __tact_context;
-global slice __tact_context_sender;
-global cell __tact_context_sys;
-
 (cell, ()) __tact_dict_set_int_int(cell d, int kl, int k, int v, int vl) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);

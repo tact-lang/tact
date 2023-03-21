@@ -465,7 +465,6 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
     if (f.kind === 'init_of') {
         ctx.used(`__gen_${f.name}_init_child`);
-        ctx.used(`__tact_context`);
         return `${fn(`__gen_${f.name}_init_child`)}(${['__tact_context_sys', ...f.args.map((a) => writeExpression(a, ctx))].join(', ')})`;
     }
 

@@ -163,27 +163,16 @@ export function writeStdlib(ctx: WriterContext) {
         `);
     });
 
-    ctx.fun('__tact_context', () => {
-        ctx.write(`
-            global (int, slice, int, slice) __tact_context;
-            global slice __tact_context_sender;
-            global cell __tact_context_sys;
-        `);
-    });
-
     ctx.fun('__tact_context_get', () => {
-        ctx.used('__tact_context');
         ctx.write(`(int, slice, int, slice) __tact_context_get() inline { return __tact_context; }`);
     });
 
     ctx.fun('__tact_context_get_sender', () => {
-        ctx.used('__tact_context');
         ctx.write(`slice __tact_context_get_sender() inline { return __tact_context_sender; }`);
     });
 
     ctx.fun('__tact_prepare_random', () => {
         ctx.write(`
-            global int __tact_randomized;
             () __tact_prepare_random() impure inline {
                 if (null?(__tact_randomized)) {
                     randomize_lt();
