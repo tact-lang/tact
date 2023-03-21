@@ -1,30 +1,5 @@
 #include "bug_18_DDDD.stdlib.fc";
-
-builder __gen_write_DDDD(builder build_0, (slice, slice, slice, cell, cell) v) inline {
-    var (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2) = v;
-    build_0 = __tact_store_address(build_0, v'addr1);
-    build_0 = __tact_store_address(build_0, v'addr2);
-    build_0 = __tact_store_address(build_0, v'addr3);
-    build_0 = build_0.store_dict(v'mapData);
-    build_0 = build_0.store_dict(v'mapData2);
-    return build_0;
-}
-
-(slice, ((slice, slice, slice, cell, cell))) __gen_read_DDDD(slice sc_0) inline {
-    var v'addr1 = sc_0~__tact_load_address();
-    var v'addr2 = sc_0~__tact_load_address();
-    var v'addr3 = sc_0~__tact_load_address();
-    var v'mapData = sc_0~load_dict();
-    var v'mapData2 = sc_0~load_dict();
-    return (sc_0, (v'addr1, v'addr2, v'addr3, v'mapData, v'mapData2));
-}
-
-(slice, ((slice, slice, slice))) __gen_read_$init$DDDD(slice sc_0) inline {
-    var v'addr1 = sc_0~__tact_load_address();
-    var v'addr2 = sc_0~__tact_load_address();
-    var v'addr3 = sc_0~__tact_load_address();
-    return (sc_0, (v'addr1, v'addr2, v'addr3));
-}
+#include "bug_18_DDDD.storage.fc";
 
 (slice, slice, slice, cell, cell) $__gen_DDDD_init(slice $addr1, slice $addr2, slice $addr3) impure inline_ref {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = (null(), null(), null(), null(), null());

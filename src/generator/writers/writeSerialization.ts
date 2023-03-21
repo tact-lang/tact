@@ -22,6 +22,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
+        ctx.context('storage');
         ctx.body(() => {
             if (allocation.ops.length > 0) {
                 ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
@@ -38,6 +39,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
     ctx.fun(ops.writerCell(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
         ctx.flag('inline');
+        ctx.context('storage');
         ctx.body(() => {
             ctx.append(`return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();`);
         })
@@ -48,6 +50,7 @@ export function writeOptionalSerializer(name: string, ctx: WriterContext) {
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
         ctx.flag('inline');
+        ctx.context('storage');
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -220,6 +223,7 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
+        ctx.context('storage');
         ctx.body(() => {
 
             // Check prefix
@@ -240,6 +244,7 @@ export function writeOptionalParser(name: string, ctx: WriterContext) {
     ctx.fun(`__gen_readopt_${name}`, () => {
         ctx.signature(`tuple __gen_readopt_${name}(cell cl)`);
         ctx.flag('inline');
+        ctx.context('storage');
         ctx.body(() => {
             ctx.write(`
                 if (null?(cl)) {

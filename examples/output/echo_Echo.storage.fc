@@ -1,0 +1,4 @@
+(slice, ((int))) __gen_read_$init$Echo(slice sc_0) inline {
+    var v'a = sc_0~load_int(257);
+    return (sc_0, (v'a));
+}

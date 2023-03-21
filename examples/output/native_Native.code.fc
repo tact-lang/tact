@@ -1,16 +1,6 @@
 #include "native_Native.stdlib.fc";
 #include "native_Native.native.fc";
-
-builder __gen_write_Native(builder build_0, (int) v) inline {
-    var (v'value) = v;
-    build_0 = build_0.store_int(v'value, 257);
-    return build_0;
-}
-
-(slice, ((int))) __gen_read_Native(slice sc_0) inline {
-    var v'value = sc_0~load_int(257);
-    return (sc_0, (v'value));
-}
+#include "native_Native.storage.fc";
 
 (int) $__gen_Native_init() impure inline_ref {
     var (($self'value)) = (null());

@@ -1,0 +1,28 @@
+(slice, ((slice))) __gen_read_ChangeOwner(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 256331011);
+    var v'newOwner = sc_0~__tact_load_address();
+    return (sc_0, (v'newOwner));
+}
+
+(slice, ((int, int))) __gen_read_Withdraw(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1672521544);
+    var v'amount = sc_0~load_coins();
+    var v'mode = sc_0~load_uint(8);
+    return (sc_0, (v'amount, v'mode));
+}
+
+builder __gen_write_Treasure(builder build_0, (slice) v) inline {
+    var (v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(slice, ((slice))) __gen_read_Treasure(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'owner));
+}
+
+(slice, ((slice))) __gen_read_$init$Treasure(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'owner));
+}

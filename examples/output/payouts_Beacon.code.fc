@@ -1,44 +1,5 @@
 #include "payouts_Beacon.stdlib.fc";
-
-(slice, ((int))) __gen_read_CanPayout(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3289991647);
-    var v'amount = sc_0~load_int(257);
-    return (sc_0, (v'amount));
-}
-
-builder __gen_write_CanPayoutResponse(builder build_0, (int, slice, int) v) inline {
-    var (v'amount, v'address, v'ok) = v;
-    build_0 = store_uint(build_0, 4293607646, 32);
-    build_0 = build_0.store_int(v'amount, 257);
-    build_0 = __tact_store_address(build_0, v'address);
-    build_0 = build_0.store_int(v'ok, 1);
-    return build_0;
-}
-
-cell __gen_writecell_CanPayoutResponse((int, slice, int) v) inline {
-    return __gen_write_CanPayoutResponse(begin_cell(), v).end_cell();
-}
-
-builder __gen_write_Beacon(builder build_0, (slice, slice, int) v) inline {
-    var (v'master, v'owner, v'completed) = v;
-    build_0 = __tact_store_address(build_0, v'master);
-    build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = build_0.store_int(v'completed, 1);
-    return build_0;
-}
-
-(slice, ((slice, slice, int))) __gen_read_Beacon(slice sc_0) inline {
-    var v'master = sc_0~__tact_load_address();
-    var v'owner = sc_0~__tact_load_address();
-    var v'completed = sc_0~load_int(1);
-    return (sc_0, (v'master, v'owner, v'completed));
-}
-
-(slice, ((slice, slice))) __gen_read_$init$Beacon(slice sc_0) inline {
-    var v'master = sc_0~__tact_load_address();
-    var v'owner = sc_0~__tact_load_address();
-    return (sc_0, (v'master, v'owner));
-}
+#include "payouts_Beacon.storage.fc";
 
 (slice, slice, int) $__gen_Beacon_init(slice $master, slice $owner) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());

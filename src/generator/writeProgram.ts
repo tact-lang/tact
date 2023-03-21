@@ -82,6 +82,19 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         });
     }
 
+    // 
+    // storage
+    //
+
+    const storageFunctions = tryExtractModule(functions, 'storage', imported);
+    if (storageFunctions) {
+        imported.push('storage');
+        files.push({
+            name: basename + '.storage.fc',
+            code: emit({ functions: storageFunctions })
+        });
+    }
+
     //
     // Remaining
     // 

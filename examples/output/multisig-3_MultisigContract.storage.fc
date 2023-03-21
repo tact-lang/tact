@@ -1,0 +1,53 @@
+builder __gen_write_Operation(builder build_0, (int, int, slice) v) inline {
+    var (v'seqno, v'amount, v'target) = v;
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_coins(v'amount);
+    build_0 = __tact_store_address(build_0, v'target);
+    return build_0;
+}
+
+cell __gen_writecell_Operation((int, int, slice) v) inline {
+    return __gen_write_Operation(begin_cell(), v).end_cell();
+}
+
+(slice, ((int, int, slice))) __gen_read_Operation(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'amount = sc_0~load_coins();
+    var v'target = sc_0~__tact_load_address();
+    return (sc_0, (v'seqno, v'amount, v'target));
+}
+
+(slice, (((int, int, slice), slice, slice, slice))) __gen_read_Execute(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 520967536);
+    var v'operation = sc_0~__gen_read_Operation();
+    var v'signature1 = sc_0~load_ref().begin_parse();
+    var v'signature2 = sc_0~load_ref().begin_parse();
+    var v'signature3 = sc_0~load_ref().begin_parse();
+    return (sc_0, (v'operation, v'signature1, v'signature2, v'signature3));
+}
+
+builder __gen_write_MultisigContract(builder build_0, (int, int, int, int) v) inline {
+    var (v'seqno, v'user1_key, v'user2_key, v'user3_key) = v;
+    build_0 = build_0.store_uint(v'seqno, 32);
+    build_0 = build_0.store_uint(v'user1_key, 256);
+    build_0 = build_0.store_uint(v'user2_key, 256);
+    build_0 = build_0.store_uint(v'user3_key, 256);
+    return build_0;
+}
+
+(slice, ((int, int, int, int))) __gen_read_MultisigContract(slice sc_0) inline {
+    var v'seqno = sc_0~load_uint(32);
+    var v'user1_key = sc_0~load_uint(256);
+    var v'user2_key = sc_0~load_uint(256);
+    var v'user3_key = sc_0~load_uint(256);
+    return (sc_0, (v'seqno, v'user1_key, v'user2_key, v'user3_key));
+}
+
+((int, int, slice)) __gen_Operation_unpack((int, int, slice) v) asm "NOP";
+
+(slice, ((int, int, int))) __gen_read_$init$MultisigContract(slice sc_0) inline {
+    var v'key1 = sc_0~load_int(257);
+    var v'key2 = sc_0~load_int(257);
+    var v'key3 = sc_0~load_int(257);
+    return (sc_0, (v'key1, v'key2, v'key3));
+}

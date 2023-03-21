@@ -1,16 +1,5 @@
 #include "masterchain-allow_MasterchainTester.stdlib.fc";
-
-(slice, ((slice, slice))) __gen_read_TestMessage(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3679600542);
-    var v'address = sc_0~__tact_load_address();
-    var v'address2 = sc_0~__tact_load_address_opt();
-    return (sc_0, (v'address, v'address2));
-}
-
-(slice, slice) __gen_TestMessage_from_tuple(tuple v) inline {
-    var (slice v'address, slice v'address2) = __tact_tuple_destroy_2(v);
-    return (__tact_verify_address(v'address), null?(v'address2) ? null() : __tact_verify_address(v'address2));
-}
+#include "masterchain-allow_MasterchainTester.storage.fc";
 
 tuple $__gen_MasterchainTester_init() impure inline_ref {
     tuple $self = null();

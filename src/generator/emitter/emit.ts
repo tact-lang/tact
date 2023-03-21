@@ -4,12 +4,15 @@ import { WrittenFunction } from "../Writer";
 import { createPadded } from "./createPadded";
 
 export function emit(args: {
-    header: string,
+    header?: Maybe<string>,
     functions?: Maybe<WrittenFunction[]>
 }) {
 
     // Emut header
-    let res = trimIndent(args.header);
+    let res = '';
+    if (args.header) {
+        res = trimIndent(args.header);
+    }
 
     // Emit functions
     if (args.functions) {

@@ -1,35 +1,5 @@
 #include "case-3_SampleContract.stdlib.fc";
-
-builder __gen_write_Source(builder build_0, (int, int) v) inline {
-    var (v'a, v'b) = v;
-    build_0 = build_0.store_int(v'a, 257);
-    build_0 = build_0.store_int(v'b, 257);
-    return build_0;
-}
-
-(slice, ((int, int))) __gen_read_Source(slice sc_0) inline {
-    var v'a = sc_0~load_int(257);
-    var v'b = sc_0~load_int(257);
-    return (sc_0, (v'a, v'b));
-}
-
-builder __gen_write_SampleContract(builder build_0, (int, int, (int, int)) v) inline {
-    var (v'a, v'b, (v'c'a, v'c'b)) = v;
-    build_0 = build_0.store_int(v'a, 257);
-    build_0 = build_0.store_int(v'b, 257);
-    var build_1 = begin_cell();
-    build_1 = __gen_write_Source(build_1, (v'c'a, v'c'b));
-    build_0 = store_ref(build_0, build_1.end_cell());
-    return build_0;
-}
-
-(slice, ((int, int, (int, int)))) __gen_read_SampleContract(slice sc_0) inline {
-    var v'a = sc_0~load_int(257);
-    var v'b = sc_0~load_int(257);
-    slice sc_1 = sc_0~load_ref().begin_parse();
-    var v'c = sc_1~__gen_read_Source();
-    return (sc_0, (v'a, v'b, v'c));
-}
+#include "case-3_SampleContract.storage.fc";
 
 ((int, int)) __gen_constructor_Source$a_b(int a, int b) inline {
     return (a, b);

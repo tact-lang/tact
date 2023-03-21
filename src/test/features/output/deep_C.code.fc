@@ -1,26 +1,5 @@
 #include "deep_C.stdlib.fc";
-
-builder __gen_write_C(builder build_0, (slice) v) inline {
-    var (v'parent) = v;
-    build_0 = __tact_store_address(build_0, v'parent);
-    return build_0;
-}
-
-(slice, ((slice))) __gen_read_C(slice sc_0) inline {
-    var v'parent = sc_0~__tact_load_address();
-    return (sc_0, (v'parent));
-}
-
-builder __gen_write_$init$C(builder build_0, (slice) v) inline {
-    var (v'parent) = v;
-    build_0 = __tact_store_address(build_0, v'parent);
-    return build_0;
-}
-
-(slice, ((slice))) __gen_read_$init$C(slice sc_0) inline {
-    var v'parent = sc_0~__tact_load_address();
-    return (sc_0, (v'parent));
-}
+#include "deep_C.storage.fc";
 
 (slice) $__gen_C_init(slice $parent) impure inline_ref {
     var (($self'parent)) = (null());

@@ -1,32 +1,5 @@
 #include "wallet-opt_Wallet.stdlib.fc";
-
-(slice, ((slice, slice))) __gen_read_TransferMessage(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3548477446);
-    var v'signature = sc_0~load_bits(512);
-    var v'transfer = sc_0;
-    return (sc_0, (v'signature, v'transfer));
-}
-
-builder __gen_write_Wallet(builder build_0, (int, int, int) v) inline {
-    var (v'seqno, v'key, v'walletId) = v;
-    build_0 = build_0.store_uint(v'seqno, 32);
-    build_0 = build_0.store_uint(v'key, 256);
-    build_0 = build_0.store_uint(v'walletId, 64);
-    return build_0;
-}
-
-(slice, ((int, int, int))) __gen_read_Wallet(slice sc_0) inline {
-    var v'seqno = sc_0~load_uint(32);
-    var v'key = sc_0~load_uint(256);
-    var v'walletId = sc_0~load_uint(64);
-    return (sc_0, (v'seqno, v'key, v'walletId));
-}
-
-(slice, ((int, int))) __gen_read_$init$Wallet(slice sc_0) inline {
-    var v'key = sc_0~load_int(257);
-    var v'walletId = sc_0~load_int(257);
-    return (sc_0, (v'key, v'walletId));
-}
+#include "wallet-opt_Wallet.storage.fc";
 
 (int, int, int) $__gen_Wallet_init(int $key, int $walletId) impure inline_ref {
     var (($self'seqno, $self'key, $self'walletId)) = (0, null(), null());

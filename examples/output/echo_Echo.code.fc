@@ -1,9 +1,5 @@
 #include "echo_Echo.stdlib.fc";
-
-(slice, ((int))) __gen_read_$init$Echo(slice sc_0) inline {
-    var v'a = sc_0~load_int(257);
-    return (sc_0, (v'a));
-}
+#include "echo_Echo.storage.fc";
 
 tuple $__gen_Echo_init(int $a) impure inline_ref {
     tuple $self = null();

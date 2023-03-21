@@ -1,0 +1,22 @@
+(slice, ((int))) __gen_read_Add(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 831841332);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+(slice, ((int))) __gen_read_Sub(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2640337643);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+builder __gen_write_Functions(builder build_0, (int) v) inline {
+    var (v'value) = v;
+    build_0 = build_0.store_int(v'value, 257);
+    return build_0;
+}
+
+(slice, ((int))) __gen_read_Functions(slice sc_0) inline {
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
