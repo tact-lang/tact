@@ -25,9 +25,9 @@
     return (($self'owner), ());
 }
 
-slice $Treasure$_fun_owner((slice) $self) impure inline_ref {
+((slice), slice) $Treasure$_fun_owner((slice) $self) impure inline_ref {
     var (($self'owner)) = $self;
-    return $self'owner;
+    return (($self'owner), $self'owner);
 }
 
 ;;
@@ -61,7 +61,7 @@ slice $Treasure$_fun_owner((slice) $self) impure inline_ref {
 
 _ %owner() method_id(83229) {
     var self = $Treasure$_contract_load();
-    var res = $Treasure$_fun_owner(self);
+    var res = self~$Treasure$_fun_owner();
     return res;
 }
 

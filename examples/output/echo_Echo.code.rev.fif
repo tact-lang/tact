@@ -313,7 +313,6 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      s1 POP
       NEWC
       NIL
       s0 s1 XCHG
@@ -487,6 +486,7 @@ SETCP0
       s1 POP
       CTOS
     }> CALLREF
+    s1 POP
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

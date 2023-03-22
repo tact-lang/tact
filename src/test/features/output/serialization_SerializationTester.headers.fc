@@ -11,31 +11,31 @@ slice __tact_verify_address(slice address) inline;
 () $SerializationTester$_contract_store((int, int, int, int, int, int, int, int, int) v) impure inline;
 
 ;; $SerializationTester$_fun_getA
-int $SerializationTester$_fun_getA((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getA((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getB
-int $SerializationTester$_fun_getB((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getB((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getC
-int $SerializationTester$_fun_getC((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getC((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getD
-int $SerializationTester$_fun_getD((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getD((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getE
-int $SerializationTester$_fun_getE((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getE((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getF
-int $SerializationTester$_fun_getF((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getF((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getG
-int $SerializationTester$_fun_getG((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getG((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getH
-int $SerializationTester$_fun_getH((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getH((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getI
-int $SerializationTester$_fun_getI((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
+((int, int, int, int, int, int, int, int, int), int) $SerializationTester$_fun_getI((int, int, int, int, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SerializationTester$_load
 (slice, ((int, int, int, int, int, int, int, int, int))) $SerializationTester$_load(slice sc_0) inline;

@@ -18,9 +18,9 @@
     return ($self, $self);
 }
 
-(int, int, int) $A$_fun_create((slice) $self, int $v) impure inline_ref {
+((slice), (int, int, int)) $A$_fun_create((slice) $self, int $v) impure inline_ref {
     var (($self'owner)) = $self;
-    return $S$_constructor_v3_v2_v1($v~$Int$_fun_inc(), $v~$Int$_fun_inc(), $v~$Int$_fun_inc());
+    return (($self'owner), $S$_constructor_v3_v2_v1($v~$Int$_fun_inc(), $v~$Int$_fun_inc(), $v~$Int$_fun_inc()));
 }
 
 ;;
@@ -41,7 +41,7 @@
 _ %create(int $$v) method_id(96687) {
     int $v = $$v;
     var self = $A$_contract_load();
-    var res = $A$_fun_create(self, $v);
+    var res = self~$A$_fun_create($v);
     return $S$_to_external(res);
 }
 

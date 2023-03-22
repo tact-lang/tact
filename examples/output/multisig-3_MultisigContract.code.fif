@@ -242,18 +242,16 @@ PROGRAM{
     $global_send INLINECALLDICT
   }>
   $MultisigContract$_fun_key1 PROCREF:<{
-    s2 s3 XCHG
-    3 BLKDROP
+    s2 PUSH
   }>
   $MultisigContract$_fun_key2 PROCREF:<{
-    s1 s3 XCHG
-    3 BLKDROP
+    OVER
   }>
   $MultisigContract$_fun_key3 PROCREF:<{
-    3 1 BLKDROP2
+    DUP
   }>
   $MultisigContract$_fun_seqno PROCREF:<{
-    3 BLKDROP
+    s3 PUSH
   }>
   $MultisigContract$_load PROCINLINE:<{
     32 LDU
@@ -336,18 +334,22 @@ PROGRAM{
   %key1 PROC:<{
     $MultisigContract$_contract_load INLINECALLDICT
     $MultisigContract$_fun_key1 INLINECALLDICT
+    4 1 BLKDROP2
   }>
   %key2 PROC:<{
     $MultisigContract$_contract_load INLINECALLDICT
     $MultisigContract$_fun_key2 INLINECALLDICT
+    4 1 BLKDROP2
   }>
   %key3 PROC:<{
     $MultisigContract$_contract_load INLINECALLDICT
     $MultisigContract$_fun_key3 INLINECALLDICT
+    4 1 BLKDROP2
   }>
   %seqno PROC:<{
     $MultisigContract$_contract_load INLINECALLDICT
     $MultisigContract$_fun_seqno INLINECALLDICT
+    4 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

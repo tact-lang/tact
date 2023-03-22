@@ -79,15 +79,12 @@ PROGRAM{
     c4 POP
   }>
   $StdlibTest$_fun_sliceBits PROCREF:<{
-    NIP
     SBITS
   }>
   $StdlibTest$_fun_sliceEmpty PROCREF:<{
-    NIP
     SEMPTY
   }>
   $StdlibTest$_fun_sliceRefs PROCREF:<{
-    NIP
     SREFS
   }>
   $StdlibTest$_load PROCINLINE:<{
@@ -106,16 +103,19 @@ PROGRAM{
     $StdlibTest$_contract_load INLINECALLDICT
     SWAP
     $StdlibTest$_fun_sliceEmpty INLINECALLDICT
+    NIP
   }>
   %sliceBits PROC:<{
     $StdlibTest$_contract_load INLINECALLDICT
     SWAP
     $StdlibTest$_fun_sliceBits INLINECALLDICT
+    NIP
   }>
   %sliceRefs PROC:<{
     $StdlibTest$_contract_load INLINECALLDICT
     SWAP
     $StdlibTest$_fun_sliceRefs INLINECALLDICT
+    NIP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

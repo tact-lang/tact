@@ -399,8 +399,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      3 BLKDROP
+      s3 PUSH
     }> CALLREF
+    4 1 BLKDROP2
 
   99239: 
     c4 PUSH
@@ -431,8 +432,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      3 1 BLKDROP2
+      s0 PUSH
     }> CALLREF
+    4 1 BLKDROP2
 
   103302: 
     c4 PUSH
@@ -463,9 +465,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s1 s3 XCHG
-      3 BLKDROP
+      s1 PUSH
     }> CALLREF
+    4 1 BLKDROP2
 
   107493: 
     c4 PUSH
@@ -496,9 +498,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s2 s3 XCHG
-      3 BLKDROP
+      s2 PUSH
     }> CALLREF
+    4 1 BLKDROP2
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

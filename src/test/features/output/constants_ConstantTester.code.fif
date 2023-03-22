@@ -79,52 +79,52 @@ PROGRAM{
     c4 POP
   }>
   $ConstantTester$_fun_globalConst PROCREF:<{
-    DROP
     100 PUSHINT
   }>
   $ConstantTester$_fun_something1 PROCREF:<{
-    DROP
     10 PUSHINT
   }>
   $ConstantTester$_fun_something2 PROCREF:<{
-    DROP
     PUSHNULL
   }>
   $ConstantTester$_fun_something3 PROCREF:<{
-    DROP
     123000000000 PUSHINT
   }>
   $ConstantTester$_fun_something4 PROCREF:<{
-    DROP
     456000000000 PUSHINT
   }>
   $ConstantTester$_fun_something5 PROCREF:<{
-    DROP
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
   }>
   %something1 PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_something1 INLINECALLDICT
+    NIP
   }>
   %something2 PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_something2 INLINECALLDICT
+    NIP
   }>
   %something3 PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_something3 INLINECALLDICT
+    NIP
   }>
   %something4 PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_something4 INLINECALLDICT
+    NIP
   }>
   %something5 PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_something5 INLINECALLDICT
+    NIP
   }>
   %globalConst PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT
     $ConstantTester$_fun_globalConst INLINECALLDICT
+    NIP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

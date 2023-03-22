@@ -179,7 +179,6 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      1 2 BLKDROP2
       <{
         4 GETGLOBVAR
         ISNULL
@@ -196,6 +195,7 @@ SETCP0
         ADD
       }> CALLREF
     }> CALLREF
+    s1 POP
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -227,7 +227,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       <{
         4 GETGLOBVAR
         ISNULL
@@ -241,6 +240,7 @@ SETCP0
         RANDU256
       }> CALLREF
     }> CALLREF
+    s1 POP
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

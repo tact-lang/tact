@@ -178,29 +178,40 @@ PROGRAM{
     c4 POP
   }>
   $SerializationTester2$_fun_getA PROCREF:<{
-    5 BLKDROP
+    s9 s8 s7 PUSH3
+    s9 s8 PUSH2
   }>
   $SerializationTester2$_fun_getAopt PROCREF:<{
-    5 BLKDROP
+    s9 s8 s7 PUSH3
+    s9 s8 PUSH2
     $Vars$_as_optional INLINECALLDICT
   }>
   $SerializationTester2$_fun_getB PROCREF:<{
-    5 5 BLKDROP2
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
   }>
   $SerializationTester2$_fun_getBopt PROCREF:<{
-    5 5 BLKDROP2
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
     $Vars$_as_optional INLINECALLDICT
   }>
   $SerializationTester2$_fun_getBoth PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 PUSH
     $Both$_constructor_a_b INLINECALLDICT
   }>
   $SerializationTester2$_fun_getBothOpt PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 PUSH
     $Both$_constructor_a_b INLINECALLDICT
     $Both$_as_optional INLINECALLDICT
   }>
   $SerializationTester2$_fun_process PROCREF:<{
     11 BLKDROP
-    10 5 BLKDROP2
     s0 s4 XCHG
     INC
     s0 s3 XCHG
@@ -354,31 +365,37 @@ PROGRAM{
   %getA PROC:<{
     $SerializationTester2$_contract_load INLINECALLDICT
     $SerializationTester2$_fun_getA INLINECALLDICT
+    10 5 BLKDROP2
     $Vars$_to_external INLINECALLDICT
   }>
   %getAopt PROC:<{
     $SerializationTester2$_contract_load INLINECALLDICT
     $SerializationTester2$_fun_getAopt INLINECALLDICT
+    10 1 BLKDROP2
     $Vars$_to_opt_external INLINECALLDICT
   }>
   %getB PROC:<{
     $SerializationTester2$_contract_load INLINECALLDICT
     $SerializationTester2$_fun_getB INLINECALLDICT
+    10 5 BLKDROP2
     $Vars$_to_external INLINECALLDICT
   }>
   %getBopt PROC:<{
     $SerializationTester2$_contract_load INLINECALLDICT
     $SerializationTester2$_fun_getBopt INLINECALLDICT
+    10 1 BLKDROP2
     $Vars$_to_opt_external INLINECALLDICT
   }>
   %getBoth PROC:<{
     $SerializationTester2$_contract_load INLINECALLDICT
     $SerializationTester2$_fun_getBoth INLINECALLDICT
+    10 10 BLKDROP2
     $Both$_to_external INLINECALLDICT
   }>
   %getBothOpt PROC:<{
     $SerializationTester2$_contract_load INLINECALLDICT
     $SerializationTester2$_fun_getBothOpt INLINECALLDICT
+    10 1 BLKDROP2
     $Both$_to_opt_external INLINECALLDICT
   }>
   %process PROC:<{
@@ -411,6 +428,7 @@ PROGRAM{
     s0 s4 XCHG
     s8 s8 s3 XCHG3
     $SerializationTester2$_fun_process INLINECALLDICT
+    10 5 BLKDROP2
     $Vars$_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{

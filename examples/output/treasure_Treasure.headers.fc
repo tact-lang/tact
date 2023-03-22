@@ -41,7 +41,7 @@ slice __tact_verify_address(slice address) inline;
 ((slice), ()) $Treasure$_fun_doWithdraw((slice) $self, int $amount, int $mode) impure inline_ref;
 
 ;; $Treasure$_fun_owner
-slice $Treasure$_fun_owner((slice) $self) impure inline_ref;
+((slice), slice) $Treasure$_fun_owner((slice) $self) impure inline_ref;
 
 ;; $Treasure$_fun_requireOwner
 ((slice), ()) $Treasure$_fun_requireOwner((slice) $self) impure inline_ref;

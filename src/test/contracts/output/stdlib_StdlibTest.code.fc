@@ -11,19 +11,19 @@
     return ($self'v);
 }
 
-int $StdlibTest$_fun_sliceEmpty((int) $self, slice $sc) impure inline_ref {
+((int), int) $StdlibTest$_fun_sliceEmpty((int) $self, slice $sc) impure inline_ref {
     var (($self'v)) = $self;
-    return slice_empty?($sc);
+    return (($self'v), slice_empty?($sc));
 }
 
-int $StdlibTest$_fun_sliceBits((int) $self, slice $sc) impure inline_ref {
+((int), int) $StdlibTest$_fun_sliceBits((int) $self, slice $sc) impure inline_ref {
     var (($self'v)) = $self;
-    return slice_bits($sc);
+    return (($self'v), slice_bits($sc));
 }
 
-int $StdlibTest$_fun_sliceRefs((int) $self, slice $sc) impure inline_ref {
+((int), int) $StdlibTest$_fun_sliceRefs((int) $self, slice $sc) impure inline_ref {
     var (($self'v)) = $self;
-    return slice_refs($sc);
+    return (($self'v), slice_refs($sc));
 }
 
 ;;
@@ -42,21 +42,21 @@ int $StdlibTest$_fun_sliceRefs((int) $self, slice $sc) impure inline_ref {
 _ %sliceEmpty(slice $$sc) method_id(73995) {
     slice $sc = $$sc;
     var self = $StdlibTest$_contract_load();
-    var res = $StdlibTest$_fun_sliceEmpty(self, $sc);
+    var res = self~$StdlibTest$_fun_sliceEmpty($sc);
     return res;
 }
 
 _ %sliceBits(slice $$sc) method_id(75090) {
     slice $sc = $$sc;
     var self = $StdlibTest$_contract_load();
-    var res = $StdlibTest$_fun_sliceBits(self, $sc);
+    var res = self~$StdlibTest$_fun_sliceBits($sc);
     return res;
 }
 
 _ %sliceRefs(slice $$sc) method_id(77445) {
     slice $sc = $$sc;
     var self = $StdlibTest$_contract_load();
-    var res = $StdlibTest$_fun_sliceRefs(self, $sc);
+    var res = self~$StdlibTest$_fun_sliceRefs($sc);
     return res;
 }
 

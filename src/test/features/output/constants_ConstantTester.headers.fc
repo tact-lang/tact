@@ -11,19 +11,19 @@ tuple $ConstantTester$_contract_load() impure inline;
 () $ConstantTester$_contract_store(tuple v) impure inline;
 
 ;; $ConstantTester$_fun_globalConst
-int $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref;
+(tuple, int) $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref;
 
 ;; $ConstantTester$_fun_something1
-int $ConstantTester$_fun_something1(tuple $self) impure inline_ref;
+(tuple, int) $ConstantTester$_fun_something1(tuple $self) impure inline_ref;
 
 ;; $ConstantTester$_fun_something2
-int $ConstantTester$_fun_something2(tuple $self) impure inline_ref;
+(tuple, int) $ConstantTester$_fun_something2(tuple $self) impure inline_ref;
 
 ;; $ConstantTester$_fun_something3
-int $ConstantTester$_fun_something3(tuple $self) impure inline_ref;
+(tuple, int) $ConstantTester$_fun_something3(tuple $self) impure inline_ref;
 
 ;; $ConstantTester$_fun_something4
-int $ConstantTester$_fun_something4(tuple $self) impure inline_ref;
+(tuple, int) $ConstantTester$_fun_something4(tuple $self) impure inline_ref;
 
 ;; $ConstantTester$_fun_something5
-slice $ConstantTester$_fun_something5(tuple $self) impure inline_ref;
+(tuple, slice) $ConstantTester$_fun_something5(tuple $self) impure inline_ref;

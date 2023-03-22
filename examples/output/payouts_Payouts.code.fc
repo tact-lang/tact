@@ -20,9 +20,9 @@
     return (($self'owner, $self'publicKey), ());
 }
 
-slice $Payouts$_fun_owner((slice, int) $self) impure inline_ref {
+((slice, int), slice) $Payouts$_fun_owner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
-    return $self'owner;
+    return (($self'owner, $self'publicKey), $self'owner);
 }
 
 ;;
@@ -77,7 +77,7 @@ slice $Payouts$_fun_owner((slice, int) $self) impure inline_ref {
 
 _ %owner() method_id(83229) {
     var self = $Payouts$_contract_load();
-    var res = $Payouts$_fun_owner(self);
+    var res = self~$Payouts$_fun_owner();
     return res;
 }
 

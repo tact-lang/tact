@@ -20,16 +20,16 @@ tuple $MasterchainTester$_contract_load() impure inline;
 () $MasterchainTester$_contract_store(tuple v) impure inline;
 
 ;; $MasterchainTester$_fun_createAddress
-slice $MasterchainTester$_fun_createAddress(tuple $self, int $chain, int $hash) impure inline_ref;
+(tuple, slice) $MasterchainTester$_fun_createAddress(tuple $self, int $chain, int $hash) impure inline_ref;
 
 ;; $MasterchainTester$_fun_handleStruct
-int $MasterchainTester$_fun_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref;
+(tuple, int) $MasterchainTester$_fun_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref;
 
 ;; $MasterchainTester$_fun_parseAddress
-slice $MasterchainTester$_fun_parseAddress(tuple $self, slice $src) impure inline_ref;
+(tuple, slice) $MasterchainTester$_fun_parseAddress(tuple $self, slice $src) impure inline_ref;
 
 ;; $MasterchainTester$_fun_serializeAddress
-int $MasterchainTester$_fun_serializeAddress(tuple $self, slice $src) impure inline_ref;
+(tuple, int) $MasterchainTester$_fun_serializeAddress(tuple $self, slice $src) impure inline_ref;
 
 ;; $TestMessage$_from_tuple
 (slice, slice) $TestMessage$_from_tuple(tuple v) inline;

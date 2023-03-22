@@ -213,7 +213,6 @@ PROGRAM{
     c4 POP
   }>
   $Echo$_fun_hello PROCREF:<{
-    NIP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101000900000e48656c6c6f2c20e8d197d2} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
@@ -364,6 +363,7 @@ PROGRAM{
     $Echo$_contract_load INLINECALLDICT
     SWAP
     $Echo$_fun_hello INLINECALLDICT
+    NIP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

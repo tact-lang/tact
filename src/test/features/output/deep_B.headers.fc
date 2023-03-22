@@ -47,7 +47,7 @@ slice __tact_verify_address(slice address) inline;
 () $B$_contract_store((slice) v) impure inline;
 
 ;; $B$_fun_getNext
-(cell, cell) $B$_fun_getNext((slice) $self) impure inline_ref;
+((slice), (cell, cell)) $B$_fun_getNext((slice) $self) impure inline_ref;
 
 ;; $B$_load
 (slice, ((slice))) $B$_load(slice sc_0) inline;

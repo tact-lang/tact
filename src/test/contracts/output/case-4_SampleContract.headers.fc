@@ -11,7 +11,7 @@ slice __tact_verify_address(slice address) inline;
 () $SampleContract$_contract_store((int, int, (int, int), cell) v) impure inline;
 
 ;; $SampleContract$_fun_stake
-int $SampleContract$_fun_stake((int, int, (int, int), cell) $self) impure inline_ref;
+((int, int, (int, int), cell), int) $SampleContract$_fun_stake((int, int, (int, int), cell) $self) impure inline_ref;
 
 ;; $SampleContract$_load
 (slice, ((int, int, (int, int), cell))) $SampleContract$_load(slice sc_0) inline;

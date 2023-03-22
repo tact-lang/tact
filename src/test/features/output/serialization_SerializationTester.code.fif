@@ -96,38 +96,31 @@ PROGRAM{
     c4 POP
   }>
   $SerializationTester$_fun_getA PROCREF:<{
-    8 BLKDROP
+    s8 PUSH
   }>
   $SerializationTester$_fun_getB PROCREF:<{
-    s7 s8 XCHG
-    8 BLKDROP
+    s7 PUSH
   }>
   $SerializationTester$_fun_getC PROCREF:<{
-    s6 s8 XCHG
-    8 BLKDROP
+    s6 PUSH
   }>
   $SerializationTester$_fun_getD PROCREF:<{
-    s5 s8 XCHG
-    8 BLKDROP
+    s5 PUSH
   }>
   $SerializationTester$_fun_getE PROCREF:<{
-    s4 s8 XCHG
-    8 BLKDROP
+    s4 PUSH
   }>
   $SerializationTester$_fun_getF PROCREF:<{
-    s3 s8 XCHG
-    8 BLKDROP
+    s3 PUSH
   }>
   $SerializationTester$_fun_getG PROCREF:<{
-    s2 s8 XCHG
-    8 BLKDROP
+    s2 PUSH
   }>
   $SerializationTester$_fun_getH PROCREF:<{
-    s1 s8 XCHG
-    8 BLKDROP
+    OVER
   }>
   $SerializationTester$_fun_getI PROCREF:<{
-    8 1 BLKDROP2
+    DUP
   }>
   $SerializationTester$_load PROCINLINE:<{
     257 PUSHINT
@@ -277,38 +270,47 @@ PROGRAM{
   %getA PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getA INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getB PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getB INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getC PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getC INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getD PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getD INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getE PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getE INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getF PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getF INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getG PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getG INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getH PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getH INLINECALLDICT
+    9 1 BLKDROP2
   }>
   %getI PROC:<{
     $SerializationTester$_contract_load INLINECALLDICT
     $SerializationTester$_fun_getI INLINECALLDICT
+    9 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

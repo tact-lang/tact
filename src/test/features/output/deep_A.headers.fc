@@ -44,7 +44,7 @@ tuple $A$_contract_load() impure inline;
 () $A$_contract_store(tuple v) impure inline;
 
 ;; $A$_fun_getNext
-(cell, cell) $A$_fun_getNext(tuple $self) impure inline_ref;
+(tuple, (cell, cell)) $A$_fun_getNext(tuple $self) impure inline_ref;
 
 ;; $B$_init_child
 (cell, cell) $B$_init_child(cell sys', slice $parent) inline_ref;

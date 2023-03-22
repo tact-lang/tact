@@ -17,34 +17,34 @@
     return ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f);
 }
 
-int $SerializationTester$_fun_getA((int, int, cell, slice, builder, slice) $self) impure inline_ref {
+((int, int, cell, slice, builder, slice), int) $SerializationTester$_fun_getA((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'a;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'a);
 }
 
-int $SerializationTester$_fun_getB((int, int, cell, slice, builder, slice) $self) impure inline_ref {
+((int, int, cell, slice, builder, slice), int) $SerializationTester$_fun_getB((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'b;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'b);
 }
 
-cell $SerializationTester$_fun_getC((int, int, cell, slice, builder, slice) $self) impure inline_ref {
+((int, int, cell, slice, builder, slice), cell) $SerializationTester$_fun_getC((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'c;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'c);
 }
 
-slice $SerializationTester$_fun_getD((int, int, cell, slice, builder, slice) $self) impure inline_ref {
+((int, int, cell, slice, builder, slice), slice) $SerializationTester$_fun_getD((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'd;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'd);
 }
 
-builder $SerializationTester$_fun_getE((int, int, cell, slice, builder, slice) $self) impure inline_ref {
+((int, int, cell, slice, builder, slice), builder) $SerializationTester$_fun_getE((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'e;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'e);
 }
 
-slice $SerializationTester$_fun_getF((int, int, cell, slice, builder, slice) $self) impure inline_ref {
+((int, int, cell, slice, builder, slice), slice) $SerializationTester$_fun_getF((int, int, cell, slice, builder, slice) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'f;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'f);
 }
 
 ;;
@@ -74,37 +74,37 @@ slice $SerializationTester$_fun_getF((int, int, cell, slice, builder, slice) $se
 
 _ %getA() method_id(123932) {
     var self = $SerializationTester$_contract_load();
-    var res = $SerializationTester$_fun_getA(self);
+    var res = self~$SerializationTester$_fun_getA();
     return res;
 }
 
 _ %getB() method_id(119935) {
     var self = $SerializationTester$_contract_load();
-    var res = $SerializationTester$_fun_getB(self);
+    var res = self~$SerializationTester$_fun_getB();
     return res;
 }
 
 _ %getC() method_id(115806) {
     var self = $SerializationTester$_contract_load();
-    var res = $SerializationTester$_fun_getC(self);
+    var res = self~$SerializationTester$_fun_getC();
     return res;
 }
 
 _ %getD() method_id(111801) {
     var self = $SerializationTester$_contract_load();
-    var res = $SerializationTester$_fun_getD(self);
+    var res = self~$SerializationTester$_fun_getD();
     return res;
 }
 
 _ %getE() method_id(107672) {
     var self = $SerializationTester$_contract_load();
-    var res = $SerializationTester$_fun_getE(self);
+    var res = self~$SerializationTester$_fun_getE();
     return res;
 }
 
 _ %getF() method_id(103675) {
     var self = $SerializationTester$_contract_load();
-    var res = $SerializationTester$_fun_getF(self);
+    var res = self~$SerializationTester$_fun_getF();
     return res;
 }
 

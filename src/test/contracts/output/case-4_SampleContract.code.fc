@@ -14,9 +14,9 @@
     return ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd);
 }
 
-int $SampleContract$_fun_stake((int, int, (int, int), cell) $self) impure inline_ref {
+((int, int, (int, int), cell), int) $SampleContract$_fun_stake((int, int, (int, int), cell) $self) impure inline_ref {
     var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = $self;
-    return $self'a;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), $self'a);
 }
 
 ;;
@@ -29,7 +29,7 @@ int $SampleContract$_fun_stake((int, int, (int, int), cell) $self) impure inline
 
 _ %stake() method_id(80984) {
     var self = $SampleContract$_contract_load();
-    var res = $SampleContract$_fun_stake(self);
+    var res = self~$SampleContract$_fun_stake();
     return res;
 }
 

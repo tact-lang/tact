@@ -20,10 +20,10 @@ int $global_isZero(int $x, int $y, int $z, (int, int, int, int) $m) impure inlin
     return (((($b > 0) & $z) & ($c == 0)) & ($d == 0));
 }
 
-int $Empty$_fun_a(tuple $self, int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
+(tuple, int) $Empty$_fun_a(tuple $self, int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {
     var ($self) = $self;
     var (($m'a, $m'b, $m'c, $m'd)) = $m;
-    return $global_isZero($x, $y, $z, ($m'a, $m'b, $m'c, $m'd));
+    return ($self, $global_isZero($x, $y, $z, ($m'a, $m'b, $m'c, $m'd)));
 }
 
 ;;
@@ -40,7 +40,7 @@ _ %a(int $$x, int $$y, int $$z, tuple $$m) method_id(97415) {
     int $z = $$z;
     (int, int, int, int) $m = $Source$_from_tuple($$m);
     var self = $Empty$_contract_load();
-    var res = $Empty$_fun_a(self, $x, $y, $z, $m);
+    var res = self~$Empty$_fun_a($x, $y, $z, $m);
     return res;
 }
 

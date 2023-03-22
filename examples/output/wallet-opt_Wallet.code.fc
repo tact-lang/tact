@@ -13,19 +13,19 @@
     return ($self'seqno, $self'key, $self'walletId);
 }
 
-int $Wallet$_fun_publicKey((int, int, int) $self) impure inline {
+((int, int, int), int) $Wallet$_fun_publicKey((int, int, int) $self) impure inline {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
-    return $self'key;
+    return (($self'seqno, $self'key, $self'walletId), $self'key);
 }
 
-int $Wallet$_fun_walletId((int, int, int) $self) impure inline {
+((int, int, int), int) $Wallet$_fun_walletId((int, int, int) $self) impure inline {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
-    return $self'walletId;
+    return (($self'seqno, $self'key, $self'walletId), $self'walletId);
 }
 
-int $Wallet$_fun_seqno((int, int, int) $self) impure inline {
+((int, int, int), int) $Wallet$_fun_seqno((int, int, int) $self) impure inline {
     var (($self'seqno, $self'key, $self'walletId)) = $self;
-    return $self'seqno;
+    return (($self'seqno, $self'key, $self'walletId), $self'seqno);
 }
 
 ;;
@@ -53,19 +53,19 @@ int $Wallet$_fun_seqno((int, int, int) $self) impure inline {
 
 _ %publicKey() method_id(86520) {
     var self = $Wallet$_contract_load();
-    var res = $Wallet$_fun_publicKey(self);
+    var res = self~$Wallet$_fun_publicKey();
     return res;
 }
 
 _ %walletId() method_id(114762) {
     var self = $Wallet$_contract_load();
-    var res = $Wallet$_fun_walletId(self);
+    var res = self~$Wallet$_fun_walletId();
     return res;
 }
 
 _ %seqno() method_id(85143) {
     var self = $Wallet$_contract_load();
-    var res = $Wallet$_fun_seqno(self);
+    var res = self~$Wallet$_fun_seqno();
     return res;
 }
 

@@ -290,16 +290,14 @@ PROGRAM{
     c4 POP
   }>
   $Multisig$_fun_member PROCREF:<{
-    s4 POP
-    2DROP
     267 PUSHINT
-    ROT
+    s4 PUSH
+    s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $Multisig$_fun_members PROCREF:<{
-    s2 s3 XCHG
-    3 BLKDROP
+    s2 PUSH
   }>
   $Multisig$_load PROCINLINE:<{
     257 PUSHINT
@@ -506,10 +504,12 @@ PROGRAM{
     $Multisig$_contract_load INLINECALLDICT
     4 ROLL
     $Multisig$_fun_member INLINECALLDICT
+    4 1 BLKDROP2
   }>
   %members PROC:<{
     $Multisig$_contract_load INLINECALLDICT
     $Multisig$_fun_members INLINECALLDICT
+    4 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

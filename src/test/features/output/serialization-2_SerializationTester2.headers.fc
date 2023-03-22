@@ -38,25 +38,25 @@ tuple $Both$_to_tuple((((int, int, int, int, int), (int, int, int, int, int))) v
 () $SerializationTester2$_contract_store(((int, int, int, int, int), (int, int, int, int, int)) v) impure inline;
 
 ;; $SerializationTester2$_fun_getA
-(int, int, int, int, int) $SerializationTester2$_fun_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), (int, int, int, int, int)) $SerializationTester2$_fun_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
 
 ;; $SerializationTester2$_fun_getAopt
-tuple $SerializationTester2$_fun_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), tuple) $SerializationTester2$_fun_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
 
 ;; $SerializationTester2$_fun_getB
-(int, int, int, int, int) $SerializationTester2$_fun_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), (int, int, int, int, int)) $SerializationTester2$_fun_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
 
 ;; $SerializationTester2$_fun_getBopt
-tuple $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), tuple) $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
 
 ;; $SerializationTester2$_fun_getBoth
-((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_fun_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), ((int, int, int, int, int), (int, int, int, int, int))) $SerializationTester2$_fun_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
 
 ;; $SerializationTester2$_fun_getBothOpt
-tuple $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), tuple) $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref;
 
 ;; $SerializationTester2$_fun_process
-(int, int, int, int, int) $SerializationTester2$_fun_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref;
+(((int, int, int, int, int), (int, int, int, int, int)), (int, int, int, int, int)) $SerializationTester2$_fun_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref;
 
 ;; $SerializationTester2$_load
 (slice, (((int, int, int, int, int), (int, int, int, int, int)))) $SerializationTester2$_load(slice sc_0) inline;

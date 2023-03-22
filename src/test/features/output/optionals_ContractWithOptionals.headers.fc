@@ -23,61 +23,61 @@ slice __tact_verify_address(slice address) inline;
 () $ContractWithOptionals$_contract_store((int, int, cell, slice, tuple, tuple) v) impure inline;
 
 ;; $ContractWithOptionals$_fun_isNotNullA
-int $ContractWithOptionals$_fun_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_isNotNullB
-int $ContractWithOptionals$_fun_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_isNotNullC
-int $ContractWithOptionals$_fun_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_isNotNullD
-int $ContractWithOptionals$_fun_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_isNotNullE
-int $ContractWithOptionals$_fun_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_isNotNullF
-int $ContractWithOptionals$_fun_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_notNullA
-int $ContractWithOptionals$_fun_notNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_notNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_notNullB
-int $ContractWithOptionals$_fun_notNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_notNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_notNullC
-cell $ContractWithOptionals$_fun_notNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), cell) $ContractWithOptionals$_fun_notNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_notNullD
-slice $ContractWithOptionals$_fun_notNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), slice) $ContractWithOptionals$_fun_notNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_notNullE
-(int, int, int, int, int) $ContractWithOptionals$_fun_notNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), (int, int, int, int, int)) $ContractWithOptionals$_fun_notNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_notNullF
-(int, int, cell, slice, tuple) $ContractWithOptionals$_fun_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), (int, int, cell, slice, tuple)) $ContractWithOptionals$_fun_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_nullA
-int $ContractWithOptionals$_fun_nullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_nullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_nullB
-int $ContractWithOptionals$_fun_nullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_nullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_nullC
-cell $ContractWithOptionals$_fun_nullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), cell) $ContractWithOptionals$_fun_nullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_nullD
-slice $ContractWithOptionals$_fun_nullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), slice) $ContractWithOptionals$_fun_nullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_nullE
-tuple $ContractWithOptionals$_fun_nullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), tuple) $ContractWithOptionals$_fun_nullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_nullF
-tuple $ContractWithOptionals$_fun_nullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), tuple) $ContractWithOptionals$_fun_nullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_fun_testVariables
-(int, int, int, int, int) $ContractWithOptionals$_fun_testVariables((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
+((int, int, cell, slice, tuple, tuple), (int, int, int, int, int)) $ContractWithOptionals$_fun_testVariables((int, int, cell, slice, tuple, tuple) $self) impure inline_ref;
 
 ;; $ContractWithOptionals$_load
 (slice, ((int, int, cell, slice, tuple, tuple))) $ContractWithOptionals$_load(slice sc_0) inline;

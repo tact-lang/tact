@@ -11,22 +11,22 @@ slice __tact_verify_address(slice address) inline;
 () $SerializationTester$_contract_store((int, int, cell, slice, builder, slice) v) impure inline;
 
 ;; $SerializationTester$_fun_getA
-int $SerializationTester$_fun_getA((int, int, cell, slice, builder, slice) $self) impure inline_ref;
+((int, int, cell, slice, builder, slice), int) $SerializationTester$_fun_getA((int, int, cell, slice, builder, slice) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getB
-int $SerializationTester$_fun_getB((int, int, cell, slice, builder, slice) $self) impure inline_ref;
+((int, int, cell, slice, builder, slice), int) $SerializationTester$_fun_getB((int, int, cell, slice, builder, slice) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getC
-cell $SerializationTester$_fun_getC((int, int, cell, slice, builder, slice) $self) impure inline_ref;
+((int, int, cell, slice, builder, slice), cell) $SerializationTester$_fun_getC((int, int, cell, slice, builder, slice) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getD
-slice $SerializationTester$_fun_getD((int, int, cell, slice, builder, slice) $self) impure inline_ref;
+((int, int, cell, slice, builder, slice), slice) $SerializationTester$_fun_getD((int, int, cell, slice, builder, slice) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getE
-builder $SerializationTester$_fun_getE((int, int, cell, slice, builder, slice) $self) impure inline_ref;
+((int, int, cell, slice, builder, slice), builder) $SerializationTester$_fun_getE((int, int, cell, slice, builder, slice) $self) impure inline_ref;
 
 ;; $SerializationTester$_fun_getF
-slice $SerializationTester$_fun_getF((int, int, cell, slice, builder, slice) $self) impure inline_ref;
+((int, int, cell, slice, builder, slice), slice) $SerializationTester$_fun_getF((int, int, cell, slice, builder, slice) $self) impure inline_ref;
 
 ;; $SerializationTester$_load
 (slice, ((int, int, cell, slice, builder, slice))) $SerializationTester$_load(slice sc_0) inline;

@@ -14,13 +14,13 @@ slice __tact_verify_address(slice address) inline;
 () $Wallet$_contract_store((int, int, int) v) impure inline;
 
 ;; $Wallet$_fun_publicKey
-int $Wallet$_fun_publicKey((int, int, int) $self) impure inline;
+((int, int, int), int) $Wallet$_fun_publicKey((int, int, int) $self) impure inline;
 
 ;; $Wallet$_fun_seqno
-int $Wallet$_fun_seqno((int, int, int) $self) impure inline;
+((int, int, int), int) $Wallet$_fun_seqno((int, int, int) $self) impure inline;
 
 ;; $Wallet$_fun_walletId
-int $Wallet$_fun_walletId((int, int, int) $self) impure inline;
+((int, int, int), int) $Wallet$_fun_walletId((int, int, int) $self) impure inline;
 
 ;; $Wallet$_load
 (slice, ((int, int, int))) $Wallet$_load(slice sc_0) inline;

@@ -107,20 +107,18 @@ PROGRAM{
     c4 POP
   }>
   $MasterchainTester$_fun_createAddress PROCREF:<{
-    1 2 BLKDROP2
     __tact_create_address INLINECALLDICT
   }>
   $MasterchainTester$_fun_handleStruct PROCREF:<{
-    3 BLKDROP
+    2DROP
     TRUE
   }>
   $MasterchainTester$_fun_parseAddress PROCREF:<{
-    NIP
     __tact_load_address INLINECALLDICT
     NIP
   }>
   $MasterchainTester$_fun_serializeAddress PROCREF:<{
-    2DROP
+    DROP
     TRUE
   }>
   $TestMessage$_from_tuple PROCINLINE:<{
@@ -157,23 +155,27 @@ PROGRAM{
     $MasterchainTester$_contract_load INLINECALLDICT
     -ROT
     $MasterchainTester$_fun_createAddress INLINECALLDICT
+    NIP
   }>
   %parseAddress PROC:<{
     $MasterchainTester$_contract_load INLINECALLDICT
     SWAP
     $MasterchainTester$_fun_parseAddress INLINECALLDICT
+    NIP
   }>
   %serializeAddress PROC:<{
     __tact_verify_address INLINECALLDICT
     $MasterchainTester$_contract_load INLINECALLDICT
     SWAP
     $MasterchainTester$_fun_serializeAddress INLINECALLDICT
+    NIP
   }>
   %handleStruct PROC:<{
     $TestMessage$_from_tuple INLINECALLDICT
     $MasterchainTester$_contract_load INLINECALLDICT
     -ROT
     $MasterchainTester$_fun_handleStruct INLINECALLDICT
+    NIP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

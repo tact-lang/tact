@@ -12,34 +12,34 @@ tuple $ConstantTester$_contract_init() impure inline_ref {
     return $self;
 }
 
-int $ConstantTester$_fun_something1(tuple $self) impure inline_ref {
+(tuple, int) $ConstantTester$_fun_something1(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return 10;
+    return ($self, 10);
 }
 
-int $ConstantTester$_fun_something2(tuple $self) impure inline_ref {
+(tuple, int) $ConstantTester$_fun_something2(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return null();
+    return ($self, null());
 }
 
-int $ConstantTester$_fun_something3(tuple $self) impure inline_ref {
+(tuple, int) $ConstantTester$_fun_something3(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return 123000000000;
+    return ($self, 123000000000);
 }
 
-int $ConstantTester$_fun_something4(tuple $self) impure inline_ref {
+(tuple, int) $ConstantTester$_fun_something4(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return 456000000000;
+    return ($self, 456000000000);
 }
 
-slice $ConstantTester$_fun_something5(tuple $self) impure inline_ref {
+(tuple, slice) $ConstantTester$_fun_something5(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return __gen_str_3226689099();
+    return ($self, __gen_str_3226689099());
 }
 
-int $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref {
+(tuple, int) $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return 100;
+    return ($self, 100);
 }
 
 ;;
@@ -52,37 +52,37 @@ int $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref {
 
 _ %something1() method_id(121234) {
     var self = $ConstantTester$_contract_load();
-    var res = $ConstantTester$_fun_something1(self);
+    var res = self~$ConstantTester$_fun_something1();
     return res;
 }
 
 _ %something2() method_id(125425) {
     var self = $ConstantTester$_contract_load();
-    var res = $ConstantTester$_fun_something2(self);
+    var res = self~$ConstantTester$_fun_something2();
     return res;
 }
 
 _ %something3() method_id(129488) {
     var self = $ConstantTester$_contract_load();
-    var res = $ConstantTester$_fun_something3(self);
+    var res = self~$ConstantTester$_fun_something3();
     return res;
 }
 
 _ %something4() method_id(100663) {
     var self = $ConstantTester$_contract_load();
-    var res = $ConstantTester$_fun_something4(self);
+    var res = self~$ConstantTester$_fun_something4();
     return res;
 }
 
 _ %something5() method_id(104726) {
     var self = $ConstantTester$_contract_load();
-    var res = $ConstantTester$_fun_something5(self);
+    var res = self~$ConstantTester$_fun_something5();
     return res;
 }
 
 _ %globalConst() method_id(116577) {
     var self = $ConstantTester$_contract_load();
-    var res = $ConstantTester$_fun_globalConst(self);
+    var res = self~$ConstantTester$_fun_globalConst();
     return res;
 }
 

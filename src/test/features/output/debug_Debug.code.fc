@@ -12,7 +12,7 @@ tuple $Debug$_contract_init() impure inline_ref {
     return $self;
 }
 
-() $Debug$_fun_debug(tuple $self) impure inline_ref {
+(tuple, ()) $Debug$_fun_debug(tuple $self) impure inline_ref {
     var ($self) = $self;
     dump_stack();
     __tact_debug_str(__gen_str_3226689099());
@@ -20,6 +20,7 @@ tuple $Debug$_contract_init() impure inline_ref {
     __tact_debug_bool(true);
     __tact_debug_bool(false);
     __tact_debug_str("null");
+    return ($self, ());
 }
 
 ;;
@@ -50,7 +51,7 @@ tuple $Debug$_contract_init() impure inline_ref {
 
 _ %debug() method_id(93099) {
     var self = $Debug$_contract_load();
-    var res = $Debug$_fun_debug(self);
+    var res = self~$Debug$_fun_debug();
     return res;
 }
 

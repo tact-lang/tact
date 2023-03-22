@@ -338,11 +338,10 @@ PROGRAM{
     c4 POP
   }>
   $IncrementContract$_fun_counters PROCREF:<{
-    4 BLKDROP
+    s4 PUSH
   }>
   $IncrementContract$_fun_counters2 PROCREF:<{
-    s1 s4 XCHG
-    4 BLKDROP
+    OVER
   }>
   $IncrementContract$_load PROCINLINE:<{
     LDDICT
@@ -540,10 +539,12 @@ PROGRAM{
   %counters PROC:<{
     $IncrementContract$_contract_load INLINECALLDICT
     $IncrementContract$_fun_counters INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %counters2 PROC:<{
     $IncrementContract$_contract_load INLINECALLDICT
     $IncrementContract$_fun_counters2 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

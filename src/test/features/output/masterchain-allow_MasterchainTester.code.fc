@@ -11,25 +11,25 @@ tuple $MasterchainTester$_contract_init() impure inline_ref {
     return $self;
 }
 
-slice $MasterchainTester$_fun_createAddress(tuple $self, int $chain, int $hash) impure inline_ref {
+(tuple, slice) $MasterchainTester$_fun_createAddress(tuple $self, int $chain, int $hash) impure inline_ref {
     var ($self) = $self;
-    return __tact_create_address($chain, $hash);
+    return ($self, __tact_create_address($chain, $hash));
 }
 
-slice $MasterchainTester$_fun_parseAddress(tuple $self, slice $src) impure inline_ref {
+(tuple, slice) $MasterchainTester$_fun_parseAddress(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
-    return $src~__tact_load_address();
+    return ($self, $src~__tact_load_address());
 }
 
-int $MasterchainTester$_fun_serializeAddress(tuple $self, slice $src) impure inline_ref {
+(tuple, int) $MasterchainTester$_fun_serializeAddress(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
-    return true;
+    return ($self, true);
 }
 
-int $MasterchainTester$_fun_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref {
+(tuple, int) $MasterchainTester$_fun_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref {
     var ($self) = $self;
     var (($src'address, $src'address2)) = $src;
-    return true;
+    return ($self, true);
 }
 
 ;;
@@ -55,28 +55,28 @@ _ %createAddress(int $$chain, int $$hash) method_id(125712) {
     int $chain = $$chain;
     int $hash = $$hash;
     var self = $MasterchainTester$_contract_load();
-    var res = $MasterchainTester$_fun_createAddress(self, $chain, $hash);
+    var res = self~$MasterchainTester$_fun_createAddress($chain, $hash);
     return res;
 }
 
 _ %parseAddress(slice $$src) method_id(102482) {
     slice $src = $$src;
     var self = $MasterchainTester$_contract_load();
-    var res = $MasterchainTester$_fun_parseAddress(self, $src);
+    var res = self~$MasterchainTester$_fun_parseAddress($src);
     return res;
 }
 
 _ %serializeAddress(slice $$src) method_id(73429) {
     slice $src = __tact_verify_address($$src);
     var self = $MasterchainTester$_contract_load();
-    var res = $MasterchainTester$_fun_serializeAddress(self, $src);
+    var res = self~$MasterchainTester$_fun_serializeAddress($src);
     return res;
 }
 
 _ %handleStruct(tuple $$src) method_id(67662) {
     (slice, slice) $src = $TestMessage$_from_tuple($$src);
     var self = $MasterchainTester$_contract_load();
-    var res = $MasterchainTester$_fun_handleStruct(self, $src);
+    var res = self~$MasterchainTester$_fun_handleStruct($src);
     return res;
 }
 

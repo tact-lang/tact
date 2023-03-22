@@ -466,7 +466,7 @@ PROGRAM{
     c4 POP
   }>
   $Payouts$_fun_owner PROCREF:<{
-    DROP
+    OVER
   }>
   $Payouts$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
@@ -698,6 +698,7 @@ PROGRAM{
   %owner PROC:<{
     $Payouts$_contract_load INLINECALLDICT
     $Payouts$_fun_owner INLINECALLDICT
+    2 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

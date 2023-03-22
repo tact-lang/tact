@@ -16,7 +16,7 @@ exports[`bugs not have a bug #18 1`] = `
           },
           "bounce": true,
           "from": "kQBbjpCWk51tkYZGsmjT-XQUL0QGlxJD4fQHGbYhdCbwQlX-",
-          "to": "kQA8Gopw5DGhvFdT0F4exGmhqeeIZvag9LOfZYsEvufndV4L",
+          "to": "kQATuFNRY5mXNNTFRLt-rOPIagkdNMRvZwXxCliykeP5KLju",
           "type": "internal",
           "value": 10000000000n,
         },

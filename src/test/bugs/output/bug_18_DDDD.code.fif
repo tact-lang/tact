@@ -149,17 +149,15 @@ PROGRAM{
     c4 POP
   }>
   $DDDD$_fun_mapData_addr1 PROCINLINE:<{
-    NIP
-    s2 POP
-    s3 POP
     257 PUSHINT
-    s2 POP
+    s3 PUSH
+    s0 s2 XCHG
     __tact_dict_get_int_slice INLINECALLDICT
   }>
   $DDDD$_fun_mapData2_addr1 PROCINLINE:<{
-    4 2 BLKDROP2
     267 PUSHINT
-    SWAP
+    s2 PUSH
+    s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
@@ -237,12 +235,14 @@ PROGRAM{
     $DDDD$_contract_load INLINECALLDICT
     5 ROLL
     $DDDD$_fun_mapData_addr1 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %mapData2_addr1 PROC:<{
     __tact_verify_address INLINECALLDICT
     $DDDD$_contract_load INLINECALLDICT
     5 ROLL
     $DDDD$_fun_mapData2_addr1 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

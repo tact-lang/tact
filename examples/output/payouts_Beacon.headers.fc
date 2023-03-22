@@ -32,7 +32,7 @@ slice __tact_verify_address(slice address) inline;
 () $Beacon$_contract_store((slice, slice, int) v) impure inline;
 
 ;; $Beacon$_fun_owner
-slice $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref;
+((slice, slice, int), slice) $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref;
 
 ;; $Beacon$_load
 (slice, ((slice, slice, int))) $Beacon$_load(slice sc_0) inline;

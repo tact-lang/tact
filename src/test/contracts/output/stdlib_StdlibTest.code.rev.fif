@@ -144,9 +144,9 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      s1 POP
       SEMPTY
     }> CALLREF
+    s1 POP
 
   75090: 
     c4 PUSH
@@ -174,9 +174,9 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      s1 POP
       SBITS
     }> CALLREF
+    s1 POP
 
   77445: 
     c4 PUSH
@@ -204,9 +204,9 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      s1 POP
       SREFS
     }> CALLREF
+    s1 POP
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT

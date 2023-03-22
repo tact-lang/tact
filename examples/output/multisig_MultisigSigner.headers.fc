@@ -35,7 +35,7 @@ slice __tact_verify_address(slice address) inline;
 () $MultisigSigner$_contract_store((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline;
 
 ;; $MultisigSigner$_fun_request
-(slice, slice, int, int, int, int, cell) $MultisigSigner$_fun_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref;
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), (slice, slice, int, int, int, int, cell)) $MultisigSigner$_fun_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref;
 
 ;; $MultisigSigner$_load
 (slice, ((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)))) $MultisigSigner$_load(slice sc_0) inline;

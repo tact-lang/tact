@@ -128,7 +128,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       NEWC
       NIL
       s0 s1 XCHG
@@ -387,6 +386,7 @@ SETCP0
       s1 POP
       CTOS
     }> CALLREF
+    s1 POP
 
   71427: 
     c4 PUSH
@@ -411,7 +411,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       PUSHSLICE
       <{
         <{
@@ -528,11 +527,12 @@ SETCP0
         }> CALLREF
       }> CALLREF
     }> CALLREF
+    s1 POP
 
   74191: 
-    x{}
+    x{31}
   74771: 
-    x{}
+    x{31}
   80064: 
     c4 PUSH
     CTOS
@@ -556,7 +556,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       95 PUSHINT
       1 PUSHINT
       <{
@@ -652,6 +651,7 @@ SETCP0
         CTOS
       }> CALLREF
     }> CALLREF
+    s1 POP
 
   82914: 
     c4 PUSH
@@ -676,7 +676,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       NEWC
       NIL
       s0 s1 XCHG
@@ -935,6 +934,7 @@ SETCP0
       s1 POP
       CTOS
     }> CALLREF
+    s1 POP
 
   93932: 
     c4 PUSH
@@ -959,9 +959,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       PUSHSLICE
     }> CALLREF
+    s1 POP
 
   94811: 
     c4 PUSH
@@ -986,7 +986,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       NEWC
       NIL
       s0 s1 XCHG
@@ -1246,6 +1245,7 @@ SETCP0
       s1 POP
       CTOS
     }> CALLREF
+    s1 POP
 
   94939: 
     c4 PUSH
@@ -1270,12 +1270,12 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       PUSHSLICE
     }> CALLREF
+    s1 POP
 
   104680: 
-    x{}
+    x{31}
   113617: 
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -1306,7 +1306,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       NEWC
       NIL
       s0 s1 XCHG
@@ -1405,6 +1404,7 @@ SETCP0
       WHILE
       s1 POP
     }> CALLREF
+    s1 POP
 
   122531: 
     c4 PUSH
@@ -1429,7 +1429,6 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       NEWC
       0 PUSHINT
       s0 s1 XCHG
@@ -1531,6 +1530,7 @@ SETCP0
       WHILE
       s1 POP
     }> CALLREF
+    s1 POP
 
   128362: 
     c4 PUSH
@@ -1556,7 +1556,6 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      s1 POP
       <{
         <{
           s0 PUSH
@@ -1672,6 +1671,7 @@ SETCP0
         }> CALLREF
       }> CALLREF
     }> CALLREF
+    s1 POP
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

@@ -256,11 +256,9 @@ PROGRAM{
     c4 POP
   }>
   $RandomContract$_fun_random PROCREF:<{
-    1 2 BLKDROP2
     $global_random INLINECALLDICT
   }>
   $RandomContract$_fun_randomInt PROCREF:<{
-    DROP
     $global_randomInt INLINECALLDICT
   }>
   $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
@@ -275,11 +273,13 @@ PROGRAM{
   %randomInt PROC:<{
     $RandomContract$_contract_load INLINECALLDICT
     $RandomContract$_fun_randomInt INLINECALLDICT
+    NIP
   }>
   %random PROC:<{
     $RandomContract$_contract_load INLINECALLDICT
     -ROT
     $RandomContract$_fun_random INLINECALLDICT
+    NIP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

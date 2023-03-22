@@ -406,7 +406,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             args,
             returns,
             ast: a,
-            isMutating: !!isMutating || (!!sself && !isGetter), // Mark all contract functions as mutating
+            isMutating: !!isMutating || (!!sself /* && !isGetter */), // Mark all contract functions as mutating
             isPublic: !!isPublic,
             isGetter: !!isGetter,
             isVirtual: !!isVirtual,

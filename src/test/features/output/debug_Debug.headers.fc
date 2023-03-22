@@ -29,7 +29,7 @@ tuple $Debug$_contract_load() impure inline;
 () $Debug$_contract_store(tuple v) impure inline;
 
 ;; $Debug$_fun_debug
-() $Debug$_fun_debug(tuple $self) impure inline_ref;
+(tuple, ()) $Debug$_fun_debug(tuple $self) impure inline_ref;
 
 ;; $Deploy$_load
 (slice, ((int))) $Deploy$_load(slice sc_0) inline;

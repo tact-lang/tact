@@ -111,9 +111,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       456000000000 PUSHINT
     }> CALLREF
+    s1 POP
 
   104726: 
     c4 PUSH
@@ -138,9 +138,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       PUSHSLICE
     }> CALLREF
+    s1 POP
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -172,9 +172,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       100 PUSHINT
     }> CALLREF
+    s1 POP
 
   121234: 
     c4 PUSH
@@ -199,9 +199,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       -6 PUSHINT
     }> CALLREF
+    s1 POP
 
   125425: 
     c4 PUSH
@@ -226,9 +226,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       PUSHNULL
     }> CALLREF
+    s1 POP
 
   129488: 
     c4 PUSH
@@ -253,9 +253,9 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      s0 POP
       123000000000 PUSHINT
     }> CALLREF
+    s1 POP
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

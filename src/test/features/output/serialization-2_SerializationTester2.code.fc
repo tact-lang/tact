@@ -15,42 +15,42 @@
     return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
-(int, int, int, int, int) $SerializationTester2$_fun_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), (int, int, int, int, int)) $SerializationTester2$_fun_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e);
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e));
 }
 
-tuple $SerializationTester2$_fun_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), tuple) $SerializationTester2$_fun_getAopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return $Vars$_as_optional(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e));
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), $Vars$_as_optional(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e)));
 }
 
-(int, int, int, int, int) $SerializationTester2$_fun_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), (int, int, int, int, int)) $SerializationTester2$_fun_getB(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e);
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
-tuple $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), tuple) $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return $Vars$_as_optional(($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), $Vars$_as_optional(($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
 }
 
-((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_fun_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), ((int, int, int, int, int), (int, int, int, int, int))) $SerializationTester2$_fun_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return $Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), $Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
 }
 
-tuple $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), tuple) $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
-    return $Both$_as_optional($Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), $Both$_as_optional($Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))));
 }
 
-(int, int, int, int, int) $SerializationTester2$_fun_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref {
+(((int, int, int, int, int), (int, int, int, int, int)), (int, int, int, int, int)) $SerializationTester2$_fun_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     var (($src'a, $src'b, $src'c, $src'd, $src'e)) = $src;
     var ((($both'a'a, $both'a'b, $both'a'c, $both'a'd, $both'a'e), ($both'b'a, $both'b'b, $both'b'c, $both'b'd, $both'b'e))) = $both;
     var ($both2) = $both2;
-    return $Vars$_constructor_a_b_c_d_e(($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5));
+    return ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)), $Vars$_constructor_a_b_c_d_e(($src'a + 1), ($src'b + 2), ($src'c + 3), ($src'd + 4), ($src'e + 5)));
 }
 
 ;;
@@ -76,37 +76,37 @@ tuple $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, in
 
 _ %getA() method_id(123932) {
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_getA(self);
+    var res = self~$SerializationTester2$_fun_getA();
     return $Vars$_to_external(res);
 }
 
 _ %getAopt() method_id(113663) {
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_getAopt(self);
+    var res = self~$SerializationTester2$_fun_getAopt();
     return $Vars$_to_opt_external(res);
 }
 
 _ %getB() method_id(119935) {
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_getB(self);
+    var res = self~$SerializationTester2$_fun_getB();
     return $Vars$_to_external(res);
 }
 
 _ %getBopt() method_id(73763) {
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_getBopt(self);
+    var res = self~$SerializationTester2$_fun_getBopt();
     return $Vars$_to_opt_external(res);
 }
 
 _ %getBoth() method_id(81754) {
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_getBoth(self);
+    var res = self~$SerializationTester2$_fun_getBoth();
     return $Both$_to_external(res);
 }
 
 _ %getBothOpt() method_id(69430) {
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_getBothOpt(self);
+    var res = self~$SerializationTester2$_fun_getBothOpt();
     return $Both$_to_opt_external(res);
 }
 
@@ -115,7 +115,7 @@ _ %process(tuple $$src, tuple $$both, tuple $$both2) method_id(104435) {
     ((int, int, int, int, int), (int, int, int, int, int)) $both = $Both$_from_tuple($$both);
     tuple $both2 = $Both$_from_opt_tuple($$both2);
     var self = $SerializationTester2$_contract_load();
-    var res = $SerializationTester2$_fun_process(self, $src, $both, $both2);
+    var res = self~$SerializationTester2$_fun_process($src, $both, $both2);
     return $Vars$_to_external(res);
 }
 

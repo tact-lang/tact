@@ -297,14 +297,13 @@ PROGRAM{
     c4 POP
   }>
   $Wallet$_fun_publicKey PROCREF:<{
-    DROP
-    NIP
+    OVER
   }>
   $Wallet$_fun_seqno PROCREF:<{
-    2DROP
+    s2 PUSH
   }>
   $Wallet$_fun_walletId PROCREF:<{
-    2 1 BLKDROP2
+    DUP
   }>
   $Wallet$_init_child PROCREF:<{
     s0 s2 XCHG
@@ -412,14 +411,17 @@ PROGRAM{
   %publicKey PROC:<{
     $Wallet$_contract_load INLINECALLDICT
     $Wallet$_fun_publicKey INLINECALLDICT
+    3 1 BLKDROP2
   }>
   %walletId PROC:<{
     $Wallet$_contract_load INLINECALLDICT
     $Wallet$_fun_walletId INLINECALLDICT
+    3 1 BLKDROP2
   }>
   %seqno PROC:<{
     $Wallet$_contract_load INLINECALLDICT
     $Wallet$_fun_seqno INLINECALLDICT
+    3 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

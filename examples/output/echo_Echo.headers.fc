@@ -41,7 +41,7 @@ tuple $Echo$_contract_load() impure inline;
 () $Echo$_contract_store(tuple v) impure inline;
 
 ;; $Echo$_fun_hello
-slice $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref;
+(tuple, slice) $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref;
 
 ;; $Echo$init$_load
 (slice, ((int))) $Echo$init$_load(slice sc_0) inline;

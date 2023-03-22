@@ -14,9 +14,9 @@
     return ($self'master, $self'owner, $self'completed);
 }
 
-slice $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref {
+((slice, slice, int), slice) $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = $self;
-    return $self'owner;
+    return (($self'master, $self'owner, $self'completed), $self'owner);
 }
 
 ;;
@@ -50,7 +50,7 @@ slice $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref {
 
 _ %owner() method_id(83229) {
     var self = $Beacon$_contract_load();
-    var res = $Beacon$_fun_owner(self);
+    var res = self~$Beacon$_fun_owner();
     return res;
 }
 

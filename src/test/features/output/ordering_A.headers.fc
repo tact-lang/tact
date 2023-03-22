@@ -26,7 +26,7 @@ slice __tact_verify_address(slice address) inline;
 () $A$_contract_store((slice) v) impure inline;
 
 ;; $A$_fun_create
-(int, int, int) $A$_fun_create((slice) $self, int $v) impure inline_ref;
+((slice), (int, int, int)) $A$_fun_create((slice) $self, int $v) impure inline_ref;
 
 ;; $A$_load
 (slice, ((slice))) $A$_load(slice sc_0) inline;

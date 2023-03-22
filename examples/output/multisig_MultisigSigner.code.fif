@@ -249,7 +249,9 @@ PROGRAM{
     c4 POP
   }>
   $MultisigSigner$_fun_request PROCREF:<{
-    5 7 BLKDROP2
+    s6 s5 s4 PUSH3
+    s6 s5 s4 PUSH3
+    s6 PUSH
   }>
   $MultisigSigner$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
@@ -434,6 +436,7 @@ PROGRAM{
   %request PROC:<{
     $MultisigSigner$_contract_load INLINECALLDICT
     $MultisigSigner$_fun_request INLINECALLDICT
+    12 7 BLKDROP2
     $Request$_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{

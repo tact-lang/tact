@@ -29,10 +29,10 @@ slice __tact_verify_address(slice address) inline;
 () $DDDD$_contract_store((slice, slice, slice, cell, cell) v) impure inline;
 
 ;; $DDDD$_fun_mapData_addr1
-slice $DDDD$_fun_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline;
+((slice, slice, slice, cell, cell), slice) $DDDD$_fun_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline;
 
 ;; $DDDD$_fun_mapData2_addr1
-int $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline;
+((slice, slice, slice, cell, cell), int) $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline;
 
 ;; $DDDD$_load
 (slice, ((slice, slice, slice, cell, cell))) $DDDD$_load(slice sc_0) inline;

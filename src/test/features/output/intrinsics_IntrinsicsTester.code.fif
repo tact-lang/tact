@@ -111,45 +111,37 @@ PROGRAM{
     c4 POP
   }>
   $IntrinsicsTester$_fun_getAddress PROCREF:<{
-    5 BLKDROP
     B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
   }>
   $IntrinsicsTester$_fun_getAddress2 PROCREF:<{
-    s2 s4 XCHG
-    4 BLKDROP
+    s2 PUSH
   }>
   $IntrinsicsTester$_fun_getCell PROCREF:<{
-    5 BLKDROP
     NEWC
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
     STSLICER
     ENDC
   }>
   $IntrinsicsTester$_fun_getCell2 PROCREF:<{
-    s1 s4 XCHG
-    4 BLKDROP
+    OVER
   }>
   $IntrinsicsTester$_fun_getPow PROCREF:<{
-    5 BLKDROP
     9 PUSHPOW2
   }>
   $IntrinsicsTester$_fun_getPow2 PROCREF:<{
-    4 1 BLKDROP2
+    DUP
   }>
   $IntrinsicsTester$_fun_getString PROCREF:<{
-    5 BLKDROP
     B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
   }>
   $IntrinsicsTester$_fun_getString2 PROCREF:<{
-    s3 s4 XCHG
-    4 BLKDROP
+    s3 PUSH
   }>
   $IntrinsicsTester$_fun_getTons PROCREF:<{
-    5 BLKDROP
     10123400000 PUSHINT
   }>
   $IntrinsicsTester$_fun_getTons2 PROCREF:<{
-    4 BLKDROP
+    s4 PUSH
   }>
   $IntrinsicsTester$_load PROCINLINE:<{
     257 PUSHINT
@@ -186,42 +178,52 @@ PROGRAM{
   %getTons PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getTons INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getTons2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getTons2 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getString PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getString INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getString2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getString2 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getAddress PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getAddress INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getAddress2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getAddress2 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getCell PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getCell INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getCell2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getCell2 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getPow PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getPow INLINECALLDICT
+    5 1 BLKDROP2
   }>
   %getPow2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getPow2 INLINECALLDICT
+    5 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

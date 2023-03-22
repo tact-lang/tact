@@ -65,10 +65,10 @@ slice __tact_verify_address(slice address) inline;
 () $RugPull$_contract_store((slice, int, int, int, int, int, int, int, int, cell) v) impure inline;
 
 ;; $RugPull$_fun_owner
-slice $RugPull$_fun_owner((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
+((slice, int, int, int, int, int, int, int, int, cell), slice) $RugPull$_fun_owner((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
 
 ;; $RugPull$_fun_params
-(int, int, int) $RugPull$_fun_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
+((slice, int, int, int, int, int, int, int, int, cell), (int, int, int)) $RugPull$_fun_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
 
 ;; $RugPull$_fun_requireNotStopped
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_requireNotStopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
@@ -80,7 +80,7 @@ slice $RugPull$_fun_owner((slice, int, int, int, int, int, int, int, int, cell) 
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_sendPayout((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, int $value) impure inline_ref;
 
 ;; $RugPull$_fun_stopped
-int $RugPull$_fun_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
+((slice, int, int, int, int, int, int, int, int, cell), int) $RugPull$_fun_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
 
 ;; $RugPull$_load
 (slice, ((slice, int, int, int, int, int, int, int, int, cell))) $RugPull$_load(slice sc_0) inline;

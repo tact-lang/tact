@@ -237,9 +237,10 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      3 BLKDROP
+      2DROP
       -1 PUSHINT
     }> CALLREF
+    s1 POP
 
   73429: 
     s0 PUSH
@@ -283,9 +284,10 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      2DROP
+      s0 POP
       -1 PUSHINT
     }> CALLREF
+    s1 POP
 
   102482: 
     c4 PUSH
@@ -311,12 +313,12 @@ SETCP0
     IFELSE
     s0 s1 XCHG
     <{
-      s1 POP
       LDMSGADDR
       s0 s1 XCHG
       4 CALLDICT
       s1 POP
     }> CALLREF
+    s1 POP
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -349,7 +351,6 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      1 2 BLKDROP2
       NEWC
       2 PUSHINT
       s0 s1 XCHG
@@ -364,6 +365,7 @@ SETCP0
       CTOS
       4 CALLDICT
     }> CALLREF
+    s1 POP
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

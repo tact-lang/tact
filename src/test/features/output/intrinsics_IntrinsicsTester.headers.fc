@@ -17,34 +17,34 @@ slice __tact_verify_address(slice address) inline;
 () $IntrinsicsTester$_contract_store((int, slice, slice, cell, int) v) impure inline;
 
 ;; $IntrinsicsTester$_fun_getAddress
-slice $IntrinsicsTester$_fun_getAddress((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), slice) $IntrinsicsTester$_fun_getAddress((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getAddress2
-slice $IntrinsicsTester$_fun_getAddress2((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), slice) $IntrinsicsTester$_fun_getAddress2((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getCell
-cell $IntrinsicsTester$_fun_getCell((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), cell) $IntrinsicsTester$_fun_getCell((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getCell2
-cell $IntrinsicsTester$_fun_getCell2((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), cell) $IntrinsicsTester$_fun_getCell2((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getPow
-int $IntrinsicsTester$_fun_getPow((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), int) $IntrinsicsTester$_fun_getPow((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getPow2
-int $IntrinsicsTester$_fun_getPow2((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), int) $IntrinsicsTester$_fun_getPow2((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getString
-slice $IntrinsicsTester$_fun_getString((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), slice) $IntrinsicsTester$_fun_getString((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getString2
-slice $IntrinsicsTester$_fun_getString2((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), slice) $IntrinsicsTester$_fun_getString2((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getTons
-int $IntrinsicsTester$_fun_getTons((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), int) $IntrinsicsTester$_fun_getTons((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_fun_getTons2
-int $IntrinsicsTester$_fun_getTons2((int, slice, slice, cell, int) $self) impure inline_ref;
+((int, slice, slice, cell, int), int) $IntrinsicsTester$_fun_getTons2((int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $IntrinsicsTester$_load
 (slice, ((int, slice, slice, cell, int))) $IntrinsicsTester$_load(slice sc_0) inline;

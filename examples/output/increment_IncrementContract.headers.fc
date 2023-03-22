@@ -59,10 +59,10 @@ cell $DeployOk$_store_cell((int) v) inline;
 () $IncrementContract$_contract_store((cell, cell, cell, cell, cell) v) impure inline;
 
 ;; $IncrementContract$_fun_counters
-cell $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell), cell) $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $IncrementContract$_fun_counters2
-cell $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell), cell) $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $IncrementContract$_load
 (slice, ((cell, cell, cell, cell, cell))) $IncrementContract$_load(slice sc_0) inline;

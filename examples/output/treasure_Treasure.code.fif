@@ -237,6 +237,7 @@ PROGRAM{
     $global_send INLINECALLDICT
   }>
   $Treasure$_fun_owner PROCREF:<{
+    DUP
   }>
   $Treasure$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
@@ -279,6 +280,7 @@ PROGRAM{
   %owner PROC:<{
     $Treasure$_contract_load INLINECALLDICT
     $Treasure$_fun_owner INLINECALLDICT
+    NIP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

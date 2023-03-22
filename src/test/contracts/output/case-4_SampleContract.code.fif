@@ -81,7 +81,7 @@ PROGRAM{
     c4 POP
   }>
   $SampleContract$_fun_stake PROCREF:<{
-    4 BLKDROP
+    s4 PUSH
   }>
   $SampleContract$_load PROCINLINE:<{
     257 PUSHINT
@@ -134,6 +134,7 @@ PROGRAM{
   %stake PROC:<{
     $SampleContract$_contract_load INLINECALLDICT
     $SampleContract$_fun_stake INLINECALLDICT
+    5 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

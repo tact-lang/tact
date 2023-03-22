@@ -14,14 +14,14 @@
     return ($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2);
 }
 
-slice $DDDD$_fun_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline {
+((slice, slice, slice, cell, cell), slice) $DDDD$_fun_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
-    return __tact_dict_get_int_slice($self'mapData, 257, $key);
+    return (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2), __tact_dict_get_int_slice($self'mapData, 257, $key));
 }
 
-int $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline {
+((slice, slice, slice, cell, cell), int) $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline {
     var (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2)) = $self;
-    return __tact_dict_get_slice_int($self'mapData2, 267, $key, 257);
+    return (($self'addr1, $self'addr2, $self'addr3, $self'mapData, $self'mapData2), __tact_dict_get_slice_int($self'mapData2, 267, $key, 257));
 }
 
 ;;
@@ -48,14 +48,14 @@ int $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $ke
 _ %mapData_addr1(int $$key) method_id(120259) {
     int $key = $$key;
     var self = $DDDD$_contract_load();
-    var res = $DDDD$_fun_mapData_addr1(self, $key);
+    var res = self~$DDDD$_fun_mapData_addr1($key);
     return res;
 }
 
 _ %mapData2_addr1(slice $$key) method_id(66206) {
     slice $key = __tact_verify_address($$key);
     var self = $DDDD$_contract_load();
-    var res = $DDDD$_fun_mapData2_addr1(self, $key);
+    var res = self~$DDDD$_fun_mapData2_addr1($key);
     return res;
 }
 

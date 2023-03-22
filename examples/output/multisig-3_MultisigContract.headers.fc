@@ -32,16 +32,16 @@ slice __tact_verify_address(slice address) inline;
 ((int, int, int, int), ()) $MultisigContract$_fun_execute((int, int, int, int) $self, (int, int, slice) $op) impure inline_ref;
 
 ;; $MultisigContract$_fun_key1
-int $MultisigContract$_fun_key1((int, int, int, int) $self) impure inline_ref;
+((int, int, int, int), int) $MultisigContract$_fun_key1((int, int, int, int) $self) impure inline_ref;
 
 ;; $MultisigContract$_fun_key2
-int $MultisigContract$_fun_key2((int, int, int, int) $self) impure inline_ref;
+((int, int, int, int), int) $MultisigContract$_fun_key2((int, int, int, int) $self) impure inline_ref;
 
 ;; $MultisigContract$_fun_key3
-int $MultisigContract$_fun_key3((int, int, int, int) $self) impure inline_ref;
+((int, int, int, int), int) $MultisigContract$_fun_key3((int, int, int, int) $self) impure inline_ref;
 
 ;; $MultisigContract$_fun_seqno
-int $MultisigContract$_fun_seqno((int, int, int, int) $self) impure inline_ref;
+((int, int, int, int), int) $MultisigContract$_fun_seqno((int, int, int, int) $self) impure inline_ref;
 
 ;; $MultisigContract$_load
 (slice, ((int, int, int, int))) $MultisigContract$_load(slice sc_0) inline;

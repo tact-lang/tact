@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: IncrementContract
-BOC Size: 1187 bytes
+BOC Size: 1188 bytes
 
 # Types
 Total Types: 10

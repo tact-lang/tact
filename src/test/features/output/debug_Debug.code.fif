@@ -189,7 +189,6 @@ PROGRAM{
     c4 POP
   }>
   $Debug$_fun_debug PROCREF:<{
-    DROP
     DUMPSTK
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
     STRDUMP
@@ -368,6 +367,7 @@ PROGRAM{
   %debug PROC:<{
     $Debug$_contract_load INLINECALLDICT
     $Debug$_fun_debug INLINECALLDICT
+    DROP
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

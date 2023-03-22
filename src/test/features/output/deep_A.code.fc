@@ -12,9 +12,9 @@ tuple $A$_contract_init() impure inline_ref {
     return $self;
 }
 
-(cell, cell) $A$_fun_getNext(tuple $self) impure inline_ref {
+(tuple, (cell, cell)) $A$_fun_getNext(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return $B$_init_child(__tact_context_sys, my_address());
+    return ($self, $B$_init_child(__tact_context_sys, my_address()));
 }
 
 ;;
@@ -35,7 +35,7 @@ tuple $A$_contract_init() impure inline_ref {
 
 _ %getNext() method_id(74105) {
     var self = $A$_contract_load();
-    var res = $A$_fun_getNext(self);
+    var res = self~$A$_fun_getNext();
     return $StateInit$_to_external(res);
 }
 

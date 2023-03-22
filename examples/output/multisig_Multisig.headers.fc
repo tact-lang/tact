@@ -50,10 +50,10 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref;
 () $Multisig$_contract_store((int, cell, int, int) v) impure inline;
 
 ;; $Multisig$_fun_member
-int $Multisig$_fun_member((int, cell, int, int) $self, slice $address) impure inline_ref;
+((int, cell, int, int), int) $Multisig$_fun_member((int, cell, int, int) $self, slice $address) impure inline_ref;
 
 ;; $Multisig$_fun_members
-cell $Multisig$_fun_members((int, cell, int, int) $self) impure inline_ref;
+((int, cell, int, int), cell) $Multisig$_fun_members((int, cell, int, int) $self) impure inline_ref;
 
 ;; $Multisig$_load
 (slice, ((int, cell, int, int))) $Multisig$_load(slice sc_0) inline;

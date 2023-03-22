@@ -12,12 +12,12 @@ tuple $Echo$_contract_init(int $a) impure inline_ref {
     return $self;
 }
 
-slice $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref {
+(tuple, slice) $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     tuple $builder = __tact_string_builder_start_string();
     $builder~__tact_string_builder_append(__gen_str_591567833());
     $builder~__tact_string_builder_append($src);
-    return __tact_string_builder_end_slice($builder);
+    return ($self, __tact_string_builder_end_slice($builder));
 }
 
 ;;
@@ -43,7 +43,7 @@ slice $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref {
 _ %hello(slice $$src) method_id(115554) {
     slice $src = $$src;
     var self = $Echo$_contract_load();
-    var res = $Echo$_fun_hello(self, $src);
+    var res = self~$Echo$_fun_hello($src);
     return res;
 }
 

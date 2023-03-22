@@ -13,9 +13,9 @@
     return ($self'parent);
 }
 
-(cell, cell) $B$_fun_getNext((slice) $self) impure inline_ref {
+((slice), (cell, cell)) $B$_fun_getNext((slice) $self) impure inline_ref {
     var (($self'parent)) = $self;
-    return $C$_init_child(__tact_context_sys, my_address());
+    return (($self'parent), $C$_init_child(__tact_context_sys, my_address()));
 }
 
 ;;
@@ -36,7 +36,7 @@
 
 _ %getNext() method_id(74105) {
     var self = $B$_contract_load();
-    var res = $B$_fun_getNext(self);
+    var res = self~$B$_fun_getNext();
     return $StateInit$_to_external(res);
 }
 

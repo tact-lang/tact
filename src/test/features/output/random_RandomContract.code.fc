@@ -11,14 +11,14 @@ tuple $RandomContract$_contract_init() impure inline_ref {
     return $self;
 }
 
-int $RandomContract$_fun_randomInt(tuple $self) impure inline_ref {
+(tuple, int) $RandomContract$_fun_randomInt(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return $global_randomInt();
+    return ($self, $global_randomInt());
 }
 
-int $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_ref {
+(tuple, int) $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_ref {
     var ($self) = $self;
-    return $global_random($min, $max);
+    return ($self, $global_random($min, $max));
 }
 
 ;;
@@ -38,7 +38,7 @@ int $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_r
 
 _ %randomInt() method_id(128647) {
     var self = $RandomContract$_contract_load();
-    var res = $RandomContract$_fun_randomInt(self);
+    var res = self~$RandomContract$_fun_randomInt();
     return res;
 }
 
@@ -46,7 +46,7 @@ _ %random(int $$min, int $$max) method_id(92013) {
     int $min = $$min;
     int $max = $$max;
     var self = $RandomContract$_contract_load();
-    var res = $RandomContract$_fun_random(self, $min, $max);
+    var res = self~$RandomContract$_fun_random($min, $max);
     return res;
 }
 

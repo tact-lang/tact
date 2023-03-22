@@ -47,13 +47,13 @@ cell $Transfer$_store_cell((int, int, slice, int, cell) v) inline;
 () $Wallet$_contract_store((int, int, int) v) impure inline;
 
 ;; $Wallet$_fun_publicKey
-int $Wallet$_fun_publicKey((int, int, int) $self) impure inline_ref;
+((int, int, int), int) $Wallet$_fun_publicKey((int, int, int) $self) impure inline_ref;
 
 ;; $Wallet$_fun_seqno
-int $Wallet$_fun_seqno((int, int, int) $self) impure inline_ref;
+((int, int, int), int) $Wallet$_fun_seqno((int, int, int) $self) impure inline_ref;
 
 ;; $Wallet$_fun_walletId
-int $Wallet$_fun_walletId((int, int, int) $self) impure inline_ref;
+((int, int, int), int) $Wallet$_fun_walletId((int, int, int) $self) impure inline_ref;
 
 ;; $Wallet$_init_child
 (cell, cell) $Wallet$_init_child(cell sys', int $key, int $walletId) inline_ref;

@@ -113,7 +113,6 @@ PROGRAM{
     c4 POP
   }>
   $A$_fun_create PROCREF:<{
-    NIP
     $Int$_fun_inc INLINECALLDICT
     SWAP
     $Int$_fun_inc INLINECALLDICT
@@ -286,6 +285,7 @@ PROGRAM{
     $A$_contract_load INLINECALLDICT
     SWAP
     $A$_fun_create INLINECALLDICT
+    1 3 BLKDROP2
     $S$_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{

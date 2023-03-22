@@ -294,8 +294,13 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
+      9 8 7 PUSH3
+      9 8 7 PUSH3
+      9 8 7 PUSH3
+      s9 PUSH
       10 TUPLE
     }> CALLREF
+    10 1 BLKDROP2
     9 CALLDICT
     s0 PUSH
     ISNULL
@@ -330,9 +335,11 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      5 5 BLKDROP2
+      4 3 2 PUSH3
+      s4 s3 PUSH2
       25 CALLDICT
     }> CALLREF
+    10 1 BLKDROP2
     33 CALLDICT
     s0 PUSH
     ISNULL
@@ -366,6 +373,13 @@ SETCP0
       1 9 BLKSWAP
     }> PUSHCONT
     IFELSE
+    <{
+      9 8 7 PUSH3
+      9 8 7 PUSH3
+      9 8 7 PUSH3
+      s9 PUSH
+    }> CALLREF
+    10 10 BLKDROP2
     5 5 BLKSWAP
     34 CALLDICT
     5 1 BLKSWAP
@@ -460,7 +474,6 @@ SETCP0
     s8 s8 s3 XCHG3
     <{
       11 BLKDROP
-      10 5 BLKDROP2
       s0 s4 XCHG
       INC
       s0 s3 XCHG
@@ -475,6 +488,7 @@ SETCP0
       s1 s3 s0 XCHG3
       26 CALLDICT
     }> CALLREF
+    10 5 BLKDROP2
 
   113617: 
     123515602279859691144772641439386770278 PUSHINT
@@ -508,9 +522,11 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      5 BLKDROP
+      9 8 7 PUSH3
+      s9 s8 PUSH2
       25 CALLDICT
     }> CALLREF
+    10 1 BLKDROP2
     33 CALLDICT
     s0 PUSH
     ISNULL
@@ -545,8 +561,10 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      5 5 BLKDROP2
+      4 3 2 PUSH3
+      s4 s3 PUSH2
     }> CALLREF
+    10 5 BLKDROP2
 
   123932: 
     c4 PUSH
@@ -573,8 +591,10 @@ SETCP0
     }> PUSHCONT
     IFELSE
     <{
-      5 BLKDROP
+      9 8 7 PUSH3
+      s9 s8 PUSH2
     }> CALLREF
+    10 5 BLKDROP2
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ
 11 THROWARG

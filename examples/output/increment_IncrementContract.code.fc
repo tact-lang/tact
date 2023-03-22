@@ -11,14 +11,14 @@
     return ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5);
 }
 
-cell $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
+((cell, cell, cell, cell, cell), cell) $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
-    return $self'counters;
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), $self'counters);
 }
 
-cell $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
+((cell, cell, cell, cell, cell), cell) $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
-    return $self'counters4;
+    return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), $self'counters4);
 }
 
 ;;
@@ -77,13 +77,13 @@ cell $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) imp
 
 _ %counters() method_id(95239) {
     var self = $IncrementContract$_contract_load();
-    var res = $IncrementContract$_fun_counters(self);
+    var res = self~$IncrementContract$_fun_counters();
     return res;
 }
 
 _ %counters2() method_id(77570) {
     var self = $IncrementContract$_contract_load();
-    var res = $IncrementContract$_fun_counters2(self);
+    var res = self~$IncrementContract$_fun_counters2();
     return res;
 }
 

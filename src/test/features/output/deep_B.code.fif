@@ -256,7 +256,6 @@ PROGRAM{
     c4 POP
   }>
   $B$_fun_getNext PROCREF:<{
-    DROP
     __tact_context_sys GETGLOB
     MYADDR
     $C$_init_child INLINECALLDICT
@@ -437,6 +436,7 @@ PROGRAM{
   %getNext PROC:<{
     $B$_contract_load INLINECALLDICT
     $B$_fun_getNext INLINECALLDICT
+    1 2 BLKDROP2
     $StateInit$_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{

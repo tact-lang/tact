@@ -19,100 +19,100 @@
     return ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f);
 }
 
-int $ContractWithOptionals$_fun_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return (~ null?($self'a));
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), (~ null?($self'a)));
 }
 
-int $ContractWithOptionals$_fun_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return (~ null?($self'b));
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), (~ null?($self'b)));
 }
 
-int $ContractWithOptionals$_fun_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return (~ null?($self'c));
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), (~ null?($self'c)));
 }
 
-int $ContractWithOptionals$_fun_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return (~ null?($self'd));
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), (~ null?($self'd)));
 }
 
-int $ContractWithOptionals$_fun_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return (~ null?($self'e));
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), (~ null?($self'e)));
 }
 
-int $ContractWithOptionals$_fun_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_isNotNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return (~ null?($self'f));
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), (~ null?($self'f)));
 }
 
-int $ContractWithOptionals$_fun_nullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_nullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'a;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'a);
 }
 
-int $ContractWithOptionals$_fun_nullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_nullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'b;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'b);
 }
 
-cell $ContractWithOptionals$_fun_nullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), cell) $ContractWithOptionals$_fun_nullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'c;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'c);
 }
 
-slice $ContractWithOptionals$_fun_nullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), slice) $ContractWithOptionals$_fun_nullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'd;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'd);
 }
 
-tuple $ContractWithOptionals$_fun_nullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), tuple) $ContractWithOptionals$_fun_nullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'e;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'e);
 }
 
-tuple $ContractWithOptionals$_fun_nullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), tuple) $ContractWithOptionals$_fun_nullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $self'f;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $self'f);
 }
 
-int $ContractWithOptionals$_fun_notNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_notNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return __tact_not_null($self'a);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), __tact_not_null($self'a));
 }
 
-int $ContractWithOptionals$_fun_notNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_fun_notNullB((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return __tact_not_null($self'b);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), __tact_not_null($self'b));
 }
 
-cell $ContractWithOptionals$_fun_notNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), cell) $ContractWithOptionals$_fun_notNullC((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return __tact_not_null($self'c);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), __tact_not_null($self'c));
 }
 
-slice $ContractWithOptionals$_fun_notNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), slice) $ContractWithOptionals$_fun_notNullD((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return __tact_not_null($self'd);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), __tact_not_null($self'd));
 }
 
-(int, int, int, int, int) $ContractWithOptionals$_fun_notNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), (int, int, int, int, int)) $ContractWithOptionals$_fun_notNullE((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $SomeGenericStruct$_not_null($self'e);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $SomeGenericStruct$_not_null($self'e));
 }
 
-(int, int, cell, slice, tuple) $ContractWithOptionals$_fun_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), (int, int, cell, slice, tuple)) $ContractWithOptionals$_fun_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
-    return $StructWithOptionals$_not_null($self'f);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $StructWithOptionals$_not_null($self'f));
 }
 
-(int, int, int, int, int) $ContractWithOptionals$_fun_testVariables((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), (int, int, int, int, int)) $ContractWithOptionals$_fun_testVariables((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     tuple $a = $SomeGenericStruct$_as_optional($SomeGenericStruct$_constructor_value1_value2_value3_value4_value5(1, 2, 3, 4, 5));
-    return $SomeGenericStruct$_not_null($a);
+    return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), $SomeGenericStruct$_not_null($a));
 }
 
 ;;
@@ -142,115 +142,115 @@ slice $ContractWithOptionals$_fun_notNullD((int, int, cell, slice, tuple, tuple)
 
 _ %isNotNullA() method_id(74449) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_isNotNullA(self);
+    var res = self~$ContractWithOptionals$_fun_isNotNullA();
     return res;
 }
 
 _ %isNotNullB() method_id(70322) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_isNotNullB(self);
+    var res = self~$ContractWithOptionals$_fun_isNotNullB();
     return res;
 }
 
 _ %isNotNullC() method_id(66195) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_isNotNullC(self);
+    var res = self~$ContractWithOptionals$_fun_isNotNullC();
     return res;
 }
 
 _ %isNotNullD() method_id(94836) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_isNotNullD(self);
+    var res = self~$ContractWithOptionals$_fun_isNotNullD();
     return res;
 }
 
 _ %isNotNullE() method_id(90709) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_isNotNullE(self);
+    var res = self~$ContractWithOptionals$_fun_isNotNullE();
     return res;
 }
 
 _ %isNotNullF() method_id(86582) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_isNotNullF(self);
+    var res = self~$ContractWithOptionals$_fun_isNotNullF();
     return res;
 }
 
 _ %nullA() method_id(119020) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_nullA(self);
+    var res = self~$ContractWithOptionals$_fun_nullA();
     return res;
 }
 
 _ %nullB() method_id(123023) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_nullB(self);
+    var res = self~$ContractWithOptionals$_fun_nullB();
     return res;
 }
 
 _ %nullC() method_id(127150) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_nullC(self);
+    var res = self~$ContractWithOptionals$_fun_nullC();
     return res;
 }
 
 _ %nullD() method_id(98377) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_nullD(self);
+    var res = self~$ContractWithOptionals$_fun_nullD();
     return res;
 }
 
 _ %nullE() method_id(102504) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_nullE(self);
+    var res = self~$ContractWithOptionals$_fun_nullE();
     return $SomeGenericStruct$_to_opt_external(res);
 }
 
 _ %nullF() method_id(106507) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_nullF(self);
+    var res = self~$ContractWithOptionals$_fun_nullF();
     return $StructWithOptionals$_to_opt_external(res);
 }
 
 _ %notNullA() method_id(110911) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_notNullA(self);
+    var res = self~$ContractWithOptionals$_fun_notNullA();
     return res;
 }
 
 _ %notNullB() method_id(98652) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_notNullB(self);
+    var res = self~$ContractWithOptionals$_fun_notNullB();
     return res;
 }
 
 _ %notNullC() method_id(102781) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_notNullC(self);
+    var res = self~$ContractWithOptionals$_fun_notNullC();
     return res;
 }
 
 _ %notNullD() method_id(123290) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_notNullD(self);
+    var res = self~$ContractWithOptionals$_fun_notNullD();
     return res;
 }
 
 _ %notNullE() method_id(127419) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_notNullE(self);
+    var res = self~$ContractWithOptionals$_fun_notNullE();
     return $SomeGenericStruct$_to_external(res);
 }
 
 _ %notNullF() method_id(115160) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_notNullF(self);
+    var res = self~$ContractWithOptionals$_fun_notNullF();
     return $StructWithOptionals$_to_external(res);
 }
 
 _ %testVariables() method_id(87190) {
     var self = $ContractWithOptionals$_contract_load();
-    var res = $ContractWithOptionals$_fun_testVariables(self);
+    var res = self~$ContractWithOptionals$_fun_testVariables();
     return $SomeGenericStruct$_to_external(res);
 }
 

@@ -44,40 +44,40 @@ tuple $StringsTester$_contract_load() impure inline;
 () $StringsTester$_contract_store(tuple v) impure inline;
 
 ;; $StringsTester$_fun_base64
-slice $StringsTester$_fun_base64(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_base64(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_constantString
-slice $StringsTester$_fun_constantString(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_constantString(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_constantStringUnicode
-slice $StringsTester$_fun_constantStringUnicode(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_constantStringUnicode(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_constantStringUnicodeLong
-slice $StringsTester$_fun_constantStringUnicodeLong(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_constantStringUnicodeLong(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_dynamicCommentCell
-cell $StringsTester$_fun_dynamicCommentCell(tuple $self) impure inline_ref;
+(tuple, cell) $StringsTester$_fun_dynamicCommentCell(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_dynamicCommentCellLarge
-cell $StringsTester$_fun_dynamicCommentCellLarge(tuple $self) impure inline_ref;
+(tuple, cell) $StringsTester$_fun_dynamicCommentCellLarge(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_dynamicCommentStringLarge
-slice $StringsTester$_fun_dynamicCommentStringLarge(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_dynamicCommentStringLarge(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_dynamicStringCell
-cell $StringsTester$_fun_dynamicStringCell(tuple $self) impure inline_ref;
+(tuple, cell) $StringsTester$_fun_dynamicStringCell(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_processBase64
-slice $StringsTester$_fun_processBase64(tuple $self, slice $src) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_processBase64(tuple $self, slice $src) impure inline_ref;
 
 ;; $StringsTester$_fun_stringWithFloat
-slice $StringsTester$_fun_stringWithFloat(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_stringWithFloat(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_stringWithLargeNumber
-slice $StringsTester$_fun_stringWithLargeNumber(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_stringWithLargeNumber(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_stringWithNegativeNumber
-slice $StringsTester$_fun_stringWithNegativeNumber(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_stringWithNegativeNumber(tuple $self) impure inline_ref;
 
 ;; $StringsTester$_fun_stringWithNumber
-slice $StringsTester$_fun_stringWithNumber(tuple $self) impure inline_ref;
+(tuple, slice) $StringsTester$_fun_stringWithNumber(tuple $self) impure inline_ref;

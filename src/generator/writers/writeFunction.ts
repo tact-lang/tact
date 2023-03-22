@@ -247,7 +247,7 @@ export function writeGetter(f: FunctionDescription, ctx: WriterContext) {
         ctx.append(`var self = ${ops.contractLoad(self.name, ctx)}();`);
 
         // Execute get method
-        ctx.append(`var res = ${ctx.used(ops.extension(self.name, f.name))}(${['self', ...f.args.map((v) => id(v.name))].join(', ')});`);
+        ctx.append(`var res = self~${ctx.used(ops.extension(self.name, f.name))}(${f.args.map((v) => id(v.name)).join(', ')});`);
 
         // Pack if needed
         if (f.returns.kind === 'ref') {

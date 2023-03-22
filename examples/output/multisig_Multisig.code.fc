@@ -16,14 +16,14 @@
     return ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight);
 }
 
-int $Multisig$_fun_member((int, cell, int, int) $self, slice $address) impure inline_ref {
+((int, cell, int, int), int) $Multisig$_fun_member((int, cell, int, int) $self, slice $address) impure inline_ref {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
-    return __tact_dict_get_slice_int($self'members, 267, $address, 257);
+    return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), __tact_dict_get_slice_int($self'members, 267, $address, 257));
 }
 
-cell $Multisig$_fun_members((int, cell, int, int) $self) impure inline_ref {
+((int, cell, int, int), cell) $Multisig$_fun_members((int, cell, int, int) $self) impure inline_ref {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = $self;
-    return $self'members;
+    return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), $self'members);
 }
 
 ;;
@@ -61,13 +61,13 @@ cell $Multisig$_fun_members((int, cell, int, int) $self) impure inline_ref {
 _ %member(slice $$address) method_id(70789) {
     slice $address = __tact_verify_address($$address);
     var self = $Multisig$_contract_load();
-    var res = $Multisig$_fun_member(self, $address);
+    var res = self~$Multisig$_fun_member($address);
     return res;
 }
 
 _ %members() method_id(104769) {
     var self = $Multisig$_contract_load();
-    var res = $Multisig$_fun_members(self);
+    var res = self~$Multisig$_fun_members();
     return res;
 }
 

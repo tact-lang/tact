@@ -17,9 +17,9 @@
     return ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body));
 }
 
-(slice, slice, int, int, int, int, cell) $MultisigSigner$_fun_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref {
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), (slice, slice, int, int, int, int, cell)) $MultisigSigner$_fun_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref {
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = $self;
-    return ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body);
+    return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body));
 }
 
 ;;
@@ -52,7 +52,7 @@
 
 _ %request() method_id(107262) {
     var self = $MultisigSigner$_contract_load();
-    var res = $MultisigSigner$_fun_request(self);
+    var res = self~$MultisigSigner$_fun_request();
     return $Request$_to_external(res);
 }
 

@@ -122,8 +122,7 @@ PROGRAM{
     c4 POP
   }>
   $Beacon$_fun_owner PROCREF:<{
-    DROP
-    NIP
+    OVER
   }>
   $Beacon$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
@@ -326,6 +325,7 @@ PROGRAM{
   %owner PROC:<{
     $Beacon$_contract_load INLINECALLDICT
     $Beacon$_fun_owner INLINECALLDICT
+    3 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

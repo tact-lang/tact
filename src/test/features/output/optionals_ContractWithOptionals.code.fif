@@ -163,91 +163,78 @@ PROGRAM{
     c4 POP
   }>
   $ContractWithOptionals$_fun_isNotNullA PROCREF:<{
-    5 BLKDROP
+    s5 PUSH
     ISNULL
     NOT
   }>
   $ContractWithOptionals$_fun_isNotNullB PROCREF:<{
-    s4 s5 XCHG
-    5 BLKDROP
+    s4 PUSH
     ISNULL
     NOT
   }>
   $ContractWithOptionals$_fun_isNotNullC PROCREF:<{
-    s3 s5 XCHG
-    5 BLKDROP
+    s3 PUSH
     ISNULL
     NOT
   }>
   $ContractWithOptionals$_fun_isNotNullD PROCREF:<{
-    s2 s5 XCHG
-    5 BLKDROP
+    s2 PUSH
     ISNULL
     NOT
   }>
   $ContractWithOptionals$_fun_isNotNullE PROCREF:<{
-    s1 s5 XCHG
-    5 BLKDROP
+    OVER
     ISNULL
     NOT
   }>
   $ContractWithOptionals$_fun_isNotNullF PROCREF:<{
-    5 1 BLKDROP2
+    DUP
     ISNULL
     NOT
   }>
   $ContractWithOptionals$_fun_notNullA PROCREF:<{
-    5 BLKDROP
+    s5 PUSH
     __tact_not_null INLINECALLDICT
   }>
   $ContractWithOptionals$_fun_notNullB PROCREF:<{
-    s4 s5 XCHG
-    5 BLKDROP
+    s4 PUSH
     __tact_not_null INLINECALLDICT
   }>
   $ContractWithOptionals$_fun_notNullC PROCREF:<{
-    s3 s5 XCHG
-    5 BLKDROP
+    s3 PUSH
     __tact_not_null INLINECALLDICT
   }>
   $ContractWithOptionals$_fun_notNullD PROCREF:<{
-    s2 s5 XCHG
-    5 BLKDROP
+    s2 PUSH
     __tact_not_null INLINECALLDICT
   }>
   $ContractWithOptionals$_fun_notNullE PROCREF:<{
-    s1 s5 XCHG
-    5 BLKDROP
+    OVER
     $SomeGenericStruct$_not_null INLINECALLDICT
   }>
   $ContractWithOptionals$_fun_notNullF PROCREF:<{
-    5 1 BLKDROP2
+    DUP
     $StructWithOptionals$_not_null INLINECALLDICT
   }>
   $ContractWithOptionals$_fun_nullA PROCREF:<{
-    5 BLKDROP
+    s5 PUSH
   }>
   $ContractWithOptionals$_fun_nullB PROCREF:<{
-    s4 s5 XCHG
-    5 BLKDROP
+    s4 PUSH
   }>
   $ContractWithOptionals$_fun_nullC PROCREF:<{
-    s3 s5 XCHG
-    5 BLKDROP
+    s3 PUSH
   }>
   $ContractWithOptionals$_fun_nullD PROCREF:<{
-    s2 s5 XCHG
-    5 BLKDROP
+    s2 PUSH
   }>
   $ContractWithOptionals$_fun_nullE PROCREF:<{
-    s1 s5 XCHG
-    5 BLKDROP
+    OVER
   }>
   $ContractWithOptionals$_fun_nullF PROCREF:<{
-    5 1 BLKDROP2
+    DUP
   }>
   $ContractWithOptionals$_fun_testVariables PROCREF:<{
-    6 BLKDROP
     1 PUSHINT
     2 PUSHINT
     3 PUSHINT
@@ -763,82 +750,101 @@ PROGRAM{
   %isNotNullA PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_isNotNullA INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %isNotNullB PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_isNotNullB INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %isNotNullC PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_isNotNullC INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %isNotNullD PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_isNotNullD INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %isNotNullE PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_isNotNullE INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %isNotNullF PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_isNotNullF INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %nullA PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_nullA INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %nullB PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_nullB INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %nullC PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_nullC INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %nullD PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_nullD INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %nullE PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_nullE INLINECALLDICT
+    6 1 BLKDROP2
     $SomeGenericStruct$_to_opt_external INLINECALLDICT
   }>
   %nullF PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_nullF INLINECALLDICT
+    6 1 BLKDROP2
     $StructWithOptionals$_to_opt_external INLINECALLDICT
   }>
   %notNullA PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_notNullA INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %notNullB PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_notNullB INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %notNullC PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_notNullC INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %notNullD PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_notNullD INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %notNullE PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_notNullE INLINECALLDICT
+    6 5 BLKDROP2
     $SomeGenericStruct$_to_external INLINECALLDICT
   }>
   %notNullF PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_notNullF INLINECALLDICT
+    6 5 BLKDROP2
     $StructWithOptionals$_to_external INLINECALLDICT
   }>
   %testVariables PROC:<{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     $ContractWithOptionals$_fun_testVariables INLINECALLDICT
+    6 5 BLKDROP2
     $SomeGenericStruct$_to_external INLINECALLDICT
   }>
   supported_interfaces PROC:<{
