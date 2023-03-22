@@ -1,6 +1,5 @@
 import { toNano } from "ton-core";
-import { ContractSystem } from "ton-emulator";
-import { inspect } from "util";
+import { ContractSystem } from "@tact-lang/emulator";
 import { Functions } from './contracts/output/benchmark_functions_Functions';
 import { Functions as FunctionsInline } from './contracts/output/benchmark_functions_inline_Functions';
 
@@ -17,8 +16,8 @@ describe('benchmarks', () => {
 
         // Find gas used
         let gasUsed = tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n);
-        expect(gasUsed).toMatchInlineSnapshot(`4164n`);
-        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`374`);
+        expect(gasUsed).toMatchInlineSnapshot(`3697n`);
+        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`354`);
     });
     it('benchmark functions(inline)', async () => {
 
@@ -32,7 +31,7 @@ describe('benchmarks', () => {
 
         // Find gas used
         let gasUsed = tracker.collect().reduce((a, v) => a + v.events.reduce((c, d) => d.$type === 'processed' ? c + d.gasUsed : c, 0n), 0n);
-        expect(gasUsed).toMatchInlineSnapshot(`4033n`);
-        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`367`);
+        expect(gasUsed).toMatchInlineSnapshot(`3566n`);
+        expect(functions.init!.code.toBoc().length).toMatchInlineSnapshot(`347`);
     });
 });

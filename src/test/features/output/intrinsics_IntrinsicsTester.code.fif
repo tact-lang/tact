@@ -1,22 +1,22 @@
 PROGRAM{
+  DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
-  DECLPROC __tact_verify_address
+  DECLPROC $IntrinsicsTester$_store
+  DECLPROC $IntrinsicsTester$_load
   DECLPROC $IntrinsicsTester$_contract_init
   DECLPROC $IntrinsicsTester$_contract_load
   DECLPROC $IntrinsicsTester$_contract_store
+  DECLPROC $IntrinsicsTester$_fun_getTons
+  DECLPROC $IntrinsicsTester$_fun_getTons2
+  DECLPROC $IntrinsicsTester$_fun_getString
+  DECLPROC $IntrinsicsTester$_fun_getString2
   DECLPROC $IntrinsicsTester$_fun_getAddress
   DECLPROC $IntrinsicsTester$_fun_getAddress2
   DECLPROC $IntrinsicsTester$_fun_getCell
   DECLPROC $IntrinsicsTester$_fun_getCell2
   DECLPROC $IntrinsicsTester$_fun_getPow
   DECLPROC $IntrinsicsTester$_fun_getPow2
-  DECLPROC $IntrinsicsTester$_fun_getString
-  DECLPROC $IntrinsicsTester$_fun_getString2
-  DECLPROC $IntrinsicsTester$_fun_getTons
-  DECLPROC $IntrinsicsTester$_fun_getTons2
-  DECLPROC $IntrinsicsTester$_load
-  DECLPROC $IntrinsicsTester$_store
   DECLPROC $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   85126 DECLMETHOD %getTons
   72025 DECLMETHOD %getTons2
@@ -37,15 +37,6 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
-    SWAP
-    __tact_verify_address INLINECALLDICT
-  }>
-  __tact_store_address PROCINLINE:<{
-    __tact_verify_address INLINECALLDICT
-    STSLICER
-  }>
   __tact_verify_address PROCINLINE:<{
     DUP
     SBITS
@@ -65,6 +56,45 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  $IntrinsicsTester$_store PROCINLINE:<{
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s3 XCHG2
+    STSLICER
+    ENDC
+    ROT
+    STREF
+    SWAP
+    __tact_store_address INLINECALLDICT
+    STREF
+    257 PUSHINT
+    STIX
+  }>
+  $IntrinsicsTester$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDREF
+    257 PUSHINT
+    LDIX
+    5 -ROLL
   }>
   $IntrinsicsTester$_contract_init PROCREF:<{
     10123400000 PUSHINT
@@ -110,6 +140,18 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  $IntrinsicsTester$_fun_getTons PROCREF:<{
+    10123400000 PUSHINT
+  }>
+  $IntrinsicsTester$_fun_getTons2 PROCREF:<{
+    s4 PUSH
+  }>
+  $IntrinsicsTester$_fun_getString PROCREF:<{
+    B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
+  }>
+  $IntrinsicsTester$_fun_getString2 PROCREF:<{
+    s3 PUSH
+  }>
   $IntrinsicsTester$_fun_getAddress PROCREF:<{
     B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
   }>
@@ -130,48 +172,6 @@ PROGRAM{
   }>
   $IntrinsicsTester$_fun_getPow2 PROCREF:<{
     DUP
-  }>
-  $IntrinsicsTester$_fun_getString PROCREF:<{
-    B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
-  }>
-  $IntrinsicsTester$_fun_getString2 PROCREF:<{
-    s3 PUSH
-  }>
-  $IntrinsicsTester$_fun_getTons PROCREF:<{
-    10123400000 PUSHINT
-  }>
-  $IntrinsicsTester$_fun_getTons2 PROCREF:<{
-    s4 PUSH
-  }>
-  $IntrinsicsTester$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    LDREF
-    SWAP
-    CTOS
-    SWAP
-    __tact_load_address INLINECALLDICT
-    SWAP
-    LDREF
-    257 PUSHINT
-    LDIX
-    5 -ROLL
-  }>
-  $IntrinsicsTester$_store PROCINLINE:<{
-    s4 s5 XCHG2
-    257 PUSHINT
-    STIX
-    NEWC
-    s0 s3 XCHG2
-    STSLICER
-    ENDC
-    ROT
-    STREF
-    SWAP
-    __tact_store_address INLINECALLDICT
-    STREF
-    257 PUSHINT
-    STIX
   }>
   $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>

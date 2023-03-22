@@ -1,3 +1,8 @@
+;;
+;; Header files for ConstantTester
+;; NOTE: declarations are sorted for optimal order
+;;
+
 ;; __tact_verify_address
 slice __tact_verify_address(slice address) inline;
 
@@ -9,9 +14,6 @@ tuple $ConstantTester$_contract_load() impure inline;
 
 ;; $ConstantTester$_contract_store
 () $ConstantTester$_contract_store(tuple v) impure inline;
-
-;; $ConstantTester$_fun_globalConst
-(tuple, int) $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref;
 
 ;; $ConstantTester$_fun_something1
 (tuple, int) $ConstantTester$_fun_something1(tuple $self) impure inline_ref;
@@ -27,3 +29,6 @@ tuple $ConstantTester$_contract_load() impure inline;
 
 ;; $ConstantTester$_fun_something5
 (tuple, slice) $ConstantTester$_fun_something5(tuple $self) impure inline_ref;
+
+;; $ConstantTester$_fun_globalConst
+(tuple, int) $ConstantTester$_fun_globalConst(tuple $self) impure inline_ref;

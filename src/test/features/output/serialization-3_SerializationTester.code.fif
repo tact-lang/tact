@@ -1,5 +1,9 @@
 PROGRAM{
   DECLPROC __tact_verify_address
+  DECLPROC $Update$_load
+  DECLPROC $SerializationTester$_store
+  DECLPROC $SerializationTester$_load
+  DECLPROC $SerializationTester$init$_load
   DECLPROC $SerializationTester$_contract_init
   DECLPROC $SerializationTester$_contract_load
   DECLPROC $SerializationTester$_contract_store
@@ -9,10 +13,6 @@ PROGRAM{
   DECLPROC $SerializationTester$_fun_getD
   DECLPROC $SerializationTester$_fun_getE
   DECLPROC $SerializationTester$_fun_getF
-  DECLPROC $SerializationTester$_load
-  DECLPROC $SerializationTester$_store
-  DECLPROC $SerializationTester$init$_load
-  DECLPROC $Update$_load
   DECLPROC %$SerializationTester$_receive_empty
   DECLPROC $SerializationTester$_receive_binary_Update
   123932 DECLMETHOD %getA
@@ -49,6 +49,127 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  $Update$_load PROCREF:<{
+    32 LDU
+    SWAP
+    2217298645 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    1 LDI
+    LDREF
+    LDREF
+    SWAP
+    CTOS
+    NEWC
+    s0 s2 XCHG
+    LDREF
+    SWAP
+    CTOS
+    s1 s3 XCHG
+    STSLICER
+    s0 s2 XCHG
+    LDREF
+    SWAP
+    CTOS
+    LDREF
+    DROP
+    CTOS
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s1 s3 XCHG
+  }>
+  $SerializationTester$_store PROCINLINE:<{
+    s5 s6 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s3 XCHG
+    1 STI
+    STREF
+    NEWC
+    ROT
+    STSLICER
+    ENDC
+    SWAP
+    STREF
+    NEWC
+    NEWC
+    s0 s3 XCHG
+    ENDC
+    CTOS
+    s1 s3 XCHG
+    STSLICER
+    ENDC
+    ROT
+    STREF
+    NEWC
+    s0 s3 XCHG2
+    STSLICER
+    ENDC
+    ROT
+    STREF
+    ENDC
+    SWAP
+    STREF
+  }>
+  $SerializationTester$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    1 LDI
+    LDREF
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    NEWC
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    s1 s2 XCHG
+    STSLICER
+    SWAP
+    LDREF
+    DROP
+    CTOS
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
+  }>
+  $SerializationTester$init$_load PROCREF:<{
+    257 PUSHINT
+    LDIX
+    1 LDI
+    LDREF
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    NEWC
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    s1 s2 XCHG
+    STSLICER
+    SWAP
+    LDREF
+    DROP
+    CTOS
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
   $SerializationTester$_contract_init PROCREF:<{
   }>
@@ -106,127 +227,6 @@ PROGRAM{
   }>
   $SerializationTester$_fun_getF PROCREF:<{
     DUP
-  }>
-  $SerializationTester$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    1 LDI
-    LDREF
-    LDREF
-    SWAP
-    CTOS
-    SWAP
-    LDREF
-    SWAP
-    CTOS
-    NEWC
-    SWAP
-    LDREF
-    SWAP
-    CTOS
-    s1 s2 XCHG
-    STSLICER
-    SWAP
-    LDREF
-    DROP
-    CTOS
-    s2 s6 XCHG
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
-  }>
-  $SerializationTester$_store PROCINLINE:<{
-    s5 s6 XCHG2
-    257 PUSHINT
-    STIX
-    s1 s3 XCHG
-    1 STI
-    STREF
-    NEWC
-    ROT
-    STSLICER
-    ENDC
-    SWAP
-    STREF
-    NEWC
-    NEWC
-    s0 s3 XCHG
-    ENDC
-    CTOS
-    s1 s3 XCHG
-    STSLICER
-    ENDC
-    ROT
-    STREF
-    NEWC
-    s0 s3 XCHG2
-    STSLICER
-    ENDC
-    ROT
-    STREF
-    ENDC
-    SWAP
-    STREF
-  }>
-  $SerializationTester$init$_load PROCREF:<{
-    257 PUSHINT
-    LDIX
-    1 LDI
-    LDREF
-    LDREF
-    SWAP
-    CTOS
-    SWAP
-    LDREF
-    SWAP
-    CTOS
-    NEWC
-    SWAP
-    LDREF
-    SWAP
-    CTOS
-    s1 s2 XCHG
-    STSLICER
-    SWAP
-    LDREF
-    DROP
-    CTOS
-    s2 s6 XCHG
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
-  }>
-  $Update$_load PROCREF:<{
-    32 LDU
-    SWAP
-    2217298645 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    257 PUSHINT
-    LDIX
-    1 LDI
-    LDREF
-    LDREF
-    SWAP
-    CTOS
-    NEWC
-    s0 s2 XCHG
-    LDREF
-    SWAP
-    CTOS
-    s1 s3 XCHG
-    STSLICER
-    s0 s2 XCHG
-    LDREF
-    SWAP
-    CTOS
-    LDREF
-    DROP
-    CTOS
-    s1 s6 XCHG
-    s1 s5 XCHG
-    s1 s4 XCHG
-    s1 s3 XCHG
   }>
   %$SerializationTester$_receive_empty PROCINLINE:<{
   }>

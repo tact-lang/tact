@@ -1,0 +1,115 @@
+#include "send_SendTester.headers.fc";
+#include "send_SendTester.stdlib.fc";
+#include "send_SendTester.constants.fc";
+#include "send_SendTester.storage.fc";
+
+;;
+;; Contract SendTester functions
+;;
+
+tuple $SendTester$_contract_init() impure inline_ref {
+    tuple $self = null();
+    $global_emit($String$_fun_asComment(__gen_str_469726401()));
+    return $self;
+}
+
+;;
+;; Receivers of a Contract SendTester
+;;
+
+(tuple, ()) $SendTester$_receive_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041(tuple $self) impure inline {
+    var $self = $self;
+    $global_reply($String$_fun_asComment(__gen_str_2024694909()));
+    $global_emit($String$_fun_asComment(__gen_str_3989651112()));
+    return ($self, ());
+}
+
+((tuple), ()) $SendTester$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
+    var $self = $self;
+    var ($deploy'queryId) = $deploy;
+    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return ($self, ());
+}
+
+;;
+;; Get methods of a Contract SendTester
+;;
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmYkFA8pvR2ryZeJ1rEEQ6jC4M5Vo7Ba89AmTZf9XWhJF8";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract SendTester
+;;
+
+(tuple, int) $SendTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$SendTester$_receive_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Hello" message
+        if (text_op == 0x9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041) {
+            self~$SendTester$_receive_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $SendTester$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$SendTester$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $SendTester$_contract_store(self);
+}

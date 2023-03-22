@@ -50,7 +50,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -59,7 +86,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -159,41 +215,6 @@ SETCP0
     s0 s1 XCHG
     1 STI
     9 1 BLKSWAP
-    15 CALLDICT
-    ENDC
-    c4 POP
-
-  14: 
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    LDREF
-    s0 POP
-    CTOS
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    s0 POP
-    s6 s9 XCHG
-    s6 s8 XCHG
-    s6 s7 XCHG
-
-  15: 
     s8 s9 XCHG2
     257 PUSHINT
     STIX
@@ -228,8 +249,8 @@ SETCP0
     ENDC
     s0 s1 XCHG
     STREF
-
-  16: 
+    ENDC
+    c4 POP
 
   91412: 
     c4 PUSH
@@ -240,7 +261,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -249,7 +297,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -269,7 +346,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -278,7 +382,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -298,7 +431,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -307,7 +467,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -327,7 +516,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -336,7 +552,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -356,7 +601,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -365,7 +637,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -385,7 +686,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -394,7 +722,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -421,7 +778,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -430,7 +814,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -450,7 +863,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -459,7 +899,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP
@@ -479,7 +948,34 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      14 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 POP
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      s0 POP
+      s6 s9 XCHG
+      s6 s8 XCHG
+      s6 s7 XCHG
       1 9 BLKDROP2
     }> PUSHCONT
     <{
@@ -488,7 +984,36 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      16 CALLDICT
+      <{
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 s1 XCHG
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        LDREF
+        s0 POP
+        CTOS
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        257 PUSHINT
+        LDI
+        s0 POP
+        s6 s9 XCHG
+        s6 s8 XCHG
+        s6 s7 XCHG
+      }> CALLREF
       s0 s9 XCHG
       ENDS
       1 8 BLKSWAP

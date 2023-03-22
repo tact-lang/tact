@@ -50,7 +50,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      16 CALLDICT
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> PUSHCONT
     <{
@@ -59,7 +63,13 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      18 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
       s0 s3 XCHG
       ENDS
       ROT
@@ -99,7 +109,29 @@ SETCP0
         520967536 PUSHINT
         EQUAL
         129 THROWIFNOT
-        19 CALLDICT
+        32 LDU
+        LDGRAMS
+        LDMSGADDR
+        s0 s1 XCHG
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        s0 PUSH
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
+        s3 s3 s0 XCHG3
         s0 s3 XCHG
         LDREF
         s0 s1 XCHG
@@ -123,7 +155,24 @@ SETCP0
         s0 s1 XCHG
         STGRAMS
         s0 s1 XCHG
-        5 CALLDICT
+        s0 PUSH
+        SBITS
+        267 PUSHINT
+        EQUAL
+        136 THROWIFNOT
+        s0 PUSH
+        11 PLDU
+        s0 PUSH
+        10 PUSHPOW2
+        EQUAL
+        s1 PUSH
+        1279 PUSHINT
+        EQUAL
+        OR
+        136 THROWIFNOT
+        10 PUSHPOW2
+        EQUAL
+        137 THROWIFNOT
         STSLICER
         ENDC
         HASHCU
@@ -148,7 +197,12 @@ SETCP0
         THROWANYIFNOT
         <{
           s2 POP
-          22 CALLDICT
+          -1 PUSHINT
+          ROTREV
+          0 PUSHINT
+          PUSHNULL
+          PUSHNULL
+          PUSHNULL
           <{
             NEWC
             1 PUSHINT
@@ -161,7 +215,24 @@ SETCP0
             s0 s1 XCHG
             3 STI
             s0 s5 XCHG2
-            5 CALLDICT
+            s0 PUSH
+            SBITS
+            267 PUSHINT
+            EQUAL
+            136 THROWIFNOT
+            s0 PUSH
+            11 PLDU
+            s0 PUSH
+            10 PUSHPOW2
+            EQUAL
+            s1 PUSH
+            1279 PUSHINT
+            EQUAL
+            OR
+            136 THROWIFNOT
+            10 PUSHPOW2
+            EQUAL
+            137 THROWIFNOT
             STSLICER
             s0 s3 XCHG2
             STGRAMS
@@ -175,6 +246,14 @@ SETCP0
             ISNULL
             NOT
             OR
+            <{
+              s3 POP
+              s3 POP
+              s0 s1 XCHG
+              0 PUSHINT
+              s0 s1 XCHG
+              1 STI
+            }> PUSHCONT
             <{
               -1 PUSHINT
               s0 s1 XCHG
@@ -241,16 +320,7 @@ SETCP0
               ENDC
               ROT
               STREF
-            }> PUSHCONT
-            <{
-              s3 POP
-              s3 POP
-              s0 s1 XCHG
-              0 PUSHINT
-              s0 s1 XCHG
-              1 STI
-            }> PUSHCONT
-            IFELSE
+            }> IFREFELSE
             s1 PUSH
             ISNULL
             NOT
@@ -283,6 +353,9 @@ SETCP0
       s0 s1 XCHG
       0 EQINT
       <{
+        s0 POP
+      }> PUSHCONT
+      <{
         HASHSU
         60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
         EQUAL
@@ -291,11 +364,7 @@ SETCP0
           RETALT
         }> PUSHCONT
         IFJMP
-      }> PUSHCONT
-      <{
-        s0 POP
-      }> PUSHCONT
-      IFELSE
+      }> IFREFELSE
       0 PUSHINT
     }> CALLREF
     s0 POP
@@ -307,68 +376,13 @@ SETCP0
     s0 s1 XCHG
     1 STI
     4 1 BLKSWAP
-    17 CALLDICT
-    ENDC
-    c4 POP
-
-  5: 
-    s0 PUSH
-    SBITS
-    267 PUSHINT
-    EQUAL
-    136 THROWIFNOT
-    s0 PUSH
-    11 PLDU
-    s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
-    1279 PUSHINT
-    EQUAL
-    OR
-    136 THROWIFNOT
-    10 PUSHPOW2
-    EQUAL
-    137 THROWIFNOT
-
-  16: 
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 1 BLKSWAP
-
-  17: 
     s3 s4 XCHG2
     32 STU
     256 STU
     256 STU
     256 STU
-
-  18: 
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    3 1 BLKSWAP
-
-  19: 
-    32 LDU
-    LDGRAMS
-    LDMSGADDR
-    s0 s1 XCHG
-    5 CALLDICT
-    s3 s3 s0 XCHG3
-
-  22: 
-    -1 PUSHINT
-    ROTREV
-    0 PUSHINT
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
+    ENDC
+    c4 POP
 
   seqno: 
     c4 PUSH
@@ -379,7 +393,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      16 CALLDICT
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> PUSHCONT
     <{
@@ -388,7 +406,13 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      18 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
       s0 s3 XCHG
       ENDS
       ROT
@@ -412,7 +436,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      16 CALLDICT
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> PUSHCONT
     <{
@@ -421,7 +449,13 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      18 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
       s0 s3 XCHG
       ENDS
       ROT
@@ -445,7 +479,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      16 CALLDICT
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> PUSHCONT
     <{
@@ -454,7 +492,13 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      18 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
       s0 s3 XCHG
       ENDS
       ROT
@@ -478,7 +522,11 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      16 CALLDICT
+      32 LDU
+      256 LDU
+      256 LDU
+      256 LDU
+      4 1 BLKSWAP
       1 4 BLKDROP2
     }> PUSHCONT
     <{
@@ -487,7 +535,13 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      18 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      3 1 BLKSWAP
       s0 s3 XCHG
       ENDS
       ROT

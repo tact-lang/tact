@@ -1,5 +1,5 @@
 import { storeTransfer, Transfer, Wallet } from "./output/wallet_Wallet";
-import { ContractSystem, testKey } from "ton-emulator";
+import { ContractSystem, testKey } from "@tact-lang/emulator";
 import { beginCell, toNano } from "ton-core";
 import { sign } from "ton-crypto";
 

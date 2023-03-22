@@ -45,8 +45,13 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     //
 
     const headers: string[] = [];
-    const sortedHeaders = [...functions].sort((a, b) => a.name.localeCompare(b.name));
-    for (let f of sortedHeaders) {
+    headers.push(`;;`);
+    headers.push(`;; Header files for ${abiSrc.name}`);
+    headers.push(`;; NOTE: declarations are sorted for optimal order`);
+    headers.push(`;;`);
+    headers.push(``);
+    // const sortedHeaders = [...functions].sort((a, b) => a.name.localeCompare(b.name));
+    for (let f of functions) {
         if (f.code.kind === 'generic' && f.signature) {
             headers.push(`;; ${f.name}`);
             let sig = f.signature;

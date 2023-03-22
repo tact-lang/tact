@@ -1,11 +1,11 @@
 PROGRAM{
   DECLPROC __tact_verify_address
+  DECLPROC $Source$_from_tuple
   DECLPROC $Empty$_contract_init
   DECLPROC $Empty$_contract_load
   DECLPROC $Empty$_contract_store
-  DECLPROC $Empty$_fun_a
   DECLPROC $global_isZero
-  DECLPROC $Source$_from_tuple
+  DECLPROC $Empty$_fun_a
   97415 DECLMETHOD %a
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -35,6 +35,9 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  $Source$_from_tuple PROCINLINE:<{
+    4 UNTUPLE
   }>
   $Empty$_contract_init PROCREF:<{
     PUSHNULL
@@ -70,9 +73,6 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $Empty$_fun_a PROCREF:<{
-    $global_isZero INLINECALLDICT
-  }>
   $global_isZero PROCREF:<{
     2DROP
     s4 s3 PUSH2
@@ -98,8 +98,8 @@ PROGRAM{
     0 EQINT
     AND
   }>
-  $Source$_from_tuple PROCINLINE:<{
-    4 UNTUPLE
+  $Empty$_fun_a PROCREF:<{
+    $global_isZero INLINECALLDICT
   }>
   %a PROC:<{
     $Source$_from_tuple INLINECALLDICT

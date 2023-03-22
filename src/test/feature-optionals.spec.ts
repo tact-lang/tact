@@ -2,7 +2,7 @@ import { randomAddress } from './utils/randomAddress';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { ContractWithOptionals, SomeGenericStruct, StructWithOptionals } from './features/output/optionals_ContractWithOptionals';
 import { Address, beginCell, Cell, toNano } from 'ton-core';
-import { ContractSystem } from 'ton-emulator';
+import { ContractSystem } from '@tact-lang/emulator';
 
 function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {
 

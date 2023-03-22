@@ -152,6 +152,14 @@
       }
     },
     {
+      "name": "send",
+      "path": "./src/test/features/send.tact",
+      "output": "./src/test/features/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "intrinsics",
       "path": "./src/test/features/intrinsics.tact",
       "output": "./src/test/features/output",
@@ -174,17 +182,6 @@
       "options": {
         "debug": true,
         "masterchain": true
-      }
-    },
-    {
-      "name": "bug_18",
-      "path": "./src/test/bugs/bug_18.tact",
-      "output": "./src/test/bugs/output",
-      "options": {
-        "debug": true,
-        "experimental": {
-          "inline": true
-        }
       }
     },
     {

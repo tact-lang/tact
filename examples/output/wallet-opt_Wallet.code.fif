@@ -1,15 +1,15 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC $TransferMessage$_load
+  DECLPROC $Wallet$_store
+  DECLPROC $Wallet$_load
+  DECLPROC $Wallet$init$_load
   DECLPROC $Wallet$_contract_init
   DECLPROC $Wallet$_contract_load
   DECLPROC $Wallet$_contract_store
   DECLPROC $Wallet$_fun_publicKey
-  DECLPROC $Wallet$_fun_seqno
   DECLPROC $Wallet$_fun_walletId
-  DECLPROC $Wallet$_load
-  DECLPROC $Wallet$_store
-  DECLPROC $Wallet$init$_load
+  DECLPROC $Wallet$_fun_seqno
   DECLPROC $Wallet$_receive_binary_TransferMessage
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
@@ -52,6 +52,25 @@ PROGRAM{
     9 PUSHPOW2
     LDSLICEX
     TUCK
+  }>
+  $Wallet$_store PROCINLINE:<{
+    s2 s3 XCHG2
+    32 STU
+    256 STU
+    64 STU
+  }>
+  $Wallet$_load PROCINLINE:<{
+    32 LDU
+    256 LDU
+    64 LDU
+    3 -ROLL
+  }>
+  $Wallet$init$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    -ROT
   }>
   $Wallet$_contract_init PROCREF:<{
     0 PUSHINT
@@ -97,30 +116,11 @@ PROGRAM{
   $Wallet$_fun_publicKey PROCINLINE:<{
     OVER
   }>
-  $Wallet$_fun_seqno PROCINLINE:<{
-    s2 PUSH
-  }>
   $Wallet$_fun_walletId PROCINLINE:<{
     DUP
   }>
-  $Wallet$_load PROCINLINE:<{
-    32 LDU
-    256 LDU
-    64 LDU
-    3 -ROLL
-  }>
-  $Wallet$_store PROCINLINE:<{
-    s2 s3 XCHG2
-    32 STU
-    256 STU
-    64 STU
-  }>
-  $Wallet$init$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    -ROT
+  $Wallet$_fun_seqno PROCINLINE:<{
+    s2 PUSH
   }>
   $Wallet$_receive_binary_TransferMessage PROCINLINE:<{
     DUP

@@ -1,27 +1,27 @@
 PROGRAM{
-  DECLPROC __tact_compute_contract_address
-  DECLPROC __tact_create_address
-  DECLPROC __tact_dict_get_code
-  DECLPROC __tact_dict_set_code
-  DECLPROC __tact_not_null
+  DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_create_address
+  DECLPROC __tact_compute_contract_address
+  DECLPROC __tact_not_null
   DECLPROC __tact_store_bool
-  DECLPROC __tact_string_builder_append
-  DECLPROC __tact_string_builder_end
+  DECLPROC __tact_dict_set_code
+  DECLPROC __tact_dict_get_code
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_comment
-  DECLPROC __tact_verify_address
+  DECLPROC __tact_string_builder_end
+  DECLPROC __tact_string_builder_append
+  DECLPROC $StateInit$_to_external
+  DECLPROC $B$init$_store
   DECLPROC $A$_contract_init
   DECLPROC $A$_contract_load
   DECLPROC $A$_contract_store
-  DECLPROC $A$_fun_getNext
-  DECLPROC $B$_init_child
-  DECLPROC $B$init$_store
   DECLPROC $global_contractAddress
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data_body
-  DECLPROC $StateInit$_to_external
   DECLPROC $String$_fun_asComment
+  DECLPROC $B$_init_child
+  DECLPROC $A$_fun_getNext
+  DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data_body
   DECLPROC $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   74105 DECLMETHOD %getNext
   113617 DECLMETHOD supported_interfaces
@@ -33,6 +33,45 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __tact_create_address PROCINLINE:<{
+    NEWC
+    2 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+    __tact_verify_address INLINECALLDICT
+  }>
   __tact_compute_contract_address PROCINLINE:<{
     NEWC
     0 PUSHINT
@@ -51,20 +90,19 @@ PROGRAM{
     HASHCU
     __tact_create_address INLINECALLDICT
   }>
-  __tact_create_address PROCINLINE:<{
-    NEWC
-    2 PUSHINT
+  __tact_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_store_bool PROCINLINE:<{
     SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    1 STU
-    s1 s2 XCHG
-    8 STI
-    256 STU
-    ENDC
-    CTOS
-    __tact_verify_address INLINECALLDICT
+    1 STI
+  }>
+  __tact_dict_set_code PROCINLINE:<{
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
   }>
   __tact_dict_get_code PROCINLINE:<{
     SWAP
@@ -73,23 +111,36 @@ PROGRAM{
     NULLSWAPIFNOT
     135 THROWIFNOT
   }>
-  __tact_dict_set_code PROCINLINE:<{
-    s0 s2 XCHG
-    16 PUSHINT
-    DICTUSETREF
-  }>
-  __tact_not_null PROCINLINE:<{
-    DUP
-    ISNULL
-    128 THROWIF
-  }>
-  __tact_store_address PROCINLINE:<{
-    __tact_verify_address INLINECALLDICT
-    STSLICER
-  }>
-  __tact_store_bool PROCINLINE:<{
+  __tact_string_builder_start PROCINLINE:<{
+    NIL
     SWAP
-    1 STI
+    TPUSH
+    PUSHNULL
+    TPUSH
+  }>
+  __tact_string_builder_start_comment PROCINLINE:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    32 STU
+    __tact_string_builder_start INLINECALLDICT
+  }>
+  __tact_string_builder_end PROCINLINE:<{
+    UNCONS
+    SWAP
+    ENDC
+    WHILE:<{
+      OVER
+      ISNULL
+      NOT
+    }>DO<{
+      SWAP
+      UNCONS
+      -ROT
+      STREF
+      ENDC
+    }>
+    NIP
   }>
   __tact_string_builder_append PROCREF:<{
     DUP
@@ -157,56 +208,10 @@ PROGRAM{
     }>
     3 BLKDROP
   }>
-  __tact_string_builder_end PROCINLINE:<{
-    UNCONS
-    SWAP
-    ENDC
-    WHILE:<{
-      OVER
-      ISNULL
-      NOT
-    }>DO<{
-      SWAP
-      UNCONS
-      -ROT
-      STREF
-      ENDC
-    }>
-    NIP
+  $StateInit$_to_external PROCINLINE:<{
   }>
-  __tact_string_builder_start PROCINLINE:<{
-    NIL
-    SWAP
-    TPUSH
-    PUSHNULL
-    TPUSH
-  }>
-  __tact_string_builder_start_comment PROCINLINE:<{
-    NEWC
-    0 PUSHINT
-    SWAP
-    32 STU
-    __tact_string_builder_start INLINECALLDICT
-  }>
-  __tact_verify_address PROCINLINE:<{
-    DUP
-    SBITS
-    267 PUSHINT
-    EQUAL
-    136 THROWIFNOT
-    DUP
-    11 PLDU
-    DUP
-    10 PUSHPOW2
-    EQUAL
-    OVER
-    1279 PUSHINT
-    EQUAL
-    OR
-    136 THROWIFNOT
-    10 PUSHPOW2
-    EQUAL
-    137 THROWIFNOT
+  $B$init$_store PROCINLINE:<{
+    __tact_store_address INLINECALLDICT
   }>
   $A$_contract_init PROCREF:<{
     PUSHNULL
@@ -241,48 +246,6 @@ PROGRAM{
     1 STI
     ENDC
     c4 POP
-  }>
-  $A$_fun_getNext PROCREF:<{
-    __tact_context_sys GETGLOB
-    MYADDR
-    $B$_init_child INLINECALLDICT
-  }>
-  $B$_init_child PROCREF:<{
-    SWAP
-    CTOS
-    LDDICT
-    DROP
-    NEWDICT
-    OVER
-    26758 PUSHINT
-    __tact_dict_get_code INLINECALLDICT
-    SWAP
-    26758 PUSHINT
-    s2 PUSH
-    __tact_dict_set_code INLINECALLDICT
-    s0 s2 XCHG
-    30887 PUSHINT
-    __tact_dict_get_code INLINECALLDICT
-    s1 s2 XCHG
-    30887 PUSHINT
-    SWAP
-    __tact_dict_set_code INLINECALLDICT
-    NEWC
-    SWAP
-    NEWC
-    STDICT
-    ENDC
-    SWAP
-    STREF
-    FALSE
-    SWAP
-    1 STI
-    ROT
-    $B$init$_store INLINECALLDICT
-    ENDC
-  }>
-  $B$init$_store PROCINLINE:<{
-    __tact_store_address INLINECALLDICT
   }>
   $global_contractAddress PROCREF:<{
     0 PUSHINT
@@ -388,18 +351,55 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_value_to_mode_bounce_code_data_body PROCINLINE:<{
-    s3 s6 XCHG
-    s3 s4 XCHG
-    -ROT
-  }>
-  $StateInit$_to_external PROCINLINE:<{
-  }>
   $String$_fun_asComment PROCREF:<{
     __tact_string_builder_start_comment INLINECALLDICT
     SWAP
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end INLINECALLDICT
+  }>
+  $B$_init_child PROCREF:<{
+    SWAP
+    CTOS
+    LDDICT
+    DROP
+    NEWDICT
+    OVER
+    26758 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    SWAP
+    26758 PUSHINT
+    s2 PUSH
+    __tact_dict_set_code INLINECALLDICT
+    s0 s2 XCHG
+    30887 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    s1 s2 XCHG
+    30887 PUSHINT
+    SWAP
+    __tact_dict_set_code INLINECALLDICT
+    NEWC
+    SWAP
+    NEWC
+    STDICT
+    ENDC
+    SWAP
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    ROT
+    $B$init$_store INLINECALLDICT
+    ENDC
+  }>
+  $A$_fun_getNext PROCREF:<{
+    __tact_context_sys GETGLOB
+    MYADDR
+    $B$_init_child INLINECALLDICT
+  }>
+  $SendParameters$_constructor_value_to_mode_bounce_code_data_body PROCINLINE:<{
+    s3 s6 XCHG
+    s3 s4 XCHG
+    -ROT
   }>
   $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB

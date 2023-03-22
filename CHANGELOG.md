@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- `emit` function to emit events
+
 ## Fixed
 - Fixed possible inconsistent behaviour when calling mutating get methods from inside of the contract
+- Fixed regression of order of functions in generated files
 
 ## [1.1.0-beta.2] - 2023-03-22
 

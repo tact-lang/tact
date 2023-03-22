@@ -1,9 +1,9 @@
 # TACT Compilation Report
-Contract: DDDD
-BOC Size: 778 bytes
+Contract: SendTester
+BOC Size: 786 bytes
 
 # Types
-Total Types: 3
+Total Types: 5
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -17,14 +17,16 @@ Signature: `Context{bounced:bool,sender:address,value:int257,raw:^slice}`
 TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters`
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
+## Deploy
+TLB: `deploy#946a98b6 queryId:uint64 = Deploy`
+Signature: `Deploy{queryId:uint64}`
+
+## DeployOk
+TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
+Signature: `DeployOk{queryId:uint64}`
+
 # Get Methods
-Total Get Methods: 2
-
-## mapData_addr1
-Argument: key
-
-## mapData2_addr1
-Argument: key
+Total Get Methods: 0
 
 # Error Codes
 2: Stack undeflow

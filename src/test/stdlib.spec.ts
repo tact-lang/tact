@@ -1,5 +1,5 @@
 import { beginCell, toNano } from "ton-core";
-import { ContractSystem } from "ton-emulator";
+import { ContractSystem } from "@tact-lang/emulator";
 import { StdlibTest } from './contracts/output/stdlib_StdlibTest';
 
 describe('stdlib', () => {

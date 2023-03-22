@@ -1,5 +1,5 @@
 import { toNano } from "ton-core";
-import { ContractSystem } from "ton-emulator";
+import { ContractSystem } from "@tact-lang/emulator";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
 
 describe('muiltisig-3', () => {

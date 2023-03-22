@@ -1,14 +1,14 @@
 PROGRAM{
   DECLPROC __tact_verify_address
+  DECLPROC $Source$_store
+  DECLPROC $Source$_load
+  DECLPROC $SampleContract$_store
+  DECLPROC $SampleContract$_load
+  DECLPROC $Source$_constructor_a_b
   DECLPROC $SampleContract$_contract_init
   DECLPROC $SampleContract$_contract_load
   DECLPROC $SampleContract$_contract_store
   DECLPROC $SampleContract$_fun_stake
-  DECLPROC $SampleContract$_load
-  DECLPROC $SampleContract$_store
-  DECLPROC $Source$_constructor_a_b
-  DECLPROC $Source$_load
-  DECLPROC $Source$_store
   80984 DECLMETHOD %stake
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -38,6 +38,48 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  $Source$_store PROCINLINE:<{
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
+  $Source$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    -ROT
+  }>
+  $SampleContract$_store PROCINLINE:<{
+    s3 s4 XCHG2
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    NEWC
+    s0 s0 s3 XCHG3
+    $Source$_store INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  $SampleContract$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    $Source$_load INLINECALLDICT
+    s2 POP
+    s2 s4 XCHG
+    s3 s0 s0 XCHG3
+  }>
+  $Source$_constructor_a_b PROCINLINE:<{
   }>
   $SampleContract$_contract_init PROCREF:<{
     0 PUSHINT
@@ -80,48 +122,6 @@ PROGRAM{
   }>
   $SampleContract$_fun_stake PROCREF:<{
     s3 PUSH
-  }>
-  $SampleContract$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
-    SWAP
-    CTOS
-    $Source$_load INLINECALLDICT
-    s2 POP
-    s2 s4 XCHG
-    s3 s0 s0 XCHG3
-  }>
-  $SampleContract$_store PROCINLINE:<{
-    s3 s4 XCHG2
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    NEWC
-    s0 s0 s3 XCHG3
-    $Source$_store INLINECALLDICT
-    ENDC
-    SWAP
-    STREF
-  }>
-  $Source$_constructor_a_b PROCINLINE:<{
-  }>
-  $Source$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    -ROT
-  }>
-  $Source$_store PROCINLINE:<{
-    s0 s2 XCHG
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
   }>
   %stake PROC:<{
     $SampleContract$_contract_load INLINECALLDICT

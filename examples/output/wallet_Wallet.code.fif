@@ -1,28 +1,28 @@
 PROGRAM{
-  DECLPROC __tact_dict_get_code
-  DECLPROC __tact_dict_set_code
-  DECLPROC __tact_load_address
-  DECLPROC __tact_not_null
-  DECLPROC __tact_store_address
-  DECLPROC __tact_store_bool
   DECLPROC __tact_verify_address
-  DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_value_to_mode_body
-  DECLPROC $Transfer$_load
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_not_null
+  DECLPROC __tact_store_bool
+  DECLPROC __tact_dict_set_code
+  DECLPROC __tact_dict_get_code
   DECLPROC $Transfer$_store
   DECLPROC $Transfer$_store_cell
+  DECLPROC $Transfer$_load
   DECLPROC $TransferMessage$_load
+  DECLPROC $Wallet$_store
+  DECLPROC $Wallet$_load
+  DECLPROC $Wallet$init$_store
+  DECLPROC $Wallet$init$_load
   DECLPROC $Wallet$_contract_init
   DECLPROC $Wallet$_contract_load
   DECLPROC $Wallet$_contract_store
-  DECLPROC $Wallet$_fun_publicKey
-  DECLPROC $Wallet$_fun_seqno
-  DECLPROC $Wallet$_fun_walletId
+  DECLPROC $global_send
   DECLPROC $Wallet$_init_child
-  DECLPROC $Wallet$_load
-  DECLPROC $Wallet$_store
-  DECLPROC $Wallet$init$_load
-  DECLPROC $Wallet$init$_store
+  DECLPROC $Wallet$_fun_publicKey
+  DECLPROC $Wallet$_fun_walletId
+  DECLPROC $Wallet$_fun_seqno
+  DECLPROC $SendParameters$_constructor_value_to_mode_body
   DECLPROC $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC $Wallet$_receive_binary_TransferMessage
   DECLPROC $Wallet$_receive_any
@@ -43,36 +43,6 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  __tact_dict_get_code PROCINLINE:<{
-    SWAP
-    16 PUSHINT
-    DICTUGETREF
-    NULLSWAPIFNOT
-    135 THROWIFNOT
-  }>
-  __tact_dict_set_code PROCINLINE:<{
-    s0 s2 XCHG
-    16 PUSHINT
-    DICTUSETREF
-  }>
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
-    SWAP
-    __tact_verify_address INLINECALLDICT
-  }>
-  __tact_not_null PROCINLINE:<{
-    DUP
-    ISNULL
-    128 THROWIF
-  }>
-  __tact_store_address PROCINLINE:<{
-    __tact_verify_address INLINECALLDICT
-    STSLICER
-  }>
-  __tact_store_bool PROCINLINE:<{
-    SWAP
-    1 STI
-  }>
   __tact_verify_address PROCINLINE:<{
     DUP
     SBITS
@@ -92,6 +62,160 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __tact_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
+  }>
+  __tact_dict_set_code PROCINLINE:<{
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
+  }>
+  __tact_dict_get_code PROCINLINE:<{
+    SWAP
+    16 PUSHINT
+    DICTUGETREF
+    NULLSWAPIFNOT
+    135 THROWIFNOT
+  }>
+  $Transfer$_store PROCINLINE:<{
+    s4 s5 XCHG2
+    32 STU
+    s1 s2 XCHG
+    8 STU
+    SWAP
+    __tact_store_address INLINECALLDICT
+    SWAP
+    STGRAMS
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      SWAP
+      1 STI
+      STREF
+    }>ELSE<{
+      FALSE
+      s2 POP
+      1 STI
+    }>
+  }>
+  $Transfer$_store_cell PROCINLINE:<{
+    NEWC
+    5 -ROLL
+    $Transfer$_store INLINECALLDICT
+    ENDC
+  }>
+  $Transfer$_load PROCINLINE:<{
+    32 LDU
+    8 LDU
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDGRAMS
+    1 LDI
+    SWAP
+    IF:<{
+      LDREF
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    5 -ROLL
+  }>
+  $TransferMessage$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    123 EQINT
+    129 THROWIFNOT
+    LDREF
+    SWAP
+    CTOS
+    SWAP
+    $Transfer$_load INLINECALLDICT
+    s5 s6 XCHG
+  }>
+  $Wallet$_store PROCINLINE:<{
+    s2 s3 XCHG2
+    32 STU
+    256 STU
+    64 STU
+  }>
+  $Wallet$_load PROCINLINE:<{
+    32 LDU
+    256 LDU
+    64 LDU
+    3 -ROLL
+  }>
+  $Wallet$init$_store PROCINLINE:<{
+    s0 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+  }>
+  $Wallet$init$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    -ROT
+  }>
+  $Wallet$_contract_init PROCREF:<{
+    0 PUSHINT
+    -ROT
+  }>
+  $Wallet$_contract_load PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      $Wallet$_load INLINECALLDICT
+      1 3 BLKDROP2
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      $Wallet$init$_load INLINECALLDICT
+      s0 s2 XCHG
+      ENDS
+      SWAP
+      $Wallet$_contract_init INLINECALLDICT
+    }>
+  }>
+  $Wallet$_contract_store PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    3 -ROLL
+    $Wallet$_store INLINECALLDICT
+    ENDC
+    c4 POP
   }>
   $global_send PROCREF:<{
     NEWC
@@ -192,119 +316,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_value_to_mode_body PROCINLINE:<{
-    TRUE
-    s4 s4 s4 XCHG3
-    PUSHNULL
-    PUSHNULL
-  }>
-  $Transfer$_load PROCINLINE:<{
-    32 LDU
-    8 LDU
-    __tact_load_address INLINECALLDICT
-    SWAP
-    LDGRAMS
-    1 LDI
-    SWAP
-    IF:<{
-      LDREF
-    }>ELSE<{
-      PUSHNULL
-      SWAP
-    }>
-    5 -ROLL
-  }>
-  $Transfer$_store PROCINLINE:<{
-    s4 s5 XCHG2
-    32 STU
-    s1 s2 XCHG
-    8 STU
-    SWAP
-    __tact_store_address INLINECALLDICT
-    SWAP
-    STGRAMS
-    OVER
-    ISNULL
-    NOT
-    IF:<{
-      TRUE
-      SWAP
-      1 STI
-      STREF
-    }>ELSE<{
-      FALSE
-      s2 POP
-      1 STI
-    }>
-  }>
-  $Transfer$_store_cell PROCINLINE:<{
-    NEWC
-    5 -ROLL
-    $Transfer$_store INLINECALLDICT
-    ENDC
-  }>
-  $TransferMessage$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    123 EQINT
-    129 THROWIFNOT
-    LDREF
-    SWAP
-    CTOS
-    SWAP
-    $Transfer$_load INLINECALLDICT
-    s5 s6 XCHG
-  }>
-  $Wallet$_contract_init PROCREF:<{
-    0 PUSHINT
-    -ROT
-  }>
-  $Wallet$_contract_load PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    SWAP
-    IF:<{
-      $Wallet$_load INLINECALLDICT
-      1 3 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $Wallet$init$_load INLINECALLDICT
-      s0 s2 XCHG
-      ENDS
-      SWAP
-      $Wallet$_contract_init INLINECALLDICT
-    }>
-  }>
-  $Wallet$_contract_store PROCINLINE:<{
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
-    TRUE
-    SWAP
-    1 STI
-    3 -ROLL
-    $Wallet$_store INLINECALLDICT
-    ENDC
-    c4 POP
-  }>
-  $Wallet$_fun_publicKey PROCREF:<{
-    OVER
-  }>
-  $Wallet$_fun_seqno PROCREF:<{
-    s2 PUSH
-  }>
-  $Wallet$_fun_walletId PROCREF:<{
-    DUP
-  }>
   $Wallet$_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
@@ -332,31 +343,20 @@ PROGRAM{
     $Wallet$init$_store INLINECALLDICT
     ENDC
   }>
-  $Wallet$_load PROCINLINE:<{
-    32 LDU
-    256 LDU
-    64 LDU
-    3 -ROLL
+  $Wallet$_fun_publicKey PROCREF:<{
+    OVER
   }>
-  $Wallet$_store PROCINLINE:<{
-    s2 s3 XCHG2
-    32 STU
-    256 STU
-    64 STU
+  $Wallet$_fun_walletId PROCREF:<{
+    DUP
   }>
-  $Wallet$init$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    -ROT
+  $Wallet$_fun_seqno PROCREF:<{
+    s2 PUSH
   }>
-  $Wallet$init$_store PROCINLINE:<{
-    s0 s2 XCHG
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
+  $SendParameters$_constructor_value_to_mode_body PROCINLINE:<{
+    TRUE
+    s4 s4 s4 XCHG3
+    PUSHNULL
+    PUSHNULL
   }>
   $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>

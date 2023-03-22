@@ -1,14 +1,26 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC $Both$_as_optional
-  DECLPROC $Both$_constructor_a_b
-  DECLPROC $Both$_from_opt_tuple
-  DECLPROC $Both$_from_tuple
+  DECLPROC $Vars$_store
+  DECLPROC $Vars$_load
+  DECLPROC $Update$_load
+  DECLPROC $SerializationTester2$_store
+  DECLPROC $SerializationTester2$_load
+  DECLPROC $Vars$_not_null
+  DECLPROC $Vars$_as_optional
+  DECLPROC $Vars$_to_tuple
+  DECLPROC $Vars$_to_opt_tuple
+  DECLPROC $Vars$_from_tuple
+  DECLPROC $Vars$_to_external
+  DECLPROC $Vars$_to_opt_external
   DECLPROC $Both$_not_null
+  DECLPROC $Both$_as_optional
+  DECLPROC $Both$_to_tuple
+  DECLPROC $Both$_to_opt_tuple
+  DECLPROC $Both$_from_tuple
+  DECLPROC $Both$_from_opt_tuple
   DECLPROC $Both$_to_external
   DECLPROC $Both$_to_opt_external
-  DECLPROC $Both$_to_opt_tuple
-  DECLPROC $Both$_to_tuple
+  DECLPROC $SerializationTester2$init$_load
   DECLPROC $SerializationTester2$_contract_init
   DECLPROC $SerializationTester2$_contract_load
   DECLPROC $SerializationTester2$_contract_store
@@ -16,23 +28,11 @@ PROGRAM{
   DECLPROC $SerializationTester2$_fun_getAopt
   DECLPROC $SerializationTester2$_fun_getB
   DECLPROC $SerializationTester2$_fun_getBopt
+  DECLPROC $Both$_constructor_a_b
   DECLPROC $SerializationTester2$_fun_getBoth
   DECLPROC $SerializationTester2$_fun_getBothOpt
-  DECLPROC $SerializationTester2$_fun_process
-  DECLPROC $SerializationTester2$_load
-  DECLPROC $SerializationTester2$_store
-  DECLPROC $SerializationTester2$init$_load
-  DECLPROC $Update$_load
-  DECLPROC $Vars$_as_optional
   DECLPROC $Vars$_constructor_a_b_c_d_e
-  DECLPROC $Vars$_from_tuple
-  DECLPROC $Vars$_load
-  DECLPROC $Vars$_not_null
-  DECLPROC $Vars$_store
-  DECLPROC $Vars$_to_external
-  DECLPROC $Vars$_to_opt_external
-  DECLPROC $Vars$_to_opt_tuple
-  DECLPROC $Vars$_to_tuple
+  DECLPROC $SerializationTester2$_fun_process
   DECLPROC %$SerializationTester2$_receive_empty
   DECLPROC $SerializationTester2$_receive_binary_Update
   123932 DECLMETHOD %getA
@@ -71,20 +71,149 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  $Both$_as_optional PROCINLINE:<{
-    10 TUPLE
+  $Vars$_store PROCINLINE:<{
+    s4 s5 XCHG2
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    257 PUSHINT
+    STIX
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    ENDC
+    SWAP
+    STREF
   }>
-  $Both$_constructor_a_b PROCINLINE:<{
+  $Vars$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    DROP
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
   }>
-  $Both$_from_opt_tuple PROCINLINE:<{
+  $Update$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2732768933 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    $Vars$_load INLINECALLDICT
+    s0 s5 XCHG
+    LDREF
+    SWAP
+    CTOS
+    $Vars$_load INLINECALLDICT
+    s5 POP
+    s5 s10 XCHG
+    4 ROLL
+  }>
+  $SerializationTester2$_store PROCINLINE:<{
+    s5 s10 XCHG
+    s4 s9 XCHG
+    s3 s8 XCHG
+    s7 s6 s10 XCHG3
+    $Vars$_store INLINECALLDICT
+    NEWC
+    5 -ROLL
+    s0 s6 XCHG
+    $Vars$_store INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  $SerializationTester2$_load PROCINLINE:<{
+    $Vars$_load INLINECALLDICT
+    s0 s5 XCHG
+    LDREF
+    SWAP
+    CTOS
+    $Vars$_load INLINECALLDICT
+    s5 POP
+    s5 s10 XCHG
+    4 ROLL
+  }>
+  $Vars$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    5 UNTUPLE
+  }>
+  $Vars$_as_optional PROCINLINE:<{
+    5 TUPLE
+  }>
+  $Vars$_to_tuple PROCINLINE:<{
+    5 TUPLE
+  }>
+  $Vars$_to_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
     IF:<{
       DROP
       PUSHNULL
     }>ELSE<{
-      $Both$_from_tuple INLINECALLDICT
-      $Both$_as_optional INLINECALLDICT
+      $Vars$_not_null INLINECALLDICT
+      $Vars$_to_tuple INLINECALLDICT
+    }>
+  }>
+  $Vars$_from_tuple PROCINLINE:<{
+    5 UNTUPLE
+  }>
+  $Vars$_to_external PROCINLINE:<{
+  }>
+  $Vars$_to_opt_external PROCINLINE:<{
+    $Vars$_to_opt_tuple INLINECALLDICT
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+    }>
+  }>
+  $Both$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    10 UNTUPLE
+  }>
+  $Both$_as_optional PROCINLINE:<{
+    10 TUPLE
+  }>
+  $Both$_to_tuple PROCINLINE:<{
+    5 5 BLKSWAP
+    $Vars$_to_tuple INLINECALLDICT
+    5 -ROLL
+    $Vars$_to_tuple INLINECALLDICT
+    2 TUPLE
+  }>
+  $Both$_to_opt_tuple PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      $Both$_not_null INLINECALLDICT
+      $Both$_to_tuple INLINECALLDICT
     }>
   }>
   $Both$_from_tuple PROCINLINE:<{
@@ -98,11 +227,16 @@ PROGRAM{
     s6 s7 XCHG
     s5 s6 XCHG
   }>
-  $Both$_not_null PROCINLINE:<{
+  $Both$_from_opt_tuple PROCINLINE:<{
     DUP
     ISNULL
-    128 THROWIF
-    10 UNTUPLE
+    IF:<{
+      DROP
+      PUSHNULL
+    }>ELSE<{
+      $Both$_from_tuple INLINECALLDICT
+      $Both$_as_optional INLINECALLDICT
+    }>
   }>
   $Both$_to_external PROCINLINE:<{
     5 5 BLKSWAP
@@ -120,23 +254,16 @@ PROGRAM{
     }>ELSE<{
     }>
   }>
-  $Both$_to_opt_tuple PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-      $Both$_not_null INLINECALLDICT
-      $Both$_to_tuple INLINECALLDICT
-    }>
-  }>
-  $Both$_to_tuple PROCINLINE:<{
-    5 5 BLKSWAP
-    $Vars$_to_tuple INLINECALLDICT
-    5 -ROLL
-    $Vars$_to_tuple INLINECALLDICT
-    2 TUPLE
+  $SerializationTester2$init$_load PROCINLINE:<{
+    $Vars$_load INLINECALLDICT
+    s0 s5 XCHG
+    LDREF
+    SWAP
+    CTOS
+    $Vars$_load INLINECALLDICT
+    s5 POP
+    s5 s10 XCHG
+    4 ROLL
   }>
   $SerializationTester2$_contract_init PROCREF:<{
   }>
@@ -195,6 +322,8 @@ PROGRAM{
     s4 s3 PUSH2
     $Vars$_as_optional INLINECALLDICT
   }>
+  $Both$_constructor_a_b PROCINLINE:<{
+  }>
   $SerializationTester2$_fun_getBoth PROCREF:<{
     s9 s8 s7 PUSH3
     s9 s8 s7 PUSH3
@@ -209,6 +338,8 @@ PROGRAM{
     s9 PUSH
     $Both$_constructor_a_b INLINECALLDICT
     $Both$_as_optional INLINECALLDICT
+  }>
+  $Vars$_constructor_a_b_c_d_e PROCINLINE:<{
   }>
   $SerializationTester2$_fun_process PROCREF:<{
     11 BLKDROP
@@ -225,137 +356,6 @@ PROGRAM{
     s3 s4 XCHG
     s1 s3 s0 XCHG3
     $Vars$_constructor_a_b_c_d_e INLINECALLDICT
-  }>
-  $SerializationTester2$_load PROCINLINE:<{
-    $Vars$_load INLINECALLDICT
-    s0 s5 XCHG
-    LDREF
-    SWAP
-    CTOS
-    $Vars$_load INLINECALLDICT
-    s5 POP
-    s5 s10 XCHG
-    4 ROLL
-  }>
-  $SerializationTester2$_store PROCINLINE:<{
-    s5 s10 XCHG
-    s4 s9 XCHG
-    s3 s8 XCHG
-    s7 s6 s10 XCHG3
-    $Vars$_store INLINECALLDICT
-    NEWC
-    5 -ROLL
-    s0 s6 XCHG
-    $Vars$_store INLINECALLDICT
-    ENDC
-    SWAP
-    STREF
-  }>
-  $SerializationTester2$init$_load PROCINLINE:<{
-    $Vars$_load INLINECALLDICT
-    s0 s5 XCHG
-    LDREF
-    SWAP
-    CTOS
-    $Vars$_load INLINECALLDICT
-    s5 POP
-    s5 s10 XCHG
-    4 ROLL
-  }>
-  $Update$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    2732768933 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    $Vars$_load INLINECALLDICT
-    s0 s5 XCHG
-    LDREF
-    SWAP
-    CTOS
-    $Vars$_load INLINECALLDICT
-    s5 POP
-    s5 s10 XCHG
-    4 ROLL
-  }>
-  $Vars$_as_optional PROCINLINE:<{
-    5 TUPLE
-  }>
-  $Vars$_constructor_a_b_c_d_e PROCINLINE:<{
-  }>
-  $Vars$_from_tuple PROCINLINE:<{
-    5 UNTUPLE
-  }>
-  $Vars$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    LDREF
-    SWAP
-    CTOS
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    DROP
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
-  }>
-  $Vars$_not_null PROCINLINE:<{
-    DUP
-    ISNULL
-    128 THROWIF
-    5 UNTUPLE
-  }>
-  $Vars$_store PROCINLINE:<{
-    s4 s5 XCHG2
-    257 PUSHINT
-    STIX
-    s1 s2 XCHG
-    257 PUSHINT
-    STIX
-    257 PUSHINT
-    STIX
-    SWAP
-    NEWC
-    257 PUSHINT
-    STIX
-    s1 s2 XCHG
-    257 PUSHINT
-    STIX
-    ENDC
-    SWAP
-    STREF
-  }>
-  $Vars$_to_external PROCINLINE:<{
-  }>
-  $Vars$_to_opt_external PROCINLINE:<{
-    $Vars$_to_opt_tuple INLINECALLDICT
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-    }>
-  }>
-  $Vars$_to_opt_tuple PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      PUSHNULL
-    }>ELSE<{
-      $Vars$_not_null INLINECALLDICT
-      $Vars$_to_tuple INLINECALLDICT
-    }>
-  }>
-  $Vars$_to_tuple PROCINLINE:<{
-    5 TUPLE
   }>
   %$SerializationTester2$_receive_empty PROCINLINE:<{
   }>

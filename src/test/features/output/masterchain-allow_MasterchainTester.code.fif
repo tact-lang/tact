@@ -1,17 +1,17 @@
 PROGRAM{
-  DECLPROC __tact_create_address
+  DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_load_address_opt
-  DECLPROC __tact_verify_address
+  DECLPROC __tact_create_address
+  DECLPROC $TestMessage$_load
+  DECLPROC $TestMessage$_from_tuple
   DECLPROC $MasterchainTester$_contract_init
   DECLPROC $MasterchainTester$_contract_load
   DECLPROC $MasterchainTester$_contract_store
   DECLPROC $MasterchainTester$_fun_createAddress
-  DECLPROC $MasterchainTester$_fun_handleStruct
   DECLPROC $MasterchainTester$_fun_parseAddress
   DECLPROC $MasterchainTester$_fun_serializeAddress
-  DECLPROC $TestMessage$_from_tuple
-  DECLPROC $TestMessage$_load
+  DECLPROC $MasterchainTester$_fun_handleStruct
   DECLPROC $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC $MasterchainTester$_receive_binary_TestMessage
   125712 DECLMETHOD %createAddress
@@ -27,20 +27,22 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  __tact_create_address PROCINLINE:<{
-    NEWC
-    2 PUSHINT
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
     SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    1 STU
-    s1 s2 XCHG
-    8 STI
-    256 STU
-    ENDC
-    CTOS
-    __tact_verify_address INLINECALLDICT
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
   }>
   __tact_load_address PROCINLINE:<{
     LDMSGADDR
@@ -60,22 +62,45 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  __tact_verify_address PROCINLINE:<{
-    DUP
-    SBITS
-    267 PUSHINT
-    EQUAL
-    136 THROWIFNOT
-    DUP
-    11 PLDU
-    DUP
-    10 PUSHPOW2
-    EQUAL
+  __tact_create_address PROCINLINE:<{
+    NEWC
+    2 PUSHINT
     SWAP
-    1279 PUSHINT
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+    __tact_verify_address INLINECALLDICT
+  }>
+  $TestMessage$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    3679600542 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address_opt INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $TestMessage$_from_tuple PROCINLINE:<{
+    2 UNTUPLE
+    SWAP
+    __tact_verify_address INLINECALLDICT
+    OVER
+    ISNULL
+    IF:<{
+      NIP
+      PUSHNULL
+    }>ELSE<{
+      SWAP
+      __tact_verify_address INLINECALLDICT
+    }>
   }>
   $MasterchainTester$_contract_init PROCREF:<{
     PUSHNULL
@@ -109,10 +134,6 @@ PROGRAM{
   $MasterchainTester$_fun_createAddress PROCREF:<{
     __tact_create_address INLINECALLDICT
   }>
-  $MasterchainTester$_fun_handleStruct PROCREF:<{
-    2DROP
-    TRUE
-  }>
   $MasterchainTester$_fun_parseAddress PROCREF:<{
     __tact_load_address INLINECALLDICT
     NIP
@@ -121,30 +142,9 @@ PROGRAM{
     DROP
     TRUE
   }>
-  $TestMessage$_from_tuple PROCINLINE:<{
-    2 UNTUPLE
-    SWAP
-    __tact_verify_address INLINECALLDICT
-    OVER
-    ISNULL
-    IF:<{
-      NIP
-      PUSHNULL
-    }>ELSE<{
-      SWAP
-      __tact_verify_address INLINECALLDICT
-    }>
-  }>
-  $TestMessage$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    3679600542 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address_opt INLINECALLDICT
-    s1 s2 XCHG
+  $MasterchainTester$_fun_handleStruct PROCREF:<{
+    2DROP
+    TRUE
   }>
   $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>

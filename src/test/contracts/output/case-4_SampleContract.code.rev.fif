@@ -50,7 +50,24 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      6 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      ROTREV
+      s0 s2 XCHG
+      LDDICT
+      s0 POP
+      s3 s5 XCHG
+      s3 s4 XCHG
+      s1 s2 XCHG
       1 5 BLKDROP2
     }> PUSHCONT
     <{
@@ -64,7 +81,6 @@ SETCP0
         PUSHNULL
         0 PUSHINT
         0 0 0 PUSH3
-        8 CALLDICT
         1 4 BLKSWAP
       }> CALLREF
     }> PUSHCONT
@@ -91,27 +107,6 @@ SETCP0
     s0 s1 XCHG
     1 STI
     5 1 BLKSWAP
-    7 CALLDICT
-    ENDC
-    c4 POP
-
-  6: 
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    LDREF
-    s0 s1 XCHG
-    CTOS
-    9 CALLDICT
-    s0 s2 XCHG
-    LDDICT
-    s0 POP
-    s3 s5 XCHG
-    s3 s4 XCHG
-    s1 s2 XCHG
-
-  7: 
     s4 s5 XCHG2
     257 PUSHINT
     STIX
@@ -120,28 +115,18 @@ SETCP0
     STIX
     NEWC
     s0 s0 s3 XCHG3
-    10 CALLDICT
-    s1 s2 XCHG
-    STDICT
-    ENDC
-    s0 s1 XCHG
-    STREF
-
-  8: 
-
-  9: 
-    257 PUSHINT
-    LDI
-    257 PUSHINT
-    LDI
-    ROTREV
-
-  10: 
     s0 s2 XCHG
     257 PUSHINT
     STIX
     257 PUSHINT
     STIX
+    s1 s2 XCHG
+    STDICT
+    ENDC
+    s0 s1 XCHG
+    STREF
+    ENDC
+    c4 POP
 
   80984: 
     c4 PUSH
@@ -152,7 +137,24 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      6 CALLDICT
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDI
+      257 PUSHINT
+      LDI
+      ROTREV
+      s0 s2 XCHG
+      LDDICT
+      s0 POP
+      s3 s5 XCHG
+      s3 s4 XCHG
+      s1 s2 XCHG
       1 5 BLKDROP2
     }> PUSHCONT
     <{
@@ -166,7 +168,6 @@ SETCP0
         PUSHNULL
         0 PUSHINT
         0 0 0 PUSH3
-        8 CALLDICT
         1 4 BLKSWAP
       }> CALLREF
     }> PUSHCONT

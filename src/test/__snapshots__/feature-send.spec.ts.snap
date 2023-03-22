@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`feature-send should send reply correctly 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "cell": "x{946A98B60000000000000000}",
+            "type": "cell",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQB2MdBC4xdD8s7H0G0yJDGtkmzFSOTQ7Xl4P7e3irCBHqe0",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 10983n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "Deploy success",
+              "type": "text",
+            },
+            "to": null,
+            "type": "external-out",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`feature-send should send reply correctly 2`] = `
+[
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Hello",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQB2MdBC4xdD8s7H0G0yJDGtkmzFSOTQ7Xl4P7e3irCBHqe0",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 13141n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "World",
+              "type": "text",
+            },
+            "bounce": true,
+            "from": "kQB2MdBC4xdD8s7H0G0yJDGtkmzFSOTQ7Xl4P7e3irCBHqe0",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": 9985687000n,
+          },
+        ],
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "text": "Something",
+              "type": "text",
+            },
+            "to": null,
+            "type": "external-out",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;

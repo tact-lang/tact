@@ -1,0 +1,8 @@
+;; String "Deploy success"
+slice __gen_str_469726401() asm "B{b5ee9c7241010101001000001c4465706c6f792073756363657373e6adf76c} B>boc <s PUSHSLICE";
+
+;; String "World"
+slice __gen_str_2024694909() asm "B{b5ee9c7241010101000700000a576f726c641893d0e2} B>boc <s PUSHSLICE";
+
+;; String "Something"
+slice __gen_str_3989651112() asm "B{b5ee9c7241010101000b000012536f6d657468696e670bf75915} B>boc <s PUSHSLICE";

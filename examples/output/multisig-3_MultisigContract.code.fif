@@ -1,26 +1,26 @@
 PROGRAM{
-  DECLPROC __tact_load_address
-  DECLPROC __tact_not_null
-  DECLPROC __tact_store_address
-  DECLPROC __tact_store_bool
   DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_not_null
+  DECLPROC __tact_store_bool
+  DECLPROC $Operation$_store
+  DECLPROC $Operation$_store_cell
+  DECLPROC $Operation$_load
   DECLPROC $Execute$_load
-  DECLPROC $global_send
+  DECLPROC $MultisigContract$_store
+  DECLPROC $MultisigContract$_load
+  DECLPROC $MultisigContract$init$_load
   DECLPROC $MultisigContract$_contract_init
   DECLPROC $MultisigContract$_contract_load
   DECLPROC $MultisigContract$_contract_store
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_to_value
   DECLPROC $MultisigContract$_fun_execute
   DECLPROC $MultisigContract$_fun_key1
   DECLPROC $MultisigContract$_fun_key2
   DECLPROC $MultisigContract$_fun_key3
   DECLPROC $MultisigContract$_fun_seqno
-  DECLPROC $MultisigContract$_load
-  DECLPROC $MultisigContract$_store
-  DECLPROC $MultisigContract$init$_load
-  DECLPROC $Operation$_load
-  DECLPROC $Operation$_store
-  DECLPROC $Operation$_store_cell
-  DECLPROC $SendParameters$_constructor_to_value
   DECLPROC $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC $MultisigContract$_receive_binary_Execute
   107493 DECLMETHOD %key1
@@ -36,24 +36,6 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
-    SWAP
-    __tact_verify_address INLINECALLDICT
-  }>
-  __tact_not_null PROCINLINE:<{
-    DUP
-    ISNULL
-    128 THROWIF
-  }>
-  __tact_store_address PROCINLINE:<{
-    __tact_verify_address INLINECALLDICT
-    STSLICER
-  }>
-  __tact_store_bool PROCINLINE:<{
-    SWAP
-    1 STI
-  }>
   __tact_verify_address PROCINLINE:<{
     DUP
     SBITS
@@ -73,6 +55,44 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __tact_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
+  }>
+  $Operation$_store PROCINLINE:<{
+    s2 s3 XCHG2
+    32 STU
+    SWAP
+    STGRAMS
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $Operation$_store_cell PROCINLINE:<{
+    NEWC
+    3 -ROLL
+    $Operation$_store INLINECALLDICT
+    ENDC
+  }>
+  $Operation$_load PROCINLINE:<{
+    32 LDU
+    LDGRAMS
+    __tact_load_address INLINECALLDICT
+    s3 s3 s0 XCHG3
   }>
   $Execute$_load PROCINLINE:<{
     32 LDU
@@ -95,6 +115,70 @@ PROGRAM{
     CTOS
     s1 s6 XCHG
     s3 s3 s0 XCHG3
+  }>
+  $MultisigContract$_store PROCINLINE:<{
+    s3 s4 XCHG2
+    32 STU
+    256 STU
+    256 STU
+    256 STU
+  }>
+  $MultisigContract$_load PROCINLINE:<{
+    32 LDU
+    256 LDU
+    256 LDU
+    256 LDU
+    4 -ROLL
+  }>
+  $MultisigContract$init$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    257 PUSHINT
+    LDIX
+    3 -ROLL
+  }>
+  $MultisigContract$_contract_init PROCREF:<{
+    0 PUSHINT
+    3 -ROLL
+  }>
+  $MultisigContract$_contract_load PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      $MultisigContract$_load INLINECALLDICT
+      1 4 BLKDROP2
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      $MultisigContract$init$_load INLINECALLDICT
+      s0 s3 XCHG
+      ENDS
+      ROT
+      $MultisigContract$_contract_init INLINECALLDICT
+    }>
+  }>
+  $MultisigContract$_contract_store PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    4 -ROLL
+    $MultisigContract$_store INLINECALLDICT
+    ENDC
+    c4 POP
   }>
   $global_send PROCREF:<{
     NEWC
@@ -195,46 +279,13 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $MultisigContract$_contract_init PROCREF:<{
-    0 PUSHINT
-    3 -ROLL
-  }>
-  $MultisigContract$_contract_load PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    SWAP
-    IF:<{
-      $MultisigContract$_load INLINECALLDICT
-      1 4 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $MultisigContract$init$_load INLINECALLDICT
-      s0 s3 XCHG
-      ENDS
-      ROT
-      $MultisigContract$_contract_init INLINECALLDICT
-    }>
-  }>
-  $MultisigContract$_contract_store PROCINLINE:<{
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
+  $SendParameters$_constructor_to_value PROCINLINE:<{
     TRUE
-    SWAP
-    1 STI
-    4 -ROLL
-    $MultisigContract$_store INLINECALLDICT
-    ENDC
-    c4 POP
+    -ROT
+    0 PUSHINT
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
   }>
   $MultisigContract$_fun_execute PROCREF:<{
     s2 POP
@@ -252,57 +303,6 @@ PROGRAM{
   }>
   $MultisigContract$_fun_seqno PROCREF:<{
     s3 PUSH
-  }>
-  $MultisigContract$_load PROCINLINE:<{
-    32 LDU
-    256 LDU
-    256 LDU
-    256 LDU
-    4 -ROLL
-  }>
-  $MultisigContract$_store PROCINLINE:<{
-    s3 s4 XCHG2
-    32 STU
-    256 STU
-    256 STU
-    256 STU
-  }>
-  $MultisigContract$init$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    257 PUSHINT
-    LDIX
-    3 -ROLL
-  }>
-  $Operation$_load PROCINLINE:<{
-    32 LDU
-    LDGRAMS
-    __tact_load_address INLINECALLDICT
-    s3 s3 s0 XCHG3
-  }>
-  $Operation$_store PROCINLINE:<{
-    s2 s3 XCHG2
-    32 STU
-    SWAP
-    STGRAMS
-    SWAP
-    __tact_store_address INLINECALLDICT
-  }>
-  $Operation$_store_cell PROCINLINE:<{
-    NEWC
-    3 -ROLL
-    $Operation$_store INLINECALLDICT
-    ENDC
-  }>
-  $SendParameters$_constructor_to_value PROCINLINE:<{
-    TRUE
-    -ROT
-    0 PUSHINT
-    PUSHNULL
-    PUSHNULL
-    PUSHNULL
   }>
   $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>

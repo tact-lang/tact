@@ -823,6 +823,15 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
+"@tact-lang/emulator@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@tact-lang/emulator/-/emulator-3.3.1.tgz#bf9ad2d1c2e4135b9ca331c08192b3b3d859ab75"
+  integrity sha512-Mct5JksjBUZik6UVepcxT0IEtyXs7Ob68+oulfNtBw2JadcK6I7jTLDSqq9tDB+xFiEo/Tr7WpWpm3DCyuoxng==
+  dependencies:
+    prando "^6.0.1"
+    teslabot "^1.5.0"
+    zod "^3.20.2"
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
@@ -4475,10 +4484,10 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-ton-core@>=0.47.1:
-  version "0.47.1"
-  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.47.1.tgz#22298d79e345ea1a34825b4044dda5a7c5995474"
-  integrity sha512-XxcgLYH+Ngo3uh7O7jkzA0/O8nfG3WC3fgUmdvY9/IkGKpkO3Y/KHtrZgAOHYAkxJCmaXpi4aPf4JEnZEiPrWQ==
+ton-core@>=0.48.0:
+  version "0.48.0"
+  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.48.0.tgz#df744c9b13b3193cb7eb8a9cbb715bcf0437e467"
+  integrity sha512-v3QL0CC8iQQ0cjUN0lI9hK7wEpLW2Wnm+N5Ukm+NSbtQ0vq36LGQR/BRywoOQZJm59XzmW4ATbtCWeas9ePrRA==
   dependencies:
     symbol.inspect "1.0.1"
 
@@ -4497,15 +4506,6 @@ ton-crypto@^3.2.0:
     jssha "3.2.0"
     ton-crypto-primitives "2.0.0"
     tweetnacl "1.0.3"
-
-ton-emulator@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/ton-emulator/-/ton-emulator-2.1.1.tgz#1ffdcc41fafcb062ba600f243ebe81e5f038764e"
-  integrity sha512-/k0tB7VPQhJEn2KUwcYlIsLrUgRLnxMGvTSsYk3zsKLbc2HR0d/K7azzmxq9BqBpKPeopL27J1IYNqpSLqMvdA==
-  dependencies:
-    prando "^6.0.1"
-    teslabot "^1.5.0"
-    zod "^3.20.2"
 
 tr46@~0.0.3:
   version "0.0.3"
