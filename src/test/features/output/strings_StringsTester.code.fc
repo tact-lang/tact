@@ -1,29 +1,15 @@
+#include "strings_StringsTester.headers.fc";
 #include "strings_StringsTester.stdlib.fc";
 #include "strings_StringsTester.constants.fc";
+#include "strings_StringsTester.storage.fc";
+
+;;
+;; Contract StringsTester functions
+;;
 
 tuple $StringsTester$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
-}
-
-tuple $StringsTester$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return null();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $StringsTester$_contract_init();
-    }
-}
-
-() $StringsTester$_contract_store(tuple v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    set_data(b.end_cell());
 }
 
 slice $StringsTester$_fun_constantString(tuple $self) impure inline_ref {

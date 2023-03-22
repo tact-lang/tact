@@ -1,13 +1,13 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC $StdlibTest$_store
-  DECLPROC $StdlibTest$_load
   DECLPROC $StdlibTest$_contract_init
   DECLPROC $StdlibTest$_contract_load
   DECLPROC $StdlibTest$_contract_store
-  DECLPROC $StdlibTest$_fun_sliceEmpty
   DECLPROC $StdlibTest$_fun_sliceBits
+  DECLPROC $StdlibTest$_fun_sliceEmpty
   DECLPROC $StdlibTest$_fun_sliceRefs
+  DECLPROC $StdlibTest$_load
+  DECLPROC $StdlibTest$_store
   DECLPROC %$StdlibTest$_receive_empty
   73995 DECLMETHOD %sliceEmpty
   75090 DECLMETHOD %sliceBits
@@ -40,16 +40,6 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-  }>
-  $StdlibTest$_store PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
-  }>
-  $StdlibTest$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
   }>
   $StdlibTest$_contract_init PROCREF:<{
     0 PUSHINT
@@ -88,17 +78,27 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $StdlibTest$_fun_sliceEmpty PROCREF:<{
-    NIP
-    SEMPTY
-  }>
   $StdlibTest$_fun_sliceBits PROCREF:<{
     NIP
     SBITS
   }>
+  $StdlibTest$_fun_sliceEmpty PROCREF:<{
+    NIP
+    SEMPTY
+  }>
   $StdlibTest$_fun_sliceRefs PROCREF:<{
     NIP
     SREFS
+  }>
+  $StdlibTest$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $StdlibTest$_store PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
   }>
   %$StdlibTest$_receive_empty PROCINLINE:<{
   }>

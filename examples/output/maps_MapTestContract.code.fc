@@ -1,30 +1,14 @@
+#include "maps_MapTestContract.headers.fc";
 #include "maps_MapTestContract.stdlib.fc";
 #include "maps_MapTestContract.storage.fc";
+
+;;
+;; Contract MapTestContract functions
+;;
 
 (cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_init() impure inline_ref {
     var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4)) = (null(), null(), null(), null(), null(), null(), null(), null());
     return ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4);
-}
-
-(cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$MapTestContract$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $MapTestContract$_contract_init();
-    }
-}
-
-() $MapTestContract$_contract_store((cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $MapTestContract$_store(b, v);
-    set_data(b.end_cell());
 }
 
 cell $MapTestContract$_fun_intMap1((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref {

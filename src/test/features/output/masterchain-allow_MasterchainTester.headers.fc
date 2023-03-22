@@ -1,0 +1,38 @@
+;; __tact_create_address
+slice __tact_create_address(int chain, int hash) inline;
+
+;; __tact_load_address
+(slice, slice) __tact_load_address(slice cs) inline;
+
+;; __tact_load_address_opt
+(slice, slice) __tact_load_address_opt(slice cs) inline;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; $MasterchainTester$_contract_init
+tuple $MasterchainTester$_contract_init() impure inline_ref;
+
+;; $MasterchainTester$_contract_load
+tuple $MasterchainTester$_contract_load() impure inline;
+
+;; $MasterchainTester$_contract_store
+() $MasterchainTester$_contract_store(tuple v) impure inline;
+
+;; $MasterchainTester$_fun_createAddress
+slice $MasterchainTester$_fun_createAddress(tuple $self, int $chain, int $hash) impure inline_ref;
+
+;; $MasterchainTester$_fun_handleStruct
+int $MasterchainTester$_fun_handleStruct(tuple $self, (slice, slice) $src) impure inline_ref;
+
+;; $MasterchainTester$_fun_parseAddress
+slice $MasterchainTester$_fun_parseAddress(tuple $self, slice $src) impure inline_ref;
+
+;; $MasterchainTester$_fun_serializeAddress
+int $MasterchainTester$_fun_serializeAddress(tuple $self, slice $src) impure inline_ref;
+
+;; $TestMessage$_from_tuple
+(slice, slice) $TestMessage$_from_tuple(tuple v) inline;
+
+;; $TestMessage$_load
+(slice, ((slice, slice))) $TestMessage$_load(slice sc_0) inline;

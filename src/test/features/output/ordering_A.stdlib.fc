@@ -79,10 +79,6 @@ builder __tact_store_bool(builder b, int v) inline {
     send_raw_message($c, $params'mode);
 }
 
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
-    return (bounce, to, value, mode, body, null(), null());
-}
-
 () $global_reply(cell $body) impure inline_ref {
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
 }

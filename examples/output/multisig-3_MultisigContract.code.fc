@@ -1,5 +1,10 @@
+#include "multisig-3_MultisigContract.headers.fc";
 #include "multisig-3_MultisigContract.stdlib.fc";
 #include "multisig-3_MultisigContract.storage.fc";
+
+;;
+;; Contract MultisigContract functions
+;;
 
 (int, int, int, int) $MultisigContract$_contract_init(int $key1, int $key2, int $key3) impure inline_ref {
     var (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)) = (0, null(), null(), null());
@@ -7,29 +12,6 @@
     $self'user2_key = $key2;
     $self'user3_key = $key3;
     return ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key);
-}
-
-(int, int, int, int) $MultisigContract$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$MultisigContract$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (int key1, int key2, int key3) = $sc~$MultisigContract$init$_load();
-        $sc.end_parse();
-        return $MultisigContract$_contract_init(key1, key2, key3);
-    }
-}
-
-() $MultisigContract$_contract_store((int, int, int, int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $MultisigContract$_store(b, v);
-    set_data(b.end_cell());
 }
 
 ((int, int, int, int), ()) $MultisigContract$_fun_execute((int, int, int, int) $self, (int, int, slice) $op) impure inline_ref {

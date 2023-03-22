@@ -1,5 +1,10 @@
+#include "multisig_MultisigSigner.headers.fc";
 #include "multisig_MultisigSigner.stdlib.fc";
 #include "multisig_MultisigSigner.storage.fc";
+
+;;
+;; Contract MultisigSigner functions
+;;
 
 (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_init(slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) impure inline_ref {
     var (($request'requested, $request'to, $request'value, $request'timeout, $request'bounce, $request'mode, $request'body)) = $request;
@@ -12,36 +17,9 @@
     return ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body));
 }
 
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$MultisigSigner$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice master, cell members, int requiredWeight, (slice, slice, int, int, int, int, cell) request) = $sc~$MultisigSigner$init$_load();
-        $sc.end_parse();
-        return $MultisigSigner$_contract_init(master, members, requiredWeight, request);
-    }
-}
-
-() $MultisigSigner$_contract_store((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $MultisigSigner$_store(b, v);
-    set_data(b.end_cell());
-}
-
 (slice, slice, int, int, int, int, cell) $MultisigSigner$_fun_request((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline_ref {
     var (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body))) = $self;
     return ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body);
-}
-
-(((slice, slice, int, int, int, int, cell))) $Signed$_constructor_request((slice, slice, int, int, int, int, cell) request) inline {
-    return (request);
 }
 
 ;;

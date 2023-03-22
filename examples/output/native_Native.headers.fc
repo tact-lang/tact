@@ -1,0 +1,17 @@
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; $Native$_contract_init
+(int) $Native$_contract_init() impure inline_ref;
+
+;; $Native$_contract_load
+(int) $Native$_contract_load() impure inline;
+
+;; $Native$_contract_store
+() $Native$_contract_store((int) v) impure inline;
+
+;; $Native$_load
+(slice, ((int))) $Native$_load(slice sc_0) inline;
+
+;; $Native$_store
+builder $Native$_store(builder build_0, (int) v) inline;

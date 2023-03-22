@@ -1,30 +1,14 @@
+#include "increment_IncrementContract.headers.fc";
 #include "increment_IncrementContract.stdlib.fc";
 #include "increment_IncrementContract.storage.fc";
+
+;;
+;; Contract IncrementContract functions
+;;
 
 (cell, cell, cell, cell, cell) $IncrementContract$_contract_init() impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = (null(), null(), null(), null(), null());
     return ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5);
-}
-
-(cell, cell, cell, cell, cell) $IncrementContract$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$IncrementContract$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $IncrementContract$_contract_init();
-    }
-}
-
-() $IncrementContract$_contract_store((cell, cell, cell, cell, cell) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $IncrementContract$_store(b, v);
-    set_data(b.end_cell());
 }
 
 cell $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref {
@@ -35,10 +19,6 @@ cell $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impu
 cell $IncrementContract$_fun_counters2((cell, cell, cell, cell, cell) $self) impure inline_ref {
     var (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)) = $self;
     return $self'counters4;
-}
-
-((int)) $DeployOk$_constructor_queryId(int queryId) inline {
-    return (queryId);
 }
 
 ;;

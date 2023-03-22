@@ -14,8 +14,7 @@ import { getRawAST } from "../grammar/store";
 import { emit } from "./emitter/emit";
 import { writeInit, writeMainContract, writeStorageOps } from "./writers/writeContract";
 import { initId } from "./writers/id";
-import { writeReceiver } from "./writers/writeRouter";
-
+import { idToHex } from "../utils/idToHex";
 
 export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, basename: string, debug: boolean = false) {
 
@@ -40,6 +39,33 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
 
     const files: { name: string, code: string }[] = [];
     const imported: string[] = [];
+
+    //
+    // Headers
+    //
+
+    const headers: string[] = [];
+    const sortedHeaders = [...functions].sort((a, b) => a.name.localeCompare(b.name));
+    for (let f of sortedHeaders) {
+        if (f.code.kind === 'generic' && f.signature) {
+            headers.push(`;; ${f.name}`);
+            let sig = f.signature;
+            if (f.flags.has('impure')) {
+                sig = sig + ' impure';
+            }
+            if (f.flags.has('inline')) {
+                sig = sig + ' inline';
+            } else {
+                sig = sig + ' inline_ref';
+            }
+            headers.push(sig + ';');
+            headers.push('');
+        }
+    }
+    files.push({
+        name: basename + '.headers.fc',
+        code: headers.join('\n')
+    });
 
     //
     // stdlib
@@ -101,22 +127,73 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // storage
     //
 
-    const storageFunctions = tryExtractModule(functions, 'storage', imported);
-    if (storageFunctions) {
-        imported.push('storage');
+    let emitedTypes: string[] = [];
+    let types = getSortedTypes(ctx);
+    for (let t of types) {
+
+        let ffs: WrittenFunction[] = [];
+        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait') {
+            const typeFunctions = tryExtractModule(functions, 'type:' + t.name, imported);
+            if (typeFunctions) {
+                imported.push('type:' + t.name);
+                ffs.push(...typeFunctions);
+            }
+        }
+        if (t.kind === 'contract') {
+            const typeFunctions = tryExtractModule(functions, 'type:' + t.name + '$init', imported);
+            if (typeFunctions) {
+                imported.push('type:' + t.name + '$init');
+                ffs.push(...typeFunctions);
+            }
+        }
+        if (ffs.length > 0) {
+
+            let header: string[] = [];
+            header.push(';;');
+            header.push(`;; Type: ${t.name}`);
+            if (t.header !== null) {
+                header.push(`;; Header: 0x${idToHex(t.header)}`);
+            }
+            if (t.tlb) {
+                header.push(`;; TLB: ${t.tlb}`);
+            }
+            header.push(';;');
+
+            emitedTypes.push(emit({
+                functions: ffs,
+                header: header.join('\n')
+            }));
+        }
+    }
+    if (emitedTypes.length > 0) {
         files.push({
             name: basename + '.storage.fc',
-            code: emit({ functions: storageFunctions })
+            code: emitedTypes.join('\n\n')
         });
     }
+
+    // const storageFunctions = tryExtractModule(functions, 'storage', imported);
+    // if (storageFunctions) {
+    //     imported.push('storage');
+    //     files.push({
+    //         name: basename + '.storage.fc',
+    //         code: emit({ functions: storageFunctions })
+    //     });
+    // }
 
     //
     // Remaining
     // 
 
     const remainingFunctions = tryExtractModule(functions, null, imported);
+    const header = files.map((v) => `#include "${v.name}";`);
+    header.push('');
+    header.push(';;');
+    header.push(`;; Contract ${abiSrc.name} functions`);
+    header.push(';;');
+    header.push('');
     const code = emit({
-        header: imported.map((v) => `#include "${basename}.${v}.fc";`).join('\n'),
+        header: header.join('\n'),
         functions: remainingFunctions
     });
     files.push({
@@ -152,21 +229,21 @@ function tryExtractModule(functions: WrittenFunction[], context: string | null, 
     }
 
     // Check dependencies
-    if (context) {
-        for (let f of ctxFunctions) {
-            for (let d of f.depends) {
-                let c = maps.get(d)!.context;
-                if (!c) {
-                    console.warn(`Function ${f.name} depends on ${d} with generic context, but ${context} is needed`);
-                    return null; // Found dependency to unknown function
-                }
-                if (c !== context && (c !== null && !imported.includes(c))) {
-                    console.warn(`Function ${f.name} depends on ${d} with ${context} context, but ${context} is needed`);
-                    return null; // Found dependency to another context
-                }
-            }
-        }
-    }
+    // if (context) {
+    //     for (let f of ctxFunctions) {
+    //         for (let d of f.depends) {
+    //             let c = maps.get(d)!.context;
+    //             if (!c) {
+    //                 console.warn(`Function ${f.name} depends on ${d} with generic context, but ${context} is needed`);
+    //                 return null; // Found dependency to unknown function
+    //             }
+    //             if (c !== context && (c !== null && !imported.includes(c))) {
+    //                 console.warn(`Function ${f.name} depends on ${d} with ${c} context, but ${context} is needed`);
+    //                 return null; // Found dependency to another context
+    //             }
+    //         }
+    //     }
+    // }
 
     return ctxFunctions;
 }

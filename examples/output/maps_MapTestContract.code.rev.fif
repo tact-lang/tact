@@ -50,23 +50,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -260,10 +244,8 @@ SETCP0
         1 LDI
         s0 s1 XCHG
         <{
-          257 PUSHINT
-          LDI
-          s0 s1 XCHG
-          SINGLE
+          41 CALLDICT
+          40 CALLDICT
         }> PUSHCONT
         <{
           PUSHNULL
@@ -322,24 +304,7 @@ SETCP0
         129 THROWIFNOT
         LDMSGADDR
         s0 s1 XCHG
-        s0 PUSH
-        SBITS
-        267 PUSHINT
-        EQUAL
-        136 THROWIFNOT
-        s0 PUSH
-        11 PLDU
-        s0 PUSH
-        10 PUSHPOW2
-        EQUAL
-        s1 PUSH
-        1279 PUSHINT
-        EQUAL
-        OR
-        136 THROWIFNOT
-        10 PUSHPOW2
-        EQUAL
-        137 THROWIFNOT
+        10 CALLDICT
         s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
@@ -390,24 +355,7 @@ SETCP0
         129 THROWIFNOT
         LDMSGADDR
         s0 s1 XCHG
-        s0 PUSH
-        SBITS
-        267 PUSHINT
-        EQUAL
-        136 THROWIFNOT
-        s0 PUSH
-        11 PLDU
-        s0 PUSH
-        10 PUSHPOW2
-        EQUAL
-        s1 PUSH
-        1279 PUSHINT
-        EQUAL
-        OR
-        136 THROWIFNOT
-        10 PUSHPOW2
-        EQUAL
-        137 THROWIFNOT
+        10 CALLDICT
         s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
@@ -456,24 +404,7 @@ SETCP0
         129 THROWIFNOT
         LDMSGADDR
         s0 s1 XCHG
-        s0 PUSH
-        SBITS
-        267 PUSHINT
-        EQUAL
-        136 THROWIFNOT
-        s0 PUSH
-        11 PLDU
-        s0 PUSH
-        10 PUSHPOW2
-        EQUAL
-        s1 PUSH
-        1279 PUSHINT
-        EQUAL
-        OR
-        136 THROWIFNOT
-        10 PUSHPOW2
-        EQUAL
-        137 THROWIFNOT
+        10 CALLDICT
         s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
@@ -517,32 +448,13 @@ SETCP0
         129 THROWIFNOT
         LDMSGADDR
         s0 s1 XCHG
-        s0 PUSH
-        SBITS
-        267 PUSHINT
-        EQUAL
-        136 THROWIFNOT
-        s0 PUSH
-        11 PLDU
-        s0 PUSH
-        10 PUSHPOW2
-        EQUAL
-        s1 PUSH
-        1279 PUSHINT
-        EQUAL
-        OR
-        136 THROWIFNOT
-        10 PUSHPOW2
-        EQUAL
-        137 THROWIFNOT
+        10 CALLDICT
         s0 s1 XCHG
         1 LDI
         s0 s1 XCHG
         <{
-          257 PUSHINT
-          LDI
-          s0 s1 XCHG
-          SINGLE
+          41 CALLDICT
+          40 CALLDICT
         }> PUSHCONT
         <{
           PUSHNULL
@@ -586,8 +498,7 @@ SETCP0
         }> PUSHCONT
         IFELSE
         -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
+      }> IFJMPREF
       s0 POP
       0 PUSHINT
     }> CALLREF
@@ -600,6 +511,50 @@ SETCP0
     s0 s1 XCHG
     1 STI
     8 1 BLKSWAP
+    31 CALLDICT
+    ENDC
+    c4 POP
+
+  10: 
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+
+  30: 
+    LDDICT
+    LDDICT
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    s0 POP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    s0 POP
+    s6 s8 XCHG
+    s6 s7 XCHG
+
+  31: 
     s7 s8 XCHG2
     STDICT
     s1 s5 XCHG
@@ -623,8 +578,50 @@ SETCP0
     ENDC
     s0 s1 XCHG
     STREF
-    ENDC
-    c4 POP
+
+  40: 
+    SINGLE
+
+  41: 
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+
+  42: 
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      CTOS
+      257 PUSHINT
+      LDI
+      s0 s1 XCHG
+      s1 POP
+      SINGLE
+    }> PUSHCONT
+    IFELSE
+
+  48: 
+    s0 PUSH
+    ISNULL
+    <{
+      s0 POP
+      PUSHNULL
+    }> PUSHCONT
+    <{
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      1 UNTUPLE
+      49 CALLDICT
+    }> PUSHCONT
+    IFELSE
+
+  49: 
+    SINGLE
 
   67207: 
     c4 PUSH
@@ -635,23 +632,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -704,23 +685,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -774,23 +739,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -838,23 +787,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -890,23 +823,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -942,23 +859,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -993,23 +894,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1063,23 +948,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1126,23 +995,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1178,23 +1031,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1230,23 +1067,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1299,23 +1120,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1369,23 +1174,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1421,36 +1210,9 @@ SETCP0
         PUSHNULL
       }> PUSHCONT
       IFNOT
-      s0 PUSH
-      ISNULL
-      <{
-        s0 POP
-        PUSHNULL
-      }> PUSHCONT
-      <{
-        CTOS
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-        s1 POP
-        SINGLE
-      }> PUSHCONT
-      IFELSE
+      42 CALLDICT
     }> CALLREF
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    <{
-      s0 PUSH
-      ISNULL
-      128 THROWIF
-      1 UNTUPLE
-      SINGLE
-    }> PUSHCONT
-    IFELSE
+    48 CALLDICT
     s0 PUSH
     ISNULL
     <{
@@ -1468,23 +1230,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1559,23 +1305,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1630,23 +1360,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
+      30 CALLDICT
       1 8 BLKDROP2
     }> PUSHCONT
     <{
@@ -1683,36 +1397,9 @@ SETCP0
         PUSHNULL
       }> PUSHCONT
       IFNOT
-      s0 PUSH
-      ISNULL
-      <{
-        s0 POP
-        PUSHNULL
-      }> PUSHCONT
-      <{
-        CTOS
-        257 PUSHINT
-        LDI
-        s0 s1 XCHG
-        s1 POP
-        SINGLE
-      }> PUSHCONT
-      IFELSE
+      42 CALLDICT
     }> CALLREF
-    s0 PUSH
-    ISNULL
-    <{
-      s0 POP
-      PUSHNULL
-    }> PUSHCONT
-    <{
-      s0 PUSH
-      ISNULL
-      128 THROWIF
-      1 UNTUPLE
-      SINGLE
-    }> PUSHCONT
-    IFELSE
+    48 CALLDICT
     s0 PUSH
     ISNULL
     <{

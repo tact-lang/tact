@@ -88,6 +88,8 @@ SETCP0
     ENDC
     c4 POP
 
+  6: 
+
   97415: 
     4 UNTUPLE
     c4 PUSH
@@ -114,31 +116,7 @@ SETCP0
     7 1 BLKSWAP
     <{
       1 7 BLKDROP2
-      <{
-        2DROP
-        s4 s3 PUSH2
-        ADD
-        INC
-        ROT
-        ADD
-        s0 s1 XCHG
-        ADD
-        s0 s2 XCHG
-        123 RSHIFT
-        s0 s3 XCHG
-        10 LSHIFT
-        s0 s2 XCHG
-        0 GTINT
-        s0 s1 XCHG
-        AND
-        s0 s2 XCHG
-        0 EQINT
-        s1 s2 XCHG
-        AND
-        s0 s1 XCHG
-        0 EQINT
-        AND
-      }> CALLREF
+      6 CALLDICT
     }> CALLREF
 
   113617: 

@@ -236,7 +236,3 @@ slice $String$_fun_fromBase64(slice $self) impure inline_ref {
     var ($self) = $self;
     return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }
-
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
-    return (bounce, to, value, mode, body, null(), null());
-}

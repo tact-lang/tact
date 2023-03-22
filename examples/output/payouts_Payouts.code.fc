@@ -1,52 +1,17 @@
+#include "payouts_Payouts.headers.fc";
 #include "payouts_Payouts.stdlib.fc";
 #include "payouts_Payouts.constants.fc";
 #include "payouts_Payouts.storage.fc";
+
+;;
+;; Contract Payouts functions
+;;
 
 (slice, int) $Payouts$_contract_init(slice $owner, int $publicKey) impure inline_ref {
     var (($self'owner, $self'publicKey)) = (null(), null());
     $self'owner = $owner;
     $self'publicKey = $publicKey;
     return ($self'owner, $self'publicKey);
-}
-
-(slice, int) $Payouts$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$Payouts$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner, int publicKey) = $sc~$Payouts$init$_load();
-        $sc.end_parse();
-        return $Payouts$_contract_init(owner, publicKey);
-    }
-}
-
-() $Payouts$_contract_store((slice, int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $Payouts$_store(b, v);
-    set_data(b.end_cell());
-}
-
-(cell, cell) $Beacon$_init_child(cell sys', slice $master, slice $owner) inline_ref {
-    slice sc' = sys'.begin_parse();
-    cell source = sc'~load_dict();
-    cell contracts = new_dict();
-    
-    ;; Contract Code: Beacon
-    cell mine = __tact_dict_get_code(source, 41210);
-    contracts = __tact_dict_set_code(contracts, 41210, mine);
-    
-    ;; Build cell
-    builder b = begin_cell();
-    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
-    b = b.store_int(false, 1);
-    b = $Beacon$init$_store(b, ($master, $owner));
-    return (mine, b.end_cell());
 }
 
 ((slice, int), ()) $Payouts$_fun_requireOwner((slice, int) $self) impure inline_ref {
@@ -58,10 +23,6 @@
 slice $Payouts$_fun_owner((slice, int) $self) impure inline_ref {
     var (($self'owner, $self'publicKey)) = $self;
     return $self'owner;
-}
-
-((int)) $CanPayout$_constructor_amount(int amount) inline {
-    return (amount);
 }
 
 ;;

@@ -1,6 +1,7 @@
 import * as changeCase from 'change-case';
 import { ABIField, beginCell } from "ton-core";
 import { CompilerContext } from "../context";
+import { idToHex } from '../utils/idToHex';
 import { newMessageId } from "../utils/newMessageId";
 import { getAllTypes, getType } from "./resolveDescriptors";
 
@@ -133,7 +134,8 @@ export function resolveSignatures(ctx: CompilerContext) {
             }
         }
 
-        let tlbHeader = (id !== null ? changeCase.snakeCase(name) + '#' + beginCell().storeUint(id, 32).endCell().beginParse().loadBuffer(4).toString('hex') : '_');
+        // Calculate TLB
+        let tlbHeader = (id !== null ? changeCase.snakeCase(name) + '#' + idToHex(id) : '_');
         let tlb = tlbHeader + ' ' + fields.join(' ') + ' = ' + name;
 
         signatures.set(name, { signature, id, tlb });

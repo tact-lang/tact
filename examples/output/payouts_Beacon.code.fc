@@ -1,5 +1,10 @@
+#include "payouts_Beacon.headers.fc";
 #include "payouts_Beacon.stdlib.fc";
 #include "payouts_Beacon.storage.fc";
+
+;;
+;; Contract Beacon functions
+;;
 
 (slice, slice, int) $Beacon$_contract_init(slice $master, slice $owner) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = (null(), null(), null());
@@ -9,36 +14,9 @@
     return ($self'master, $self'owner, $self'completed);
 }
 
-(slice, slice, int) $Beacon$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$Beacon$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice master, slice owner) = $sc~$Beacon$init$_load();
-        $sc.end_parse();
-        return $Beacon$_contract_init(master, owner);
-    }
-}
-
-() $Beacon$_contract_store((slice, slice, int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $Beacon$_store(b, v);
-    set_data(b.end_cell());
-}
-
 slice $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref {
     var (($self'master, $self'owner, $self'completed)) = $self;
     return $self'owner;
-}
-
-((int, slice, int)) $CanPayoutResponse$_constructor_ok_amount_address(int ok, int amount, slice address) inline {
-    return (amount, address, ok);
 }
 
 ;;

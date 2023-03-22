@@ -16,11 +16,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
         ctx.fun(ops.typeField(type.name, f.name, ctx), () => {
             ctx.signature(`_ ${ops.typeField(type.name, f.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
             ctx.flag('inline');
-            if (origin === 'user') {
-                ctx.context('storage');
-            } else {
-                ctx.context('stdlib');
-            }
+            ctx.context('type:' + type.name);
             ctx.body(() => {
                 ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
                 ctx.append(`return v'${f.name};`);
@@ -31,11 +27,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     // Tensor cast
     ctx.fun(ops.typeTensorCast(type.name, ctx), () => {
         ctx.signature(`(${resolveFuncType(type, ctx)}) ${ops.typeTensorCast(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.asm('asm "NOP"');
     });
 
@@ -43,11 +35,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeNotNull(type.name, ctx), () => {
         ctx.signature(`(${resolveFuncType(type, ctx)}) ${ops.typeNotNull(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`)
             let flatPack = resolveFuncFlatPack(type, 'vvv', ctx);
@@ -64,11 +52,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeAsOptional(type.name, ctx), () => {
         ctx.signature(`tuple ${ops.typeAsOptional(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var ${resolveFuncTypeUnpack(type, 'v', ctx)} = v;`);
             let flatPack = resolveFuncFlatPack(type, 'v', ctx);
@@ -84,11 +68,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeToTuple(type.name, ctx), () => {
         ctx.signature(`tuple ${ops.typeToTuple(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v;`);
             let vars: string[] = [];
@@ -114,11 +94,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeToOptTuple(type.name, ctx), () => {
         ctx.signature(`tuple ${ops.typeToOptTuple(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
             ctx.append(`return ${ops.typeToTuple(type.name, ctx)}(${ops.typeNotNull(type.name, ctx)}(v)); `);
@@ -128,11 +104,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeFromTuple(type.name, ctx), () => {
         ctx.signature(`(${type.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ')}) ${ops.typeFromTuple(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             // Resolve vars
             let vars: string[] = [];
@@ -171,11 +143,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeFromOptTuple(type.name, ctx), () => {
         ctx.signature(`tuple ${ops.typeFromOptTuple(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`if (null?(v)) { return null(); } `);
             ctx.append(`return ${ops.typeAsOptional(type.name, ctx)}(${ops.typeFromTuple(type.name, ctx)}(v));`);
@@ -189,11 +157,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeToExternal(type.name, ctx), () => {
         ctx.signature(`(${type.fields.map((v) => resolveFuncTupledType(v.type, ctx)).join(', ')}) ${ops.typeToExternal(type.name, ctx)}((${resolveFuncType(type, ctx)}) v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var (${type.fields.map((v) => `v'${v.name}`).join(', ')}) = v; `);
             let vars: string[] = [];
@@ -218,11 +182,7 @@ export function writeAccessors(type: TypeDescription, origin: TypeOrigin, ctx: W
     ctx.fun(ops.typeToOptExternal(type.name, ctx), () => {
         ctx.signature(`tuple ${ops.typeToOptExternal(type.name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             ctx.append(`var loaded = ${ops.typeToOptTuple(type.name, ctx)}(v);`);
             ctx.append(`if (null?(loaded)) {`);

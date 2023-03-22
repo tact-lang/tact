@@ -51,9 +51,7 @@ function writeStructConstructor(type: TypeDescription, args: string[], ctx: Writ
         const sig = `(${resolveFuncType(type, ctx)}) ${name}(${args.map((v) => resolveFuncType(type.fields.find((v2) => v2.name === v)!.type, ctx) + ' ' + v).join(', ')})`;
         ctx.signature(sig);
         ctx.flag('inline');
-        if (type.origin === 'stdlib') {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name);
         ctx.body(() => {
             // Create expressions
             let expressions = type.fields.map((v) => {

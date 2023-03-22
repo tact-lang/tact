@@ -1,13 +1,13 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC $Add$_load
-  DECLPROC $Sub$_load
-  DECLPROC $Functions$_store
-  DECLPROC $Functions$_load
   DECLPROC $Functions$_contract_init
   DECLPROC $Functions$_contract_load
   DECLPROC $Functions$_contract_store
   DECLPROC $Functions$_fun_update
+  DECLPROC $Functions$_load
+  DECLPROC $Functions$_store
+  DECLPROC $Sub$_load
   DECLPROC $Functions$_receive_binary_Add
   DECLPROC $Functions$_receive_binary_Sub
   113617 DECLMETHOD supported_interfaces
@@ -45,26 +45,6 @@ PROGRAM{
     831841332 PUSHINT
     EQUAL
     129 THROWIFNOT
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
-  $Sub$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    2640337643 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
-  $Functions$_store PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
-  }>
-  $Functions$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
@@ -108,6 +88,26 @@ PROGRAM{
   }>
   $Functions$_fun_update PROCINLINE:<{
     ADD
+  }>
+  $Functions$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $Functions$_store PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  $Sub$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2640337643 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
   }>
   $Functions$_receive_binary_Add PROCINLINE:<{
     55789 PUSHINT

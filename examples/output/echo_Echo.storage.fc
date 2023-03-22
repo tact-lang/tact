@@ -1,4 +1,39 @@
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+;;
+;; Type: Echo
+;;
+
 (slice, ((int))) $Echo$init$_load(slice sc_0) inline {
     var v'a = sc_0~load_int(257);
     return (sc_0, (v'a));
+}
+
+tuple $Echo$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return null();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (int a) = $sc~$Echo$init$_load();
+        $sc.end_parse();
+        return $Echo$_contract_init(a);
+    }
+}
+
+() $Echo$_contract_store(tuple v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    set_data(b.end_cell());
 }

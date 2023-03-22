@@ -1,5 +1,10 @@
+#include "serialization_SerializationTester.headers.fc";
 #include "serialization_SerializationTester.stdlib.fc";
 #include "serialization_SerializationTester.storage.fc";
+
+;;
+;; Contract SerializationTester functions
+;;
 
 (int, int, int, int, int, int, int, int, int) $SerializationTester$_contract_init(int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i)) = (null(), null(), null(), null(), null(), null(), null(), null(), null());
@@ -13,29 +18,6 @@
     $self'h = $h;
     $self'i = $i;
     return ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f, $self'g, $self'h, $self'i);
-}
-
-(int, int, int, int, int, int, int, int, int) $SerializationTester$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$SerializationTester$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (int a, int b, int c, int d, int e, int f, int g, int h, int i) = $sc~$SerializationTester$init$_load();
-        $sc.end_parse();
-        return $SerializationTester$_contract_init(a, b, c, d, e, f, g, h, i);
-    }
-}
-
-() $SerializationTester$_contract_store((int, int, int, int, int, int, int, int, int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $SerializationTester$_store(b, v);
-    set_data(b.end_cell());
 }
 
 int $SerializationTester$_fun_getA((int, int, int, int, int, int, int, int, int) $self) impure inline_ref {

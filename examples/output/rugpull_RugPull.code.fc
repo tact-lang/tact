@@ -1,6 +1,11 @@
+#include "rugpull_RugPull.headers.fc";
 #include "rugpull_RugPull.stdlib.fc";
 #include "rugpull_RugPull.constants.fc";
 #include "rugpull_RugPull.storage.fc";
+
+;;
+;; Contract RugPull functions
+;;
 
 (slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_init(slice $owner, int $investment, int $returns, int $fee) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
@@ -16,37 +21,10 @@
     return ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue);
 }
 
-(slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$RugPull$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner, int investment, int returns, int fee) = $sc~$RugPull$init$_load();
-        $sc.end_parse();
-        return $RugPull$_contract_init(owner, investment, returns, fee);
-    }
-}
-
-() $RugPull$_contract_store((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $RugPull$_store(b, v);
-    set_data(b.end_cell());
-}
-
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_sendPayout((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, int $value) impure inline_ref {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
     $global_send($SendParameters$_constructor_value_to_mode($value, $to, 2));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
-}
-
-((int, int, int)) $RugParams$_constructor_investment_returns_fee(int investment, int returns, int fee) inline {
-    return (investment, returns, fee);
 }
 
 (int, int, int) $RugPull$_fun_params((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref {

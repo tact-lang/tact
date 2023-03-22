@@ -1,33 +1,15 @@
+#include "ordering_A.headers.fc";
 #include "ordering_A.stdlib.fc";
 #include "ordering_A.storage.fc";
+
+;;
+;; Contract A functions
+;;
 
 (slice) $A$_contract_init(slice $owner) impure inline_ref {
     var (($self'owner)) = (null());
     $self'owner = $owner;
     return ($self'owner);
-}
-
-(slice) $A$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$A$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice owner) = $sc~$A$init$_load();
-        $sc.end_parse();
-        return $A$_contract_init(owner);
-    }
-}
-
-() $A$_contract_store((slice) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $A$_store(b, v);
-    set_data(b.end_cell());
 }
 
 (int, int) $Int$_fun_inc(int $self) impure inline_ref {
@@ -36,17 +18,9 @@
     return ($self, $self);
 }
 
-((int, int, int)) $S$_constructor_v3_v2_v1(int v3, int v2, int v1) inline {
-    return (v1, v2, v3);
-}
-
 (int, int, int) $A$_fun_create((slice) $self, int $v) impure inline_ref {
     var (($self'owner)) = $self;
     return $S$_constructor_v3_v2_v1($v~$Int$_fun_inc(), $v~$Int$_fun_inc(), $v~$Int$_fun_inc());
-}
-
-((int)) $DeployOk$_constructor_queryId(int queryId) inline {
-    return (queryId);
 }
 
 ;;

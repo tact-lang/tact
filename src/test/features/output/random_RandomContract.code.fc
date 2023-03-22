@@ -1,29 +1,14 @@
+#include "random_RandomContract.headers.fc";
 #include "random_RandomContract.stdlib.fc";
 #include "random_RandomContract.storage.fc";
+
+;;
+;; Contract RandomContract functions
+;;
 
 tuple $RandomContract$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
-}
-
-tuple $RandomContract$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return null();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $RandomContract$_contract_init();
-    }
-}
-
-() $RandomContract$_contract_store(tuple v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    set_data(b.end_cell());
 }
 
 int $RandomContract$_fun_randomInt(tuple $self) impure inline_ref {
@@ -34,10 +19,6 @@ int $RandomContract$_fun_randomInt(tuple $self) impure inline_ref {
 int $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_ref {
     var ($self) = $self;
     return $global_random($min, $max);
-}
-
-((int)) $DeployOk$_constructor_queryId(int queryId) inline {
-    return (queryId);
 }
 
 ;;

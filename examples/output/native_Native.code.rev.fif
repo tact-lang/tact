@@ -50,9 +50,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      s0 s1 XCHG
+      5 CALLDICT
       s1 POP
     }> PUSHCONT
     <{
@@ -94,7 +92,7 @@ SETCP0
         93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
         EQUAL
         <{
-          2 CALLDICT
+          7 CALLDICT
           ADD
           -1 PUSHINT
           RETALT
@@ -116,13 +114,21 @@ SETCP0
     s0 s1 XCHG
     1 STI
     s0 s1 XCHG
-    s0 s1 XCHG
-    257 PUSHINT
-    STIX
+    6 CALLDICT
     ENDC
     c4 POP
 
-  2: 
+  5: 
+    257 PUSHINT
+    LDI
+    s0 s1 XCHG
+
+  6: 
+    s0 s1 XCHG
+    257 PUSHINT
+    STIX
+
+  7: 
     1000 PUSHINT
 
   113617: 

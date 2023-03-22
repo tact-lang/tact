@@ -23,11 +23,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + name);
         ctx.body(() => {
             if (allocation.ops.length > 0) {
                 ctx.append(`var ${resolveFuncTypeFromAbiUnpack(`v`, allocation.ops, ctx)} = v;`)
@@ -44,11 +40,7 @@ export function writeSerializer(name: string, forceInline: boolean, allocation: 
     ctx.fun(ops.writerCell(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCell(name, ctx)}(${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)} v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + name);
         ctx.body(() => {
             ctx.append(`return ${ops.writer(name, ctx)}(begin_cell(), v).end_cell();`);
         })
@@ -59,11 +51,7 @@ export function writeOptionalSerializer(name: string, origin: TypeOrigin, ctx: W
     ctx.fun(ops.writerCellOpt(name, ctx), () => {
         ctx.signature(`cell ${ops.writerCellOpt(name, ctx)}(tuple v)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + name);
         ctx.body(() => {
             ctx.write(`
                 if (null?(v)) {
@@ -235,11 +223,7 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + name);
         ctx.body(() => {
 
             // Check prefix
@@ -260,11 +244,7 @@ export function writeOptionalParser(name: string, origin: TypeOrigin, ctx: Write
     ctx.fun(ops.readerOpt(name, ctx), () => {
         ctx.signature(`tuple ${ops.readerOpt(name, ctx)}(cell cl)`);
         ctx.flag('inline');
-        if (origin === 'user') {
-            ctx.context('storage');
-        } else {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + name);
         ctx.body(() => {
             ctx.write(`
                 if (null?(cl)) {

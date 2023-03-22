@@ -1,5 +1,10 @@
+#include "optionals_ContractWithOptionals.headers.fc";
 #include "optionals_ContractWithOptionals.stdlib.fc";
 #include "optionals_ContractWithOptionals.storage.fc";
+
+;;
+;; Contract ContractWithOptionals functions
+;;
 
 (int, int, cell, slice, tuple, tuple) $ContractWithOptionals$_contract_init(int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) impure inline_ref {
     var ($e) = $e;
@@ -12,27 +17,6 @@
     $self'e = $e;
     $self'f = $f;
     return ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f);
-}
-
-(int, int, cell, slice, tuple, tuple) $ContractWithOptionals$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$ContractWithOptionals$_load();
-    } else {
-        (int a, int b, cell c, slice d, tuple e, tuple f) = $sc~$ContractWithOptionals$init$_load();
-        $sc.end_parse();
-        return $ContractWithOptionals$_contract_init(a, b, c, d, e, f);
-    }
-}
-
-() $ContractWithOptionals$_contract_store((int, int, cell, slice, tuple, tuple) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $ContractWithOptionals$_store(b, v);
-    set_data(b.end_cell());
 }
 
 int $ContractWithOptionals$_fun_isNotNullA((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
@@ -123,10 +107,6 @@ slice $ContractWithOptionals$_fun_notNullD((int, int, cell, slice, tuple, tuple)
 (int, int, cell, slice, tuple) $ContractWithOptionals$_fun_notNullF((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f)) = $self;
     return $StructWithOptionals$_not_null($self'f);
-}
-
-((int, int, int, int, int)) $SomeGenericStruct$_constructor_value1_value2_value3_value4_value5(int value1, int value2, int value3, int value4, int value5) inline {
-    return (value1, value2, value3, value4, value5);
 }
 
 (int, int, int, int, int) $ContractWithOptionals$_fun_testVariables((int, int, cell, slice, tuple, tuple) $self) impure inline_ref {

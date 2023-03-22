@@ -95,24 +95,7 @@ SETCP0
         129 THROWIFNOT
         LDMSGADDR
         s0 s1 XCHG
-        s0 PUSH
-        SBITS
-        267 PUSHINT
-        EQUAL
-        136 THROWIFNOT
-        s0 PUSH
-        11 PLDU
-        s0 PUSH
-        10 PUSHPOW2
-        EQUAL
-        s1 PUSH
-        1279 PUSHINT
-        EQUAL
-        OR
-        136 THROWIFNOT
-        10 PUSHPOW2
-        EQUAL
-        137 THROWIFNOT
+        4 CALLDICT
         s0 s1 XCHG
         LDMSGADDR
         s1 PUSH
@@ -120,24 +103,7 @@ SETCP0
         0 NEQINT
         <{
           s0 s1 XCHG
-          s0 PUSH
-          SBITS
-          267 PUSHINT
-          EQUAL
-          136 THROWIFNOT
-          s0 PUSH
-          11 PLDU
-          s0 PUSH
-          10 PUSHPOW2
-          EQUAL
-          s1 PUSH
-          1279 PUSHINT
-          EQUAL
-          OR
-          136 THROWIFNOT
-          10 PUSHPOW2
-          EQUAL
-          137 THROWIFNOT
+          4 CALLDICT
         }> PUSHCONT
         <{
           s1 POP
@@ -148,9 +114,13 @@ SETCP0
         1 2 BLKDROP2
         2DROP
         -1 PUSHINT
-      }> IFJMPREF
+      }> PUSHCONT
+      IFJMP
       s0 s1 XCHG
       0 EQINT
+      <{
+        s0 POP
+      }> PUSHCONT
       <{
         HASHSU
         60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
@@ -160,11 +130,7 @@ SETCP0
           RETALT
         }> PUSHCONT
         IFJMP
-      }> PUSHCONT
-      <{
-        s0 POP
-      }> PUSHCONT
-      IFELSE
+      }> IFREFELSE
       0 PUSHINT
     }> CALLREF
     s0 POP
@@ -178,6 +144,26 @@ SETCP0
     1 STI
     ENDC
     c4 POP
+
+  4: 
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    10 PUSHPOW2
+    EQUAL
+    s1 PUSH
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
 
   67662: 
     2 UNTUPLE
@@ -328,24 +314,7 @@ SETCP0
       s1 POP
       LDMSGADDR
       s0 s1 XCHG
-      s0 PUSH
-      SBITS
-      267 PUSHINT
-      EQUAL
-      136 THROWIFNOT
-      s0 PUSH
-      11 PLDU
-      s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
-      1279 PUSHINT
-      EQUAL
-      OR
-      136 THROWIFNOT
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
+      4 CALLDICT
       s1 POP
     }> CALLREF
 
@@ -393,24 +362,7 @@ SETCP0
       256 STU
       ENDC
       CTOS
-      s0 PUSH
-      SBITS
-      267 PUSHINT
-      EQUAL
-      136 THROWIFNOT
-      s0 PUSH
-      11 PLDU
-      s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
-      1279 PUSHINT
-      EQUAL
-      OR
-      136 THROWIFNOT
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
+      4 CALLDICT
     }> CALLREF
 ) 19 DICTPUSHCONST
 DICTIGETJMPZ

@@ -53,7 +53,7 @@ const golden: string[] = [
     'true',
     'false',
     '((($a > 1) | (($b < 2) & ($c == 3))) | (~ ((($d != 4) & true) & (~ false))))',
-    '$f1($a)',
+    '$global_f1($a)',
     '$A$_constructor_a_b(1, 2)',
     `$j'a`,
     '$A$_get_b($A$_constructor_a_b(1, 2))',

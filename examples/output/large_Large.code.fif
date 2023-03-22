@@ -1,10 +1,10 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC $Large$_store
-  DECLPROC $Large$_load
   DECLPROC $Large$_contract_init
   DECLPROC $Large$_contract_load
   DECLPROC $Large$_contract_store
+  DECLPROC $Large$_load
+  DECLPROC $Large$_store
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -33,31 +33,6 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-  }>
-  $Large$_store PROCINLINE:<{
-    s3 s4 XCHG2
-    STREF
-    STREF
-    SWAP
-    NEWC
-    STREF
-    s1 s2 XCHG
-    STREF
-    ENDC
-    SWAP
-    STREF
-  }>
-  $Large$_load PROCINLINE:<{
-    LDREF
-    LDREF
-    LDREF
-    SWAP
-    CTOS
-    LDREF
-    LDREF
-    DROP
-    s2 s4 XCHG
-    s2 s3 XCHG
   }>
   $Large$_contract_init PROCREF:<{
     NEWC
@@ -110,6 +85,31 @@ PROGRAM{
     $Large$_store INLINECALLDICT
     ENDC
     c4 POP
+  }>
+  $Large$_load PROCINLINE:<{
+    LDREF
+    LDREF
+    LDREF
+    SWAP
+    CTOS
+    LDREF
+    LDREF
+    DROP
+    s2 s4 XCHG
+    s2 s3 XCHG
+  }>
+  $Large$_store PROCINLINE:<{
+    s3 s4 XCHG2
+    STREF
+    STREF
+    SWAP
+    NEWC
+    STREF
+    s1 s2 XCHG
+    STREF
+    ENDC
+    SWAP
+    STREF
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

@@ -1,11 +1,11 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC hello_world
-  DECLPROC $Native$_store
-  DECLPROC $Native$_load
   DECLPROC $Native$_contract_init
   DECLPROC $Native$_contract_load
   DECLPROC $Native$_contract_store
+  DECLPROC $Native$_load
+  DECLPROC $Native$_store
+  DECLPROC hello_world
   DECLPROC $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
@@ -35,19 +35,6 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-  }>
-  hello_world PROC:<{
-    1000 PUSHINT
-  }>
-  $Native$_store PROCINLINE:<{
-    SWAP
-    257 PUSHINT
-    STIX
-  }>
-  $Native$_load PROCINLINE:<{
-    257 PUSHINT
-    LDIX
-    SWAP
   }>
   $Native$_contract_init PROCREF:<{
     0 PUSHINT
@@ -85,6 +72,19 @@ PROGRAM{
     $Native$_store INLINECALLDICT
     ENDC
     c4 POP
+  }>
+  $Native$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $Native$_store PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
+  hello_world PROC:<{
+    1000 PUSHINT
   }>
   $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
     hello_world CALLDICT

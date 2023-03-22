@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: SerializationTester2
-BOC Size: 1711 bytes
+BOC Size: 1111 bytes
 
 # Types
 Total Types: 6

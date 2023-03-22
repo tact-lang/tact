@@ -1,29 +1,14 @@
+#include "case-1_Empty.headers.fc";
 #include "case-1_Empty.stdlib.fc";
 #include "case-1_Empty.storage.fc";
+
+;;
+;; Contract Empty functions
+;;
 
 tuple $Empty$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
-}
-
-tuple $Empty$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return null();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $Empty$_contract_init();
-    }
-}
-
-() $Empty$_contract_store(tuple v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    set_data(b.end_cell());
 }
 
 int $global_isZero(int $x, int $y, int $z, (int, int, int, int) $m) impure inline_ref {

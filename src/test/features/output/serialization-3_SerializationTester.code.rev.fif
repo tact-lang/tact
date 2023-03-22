@@ -50,32 +50,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -84,34 +59,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP
@@ -199,6 +147,39 @@ SETCP0
     s0 s1 XCHG
     1 STI
     6 1 BLKSWAP
+    12 CALLDICT
+    ENDC
+    c4 POP
+
+  11: 
+    257 PUSHINT
+    LDI
+    1 LDI
+    LDREF
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    s0 s1 XCHG
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    NEWC
+    s0 s1 XCHG
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    s1 s2 XCHG
+    STSLICER
+    s0 s1 XCHG
+    LDREF
+    s0 POP
+    CTOS
+    s2 s6 XCHG
+    s2 s5 XCHG
+    s2 s4 XCHG
+    s2 s3 XCHG
+
+  12: 
     s5 s6 XCHG2
     257 PUSHINT
     STIX
@@ -230,8 +211,8 @@ SETCP0
     ENDC
     s0 s1 XCHG
     STREF
-    ENDC
-    c4 POP
+
+  13: 
 
   103675: 
     c4 PUSH
@@ -242,32 +223,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -276,34 +232,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP
@@ -322,32 +251,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -356,34 +260,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP
@@ -403,32 +280,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -437,34 +289,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP
@@ -491,32 +316,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -525,34 +325,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP
@@ -572,32 +345,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -606,34 +354,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP
@@ -653,32 +374,7 @@ SETCP0
     1 LDI
     s0 s1 XCHG
     <{
-      257 PUSHINT
-      LDI
-      1 LDI
-      LDREF
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      NEWC
-      s0 s1 XCHG
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      s1 s2 XCHG
-      STSLICER
-      s0 s1 XCHG
-      LDREF
-      s0 POP
-      CTOS
-      s2 s6 XCHG
-      s2 s5 XCHG
-      s2 s4 XCHG
-      s2 s3 XCHG
+      11 CALLDICT
       1 6 BLKDROP2
     }> PUSHCONT
     <{
@@ -687,34 +383,7 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        257 PUSHINT
-        LDI
-        1 LDI
-        LDREF
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        NEWC
-        s0 s1 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        s1 s2 XCHG
-        STSLICER
-        s0 s1 XCHG
-        LDREF
-        s0 POP
-        CTOS
-        s2 s6 XCHG
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-      }> CALLREF
+      13 CALLDICT
       s0 s6 XCHG
       ENDS
       1 5 BLKSWAP

@@ -1,29 +1,15 @@
+#include "constants_ConstantTester.headers.fc";
 #include "constants_ConstantTester.stdlib.fc";
 #include "constants_ConstantTester.constants.fc";
+#include "constants_ConstantTester.storage.fc";
+
+;;
+;; Contract ConstantTester functions
+;;
 
 tuple $ConstantTester$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
-}
-
-tuple $ConstantTester$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return null();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $ConstantTester$_contract_init();
-    }
-}
-
-() $ConstantTester$_contract_store(tuple v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    set_data(b.end_cell());
 }
 
 int $ConstantTester$_fun_something1(tuple $self) impure inline_ref {

@@ -1,8 +1,45 @@
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode(int value, slice to, int mode) inline {
+    return (true, to, value, mode, null(), null(), null());
+}
+
+;;
+;; Type: ChangeOwner
+;; Header: 0x0f474d03
+;; TLB: change_owner#0f474d03 newOwner:address = ChangeOwner
+;;
+
 (slice, ((slice))) $ChangeOwner$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 256331011);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
+
+;;
+;; Type: RugParams
+;; TLB: _ investment:int257 returns:int257 fee:int257 = RugParams
+;;
+
+(int, int, int) $RugParams$_to_external(((int, int, int)) v) inline {
+    var (v'investment, v'returns, v'fee) = v; 
+    return (v'investment, v'returns, v'fee);
+}
+
+((int, int, int)) $RugParams$_constructor_investment_returns_fee(int investment, int returns, int fee) inline {
+    return (investment, returns, fee);
+}
+
+;;
+;; Type: RugPull
+;;
 
 builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline {
     var (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue) = v;
@@ -39,11 +76,6 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
     return (sc_0, (v'owner, v'investment, v'returns, v'fee, v'balance, v'rugpulled, v'stopped, v'queueStart, v'queueEnd, v'queue));
 }
 
-(int, int, int) $RugParams$_to_external(((int, int, int)) v) inline {
-    var (v'investment, v'returns, v'fee) = v; 
-    return (v'investment, v'returns, v'fee);
-}
-
 (slice, ((slice, int, int, int))) $RugPull$init$_load(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'investment = sc_0~load_int(257);
@@ -51,4 +83,27 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'fee = sc_1~load_int(257);
     return (sc_0, (v'owner, v'investment, v'returns, v'fee));
+}
+
+(slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$RugPull$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice owner, int investment, int returns, int fee) = $sc~$RugPull$init$_load();
+        $sc.end_parse();
+        return $RugPull$_contract_init(owner, investment, returns, fee);
+    }
+}
+
+() $RugPull$_contract_store((slice, int, int, int, int, int, int, int, int, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $RugPull$_store(b, v);
+    set_data(b.end_cell());
 }

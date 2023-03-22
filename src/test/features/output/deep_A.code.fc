@@ -1,51 +1,15 @@
+#include "deep_A.headers.fc";
 #include "deep_A.stdlib.fc";
 #include "deep_A.constants.fc";
 #include "deep_A.storage.fc";
 
+;;
+;; Contract A functions
+;;
+
 tuple $A$_contract_init() impure inline_ref {
     tuple $self = null();
     return $self;
-}
-
-tuple $A$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return null();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $A$_contract_init();
-    }
-}
-
-() $A$_contract_store(tuple v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    set_data(b.end_cell());
-}
-
-(cell, cell) $B$_init_child(cell sys', slice $parent) inline_ref {
-    slice sc' = sys'.begin_parse();
-    cell source = sc'~load_dict();
-    cell contracts = new_dict();
-    
-    ;; Contract Code: B
-    cell mine = __tact_dict_get_code(source, 26758);
-    contracts = __tact_dict_set_code(contracts, 26758, mine);
-    
-    ;; Contract Code: C
-    cell code_30887 = __tact_dict_get_code(source, 30887);
-    contracts = __tact_dict_set_code(contracts, 30887, code_30887);
-    
-    ;; Build cell
-    builder b = begin_cell();
-    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
-    b = b.store_int(false, 1);
-    b = $B$init$_store(b, ($parent));
-    return (mine, b.end_cell());
 }
 
 (cell, cell) $A$_fun_getNext(tuple $self) impure inline_ref {

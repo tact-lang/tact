@@ -1,0 +1,44 @@
+;; __tact_dict_get_int_slice
+slice __tact_dict_get_int_slice(cell d, int kl, int k) inline;
+
+;; __tact_dict_get_slice_int
+int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline;
+
+;; __tact_dict_set_int_slice
+(cell, ()) __tact_dict_set_int_slice(cell d, int kl, int k, slice v) inline;
+
+;; __tact_dict_set_slice_int
+(cell, ()) __tact_dict_set_slice_int(cell d, int kl, slice k, int v, int vl) inline;
+
+;; __tact_load_address
+(slice, slice) __tact_load_address(slice cs) inline;
+
+;; __tact_store_address
+builder __tact_store_address(builder b, slice address) inline;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; $DDDD$_contract_init
+(slice, slice, slice, cell, cell) $DDDD$_contract_init(slice $addr1, slice $addr2, slice $addr3) impure inline_ref;
+
+;; $DDDD$_contract_load
+(slice, slice, slice, cell, cell) $DDDD$_contract_load() impure inline;
+
+;; $DDDD$_contract_store
+() $DDDD$_contract_store((slice, slice, slice, cell, cell) v) impure inline;
+
+;; $DDDD$_fun_mapData_addr1
+slice $DDDD$_fun_mapData_addr1((slice, slice, slice, cell, cell) $self, int $key) impure inline;
+
+;; $DDDD$_fun_mapData2_addr1
+int $DDDD$_fun_mapData2_addr1((slice, slice, slice, cell, cell) $self, slice $key) impure inline;
+
+;; $DDDD$_load
+(slice, ((slice, slice, slice, cell, cell))) $DDDD$_load(slice sc_0) inline;
+
+;; $DDDD$_store
+builder $DDDD$_store(builder build_0, (slice, slice, slice, cell, cell) v) inline;
+
+;; $DDDD$init$_load
+(slice, ((slice, slice, slice))) $DDDD$init$_load(slice sc_0) inline;

@@ -129,11 +129,3 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
-
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode_bounce_code_data(int value, slice to, int mode, int bounce, cell code, cell data) inline {
-    return (bounce, to, value, mode, null(), code, data);
-}
-
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
-    return (bounce, to, value, mode, body, null(), null());
-}

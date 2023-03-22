@@ -115,11 +115,6 @@ cell __tact_string_builder_end(tuple builders) inline {
     return ((builders), ());
 }
 
-(cell, cell) $StateInit$_to_external(((cell, cell)) v) inline {
-    var (v'code, v'data) = v; 
-    return (v'code, v'data);
-}
-
 slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
@@ -173,8 +168,4 @@ cell $String$_fun_asComment(slice $self) impure inline_ref {
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
-}
-
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode_bounce_code_data_body(int value, slice to, int mode, int bounce, cell code, cell data, cell body) inline {
-    return (bounce, to, value, mode, body, code, data);
 }

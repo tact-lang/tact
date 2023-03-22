@@ -1,30 +1,14 @@
+#include "stdlib_StdlibTest.headers.fc";
 #include "stdlib_StdlibTest.stdlib.fc";
 #include "stdlib_StdlibTest.storage.fc";
+
+;;
+;; Contract StdlibTest functions
+;;
 
 (int) $StdlibTest$_contract_init() impure inline_ref {
     var (($self'v)) = (0);
     return ($self'v);
-}
-
-(int) $StdlibTest$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$StdlibTest$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        return $StdlibTest$_contract_init();
-    }
-}
-
-() $StdlibTest$_contract_store((int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $StdlibTest$_store(b, v);
-    set_data(b.end_cell());
 }
 
 int $StdlibTest$_fun_sliceEmpty((int) $self, slice $sc) impure inline_ref {

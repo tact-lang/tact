@@ -1,5 +1,10 @@
+#include "serialization-2_SerializationTester2.headers.fc";
 #include "serialization-2_SerializationTester2.stdlib.fc";
 #include "serialization-2_SerializationTester2.storage.fc";
+
+;;
+;; Contract SerializationTester2 functions
+;;
 
 ((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_init((int, int, int, int, int) $a, (int, int, int, int, int) $b) impure inline_ref {
     var (($a'a, $a'b, $a'c, $a'd, $a'e)) = $a;
@@ -8,29 +13,6 @@
     ($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e) = ($a'a, $a'b, $a'c, $a'd, $a'e);
     ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e) = ($b'a, $b'b, $b'c, $b'd, $b'e);
     return (($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
-}
-
-((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$SerializationTester2$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        ((int, int, int, int, int) a, (int, int, int, int, int) b) = $sc~$SerializationTester2$init$_load();
-        $sc.end_parse();
-        return $SerializationTester2$_contract_init(a, b);
-    }
-}
-
-() $SerializationTester2$_contract_store(((int, int, int, int, int), (int, int, int, int, int)) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $SerializationTester2$_store(b, v);
-    set_data(b.end_cell());
 }
 
 (int, int, int, int, int) $SerializationTester2$_fun_getA(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
@@ -53,10 +35,6 @@ tuple $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, 
     return $Vars$_as_optional(($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
 }
 
-(((int, int, int, int, int), (int, int, int, int, int))) $Both$_constructor_a_b((int, int, int, int, int) a, (int, int, int, int, int) b) inline {
-    return (a, b);
-}
-
 ((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_fun_getBoth(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     return $Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e));
@@ -65,10 +43,6 @@ tuple $SerializationTester2$_fun_getBopt(((int, int, int, int, int), (int, int, 
 tuple $SerializationTester2$_fun_getBothOpt(((int, int, int, int, int), (int, int, int, int, int)) $self) impure inline_ref {
     var ((($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e))) = $self;
     return $Both$_as_optional($Both$_constructor_a_b(($self'a'a, $self'a'b, $self'a'c, $self'a'd, $self'a'e), ($self'b'a, $self'b'b, $self'b'c, $self'b'd, $self'b'e)));
-}
-
-((int, int, int, int, int)) $Vars$_constructor_a_b_c_d_e(int a, int b, int c, int d, int e) inline {
-    return (a, b, c, d, e);
 }
 
 (int, int, int, int, int) $SerializationTester2$_fun_process(((int, int, int, int, int), (int, int, int, int, int)) $self, (int, int, int, int, int) $src, ((int, int, int, int, int), (int, int, int, int, int)) $both, tuple $both2) impure inline_ref {

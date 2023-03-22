@@ -74,7 +74,3 @@ builder __tact_store_bool(builder b, int v) inline {
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
-
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value(slice to, int value) inline {
-    return (true, to, value, 0, null(), null(), null());
-}

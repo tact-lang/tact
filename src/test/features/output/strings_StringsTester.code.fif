@@ -1,32 +1,32 @@
 PROGRAM{
-  DECLPROC __tact_verify_address
+  DECLPROC __tact_float_to_string
+  DECLPROC __tact_int_to_string
+  DECLPROC __tact_string_builder_append
+  DECLPROC __tact_string_builder_end
+  DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_start_string
-  DECLPROC __tact_string_builder_end
-  DECLPROC __tact_string_builder_end_slice
-  DECLPROC __tact_string_builder_append
-  DECLPROC __tact_int_to_string
-  DECLPROC __tact_float_to_string
+  DECLPROC __tact_verify_address
   DECLPROC $Builder$_fun_asSlice
   DECLPROC $Slice$_fun_fromBase64
   DECLPROC $String$_fun_fromBase64
   DECLPROC $StringsTester$_contract_init
   DECLPROC $StringsTester$_contract_load
   DECLPROC $StringsTester$_contract_store
+  DECLPROC $StringsTester$_fun_base64
   DECLPROC $StringsTester$_fun_constantString
   DECLPROC $StringsTester$_fun_constantStringUnicode
   DECLPROC $StringsTester$_fun_constantStringUnicodeLong
-  DECLPROC $StringsTester$_fun_dynamicStringCell
   DECLPROC $StringsTester$_fun_dynamicCommentCell
   DECLPROC $StringsTester$_fun_dynamicCommentCellLarge
   DECLPROC $StringsTester$_fun_dynamicCommentStringLarge
-  DECLPROC $StringsTester$_fun_stringWithNumber
-  DECLPROC $StringsTester$_fun_stringWithNegativeNumber
-  DECLPROC $StringsTester$_fun_stringWithLargeNumber
-  DECLPROC $StringsTester$_fun_stringWithFloat
-  DECLPROC $StringsTester$_fun_base64
+  DECLPROC $StringsTester$_fun_dynamicStringCell
   DECLPROC $StringsTester$_fun_processBase64
+  DECLPROC $StringsTester$_fun_stringWithFloat
+  DECLPROC $StringsTester$_fun_stringWithLargeNumber
+  DECLPROC $StringsTester$_fun_stringWithNegativeNumber
+  DECLPROC $StringsTester$_fun_stringWithNumber
   DECLPROC %$StringsTester$_receive_empty
   93932 DECLMETHOD %constantString
   94939 DECLMETHOD %constantStringUnicode
@@ -50,209 +50,6 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
-  __tact_verify_address PROCINLINE:<{
-    DUP
-    SBITS
-    267 PUSHINT
-    EQUAL
-    136 THROWIFNOT
-    DUP
-    11 PLDU
-    DUP
-    10 PUSHPOW2
-    EQUAL
-    OVER
-    1279 PUSHINT
-    EQUAL
-    OR
-    136 THROWIFNOT
-    10 PUSHPOW2
-    EQUAL
-    137 THROWIFNOT
-  }>
-  __tact_string_builder_start PROCINLINE:<{
-    NIL
-    SWAP
-    TPUSH
-    PUSHNULL
-    TPUSH
-  }>
-  __tact_string_builder_start_comment PROCINLINE:<{
-    NEWC
-    0 PUSHINT
-    SWAP
-    32 STU
-    __tact_string_builder_start INLINECALLDICT
-  }>
-  __tact_string_builder_start_string PROCINLINE:<{
-    NEWC
-    __tact_string_builder_start INLINECALLDICT
-  }>
-  __tact_string_builder_end PROCINLINE:<{
-    UNCONS
-    SWAP
-    ENDC
-    WHILE:<{
-      OVER
-      ISNULL
-      NOT
-    }>DO<{
-      SWAP
-      UNCONS
-      -ROT
-      STREF
-      ENDC
-    }>
-    NIP
-  }>
-  __tact_string_builder_end_slice PROCINLINE:<{
-    __tact_string_builder_end INLINECALLDICT
-    CTOS
-  }>
-  __tact_string_builder_append PROCREF:<{
-    DUP
-    SREFS
-    OVER
-    SBITS
-    WHILE:<{
-      DUP
-      0 GTINT
-      s2 PUSH
-      0 GTINT
-      OR
-    }>DO<{
-      s0 s3 XCHG
-      UNCONS
-      127 PUSHINT
-      s2 PUSH
-      BBITS
-      3 RSHIFT#
-      SUB
-      s0 s5 XCHG
-      3 RSHIFT#
-      s5 s5 XCPU
-      MIN
-      DUP
-      0 GTINT
-      IF:<{
-        DUP
-        3 LSHIFT#
-        s1 s5 XCHG
-        LDSLICEX
-        s3 s3 XCHG2
-        STSLICER
-        s0 s1 s4 XCHG3
-      }>
-      -ROT
-      CONS
-      s4 s1 PUSH2
-      SUB
-      0 GTINT
-      IF:<{
-        NEWC
-        SWAP
-        CONS
-        s4 s4 XCHG2
-        SUB
-        3 LSHIFT#
-      }>ELSE<{
-        NIP
-        s3 POP
-        0 GTINT
-        IF:<{
-          LDREF
-          DROP
-          CTOS
-          DUP
-          SREFS
-          OVER
-          SBITS
-        }>ELSE<{
-          0 PUSHINT
-          DUP
-        }>
-      }>
-    }>
-    3 BLKDROP
-  }>
-  __tact_int_to_string PROCREF:<{
-    NEWC
-    OVER
-    0 LESSINT
-    IF:<{
-      45 PUSHINT
-      SWAP
-      8 STU
-      SWAP
-      NEGATE
-      SWAP
-    }>
-    OVER
-    1000000000000000000000000000000 PUSHINTX
-    LESS
-    IF:<{
-      0 PUSHINT
-      DUP
-      1 PUSHINT
-      UNTIL:<{
-        s0 s4 XCHG
-        10 PUSHINT
-        DIVMOD
-        48 ADDCONST
-        s5 PUSH
-        MUL
-        s1 s2 XCHG
-        ADD
-        s0 s4 XCHG
-        8 LSHIFT#
-        s0 s2 XCHG
-        INC
-        OVER
-        0 EQINT
-        s5 s3 s0 XCHG3
-      }>
-      DROP
-      s3 POP
-      3 LSHIFT#
-      STUX
-    }>ELSE<{
-      NIL
-      0 PUSHINT
-      UNTIL:<{
-        s3 PUSH
-        10 PUSHINT
-        MOD
-        s1 s2 XCHG
-        TPUSH
-        SWAP
-        INC
-        s0 s3 XCHG
-        10 PUSHINT
-        DIV
-        DUP
-        0 EQINT
-        s1 s4 XCHG
-      }>
-      s3 POP
-      s2 PUSH
-      DEC
-      s0 s3 XCHG
-      REPEAT:<{
-        s0 s2 PUSH2
-        INDEXVAR
-        48 ADDCONST
-        ROT
-        8 STU
-        s0 s2 XCHG
-        DEC
-        -ROT
-      }>
-      DROP
-      NIP
-    }>
-    ENDC
-    CTOS
-  }>
   __tact_float_to_string PROCREF:<{
     DUP
     1 LESSINT
@@ -337,6 +134,209 @@ PROGRAM{
     2 1 BLKDROP2
     ENDC
     CTOS
+  }>
+  __tact_int_to_string PROCREF:<{
+    NEWC
+    OVER
+    0 LESSINT
+    IF:<{
+      45 PUSHINT
+      SWAP
+      8 STU
+      SWAP
+      NEGATE
+      SWAP
+    }>
+    OVER
+    1000000000000000000000000000000 PUSHINTX
+    LESS
+    IF:<{
+      0 PUSHINT
+      DUP
+      1 PUSHINT
+      UNTIL:<{
+        s0 s4 XCHG
+        10 PUSHINT
+        DIVMOD
+        48 ADDCONST
+        s5 PUSH
+        MUL
+        s1 s2 XCHG
+        ADD
+        s0 s4 XCHG
+        8 LSHIFT#
+        s0 s2 XCHG
+        INC
+        OVER
+        0 EQINT
+        s5 s3 s0 XCHG3
+      }>
+      DROP
+      s3 POP
+      3 LSHIFT#
+      STUX
+    }>ELSE<{
+      NIL
+      0 PUSHINT
+      UNTIL:<{
+        s3 PUSH
+        10 PUSHINT
+        MOD
+        s1 s2 XCHG
+        TPUSH
+        SWAP
+        INC
+        s0 s3 XCHG
+        10 PUSHINT
+        DIV
+        DUP
+        0 EQINT
+        s1 s4 XCHG
+      }>
+      s3 POP
+      s2 PUSH
+      DEC
+      s0 s3 XCHG
+      REPEAT:<{
+        s0 s2 PUSH2
+        INDEXVAR
+        48 ADDCONST
+        ROT
+        8 STU
+        s0 s2 XCHG
+        DEC
+        -ROT
+      }>
+      DROP
+      NIP
+    }>
+    ENDC
+    CTOS
+  }>
+  __tact_string_builder_append PROCREF:<{
+    DUP
+    SREFS
+    OVER
+    SBITS
+    WHILE:<{
+      DUP
+      0 GTINT
+      s2 PUSH
+      0 GTINT
+      OR
+    }>DO<{
+      s0 s3 XCHG
+      UNCONS
+      127 PUSHINT
+      s2 PUSH
+      BBITS
+      3 RSHIFT#
+      SUB
+      s0 s5 XCHG
+      3 RSHIFT#
+      s5 s5 XCPU
+      MIN
+      DUP
+      0 GTINT
+      IF:<{
+        DUP
+        3 LSHIFT#
+        s1 s5 XCHG
+        LDSLICEX
+        s3 s3 XCHG2
+        STSLICER
+        s0 s1 s4 XCHG3
+      }>
+      -ROT
+      CONS
+      s4 s1 PUSH2
+      SUB
+      0 GTINT
+      IF:<{
+        NEWC
+        SWAP
+        CONS
+        s4 s4 XCHG2
+        SUB
+        3 LSHIFT#
+      }>ELSE<{
+        NIP
+        s3 POP
+        0 GTINT
+        IF:<{
+          LDREF
+          DROP
+          CTOS
+          DUP
+          SREFS
+          OVER
+          SBITS
+        }>ELSE<{
+          0 PUSHINT
+          DUP
+        }>
+      }>
+    }>
+    3 BLKDROP
+  }>
+  __tact_string_builder_end PROCINLINE:<{
+    UNCONS
+    SWAP
+    ENDC
+    WHILE:<{
+      OVER
+      ISNULL
+      NOT
+    }>DO<{
+      SWAP
+      UNCONS
+      -ROT
+      STREF
+      ENDC
+    }>
+    NIP
+  }>
+  __tact_string_builder_end_slice PROCINLINE:<{
+    __tact_string_builder_end INLINECALLDICT
+    CTOS
+  }>
+  __tact_string_builder_start PROCINLINE:<{
+    NIL
+    SWAP
+    TPUSH
+    PUSHNULL
+    TPUSH
+  }>
+  __tact_string_builder_start_comment PROCINLINE:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    32 STU
+    __tact_string_builder_start INLINECALLDICT
+  }>
+  __tact_string_builder_start_string PROCINLINE:<{
+    NEWC
+    __tact_string_builder_start INLINECALLDICT
+  }>
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
   }>
   $Builder$_fun_asSlice PROCREF:<{
     ENDC
@@ -473,6 +473,11 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  $StringsTester$_fun_base64 PROCREF:<{
+    DROP
+    B{b5ee9c72410101010026000048545746756553426f5957356b637942745957746c494778705a32683049486476636d7375ff762436} B>boc <s PUSHSLICE
+    $String$_fun_fromBase64 INLINECALLDICT
+  }>
   $StringsTester$_fun_constantString PROCREF:<{
     DROP
     B{b5ee9c7241010101000d0000167465737420737472696e67ee608f50} B>boc <s PUSHSLICE
@@ -484,13 +489,6 @@ PROGRAM{
   $StringsTester$_fun_constantStringUnicodeLong PROCREF:<{
     DROP
     B{b5ee9c72410206010002fa0001fed0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f918020d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b80101fed0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d182200201fed0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d180200301fef09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd10401fe80d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b50500dcd18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0bfd180d0b8d0b2d0b5d18220d0bcd0b8d18020f09f9180d0918e6a} B>boc <s PUSHSLICE
-  }>
-  $StringsTester$_fun_dynamicStringCell PROCREF:<{
-    DROP
-    __tact_string_builder_start_string INLINECALLDICT
-    B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
-    __tact_string_builder_append INLINECALLDICT
-    __tact_string_builder_end INLINECALLDICT
   }>
   $StringsTester$_fun_dynamicCommentCell PROCREF:<{
     DROP
@@ -517,12 +515,29 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $StringsTester$_fun_stringWithNumber PROCREF:<{
+  $StringsTester$_fun_dynamicStringCell PROCREF:<{
+    DROP
+    __tact_string_builder_start_string INLINECALLDICT
+    B{b5ee9c7241010101000800000c48656c6c6f21a44219b3} B>boc <s PUSHSLICE
+    __tact_string_builder_append INLINECALLDICT
+    __tact_string_builder_end INLINECALLDICT
+  }>
+  $StringsTester$_fun_processBase64 PROCREF:<{
+    NIP
+    $String$_fun_fromBase64 INLINECALLDICT
+  }>
+  $StringsTester$_fun_stringWithFloat PROCREF:<{
+    DROP
+    95 PUSHINT
+    1 PUSHINT
+    __tact_float_to_string INLINECALLDICT
+  }>
+  $StringsTester$_fun_stringWithLargeNumber PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
-    123 PUSHINT
+    1000000000000000000000000000000000000000000000000000000000000 PUSHINTX
     __tact_int_to_string INLINECALLDICT
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
@@ -537,30 +552,15 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $StringsTester$_fun_stringWithLargeNumber PROCREF:<{
+  $StringsTester$_fun_stringWithNumber PROCREF:<{
     DROP
     __tact_string_builder_start_string INLINECALLDICT
     B{b5ee9c7241010101001700002a48656c6c6f2c20796f75722062616c616e63653a201d628127} B>boc <s PUSHSLICE
     __tact_string_builder_append INLINECALLDICT
-    1000000000000000000000000000000000000000000000000000000000000 PUSHINTX
+    123 PUSHINT
     __tact_int_to_string INLINECALLDICT
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
-  }>
-  $StringsTester$_fun_stringWithFloat PROCREF:<{
-    DROP
-    95 PUSHINT
-    1 PUSHINT
-    __tact_float_to_string INLINECALLDICT
-  }>
-  $StringsTester$_fun_base64 PROCREF:<{
-    DROP
-    B{b5ee9c72410101010026000048545746756553426f5957356b637942745957746c494778705a32683049486476636d7375ff762436} B>boc <s PUSHSLICE
-    $String$_fun_fromBase64 INLINECALLDICT
-  }>
-  $StringsTester$_fun_processBase64 PROCREF:<{
-    NIP
-    $String$_fun_fromBase64 INLINECALLDICT
   }>
   %$StringsTester$_receive_empty PROCINLINE:<{
   }>

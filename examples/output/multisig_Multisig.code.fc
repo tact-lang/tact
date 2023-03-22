@@ -1,5 +1,10 @@
+#include "multisig_Multisig.headers.fc";
 #include "multisig_Multisig.stdlib.fc";
 #include "multisig_Multisig.storage.fc";
+
+;;
+;; Contract Multisig functions
+;;
 
 (int, cell, int, int) $Multisig$_contract_init(cell $members, int $totalWeight, int $requiredWeight) impure inline_ref {
     var (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight)) = (null(), null(), null(), null());
@@ -9,46 +14,6 @@
     $self'totalWeight = 0;
     $self'seqno = 0;
     return ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight);
-}
-
-(int, cell, int, int) $Multisig$_contract_load() impure inline {
-    slice $sc = get_data().begin_parse();
-    __tact_context_sys = $sc~load_ref();
-    int $loaded = $sc~load_int(1);
-    if ($loaded) {
-        return $sc~$Multisig$_load();
-    } else {
-        ;; Allow only workchain deployments
-        throw_unless(137, my_address().preload_uint(11) == 1024);
-        (cell members, int totalWeight, int requiredWeight) = $sc~$Multisig$init$_load();
-        $sc.end_parse();
-        return $Multisig$_contract_init(members, totalWeight, requiredWeight);
-    }
-}
-
-() $Multisig$_contract_store((int, cell, int, int) v) impure inline {
-    builder b = begin_cell();
-    b = b.store_ref(__tact_context_sys);
-    b = b.store_int(true, 1);
-    b = $Multisig$_store(b, v);
-    set_data(b.end_cell());
-}
-
-(cell, cell) $MultisigSigner$_init_child(cell sys', slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) inline_ref {
-    slice sc' = sys'.begin_parse();
-    cell source = sc'~load_dict();
-    cell contracts = new_dict();
-    
-    ;; Contract Code: MultisigSigner
-    cell mine = __tact_dict_get_code(source, 37817);
-    contracts = __tact_dict_set_code(contracts, 37817, mine);
-    
-    ;; Build cell
-    builder b = begin_cell();
-    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
-    b = b.store_int(false, 1);
-    b = $MultisigSigner$init$_store(b, ($master, $members, $requiredWeight, $request));
-    return (mine, b.end_cell());
 }
 
 int $Multisig$_fun_member((int, cell, int, int) $self, slice $address) impure inline_ref {

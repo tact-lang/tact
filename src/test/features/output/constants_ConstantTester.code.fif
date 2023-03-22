@@ -3,12 +3,12 @@ PROGRAM{
   DECLPROC $ConstantTester$_contract_init
   DECLPROC $ConstantTester$_contract_load
   DECLPROC $ConstantTester$_contract_store
+  DECLPROC $ConstantTester$_fun_globalConst
   DECLPROC $ConstantTester$_fun_something1
   DECLPROC $ConstantTester$_fun_something2
   DECLPROC $ConstantTester$_fun_something3
   DECLPROC $ConstantTester$_fun_something4
   DECLPROC $ConstantTester$_fun_something5
-  DECLPROC $ConstantTester$_fun_globalConst
   121234 DECLMETHOD %something1
   125425 DECLMETHOD %something2
   129488 DECLMETHOD %something3
@@ -78,6 +78,10 @@ PROGRAM{
     ENDC
     c4 POP
   }>
+  $ConstantTester$_fun_globalConst PROCREF:<{
+    DROP
+    100 PUSHINT
+  }>
   $ConstantTester$_fun_something1 PROCREF:<{
     DROP
     10 PUSHINT
@@ -97,10 +101,6 @@ PROGRAM{
   $ConstantTester$_fun_something5 PROCREF:<{
     DROP
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
-  }>
-  $ConstantTester$_fun_globalConst PROCREF:<{
-    DROP
-    100 PUSHINT
   }>
   %something1 PROC:<{
     $ConstantTester$_contract_load INLINECALLDICT

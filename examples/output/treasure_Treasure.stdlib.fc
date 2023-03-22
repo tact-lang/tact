@@ -82,7 +82,3 @@ int __tact_address_eq(slice a, slice b) inline {
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
-
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode_body(int value, slice to, int mode, cell body) inline {
-    return (true, to, value, mode, body, null(), null());
-}

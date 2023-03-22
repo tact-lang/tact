@@ -19,9 +19,7 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
         ctx.signature(`${resolveFuncType(type, ctx)} ${ops.contractLoad(type.name, ctx)}()`);
         ctx.flag('impure');
         ctx.flag('inline');
-        if (origin === 'stdlib') {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name + '$init');
         ctx.body(() => {
 
             // Load data slice
@@ -69,9 +67,7 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
         ctx.signature(sig);
         ctx.flag('impure');
         ctx.flag('inline');
-        if (origin === 'stdlib') {
-            ctx.context('stdlib');
-        }
+        ctx.context('type:' + type.name + '$init');
         ctx.body(() => {
             ctx.append(`builder b = begin_cell();`);
 
@@ -98,9 +94,6 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         const sig = `${resolveFuncType(t, ctx)} ${ops.contractInit(t.name, ctx)}(${args.join(', ')})`;
         ctx.signature(sig);
         ctx.flag('impure');
-        if (t.origin === 'stdlib') {
-            ctx.context('stdlib');
-        }
         ctx.body(() => {
             // Unpack args
             for (let a of init.args) {
@@ -144,6 +137,7 @@ export function writeInit(t: TypeDescription, init: InitDescription, ctx: Writer
         if (enabledInline(ctx.ctx)) {
             ctx.flag('inline');
         }
+        ctx.context('type:' + t.name + '$init');
         ctx.body(() => {
             ctx.write(`
                 slice sc' = sys'.begin_parse();

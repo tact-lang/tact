@@ -1,19 +1,19 @@
 PROGRAM{
-  DECLPROC __tact_verify_address
+  DECLPROC __tact_dict_get_int_slice
+  DECLPROC __tact_dict_get_slice_int
+  DECLPROC __tact_dict_set_int_slice
+  DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
-  DECLPROC __tact_dict_set_int_slice
-  DECLPROC __tact_dict_get_int_slice
-  DECLPROC __tact_dict_set_slice_int
-  DECLPROC __tact_dict_get_slice_int
-  DECLPROC $DDDD$_store
-  DECLPROC $DDDD$_load
-  DECLPROC $DDDD$init$_load
+  DECLPROC __tact_verify_address
   DECLPROC $DDDD$_contract_init
   DECLPROC $DDDD$_contract_load
   DECLPROC $DDDD$_contract_store
   DECLPROC $DDDD$_fun_mapData_addr1
   DECLPROC $DDDD$_fun_mapData2_addr1
+  DECLPROC $DDDD$_load
+  DECLPROC $DDDD$_store
+  DECLPROC $DDDD$init$_load
   DECLPROC %$DDDD$_receive_empty
   120259 DECLMETHOD %mapData_addr1
   66206 DECLMETHOD %mapData2_addr1
@@ -26,6 +26,67 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
+  __tact_dict_get_int_slice PROCINLINE:<{
+    -ROT
+    DICTIGET
+    NULLSWAPIFNOT
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_get_slice_int PROCINLINE:<{
+    s1 s3 s3 XCHG3
+    DICTGET
+    NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_int_slice PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTISET
+    }>
+  }>
+  __tact_dict_set_slice_int PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+      DICTDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTSETB
+    }>
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
   __tact_verify_address PROCINLINE:<{
     DUP
     SBITS
@@ -45,97 +106,6 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-  }>
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
-    SWAP
-    __tact_verify_address INLINECALLDICT
-  }>
-  __tact_store_address PROCINLINE:<{
-    __tact_verify_address INLINECALLDICT
-    STSLICER
-  }>
-  __tact_dict_set_int_slice PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      -ROT
-      DICTIDEL
-      DROP
-    }>ELSE<{
-      s1 s3 s3 XCHG3
-      DICTISET
-    }>
-  }>
-  __tact_dict_get_int_slice PROCINLINE:<{
-    -ROT
-    DICTIGET
-    NULLSWAPIFNOT
-    IF:<{
-    }>ELSE<{
-      DROP
-      PUSHNULL
-    }>
-  }>
-  __tact_dict_set_slice_int PROCINLINE:<{
-    OVER
-    ISNULL
-    IF:<{
-      2DROP
-      -ROT
-      DICTDEL
-      DROP
-    }>ELSE<{
-      NEWC
-      SWAP
-      STIX
-      s1 s3 s3 XCHG3
-      DICTSETB
-    }>
-  }>
-  __tact_dict_get_slice_int PROCINLINE:<{
-    s1 s3 s3 XCHG3
-    DICTGET
-    NULLSWAPIFNOT
-    IF:<{
-      SWAP
-      LDIX
-      DROP
-    }>ELSE<{
-      2DROP
-      PUSHNULL
-    }>
-  }>
-  $DDDD$_store PROCINLINE:<{
-    s5 s4 XCHG2
-    __tact_store_address INLINECALLDICT
-    ROT
-    __tact_store_address INLINECALLDICT
-    SWAP
-    __tact_store_address INLINECALLDICT
-    s1 s2 XCHG
-    STDICT
-    STDICT
-  }>
-  $DDDD$_load PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    SWAP
-    LDDICT
-    LDDICT
-    5 -ROLL
-  }>
-  $DDDD$init$_load PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    s3 s3 s0 XCHG3
   }>
   $DDDD$_contract_init PROCREF:<{
     PUSHNULL
@@ -192,6 +162,36 @@ PROGRAM{
     SWAP
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $DDDD$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    LDDICT
+    LDDICT
+    5 -ROLL
+  }>
+  $DDDD$_store PROCINLINE:<{
+    s5 s4 XCHG2
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
+    STDICT
+    STDICT
+  }>
+  $DDDD$init$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    s3 s3 s0 XCHG3
   }>
   %$DDDD$_receive_empty PROCINLINE:<{
     SWAP

@@ -1,3 +1,7 @@
+;;
+;; Type: Large
+;;
+
 builder $Large$_store(builder build_0, (cell, cell, cell, cell) v) inline {
     var (v'cell1, v'cell2, v'cell3, v'cell4) = v;
     build_0 = build_0.store_ref(v'cell1);
@@ -16,4 +20,25 @@ builder $Large$_store(builder build_0, (cell, cell, cell, cell) v) inline {
     var v'cell3 = sc_1~load_ref();
     var v'cell4 = sc_1~load_ref();
     return (sc_0, (v'cell1, v'cell2, v'cell3, v'cell4));
+}
+
+(cell, cell, cell, cell) $Large$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$Large$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        return $Large$_contract_init();
+    }
+}
+
+() $Large$_contract_store((cell, cell, cell, cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $Large$_store(b, v);
+    set_data(b.end_cell());
 }

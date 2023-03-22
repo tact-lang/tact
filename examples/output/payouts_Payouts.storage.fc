@@ -1,8 +1,29 @@
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+;;
+;; Type: ChangeOwner
+;; Header: 0x0f474d03
+;; TLB: change_owner#0f474d03 newOwner:address = ChangeOwner
+;;
+
 (slice, ((slice))) $ChangeOwner$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 256331011);
     var v'newOwner = sc_0~__tact_load_address();
     return (sc_0, (v'newOwner));
 }
+
+;;
+;; Type: CanPayout
+;; Header: 0xc41949df
+;; TLB: can_payout#c41949df amount:int257 = CanPayout
+;;
 
 builder $CanPayout$_store(builder build_0, (int) v) inline {
     var (v'amount) = v;
@@ -15,6 +36,16 @@ cell $CanPayout$_store_cell((int) v) inline {
     return $CanPayout$_store(begin_cell(), v).end_cell();
 }
 
+((int)) $CanPayout$_constructor_amount(int amount) inline {
+    return (amount);
+}
+
+;;
+;; Type: CanPayoutResponse
+;; Header: 0xffeb40de
+;; TLB: can_payout_response#ffeb40de amount:int257 address:address ok:bool = CanPayoutResponse
+;;
+
 (slice, ((int, slice, int))) $CanPayoutResponse$_load(slice sc_0) inline {
     throw_unless(129, sc_0~load_uint(32) == 4293607646);
     var v'amount = sc_0~load_int(257);
@@ -22,6 +53,38 @@ cell $CanPayout$_store_cell((int) v) inline {
     var v'ok = sc_0~load_int(1);
     return (sc_0, (v'amount, v'address, v'ok));
 }
+
+;;
+;; Type: Beacon
+;;
+
+builder $Beacon$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'master, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(cell, cell) $Beacon$_init_child(cell sys', slice $master, slice $owner) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: Beacon
+    cell mine = __tact_dict_get_code(source, 41210);
+    contracts = __tact_dict_set_code(contracts, 41210, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $Beacon$init$_store(b, ($master, $owner));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: Payouts
+;;
 
 builder $Payouts$_store(builder build_0, (slice, int) v) inline {
     var (v'owner, v'publicKey) = v;
@@ -36,15 +99,31 @@ builder $Payouts$_store(builder build_0, (slice, int) v) inline {
     return (sc_0, (v'owner, v'publicKey));
 }
 
-builder $Beacon$init$_store(builder build_0, (slice, slice) v) inline {
-    var (v'master, v'owner) = v;
-    build_0 = __tact_store_address(build_0, v'master);
-    build_0 = __tact_store_address(build_0, v'owner);
-    return build_0;
-}
-
 (slice, ((slice, int))) $Payouts$init$_load(slice sc_0) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'publicKey = sc_0~load_int(257);
     return (sc_0, (v'owner, v'publicKey));
+}
+
+(slice, int) $Payouts$_contract_load() impure inline {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$Payouts$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice owner, int publicKey) = $sc~$Payouts$init$_load();
+        $sc.end_parse();
+        return $Payouts$_contract_init(owner, publicKey);
+    }
+}
+
+() $Payouts$_contract_store((slice, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $Payouts$_store(b, v);
+    set_data(b.end_cell());
 }

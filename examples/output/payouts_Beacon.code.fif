@@ -1,26 +1,26 @@
 PROGRAM{
-  DECLPROC __tact_verify_address
-  DECLPROC __tact_load_address
-  DECLPROC __tact_store_address
-  DECLPROC __tact_not_null
+  DECLPROC __tact_address_eq
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
+  DECLPROC __tact_load_address
+  DECLPROC __tact_not_null
+  DECLPROC __tact_store_address
   DECLPROC __tact_store_bool
-  DECLPROC __tact_address_eq
-  DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
-  DECLPROC $CanPayout$_load
-  DECLPROC $CanPayoutResponse$_store
-  DECLPROC $CanPayoutResponse$_store_cell
-  DECLPROC $Beacon$_store
-  DECLPROC $Beacon$_load
-  DECLPROC $Beacon$init$_load
+  DECLPROC __tact_verify_address
   DECLPROC $Beacon$_contract_init
   DECLPROC $Beacon$_contract_load
   DECLPROC $Beacon$_contract_store
   DECLPROC $Beacon$_fun_owner
+  DECLPROC $Beacon$_load
+  DECLPROC $Beacon$_store
+  DECLPROC $Beacon$init$_load
+  DECLPROC $CanPayout$_load
   DECLPROC $CanPayoutResponse$_constructor_ok_amount_address
+  DECLPROC $CanPayoutResponse$_store
+  DECLPROC $CanPayoutResponse$_store_cell
+  DECLPROC $global_reply
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
   DECLPROC $Beacon$_receive_binary_CanPayout
   DECLPROC $Beacon$_receive_bounce
   83229 DECLMETHOD %owner
@@ -33,6 +33,34 @@ PROGRAM{
   DECLGLOBVAR __tact_context_sender
   DECLGLOBVAR __tact_context_sys
   DECLGLOBVAR __tact_randomized
+  __tact_address_eq PROCINLINE:<{
+    SDEQ
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
+  }>
   __tact_verify_address PROCINLINE:<{
     DUP
     SBITS
@@ -53,33 +81,111 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  __tact_load_address PROCINLINE:<{
-    LDMSGADDR
+  $Beacon$_contract_init PROCREF:<{
+    FALSE
+  }>
+  $Beacon$_contract_load PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
     SWAP
-    __tact_verify_address INLINECALLDICT
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IF:<{
+      $Beacon$_load INLINECALLDICT
+      1 3 BLKDROP2
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      $Beacon$init$_load INLINECALLDICT
+      s0 s2 XCHG
+      ENDS
+      SWAP
+      $Beacon$_contract_init INLINECALLDICT
+    }>
   }>
-  __tact_store_address PROCINLINE:<{
-    __tact_verify_address INLINECALLDICT
-    STSLICER
-  }>
-  __tact_not_null PROCINLINE:<{
-    DUP
-    ISNULL
-    128 THROWIF
-  }>
-  __tact_context_get PROCINLINE:<{
-    __tact_context GETGLOB
-    4 UNTUPLE
-  }>
-  __tact_context_get_sender PROCINLINE:<{
-    __tact_context_sender GETGLOB
-  }>
-  __tact_store_bool PROCINLINE:<{
+  $Beacon$_contract_store PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
     SWAP
     1 STI
+    3 -ROLL
+    $Beacon$_store INLINECALLDICT
+    ENDC
+    c4 POP
   }>
-  __tact_address_eq PROCINLINE:<{
-    SDEQ
+  $Beacon$_fun_owner PROCREF:<{
+    DROP
+    NIP
+  }>
+  $Beacon$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    3 -ROLL
+  }>
+  $Beacon$_store PROCINLINE:<{
+    2SWAP
+    __tact_store_address INLINECALLDICT
+    ROT
+    __tact_store_address INLINECALLDICT
+    1 STI
+  }>
+  $Beacon$init$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $CanPayout$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    3289991647 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $CanPayoutResponse$_constructor_ok_amount_address PROCINLINE:<{
+    ROT
+  }>
+  $CanPayoutResponse$_store PROCINLINE:<{
+    4293607646 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    257 PUSHINT
+    STIX
+    SWAP
+    __tact_store_address INLINECALLDICT
+    1 STI
+  }>
+  $CanPayoutResponse$_store_cell PROCINLINE:<{
+    NEWC
+    3 -ROLL
+    $CanPayoutResponse$_store INLINECALLDICT
+    ENDC
+  }>
+  $global_reply PROCREF:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
   $global_send PROCREF:<{
     NEWC
@@ -183,112 +289,6 @@ PROGRAM{
   $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
-  }>
-  $global_reply PROCREF:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
-  $CanPayout$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    3289991647 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    257 PUSHINT
-    LDIX
-    SWAP
-  }>
-  $CanPayoutResponse$_store PROCINLINE:<{
-    4293607646 PUSHINT
-    s0 s4 XCHG2
-    32 STU
-    s1 s2 XCHG
-    257 PUSHINT
-    STIX
-    SWAP
-    __tact_store_address INLINECALLDICT
-    1 STI
-  }>
-  $CanPayoutResponse$_store_cell PROCINLINE:<{
-    NEWC
-    3 -ROLL
-    $CanPayoutResponse$_store INLINECALLDICT
-    ENDC
-  }>
-  $Beacon$_store PROCINLINE:<{
-    2SWAP
-    __tact_store_address INLINECALLDICT
-    ROT
-    __tact_store_address INLINECALLDICT
-    1 STI
-  }>
-  $Beacon$_load PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    SWAP
-    1 LDI
-    3 -ROLL
-  }>
-  $Beacon$init$_load PROCINLINE:<{
-    __tact_load_address INLINECALLDICT
-    SWAP
-    __tact_load_address INLINECALLDICT
-    s1 s2 XCHG
-  }>
-  $Beacon$_contract_init PROCREF:<{
-    FALSE
-  }>
-  $Beacon$_contract_load PROCINLINE:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    SWAP
-    __tact_context_sys SETGLOB
-    1 LDI
-    SWAP
-    IF:<{
-      $Beacon$_load INLINECALLDICT
-      1 3 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $Beacon$init$_load INLINECALLDICT
-      s0 s2 XCHG
-      ENDS
-      SWAP
-      $Beacon$_contract_init INLINECALLDICT
-    }>
-  }>
-  $Beacon$_contract_store PROCINLINE:<{
-    NEWC
-    __tact_context_sys GETGLOB
-    SWAP
-    STREF
-    TRUE
-    SWAP
-    1 STI
-    3 -ROLL
-    $Beacon$_store INLINECALLDICT
-    ENDC
-    c4 POP
-  }>
-  $Beacon$_fun_owner PROCREF:<{
-    DROP
-    NIP
-  }>
-  $CanPayoutResponse$_constructor_ok_amount_address PROCINLINE:<{
-    ROT
   }>
   $Beacon$_receive_binary_CanPayout PROCINLINE:<{
     __tact_context_get INLINECALLDICT
