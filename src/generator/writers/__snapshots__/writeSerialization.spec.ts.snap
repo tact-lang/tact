@@ -613,12 +613,12 @@ if (ok) {
     "flags": Set {
       "inline",
     },
-    "name": "__tact_address_eq",
-    "signature": "int __tact_address_eq(slice a, slice b)",
+    "name": "__tact_slice_eq_bits",
+    "signature": "int __tact_slice_eq_bits(slice a, slice b)",
   },
   {
     "code": {
-      "code": "return ~ equal_slice_bits(a, b);",
+      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -627,8 +627,54 @@ if (ok) {
     "flags": Set {
       "inline",
     },
-    "name": "__tact_address_neq",
-    "signature": "int __tact_address_neq(slice a, slice b)",
+    "name": "__tact_slice_eq_bits_nullable_one",
+    "signature": "int __tact_slice_eq_bits_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_bits_nullable",
+    "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a == b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_eq_nullable_one",
+    "signature": "int __tact_int_eq_nullable_one(int a, int b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_eq_nullable",
+    "signature": "int __tact_int_eq_nullable(int a, int b)",
   },
   {
     "code": {
@@ -656,7 +702,7 @@ if (ok) {
       "inline",
     },
     "name": "__tact_cell_neq",
-    "signature": "int __tact_cell_neq(slice a, slice b)",
+    "signature": "int __tact_cell_neq(cell a, cell b)",
   },
   {
     "code": {
@@ -3938,12 +3984,12 @@ if (ok) {
     "flags": Set {
       "inline",
     },
-    "name": "__tact_address_eq",
-    "signature": "int __tact_address_eq(slice a, slice b)",
+    "name": "__tact_slice_eq_bits",
+    "signature": "int __tact_slice_eq_bits(slice a, slice b)",
   },
   {
     "code": {
-      "code": "return ~ equal_slice_bits(a, b);",
+      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -3952,8 +3998,54 @@ if (ok) {
     "flags": Set {
       "inline",
     },
-    "name": "__tact_address_neq",
-    "signature": "int __tact_address_neq(slice a, slice b)",
+    "name": "__tact_slice_eq_bits_nullable_one",
+    "signature": "int __tact_slice_eq_bits_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_bits_nullable",
+    "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a == b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_eq_nullable_one",
+    "signature": "int __tact_int_eq_nullable_one(int a, int b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_eq_nullable",
+    "signature": "int __tact_int_eq_nullable(int a, int b)",
   },
   {
     "code": {
@@ -3981,7 +4073,7 @@ if (ok) {
       "inline",
     },
     "name": "__tact_cell_neq",
-    "signature": "int __tact_cell_neq(slice a, slice b)",
+    "signature": "int __tact_cell_neq(cell a, cell b)",
   },
   {
     "code": {
@@ -7263,12 +7355,12 @@ if (ok) {
     "flags": Set {
       "inline",
     },
-    "name": "__tact_address_eq",
-    "signature": "int __tact_address_eq(slice a, slice b)",
+    "name": "__tact_slice_eq_bits",
+    "signature": "int __tact_slice_eq_bits(slice a, slice b)",
   },
   {
     "code": {
-      "code": "return ~ equal_slice_bits(a, b);",
+      "code": "return (null?(a)) ? (false) : (equal_slice_bits(a, b));",
       "kind": "generic",
     },
     "comment": null,
@@ -7277,8 +7369,54 @@ if (ok) {
     "flags": Set {
       "inline",
     },
-    "name": "__tact_address_neq",
-    "signature": "int __tact_address_neq(slice a, slice b)",
+    "name": "__tact_slice_eq_bits_nullable_one",
+    "signature": "int __tact_slice_eq_bits_nullable_one(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_slice_eq_bits_nullable",
+    "signature": "int __tact_slice_eq_bits_nullable(slice a, slice b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a == b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_eq_nullable_one",
+    "signature": "int __tact_int_eq_nullable_one(int a, int b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_eq_nullable",
+    "signature": "int __tact_int_eq_nullable(int a, int b)",
   },
   {
     "code": {
@@ -7306,7 +7444,7 @@ if (ok) {
       "inline",
     },
     "name": "__tact_cell_neq",
-    "signature": "int __tact_cell_neq(slice a, slice b)",
+    "signature": "int __tact_cell_neq(cell a, cell b)",
   },
   {
     "code": {

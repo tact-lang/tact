@@ -186,10 +186,11 @@ SETCP0
         s1 POP
         1 GETGLOBVAR
         4 UNTUPLE
-        2DROP
+        s2 s3 XCHG
+        3 BLKDROP
+        s4 PUSH
         4429 PUSHINT
-        s2 POP
-        s5 PUSH
+        s0 s2 XCHG
         SDEQ
         THROWANYIFNOT
         100000000 PUSHINT

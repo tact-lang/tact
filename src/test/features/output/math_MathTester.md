@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MathTester
-BOC Size: 914 bytes
+BOC Size: 2426 bytes
 
 # Types
 Total Types: 5
@@ -26,7 +26,7 @@ TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
 
 # Get Methods
-Total Get Methods: 7
+Total Get Methods: 23
 
 ## add
 Argument: a
@@ -55,6 +55,66 @@ Argument: b
 ## compare6
 Argument: a
 Argument: b
+
+## compare7
+Argument: a
+Argument: b
+
+## compare8
+Argument: a
+Argument: b
+
+## compare9
+Argument: a
+Argument: b
+
+## compare10
+Argument: a
+Argument: b
+
+## compare11
+Argument: a
+Argument: b
+
+## compare12
+Argument: a
+Argument: b
+
+## compare13
+Argument: a
+Argument: b
+
+## compare14
+Argument: a
+Argument: b
+
+## compare15
+Argument: a
+Argument: b
+
+## compare16
+Argument: a
+Argument: b
+
+## compare17
+Argument: a
+Argument: b
+
+## compare18
+Argument: a
+Argument: b
+
+## isNull1
+Argument: a
+
+## isNotNull1
+Argument: a
+
+## isNull2
+Argument: address
+
+## isNotNull2
+Argument: address
 
 # Error Codes
 2: Stack undeflow

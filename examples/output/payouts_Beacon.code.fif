@@ -6,7 +6,7 @@ PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
-  DECLPROC __tact_address_eq
+  DECLPROC __tact_slice_eq_bits
   DECLPROC $CanPayout$_load
   DECLPROC $CanPayoutResponse$_store
   DECLPROC $CanPayoutResponse$_store_cell
@@ -78,7 +78,7 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  __tact_address_eq PROCINLINE:<{
+  __tact_slice_eq_bits PROCINLINE:<{
     SDEQ
   }>
   $CanPayout$_load PROCINLINE:<{
@@ -291,11 +291,12 @@ PROGRAM{
   }>
   $Beacon$_receive_binary_CanPayout PROCINLINE:<{
     __tact_context_get INLINECALLDICT
-    2DROP
+    s2 s3 XCHG
+    3 BLKDROP
+    s4 PUSH
     4429 PUSHINT
-    s2 POP
-    s5 PUSH
-    __tact_address_eq INLINECALLDICT
+    s0 s2 XCHG
+    __tact_slice_eq_bits INLINECALLDICT
     THROWANYIFNOT
     100000000 PUSHINT
     0 PUSHINT

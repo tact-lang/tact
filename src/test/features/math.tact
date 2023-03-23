@@ -9,6 +9,10 @@ contract MathTester with Deployable {
         return a + b;
     }
 
+    //
+    // Int Compare
+    //
+
     get fun compare1(a: Int, b: Int?): Bool {
         return a == b;
     }
@@ -31,5 +35,73 @@ contract MathTester with Deployable {
 
     get fun compare6(a: Int?, b: Int?): Bool {
         return a != b;
+    }
+
+    get fun compare7(a: Int, b: Int): Bool {
+        return a > b;
+    }
+
+    get fun compare8(a: Int, b: Int): Bool {
+        return a >= b;
+    }
+
+    get fun compare9(a: Int, b: Int): Bool {
+        return a < b;
+    }
+
+    get fun compare10(a: Int, b: Int): Bool {
+        return a <= b;
+    }
+
+    get fun compare11(a: Address, b: Address): Bool {
+        return a == b;
+    }
+
+    get fun compare12(a: Address, b: Address?): Bool {
+        return a == b;
+    }
+
+    get fun compare13(a: Address?, b: Address): Bool {
+        return a == b;
+    }
+
+    get fun compare14(a: Address?, b: Address?): Bool {
+        return a == b;
+    }
+
+    get fun compare15(a: Address, b: Address): Bool {
+        return a != b;
+    }
+
+    get fun compare16(a: Address, b: Address?): Bool {
+        return a != b;
+    }
+
+    get fun compare17(a: Address?, b: Address): Bool {
+        return a != b;
+    }
+
+    get fun compare18(a: Address?, b: Address?): Bool {
+        return a != b;
+    }
+
+    //
+    // IsNull/IsNotNull
+    //
+
+    get fun isNull1(a: Int?): Bool {
+        return a == null;
+    }
+
+    get fun isNotNull1(a: Int?): Bool {
+        return a != null;
+    }
+
+    get fun isNull2(address: Address?): Bool {
+        return address == null;
+    }
+
+    get fun isNotNull2(address: Address?): Bool {
+        return address != null;
     }
 }

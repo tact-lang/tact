@@ -9,7 +9,7 @@ PROGRAM{
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
-  DECLPROC __tact_address_eq
+  DECLPROC __tact_slice_eq_bits
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
   DECLPROC __tact_string_builder_start
@@ -134,7 +134,7 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  __tact_address_eq PROCINLINE:<{
+  __tact_slice_eq_bits PROCINLINE:<{
     SDEQ
   }>
   __tact_dict_set_code PROCINLINE:<{
@@ -588,8 +588,8 @@ PROGRAM{
   }>
   $Payouts$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
-    s2 PUSH
-    __tact_address_eq INLINECALLDICT
+    s2 s(-1) PUXC
+    __tact_slice_eq_bits INLINECALLDICT
     132 THROWIFNOT
   }>
   $Payouts$_fun_owner PROCREF:<{
@@ -654,10 +654,9 @@ PROGRAM{
     s5 PUSH
     $Beacon$_init_child INLINECALLDICT
     $global_contractAddress INLINECALLDICT
-    SWAP
     4429 PUSHINT
     s0 s2 XCHG
-    __tact_address_eq INLINECALLDICT
+    __tact_slice_eq_bits INLINECALLDICT
     THROWANYIFNOT
     SWAP
     IF:<{

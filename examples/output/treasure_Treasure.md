@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Treasure
-BOC Size: 889 bytes
+BOC Size: 890 bytes
 
 # Types
 Total Types: 5

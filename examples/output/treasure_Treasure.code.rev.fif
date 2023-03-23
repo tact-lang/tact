@@ -140,7 +140,7 @@ SETCP0
           s0 s2 XCHG
           <{
             2 GETGLOBVAR
-            s1 PUSH
+            s1 s-1 PUXC
             SDEQ
             132 THROWIFNOT
           }> CALLREF
@@ -332,7 +332,7 @@ SETCP0
         s0 s1 XCHG
         <{
           2 GETGLOBVAR
-          s1 PUSH
+          s1 s-1 PUXC
           SDEQ
           132 THROWIFNOT
         }> CALLREF
@@ -353,7 +353,7 @@ SETCP0
             s0 s2 XCHG
             <{
               2 GETGLOBVAR
-              s1 PUSH
+              s1 s-1 PUXC
               SDEQ
               132 THROWIFNOT
             }> CALLREF

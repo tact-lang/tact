@@ -296,7 +296,6 @@ SETCP0
             EQUAL
             137 THROWIFNOT
           }> CALLREF
-          s0 s1 XCHG
           4429 PUSHINT
           s0 s2 XCHG
           SDEQ
@@ -863,7 +862,7 @@ SETCP0
         ROTREV
         <{
           2 GETGLOBVAR
-          s2 PUSH
+          s2 s-1 PUXC
           SDEQ
           132 THROWIFNOT
         }> CALLREF

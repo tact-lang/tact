@@ -18,32 +18,112 @@ tuple $MathTester$_contract_init() impure inline_ref {
 
 (tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_int_eq_first_nullable($b, $a) ));
+    return ($self, __tact_int_eq_nullable_one($b, $a));
 }
 
 (tuple, int) $MathTester$_fun_compare2(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_int_eq_first_nullable($b, $a) ));
+    return ($self, __tact_int_neq_nullable_one($b, $a));
 }
 
 (tuple, int) $MathTester$_fun_compare3(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_int_eq_first_nullable($a, $b) ));
+    return ($self, __tact_int_eq_nullable_one($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare4(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_int_eq_first_nullable($a, $b) ));
+    return ($self, __tact_int_neq_nullable_one($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare5(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_int_eq_both_nullable($a, $b) ));
+    return ($self, __tact_int_eq_nullable($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare6(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_int_eq_both_nullable($a, $b) ));
+    return ($self, __tact_int_neq_nullable($a, $b));
+}
+
+(tuple, int) $MathTester$_fun_compare7(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a > $b));
+}
+
+(tuple, int) $MathTester$_fun_compare8(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a >= $b));
+}
+
+(tuple, int) $MathTester$_fun_compare9(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a < $b));
+}
+
+(tuple, int) $MathTester$_fun_compare10(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a <= $b));
+}
+
+(tuple, int) $MathTester$_fun_compare11(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_slice_eq_bits($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare12(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_slice_eq_bits_nullable_one($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare13(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_slice_eq_bits_nullable_one($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare14(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_slice_eq_bits_nullable($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare15(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_slice_eq_bits($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare16(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_slice_eq_bits_nullable_one($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare17(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_slice_eq_bits_nullable_one($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare18(tuple $self, slice $a, slice $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_slice_eq_bits_nullable($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_isNull1(tuple $self, int $a) impure inline_ref {
+    var ($self) = $self;
+    return ($self, null?($a));
+}
+
+(tuple, int) $MathTester$_fun_isNotNull1(tuple $self, int $a) impure inline_ref {
+    var ($self) = $self;
+    return ($self, (~ null?($a)));
+}
+
+(tuple, int) $MathTester$_fun_isNull2(tuple $self, slice $address) impure inline_ref {
+    var ($self) = $self;
+    return ($self, null?($address));
+}
+
+(tuple, int) $MathTester$_fun_isNotNull2(tuple $self, slice $address) impure inline_ref {
+    var ($self) = $self;
+    return ($self, (~ null?($address)));
 }
 
 ;;
@@ -117,6 +197,130 @@ _ %compare6(int $$a, int $$b) method_id(84903) {
     return res;
 }
 
+_ %compare7(int $$a, int $$b) method_id(88966) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare7($a, $b);
+    return res;
+}
+
+_ %compare8(int $$a, int $$b) method_id(109161) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare8($a, $b);
+    return res;
+}
+
+_ %compare9(int $$a, int $$b) method_id(113224) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare9($a, $b);
+    return res;
+}
+
+_ %compare10(int $$a, int $$b) method_id(127339) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare10($a, $b);
+    return res;
+}
+
+_ %compare11(slice $$a, slice $$b) method_id(123210) {
+    slice $a = __tact_verify_address($$a);
+    slice $b = __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare11($a, $b);
+    return res;
+}
+
+_ %compare12(slice $$a, slice $$b) method_id(119081) {
+    slice $a = __tact_verify_address($$a);
+    slice $b = null?($$b) ? null() : __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare12($a, $b);
+    return res;
+}
+
+_ %compare13(slice $$a, slice $$b) method_id(114952) {
+    slice $a = null?($$a) ? null() : __tact_verify_address($$a);
+    slice $b = __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare13($a, $b);
+    return res;
+}
+
+_ %compare14(slice $$a, slice $$b) method_id(111087) {
+    slice $a = null?($$a) ? null() : __tact_verify_address($$a);
+    slice $b = null?($$b) ? null() : __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare14($a, $b);
+    return res;
+}
+
+_ %compare15(slice $$a, slice $$b) method_id(106958) {
+    slice $a = __tact_verify_address($$a);
+    slice $b = __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare15($a, $b);
+    return res;
+}
+
+_ %compare16(slice $$a, slice $$b) method_id(102829) {
+    slice $a = __tact_verify_address($$a);
+    slice $b = null?($$b) ? null() : __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare16($a, $b);
+    return res;
+}
+
+_ %compare17(slice $$a, slice $$b) method_id(98700) {
+    slice $a = null?($$a) ? null() : __tact_verify_address($$a);
+    slice $b = __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare17($a, $b);
+    return res;
+}
+
+_ %compare18(slice $$a, slice $$b) method_id(94307) {
+    slice $a = null?($$a) ? null() : __tact_verify_address($$a);
+    slice $b = null?($$b) ? null() : __tact_verify_address($$b);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare18($a, $b);
+    return res;
+}
+
+_ %isNull1(int $$a) method_id(111973) {
+    int $a = $$a;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_isNull1($a);
+    return res;
+}
+
+_ %isNotNull1(int $$a) method_id(89158) {
+    int $a = $$a;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_isNotNull1($a);
+    return res;
+}
+
+_ %isNull2(slice $$address) method_id(99590) {
+    slice $address = null?($$address) ? null() : __tact_verify_address($$address);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_isNull2($address);
+    return res;
+}
+
+_ %isNotNull2(slice $$address) method_id(93221) {
+    slice $address = null?($$address) ? null() : __tact_verify_address($$address);
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_isNotNull2($address);
+    return res;
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -128,7 +332,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmdLKBXKdRRWhRiPyDafpxGCpFGZCgQxwLXYFe2nHMYzM1";
+    return "ipfs://QmWkYakjPyu5JJxC2uUmQudQAsHfRPmNGsh84uhLgJLTEd";
 }
 
 _ lazy_deployment_completed() {

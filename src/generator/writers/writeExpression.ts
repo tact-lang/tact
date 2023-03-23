@@ -192,17 +192,35 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Special case for address
         let lt = getExpType(ctx.ctx, f.left);
         let rt = getExpType(ctx.ctx, f.right);
-        if (lt.kind === 'ref' && rt.kind === 'ref' && lt.name === 'Address' && rt.name === 'Address') {
-            if (f.op === '==') {
-                ctx.used(`__tact_address_eq`);
-                return (`__tact_address_eq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
-            } else if (f.op === '!=') {
-                ctx.used(`__tact_address_neq`);
-                return (`__tact_address_neq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
-            } else {
-                throwError('Cannot use ' + f.op + ' on addresses', f.ref);
+
+        // Case for addresses
+        if (
+            lt.kind === 'ref' &&
+            rt.kind === 'ref' &&
+            lt.name === 'Address' &&
+            rt.name === 'Address'
+        ) {
+            let prefix = '';
+            if (f.op == '!=') {
+                prefix = '~ ';
             }
+            if (lt.optional && rt.optional) {
+                ctx.used(`__tact_slice_eq_bits_nullable`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            }
+            if (lt.optional && !rt.optional) {
+                ctx.used(`__tact_slice_eq_bits_nullable_one`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            }
+            if (!lt.optional && rt.optional) {
+                ctx.used(`__tact_slice_eq_bits_nullable_one`);
+                return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+            }
+            ctx.used(`__tact_slice_eq_bits`);
+            return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
         }
+
+        // Case for maps
         if (lt.kind === 'map' && rt.kind === 'map') {
             if (f.op === '==') {
                 ctx.used(`__tact_cell_eq`);
@@ -226,21 +244,18 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Special case for equality of nullable ints
         if (f.op === '==' || f.op === '!=') {
-            let prefix = '';
-            if (f.op == '!=') {
-                prefix = '~ ';
-            }
+            let op = f.op === '==' ? 'eq' : 'neq';
             if (lt.optional && rt.optional) {
-                ctx.used(`__tact_int_eq_both_nullable`);
-                return `( ${prefix}__tact_int_eq_both_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+                ctx.used(`__tact_int_${op}_nullable`);
+                return `__tact_int_${op}_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
             }
             if (lt.optional && !rt.optional) {
-                ctx.used(`__tact_int_eq_first_nullable`);
-                return `( ${prefix}__tact_int_eq_first_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+                ctx.used(`__tact_int_${op}_nullable_one`);
+                return `__tact_int_${op}_nullable_one(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
             }
             if (!lt.optional && rt.optional) {
-                ctx.used(`__tact_int_eq_first_nullable`);
-                return `( ${prefix}__tact_int_eq_first_nullable(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+                ctx.used(`__tact_int_${op}_nullable_one`);
+                return `__tact_int_${op}_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
             }
         }
 

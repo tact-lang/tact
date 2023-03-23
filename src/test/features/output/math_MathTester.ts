@@ -282,8 +282,8 @@ function initMathTester_init_args(src: MathTester_init_args) {
 }
 
 async function MathTester_init() {
-    const __code = Cell.fromBase64('te6ccgECHgEAA4YAART/APSkE/S88sgLAQIBYgIDAtjQAdDTAwFxsMABkX+RcOIB+kABINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJVFBTA28E+GEC+GLtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MDDI+EMBzH8BygDJ7VQcBAIBIAgJAYJwIddJwh+VMCDXCx/eApJbf+ABghCUapi2uo6i0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yds8f+AwcAUBGn/4QnBYA4BCAW1t2zwGAc7IcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJzxZQA/oCcAHKaCNusyVus7GXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsABwCYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAIBIAoLALm93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQThOy6ctWadluZ0HSzbKM3RSQCASAMDQIBIBMUAgEgDg8CRbdoHaiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwHBICRbLI+1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgHBACRbLAu1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgHBEAFAEhbpJbcJG64rMAECFukltwkbriABIBIW6SW3CRuuICAUgVFgIBIBkaAkWvy/aiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwBwXAkWt0/aiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwBwYAAKgADAhbiFuXLCTXwR/mwGzAbOwkbqSW3Di4rMCRbL5e1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgHBsCRbLxO1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgHB0AEiFukltwkbriswACbQAuIW4hblywk18Ef5sBswGzsJG6kltw4uI=');
-    const __system = Cell.fromBase64('te6cckECIAEAA5AAAQHAAQEFoJpJAgEU/wD0pBP0vPLICwMCAWIaBAIBIAYFALm93owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwTgN6k73yqLLeOOp6e8CrOGTQThOy6ctWadluZ0HSzbKM3RSQCASASBwIBIA0IAgEgCwkCRbLxO1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgHwoALiFuIW5csJNfBH+bAbMBs7CRupJbcOLiAkWy+XtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MYB8MABIhbpJbcJG64rMCAUgQDgJFrdP2omhqAPwx6QAYSLbHRvwUa4WFQYTdeXBE7Z5xLO2eGMAfDwAwIW4hblywk18Ef5sBswGzsJG6kltw4uKzAkWvy/aiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwB8RAAKgAgEgFRMCRbdoHaiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwHxQAEgEhbpJbcJG64gIBIBgWAkWywLtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MYB8XABAhbpJbcJG64gJFssj7UTQ1AH4Y9IAMJFtjo34KNcLCoMJuvLgids84lnbPDGAfGQAUASFukltwkbriswLY0AHQ0wMBcbDAAZF/kXDiAfpAASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgiVRQUwNvBPhhAvhi7UTQ1AH4Y9IAMJFtjo34KNcLCoMJuvLgids84lnbPDAwyPhDAcx/AcoAye1UHxsBgnAh10nCH5UwINcLH94Cklt/4AGCEJRqmLa6jqLTHwGCEJRqmLa68uCB0z8BMcgBghCv+Q9XWMsfyz/J2zx/4DBwHAEaf/hCcFgDgEIBbW3bPB0BzshxAcoBUAcBygBwAcoCUAUg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4InPFlAD+gJwAcpoI26zJW6zsZczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAeAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAAJtYgMYtg==');
+    const __code = Cell.fromBase64('te6ccgECTAEACW4AART/APSkE/S88sgLAQIBYgIDAtjQAdDTAwFxsMABkX+RcOIB+kABINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJVFBTA28E+GEC+GLtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MDDI+EMBzH8BygDJ7VRKBAIBIAgJAYJwIddJwh+VMCDXCx/eApJbf+ABghCUapi2uo6i0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yds8f+AwcAUBGn/4QnBYA4BCAW1t2zwGAc7IcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJzxZQA/oCcAHKaCNusyVus7GXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsABwCYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAIBIAoLAgEgKCkCASAMDQIBIBMUAgEgDg8CRbdoHaiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwShICRbLI+1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgShACRbLAu1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgShEAEgEhbpJbf5G94gAQIW6SW3CRuuIAEgEhbpJbcJG64gIBIBUWAgEgHh8CASAXGAIBWBscAkWvy/aiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwEoZAkWt0/aiaGoA/DHpABhItsdG/BRrhYVBhN15cETtnnEs7Z4YwEoaAAKgAC4hbiFuXLCTXwRwmwGzAbOwkb2SW3/i4gJEq4btRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MUodAkSoRu1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOIB2zwxSiMAArwCAVggIQIBICQlAkSr5e1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxSiIClqglIG6SMG2OISDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgieLtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziAds8MUojABAhbpJbf5G94gAEbrMC7awxkLdJGLbHEQCQa6TAgIXdeXBEEGuFhRBBhN0QwIJ/3Vj5cERBhN15cETxELdJGLbHEQCQa6TAgIXdeXBEEGuFhRBBhN0QwIJ/3Vj5cERBhN15cETxdqJoagD8MekAGEi2x0b8FGuFhUGE3XlwRO2ecSztnhjASiYCRa3idqJoagD8MekAGEi2x0b8FGuFhUGE3XlwRO2ecSztnhjASicAMiFuIW5csJNfBH+cAbMBs7CSxwWSW3Di4rMALiFuIW5csJNfBH+bAbMBs7CRupJbcOLiAgEgKisCASBBQgIBICwtAgEgMjMCAUguLwLdsGtASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSFukjFtjiIBINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJ4u1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgSjEC3KmMIW6SMW2OIgEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IniASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgie1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxSjAClqkGIG6SMG2OISDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgieLtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziAds8MUo9ABQhbpJbcJLHBeKzABYBIW6SW3CSxwXiswIBIDQ1AgEgODkCzaznAJBrpMCAhd15cEQQa4WFEEGE3RDAgn/dWPlwREGE3XlwRICQa6TAgIXdeXBEEGuFhRBBhN0QwIJ/3Vj5cERBhN15cET2omhqAPwx6QAYSLbHRvwUa4WFQYTdeXBE7Z5xLO2eGMBKNgJFrTT2omhqAPwx6QAYSLbHRvwUa4WFQYTdeXBE7Z5xLO2eGMBKNwAIAccFswACvgIBIDo7AgFmPj8C7KnvIW6SMW2OIgEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IniIW6SMW2OIgEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4Ini7UTQ1AH4Y9IAMJFtjo34KNcLCoMJuvLgids84lnbPDFKPAJEqWXtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziAds8MUo9ADAhbiFuXLCTXwR/nAGzAbOwkscFkltw4uIAAm4CQ6EjtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MZKQAC3o0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwG9Sd75VFlvHHU9PeBVnDJoJwnZdOWrNOy3M6DpZtlGbopIAArkCASBDRAIBIEdIAt2wQghbpIxbY4iASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgieIBINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJ7UTQ1AH4Y9IAMJFtjo34KNcLCoMJuvLgids84lnbPDGBKRQLdsEpASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgiSFukjFtjiIBINdJgQELuvLgiCDXCwoggwm6IYEE/7qx8uCIgwm68uCJ4u1E0NQB+GPSADCRbY6N+CjXCwqDCbry4InbPOJZ2zwxgSkYAEiFukltwkscF4gAUASFukltwkscF4gLNsFKASDXSYEBC7ry4Igg1wsKIIMJuiGBBP+6sfLgiIMJuvLgiQEg10mBAQu68uCIINcLCiCDCbohgQT/urHy4IiDCbry4IntRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MYEpJAkWwWvtRNDUAfhj0gAwkW2Ojfgo1wsKgwm68uCJ2zziWds8MYEpLAAYBxwUAAm0AArs=');
+    const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -417,6 +417,146 @@ export class MathTester implements Contract {
         builder.writeNumber(a);
         builder.writeNumber(b);
         let source = (await provider.get('compare6', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare7(provider: ContractProvider, a: bigint, b: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(a);
+        builder.writeNumber(b);
+        let source = (await provider.get('compare7', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare8(provider: ContractProvider, a: bigint, b: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(a);
+        builder.writeNumber(b);
+        let source = (await provider.get('compare8', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare9(provider: ContractProvider, a: bigint, b: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(a);
+        builder.writeNumber(b);
+        let source = (await provider.get('compare9', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare10(provider: ContractProvider, a: bigint, b: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(a);
+        builder.writeNumber(b);
+        let source = (await provider.get('compare10', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare11(provider: ContractProvider, a: Address, b: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare11', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare12(provider: ContractProvider, a: Address, b: Address | null) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare12', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare13(provider: ContractProvider, a: Address | null, b: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare13', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare14(provider: ContractProvider, a: Address | null, b: Address | null) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare14', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare15(provider: ContractProvider, a: Address, b: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare15', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare16(provider: ContractProvider, a: Address, b: Address | null) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare16', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare17(provider: ContractProvider, a: Address | null, b: Address) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare17', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getCompare18(provider: ContractProvider, a: Address | null, b: Address | null) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(a);
+        builder.writeAddress(b);
+        let source = (await provider.get('compare18', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNull1(provider: ContractProvider, a: bigint | null) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(a);
+        let source = (await provider.get('isNull1', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNull1(provider: ContractProvider, a: bigint | null) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(a);
+        let source = (await provider.get('isNotNull1', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNull2(provider: ContractProvider, address: Address | null) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(address);
+        let source = (await provider.get('isNull2', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getIsNotNull2(provider: ContractProvider, address: Address | null) {
+        let builder = new TupleBuilder();
+        builder.writeAddress(address);
+        let source = (await provider.get('isNotNull2', builder.build())).stack;
         let result = source.readBoolean();
         return result;
     }

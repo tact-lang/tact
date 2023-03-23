@@ -8,7 +8,7 @@ PROGRAM{
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_get_slice_int
-  DECLPROC __tact_address_eq
+  DECLPROC __tact_slice_eq_bits
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
   DECLPROC $Request$_store
@@ -128,7 +128,7 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  __tact_address_eq PROCINLINE:<{
+  __tact_slice_eq_bits PROCINLINE:<{
     SDEQ
   }>
   __tact_dict_set_code PROCINLINE:<{
@@ -484,9 +484,10 @@ PROGRAM{
     s10 s9 PUSH2
     $MultisigSigner$_init_child INLINECALLDICT
     $global_contractAddress INLINECALLDICT
+    s0 s7 XCHG
     4429 PUSHINT
     s0 s8 XCHG
-    __tact_address_eq INLINECALLDICT
+    __tact_slice_eq_bits INLINECALLDICT
     s1 s7 XCHG
     THROWANYIFNOT
     4755 PUSHINT

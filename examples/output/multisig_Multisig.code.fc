@@ -48,7 +48,7 @@
     slice $sender = __tact_context_get_sender();
     var ($opInit'code, $opInit'data) = $MultisigSigner$_init_child(__tact_context_sys, my_address(), $self'members, $self'requiredWeight, ($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body));
     slice $opAddress = $global_contractAddress(($opInit'code, $opInit'data));
-    throw_unless(4429, __tact_address_eq($opAddress, $sender));
+    throw_unless(4429, ( __tact_slice_eq_bits($sender, $opAddress) ));
     throw_unless(4755, ($msg'request'timeout > now()));
     $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'request'to, $msg'request'value, $msg'request'mode, $msg'request'bounce, $msg'request'body));
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());

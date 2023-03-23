@@ -14,7 +14,7 @@
 
 ((slice), ()) $Treasure$_fun_requireOwner((slice) $self) impure inline_ref {
     var (($self'owner)) = $self;
-    throw_unless(132, __tact_address_eq(__tact_context_get_sender(), $self'owner));
+    throw_unless(132, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
     return (($self'owner), ());
 }
 

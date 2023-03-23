@@ -799,6 +799,7 @@ SETCP0
           EQUAL
           137 THROWIFNOT
         }> CALLREF
+        s0 s7 XCHG
         4429 PUSHINT
         s0 s8 XCHG
         SDEQ

@@ -437,8 +437,8 @@ export function writeStdlib(ctx: WriterContext) {
     // Address
     // 
 
-    ctx.fun(`__tact_address_eq`, () => {
-        ctx.signature(`int __tact_address_eq(slice a, slice b)`);
+    ctx.fun(`__tact_slice_eq_bits`, () => {
+        ctx.signature(`int __tact_slice_eq_bits(slice a, slice b)`);
         ctx.flag('inline');
         ctx.context('stdlib');
         ctx.body(() => {
@@ -448,14 +448,27 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun(`__tact_address_neq`, () => {
-        ctx.signature(`int __tact_address_neq(slice a, slice b)`);
+    ctx.fun(`__tact_slice_eq_bits_nullable_one`, () => {
+        ctx.signature(`int __tact_slice_eq_bits_nullable_one(slice a, slice b)`);
         ctx.flag('inline');
         ctx.context('stdlib');
         ctx.body(() => {
             ctx.write(`
-                return ~ equal_slice_bits(a, b);
-            `);
+                return (null?(a)) ? (false) : (equal_slice_bits(a, b));
+            `)
+        });
+    });
+
+    ctx.fun(`__tact_slice_eq_bits_nullable`, () => {
+        ctx.signature(`int __tact_slice_eq_bits_nullable(slice a, slice b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var a_is_null = null?(a);
+                var b_is_null = null?(b);
+                return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( equal_slice_bits(a, b) ) : ( false ) );
+            `)
         });
     });
 
@@ -463,8 +476,8 @@ export function writeStdlib(ctx: WriterContext) {
     // Int Eq
     //
 
-    ctx.fun(`__tact_int_eq_first_nullable`, () => {
-        ctx.signature(`int __tact_int_eq_first_nullable(int a, int b)`);
+    ctx.fun(`__tact_int_eq_nullable_one`, () => {
+        ctx.signature(`int __tact_int_eq_nullable_one(int a, int b)`);
         ctx.flag('inline');
         ctx.context('stdlib');
         ctx.body(() => {
@@ -474,15 +487,39 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
-    ctx.fun(`__tact_int_eq_both_nullable`, () => {
-        ctx.signature(`int __tact_int_eq_both_nullable(int a, int b)`);
+    ctx.fun(`__tact_int_neq_nullable_one`, () => {
+        ctx.signature(`int __tact_int_neq_nullable_one(int a, int b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (true) : (a != b);
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_int_eq_nullable`, () => {
+        ctx.signature(`int __tact_int_eq_nullable(int a, int b)`);
         ctx.flag('inline');
         ctx.context('stdlib');
         ctx.body(() => {
             ctx.write(`
                 var a_is_null = null?(a);
                 var b_is_null = null?(b);
-                return (a_is_null & b_is_null) ? (true) : ( (( ~ a_is_null ) & ( ~ b_is_null )) ? ( a == b) : (false) );
+                return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_int_neq_nullable`, () => {
+        ctx.signature(`int __tact_int_neq_nullable(int a, int b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var a_is_null = null?(a);
+                var b_is_null = null?(b);
+                return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a != b ) : ( true ) );
             `);
         });
     });
@@ -502,7 +539,7 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
     ctx.fun(`__tact_cell_neq`, () => {
-        ctx.signature(`int __tact_cell_neq(slice a, slice b)`);
+        ctx.signature(`int __tact_cell_neq(cell a, cell b)`);
         ctx.flag('inline');
         ctx.context('stdlib');
         ctx.body(() => {

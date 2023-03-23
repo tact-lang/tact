@@ -30,8 +30,8 @@ builder __tact_store_bool(builder b, int v) inline;
 ;; __tact_dict_get_int_slice
 slice __tact_dict_get_int_slice(cell d, int kl, int k) inline;
 
-;; __tact_address_eq
-int __tact_address_eq(slice a, slice b) inline;
+;; __tact_slice_eq_bits
+int __tact_slice_eq_bits(slice a, slice b) inline;
 
 ;; __tact_string_builder_start
 tuple __tact_string_builder_start(builder b) inline;

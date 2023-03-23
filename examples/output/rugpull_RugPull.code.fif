@@ -8,7 +8,7 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_int_slice
   DECLPROC __tact_dict_get_int_slice
-  DECLPROC __tact_address_eq
+  DECLPROC __tact_slice_eq_bits
   DECLPROC __tact_string_builder_start
   DECLPROC __tact_string_builder_start_comment
   DECLPROC __tact_string_builder_end
@@ -118,7 +118,7 @@ PROGRAM{
       PUSHNULL
     }>
   }>
-  __tact_address_eq PROCINLINE:<{
+  __tact_slice_eq_bits PROCINLINE:<{
     SDEQ
   }>
   __tact_string_builder_start PROCINLINE:<{
@@ -494,8 +494,8 @@ PROGRAM{
   }>
   $RugPull$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
-    s10 PUSH
-    __tact_address_eq INLINECALLDICT
+    s10 s(-1) PUXC
+    __tact_slice_eq_bits INLINECALLDICT
     132 THROWIFNOT
   }>
   $RugPull$_fun_owner PROCREF:<{

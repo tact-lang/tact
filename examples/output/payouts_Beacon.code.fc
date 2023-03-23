@@ -27,7 +27,7 @@
     var ($self'master, $self'owner, $self'completed) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    throw_unless(4429, __tact_address_eq($ctx'sender, $self'master));
+    throw_unless(4429, ( __tact_slice_eq_bits($self'master, $ctx'sender) ));
     raw_reserve(100000000, 0);
     if ($self'completed) {
         $self'completed = true;

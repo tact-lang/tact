@@ -592,7 +592,7 @@ SETCP0
         10 1 BLKSWAP
         <{
           2 GETGLOBVAR
-          s10 PUSH
+          s10 s-1 PUXC
           SDEQ
           132 THROWIFNOT
         }> CALLREF
@@ -614,7 +614,7 @@ SETCP0
           s0 POP
           <{
             2 GETGLOBVAR
-            s10 PUSH
+            s10 s-1 PUXC
             SDEQ
             132 THROWIFNOT
           }> CALLREF
@@ -950,7 +950,7 @@ SETCP0
           <{
             <{
               2 GETGLOBVAR
-              s10 PUSH
+              s10 s-1 PUXC
               SDEQ
               132 THROWIFNOT
             }> CALLREF

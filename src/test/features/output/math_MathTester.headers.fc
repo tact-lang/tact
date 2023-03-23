@@ -18,11 +18,26 @@ slice __tact_context_get_sender() inline;
 ;; __tact_store_bool
 builder __tact_store_bool(builder b, int v) inline;
 
-;; __tact_int_eq_first_nullable
-int __tact_int_eq_first_nullable(int a, int b) inline;
+;; __tact_slice_eq_bits
+int __tact_slice_eq_bits(slice a, slice b) inline;
 
-;; __tact_int_eq_both_nullable
-int __tact_int_eq_both_nullable(int a, int b) inline;
+;; __tact_slice_eq_bits_nullable_one
+int __tact_slice_eq_bits_nullable_one(slice a, slice b) inline;
+
+;; __tact_slice_eq_bits_nullable
+int __tact_slice_eq_bits_nullable(slice a, slice b) inline;
+
+;; __tact_int_eq_nullable_one
+int __tact_int_eq_nullable_one(int a, int b) inline;
+
+;; __tact_int_neq_nullable_one
+int __tact_int_neq_nullable_one(int a, int b) inline;
+
+;; __tact_int_eq_nullable
+int __tact_int_eq_nullable(int a, int b) inline;
+
+;; __tact_int_neq_nullable
+int __tact_int_neq_nullable(int a, int b) inline;
 
 ;; $Deploy$_load
 (slice, ((int))) $Deploy$_load(slice sc_0) inline;
@@ -71,6 +86,54 @@ tuple $MathTester$_contract_load() impure inline;
 
 ;; $MathTester$_fun_compare6
 (tuple, int) $MathTester$_fun_compare6(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare7
+(tuple, int) $MathTester$_fun_compare7(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare8
+(tuple, int) $MathTester$_fun_compare8(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare9
+(tuple, int) $MathTester$_fun_compare9(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare10
+(tuple, int) $MathTester$_fun_compare10(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare11
+(tuple, int) $MathTester$_fun_compare11(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare12
+(tuple, int) $MathTester$_fun_compare12(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare13
+(tuple, int) $MathTester$_fun_compare13(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare14
+(tuple, int) $MathTester$_fun_compare14(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare15
+(tuple, int) $MathTester$_fun_compare15(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare16
+(tuple, int) $MathTester$_fun_compare16(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare17
+(tuple, int) $MathTester$_fun_compare17(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_compare18
+(tuple, int) $MathTester$_fun_compare18(tuple $self, slice $a, slice $b) impure inline_ref;
+
+;; $MathTester$_fun_isNull1
+(tuple, int) $MathTester$_fun_isNull1(tuple $self, int $a) impure inline_ref;
+
+;; $MathTester$_fun_isNotNull1
+(tuple, int) $MathTester$_fun_isNotNull1(tuple $self, int $a) impure inline_ref;
+
+;; $MathTester$_fun_isNull2
+(tuple, int) $MathTester$_fun_isNull2(tuple $self, slice $address) impure inline_ref;
+
+;; $MathTester$_fun_isNotNull2
+(tuple, int) $MathTester$_fun_isNotNull2(tuple $self, slice $address) impure inline_ref;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;
