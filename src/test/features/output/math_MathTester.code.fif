@@ -11,6 +11,9 @@ PROGRAM{
   DECLPROC __tact_int_neq_nullable_one
   DECLPROC __tact_int_eq_nullable
   DECLPROC __tact_int_neq_nullable
+  DECLPROC __tact_cell_eq
+  DECLPROC __tact_cell_eq_nullable_one
+  DECLPROC __tact_cell_eq_nullable
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
@@ -39,10 +42,22 @@ PROGRAM{
   DECLPROC $MathTester$_fun_compare16
   DECLPROC $MathTester$_fun_compare17
   DECLPROC $MathTester$_fun_compare18
+  DECLPROC $MathTester$_fun_compare19
+  DECLPROC $MathTester$_fun_compare20
+  DECLPROC $MathTester$_fun_compare21
+  DECLPROC $MathTester$_fun_compare22
+  DECLPROC $MathTester$_fun_compare23
+  DECLPROC $MathTester$_fun_compare24
+  DECLPROC $MathTester$_fun_compare25
+  DECLPROC $MathTester$_fun_compare26
+  DECLPROC $MathTester$_fun_compare27
+  DECLPROC $MathTester$_fun_compare28
   DECLPROC $MathTester$_fun_isNull1
   DECLPROC $MathTester$_fun_isNotNull1
   DECLPROC $MathTester$_fun_isNull2
   DECLPROC $MathTester$_fun_isNotNull2
+  DECLPROC $MathTester$_fun_isNull3
+  DECLPROC $MathTester$_fun_isNotNull3
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $MathTester$_receive_binary_Deploy
   83863 DECLMETHOD %add
@@ -64,10 +79,22 @@ PROGRAM{
   102829 DECLMETHOD %compare16
   98700 DECLMETHOD %compare17
   94307 DECLMETHOD %compare18
+  90178 DECLMETHOD %compare19
+  107576 DECLMETHOD %compare20
+  111641 DECLMETHOD %compare21
+  99450 DECLMETHOD %compare22
+  103515 DECLMETHOD %compare23
+  124092 DECLMETHOD %compare24
+  128157 DECLMETHOD %compare25
+  115966 DECLMETHOD %compare26
+  120031 DECLMETHOD %compare27
+  75056 DECLMETHOD %compare28
   111973 DECLMETHOD %isNull1
   89158 DECLMETHOD %isNotNull1
   99590 DECLMETHOD %isNull2
   93221 DECLMETHOD %isNotNull2
+  103719 DECLMETHOD %isNull3
+  97284 DECLMETHOD %isNotNull3
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -215,6 +242,55 @@ PROGRAM{
       }>ELSE<{
         2DROP
         TRUE
+      }>
+    }>
+  }>
+  __tact_cell_eq PROCINLINE:<{
+    SWAP
+    HASHCU
+    SWAP
+    HASHCU
+    EQUAL
+  }>
+  __tact_cell_eq_nullable_one PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      FALSE
+    }>ELSE<{
+      SWAP
+      HASHCU
+      SWAP
+      HASHCU
+      EQUAL
+    }>
+  }>
+  __tact_cell_eq_nullable PROCINLINE:<{
+    OVER
+    ISNULL
+    OVER
+    ISNULL
+    2DUP
+    AND
+    IF:<{
+      4 BLKDROP
+      TRUE
+    }>ELSE<{
+      SWAP
+      NOT
+      SWAP
+      NOT
+      AND
+      IF:<{
+        SWAP
+        HASHCU
+        SWAP
+        HASHCU
+        EQUAL
+      }>ELSE<{
+        2DROP
+        FALSE
       }>
     }>
   }>
@@ -454,6 +530,45 @@ PROGRAM{
     __tact_slice_eq_bits_nullable INLINECALLDICT
     NOT
   }>
+  $MathTester$_fun_compare19 PROCREF:<{
+    SWAP
+    __tact_cell_eq INLINECALLDICT
+  }>
+  $MathTester$_fun_compare20 PROCREF:<{
+    SWAP
+    __tact_cell_eq_nullable_one INLINECALLDICT
+  }>
+  $MathTester$_fun_compare21 PROCREF:<{
+    __tact_cell_eq_nullable_one INLINECALLDICT
+  }>
+  $MathTester$_fun_compare22 PROCREF:<{
+    __tact_cell_eq_nullable INLINECALLDICT
+  }>
+  $MathTester$_fun_compare23 PROCREF:<{
+    SWAP
+    __tact_cell_eq INLINECALLDICT
+    NOT
+  }>
+  $MathTester$_fun_compare24 PROCREF:<{
+    SWAP
+    __tact_cell_eq_nullable_one INLINECALLDICT
+    NOT
+  }>
+  $MathTester$_fun_compare25 PROCREF:<{
+    __tact_cell_eq_nullable_one INLINECALLDICT
+    NOT
+  }>
+  $MathTester$_fun_compare26 PROCREF:<{
+    __tact_cell_eq_nullable INLINECALLDICT
+    NOT
+  }>
+  $MathTester$_fun_compare27 PROCREF:<{
+    __tact_cell_eq_nullable INLINECALLDICT
+  }>
+  $MathTester$_fun_compare28 PROCREF:<{
+    __tact_cell_eq_nullable INLINECALLDICT
+    NOT
+  }>
   $MathTester$_fun_isNull1 PROCREF:<{
     ISNULL
   }>
@@ -465,6 +580,13 @@ PROGRAM{
     ISNULL
   }>
   $MathTester$_fun_isNotNull2 PROCREF:<{
+    ISNULL
+    NOT
+  }>
+  $MathTester$_fun_isNull3 PROCREF:<{
+    ISNULL
+  }>
+  $MathTester$_fun_isNotNull3 PROCREF:<{
     ISNULL
     NOT
   }>
@@ -677,6 +799,66 @@ PROGRAM{
     $MathTester$_fun_compare18 INLINECALLDICT
     NIP
   }>
+  %compare19 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare19 INLINECALLDICT
+    NIP
+  }>
+  %compare20 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare20 INLINECALLDICT
+    NIP
+  }>
+  %compare21 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare21 INLINECALLDICT
+    NIP
+  }>
+  %compare22 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare22 INLINECALLDICT
+    NIP
+  }>
+  %compare23 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare23 INLINECALLDICT
+    NIP
+  }>
+  %compare24 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare24 INLINECALLDICT
+    NIP
+  }>
+  %compare25 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare25 INLINECALLDICT
+    NIP
+  }>
+  %compare26 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare26 INLINECALLDICT
+    NIP
+  }>
+  %compare27 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare27 INLINECALLDICT
+    NIP
+  }>
+  %compare28 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare28 INLINECALLDICT
+    NIP
+  }>
   %isNull1 PROC:<{
     $MathTester$_contract_load INLINECALLDICT
     SWAP
@@ -717,6 +899,18 @@ PROGRAM{
     $MathTester$_fun_isNotNull2 INLINECALLDICT
     NIP
   }>
+  %isNull3 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    SWAP
+    $MathTester$_fun_isNull3 INLINECALLDICT
+    NIP
+  }>
+  %isNotNull3 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    SWAP
+    $MathTester$_fun_isNotNull3 INLINECALLDICT
+    NIP
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -725,7 +919,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d576b59616b6a507975354a4a78433275556d517564514173486652506d4e477368383475684c674a4c544564} PUSHSLICE
+    x{697066733a2f2f516d6163673355644433456e69337567724557547159644e74474352366d474b7851455939384839483865686663} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

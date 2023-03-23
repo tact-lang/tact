@@ -39,6 +39,15 @@ int __tact_int_eq_nullable(int a, int b) inline;
 ;; __tact_int_neq_nullable
 int __tact_int_neq_nullable(int a, int b) inline;
 
+;; __tact_cell_eq
+int __tact_cell_eq(cell a, cell b) inline;
+
+;; __tact_cell_eq_nullable_one
+int __tact_cell_eq_nullable_one(cell a, cell b) inline;
+
+;; __tact_cell_eq_nullable
+int __tact_cell_eq_nullable(cell a, cell b) inline;
+
 ;; $Deploy$_load
 (slice, ((int))) $Deploy$_load(slice sc_0) inline;
 
@@ -123,6 +132,36 @@ tuple $MathTester$_contract_load() impure inline;
 ;; $MathTester$_fun_compare18
 (tuple, int) $MathTester$_fun_compare18(tuple $self, slice $a, slice $b) impure inline_ref;
 
+;; $MathTester$_fun_compare19
+(tuple, int) $MathTester$_fun_compare19(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare20
+(tuple, int) $MathTester$_fun_compare20(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare21
+(tuple, int) $MathTester$_fun_compare21(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare22
+(tuple, int) $MathTester$_fun_compare22(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare23
+(tuple, int) $MathTester$_fun_compare23(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare24
+(tuple, int) $MathTester$_fun_compare24(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare25
+(tuple, int) $MathTester$_fun_compare25(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare26
+(tuple, int) $MathTester$_fun_compare26(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare27
+(tuple, int) $MathTester$_fun_compare27(tuple $self, cell $a, cell $b) impure inline_ref;
+
+;; $MathTester$_fun_compare28
+(tuple, int) $MathTester$_fun_compare28(tuple $self, cell $a, cell $b) impure inline_ref;
+
 ;; $MathTester$_fun_isNull1
 (tuple, int) $MathTester$_fun_isNull1(tuple $self, int $a) impure inline_ref;
 
@@ -134,6 +173,12 @@ tuple $MathTester$_contract_load() impure inline;
 
 ;; $MathTester$_fun_isNotNull2
 (tuple, int) $MathTester$_fun_isNotNull2(tuple $self, slice $address) impure inline_ref;
+
+;; $MathTester$_fun_isNull3
+(tuple, int) $MathTester$_fun_isNull3(tuple $self, cell $cell) impure inline_ref;
+
+;; $MathTester$_fun_isNotNull3
+(tuple, int) $MathTester$_fun_isNotNull3(tuple $self, cell $cell) impure inline_ref;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

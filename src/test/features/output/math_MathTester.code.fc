@@ -106,6 +106,56 @@ tuple $MathTester$_contract_init() impure inline_ref {
     return ($self, ( ~ __tact_slice_eq_bits_nullable($a, $b) ));
 }
 
+(tuple, int) $MathTester$_fun_compare19(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_cell_eq($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare20(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_cell_eq_nullable_one($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare21(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_cell_eq_nullable_one($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare22(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_cell_eq_nullable($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare23(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_cell_eq($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare24(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_cell_eq_nullable_one($b, $a) ));
+}
+
+(tuple, int) $MathTester$_fun_compare25(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_cell_eq_nullable_one($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare26(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_cell_eq_nullable($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare27(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( __tact_cell_eq_nullable($a, $b) ));
+}
+
+(tuple, int) $MathTester$_fun_compare28(tuple $self, cell $a, cell $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ( ~ __tact_cell_eq_nullable($a, $b) ));
+}
+
 (tuple, int) $MathTester$_fun_isNull1(tuple $self, int $a) impure inline_ref {
     var ($self) = $self;
     return ($self, null?($a));
@@ -124,6 +174,16 @@ tuple $MathTester$_contract_init() impure inline_ref {
 (tuple, int) $MathTester$_fun_isNotNull2(tuple $self, slice $address) impure inline_ref {
     var ($self) = $self;
     return ($self, (~ null?($address)));
+}
+
+(tuple, int) $MathTester$_fun_isNull3(tuple $self, cell $cell) impure inline_ref {
+    var ($self) = $self;
+    return ($self, null?($cell));
+}
+
+(tuple, int) $MathTester$_fun_isNotNull3(tuple $self, cell $cell) impure inline_ref {
+    var ($self) = $self;
+    return ($self, (~ null?($cell)));
 }
 
 ;;
@@ -293,6 +353,86 @@ _ %compare18(slice $$a, slice $$b) method_id(94307) {
     return res;
 }
 
+_ %compare19(cell $$a, cell $$b) method_id(90178) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare19($a, $b);
+    return res;
+}
+
+_ %compare20(cell $$a, cell $$b) method_id(107576) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare20($a, $b);
+    return res;
+}
+
+_ %compare21(cell $$a, cell $$b) method_id(111641) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare21($a, $b);
+    return res;
+}
+
+_ %compare22(cell $$a, cell $$b) method_id(99450) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare22($a, $b);
+    return res;
+}
+
+_ %compare23(cell $$a, cell $$b) method_id(103515) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare23($a, $b);
+    return res;
+}
+
+_ %compare24(cell $$a, cell $$b) method_id(124092) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare24($a, $b);
+    return res;
+}
+
+_ %compare25(cell $$a, cell $$b) method_id(128157) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare25($a, $b);
+    return res;
+}
+
+_ %compare26(cell $$a, cell $$b) method_id(115966) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare26($a, $b);
+    return res;
+}
+
+_ %compare27(cell $$a, cell $$b) method_id(120031) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare27($a, $b);
+    return res;
+}
+
+_ %compare28(cell $$a, cell $$b) method_id(75056) {
+    cell $a = $$a;
+    cell $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare28($a, $b);
+    return res;
+}
+
 _ %isNull1(int $$a) method_id(111973) {
     int $a = $$a;
     var self = $MathTester$_contract_load();
@@ -321,6 +461,20 @@ _ %isNotNull2(slice $$address) method_id(93221) {
     return res;
 }
 
+_ %isNull3(cell $$cell) method_id(103719) {
+    cell $cell = $$cell;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_isNull3($cell);
+    return res;
+}
+
+_ %isNotNull3(cell $$cell) method_id(97284) {
+    cell $cell = $$cell;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_isNotNull3($cell);
+    return res;
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -332,7 +486,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmWkYakjPyu5JJxC2uUmQudQAsHfRPmNGsh84uhLgJLTEd";
+    return "ipfs://Qmacg3UdD3Eni3ugrEWTqYdNtGCR6mGKxQEY98H9H8ehfc";
 }
 
 _ lazy_deployment_completed() {

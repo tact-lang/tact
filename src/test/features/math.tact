@@ -53,6 +53,10 @@ contract MathTester with Deployable {
         return a <= b;
     }
 
+    //
+    // Address Compare
+    //
+
     get fun compare11(a: Address, b: Address): Bool {
         return a == b;
     }
@@ -86,6 +90,52 @@ contract MathTester with Deployable {
     }
 
     //
+    // Cell compare
+    //
+
+    get fun compare19(a: Cell, b: Cell): Bool {
+        return a == b;
+    }
+
+    get fun compare20(a: Cell, b: Cell?): Bool {
+        return a == b;
+    }
+
+    get fun compare21(a: Cell?, b: Cell): Bool {
+        return a == b;
+    }
+
+    get fun compare22(a: Cell?, b: Cell?): Bool {
+        return a == b;
+    }
+
+    get fun compare23(a: Cell, b: Cell): Bool {
+        return a != b;
+    }
+
+    get fun compare24(a: Cell, b: Cell?): Bool {
+        return a != b;
+    }
+
+    get fun compare25(a: Cell?, b: Cell): Bool {
+        return a != b;
+    }
+
+    get fun compare26(a: Cell?, b: Cell?): Bool {
+        return a != b;
+    }
+
+    // Compare dicts
+
+    get fun compare27(a: map<Int, Int>, b: map<Int, Int>): Bool {
+        return a == b;
+    }
+
+    get fun compare28(a: map<Int, Int>, b: map<Int, Int>): Bool {
+        return a != b;
+    }
+
+    //
     // IsNull/IsNotNull
     //
 
@@ -103,5 +153,13 @@ contract MathTester with Deployable {
 
     get fun isNotNull2(address: Address?): Bool {
         return address != null;
+    }
+
+    get fun isNull3(cell: Cell?): Bool {
+        return cell == null;
+    }
+
+    get fun isNotNull3(cell: Cell?): Bool {
+        return cell != null;
     }
 }

@@ -65,6 +65,20 @@ int __tact_int_neq_nullable(int a, int b) inline {
     return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a != b ) : ( true ) );
 }
 
+int __tact_cell_eq(cell a, cell b) inline {
+    return (a.cell_hash() ==  b.cell_hash());
+}
+
+int __tact_cell_eq_nullable_one(cell a, cell b) inline {
+    return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
+}
+
+int __tact_cell_eq_nullable(cell a, cell b) inline {
+    var a_is_null = null?(a);
+    var b_is_null = null?(b);
+    return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() == b.cell_hash() ) : ( false ) );
+}
+
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {
     var (($params'bounce, $params'to, $params'value, $params'mode, $params'body, $params'code, $params'data)) = $params;
     builder $b = begin_cell();

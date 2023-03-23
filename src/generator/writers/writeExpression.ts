@@ -220,17 +220,41 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
         }
 
+        // Case for cells
+        if (
+            lt.kind === 'ref' &&
+            rt.kind === 'ref' &&
+            lt.name === 'Cell' &&
+            rt.name === 'Cell'
+        ) {
+            let prefix = '';
+            if (f.op == '!=') {
+                prefix = '~ ';
+            }
+            if (lt.optional && rt.optional) {
+                ctx.used(`__tact_cell_eq_nullable`);
+                return `( ${prefix}__tact_cell_eq_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            }
+            if (lt.optional && !rt.optional) {
+                ctx.used(`__tact_cell_eq_nullable_one`);
+                return `( ${prefix}__tact_cell_eq_nullable_one(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            }
+            if (!lt.optional && rt.optional) {
+                ctx.used(`__tact_cell_eq_nullable_one`);
+                return `( ${prefix}__tact_cell_eq_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+            }
+            ctx.used(`__tact_cell_eq`);
+            return `( ${prefix}__tact_cell_eq(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+        }
+
         // Case for maps
         if (lt.kind === 'map' && rt.kind === 'map') {
-            if (f.op === '==') {
-                ctx.used(`__tact_cell_eq`);
-                return (`__tact_cell_eq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
-            } else if (f.op === '!=') {
-                ctx.used(`__tact_cell_eq`);
-                return (`__tact_cell_neq(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`);
-            } else {
-                throwError('Cannot use ' + f.op + ' on maps', f.ref);
+            let prefix = '';
+            if (f.op == '!=') {
+                prefix = '~ ';
             }
+            ctx.used(`__tact_cell_eq_nullable`);
+            return `( ${prefix}__tact_cell_eq_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
         }
 
         // Check for int or boolean types
