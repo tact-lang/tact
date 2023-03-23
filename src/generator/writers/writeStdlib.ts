@@ -460,6 +460,34 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     //
+    // Int Eq
+    //
+
+    ctx.fun(`__tact_int_eq_first_nullable`, () => {
+        ctx.signature(`int __tact_int_eq_first_nullable(int a, int b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (false) : (a == b);
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_int_eq_both_nullable`, () => {
+        ctx.signature(`int __tact_int_eq_both_nullable(int a, int b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var a_is_null = null?(a);
+                var b_is_null = null?(b);
+                return (a_is_null & b_is_null) ? (true) : ( (( ~ a_is_null ) & ( ~ b_is_null )) ? ( a == b) : (false) );
+            `);
+        });
+    });
+
+    //
     // Cell Eq
     // 
 

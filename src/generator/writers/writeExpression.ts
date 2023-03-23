@@ -215,6 +215,36 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
         }
 
+        // Check for int or boolean types
+        if (lt.kind !== 'ref'
+            || rt.kind !== 'ref'
+            || (lt.name !== 'Int' && lt.name !== 'Bool')
+            || (rt.name !== 'Int' && rt.name !== 'Bool')
+        ) {
+            throw Error('Invalid types for binary operation'); // Should be unreachable
+        }
+
+        // Special case for equality of nullable ints
+        if (f.op === '==' || f.op === '!=') {
+            let prefix = '';
+            if (f.op == '!=') {
+                prefix = '~ ';
+            }
+            if (lt.optional && rt.optional) {
+                ctx.used(`__tact_int_eq_both_nullable`);
+                return `( ${prefix}__tact_int_eq_both_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            }
+            if (lt.optional && !rt.optional) {
+                ctx.used(`__tact_int_eq_first_nullable`);
+                return `( ${prefix}__tact_int_eq_first_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            }
+            if (!lt.optional && rt.optional) {
+                ctx.used(`__tact_int_eq_first_nullable`);
+                return `( ${prefix}__tact_int_eq_first_nullable(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+            }
+        }
+
+        // Other ops
         let op: string;
         if (f.op === '*') {
             op = '*';

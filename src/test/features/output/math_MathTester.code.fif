@@ -4,6 +4,8 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
+  DECLPROC __tact_int_eq_first_nullable
+  DECLPROC __tact_int_eq_both_nullable
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
@@ -73,6 +75,40 @@ PROGRAM{
   __tact_store_bool PROCINLINE:<{
     SWAP
     1 STI
+  }>
+  __tact_int_eq_first_nullable PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      FALSE
+    }>ELSE<{
+      EQUAL
+    }>
+  }>
+  __tact_int_eq_both_nullable PROCINLINE:<{
+    OVER
+    ISNULL
+    OVER
+    ISNULL
+    2DUP
+    AND
+    IF:<{
+      4 BLKDROP
+      TRUE
+    }>ELSE<{
+      SWAP
+      NOT
+      SWAP
+      NOT
+      AND
+      IF:<{
+        EQUAL
+      }>ELSE<{
+        2DROP
+        FALSE
+      }>
+    }>
   }>
   $Deploy$_load PROCINLINE:<{
     32 LDU
@@ -247,22 +283,27 @@ PROGRAM{
     ADD
   }>
   $MathTester$_fun_compare1 PROCREF:<{
-    EQUAL
+    SWAP
+    __tact_int_eq_first_nullable INLINECALLDICT
   }>
   $MathTester$_fun_compare2 PROCREF:<{
-    NEQ
+    SWAP
+    __tact_int_eq_first_nullable INLINECALLDICT
+    NOT
   }>
   $MathTester$_fun_compare3 PROCREF:<{
-    EQUAL
+    __tact_int_eq_first_nullable INLINECALLDICT
   }>
   $MathTester$_fun_compare4 PROCREF:<{
-    NEQ
+    __tact_int_eq_first_nullable INLINECALLDICT
+    NOT
   }>
   $MathTester$_fun_compare5 PROCREF:<{
-    EQUAL
+    __tact_int_eq_both_nullable INLINECALLDICT
   }>
   $MathTester$_fun_compare6 PROCREF:<{
-    NEQ
+    __tact_int_eq_both_nullable INLINECALLDICT
+    NOT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>

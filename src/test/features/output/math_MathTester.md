@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MathTester
-BOC Size: 825 bytes
+BOC Size: 914 bytes
 
 # Types
 Total Types: 5

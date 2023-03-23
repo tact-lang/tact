@@ -18,32 +18,32 @@ tuple $MathTester$_contract_init() impure inline_ref {
 
 (tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ($a == $b));
+    return ($self, ( __tact_int_eq_first_nullable($b, $a) ));
 }
 
 (tuple, int) $MathTester$_fun_compare2(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ($a != $b));
+    return ($self, ( ~ __tact_int_eq_first_nullable($b, $a) ));
 }
 
 (tuple, int) $MathTester$_fun_compare3(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ($a == $b));
+    return ($self, ( __tact_int_eq_first_nullable($a, $b) ));
 }
 
 (tuple, int) $MathTester$_fun_compare4(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ($a != $b));
+    return ($self, ( ~ __tact_int_eq_first_nullable($a, $b) ));
 }
 
 (tuple, int) $MathTester$_fun_compare5(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ($a == $b));
+    return ($self, ( __tact_int_eq_both_nullable($a, $b) ));
 }
 
 (tuple, int) $MathTester$_fun_compare6(tuple $self, int $a, int $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ($a != $b));
+    return ($self, ( ~ __tact_int_eq_both_nullable($a, $b) ));
 }
 
 ;;

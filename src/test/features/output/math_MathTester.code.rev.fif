@@ -296,7 +296,18 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      NEQ
+      s0 s1 XCHG
+      s1 PUSH
+      ISNULL
+      <{
+        2DROP
+        0 PUSHINT
+      }> PUSHCONT
+      <{
+        EQUAL
+      }> PUSHCONT
+      IFELSE
+      NOT
     }> CALLREF
     s1 POP
 
@@ -324,7 +335,16 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      EQUAL
+      s1 PUSH
+      ISNULL
+      <{
+        2DROP
+        0 PUSHINT
+      }> PUSHCONT
+      <{
+        EQUAL
+      }> PUSHCONT
+      IFELSE
     }> CALLREF
     s1 POP
 
@@ -352,7 +372,17 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      EQUAL
+      s0 s1 XCHG
+      s1 PUSH
+      ISNULL
+      <{
+        2DROP
+        0 PUSHINT
+      }> PUSHCONT
+      <{
+        EQUAL
+      }> PUSHCONT
+      IFELSE
     }> CALLREF
     s1 POP
 
@@ -408,7 +438,33 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      NEQ
+      s1 PUSH
+      ISNULL
+      s1 PUSH
+      ISNULL
+      2DUP
+      AND
+      <{
+        4 BLKDROP
+        -1 PUSHINT
+      }> PUSHCONT
+      <{
+        s0 s1 XCHG
+        NOT
+        s0 s1 XCHG
+        NOT
+        AND
+        <{
+          EQUAL
+        }> PUSHCONT
+        <{
+          2DROP
+          0 PUSHINT
+        }> PUSHCONT
+        IFELSE
+      }> PUSHCONT
+      IFELSE
+      NOT
     }> CALLREF
     s1 POP
 
@@ -436,7 +492,17 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      NEQ
+      s1 PUSH
+      ISNULL
+      <{
+        2DROP
+        0 PUSHINT
+      }> PUSHCONT
+      <{
+        EQUAL
+      }> PUSHCONT
+      IFELSE
+      NOT
     }> CALLREF
     s1 POP
 
@@ -464,7 +530,32 @@ SETCP0
     IFELSE
     ROTREV
     <{
-      EQUAL
+      s1 PUSH
+      ISNULL
+      s1 PUSH
+      ISNULL
+      2DUP
+      AND
+      <{
+        4 BLKDROP
+        -1 PUSHINT
+      }> PUSHCONT
+      <{
+        s0 s1 XCHG
+        NOT
+        s0 s1 XCHG
+        NOT
+        AND
+        <{
+          EQUAL
+        }> PUSHCONT
+        <{
+          2DROP
+          0 PUSHINT
+        }> PUSHCONT
+        IFELSE
+      }> PUSHCONT
+      IFELSE
     }> CALLREF
     s1 POP
 

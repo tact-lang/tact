@@ -26,9 +26,33 @@ describe('feature-math', () => {
         expect(await contract.getCompare2(1n, 2n)).toBe(true);
         expect(await contract.getCompare2(1n, 1n)).toBe(false);
 
-        // Compare with nullable
+        // Compare with second nullable
         expect(await contract.getCompare1(1n, 2n)).toBe(false);
         expect(await contract.getCompare1(1n, 1n)).toBe(true);
         expect(await contract.getCompare1(1n, null)).toBe(false);
+        expect(await contract.getCompare2(1n, 2n)).toBe(true);
+        expect(await contract.getCompare2(1n, 1n)).toBe(false);
+        expect(await contract.getCompare2(1n, null)).toBe(true);
+
+        // Compare with first nullable
+        expect(await contract.getCompare3(2n, 1n)).toBe(false);
+        expect(await contract.getCompare3(1n, 1n)).toBe(true);
+        expect(await contract.getCompare3(null, 1n)).toBe(false);
+        expect(await contract.getCompare4(2n, 1n)).toBe(true);
+        expect(await contract.getCompare4(1n, 1n)).toBe(false);
+        expect(await contract.getCompare4(null, 1n)).toBe(true);
+
+        // Compare with both nullable
+        expect(await contract.getCompare5(2n, 1n)).toBe(false);
+        expect(await contract.getCompare5(1n, 1n)).toBe(true);
+        expect(await contract.getCompare5(null, 1n)).toBe(false);
+        expect(await contract.getCompare5(1n, null)).toBe(false);
+        expect(await contract.getCompare5(null, null)).toBe(true);
+
+        expect(await contract.getCompare6(2n, 1n)).toBe(true);
+        expect(await contract.getCompare6(1n, 1n)).toBe(false);
+        expect(await contract.getCompare6(null, 1n)).toBe(true);
+        expect(await contract.getCompare6(1n, null)).toBe(true);
+        expect(await contract.getCompare6(null, null)).toBe(false);
     });
 });

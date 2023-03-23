@@ -18,6 +18,12 @@ slice __tact_context_get_sender() inline;
 ;; __tact_store_bool
 builder __tact_store_bool(builder b, int v) inline;
 
+;; __tact_int_eq_first_nullable
+int __tact_int_eq_first_nullable(int a, int b) inline;
+
+;; __tact_int_eq_both_nullable
+int __tact_int_eq_both_nullable(int a, int b) inline;
+
 ;; $Deploy$_load
 (slice, ((int))) $Deploy$_load(slice sc_0) inline;
 
