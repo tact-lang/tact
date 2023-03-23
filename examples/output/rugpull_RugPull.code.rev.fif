@@ -232,10 +232,15 @@ SETCP0
             s3 PUSH
             ISNULL
             NOT
-            s5 PUSH
-            ISNULL
-            NOT
-            OR
+            <{
+              -1 PUSHINT
+            }> PUSHCONT
+            <{
+              s4 PUSH
+              ISNULL
+              NOT
+            }> PUSHCONT
+            IFELSE
             <{
               s3 POP
               s3 POP
@@ -371,10 +376,15 @@ SETCP0
           <{
             s0 s7 PUSH2
             GREATER
-            s6 s3 PUSH2
-            SUB
-            0 GTINT
-            AND
+            <{
+              s5 s2 PUSH2
+              SUB
+              0 GTINT
+            }> PUSHCONT
+            <{
+              0 PUSHINT
+            }> PUSHCONT
+            IFELSE
           }> PUSHCONT
           <{
             s1 PUSH
@@ -445,10 +455,15 @@ SETCP0
                 s3 PUSH
                 ISNULL
                 NOT
-                s5 PUSH
-                ISNULL
-                NOT
-                OR
+                <{
+                  -1 PUSHINT
+                }> PUSHCONT
+                <{
+                  s4 PUSH
+                  ISNULL
+                  NOT
+                }> PUSHCONT
+                IFELSE
                 <{
                   s3 POP
                   s3 POP
@@ -673,10 +688,15 @@ SETCP0
             s3 PUSH
             ISNULL
             NOT
-            s5 PUSH
-            ISNULL
-            NOT
-            OR
+            <{
+              -1 PUSHINT
+            }> PUSHCONT
+            <{
+              s4 PUSH
+              ISNULL
+              NOT
+            }> PUSHCONT
+            IFELSE
             <{
               s3 POP
               s3 POP
@@ -835,10 +855,15 @@ SETCP0
             s3 PUSH
             ISNULL
             NOT
-            s5 PUSH
-            ISNULL
-            NOT
-            OR
+            <{
+              -1 PUSHINT
+            }> PUSHCONT
+            <{
+              s4 PUSH
+              ISNULL
+              NOT
+            }> PUSHCONT
+            IFELSE
             <{
               s3 POP
               s3 POP
@@ -1114,10 +1139,15 @@ SETCP0
                 s3 PUSH
                 ISNULL
                 NOT
-                s5 PUSH
-                ISNULL
-                NOT
-                OR
+                <{
+                  -1 PUSHINT
+                }> PUSHCONT
+                <{
+                  s4 PUSH
+                  ISNULL
+                  NOT
+                }> PUSHCONT
+                IFELSE
                 <{
                   s3 POP
                   s3 POP

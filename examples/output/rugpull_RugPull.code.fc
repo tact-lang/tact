@@ -70,7 +70,7 @@
     $self'queue~__tact_dict_set_int_slice(257, $self'queueEnd, $ctx'sender);
     $self'queueEnd = ($self'queueEnd + 1);
     $self'balance = ($self'balance + $self'investment);
-    while ((($self'balance > $self'returns) & (($self'queueEnd - $self'queueStart) > 0))) {
+    while (( (($self'balance > $self'returns)) ? ((($self'queueEnd - $self'queueStart) > 0)) : (false) )) {
         slice $investor = __tact_not_null(__tact_dict_get_int_slice($self'queue, 257, $self'queueStart));
         $self'balance = ($self'balance - $self'returns);
         $self'queueStart = ($self'queueStart + 1);

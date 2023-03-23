@@ -272,10 +272,13 @@ PROGRAM{
     s3 PUSH
     ISNULL
     NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
+    IF:<{
+      TRUE
+    }>ELSE<{
+      s4 PUSH
+      ISNULL
+      NOT
+    }>
     IF:<{
       TRUE
       __tact_store_bool INLINECALLDICT

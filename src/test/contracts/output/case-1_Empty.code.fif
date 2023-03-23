@@ -88,15 +88,24 @@ PROGRAM{
     10 LSHIFT#
     s0 s2 XCHG
     0 GTINT
-    SWAP
-    AND
-    s0 s2 XCHG
-    0 EQINT
-    s1 s2 XCHG
-    AND
-    SWAP
-    0 EQINT
-    AND
+    IF:<{
+    }>ELSE<{
+      DROP
+      FALSE
+    }>
+    IF:<{
+      SWAP
+      0 EQINT
+    }>ELSE<{
+      NIP
+      FALSE
+    }>
+    IF:<{
+      0 EQINT
+    }>ELSE<{
+      DROP
+      FALSE
+    }>
   }>
   $Empty$_fun_a PROCREF:<{
     $global_isZero INLINECALLDICT

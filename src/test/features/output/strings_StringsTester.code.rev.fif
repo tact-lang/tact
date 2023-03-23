@@ -424,9 +424,14 @@ SETCP0
             8 LDU
             s1 PUSH
             64 GTINT
-            s2 PUSH
-            91 LESSINT
-            AND
+            <{
+              s1 PUSH
+              91 LESSINT
+            }> PUSHCONT
+            <{
+              0 PUSHINT
+            }> PUSHCONT
+            IFELSE
             <{
               s0 s1 XCHG
               -65 ADDCONST
@@ -436,9 +441,14 @@ SETCP0
             <{
               s1 PUSH
               96 GTINT
-              s2 PUSH
-              123 LESSINT
-              AND
+              <{
+                s1 PUSH
+                123 LESSINT
+              }> PUSHCONT
+              <{
+                0 PUSHINT
+              }> PUSHCONT
+              IFELSE
               <{
                 s0 s1 XCHG
                 -71 ADDCONST
@@ -448,9 +458,14 @@ SETCP0
               <{
                 s1 PUSH
                 47 GTINT
-                s2 PUSH
-                58 LESSINT
-                AND
+                <{
+                  s1 PUSH
+                  58 LESSINT
+                }> PUSHCONT
+                <{
+                  0 PUSHINT
+                }> PUSHCONT
+                IFELSE
                 <{
                   s0 s1 XCHG
                   4 ADDCONST
@@ -460,9 +475,14 @@ SETCP0
                 <{
                   s1 PUSH
                   45 EQINT
-                  s2 PUSH
-                  43 EQINT
-                  OR
+                  <{
+                    -1 PUSHINT
+                  }> PUSHCONT
+                  <{
+                    s1 PUSH
+                    43 EQINT
+                  }> PUSHCONT
+                  IFELSE
                   <{
                     62 PUSHINT
                     s2 POP
@@ -472,9 +492,14 @@ SETCP0
                   <{
                     s1 PUSH
                     95 EQINT
-                    s2 PUSH
-                    47 EQINT
-                    OR
+                    <{
+                      -1 PUSHINT
+                    }> PUSHCONT
+                    <{
+                      s1 PUSH
+                      47 EQINT
+                    }> PUSHCONT
+                    IFELSE
                     <{
                       63 PUSHINT
                       s2 POP
@@ -518,7 +543,8 @@ SETCP0
             SUB
             LDSLICEX
             s0 POP
-          }> IFJMPREF
+          }> PUSHCONT
+          IFJMP
           2DROP
           <{
             ENDC
@@ -1568,9 +1594,14 @@ SETCP0
             8 LDU
             s1 PUSH
             64 GTINT
-            s2 PUSH
-            91 LESSINT
-            AND
+            <{
+              s1 PUSH
+              91 LESSINT
+            }> PUSHCONT
+            <{
+              0 PUSHINT
+            }> PUSHCONT
+            IFELSE
             <{
               s0 s1 XCHG
               -65 ADDCONST
@@ -1580,9 +1611,14 @@ SETCP0
             <{
               s1 PUSH
               96 GTINT
-              s2 PUSH
-              123 LESSINT
-              AND
+              <{
+                s1 PUSH
+                123 LESSINT
+              }> PUSHCONT
+              <{
+                0 PUSHINT
+              }> PUSHCONT
+              IFELSE
               <{
                 s0 s1 XCHG
                 -71 ADDCONST
@@ -1592,9 +1628,14 @@ SETCP0
               <{
                 s1 PUSH
                 47 GTINT
-                s2 PUSH
-                58 LESSINT
-                AND
+                <{
+                  s1 PUSH
+                  58 LESSINT
+                }> PUSHCONT
+                <{
+                  0 PUSHINT
+                }> PUSHCONT
+                IFELSE
                 <{
                   s0 s1 XCHG
                   4 ADDCONST
@@ -1604,9 +1645,14 @@ SETCP0
                 <{
                   s1 PUSH
                   45 EQINT
-                  s2 PUSH
-                  43 EQINT
-                  OR
+                  <{
+                    -1 PUSHINT
+                  }> PUSHCONT
+                  <{
+                    s1 PUSH
+                    43 EQINT
+                  }> PUSHCONT
+                  IFELSE
                   <{
                     62 PUSHINT
                     s2 POP
@@ -1616,9 +1662,14 @@ SETCP0
                   <{
                     s1 PUSH
                     95 EQINT
-                    s2 PUSH
-                    47 EQINT
-                    OR
+                    <{
+                      -1 PUSHINT
+                    }> PUSHCONT
+                    <{
+                      s1 PUSH
+                      47 EQINT
+                    }> PUSHCONT
+                    IFELSE
                     <{
                       63 PUSHINT
                       s2 POP
@@ -1662,7 +1713,8 @@ SETCP0
             SUB
             LDSLICEX
             s0 POP
-          }> IFJMPREF
+          }> PUSHCONT
+          IFJMP
           2DROP
           <{
             ENDC

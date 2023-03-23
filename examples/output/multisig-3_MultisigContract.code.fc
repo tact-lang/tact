@@ -58,7 +58,7 @@
     int $ok2 = check_signature($op_hash, $msg'signature2, $self'user2_key);
     int $ok3 = check_signature($op_hash, $msg'signature3, $self'user3_key);
     throw_unless(17654, ($msg'operation'seqno == $self'seqno));
-    throw_unless(48401, (($ok1 & $ok2) & $ok3));
+    throw_unless(48401, ( (( ($ok1) ? ($ok2) : (false) )) ? ($ok3) : (false) ));
     ($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key)~$MultisigContract$_fun_execute($Operation$_tensor_cast(($msg'operation'seqno, $msg'operation'amount, $msg'operation'target)));
     return (($self'seqno, $self'user1_key, $self'user2_key, $self'user3_key), ());
 }

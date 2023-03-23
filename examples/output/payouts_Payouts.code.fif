@@ -370,10 +370,13 @@ PROGRAM{
     s3 PUSH
     ISNULL
     NOT
-    s5 PUSH
-    ISNULL
-    NOT
-    OR
+    IF:<{
+      TRUE
+    }>ELSE<{
+      s4 PUSH
+      ISNULL
+      NOT
+    }>
     IF:<{
       TRUE
       __tact_store_bool INLINECALLDICT
@@ -467,9 +470,12 @@ PROGRAM{
       8 LDU
       OVER
       64 GTINT
-      s2 PUSH
-      91 LESSINT
-      AND
+      IF:<{
+        OVER
+        91 LESSINT
+      }>ELSE<{
+        FALSE
+      }>
       IF:<{
         SWAP
         -65 ADDCONST
@@ -478,9 +484,12 @@ PROGRAM{
       }>ELSE<{
         OVER
         96 GTINT
-        s2 PUSH
-        123 LESSINT
-        AND
+        IF:<{
+          OVER
+          123 LESSINT
+        }>ELSE<{
+          FALSE
+        }>
         IF:<{
           SWAP
           -71 ADDCONST
@@ -489,9 +498,12 @@ PROGRAM{
         }>ELSE<{
           OVER
           47 GTINT
-          s2 PUSH
-          58 LESSINT
-          AND
+          IF:<{
+            OVER
+            58 LESSINT
+          }>ELSE<{
+            FALSE
+          }>
           IF:<{
             SWAP
             4 ADDCONST
@@ -500,9 +512,12 @@ PROGRAM{
           }>ELSE<{
             OVER
             45 EQINT
-            s2 PUSH
-            43 EQINT
-            OR
+            IF:<{
+              TRUE
+            }>ELSE<{
+              OVER
+              43 EQINT
+            }>
             IF:<{
               62 PUSHINT
               s2 POP
@@ -511,9 +526,12 @@ PROGRAM{
             }>ELSE<{
               OVER
               95 EQINT
-              s2 PUSH
-              47 EQINT
-              OR
+              IF:<{
+                TRUE
+              }>ELSE<{
+                OVER
+                47 EQINT
+              }>
               IF:<{
                 63 PUSHINT
                 s2 POP

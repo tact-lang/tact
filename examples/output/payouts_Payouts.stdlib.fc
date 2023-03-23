@@ -150,7 +150,7 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+    if (( ((~ null?($params'code))) ? (true) : ((~ null?($params'data))) )) {
         $b = __tact_store_bool($b, true);
         builder $bc = begin_cell();
         $bc = __tact_store_bool($bc, false);
@@ -200,15 +200,15 @@ slice $Slice$_fun_fromBase64(slice $self) impure inline_ref {
     builder $result = begin_cell();
     repeat ($size) {
         int $code = $self~load_uint(8);
-        if ((($code >= 65) & ($code <= 90))) {
+        if (( (($code >= 65)) ? (($code <= 90)) : (false) )) {
             $result = store_uint($result, ($code - 65), 6);
-        } elseif ((($code >= 97) & ($code <= 122))) {
+        } elseif (( (($code >= 97)) ? (($code <= 122)) : (false) )) {
             $result = store_uint($result, ($code - (97 - 26)), 6);
-        } elseif ((($code >= 48) & ($code <= 57))) {
+        } elseif (( (($code >= 48)) ? (($code <= 57)) : (false) )) {
             $result = store_uint($result, ($code + (52 - 48)), 6);
-        } elseif ((($code == 45) | ($code == 43))) {
+        } elseif (( (($code == 45)) ? (true) : (($code == 43)) )) {
             $result = store_uint($result, 62, 6);
-        } elseif ((($code == 95) | ($code == 47))) {
+        } elseif (( (($code == 95)) ? (true) : (($code == 47)) )) {
             $result = store_uint($result, 63, 6);
         } elseif (($code == 61)) {
         } else {

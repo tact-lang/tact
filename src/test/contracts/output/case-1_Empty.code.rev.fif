@@ -128,15 +128,28 @@ SETCP0
         10 LSHIFT
         s0 s2 XCHG
         0 GTINT
-        s0 s1 XCHG
-        AND
-        s0 s2 XCHG
-        0 EQINT
-        s1 s2 XCHG
-        AND
-        s0 s1 XCHG
-        0 EQINT
-        AND
+        <{
+          s0 POP
+          0 PUSHINT
+        }> PUSHCONT
+        IFNOT
+        <{
+          s0 s1 XCHG
+          0 EQINT
+        }> PUSHCONT
+        <{
+          s1 POP
+          0 PUSHINT
+        }> PUSHCONT
+        IFELSE
+        <{
+          0 EQINT
+        }> PUSHCONT
+        <{
+          s0 POP
+          0 PUSHINT
+        }> PUSHCONT
+        IFELSE
       }> CALLREF
     }> CALLREF
     s1 POP

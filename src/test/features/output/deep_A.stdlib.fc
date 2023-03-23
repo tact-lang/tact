@@ -129,7 +129,7 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     $b = __tact_store_address($b, $params'to);
     $b = store_coins($b, $params'value);
     $b = store_int($b, 0, ((((1 + 4) + 4) + 64) + 32));
-    if (((~ null?($params'code)) | (~ null?($params'data)))) {
+    if (( ((~ null?($params'code))) ? (true) : ((~ null?($params'data))) )) {
         $b = __tact_store_bool($b, true);
         builder $bc = begin_cell();
         $bc = __tact_store_bool($bc, false);

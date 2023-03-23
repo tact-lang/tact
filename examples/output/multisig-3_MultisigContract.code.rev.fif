@@ -188,12 +188,20 @@ SETCP0
         s6 s10 PUSH2
         EQUAL
         THROWANYIFNOT
-        s0 s1 XCHG
         48401 PUSHINT
-        s0 s3 XCHG
-        AND
+        s0 s2 XCHG
+        <{
+          0 PUSHINT
+          s3 POP
+        }> PUSHCONT
+        IFNOT
+        s0 s2 XCHG
+        <{
+          0 PUSHINT
+          s2 POP
+        }> PUSHCONT
+        IFNOT
         s0 s1 XCHG
-        AND
         THROWANYIFNOT
         <{
           s2 POP
@@ -242,10 +250,15 @@ SETCP0
             s3 PUSH
             ISNULL
             NOT
-            s5 PUSH
-            ISNULL
-            NOT
-            OR
+            <{
+              -1 PUSHINT
+            }> PUSHCONT
+            <{
+              s4 PUSH
+              ISNULL
+              NOT
+            }> PUSHCONT
+            IFELSE
             <{
               s3 POP
               s3 POP

@@ -662,6 +662,20 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
   },
   {
     "code": {
+      "code": "return (null?(a)) ? (true) : (a != b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_neq_nullable_one",
+    "signature": "int __tact_int_neq_nullable_one(int a, int b)",
+  },
+  {
+    "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
 return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );",
@@ -675,6 +689,22 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_int_eq_nullable",
     "signature": "int __tact_int_eq_nullable(int a, int b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a != b ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_neq_nullable",
+    "signature": "int __tact_int_neq_nullable(int a, int b)",
   },
   {
     "code": {
@@ -703,6 +733,66 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_cell_neq",
     "signature": "int __tact_cell_neq(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_eq_nullable_one",
+    "signature": "int __tact_cell_eq_nullable_one(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_neq_nullable_one",
+    "signature": "int __tact_cell_neq_nullable_one(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() == b.cell_hash() ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_eq_nullable",
+    "signature": "int __tact_cell_eq_nullable(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() != b.cell_hash() ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_neq_nullable",
+    "signature": "int __tact_cell_neq_nullable(cell a, cell b)",
   },
   {
     "code": {
@@ -4033,6 +4123,20 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
   },
   {
     "code": {
+      "code": "return (null?(a)) ? (true) : (a != b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_neq_nullable_one",
+    "signature": "int __tact_int_neq_nullable_one(int a, int b)",
+  },
+  {
+    "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
 return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );",
@@ -4046,6 +4150,22 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_int_eq_nullable",
     "signature": "int __tact_int_eq_nullable(int a, int b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a != b ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_neq_nullable",
+    "signature": "int __tact_int_neq_nullable(int a, int b)",
   },
   {
     "code": {
@@ -4074,6 +4194,66 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_cell_neq",
     "signature": "int __tact_cell_neq(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_eq_nullable_one",
+    "signature": "int __tact_cell_eq_nullable_one(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_neq_nullable_one",
+    "signature": "int __tact_cell_neq_nullable_one(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() == b.cell_hash() ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_eq_nullable",
+    "signature": "int __tact_cell_eq_nullable(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() != b.cell_hash() ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_neq_nullable",
+    "signature": "int __tact_cell_neq_nullable(cell a, cell b)",
   },
   {
     "code": {
@@ -7404,6 +7584,20 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
   },
   {
     "code": {
+      "code": "return (null?(a)) ? (true) : (a != b);",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_neq_nullable_one",
+    "signature": "int __tact_int_neq_nullable_one(int a, int b)",
+  },
+  {
+    "code": {
       "code": "var a_is_null = null?(a);
 var b_is_null = null?(b);
 return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a == b ) : ( false ) );",
@@ -7417,6 +7611,22 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_int_eq_nullable",
     "signature": "int __tact_int_eq_nullable(int a, int b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a != b ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_int_neq_nullable",
+    "signature": "int __tact_int_neq_nullable(int a, int b)",
   },
   {
     "code": {
@@ -7445,6 +7655,66 @@ return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_nul
     },
     "name": "__tact_cell_neq",
     "signature": "int __tact_cell_neq(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_eq_nullable_one",
+    "signature": "int __tact_cell_eq_nullable_one(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_neq_nullable_one",
+    "signature": "int __tact_cell_neq_nullable_one(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() == b.cell_hash() ) : ( false ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_eq_nullable",
+    "signature": "int __tact_cell_eq_nullable(cell a, cell b)",
+  },
+  {
+    "code": {
+      "code": "var a_is_null = null?(a);
+var b_is_null = null?(b);
+return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() != b.cell_hash() ) : ( true ) );",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_cell_neq_nullable",
+    "signature": "int __tact_cell_neq_nullable(cell a, cell b)",
   },
   {
     "code": {

@@ -282,6 +282,16 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
         }
 
+        // Case for "&&" operator
+        if (f.op === '&&') {
+            return `( (${writeExpression(f.left, ctx)}) ? (${writeExpression(f.right, ctx)}) : (false) )`;
+        }
+
+        // Case for "||" operator
+        if (f.op === '||') {
+            return `( (${writeExpression(f.left, ctx)}) ? (true) : (${writeExpression(f.right, ctx)}) )`;
+        }
+
         // Other ops
         let op: string;
         if (f.op === '*') {
@@ -302,10 +312,6 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             op = '>';
         } else if (f.op === '>=') {
             op = '>=';
-        } else if (f.op === '||') {
-            op = '|';
-        } else if (f.op === '&&') {
-            op = '&';
         } else if (f.op === '<<') {
             op = '<<';
         } else if (f.op === '>>') {

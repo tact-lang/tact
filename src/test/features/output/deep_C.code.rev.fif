@@ -386,10 +386,15 @@ SETCP0
               s3 PUSH
               ISNULL
               NOT
-              s5 PUSH
-              ISNULL
-              NOT
-              OR
+              <{
+                -1 PUSHINT
+              }> PUSHCONT
+              <{
+                s4 PUSH
+                ISNULL
+                NOT
+              }> PUSHCONT
+              IFELSE
               <{
                 s3 POP
                 s3 POP
