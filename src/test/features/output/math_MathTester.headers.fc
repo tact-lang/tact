@@ -1,0 +1,70 @@
+;;
+;; Header files for MathTester
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; __tact_store_address
+builder __tact_store_address(builder b, slice address) inline;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_store_bool
+builder __tact_store_bool(builder b, int v) inline;
+
+;; $Deploy$_load
+(slice, ((int))) $Deploy$_load(slice sc_0) inline;
+
+;; $DeployOk$_store
+builder $DeployOk$_store(builder build_0, (int) v) inline;
+
+;; $DeployOk$_store_cell
+cell $DeployOk$_store_cell((int) v) inline;
+
+;; $MathTester$_contract_init
+tuple $MathTester$_contract_init() impure inline_ref;
+
+;; $MathTester$_contract_load
+tuple $MathTester$_contract_load() impure inline;
+
+;; $MathTester$_contract_store
+() $MathTester$_contract_store(tuple v) impure inline;
+
+;; $global_send
+() $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $global_reply
+() $global_reply(cell $body) impure inline_ref;
+
+;; $MathTester$_fun_add
+(tuple, int) $MathTester$_fun_add(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare1
+(tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare2
+(tuple, int) $MathTester$_fun_compare2(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare3
+(tuple, int) $MathTester$_fun_compare3(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare4
+(tuple, int) $MathTester$_fun_compare4(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare5
+(tuple, int) $MathTester$_fun_compare5(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $MathTester$_fun_compare6
+(tuple, int) $MathTester$_fun_compare6(tuple $self, int $a, int $b) impure inline_ref;
+
+;; $DeployOk$_constructor_queryId
+((int)) $DeployOk$_constructor_queryId(int queryId) inline;

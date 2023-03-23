@@ -1,0 +1,388 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get_sender
+  DECLPROC __tact_store_bool
+  DECLPROC $Deploy$_load
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
+  DECLPROC $MathTester$_contract_init
+  DECLPROC $MathTester$_contract_load
+  DECLPROC $MathTester$_contract_store
+  DECLPROC $global_send
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $global_reply
+  DECLPROC $MathTester$_fun_add
+  DECLPROC $MathTester$_fun_compare1
+  DECLPROC $MathTester$_fun_compare2
+  DECLPROC $MathTester$_fun_compare3
+  DECLPROC $MathTester$_fun_compare4
+  DECLPROC $MathTester$_fun_compare5
+  DECLPROC $MathTester$_fun_compare6
+  DECLPROC $DeployOk$_constructor_queryId
+  DECLPROC $MathTester$_receive_binary_Deploy
+  83863 DECLMETHOD %add
+  80704 DECLMETHOD %compare1
+  68387 DECLMETHOD %compare2
+  72450 DECLMETHOD %compare3
+  93157 DECLMETHOD %compare4
+  97220 DECLMETHOD %compare5
+  84903 DECLMETHOD %compare6
+  113617 DECLMETHOD supported_interfaces
+  DECLPROC get_abi_ipfs
+  DECLPROC lazy_deployment_completed
+  DECLPROC $MathTester$_contract_router
+  DECLPROC recv_internal
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
+  DECLGLOBVAR __tact_context_sys
+  DECLGLOBVAR __tact_randomized
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    10 PUSHPOW2
+    EQUAL
+    OVER
+    1279 PUSHINT
+    EQUAL
+    OR
+    136 THROWIFNOT
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __tact_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
+  }>
+  $Deploy$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2490013878 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    SWAP
+  }>
+  $DeployOk$_store PROCINLINE:<{
+    2952335191 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  $DeployOk$_store_cell PROCINLINE:<{
+    NEWC
+    SWAP
+    $DeployOk$_store INLINECALLDICT
+    ENDC
+  }>
+  $MathTester$_contract_init PROCREF:<{
+    PUSHNULL
+  }>
+  $MathTester$_contract_load PROCINLINE:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    DROP
+    IF:<{
+      PUSHNULL
+    }>ELSE<{
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      $MathTester$_contract_init INLINECALLDICT
+    }>
+  }>
+  $MathTester$_contract_store PROCINLINE:<{
+    DROP
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    ENDC
+    c4 POP
+  }>
+  $global_send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    s5 PUSH
+    ISNULL
+    NOT
+    OR
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $global_reply PROCREF:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
+  $MathTester$_fun_add PROCREF:<{
+    ADD
+  }>
+  $MathTester$_fun_compare1 PROCREF:<{
+    EQUAL
+  }>
+  $MathTester$_fun_compare2 PROCREF:<{
+    NEQ
+  }>
+  $MathTester$_fun_compare3 PROCREF:<{
+    EQUAL
+  }>
+  $MathTester$_fun_compare4 PROCREF:<{
+    NEQ
+  }>
+  $MathTester$_fun_compare5 PROCREF:<{
+    EQUAL
+  }>
+  $MathTester$_fun_compare6 PROCREF:<{
+    NEQ
+  }>
+  $DeployOk$_constructor_queryId PROCINLINE:<{
+  }>
+  $MathTester$_receive_binary_Deploy PROCINLINE:<{
+    $DeployOk$_constructor_queryId INLINECALLDICT
+    $DeployOk$_store_cell INLINECALLDICT
+    $global_reply INLINECALLDICT
+  }>
+  %add PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_add INLINECALLDICT
+    NIP
+  }>
+  %compare1 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare1 INLINECALLDICT
+    NIP
+  }>
+  %compare2 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare2 INLINECALLDICT
+    NIP
+  }>
+  %compare3 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare3 INLINECALLDICT
+    NIP
+  }>
+  %compare4 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare4 INLINECALLDICT
+    NIP
+  }>
+  %compare5 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare5 INLINECALLDICT
+    NIP
+  }>
+  %compare6 PROC:<{
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_fun_compare6 INLINECALLDICT
+    NIP
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    36993126140238121407019133875791708966 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d644c4b42584b645252576852695079446166707847437046475a43675178774c58594665326e484d597a4d31} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $MathTester$_contract_router PROCREF:<{
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    s0 s2 XCHG
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    SWAP
+    2490013878 PUSHINT
+    EQUAL
+    IFJMP:<{
+      $Deploy$_load INLINECALLDICT
+      NIP
+      $MathTester$_receive_binary_Deploy INLINECALLDICT
+      TRUE
+    }>
+    DROP
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    1 EQINT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      FALSE
+    }>
+    SWAP
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
+    $MathTester$_contract_load INLINECALLDICT
+    -ROT
+    $MathTester$_contract_router INLINECALLDICT
+    DROP
+    $MathTester$_contract_store INLINECALLDICT
+  }>
+}END>c

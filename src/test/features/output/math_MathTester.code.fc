@@ -1,0 +1,186 @@
+#include "math_MathTester.headers.fc";
+#include "math_MathTester.stdlib.fc";
+#include "math_MathTester.storage.fc";
+
+;;
+;; Contract MathTester functions
+;;
+
+tuple $MathTester$_contract_init() impure inline_ref {
+    tuple $self = null();
+    return $self;
+}
+
+(tuple, int) $MathTester$_fun_add(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a + $b));
+}
+
+(tuple, int) $MathTester$_fun_compare1(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a == $b));
+}
+
+(tuple, int) $MathTester$_fun_compare2(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a != $b));
+}
+
+(tuple, int) $MathTester$_fun_compare3(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a == $b));
+}
+
+(tuple, int) $MathTester$_fun_compare4(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a != $b));
+}
+
+(tuple, int) $MathTester$_fun_compare5(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a == $b));
+}
+
+(tuple, int) $MathTester$_fun_compare6(tuple $self, int $a, int $b) impure inline_ref {
+    var ($self) = $self;
+    return ($self, ($a != $b));
+}
+
+;;
+;; Receivers of a Contract MathTester
+;;
+
+((tuple), ()) $MathTester$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
+    var $self = $self;
+    var ($deploy'queryId) = $deploy;
+    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return ($self, ());
+}
+
+;;
+;; Get methods of a Contract MathTester
+;;
+
+_ %add(int $$a, int $$b) method_id(83863) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_add($a, $b);
+    return res;
+}
+
+_ %compare1(int $$a, int $$b) method_id(80704) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare1($a, $b);
+    return res;
+}
+
+_ %compare2(int $$a, int $$b) method_id(68387) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare2($a, $b);
+    return res;
+}
+
+_ %compare3(int $$a, int $$b) method_id(72450) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare3($a, $b);
+    return res;
+}
+
+_ %compare4(int $$a, int $$b) method_id(93157) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare4($a, $b);
+    return res;
+}
+
+_ %compare5(int $$a, int $$b) method_id(97220) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare5($a, $b);
+    return res;
+}
+
+_ %compare6(int $$a, int $$b) method_id(84903) {
+    int $a = $$a;
+    int $b = $$b;
+    var self = $MathTester$_contract_load();
+    var res = self~$MathTester$_fun_compare6($a, $b);
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.debug.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmdLKBXKdRRWhRiPyDafpxGCpFGZCgQxwLXYFe2nHMYzM1";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract MathTester
+;;
+
+(tuple, int) $MathTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$MathTester$_receive_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $MathTester$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$MathTester$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $MathTester$_contract_store(self);
+}
