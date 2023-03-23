@@ -193,7 +193,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         let lt = getExpType(ctx.ctx, f.left);
         let rt = getExpType(ctx.ctx, f.right);
 
-        // Case for addresses
+        // Case for addresses equality
         if (
             lt.kind === 'ref' &&
             rt.kind === 'ref' &&
@@ -220,41 +220,35 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
         }
 
-        // Case for cells
+        // Case for cells eqality
         if (
             lt.kind === 'ref' &&
             rt.kind === 'ref' &&
             lt.name === 'Cell' &&
             rt.name === 'Cell'
         ) {
-            let prefix = '';
-            if (f.op == '!=') {
-                prefix = '~ ';
-            }
+            let op = f.op === '==' ? 'eq' : 'neq';
             if (lt.optional && rt.optional) {
-                ctx.used(`__tact_cell_eq_nullable`);
-                return `( ${prefix}__tact_cell_eq_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+                ctx.used(`__tact_cell_${op}_nullable`);
+                return `__tact_cell_${op}_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
             }
             if (lt.optional && !rt.optional) {
-                ctx.used(`__tact_cell_eq_nullable_one`);
-                return `( ${prefix}__tact_cell_eq_nullable_one(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+                ctx.used(`__tact_cell_${op}_nullable_one`);
+                return `__tact_cell_${op}_nullable_one(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
             }
             if (!lt.optional && rt.optional) {
-                ctx.used(`__tact_cell_eq_nullable_one`);
-                return `( ${prefix}__tact_cell_eq_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+                ctx.used(`__tact_cell_${op}_nullable_one`);
+                return `__tact_cell_${op}_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
             }
-            ctx.used(`__tact_cell_eq`);
-            return `( ${prefix}__tact_cell_eq(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)}) )`;
+            ctx.used(`__tact_cell_${op}`);
+            return `__tact_cell_${op}(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
         }
 
-        // Case for maps
+        // Case for maps eqality
         if (lt.kind === 'map' && rt.kind === 'map') {
-            let prefix = '';
-            if (f.op == '!=') {
-                prefix = '~ ';
-            }
-            ctx.used(`__tact_cell_eq_nullable`);
-            return `( ${prefix}__tact_cell_eq_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)}) )`;
+            let op = f.op === '==' ? 'eq' : 'neq';
+            ctx.used(`__tact_cell_${op}_nullable`);
+            return `__tact_cell_${op}_nullable(${writeExpression(f.left, ctx)}, ${writeExpression(f.right, ctx)})`;
         }
 
         // Check for int or boolean types
@@ -266,7 +260,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             throw Error('Invalid types for binary operation'); // Should be unreachable
         }
 
-        // Special case for equality of nullable ints
+        // Case for ints equality
         if (f.op === '==' || f.op === '!=') {
             let op = f.op === '==' ? 'eq' : 'neq';
             if (lt.optional && rt.optional) {
@@ -280,6 +274,11 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (!lt.optional && rt.optional) {
                 ctx.used(`__tact_int_${op}_nullable_one`);
                 return `__tact_int_${op}_nullable_one(${writeExpression(f.right, ctx)}, ${writeExpression(f.left, ctx)})`;
+            }
+            if (f.op === '==') {
+                return `(${writeExpression(f.left, ctx)} == ${writeExpression(f.right, ctx)})`;
+            } else {
+                return `(${writeExpression(f.left, ctx)} != ${writeExpression(f.right, ctx)})`;
             }
         }
 
@@ -295,10 +294,6 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             op = '+';
         } else if (f.op === '-') {
             op = '-';
-        } else if (f.op === '==') {
-            op = '==';
-        } else if (f.op === '!=') {
-            op = '!=';
         } else if (f.op === '<') {
             op = '<';
         } else if (f.op === '<=') {

@@ -108,52 +108,52 @@ tuple $MathTester$_contract_init() impure inline_ref {
 
 (tuple, int) $MathTester$_fun_compare19(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_cell_eq($b, $a) ));
+    return ($self, __tact_cell_eq($b, $a));
 }
 
 (tuple, int) $MathTester$_fun_compare20(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_cell_eq_nullable_one($b, $a) ));
+    return ($self, __tact_cell_eq_nullable_one($b, $a));
 }
 
 (tuple, int) $MathTester$_fun_compare21(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_cell_eq_nullable_one($a, $b) ));
+    return ($self, __tact_cell_eq_nullable_one($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare22(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_cell_eq_nullable($a, $b) ));
+    return ($self, __tact_cell_eq_nullable($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare23(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_cell_eq($b, $a) ));
+    return ($self, __tact_cell_neq($b, $a));
 }
 
 (tuple, int) $MathTester$_fun_compare24(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_cell_eq_nullable_one($b, $a) ));
+    return ($self, __tact_cell_neq_nullable_one($b, $a));
 }
 
 (tuple, int) $MathTester$_fun_compare25(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_cell_eq_nullable_one($a, $b) ));
+    return ($self, __tact_cell_neq_nullable_one($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare26(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_cell_eq_nullable($a, $b) ));
+    return ($self, __tact_cell_neq_nullable($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare27(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( __tact_cell_eq_nullable($a, $b) ));
+    return ($self, __tact_cell_eq_nullable($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_compare28(tuple $self, cell $a, cell $b) impure inline_ref {
     var ($self) = $self;
-    return ($self, ( ~ __tact_cell_eq_nullable($a, $b) ));
+    return ($self, __tact_cell_neq_nullable($a, $b));
 }
 
 (tuple, int) $MathTester$_fun_isNull1(tuple $self, int $a) impure inline_ref {

@@ -12,8 +12,11 @@ PROGRAM{
   DECLPROC __tact_int_eq_nullable
   DECLPROC __tact_int_neq_nullable
   DECLPROC __tact_cell_eq
+  DECLPROC __tact_cell_neq
   DECLPROC __tact_cell_eq_nullable_one
+  DECLPROC __tact_cell_neq_nullable_one
   DECLPROC __tact_cell_eq_nullable
+  DECLPROC __tact_cell_neq_nullable
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
@@ -252,6 +255,13 @@ PROGRAM{
     HASHCU
     EQUAL
   }>
+  __tact_cell_neq PROCINLINE:<{
+    SWAP
+    HASHCU
+    SWAP
+    HASHCU
+    NEQ
+  }>
   __tact_cell_eq_nullable_one PROCINLINE:<{
     OVER
     ISNULL
@@ -264,6 +274,20 @@ PROGRAM{
       SWAP
       HASHCU
       EQUAL
+    }>
+  }>
+  __tact_cell_neq_nullable_one PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      TRUE
+    }>ELSE<{
+      SWAP
+      HASHCU
+      SWAP
+      HASHCU
+      NEQ
     }>
   }>
   __tact_cell_eq_nullable PROCINLINE:<{
@@ -291,6 +315,34 @@ PROGRAM{
       }>ELSE<{
         2DROP
         FALSE
+      }>
+    }>
+  }>
+  __tact_cell_neq_nullable PROCINLINE:<{
+    OVER
+    ISNULL
+    OVER
+    ISNULL
+    2DUP
+    AND
+    IF:<{
+      4 BLKDROP
+      FALSE
+    }>ELSE<{
+      SWAP
+      NOT
+      SWAP
+      NOT
+      AND
+      IF:<{
+        SWAP
+        HASHCU
+        SWAP
+        HASHCU
+        NEQ
+      }>ELSE<{
+        2DROP
+        TRUE
       }>
     }>
   }>
@@ -546,28 +598,23 @@ PROGRAM{
   }>
   $MathTester$_fun_compare23 PROCREF:<{
     SWAP
-    __tact_cell_eq INLINECALLDICT
-    NOT
+    __tact_cell_neq INLINECALLDICT
   }>
   $MathTester$_fun_compare24 PROCREF:<{
     SWAP
-    __tact_cell_eq_nullable_one INLINECALLDICT
-    NOT
+    __tact_cell_neq_nullable_one INLINECALLDICT
   }>
   $MathTester$_fun_compare25 PROCREF:<{
-    __tact_cell_eq_nullable_one INLINECALLDICT
-    NOT
+    __tact_cell_neq_nullable_one INLINECALLDICT
   }>
   $MathTester$_fun_compare26 PROCREF:<{
-    __tact_cell_eq_nullable INLINECALLDICT
-    NOT
+    __tact_cell_neq_nullable INLINECALLDICT
   }>
   $MathTester$_fun_compare27 PROCREF:<{
     __tact_cell_eq_nullable INLINECALLDICT
   }>
   $MathTester$_fun_compare28 PROCREF:<{
-    __tact_cell_eq_nullable INLINECALLDICT
-    NOT
+    __tact_cell_neq_nullable INLINECALLDICT
   }>
   $MathTester$_fun_isNull1 PROCREF:<{
     ISNULL

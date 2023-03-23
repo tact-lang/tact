@@ -69,14 +69,28 @@ int __tact_cell_eq(cell a, cell b) inline {
     return (a.cell_hash() ==  b.cell_hash());
 }
 
+int __tact_cell_neq(cell a, cell b) inline {
+    return (a.cell_hash() !=  b.cell_hash());
+}
+
 int __tact_cell_eq_nullable_one(cell a, cell b) inline {
     return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
+}
+
+int __tact_cell_neq_nullable_one(cell a, cell b) inline {
+    return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());
 }
 
 int __tact_cell_eq_nullable(cell a, cell b) inline {
     var a_is_null = null?(a);
     var b_is_null = null?(b);
     return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() == b.cell_hash() ) : ( false ) );
+}
+
+int __tact_cell_neq_nullable(cell a, cell b) inline {
+    var a_is_null = null?(a);
+    var b_is_null = null?(b);
+    return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() != b.cell_hash() ) : ( true ) );
 }
 
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref {

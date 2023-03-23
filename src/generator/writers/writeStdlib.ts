@@ -539,6 +539,17 @@ export function writeStdlib(ctx: WriterContext) {
         });
     });
 
+    ctx.fun(`__tact_cell_neq`, () => {
+        ctx.signature(`int __tact_cell_neq(cell a, cell b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                return (a.cell_hash() !=  b.cell_hash());
+            `);
+        });
+    });
+
     ctx.fun(`__tact_cell_eq_nullable_one`, () => {
         ctx.signature(`int __tact_cell_eq_nullable_one(cell a, cell b)`);
         ctx.flag('inline');
@@ -546,6 +557,17 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 return (null?(a)) ? (false) : (a.cell_hash() == b.cell_hash());
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_cell_neq_nullable_one`, () => {
+        ctx.signature(`int __tact_cell_neq_nullable_one(cell a, cell b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                return (null?(a)) ? (true) : (a.cell_hash() != b.cell_hash());
             `);
         });
     });
@@ -559,6 +581,19 @@ export function writeStdlib(ctx: WriterContext) {
                 var a_is_null = null?(a);
                 var b_is_null = null?(b);
                 return ( a_is_null & b_is_null ) ? ( true ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() == b.cell_hash() ) : ( false ) );
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_cell_neq_nullable`, () => {
+        ctx.signature(`int __tact_cell_neq_nullable(cell a, cell b)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var a_is_null = null?(a);
+                var b_is_null = null?(b);
+                return ( a_is_null & b_is_null ) ? ( false ) : ( ( ( ~ a_is_null ) & ( ~ b_is_null ) ) ? ( a.cell_hash() != b.cell_hash() ) : ( true ) );
             `);
         });
     });

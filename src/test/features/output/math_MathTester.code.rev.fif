@@ -379,7 +379,7 @@ SETCP0
       AND
       <{
         4 BLKDROP
-        -1 PUSHINT
+        0 PUSHINT
       }> PUSHCONT
       <{
         s0 s1 XCHG
@@ -392,16 +392,15 @@ SETCP0
           HASHCU
           s0 s1 XCHG
           HASHCU
-          EQUAL
+          NEQ
         }> PUSHCONT
         <{
           2DROP
-          0 PUSHINT
+          -1 PUSHINT
         }> PUSHCONT
         IFELSE
       }> PUSHCONT
       IFELSE
-      NOT
     }> CALLREF
     s1 POP
 
@@ -1211,8 +1210,7 @@ SETCP0
       HASHCU
       s0 s1 XCHG
       HASHCU
-      EQUAL
-      NOT
+      NEQ
     }> CALLREF
     s1 POP
 
@@ -1711,7 +1709,7 @@ SETCP0
       AND
       <{
         4 BLKDROP
-        -1 PUSHINT
+        0 PUSHINT
       }> PUSHCONT
       <{
         s0 s1 XCHG
@@ -1724,16 +1722,15 @@ SETCP0
           HASHCU
           s0 s1 XCHG
           HASHCU
-          EQUAL
+          NEQ
         }> PUSHCONT
         <{
           2DROP
-          0 PUSHINT
+          -1 PUSHINT
         }> PUSHCONT
         IFELSE
       }> PUSHCONT
       IFELSE
-      NOT
     }> CALLREF
     s1 POP
 
@@ -1975,17 +1972,16 @@ SETCP0
       ISNULL
       <{
         2DROP
-        0 PUSHINT
+        -1 PUSHINT
       }> PUSHCONT
       <{
         s0 s1 XCHG
         HASHCU
         s0 s1 XCHG
         HASHCU
-        EQUAL
+        NEQ
       }> PUSHCONT
       IFELSE
-      NOT
     }> CALLREF
     s1 POP
 
@@ -2045,17 +2041,16 @@ SETCP0
       ISNULL
       <{
         2DROP
-        0 PUSHINT
+        -1 PUSHINT
       }> PUSHCONT
       <{
         s0 s1 XCHG
         HASHCU
         s0 s1 XCHG
         HASHCU
-        EQUAL
+        NEQ
       }> PUSHCONT
       IFELSE
-      NOT
     }> CALLREF
     s1 POP
 ) 19 DICTPUSHCONST

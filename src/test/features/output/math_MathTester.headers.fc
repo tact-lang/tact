@@ -42,11 +42,20 @@ int __tact_int_neq_nullable(int a, int b) inline;
 ;; __tact_cell_eq
 int __tact_cell_eq(cell a, cell b) inline;
 
+;; __tact_cell_neq
+int __tact_cell_neq(cell a, cell b) inline;
+
 ;; __tact_cell_eq_nullable_one
 int __tact_cell_eq_nullable_one(cell a, cell b) inline;
 
+;; __tact_cell_neq_nullable_one
+int __tact_cell_neq_nullable_one(cell a, cell b) inline;
+
 ;; __tact_cell_eq_nullable
 int __tact_cell_eq_nullable(cell a, cell b) inline;
+
+;; __tact_cell_neq_nullable
+int __tact_cell_neq_nullable(cell a, cell b) inline;
 
 ;; $Deploy$_load
 (slice, ((int))) $Deploy$_load(slice sc_0) inline;
