@@ -1,6 +1,35 @@
-SETCP0
-(:methods
-  recv_internal: 
+PROGRAM{
+  DECLPROC ?fun_0;
+  DECLPROC ?fun_1;
+  DECLPROC recv_internal;
+  DECLPROC ?fun_3;
+  DECLPROC ?fun_2;
+  DECLPROC ?fun_5;
+  DECLPROC ?fun_4;
+  DECLPROC supported_interfaces;
+  DECLPROC ?fun_7;
+  DECLPROC ?fun_6;
+  DECLPROC ?fun_9;
+  DECLPROC ?fun_8;
+  DECLPROC ?fun_10;
+  DECLPROC ?fun_12;
+  DECLPROC ?fun_11;
+  ?fun_0 PROCREF:<{
+    NULL
+  }>
+  ?fun_1 PROCREF:<{
+    s0 PUSH
+    SBITS
+    s1 POP
+    31 GTINT
+    s0 POP
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+  }>
+  recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
     4 LDU
@@ -36,7 +65,7 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    0 4 2 PUXCPU
+    s0 s6 s4 PUXCPU
     s0 s3 XCHG
     4 TUPLE
     1 SETGLOBVAR
@@ -50,7 +79,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -58,24 +87,11 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
     ROTREV
-    <{
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
-      s0 POP
-      <{
-        -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
-      0 PUSHINT
-    }> CALLREF
+    ?fun_1 INLINECALLDICT
     s0 POP
     s0 POP
     NEWC
@@ -87,8 +103,11 @@ SETCP0
     1 STI
     ENDC
     c4 POP
-
-  100663: 
+  }>
+  ?fun_3 PROCREF:<{
+    456000000000 PUSHINT
+  }>
+  ?fun_2 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -97,7 +116,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -105,17 +124,16 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      456000000000 PUSHINT
-    }> CALLREF
+    ?fun_3 INLINECALLDICT
     s1 POP
-
-  104726: 
+  }>
+  ?fun_5 PROCREF:<{
+    x{48656C6C6F20776F726C64218} PUSHSLICE
+  }>
+  ?fun_4 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -124,7 +142,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -132,24 +150,23 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      PUSHSLICE
-    }> CALLREF
+    ?fun_5 INLINECALLDICT
     s1 POP
-
-  113617: 
+  }>
+  supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
     42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
-
-  116577: 
+  }>
+  ?fun_7 PROCREF:<{
+    100 PUSHINT
+  }>
+  ?fun_6 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -158,7 +175,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -166,17 +183,16 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      100 PUSHINT
-    }> CALLREF
+    ?fun_7 INLINECALLDICT
     s1 POP
-
-  121234: 
+  }>
+  ?fun_9 PROCREF:<{
+    10 PUSHINT
+  }>
+  ?fun_8 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -185,7 +201,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -193,17 +209,13 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      -6 PUSHINT
-    }> CALLREF
+    ?fun_9 INLINECALLDICT
     s1 POP
-
-  125425: 
+  }>
+  ?fun_10 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -212,7 +224,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -220,17 +232,16 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      PUSHNULL
-    }> CALLREF
+    ?fun_0 INLINECALLDICT
     s1 POP
-
-  129488: 
+  }>
+  ?fun_12 PROCREF:<{
+    123000000000 PUSHINT
+  }>
+  ?fun_11 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -239,7 +250,7 @@ SETCP0
     1 LDI
     s0 POP
     <{
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       MYADDR
@@ -247,15 +258,10 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      123000000000 PUSHINT
-    }> CALLREF
+    ?fun_12 INLINECALLDICT
     s1 POP
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+  }>
+}END>c

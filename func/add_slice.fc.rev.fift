@@ -1,8 +1,10 @@
-SETCP0
-(:methods
-  recv_internal: 
-
-  2: 
+PROGRAM{
+  DECLPROC recv_internal;
+  DECLPROC ?fun_0;
+  recv_internal PROC:<{
+    
+  }>
+  ?fun_0 PROC:<{
     s0 s1 XCHG
     2 UNTUPLE
     127 PUSHINT
@@ -28,16 +30,16 @@ SETCP0
       s0 POP
     }> PUSHCONT
     IFELSE
-    PAIR
+    2 TUPLE
     s1 PUSH
     SBITS
     0 GTINT
     <{
       NEWC
       s0 s1 XCHG
-      PAIR
+      2 TUPLE
       s0 s1 XCHG
-      2 CALLDICT
+      2 CALL
     }> PUSHCONT
     IFJMP
     s1 PUSH
@@ -57,7 +59,6 @@ SETCP0
     LDREF
     s0 POP
     CTOS
-    2 CALLDICT
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+    2 CALL
+  }>
+}END>c

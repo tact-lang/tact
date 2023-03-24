@@ -1,6 +1,6 @@
 import fs from 'fs';
+import { decompileAll } from '@tact-lang/opcode';
 import { run } from '../src/node';
-import { fromCode } from 'tvm-disassembler';
 import { Cell } from 'ton-core';
 import { build } from '../src/pipeline/build';
 import { FuncCompilationResult, funcCompile } from '../src/func/funcCompile';
@@ -86,7 +86,7 @@ import { consoleLogger } from '../src/logger';
             fs.writeFileSync(p.path + r + ".cell", c.output!);
 
             // Cell -> Fift decpmpiler
-            let source = fromCode(Cell.fromBoc(c.output!)[0]);
+            let source = decompileAll({ src: c.output! });
             fs.writeFileSync(p.path + r + ".rev.fift", source);
         }
     }

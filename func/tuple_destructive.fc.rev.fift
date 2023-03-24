@@ -1,6 +1,7 @@
-SETCP0
-(:methods
-  recv_internal: 
+PROGRAM{
+  DECLPROC recv_internal;
+  DECLPROC ?fun_0;
+  recv_internal PROC:<{
     1 PUSHINT
     2 PUSHINT
     3 PUSHINT
@@ -8,12 +9,12 @@ SETCP0
     5 PUSHINT
     6 PUSHINT
     7 PUSHINT
-    PAIR
+    2 TUPLE
     6 TUPLE
-    1 CALLDICT
+    1 CALL
     s0 POP
-
-  1: 
+  }>
+  ?fun_0 PROC:<{
     6 UNTUPLE
     s0 POP
     s4 s3 XCHG2
@@ -24,6 +25,5 @@ SETCP0
     ADD
     s0 s1 XCHG
     ADD
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+  }>
+}END>c

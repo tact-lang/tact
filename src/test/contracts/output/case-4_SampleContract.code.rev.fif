@@ -1,6 +1,29 @@
-SETCP0
-(:methods
-  recv_internal: 
+PROGRAM{
+  DECLPROC ?fun_0;
+  DECLPROC ?fun_1;
+  DECLPROC recv_internal;
+  DECLPROC ?fun_3;
+  DECLPROC ?fun_2;
+  DECLPROC supported_interfaces;
+  ?fun_0 PROCREF:<{
+    NULL
+    0 PUSHINT
+    s0 s0 s0 PUSH3
+    1 4 BLKSWAP
+  }>
+  ?fun_1 PROCREF:<{
+    s0 PUSH
+    SBITS
+    s1 POP
+    31 GTINT
+    s0 POP
+    <{
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+  }>
+  recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
     4 LDU
@@ -36,7 +59,7 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    0 4 2 PUXCPU
+    s0 s6 s4 PUXCPU
     s0 s3 XCHG
     4 TUPLE
     1 SETGLOBVAR
@@ -51,16 +74,16 @@ SETCP0
     s0 s1 XCHG
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       ROTREV
       s0 s2 XCHG
       LDDICT
@@ -77,27 +100,11 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-        0 PUSHINT
-        0 0 0 PUSH3
-        1 4 BLKSWAP
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
     2 5 BLKSWAP
-    <{
-      s0 PUSH
-      SBITS
-      s1 POP
-      31 GTINT
-      s0 POP
-      <{
-        -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
-      0 PUSHINT
-    }> CALLREF
+    ?fun_1 INLINECALLDICT
     s0 POP
     NEWC
     3 GETGLOBVAR
@@ -127,8 +134,11 @@ SETCP0
     STREF
     ENDC
     c4 POP
-
-  80984: 
+  }>
+  ?fun_3 PROCREF:<{
+    s4 PUSH
+  }>
+  ?fun_2 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -138,16 +148,16 @@ SETCP0
     s0 s1 XCHG
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       ROTREV
       s0 s2 XCHG
       LDDICT
@@ -164,24 +174,16 @@ SETCP0
       10 PUSHPOW2
       EQUAL
       137 THROWIFNOT
-      <{
-        PUSHNULL
-        0 PUSHINT
-        0 0 0 PUSH3
-        1 4 BLKSWAP
-      }> CALLREF
+      ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    <{
-      s4 PUSH
-    }> CALLREF
+    ?fun_3 INLINECALLDICT
     5 1 BLKDROP2
-
-  113617: 
+  }>
+  supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
     42980537499636128163026532310500881091 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+  }>
+}END>c

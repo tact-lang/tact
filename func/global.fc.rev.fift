@@ -1,13 +1,13 @@
-SETCP0
-(:methods
-  recv_internal: 
+PROGRAM{
+  DECLPROC recv_internal;
+  DECLPROC ?fun_0;
+  recv_internal PROC:<{
     1 PUSHINT
-    1 CALLDICT
-    PAIR
+    1 CALL
+    2 TUPLE
     1 SETGLOBVAR
-
-  1: 
+  }>
+  ?fun_0 PROC:<{
     s0 PUSH
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+  }>
+}END>c

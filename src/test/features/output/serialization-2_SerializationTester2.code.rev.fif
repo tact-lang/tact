@@ -1,6 +1,107 @@
-SETCP0
-(:methods
-  recv_internal: 
+PROGRAM{
+  DECLPROC ?fun_0;
+  DECLPROC recv_internal;
+  DECLPROC ?fun_2;
+  DECLPROC ?fun_1;
+  DECLPROC ?fun_4;
+  DECLPROC ?fun_3;
+  DECLPROC ?fun_6;
+  DECLPROC ?fun_5;
+  DECLPROC ?fun_8;
+  DECLPROC ?fun_7;
+  DECLPROC supported_interfaces;
+  DECLPROC ?fun_10;
+  DECLPROC ?fun_9;
+  DECLPROC ?fun_12;
+  DECLPROC ?fun_11;
+  DECLPROC ?fun_14;
+  DECLPROC ?fun_13;
+  ?fun_0 PROCREF:<{
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    s0 s2 XCHG
+    <{
+      DROP2
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    s1 PUSH
+    0 EQINT
+    s1 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    <{
+      DROP2
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    s0 s1 XCHG
+    2732768933 PUSHINT
+    EQUAL
+    <{
+      32 LDU
+      s0 s1 XCHG
+      2732768933 PUSHINT
+      EQUAL
+      129 THROWIFNOT
+      257 PUSHINT
+      LDIX
+      257 PUSHINT
+      LDIX
+      257 PUSHINT
+      LDIX
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDIX
+      257 PUSHINT
+      LDIX
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s0 s5 XCHG
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDIX
+      257 PUSHINT
+      LDIX
+      257 PUSHINT
+      LDIX
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      257 PUSHINT
+      LDIX
+      257 PUSHINT
+      LDIX
+      s0 POP
+      s2 s5 XCHG
+      s2 s4 XCHG
+      s2 s3 XCHG
+      s5 POP
+      s5 s10 XCHG
+      1 4 BLKSWAP
+      1 10 BLKDROP2
+      10 10 BLKDROP2
+      -1 PUSHINT
+    }> IFJMPREF
+    s0 POP
+    0 PUSHINT
+  }>
+  recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
     4 LDU
@@ -36,7 +137,7 @@ SETCP0
     10 PUSHPOW2
     EQUAL
     137 THROWIFNOT
-    0 4 2 PUXCPU
+    s0 s6 s4 PUXCPU
     s0 s3 XCHG
     4 TUPLE
     1 SETGLOBVAR
@@ -56,18 +157,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -77,18 +178,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -102,18 +203,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -123,18 +224,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -145,91 +246,7 @@ SETCP0
       1 10 BLKDROP2
     }> IFREFELSE
     2 10 BLKSWAP
-    <{
-      0 PUSHINT
-      s1 PUSH
-      SBITS
-      31 GTINT
-      <{
-        s0 POP
-        s0 PUSH
-        32 PLDU
-      }> PUSHCONT
-      IF
-      s0 s2 XCHG
-      <{
-        2DROP
-        -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
-      s1 PUSH
-      0 EQINT
-      s1 PUSH
-      SBITS
-      33 LESSINT
-      AND
-      <{
-        2DROP
-        -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
-      s0 s1 XCHG
-      2732768933 PUSHINT
-      EQUAL
-      <{
-        32 LDU
-        s0 s1 XCHG
-        2732768933 PUSHINT
-        EQUAL
-        129 THROWIFNOT
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        s0 POP
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-        s0 s5 XCHG
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        LDREF
-        s0 s1 XCHG
-        CTOS
-        257 PUSHINT
-        LDI
-        257 PUSHINT
-        LDI
-        s0 POP
-        s2 s5 XCHG
-        s2 s4 XCHG
-        s2 s3 XCHG
-        s5 POP
-        s5 s10 XCHG
-        1 4 BLKSWAP
-        1 10 BLKDROP2
-        10 10 BLKDROP2
-        -1 PUSHINT
-      }> IFJMPREF
-      s0 POP
-      0 PUSHINT
-    }> CALLREF
+    ?fun_0 INLINECALLDICT
     s0 POP
     NEWC
     3 GETGLOBVAR
@@ -287,8 +304,15 @@ SETCP0
     STREF
     ENDC
     c4 POP
-
-  69430: 
+  }>
+  ?fun_2 PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 PUSH
+    10 TUPLE
+  }>
+  ?fun_1 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -303,18 +327,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -324,18 +348,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -349,18 +373,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -370,18 +394,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -391,19 +415,13 @@ SETCP0
       1 4 BLKSWAP
       1 10 BLKDROP2
     }> IFREFELSE
-    <{
-      9 8 7 PUSH3
-      9 8 7 PUSH3
-      9 8 7 PUSH3
-      s9 PUSH
-      10 TUPLE
-    }> CALLREF
+    ?fun_2 INLINECALLDICT
     10 1 BLKDROP2
     s0 PUSH
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       s0 PUSH
@@ -414,18 +432,23 @@ SETCP0
       5 TUPLE
       5 1 BLKSWAP
       5 TUPLE
-      PAIR
+      2 TUPLE
     }> PUSHCONT
     IFELSE
     s0 PUSH
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     IF
-
-  73763: 
+  }>
+  ?fun_4 PROCREF:<{
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
+    5 TUPLE
+  }>
+  ?fun_3 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -440,18 +463,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -461,18 +484,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -486,18 +509,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -507,18 +530,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -528,17 +551,13 @@ SETCP0
       1 4 BLKSWAP
       1 10 BLKDROP2
     }> IFREFELSE
-    <{
-      4 3 2 PUSH3
-      s4 s3 PUSH2
-      5 TUPLE
-    }> CALLREF
+    ?fun_4 INLINECALLDICT
     10 1 BLKDROP2
     s0 PUSH
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       s0 PUSH
@@ -552,11 +571,17 @@ SETCP0
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     IF
-
-  81754: 
+  }>
+  ?fun_6 PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 PUSH
+  }>
+  ?fun_5 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -571,18 +596,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -592,18 +617,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -617,18 +642,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -638,18 +663,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -659,19 +684,29 @@ SETCP0
       1 4 BLKSWAP
       1 10 BLKDROP2
     }> IFREFELSE
-    <{
-      9 8 7 PUSH3
-      9 8 7 PUSH3
-      9 8 7 PUSH3
-      s9 PUSH
-    }> CALLREF
+    ?fun_6 INLINECALLDICT
     10 10 BLKDROP2
     5 5 BLKSWAP
     5 TUPLE
     5 1 BLKSWAP
     5 TUPLE
-
-  104435: 
+  }>
+  ?fun_8 PROCREF:<{
+    11 BLKDROP
+    s0 s4 XCHG
+    INC
+    s0 s3 XCHG
+    2 ADD
+    s0 s2 XCHG
+    3 ADD
+    s0 s1 XCHG
+    4 ADD
+    s0 s4 XCHG
+    5 ADD
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+  }>
+  ?fun_7 PROC:<{
     s0 s2 XCHG
     5 UNTUPLE
     s0 s5 XCHG
@@ -689,7 +724,7 @@ SETCP0
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       2 UNTUPLE
@@ -718,18 +753,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -739,18 +774,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -764,18 +799,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -785,18 +820,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -845,31 +880,22 @@ SETCP0
     s0 s5 XCHG
     s0 s4 XCHG
     s8 s8 s3 XCHG3
-    <{
-      11 BLKDROP
-      s0 s4 XCHG
-      INC
-      s0 s3 XCHG
-      2 ADDCONST
-      s0 s2 XCHG
-      3 ADDCONST
-      s0 s1 XCHG
-      4 ADDCONST
-      s0 s4 XCHG
-      5 ADDCONST
-      s3 s4 XCHG
-      s1 s3 s0 XCHG3
-    }> CALLREF
+    ?fun_8 INLINECALLDICT
     10 5 BLKDROP2
-
-  113617: 
+  }>
+  supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
     42980537499636128163026532310500881091 PUSHINT
     36993126140238121407019133875791708966 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
-
-  113663: 
+  }>
+  ?fun_10 PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 PUSH2
+    5 TUPLE
+  }>
+  ?fun_9 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -884,18 +910,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -905,18 +931,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -930,18 +956,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -951,18 +977,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -972,17 +998,13 @@ SETCP0
       1 4 BLKSWAP
       1 10 BLKDROP2
     }> IFREFELSE
-    <{
-      9 8 7 PUSH3
-      s9 s8 PUSH2
-      5 TUPLE
-    }> CALLREF
+    ?fun_10 INLINECALLDICT
     10 1 BLKDROP2
     s0 PUSH
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     <{
       s0 PUSH
@@ -996,11 +1018,15 @@ SETCP0
     ISNULL
     <{
       s0 POP
-      PUSHNULL
+      NULL
     }> PUSHCONT
     IF
-
-  119935: 
+  }>
+  ?fun_12 PROCREF:<{
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
+  }>
+  ?fun_11 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -1015,18 +1041,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1036,18 +1062,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1061,18 +1087,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1082,18 +1108,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1103,13 +1129,14 @@ SETCP0
       1 4 BLKSWAP
       1 10 BLKDROP2
     }> IFREFELSE
-    <{
-      4 3 2 PUSH3
-      s4 s3 PUSH2
-    }> CALLREF
+    ?fun_12 INLINECALLDICT
     10 5 BLKDROP2
-
-  123932: 
+  }>
+  ?fun_14 PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 PUSH2
+  }>
+  ?fun_13 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -1124,18 +1151,18 @@ SETCP0
       EQUAL
       137 THROWIFNOT
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1145,18 +1172,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1170,18 +1197,18 @@ SETCP0
     }> PUSHCONT
     <{
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1191,18 +1218,18 @@ SETCP0
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       LDREF
       s0 s1 XCHG
       CTOS
       257 PUSHINT
-      LDI
+      LDIX
       257 PUSHINT
-      LDI
+      LDIX
       s0 POP
       s2 s5 XCHG
       s2 s4 XCHG
@@ -1212,11 +1239,7 @@ SETCP0
       1 4 BLKSWAP
       1 10 BLKDROP2
     }> IFREFELSE
-    <{
-      9 8 7 PUSH3
-      s9 s8 PUSH2
-    }> CALLREF
+    ?fun_14 INLINECALLDICT
     10 5 BLKDROP2
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+  }>
+}END>c

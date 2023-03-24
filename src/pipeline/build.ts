@@ -1,5 +1,5 @@
 import { beginCell, Cell, Dictionary } from 'ton-core';
-import { fromBoc } from 'tvm-disassembler/dist/disassembler';
+import { decompileAll } from '@tact-lang/opcode';
 import { writeTypescript } from '../bindings/writeTypescript';
 import { featureEnable } from '../config/features';
 import { ConfigProject } from "../config/parseConfig";
@@ -139,7 +139,7 @@ export async function build(args: {
         logger.log('   > ' + contract + ': fift decompiler');
         let codeFiftDecompiled: string;
         try {
-            codeFiftDecompiled = fromBoc(codeBoc);
+            codeFiftDecompiled = decompileAll({ src: codeBoc });
             project.writeFile(pathCodeFifDec, codeFiftDecompiled);
         } catch (e) {
             logger.error('Fift decompiler crashed');

@@ -1,6 +1,7 @@
-SETCP0
-(:methods
-  recv_internal: 
+PROGRAM{
+  DECLPROC recv_internal;
+  DECLPROC ?fun_0;
+  recv_internal PROC:<{
     s1 POP
     s0 PUSH
     SBITS
@@ -14,7 +15,7 @@ SETCP0
     64 LDU
     3 1 BLKSWAP
     1 3 BLKDROP2
-    6 CALLDICT
+    6 CALL
     NEWC
     3 1 BLKSWAP
     s2 s3 XCHG2
@@ -24,8 +25,8 @@ SETCP0
     ENDC
     c4 POP
     100 THROW
-
-  6: 
-) 19 DICTPUSHCONST
-DICTIGETJMPZ
-11 THROWARG
+  }>
+  ?fun_0 PROC:<{
+    
+  }>
+}END>c
