@@ -58,63 +58,6 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-tuple __tact_string_builder_start(builder b) inline {
-    return tpush(tpush(empty_tuple(), b), null());
-}
-
-tuple __tact_string_builder_start_comment() inline {
-    return __tact_string_builder_start(begin_cell().store_uint(0, 32));
-}
-
-cell __tact_string_builder_end(tuple builders) inline {
-    (builder b, tuple tail) = uncons(builders);
-    cell c = b.end_cell();
-    while(~ null?(tail)) {
-        (b, tail) = uncons(tail);
-        c = b.store_ref(c).end_cell();
-    }
-    return c;
-}
-
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref {
-    int sliceRefs = slice_refs(sc);
-    int sliceBits = slice_bits(sc);
-    
-    while((sliceBits > 0) | (sliceRefs > 0)) {
-    
-        ;; Load the current builder
-        (builder b, tuple tail) = uncons(builders);
-        int remBytes = 127 - (builder_bits(b) / 8);
-        int exBytes = sliceBits / 8;
-    
-        ;; Append bits
-        int amount = min(remBytes, exBytes);
-        if (amount > 0) {
-            slice read = sc~load_bits(amount * 8);
-            b = b.store_slice(read);
-        }
-    
-        ;; Update builders
-        builders = cons(b, tail);
-    
-        ;; Check if we need to add a new cell and continue
-        if (exBytes - amount > 0) {
-            var bb = begin_cell();
-            builders = cons(bb, builders);
-            sliceBits = (exBytes - amount) * 8;
-        } elseif (sliceRefs > 0) {
-            sc = sc~load_ref().begin_parse();
-            sliceRefs = slice_refs(sc);
-            sliceBits = slice_bits(sc);
-        } else {
-            sliceBits = 0;
-            sliceRefs = 0;
-        }
-    }
-    
-    return ((builders), ());
-}
-
 slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
@@ -161,11 +104,4 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
-}
-
-cell $String$_fun_asComment(slice $self) impure inline_ref {
-    var ($self) = $self;
-    tuple $b = __tact_string_builder_start_comment();
-    $b~__tact_string_builder_append($self);
-    return __tact_string_builder_end($b);
 }

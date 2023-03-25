@@ -33,18 +33,6 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline;
 ;; __tact_slice_eq_bits
 int __tact_slice_eq_bits(slice a, slice b) inline;
 
-;; __tact_string_builder_start
-tuple __tact_string_builder_start(builder b) inline;
-
-;; __tact_string_builder_start_comment
-tuple __tact_string_builder_start_comment() inline;
-
-;; __tact_string_builder_end
-cell __tact_string_builder_end(tuple builders) inline;
-
-;; __tact_string_builder_append
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
-
 ;; $ChangeOwner$_load
 (slice, ((slice))) $ChangeOwner$_load(slice sc_0) inline;
 
@@ -77,9 +65,6 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 
 ;; $global_reply
 () $global_reply(cell $body) impure inline_ref;
-
-;; $String$_fun_asComment
-cell $String$_fun_asComment(slice $self) impure inline_ref;
 
 ;; $SendParameters$_constructor_value_to_mode
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode(int value, slice to, int mode) inline;

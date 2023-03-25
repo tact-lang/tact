@@ -18,18 +18,6 @@ slice __tact_context_get_sender() inline;
 ;; __tact_store_bool
 builder __tact_store_bool(builder b, int v) inline;
 
-;; __tact_string_builder_start
-tuple __tact_string_builder_start(builder b) inline;
-
-;; __tact_string_builder_start_comment
-tuple __tact_string_builder_start_comment() inline;
-
-;; __tact_string_builder_end
-cell __tact_string_builder_end(tuple builders) inline;
-
-;; __tact_string_builder_append
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
-
 ;; $Deploy$_load
 (slice, ((int))) $Deploy$_load(slice sc_0) inline;
 
@@ -41,9 +29,6 @@ cell $DeployOk$_store_cell((int) v) inline;
 
 ;; $global_emit
 () $global_emit(cell $body) impure inline_ref;
-
-;; $String$_fun_asComment
-cell $String$_fun_asComment(slice $self) impure inline_ref;
 
 ;; $SendTester$_contract_init
 tuple $SendTester$_contract_init() impure inline_ref;

@@ -9,7 +9,7 @@
 
 tuple $SendTester$_contract_init() impure inline_ref {
     tuple $self = null();
-    $global_emit($String$_fun_asComment(__gen_str_469726401()));
+    $global_emit(__gen_cell_comment_50b8812df4a733c5a2266eb68dec952c64d04a3174bae42566a1e191dbdb470c());
     return $self;
 }
 
@@ -19,8 +19,8 @@ tuple $SendTester$_contract_init() impure inline_ref {
 
 (tuple, ()) $SendTester$_receive_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041(tuple $self) impure inline {
     var $self = $self;
-    $global_reply($String$_fun_asComment(__gen_str_2024694909()));
-    $global_emit($String$_fun_asComment(__gen_str_3989651112()));
+    $global_reply(__gen_cell_comment_95fbfd67c31e549b5d4386ed4a2beebc294be55acb3eddadaa7f9df86be36d42());
+    $global_emit(__gen_cell_comment_ec65c74747db20896a39d874b0473dd5e61e08fc9f3516d56d58eaeea5031ea4());
     return ($self, ());
 }
 

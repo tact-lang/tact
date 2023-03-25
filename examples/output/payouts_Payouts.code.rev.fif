@@ -1,19 +1,17 @@
 PROGRAM{
   DECLPROC ?fun_2;
   DECLPROC ?fun_3;
-  DECLPROC ?fun_5;
   DECLPROC ?fun_4;
-  DECLPROC ?fun_6;
   DECLPROC ?fun_1;
-  DECLPROC ?fun_7;
-  DECLPROC ?fun_11;
-  DECLPROC ?fun_10;
+  DECLPROC ?fun_5;
   DECLPROC ?fun_9;
-  DECLPROC ?fun_12;
   DECLPROC ?fun_8;
+  DECLPROC ?fun_7;
+  DECLPROC ?fun_10;
+  DECLPROC ?fun_6;
   DECLPROC ?fun_0;
   DECLPROC recv_internal;
-  DECLPROC ?fun_13;
+  DECLPROC ?fun_11;
   DECLPROC owner;
   DECLPROC supported_interfaces;
   ?fun_2 PROCREF:<{
@@ -137,110 +135,7 @@ PROGRAM{
     EQUAL
     137 THROWIFNOT
   }>
-  ?fun_5 PROCREF:<{
-    s0 PUSH
-    SREFS
-    s1 PUSH
-    SBITS
-    <{
-      s0 PUSH
-      0 GTINT
-      s2 PUSH
-      0 GTINT
-      OR
-    }> PUSHCONT
-    <{
-      s0 s3 XCHG
-      2 UNTUPLE
-      127 PUSHINT
-      s2 PUSH
-      BBITS
-      3 RSHIFT
-      SUB
-      s0 s5 XCHG
-      3 RSHIFT
-      s5 s5 XCPU
-      MIN
-      s0 PUSH
-      0 GTINT
-      <{
-        s0 PUSH
-        3 LSHIFT
-        s1 s5 XCHG
-        LDSLICEX
-        s3 s3 XCHG2
-        STSLICER
-        s0 s1 s4 XCHG3
-      }> PUSHCONT
-      IF
-      ROTREV
-      2 TUPLE
-      s4 s1 PUSH2
-      SUB
-      0 GTINT
-      <{
-        NEWC
-        s0 s1 XCHG
-        2 TUPLE
-        s4 s4 XCHG2
-        SUB
-        3 LSHIFT
-      }> PUSHCONT
-      <{
-        s1 POP
-        s3 POP
-        0 GTINT
-        <{
-          LDREF
-          s0 POP
-          CTOS
-          s0 PUSH
-          SREFS
-          s1 PUSH
-          SBITS
-        }> PUSHCONT
-        <{
-          0 PUSHINT
-          s0 PUSH
-        }> PUSHCONT
-        IFELSE
-      }> PUSHCONT
-      IFELSE
-    }> PUSHCONT
-    WHILE
-    3 BLKDROP
-  }>
   ?fun_4 PROCREF:<{
-    NEWC
-    0 PUSHINT
-    s0 s1 XCHG
-    32 STU
-    0 TUPLE
-    s0 s1 XCHG
-    TPUSH
-    NULL
-    TPUSH
-    s0 s1 XCHG
-    ?fun_5 INLINECALLDICT
-    2 UNTUPLE
-    s0 s1 XCHG
-    ENDC
-    <{
-      s1 PUSH
-      ISNULL
-      NOT
-    }> PUSHCONT
-    <{
-      s0 s1 XCHG
-      2 UNTUPLE
-      ROTREV
-      STREF
-      ENDC
-    }> PUSHCONT
-    WHILE
-    s1 POP
-  }>
-  ?fun_6 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -409,13 +304,12 @@ PROGRAM{
       0 PUSHINT
       66 PUSHINT
       0 PUSHINT
-      x{416C726561647920706169648} PUSHSLICE
-      ?fun_4 INLINECALLDICT
+      x{00000000416C72656164792070616964} PUSHREF
       s1 s4 XCHG
       s3 s3 s0 XCHG3
       NULL
       NULL
-      ?fun_6 INLINECALLDICT
+      ?fun_4 INLINECALLDICT
     }> PUSHCONT
     <{
       62972 PUSHINT
@@ -431,27 +325,26 @@ PROGRAM{
       THROWANYIFNOT
       66 PUSHINT
       0 PUSHINT
-      x{537563636573738} PUSHSLICE
-      ?fun_4 INLINECALLDICT
+      x{0000000053756363657373} PUSHREF
       s3 s4 XCHG
       s1 s4 XCHG
       s3 s3 s0 XCHG3
       NULL
       NULL
-      ?fun_6 INLINECALLDICT
+      ?fun_4 INLINECALLDICT
     }> IFREFELSE
   }>
-  ?fun_7 PROCREF:<{
+  ?fun_5 PROCREF:<{
     2 GETGLOBVAR
     s2 s1 PUXC
     SDEQ
     132 THROWIFNOT
   }>
-  ?fun_11 PROCREF:<{
+  ?fun_9 PROCREF:<{
     ENDC
     CTOS
   }>
-  ?fun_10 PROCREF:<{
+  ?fun_8 PROCREF:<{
     s0 PUSH
     SBITS
     3 RSHIFT
@@ -574,7 +467,7 @@ PROGRAM{
     0 NEQINT
     <{
       s0 s2 XCHG
-      ?fun_11 INLINECALLDICT
+      ?fun_9 INLINECALLDICT
       s0 s2 XCHG
       SUB
       LDSLICEX
@@ -582,15 +475,15 @@ PROGRAM{
     }> PUSHCONT
     IFJMP
     DROP2
-    ?fun_11 INLINECALLDICT
+    ?fun_9 INLINECALLDICT
   }>
-  ?fun_9 PROCREF:<{
-    ?fun_10 INLINECALLDICT
+  ?fun_7 PROCREF:<{
+    ?fun_8 INLINECALLDICT
   }>
-  ?fun_12 PROCREF:<{
+  ?fun_10 PROCREF:<{
     ENDC
   }>
-  ?fun_8 PROCREF:<{
+  ?fun_6 PROCREF:<{
     1 GETGLOBVAR
     4 UNTUPLE
     s0 POP
@@ -601,7 +494,7 @@ PROGRAM{
     s1 s2 XCHG
     THROWANYIFNOT
     s0 s1 XCHG
-    ?fun_9 INLINECALLDICT
+    ?fun_7 INLINECALLDICT
     LDGRAMS
     9 PUSHPOW2
     LDSLICEX
@@ -629,7 +522,7 @@ PROGRAM{
     STSLICER
     s2 PUSH
     STGRAMS
-    ?fun_12 INLINECALLDICT
+    ?fun_10 INLINECALLDICT
     HASHCU
     48401 PUSHINT
     s2 s5 XCPU
@@ -658,7 +551,7 @@ PROGRAM{
     s3 s3 s0 XCHG3
     NULL
     NULL
-    ?fun_6 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
   }>
   ?fun_0 PROCREF:<{
     2 SAVE
@@ -751,7 +644,7 @@ PROGRAM{
       137 THROWIFNOT
       s1 POP
       ROTREV
-      ?fun_7 INLINECALLDICT
+      ?fun_5 INLINECALLDICT
       s1 POP
       -1 PUSHINT
     }> IFJMPREF
@@ -767,7 +660,7 @@ PROGRAM{
       <{
         32 PUSHINT
         SDSKIPFIRST
-        ?fun_8 INLINECALLDICT
+        ?fun_6 INLINECALLDICT
         -1 PUSHINT
         RETFALSE
       }> PUSHCONT
@@ -923,7 +816,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_13 PROCREF:<{
+  ?fun_11 PROCREF:<{
     s1 PUSH
   }>
   owner PROC:<{
@@ -996,7 +889,7 @@ PROGRAM{
       s0 s1 XCHG
     }> PUSHCONT
     IFELSE
-    ?fun_13 INLINECALLDICT
+    ?fun_11 INLINECALLDICT
     2 1 BLKDROP2
   }>
   supported_interfaces PROC:<{

@@ -14,53 +14,53 @@ tuple $StringsTester$_contract_init() impure inline_ref {
 
 (tuple, slice) $StringsTester$_fun_constantString(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return ($self, __gen_str_3579288646());
+    return ($self, __gen_slice_string_74d626e0f3941e966793bdd5fcf327bb9bff00847b32ebc108c9133956147c7a());
 }
 
 (tuple, slice) $StringsTester$_fun_constantStringUnicode(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return ($self, __gen_str_3070532033());
+    return ($self, __gen_slice_string_710059deca558715c18495640cfb369b538848c2f8fb3b58a43d7acb2d7d7c4b());
 }
 
 (tuple, slice) $StringsTester$_fun_constantStringUnicodeLong(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return ($self, __gen_str_3872846997());
+    return ($self, __gen_slice_string_96c344cdade1da5e97412fd081c6d3cd5e1735a2085600e21bc23ed337a77f60());
 }
 
 (tuple, cell) $StringsTester$_fun_dynamicStringCell(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_860684655());
+    $b~__tact_string_builder_append(__gen_slice_string_caa2a2c6f920cdf334acf8f83ab9ef931b272c5b229f5c537570e420477e1a54());
     return ($self, __tact_string_builder_end($b));
 }
 
 (tuple, cell) $StringsTester$_fun_dynamicCommentCell(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_comment();
-    $b~__tact_string_builder_append(__gen_str_2498516892());
+    $b~__tact_string_builder_append(__gen_slice_string_7e88585a2e68d61d03c94bcfa99c6306015b0327fc9e7d4adb9c5cb597ade16f());
     return ($self, __tact_string_builder_end($b));
 }
 
 (tuple, cell) $StringsTester$_fun_dynamicCommentCellLarge(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_860684655());
-    $b~__tact_string_builder_append(__gen_str_3872846997());
+    $b~__tact_string_builder_append(__gen_slice_string_caa2a2c6f920cdf334acf8f83ab9ef931b272c5b229f5c537570e420477e1a54());
+    $b~__tact_string_builder_append(__gen_slice_string_96c344cdade1da5e97412fd081c6d3cd5e1735a2085600e21bc23ed337a77f60());
     return ($self, __tact_string_builder_end($b));
 }
 
 (tuple, slice) $StringsTester$_fun_dynamicCommentStringLarge(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_860684655());
-    $b~__tact_string_builder_append(__gen_str_3872846997());
+    $b~__tact_string_builder_append(__gen_slice_string_caa2a2c6f920cdf334acf8f83ab9ef931b272c5b229f5c537570e420477e1a54());
+    $b~__tact_string_builder_append(__gen_slice_string_96c344cdade1da5e97412fd081c6d3cd5e1735a2085600e21bc23ed337a77f60());
     return ($self, __tact_string_builder_end_slice($b));
 }
 
 (tuple, slice) $StringsTester$_fun_stringWithNumber(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_519161862());
+    $b~__tact_string_builder_append(__gen_slice_string_03dd40537be2dc6a7f0dc501d655369d5bc3f46f2ef4b2badd4d288d457444e9());
     $b~__tact_string_builder_append(__tact_int_to_string(123));
     return ($self, __tact_string_builder_end_slice($b));
 }
@@ -68,7 +68,7 @@ tuple $StringsTester$_contract_init() impure inline_ref {
 (tuple, slice) $StringsTester$_fun_stringWithNegativeNumber(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_519161862());
+    $b~__tact_string_builder_append(__gen_slice_string_03dd40537be2dc6a7f0dc501d655369d5bc3f46f2ef4b2badd4d288d457444e9());
     $b~__tact_string_builder_append(__tact_int_to_string((- 123)));
     return ($self, __tact_string_builder_end_slice($b));
 }
@@ -76,7 +76,7 @@ tuple $StringsTester$_contract_init() impure inline_ref {
 (tuple, slice) $StringsTester$_fun_stringWithLargeNumber(tuple $self) impure inline_ref {
     var ($self) = $self;
     tuple $b = __tact_string_builder_start_string();
-    $b~__tact_string_builder_append(__gen_str_519161862());
+    $b~__tact_string_builder_append(__gen_slice_string_03dd40537be2dc6a7f0dc501d655369d5bc3f46f2ef4b2badd4d288d457444e9());
     $b~__tact_string_builder_append(__tact_int_to_string(1000000000000000000000000000000000000000000000000000000000000));
     return ($self, __tact_string_builder_end_slice($b));
 }
@@ -88,7 +88,7 @@ tuple $StringsTester$_contract_init() impure inline_ref {
 
 (tuple, slice) $StringsTester$_fun_base64(tuple $self) impure inline_ref {
     var ($self) = $self;
-    return ($self, $String$_fun_fromBase64(__gen_str_1560934365()));
+    return ($self, $String$_fun_fromBase64(__gen_slice_string_2a445194828b2997d031d317e7bafe3930ebc99081602b9f4b9702f288e5dc0f()));
 }
 
 (tuple, slice) $StringsTester$_fun_processBase64(tuple $self, slice $src) impure inline_ref {

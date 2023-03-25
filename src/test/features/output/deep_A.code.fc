@@ -25,7 +25,7 @@ tuple $A$_contract_init() impure inline_ref {
     var $self = $self;
     var ($init'code, $init'data) = $B$_init_child(__tact_context_sys, my_address());
     slice $address = $global_contractAddress(($init'code, $init'data));
-    $global_send($SendParameters$_constructor_value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, $String$_fun_asComment(__gen_str_796354186())));
+    $global_send($SendParameters$_constructor_value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, __gen_cell_comment_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d()));
     return ($self, ());
 }
 

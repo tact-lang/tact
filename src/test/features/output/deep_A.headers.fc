@@ -27,18 +27,6 @@ cell __tact_dict_set_code(cell dict, int id, cell code) inline;
 ;; __tact_dict_get_code
 cell __tact_dict_get_code(cell dict, int id) inline;
 
-;; __tact_string_builder_start
-tuple __tact_string_builder_start(builder b) inline;
-
-;; __tact_string_builder_start_comment
-tuple __tact_string_builder_start_comment() inline;
-
-;; __tact_string_builder_end
-cell __tact_string_builder_end(tuple builders) inline;
-
-;; __tact_string_builder_append
-((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
-
 ;; $StateInit$_to_external
 (cell, cell) $StateInit$_to_external(((cell, cell)) v) inline;
 
@@ -59,9 +47,6 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref;
 
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
-
-;; $String$_fun_asComment
-cell $String$_fun_asComment(slice $self) impure inline_ref;
 
 ;; $B$_init_child
 (cell, cell) $B$_init_child(cell sys', slice $parent) inline_ref;

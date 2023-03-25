@@ -6,13 +6,13 @@ import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
-import { getStringId } from "../../types/resolveStrings";
 import { id } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
 import { Address, Cell } from "ton-core";
-import { writeAddress, writeCell } from "./writeConstant";
+import { writeAddress, writeCell, writeString } from "./writeConstant";
 import { ops } from "./ops";
+import { tryExpressionIntrinsics } from "../intrinsics/tryExpressionIntrinsics";
 
 function isNull(f: ASTExpression) {
     if (f.kind === 'null') {
@@ -76,9 +76,9 @@ export function writeValue(s: bigint | string | boolean | Address | Cell | null,
         return s.toString(10);
     }
     if (typeof s === 'string') {
-        let id = getStringId(s, ctx.ctx);
-        ctx.used(`__gen_str_${id}`);
-        return `__gen_str_${id}()`;
+        let id = writeString(s, ctx);
+        ctx.used(id);
+        return `${id}()`;
     }
     if (typeof s === 'boolean') {
         return s ? 'true' : 'false';
@@ -91,7 +91,7 @@ export function writeValue(s: bigint | string | boolean | Address | Cell | null,
     if (s instanceof Cell) {
         let res = writeCell(s, ctx);
         ctx.used(res);
-        return 'begin_cell().store_slice(' + res + '()).end_cell()';
+        return `${res}()`;
     }
     if (s === null) {
         return 'null()';
@@ -100,6 +100,15 @@ export function writeValue(s: bigint | string | boolean | Address | Cell | null,
 }
 
 export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
+
+    //
+    // Try intrinsics
+    //
+
+    let intrinsic = tryExpressionIntrinsics(f, ctx);
+    if (intrinsic) {
+        return intrinsic;
+    }
 
     //
     // Boolean
@@ -122,9 +131,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
     //
 
     if (f.kind === 'string') {
-        let id = getStringId(f.value, ctx.ctx);
-        ctx.used(`__gen_str_${id}`);
-        return `__gen_str_${id}()`;
+        let id = writeString(f.value, ctx);
+        ctx.used(id);
+        return `${id}()`;
     }
 
     //

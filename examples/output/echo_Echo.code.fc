@@ -15,7 +15,7 @@ tuple $Echo$_contract_init(int $a) impure inline_ref {
 (tuple, slice) $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     tuple $builder = __tact_string_builder_start_string();
-    $builder~__tact_string_builder_append(__gen_str_591567833());
+    $builder~__tact_string_builder_append(__gen_slice_string_f370faf8638967dd9ace3fe077417700dc2370082f3795482bcb6285b962df24());
     $builder~__tact_string_builder_append($src);
     return ($self, __tact_string_builder_end_slice($builder));
 }

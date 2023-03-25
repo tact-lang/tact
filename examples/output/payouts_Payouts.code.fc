@@ -56,9 +56,9 @@
     throw_unless(4429, ( __tact_slice_eq_bits($address, $ctx'sender) ));
     if ($msg'ok) {
         throw_unless(62972, ((((__tact_my_balance() - $ctx'value) - 1000000000) - $msg'amount) > 0));
-        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'address, $msg'amount, (64 + 2), false, $String$_fun_asComment(__gen_str_3364490128())));
+        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'address, $msg'amount, (64 + 2), false, __gen_cell_comment_37e90db9d1f7725dc0128ee6bad2035fb50479e09a488a29257bed01a23050a0()));
     } else {
-        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'address, 0, (64 + 2), false, $String$_fun_asComment(__gen_str_2620117026())));
+        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'address, 0, (64 + 2), false, __gen_cell_comment_51a60a895442bd331fe75161305b2afbe04d33f1cd6cf8a1649e028f992eb33c()));
     }
     return (($self'owner, $self'publicKey), ());
 }

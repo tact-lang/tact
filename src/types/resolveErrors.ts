@@ -4,7 +4,6 @@ import { ASTNode, traverse } from "../grammar/ast";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { getAllStaticConstants, getAllStaticFunctions, getAllTypes } from "./resolveDescriptors";
 
-let store = createContextStore<{ value: string, id: number }>();
 let exceptions = createContextStore<{ value: string, id: number }>();
 
 function stringId(src: string): number {
@@ -17,16 +16,6 @@ function exceptionId(src: string): number {
 
 function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
     traverse(ast, (node) => {
-        if (node.kind === 'string') {
-            if (!store.get(ctx, node.value)) {
-                let id = stringId(node.value);
-                if (Object.values(store.all(ctx)).find((v) => v.id === id)) {
-                    throw new Error(`Duplicate string id: ${node.value}`);
-                }
-                ctx = store.set(ctx, node.value, { value: node.value, id });
-            }
-        }
-
         if (node.kind === 'op_static_call' && node.name === 'require') {
             if (node.args.length !== 2) {
                 return;
@@ -44,7 +33,7 @@ function resolveStringsInAST(ast: ASTNode, ctx: CompilerContext) {
     return ctx;
 }
 
-export function resolveStrings(ctx: CompilerContext) {
+export function resolveErrors(ctx: CompilerContext) {
 
     // Process all static functions
     for (let f of Object.values(getAllStaticFunctions(ctx))) {
@@ -86,18 +75,6 @@ export function resolveStrings(ctx: CompilerContext) {
     }
 
     return ctx;
-}
-
-export function getAllStrings(ctx: CompilerContext) {
-    return Object.values(store.all(ctx));
-}
-
-export function getStringId(value: string, ctx: CompilerContext) {
-    let ex = store.get(ctx, value);
-    if (!ex) {
-        throw new Error(`String not found: ${value}`);
-    }
-    return ex.id;
 }
 
 export function getAllErrors(ctx: CompilerContext) {

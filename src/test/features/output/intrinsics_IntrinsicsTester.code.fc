@@ -8,7 +8,7 @@
 ;;
 
 (int, slice, slice, cell, int) $IntrinsicsTester$_contract_init() impure inline_ref {
-    var (($self'a, $self'b, $self'c, $self'd, $self'e)) = (10123400000, __gen_str_1693223114(), __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc(), begin_cell().store_slice(__gen_slice_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36()).end_cell(), 512);
+    var (($self'a, $self'b, $self'c, $self'd, $self'e)) = (10123400000, __gen_slice_string_fddd37b8318ce351584ce13d887b2bdfd89a245250fa3ccc433cc820d90bcae1(), __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc(), __gen_cell_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36(), 512);
     return ($self'a, $self'b, $self'c, $self'd, $self'e);
 }
 
@@ -24,7 +24,7 @@
 
 ((int, slice, slice, cell, int), slice) $IntrinsicsTester$_fun_getString((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
-    return (($self'a, $self'b, $self'c, $self'd, $self'e), __gen_str_1693223114());
+    return (($self'a, $self'b, $self'c, $self'd, $self'e), __gen_slice_string_fddd37b8318ce351584ce13d887b2bdfd89a245250fa3ccc433cc820d90bcae1());
 }
 
 ((int, slice, slice, cell, int), slice) $IntrinsicsTester$_fun_getString2((int, slice, slice, cell, int) $self) impure inline_ref {
@@ -44,7 +44,7 @@
 
 ((int, slice, slice, cell, int), cell) $IntrinsicsTester$_fun_getCell((int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
-    return (($self'a, $self'b, $self'c, $self'd, $self'e), begin_cell().store_slice(__gen_slice_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36()).end_cell());
+    return (($self'a, $self'b, $self'c, $self'd, $self'e), __gen_cell_cell_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36());
 }
 
 ((int, slice, slice, cell, int), cell) $IntrinsicsTester$_fun_getCell2((int, slice, slice, cell, int) $self) impure inline_ref {

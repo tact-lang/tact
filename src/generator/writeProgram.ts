@@ -8,8 +8,6 @@ import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
 import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
-import { getAllStrings } from "../types/resolveStrings";
-import { writeString } from './writers/writeConstant';
 import { getRawAST } from "../grammar/store";
 import { emit } from "./emitter/emit";
 import { writeInit, writeMainContract, writeStorageOps } from "./writers/writeContract";
@@ -299,11 +297,6 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
         if (t.kind === 'contract') {
             writeStorageOps(t, t.origin, wctx);
         }
-    }
-
-    // Strings
-    for (let k of getAllStrings(ctx)) {
-        writeString(k.value, wctx);
     }
 
     // Static functions

@@ -8,10 +8,6 @@ PROGRAM{
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
-  DECLPROC __tact_string_builder_start
-  DECLPROC __tact_string_builder_start_comment
-  DECLPROC __tact_string_builder_end
-  DECLPROC __tact_string_builder_append
   DECLPROC $C$_store
   DECLPROC $C$_load
   DECLPROC $C$init$_store
@@ -21,7 +17,6 @@ PROGRAM{
   DECLPROC $C$_contract_store
   DECLPROC $global_contractAddress
   DECLPROC $global_send
-  DECLPROC $String$_fun_asComment
   DECLPROC $C$_init_child
   DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data_body
   DECLPROC $C$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
@@ -117,103 +112,6 @@ PROGRAM{
     DICTUGETREF
     NULLSWAPIFNOT
     135 THROWIFNOT
-  }>
-  __tact_string_builder_start PROCINLINE:<{
-    NIL
-    SWAP
-    TPUSH
-    PUSHNULL
-    TPUSH
-  }>
-  __tact_string_builder_start_comment PROCINLINE:<{
-    NEWC
-    0 PUSHINT
-    SWAP
-    32 STU
-    __tact_string_builder_start INLINECALLDICT
-  }>
-  __tact_string_builder_end PROCINLINE:<{
-    UNCONS
-    SWAP
-    ENDC
-    WHILE:<{
-      OVER
-      ISNULL
-      NOT
-    }>DO<{
-      SWAP
-      UNCONS
-      -ROT
-      STREF
-      ENDC
-    }>
-    NIP
-  }>
-  __tact_string_builder_append PROCREF:<{
-    DUP
-    SREFS
-    OVER
-    SBITS
-    WHILE:<{
-      DUP
-      0 GTINT
-      s2 PUSH
-      0 GTINT
-      OR
-    }>DO<{
-      s0 s3 XCHG
-      UNCONS
-      127 PUSHINT
-      s2 PUSH
-      BBITS
-      3 RSHIFT#
-      SUB
-      s0 s5 XCHG
-      3 RSHIFT#
-      s5 s5 XCPU
-      MIN
-      DUP
-      0 GTINT
-      IF:<{
-        DUP
-        3 LSHIFT#
-        s1 s5 XCHG
-        LDSLICEX
-        s3 s3 XCHG2
-        STSLICER
-        s0 s1 s4 XCHG3
-      }>
-      -ROT
-      CONS
-      s4 s1 PUSH2
-      SUB
-      0 GTINT
-      IF:<{
-        NEWC
-        SWAP
-        CONS
-        s4 s4 XCHG2
-        SUB
-        3 LSHIFT#
-      }>ELSE<{
-        NIP
-        s3 POP
-        0 GTINT
-        IF:<{
-          LDREF
-          DROP
-          CTOS
-          DUP
-          SREFS
-          OVER
-          SBITS
-        }>ELSE<{
-          0 PUSHINT
-          DUP
-        }>
-      }>
-    }>
-    3 BLKDROP
   }>
   $C$_store PROCINLINE:<{
     __tact_store_address INLINECALLDICT
@@ -372,12 +270,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $String$_fun_asComment PROCREF:<{
-    __tact_string_builder_start_comment INLINECALLDICT
-    SWAP
-    __tact_string_builder_append INLINECALLDICT
-    __tact_string_builder_end INLINECALLDICT
-  }>
   $C$_init_child PROCREF:<{
     SWAP
     CTOS
@@ -419,8 +311,7 @@ PROGRAM{
     0 PUSHINT
     66 PUSHINT
     TRUE
-    B{b5ee9c7241010101000a0000104d65737361676532cd775f6e} B>boc <s PUSHSLICE
-    $String$_fun_asComment INLINECALLDICT
+    B{b5ee9c7241010101000e000018000000004d65737361676532cf81fb3d} B>boc PUSHREF
     4 3 REVERSE
     s4 s3 s0 XCHG3
     s1 s2 XCHG

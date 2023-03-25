@@ -21,7 +21,7 @@
     var ($self'parent) = $self;
     var ($init'code, $init'data) = $C$_init_child(__tact_context_sys, $self'parent);
     slice $address = $global_contractAddress(($init'code, $init'data));
-    $global_send($SendParameters$_constructor_value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, $String$_fun_asComment(__gen_str_1801178584())));
+    $global_send($SendParameters$_constructor_value_to_mode_bounce_code_data_body(0, $address, (64 + 2), true, $init'code, $init'data, __gen_cell_comment_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272()));
     return (($self'parent), ());
 }
 

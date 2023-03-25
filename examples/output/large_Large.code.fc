@@ -8,7 +8,7 @@
 ;;
 
 (cell, cell, cell, cell) $Large$_contract_init() impure inline_ref {
-    var (($self'cell1, $self'cell2, $self'cell3, $self'cell4)) = (begin_cell().store_slice(__gen_slice_cell_1a028cccfdce37fa38acc68cb1824bfc64d3e0c250de39f381d40e0ab1d5bf93()).end_cell(), begin_cell().store_slice(__gen_slice_cell_8c91d2cb30a59176d5f4d71521469fdf65e8078136026cc79623aa9cfe22013c()).end_cell(), begin_cell().store_slice(__gen_slice_cell_31c99d25866a6b12f8f377ae17fa9d6803535f07f0e0e052fe2f016b9e9fa839()).end_cell(), begin_cell().store_slice(__gen_slice_cell_001f65cdb7a3a2e0613601520ce3d65b14f08d94e33451ecd9f4dd3be61b65af()).end_cell());
+    var (($self'cell1, $self'cell2, $self'cell3, $self'cell4)) = (__gen_cell_cell_1a028cccfdce37fa38acc68cb1824bfc64d3e0c250de39f381d40e0ab1d5bf93(), __gen_cell_cell_8c91d2cb30a59176d5f4d71521469fdf65e8078136026cc79623aa9cfe22013c(), __gen_cell_cell_31c99d25866a6b12f8f377ae17fa9d6803535f07f0e0e052fe2f016b9e9fa839(), __gen_cell_cell_001f65cdb7a3a2e0613601520ce3d65b14f08d94e33451ecd9f4dd3be61b65af());
     return ($self'cell1, $self'cell2, $self'cell3, $self'cell4);
 }
 

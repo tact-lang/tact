@@ -15,7 +15,7 @@ tuple $Debug$_contract_init() impure inline_ref {
 (tuple, ()) $Debug$_fun_debug(tuple $self) impure inline_ref {
     var ($self) = $self;
     dump_stack();
-    __tact_debug_str(__gen_str_3226689099());
+    __tact_debug_str(__gen_slice_string_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36());
     __tact_debug_str(__tact_int_to_string(123));
     __tact_debug_bool(true);
     __tact_debug_bool(false);
@@ -30,7 +30,7 @@ tuple $Debug$_contract_init() impure inline_ref {
 (tuple, ()) $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
     var $self = $self;
     dump_stack();
-    __tact_debug_str(__gen_str_3226689099());
+    __tact_debug_str(__gen_slice_string_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36());
     __tact_debug_str(__tact_int_to_string(123));
     __tact_debug_bool(true);
     __tact_debug_bool(false);

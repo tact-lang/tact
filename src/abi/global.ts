@@ -4,7 +4,7 @@ import { writeAddress, writeCell } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
-import { getErrorId } from "../types/resolveStrings";
+import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 
 export const GlobalFunctions: { [key: string]: AbiFunction } = {
@@ -153,7 +153,7 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
             // Generate address
             let res = writeCell(c, ctx);
             ctx.used(res);
-            return 'begin_cell().store_slice(' + res + '()).end_cell()';
+            return `${res}()`;
         }
     },
     dump: {

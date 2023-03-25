@@ -4,15 +4,10 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
-  DECLPROC __tact_string_builder_start
-  DECLPROC __tact_string_builder_start_comment
-  DECLPROC __tact_string_builder_end
-  DECLPROC __tact_string_builder_append
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
   DECLPROC $global_emit
-  DECLPROC $String$_fun_asComment
   DECLPROC $SendTester$_contract_init
   DECLPROC $SendTester$_contract_load
   DECLPROC $SendTester$_contract_store
@@ -67,103 +62,6 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  __tact_string_builder_start PROCINLINE:<{
-    NIL
-    SWAP
-    TPUSH
-    PUSHNULL
-    TPUSH
-  }>
-  __tact_string_builder_start_comment PROCINLINE:<{
-    NEWC
-    0 PUSHINT
-    SWAP
-    32 STU
-    __tact_string_builder_start INLINECALLDICT
-  }>
-  __tact_string_builder_end PROCINLINE:<{
-    UNCONS
-    SWAP
-    ENDC
-    WHILE:<{
-      OVER
-      ISNULL
-      NOT
-    }>DO<{
-      SWAP
-      UNCONS
-      -ROT
-      STREF
-      ENDC
-    }>
-    NIP
-  }>
-  __tact_string_builder_append PROCREF:<{
-    DUP
-    SREFS
-    OVER
-    SBITS
-    WHILE:<{
-      DUP
-      0 GTINT
-      s2 PUSH
-      0 GTINT
-      OR
-    }>DO<{
-      s0 s3 XCHG
-      UNCONS
-      127 PUSHINT
-      s2 PUSH
-      BBITS
-      3 RSHIFT#
-      SUB
-      s0 s5 XCHG
-      3 RSHIFT#
-      s5 s5 XCPU
-      MIN
-      DUP
-      0 GTINT
-      IF:<{
-        DUP
-        3 LSHIFT#
-        s1 s5 XCHG
-        LDSLICEX
-        s3 s3 XCHG2
-        STSLICER
-        s0 s1 s4 XCHG3
-      }>
-      -ROT
-      CONS
-      s4 s1 PUSH2
-      SUB
-      0 GTINT
-      IF:<{
-        NEWC
-        SWAP
-        CONS
-        s4 s4 XCHG2
-        SUB
-        3 LSHIFT#
-      }>ELSE<{
-        NIP
-        s3 POP
-        0 GTINT
-        IF:<{
-          LDREF
-          DROP
-          CTOS
-          DUP
-          SREFS
-          OVER
-          SBITS
-        }>ELSE<{
-          0 PUSHINT
-          DUP
-        }>
-      }>
-    }>
-    3 BLKDROP
-  }>
   $Deploy$_load PROCINLINE:<{
     32 LDU
     SWAP
@@ -208,16 +106,9 @@ PROGRAM{
     0 PUSHINT
     SENDRAWMSG
   }>
-  $String$_fun_asComment PROCREF:<{
-    __tact_string_builder_start_comment INLINECALLDICT
-    SWAP
-    __tact_string_builder_append INLINECALLDICT
-    __tact_string_builder_end INLINECALLDICT
-  }>
   $SendTester$_contract_init PROCREF:<{
     PUSHNULL
-    B{b5ee9c7241010101001000001c4465706c6f792073756363657373e6adf76c} B>boc <s PUSHSLICE
-    $String$_fun_asComment INLINECALLDICT
+    B{b5ee9c72410101010014000024000000004465706c6f7920737563636573736c569015} B>boc PUSHREF
     $global_emit INLINECALLDICT
   }>
   $SendTester$_contract_load PROCINLINE:<{
@@ -371,11 +262,9 @@ PROGRAM{
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   $SendTester$_receive_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041 PROCINLINE:<{
-    B{b5ee9c7241010101000700000a576f726c641893d0e2} B>boc <s PUSHSLICE
-    $String$_fun_asComment INLINECALLDICT
+    B{b5ee9c7241010101000b00001200000000576f726c64cf8219c9} B>boc PUSHREF
     $global_reply INLINECALLDICT
-    B{b5ee9c7241010101000b000012536f6d657468696e670bf75915} B>boc <s PUSHSLICE
-    $String$_fun_asComment INLINECALLDICT
+    B{b5ee9c7241010101000f00001a00000000536f6d657468696e6707ec49a0} B>boc PUSHREF
     $global_emit INLINECALLDICT
   }>
   $SendTester$_receive_binary_Deploy PROCINLINE:<{
