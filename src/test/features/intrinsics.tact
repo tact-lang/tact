@@ -53,4 +53,8 @@ contract IntrinsicsTester {
     get fun getPow2(): Int {
         return self.e;
     }
+
+    get fun getComment(): Cell {
+        return "Hello world".asComment();
+    }
 }

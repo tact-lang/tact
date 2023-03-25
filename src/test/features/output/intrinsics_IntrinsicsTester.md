@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: IntrinsicsTester
-BOC Size: 1601 bytes
+BOC Size: 1723 bytes
 
 # Types
 Total Types: 3
@@ -18,7 +18,7 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 # Get Methods
-Total Get Methods: 10
+Total Get Methods: 11
 
 ## getTons
 
@@ -39,6 +39,8 @@ Total Get Methods: 10
 ## getPow
 
 ## getPow2
+
+## getComment
 
 # Error Codes
 2: Stack undeflow

@@ -23,6 +23,8 @@ PROGRAM{
   DECLPROC supported_interfaces;
   DECLPROC ?fun_21;
   DECLPROC ?fun_20;
+  DECLPROC ?fun_23;
+  DECLPROC ?fun_22;
   ?fun_0 PROCREF:<{
     10123400000 PUSHINT
     x{48656C6C6F20776F726C648} PUSHSLICE
@@ -736,7 +738,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   ?fun_21 PROCREF:<{
-    s3 PUSH
+    x{0000000048656C6C6F20776F726C64} PUSHREF
   }>
   ?fun_20 PROC:<{
     c4 PUSH
@@ -791,6 +793,64 @@ PROGRAM{
     }> PUSHCONT
     IFELSE
     ?fun_21 INLINECALLDICT
+    5 1 BLKDROP2
+  }>
+  ?fun_23 PROCREF:<{
+    s3 PUSH
+  }>
+  ?fun_22 PROC:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 s1 XCHG
+    <{
+      257 PUSHINT
+      LDIX
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      s0 s1 XCHG
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      s0 PUSH
+      11 PLDU
+      s0 PUSH
+      10 PUSHPOW2
+      EQUAL
+      s1 PUSH
+      1279 PUSHINT
+      EQUAL
+      OR
+      136 THROWIFNOT
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      s0 s1 XCHG
+      LDREF
+      257 PUSHINT
+      LDIX
+      5 1 BLKSWAP
+      1 5 BLKDROP2
+    }> PUSHCONT
+    <{
+      s0 POP
+      MYADDR
+      11 PLDU
+      10 PUSHPOW2
+      EQUAL
+      137 THROWIFNOT
+      ?fun_0 INLINECALLDICT
+    }> PUSHCONT
+    IFELSE
+    ?fun_23 INLINECALLDICT
     5 1 BLKDROP2
   }>
 }END>c

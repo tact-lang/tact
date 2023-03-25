@@ -17,6 +17,7 @@ PROGRAM{
   DECLPROC $IntrinsicsTester$_fun_getCell2
   DECLPROC $IntrinsicsTester$_fun_getPow
   DECLPROC $IntrinsicsTester$_fun_getPow2
+  DECLPROC $IntrinsicsTester$_fun_getComment
   DECLPROC $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   85126 DECLMETHOD %getTons
   72025 DECLMETHOD %getTons2
@@ -28,6 +29,7 @@ PROGRAM{
   94033 DECLMETHOD %getCell2
   93948 DECLMETHOD %getPow
   92025 DECLMETHOD %getPow2
+  116303 DECLMETHOD %getComment
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -167,6 +169,9 @@ PROGRAM{
   $IntrinsicsTester$_fun_getPow2 PROCREF:<{
     DUP
   }>
+  $IntrinsicsTester$_fun_getComment PROCREF:<{
+    B{b5ee9c7241010101001100001e0000000048656c6c6f20776f726c64f5e7b6c8} B>boc PUSHREF
+  }>
   $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
   %getTons PROC:<{
@@ -219,6 +224,11 @@ PROGRAM{
     $IntrinsicsTester$_fun_getPow2 INLINECALLDICT
     5 1 BLKDROP2
   }>
+  %getComment PROC:<{
+    $IntrinsicsTester$_contract_load INLINECALLDICT
+    $IntrinsicsTester$_fun_getComment INLINECALLDICT
+    5 1 BLKDROP2
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -227,7 +237,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5072346431636d624c4d443354786b69473778747a64774d47766b777243426a39346667506b4a5070627262} PUSHSLICE
+    x{697066733a2f2f516d6156357835674c3372576f504e746d7743533958415448553179795035746676544678466734526a5241326d} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

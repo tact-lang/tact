@@ -23,5 +23,6 @@ describe('feature-instrinsics', () => {
         expect((await contract.getGetCell2()).equals(Cell.fromBase64('te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw='))).toBe(true);
         expect(await contract.getGetPow()).toBe(512n);
         expect(await contract.getGetPow2()).toBe(512n);
+        expect((await contract.getGetComment()).equals(beginCell().storeUint(0, 32).storeStringTail('Hello world').endCell())).toBe(true);
     });
 });

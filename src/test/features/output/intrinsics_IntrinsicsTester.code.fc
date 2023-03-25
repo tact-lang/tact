@@ -62,6 +62,11 @@
     return (($self'a, $self'b, $self'c, $self'd, $self'e), $self'e);
 }
 
+((int, slice, slice, cell, int), cell) $IntrinsicsTester$_fun_getComment((int, slice, slice, cell, int) $self) impure inline_ref {
+    var (($self'a, $self'b, $self'c, $self'd, $self'e)) = $self;
+    return (($self'a, $self'b, $self'c, $self'd, $self'e), __gen_cell_comment_947a54d50e20851945ec9cfe3440edd107efea5a57acbc50214c6c44631a8a45());
+}
+
 ;;
 ;; Receivers of a Contract IntrinsicsTester
 ;;
@@ -135,6 +140,12 @@ _ %getPow2() method_id(92025) {
     return res;
 }
 
+_ %getComment() method_id(116303) {
+    var self = $IntrinsicsTester$_contract_load();
+    var res = self~$IntrinsicsTester$_fun_getComment();
+    return res;
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -146,7 +157,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmPr4d1cmbLMD3TxkiG7xtzdwMGvkwrCBj94fgPkJPpbrb";
+    return "ipfs://QmaV5x5gL3rWoPNtmwCS9XATHU1yyP5tfvTFxFg4RjRA2m";
 }
 
 _ lazy_deployment_completed() {

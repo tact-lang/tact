@@ -56,3 +56,6 @@ builder $IntrinsicsTester$_store(builder build_0, (int, slice, slice, cell, int)
 
 ;; $IntrinsicsTester$_fun_getPow2
 ((int, slice, slice, cell, int), int) $IntrinsicsTester$_fun_getPow2((int, slice, slice, cell, int) $self) impure inline_ref;
+
+;; $IntrinsicsTester$_fun_getComment
+((int, slice, slice, cell, int), cell) $IntrinsicsTester$_fun_getComment((int, slice, slice, cell, int) $self) impure inline_ref;
