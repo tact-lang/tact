@@ -823,6 +823,16 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
+"@tact-lang/coverage@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.2.tgz#f7879e895320c43b6b3951070d8516bd4a86b214"
+  integrity sha512-MwrrQNxPJj0rRQeRg+p47H++KvI049/bwgFYknLb4QlDNYpcwev+uE3EADF11W3lBd2MWLcuuP5qUTt+JOOBUQ==
+  dependencies:
+    "@tact-lang/opcode" "^0.0.9"
+    prando "^6.0.1"
+    teslabot "^1.5.0"
+    zod "^3.20.2"
+
 "@tact-lang/emulator@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@tact-lang/emulator/-/emulator-3.3.1.tgz#bf9ad2d1c2e4135b9ca331c08192b3b3d859ab75"
@@ -836,6 +846,11 @@
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.3.tgz#8f526f25751ee8f69985bd188d8b157b72a0c743"
   integrity sha512-W58WXIO9bDnf/t+z7FQyIL67Fyq2UWSZGI/fX3dvDKsJ3zTW8+ZAYHvK6j98FVKFgNVttwWkdcFA+a3O0t+Alw==
+
+"@tact-lang/opcode@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.9.tgz#1b2f51ca2b362f6c78eb611ca8b2758e0d706b0c"
+  integrity sha512-/MN8s1CE1V6QAqDVBfsABsNzyzAFruUbJkP06cLy1b1zvWznPvLfu/r85ZCphpiBYYVRLgLrwE5wS2XkaXuR/Q==
 
 "@tootallnate/once@1":
   version "1.1.2"
