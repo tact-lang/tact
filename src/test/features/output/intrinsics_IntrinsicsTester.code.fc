@@ -76,6 +76,12 @@
     return (($self'a, $self'b, $self'c, $self'd, $self'e), ());
 }
 
+((int, slice, slice, cell, int), ()) $IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd((int, slice, slice, cell, int) $self) impure inline {
+    var ($self'a, $self'b, $self'c, $self'd, $self'e) = $self;
+    $global_emit(__gen_cell_comment_947a54d50e20851945ec9cfe3440edd107efea5a57acbc50214c6c44631a8a45());
+    return (($self'a, $self'b, $self'c, $self'd, $self'e), ());
+}
+
 ;;
 ;; Get methods of a Contract IntrinsicsTester
 ;;
@@ -157,7 +163,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmaV5x5gL3rWoPNtmwCS9XATHU1yyP5tfvTFxFg4RjRA2m";
+    return "ipfs://QmdBgbWM3iXmJJ9osjyageo8gVKDY4TAU4fefJvskV89ah";
 }
 
 _ lazy_deployment_completed() {
@@ -188,6 +194,12 @@ _ lazy_deployment_completed() {
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
             self~$IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            return (self, true);
+        }
+        
+        ;; Receive "emit_1" message
+        if (text_op == 0x51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd) {
+            self~$IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd();
             return (self, true);
         }
     }

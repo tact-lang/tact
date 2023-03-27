@@ -57,4 +57,8 @@ contract IntrinsicsTester {
     get fun getComment(): Cell {
         return "Hello world".asComment();
     }
+
+    receive("emit_1") {
+        emit("Hello world".asComment());
+    }
 }

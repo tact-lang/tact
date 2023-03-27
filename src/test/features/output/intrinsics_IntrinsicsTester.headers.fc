@@ -27,6 +27,9 @@ builder $IntrinsicsTester$_store(builder build_0, (int, slice, slice, cell, int)
 ;; $IntrinsicsTester$_contract_store
 () $IntrinsicsTester$_contract_store((int, slice, slice, cell, int) v) impure inline;
 
+;; $global_emit
+() $global_emit(cell $body) impure inline_ref;
+
 ;; $IntrinsicsTester$_fun_getTons
 ((int, slice, slice, cell, int), int) $IntrinsicsTester$_fun_getTons((int, slice, slice, cell, int) $self) impure inline_ref;
 

@@ -85,22 +85,9 @@ PROGRAM{
   }>
   $global_emit PROCREF:<{
     NEWC
-    3 PUSHINT
+    15211807202738752817960438464513 PUSHINT
     SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    2 STU
-    0 PUSHINT
-    SWAP
-    96 STU
-    FALSE
-    __tact_store_bool INLINECALLDICT
-    TRUE
-    __tact_store_bool INLINECALLDICT
+    104 STU
     STREF
     ENDC
     0 PUSHINT

@@ -79,20 +79,11 @@ fun reply(body: Cell?) {
 }
 
 fun emit(body: Cell) {
-    let b: Builder = beginCell();
-    b = b.storeUint(3, 2); // ext_out_msg_info$11
-    b = b.storeUint(0, 2); // src:MsgAddressInt
-    b = b.storeUint(0, 2); // dest:MsgAddressExt
-    b = b.storeUint(0, 96); // created_lt:uint64 created_at:uint32
-
-    // State init
-    b = b.storeBool(false);
-
-    // Body
-    b = b.storeBool(true);
-    b = b.storeRef(body);
-
-    // Send message
-    let c: Cell = b.endCell();
+    // ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt created_lt:uint64 created_at:uint32
+    //                     maybe: stateInit (false) bodyRef: bool (true)
+    let c: Cell = beginCell()
+        .storeUint(15211807202738752817960438464513, 104)
+        .storeRef(body)
+        .endCell();
     nativeSendMessage(c, 0);
 }

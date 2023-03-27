@@ -32,15 +32,7 @@ builder __tact_store_bool(builder b, int v) inline {
 }
 
 () $global_emit(cell $body) impure inline_ref {
-    builder $b = begin_cell();
-    $b = store_uint($b, 3, 2);
-    $b = store_uint($b, 0, 2);
-    $b = store_uint($b, 0, 2);
-    $b = store_uint($b, 0, 96);
-    $b = __tact_store_bool($b, false);
-    $b = __tact_store_bool($b, true);
-    $b = store_ref($b, $body);
-    cell $c = end_cell($b);
+    cell $c = end_cell(store_ref(store_uint(begin_cell(), 15211807202738752817960438464513, 104), $body));
     send_raw_message($c, 0);
 }
 

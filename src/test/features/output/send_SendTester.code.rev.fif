@@ -9,24 +9,9 @@ PROGRAM{
   DECLPROC supported_interfaces;
   ?fun_1 PROCREF:<{
     NEWC
-    3 PUSHINT
+    15211807202738752817960438464513 PUSHINT
     s0 s1 XCHG
-    2 STU
-    0 PUSHINT
-    s0 s1 XCHG
-    2 STU
-    0 PUSHINT
-    s0 s1 XCHG
-    2 STU
-    0 PUSHINT
-    s0 s1 XCHG
-    96 STU
-    0 PUSHINT
-    s0 s1 XCHG
-    1 STI
-    -1 PUSHINT
-    s0 s1 XCHG
-    1 STI
+    104 STU
     STREF
     ENDC
     0 PUSHINT

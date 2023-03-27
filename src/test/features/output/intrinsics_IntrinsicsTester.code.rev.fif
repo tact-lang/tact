@@ -1,36 +1,47 @@
 PROGRAM{
   DECLPROC ?fun_0;
+  DECLPROC ?fun_2;
   DECLPROC ?fun_1;
   DECLPROC recv_internal;
-  DECLPROC ?fun_3;
-  DECLPROC ?fun_2;
-  DECLPROC ?fun_5;
   DECLPROC ?fun_4;
-  DECLPROC ?fun_7;
+  DECLPROC ?fun_3;
   DECLPROC ?fun_6;
-  DECLPROC ?fun_9;
+  DECLPROC ?fun_5;
   DECLPROC ?fun_8;
-  DECLPROC ?fun_11;
+  DECLPROC ?fun_7;
   DECLPROC ?fun_10;
-  DECLPROC ?fun_13;
+  DECLPROC ?fun_9;
   DECLPROC ?fun_12;
-  DECLPROC ?fun_15;
+  DECLPROC ?fun_11;
   DECLPROC ?fun_14;
-  DECLPROC ?fun_17;
+  DECLPROC ?fun_13;
   DECLPROC ?fun_16;
-  DECLPROC ?fun_19;
+  DECLPROC ?fun_15;
   DECLPROC ?fun_18;
-  DECLPROC supported_interfaces;
-  DECLPROC ?fun_21;
+  DECLPROC ?fun_17;
   DECLPROC ?fun_20;
-  DECLPROC ?fun_23;
+  DECLPROC ?fun_19;
+  DECLPROC supported_interfaces;
   DECLPROC ?fun_22;
+  DECLPROC ?fun_21;
+  DECLPROC ?fun_24;
+  DECLPROC ?fun_23;
   ?fun_0 PROCREF:<{
     10123400000 PUSHINT
     x{48656C6C6F20776F726C648} PUSHSLICE
     x{80107BFAAA5CC6E5368E5F9799188BD798CD22E04AB16D1D8EA4FC37480741E63512_} PUSHSLICE
     x{48656C6C6F20776F726C6421} PUSHREF
     9 PUSHPOW2
+  }>
+  ?fun_2 PROCREF:<{
+    NEWC
+    15211807202738752817960438464513 PUSHINT
+    s0 s1 XCHG
+    104 STU
+    STREF
+    ENDC
+    0 PUSHINT
+    SENDRAWMSG
   }>
   ?fun_1 PROCREF:<{
     2 SAVE
@@ -55,9 +66,20 @@ PROGRAM{
     0 EQINT
     <{
       HASHSU
+      s0 PUSH
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       <{
+        s0 POP
+        -1 PUSHINT
+        RETFALSE
+      }> PUSHCONT
+      IFJMP
+      37050884901759915338437282997942222306459819050362497402689035064755329816285 PUSHINT
+      EQUAL
+      <{
+        x{0000000048656C6C6F20776F726C64} PUSHREF
+        ?fun_2 INLINECALLDICT
         -1 PUSHINT
         RETFALSE
       }> PUSHCONT
@@ -208,10 +230,10 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_3 PROCREF:<{
+  ?fun_4 PROCREF:<{
     x{80107BFAAA5CC6E5368E5F9799188BD798CD22E04AB16D1D8EA4FC37480741E63512_} PUSHSLICE
   }>
-  ?fun_2 PROC:<{
+  ?fun_3 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -263,13 +285,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_3 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_5 PROCREF:<{
+  ?fun_6 PROCREF:<{
     s4 PUSH
   }>
-  ?fun_4 PROC:<{
+  ?fun_5 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -321,13 +343,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_5 INLINECALLDICT
+    ?fun_6 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_7 PROCREF:<{
+  ?fun_8 PROCREF:<{
     x{48656C6C6F20776F726C6421} PUSHREF
   }>
-  ?fun_6 PROC:<{
+  ?fun_7 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -379,13 +401,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_7 INLINECALLDICT
+    ?fun_8 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_9 PROCREF:<{
+  ?fun_10 PROCREF:<{
     10123400000 PUSHINT
   }>
-  ?fun_8 PROC:<{
+  ?fun_9 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -437,13 +459,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_9 INLINECALLDICT
+    ?fun_10 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_11 PROCREF:<{
+  ?fun_12 PROCREF:<{
     s0 PUSH
   }>
-  ?fun_10 PROC:<{
+  ?fun_11 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -495,13 +517,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_11 INLINECALLDICT
+    ?fun_12 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_13 PROCREF:<{
+  ?fun_14 PROCREF:<{
     9 PUSHPOW2
   }>
-  ?fun_12 PROC:<{
+  ?fun_13 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -553,13 +575,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_13 INLINECALLDICT
+    ?fun_14 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_15 PROCREF:<{
+  ?fun_16 PROCREF:<{
     s1 PUSH
   }>
-  ?fun_14 PROC:<{
+  ?fun_15 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -611,13 +633,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_15 INLINECALLDICT
+    ?fun_16 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_17 PROCREF:<{
+  ?fun_18 PROCREF:<{
     x{48656C6C6F20776F726C648} PUSHSLICE
   }>
-  ?fun_16 PROC:<{
+  ?fun_17 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -669,13 +691,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_17 INLINECALLDICT
+    ?fun_18 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_19 PROCREF:<{
+  ?fun_20 PROCREF:<{
     s2 PUSH
   }>
-  ?fun_18 PROC:<{
+  ?fun_19 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -727,7 +749,7 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_19 INLINECALLDICT
+    ?fun_20 INLINECALLDICT
     5 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
@@ -737,10 +759,10 @@ PROGRAM{
     36993126140238121407019133875791708966 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
   }>
-  ?fun_21 PROCREF:<{
+  ?fun_22 PROCREF:<{
     x{0000000048656C6C6F20776F726C64} PUSHREF
   }>
-  ?fun_20 PROC:<{
+  ?fun_21 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -792,13 +814,13 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_21 INLINECALLDICT
+    ?fun_22 INLINECALLDICT
     5 1 BLKDROP2
   }>
-  ?fun_23 PROCREF:<{
+  ?fun_24 PROCREF:<{
     s3 PUSH
   }>
-  ?fun_22 PROC:<{
+  ?fun_23 PROC:<{
     c4 PUSH
     CTOS
     LDREF
@@ -850,7 +872,7 @@ PROGRAM{
       ?fun_0 INLINECALLDICT
     }> PUSHCONT
     IFELSE
-    ?fun_23 INLINECALLDICT
+    ?fun_24 INLINECALLDICT
     5 1 BLKDROP2
   }>
 }END>c
