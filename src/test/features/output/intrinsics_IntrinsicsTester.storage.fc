@@ -21,7 +21,7 @@ builder $IntrinsicsTester$_store(builder build_0, (int, slice, slice, cell, int)
     return (sc_0, (v'a, v'b, v'c, v'd, v'e));
 }
 
-(int, slice, slice, cell, int) $IntrinsicsTester$_contract_load() impure inline {
+(int, slice, slice, cell, int) $IntrinsicsTester$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

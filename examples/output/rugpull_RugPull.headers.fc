@@ -52,7 +52,7 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 (slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_init(slice $owner, int $investment, int $returns, int $fee) impure inline_ref;
 
 ;; $RugPull$_contract_load
-(slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_load() impure inline;
+(slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_load() impure inline_ref;
 
 ;; $RugPull$_contract_store
 () $RugPull$_contract_store((slice, int, int, int, int, int, int, int, int, cell) v) impure inline;

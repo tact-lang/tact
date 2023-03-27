@@ -25,7 +25,7 @@ builder $SampleContract$_store(builder build_0, (int, int, (int, int), cell) v) 
 (int, int, (int, int), cell) $SampleContract$_contract_init() impure inline_ref;
 
 ;; $SampleContract$_contract_load
-(int, int, (int, int), cell) $SampleContract$_contract_load() impure inline;
+(int, int, (int, int), cell) $SampleContract$_contract_load() impure inline_ref;
 
 ;; $SampleContract$_contract_store
 () $SampleContract$_contract_store((int, int, (int, int), cell) v) impure inline;

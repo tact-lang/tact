@@ -100,7 +100,7 @@ _ lazy_deployment_completed() {
     ;; Context
     var cs = in_msg_cell.begin_parse();
     var msg_flags = cs~load_uint(4);
-    var msg_bounced = ((msg_flags & 1) == 1 ? true : false);
+    var msg_bounced = -(msg_flags & 1);
     slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
     __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
     __tact_context_sender = msg_sender_addr;

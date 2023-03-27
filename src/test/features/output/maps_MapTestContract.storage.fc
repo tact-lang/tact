@@ -228,7 +228,7 @@ builder $MapTestContract$_store(builder build_0, (cell, cell, cell, cell, cell, 
     return (sc_0, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
 }
 
-(cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline {
+(cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

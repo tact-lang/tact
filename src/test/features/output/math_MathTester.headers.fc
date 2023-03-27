@@ -70,7 +70,7 @@ cell $DeployOk$_store_cell((int) v) inline;
 tuple $MathTester$_contract_init() impure inline_ref;
 
 ;; $MathTester$_contract_load
-tuple $MathTester$_contract_load() impure inline;
+tuple $MathTester$_contract_load() impure inline_ref;
 
 ;; $MathTester$_contract_store
 () $MathTester$_contract_store(tuple v) impure inline;

@@ -44,7 +44,7 @@ cell $DeployOk$_store_cell((int) v) inline {
 ;; Type: MathTester
 ;;
 
-tuple $MathTester$_contract_load() impure inline {
+tuple $MathTester$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

@@ -43,7 +43,7 @@ builder $MultisigContract$_store(builder build_0, (int, int, int, int) v) inline
 (int, int, int, int) $MultisigContract$_contract_init(int $key1, int $key2, int $key3) impure inline_ref;
 
 ;; $MultisigContract$_contract_load
-(int, int, int, int) $MultisigContract$_contract_load() impure inline;
+(int, int, int, int) $MultisigContract$_contract_load() impure inline_ref;
 
 ;; $MultisigContract$_contract_store
 () $MultisigContract$_contract_store((int, int, int, int) v) impure inline;

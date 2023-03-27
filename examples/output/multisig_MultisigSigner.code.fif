@@ -233,7 +233,7 @@ PROGRAM{
     s0 s7 XCHG
     5 2 BLKSWAP
   }>
-  $MultisigSigner$_contract_load PROCINLINE:<{
+  $MultisigSigner$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -241,21 +241,20 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $MultisigSigner$_load INLINECALLDICT
       1 12 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $MultisigSigner$init$_load INLINECALLDICT
-      s0 s10 XCHG
-      ENDS
-      9 ROLL
-      $MultisigSigner$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $MultisigSigner$init$_load INLINECALLDICT
+    s0 s10 XCHG
+    ENDS
+    9 ROLL
+    $MultisigSigner$_contract_init INLINECALLDICT
   }>
   $MultisigSigner$_contract_store PROCINLINE:<{
     NEWC
@@ -504,12 +503,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

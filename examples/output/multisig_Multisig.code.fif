@@ -249,7 +249,7 @@ PROGRAM{
     0 PUSHINT
     s2 s0 s2 XCPUXC
   }>
-  $Multisig$_contract_load PROCINLINE:<{
+  $Multisig$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -257,21 +257,20 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $Multisig$_load INLINECALLDICT
       1 4 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $Multisig$init$_load INLINECALLDICT
-      s0 s3 XCHG
-      ENDS
-      ROT
-      $Multisig$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $Multisig$init$_load INLINECALLDICT
+    s0 s3 XCHG
+    ENDS
+    ROT
+    $Multisig$_contract_init INLINECALLDICT
   }>
   $Multisig$_contract_store PROCINLINE:<{
     NEWC
@@ -570,12 +569,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

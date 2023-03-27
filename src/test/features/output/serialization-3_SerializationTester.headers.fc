@@ -22,7 +22,7 @@ builder $SerializationTester$_store(builder build_0, (int, int, cell, slice, bui
 (int, int, cell, slice, builder, slice) $SerializationTester$_contract_init(int $a, int $b, cell $c, slice $d, builder $e, slice $f) impure inline_ref;
 
 ;; $SerializationTester$_contract_load
-(int, int, cell, slice, builder, slice) $SerializationTester$_contract_load() impure inline;
+(int, int, cell, slice, builder, slice) $SerializationTester$_contract_load() impure inline_ref;
 
 ;; $SerializationTester$_contract_store
 () $SerializationTester$_contract_store((int, int, cell, slice, builder, slice) v) impure inline;

@@ -52,7 +52,7 @@ builder $Treasure$_store(builder build_0, (slice) v) inline {
     return (sc_0, (v'owner));
 }
 
-(slice) $Treasure$_contract_load() impure inline {
+(slice) $Treasure$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

@@ -34,7 +34,7 @@ slice __tact_float_to_string(int src, int digits) inline_ref;
 tuple $StringsTester$_contract_init() impure inline_ref;
 
 ;; $StringsTester$_contract_load
-tuple $StringsTester$_contract_load() impure inline;
+tuple $StringsTester$_contract_load() impure inline_ref;
 
 ;; $StringsTester$_contract_store
 () $StringsTester$_contract_store(tuple v) impure inline;

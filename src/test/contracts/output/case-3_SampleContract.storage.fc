@@ -42,7 +42,7 @@ builder $SampleContract$_store(builder build_0, (int, int, (int, int)) v) inline
     return (sc_0, (v'a, v'b, v'c));
 }
 
-(int, int, (int, int)) $SampleContract$_contract_load() impure inline {
+(int, int, (int, int)) $SampleContract$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

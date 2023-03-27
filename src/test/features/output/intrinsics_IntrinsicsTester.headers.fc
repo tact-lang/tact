@@ -22,7 +22,7 @@ builder $IntrinsicsTester$_store(builder build_0, (int, slice, slice, cell, int)
 (int, slice, slice, cell, int) $IntrinsicsTester$_contract_init() impure inline_ref;
 
 ;; $IntrinsicsTester$_contract_load
-(int, slice, slice, cell, int) $IntrinsicsTester$_contract_load() impure inline;
+(int, slice, slice, cell, int) $IntrinsicsTester$_contract_load() impure inline_ref;
 
 ;; $IntrinsicsTester$_contract_store
 () $IntrinsicsTester$_contract_store((int, slice, slice, cell, int) v) impure inline;

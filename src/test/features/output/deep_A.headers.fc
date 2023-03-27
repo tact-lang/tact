@@ -37,7 +37,7 @@ builder $B$init$_store(builder build_0, (slice) v) inline;
 tuple $A$_contract_init() impure inline_ref;
 
 ;; $A$_contract_load
-tuple $A$_contract_load() impure inline;
+tuple $A$_contract_load() impure inline_ref;
 
 ;; $A$_contract_store
 () $A$_contract_store(tuple v) impure inline;

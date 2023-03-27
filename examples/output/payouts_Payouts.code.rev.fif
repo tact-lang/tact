@@ -1,20 +1,82 @@
 PROGRAM{
-  DECLPROC ?fun_2;
+  DECLPROC ?fun_0;
   DECLPROC ?fun_3;
   DECLPROC ?fun_4;
-  DECLPROC ?fun_1;
   DECLPROC ?fun_5;
+  DECLPROC ?fun_2;
+  DECLPROC ?fun_6;
+  DECLPROC ?fun_10;
   DECLPROC ?fun_9;
   DECLPROC ?fun_8;
-  DECLPROC ?fun_7;
-  DECLPROC ?fun_10;
-  DECLPROC ?fun_6;
-  DECLPROC ?fun_0;
-  DECLPROC recv_internal;
   DECLPROC ?fun_11;
+  DECLPROC ?fun_7;
+  DECLPROC ?fun_1;
+  DECLPROC recv_internal;
+  DECLPROC ?fun_12;
   DECLPROC owner;
   DECLPROC supported_interfaces;
-  ?fun_2 PROCREF:<{
+  ?fun_0 PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 s1 XCHG
+    <{
+      LDMSGADDR
+      s0 s1 XCHG
+      s0 PUSH
+      SBITS
+      267 PUSHINT
+      EQUAL
+      136 THROWIFNOT
+      s0 PUSH
+      11 PLDU
+      s0 PUSH
+      1279 PUSHINT
+      EQUAL
+      137 THROWIF
+      10 PUSHPOW2
+      EQUAL
+      136 THROWIFNOT
+      s0 s1 XCHG
+      257 PUSHINT
+      LDIX
+      ROTREV
+      1 2 BLKDROP2
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    1279 PUSHINT
+    EQUAL
+    137 THROWIF
+    10 PUSHPOW2
+    EQUAL
+    136 THROWIFNOT
+    s0 s1 XCHG
+    257 PUSHINT
+    LDIX
+    ROTREV
+    s0 s2 XCHG
+    ENDS
+    s0 s1 XCHG
+  }>
+  ?fun_3 PROCREF:<{
     s0 s2 XCHG
     CTOS
     LDDICT
@@ -78,7 +140,7 @@ PROGRAM{
     STSLICER
     ENDC
   }>
-  ?fun_3 PROCREF:<{
+  ?fun_4 PROCREF:<{
     0 PUSHINT
     ROTREV
     NEWC
@@ -123,7 +185,7 @@ PROGRAM{
     EQUAL
     136 THROWIFNOT
   }>
-  ?fun_4 PROCREF:<{
+  ?fun_5 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -267,7 +329,7 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_1 PROCREF:<{
+  ?fun_2 PROCREF:<{
     1 GETGLOBVAR
     4 UNTUPLE
     s0 POP
@@ -275,8 +337,8 @@ PROGRAM{
     3 GETGLOBVAR
     MYADDR
     s5 PUSH
-    ?fun_2 INLINECALLDICT
     ?fun_3 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
     4429 PUSHINT
     s0 s2 XCHG
     SDEQ
@@ -293,7 +355,7 @@ PROGRAM{
       s3 s3 s0 XCHG3
       NULL
       NULL
-      ?fun_4 INLINECALLDICT
+      ?fun_5 INLINECALLDICT
     }> PUSHCONT
     <{
       62972 PUSHINT
@@ -315,20 +377,20 @@ PROGRAM{
       s3 s3 s0 XCHG3
       NULL
       NULL
-      ?fun_4 INLINECALLDICT
+      ?fun_5 INLINECALLDICT
     }> IFREFELSE
   }>
-  ?fun_5 PROCREF:<{
+  ?fun_6 PROCREF:<{
     2 GETGLOBVAR
     s2 s1 PUXC
     SDEQ
     132 THROWIFNOT
   }>
-  ?fun_9 PROCREF:<{
+  ?fun_10 PROCREF:<{
     ENDC
     CTOS
   }>
-  ?fun_8 PROCREF:<{
+  ?fun_9 PROCREF:<{
     s0 PUSH
     SBITS
     3 RSHIFT
@@ -451,7 +513,7 @@ PROGRAM{
     0 NEQINT
     <{
       s0 s2 XCHG
-      ?fun_9 INLINECALLDICT
+      ?fun_10 INLINECALLDICT
       s0 s2 XCHG
       SUB
       LDSLICEX
@@ -459,15 +521,15 @@ PROGRAM{
     }> PUSHCONT
     IFJMP
     DROP2
+    ?fun_10 INLINECALLDICT
+  }>
+  ?fun_8 PROCREF:<{
     ?fun_9 INLINECALLDICT
   }>
-  ?fun_7 PROCREF:<{
-    ?fun_8 INLINECALLDICT
-  }>
-  ?fun_10 PROCREF:<{
+  ?fun_11 PROCREF:<{
     ENDC
   }>
-  ?fun_6 PROCREF:<{
+  ?fun_7 PROCREF:<{
     1 GETGLOBVAR
     4 UNTUPLE
     s0 POP
@@ -478,7 +540,7 @@ PROGRAM{
     s1 s2 XCHG
     THROWANYIFNOT
     s0 s1 XCHG
-    ?fun_7 INLINECALLDICT
+    ?fun_8 INLINECALLDICT
     LDGRAMS
     9 PUSHPOW2
     LDSLICEX
@@ -502,7 +564,7 @@ PROGRAM{
     STSLICER
     s2 PUSH
     STGRAMS
-    ?fun_10 INLINECALLDICT
+    ?fun_11 INLINECALLDICT
     HASHCU
     48401 PUSHINT
     s2 s5 XCPU
@@ -511,8 +573,8 @@ PROGRAM{
     3 GETGLOBVAR
     MYADDR
     1 3 BLKSWAP
-    ?fun_2 INLINECALLDICT
     ?fun_3 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
     0 PUSHINT
     66 PUSHINT
     -1 PUSHINT
@@ -531,9 +593,9 @@ PROGRAM{
     s3 s3 s0 XCHG3
     NULL
     NULL
-    ?fun_4 INLINECALLDICT
+    ?fun_5 INLINECALLDICT
   }>
-  ?fun_0 PROCREF:<{
+  ?fun_1 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -584,7 +646,7 @@ PROGRAM{
       1 LDI
       3 1 BLKSWAP
       1 3 BLKDROP2
-      ?fun_1 INLINECALLDICT
+      ?fun_2 INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
@@ -616,7 +678,7 @@ PROGRAM{
       136 THROWIFNOT
       s1 POP
       ROTREV
-      ?fun_5 INLINECALLDICT
+      ?fun_6 INLINECALLDICT
       s1 POP
       -1 PUSHINT
     }> IFJMPREF
@@ -632,7 +694,7 @@ PROGRAM{
       <{
         32 PUSHINT
         SDSKIPFIRST
-        ?fun_6 INLINECALLDICT
+        ?fun_7 INLINECALLDICT
         -1 PUSHINT
         RETFALSE
       }> PUSHCONT
@@ -648,14 +710,7 @@ PROGRAM{
     s0 s1 XCHG
     1 PUSHINT
     AND
-    1 EQINT
-    <{
-      -1 PUSHINT
-    }> PUSHCONT
-    <{
-      0 PUSHINT
-    }> PUSHCONT
-    IFELSE
+    -1 MULCONST
     s0 s1 XCHG
     LDMSGADDR
     s0 s1 XCHG
@@ -679,69 +734,9 @@ PROGRAM{
     1 SETGLOBVAR
     s0 s2 XCHG
     2 SETGLOBVAR
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 s1 XCHG
-    <{
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 PUSH
-      SBITS
-      267 PUSHINT
-      EQUAL
-      136 THROWIFNOT
-      s0 PUSH
-      11 PLDU
-      s0 PUSH
-      1279 PUSHINT
-      EQUAL
-      137 THROWIF
-      10 PUSHPOW2
-      EQUAL
-      136 THROWIFNOT
-      s0 s1 XCHG
-      257 PUSHINT
-      LDIX
-      ROTREV
-      1 2 BLKDROP2
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 PUSH
-      SBITS
-      267 PUSHINT
-      EQUAL
-      136 THROWIFNOT
-      s0 PUSH
-      11 PLDU
-      s0 PUSH
-      1279 PUSHINT
-      EQUAL
-      137 THROWIF
-      10 PUSHPOW2
-      EQUAL
-      136 THROWIFNOT
-      s0 s1 XCHG
-      257 PUSHINT
-      LDIX
-      ROTREV
-      s0 s2 XCHG
-      ENDS
-      s0 s1 XCHG
-    }> PUSHCONT
-    IFELSE
-    SWAP2
     ?fun_0 INLINECALLDICT
+    SWAP2
+    ?fun_1 INLINECALLDICT
     s0 POP
     NEWC
     3 GETGLOBVAR
@@ -772,72 +767,12 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_11 PROCREF:<{
+  ?fun_12 PROCREF:<{
     s1 PUSH
   }>
   owner PROC:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 s1 XCHG
-    <{
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 PUSH
-      SBITS
-      267 PUSHINT
-      EQUAL
-      136 THROWIFNOT
-      s0 PUSH
-      11 PLDU
-      s0 PUSH
-      1279 PUSHINT
-      EQUAL
-      137 THROWIF
-      10 PUSHPOW2
-      EQUAL
-      136 THROWIFNOT
-      s0 s1 XCHG
-      257 PUSHINT
-      LDIX
-      ROTREV
-      1 2 BLKDROP2
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      LDMSGADDR
-      s0 s1 XCHG
-      s0 PUSH
-      SBITS
-      267 PUSHINT
-      EQUAL
-      136 THROWIFNOT
-      s0 PUSH
-      11 PLDU
-      s0 PUSH
-      1279 PUSHINT
-      EQUAL
-      137 THROWIF
-      10 PUSHPOW2
-      EQUAL
-      136 THROWIFNOT
-      s0 s1 XCHG
-      257 PUSHINT
-      LDIX
-      ROTREV
-      s0 s2 XCHG
-      ENDS
-      s0 s1 XCHG
-    }> PUSHCONT
-    IFELSE
-    ?fun_11 INLINECALLDICT
+    ?fun_0 INLINECALLDICT
+    ?fun_12 INLINECALLDICT
     2 1 BLKDROP2
   }>
   supported_interfaces PROC:<{

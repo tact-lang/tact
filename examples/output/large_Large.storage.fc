@@ -22,7 +22,7 @@ builder $Large$_store(builder build_0, (cell, cell, cell, cell) v) inline {
     return (sc_0, (v'cell1, v'cell2, v'cell3, v'cell4));
 }
 
-(cell, cell, cell, cell) $Large$_contract_load() impure inline {
+(cell, cell, cell, cell) $Large$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

@@ -10,7 +10,7 @@ slice __tact_verify_address(slice address) inline;
 tuple $ConstantTester$_contract_init() impure inline_ref;
 
 ;; $ConstantTester$_contract_load
-tuple $ConstantTester$_contract_load() impure inline;
+tuple $ConstantTester$_contract_load() impure inline_ref;
 
 ;; $ConstantTester$_contract_store
 () $ConstantTester$_contract_store(tuple v) impure inline;

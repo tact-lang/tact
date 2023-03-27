@@ -176,7 +176,7 @@ PROGRAM{
     0 PUSHINT
     -ROT
   }>
-  $Wallet$_contract_load PROCINLINE:<{
+  $Wallet$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -184,21 +184,20 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $Wallet$_load INLINECALLDICT
       1 3 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $Wallet$init$_load INLINECALLDICT
-      s0 s2 XCHG
-      ENDS
-      SWAP
-      $Wallet$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $Wallet$init$_load INLINECALLDICT
+    s0 s2 XCHG
+    ENDS
+    SWAP
+    $Wallet$_contract_init INLINECALLDICT
   }>
   $Wallet$_contract_store PROCINLINE:<{
     NEWC
@@ -526,12 +525,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

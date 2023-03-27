@@ -1,20 +1,40 @@
 PROGRAM{
-  DECLPROC ?fun_0;
   DECLPROC ?fun_1;
-  DECLPROC recv_internal;
-  DECLPROC ?fun_3;
+  DECLPROC ?fun_0;
   DECLPROC ?fun_2;
-  DECLPROC ?fun_5;
+  DECLPROC recv_internal;
   DECLPROC ?fun_4;
-  DECLPROC ?fun_7;
+  DECLPROC ?fun_3;
   DECLPROC ?fun_6;
-  DECLPROC supported_interfaces;
-  DECLPROC ?fun_9;
+  DECLPROC ?fun_5;
   DECLPROC ?fun_8;
-  ?fun_0 PROCREF:<{
+  DECLPROC ?fun_7;
+  DECLPROC supported_interfaces;
+  DECLPROC ?fun_10;
+  DECLPROC ?fun_9;
+  ?fun_1 PROCREF:<{
     NULL
   }>
-  ?fun_1 PROCREF:<{
+  ?fun_0 PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    ?fun_1 INLINECALLDICT
+  }>
+  ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -116,14 +136,7 @@ PROGRAM{
     s0 s1 XCHG
     1 PUSHINT
     AND
-    1 EQINT
-    <{
-      -1 PUSHINT
-    }> PUSHCONT
-    <{
-      0 PUSHINT
-    }> PUSHCONT
-    IFELSE
+    -1 MULCONST
     s0 s1 XCHG
     LDMSGADDR
     s0 s1 XCHG
@@ -147,27 +160,9 @@ PROGRAM{
     1 SETGLOBVAR
     s0 s2 XCHG
     2 SETGLOBVAR
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      ?fun_0 INLINECALLDICT
-    }> PUSHCONT
-    IFELSE
+    ?fun_0 INLINECALLDICT
     ROTREV
-    ?fun_1 INLINECALLDICT
+    ?fun_2 INLINECALLDICT
     s0 POP
     s0 POP
     NEWC
@@ -180,11 +175,11 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_3 PROCREF:<{
+  ?fun_4 PROCREF:<{
     DROP2
     -1 PUSHINT
   }>
-  ?fun_2 PROC:<{
+  ?fun_3 PROC:<{
     2 UNTUPLE
     s0 s1 XCHG
     s0 PUSH
@@ -225,34 +220,16 @@ PROGRAM{
       136 THROWIFNOT
     }> PUSHCONT
     IFELSE
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      ?fun_0 INLINECALLDICT
-    }> PUSHCONT
-    IFELSE
+    ?fun_0 INLINECALLDICT
     ROTREV
-    ?fun_3 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
     s1 POP
   }>
-  ?fun_5 PROCREF:<{
+  ?fun_6 PROCREF:<{
     s0 POP
     -1 PUSHINT
   }>
-  ?fun_4 PROC:<{
+  ?fun_5 PROC:<{
     s0 PUSH
     SBITS
     267 PUSHINT
@@ -267,30 +244,12 @@ PROGRAM{
     10 PUSHPOW2
     EQUAL
     136 THROWIFNOT
-    c4 PUSH
-    CTOS
-    LDREF
+    ?fun_0 INLINECALLDICT
     s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      ?fun_0 INLINECALLDICT
-    }> PUSHCONT
-    IFELSE
-    s0 s1 XCHG
-    ?fun_5 INLINECALLDICT
+    ?fun_6 INLINECALLDICT
     s1 POP
   }>
-  ?fun_7 PROCREF:<{
+  ?fun_8 PROCREF:<{
     LDMSGADDR
     s0 s1 XCHG
     s0 PUSH
@@ -309,28 +268,10 @@ PROGRAM{
     136 THROWIFNOT
     s1 POP
   }>
-  ?fun_6 PROC:<{
-    c4 PUSH
-    CTOS
-    LDREF
+  ?fun_7 PROC:<{
+    ?fun_0 INLINECALLDICT
     s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      ?fun_0 INLINECALLDICT
-    }> PUSHCONT
-    IFELSE
-    s0 s1 XCHG
-    ?fun_7 INLINECALLDICT
+    ?fun_8 INLINECALLDICT
     s1 POP
   }>
   supported_interfaces PROC:<{
@@ -340,7 +281,7 @@ PROGRAM{
     36993126140238121407019133875791708966 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
   }>
-  ?fun_9 PROCREF:<{
+  ?fun_10 PROCREF:<{
     NEWC
     2 PUSHINT
     s0 s1 XCHG
@@ -368,28 +309,10 @@ PROGRAM{
     EQUAL
     136 THROWIFNOT
   }>
-  ?fun_8 PROC:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      ?fun_0 INLINECALLDICT
-    }> PUSHCONT
-    IFELSE
+  ?fun_9 PROC:<{
+    ?fun_0 INLINECALLDICT
     ROTREV
-    ?fun_9 INLINECALLDICT
+    ?fun_10 INLINECALLDICT
     s1 POP
   }>
 }END>c

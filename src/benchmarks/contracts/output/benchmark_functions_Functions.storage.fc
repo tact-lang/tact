@@ -37,7 +37,7 @@ builder $Functions$_store(builder build_0, (int) v) inline {
     return (sc_0, (v'value));
 }
 
-(int) $Functions$_contract_load() impure inline {
+(int) $Functions$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

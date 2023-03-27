@@ -103,7 +103,7 @@ PROGRAM{
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc PUSHREF
     9 PUSHPOW2
   }>
-  $IntrinsicsTester$_contract_load PROCINLINE:<{
+  $IntrinsicsTester$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -111,18 +111,17 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $IntrinsicsTester$_load INLINECALLDICT
       1 5 BLKDROP2
-    }>ELSE<{
-      DROP
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $IntrinsicsTester$_contract_init INLINECALLDICT
     }>
+    DROP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $IntrinsicsTester$_contract_init INLINECALLDICT
   }>
   $IntrinsicsTester$_contract_store PROCINLINE:<{
     NEWC
@@ -306,12 +305,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

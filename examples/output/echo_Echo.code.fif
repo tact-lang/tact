@@ -178,7 +178,7 @@ PROGRAM{
     DROP
     PUSHNULL
   }>
-  $Echo$_contract_load PROCINLINE:<{
+  $Echo$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -186,20 +186,19 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       DROP
       PUSHNULL
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $Echo$init$_load INLINECALLDICT
-      SWAP
-      ENDS
-      $Echo$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $Echo$init$_load INLINECALLDICT
+    SWAP
+    ENDS
+    $Echo$_contract_init INLINECALLDICT
   }>
   $Echo$_contract_store PROCINLINE:<{
     DROP
@@ -420,12 +419,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

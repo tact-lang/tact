@@ -16,7 +16,7 @@ builder $StdlibTest$_store(builder build_0, (int) v) inline;
 (int) $StdlibTest$_contract_init() impure inline_ref;
 
 ;; $StdlibTest$_contract_load
-(int) $StdlibTest$_contract_load() impure inline;
+(int) $StdlibTest$_contract_load() impure inline_ref;
 
 ;; $StdlibTest$_contract_store
 () $StdlibTest$_contract_store((int) v) impure inline;

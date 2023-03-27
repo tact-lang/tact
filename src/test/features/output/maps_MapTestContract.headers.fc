@@ -103,7 +103,7 @@ tuple $SomeStruct$_to_opt_external(tuple v) inline;
 (cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_init() impure inline_ref;
 
 ;; $MapTestContract$_contract_load
-(cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline;
+(cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline_ref;
 
 ;; $MapTestContract$_contract_store
 () $MapTestContract$_contract_store((cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline;

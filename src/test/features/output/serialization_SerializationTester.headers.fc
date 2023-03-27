@@ -22,7 +22,7 @@ builder $SerializationTester$_store(builder build_0, (int, int, int, int, int, i
 (int, int, int, int, int, int, int, int, int) $SerializationTester$_contract_init(int $a, int $b, int $c, int $d, int $e, int $f, int $g, int $h, int $i) impure inline_ref;
 
 ;; $SerializationTester$_contract_load
-(int, int, int, int, int, int, int, int, int) $SerializationTester$_contract_load() impure inline;
+(int, int, int, int, int, int, int, int, int) $SerializationTester$_contract_load() impure inline_ref;
 
 ;; $SerializationTester$_contract_store
 () $SerializationTester$_contract_store((int, int, int, int, int, int, int, int, int) v) impure inline;

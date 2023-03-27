@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MasterchainTester
-BOC Size: 714 bytes
+BOC Size: 651 bytes
 
 # Types
 Total Types: 4

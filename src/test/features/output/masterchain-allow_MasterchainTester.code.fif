@@ -105,7 +105,7 @@ PROGRAM{
   $MasterchainTester$_contract_init PROCREF:<{
     PUSHNULL
   }>
-  $MasterchainTester$_contract_load PROCINLINE:<{
+  $MasterchainTester$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -113,11 +113,10 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     DROP
-    IF:<{
+    IFJMP:<{
       PUSHNULL
-    }>ELSE<{
-      $MasterchainTester$_contract_init INLINECALLDICT
     }>
+    $MasterchainTester$_contract_init INLINECALLDICT
   }>
   $MasterchainTester$_contract_store PROCINLINE:<{
     DROP
@@ -243,12 +242,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

@@ -70,7 +70,7 @@ builder $Beacon$init$_store(builder build_0, (slice, slice) v) inline;
 (slice, int) $Payouts$_contract_init(slice $owner, int $publicKey) impure inline_ref;
 
 ;; $Payouts$_contract_load
-(slice, int) $Payouts$_contract_load() impure inline;
+(slice, int) $Payouts$_contract_load() impure inline_ref;
 
 ;; $Payouts$_contract_store
 () $Payouts$_contract_store((slice, int) v) impure inline;

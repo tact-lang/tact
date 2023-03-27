@@ -13,7 +13,7 @@ slice __tact_verify_address(slice address) inline;
 tuple $Empty$_contract_init() impure inline_ref;
 
 ;; $Empty$_contract_load
-tuple $Empty$_contract_load() impure inline;
+tuple $Empty$_contract_load() impure inline_ref;
 
 ;; $Empty$_contract_store
 () $Empty$_contract_store(tuple v) impure inline;

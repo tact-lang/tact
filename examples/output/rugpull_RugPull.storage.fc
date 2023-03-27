@@ -85,7 +85,7 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
     return (sc_0, (v'owner, v'investment, v'returns, v'fee));
 }
 
-(slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_load() impure inline {
+(slice, int, int, int, int, int, int, int, int, cell) $RugPull$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

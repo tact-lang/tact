@@ -34,7 +34,7 @@ cell $DeployOk$_store_cell((int) v) inline;
 tuple $RandomContract$_contract_init() impure inline_ref;
 
 ;; $RandomContract$_contract_load
-tuple $RandomContract$_contract_load() impure inline;
+tuple $RandomContract$_contract_load() impure inline_ref;
 
 ;; $RandomContract$_contract_store
 () $RandomContract$_contract_store(tuple v) impure inline;

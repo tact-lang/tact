@@ -16,7 +16,7 @@ builder $Native$_store(builder build_0, (int) v) inline;
 (int) $Native$_contract_init() impure inline_ref;
 
 ;; $Native$_contract_load
-(int) $Native$_contract_load() impure inline;
+(int) $Native$_contract_load() impure inline_ref;
 
 ;; $Native$_contract_store
 () $Native$_contract_store((int) v) impure inline;

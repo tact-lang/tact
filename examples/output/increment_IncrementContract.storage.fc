@@ -144,7 +144,7 @@ builder $IncrementContract$_store(builder build_0, (cell, cell, cell, cell, cell
     return (sc_0, (v'counters, v'counters2, v'counters3, v'counters4, v'counters5));
 }
 
-(cell, cell, cell, cell, cell) $IncrementContract$_contract_load() impure inline {
+(cell, cell, cell, cell, cell) $IncrementContract$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

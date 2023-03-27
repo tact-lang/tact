@@ -46,7 +46,7 @@ builder $C$init$_store(builder build_0, (slice) v) inline;
 (slice) $C$_contract_init(slice $parent) impure inline_ref;
 
 ;; $C$_contract_load
-(slice) $C$_contract_load() impure inline;
+(slice) $C$_contract_load() impure inline_ref;
 
 ;; $C$_contract_store
 () $C$_contract_store((slice) v) impure inline;

@@ -626,7 +626,7 @@ PROGRAM{
   }>
   $ContractWithOptionals$_contract_init PROCREF:<{
   }>
-  $ContractWithOptionals$_contract_load PROCINLINE:<{
+  $ContractWithOptionals$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -634,16 +634,15 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $ContractWithOptionals$_load INLINECALLDICT
       1 6 BLKDROP2
-    }>ELSE<{
-      $ContractWithOptionals$init$_load INLINECALLDICT
-      s0 s6 XCHG
-      ENDS
-      5 ROLL
-      $ContractWithOptionals$_contract_init INLINECALLDICT
     }>
+    $ContractWithOptionals$init$_load INLINECALLDICT
+    s0 s6 XCHG
+    ENDS
+    5 ROLL
+    $ContractWithOptionals$_contract_init INLINECALLDICT
   }>
   $ContractWithOptionals$_contract_store PROCINLINE:<{
     NEWC
@@ -908,12 +907,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

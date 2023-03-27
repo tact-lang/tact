@@ -82,7 +82,7 @@ tuple $StructWithOptionals$_to_opt_external(tuple v) inline;
 (int, int, cell, slice, tuple, tuple) $ContractWithOptionals$_contract_init(int $a, int $b, cell $c, slice $d, tuple $e, tuple $f) impure inline_ref;
 
 ;; $ContractWithOptionals$_contract_load
-(int, int, cell, slice, tuple, tuple) $ContractWithOptionals$_contract_load() impure inline;
+(int, int, cell, slice, tuple, tuple) $ContractWithOptionals$_contract_load() impure inline_ref;
 
 ;; $ContractWithOptionals$_contract_store
 () $ContractWithOptionals$_contract_store((int, int, cell, slice, tuple, tuple) v) impure inline;

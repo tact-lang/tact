@@ -52,7 +52,7 @@ builder $Wallet$init$_store(builder build_0, (int, int) v) inline;
 (int, int, int) $Wallet$_contract_init(int $key, int $walletId) impure inline_ref;
 
 ;; $Wallet$_contract_load
-(int, int, int) $Wallet$_contract_load() impure inline;
+(int, int, int) $Wallet$_contract_load() impure inline_ref;
 
 ;; $Wallet$_contract_store
 () $Wallet$_contract_store((int, int, int) v) impure inline;

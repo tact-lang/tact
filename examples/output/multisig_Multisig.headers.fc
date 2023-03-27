@@ -64,7 +64,7 @@ builder $MultisigSigner$init$_store(builder build_0, (slice, cell, int, (slice, 
 (int, cell, int, int) $Multisig$_contract_init(cell $members, int $totalWeight, int $requiredWeight) impure inline_ref;
 
 ;; $Multisig$_contract_load
-(int, cell, int, int) $Multisig$_contract_load() impure inline;
+(int, cell, int, int) $Multisig$_contract_load() impure inline_ref;
 
 ;; $Multisig$_contract_store
 () $Multisig$_contract_store((int, cell, int, int) v) impure inline;

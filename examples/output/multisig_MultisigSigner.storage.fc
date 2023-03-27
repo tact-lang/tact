@@ -101,7 +101,7 @@ builder $MultisigSigner$_store(builder build_0, (slice, cell, int, int, int, (sl
     return (sc_0, (v'master, v'members, v'requiredWeight, v'request));
 }
 
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_load() impure inline {
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

@@ -18,7 +18,7 @@ export function writeStorageOps(type: TypeDescription, origin: TypeOrigin, ctx: 
     ctx.fun(ops.contractLoad(type.name, ctx), () => {
         ctx.signature(`${resolveFuncType(type, ctx)} ${ops.contractLoad(type.name, ctx)}()`);
         ctx.flag('impure');
-        ctx.flag('inline');
+        // ctx.flag('inline');
         ctx.context('type:' + type.name + '$init');
         ctx.body(() => {
 
@@ -238,7 +238,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
             ctx.append(`;; Context`);
             ctx.append(`var cs = in_msg_cell.begin_parse();`);
             ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-            ctx.append(`var msg_bounced = ((msg_flags & 1) == 1 ? true : false);`);
+            ctx.append(`var msg_bounced = -(msg_flags & 1);`);
             ctx.append(`slice msg_sender_addr = ${ctx.used('__tact_verify_address')}(cs~load_msg_addr());`);
             ctx.append(`__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`);
             ctx.append(`__tact_context_sender = msg_sender_addr;`);

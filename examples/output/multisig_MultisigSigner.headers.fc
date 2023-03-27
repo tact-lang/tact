@@ -55,7 +55,7 @@ builder $MultisigSigner$_store(builder build_0, (slice, cell, int, int, int, (sl
 (slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_init(slice $master, cell $members, int $requiredWeight, (slice, slice, int, int, int, int, cell) $request) impure inline_ref;
 
 ;; $MultisigSigner$_contract_load
-(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_load() impure inline;
+(slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $MultisigSigner$_contract_load() impure inline_ref;
 
 ;; $MultisigSigner$_contract_store
 () $MultisigSigner$_contract_store((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) v) impure inline;

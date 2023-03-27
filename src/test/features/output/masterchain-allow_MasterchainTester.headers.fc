@@ -25,7 +25,7 @@ slice __tact_create_address(int chain, int hash) inline;
 tuple $MasterchainTester$_contract_init() impure inline_ref;
 
 ;; $MasterchainTester$_contract_load
-tuple $MasterchainTester$_contract_load() impure inline;
+tuple $MasterchainTester$_contract_load() impure inline_ref;
 
 ;; $MasterchainTester$_contract_store
 () $MasterchainTester$_contract_store(tuple v) impure inline;

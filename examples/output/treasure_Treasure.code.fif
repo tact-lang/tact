@@ -101,7 +101,7 @@ PROGRAM{
   }>
   $Treasure$_contract_init PROCREF:<{
   }>
-  $Treasure$_contract_load PROCINLINE:<{
+  $Treasure$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -109,20 +109,19 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $Treasure$_load INLINECALLDICT
       NIP
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $Treasure$init$_load INLINECALLDICT
-      SWAP
-      ENDS
-      $Treasure$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $Treasure$init$_load INLINECALLDICT
+    SWAP
+    ENDS
+    $Treasure$_contract_init INLINECALLDICT
   }>
   $Treasure$_contract_store PROCINLINE:<{
     NEWC
@@ -358,12 +357,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

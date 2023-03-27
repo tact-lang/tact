@@ -185,7 +185,7 @@ PROGRAM{
   }>
   $SerializationTester$_contract_init PROCREF:<{
   }>
-  $SerializationTester$_contract_load PROCINLINE:<{
+  $SerializationTester$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -193,21 +193,20 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $SerializationTester$_load INLINECALLDICT
       1 9 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $SerializationTester$init$_load INLINECALLDICT
-      s0 s9 XCHG
-      ENDS
-      8 ROLL
-      $SerializationTester$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $SerializationTester$init$_load INLINECALLDICT
+    s0 s9 XCHG
+    ENDS
+    8 ROLL
+    $SerializationTester$_contract_init INLINECALLDICT
   }>
   $SerializationTester$_contract_store PROCINLINE:<{
     NEWC
@@ -369,12 +368,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

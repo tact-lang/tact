@@ -67,7 +67,7 @@ builder $Beacon$_store(builder build_0, (slice, slice, int) v) inline {
     return (sc_0, (v'master, v'owner));
 }
 
-(slice, slice, int) $Beacon$_contract_load() impure inline {
+(slice, slice, int) $Beacon$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);

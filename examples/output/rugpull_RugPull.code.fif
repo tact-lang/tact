@@ -210,7 +210,7 @@ PROGRAM{
     FALSE
     3 -ROLL
   }>
-  $RugPull$_contract_load PROCINLINE:<{
+  $RugPull$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -218,21 +218,20 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $RugPull$_load INLINECALLDICT
       1 10 BLKDROP2
-    }>ELSE<{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $RugPull$init$_load INLINECALLDICT
-      s0 s4 XCHG
-      ENDS
-      3 ROLL
-      $RugPull$_contract_init INLINECALLDICT
     }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $RugPull$init$_load INLINECALLDICT
+    s0 s4 XCHG
+    ENDS
+    3 ROLL
+    $RugPull$_contract_init INLINECALLDICT
   }>
   $RugPull$_contract_store PROCINLINE:<{
     NEWC
@@ -609,12 +608,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

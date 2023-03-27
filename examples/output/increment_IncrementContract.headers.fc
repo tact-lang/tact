@@ -76,7 +76,7 @@ builder $IncrementContract$_store(builder build_0, (cell, cell, cell, cell, cell
 (cell, cell, cell, cell, cell) $IncrementContract$_contract_init() impure inline_ref;
 
 ;; $IncrementContract$_contract_load
-(cell, cell, cell, cell, cell) $IncrementContract$_contract_load() impure inline;
+(cell, cell, cell, cell, cell) $IncrementContract$_contract_load() impure inline_ref;
 
 ;; $IncrementContract$_contract_store
 () $IncrementContract$_contract_store((cell, cell, cell, cell, cell) v) impure inline;

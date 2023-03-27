@@ -43,7 +43,7 @@ slice __tact_string_builder_end_slice(tuple builders) inline;
 tuple $Echo$_contract_init(int $a) impure inline_ref;
 
 ;; $Echo$_contract_load
-tuple $Echo$_contract_load() impure inline;
+tuple $Echo$_contract_load() impure inline_ref;
 
 ;; $Echo$_contract_store
 () $Echo$_contract_store(tuple v) impure inline;

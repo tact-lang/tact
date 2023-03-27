@@ -1,13 +1,14 @@
 PROGRAM{
+  DECLPROC ?fun_2;
   DECLPROC ?fun_1;
   DECLPROC ?fun_0;
-  DECLPROC ?fun_4;
-  DECLPROC ?fun_3;
   DECLPROC ?fun_5;
-  DECLPROC ?fun_2;
+  DECLPROC ?fun_4;
+  DECLPROC ?fun_6;
+  DECLPROC ?fun_3;
   DECLPROC recv_internal;
   DECLPROC supported_interfaces;
-  ?fun_1 PROCREF:<{
+  ?fun_2 PROCREF:<{
     NEWC
     15211807202738752817960438464513 PUSHINT
     s0 s1 XCHG
@@ -17,12 +18,31 @@ PROGRAM{
     0 PUSHINT
     SENDRAWMSG
   }>
-  ?fun_0 PROCREF:<{
+  ?fun_1 PROCREF:<{
     NULL
     x{000000004465706C6F792073756363657373} PUSHREF
+    ?fun_2 INLINECALLDICT
+  }>
+  ?fun_0 PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
     ?fun_1 INLINECALLDICT
   }>
-  ?fun_4 PROCREF:<{
+  ?fun_5 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -166,7 +186,7 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_3 PROCREF:<{
+  ?fun_4 PROCREF:<{
     -1 PUSHINT
     2 GETGLOBVAR
     0 PUSHINT
@@ -176,15 +196,15 @@ PROGRAM{
     s0 s1 XCHG
     NULL
     NULL
-    ?fun_4 INLINECALLDICT
+    ?fun_5 INLINECALLDICT
   }>
-  ?fun_5 PROCREF:<{
+  ?fun_6 PROCREF:<{
     x{00000000576F726C64} PUSHREF
-    ?fun_3 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
     x{00000000536F6D657468696E67} PUSHREF
-    ?fun_1 INLINECALLDICT
+    ?fun_2 INLINECALLDICT
   }>
-  ?fun_2 PROCREF:<{
+  ?fun_3 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -223,7 +243,7 @@ PROGRAM{
       32 STU
       64 STU
       ENDC
-      ?fun_3 INLINECALLDICT
+      ?fun_4 INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
@@ -234,7 +254,7 @@ PROGRAM{
       70428803322249702641686993123444091967701319117035219703275842373885383815233 PUSHINT
       EQUAL
       <{
-        ?fun_5 INLINECALLDICT
+        ?fun_6 INLINECALLDICT
         -1 PUSHINT
         RETFALSE
       }> PUSHCONT
@@ -253,14 +273,7 @@ PROGRAM{
     s0 s1 XCHG
     1 PUSHINT
     AND
-    1 EQINT
-    <{
-      -1 PUSHINT
-    }> PUSHCONT
-    <{
-      0 PUSHINT
-    }> PUSHCONT
-    IFELSE
+    -1 MULCONST
     s0 s1 XCHG
     LDMSGADDR
     s0 s1 XCHG
@@ -284,27 +297,9 @@ PROGRAM{
     1 SETGLOBVAR
     s0 s2 XCHG
     2 SETGLOBVAR
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    <{
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      ?fun_0 INLINECALLDICT
-    }> PUSHCONT
-    IFELSE
+    ?fun_0 INLINECALLDICT
     ROTREV
-    ?fun_2 INLINECALLDICT
+    ?fun_3 INLINECALLDICT
     s0 POP
     s0 POP
     NEWC

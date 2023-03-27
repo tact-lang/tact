@@ -49,7 +49,7 @@ builder $Beacon$_store(builder build_0, (slice, slice, int) v) inline;
 (slice, slice, int) $Beacon$_contract_init(slice $master, slice $owner) impure inline_ref;
 
 ;; $Beacon$_contract_load
-(slice, slice, int) $Beacon$_contract_load() impure inline;
+(slice, slice, int) $Beacon$_contract_load() impure inline_ref;
 
 ;; $Beacon$_contract_store
 () $Beacon$_contract_store((slice, slice, int) v) impure inline;

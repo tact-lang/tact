@@ -43,7 +43,7 @@ builder $Treasure$_store(builder build_0, (slice) v) inline;
 (slice) $Treasure$_contract_init(slice $owner) impure inline_ref;
 
 ;; $Treasure$_contract_load
-(slice) $Treasure$_contract_load() impure inline;
+(slice) $Treasure$_contract_load() impure inline_ref;
 
 ;; $Treasure$_contract_store
 () $Treasure$_contract_store((slice) v) impure inline;

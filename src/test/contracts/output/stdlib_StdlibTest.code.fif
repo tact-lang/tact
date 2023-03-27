@@ -50,7 +50,7 @@ PROGRAM{
   $StdlibTest$_contract_init PROCREF:<{
     0 PUSHINT
   }>
-  $StdlibTest$_contract_load PROCINLINE:<{
+  $StdlibTest$_contract_load PROCREF:<{
     c4 PUSH
     CTOS
     LDREF
@@ -58,18 +58,17 @@ PROGRAM{
     __tact_context_sys SETGLOB
     1 LDI
     SWAP
-    IF:<{
+    IFJMP:<{
       $StdlibTest$_load INLINECALLDICT
       NIP
-    }>ELSE<{
-      DROP
-      MYADDR
-      11 PLDU
-      10 PUSHPOW2
-      EQUAL
-      137 THROWIFNOT
-      $StdlibTest$_contract_init INLINECALLDICT
     }>
+    DROP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $StdlibTest$_contract_init INLINECALLDICT
   }>
   $StdlibTest$_contract_store PROCINLINE:<{
     NEWC
@@ -162,12 +161,7 @@ PROGRAM{
     SWAP
     1 PUSHINT
     AND
-    1 EQINT
-    IF:<{
-      TRUE
-    }>ELSE<{
-      FALSE
-    }>
+    NEGATE
     SWAP
     LDMSGADDR
     SWAP

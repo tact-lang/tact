@@ -73,7 +73,7 @@ tuple $Both$_to_opt_external(tuple v) inline;
 ((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_init((int, int, int, int, int) $a, (int, int, int, int, int) $b) impure inline_ref;
 
 ;; $SerializationTester2$_contract_load
-((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_load() impure inline;
+((int, int, int, int, int), (int, int, int, int, int)) $SerializationTester2$_contract_load() impure inline_ref;
 
 ;; $SerializationTester2$_contract_store
 () $SerializationTester2$_contract_store(((int, int, int, int, int), (int, int, int, int, int)) v) impure inline;
