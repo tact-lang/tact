@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@ipld/dag-pb": "2.1.18",
-    "@tact-lang/opcode": "^0.0.3",
+    "@tact-lang/opcode": "^0.0.11",
     "arg": "^5.0.2",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
@@ -40,14 +40,15 @@
     "path-normalize": "^6.0.10",
     "prando": "^6.0.1",
     "qs": "^6.11.0",
-    "ton-core": ">=0.48.0",
+    "ton-core": ">=0.49.0",
     "ton-crypto": "^3.2.0",
     "zod": "^3.20.2"
   },
   "devDependencies": {
     "@ohm-js/cli": "^1.1.0",
     "@release-it/keep-a-changelog": "^3.1.0",
-    "@tact-lang/emulator": "^3.3.1",
+    "@tact-lang/coverage": "^0.0.4",
+    "@tact-lang/emulator": "^3.4.1",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.2.3",
     "@types/js-yaml": "^4.0.5",

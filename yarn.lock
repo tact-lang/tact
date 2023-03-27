@@ -823,34 +823,30 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
-"@tact-lang/coverage@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.2.tgz#f7879e895320c43b6b3951070d8516bd4a86b214"
-  integrity sha512-MwrrQNxPJj0rRQeRg+p47H++KvI049/bwgFYknLb4QlDNYpcwev+uE3EADF11W3lBd2MWLcuuP5qUTt+JOOBUQ==
+"@tact-lang/coverage@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.4.tgz#ac6929bb54954090d157d8e243c9c4e687098d99"
+  integrity sha512-MKZ47N9lYVBr3wOl+u+J1o6qP+Blz0YZ/EqO7lih6md92/FO6EAI8B0gcnOfSrRGW8sOuM8lk3U/vM6wYcutdQ==
   dependencies:
-    "@tact-lang/opcode" "^0.0.9"
+    "@tact-lang/opcode" "^0.0.11"
+    glob "^9.3.2"
     prando "^6.0.1"
     teslabot "^1.5.0"
     zod "^3.20.2"
 
-"@tact-lang/emulator@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@tact-lang/emulator/-/emulator-3.3.1.tgz#bf9ad2d1c2e4135b9ca331c08192b3b3d859ab75"
-  integrity sha512-Mct5JksjBUZik6UVepcxT0IEtyXs7Ob68+oulfNtBw2JadcK6I7jTLDSqq9tDB+xFiEo/Tr7WpWpm3DCyuoxng==
+"@tact-lang/emulator@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@tact-lang/emulator/-/emulator-3.4.1.tgz#974fef4859ef8977dcbaa665c05f296410791ef6"
+  integrity sha512-+elgvFUCmjqBPWTFcxiyWQM+CxP+r8nqcd59HxJ2YkboiarC3IkjTcXkXAKIP9gMFfNRrbYjF1w/iC+5Mylgew==
   dependencies:
     prando "^6.0.1"
     teslabot "^1.5.0"
     zod "^3.20.2"
 
-"@tact-lang/opcode@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.3.tgz#8f526f25751ee8f69985bd188d8b157b72a0c743"
-  integrity sha512-W58WXIO9bDnf/t+z7FQyIL67Fyq2UWSZGI/fX3dvDKsJ3zTW8+ZAYHvK6j98FVKFgNVttwWkdcFA+a3O0t+Alw==
-
-"@tact-lang/opcode@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.9.tgz#1b2f51ca2b362f6c78eb611ca8b2758e0d706b0c"
-  integrity sha512-/MN8s1CE1V6QAqDVBfsABsNzyzAFruUbJkP06cLy1b1zvWznPvLfu/r85ZCphpiBYYVRLgLrwE5wS2XkaXuR/Q==
+"@tact-lang/opcode@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.11.tgz#2df96d683c8688d77baa04e1293e85dff30ca7b6"
+  integrity sha512-235t67lHVZgLq2cBvezKuCKb9TtycrzM4fP/frohOO0ZuK0GWCJ116ZZlhNZeH6hEJqp25vd+ZAV/r4I3bvPaA==
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -2183,6 +2179,16 @@ glob@^8.1.0:
     minimatch "^5.0.1"
     once "^1.3.0"
 
+glob@^9.3.2:
+  version "9.3.2"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-9.3.2.tgz#8528522e003819e63d11c979b30896e0eaf52eda"
+  integrity sha512-BTv/JhKXFEHsErMte/AnfiSv8yYOLLiyH2lTg8vn02O21zWFgHPTfxtgn1QRe7NRgggUhC8hacR2Re94svHqeA==
+  dependencies:
+    fs.realpath "^1.0.0"
+    minimatch "^7.4.1"
+    minipass "^4.2.4"
+    path-scurry "^1.6.1"
+
 global-dirs@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/global-dirs/-/global-dirs-3.0.1.tgz#0c488971f066baceda21447aecb1a8b911d22485"
@@ -3345,6 +3351,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lru-cache@^7.14.1:
+  version "7.18.3"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.18.3.tgz#f793896e0fd0e954a59dfdd82f0773808df6aa89"
+  integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
+
 macos-release@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/macos-release/-/macos-release-3.1.0.tgz#6165bb0736ae567ed6649e36ce6a24d87cbb7aca"
@@ -3440,10 +3451,22 @@ minimatch@^5.0.1:
   dependencies:
     brace-expansion "^2.0.1"
 
+minimatch@^7.4.1:
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-7.4.3.tgz#012cbf110a65134bb354ae9773b55256cdb045a2"
+  integrity sha512-5UB4yYusDtkRPbRiy1cqZ1IpGNcJCGlEMG17RKzPddpyiPKoCdwohbED8g4QXT0ewCt8LTkQXuljsUfQ3FKM4A==
+  dependencies:
+    brace-expansion "^2.0.1"
+
 minimist@^1.2.0, minimist@^1.2.5:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.7.tgz#daa1c4d91f507390437c6a8bc01078e7000c4d18"
   integrity sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==
+
+minipass@^4.0.2, minipass@^4.2.4:
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.2.5.tgz#9e0e5256f1e3513f8c34691dd68549e85b2c8ceb"
+  integrity sha512-+yQl7SX3bIT83Lhb4BVorMAHVuqsskxRdlmO9kTpyukp8vsm2Sn/fUOV9xlnG8/a5JsypJzap21lz/y3FBMJ8Q==
 
 mkdirp@^2.1.3:
   version "2.1.3"
@@ -3794,6 +3817,14 @@ path-parse@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
   integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
+
+path-scurry@^1.6.1:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/path-scurry/-/path-scurry-1.6.3.tgz#4eba7183d64ef88b63c7d330bddc3ba279dc6c40"
+  integrity sha512-RAmB+n30SlN+HnNx6EbcpoDy9nwdpcGPnEKrJnu6GZoDWBdIjo1UQMVtW2ybtC7LC2oKLcMq8y5g8WnKLiod9g==
+  dependencies:
+    lru-cache "^7.14.1"
+    minipass "^4.0.2"
 
 path-type@^4.0.0:
   version "4.0.0"
@@ -4504,10 +4535,10 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-ton-core@>=0.48.0:
-  version "0.48.0"
-  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.48.0.tgz#df744c9b13b3193cb7eb8a9cbb715bcf0437e467"
-  integrity sha512-v3QL0CC8iQQ0cjUN0lI9hK7wEpLW2Wnm+N5Ukm+NSbtQ0vq36LGQR/BRywoOQZJm59XzmW4ATbtCWeas9ePrRA==
+ton-core@>=0.49.0:
+  version "0.49.0"
+  resolved "https://registry.yarnpkg.com/ton-core/-/ton-core-0.49.0.tgz#69d338daa72e33b36aea4fb02cb0c7b3bf2c668b"
+  integrity sha512-t3fhs9rb7JfOccSU966bLSHq5G4PYippaXpQJGZPvUwoNVdlM3/nUwz6S6cr/hsGbthRBzApl4FhJsDlx9r4vA==
   dependencies:
     symbol.inspect "1.0.1"
 

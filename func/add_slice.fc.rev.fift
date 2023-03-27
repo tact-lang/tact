@@ -2,7 +2,7 @@ PROGRAM{
   DECLPROC recv_internal;
   DECLPROC ?fun_0;
   recv_internal PROC:<{
-    
+
   }>
   ?fun_0 PROC:<{
     s0 s1 XCHG
