@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`feature-random should chain deep sequences correctly 1`] = `"kQCpQE0XCVJlPmVpZVKAZeOX8CAUrICRuHvKICbi3exOPZan"`;
+exports[`feature-random should chain deep sequences correctly 1`] = `"kQC-U2o_lmuXxNefEaFU9CRTCSpsZ5hCJX9J0JhAEdCcl3Am"`;
 
-exports[`feature-random should chain deep sequences correctly 2`] = `"kQDHcW-z5Cd53Xrhdx-srxydO_SqN267xSsBElmH_JX5Rjaj"`;
+exports[`feature-random should chain deep sequences correctly 2`] = `"kQAezrEHN2SM19CtUXuQr3qJh0ZpxRwObArJ1RuZKnUNfegK"`;
 
-exports[`feature-random should chain deep sequences correctly 3`] = `"kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH"`;
+exports[`feature-random should chain deep sequences correctly 3`] = `"kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX"`;
 
 exports[`feature-random should chain deep sequences correctly 4`] = `
 [
@@ -23,14 +23,14 @@ exports[`feature-random should chain deep sequences correctly 4`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCpQE0XCVJlPmVpZVKAZeOX8CAUrICRuHvKICbi3exOPZan",
+          "to": "kQC-U2o_lmuXxNefEaFU9CRTCSpsZ5hCJX9J0JhAEdCcl3Am",
           "type": "internal",
           "value": 10000000000n,
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 15956n,
+        "gasUsed": 15636n,
       },
       {
         "$type": "sent",
@@ -41,10 +41,10 @@ exports[`feature-random should chain deep sequences correctly 4`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQCpQE0XCVJlPmVpZVKAZeOX8CAUrICRuHvKICbi3exOPZan",
-            "to": "kQDHcW-z5Cd53Xrhdx-srxydO_SqN267xSsBElmH_JX5Rjaj",
+            "from": "kQC-U2o_lmuXxNefEaFU9CRTCSpsZ5hCJX9J0JhAEdCcl3Am",
+            "to": "kQAezrEHN2SM19CtUXuQr3qJh0ZpxRwObArJ1RuZKnUNfegK",
             "type": "internal",
-            "value": 9969211000n,
+            "value": 9970011000n,
           },
         ],
       },
@@ -69,15 +69,15 @@ exports[`feature-random should chain deep sequences correctly 5`] = `
             "type": "text",
           },
           "bounce": true,
-          "from": "kQCpQE0XCVJlPmVpZVKAZeOX8CAUrICRuHvKICbi3exOPZan",
-          "to": "kQDHcW-z5Cd53Xrhdx-srxydO_SqN267xSsBElmH_JX5Rjaj",
+          "from": "kQC-U2o_lmuXxNefEaFU9CRTCSpsZ5hCJX9J0JhAEdCcl3Am",
+          "to": "kQAezrEHN2SM19CtUXuQr3qJh0ZpxRwObArJ1RuZKnUNfegK",
           "type": "internal",
-          "value": 9969211000n,
+          "value": 9970011000n,
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 14857n,
+        "gasUsed": 14377n,
       },
       {
         "$type": "sent",
@@ -88,10 +88,10 @@ exports[`feature-random should chain deep sequences correctly 5`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQDHcW-z5Cd53Xrhdx-srxydO_SqN267xSsBElmH_JX5Rjaj",
-            "to": "kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH",
+            "from": "kQAezrEHN2SM19CtUXuQr3qJh0ZpxRwObArJ1RuZKnUNfegK",
+            "to": "kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX",
             "type": "internal",
-            "value": 9944624000n,
+            "value": 9946184000n,
           },
         ],
       },
@@ -116,15 +116,15 @@ exports[`feature-random should chain deep sequences correctly 6`] = `
             "type": "text",
           },
           "bounce": true,
-          "from": "kQDHcW-z5Cd53Xrhdx-srxydO_SqN267xSsBElmH_JX5Rjaj",
-          "to": "kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH",
+          "from": "kQAezrEHN2SM19CtUXuQr3qJh0ZpxRwObArJ1RuZKnUNfegK",
+          "to": "kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX",
           "type": "internal",
-          "value": 9944624000n,
+          "value": 9946184000n,
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 14785n,
+        "gasUsed": 14305n,
       },
       {
         "$type": "sent",
@@ -135,10 +135,10 @@ exports[`feature-random should chain deep sequences correctly 6`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH",
-            "to": "kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH",
+            "from": "kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX",
+            "to": "kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX",
             "type": "internal",
-            "value": 9920297000n,
+            "value": 9922617000n,
           },
         ],
       },
@@ -155,15 +155,15 @@ exports[`feature-random should chain deep sequences correctly 6`] = `
             "type": "text",
           },
           "bounce": true,
-          "from": "kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH",
-          "to": "kQBJ_Xydk0-59l3OdTLEL8ymuynX_Iw1TwhOOqKRSPkEtpPH",
+          "from": "kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX",
+          "to": "kQBUDE-TS2jrMFKs6zed70_3N_UASVDzE3Ok2dvXnJLmqViX",
           "type": "internal",
-          "value": 9920297000n,
+          "value": 9922617000n,
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 4825n,
+        "gasUsed": 4585n,
       },
     ],
   },

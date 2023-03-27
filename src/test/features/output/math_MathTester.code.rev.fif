@@ -92,16 +92,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     STSLICER
     s0 s3 XCHG2
     STGRAMS
@@ -301,16 +297,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     s0 s6 s4 PUXCPU
     s0 s3 XCHG
     4 TUPLE
@@ -734,16 +726,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     c4 PUSH
@@ -815,16 +803,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -843,16 +827,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     c4 PUSH
@@ -984,16 +964,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     s0 s1 XCHG
@@ -1005,16 +981,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     c4 PUSH
     CTOS
     LDREF
@@ -1113,16 +1085,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     c4 PUSH
@@ -1172,16 +1140,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     s1 PUSH
     ISNULL
     <{
@@ -1198,16 +1162,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     c4 PUSH
@@ -1304,16 +1264,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     s0 s1 XCHG
     s0 PUSH
     SBITS
@@ -1323,16 +1279,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     c4 PUSH
     CTOS
     LDREF
@@ -1469,16 +1421,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     s1 PUSH
@@ -1497,16 +1445,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     c4 PUSH
@@ -1659,16 +1603,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     s0 s1 XCHG
@@ -1680,16 +1620,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     c4 PUSH
     CTOS
     LDREF
@@ -1760,16 +1696,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     s1 PUSH
     ISNULL
     <{
@@ -1786,16 +1718,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
     }> PUSHCONT
     IFELSE
     c4 PUSH
@@ -1859,16 +1787,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     s0 s1 XCHG
     s0 PUSH
     SBITS
@@ -1878,16 +1802,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     c4 PUSH
     CTOS
     LDREF

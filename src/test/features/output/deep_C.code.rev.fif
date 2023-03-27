@@ -44,16 +44,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     STSLICER
     ENDC
   }>
@@ -95,16 +91,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
   }>
   ?fun_4 PROCREF:<{
     NEWC
@@ -126,16 +118,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     STSLICER
     s0 s3 XCHG2
     STGRAMS
@@ -345,16 +333,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     s0 s6 s4 PUXCPU
     s0 s3 XCHG
     4 TUPLE
@@ -379,16 +363,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
       s1 POP
     }> PUSHCONT
     <{
@@ -407,16 +387,12 @@ PROGRAM{
       s0 PUSH
       11 PLDU
       s0 PUSH
-      10 PUSHPOW2
-      EQUAL
-      s1 PUSH
       1279 PUSHINT
       EQUAL
-      OR
-      136 THROWIFNOT
+      137 THROWIF
       10 PUSHPOW2
       EQUAL
-      137 THROWIFNOT
+      136 THROWIFNOT
       s0 s1 XCHG
       ENDS
     }> PUSHCONT
@@ -440,16 +416,12 @@ PROGRAM{
     s0 PUSH
     11 PLDU
     s0 PUSH
-    10 PUSHPOW2
-    EQUAL
-    s1 PUSH
     1279 PUSHINT
     EQUAL
-    OR
-    136 THROWIFNOT
+    137 THROWIF
     10 PUSHPOW2
     EQUAL
-    137 THROWIFNOT
+    136 THROWIFNOT
     STSLICER
     ENDC
     c4 POP

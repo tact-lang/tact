@@ -26,8 +26,19 @@ export function writeStdlib(ctx: WriterContext) {
             ctx.write(`
                 throw_unless(${contractErrors.invalidAddress.id}, address.slice_bits() == 267);
                 var h = address.preload_uint(11);
-                throw_unless(${contractErrors.invalidAddress.id}, (h == 1024) | (h == 1279));
-                ${!enabledMaterchain(ctx.ctx) ? `throw_unless(${contractErrors.masterchainNotEnabled.id}, h == 1024);` : ''}
+            `);
+
+            if (enabledMaterchain(ctx.ctx)) {
+                ctx.write(`
+                    throw_unless(${contractErrors.invalidAddress.id}, (h == 1024) | (h == 1279));
+                `);
+            } else {
+                ctx.write(`
+                    throw_if(${contractErrors.masterchainNotEnabled.id}, h == 1279);
+                    throw_unless(${contractErrors.invalidAddress.id}, h == 1024);
+                `);
+            }
+            ctx.write(`
                 return address;
             `);
         })

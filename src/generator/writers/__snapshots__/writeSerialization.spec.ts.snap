@@ -61,8 +61,8 @@ exports[`writeSerialization should write serializer for A 1`] = `
     "code": {
       "code": "throw_unless(136, address.slice_bits() == 267);
 var h = address.preload_uint(11);
-throw_unless(136, (h == 1024) | (h == 1279));
-throw_unless(137, h == 1024);
+throw_if(137, h == 1279);
+throw_unless(136, h == 1024);
 return address;",
       "kind": "generic",
     },
@@ -3522,8 +3522,8 @@ exports[`writeSerialization should write serializer for B 1`] = `
     "code": {
       "code": "throw_unless(136, address.slice_bits() == 267);
 var h = address.preload_uint(11);
-throw_unless(136, (h == 1024) | (h == 1279));
-throw_unless(137, h == 1024);
+throw_if(137, h == 1279);
+throw_unless(136, h == 1024);
 return address;",
       "kind": "generic",
     },
@@ -6983,8 +6983,8 @@ exports[`writeSerialization should write serializer for C 1`] = `
     "code": {
       "code": "throw_unless(136, address.slice_bits() == 267);
 var h = address.preload_uint(11);
-throw_unless(136, (h == 1024) | (h == 1279));
-throw_unless(137, h == 1024);
+throw_if(137, h == 1279);
+throw_unless(136, h == 1024);
 return address;",
       "kind": "generic",
     },
