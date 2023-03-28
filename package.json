@@ -47,7 +47,7 @@
   "devDependencies": {
     "@ohm-js/cli": "^1.1.0",
     "@release-it/keep-a-changelog": "^3.1.0",
-    "@tact-lang/coverage": "^0.0.4",
+    "@tact-lang/coverage": "^0.0.5",
     "@tact-lang/emulator": "^3.4.1",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.2.3",

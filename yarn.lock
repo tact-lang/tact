@@ -823,12 +823,12 @@
   dependencies:
     defer-to-connect "^2.0.1"
 
-"@tact-lang/coverage@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.4.tgz#ac6929bb54954090d157d8e243c9c4e687098d99"
-  integrity sha512-MKZ47N9lYVBr3wOl+u+J1o6qP+Blz0YZ/EqO7lih6md92/FO6EAI8B0gcnOfSrRGW8sOuM8lk3U/vM6wYcutdQ==
+"@tact-lang/coverage@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@tact-lang/coverage/-/coverage-0.0.5.tgz#8da0d25f2a48638712fe746bfd05491d14773afa"
+  integrity sha512-1vWP2DyXDTMFrThdX+oYCHus+7FpAYTF2Jx0zEfHMJi0g6QL/4zCOkouEBFrvueOtsOiTQKGR+IFgUcNzXjnFw==
   dependencies:
-    "@tact-lang/opcode" "^0.0.11"
+    "@tact-lang/opcode" "^0.0.12"
     glob "^9.3.2"
     prando "^6.0.1"
     teslabot "^1.5.0"
@@ -842,11 +842,6 @@
     prando "^6.0.1"
     teslabot "^1.5.0"
     zod "^3.20.2"
-
-"@tact-lang/opcode@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@tact-lang/opcode/-/opcode-0.0.11.tgz#2df96d683c8688d77baa04e1293e85dff30ca7b6"
-  integrity sha512-235t67lHVZgLq2cBvezKuCKb9TtycrzM4fP/frohOO0ZuK0GWCJ116ZZlhNZeH6hEJqp25vd+ZAV/r4I3bvPaA==
 
 "@tact-lang/opcode@^0.0.12":
   version "0.0.12"
