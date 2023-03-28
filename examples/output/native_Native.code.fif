@@ -8,8 +8,8 @@ PROGRAM{
   DECLPROC hello_world
   DECLPROC $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
   113617 DECLMETHOD supported_interfaces
-  DECLPROC get_abi_ipfs
-  DECLPROC lazy_deployment_completed
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
   DECLPROC $Native$_contract_router
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context

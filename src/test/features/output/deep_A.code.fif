@@ -20,8 +20,8 @@ PROGRAM{
   DECLPROC $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   74105 DECLMETHOD %getNext
   113617 DECLMETHOD supported_interfaces
-  DECLPROC get_abi_ipfs
-  DECLPROC lazy_deployment_completed
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
   DECLPROC $A$_contract_router
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context

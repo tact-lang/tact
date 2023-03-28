@@ -28,8 +28,8 @@ PROGRAM{
   95541 DECLMETHOD %getH
   91412 DECLMETHOD %getI
   113617 DECLMETHOD supported_interfaces
-  DECLPROC get_abi_ipfs
-  DECLPROC lazy_deployment_completed
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
   DECLPROC $SerializationTester$_contract_router
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context

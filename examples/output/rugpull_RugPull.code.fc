@@ -147,11 +147,11 @@ _ supported_interfaces() method_id {
     );
 }
 
-_ get_abi_ipfs() {
+_ get_abi_ipfs() method_id {
     return "ipfs://QmdfhYvEv8AuZ49vUw8RmL1ZhyE64jgVqDKtdHCSiMX4ga";
 }
 
-_ lazy_deployment_completed() {
+_ lazy_deployment_completed() method_id {
     return get_data().begin_parse().load_int(1);
 }
 

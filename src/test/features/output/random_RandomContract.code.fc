@@ -60,11 +60,11 @@ _ supported_interfaces() method_id {
     );
 }
 
-_ get_abi_ipfs() {
+_ get_abi_ipfs() method_id {
     return "ipfs://QmTDBjYBMtDJmZhPoL9NgPNyqYyqy5ZY45Z48PcGnmGn5g";
 }
 
-_ lazy_deployment_completed() {
+_ lazy_deployment_completed() method_id {
     return get_data().begin_parse().load_int(1);
 }
 

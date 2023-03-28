@@ -26,8 +26,8 @@ PROGRAM{
   DECLPROC $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
   107262 DECLMETHOD %request
   113617 DECLMETHOD supported_interfaces
-  DECLPROC get_abi_ipfs
-  DECLPROC lazy_deployment_completed
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
   DECLPROC $MultisigSigner$_contract_router
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context

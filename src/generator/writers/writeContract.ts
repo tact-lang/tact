@@ -205,7 +205,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
         writeInterfaces(type, ctx);
 
         // ABI
-        ctx.append(`_ get_abi_ipfs() {`);
+        ctx.append(`_ get_abi_ipfs() method_id {`);
         ctx.inIndent(() => {
             ctx.append(`return "${abiLink}";`);
         });
@@ -213,7 +213,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
         ctx.append();
 
         // Deployed
-        ctx.append(`_ lazy_deployment_completed() {`);
+        ctx.append(`_ lazy_deployment_completed() method_id {`);
         ctx.inIndent(() => {
             ctx.append(`return get_data().begin_parse().load_int(1);`);
         });

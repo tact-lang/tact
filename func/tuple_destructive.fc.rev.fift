@@ -1,6 +1,6 @@
 PROGRAM{
   DECLPROC recv_internal;
-  DECLPROC ?fun_0;
+  DECLPROC ?fun_1;
   recv_internal PROC:<{
     1 PUSHINT
     2 PUSHINT
@@ -14,7 +14,7 @@ PROGRAM{
     1 CALL
     s0 POP
   }>
-  ?fun_0 PROC:<{
+  ?fun_1 PROC:<{
     6 UNTUPLE
     s0 POP
     s4 s3 XCHG2

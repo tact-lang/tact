@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - `inline` modifier for functions to inline them into the caller
 
+## Fixed
+- Fix missing `method_id` in `get_abi_ipfs` and `lazy_deployment_completed`
+
 ## [1.1.0-beta.6] - 2023-03-27
 
 ## Changed

@@ -23,8 +23,8 @@ PROGRAM{
   128647 DECLMETHOD %randomInt
   92013 DECLMETHOD %random
   113617 DECLMETHOD supported_interfaces
-  DECLPROC get_abi_ipfs
-  DECLPROC lazy_deployment_completed
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
   DECLPROC $RandomContract$_contract_router
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
