@@ -318,7 +318,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCREF:<{
+  $global_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -329,7 +329,7 @@ PROGRAM{
     $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $Slice$_fun_asCell PROCREF:<{
+  $Slice$_fun_asCell PROCINLINE:<{
     NEWC
     SWAP
     STSLICER

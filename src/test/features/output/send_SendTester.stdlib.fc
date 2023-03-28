@@ -31,7 +31,7 @@ builder __tact_store_bool(builder b, int v) inline {
     return b.store_int(v, 1);
 }
 
-() $global_emit(cell $body) impure inline_ref {
+() $global_emit(cell $body) impure inline {
     cell $c = end_cell(store_ref(store_uint(begin_cell(), 15211807202738752817960438464513, 104), $body));
     send_raw_message($c, 0);
 }
@@ -79,6 +79,6 @@ builder __tact_store_bool(builder b, int v) inline {
     send_raw_message($c, $params'mode);
 }
 
-() $global_reply(cell $body) impure inline_ref {
+() $global_reply(cell $body) impure inline {
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
 }

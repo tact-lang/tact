@@ -158,7 +158,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $global_contractAddress PROCREF:<{
+  $global_contractAddress PROCINLINE:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT

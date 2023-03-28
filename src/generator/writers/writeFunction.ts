@@ -196,7 +196,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     ctx.fun(name, () => {
         ctx.signature(`${returns} ${name}(${args.join(', ')})`);
         ctx.flag('impure');
-        if (enabledInline(ctx.ctx)) {
+        if (enabledInline(ctx.ctx) || f.isInline) {
             ctx.flag('inline');
         }
         if (f.origin === 'stdlib') {

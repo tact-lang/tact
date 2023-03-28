@@ -1,17 +1,14 @@
 PROGRAM{
   DECLPROC ?fun_1;
   DECLPROC ?fun_0;
-  DECLPROC ?fun_4;
   DECLPROC ?fun_3;
   DECLPROC ?fun_2;
   DECLPROC recv_internal;
+  DECLPROC ?fun_5;
+  DECLPROC ?fun_4;
+  DECLPROC supported_interfaces;
   DECLPROC ?fun_7;
   DECLPROC ?fun_6;
-  DECLPROC ?fun_5;
-  DECLPROC supported_interfaces;
-  DECLPROC ?fun_10;
-  DECLPROC ?fun_9;
-  DECLPROC ?fun_8;
   ?fun_1 PROCREF:<{
     NULL
   }>
@@ -34,7 +31,7 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_1 INLINECALLDICT
   }>
-  ?fun_4 PROCREF:<{
+  ?fun_3 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -178,18 +175,6 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_3 PROCREF:<{
-    -1 PUSHINT
-    2 GETGLOBVAR
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_4 INLINECALLDICT
-  }>
   ?fun_2 PROCREF:<{
     0 PUSHINT
     s1 PUSH
@@ -226,6 +211,15 @@ PROGRAM{
       32 STU
       64 STU
       ENDC
+      -1 PUSHINT
+      2 GETGLOBVAR
+      0 PUSHINT
+      ROT
+      s0 s3 XCHG
+      66 PUSHINT
+      s0 s1 XCHG
+      NULL
+      NULL
       ?fun_3 INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
@@ -279,7 +273,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_7 PROCREF:<{
+  ?fun_5 PROCREF:<{
     4 GETGLOBVAR
     ISNULL
     <{
@@ -294,13 +288,10 @@ PROGRAM{
     RAND
     ADD
   }>
-  ?fun_6 PROCREF:<{
-    ?fun_7 INLINECALLDICT
-  }>
-  ?fun_5 PROC:<{
+  ?fun_4 PROC:<{
     ?fun_0 INLINECALLDICT
     ROTREV
-    ?fun_6 INLINECALLDICT
+    ?fun_5 INLINECALLDICT
     s1 POP
   }>
   supported_interfaces PROC:<{
@@ -310,7 +301,7 @@ PROGRAM{
     36993126140238121407019133875791708966 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
   }>
-  ?fun_10 PROCREF:<{
+  ?fun_7 PROCREF:<{
     4 GETGLOBVAR
     ISNULL
     <{
@@ -322,12 +313,9 @@ PROGRAM{
     IF
     RANDU256
   }>
-  ?fun_9 PROCREF:<{
-    ?fun_10 INLINECALLDICT
-  }>
-  ?fun_8 PROC:<{
+  ?fun_6 PROC:<{
     ?fun_0 INLINECALLDICT
-    ?fun_9 INLINECALLDICT
+    ?fun_7 INLINECALLDICT
     s1 POP
   }>
 }END>c

@@ -3,14 +3,12 @@ PROGRAM{
   DECLPROC ?fun_0;
   DECLPROC ?fun_4;
   DECLPROC ?fun_3;
-  DECLPROC ?fun_6;
   DECLPROC ?fun_5;
-  DECLPROC ?fun_7;
   DECLPROC ?fun_2;
   DECLPROC recv_internal;
   DECLPROC supported_interfaces;
-  DECLPROC ?fun_9;
-  DECLPROC ?fun_8;
+  DECLPROC ?fun_7;
+  DECLPROC ?fun_6;
   ?fun_1 PROCREF:<{
     s0 POP
     NULL
@@ -143,7 +141,7 @@ PROGRAM{
     WHILE
     s1 POP
   }>
-  ?fun_6 PROCREF:<{
+  ?fun_5 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -287,24 +285,6 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_5 PROCREF:<{
-    -1 PUSHINT
-    2 GETGLOBVAR
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_6 INLINECALLDICT
-  }>
-  ?fun_7 PROCREF:<{
-    NEWC
-    s0 s1 XCHG
-    STSLICER
-    ENDC
-  }>
   ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
@@ -334,6 +314,15 @@ PROGRAM{
         32 PUSHINT
         SDSKIPFIRST
         ?fun_3 INLINECALLDICT
+        -1 PUSHINT
+        2 GETGLOBVAR
+        0 PUSHINT
+        ROT
+        s0 s3 XCHG
+        66 PUSHINT
+        s0 s1 XCHG
+        NULL
+        NULL
         ?fun_5 INLINECALLDICT
         -1 PUSHINT
         RETFALSE
@@ -341,7 +330,19 @@ PROGRAM{
       IFJMP
     }> PUSHCONT
     IF
-    ?fun_7 INLINECALLDICT
+    NEWC
+    s0 s1 XCHG
+    STSLICER
+    ENDC
+    -1 PUSHINT
+    2 GETGLOBVAR
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    s0 s1 XCHG
+    NULL
+    NULL
     ?fun_5 INLINECALLDICT
     -1 PUSHINT
   }>
@@ -397,7 +398,7 @@ PROGRAM{
     42980537499636128163026532310500881091 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
   }>
-  ?fun_9 PROCREF:<{
+  ?fun_7 PROCREF:<{
     NEWC
     0 TUPLE
     s0 s1 XCHG
@@ -427,10 +428,10 @@ PROGRAM{
     s1 POP
     CTOS
   }>
-  ?fun_8 PROC:<{
+  ?fun_6 PROC:<{
     ?fun_0 INLINECALLDICT
     s0 s1 XCHG
-    ?fun_9 INLINECALLDICT
+    ?fun_7 INLINECALLDICT
     s1 POP
   }>
 }END>c

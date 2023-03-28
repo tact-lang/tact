@@ -5,17 +5,16 @@ PROGRAM{
   DECLPROC ?fun_4;
   DECLPROC ?fun_5;
   DECLPROC ?fun_6;
-  DECLPROC ?fun_8;
   DECLPROC ?fun_7;
   DECLPROC ?fun_2;
   DECLPROC recv_internal;
-  DECLPROC ?fun_10;
   DECLPROC ?fun_9;
-  DECLPROC ?fun_11;
+  DECLPROC ?fun_8;
+  DECLPROC ?fun_10;
   DECLPROC owner;
   DECLPROC supported_interfaces;
-  DECLPROC ?fun_13;
   DECLPROC ?fun_12;
+  DECLPROC ?fun_11;
   ?fun_1 PROCREF:<{
     NULL
     0 PUSHINT
@@ -283,7 +282,12 @@ PROGRAM{
     SDEQ
     132 THROWIFNOT
   }>
-  ?fun_8 PROCREF:<{
+  ?fun_7 PROCREF:<{
+    ?fun_6 INLINECALLDICT
+    ?fun_3 INLINECALLDICT
+    s3 POP
+    -1 PUSHINT
+    x{0000000053746F70706564} PUSHREF
     -1 PUSHINT
     2 GETGLOBVAR
     0 PUSHINT
@@ -294,14 +298,6 @@ PROGRAM{
     NULL
     NULL
     ?fun_4 INLINECALLDICT
-  }>
-  ?fun_7 PROCREF:<{
-    ?fun_6 INLINECALLDICT
-    ?fun_3 INLINECALLDICT
-    s3 POP
-    -1 PUSHINT
-    x{0000000053746F70706564} PUSHREF
-    ?fun_8 INLINECALLDICT
     s0 s3 XCHG
   }>
   ?fun_2 PROCREF:<{
@@ -611,20 +607,20 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_10 PROCREF:<{
+  ?fun_9 PROCREF:<{
     s3 PUSH
   }>
-  ?fun_9 PROC:<{
+  ?fun_8 PROC:<{
     ?fun_0 INLINECALLDICT
-    ?fun_10 INLINECALLDICT
+    ?fun_9 INLINECALLDICT
     10 1 BLKDROP2
   }>
-  ?fun_11 PROCREF:<{
+  ?fun_10 PROCREF:<{
     s9 PUSH
   }>
   owner PROC:<{
     ?fun_0 INLINECALLDICT
-    ?fun_11 INLINECALLDICT
+    ?fun_10 INLINECALLDICT
     10 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
@@ -636,12 +632,12 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
     192989407141549587419771644724066226057 PUSHINT
   }>
-  ?fun_13 PROCREF:<{
+  ?fun_12 PROCREF:<{
     s8 s7 s6 PUSH3
   }>
-  ?fun_12 PROC:<{
+  ?fun_11 PROC:<{
     ?fun_0 INLINECALLDICT
-    ?fun_13 INLINECALLDICT
+    ?fun_12 INLINECALLDICT
     10 3 BLKDROP2
   }>
 }END>c

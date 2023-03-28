@@ -64,7 +64,7 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $SendParameters$_constructor_value_to_mode
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_value_to_mode(int value, slice to, int mode) inline;

@@ -55,10 +55,10 @@ tuple $Echo$_contract_load() impure inline_ref;
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $Slice$_fun_asCell
-cell $Slice$_fun_asCell(slice $self) impure inline_ref;
+cell $Slice$_fun_asCell(slice $self) impure inline;
 
 ;; $String$_fun_asComment
 cell $String$_fun_asComment(slice $self) impure inline_ref;

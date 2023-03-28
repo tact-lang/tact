@@ -367,7 +367,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $Builder$_fun_asSlice PROCREF:<{
+  $Builder$_fun_asSlice PROCINLINE:<{
     ENDC
     CTOS
   }>
@@ -480,7 +480,7 @@ PROGRAM{
     2DROP
     $Builder$_fun_asSlice INLINECALLDICT
   }>
-  $String$_fun_fromBase64 PROCREF:<{
+  $String$_fun_fromBase64 PROCINLINE:<{
     $Slice$_fun_fromBase64 INLINECALLDICT
   }>
   $StringsTester$_fun_constantString PROCREF:<{

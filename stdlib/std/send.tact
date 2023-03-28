@@ -68,7 +68,7 @@ fun send(params: SendParameters) {
     nativeSendMessage(c, params.mode);
 }
 
-fun reply(body: Cell?) {
+inline fun reply(body: Cell?) {
     send(SendParameters{
         bounce: true,
         to: sender(),
@@ -78,7 +78,7 @@ fun reply(body: Cell?) {
     });
 }
 
-fun emit(body: Cell) {
+inline fun emit(body: Cell) {
     // ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt created_lt:uint64 created_at:uint32
     //                     maybe: stateInit (false) bodyRef: bool (true)
     let c: Cell = beginCell()

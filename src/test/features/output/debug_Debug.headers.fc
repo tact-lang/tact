@@ -49,7 +49,7 @@ tuple $Debug$_contract_load() impure inline_ref;
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $Debug$_fun_debug
 (tuple, ()) $Debug$_fun_debug(tuple $self) impure inline_ref;

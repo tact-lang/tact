@@ -36,7 +36,7 @@ extends native toString(self: Int): String;
 @name(__tact_float_to_string)
 extends native toFloatString(self: Int, digits: Int): String;
 
-extends fun toCoinsString(self: Int): String {
+inline extends fun toCoinsString(self: Int): String {
     return self.toFloatString(9);
 }
 
@@ -52,7 +52,7 @@ extends native asSlice(self: String): Slice;
 @name(__tact_slice_to_str)
 extends native asString(self: Slice): String;
 
-extends fun fromBase64(self: String): Slice {
+inline extends fun fromBase64(self: String): Slice {
     return self.asSlice().fromBase64();
 }
 

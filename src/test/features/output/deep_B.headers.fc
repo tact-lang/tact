@@ -55,7 +55,7 @@ builder $C$init$_store(builder build_0, (slice) v) inline;
 () $B$_contract_store((slice) v) impure inline;
 
 ;; $global_contractAddress
-slice $global_contractAddress((cell, cell) $s) impure inline_ref;
+slice $global_contractAddress((cell, cell) $s) impure inline;
 
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;

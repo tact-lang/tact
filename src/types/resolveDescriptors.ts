@@ -288,6 +288,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         let isExtends = a.attributes.find(a => a.type === 'extends');
         let isVirtual = a.attributes.find(a => a.type === 'virtual');
         let isOverrides = a.attributes.find(a => a.type === 'overrides');
+        let isInline = a.attributes.find(a => a.type === 'inline');
 
         // Check for native
         if (a.kind === 'def_native_function') {
@@ -353,6 +354,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
             throwError('Functions cannot be both public and getters', isPublic.ref);
         }
 
+        // Check for getter
+        if (isInline && isGetter) {
+            throwError('Getters cannot be inline', isInline.ref);
+        }
+
         // Validate mutating
         if (isExtends) {
 
@@ -411,6 +417,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             isGetter: !!isGetter,
             isVirtual: !!isVirtual,
             isOverrides: !!isOverrides,
+            isInline: !!isInline,
         };
     }
 

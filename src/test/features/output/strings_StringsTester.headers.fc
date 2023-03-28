@@ -40,13 +40,13 @@ tuple $StringsTester$_contract_load() impure inline_ref;
 () $StringsTester$_contract_store(tuple v) impure inline;
 
 ;; $Builder$_fun_asSlice
-slice $Builder$_fun_asSlice(builder $self) impure inline_ref;
+slice $Builder$_fun_asSlice(builder $self) impure inline;
 
 ;; $Slice$_fun_fromBase64
 slice $Slice$_fun_fromBase64(slice $self) impure inline_ref;
 
 ;; $String$_fun_fromBase64
-slice $String$_fun_fromBase64(slice $self) impure inline_ref;
+slice $String$_fun_fromBase64(slice $self) impure inline;
 
 ;; $StringsTester$_fun_constantString
 (tuple, slice) $StringsTester$_fun_constantString(tuple $self) impure inline_ref;

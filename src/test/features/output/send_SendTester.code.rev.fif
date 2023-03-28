@@ -1,14 +1,13 @@
 PROGRAM{
-  DECLPROC ?fun_2;
   DECLPROC ?fun_1;
   DECLPROC ?fun_0;
-  DECLPROC ?fun_5;
-  DECLPROC ?fun_4;
-  DECLPROC ?fun_6;
   DECLPROC ?fun_3;
+  DECLPROC ?fun_2;
   DECLPROC recv_internal;
   DECLPROC supported_interfaces;
-  ?fun_2 PROCREF:<{
+  ?fun_1 PROCREF:<{
+    NULL
+    x{000000004465706C6F792073756363657373} PUSHREF
     NEWC
     15211807202738752817960438464513 PUSHINT
     s0 s1 XCHG
@@ -17,11 +16,6 @@ PROGRAM{
     ENDC
     0 PUSHINT
     SENDRAWMSG
-  }>
-  ?fun_1 PROCREF:<{
-    NULL
-    x{000000004465706C6F792073756363657373} PUSHREF
-    ?fun_2 INLINECALLDICT
   }>
   ?fun_0 PROCREF:<{
     c4 PUSH
@@ -42,7 +36,7 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_1 INLINECALLDICT
   }>
-  ?fun_5 PROCREF:<{
+  ?fun_3 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -186,25 +180,7 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_4 PROCREF:<{
-    -1 PUSHINT
-    2 GETGLOBVAR
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_5 INLINECALLDICT
-  }>
-  ?fun_6 PROCREF:<{
-    x{00000000576F726C64} PUSHREF
-    ?fun_4 INLINECALLDICT
-    x{00000000536F6D657468696E67} PUSHREF
-    ?fun_2 INLINECALLDICT
-  }>
-  ?fun_3 PROCREF:<{
+  ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -243,27 +219,54 @@ PROGRAM{
       32 STU
       64 STU
       ENDC
-      ?fun_4 INLINECALLDICT
+      -1 PUSHINT
+      2 GETGLOBVAR
+      0 PUSHINT
+      ROT
+      s0 s3 XCHG
+      66 PUSHINT
+      s0 s1 XCHG
+      NULL
+      NULL
+      ?fun_3 INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
     s0 s1 XCHG
     0 EQINT
     <{
+      s0 POP
+    }> PUSHCONT
+    <{
       HASHSU
       70428803322249702641686993123444091967701319117035219703275842373885383815233 PUSHINT
       EQUAL
       <{
-        ?fun_6 INLINECALLDICT
+        x{00000000576F726C64} PUSHREF
+        -1 PUSHINT
+        2 GETGLOBVAR
+        0 PUSHINT
+        ROT
+        s0 s3 XCHG
+        66 PUSHINT
+        s0 s1 XCHG
+        NULL
+        NULL
+        ?fun_3 INLINECALLDICT
+        x{00000000536F6D657468696E67} PUSHREF
+        NEWC
+        15211807202738752817960438464513 PUSHINT
+        s0 s1 XCHG
+        104 STU
+        STREF
+        ENDC
+        0 PUSHINT
+        SENDRAWMSG
         -1 PUSHINT
         RETFALSE
       }> PUSHCONT
       IFJMP
-    }> PUSHCONT
-    <{
-      s0 POP
-    }> PUSHCONT
-    IFELSE
+    }> IFREFELSE
     0 PUSHINT
   }>
   recv_internal PROC:<{
@@ -299,7 +302,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_0 INLINECALLDICT
     ROTREV
-    ?fun_3 INLINECALLDICT
+    ?fun_2 INLINECALLDICT
     s0 POP
     s0 POP
     NEWC

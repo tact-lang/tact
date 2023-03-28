@@ -261,7 +261,14 @@ export type ASTArgument = {
     ref: ASTRef
 }
 
-export type ASTFunctionAttribute = { type: 'public', ref: ASTRef } | { type: 'get', ref: ASTRef } | { type: 'mutates', ref: ASTRef } | { type: 'extends', ref: ASTRef } | { type: 'virtual', ref: ASTRef } | { type: 'overrides', ref: ASTRef };
+export type ASTFunctionAttribute =
+    | { type: 'public', ref: ASTRef }
+    | { type: 'get', ref: ASTRef }
+    | { type: 'mutates', ref: ASTRef }
+    | { type: 'extends', ref: ASTRef }
+    | { type: 'virtual', ref: ASTRef }
+    | { type: 'overrides', ref: ASTRef }
+    | { type: 'inline', ref: ASTRef };
 
 export type ASTFunction = {
     kind: 'def_function',

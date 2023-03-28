@@ -82,7 +82,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-slice $global_contractAddress((cell, cell) $s) impure inline_ref {
+slice $global_contractAddress((cell, cell) $s) impure inline {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }

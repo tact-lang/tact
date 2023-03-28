@@ -101,28 +101,28 @@ extends native refsEmpty(self: Slice): Bool;
 // Conversions
 //
 
-extends fun asSlice(self: Builder): Slice {
+inline extends fun asSlice(self: Builder): Slice {
     return self.endCell().beginParse();
 }
 
-extends fun asSlice(self: Cell): Slice {
+inline extends fun asSlice(self: Cell): Slice {
     return self.beginParse();
 }
 
-extends fun asCell(self: Slice): Cell {
+inline extends fun asCell(self: Slice): Cell {
     return beginCell()
         .storeSlice(self)
         .endCell();
 }
 
-extends fun asCell(self: Builder): Cell {
+inline extends fun asCell(self: Builder): Cell {
     return self.endCell();
 }
 
-fun emptyCell(): Cell {
+inline fun emptyCell(): Cell {
     return beginCell().endCell();
 }
 
-fun emptySlice(): Slice {
+inline fun emptySlice(): Slice {
     return emptyCell().asSlice();
 }

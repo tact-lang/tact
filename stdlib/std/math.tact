@@ -17,12 +17,12 @@ native nativeRandom(): Int;
 @name(rand)
 native nativeRandomInterval(max: Int): Int;
 
-fun randomInt(): Int {
+inline fun randomInt(): Int {
     nativePrepareRandom();
     return nativeRandom();
 }
 
-fun random(min: Int, max: Int): Int {
+inline fun random(min: Int, max: Int): Int {
     nativePrepareRandom();
     return min + nativeRandomInterval(max - min);
 }

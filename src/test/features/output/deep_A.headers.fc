@@ -43,7 +43,7 @@ tuple $A$_contract_load() impure inline_ref;
 () $A$_contract_store(tuple v) impure inline;
 
 ;; $global_contractAddress
-slice $global_contractAddress((cell, cell) $s) impure inline_ref;
+slice $global_contractAddress((cell, cell) $s) impure inline;
 
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;

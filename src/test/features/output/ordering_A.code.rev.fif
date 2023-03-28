@@ -1,12 +1,11 @@
 PROGRAM{
   DECLPROC ?fun_0;
-  DECLPROC ?fun_3;
   DECLPROC ?fun_2;
   DECLPROC ?fun_1;
   DECLPROC recv_internal;
-  DECLPROC ?fun_6;
   DECLPROC ?fun_5;
   DECLPROC ?fun_4;
+  DECLPROC ?fun_3;
   DECLPROC supported_interfaces;
   ?fun_0 PROCREF:<{
     c4 PUSH
@@ -60,7 +59,7 @@ PROGRAM{
     s0 s1 XCHG
     ENDS
   }>
-  ?fun_3 PROCREF:<{
+  ?fun_2 PROCREF:<{
     NEWC
     1 PUSHINT
     s0 s1 XCHG
@@ -204,18 +203,6 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_2 PROCREF:<{
-    -1 PUSHINT
-    2 GETGLOBVAR
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_3 INLINECALLDICT
-  }>
   ?fun_1 PROCREF:<{
     0 PUSHINT
     s1 PUSH
@@ -252,6 +239,15 @@ PROGRAM{
       32 STU
       64 STU
       ENDC
+      -1 PUSHINT
+      2 GETGLOBVAR
+      0 PUSHINT
+      ROT
+      s0 s3 XCHG
+      66 PUSHINT
+      s0 s1 XCHG
+      NULL
+      NULL
       ?fun_2 INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
@@ -320,23 +316,23 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  ?fun_6 PROCREF:<{
+  ?fun_5 PROCREF:<{
     INC
     s0 PUSH
   }>
-  ?fun_5 PROCREF:<{
-    ?fun_6 INLINECALLDICT
+  ?fun_4 PROCREF:<{
+    ?fun_5 INLINECALLDICT
     s0 s1 XCHG
-    ?fun_6 INLINECALLDICT
+    ?fun_5 INLINECALLDICT
     s0 s1 XCHG
-    ?fun_6 INLINECALLDICT
+    ?fun_5 INLINECALLDICT
     s1 POP
     s0 s2 XCHG
   }>
-  ?fun_4 PROC:<{
+  ?fun_3 PROC:<{
     ?fun_0 INLINECALLDICT
     s0 s1 XCHG
-    ?fun_5 INLINECALLDICT
+    ?fun_4 INLINECALLDICT
     1 3 BLKDROP2
   }>
   supported_interfaces PROC:<{

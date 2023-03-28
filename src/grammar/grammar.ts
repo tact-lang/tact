@@ -160,6 +160,9 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
     FunctionAttribute_overrides(arg0) {
         return { type: 'overrides', ref: createRef(this) };
     },
+    FunctionAttribute_inline(arg0) {
+        return { type: 'inline', ref: createRef(this) };
+    },
     FunctionAttribute_virtual(arg0) {
         return { type: 'virtual', ref: createRef(this) };
     },

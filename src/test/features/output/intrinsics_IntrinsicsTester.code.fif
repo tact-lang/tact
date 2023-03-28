@@ -136,7 +136,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $global_emit PROCREF:<{
+  $global_emit PROCINLINE:<{
     NEWC
     15211807202738752817960438464513 PUSHINT
     SWAP

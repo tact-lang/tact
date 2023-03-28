@@ -310,7 +310,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCREF:<{
+  $global_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT

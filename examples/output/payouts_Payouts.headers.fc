@@ -76,22 +76,22 @@ builder $Beacon$init$_store(builder build_0, (slice, slice) v) inline;
 () $Payouts$_contract_store((slice, int) v) impure inline;
 
 ;; $global_contractAddress
-slice $global_contractAddress((cell, cell) $s) impure inline_ref;
+slice $global_contractAddress((cell, cell) $s) impure inline;
 
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
 ;; $Builder$_fun_asSlice
-slice $Builder$_fun_asSlice(builder $self) impure inline_ref;
+slice $Builder$_fun_asSlice(builder $self) impure inline;
 
 ;; $Builder$_fun_asCell
-cell $Builder$_fun_asCell(builder $self) impure inline_ref;
+cell $Builder$_fun_asCell(builder $self) impure inline;
 
 ;; $Slice$_fun_fromBase64
 slice $Slice$_fun_fromBase64(slice $self) impure inline_ref;
 
 ;; $String$_fun_fromBase64
-slice $String$_fun_fromBase64(slice $self) impure inline_ref;
+slice $String$_fun_fromBase64(slice $self) impure inline;
 
 ;; $Beacon$_init_child
 (cell, cell) $Beacon$_init_child(cell sys', slice $master, slice $owner) inline_ref;

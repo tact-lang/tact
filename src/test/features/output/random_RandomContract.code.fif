@@ -127,11 +127,11 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $global_randomInt PROCREF:<{
+  $global_randomInt PROCINLINE:<{
     __tact_prepare_random INLINECALLDICT
     RANDU256
   }>
-  $global_random PROCREF:<{
+  $global_random PROCINLINE:<{
     __tact_prepare_random INLINECALLDICT
     OVER
     SUB
@@ -244,7 +244,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCREF:<{
+  $global_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT

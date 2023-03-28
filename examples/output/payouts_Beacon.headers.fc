@@ -61,7 +61,7 @@ builder $Beacon$_store(builder build_0, (slice, slice, int) v) inline;
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $Beacon$_fun_owner
 ((slice, slice, int), slice) $Beacon$_fun_owner((slice, slice, int) $self) impure inline_ref;

@@ -63,6 +63,7 @@ Tact {
                       | extends --extends
                       | virtual --virtual
                       | overrides --overrides
+                      | inline --inline
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
@@ -207,6 +208,7 @@ Tact {
             | initOf
             | overrides
             | virtual
+            | inline
     contract = "contract" ~idPart
     let = "let" ~idPart
     fun = "fun" ~idPart
@@ -230,6 +232,7 @@ Tact {
     initOf = "initOf" ~idPart
     virtual = "virtual" ~idPart
     overrides = "overrides" ~idPart
+    inline = "inline" ~idPart
 
     // Attributes
     nameAttribute = "@name"

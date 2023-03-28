@@ -70,6 +70,7 @@ export type FunctionDescription = {
     isMutating: boolean,
     isOverrides: boolean,
     isVirtual: boolean,
+    isInline: boolean,
     self: string | null,
     returns: TypeRef,
     args: FunctionArgument[],

@@ -167,7 +167,7 @@ slice __tact_float_to_string(int src, int digits) inline_ref {
     return b.end_cell().begin_parse();
 }
 
-slice $Builder$_fun_asSlice(builder $self) impure inline_ref {
+slice $Builder$_fun_asSlice(builder $self) impure inline {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
@@ -203,7 +203,7 @@ slice $Slice$_fun_fromBase64(slice $self) impure inline_ref {
     }
 }
 
-slice $String$_fun_fromBase64(slice $self) impure inline_ref {
+slice $String$_fun_fromBase64(slice $self) impure inline {
     var ($self) = $self;
     return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }

@@ -58,7 +58,7 @@ builder $A$_store(builder build_0, (slice) v) inline;
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $Int$_fun_inc
 (int, int) $Int$_fun_inc(int $self) impure inline_ref;

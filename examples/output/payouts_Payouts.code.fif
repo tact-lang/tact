@@ -238,7 +238,7 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $global_contractAddress PROCREF:<{
+  $global_contractAddress PROCINLINE:<{
     0 PUSHINT
     -ROT
     __tact_compute_contract_address INLINECALLDICT
@@ -345,11 +345,11 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $Builder$_fun_asSlice PROCREF:<{
+  $Builder$_fun_asSlice PROCINLINE:<{
     ENDC
     CTOS
   }>
-  $Builder$_fun_asCell PROCREF:<{
+  $Builder$_fun_asCell PROCINLINE:<{
     ENDC
   }>
   $Slice$_fun_fromBase64 PROCREF:<{
@@ -461,7 +461,7 @@ PROGRAM{
     2DROP
     $Builder$_fun_asSlice INLINECALLDICT
   }>
-  $String$_fun_fromBase64 PROCREF:<{
+  $String$_fun_fromBase64 PROCINLINE:<{
     $Slice$_fun_fromBase64 INLINECALLDICT
   }>
   $Beacon$_init_child PROCREF:<{

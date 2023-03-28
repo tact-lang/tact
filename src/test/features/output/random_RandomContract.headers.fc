@@ -40,10 +40,10 @@ tuple $RandomContract$_contract_load() impure inline_ref;
 () $RandomContract$_contract_store(tuple v) impure inline;
 
 ;; $global_randomInt
-int $global_randomInt() impure inline_ref;
+int $global_randomInt() impure inline;
 
 ;; $global_random
-int $global_random(int $min, int $max) impure inline_ref;
+int $global_random(int $min, int $max) impure inline;
 
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
@@ -52,7 +52,7 @@ int $global_random(int $min, int $max) impure inline_ref;
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $RandomContract$_fun_randomInt
 (tuple, int) $RandomContract$_fun_randomInt(tuple $self) impure inline_ref;

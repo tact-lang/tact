@@ -79,7 +79,7 @@ cell __tact_dict_get_code(cell dict, int id) inline {
     return data;
 }
 
-slice $global_contractAddress((cell, cell) $s) impure inline_ref {
+slice $global_contractAddress((cell, cell) $s) impure inline {
     var (($s'code, $s'data)) = $s;
     return __tact_compute_contract_address(0, $s'code, $s'data);
 }
@@ -127,12 +127,12 @@ slice $global_contractAddress((cell, cell) $s) impure inline_ref {
     send_raw_message($c, $params'mode);
 }
 
-slice $Builder$_fun_asSlice(builder $self) impure inline_ref {
+slice $Builder$_fun_asSlice(builder $self) impure inline {
     var ($self) = $self;
     return begin_parse(end_cell($self));
 }
 
-cell $Builder$_fun_asCell(builder $self) impure inline_ref {
+cell $Builder$_fun_asCell(builder $self) impure inline {
     var ($self) = $self;
     return end_cell($self);
 }
@@ -168,7 +168,7 @@ slice $Slice$_fun_fromBase64(slice $self) impure inline_ref {
     }
 }
 
-slice $String$_fun_fromBase64(slice $self) impure inline_ref {
+slice $String$_fun_fromBase64(slice $self) impure inline {
     var ($self) = $self;
     return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }

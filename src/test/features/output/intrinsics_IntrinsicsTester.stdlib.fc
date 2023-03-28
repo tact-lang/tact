@@ -24,7 +24,7 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
-() $global_emit(cell $body) impure inline_ref {
+() $global_emit(cell $body) impure inline {
     cell $c = end_cell(store_ref(store_uint(begin_cell(), 15211807202738752817960438464513, 104), $body));
     send_raw_message($c, 0);
 }

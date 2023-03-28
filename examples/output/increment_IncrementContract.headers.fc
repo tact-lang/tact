@@ -88,7 +88,7 @@ builder $IncrementContract$_store(builder build_0, (cell, cell, cell, cell, cell
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
 ;; $global_reply
-() $global_reply(cell $body) impure inline_ref;
+() $global_reply(cell $body) impure inline;
 
 ;; $IncrementContract$_fun_counters
 ((cell, cell, cell, cell, cell), cell) $IncrementContract$_fun_counters((cell, cell, cell, cell, cell) $self) impure inline_ref;

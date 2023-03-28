@@ -38,12 +38,12 @@ builder __tact_store_bool(builder b, int v) inline {
     return b.store_int(v, 1);
 }
 
-int $global_randomInt() impure inline_ref {
+int $global_randomInt() impure inline {
     __tact_prepare_random();
     return random();
 }
 
-int $global_random(int $min, int $max) impure inline_ref {
+int $global_random(int $min, int $max) impure inline {
     __tact_prepare_random();
     return ($min + rand(($max - $min)));
 }
@@ -91,6 +91,6 @@ int $global_random(int $min, int $max) impure inline_ref {
     send_raw_message($c, $params'mode);
 }
 
-() $global_reply(cell $body) impure inline_ref {
+() $global_reply(cell $body) impure inline {
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
 }

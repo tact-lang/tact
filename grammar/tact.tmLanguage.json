@@ -572,7 +572,7 @@
       "patterns": [
         {
           "name": "keyword.control.tact",
-          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|virtual|overrides|native|let|const|fun|self|is|initOf|map|get|as)\\b"
+          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|virtual|overrides|inline|native|let|const|fun|self|is|initOf|map|get|as)\\b"
         },
         {
           "name": "keyword.operator",

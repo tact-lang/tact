@@ -79,7 +79,7 @@ PROGRAM{
     $DeployOk$_store INLINECALLDICT
     ENDC
   }>
-  $global_emit PROCREF:<{
+  $global_emit PROCINLINE:<{
     NEWC
     15211807202738752817960438464513 PUSHINT
     SWAP
@@ -230,7 +230,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCREF:<{
+  $global_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
