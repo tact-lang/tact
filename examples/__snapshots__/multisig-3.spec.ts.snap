@@ -17,7 +17,7 @@ exports[`muiltisig-3 should deploy 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCLqFGo0x3pT2EhIshA6M2fjYWkZ9Zgds-2UVLjQjQQ8ymY",
+          "to": "kQAJzq5KE8BlP4wC_35QNfBXeKO5V_-f82L4m8U5untME305",
           "type": "internal",
           "value": 10000000000n,
         },
