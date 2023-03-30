@@ -1,6 +1,6 @@
 import { beginCell } from "ton-core";
 import { getType } from "../../types/resolveDescriptors";
-import { ReceiverDescription, TypeDescription } from "../../types/types";
+import { ReceiverDescription, ReceiverSelector, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { id } from "./id";
 import { ops } from "./ops";
@@ -28,27 +28,65 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`if (msg_bounced) {`);
         ctx.inIndent(() => {
 
-            /*
-                TODO: 
-                this part needs to be changed such that it will be able to handle multiple bounced messages.
+            const nonGenericReceivers = type.receivers.filter(r => {
+                if (r.selector.kind !== "internal-bounce") return false;
+                const allocation = getType(ctx.ctx, r.selector.type);
+                return !(allocation.origin === "stdlib" && allocation.name === "Slice");
+              });
+              
+            const genericReceiver = type.receivers.find(r => {
+                if (r.selector.kind !== "internal-bounce") return false;
+                const allocation = getType(ctx.ctx, r.selector.type);
+                return allocation.origin === "stdlib" && allocation.name === "Slice";
+            });
+
+            for (const r of nonGenericReceivers) {
+                const selector = r.selector;
+                if (selector.kind !== "internal-bounce") throw Error('Invalid selector type: ' + selector.kind);
+
+                let allocation = getType(ctx.ctx, selector.type);
                 
-            */
+                if (!allocation.header) {
+                    throw Error('Invalid allocation: ' + selector.type);
+                }
 
-            let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
-            
-            console.log(type.receivers.map(r => r.selector.kind), "Shahar")
-            if (bouncedHandler && bouncedHandler.selector.kind === "internal-bounce") {
-                let allocation = getType(ctx.ctx, bouncedHandler.selector.type);
+                ctx.append();
+                ctx.append(`;; Bounced handler for ${selector.type} message`);
+                ctx.append(`if (op == ${allocation.header}) {`);
+                ctx.inIndent(() => {
+                    // Read message
+                    // TODO prepare the partial struct
+                    //ctx.append(`var msg = in_msg~${ops.reader(selector.type, ctx)}();`);
 
-                ctx.append(`self~${ops.receiveBounce(type.name, bouncedHandler.selector.type)}(in_msg);`);
+                    // Execute function
+                    ctx.append(`self~${ops.receiveBounce(type.name, selector.type)}(in_msg);`);
+
+                    // Exit
+                    ctx.append('return (self, true);');
+                })
+                ctx.append(`}`);
+            }
+
+            if (genericReceiver) {
+                const selector = genericReceiver.selector;
+                if (selector.kind !== "internal-bounce") throw Error('Invalid selector type: ' + selector.kind);
+
+                ctx.append();
+                ctx.append(`;; Bounced handler for ${selector.type} message (Generic)`);
+                // Read message
+                // TODO prepare the partial struct
+                //ctx.append(`var msg = in_msg~${ops.reader(selector.type, ctx)}();`);
+
+                // Execute function
+                ctx.append(`self~${ops.receiveBounce(type.name, selector.type)}(in_msg);`);
 
                 // Exit
                 ctx.append('return (self, true);');
             } else {
-
-                // Exit
                 ctx.append(`return (self, true);`);
+
             }
+            
         });
         ctx.append(`}`);
 

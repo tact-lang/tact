@@ -11,7 +11,6 @@ PROGRAM{
   DECLPROC $SampleContract$_receive_bounce_Slice
   DECLPROC $SampleContract$_receive_bounce_Koko
   DECLPROC $SampleContract$_receive_bounce_Shoko
-  DECLPROC $SampleContract$_receive_bounce_Zhoko
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -107,9 +106,6 @@ PROGRAM{
   $SampleContract$_receive_bounce_Shoko PROCINLINE:<{
     DROP
   }>
-  $SampleContract$_receive_bounce_Zhoko PROCINLINE:<{
-    DROP
-  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -139,7 +135,21 @@ PROGRAM{
     }>
     s0 s2 XCHG
     IFJMP:<{
-      NIP
+      OVER
+      994470181 PUSHINT
+      EQUAL
+      IFJMP:<{
+        NIP
+        $SampleContract$_receive_bounce_Koko INLINECALLDICT
+        TRUE
+      }>
+      SWAP
+      3744520988 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $SampleContract$_receive_bounce_Shoko INLINECALLDICT
+        TRUE
+      }>
       $SampleContract$_receive_bounce_Slice INLINECALLDICT
       TRUE
     }>

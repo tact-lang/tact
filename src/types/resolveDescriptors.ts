@@ -566,10 +566,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             throwError('Receive function cannot have optional argument', d.ref);
                         }
 
+                        
+
                         // Check resolved argument type
                         // TODO throw if slice
                         // TODO throw for bounced without receivers
+                        console.log("trying to resolve type :" + arg.type.name);
                         let t = types[arg.type.name];
+                        const isGenericHandler = t.kind === 'primitive' && t.name === 'Slice';
                         // if (t.kind === 'primitive' || t.name === 'Slice') {
                         //     throwError('Bounce receive function can only accept message', d.ref);
                         // }
@@ -580,6 +584,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         //     throwError('Bounce receive function already exists for type:' + arg.type.name, d.ref);
                         // }
                         console.log('Bounce receiver', arg)
+
+                        // TODO rethink whether "generic" is a good way to handle this
                         s.receivers.push({
                             selector: { kind: 'internal-bounce', name: arg.name, type: arg.type.name },
                             ast: d

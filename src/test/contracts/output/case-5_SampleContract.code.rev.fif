@@ -41,7 +41,23 @@ PROGRAM{
     IF
     s0 s2 XCHG
     <{
-      s1 POP
+      s1 PUSH
+      994470181 PUSHINT
+      EQUAL
+      <{
+        s1 POP
+        s0 POP
+        -1 PUSHINT
+      }> PUSHCONT
+      IFJMP
+      s0 s1 XCHG
+      3744520988 PUSHINT
+      EQUAL
+      <{
+        s0 POP
+        -1 PUSHINT
+      }> PUSHCONT
+      IFJMP
       s0 POP
       -1 PUSHINT
     }> PUSHCONT
@@ -85,9 +101,6 @@ PROGRAM{
     s0 s1 XCHG
     0 EQINT
     <{
-      s0 POP
-    }> PUSHCONT
-    <{
       HASHSU
       93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
       EQUAL
@@ -96,8 +109,9 @@ PROGRAM{
         RETFALSE
       }> PUSHCONT
       IFJMP
-    }> IFREFELSE
+    }> IFREFELSEREF
     0 PUSHINT
+    s0 POP
   }>
   recv_internal PROC:<{
     s0 s1 XCHG

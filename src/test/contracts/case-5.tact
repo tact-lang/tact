@@ -36,8 +36,6 @@ contract SampleContract {
         // only the first 224 bits are populated into a partial Shoko struct
     }
     
-    bounced(msg: Zhoko~) {
-        // only the first 224 bits are populated into a partial Shoko struct
-    }
+   
 
 }
