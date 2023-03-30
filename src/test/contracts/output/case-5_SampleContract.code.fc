@@ -1,0 +1,147 @@
+#include "case-5_SampleContract.headers.fc";
+#include "case-5_SampleContract.stdlib.fc";
+#include "case-5_SampleContract.storage.fc";
+
+;;
+;; Contract SampleContract functions
+;;
+
+(int, int, (int, int), cell) $SampleContract$_contract_init() impure inline_ref {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = (null(), null(), null(), null());
+    $self'a = 0;
+    $self'b = 0;
+    ($self'c'a, $self'c'b) = $Source$_constructor_a_b(0, 0);
+    return ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd);
+}
+
+((int, int, (int, int), cell), int) $SampleContract$_fun_stake((int, int, (int, int), cell) $self) impure inline_ref {
+    var (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd)) = $self;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), $self'a);
+}
+
+;;
+;; Receivers of a Contract SampleContract
+;;
+
+(((int, int, (int, int), cell)), ()) $SampleContract$_receive_binary_Shoko((int, int, (int, int), cell) $self, (int) $msg) impure inline {
+    var ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd) = $self;
+    var ($msg'amount) = $msg;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), ());
+}
+
+(((int, int, (int, int), cell)), ()) $SampleContract$_receive_binary_Koko((int, int, (int, int), cell) $self, (int) $msg) impure inline {
+    var ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd) = $self;
+    var ($msg'amount) = $msg;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), ());
+}
+
+((int, int, (int, int), cell), ()) $SampleContract$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4((int, int, (int, int), cell) $self) impure inline {
+    var ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd) = $self;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), ());
+}
+
+((int, int, (int, int), cell), ()) $SampleContract$_receive_bounce((int, int, (int, int), cell) $self, slice $msg) impure inline {
+    var ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd) = $self;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), ());
+}
+
+((int, int, (int, int), cell), ()) $SampleContract$_receive_bounce((int, int, (int, int), cell) $self, slice $msg) impure inline {
+    var ($self'a, $self'b, ($self'c'a, $self'c'b), $self'd) = $self;
+    return (($self'a, $self'b, ($self'c'a, $self'c'b), $self'd), ());
+}
+
+;;
+;; Get methods of a Contract SampleContract
+;;
+
+_ %stake() method_id(80984) {
+    var self = $SampleContract$_contract_load();
+    var res = self~$SampleContract$_fun_stake();
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() {
+    return "ipfs://QmV8iEoBJfG2JG5PsBEcpM4xtLgCGG2ryMDQjR2qywqcDw";
+}
+
+_ lazy_deployment_completed() {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract SampleContract
+;;
+
+((int, int, (int, int), cell), int) $SampleContract$_contract_router((int, int, (int, int), cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        self~$SampleContract$_receive_bounce(in_msg);
+        return (self, true);
+    }
+    
+    ;; Receive Shoko message
+    if (op == 769032830) {
+        var msg = in_msg~$Shoko$_load();
+        self~$SampleContract$_receive_binary_Shoko(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Koko message
+    if (op == 3421240260) {
+        var msg = in_msg~$Koko$_load();
+        self~$SampleContract$_receive_binary_Koko(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Increment" message
+        if (text_op == 0xcdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4) {
+            self~$SampleContract$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $SampleContract$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$SampleContract$_contract_router(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(handled, 130);
+    
+    ;; Persist state
+    $SampleContract$_contract_store(self);
+}
