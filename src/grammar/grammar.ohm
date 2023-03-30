@@ -70,6 +70,7 @@ Tact {
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
                     | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bounced
+                    | "bounced" "(" stringLiteral ")" "{" Statement* "}" --bouncedcomment
 
     // Statements
     Statement = StatementLet

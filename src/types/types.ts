@@ -100,7 +100,8 @@ export type ReceiverSelector = {
     name: string
 } | {
     kind: 'internal-bounce',
-    name: string
+    name: string,
+    type: string
 };
 
 export type ReceiverDescription = {

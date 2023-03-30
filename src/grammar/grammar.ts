@@ -326,6 +326,14 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
+    ReceiveFunction_bouncedcomment(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_receive',
+            selector: { kind: 'bounce', arg: arg2.resolve_expression() },
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
 });
 
 // Statements

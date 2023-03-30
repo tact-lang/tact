@@ -27,10 +27,20 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
         ctx.append(`;; Handle bounced messages`);
         ctx.append(`if (msg_bounced) {`);
         ctx.inIndent(() => {
-            let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
-            if (bouncedHandler) {
 
-                ctx.append(`self~${ops.receiveBounce(type.name)}(in_msg);`);
+            /*
+                TODO: 
+                this part needs to be changed such that it will be able to handle multiple bounced messages.
+                
+            */
+
+            let bouncedHandler = type.receivers.find(f => f.selector.kind === 'internal-bounce');
+            
+            console.log(type.receivers.map(r => r.selector.kind), "Shahar")
+            if (bouncedHandler && bouncedHandler.selector.kind === "internal-bounce") {
+                let allocation = getType(ctx.ctx, bouncedHandler.selector.type);
+
+                ctx.append(`self~${ops.receiveBounce(type.name, bouncedHandler.selector.type)}(in_msg);`);
 
                 // Exit
                 ctx.append('return (self, true);');
@@ -274,7 +284,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
 
     // Bounced
     if (selector.kind === 'internal-bounce') {
-        ctx.append(`(${selfType}, ()) ${ops.receiveBounce(self.name)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
+        ctx.append(`(${selfType}, ()) ${ops.receiveBounce(self.name, selector.type)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
 

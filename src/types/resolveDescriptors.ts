@@ -567,16 +567,21 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check resolved argument type
+                        // TODO throw if slice
+                        // TODO throw for bounced without receivers
                         let t = types[arg.type.name];
-                        if (t.kind !== 'primitive' || t.name !== 'Slice') {
-                            throwError('Bounce receive function can only accept message', d.ref);
-                        }
+                        // if (t.kind === 'primitive' || t.name === 'Slice') {
+                        //     throwError('Bounce receive function can only accept message', d.ref);
+                        // }
 
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce')) {
-                            throwError('Bounce receive function already exists', d.ref);
-                        }
+                        // TODO handle comments
+                        // TODO handle already exists
+                        // if (s.receivers.find((v) => v.selector.kind === 'internal-bounce' && v.selector.type === arg.type?.name)) {
+                        //     throwError('Bounce receive function already exists for type:' + arg.type.name, d.ref);
+                        // }
+                        console.log('Bounce receiver', arg)
                         s.receivers.push({
-                            selector: { kind: 'internal-bounce', name: arg.name },
+                            selector: { kind: 'internal-bounce', name: arg.name, type: arg.type.name },
                             ast: d
                         });
                     }
