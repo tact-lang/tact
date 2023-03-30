@@ -32,12 +32,22 @@ tuple $SampleContract$_contract_init() impure inline_ref {
     return ($self, ());
 }
 
+(tuple, ()) $SampleContract$_receive_bounce_Slice(tuple $self, slice $msg) impure inline {
+    var $self = $self;
+    return ($self, ());
+}
+
 (tuple, ()) $SampleContract$_receive_bounce_Koko(tuple $self, slice $msg) impure inline {
     var $self = $self;
     return ($self, ());
 }
 
 (tuple, ()) $SampleContract$_receive_bounce_Shoko(tuple $self, slice $msg) impure inline {
+    var $self = $self;
+    return ($self, ());
+}
+
+(tuple, ()) $SampleContract$_receive_bounce_Zhoko(tuple $self, slice $msg) impure inline {
     var $self = $self;
     return ($self, ());
 }
@@ -77,7 +87,7 @@ _ lazy_deployment_completed() {
     
     ;; Handle bounced messages
     if (msg_bounced) {
-        self~$SampleContract$_receive_bounce_Koko(in_msg);
+        self~$SampleContract$_receive_bounce_Slice(in_msg);
         return (self, true);
     }
     

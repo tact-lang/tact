@@ -14,6 +14,8 @@ describe('integration', () => {
         __DANGER_resetNodeId();
     });
     for (let r of loadCases(__dirname + "/contracts/")) {
+        // if (r.name !== "case-5") return;
+        console.log(r.name, "CASE!")
         it('should resolve expressions for ' + r.name, async () => {
             let ctx = new CompilerContext({ shared: {} });
             let project = createNodeFileSystem(__dirname + "/contracts/");
