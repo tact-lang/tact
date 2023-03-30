@@ -78,7 +78,7 @@
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $Wallet$_receive_bounce((int, int, int) $self, slice $msg) impure inline {
+((int, int, int), ()) $Wallet$_receive_bounce_Slice((int, int, int) $self, slice $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
@@ -136,7 +136,7 @@ _ lazy_deployment_completed() {
     
     ;; Handle bounced messages
     if (msg_bounced) {
-        self~$Wallet$_receive_bounce(in_msg);
+        self~$Wallet$_receive_bounce_Slice(in_msg);
         return (self, true);
     }
     

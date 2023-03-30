@@ -1,61 +1,36 @@
-struct Source {
-    a: Int;
-    b: Int;
-}
-
 message Shoko {
     amount: Int as uint32;
+    thisDoesNotFit: Int as uint256;
 }
 
 message Koko {
-    amount: Int as uint32;
-}
-
-fun isZero(x: Int, y: Int, z: Bool, m: Source): Bool {
-    m.b = 10;
-    return (x + m.b) > 0 && z;
+    amount_bigger: Int as uint64;
+    thisDoesNotFit: Int as uint256;
 }
 
 contract SampleContract {
-    a: Int;
-    b: Int;
-    c: Source;
-    d: map<Int, Int>;
-
     init() {
-        self.a = 0;
-        self.b = 0;
-        self.c = Source{a: 0, b: 0};
     }
 
     receive(msg: Shoko) {
-
+        // do something with the Shoko struct
     }
     
     receive(msg: Koko) {
-
+        // do something with the Koko struct
     }
 
     receive("Increment") {
-
+        // simple handler for a text message
     }
 
     
-    bounced(msg: Shoko) {
-
+    bounced(msg: Koko~) {
+        // only the first 224 bits are populated into a partial Koko struct
     }
     
-    bounced(msg: Koko) {
-
+    bounced(msg: Shoko~) {
+        // only the first 224 bits are populated into a partial Shoko struct
     }
 
-    fun addStake() { 
-        self.a = 10;
-        self.b = -20;
-        self.c = Source{a: 10, b: 20};
-    }
-
-    get fun stake(): Int {
-        return self.a;
-    }
 }
