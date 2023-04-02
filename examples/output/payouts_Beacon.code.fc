@@ -88,8 +88,7 @@ _ lazy_deployment_completed() {
     if (msg_bounced) {
         
         ;; Bounced handler for Slice message (Generic)
-            self~$Beacon$_receive_bounce_Slice(in_msg);
-            return (self, true);
+        self~$Beacon$_receive_bounce_Slice(in_msg);
         return (self, true);
     }
     

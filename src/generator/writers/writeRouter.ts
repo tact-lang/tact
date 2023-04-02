@@ -14,6 +14,14 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
 
         // Parse incoming message
         ctx.append();
+
+        // TODO 
+        /*
+        if (msg_bounced) {
+                in_msg.skip(32); ;; skip 0xffff 
+            } 
+        */ 
+
         ctx.append(`;; Parse incoming message`);
         ctx.append(`int op = 0;`);
         ctx.append(`if (slice_bits(in_msg) >= 32) {`);
@@ -39,6 +47,8 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 const allocation = getType(ctx.ctx, r.selector.type);
                 return allocation.origin === "stdlib" && allocation.name === "Slice";
             });
+            
+            // TODO add comment bounce handlers
 
             for (const r of nonGenericReceivers) {
                 const selector = r.selector;
@@ -67,15 +77,13 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`}`);
             }
 
+            // TODO perhaps we can skip the msg.skipBits(32); // 0xFFFFFFFF for the user.. not sure
             if (genericReceiver) {
                 const selector = genericReceiver.selector;
                 if (selector.kind !== "internal-bounce") throw Error('Invalid selector type: ' + selector.kind);
 
                 ctx.append();
                 ctx.append(`;; Bounced handler for ${selector.type} message (Generic)`);
-                // Read message
-                // TODO prepare the partial struct
-                //ctx.append(`var msg = in_msg~${ops.reader(selector.type, ctx)}();`);
 
                 // Execute function
                 ctx.append(`self~${ops.receiveBounce(type.name, selector.type)}(in_msg);`);

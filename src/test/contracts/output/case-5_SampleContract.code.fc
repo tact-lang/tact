@@ -76,6 +76,7 @@ _ lazy_deployment_completed() {
     
     ;; Parse incoming message
     int op = 0;
+
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
@@ -96,8 +97,7 @@ _ lazy_deployment_completed() {
         }
         
         ;; Bounced handler for Slice message (Generic)
-            self~$SampleContract$_receive_bounce_Slice(in_msg);
-            return (self, true);
+        self~$SampleContract$_receive_bounce_Slice(in_msg);
         return (self, true);
     }
     

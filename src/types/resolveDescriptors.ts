@@ -117,7 +117,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: [],
-                constants: []
+                constants: [],
+                partialForBounced: false
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -136,7 +137,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
-                constants: []
+                constants: [],
+                partialForBounced: false
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -155,8 +157,33 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: [],
-                constants: []
+                constants: [],
+                partialForBounced: false
             };
+
+            // TODO: a different approach would be to make this a different type at the AST level
+            // TODO: ~ should be a const
+            // if (a.message) {
+            //     types[a.name + "~"] = {
+            //         kind: 'struct',
+            //         origin: a.origin,
+            //         name: a.name + "~",
+            //         uid,
+            //         header: null,
+            //         tlb: null,
+            //         signature: null,
+            //         fields: [],
+            //         traits: [],
+            //         functions: new Map(),
+            //         receivers: [],
+            //         dependsOn: [],
+            //         init: null,
+            //         ast: a,
+            //         interfaces: [],
+            //         constants: [],
+            //         partialForBounced: true
+            //     };
+            // }
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
                 kind: 'trait',
@@ -174,7 +201,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
-                constants: []
+                constants: [],
+                partialForBounced: false
             };
         }
     }
@@ -232,10 +260,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Struct
         if (a.kind === 'def_struct') {
             for (const f of a.fields) {
+                let bouncedBitsCounter = 0;
+
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throwError(`Field ${f.name} already exists`, f.ref);
                 }
                 types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                
+                // TODO limit fields
+                // TODO should we process ~ structs if there isn't a bounced handler?
+                // if (a.message) {
+                //     const fieldDescription = buildFieldDescription(f, types[a.name].fields.length)
+                //     console.log(fieldDescription, "fieldDescriptionFOR_BOUNCED")
+                //     types[a.name + "~"].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                // }
             }
         }
 
@@ -571,7 +609,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         // Check resolved argument type
                         // TODO throw if slice
                         // TODO throw for bounced without receivers
-                        console.log("trying to resolve type :" + arg.type.name);
+                        console.log("trying to resolve type: " + arg.type.name);
                         let t = types[arg.type.name];
                         const isGenericHandler = t.kind === 'primitive' && t.name === 'Slice';
                         // if (t.kind === 'primitive' || t.name === 'Slice') {

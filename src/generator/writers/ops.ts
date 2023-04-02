@@ -16,6 +16,7 @@ export const ops = {
     writerCell: (type: string, ctx: WriterContext) => used(`$${type}$_store_cell`, ctx),
     writerCellOpt: (type: string, ctx: WriterContext) => used(`$${type}$_store_opt`, ctx),
     reader: (type: string, ctx: WriterContext) => used(`$${type}$_load`, ctx),
+    readerBounced: (type: string, ctx: WriterContext) => used(`$${type}$_load_bounced`, ctx),
     readerOpt: (type: string, ctx: WriterContext) => used(`$${type}$_load_opt`, ctx),
     typeField: (type: string, name: string, ctx: WriterContext) => used(`$${type}$_get_${name}`, ctx),
     typeTensorCast: (type: string, ctx: WriterContext) => used(`$${type}$_tensor_cast`, ctx),

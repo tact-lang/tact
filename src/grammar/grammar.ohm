@@ -69,7 +69,7 @@ Tact {
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
-                    | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bouncedEmpty
+                    | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bouncedEmpty // TODO this needs to reject non-Slice args
                     | "bounced" "(" FunctionArg "~" ")" "{" Statement* "}" --bouncedSimple
 
     // Statements

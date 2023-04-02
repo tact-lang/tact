@@ -20,6 +20,7 @@ export type TypeDescription = {
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
+    partialForBounced: boolean;
 }
 
 export type TypeRef = {

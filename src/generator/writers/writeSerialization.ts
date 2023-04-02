@@ -240,6 +240,31 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
     });
 }
 
+export function writeBouncedParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
+    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
+
+    ctx.fun(ops.reader(name, ctx), () => {
+        ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.readerBounced(name, ctx)}(slice sc_0)`);
+        if (forceInline || isSmall) {
+            ctx.flag('inline');
+        }
+        ctx.context('type:' + name);
+        ctx.body(() => {
+
+            // Check prefix
+            if (allocation.header) {
+                ctx.append(`throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`);
+            }
+
+            // Write cell parser
+            writeCellParser(allocation.root, 0, ctx);
+
+            // Compile tuple
+            ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
+        });
+    });
+}
+
 export function writeOptionalParser(name: string, origin: TypeOrigin, ctx: WriterContext) {
     ctx.fun(ops.readerOpt(name, ctx), () => {
         ctx.signature(`tuple ${ops.readerOpt(name, ctx)}(cell cl)`);
@@ -337,6 +362,7 @@ function writeFieldParser(f: AllocationOperation, gen: number, ctx: WriterContex
         }
         return;
     }
+    // TODO (when slice is supported in tact)
     if (op.kind === 'slice') {
         if (op.optional) {
             if (op.format !== 'default') {
@@ -391,6 +417,7 @@ function writeFieldParser(f: AllocationOperation, gen: number, ctx: WriterContex
         ctx.append(`${varName} = sc_${gen}~load_dict();`);
         return;
     }
+    // TODO handle this (if the struct can be contained within the same cell)
     if (op.kind === 'struct') {
         if (op.optional) {
             if (op.ref) {

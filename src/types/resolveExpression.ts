@@ -1,4 +1,4 @@
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode } from '../grammar/ast';
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction, resolveTypeRef } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
@@ -25,6 +25,9 @@ function registerExpType(ctx: CompilerContext, exp: ASTExpression, description: 
             return ctx;
         }
         throw Error('Expression ' + exp.id + ' already has a type');
+    }
+    if (exp.id === 1828) {
+        console.trace()
     }
     return store.set(ctx, exp.id, { ast: exp, description });
 }

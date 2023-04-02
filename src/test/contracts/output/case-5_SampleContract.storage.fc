@@ -11,6 +11,13 @@
     return (sc_0, (v'amount, v'thisDoesNotFit));
 }
 
+(slice, ((int, int))) $Shoko$_load_for_bounce(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3744520988);
+    var v'amount = sc_0~load_uint(32);
+    ;; var v'thisDoesNotFit = sc_0~load_uint(256);
+    return (sc_0, (v'amount, v'thisDoesNotFit));
+}
+
 ;;
 ;; Type: Koko
 ;; Header: 0x3b466925
