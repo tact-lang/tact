@@ -6,7 +6,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Empty$_contract_router
+  DECLPROC $Empty$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -76,7 +76,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Empty$_contract_router PROCREF:<{
+  $Empty$_contract_router_internal PROCREF:<{
     DUP
     SBITS
     NIP
@@ -108,7 +108,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Empty$_contract_load INLINECALLDICT
     -ROT
-    $Empty$_contract_router INLINECALLDICT
+    $Empty$_contract_router_internal INLINECALLDICT
     DROP
     $Empty$_contract_store INLINECALLDICT
   }>

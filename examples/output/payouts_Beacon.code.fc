@@ -23,7 +23,7 @@
 ;; Receivers of a Contract Beacon
 ;;
 
-(((slice, slice, int)), ()) $Beacon$_receive_binary_CanPayout((slice, slice, int) $self, (int) $msg) impure inline {
+(((slice, slice, int)), ()) $Beacon$_internal_binary_CanPayout((slice, slice, int) $self, (int) $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
     var ($msg'amount) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -76,7 +76,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Beacon
 ;;
 
-((slice, slice, int), int) $Beacon$_contract_router((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice, slice, int), int) $Beacon$_contract_router_internal((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -93,7 +93,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive CanPayout message
     if (op == 3289991647) {
         var msg = in_msg~$CanPayout$_load();
-        self~$Beacon$_receive_binary_CanPayout(msg);
+        self~$Beacon$_internal_binary_CanPayout(msg);
         return (self, true);
     }
     
@@ -114,7 +114,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Beacon$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Beacon$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Beacon$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

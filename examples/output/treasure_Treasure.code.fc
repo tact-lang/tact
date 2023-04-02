@@ -34,20 +34,20 @@
 ;; Receivers of a Contract Treasure
 ;;
 
-(((slice)), ()) $Treasure$_receive_binary_Withdraw((slice) $self, (int, int) $msg) impure inline {
+(((slice)), ()) $Treasure$_internal_binary_Withdraw((slice) $self, (int, int) $msg) impure inline {
     var ($self'owner) = $self;
     var ($msg'amount, $msg'mode) = $msg;
     ($self'owner)~$Treasure$_fun_doWithdraw($msg'amount, $msg'mode);
     return (($self'owner), ());
 }
 
-((slice), ()) $Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) $self) impure inline {
+((slice), ()) $Treasure$_internal_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d((slice) $self) impure inline {
     var ($self'owner) = $self;
     ($self'owner)~$Treasure$_fun_doWithdraw(0, (32 + 128));
     return (($self'owner), ());
 }
 
-(((slice)), ()) $Treasure$_receive_binary_ChangeOwner((slice) $self, (slice) $msg) impure inline {
+(((slice)), ()) $Treasure$_internal_binary_ChangeOwner((slice) $self, (slice) $msg) impure inline {
     var ($self'owner) = $self;
     var ($msg'newOwner) = $msg;
     ($self'owner)~$Treasure$_fun_requireOwner();
@@ -88,7 +88,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Treasure
 ;;
 
-((slice), int) $Treasure$_contract_router((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice), int) $Treasure$_contract_router_internal((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -104,14 +104,14 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Withdraw message
     if (op == 1672521544) {
         var msg = in_msg~$Withdraw$_load();
-        self~$Treasure$_receive_binary_Withdraw(msg);
+        self~$Treasure$_internal_binary_Withdraw(msg);
         return (self, true);
     }
     
     ;; Receive ChangeOwner message
     if (op == 256331011) {
         var msg = in_msg~$ChangeOwner$_load();
-        self~$Treasure$_receive_binary_ChangeOwner(msg);
+        self~$Treasure$_internal_binary_ChangeOwner(msg);
         return (self, true);
     }
     
@@ -121,7 +121,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Destroy" message
         if (text_op == 0x986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d) {
-            self~$Treasure$_receive_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
+            self~$Treasure$_internal_text_986c2ba124bb9287eb4a0bd8d3104e1c0067a3c93952d889c74d08185bd30d4d();
             return (self, true);
         }
     }
@@ -143,7 +143,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Treasure$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Treasure$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Treasure$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

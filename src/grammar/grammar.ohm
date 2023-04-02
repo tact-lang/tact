@@ -71,6 +71,9 @@ Tact {
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
                     | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bounced
+                    | "external" "(" FunctionArg ")" "{" Statement* "}" --externalSimple
+                    | "external" "(" stringLiteral ")" "{" Statement* "}" --externalComment
+                    | "external" "(" ")" "{" Statement* "}" --externalEmpty
 
     // Statements
     Statement = StatementLet

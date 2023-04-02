@@ -33,8 +33,8 @@ PROGRAM{
   DECLPROC $SerializationTester2$_fun_getBothOpt
   DECLPROC $Vars$_constructor_a_b_c_d_e
   DECLPROC $SerializationTester2$_fun_process
-  DECLPROC %$SerializationTester2$_receive_empty
-  DECLPROC $SerializationTester2$_receive_binary_Update
+  DECLPROC %$SerializationTester2$_internal_empty
+  DECLPROC $SerializationTester2$_internal_binary_Update
   123932 DECLMETHOD %getA
   113663 DECLMETHOD %getAopt
   119935 DECLMETHOD %getB
@@ -45,7 +45,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $SerializationTester2$_contract_router
+  DECLPROC $SerializationTester2$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -352,9 +352,9 @@ PROGRAM{
     s1 s3 s0 XCHG3
     $Vars$_constructor_a_b_c_d_e INLINECALLDICT
   }>
-  %$SerializationTester2$_receive_empty PROCINLINE:<{
+  %$SerializationTester2$_internal_empty PROCINLINE:<{
   }>
-  $SerializationTester2$_receive_binary_Update PROCINLINE:<{
+  $SerializationTester2$_internal_binary_Update PROCINLINE:<{
     10 10 BLKDROP2
   }>
   %getA PROC:<{
@@ -442,7 +442,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $SerializationTester2$_contract_router PROCREF:<{
+  $SerializationTester2$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -465,7 +465,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      %$SerializationTester2$_receive_empty INLINECALLDICT
+      %$SerializationTester2$_internal_empty INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -474,7 +474,7 @@ PROGRAM{
     IFJMP:<{
       $Update$_load INLINECALLDICT
       1 10 BLKDROP2
-      $SerializationTester2$_receive_binary_Update INLINECALLDICT
+      $SerializationTester2$_internal_binary_Update INLINECALLDICT
       TRUE
     }>
     DROP
@@ -500,7 +500,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $SerializationTester2$_contract_load INLINECALLDICT
     2 10 BLKSWAP
-    $SerializationTester2$_contract_router INLINECALLDICT
+    $SerializationTester2$_contract_router_internal INLINECALLDICT
     DROP
     $SerializationTester2$_contract_store INLINECALLDICT
   }>

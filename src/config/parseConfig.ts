@@ -3,6 +3,7 @@ import { z } from "zod";
 const optionsSchema = z.object({
     debug: z.boolean().optional(),
     masterchain: z.boolean().optional(),
+    external: z.boolean().optional(),
     experimental: z.object({
         inline: z.boolean().optional()
     }).strict().optional()

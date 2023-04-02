@@ -100,7 +100,7 @@ tuple $StringsTester$_contract_init() impure inline_ref {
 ;; Receivers of a Contract StringsTester
 ;;
 
-((tuple), ()) %$StringsTester$_receive_empty(tuple $self) impure inline {
+((tuple), ()) %$StringsTester$_internal_empty(tuple $self) impure inline {
     var $self = $self;
     return ($self, ());
 }
@@ -210,7 +210,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract StringsTester
 ;;
 
-(tuple, int) $StringsTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $StringsTester$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -225,7 +225,7 @@ _ lazy_deployment_completed() method_id {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$StringsTester$_receive_empty();
+        self~%$StringsTester$_internal_empty();
         return (self, true);
     }
     
@@ -246,7 +246,7 @@ _ lazy_deployment_completed() method_id {
     var self = $StringsTester$_contract_load();
     
     ;; Handle operation
-    int handled = self~$StringsTester$_contract_router(msg_bounced, in_msg);
+    int handled = self~$StringsTester$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

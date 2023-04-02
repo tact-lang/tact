@@ -22,12 +22,12 @@ PROGRAM{
   DECLPROC $S$_constructor_v3_v2_v1
   DECLPROC $A$_fun_create
   DECLPROC $DeployOk$_constructor_queryId
-  DECLPROC $A$_receive_binary_Deploy
+  DECLPROC $A$_internal_binary_Deploy
   96687 DECLMETHOD %create
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $A$_contract_router
+  DECLPROC $A$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -274,7 +274,7 @@ PROGRAM{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
-  $A$_receive_binary_Deploy PROCINLINE:<{
+  $A$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
     $global_reply INLINECALLDICT
@@ -302,7 +302,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $A$_contract_router PROCREF:<{
+  $A$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -323,7 +323,7 @@ PROGRAM{
     IFJMP:<{
       $Deploy$_load INLINECALLDICT
       NIP
-      $A$_receive_binary_Deploy INLINECALLDICT
+      $A$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
     DROP
@@ -349,7 +349,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $A$_contract_load INLINECALLDICT
     -ROT
-    $A$_contract_router INLINECALLDICT
+    $A$_contract_router_internal INLINECALLDICT
     DROP
     $A$_contract_store INLINECALLDICT
   }>

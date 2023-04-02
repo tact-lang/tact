@@ -115,82 +115,82 @@
 ;; Receivers of a Contract MapTestContract
 ;;
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) %$MapTestContract$_receive_empty((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) %$MapTestContract$_internal_empty((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetIntMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetIntMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'intMap1~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetIntMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetIntMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'intMap2~__tact_dict_set_int_int(257, $msg'key, $msg'value, 1);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetIntMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetIntMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'intMap3~__tact_dict_set_int_cell(257, $msg'key, $msg'value);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetIntMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, tuple) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetIntMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, tuple) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'intMap4~__tact_dict_set_int_cell(257, $msg'key, $SomeStruct$_store_opt($msg'value));
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetIntMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, slice) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetIntMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (int, slice) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'intMap5~__tact_dict_set_int_slice(257, $msg'key, $msg'value);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetAddrMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, int) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetAddrMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, int) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'addrMap1~__tact_dict_set_slice_int(267, $msg'key, $msg'value, 257);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetAddrMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, int) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetAddrMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, int) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'addrMap2~__tact_dict_set_slice_int(267, $msg'key, $msg'value, 1);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetAddrMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, cell) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetAddrMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, cell) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'addrMap3~__tact_dict_set_slice_cell(267, $msg'key, $msg'value);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetAddrMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, tuple) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetAddrMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, tuple) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'addrMap4~__tact_dict_set_slice_cell(267, $msg'key, $SomeStruct$_store_opt($msg'value));
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_receive_binary_SetAddrMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, slice) $msg) impure inline {
+(((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell)), ()) $MapTestContract$_internal_binary_SetAddrMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, (slice, slice) $msg) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'addrMap5~__tact_dict_set_slice_slice(267, $msg'key, $msg'value);
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5), ());
 }
 
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), ()) $MapTestContract$_receive_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline {
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), ()) $MapTestContract$_internal_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline {
     var ($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5) = $self;
     $self'addrMap1 = null();
     $self'addrMap2 = null();
@@ -360,7 +360,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract MapTestContract
 ;;
 
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_contract_router((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_contract_router_internal((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -375,77 +375,77 @@ _ lazy_deployment_completed() method_id {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$MapTestContract$_receive_empty();
+        self~%$MapTestContract$_internal_empty();
         return (self, true);
     }
     
     ;; Receive SetIntMap1 message
     if (op == 1510253336) {
         var msg = in_msg~$SetIntMap1$_load();
-        self~$MapTestContract$_receive_binary_SetIntMap1(msg);
+        self~$MapTestContract$_internal_binary_SetIntMap1(msg);
         return (self, true);
     }
     
     ;; Receive SetIntMap2 message
     if (op == 1629867766) {
         var msg = in_msg~$SetIntMap2$_load();
-        self~$MapTestContract$_receive_binary_SetIntMap2(msg);
+        self~$MapTestContract$_internal_binary_SetIntMap2(msg);
         return (self, true);
     }
     
     ;; Receive SetIntMap3 message
     if (op == 3613954633) {
         var msg = in_msg~$SetIntMap3$_load();
-        self~$MapTestContract$_receive_binary_SetIntMap3(msg);
+        self~$MapTestContract$_internal_binary_SetIntMap3(msg);
         return (self, true);
     }
     
     ;; Receive SetIntMap4 message
     if (op == 383013829) {
         var msg = in_msg~$SetIntMap4$_load();
-        self~$MapTestContract$_receive_binary_SetIntMap4(msg);
+        self~$MapTestContract$_internal_binary_SetIntMap4(msg);
         return (self, true);
     }
     
     ;; Receive SetIntMap5 message
     if (op == 2809746751) {
         var msg = in_msg~$SetIntMap5$_load();
-        self~$MapTestContract$_receive_binary_SetIntMap5(msg);
+        self~$MapTestContract$_internal_binary_SetIntMap5(msg);
         return (self, true);
     }
     
     ;; Receive SetAddrMap1 message
     if (op == 1749966413) {
         var msg = in_msg~$SetAddrMap1$_load();
-        self~$MapTestContract$_receive_binary_SetAddrMap1(msg);
+        self~$MapTestContract$_internal_binary_SetAddrMap1(msg);
         return (self, true);
     }
     
     ;; Receive SetAddrMap2 message
     if (op == 624157584) {
         var msg = in_msg~$SetAddrMap2$_load();
-        self~$MapTestContract$_receive_binary_SetAddrMap2(msg);
+        self~$MapTestContract$_internal_binary_SetAddrMap2(msg);
         return (self, true);
     }
     
     ;; Receive SetAddrMap3 message
     if (op == 4276365062) {
         var msg = in_msg~$SetAddrMap3$_load();
-        self~$MapTestContract$_receive_binary_SetAddrMap3(msg);
+        self~$MapTestContract$_internal_binary_SetAddrMap3(msg);
         return (self, true);
     }
     
     ;; Receive SetAddrMap4 message
     if (op == 1683777913) {
         var msg = in_msg~$SetAddrMap4$_load();
-        self~$MapTestContract$_receive_binary_SetAddrMap4(msg);
+        self~$MapTestContract$_internal_binary_SetAddrMap4(msg);
         return (self, true);
     }
     
     ;; Receive SetAddrMap5 message
     if (op == 1741376771) {
         var msg = in_msg~$SetAddrMap5$_load();
-        self~$MapTestContract$_receive_binary_SetAddrMap5(msg);
+        self~$MapTestContract$_internal_binary_SetAddrMap5(msg);
         return (self, true);
     }
     
@@ -455,7 +455,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "reset" message
         if (text_op == 0x4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b) {
-            self~$MapTestContract$_receive_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b();
+            self~$MapTestContract$_internal_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b();
             return (self, true);
         }
     }
@@ -477,7 +477,7 @@ _ lazy_deployment_completed() method_id {
     var self = $MapTestContract$_contract_load();
     
     ;; Handle operation
-    int handled = self~$MapTestContract$_contract_router(msg_bounced, in_msg);
+    int handled = self~$MapTestContract$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

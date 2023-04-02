@@ -7,6 +7,7 @@ import { crc16 } from "../utils/crc16";
 import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "ton-core";
+import { enabledExternals } from "../config/features";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -460,8 +461,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 if (d.kind === 'def_receive') {
 
-                    if (d.selector.kind === 'simple') {
+                    // Check if externals are enabled
+                    if (d.selector.kind.startsWith('external-') && !enabledExternals(ctx)) {
+                        throwError('External functions are not enabled', d.ref);
+                    }
+
+                    if (d.selector.kind === 'internal-simple' || d.selector.kind === 'external-simple') {
                         const arg = d.selector.arg;
+                        const internal = d.selector.kind === 'internal-simple';
 
                         // Check argument type
                         if (arg.type.kind !== 'type_ref_simple') {
@@ -483,14 +490,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             if (t.name === 'Slice') {
 
                                 // Check for existing receiver
-                                if (s.receivers.find((v) => v.selector.kind === 'internal-fallback')) {
+                                if (s.receivers.find((v) => v.selector.kind === (internal ? 'internal-fallback' : 'external-fallback'))) {
                                     throwError(`Fallback receive function already exists`, d.ref);
                                 }
 
                                 // Persist receiver
                                 s.receivers.push({
                                     selector: {
-                                        kind: 'internal-fallback',
+                                        kind: internal ? 'internal-fallback' : 'external-fallback',
                                         name: arg.name
                                     },
                                     ast: d
@@ -499,14 +506,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             } else if (t.name === 'String') {
 
                                 // Check for existing receiver
-                                if (s.receivers.find((v) => v.selector.kind === 'internal-comment-fallback')) {
+                                if (s.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment-fallback' : 'external-comment-fallback'))) {
                                     throwError('Comment fallback receive function already exists', d.ref);
                                 }
 
                                 // Persist receiver
                                 s.receivers.push({
                                     selector: {
-                                        kind: 'internal-comment-fallback',
+                                        kind: (internal ? 'internal-comment-fallback' : 'external-comment-fallback'),
                                         name: arg.name
                                     },
                                     ast: d
@@ -529,38 +536,46 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
                             // Check for duplicate
                             const n = arg.type.name;
-                            if (s.receivers.find((v) => v.selector.kind === 'internal-binary' && v.selector.name === n)) {
+                            if (s.receivers.find((v) => v.selector.kind === (internal ? 'internal-binary' : 'external-binary') && v.selector.name === n)) {
                                 throwError(`Receive function for ${arg.type.name} already exists`, d.ref);
                             }
 
                             // Persist receiver
                             s.receivers.push({
                                 selector: {
-                                    kind: 'internal-binary', name: arg.name,
+                                    kind: (internal ? 'internal-binary' : 'external-binary'),
+                                    name: arg.name,
                                     type: arg.type.name,
                                 },
                                 ast: d
                             });
                         }
-                    } else if (d.selector.kind === 'comment') {
+                    } else if (d.selector.kind === 'internal-comment' || d.selector.kind === 'external-comment') {
+                        const internal = d.selector.kind === 'internal-comment';
                         if (d.selector.comment.value === '') {
                             throwError('To use empty comment receiver, just remove argument instead of passing empty string', d.ref);
                         }
                         let c = d.selector.comment.value;
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-comment' && v.selector.comment === c)) {
+                        if (s.receivers.find((v) => v.selector.kind === (internal ? 'internal-comment' : 'external-comment') && v.selector.comment === c)) {
                             throwError(`Receive function for "${c}" already exists`, d.ref);
                         }
                         s.receivers.push({
-                            selector: { kind: 'internal-comment', comment: c },
+                            selector: {
+                                kind: (internal ? 'internal-comment' : 'external-comment'),
+                                comment: c
+                            },
                             ast: d
                         });
-                    } else if (d.selector.kind === 'fallback') {
+                    } else if (d.selector.kind === 'internal-fallback') {
+                        const internal = d.selector.kind === 'internal-fallback';
                         // Handle empty
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-empty')) {
+                        if (s.receivers.find((v) => v.selector.kind === (internal ? 'internal-empty' : 'external-empty'))) {
                             throwError('Empty receive function already exists', d.ref);
                         }
                         s.receivers.push({
-                            selector: { kind: 'internal-empty' },
+                            selector: {
+                                kind: (internal ? 'internal-empty' : 'external-empty')
+                            },
                             ast: d
                         });
                     } else if (d.selector.kind === 'bounce') {
@@ -586,6 +601,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                             selector: { kind: 'internal-bounce', name: arg.name },
                             ast: d
                         });
+                    } else {
+                        throwError('Invalid receive function selector', d.ref);
                     }
                 }
             }
@@ -648,7 +665,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         visit(f.name);
                     }
                 } else {
-                    throw Error('Unexpected type: ' + tt.ast.kind);
+                    throwError('Type ' + name + ' is not a trait', t.ast.ref);
                 }
             }
             for (let s of t.ast.traits) {

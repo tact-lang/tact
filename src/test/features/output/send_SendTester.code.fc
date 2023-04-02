@@ -17,14 +17,14 @@ tuple $SendTester$_contract_init() impure inline_ref {
 ;; Receivers of a Contract SendTester
 ;;
 
-(tuple, ()) $SendTester$_receive_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041(tuple $self) impure inline {
+(tuple, ()) $SendTester$_internal_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041(tuple $self) impure inline {
     var $self = $self;
     $global_reply(__gen_cell_comment_95fbfd67c31e549b5d4386ed4a2beebc294be55acb3eddadaa7f9df86be36d42());
     $global_emit(__gen_cell_comment_ec65c74747db20896a39d874b0473dd5e61e08fc9f3516d56d58eaeea5031ea4());
     return ($self, ());
 }
 
-((tuple), ()) $SendTester$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
+((tuple), ()) $SendTester$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
     $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
@@ -57,7 +57,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract SendTester
 ;;
 
-(tuple, int) $SendTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $SendTester$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -73,7 +73,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Deploy message
     if (op == 2490013878) {
         var msg = in_msg~$Deploy$_load();
-        self~$SendTester$_receive_binary_Deploy(msg);
+        self~$SendTester$_internal_binary_Deploy(msg);
         return (self, true);
     }
     
@@ -83,7 +83,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Hello" message
         if (text_op == 0x9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041) {
-            self~$SendTester$_receive_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041();
+            self~$SendTester$_internal_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041();
             return (self, true);
         }
     }
@@ -105,7 +105,7 @@ _ lazy_deployment_completed() method_id {
     var self = $SendTester$_contract_load();
     
     ;; Handle operation
-    int handled = self~$SendTester$_contract_router(msg_bounced, in_msg);
+    int handled = self~$SendTester$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

@@ -8,14 +8,14 @@ PROGRAM{
   DECLPROC $StdlibTest$_fun_sliceEmpty
   DECLPROC $StdlibTest$_fun_sliceBits
   DECLPROC $StdlibTest$_fun_sliceRefs
-  DECLPROC %$StdlibTest$_receive_empty
+  DECLPROC %$StdlibTest$_internal_empty
   73995 DECLMETHOD %sliceEmpty
   75090 DECLMETHOD %sliceBits
   77445 DECLMETHOD %sliceRefs
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $StdlibTest$_contract_router
+  DECLPROC $StdlibTest$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -92,7 +92,7 @@ PROGRAM{
   $StdlibTest$_fun_sliceRefs PROCREF:<{
     SREFS
   }>
-  %$StdlibTest$_receive_empty PROCINLINE:<{
+  %$StdlibTest$_internal_empty PROCINLINE:<{
   }>
   %sliceEmpty PROC:<{
     $StdlibTest$_contract_load INLINECALLDICT
@@ -127,7 +127,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $StdlibTest$_contract_router PROCREF:<{
+  $StdlibTest$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -149,7 +149,7 @@ PROGRAM{
     33 LESSINT
     AND
     IFJMP:<{
-      %$StdlibTest$_receive_empty INLINECALLDICT
+      %$StdlibTest$_internal_empty INLINECALLDICT
       TRUE
     }>
     FALSE
@@ -174,7 +174,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $StdlibTest$_contract_load INLINECALLDICT
     -ROT
-    $StdlibTest$_contract_router INLINECALLDICT
+    $StdlibTest$_contract_router_internal INLINECALLDICT
     DROP
     $StdlibTest$_contract_store INLINECALLDICT
   }>

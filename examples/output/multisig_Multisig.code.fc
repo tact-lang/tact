@@ -30,7 +30,7 @@
 ;; Receivers of a Contract Multisig
 ;;
 
-(((int, cell, int, int)), ()) $Multisig$_receive_binary_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure inline {
+(((int, cell, int, int)), ()) $Multisig$_internal_binary_Request((int, cell, int, int) $self, (slice, slice, int, int, int, int, cell) $msg) impure inline {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var ($msg'requested, $msg'to, $msg'value, $msg'timeout, $msg'bounce, $msg'mode, $msg'body) = $msg;
     slice $sender = __tact_context_get_sender();
@@ -42,7 +42,7 @@
     return (($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight), ());
 }
 
-(((int, cell, int, int)), ()) $Multisig$_receive_binary_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure inline {
+(((int, cell, int, int)), ()) $Multisig$_internal_binary_Signed((int, cell, int, int) $self, ((slice, slice, int, int, int, int, cell)) $msg) impure inline {
     var ($self'seqno, $self'members, $self'totalWeight, $self'requiredWeight) = $self;
     var (($msg'request'requested, $msg'request'to, $msg'request'value, $msg'request'timeout, $msg'request'bounce, $msg'request'mode, $msg'request'body)) = $msg;
     slice $sender = __tact_context_get_sender();
@@ -92,7 +92,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Multisig
 ;;
 
-((int, cell, int, int), int) $Multisig$_contract_router((int, cell, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, cell, int, int), int) $Multisig$_contract_router_internal((int, cell, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -108,14 +108,14 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Request message
     if (op == 4266760323) {
         var msg = in_msg~$Request$_load();
-        self~$Multisig$_receive_binary_Request(msg);
+        self~$Multisig$_internal_binary_Request(msg);
         return (self, true);
     }
     
     ;; Receive Signed message
     if (op == 2213172633) {
         var msg = in_msg~$Signed$_load();
-        self~$Multisig$_receive_binary_Signed(msg);
+        self~$Multisig$_internal_binary_Signed(msg);
         return (self, true);
     }
     
@@ -136,7 +136,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Multisig$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Multisig$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Multisig$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

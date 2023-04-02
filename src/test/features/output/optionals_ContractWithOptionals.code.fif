@@ -47,8 +47,8 @@ PROGRAM{
   DECLPROC $ContractWithOptionals$_fun_notNullF
   DECLPROC $SomeGenericStruct$_constructor_value1_value2_value3_value4_value5
   DECLPROC $ContractWithOptionals$_fun_testVariables
-  DECLPROC %$ContractWithOptionals$_receive_empty
-  DECLPROC $ContractWithOptionals$_receive_binary_Update
+  DECLPROC %$ContractWithOptionals$_internal_empty
+  DECLPROC $ContractWithOptionals$_internal_binary_Update
   74449 DECLMETHOD %isNotNullA
   70322 DECLMETHOD %isNotNullB
   66195 DECLMETHOD %isNotNullC
@@ -71,7 +71,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $ContractWithOptionals$_contract_router
+  DECLPROC $ContractWithOptionals$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -741,9 +741,9 @@ PROGRAM{
     $SomeGenericStruct$_as_optional INLINECALLDICT
     $SomeGenericStruct$_not_null INLINECALLDICT
   }>
-  %$ContractWithOptionals$_receive_empty PROCINLINE:<{
+  %$ContractWithOptionals$_internal_empty PROCINLINE:<{
   }>
-  $ContractWithOptionals$_receive_binary_Update PROCINLINE:<{
+  $ContractWithOptionals$_internal_binary_Update PROCINLINE:<{
     6 6 BLKDROP2
   }>
   %isNotNullA PROC:<{
@@ -862,7 +862,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $ContractWithOptionals$_contract_router PROCREF:<{
+  $ContractWithOptionals$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -885,7 +885,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      %$ContractWithOptionals$_receive_empty INLINECALLDICT
+      %$ContractWithOptionals$_internal_empty INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -894,7 +894,7 @@ PROGRAM{
     IFJMP:<{
       $Update$_load INLINECALLDICT
       1 6 BLKDROP2
-      $ContractWithOptionals$_receive_binary_Update INLINECALLDICT
+      $ContractWithOptionals$_internal_binary_Update INLINECALLDICT
       TRUE
     }>
     DROP
@@ -920,7 +920,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $ContractWithOptionals$_contract_load INLINECALLDICT
     2 6 BLKSWAP
-    $ContractWithOptionals$_contract_router INLINECALLDICT
+    $ContractWithOptionals$_contract_router_internal INLINECALLDICT
     DROP
     $ContractWithOptionals$_contract_store INLINECALLDICT
   }>

@@ -28,14 +28,14 @@ PROGRAM{
   DECLPROC $Multisig$_fun_members
   DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
-  DECLPROC $Multisig$_receive_binary_Request
-  DECLPROC $Multisig$_receive_binary_Signed
+  DECLPROC $Multisig$_internal_binary_Request
+  DECLPROC $Multisig$_internal_binary_Signed
   70789 DECLMETHOD %member
   104769 DECLMETHOD %members
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Multisig$_contract_router
+  DECLPROC $Multisig$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -442,7 +442,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $Multisig$_receive_binary_Request PROCINLINE:<{
+  $Multisig$_internal_binary_Request PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     267 PUSHINT
     s11 PUSH
@@ -472,7 +472,7 @@ PROGRAM{
     $SendParameters$_constructor_value_to_mode_bounce_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $Multisig$_receive_binary_Signed PROCINLINE:<{
+  $Multisig$_internal_binary_Signed PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     __tact_context_sys GETGLOB
     MYADDR
@@ -525,7 +525,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Multisig$_contract_router PROCREF:<{
+  $Multisig$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -547,7 +547,7 @@ PROGRAM{
       NIP
       $Request$_load INLINECALLDICT
       1 7 BLKDROP2
-      $Multisig$_receive_binary_Request INLINECALLDICT
+      $Multisig$_internal_binary_Request INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -556,7 +556,7 @@ PROGRAM{
     IFJMP:<{
       $Signed$_load INLINECALLDICT
       1 7 BLKDROP2
-      $Multisig$_receive_binary_Signed INLINECALLDICT
+      $Multisig$_internal_binary_Signed INLINECALLDICT
       TRUE
     }>
     DROP
@@ -582,7 +582,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Multisig$_contract_load INLINECALLDICT
     2 4 BLKSWAP
-    $Multisig$_contract_router INLINECALLDICT
+    $Multisig$_contract_router_internal INLINECALLDICT
     DROP
     $Multisig$_contract_store INLINECALLDICT
   }>

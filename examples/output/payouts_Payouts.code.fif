@@ -34,14 +34,14 @@ PROGRAM{
   DECLPROC $Payouts$_fun_owner
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $CanPayout$_constructor_amount
-  DECLPROC $Payouts$_receive_any_text
-  DECLPROC $Payouts$_receive_binary_CanPayoutResponse
-  DECLPROC $Payouts$_receive_binary_ChangeOwner
+  DECLPROC $Payouts$_internal_any_text
+  DECLPROC $Payouts$_internal_binary_CanPayoutResponse
+  DECLPROC $Payouts$_internal_binary_ChangeOwner
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Payouts$_contract_router
+  DECLPROC $Payouts$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -508,7 +508,7 @@ PROGRAM{
   }>
   $CanPayout$_constructor_amount PROCINLINE:<{
   }>
-  $Payouts$_receive_any_text PROCINLINE:<{
+  $Payouts$_internal_any_text PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     DROP
     16059 PUSHINT
@@ -550,7 +550,7 @@ PROGRAM{
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $Payouts$_receive_binary_CanPayoutResponse PROCINLINE:<{
+  $Payouts$_internal_binary_CanPayoutResponse PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     DROP
     s2 POP
@@ -592,7 +592,7 @@ PROGRAM{
       $global_send INLINECALLDICT
     }>
   }>
-  $Payouts$_receive_binary_ChangeOwner PROCINLINE:<{
+  $Payouts$_internal_binary_ChangeOwner PROCINLINE:<{
     -ROT
     $Payouts$_fun_requireOwner INLINECALLDICT
     NIP
@@ -619,7 +619,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Payouts$_contract_router PROCREF:<{
+  $Payouts$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -643,7 +643,7 @@ PROGRAM{
       NIP
       $CanPayoutResponse$_load INLINECALLDICT
       1 3 BLKDROP2
-      $Payouts$_receive_binary_CanPayoutResponse INLINECALLDICT
+      $Payouts$_internal_binary_CanPayoutResponse INLINECALLDICT
       TRUE
     }>
     OVER
@@ -653,7 +653,7 @@ PROGRAM{
       NIP
       $ChangeOwner$_load INLINECALLDICT
       NIP
-      $Payouts$_receive_binary_ChangeOwner INLINECALLDICT
+      $Payouts$_internal_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -665,7 +665,7 @@ PROGRAM{
       IFJMP:<{
         32 PUSHINT
         SDSKIPFIRST
-        $Payouts$_receive_any_text INLINECALLDICT
+        $Payouts$_internal_any_text INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -695,7 +695,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Payouts$_contract_load INLINECALLDICT
     2SWAP
-    $Payouts$_contract_router INLINECALLDICT
+    $Payouts$_contract_router_internal INLINECALLDICT
     DROP
     $Payouts$_contract_store INLINECALLDICT
   }>

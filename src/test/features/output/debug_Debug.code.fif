@@ -17,13 +17,13 @@ PROGRAM{
   DECLPROC $global_reply
   DECLPROC $Debug$_fun_debug
   DECLPROC $DeployOk$_constructor_queryId
-  DECLPROC $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57
-  DECLPROC $Debug$_receive_binary_Deploy
+  DECLPROC $Debug$_internal_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57
+  DECLPROC $Debug$_internal_binary_Deploy
   93099 DECLMETHOD %debug
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Debug$_contract_router
+  DECLPROC $Debug$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -340,7 +340,7 @@ PROGRAM{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
-  $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 PROCINLINE:<{
+  $Debug$_internal_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 PROCINLINE:<{
     DUMPSTK
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
     STRDUMP
@@ -357,7 +357,7 @@ PROGRAM{
     STRDUMP
     DROP
   }>
-  $Debug$_receive_binary_Deploy PROCINLINE:<{
+  $Debug$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
     $global_reply INLINECALLDICT
@@ -383,7 +383,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Debug$_contract_router PROCREF:<{
+  $Debug$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -407,7 +407,7 @@ PROGRAM{
       NIP
       $Deploy$_load INLINECALLDICT
       NIP
-      $Debug$_receive_binary_Deploy INLINECALLDICT
+      $Debug$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -417,7 +417,7 @@ PROGRAM{
       78767043930632832884184893608813340453083540642055662257146169686053766160215 PUSHINT
       EQUAL
       IFJMP:<{
-        $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
+        $Debug$_internal_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -446,7 +446,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Debug$_contract_load INLINECALLDICT
     -ROT
-    $Debug$_contract_router INLINECALLDICT
+    $Debug$_contract_router_internal INLINECALLDICT
     DROP
     $Debug$_contract_store INLINECALLDICT
   }>

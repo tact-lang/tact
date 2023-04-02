@@ -8,12 +8,12 @@ PROGRAM{
   DECLPROC $Functions$_contract_load
   DECLPROC $Functions$_contract_store
   DECLPROC $Functions$_fun_update
-  DECLPROC $Functions$_receive_binary_Add
-  DECLPROC $Functions$_receive_binary_Sub
+  DECLPROC $Functions$_internal_binary_Add
+  DECLPROC $Functions$_internal_binary_Sub
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Functions$_contract_router
+  DECLPROC $Functions$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -104,14 +104,14 @@ PROGRAM{
   $Functions$_fun_update PROCREF:<{
     ADD
   }>
-  $Functions$_receive_binary_Add PROCINLINE:<{
+  $Functions$_internal_binary_Add PROCINLINE:<{
     55789 PUSHINT
     OVER
     0 GTINT
     THROWANYIFNOT
     $Functions$_fun_update INLINECALLDICT
   }>
-  $Functions$_receive_binary_Sub PROCINLINE:<{
+  $Functions$_internal_binary_Sub PROCINLINE:<{
     55789 PUSHINT
     OVER
     0 GTINT
@@ -134,7 +134,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Functions$_contract_router PROCREF:<{
+  $Functions$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -156,7 +156,7 @@ PROGRAM{
       NIP
       $Add$_load INLINECALLDICT
       NIP
-      $Functions$_receive_binary_Add INLINECALLDICT
+      $Functions$_internal_binary_Add INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -165,7 +165,7 @@ PROGRAM{
     IFJMP:<{
       $Sub$_load INLINECALLDICT
       NIP
-      $Functions$_receive_binary_Sub INLINECALLDICT
+      $Functions$_internal_binary_Sub INLINECALLDICT
       TRUE
     }>
     DROP
@@ -191,7 +191,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Functions$_contract_load INLINECALLDICT
     -ROT
-    $Functions$_contract_router INLINECALLDICT
+    $Functions$_contract_router_internal INLINECALLDICT
     DROP
     $Functions$_contract_store INLINECALLDICT
   }>

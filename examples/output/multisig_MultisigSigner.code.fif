@@ -22,13 +22,13 @@ PROGRAM{
   DECLPROC $MultisigSigner$_fun_request
   DECLPROC $SendParameters$_constructor_value_to_mode_bounce_body
   DECLPROC $Signed$_constructor_request
-  DECLPROC %$MultisigSigner$_receive_empty
-  DECLPROC $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
+  DECLPROC %$MultisigSigner$_internal_empty
+  DECLPROC $MultisigSigner$_internal_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039
   107262 DECLMETHOD %request
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $MultisigSigner$_contract_router
+  DECLPROC $MultisigSigner$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -383,9 +383,9 @@ PROGRAM{
   }>
   $Signed$_constructor_request PROCINLINE:<{
   }>
-  %$MultisigSigner$_receive_empty PROCINLINE:<{
+  %$MultisigSigner$_internal_empty PROCINLINE:<{
   }>
-  $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROCINLINE:<{
+  $MultisigSigner$_internal_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 PROCINLINE:<{
     4755 PUSHINT
     s4 PUSH
     NOW
@@ -452,7 +452,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $MultisigSigner$_contract_router PROCREF:<{
+  $MultisigSigner$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -477,7 +477,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      %$MultisigSigner$_receive_empty INLINECALLDICT
+      %$MultisigSigner$_internal_empty INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -487,7 +487,7 @@ PROGRAM{
       15687661268003540618347676322063149294643333469463580674027607086437424345145 PUSHINT
       EQUAL
       IFJMP:<{
-        $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
+        $MultisigSigner$_internal_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -516,7 +516,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $MultisigSigner$_contract_load INLINECALLDICT
     2 12 BLKSWAP
-    $MultisigSigner$_contract_router INLINECALLDICT
+    $MultisigSigner$_contract_router_internal INLINECALLDICT
     DROP
     $MultisigSigner$_contract_store INLINECALLDICT
   }>

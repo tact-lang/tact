@@ -25,7 +25,7 @@
 ;; Receivers of a Contract IncrementContract
 ;;
 
-(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_internal_binary_Increment((cell, cell, cell, cell, cell) $self, (int, int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'value) = $msg;
     $self'counters~__tact_dict_set_int_int(257, $msg'key, $msg'value, 257);
@@ -33,7 +33,7 @@
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_internal_binary_Toggle((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     int $ex = __tact_dict_get_int_int($self'counters2, 257, $msg'key, 1);
@@ -45,7 +45,7 @@
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_internal_binary_Persist((cell, cell, cell, cell, cell) $self, (int, cell) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key, $msg'content) = $msg;
     throw_unless(52777, null?(__tact_dict_get_int_cell($self'counters3, 257, $msg'key)));
@@ -53,7 +53,7 @@
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_internal_binary_Reset((cell, cell, cell, cell, cell) $self, (int) $msg) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($msg'key) = $msg;
     $self'counters~__tact_dict_set_int_int(257, $msg'key, null(), 257);
@@ -64,7 +64,7 @@
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 
-(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_receive_binary_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
+(((cell, cell, cell, cell, cell)), ()) $IncrementContract$_internal_binary_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($deploy'queryId) = $deploy;
     $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
@@ -108,7 +108,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract IncrementContract
 ;;
 
-((cell, cell, cell, cell, cell), int) $IncrementContract$_contract_router((cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+((cell, cell, cell, cell, cell), int) $IncrementContract$_contract_router_internal((cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -124,35 +124,35 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Increment message
     if (op == 537284411) {
         var msg = in_msg~$Increment$_load();
-        self~$IncrementContract$_receive_binary_Increment(msg);
+        self~$IncrementContract$_internal_binary_Increment(msg);
         return (self, true);
     }
     
     ;; Receive Toggle message
     if (op == 1081595080) {
         var msg = in_msg~$Toggle$_load();
-        self~$IncrementContract$_receive_binary_Toggle(msg);
+        self~$IncrementContract$_internal_binary_Toggle(msg);
         return (self, true);
     }
     
     ;; Receive Persist message
     if (op == 3801943978) {
         var msg = in_msg~$Persist$_load();
-        self~$IncrementContract$_receive_binary_Persist(msg);
+        self~$IncrementContract$_internal_binary_Persist(msg);
         return (self, true);
     }
     
     ;; Receive Reset message
     if (op == 1718153138) {
         var msg = in_msg~$Reset$_load();
-        self~$IncrementContract$_receive_binary_Reset(msg);
+        self~$IncrementContract$_internal_binary_Reset(msg);
         return (self, true);
     }
     
     ;; Receive Deploy message
     if (op == 2490013878) {
         var msg = in_msg~$Deploy$_load();
-        self~$IncrementContract$_receive_binary_Deploy(msg);
+        self~$IncrementContract$_internal_binary_Deploy(msg);
         return (self, true);
     }
     
@@ -173,7 +173,7 @@ _ lazy_deployment_completed() method_id {
     var self = $IncrementContract$_contract_load();
     
     ;; Handle operation
-    int handled = self~$IncrementContract$_contract_router(msg_bounced, in_msg);
+    int handled = self~$IncrementContract$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

@@ -71,12 +71,12 @@
 ;; Receivers of a Contract IntrinsicsTester
 ;;
 
-((int, slice, slice, cell, int), ()) $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, slice, slice, cell, int) $self) impure inline {
+((int, slice, slice, cell, int), ()) $IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, slice, slice, cell, int) $self) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e), ());
 }
 
-((int, slice, slice, cell, int), ()) $IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd((int, slice, slice, cell, int) $self) impure inline {
+((int, slice, slice, cell, int), ()) $IntrinsicsTester$_internal_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd((int, slice, slice, cell, int) $self) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e) = $self;
     $global_emit(__gen_cell_comment_947a54d50e20851945ec9cfe3440edd107efea5a57acbc50214c6c44631a8a45());
     return (($self'a, $self'b, $self'c, $self'd, $self'e), ());
@@ -174,7 +174,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract IntrinsicsTester
 ;;
 
-((int, slice, slice, cell, int), int) $IntrinsicsTester$_contract_router((int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, slice, slice, cell, int), int) $IntrinsicsTester$_contract_router_internal((int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -193,13 +193,13 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            self~$IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            self~$IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             return (self, true);
         }
         
         ;; Receive "emit_1" message
         if (text_op == 0x51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd) {
-            self~$IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd();
+            self~$IntrinsicsTester$_internal_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd();
             return (self, true);
         }
     }
@@ -221,7 +221,7 @@ _ lazy_deployment_completed() method_id {
     var self = $IntrinsicsTester$_contract_load();
     
     ;; Handle operation
-    int handled = self~$IntrinsicsTester$_contract_router(msg_bounced, in_msg);
+    int handled = self~$IntrinsicsTester$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

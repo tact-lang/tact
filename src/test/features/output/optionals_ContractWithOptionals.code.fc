@@ -119,12 +119,12 @@
 ;; Receivers of a Contract ContractWithOptionals
 ;;
 
-(((int, int, cell, slice, tuple, tuple)), ()) %$ContractWithOptionals$_receive_empty((int, int, cell, slice, tuple, tuple) $self) impure inline {
+(((int, int, cell, slice, tuple, tuple)), ()) %$ContractWithOptionals$_internal_empty((int, int, cell, slice, tuple, tuple) $self) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
     return (($self'a, $self'b, $self'c, $self'd, $self'e, $self'f), ());
 }
 
-(((int, int, cell, slice, tuple, tuple)), ()) $ContractWithOptionals$_receive_binary_Update((int, int, cell, slice, tuple, tuple) $self, (int, int, cell, slice, tuple, tuple) $msg) impure inline {
+(((int, int, cell, slice, tuple, tuple)), ()) $ContractWithOptionals$_internal_binary_Update((int, int, cell, slice, tuple, tuple) $self, (int, int, cell, slice, tuple, tuple) $msg) impure inline {
     var ($self'a, $self'b, $self'c, $self'd, $self'e, $self'f) = $self;
     var ($msg'a, $msg'b, $msg'c, $msg'd, $msg'e, $msg'f) = $msg;
     $self'a = $msg'a;
@@ -276,7 +276,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract ContractWithOptionals
 ;;
 
-((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_contract_router((int, int, cell, slice, tuple, tuple) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, int, cell, slice, tuple, tuple), int) $ContractWithOptionals$_contract_router_internal((int, int, cell, slice, tuple, tuple) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -291,14 +291,14 @@ _ lazy_deployment_completed() method_id {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$ContractWithOptionals$_receive_empty();
+        self~%$ContractWithOptionals$_internal_empty();
         return (self, true);
     }
     
     ;; Receive Update message
     if (op == 357891325) {
         var msg = in_msg~$Update$_load();
-        self~$ContractWithOptionals$_receive_binary_Update(msg);
+        self~$ContractWithOptionals$_internal_binary_Update(msg);
         return (self, true);
     }
     
@@ -319,7 +319,7 @@ _ lazy_deployment_completed() method_id {
     var self = $ContractWithOptionals$_contract_load();
     
     ;; Handle operation
-    int handled = self~$ContractWithOptionals$_contract_router(msg_bounced, in_msg);
+    int handled = self~$ContractWithOptionals$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

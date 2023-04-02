@@ -29,6 +29,7 @@ export function check(args: { project: VirtualFileSystem, entrypoint: string }):
     let ctx: CompilerContext = new CompilerContext({ shared: {} });
     ctx = featureEnable(ctx, 'debug'); // Enable debug flag (does not affect type checking in practice)
     ctx = featureEnable(ctx, 'masterchain'); // Enable masterchain flag to avoid masterchain-specific errors
+    ctx = featureEnable(ctx, 'external'); // Enable external messages flag to avoid external-specific errors
 
     // Execute check
     let items: CheckResultItem[] = [];

@@ -58,7 +58,7 @@
 ;; Receivers of a Contract RugPull
 ;;
 
-(((slice, int, int, int, int, int, int, int, int, cell)), ()) %$RugPull$_receive_empty((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) %$RugPull$_internal_empty((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_requireNotStopped();
     if ($self'rugpulled) {
@@ -79,7 +79,7 @@
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_internal_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_requireOwner();
     if ((~ $self'rugpulled)) {
@@ -89,14 +89,14 @@
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_internal_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     $self'rugpulled = true;
     $global_send($SendParameters$_constructor_value_to_mode(0, $self'owner, 128));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-(((slice, int, int, int, int, int, int, int, int, cell)), ()) $RugPull$_receive_binary_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (slice) $msg) impure inline {
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) $RugPull$_internal_binary_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (slice) $msg) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     var ($msg'newOwner) = $msg;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_requireOwner();
@@ -104,7 +104,7 @@
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
+((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_internal_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_requireOwner();
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_requireNotStopped();
@@ -159,7 +159,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract RugPull
 ;;
 
-((slice, int, int, int, int, int, int, int, int, cell), int) $RugPull$_contract_router((slice, int, int, int, int, int, int, int, int, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice, int, int, int, int, int, int, int, int, cell), int) $RugPull$_contract_router_internal((slice, int, int, int, int, int, int, int, int, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -174,14 +174,14 @@ _ lazy_deployment_completed() method_id {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$RugPull$_receive_empty();
+        self~%$RugPull$_internal_empty();
         return (self, true);
     }
     
     ;; Receive ChangeOwner message
     if (op == 256331011) {
         var msg = in_msg~$ChangeOwner$_load();
-        self~$RugPull$_receive_binary_ChangeOwner(msg);
+        self~$RugPull$_internal_binary_ChangeOwner(msg);
         return (self, true);
     }
     
@@ -191,19 +191,19 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "withdraw" message
         if (text_op == 0x095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4) {
-            self~$RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4();
+            self~$RugPull$_internal_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4();
             return (self, true);
         }
         
         ;; Receive "rugpull" message
         if (text_op == 0xcde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea) {
-            self~$RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea();
+            self~$RugPull$_internal_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea();
             return (self, true);
         }
         
         ;; Receive "Stop" message
         if (text_op == 0xbcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501) {
-            self~$RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501();
+            self~$RugPull$_internal_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501();
             return (self, true);
         }
     }
@@ -225,7 +225,7 @@ _ lazy_deployment_completed() method_id {
     var self = $RugPull$_contract_load();
     
     ;; Handle operation
-    int handled = self~$RugPull$_contract_router(msg_bounced, in_msg);
+    int handled = self~$RugPull$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

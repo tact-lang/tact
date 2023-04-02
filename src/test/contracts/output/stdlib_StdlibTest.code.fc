@@ -30,7 +30,7 @@
 ;; Receivers of a Contract StdlibTest
 ;;
 
-(((int)), ()) %$StdlibTest$_receive_empty((int) $self) impure inline {
+(((int)), ()) %$StdlibTest$_internal_empty((int) $self) impure inline {
     var ($self'v) = $self;
     return (($self'v), ());
 }
@@ -81,7 +81,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract StdlibTest
 ;;
 
-((int), int) $StdlibTest$_contract_router((int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int), int) $StdlibTest$_contract_router_internal((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -96,7 +96,7 @@ _ lazy_deployment_completed() method_id {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$StdlibTest$_receive_empty();
+        self~%$StdlibTest$_internal_empty();
         return (self, true);
     }
     
@@ -117,7 +117,7 @@ _ lazy_deployment_completed() method_id {
     var self = $StdlibTest$_contract_load();
     
     ;; Handle operation
-    int handled = self~$StdlibTest$_contract_router(msg_bounced, in_msg);
+    int handled = self~$StdlibTest$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

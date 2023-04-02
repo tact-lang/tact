@@ -40,7 +40,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Empty
 ;;
 
-(tuple, int) $Empty$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $Empty$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -70,7 +70,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Empty$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Empty$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Empty$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

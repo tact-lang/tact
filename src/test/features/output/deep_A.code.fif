@@ -17,12 +17,12 @@ PROGRAM{
   DECLPROC $B$_init_child
   DECLPROC $A$_fun_getNext
   DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data_body
-  DECLPROC $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
+  DECLPROC $A$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
   74105 DECLMETHOD %getNext
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $A$_contract_router
+  DECLPROC $A$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -291,7 +291,7 @@ PROGRAM{
     s3 s4 XCHG
     -ROT
   }>
-  $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
+  $A$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
     MYADDR
     $B$_init_child INLINECALLDICT
@@ -329,7 +329,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $A$_contract_router PROCREF:<{
+  $A$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -353,7 +353,7 @@ PROGRAM{
       81463308115887082732985988965814941212607499737973399264699107294340141092189 PUSHINT
       EQUAL
       IFJMP:<{
-        $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
+        $A$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -382,7 +382,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $A$_contract_load INLINECALLDICT
     -ROT
-    $A$_contract_router INLINECALLDICT
+    $A$_contract_router_internal INLINECALLDICT
     DROP
     $A$_contract_store INLINECALLDICT
   }>

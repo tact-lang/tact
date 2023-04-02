@@ -34,14 +34,14 @@ export const ops = {
     contractInitChild: (type: string, ctx: WriterContext) => used(`$${type}$_init_child`, ctx),
     contractLoad: (type: string, ctx: WriterContext) => used(`$${type}$_contract_load`, ctx),
     contractStore: (type: string, ctx: WriterContext) => used(`$${type}$_contract_store`, ctx),
-    contractRouter: (type: string) => `$${type}$_contract_router`, // Not rendered as dependency
+    contractRouter: (type: string, kind: 'internal' | 'external') => `$${type}$_contract_router_${kind}`, // Not rendered as dependency
 
     // Router operations
-    receiveEmpty: (type: string) => `%$${type}$_receive_empty`,
-    receiveType: (type: string, msg: string) => `$${type}$_receive_binary_${msg}`,
-    receiveAnyText: (type: string) => `$${type}$_receive_any_text`,
-    receiveText: (type: string, hash: string) => `$${type}$_receive_text_${hash}`,
-    receiveAny: (type: string) => `$${type}$_receive_any`,
+    receiveEmpty: (type: string, kind: 'internal' | 'external') => `%$${type}$_${kind}_empty`,
+    receiveType: (type: string, kind: 'internal' | 'external', msg: string) => `$${type}$_${kind}_binary_${msg}`,
+    receiveAnyText: (type: string, kind: 'internal' | 'external') => `$${type}$_${kind}_any_text`,
+    receiveText: (type: string, kind: 'internal' | 'external', hash: string) => `$${type}$_${kind}_text_${hash}`,
+    receiveAny: (type: string, kind: 'internal' | 'external') => `$${type}$_${kind}_any`,
     receiveBounce: (type: string) => `$${type}$_receive_bounce`,
 
     // Functions

@@ -27,7 +27,7 @@ PROGRAM{
   DECLPROC $StringsTester$_fun_stringWithFloat
   DECLPROC $StringsTester$_fun_base64
   DECLPROC $StringsTester$_fun_processBase64
-  DECLPROC %$StringsTester$_receive_empty
+  DECLPROC %$StringsTester$_internal_empty
   93932 DECLMETHOD %constantString
   94939 DECLMETHOD %constantStringUnicode
   104680 DECLMETHOD %constantStringUnicodeLong
@@ -44,7 +44,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $StringsTester$_contract_router
+  DECLPROC $StringsTester$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -559,7 +559,7 @@ PROGRAM{
   $StringsTester$_fun_processBase64 PROCREF:<{
     $String$_fun_fromBase64 INLINECALLDICT
   }>
-  %$StringsTester$_receive_empty PROCINLINE:<{
+  %$StringsTester$_internal_empty PROCINLINE:<{
   }>
   %constantString PROC:<{
     $StringsTester$_contract_load INLINECALLDICT
@@ -643,7 +643,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $StringsTester$_contract_router PROCREF:<{
+  $StringsTester$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -665,7 +665,7 @@ PROGRAM{
     33 LESSINT
     AND
     IFJMP:<{
-      %$StringsTester$_receive_empty INLINECALLDICT
+      %$StringsTester$_internal_empty INLINECALLDICT
       TRUE
     }>
     FALSE
@@ -690,7 +690,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $StringsTester$_contract_load INLINECALLDICT
     -ROT
-    $StringsTester$_contract_router INLINECALLDICT
+    $StringsTester$_contract_router_internal INLINECALLDICT
     DROP
     $StringsTester$_contract_store INLINECALLDICT
   }>

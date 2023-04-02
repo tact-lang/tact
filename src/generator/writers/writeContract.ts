@@ -227,7 +227,11 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
         ctx.append(``);
 
         // Render body
-        writeRouter(type, ctx);
+        const hasExternal = type.receivers.find((v) => v.selector.kind.startsWith('external-'));
+        writeRouter(type, 'internal', ctx);
+        if (hasExternal) {
+            writeRouter(type, 'external', ctx);
+        }
 
         // Render internal receiver
         ctx.append(`() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`);
@@ -251,7 +255,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
 
             // Process operation
             ctx.append(`;; Handle operation`);
-            ctx.append(`int handled = self~${ops.contractRouter(type.name)}(msg_bounced, in_msg);`);
+            ctx.append(`int handled = self~${ops.contractRouter(type.name, 'internal')}(msg_bounced, in_msg);`);
             ctx.append();
 
             // Throw if not handled
@@ -265,5 +269,33 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
         });
         ctx.append('}');
         ctx.append();
+
+        // Render external receiver
+        if (hasExternal) {
+            ctx.append(`() recv_external(slice in_msg) impure {`);
+            ctx.inIndent(() => {
+
+                // Load self
+                ctx.append(`;; Load contract data`);
+                ctx.append(`var self = ${ops.contractLoad(type.name, ctx)}();`);
+                ctx.append();
+
+                // Process operation
+                ctx.append(`;; Handle operation`);
+                ctx.append(`int handled = self~${ops.contractRouter(type.name, 'external')}(in_msg);`);
+                ctx.append();
+
+                // Throw if not handled
+                ctx.append(`;; Throw if not handled`);
+                ctx.append(`throw_unless(handled, ${contractErrors.invalidMessage.id});`);
+                ctx.append();
+
+                // Persist state
+                ctx.append(`;; Persist state`);
+                ctx.append(`${ops.contractStore(type.name, ctx)}(self);`);
+            });
+            ctx.append('}');
+            ctx.append();
+        }
     });
 }

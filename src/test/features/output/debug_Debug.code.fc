@@ -27,7 +27,7 @@ tuple $Debug$_contract_init() impure inline_ref {
 ;; Receivers of a Contract Debug
 ;;
 
-(tuple, ()) $Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
+(tuple, ()) $Debug$_internal_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57(tuple $self) impure inline {
     var $self = $self;
     dump_stack();
     __tact_debug_str(__gen_slice_string_be033138a8e284b3da1cee56e92447de2368f6431d64a3c6fe4db3183aeb9c36());
@@ -38,7 +38,7 @@ tuple $Debug$_contract_init() impure inline_ref {
     return ($self, ());
 }
 
-((tuple), ()) $Debug$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
+((tuple), ()) $Debug$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
     $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
@@ -77,7 +77,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Debug
 ;;
 
-(tuple, int) $Debug$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $Debug$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -93,7 +93,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Deploy message
     if (op == 2490013878) {
         var msg = in_msg~$Deploy$_load();
-        self~$Debug$_receive_binary_Deploy(msg);
+        self~$Debug$_internal_binary_Deploy(msg);
         return (self, true);
     }
     
@@ -103,7 +103,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Debug" message
         if (text_op == 0xae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57) {
-            self~$Debug$_receive_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57();
+            self~$Debug$_internal_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57();
             return (self, true);
         }
     }
@@ -125,7 +125,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Debug$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Debug$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Debug$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

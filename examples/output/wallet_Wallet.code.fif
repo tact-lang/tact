@@ -23,13 +23,13 @@ PROGRAM{
   DECLPROC $Wallet$_fun_walletId
   DECLPROC $Wallet$_fun_seqno
   DECLPROC $SendParameters$_constructor_value_to_mode_body
-  DECLPROC $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC $Wallet$_receive_binary_TransferMessage
-  DECLPROC $Wallet$_receive_any
-  DECLPROC %$Wallet$_receive_empty
-  DECLPROC $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
-  DECLPROC $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439
-  DECLPROC $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
+  DECLPROC $Wallet$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $Wallet$_internal_binary_TransferMessage
+  DECLPROC $Wallet$_internal_any
+  DECLPROC %$Wallet$_internal_empty
+  DECLPROC $Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
+  DECLPROC $Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439
+  DECLPROC $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
   DECLPROC $Wallet$_receive_bounce
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
@@ -37,7 +37,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Wallet$_contract_router
+  DECLPROC $Wallet$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -356,9 +356,9 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  $Wallet$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $Wallet$_receive_binary_TransferMessage PROCINLINE:<{
+  $Wallet$_internal_binary_TransferMessage PROCINLINE:<{
     s4 s3 s2 PUSH3
     s4 s3 PUSH2
     $Transfer$_store_cell INLINECALLDICT
@@ -380,28 +380,28 @@ PROGRAM{
     $SendParameters$_constructor_value_to_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $Wallet$_receive_any PROCINLINE:<{
+  $Wallet$_internal_any PROCINLINE:<{
     DROP
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  %$Wallet$_receive_empty PROCINLINE:<{
+  %$Wallet$_internal_empty PROCINLINE:<{
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
+  $Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 PROCINLINE:<{
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 PROCINLINE:<{
+  $Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 PROCINLINE:<{
     s0 s2 XCHG
     INC
     s0 s2 XCHG
   }>
-  $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
+  $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
   }>
   $Wallet$_receive_bounce PROCINLINE:<{
     DROP
@@ -436,7 +436,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Wallet$_contract_router PROCREF:<{
+  $Wallet$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -460,7 +460,7 @@ PROGRAM{
       NIP
       $TransferMessage$_load INLINECALLDICT
       1 6 BLKDROP2
-      $Wallet$_receive_binary_TransferMessage INLINECALLDICT
+      $Wallet$_internal_binary_TransferMessage INLINECALLDICT
       TRUE
     }>
     OVER
@@ -471,7 +471,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      %$Wallet$_receive_empty INLINECALLDICT
+      %$Wallet$_internal_empty INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -484,7 +484,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         2DROP
-        $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        $Wallet$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -493,7 +493,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         2DROP
-        $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
+        $Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -502,7 +502,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         2DROP
-        $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 INLINECALLDICT
+        $Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -510,12 +510,12 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 INLINECALLDICT
+        $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 INLINECALLDICT
         TRUE
         RETALT
       }>
     }>
-    $Wallet$_receive_any INLINECALLDICT
+    $Wallet$_internal_any INLINECALLDICT
     TRUE
   }>
   recv_internal PROC:<{
@@ -538,7 +538,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Wallet$_contract_load INLINECALLDICT
     2 3 BLKSWAP
-    $Wallet$_contract_router INLINECALLDICT
+    $Wallet$_contract_router_internal INLINECALLDICT
     DROP
     $Wallet$_contract_store INLINECALLDICT
   }>

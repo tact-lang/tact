@@ -19,12 +19,12 @@ PROGRAM{
   DECLPROC $global_send
   DECLPROC $C$_init_child
   DECLPROC $SendParameters$_constructor_value_to_mode_bounce_code_data_body
-  DECLPROC $C$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
-  DECLPROC $C$_receive_text_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272
+  DECLPROC $C$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d
+  DECLPROC $C$_internal_text_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $C$_contract_router
+  DECLPROC $C$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -297,7 +297,7 @@ PROGRAM{
     s3 s4 XCHG
     -ROT
   }>
-  $C$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
+  $C$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d PROCINLINE:<{
     __tact_context_sys GETGLOB
     OVER
     $C$_init_child INLINECALLDICT
@@ -313,7 +313,7 @@ PROGRAM{
     $SendParameters$_constructor_value_to_mode_bounce_code_data_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $C$_receive_text_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272 PROCINLINE:<{
+  $C$_internal_text_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272 PROCINLINE:<{
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
@@ -331,7 +331,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $C$_contract_router PROCREF:<{
+  $C$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -357,14 +357,14 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $C$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
+        $C$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d INLINECALLDICT
         TRUE
         RETALT
       }>
       114089746356047353508133676070720907146352136342213405975581125113545976697458 PUSHINT
       EQUAL
       IFJMP:<{
-        $C$_receive_text_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272 INLINECALLDICT
+        $C$_internal_text_fc3c82112466581dba23f904cd1a09723c0869adea0045bd6733ea4f76dbd272 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -393,7 +393,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $C$_contract_load INLINECALLDICT
     -ROT
-    $C$_contract_router INLINECALLDICT
+    $C$_contract_router_internal INLINECALLDICT
     DROP
     $C$_contract_store INLINECALLDICT
   }>

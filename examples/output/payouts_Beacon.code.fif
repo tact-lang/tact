@@ -21,13 +21,13 @@ PROGRAM{
   DECLPROC $global_reply
   DECLPROC $Beacon$_fun_owner
   DECLPROC $CanPayoutResponse$_constructor_ok_amount_address
-  DECLPROC $Beacon$_receive_binary_CanPayout
+  DECLPROC $Beacon$_internal_binary_CanPayout
   DECLPROC $Beacon$_receive_bounce
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Beacon$_contract_router
+  DECLPROC $Beacon$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -287,7 +287,7 @@ PROGRAM{
   $CanPayoutResponse$_constructor_ok_amount_address PROCINLINE:<{
     ROT
   }>
-  $Beacon$_receive_binary_CanPayout PROCINLINE:<{
+  $Beacon$_internal_binary_CanPayout PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
@@ -342,7 +342,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Beacon$_contract_router PROCREF:<{
+  $Beacon$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -364,7 +364,7 @@ PROGRAM{
     IFJMP:<{
       $CanPayout$_load INLINECALLDICT
       NIP
-      $Beacon$_receive_binary_CanPayout INLINECALLDICT
+      $Beacon$_internal_binary_CanPayout INLINECALLDICT
       TRUE
     }>
     DROP
@@ -390,7 +390,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Beacon$_contract_load INLINECALLDICT
     2 3 BLKSWAP
-    $Beacon$_contract_router INLINECALLDICT
+    $Beacon$_contract_router_internal INLINECALLDICT
     DROP
     $Beacon$_contract_store INLINECALLDICT
   }>

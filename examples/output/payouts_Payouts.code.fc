@@ -29,7 +29,7 @@
 ;; Receivers of a Contract Payouts
 ;;
 
-((slice, int), ()) $Payouts$_receive_any_text((slice, int) $self, slice $msg) impure inline {
+((slice, int), ()) $Payouts$_internal_any_text((slice, int) $self, slice $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(16059, ($ctx'value >= 1000000000));
@@ -47,7 +47,7 @@
     return (($self'owner, $self'publicKey), ());
 }
 
-(((slice, int)), ()) $Payouts$_receive_binary_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure inline {
+(((slice, int)), ()) $Payouts$_internal_binary_CanPayoutResponse((slice, int) $self, (int, slice, int) $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'amount, $msg'address, $msg'ok) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -63,7 +63,7 @@
     return (($self'owner, $self'publicKey), ());
 }
 
-(((slice, int)), ()) $Payouts$_receive_binary_ChangeOwner((slice, int) $self, (slice) $msg) impure inline {
+(((slice, int)), ()) $Payouts$_internal_binary_ChangeOwner((slice, int) $self, (slice) $msg) impure inline {
     var ($self'owner, $self'publicKey) = $self;
     var ($msg'newOwner) = $msg;
     ($self'owner, $self'publicKey)~$Payouts$_fun_requireOwner();
@@ -104,7 +104,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Payouts
 ;;
 
-((slice, int), int) $Payouts$_contract_router((slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice, int), int) $Payouts$_contract_router_internal((slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -120,21 +120,21 @@ _ lazy_deployment_completed() method_id {
     ;; Receive CanPayoutResponse message
     if (op == 4293607646) {
         var msg = in_msg~$CanPayoutResponse$_load();
-        self~$Payouts$_receive_binary_CanPayoutResponse(msg);
+        self~$Payouts$_internal_binary_CanPayoutResponse(msg);
         return (self, true);
     }
     
     ;; Receive ChangeOwner message
     if (op == 256331011) {
         var msg = in_msg~$ChangeOwner$_load();
-        self~$Payouts$_receive_binary_ChangeOwner(msg);
+        self~$Payouts$_internal_binary_ChangeOwner(msg);
         return (self, true);
     }
     
     ;; Text Receivers
     if (op == 0) {
         if (slice_bits(in_msg) >= 32) {
-            self~$Payouts$_receive_any_text(in_msg.skip_bits(32));
+            self~$Payouts$_internal_any_text(in_msg.skip_bits(32));
             return (self, true);
         }
     }
@@ -156,7 +156,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Payouts$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Payouts$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Payouts$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

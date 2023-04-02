@@ -19,8 +19,8 @@ PROGRAM{
   DECLPROC $IntrinsicsTester$_fun_getPow
   DECLPROC $IntrinsicsTester$_fun_getPow2
   DECLPROC $IntrinsicsTester$_fun_getComment
-  DECLPROC $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC $IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd
+  DECLPROC $IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $IntrinsicsTester$_internal_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd
   85126 DECLMETHOD %getTons
   72025 DECLMETHOD %getTons2
   97624 DECLMETHOD %getString
@@ -35,7 +35,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $IntrinsicsTester$_contract_router
+  DECLPROC $IntrinsicsTester$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -179,9 +179,9 @@ PROGRAM{
   $IntrinsicsTester$_fun_getComment PROCREF:<{
     B{b5ee9c7241010101001100001e0000000048656c6c6f20776f726c64f5e7b6c8} B>boc PUSHREF
   }>
-  $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  $IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd PROCINLINE:<{
+  $IntrinsicsTester$_internal_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd PROCINLINE:<{
     B{b5ee9c7241010101001100001e0000000048656c6c6f20776f726c64f5e7b6c8} B>boc PUSHREF
     $global_emit INLINECALLDICT
   }>
@@ -256,7 +256,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $IntrinsicsTester$_contract_router PROCREF:<{
+  $IntrinsicsTester$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -282,14 +282,14 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $IntrinsicsTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        $IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         TRUE
         RETALT
       }>
       37050884901759915338437282997942222306459819050362497402689035064755329816285 PUSHINT
       EQUAL
       IFJMP:<{
-        $IntrinsicsTester$_receive_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd INLINECALLDICT
+        $IntrinsicsTester$_internal_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -318,7 +318,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $IntrinsicsTester$_contract_load INLINECALLDICT
     2 5 BLKSWAP
-    $IntrinsicsTester$_contract_router INLINECALLDICT
+    $IntrinsicsTester$_contract_router_internal INLINECALLDICT
     DROP
     $IntrinsicsTester$_contract_store INLINECALLDICT
   }>

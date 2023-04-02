@@ -26,12 +26,12 @@
 ;; Receivers of a Contract MultisigSigner
 ;;
 
-(((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) %$MultisigSigner$_receive_empty((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
+(((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell))), ()) %$MultisigSigner$_internal_empty((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     return (($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)), ());
 }
 
-((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) $MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), ()) $MultisigSigner$_internal_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) $self) impure inline {
     var ($self'master, $self'members, $self'weight, $self'requiredWeight, $self'completed, ($self'request'requested, $self'request'to, $self'request'value, $self'request'timeout, $self'request'bounce, $self'request'mode, $self'request'body)) = $self;
     throw_unless(4755, ($self'request'timeout > now()));
     throw_unless(40810, (~ $self'completed));
@@ -77,7 +77,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract MultisigSigner
 ;;
 
-((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), int) $MultisigSigner$_contract_router((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)), int) $MultisigSigner$_contract_router_internal((slice, cell, int, int, int, (slice, slice, int, int, int, int, cell)) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -92,7 +92,7 @@ _ lazy_deployment_completed() method_id {
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$MultisigSigner$_receive_empty();
+        self~%$MultisigSigner$_internal_empty();
         return (self, true);
     }
     
@@ -102,7 +102,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "YES" message
         if (text_op == 0x22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039) {
-            self~$MultisigSigner$_receive_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
+            self~$MultisigSigner$_internal_text_22aee6d0a6dc146577277dd58d06ae3090a3cdd3d8a88561184208ae5f6eb039();
             return (self, true);
         }
     }
@@ -124,7 +124,7 @@ _ lazy_deployment_completed() method_id {
     var self = $MultisigSigner$_contract_load();
     
     ;; Handle operation
-    int handled = self~$MultisigSigner$_contract_router(msg_bounced, in_msg);
+    int handled = self~$MultisigSigner$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

@@ -27,7 +27,7 @@
 ;; Receivers of a Contract A
 ;;
 
-(((slice)), ()) $A$_receive_binary_Deploy((slice) $self, (int) $deploy) impure inline {
+(((slice)), ()) $A$_internal_binary_Deploy((slice) $self, (int) $deploy) impure inline {
     var ($self'owner) = $self;
     var ($deploy'queryId) = $deploy;
     $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
@@ -67,7 +67,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract A
 ;;
 
-((slice), int) $A$_contract_router((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice), int) $A$_contract_router_internal((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -83,7 +83,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Deploy message
     if (op == 2490013878) {
         var msg = in_msg~$Deploy$_load();
-        self~$A$_receive_binary_Deploy(msg);
+        self~$A$_internal_binary_Deploy(msg);
         return (self, true);
     }
     
@@ -104,7 +104,7 @@ _ lazy_deployment_completed() method_id {
     var self = $A$_contract_load();
     
     ;; Handle operation
-    int handled = self~$A$_contract_router(msg_bounced, in_msg);
+    int handled = self~$A$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

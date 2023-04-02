@@ -62,7 +62,7 @@ PROGRAM{
   DECLPROC $MathTester$_fun_isNull3
   DECLPROC $MathTester$_fun_isNotNull3
   DECLPROC $DeployOk$_constructor_queryId
-  DECLPROC $MathTester$_receive_binary_Deploy
+  DECLPROC $MathTester$_internal_binary_Deploy
   83863 DECLMETHOD %add
   80704 DECLMETHOD %compare1
   68387 DECLMETHOD %compare2
@@ -101,7 +101,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $MathTester$_contract_router
+  DECLPROC $MathTester$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -637,7 +637,7 @@ PROGRAM{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
-  $MathTester$_receive_binary_Deploy PROCINLINE:<{
+  $MathTester$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
     $global_reply INLINECALLDICT
@@ -972,7 +972,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $MathTester$_contract_router PROCREF:<{
+  $MathTester$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -993,7 +993,7 @@ PROGRAM{
     IFJMP:<{
       $Deploy$_load INLINECALLDICT
       NIP
-      $MathTester$_receive_binary_Deploy INLINECALLDICT
+      $MathTester$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
     DROP
@@ -1019,7 +1019,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $MathTester$_contract_load INLINECALLDICT
     -ROT
-    $MathTester$_contract_router INLINECALLDICT
+    $MathTester$_contract_router_internal INLINECALLDICT
     DROP
     $MathTester$_contract_store INLINECALLDICT
   }>

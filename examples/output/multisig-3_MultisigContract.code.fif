@@ -21,8 +21,8 @@ PROGRAM{
   DECLPROC $MultisigContract$_fun_key2
   DECLPROC $MultisigContract$_fun_key3
   DECLPROC $MultisigContract$_fun_seqno
-  DECLPROC $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
-  DECLPROC $MultisigContract$_receive_binary_Execute
+  DECLPROC $MultisigContract$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
+  DECLPROC $MultisigContract$_internal_binary_Execute
   107493 DECLMETHOD %key1
   103302 DECLMETHOD %key2
   99239 DECLMETHOD %key3
@@ -30,7 +30,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $MultisigContract$_contract_router
+  DECLPROC $MultisigContract$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -302,9 +302,9 @@ PROGRAM{
   $MultisigContract$_fun_seqno PROCREF:<{
     s3 PUSH
   }>
-  $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
+  $MultisigContract$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
-  $MultisigContract$_receive_binary_Execute PROCINLINE:<{
+  $MultisigContract$_internal_binary_Execute PROCINLINE:<{
     s5 s4 s3 PUSH3
     $Operation$_store_cell INLINECALLDICT
     HASHCU
@@ -372,7 +372,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $MultisigContract$_contract_router PROCREF:<{
+  $MultisigContract$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -396,7 +396,7 @@ PROGRAM{
       NIP
       $Execute$_load INLINECALLDICT
       1 6 BLKDROP2
-      $MultisigContract$_receive_binary_Execute INLINECALLDICT
+      $MultisigContract$_internal_binary_Execute INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -406,7 +406,7 @@ PROGRAM{
       60529586900441909508163366315693238357781362892506273907639555627111304786502 PUSHINT
       EQUAL
       IFJMP:<{
-        $MultisigContract$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
+        $MultisigContract$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -435,7 +435,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $MultisigContract$_contract_load INLINECALLDICT
     2 4 BLKSWAP
-    $MultisigContract$_contract_router INLINECALLDICT
+    $MultisigContract$_contract_router_internal INLINECALLDICT
     DROP
     $MultisigContract$_contract_store INLINECALLDICT
   }>

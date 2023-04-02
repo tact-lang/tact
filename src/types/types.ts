@@ -102,7 +102,22 @@ export type ReceiverSelector = {
 } | {
     kind: 'internal-bounce',
     name: string
-};
+} | {
+    kind: 'external-binary',
+    type: string,
+    name: string,
+} | {
+    kind: 'external-empty'
+} | {
+    kind: 'external-comment',
+    comment: string
+} | {
+    kind: 'external-comment-fallback',
+    name: string
+} | {
+    kind: 'external-fallback',
+    name: string
+}
 
 export type ReceiverDescription = {
     selector: ReceiverSelector,

@@ -32,12 +32,12 @@
 ;; Receivers of a Contract Wallet
 ;;
 
-((int, int, int), ()) $Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure inline {
+((int, int, int), ()) $Wallet$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-(((int, int, int)), ()) $Wallet$_receive_binary_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure inline {
+(((int, int, int)), ()) $Wallet$_internal_binary_TransferMessage((int, int, int) $self, (slice, (int, int, slice, int, cell)) $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, ($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)) = $msg;
     int $op_hash = cell_hash($Transfer$_store_cell(($msg'transfer'seqno, $msg'transfer'mode, $msg'transfer'to, $msg'transfer'amount, $msg'transfer'body)));
@@ -48,31 +48,31 @@
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $Wallet$_receive_any((int, int, int) $self, slice $msg) impure inline {
+((int, int, int), ()) $Wallet$_internal_any((int, int, int) $self, slice $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     $self'seqno = ($self'seqno + 1);
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-(((int, int, int)), ()) %$Wallet$_receive_empty((int, int, int) $self) impure inline {
+(((int, int, int)), ()) %$Wallet$_internal_empty((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     $self'seqno = ($self'seqno + 1);
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) $self) impure inline {
+((int, int, int), ()) $Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     $self'seqno = ($self'seqno + 1);
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439((int, int, int) $self) impure inline {
+((int, int, int), ()) $Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     $self'seqno = ($self'seqno + 1);
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) $self) impure inline {
+((int, int, int), ()) $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9((int, int, int) $self) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($walletInit'code, $walletInit'data) = $Wallet$_init_child(__tact_context_sys, $self'key, ($self'walletId + 1));
     return (($self'seqno, $self'key, $self'walletId), ());
@@ -126,7 +126,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Wallet
 ;;
 
-((int, int, int), int) $Wallet$_contract_router((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, int, int), int) $Wallet$_contract_router_internal((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -143,13 +143,13 @@ _ lazy_deployment_completed() method_id {
     ;; Receive TransferMessage message
     if (op == 123) {
         var msg = in_msg~$TransferMessage$_load();
-        self~$Wallet$_receive_binary_TransferMessage(msg);
+        self~$Wallet$_internal_binary_TransferMessage(msg);
         return (self, true);
     }
     
     ;; Receive empty message
     if ((op == 0) & (slice_bits(in_msg) <= 32)) {
-        self~%$Wallet$_receive_empty();
+        self~%$Wallet$_internal_empty();
         return (self, true);
     }
     
@@ -159,31 +159,31 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            self~$Wallet$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            self~$Wallet$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             return (self, true);
         }
         
         ;; Receive "notify" message
         if (text_op == 0x0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2) {
-            self~$Wallet$_receive_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
+            self~$Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2();
             return (self, true);
         }
         
         ;; Receive "Слава Україні" message
         if (text_op == 0x269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439) {
-            self~$Wallet$_receive_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439();
+            self~$Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439();
             return (self, true);
         }
         
         ;; Receive "duplicate" message
         if (text_op == 0x9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9) {
-            self~$Wallet$_receive_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9();
+            self~$Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9();
             return (self, true);
         }
     }
     
     ;; Receiver fallback
-    self~$Wallet$_receive_any(in_msg);
+    self~$Wallet$_internal_any(in_msg);
     return (self, true);
 }
 
@@ -201,7 +201,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Wallet$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Wallet$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Wallet$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

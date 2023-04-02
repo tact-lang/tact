@@ -26,6 +26,14 @@
       "output": "./examples/output"
     },
     {
+      "name": "external",
+      "path": "./examples/external.tact",
+      "output": "./examples/output",
+      "options": {
+        "external": true
+      }
+    },
+    {
       "name": "wallet",
       "path": "./examples/wallet.tact",
       "output": "./examples/output"

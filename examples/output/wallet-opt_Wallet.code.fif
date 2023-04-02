@@ -10,14 +10,14 @@ PROGRAM{
   DECLPROC $Wallet$_fun_publicKey
   DECLPROC $Wallet$_fun_walletId
   DECLPROC $Wallet$_fun_seqno
-  DECLPROC $Wallet$_receive_binary_TransferMessage
+  DECLPROC $Wallet$_internal_binary_TransferMessage
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
   85143 DECLMETHOD %seqno
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Wallet$_contract_router
+  DECLPROC $Wallet$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -117,7 +117,7 @@ PROGRAM{
   $Wallet$_fun_seqno PROCINLINE:<{
     s2 PUSH
   }>
-  $Wallet$_receive_binary_TransferMessage PROCINLINE:<{
+  $Wallet$_internal_binary_TransferMessage PROCINLINE:<{
     DUP
     HASHSU
     48401 PUSHINT
@@ -170,7 +170,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Wallet$_contract_router PROCREF:<{
+  $Wallet$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -191,7 +191,7 @@ PROGRAM{
     IFJMP:<{
       $TransferMessage$_load INLINECALLDICT
       1 2 BLKDROP2
-      $Wallet$_receive_binary_TransferMessage INLINECALLDICT
+      $Wallet$_internal_binary_TransferMessage INLINECALLDICT
       TRUE
     }>
     DROP
@@ -217,7 +217,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Wallet$_contract_load INLINECALLDICT
     2 3 BLKSWAP
-    $Wallet$_contract_router INLINECALLDICT
+    $Wallet$_contract_router_internal INLINECALLDICT
     DROP
     $Wallet$_contract_store INLINECALLDICT
   }>

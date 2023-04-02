@@ -28,18 +28,18 @@ PROGRAM{
   DECLPROC $RugPull$_fun_owner
   DECLPROC $RugPull$_fun_requireNotStopped
   DECLPROC $RugPull$_fun_stopped
-  DECLPROC %$RugPull$_receive_empty
-  DECLPROC $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4
-  DECLPROC $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea
-  DECLPROC $RugPull$_receive_binary_ChangeOwner
-  DECLPROC $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501
+  DECLPROC %$RugPull$_internal_empty
+  DECLPROC $RugPull$_internal_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4
+  DECLPROC $RugPull$_internal_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea
+  DECLPROC $RugPull$_internal_binary_ChangeOwner
+  DECLPROC $RugPull$_internal_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501
   116437 DECLMETHOD %params
   83229 DECLMETHOD %owner
   74107 DECLMETHOD %stopped
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $RugPull$_contract_router
+  DECLPROC $RugPull$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -400,7 +400,7 @@ PROGRAM{
   $RugPull$_fun_stopped PROCREF:<{
     s3 PUSH
   }>
-  %$RugPull$_receive_empty PROCINLINE:<{
+  %$RugPull$_internal_empty PROCINLINE:<{
     $RugPull$_fun_requireNotStopped INLINECALLDICT
     s4 PUSH
     IF:<{
@@ -456,7 +456,7 @@ PROGRAM{
       s5 s5 XCHG2
     }>
   }>
-  $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROCINLINE:<{
+  $RugPull$_internal_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 PROCINLINE:<{
     $RugPull$_fun_requireOwner INLINECALLDICT
     s4 PUSH
     NOT
@@ -471,7 +471,7 @@ PROGRAM{
     $SendParameters$_constructor_value_to_mode INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROCINLINE:<{
+  $RugPull$_internal_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea PROCINLINE:<{
     s4 POP
     TRUE
     0 PUSHINT
@@ -481,12 +481,12 @@ PROGRAM{
     $global_send INLINECALLDICT
     s0 s4 XCHG
   }>
-  $RugPull$_receive_binary_ChangeOwner PROCINLINE:<{
+  $RugPull$_internal_binary_ChangeOwner PROCINLINE:<{
     10 -ROLL
     $RugPull$_fun_requireOwner INLINECALLDICT
     1 9 BLKDROP2
   }>
-  $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 PROCINLINE:<{
+  $RugPull$_internal_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 PROCINLINE:<{
     $RugPull$_fun_requireOwner INLINECALLDICT
     $RugPull$_fun_requireNotStopped INLINECALLDICT
     s3 POP
@@ -529,7 +529,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $RugPull$_contract_router PROCREF:<{
+  $RugPull$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -554,7 +554,7 @@ PROGRAM{
     AND
     IFJMP:<{
       2DROP
-      %$RugPull$_receive_empty INLINECALLDICT
+      %$RugPull$_internal_empty INLINECALLDICT
       TRUE
     }>
     OVER
@@ -564,7 +564,7 @@ PROGRAM{
       NIP
       $ChangeOwner$_load INLINECALLDICT
       NIP
-      $RugPull$_receive_binary_ChangeOwner INLINECALLDICT
+      $RugPull$_internal_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -576,7 +576,7 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $RugPull$_receive_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 INLINECALLDICT
+        $RugPull$_internal_text_095190194aee611ce895c5503adf85fd864de7905746142f608d3eb2faad14e4 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -585,14 +585,14 @@ PROGRAM{
       EQUAL
       IFJMP:<{
         DROP
-        $RugPull$_receive_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea INLINECALLDICT
+        $RugPull$_internal_text_cde242c6cac560a99ff2d2683ee0fb1629a818aec0f1166511cd822cf20da4ea INLINECALLDICT
         TRUE
         RETALT
       }>
       85478235227686204299312064008631277118150318603456584517510472216578858763521 PUSHINT
       EQUAL
       IFJMP:<{
-        $RugPull$_receive_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 INLINECALLDICT
+        $RugPull$_internal_text_bcfaf776907c719cc8d379d8f194aaaa27e8ca2871cd591781721f215a454501 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -621,7 +621,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $RugPull$_contract_load INLINECALLDICT
     2 10 BLKSWAP
-    $RugPull$_contract_router INLINECALLDICT
+    $RugPull$_contract_router_internal INLINECALLDICT
     DROP
     $RugPull$_contract_store INLINECALLDICT
   }>

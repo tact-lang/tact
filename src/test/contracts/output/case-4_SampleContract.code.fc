@@ -54,7 +54,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract SampleContract
 ;;
 
-((int, int, (int, int), cell), int) $SampleContract$_contract_router((int, int, (int, int), cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, int, (int, int), cell), int) $SampleContract$_contract_router_internal((int, int, (int, int), cell) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -84,7 +84,7 @@ _ lazy_deployment_completed() method_id {
     var self = $SampleContract$_contract_load();
     
     ;; Handle operation
-    int handled = self~$SampleContract$_contract_router(msg_bounced, in_msg);
+    int handled = self~$SampleContract$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

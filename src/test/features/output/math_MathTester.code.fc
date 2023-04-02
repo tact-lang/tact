@@ -190,7 +190,7 @@ tuple $MathTester$_contract_init() impure inline_ref {
 ;; Receivers of a Contract MathTester
 ;;
 
-((tuple), ()) $MathTester$_receive_binary_Deploy(tuple $self, (int) $deploy) impure inline {
+((tuple), ()) $MathTester$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
     $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
@@ -497,7 +497,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract MathTester
 ;;
 
-(tuple, int) $MathTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $MathTester$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -513,7 +513,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Deploy message
     if (op == 2490013878) {
         var msg = in_msg~$Deploy$_load();
-        self~$MathTester$_receive_binary_Deploy(msg);
+        self~$MathTester$_internal_binary_Deploy(msg);
         return (self, true);
     }
     
@@ -534,7 +534,7 @@ _ lazy_deployment_completed() method_id {
     var self = $MathTester$_contract_load();
     
     ;; Handle operation
-    int handled = self~$MathTester$_contract_router(msg_bounced, in_msg);
+    int handled = self~$MathTester$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

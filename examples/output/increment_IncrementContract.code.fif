@@ -31,17 +31,17 @@ PROGRAM{
   DECLPROC $IncrementContract$_fun_counters
   DECLPROC $IncrementContract$_fun_counters2
   DECLPROC $DeployOk$_constructor_queryId
-  DECLPROC $IncrementContract$_receive_binary_Increment
-  DECLPROC $IncrementContract$_receive_binary_Toggle
-  DECLPROC $IncrementContract$_receive_binary_Persist
-  DECLPROC $IncrementContract$_receive_binary_Reset
-  DECLPROC $IncrementContract$_receive_binary_Deploy
+  DECLPROC $IncrementContract$_internal_binary_Increment
+  DECLPROC $IncrementContract$_internal_binary_Toggle
+  DECLPROC $IncrementContract$_internal_binary_Persist
+  DECLPROC $IncrementContract$_internal_binary_Reset
+  DECLPROC $IncrementContract$_internal_binary_Deploy
   95239 DECLMETHOD %counters
   77570 DECLMETHOD %counters2
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $IncrementContract$_contract_router
+  DECLPROC $IncrementContract$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -440,7 +440,7 @@ PROGRAM{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
-  $IncrementContract$_receive_binary_Increment PROCINLINE:<{
+  $IncrementContract$_internal_binary_Increment PROCINLINE:<{
     257 PUSHINT
     DUP
     s3 s8 XCHG
@@ -455,7 +455,7 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     SWAP
   }>
-  $IncrementContract$_receive_binary_Toggle PROCINLINE:<{
+  $IncrementContract$_internal_binary_Toggle PROCINLINE:<{
     s4 PUSH
     257 PUSHINT
     s2 PUSH
@@ -483,7 +483,7 @@ PROGRAM{
     }>
     s0 s3 XCHG
   }>
-  $IncrementContract$_receive_binary_Persist PROCINLINE:<{
+  $IncrementContract$_internal_binary_Persist PROCINLINE:<{
     52777 PUSHINT
     s5 PUSH
     257 PUSHINT
@@ -497,7 +497,7 @@ PROGRAM{
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s2 XCHG
   }>
-  $IncrementContract$_receive_binary_Reset PROCINLINE:<{
+  $IncrementContract$_internal_binary_Reset PROCINLINE:<{
     257 PUSHINT
     PUSHNULL
     s1 s2 PUSH2
@@ -529,7 +529,7 @@ PROGRAM{
     s3 s4 XCHG
     s1 s3 s0 XCHG3
   }>
-  $IncrementContract$_receive_binary_Deploy PROCINLINE:<{
+  $IncrementContract$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
     $global_reply INLINECALLDICT
@@ -559,7 +559,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $IncrementContract$_contract_router PROCREF:<{
+  $IncrementContract$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -581,7 +581,7 @@ PROGRAM{
       NIP
       $Increment$_load INLINECALLDICT
       1 2 BLKDROP2
-      $IncrementContract$_receive_binary_Increment INLINECALLDICT
+      $IncrementContract$_internal_binary_Increment INLINECALLDICT
       TRUE
     }>
     OVER
@@ -591,7 +591,7 @@ PROGRAM{
       NIP
       $Toggle$_load INLINECALLDICT
       NIP
-      $IncrementContract$_receive_binary_Toggle INLINECALLDICT
+      $IncrementContract$_internal_binary_Toggle INLINECALLDICT
       TRUE
     }>
     OVER
@@ -601,7 +601,7 @@ PROGRAM{
       NIP
       $Persist$_load INLINECALLDICT
       1 2 BLKDROP2
-      $IncrementContract$_receive_binary_Persist INLINECALLDICT
+      $IncrementContract$_internal_binary_Persist INLINECALLDICT
       TRUE
     }>
     OVER
@@ -611,7 +611,7 @@ PROGRAM{
       NIP
       $Reset$_load INLINECALLDICT
       NIP
-      $IncrementContract$_receive_binary_Reset INLINECALLDICT
+      $IncrementContract$_internal_binary_Reset INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -620,7 +620,7 @@ PROGRAM{
     IFJMP:<{
       $Deploy$_load INLINECALLDICT
       NIP
-      $IncrementContract$_receive_binary_Deploy INLINECALLDICT
+      $IncrementContract$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
     DROP
@@ -646,7 +646,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $IncrementContract$_contract_load INLINECALLDICT
     2 5 BLKSWAP
-    $IncrementContract$_contract_router INLINECALLDICT
+    $IncrementContract$_contract_router_internal INLINECALLDICT
     DROP
     $IncrementContract$_contract_store INLINECALLDICT
   }>

@@ -32,7 +32,7 @@
 ;; Receivers of a Contract Wallet
 ;;
 
-(((int, int, int)), ()) $Wallet$_receive_binary_TransferMessage((int, int, int) $self, (slice, slice) $msg) impure inline {
+(((int, int, int)), ()) $Wallet$_internal_binary_TransferMessage((int, int, int) $self, (slice, slice) $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
     var ($msg'signature, $msg'transfer) = $msg;
     int $op_hash = slice_hash($msg'transfer);
@@ -90,7 +90,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Wallet
 ;;
 
-((int, int, int), int) $Wallet$_contract_router((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, int, int), int) $Wallet$_contract_router_internal((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -106,7 +106,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive TransferMessage message
     if (op == 3548477446) {
         var msg = in_msg~$TransferMessage$_load();
-        self~$Wallet$_receive_binary_TransferMessage(msg);
+        self~$Wallet$_internal_binary_TransferMessage(msg);
         return (self, true);
     }
     
@@ -127,7 +127,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Wallet$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Wallet$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Wallet$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

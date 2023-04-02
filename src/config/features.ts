@@ -14,6 +14,10 @@ export function enabledMaterchain(ctx: CompilerContext) {
     return featureEnabled(ctx, 'masterchain');
 }
 
+export function enabledExternals(ctx: CompilerContext) {
+    return featureEnabled(ctx, 'external');
+}
+
 export function featureEnabled(ctx: CompilerContext, key: string) {
     return featureStore.get(ctx, key) === true;
 }

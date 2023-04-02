@@ -257,7 +257,7 @@
     },
     "receive-declaration": {
       "name": "meta.struct.field.tact",
-      "begin": "(receive)",
+      "begin": "(receive|external)",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.receive.tact"

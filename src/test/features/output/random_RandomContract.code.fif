@@ -19,13 +19,13 @@ PROGRAM{
   DECLPROC $RandomContract$_fun_randomInt
   DECLPROC $RandomContract$_fun_random
   DECLPROC $DeployOk$_constructor_queryId
-  DECLPROC $RandomContract$_receive_binary_Deploy
+  DECLPROC $RandomContract$_internal_binary_Deploy
   128647 DECLMETHOD %randomInt
   92013 DECLMETHOD %random
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $RandomContract$_contract_router
+  DECLPROC $RandomContract$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -263,7 +263,7 @@ PROGRAM{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
-  $RandomContract$_receive_binary_Deploy PROCINLINE:<{
+  $RandomContract$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
     $global_reply INLINECALLDICT
@@ -295,7 +295,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $RandomContract$_contract_router PROCREF:<{
+  $RandomContract$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -316,7 +316,7 @@ PROGRAM{
     IFJMP:<{
       $Deploy$_load INLINECALLDICT
       NIP
-      $RandomContract$_receive_binary_Deploy INLINECALLDICT
+      $RandomContract$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
     DROP
@@ -342,7 +342,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $RandomContract$_contract_load INLINECALLDICT
     -ROT
-    $RandomContract$_contract_router INLINECALLDICT
+    $RandomContract$_contract_router_internal INLINECALLDICT
     DROP
     $RandomContract$_contract_store INLINECALLDICT
   }>

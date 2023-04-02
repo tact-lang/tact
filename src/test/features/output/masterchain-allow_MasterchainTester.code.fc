@@ -36,12 +36,12 @@ tuple $MasterchainTester$_contract_init() impure inline_ref {
 ;; Receivers of a Contract MasterchainTester
 ;;
 
-(tuple, ()) $MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246(tuple $self) impure inline {
+(tuple, ()) $MasterchainTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246(tuple $self) impure inline {
     var $self = $self;
     return ($self, ());
 }
 
-((tuple), ()) $MasterchainTester$_receive_binary_TestMessage(tuple $self, (slice, slice) $message) impure inline {
+((tuple), ()) $MasterchainTester$_internal_binary_TestMessage(tuple $self, (slice, slice) $message) impure inline {
     var $self = $self;
     var ($message'address, $message'address2) = $message;
     return ($self, ());
@@ -102,7 +102,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract MasterchainTester
 ;;
 
-(tuple, int) $MasterchainTester$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $MasterchainTester$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -118,7 +118,7 @@ _ lazy_deployment_completed() method_id {
     ;; Receive TestMessage message
     if (op == 3679600542) {
         var msg = in_msg~$TestMessage$_load();
-        self~$MasterchainTester$_receive_binary_TestMessage(msg);
+        self~$MasterchainTester$_internal_binary_TestMessage(msg);
         return (self, true);
     }
     
@@ -128,7 +128,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Deploy" message
         if (text_op == 0x85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246) {
-            self~$MasterchainTester$_receive_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
+            self~$MasterchainTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246();
             return (self, true);
         }
     }
@@ -150,7 +150,7 @@ _ lazy_deployment_completed() method_id {
     var self = $MasterchainTester$_contract_load();
     
     ;; Handle operation
-    int handled = self~$MasterchainTester$_contract_router(msg_bounced, in_msg);
+    int handled = self~$MasterchainTester$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

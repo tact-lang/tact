@@ -24,13 +24,13 @@ tuple $Echo$_contract_init(int $a) impure inline_ref {
 ;; Receivers of a Contract Echo
 ;;
 
-(tuple, ()) $Echo$_receive_any_text(tuple $self, slice $msg) impure inline {
+(tuple, ()) $Echo$_internal_any_text(tuple $self, slice $msg) impure inline {
     var $self = $self;
     $global_reply($String$_fun_asComment($msg));
     return ($self, ());
 }
 
-(tuple, ()) $Echo$_receive_any(tuple $self, slice $msg) impure inline {
+(tuple, ()) $Echo$_internal_any(tuple $self, slice $msg) impure inline {
     var $self = $self;
     $global_reply($Slice$_fun_asCell($msg));
     return ($self, ());
@@ -68,7 +68,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Echo
 ;;
 
-(tuple, int) $Echo$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $Echo$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -84,13 +84,13 @@ _ lazy_deployment_completed() method_id {
     ;; Text Receivers
     if (op == 0) {
         if (slice_bits(in_msg) >= 32) {
-            self~$Echo$_receive_any_text(in_msg.skip_bits(32));
+            self~$Echo$_internal_any_text(in_msg.skip_bits(32));
             return (self, true);
         }
     }
     
     ;; Receiver fallback
-    self~$Echo$_receive_any(in_msg);
+    self~$Echo$_internal_any(in_msg);
     return (self, true);
 }
 
@@ -108,7 +108,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Echo$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Echo$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Echo$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

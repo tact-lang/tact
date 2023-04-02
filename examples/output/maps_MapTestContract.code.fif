@@ -48,14 +48,14 @@ PROGRAM{
   DECLPROC $MapTestContract$_fun_addrMap3Value
   DECLPROC $MapTestContract$_fun_addrMap4
   DECLPROC $MapTestContract$_fun_addrMap4Value
-  DECLPROC $MapTestContract$_receive_binary_SetIntMap1
-  DECLPROC $MapTestContract$_receive_binary_SetIntMap2
-  DECLPROC $MapTestContract$_receive_binary_SetIntMap3
-  DECLPROC $MapTestContract$_receive_binary_SetIntMap4
-  DECLPROC $MapTestContract$_receive_binary_SetAddrMap1
-  DECLPROC $MapTestContract$_receive_binary_SetAddrMap2
-  DECLPROC $MapTestContract$_receive_binary_SetAddrMap3
-  DECLPROC $MapTestContract$_receive_binary_SetAddrMap4
+  DECLPROC $MapTestContract$_internal_binary_SetIntMap1
+  DECLPROC $MapTestContract$_internal_binary_SetIntMap2
+  DECLPROC $MapTestContract$_internal_binary_SetIntMap3
+  DECLPROC $MapTestContract$_internal_binary_SetIntMap4
+  DECLPROC $MapTestContract$_internal_binary_SetAddrMap1
+  DECLPROC $MapTestContract$_internal_binary_SetAddrMap2
+  DECLPROC $MapTestContract$_internal_binary_SetAddrMap3
+  DECLPROC $MapTestContract$_internal_binary_SetAddrMap4
   67207 DECLMETHOD %intMap1
   103396 DECLMETHOD %intMap1Value
   79588 DECLMETHOD %intMap2
@@ -75,7 +75,7 @@ PROGRAM{
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $MapTestContract$_contract_router
+  DECLPROC $MapTestContract$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -589,7 +589,7 @@ PROGRAM{
     __tact_dict_get_slice_cell INLINECALLDICT
     $SomeStruct$_load_opt INLINECALLDICT
   }>
-  $MapTestContract$_receive_binary_SetIntMap1 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetIntMap1 PROCINLINE:<{
     257 PUSHINT
     DUP
     s4 s11 XCHG
@@ -597,7 +597,7 @@ PROGRAM{
     __tact_dict_set_int_int INLINECALLDICT
     s0 s7 XCHG
   }>
-  $MapTestContract$_receive_binary_SetIntMap2 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetIntMap2 PROCINLINE:<{
     s2 s8 XCHG
     257 PUSHINT
     -ROT
@@ -605,14 +605,14 @@ PROGRAM{
     __tact_dict_set_int_int INLINECALLDICT
     s0 s6 XCHG
   }>
-  $MapTestContract$_receive_binary_SetIntMap3 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetIntMap3 PROCINLINE:<{
     s2 s7 XCHG
     257 PUSHINT
     -ROT
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s5 XCHG
   }>
-  $MapTestContract$_receive_binary_SetIntMap4 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetIntMap4 PROCINLINE:<{
     257 PUSHINT
     SWAP
     $SomeStruct$_store_opt INLINECALLDICT
@@ -621,7 +621,7 @@ PROGRAM{
     __tact_dict_set_int_cell INLINECALLDICT
     s0 s4 XCHG
   }>
-  $MapTestContract$_receive_binary_SetAddrMap1 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetAddrMap1 PROCINLINE:<{
     s2 s5 XCHG
     267 PUSHINT
     -ROT
@@ -629,7 +629,7 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     s0 s3 XCHG
   }>
-  $MapTestContract$_receive_binary_SetAddrMap2 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetAddrMap2 PROCINLINE:<{
     s2 s4 XCHG
     267 PUSHINT
     -ROT
@@ -637,14 +637,14 @@ PROGRAM{
     __tact_dict_set_slice_int INLINECALLDICT
     s0 s2 XCHG
   }>
-  $MapTestContract$_receive_binary_SetAddrMap3 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetAddrMap3 PROCINLINE:<{
     s2 s3 XCHG
     267 PUSHINT
     -ROT
     __tact_dict_set_slice_cell INLINECALLDICT
     SWAP
   }>
-  $MapTestContract$_receive_binary_SetAddrMap4 PROCINLINE:<{
+  $MapTestContract$_internal_binary_SetAddrMap4 PROCINLINE:<{
     267 PUSHINT
     SWAP
     $SomeStruct$_store_opt INLINECALLDICT
@@ -760,7 +760,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $MapTestContract$_contract_router PROCREF:<{
+  $MapTestContract$_contract_router_internal PROCREF:<{
     0 PUSHINT
     OVER
     SBITS
@@ -782,7 +782,7 @@ PROGRAM{
       NIP
       $SetIntMap1$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetIntMap1 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetIntMap1 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -792,7 +792,7 @@ PROGRAM{
       NIP
       $SetIntMap2$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetIntMap2 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetIntMap2 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -802,7 +802,7 @@ PROGRAM{
       NIP
       $SetIntMap3$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetIntMap3 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetIntMap3 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -812,7 +812,7 @@ PROGRAM{
       NIP
       $SetIntMap4$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetIntMap4 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetIntMap4 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -822,7 +822,7 @@ PROGRAM{
       NIP
       $SetAddrMap1$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetAddrMap1 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetAddrMap1 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -832,7 +832,7 @@ PROGRAM{
       NIP
       $SetAddrMap2$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetAddrMap2 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetAddrMap2 INLINECALLDICT
       TRUE
     }>
     OVER
@@ -842,7 +842,7 @@ PROGRAM{
       NIP
       $SetAddrMap3$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetAddrMap3 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetAddrMap3 INLINECALLDICT
       TRUE
     }>
     SWAP
@@ -851,7 +851,7 @@ PROGRAM{
     IFJMP:<{
       $SetAddrMap4$_load INLINECALLDICT
       1 2 BLKDROP2
-      $MapTestContract$_receive_binary_SetAddrMap4 INLINECALLDICT
+      $MapTestContract$_internal_binary_SetAddrMap4 INLINECALLDICT
       TRUE
     }>
     DROP
@@ -877,7 +877,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $MapTestContract$_contract_load INLINECALLDICT
     2 8 BLKSWAP
-    $MapTestContract$_contract_router INLINECALLDICT
+    $MapTestContract$_contract_router_internal INLINECALLDICT
     DROP
     $MapTestContract$_contract_store INLINECALLDICT
   }>

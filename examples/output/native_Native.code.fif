@@ -6,11 +6,11 @@ PROGRAM{
   DECLPROC $Native$_contract_load
   DECLPROC $Native$_contract_store
   DECLPROC hello_world
-  DECLPROC $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
+  DECLPROC $Native$_internal_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
-  DECLPROC $Native$_contract_router
+  DECLPROC $Native$_contract_router_internal
   DECLPROC recv_internal
   DECLGLOBVAR __tact_context
   DECLGLOBVAR __tact_context_sender
@@ -81,7 +81,7 @@ PROGRAM{
   hello_world PROC:<{
     1000 PUSHINT
   }>
-  $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
+  $Native$_internal_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
     hello_world CALLDICT
     ADD
   }>
@@ -100,7 +100,7 @@ PROGRAM{
     1 LDI
     SWAP
   }>
-  $Native$_contract_router PROCREF:<{
+  $Native$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -124,7 +124,7 @@ PROGRAM{
       93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
       EQUAL
       IFJMP:<{
-        $Native$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 INLINECALLDICT
+        $Native$_internal_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 INLINECALLDICT
         TRUE
         RETALT
       }>
@@ -153,7 +153,7 @@ PROGRAM{
     __tact_context_sender SETGLOB
     $Native$_contract_load INLINECALLDICT
     -ROT
-    $Native$_contract_router INLINECALLDICT
+    $Native$_contract_router_internal INLINECALLDICT
     DROP
     $Native$_contract_store INLINECALLDICT
   }>

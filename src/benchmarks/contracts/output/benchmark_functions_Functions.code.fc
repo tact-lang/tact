@@ -22,7 +22,7 @@
 ;; Receivers of a Contract Functions
 ;;
 
-(((int)), ()) $Functions$_receive_binary_Add((int) $self, (int) $msg) impure inline {
+(((int)), ()) $Functions$_internal_binary_Add((int) $self, (int) $msg) impure inline {
     var ($self'value) = $self;
     var ($msg'value) = $msg;
     throw_unless(55789, ($msg'value > 0));
@@ -30,7 +30,7 @@
     return (($self'value), ());
 }
 
-(((int)), ()) $Functions$_receive_binary_Sub((int) $self, (int) $msg) impure inline {
+(((int)), ()) $Functions$_internal_binary_Sub((int) $self, (int) $msg) impure inline {
     var ($self'value) = $self;
     var ($msg'value) = $msg;
     throw_unless(55789, ($msg'value > 0));
@@ -63,7 +63,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Functions
 ;;
 
-((int), int) $Functions$_contract_router((int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int), int) $Functions$_contract_router_internal((int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -79,14 +79,14 @@ _ lazy_deployment_completed() method_id {
     ;; Receive Add message
     if (op == 831841332) {
         var msg = in_msg~$Add$_load();
-        self~$Functions$_receive_binary_Add(msg);
+        self~$Functions$_internal_binary_Add(msg);
         return (self, true);
     }
     
     ;; Receive Sub message
     if (op == 2640337643) {
         var msg = in_msg~$Sub$_load();
-        self~$Functions$_receive_binary_Sub(msg);
+        self~$Functions$_internal_binary_Sub(msg);
         return (self, true);
     }
     
@@ -107,7 +107,7 @@ _ lazy_deployment_completed() method_id {
     var self = $Functions$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Functions$_contract_router(msg_bounced, in_msg);
+    int handled = self~$Functions$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

@@ -21,7 +21,7 @@ tuple $A$_contract_init() impure inline_ref {
 ;; Receivers of a Contract A
 ;;
 
-(tuple, ()) $A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d(tuple $self) impure inline {
+(tuple, ()) $A$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d(tuple $self) impure inline {
     var $self = $self;
     var ($init'code, $init'data) = $B$_init_child(__tact_context_sys, my_address());
     slice $address = $global_contractAddress(($init'code, $init'data));
@@ -61,7 +61,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract A
 ;;
 
-(tuple, int) $A$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
+(tuple, int) $A$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
     ;; Parse incoming message
     int op = 0;
@@ -80,7 +80,7 @@ _ lazy_deployment_completed() method_id {
         
         ;; Receive "Message" message
         if (text_op == 0xb41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d) {
-            self~$A$_receive_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d();
+            self~$A$_internal_text_b41a9933301c1d728e64e23685fe3a9c7540ab9359ef7318943c0ee5e0910d5d();
             return (self, true);
         }
     }
@@ -102,7 +102,7 @@ _ lazy_deployment_completed() method_id {
     var self = $A$_contract_load();
     
     ;; Handle operation
-    int handled = self~$A$_contract_router(msg_bounced, in_msg);
+    int handled = self~$A$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(handled, 130);

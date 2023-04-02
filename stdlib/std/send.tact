@@ -87,3 +87,6 @@ inline fun emit(body: Cell) {
         .endCell();
     nativeSendMessage(c, 0);
 }
+
+@name(accept_message)
+native acceptMessage();

@@ -300,7 +300,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
     ReceiveFunction_simple(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
             kind: 'def_receive',
-            selector: { kind: 'simple', arg: arg2.resolve_declaration() },
+            selector: { kind: 'internal-simple', arg: arg2.resolve_declaration() },
             statements: arg5.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
@@ -308,7 +308,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
     ReceiveFunction_empty(arg0, arg1, arg2, arg3, arg4, arg5) {
         return createNode({
             kind: 'def_receive',
-            selector: { kind: 'fallback' },
+            selector: { kind: 'internal-fallback' },
             statements: arg4.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
@@ -316,7 +316,7 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
     ReceiveFunction_comment(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
             kind: 'def_receive',
-            selector: { kind: 'comment', comment: arg2.resolve_expression() },
+            selector: { kind: 'internal-comment', comment: arg2.resolve_expression() },
             statements: arg5.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
@@ -325,6 +325,22 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         return createNode({
             kind: 'def_receive',
             selector: { kind: 'bounce', arg: arg2.resolve_declaration() },
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    ReceiveFunction_externalSimple(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_receive',
+            selector: { kind: 'external-simple', arg: arg2.resolve_declaration() },
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    ReceiveFunction_externalComment(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_receive',
+            selector: { kind: 'external-comment', comment: arg2.resolve_expression() },
             statements: arg5.children.map((v: any) => v.resolve_statement()),
             ref: createRef(this)
         })
