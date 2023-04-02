@@ -604,6 +604,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_slice",
+    "signature": "(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r;
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_slice",
+    "signature": "slice __tact_dict_get_slice_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
       "code": "return equal_slice_bits(a, b);",
       "kind": "generic",
     },
@@ -4065,6 +4107,48 @@ if (ok) {
   },
   {
     "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_slice",
+    "signature": "(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r;
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_slice",
+    "signature": "slice __tact_dict_get_slice_slice(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
       "code": "return equal_slice_bits(a, b);",
       "kind": "generic",
     },
@@ -7523,6 +7607,48 @@ if (ok) {
     },
     "name": "__tact_dict_get_slice_cell",
     "signature": "cell __tact_dict_get_slice_cell(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_slice",
+    "signature": "(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r;
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_slice",
+    "signature": "slice __tact_dict_get_slice_slice(cell d, int kl, slice k)",
   },
   {
     "code": {

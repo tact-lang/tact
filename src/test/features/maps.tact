@@ -20,7 +20,7 @@ message SetIntMap4 {
 
 message SetIntMap5 {
     key: Int;
-    value: SomeStruct;
+    value: Address?;
 }
 
 message SetAddrMap1 {
@@ -45,7 +45,7 @@ message SetAddrMap4 {
 
 message SetAddrMap5 {
     key: Address;
-    value: SomeStruct;
+    value: Address?;
 }
 
 struct SomeStruct {
@@ -70,6 +70,7 @@ contract MapTestContract {
     intMap2: map<Int, Bool>;
     intMap3: map<Int, Cell>;
     intMap4: map<Int, SomeStruct>;
+    intMap5: map<Int, Address>;
 
     receive(msg: SetIntMap1) {
         self.intMap1.set(msg.key, msg.value);
@@ -88,7 +89,7 @@ contract MapTestContract {
     }
 
     receive(msg: SetIntMap5) {
-        self.intMap4.set(msg.key, msg.value);
+        self.intMap5.set(msg.key, msg.value);
     }
 
     get fun intMap1(): map<Int, Int> {
@@ -123,6 +124,14 @@ contract MapTestContract {
         return self.intMap4.get(key);
     }
 
+    get fun intMap5(): map<Int, Address> {
+        return self.intMap5;
+    }
+
+    get fun intMap5Value(key: Int): Address? {
+        return self.intMap5.get(key);
+    }
+
     //
     // Address Keys
     //
@@ -131,6 +140,7 @@ contract MapTestContract {
     addrMap2: map<Address, Bool>;
     addrMap3: map<Address, Cell>;
     addrMap4: map<Address, SomeStruct>;
+    addrMap5: map<Address, Address>;
 
     receive(msg: SetAddrMap1) {
         self.addrMap1.set(msg.key, msg.value);
@@ -149,7 +159,7 @@ contract MapTestContract {
     }
 
     receive(msg: SetAddrMap5) {
-        self.addrMap4.set(msg.key, msg.value);
+        self.addrMap5.set(msg.key, msg.value);
     }
 
     receive("reset") {
@@ -157,11 +167,13 @@ contract MapTestContract {
         self.addrMap2 = emptyMap();
         self.addrMap3 = emptyMap();
         self.addrMap4 = emptyMap();
+        self.addrMap5 = emptyMap();
 
         self.intMap1 = emptyMap();
         self.intMap2 = emptyMap();
         self.intMap3 = emptyMap();
         self.intMap4 = emptyMap();
+        self.intMap5 = emptyMap();
     }
 
     get fun addrMap1(): map<Address, Int> {
@@ -194,5 +206,13 @@ contract MapTestContract {
 
     get fun addrMap4Value(key: Address): SomeStruct? {
         return self.addrMap4.get(key);
+    }
+
+    get fun addrMap5(): map<Address, Address> {
+        return self.addrMap5;
+    }
+
+    get fun addrMap5Value(key: Address): Address? {
+        return self.addrMap5.get(key);
     }
 }

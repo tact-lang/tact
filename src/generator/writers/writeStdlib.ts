@@ -445,6 +445,42 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     //
+    // Dict Slice -> Slice
+    //
+
+    ctx.fun('__tact_dict_set_slice_slice', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_slice_slice(cell d, int kl, slice k, slice v)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(v)) {
+                    var (r, ok) = ${ctx.used(`__tact_dict_delete`)}(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (dict_set_builder(d, kl, k, begin_cell().store_slice(v)), ());
+                }
+            `);
+        });
+    });
+
+    ctx.fun(`__tact_dict_get_slice_slice`, () => {
+        ctx.signature(`slice __tact_dict_get_slice_slice(cell d, int kl, slice k)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = ${ctx.used(`__tact_dict_get`)}(d, kl, k);
+                if (ok) {
+                    return r;
+                } else {
+                    return null();
+                }
+            `);
+        });
+    });
+
+    //
     // Address
     // 
 

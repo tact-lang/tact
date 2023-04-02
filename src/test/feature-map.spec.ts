@@ -32,6 +32,7 @@ describe('feature-map', () => {
             expect((await contract.getIntMap2()).size).toBe(0);
             expect((await contract.getIntMap3()).size).toBe(0);
             expect((await contract.getIntMap4()).size).toBe(0);
+            expect((await contract.getIntMap5()).size).toBe(0);
             expect((await contract.getAddrMap1()).size).toBe(0);
             expect((await contract.getAddrMap2()).size).toBe(0);
             expect((await contract.getAddrMap3()).size).toBe(0);
@@ -58,6 +59,7 @@ describe('feature-map', () => {
                 let addr = randomAddress(0, 'addr-' + k.toString(10));
                 let valueCell = beginCell().storeUint(123123, 128).endCell();
                 let valueStruct: SomeStruct = { $$type: 'SomeStruct', value: 10012312n };
+                let valueAddr = randomAddress(0, 'value-' + k.toString(10));
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap1', key: k, value: valueInt });
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap2', key: k, value: valueBool });
@@ -65,6 +67,8 @@ describe('feature-map', () => {
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap3', key: k, value: valueCell });
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap4', key: k, value: valueStruct });
+                await system.run();
+                await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap5', key: k, value: valueAddr });
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap1', key: addr, value: valueInt });
                 await system.run();
@@ -74,17 +78,21 @@ describe('feature-map', () => {
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap4', key: addr, value: valueStruct });
                 await system.run();
+                await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap5', key: addr, value: valueAddr });
+                await system.run();
 
                 // Check value set
                 expect((await contract.getIntMap1Value(k))).toBe(valueInt);
                 expect((await contract.getIntMap2Value(k))!).toBe(valueBool);
                 expect((await contract.getIntMap3Value(k))!.equals(valueCell)).toBe(true);
                 expect(strEq((await contract.getIntMap4Value(k))!, valueStruct)).toBe(true);
+                expect((await contract.getIntMap5Value(k))!.equals(valueAddr)).toBe(true);
 
                 expect((await contract.getAddrMap1Value(addr))).toBe(valueInt);
                 expect((await contract.getAddrMap2Value(addr))!).toBe(valueBool);
                 expect((await contract.getAddrMap3Value(addr))!.equals(valueCell)).toBe(true);
                 expect(strEq((await contract.getAddrMap4Value(addr))!, valueStruct)).toBe(true);
+                expect((await contract.getAddrMap5Value(addr))!.equals(valueAddr)).toBe(true);
 
                 // Clear keys
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap1', key: k, value: null });
@@ -95,6 +103,8 @@ describe('feature-map', () => {
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap4', key: k, value: null });
                 await system.run();
+                await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetIntMap5', key: k, value: null });
+                await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap1', key: addr, value: null });
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap2', key: addr, value: null });
@@ -103,6 +113,8 @@ describe('feature-map', () => {
                 await system.run();
                 await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap4', key: addr, value: null });
                 await system.run();
+                await contract.send(treasure, { value: toNano(1) }, { $$type: 'SetAddrMap5', key: addr, value: null });
+                await system.run();
 
 
                 // Check value cleared
@@ -110,10 +122,12 @@ describe('feature-map', () => {
                 expect((await contract.getIntMap2Value(k))).toBeNull();
                 expect((await contract.getIntMap3Value(k))).toBeNull();
                 expect((await contract.getIntMap4Value(k))).toBeNull();
+                expect((await contract.getIntMap5Value(k))).toBeNull();
                 expect((await contract.getAddrMap1Value(addr))).toBeNull();
                 expect((await contract.getAddrMap2Value(addr))).toBeNull();
                 expect((await contract.getAddrMap3Value(addr))).toBeNull();
                 expect((await contract.getAddrMap4Value(addr))).toBeNull();
+                expect((await contract.getAddrMap5Value(addr))).toBeNull();
             }
         } catch (e) {
             if (e instanceof ComputeError) {

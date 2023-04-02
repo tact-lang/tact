@@ -117,14 +117,14 @@ tuple $SomeStruct$_to_opt_external(tuple v) inline {
 
 ;;
 ;; Type: SetIntMap5
-;; Header: 0x0e58f181
-;; TLB: set_int_map5#0e58f181 key:int257 value:SomeStruct{value:int257} = SetIntMap5
+;; Header: 0xa779553f
+;; TLB: set_int_map5#a779553f key:int257 value:Maybe address = SetIntMap5
 ;;
 
-(slice, ((int, (int)))) $SetIntMap5$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 240710017);
+(slice, ((int, slice))) $SetIntMap5$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2809746751);
     var v'key = sc_0~load_int(257);
-    var v'value = sc_0~$SomeStruct$_load();
+    var v'value = sc_0~__tact_load_address_opt();
     return (sc_0, (v'key, v'value));
 }
 
@@ -182,14 +182,14 @@ tuple $SomeStruct$_to_opt_external(tuple v) inline {
 
 ;;
 ;; Type: SetAddrMap5
-;; Header: 0x50f95ce1
-;; TLB: set_addr_map5#50f95ce1 key:address value:SomeStruct{value:int257} = SetAddrMap5
+;; Header: 0x67cb4d03
+;; TLB: set_addr_map5#67cb4d03 key:address value:Maybe address = SetAddrMap5
 ;;
 
-(slice, ((slice, (int)))) $SetAddrMap5$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 1358519521);
+(slice, ((slice, slice))) $SetAddrMap5$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1741376771);
     var v'key = sc_0~__tact_load_address();
-    var v'value = sc_0~$SomeStruct$_load();
+    var v'value = sc_0~__tact_load_address_opt();
     return (sc_0, (v'key, v'value));
 }
 
@@ -197,38 +197,45 @@ tuple $SomeStruct$_to_opt_external(tuple v) inline {
 ;; Type: MapTestContract
 ;;
 
-builder $MapTestContract$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
-    var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4) = v;
+builder $MapTestContract$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) v) inline {
+    var (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'intMap5, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4, v'addrMap5) = v;
     build_0 = build_0.store_dict(v'intMap1);
     build_0 = build_0.store_dict(v'intMap2);
     var build_1 = begin_cell();
     build_1 = build_1.store_dict(v'intMap3);
     build_1 = build_1.store_dict(v'intMap4);
-    build_1 = build_1.store_dict(v'addrMap1);
+    build_1 = build_1.store_dict(v'intMap5);
     var build_2 = begin_cell();
+    build_2 = build_2.store_dict(v'addrMap1);
     build_2 = build_2.store_dict(v'addrMap2);
     build_2 = build_2.store_dict(v'addrMap3);
-    build_2 = build_2.store_dict(v'addrMap4);
+    var build_3 = begin_cell();
+    build_3 = build_3.store_dict(v'addrMap4);
+    build_3 = build_3.store_dict(v'addrMap5);
+    build_2 = store_ref(build_2, build_3.end_cell());
     build_1 = store_ref(build_1, build_2.end_cell());
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, ((cell, cell, cell, cell, cell, cell, cell, cell))) $MapTestContract$_load(slice sc_0) inline {
+(slice, ((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell))) $MapTestContract$_load(slice sc_0) inline {
     var v'intMap1 = sc_0~load_dict();
     var v'intMap2 = sc_0~load_dict();
     slice sc_1 = sc_0~load_ref().begin_parse();
     var v'intMap3 = sc_1~load_dict();
     var v'intMap4 = sc_1~load_dict();
-    var v'addrMap1 = sc_1~load_dict();
+    var v'intMap5 = sc_1~load_dict();
     slice sc_2 = sc_1~load_ref().begin_parse();
+    var v'addrMap1 = sc_2~load_dict();
     var v'addrMap2 = sc_2~load_dict();
     var v'addrMap3 = sc_2~load_dict();
-    var v'addrMap4 = sc_2~load_dict();
-    return (sc_0, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4));
+    slice sc_3 = sc_2~load_ref().begin_parse();
+    var v'addrMap4 = sc_3~load_dict();
+    var v'addrMap5 = sc_3~load_dict();
+    return (sc_0, (v'intMap1, v'intMap2, v'intMap3, v'intMap4, v'intMap5, v'addrMap1, v'addrMap2, v'addrMap3, v'addrMap4, v'addrMap5));
 }
 
-(cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline_ref {
+(cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -241,7 +248,7 @@ builder $MapTestContract$_store(builder build_0, (cell, cell, cell, cell, cell, 
     }
 }
 
-() $MapTestContract$_contract_store((cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline {
+() $MapTestContract$_contract_store((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);

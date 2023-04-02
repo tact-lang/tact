@@ -1,14 +1,19 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
+  DECLPROC __tact_load_address_opt
   DECLPROC __tact_dict_set_int_int
   DECLPROC __tact_dict_get_int_int
   DECLPROC __tact_dict_set_int_cell
   DECLPROC __tact_dict_get_int_cell
+  DECLPROC __tact_dict_set_int_slice
+  DECLPROC __tact_dict_get_int_slice
   DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_dict_get_slice_int
   DECLPROC __tact_dict_set_slice_cell
   DECLPROC __tact_dict_get_slice_cell
+  DECLPROC __tact_dict_set_slice_slice
+  DECLPROC __tact_dict_get_slice_slice
   DECLPROC $SetIntMap1$_load
   DECLPROC $SetIntMap2$_load
   DECLPROC $SetIntMap3$_load
@@ -42,6 +47,8 @@ PROGRAM{
   DECLPROC $MapTestContract$_fun_intMap3Value
   DECLPROC $MapTestContract$_fun_intMap4
   DECLPROC $MapTestContract$_fun_intMap4Value
+  DECLPROC $MapTestContract$_fun_intMap5
+  DECLPROC $MapTestContract$_fun_intMap5Value
   DECLPROC $MapTestContract$_fun_addrMap1
   DECLPROC $MapTestContract$_fun_addrMap1Value
   DECLPROC $MapTestContract$_fun_addrMap2
@@ -50,6 +57,8 @@ PROGRAM{
   DECLPROC $MapTestContract$_fun_addrMap3Value
   DECLPROC $MapTestContract$_fun_addrMap4
   DECLPROC $MapTestContract$_fun_addrMap4Value
+  DECLPROC $MapTestContract$_fun_addrMap5
+  DECLPROC $MapTestContract$_fun_addrMap5Value
   DECLPROC %$MapTestContract$_receive_empty
   DECLPROC $MapTestContract$_receive_binary_SetIntMap1
   DECLPROC $MapTestContract$_receive_binary_SetIntMap2
@@ -70,6 +79,8 @@ PROGRAM{
   71844 DECLMETHOD %intMap3Value
   87586 DECLMETHOD %intMap4
   119013 DECLMETHOD %intMap4Value
+  83459 DECLMETHOD %intMap5
+  103749 DECLMETHOD %intMap5Value
   93537 DECLMETHOD %addrMap1
   116148 DECLMETHOD %addrMap1Value
   89346 DECLMETHOD %addrMap2
@@ -78,6 +89,8 @@ PROGRAM{
   85748 DECLMETHOD %addrMap3Value
   81348 DECLMETHOD %addrMap4
   100021 DECLMETHOD %addrMap4Value
+  77285 DECLMETHOD %addrMap5
+  115477 DECLMETHOD %addrMap5Value
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -107,6 +120,19 @@ PROGRAM{
     LDMSGADDR
     SWAP
     __tact_verify_address INLINECALLDICT
+  }>
+  __tact_load_address_opt PROCINLINE:<{
+    LDMSGADDR
+    OVER
+    2 PLDU
+    0 NEQINT
+    IF:<{
+      SWAP
+      __tact_verify_address INLINECALLDICT
+    }>ELSE<{
+      NIP
+      PUSHNULL
+    }>
   }>
   __tact_dict_set_int_int PROCINLINE:<{
     OVER
@@ -160,6 +186,29 @@ PROGRAM{
       PUSHNULL
     }>
   }>
+  __tact_dict_set_int_slice PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>ELSE<{
+      s1 s3 s3 XCHG3
+      DICTISET
+    }>
+  }>
+  __tact_dict_get_int_slice PROCINLINE:<{
+    -ROT
+    DICTIGET
+    NULLSWAPIFNOT
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
+    }>
+  }>
   __tact_dict_set_slice_int PROCINLINE:<{
     OVER
     ISNULL
@@ -205,6 +254,32 @@ PROGRAM{
   __tact_dict_get_slice_cell PROCINLINE:<{
     -ROT
     DICTGETREF
+    NULLSWAPIFNOT
+    IF:<{
+    }>ELSE<{
+      DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_slice_slice PROCINLINE:<{
+    DUP
+    ISNULL
+    IF:<{
+      DROP
+      -ROT
+      DICTDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STSLICER
+      s1 s3 s3 XCHG3
+      DICTSETB
+    }>
+  }>
+  __tact_dict_get_slice_slice PROCINLINE:<{
+    -ROT
+    DICTGET
     NULLSWAPIFNOT
     IF:<{
     }>ELSE<{
@@ -337,12 +412,12 @@ PROGRAM{
   $SetIntMap5$_load PROCINLINE:<{
     32 LDU
     SWAP
-    240710017 PUSHINT
+    2809746751 PUSHINT
     EQUAL
     129 THROWIFNOT
     257 PUSHINT
     LDIX
-    $SomeStruct$_load INLINECALLDICT
+    __tact_load_address_opt INLINECALLDICT
     s1 s2 XCHG
   }>
   $SetAddrMap1$_load PROCINLINE:<{
@@ -421,34 +496,43 @@ PROGRAM{
   $SetAddrMap5$_load PROCINLINE:<{
     32 LDU
     SWAP
-    1358519521 PUSHINT
+    1741376771 PUSHINT
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
     SWAP
-    $SomeStruct$_load INLINECALLDICT
+    __tact_load_address_opt INLINECALLDICT
     s1 s2 XCHG
   }>
   $MapTestContract$_store PROCINLINE:<{
-    s7 s8 XCHG2
+    s9 s10 XCHG2
     STDICT
-    s1 s5 XCHG
+    s1 s7 XCHG
+    STDICT
+    s0 s5 XCHG
+    NEWC
+    STDICT
+    s1 s4 XCHG
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    SWAP
+    NEWC
+    STDICT
+    s1 s2 XCHG
+    STDICT
+    s1 s3 XCHG
     STDICT
     s0 s3 XCHG
     NEWC
     STDICT
-    s1 s2 XCHG
-    STDICT
-    STDICT
-    s0 s2 XCHG
-    NEWC
-    STDICT
-    s1 s3 XCHG
-    STDICT
-    s1 s3 XCHG
+    s1 s4 XCHG
     STDICT
     ENDC
     ROT
+    STREF
+    ENDC
+    SWAP
     STREF
     ENDC
     SWAP
@@ -469,9 +553,14 @@ PROGRAM{
     LDDICT
     LDDICT
     LDDICT
+    LDREF
     DROP
-    s6 s8 XCHG
-    s6 s7 XCHG
+    CTOS
+    LDDICT
+    LDDICT
+    DROP
+    s8 s10 XCHG
+    s8 s9 XCHG
   }>
   $SomeStruct$_to_tuple PROCINLINE:<{
     1 TUPLE
@@ -506,6 +595,8 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
+    PUSHNULL
+    PUSHNULL
   }>
   $MapTestContract$_contract_load PROCREF:<{
     c4 PUSH
@@ -517,7 +608,7 @@ PROGRAM{
     SWAP
     IFJMP:<{
       $MapTestContract$_load INLINECALLDICT
-      1 8 BLKDROP2
+      1 10 BLKDROP2
     }>
     DROP
     MYADDR
@@ -535,275 +626,316 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    8 -ROLL
+    10 -ROLL
     $MapTestContract$_store INLINECALLDICT
     ENDC
     c4 POP
   }>
   $MapTestContract$_fun_intMap1 PROCREF:<{
-    s7 PUSH
+    s9 PUSH
   }>
   $MapTestContract$_fun_intMap1Value PROCREF:<{
     257 PUSHINT
-    s0 s9 PUSH2
+    s0 s11 PUSH2
     s3 s3 XCHG2
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap2 PROCREF:<{
-    s6 PUSH
+    s8 PUSH
   }>
   $MapTestContract$_fun_intMap2Value PROCREF:<{
     257 PUSHINT
-    s8 PUSH
+    s10 PUSH
     s0 s2 XCHG
     1 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap3 PROCREF:<{
-    s5 PUSH
+    s7 PUSH
   }>
   $MapTestContract$_fun_intMap3Value PROCREF:<{
     257 PUSHINT
-    s7 PUSH
+    s9 PUSH
     s0 s2 XCHG
     __tact_dict_get_int_cell INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap4 PROCREF:<{
-    s4 PUSH
+    s6 PUSH
   }>
   $MapTestContract$_fun_intMap4Value PROCREF:<{
     257 PUSHINT
-    s6 PUSH
+    s8 PUSH
     s0 s2 XCHG
     __tact_dict_get_int_cell INLINECALLDICT
     $SomeStruct$_load_opt INLINECALLDICT
   }>
+  $MapTestContract$_fun_intMap5 PROCREF:<{
+    s5 PUSH
+  }>
+  $MapTestContract$_fun_intMap5Value PROCREF:<{
+    257 PUSHINT
+    s7 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_int_slice INLINECALLDICT
+  }>
   $MapTestContract$_fun_addrMap1 PROCREF:<{
-    s3 PUSH
+    s4 PUSH
   }>
   $MapTestContract$_fun_addrMap1Value PROCREF:<{
     267 PUSHINT
-    s5 PUSH
+    s6 PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap2 PROCREF:<{
-    s2 PUSH
+    s3 PUSH
   }>
   $MapTestContract$_fun_addrMap2Value PROCREF:<{
     267 PUSHINT
-    s4 PUSH
+    s5 PUSH
     s0 s2 XCHG
     1 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap3 PROCREF:<{
-    OVER
+    s2 PUSH
   }>
   $MapTestContract$_fun_addrMap3Value PROCREF:<{
     267 PUSHINT
-    s3 PUSH
+    s4 PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_cell INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap4 PROCREF:<{
-    DUP
+    OVER
   }>
   $MapTestContract$_fun_addrMap4Value PROCREF:<{
     267 PUSHINT
-    s2 PUSH
+    s3 PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_cell INLINECALLDICT
     $SomeStruct$_load_opt INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap5 PROCREF:<{
+    DUP
+  }>
+  $MapTestContract$_fun_addrMap5Value PROCREF:<{
+    267 PUSHINT
+    s2 PUSH
+    s0 s2 XCHG
+    __tact_dict_get_slice_slice INLINECALLDICT
   }>
   %$MapTestContract$_receive_empty PROCINLINE:<{
   }>
   $MapTestContract$_receive_binary_SetIntMap1 PROCINLINE:<{
     257 PUSHINT
     DUP
-    s4 s11 XCHG
+    s4 s13 XCHG
     s3 s3 s0 XCHG3
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s7 XCHG
+    s0 s9 XCHG
   }>
   $MapTestContract$_receive_binary_SetIntMap2 PROCINLINE:<{
-    s2 s8 XCHG
+    s2 s10 XCHG
     257 PUSHINT
     -ROT
     1 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s6 XCHG
+    s0 s8 XCHG
   }>
   $MapTestContract$_receive_binary_SetIntMap3 PROCINLINE:<{
-    s2 s7 XCHG
+    s2 s9 XCHG
     257 PUSHINT
     -ROT
     __tact_dict_set_int_cell INLINECALLDICT
-    s0 s5 XCHG
+    s0 s7 XCHG
   }>
   $MapTestContract$_receive_binary_SetIntMap4 PROCINLINE:<{
     257 PUSHINT
     SWAP
     $SomeStruct$_store_opt INLINECALLDICT
-    s3 s7 XCHG
+    s3 s9 XCHG
     s1 s2 XCHG
     __tact_dict_set_int_cell INLINECALLDICT
-    s0 s4 XCHG
+    s0 s6 XCHG
   }>
   $MapTestContract$_receive_binary_SetIntMap5 PROCINLINE:<{
+    s2 s7 XCHG
     257 PUSHINT
-    SWAP
-    $SomeStruct$_store_cell INLINECALLDICT
-    s3 s7 XCHG
-    s1 s2 XCHG
-    __tact_dict_set_int_cell INLINECALLDICT
-    s0 s4 XCHG
+    -ROT
+    __tact_dict_set_int_slice INLINECALLDICT
+    s0 s5 XCHG
   }>
   $MapTestContract$_receive_binary_SetAddrMap1 PROCINLINE:<{
-    s2 s5 XCHG
+    s2 s6 XCHG
     267 PUSHINT
     -ROT
     257 PUSHINT
     __tact_dict_set_slice_int INLINECALLDICT
-    s0 s3 XCHG
+    s0 s4 XCHG
   }>
   $MapTestContract$_receive_binary_SetAddrMap2 PROCINLINE:<{
-    s2 s4 XCHG
+    s2 s5 XCHG
     267 PUSHINT
     -ROT
     1 PUSHINT
     __tact_dict_set_slice_int INLINECALLDICT
-    s0 s2 XCHG
+    s0 s3 XCHG
   }>
   $MapTestContract$_receive_binary_SetAddrMap3 PROCINLINE:<{
-    s2 s3 XCHG
+    s2 s4 XCHG
     267 PUSHINT
     -ROT
     __tact_dict_set_slice_cell INLINECALLDICT
-    SWAP
+    s0 s2 XCHG
   }>
   $MapTestContract$_receive_binary_SetAddrMap4 PROCINLINE:<{
     267 PUSHINT
     SWAP
     $SomeStruct$_store_opt INLINECALLDICT
+    s3 s4 XCHG
     s1 s2 XCHG
     __tact_dict_set_slice_cell INLINECALLDICT
+    SWAP
   }>
   $MapTestContract$_receive_binary_SetAddrMap5 PROCINLINE:<{
     267 PUSHINT
-    SWAP
-    $SomeStruct$_store_cell INLINECALLDICT
-    s1 s2 XCHG
-    __tact_dict_set_slice_cell INLINECALLDICT
+    -ROT
+    __tact_dict_set_slice_slice INLINECALLDICT
   }>
   $MapTestContract$_receive_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b PROCINLINE:<{
-    8 BLKDROP
+    10 BLKDROP
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
-    s0 s4 XCHG
     PUSHNULL
     PUSHNULL
-    s5 s4 XCHG2
+    s6 s5 XCHG2
     PUSHNULL
-    s0 s4 XCHG
+    PUSHNULL
+    s6 s5 XCHG2
+    PUSHNULL
+    s0 s5 XCHG
   }>
   %intMap1 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_intMap1 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap1Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_intMap1Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap2 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_intMap2 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap2Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_intMap2Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap3 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_intMap3 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap3Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_intMap3Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap4 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_intMap4 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %intMap4Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_intMap4Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
     $SomeStruct$_to_opt_external INLINECALLDICT
+  }>
+  %intMap5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap5 INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %intMap5Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    10 ROLL
+    $MapTestContract$_fun_intMap5Value INLINECALLDICT
+    10 1 BLKDROP2
   }>
   %addrMap1 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_addrMap1 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap1Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_addrMap1Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap2 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_addrMap2 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap2Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_addrMap2Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap3 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_addrMap3 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap3Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_addrMap3Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap4 PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
     $MapTestContract$_fun_addrMap4 INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
   }>
   %addrMap4Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
-    8 ROLL
+    10 ROLL
     $MapTestContract$_fun_addrMap4Value INLINECALLDICT
-    8 1 BLKDROP2
+    10 1 BLKDROP2
     $SomeStruct$_to_opt_external INLINECALLDICT
+  }>
+  %addrMap5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap5 INLINECALLDICT
+    10 1 BLKDROP2
+  }>
+  %addrMap5Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    10 ROLL
+    $MapTestContract$_fun_addrMap5Value INLINECALLDICT
+    10 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
@@ -812,7 +944,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d544871384e4538755445737a4c3834397a7246675271464768474b634d314d584431616f734e63504b775365} PUSHSLICE
+    x{697066733a2f2f516d65504b774e4259466275334e6576316874597270636d4c64334a51676b433732705567456171686569777948} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -889,7 +1021,7 @@ PROGRAM{
       TRUE
     }>
     OVER
-    240710017 PUSHINT
+    2809746751 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
@@ -939,7 +1071,7 @@ PROGRAM{
       TRUE
     }>
     OVER
-    1358519521 PUSHINT
+    1741376771 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
@@ -983,7 +1115,7 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $MapTestContract$_contract_load INLINECALLDICT
-    2 8 BLKSWAP
+    2 10 BLKSWAP
     $MapTestContract$_contract_router INLINECALLDICT
     DROP
     $MapTestContract$_contract_store INLINECALLDICT

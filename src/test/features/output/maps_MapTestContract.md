@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 2041 bytes
+BOC Size: 2264 bytes
 
 # Types
 Total Types: 14
@@ -34,8 +34,8 @@ TLB: `set_int_map4#16d453c5 key:int257 value:Maybe SomeStruct{value:int257} = Se
 Signature: `SetIntMap4{key:int257,value:Maybe SomeStruct{value:int257}}`
 
 ## SetIntMap5
-TLB: `set_int_map5#0e58f181 key:int257 value:SomeStruct{value:int257} = SetIntMap5`
-Signature: `SetIntMap5{key:int257,value:SomeStruct{value:int257}}`
+TLB: `set_int_map5#a779553f key:int257 value:Maybe address = SetIntMap5`
+Signature: `SetIntMap5{key:int257,value:Maybe address}`
 
 ## SetAddrMap1
 TLB: `set_addr_map1#684e5e4d key:address value:Maybe int257 = SetAddrMap1`
@@ -54,15 +54,15 @@ TLB: `set_addr_map4#645c6979 key:address value:Maybe SomeStruct{value:int257} = 
 Signature: `SetAddrMap4{key:address,value:Maybe SomeStruct{value:int257}}`
 
 ## SetAddrMap5
-TLB: `set_addr_map5#50f95ce1 key:address value:SomeStruct{value:int257} = SetAddrMap5`
-Signature: `SetAddrMap5{key:address,value:SomeStruct{value:int257}}`
+TLB: `set_addr_map5#67cb4d03 key:address value:Maybe address = SetAddrMap5`
+Signature: `SetAddrMap5{key:address,value:Maybe address}`
 
 ## SomeStruct
 TLB: `_ value:int257 = SomeStruct`
 Signature: `SomeStruct{value:int257}`
 
 # Get Methods
-Total Get Methods: 16
+Total Get Methods: 20
 
 ## intMap1
 
@@ -84,6 +84,11 @@ Argument: key
 ## intMap4Value
 Argument: key
 
+## intMap5
+
+## intMap5Value
+Argument: key
+
 ## addrMap1
 
 ## addrMap1Value
@@ -102,6 +107,11 @@ Argument: key
 ## addrMap4
 
 ## addrMap4Value
+Argument: key
+
+## addrMap5
+
+## addrMap5Value
 Argument: key
 
 # Error Codes
