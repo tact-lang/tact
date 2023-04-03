@@ -214,6 +214,14 @@
           "inline": true
         }
       }
+    },
+    {
+      "name": "bugs",
+      "path": "./src/test/bugs/bugs.tact",
+      "output": "./src/test/bugs/output",
+      "options": {
+        "debug": true
+      }
     }
   ]
 }

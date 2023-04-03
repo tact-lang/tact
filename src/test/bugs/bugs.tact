@@ -1,0 +1,1 @@
+import "./issue42.tact";

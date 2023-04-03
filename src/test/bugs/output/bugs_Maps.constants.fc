@@ -1,0 +1,11 @@
+;; String "not found"
+slice __gen_slice_string_ef17d523607831d9b150cef9b36c6e32272887eac302eefcd2ca22fed29f4e21() asm "B{b5ee9c7241010101000b0000126e6f7420666f756e64de9b0ed2} B>boc <s PUSHSLICE";
+
+;; String "SHIB"
+slice __gen_slice_string_974f8ddbc705ede61e61b42cacf124a05423b9c40120e70d786f3889001bd327() asm "B{b5ee9c72410101010006000008534849429c299a01} B>boc <s PUSHSLICE";
+
+;; EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N
+slice __gen_slice_address_58e2d2fc9446d00e70b3ad3ea1eb88797c323bae517f2527f807f62d09a56fdc() asm "B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE";
+
+;; String "DOGE"
+slice __gen_slice_string_78fea0ad55f744389997adb1b2c7823104a9b1ad6443ff331d83f89f506d2239() asm "B{b5ee9c72410101010006000008444f474563b21fa5} B>boc <s PUSHSLICE";
