@@ -27,13 +27,6 @@ tuple $SampleContract$_contract_init() impure inline_ref {
     return ($self, ());
 }
 
-((tuple), ()) $SampleContract$_receive_binary_bounce_Second(tuple $self, (int) $tst) impure inline {
-    var $self = $self;
-    var ($tst'amount_bigger) = $tst;
-    int $x = $tst'amount_bigger;
-    return ($self, ());
-}
-
 (tuple, ()) $SampleContract$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4(tuple $self) impure inline {
     var $self = $self;
     return ($self, ());
@@ -42,6 +35,13 @@ tuple $SampleContract$_contract_init() impure inline_ref {
 ((tuple), ()) $SampleContract$_receive_binary_bounce_Slice(tuple $self, slice $msg) impure inline {
     var $self = $self;
     var $msg = $msg;
+    return ($self, ());
+}
+
+((tuple), ()) $SampleContract$_receive_binary_bounce_Second(tuple $self, (int) $tst) impure inline {
+    var $self = $self;
+    var ($tst'amount_bigger) = $tst;
+    int $x = $tst'amount_bigger;
     return ($self, ());
 }
 
@@ -78,11 +78,6 @@ _ lazy_deployment_completed() {
 
 (tuple, int) $SampleContract$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
-    if (msg_bounced) {
-        ;; skip 0xffff
-        in_msg.skip_bits(32);
-    }
-
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {

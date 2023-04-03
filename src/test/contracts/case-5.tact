@@ -37,13 +37,13 @@ contract SampleContract {
         // the general handler, as supported today
     }
     
-    bounced(tst: Second~) {
+    bounced(tst: bounced<Second>) {
         // only the first 224 bits are populated into a partial Koko struct
         let x: Int = tst.amount_bigger;
         //let y: Int = tst.thisDoesNotFit; // compiler should throw
     }
     
-    bounced(msg: First~) {
+    bounced(msg: bounced<First>) {
         // only the first 224 bits are populated into a partial Shoko struct
     }
 

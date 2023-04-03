@@ -66,16 +66,13 @@ Tact {
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
     FunctionArg = id ":" Type
-    
-    //PartialType = Type "~"
-    //PartialFunctionArg = id ":" PartialType
+    BouncedFunctionArg = id ":" "bounced<" Type ">"
     
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment
                     | "bounced" "(" FunctionArg ")" "{" Statement* "}" --bouncedEmpty // TODO this needs to reject non-Slice args
-                    | "bounced" "(" FunctionArg "~" ")" "{" Statement* "}" --bouncedSimple
-                   // | "bounced" "(" PartialFunctionArg ")" "{" Statement* "}" --bouncedSimple
+                    | "bounced" "(" BouncedFunctionArg ")" "{" Statement* "}" --bouncedSimple
 
     // Statements
     Statement = StatementLet
