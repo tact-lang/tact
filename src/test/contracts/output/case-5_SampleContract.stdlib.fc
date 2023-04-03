@@ -14,3 +14,8 @@ slice __tact_verify_address(slice address) inline {
     throw_unless(136, h == 1024);
     return address;
 }
+
+(slice, slice) __tact_load_address(slice cs) inline {
+    slice raw = cs~load_msg_addr();
+    return (cs, __tact_verify_address(raw));
+}

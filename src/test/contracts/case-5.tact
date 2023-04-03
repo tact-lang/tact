@@ -1,6 +1,6 @@
 message First {
     amount: Int as uint32;
-    thisDoesNotFit: Int as uint256;
+    myCoins: Int as coins;
 }
 
 message Second {
@@ -34,23 +34,20 @@ contract SampleContract {
     }
 
     bounced(msg: Slice) {
-        // the general handler
+        // the general handler, as supported today
     }
     
-    bounced(tst: First~) {
+    bounced(tst: Second~) {
         // only the first 224 bits are populated into a partial Koko struct
         let x: Int = tst.amount_bigger;
-        let y: Int = msg.thisDoesNotFit; // compiler should throw
+        //let y: Int = tst.thisDoesNotFit; // compiler should throw
     }
     
-    bounced(msg: Second~) {
+    bounced(msg: First~) {
         // only the first 224 bits are populated into a partial Shoko struct
     }
 
-    bounced("Increment") {
-
-    }
-    
-   
-
+    // This will be supported in a future commit, and will throw if the string does not fit within a bounced message
+    //bounced("Increment") {
+    // }
 }

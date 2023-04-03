@@ -1,6 +1,7 @@
 PROGRAM{
   DECLPROC ?fun_1;
   DECLPROC ?fun_0;
+  DECLPROC ?fun_3;
   DECLPROC ?fun_2;
   DECLPROC recv_internal;
   DECLPROC supported_interfaces;
@@ -26,6 +27,48 @@ PROGRAM{
     137 THROWIFNOT
     ?fun_1 INLINECALLDICT
   }>
+  ?fun_3 PROCREF:<{
+    32 LDU
+    s0 s1 XCHG
+    254871020 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    256 LDU
+    LDMSGADDR
+    s0 s1 XCHG
+    s0 PUSH
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    s0 PUSH
+    11 PLDU
+    s0 PUSH
+    1279 PUSHINT
+    EQUAL
+    137 THROWIF
+    10 PUSHPOW2
+    EQUAL
+    136 THROWIFNOT
+    s0 s1 XCHG
+    1 LDI
+    257 PUSHINT
+    LDIX
+    s0 s1 XCHG
+    s0 s1 XCHG
+    LDREF
+    s0 s1 XCHG
+    CTOS
+    257 PUSHINT
+    LDIX
+    s0 s1 XCHG
+    s1 POP
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
   ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
@@ -42,18 +85,24 @@ PROGRAM{
     s0 s2 XCHG
     <{
       s1 PUSH
-      994470181 PUSHINT
+      254871020 PUSHINT
       EQUAL
       <{
+        s1 POP
+        64 LDU
+        s0 s1 XCHG
         s1 POP
         s0 POP
         -1 PUSHINT
       }> PUSHCONT
       IFJMP
       s0 s1 XCHG
-      3744520988 PUSHINT
+      899738521 PUSHINT
       EQUAL
       <{
+        32 LDU
+        s0 s1 XCHG
+        s1 POP
         s0 POP
         -1 PUSHINT
       }> PUSHCONT
@@ -63,17 +112,17 @@ PROGRAM{
     }> PUSHCONT
     IFJMP
     s1 PUSH
-    3744520988 PUSHINT
+    899738521 PUSHINT
     EQUAL
     <{
       s1 POP
       32 LDU
       s0 s1 XCHG
-      3744520988 PUSHINT
+      899738521 PUSHINT
       EQUAL
       129 THROWIFNOT
       32 LDU
-      256 LDU
+      LDGRAMS
       ROTREV
       1 2 BLKDROP2
       DROP2
@@ -81,25 +130,21 @@ PROGRAM{
     }> PUSHCONT
     IFJMP
     s1 PUSH
-    994470181 PUSHINT
+    254871020 PUSHINT
     EQUAL
     <{
       s1 POP
-      32 LDU
-      s0 s1 XCHG
-      994470181 PUSHINT
-      EQUAL
-      129 THROWIFNOT
-      64 LDU
-      256 LDU
-      ROTREV
-      1 2 BLKDROP2
-      DROP2
+      ?fun_3 INLINECALLDICT
+      1 6 BLKDROP2
+      6 BLKDROP
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
     s0 s1 XCHG
     0 EQINT
+    <{
+      s0 POP
+    }> PUSHCONT
     <{
       HASHSU
       93093333132076440750103890131866374745660412111105226855661378207494015626164 PUSHINT
@@ -109,9 +154,8 @@ PROGRAM{
         RETFALSE
       }> PUSHCONT
       IFJMP
-    }> IFREFELSEREF
+    }> IFREFELSE
     0 PUSHINT
-    s0 POP
   }>
   recv_internal PROC:<{
     s0 s1 XCHG

@@ -23,7 +23,7 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
     // TypeDescription
     if (descriptor.kind === 'primitive') {
         return name;
-    } else if (descriptor.kind === 'struct') {
+    } else if (descriptor.kind === 'struct' || descriptor.kind === 'partial_struct') {
         if (optional || descriptor.fields.length === 0) {
             return name;
         } else {

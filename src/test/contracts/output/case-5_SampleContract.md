@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: SampleContract
-BOC Size: 387 bytes
+BOC Size: 454 bytes
 
 # Types
-Total Types: 5
+Total Types: 6
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -17,13 +17,17 @@ Signature: `Context{bounced:bool,sender:address,value:int257,raw:^slice}`
 TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters`
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
-## Shoko
-TLB: `shoko#df30db1c amount:uint32 thisDoesNotFit:uint256 = Shoko`
-Signature: `Shoko{amount:uint32,thisDoesNotFit:uint256}`
+## First
+TLB: `first#35a0eb99 amount:uint32 myCoins:coins = First`
+Signature: `First{amount:uint32,myCoins:coins}`
 
-## Koko
-TLB: `koko#3b466925 amount_bigger:uint64 thisDoesNotFit:uint256 = Koko`
-Signature: `Koko{amount_bigger:uint64,thisDoesNotFit:uint256}`
+## Second
+TLB: `second#0f3105ec amount_bigger:uint64 thisDoesNotFit:uint256 myAddress:address myBool:bool myStruct:MyStruct{amount:int257} myStruct2:MyStruct{amount:int257} = Second`
+Signature: `Second{amount_bigger:uint64,thisDoesNotFit:uint256,myAddress:address,myBool:bool,myStruct:MyStruct{amount:int257},myStruct2:MyStruct{amount:int257}}`
+
+## MyStruct
+TLB: `_ amount:int257 = MyStruct`
+Signature: `MyStruct{amount:int257}`
 
 # Get Methods
 Total Get Methods: 0

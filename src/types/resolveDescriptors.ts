@@ -118,7 +118,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: [],
                 constants: [],
-                partialForBounced: false
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -138,7 +137,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
-                partialForBounced: false
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -158,32 +156,30 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: [],
                 constants: [],
-                partialForBounced: false
             };
 
             // TODO: a different approach would be to make this a different type at the AST level
             // TODO: ~ should be a const
-            // if (a.message) {
-            //     types[a.name + "~"] = {
-            //         kind: 'struct',
-            //         origin: a.origin,
-            //         name: a.name + "~",
-            //         uid,
-            //         header: null,
-            //         tlb: null,
-            //         signature: null,
-            //         fields: [],
-            //         traits: [],
-            //         functions: new Map(),
-            //         receivers: [],
-            //         dependsOn: [],
-            //         init: null,
-            //         ast: a,
-            //         interfaces: [],
-            //         constants: [],
-            //         partialForBounced: true
-            //     };
-            // }
+            if (a.message) {
+                types[a.name + '~'] = {
+                    kind: 'partial_struct',
+                    origin: a.origin,
+                    name: a.name + '~',
+                    uid,
+                    header: null,
+                    tlb: null,
+                    signature: null,
+                    fields: [],
+                    traits: [],
+                    functions: new Map(),
+                    receivers: [],
+                    dependsOn: [],
+                    init: null,
+                    ast: a,
+                    interfaces: [],
+                    constants: [],
+                };
+            }
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
                 kind: 'trait',
@@ -202,7 +198,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
-                partialForBounced: false
             };
         }
     }
@@ -259,9 +254,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Struct
         if (a.kind === 'def_struct') {
+            let bouncedBitsCounter = 0;
             for (const f of a.fields) {
-                let bouncedBitsCounter = 0;
-
+                
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throwError(`Field ${f.name} already exists`, f.ref);
                 }
@@ -269,11 +264,15 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 
                 // TODO limit fields
                 // TODO should we process ~ structs if there isn't a bounced handler?
-                // if (a.message) {
-                //     const fieldDescription = buildFieldDescription(f, types[a.name].fields.length)
-                //     console.log(fieldDescription, "fieldDescriptionFOR_BOUNCED")
-                //     types[a.name + "~"].fields.push(buildFieldDescription(f, types[a.name].fields.length));
-                // }
+                // BUILD PARTIAL STRUCT
+                if (a.message && bouncedBitsCounter === 0) {
+                    bouncedBitsCounter += 1 // TODO should be based on field bit counter
+                    // TODO how to count nested structs length?
+                    // TOOD can structs hold things such as coins?
+                    const fieldDescription = buildFieldDescription(f, types[a.name].fields.length)
+                    console.log("PushX " + fieldDescription.name, bouncedBitsCounter, a.fields.length)
+                    types[a.name + `~`].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                }
             }
         }
 
@@ -609,9 +608,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         // Check resolved argument type
                         // TODO throw if slice
                         // TODO throw for bounced without receivers
-                        console.log("trying to resolve type: " + arg.type.name);
+                        // console.log("trying to resolve type: " + arg.type.name);
                         let t = types[arg.type.name];
-                        const isGenericHandler = t.kind === 'primitive' && t.name === 'Slice';
+                        const isGeneric = t.kind === 'primitive' && t.name === 'Slice';
                         // if (t.kind === 'primitive' || t.name === 'Slice') {
                         //     throwError('Bounce receive function can only accept message', d.ref);
                         // }
@@ -621,11 +620,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         // if (s.receivers.find((v) => v.selector.kind === 'internal-bounce' && v.selector.type === arg.type?.name)) {
                         //     throwError('Bounce receive function already exists for type:' + arg.type.name, d.ref);
                         // }
-                        console.log('Bounce receiver', arg)
 
                         // TODO rethink whether "generic" is a good way to handle this
                         s.receivers.push({
-                            selector: { kind: 'internal-bounce', name: arg.name, type: arg.type.name },
+                            selector: { kind: 'internal-bounce', name: arg.name, type: arg.type.name, isGeneric },
                             ast: d
                         });
                     }

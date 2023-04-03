@@ -4,7 +4,7 @@ import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, A
 export type TypeOrigin = 'stdlib' | 'user';
 
 export type TypeDescription = {
-    kind: 'struct' | 'primitive' | 'contract' | 'trait';
+    kind: 'struct' | 'primitive' | 'contract' | 'trait' | 'partial_struct';
     origin: TypeOrigin;
     name: string;
     uid: number;
@@ -20,7 +20,6 @@ export type TypeDescription = {
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
-    partialForBounced: boolean;
 }
 
 export type TypeRef = {
@@ -102,7 +101,8 @@ export type ReceiverSelector = {
 } | {
     kind: 'internal-bounce',
     name: string,
-    type: string
+    type: string,
+    isGeneric: boolean
 };
 
 export type ReceiverDescription = {

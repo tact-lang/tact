@@ -195,6 +195,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
         ctx.append(`build_${gen} = build_${gen}.store_dict(${fieldName});`);
         return;
     }
+    // TODO nested structs of partial structs?
     if (op.kind === 'struct') {
         if (op.ref) {
             throw Error('Not implemented');
@@ -240,10 +241,13 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
     });
 }
 
+// TODO perhaps extract logic from writeParser and writeBouncedParser
 export function writeBouncedParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
     let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
-    ctx.fun(ops.reader(name, ctx), () => {
+    name = name.replace(/~$/, ''); // Remove the ~ suffix
+
+    ctx.fun(ops.readerBounced(name, ctx), () => {
         ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.readerBounced(name, ctx)}(slice sc_0)`);
         if (forceInline || isSmall) {
             ctx.flag('inline');

@@ -1,34 +1,52 @@
 ;;
-;; Type: Shoko
-;; Header: 0xdf30db1c
-;; TLB: shoko#df30db1c amount:uint32 thisDoesNotFit:uint256 = Shoko
+;; Type: First
+;; Header: 0x35a0eb99
+;; TLB: first#35a0eb99 amount:uint32 myCoins:coins = First
 ;;
 
-(slice, ((int, int))) $Shoko$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3744520988);
+(slice, ((int, int))) $First$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 899738521);
     var v'amount = sc_0~load_uint(32);
-    var v'thisDoesNotFit = sc_0~load_uint(256);
-    return (sc_0, (v'amount, v'thisDoesNotFit));
+    var v'myCoins = sc_0~load_coins();
+    return (sc_0, (v'amount, v'myCoins));
 }
 
-(slice, ((int, int))) $Shoko$_load_for_bounce(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3744520988);
+(slice, ((int))) $First$_load_bounced(slice sc_0) inline {
     var v'amount = sc_0~load_uint(32);
-    ;; var v'thisDoesNotFit = sc_0~load_uint(256);
-    return (sc_0, (v'amount, v'thisDoesNotFit));
+    return (sc_0, (v'amount));
 }
 
 ;;
-;; Type: Koko
-;; Header: 0x3b466925
-;; TLB: koko#3b466925 amount_bigger:uint64 thisDoesNotFit:uint256 = Koko
+;; Type: MyStruct
+;; TLB: _ amount:int257 = MyStruct
 ;;
 
-(slice, ((int, int))) $Koko$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 994470181);
+(slice, ((int))) $MyStruct$_load(slice sc_0) inline {
+    var v'amount = sc_0~load_int(257);
+    return (sc_0, (v'amount));
+}
+
+;;
+;; Type: Second
+;; Header: 0x0f3105ec
+;; TLB: second#0f3105ec amount_bigger:uint64 thisDoesNotFit:uint256 myAddress:address myBool:bool myStruct:MyStruct{amount:int257} myStruct2:MyStruct{amount:int257} = Second
+;;
+
+(slice, ((int, int, slice, int, (int), (int)))) $Second$_load(slice sc_0) inline_ref {
+    throw_unless(129, sc_0~load_uint(32) == 254871020);
     var v'amount_bigger = sc_0~load_uint(64);
     var v'thisDoesNotFit = sc_0~load_uint(256);
-    return (sc_0, (v'amount_bigger, v'thisDoesNotFit));
+    var v'myAddress = sc_0~__tact_load_address();
+    var v'myBool = sc_0~load_int(1);
+    var v'myStruct = sc_0~$MyStruct$_load();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'myStruct2 = sc_1~$MyStruct$_load();
+    return (sc_0, (v'amount_bigger, v'thisDoesNotFit, v'myAddress, v'myBool, v'myStruct, v'myStruct2));
+}
+
+(slice, ((int))) $Second$_load_bounced(slice sc_0) inline {
+    var v'amount_bigger = sc_0~load_uint(64);
+    return (sc_0, (v'amount_bigger));
 }
 
 ;;

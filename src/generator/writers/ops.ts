@@ -43,7 +43,7 @@ export const ops = {
     receiveAnyText: (type: string) => `$${type}$_receive_any_text`,
     receiveText: (type: string, hash: string) => `$${type}$_receive_text_${hash}`,
     receiveAny: (type: string) => `$${type}$_receive_any`,
-    receiveBounce: (type: string, msg: string) => `$${type}$_receive_bounce_${msg}`,
+    receiveTypeBounce: (type: string, msg: string) => `$${type}$_receive_binary_bounce_${msg}`,
 
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,

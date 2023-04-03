@@ -120,7 +120,6 @@ export class WriterContext {
     };
 
     fun(name: string, handler: () => void) {
-
         //
         // Duplicates check
         //
@@ -188,6 +187,7 @@ export class WriterContext {
         if (!code) {
             throw new Error(`Function ${name} body not set`);
         }
+
         this.#pendingDepends = null;
         this.#pendingWriter = null;
         this.#pendingName = null;

@@ -15,15 +15,22 @@ tuple $SampleContract$_contract_init() impure inline_ref {
 ;; Receivers of a Contract SampleContract
 ;;
 
-((tuple), ()) $SampleContract$_receive_binary_Shoko(tuple $self, (int, int) $msg) impure inline {
+((tuple), ()) $SampleContract$_receive_binary_First(tuple $self, (int, int) $msg) impure inline {
     var $self = $self;
-    var ($msg'amount, $msg'thisDoesNotFit) = $msg;
+    var ($msg'amount, $msg'myCoins) = $msg;
     return ($self, ());
 }
 
-((tuple), ()) $SampleContract$_receive_binary_Koko(tuple $self, (int, int) $msg) impure inline {
+((tuple), ()) $SampleContract$_receive_binary_Second(tuple $self, (int, int, slice, int, (int), (int)) $msg) impure inline {
     var $self = $self;
-    var ($msg'amount_bigger, $msg'thisDoesNotFit) = $msg;
+    var ($msg'amount_bigger, $msg'thisDoesNotFit, $msg'myAddress, $msg'myBool, ($msg'myStruct'amount), ($msg'myStruct2'amount)) = $msg;
+    return ($self, ());
+}
+
+((tuple), ()) $SampleContract$_receive_binary_bounce_Second(tuple $self, (int) $tst) impure inline {
+    var $self = $self;
+    var ($tst'amount_bigger) = $tst;
+    int $x = $tst'amount_bigger;
     return ($self, ());
 }
 
@@ -32,18 +39,15 @@ tuple $SampleContract$_contract_init() impure inline_ref {
     return ($self, ());
 }
 
-(tuple, ()) $SampleContract$_receive_bounce_Slice(tuple $self, slice $msg) impure inline {
+((tuple), ()) $SampleContract$_receive_binary_bounce_Slice(tuple $self, slice $msg) impure inline {
     var $self = $self;
+    var $msg = $msg;
     return ($self, ());
 }
 
-(tuple, ()) $SampleContract$_receive_bounce_Koko(tuple $self, slice $msg) impure inline {
+((tuple), ()) $SampleContract$_receive_binary_bounce_First(tuple $self, (int) $msg) impure inline {
     var $self = $self;
-    return ($self, ());
-}
-
-(tuple, ()) $SampleContract$_receive_bounce_Shoko(tuple $self, slice $msg) impure inline {
-    var $self = $self;
+    var ($msg'amount) = $msg;
     return ($self, ());
 }
 
@@ -61,7 +65,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() {
-    return "ipfs://QmZfC5DS8eeM5U2gCzKTsc1dPaeW5Zzvc7iRH9n5dvbru9";
+    return "ipfs://QmTbT2A6i1hvqHJNghFARnp5ErPGXJrdu7aGCPEYBVPV1B";
 }
 
 _ lazy_deployment_completed() {
@@ -74,9 +78,13 @@ _ lazy_deployment_completed() {
 
 (tuple, int) $SampleContract$_contract_router(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
+    if (msg_bounced) {
+        ;; skip 0xffff
+        in_msg.skip_bits(32);
+    }
+
     ;; Parse incoming message
     int op = 0;
-
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
     }
@@ -84,34 +92,36 @@ _ lazy_deployment_completed() {
     ;; Handle bounced messages
     if (msg_bounced) {
         
-        ;; Bounced handler for Koko message
-        if (op == 994470181) {
-            self~$SampleContract$_receive_bounce_Koko(in_msg);
+        ;; Bounced handler for Second message
+        if (op == 254871020) {
+            var msg = in_msg~$Second$_load_bounced();
+            self~$SampleContract$_receive_binary_bounce_Second(msg);
             return (self, true);
         }
         
-        ;; Bounced handler for Shoko message
-        if (op == 3744520988) {
-            self~$SampleContract$_receive_bounce_Shoko(in_msg);
+        ;; Bounced handler for First message
+        if (op == 899738521) {
+            var msg = in_msg~$First$_load_bounced();
+            self~$SampleContract$_receive_binary_bounce_First(msg);
             return (self, true);
         }
         
         ;; Bounced handler for Slice message (Generic)
-        self~$SampleContract$_receive_bounce_Slice(in_msg);
+        self~$SampleContract$_receive_binary_bounce_Slice(in_msg);
         return (self, true);
     }
     
-    ;; Receive Shoko message
-    if (op == 3744520988) {
-        var msg = in_msg~$Shoko$_load();
-        self~$SampleContract$_receive_binary_Shoko(msg);
+    ;; Receive First message
+    if (op == 899738521) {
+        var msg = in_msg~$First$_load();
+        self~$SampleContract$_receive_binary_First(msg);
         return (self, true);
     }
     
-    ;; Receive Koko message
-    if (op == 994470181) {
-        var msg = in_msg~$Koko$_load();
-        self~$SampleContract$_receive_binary_Koko(msg);
+    ;; Receive Second message
+    if (op == 254871020) {
+        var msg = in_msg~$Second$_load();
+        self~$SampleContract$_receive_binary_Second(msg);
         return (self, true);
     }
     

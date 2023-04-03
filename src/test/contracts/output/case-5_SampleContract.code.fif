@@ -1,16 +1,20 @@
 PROGRAM{
   DECLPROC __tact_verify_address
-  DECLPROC $Shoko$_load
-  DECLPROC $Koko$_load
+  DECLPROC __tact_load_address
+  DECLPROC $First$_load
+  DECLPROC $First$_load_bounced
+  DECLPROC $MyStruct$_load
+  DECLPROC $Second$_load
+  DECLPROC $Second$_load_bounced
   DECLPROC $SampleContract$_contract_init
   DECLPROC $SampleContract$_contract_load
   DECLPROC $SampleContract$_contract_store
-  DECLPROC $SampleContract$_receive_binary_Shoko
-  DECLPROC $SampleContract$_receive_binary_Koko
+  DECLPROC $SampleContract$_receive_binary_First
+  DECLPROC $SampleContract$_receive_binary_Second
   DECLPROC $SampleContract$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
-  DECLPROC $SampleContract$_receive_bounce_Slice
-  DECLPROC $SampleContract$_receive_bounce_Koko
-  DECLPROC $SampleContract$_receive_bounce_Shoko
+  DECLPROC $SampleContract$_receive_binary_bounce_Slice
+  DECLPROC $SampleContract$_receive_binary_bounce_Second
+  DECLPROC $SampleContract$_receive_binary_bounce_First
   113617 DECLMETHOD supported_interfaces
   DECLPROC get_abi_ipfs
   DECLPROC lazy_deployment_completed
@@ -36,25 +40,56 @@ PROGRAM{
     EQUAL
     136 THROWIFNOT
   }>
-  $Shoko$_load PROCINLINE:<{
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  $First$_load PROCINLINE:<{
     32 LDU
     SWAP
-    3744520988 PUSHINT
+    899738521 PUSHINT
     EQUAL
     129 THROWIFNOT
     32 LDU
-    256 LDU
+    LDGRAMS
     -ROT
   }>
-  $Koko$_load PROCINLINE:<{
+  $First$_load_bounced PROCINLINE:<{
     32 LDU
     SWAP
-    994470181 PUSHINT
+  }>
+  $MyStruct$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $Second$_load PROCREF:<{
+    32 LDU
+    SWAP
+    254871020 PUSHINT
     EQUAL
     129 THROWIFNOT
     64 LDU
     256 LDU
-    -ROT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    $MyStruct$_load INLINECALLDICT
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    $MyStruct$_load INLINECALLDICT
+    NIP
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
+  $Second$_load_bounced PROCINLINE:<{
+    64 LDU
+    SWAP
   }>
   $SampleContract$_contract_init PROCREF:<{
     PUSHNULL
@@ -89,21 +124,21 @@ PROGRAM{
     ENDC
     c4 POP
   }>
-  $SampleContract$_receive_binary_Shoko PROCINLINE:<{
+  $SampleContract$_receive_binary_First PROCINLINE:<{
     2DROP
   }>
-  $SampleContract$_receive_binary_Koko PROCINLINE:<{
-    2DROP
+  $SampleContract$_receive_binary_Second PROCINLINE:<{
+    6 BLKDROP
   }>
   $SampleContract$_receive_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
   }>
-  $SampleContract$_receive_bounce_Slice PROCINLINE:<{
+  $SampleContract$_receive_binary_bounce_Slice PROCINLINE:<{
     DROP
   }>
-  $SampleContract$_receive_bounce_Koko PROCINLINE:<{
+  $SampleContract$_receive_binary_bounce_Second PROCINLINE:<{
     DROP
   }>
-  $SampleContract$_receive_bounce_Shoko PROCINLINE:<{
+  $SampleContract$_receive_binary_bounce_First PROCINLINE:<{
     DROP
   }>
   supported_interfaces PROC:<{
@@ -113,7 +148,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a66433544533865654d35553267437a4b547363316450616557355a7a766337695248396e35647662727539} PUSHSLICE
+    x{697066733a2f2f516d5462543241366931687671484a4e67684641526e703545725047584a72647537614743504559425650563142} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -136,41 +171,45 @@ PROGRAM{
     s0 s2 XCHG
     IFJMP:<{
       OVER
-      994470181 PUSHINT
+      254871020 PUSHINT
       EQUAL
       IFJMP:<{
         NIP
-        $SampleContract$_receive_bounce_Koko INLINECALLDICT
+        $Second$_load_bounced INLINECALLDICT
+        NIP
+        $SampleContract$_receive_binary_bounce_Second INLINECALLDICT
         TRUE
       }>
       SWAP
-      3744520988 PUSHINT
+      899738521 PUSHINT
       EQUAL
       IFJMP:<{
-        $SampleContract$_receive_bounce_Shoko INLINECALLDICT
+        $First$_load_bounced INLINECALLDICT
+        NIP
+        $SampleContract$_receive_binary_bounce_First INLINECALLDICT
         TRUE
       }>
-      $SampleContract$_receive_bounce_Slice INLINECALLDICT
+      $SampleContract$_receive_binary_bounce_Slice INLINECALLDICT
       TRUE
     }>
     OVER
-    3744520988 PUSHINT
+    899738521 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
-      $Shoko$_load INLINECALLDICT
+      $First$_load INLINECALLDICT
       1 2 BLKDROP2
-      $SampleContract$_receive_binary_Shoko INLINECALLDICT
+      $SampleContract$_receive_binary_First INLINECALLDICT
       TRUE
     }>
     OVER
-    994470181 PUSHINT
+    254871020 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
-      $Koko$_load INLINECALLDICT
-      1 2 BLKDROP2
-      $SampleContract$_receive_binary_Koko INLINECALLDICT
+      $Second$_load INLINECALLDICT
+      1 6 BLKDROP2
+      $SampleContract$_receive_binary_Second INLINECALLDICT
       TRUE
     }>
     SWAP

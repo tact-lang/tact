@@ -187,96 +187,159 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
     }
 }
 
-export type Shoko = {
-    $$type: 'Shoko';
+export type First = {
+    $$type: 'First';
     amount: bigint;
-    thisDoesNotFit: bigint;
+    myCoins: bigint;
 }
 
-export function storeShoko(src: Shoko) {
+export function storeFirst(src: First) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3744520988, 32);
+        b_0.storeUint(899738521, 32);
         b_0.storeUint(src.amount, 32);
-        b_0.storeUint(src.thisDoesNotFit, 256);
+        b_0.storeCoins(src.myCoins);
     };
 }
 
-export function loadShoko(slice: Slice) {
+export function loadFirst(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3744520988) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 899738521) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadUintBig(32);
-    let _thisDoesNotFit = sc_0.loadUintBig(256);
-    return { $$type: 'Shoko' as const, amount: _amount, thisDoesNotFit: _thisDoesNotFit };
+    let _myCoins = sc_0.loadCoins();
+    return { $$type: 'First' as const, amount: _amount, myCoins: _myCoins };
 }
 
-function loadTupleShoko(source: TupleReader) {
+function loadTupleFirst(source: TupleReader) {
     let _amount = source.readBigNumber();
-    let _thisDoesNotFit = source.readBigNumber();
-    return { $$type: 'Shoko' as const, amount: _amount, thisDoesNotFit: _thisDoesNotFit };
+    let _myCoins = source.readBigNumber();
+    return { $$type: 'First' as const, amount: _amount, myCoins: _myCoins };
 }
 
-function storeTupleShoko(source: Shoko) {
+function storeTupleFirst(source: First) {
     let builder = new TupleBuilder();
     builder.writeNumber(source.amount);
-    builder.writeNumber(source.thisDoesNotFit);
+    builder.writeNumber(source.myCoins);
     return builder.build();
 }
 
-function dictValueParserShoko(): DictionaryValue<Shoko> {
+function dictValueParserFirst(): DictionaryValue<First> {
     return {
         serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeShoko(src)).endCell());
+            buidler.storeRef(beginCell().store(storeFirst(src)).endCell());
         },
         parse: (src) => {
-            return loadShoko(src.loadRef().beginParse());
+            return loadFirst(src.loadRef().beginParse());
         }
     }
 }
 
-export type Koko = {
-    $$type: 'Koko';
+export type Second = {
+    $$type: 'Second';
     amount_bigger: bigint;
     thisDoesNotFit: bigint;
+    myAddress: Address;
+    myBool: boolean;
+    myStruct: MyStruct;
+    myStruct2: MyStruct;
 }
 
-export function storeKoko(src: Koko) {
+export function storeSecond(src: Second) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(994470181, 32);
+        b_0.storeUint(254871020, 32);
         b_0.storeUint(src.amount_bigger, 64);
         b_0.storeUint(src.thisDoesNotFit, 256);
+        b_0.storeAddress(src.myAddress);
+        b_0.storeBit(src.myBool);
+        b_0.store(storeMyStruct(src.myStruct));
+        let b_1 = new Builder();
+        b_1.store(storeMyStruct(src.myStruct2));
+        b_0.storeRef(b_1.endCell());
     };
 }
 
-export function loadKoko(slice: Slice) {
+export function loadSecond(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 994470181) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 254871020) { throw Error('Invalid prefix'); }
     let _amount_bigger = sc_0.loadUintBig(64);
     let _thisDoesNotFit = sc_0.loadUintBig(256);
-    return { $$type: 'Koko' as const, amount_bigger: _amount_bigger, thisDoesNotFit: _thisDoesNotFit };
+    let _myAddress = sc_0.loadAddress();
+    let _myBool = sc_0.loadBit();
+    let _myStruct = loadMyStruct(sc_0);
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _myStruct2 = loadMyStruct(sc_1);
+    return { $$type: 'Second' as const, amount_bigger: _amount_bigger, thisDoesNotFit: _thisDoesNotFit, myAddress: _myAddress, myBool: _myBool, myStruct: _myStruct, myStruct2: _myStruct2 };
 }
 
-function loadTupleKoko(source: TupleReader) {
+function loadTupleSecond(source: TupleReader) {
     let _amount_bigger = source.readBigNumber();
     let _thisDoesNotFit = source.readBigNumber();
-    return { $$type: 'Koko' as const, amount_bigger: _amount_bigger, thisDoesNotFit: _thisDoesNotFit };
+    let _myAddress = source.readAddress();
+    let _myBool = source.readBoolean();
+    const _myStruct = loadTupleMyStruct(source.readTuple());
+    const _myStruct2 = loadTupleMyStruct(source.readTuple());
+    return { $$type: 'Second' as const, amount_bigger: _amount_bigger, thisDoesNotFit: _thisDoesNotFit, myAddress: _myAddress, myBool: _myBool, myStruct: _myStruct, myStruct2: _myStruct2 };
 }
 
-function storeTupleKoko(source: Koko) {
+function storeTupleSecond(source: Second) {
     let builder = new TupleBuilder();
     builder.writeNumber(source.amount_bigger);
     builder.writeNumber(source.thisDoesNotFit);
+    builder.writeAddress(source.myAddress);
+    builder.writeBoolean(source.myBool);
+    builder.writeTuple(storeTupleMyStruct(source.myStruct));
+    builder.writeTuple(storeTupleMyStruct(source.myStruct2));
     return builder.build();
 }
 
-function dictValueParserKoko(): DictionaryValue<Koko> {
+function dictValueParserSecond(): DictionaryValue<Second> {
     return {
         serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeKoko(src)).endCell());
+            buidler.storeRef(beginCell().store(storeSecond(src)).endCell());
         },
         parse: (src) => {
-            return loadKoko(src.loadRef().beginParse());
+            return loadSecond(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type MyStruct = {
+    $$type: 'MyStruct';
+    amount: bigint;
+}
+
+export function storeMyStruct(src: MyStruct) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeInt(src.amount, 257);
+    };
+}
+
+export function loadMyStruct(slice: Slice) {
+    let sc_0 = slice;
+    let _amount = sc_0.loadIntBig(257);
+    return { $$type: 'MyStruct' as const, amount: _amount };
+}
+
+function loadTupleMyStruct(source: TupleReader) {
+    let _amount = source.readBigNumber();
+    return { $$type: 'MyStruct' as const, amount: _amount };
+}
+
+function storeTupleMyStruct(source: MyStruct) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.amount);
+    return builder.build();
+}
+
+function dictValueParserMyStruct(): DictionaryValue<MyStruct> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeMyStruct(src)).endCell());
+        },
+        parse: (src) => {
+            return loadMyStruct(src.loadRef().beginParse());
         }
     }
 }
@@ -292,8 +355,8 @@ function initSampleContract_init_args(src: SampleContract_init_args) {
 }
 
 async function SampleContract_init() {
-    const __code = Cell.fromBase64('te6ccgECCQEAAXcAART/APSkE/S88sgLAQIBYgIDAo7QAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVAQFAJWhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcE4TsunLVmnZbmdB0s2yjN0UkBNO1E0NQB+GPSADCRbeD4KNcLCoMJuvLgids8BgL07aLt+3Ah10nCH5UwINcLH94CjhshghA7RmklupMxMH/gAYIQ3zDbHLqSMH/gMH/gIYIQ3zDbHLqOFzHTHwGCEN8w2xy68uCB0x/T/1lsElt/4CGCEDtGaSW6jhcx0x8BghA7RmkluvLggdM/0/9ZbBJbf+ABwADjD3AHCAACbQBU+QGC8M3Q9ZZqN5IiOKaVTukYoWLMWQQJ72XwlM7oHp0LxSu0upN/2zHgAAIw');
-    const __system = Cell.fromBase64('te6cckECCwEAAYEAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIFBACVoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOE7Lpy1Zp2W5nQdLNsozdFJAo7QAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVAkGAvTtou37cCHXScIflTAg1wsf3gKOGyGCEDtGaSW6kzEwf+ABghDfMNscupIwf+Awf+AhghDfMNscuo4XMdMfAYIQ3zDbHLry4IHTH9P/WWwSW3/gIYIQO0ZpJbqOFzHTHwGCEDtGaSW68uCB0z/T/1lsElt/4AHAAOMPcAgHAAIwAFT5AYLwzdD1lmo3kiI4ppVO6RihYsxZBAnvZfCUzugenQvFK7S6k3/bMeABNO1E0NQB+GPSADCRbeD4KNcLCoMJuvLgids8CgACbfMysR0=');
+    const __code = Cell.fromBase64('te6ccgECCQEAAboAART/APSkE/S88sgLAQIBYgIDAo7QAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVAQFAJWhd6ME4LnYerpZXPY9CdhzrJUKNs0E4TusalpWyPlmRadeW/vixHME4ECrgDcAzscpnLB1XI5LZYcE4TsunLVmnZbmdB0s2yjN0UkBNO1E0NQB+GPSADCRbeD4KNcLCoMJuvLgids8BgLq7aLt+3Ah10nCH5UwINcLH94CjiMhghAPMQXsupcx0z8BMTB/4AGCEDWg65m6ltMfATEwf+Awf+AhghA1oOuZuo4XMdMfAYIQNaDrmbry4IHTH/oAWWwSW3/gIYIQDzEF7LqOiDHbPGwWXwZ/4AHAAJEw4w1wBwgAAm0AktMfAYIQDzEF7Lry4IHTP9P/+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHSAIEBAdcAAQHUAdCBAQHXAAExFhUUQzAAVPkBgvDN0PWWajeSIjimlU7pGKFizFkECe9l8JTO6B6dC8UrtLqTf9sx4A==');
+    const __system = Cell.fromBase64('te6cckECCwEAAcQAAQHAAQEFoIcVAgEU/wD0pBP0vPLICwMCAWIFBACVoXejBOC52Hq6WVz2PQnYc6yVCjbNBOE7rGpaVsj5ZkWnXlv74sRzBOBAq4A3AM7HKZywdVyOS2WHBOE7Lpy1Zp2W5nQdLNsozdFJAo7QAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVAkGAurtou37cCHXScIflTAg1wsf3gKOIyGCEA8xBey6lzHTPwExMH/gAYIQNaDrmbqW0x8BMTB/4DB/4CGCEDWg65m6jhcx0x8BghA1oOuZuvLggdMf+gBZbBJbf+AhghAPMQXsuo6IMds8bBZfBn/gAcAAkTDjDXAIBwBU+QGC8M3Q9ZZqN5IiOKaVTukYoWLMWQQJ72XwlM7oHp0LxSu0upN/2zHgAJLTHwGCEA8xBey68uCB0z/T//pAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB0gCBAQHXAAEB1AHQgQEB1wABMRYVFEMwATTtRNDUAfhj0gAwkW3g+CjXCwqDCbry4InbPAoAAm1rOGkc');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -356,14 +419,14 @@ export class SampleContract implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Shoko | Koko | 'Increment') {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: First | Second | 'Increment') {
         
         let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Shoko') {
-            body = beginCell().store(storeShoko(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'First') {
+            body = beginCell().store(storeFirst(message)).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Koko') {
-            body = beginCell().store(storeKoko(message)).endCell();
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Second') {
+            body = beginCell().store(storeSecond(message)).endCell();
         }
         if (message === 'Increment') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();

@@ -54,7 +54,8 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 const selector = r.selector;
                 if (selector.kind !== "internal-bounce") throw Error('Invalid selector type: ' + selector.kind);
 
-                let allocation = getType(ctx.ctx, selector.type);
+                // TODO improve originalType
+                let allocation = getType(ctx.ctx, selector.type.replace(/~$/, ''));
                 
                 if (!allocation.header) {
                     throw Error('Invalid allocation: ' + selector.type);
@@ -65,11 +66,11 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`if (op == ${allocation.header}) {`);
                 ctx.inIndent(() => {
                     // Read message
-                    // TODO prepare the partial struct
-                    //ctx.append(`var msg = in_msg~${ops.reader(selector.type, ctx)}();`);
+                    ctx.append(`var msg = in_msg~${ops.readerBounced(selector.type, ctx)}();`);
 
                     // Execute function
-                    ctx.append(`self~${ops.receiveBounce(type.name, selector.type)}(in_msg);`);
+                    console.log(selector.type, type.name, "BOUNCED RECEIVER")
+                    ctx.append(`self~${ops.receiveTypeBounce(type.name, selector.type)}(msg);`);
 
                     // Exit
                     ctx.append('return (self, true);');
@@ -86,7 +87,7 @@ export function writeRouter(type: TypeDescription, ctx: WriterContext) {
                 ctx.append(`;; Bounced handler for ${selector.type} message (Generic)`);
 
                 // Execute function
-                ctx.append(`self~${ops.receiveBounce(type.name, selector.type)}(in_msg);`);
+                ctx.append(`self~${ops.receiveTypeBounce(type.name, selector.type)}(in_msg);`);
 
                 // Exit
                 ctx.append('return (self, true);');
@@ -330,9 +331,17 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
 
     // Bounced
     if (selector.kind === 'internal-bounce') {
-        ctx.append(`(${selfType}, ()) ${ops.receiveBounce(self.name, selector.type)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
+        const type = selector.isGeneric ? selector.type : selector.type + '~';
+        let args = [
+            selfType + ' ' + id('self'),
+            resolveFuncType(type, ctx) + ' ' + id(selector.name)
+        ];
+        // TODO we use selector.type becuase of func grammer which wouldn't allow ~ (maybe we can do better with a different symbol)
+        ctx.append(`((${selfType}), ()) ${ops.receiveTypeBounce(self.name, selector.type)}(${args.join(', ')}) impure inline {`);
+        // ctx.append(`(${selfType}, ()) ${ops.receiveBounce(self.name, selector.type)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
+            ctx.append(`var ${resolveFuncTypeUnpack(type, id(selector.name), ctx)} = ${id(selector.name)};`);
 
             for (let s of f.ast.statements) {
                 writeStatement(s, selfRes, null, ctx);

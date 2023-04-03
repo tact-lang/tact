@@ -26,9 +26,6 @@ function registerExpType(ctx: CompilerContext, exp: ASTExpression, description: 
         }
         throw Error('Expression ' + exp.id + ' already has a type');
     }
-    if (exp.id === 1828) {
-        console.trace()
-    }
     return store.set(ctx, exp.id, { ast: exp, description });
 }
 

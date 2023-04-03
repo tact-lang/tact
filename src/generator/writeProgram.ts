@@ -2,7 +2,7 @@ import { CompilerContext } from "../context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
 import { WriterContext, WrittenFunction } from "./Writer";
-import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
+import { writeBouncedParser, writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
@@ -135,7 +135,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     for (let t of types) {
 
         let ffs: WrittenFunction[] = [];
-        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait') {
+        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait' || t.kind === 'partial_struct') {
             const typeFunctions = tryExtractModule(functions, 'type:' + t.name, imported);
             if (typeFunctions) {
                 imported.push('type:' + t.name);
@@ -267,17 +267,24 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     // Serializators
     let sortedTypes = getSortedTypes(ctx);
     for (let t of sortedTypes) {
-        console.log("Writing serializer for " + t.name, "SHAHAR1");
+        // console.log("Writing serializer for " + t.name, "SHAHAR1");
         if (t.kind === 'contract' || t.kind === 'struct') {
-            console.log("Writing serializer for " + t.name, "SHAHAR1-1");
+            // console.log("Writing serializer for " + t.name, "SHAHAR1-1");
             let allocation = getAllocation(ctx, t.name);
             writeSerializer(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalSerializer(t.name, t.origin, wctx);
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalParser(t.name, t.origin, wctx);
         }
+        if (t.kind === 'partial_struct') {
+            // console.log("Writing serializer for " + t.name, "SHAHAR1-1");
+            let allocation = getAllocation(ctx, t.name);
+            writeBouncedParser(t.name, false, allocation, t.origin, wctx);
+            // writeOptionalParser(t.name, t.origin, wctx); TODO maybe relevant for nested structs?
+        }
     }
 
+    // TODO are accessors relevant for partial structs?
     // Accessors
     for (let t of allTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
@@ -287,9 +294,9 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
 
     // Init serializers
     for (let t of sortedTypes) {
-        console.log("Writing init serializer for " + t.name, "SHAHAR2");
+        // console.log("Writing init serializer for " + t.name, "SHAHAR2");
         if (t.kind === 'contract' && t.init) {
-            console.log("Writing init serializer for " + t.name, "SHAHAR2-2");
+            // console.log("Writing init serializer for " + t.name, "SHAHAR2-2");
             let allocation = getAllocation(ctx, initId(t.name));
             writeSerializer(initId(t.name), true, allocation, t.origin, wctx);
             writeParser(initId(t.name), false, allocation, t.origin, wctx);

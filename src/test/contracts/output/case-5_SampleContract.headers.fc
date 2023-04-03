@@ -6,11 +6,23 @@
 ;; __tact_verify_address
 slice __tact_verify_address(slice address) inline;
 
-;; $Shoko$_load
-(slice, ((int, int))) $Shoko$_load(slice sc_0) inline;
+;; __tact_load_address
+(slice, slice) __tact_load_address(slice cs) inline;
 
-;; $Koko$_load
-(slice, ((int, int))) $Koko$_load(slice sc_0) inline;
+;; $First$_load
+(slice, ((int, int))) $First$_load(slice sc_0) inline;
+
+;; $First$_load_bounced
+(slice, ((int))) $First$_load_bounced(slice sc_0) inline;
+
+;; $MyStruct$_load
+(slice, ((int))) $MyStruct$_load(slice sc_0) inline;
+
+;; $Second$_load
+(slice, ((int, int, slice, int, (int), (int)))) $Second$_load(slice sc_0) inline_ref;
+
+;; $Second$_load_bounced
+(slice, ((int))) $Second$_load_bounced(slice sc_0) inline;
 
 ;; $SampleContract$_contract_init
 tuple $SampleContract$_contract_init() impure inline_ref;

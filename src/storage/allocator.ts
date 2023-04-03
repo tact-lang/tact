@@ -4,6 +4,7 @@ import { AllocationCell, AllocationOperation, AllocationOperationType } from "./
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
 
+// TODO can we use this for calculating the partial-sized struct?
 export function getOperationSize(src: AllocationOperationType): { bits: number, refs: number } {
     if (src.kind === 'int' || src.kind === 'uint') {
         return { bits: src.bits + (src.optional ? 1 : 0), refs: 0 };
