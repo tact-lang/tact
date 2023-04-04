@@ -1,0 +1,5 @@
+;; String "In generic bounce!"
+slice __gen_slice_string_fefa5934c8084a8158005cbd8b2e7deb88a80c3dcb44fc30c2f463d6536d67b9() asm "B{b5ee9c72410101010014000024496e2067656e6572696320626f756e63652192ed6382} B>boc <s PUSHSLICE";
+
+;; String "In bounce!"
+slice __gen_slice_string_ef49ea3006c78f082586b5ab63c9bfd3460b9197fdd194c3864c7f5456c29237() asm "B{b5ee9c7241010101000c000014496e20626f756e6365211ce91d77} B>boc <s PUSHSLICE";

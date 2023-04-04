@@ -23,8 +23,8 @@ export function getAllocations(ctx: CompilerContext) {
 }
 
 export function getSortedTypes(ctx: CompilerContext) {
-    let types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract');
-    let structs = types.filter(t => t.kind === 'struct');
+    let types = Object.values(getAllTypes(ctx)).filter((v) => v.kind === 'struct' || v.kind === 'contract' || v.kind === 'partial_struct');
+    let structs = types.filter(t => t.kind === 'struct' || t.kind === 'partial_struct');
     let refs = (src: TypeDescription) => {
         let res: TypeDescription[] = []
         let t = new Set<string>();

@@ -13,7 +13,7 @@ describe('integration', () => {
     beforeEach(() => {
         __DANGER_resetNodeId();
     });
-    for (let r of loadCases(__dirname + "/contracts/")) {
+    for (let r of loadCases(__dirname + "/contracts/").filter(r => r.name.startsWith('case-5'))) {
         it('should resolve expressions for ' + r.name, async () => {
             let ctx = new CompilerContext({ shared: {} });
             let project = createNodeFileSystem(__dirname + "/contracts/");

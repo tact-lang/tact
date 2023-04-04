@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
-import { getType } from "../../types/resolveDescriptors";
+import { getType, fromBounced } from '../../types/resolveDescriptors';
 import { TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
@@ -195,6 +195,7 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
         ctx.append(`build_${gen} = build_${gen}.store_dict(${fieldName});`);
         return;
     }
+    // TODO nested structs of partial structs?
     if (op.kind === 'struct') {
         if (op.ref) {
             throw Error('Not implemented');
@@ -220,6 +221,33 @@ export function writeParser(name: string, forceInline: boolean, allocation: Stor
 
     ctx.fun(ops.reader(name, ctx), () => {
         ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.reader(name, ctx)}(slice sc_0)`);
+        if (forceInline || isSmall) {
+            ctx.flag('inline');
+        }
+        ctx.context('type:' + name);
+        ctx.body(() => {
+
+            // Check prefix
+            if (allocation.header) {
+                ctx.append(`throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`);
+            }
+
+            // Write cell parser
+            writeCellParser(allocation.root, 0, ctx);
+
+            // Compile tuple
+            ctx.append(`return (sc_0, (${allocation.ops.map((v) => `v'${v.name}`).join(', ')}));`);
+        });
+    });
+}
+
+export function writeBouncedParser(name: string, forceInline: boolean, allocation: StorageAllocation, origin: TypeOrigin, ctx: WriterContext) {
+    let isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
+
+    name = fromBounced(name); // For func syntax purposes, remove %%BOUNCED%%
+
+    ctx.fun(ops.readerBounced(name, ctx), () => {
+        ctx.signature(`(slice, (${resolveFuncTypeFromAbi(allocation.ops.map((v) => v.type), ctx)})) ${ops.readerBounced(name, ctx)}(slice sc_0)`);
         if (forceInline || isSmall) {
             ctx.flag('inline');
         }

@@ -139,6 +139,11 @@ PROGRAM{
     SWAP
   }>
   $SampleContract$_contract_router_internal PROCREF:<{
+    OVER
+    IF:<{
+      32 PUSHINT
+      SDSKIPFIRST
+    }>
     DUP
     SBITS
     NIP

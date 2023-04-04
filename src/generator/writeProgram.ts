@@ -2,7 +2,7 @@ import { CompilerContext } from "../context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
 import { WriterContext, WrittenFunction } from "./Writer";
-import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
+import { writeBouncedParser, writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
@@ -135,7 +135,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     for (let t of types) {
 
         let ffs: WrittenFunction[] = [];
-        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait') {
+        if (t.kind === 'struct' || t.kind === 'contract' || t.kind == 'trait' || t.kind === 'partial_struct') {
             const typeFunctions = tryExtractModule(functions, 'type:' + t.name, imported);
             if (typeFunctions) {
                 imported.push('type:' + t.name);
@@ -274,8 +274,13 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalParser(t.name, t.origin, wctx);
         }
+        if (t.kind === 'partial_struct') {
+            let allocation = getAllocation(ctx, t.name);
+            writeBouncedParser(t.name, false, allocation, t.origin, wctx);
+        }
     }
 
+    // TODO are accessors relevant for partial structs?
     // Accessors
     for (let t of allTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {

@@ -123,7 +123,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmXFF8HNnBEheMz6UbzyJzYWtDnUMptG8QpRch4zai962o";
+    return "ipfs://QmatDkXV5WPfLQhJwDpDYHDEe3zgni7Seg3FYkHrrPkjmv";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -135,6 +135,11 @@ _ lazy_deployment_completed() method_id {
 ;;
 
 ((cell, cell, cell, cell, cell, cell, cell, cell), int) $Maps$_contract_router_internal((cell, cell, cell, cell, cell, cell, cell, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    
+    if (msg_bounced) {
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+    }
     
     ;; Parse incoming message
     int op = 0;

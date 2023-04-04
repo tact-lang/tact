@@ -1,13 +1,13 @@
 PROGRAM{
   DECLPROC recv_internal;
-  DECLPROC ?fun_1;
+  DECLPROC ?fun_0;
   recv_internal PROC:<{
     1 PUSHINT
     1 CALL
     2 TUPLE
     1 SETGLOBVAR
   }>
-  ?fun_1 PROC:<{
+  ?fun_0 PROC:<{
     s0 PUSH
   }>
 }END>c

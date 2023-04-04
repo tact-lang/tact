@@ -1,0 +1,2 @@
+;; String "Bouncing!"
+slice __gen_slice_string_6d7f3ad26da9b3094ad497db31f04fa832a70e84a71fb689a86fec6544e3147f() asm "B{b5ee9c7241010101000b000012426f756e63696e672171662d75} B>boc <s PUSHSLICE";

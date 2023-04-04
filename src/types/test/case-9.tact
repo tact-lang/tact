@@ -1,0 +1,19 @@
+primitive Int;
+primitive Bool;
+
+message A {
+  a: Int as uint32;
+  b: Bool;
+  c: Int as uint256;
+}
+
+contract Test {
+  init() {}
+  receive(src: A) {
+    
+  }
+  
+  bounced(src: bounced<A>) {
+    let x: Int = src.c;
+  }
+}

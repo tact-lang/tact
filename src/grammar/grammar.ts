@@ -228,6 +228,15 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
+    BouncedFunctionArg(arg0, arg1, arg2, arg3, arg4) {
+        checkVariableName(arg0.sourceString, createRef(arg0));
+        return createNode({
+            kind: 'def_argument',
+            name: arg0.sourceString,
+            type: arg3.resolve_expression(),
+            ref: createRef(this)
+        })
+    },
     FunctionArg(arg0, arg1, arg2) {
         checkVariableName(arg0.sourceString, createRef(arg0));
         return createNode({
@@ -321,7 +330,15 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    ReceiveFunction_bounced(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+    ReceiveFunction_bouncedSlice(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        return createNode({
+            kind: 'def_receive',
+            selector: { kind: 'bounce', arg: arg2.resolve_declaration() },
+            statements: arg5.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    ReceiveFunction_bouncedSimple(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         return createNode({
             kind: 'def_receive',
             selector: { kind: 'bounce', arg: arg2.resolve_declaration() },

@@ -78,8 +78,9 @@
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
-((int, int, int), ()) $Wallet$_receive_bounce((int, int, int) $self, slice $msg) impure inline {
+(((int, int, int)), ()) $Wallet$_receive_binary_bounce_Slice((int, int, int) $self, slice $msg) impure inline {
     var ($self'seqno, $self'key, $self'walletId) = $self;
+    var $msg = $msg;
     return (($self'seqno, $self'key, $self'walletId), ());
 }
 
@@ -128,6 +129,11 @@ _ lazy_deployment_completed() method_id {
 
 ((int, int, int), int) $Wallet$_contract_router_internal((int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
+    if (msg_bounced) {
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+    }
+    
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
@@ -136,7 +142,9 @@ _ lazy_deployment_completed() method_id {
     
     ;; Handle bounced messages
     if (msg_bounced) {
-        self~$Wallet$_receive_bounce(in_msg);
+        
+        ;; Bounced handler for Slice message (Generic)
+        self~$Wallet$_receive_binary_bounce_Slice(in_msg);
         return (self, true);
     }
     

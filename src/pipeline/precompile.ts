@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { resolveDescriptors } from "../types/resolveDescriptors";
+import { resolveDescriptors, getAllTypes, resolvePartialStructs } from '../types/resolveDescriptors';
 import { resolveAllocations } from "../storage/resolveAllocation";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
@@ -7,6 +7,7 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from '../types/resolveSignatures';
 import { resolveImports } from '../imports/resolveImports';
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { C } from '../test/features/output/deep_C';
 
 export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, entrypoint: string) {
 
@@ -22,6 +23,9 @@ export function precompile(ctx: CompilerContext, project: VirtualFileSystem, std
 
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx);
+
+    // Add partial structs for bounced receivers
+    ctx = resolvePartialStructs(ctx);
 
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);

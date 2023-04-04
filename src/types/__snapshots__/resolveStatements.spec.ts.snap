@@ -230,6 +230,16 @@ Line 12, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-23 1`] = `
+"<unknown>:19:18: Type "A%%BOUNCED%%" does not have a field named "c"
+Line 19, col 18:
+  18 |     let y: Bool = src.b;
+> 19 |     let z: Int = src.c;
+                        ^~~~~
+  20 |   }
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [
@@ -718,6 +728,27 @@ exports[`resolveStatements should resolve statements for case-8 1`] = `
   [
     "self.value + 1",
     "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for case-9 1`] = `
+[
+  [
+    "src",
+    "A%%BOUNCED%%",
+  ],
+  [
+    "src.a",
+    "Int",
+  ],
+  [
+    "src",
+    "A%%BOUNCED%%",
+  ],
+  [
+    "src.b",
+    "Bool",
   ],
 ]
 `;

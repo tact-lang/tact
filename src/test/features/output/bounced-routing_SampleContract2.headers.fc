@@ -1,0 +1,22 @@
+;;
+;; Header files for SampleContract2
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; __tact_load_address
+(slice, slice) __tact_load_address(slice cs) inline;
+
+;; $First$_load
+(slice, ((int, int, int, slice))) $First$_load(slice sc_0) inline;
+
+;; $SampleContract2$_contract_init
+tuple $SampleContract2$_contract_init() impure inline_ref;
+
+;; $SampleContract2$_contract_load
+tuple $SampleContract2$_contract_load() impure inline_ref;
+
+;; $SampleContract2$_contract_store
+() $SampleContract2$_contract_store(tuple v) impure inline;

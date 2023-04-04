@@ -63,6 +63,11 @@ _ lazy_deployment_completed() method_id {
 
 (tuple, int) $A$_contract_router_internal(tuple self, int msg_bounced, slice in_msg) impure inline_ref {
     
+    if (msg_bounced) {
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+    }
+    
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
