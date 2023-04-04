@@ -280,7 +280,6 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
         }
     }
 
-    // TODO are accessors relevant for partial structs?
     // Accessors
     for (let t of allTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {

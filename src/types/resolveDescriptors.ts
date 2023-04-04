@@ -1047,8 +1047,8 @@ export function resolvePartialStructs(ctx: CompilerContext) {
                 name: newTypeName,
                 uid: uidForName(newTypeName, getAllTypes(ctx)),
                 header: originalType.header,
-                tlb: null, // TODO?
-                signature: null, // TODO?
+                tlb: null,
+                signature: null,
                 fields: [],
                 traits: [],
                 functions: new Map(),

@@ -195,7 +195,6 @@ function writeSerializerField(f: AllocationOperation, gen: number, ctx: WriterCo
         ctx.append(`build_${gen} = build_${gen}.store_dict(${fieldName});`);
         return;
     }
-    // TODO nested structs of partial structs?
     if (op.kind === 'struct') {
         if (op.ref) {
             throw Error('Not implemented');
