@@ -4,7 +4,7 @@ import { Config, Options } from "./config/parseConfig";
 import { consoleLogger } from "./logger";
 import { PackageFileFormat, run, TactLogger } from "./main";
 import { fileFormat } from "./packaging/fileFormat";
-const version = require('../package.json').version;
+import { getCompilerVersion } from "./pipeline/version";
 
 export type VerifyResult = {
     ok: true,
@@ -31,7 +31,7 @@ export async function verify(args: { pkg: string, logger?: TactLogger | null | u
     if (unpacked.compiler.name !== 'tact') {
         return { ok: false, error: 'invalid-compiler' };
     }
-    if (unpacked.compiler.version !== version) {
+    if (unpacked.compiler.version !== getCompilerVersion()) {
         return { ok: false, error: 'invalid-compiler-version' };
     }
 

@@ -18,7 +18,7 @@ import { createVirtualFileSystem } from '../vfs/createVirtualFileSystem';
 import { VirtualFileSystem } from '../vfs/VirtualFileSystem';
 import { compile } from './compile';
 import { precompile } from "./precompile";
-const version = require('../../package.json').version;
+import { getCompilerVersion } from './version';
 
 export async function build(args: {
     config: ConfigProject,
@@ -221,7 +221,7 @@ export async function build(args: {
             sources,
             compiler: {
                 name: 'tact',
-                version,
+                version: getCompilerVersion(),
                 parameters: cfg
             }
         };

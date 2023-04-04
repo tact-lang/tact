@@ -10,9 +10,13 @@ import { createNodeFileSystem } from '../src/vfs/createNodeFileSystem';
 import { glob } from 'glob';
 import { verify } from '../src/verify';
 import { consoleLogger } from '../src/logger';
+import { __DANGER__disableVersionNumber } from '../src/pipeline/version';
 
 // Read cases
 (async () => {
+
+    // Disable version number in packages
+    __DANGER__disableVersionNumber();
 
     // Compile projects
     await run({ configPath: __dirname + '/../tact.config.json' });
