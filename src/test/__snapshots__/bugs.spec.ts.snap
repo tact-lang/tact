@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`bugs should deploy contract correctly 1`] = `
+[
+  {
+    "$seq": 0,
+    "events": [
+      {
+        "$type": "deploy",
+      },
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "cell": "x{178D45190000000000000000502540BE4008006B8E4466A463A69A0E62E56E6E7F9B365EE7C44DED90C2AA0A07AA0F833125FF0016E3A425A4E75B646191AC9A34FE5D050BD101A5C490F87D01C66D885D09BC1082_}",
+            "type": "cell",
+          },
+          "bounce": false,
+          "from": "kQA1xyIzUjHTTQcxcrc3P82bL3PiJvbIYVUFA9UHwZiS_z25",
+          "to": "kQDXgQUCFogBkA17XlxyS4mTa65vLJtHVE0NmU-L_H3OUhA3",
+          "type": "internal",
+          "value": 9958866000n,
+        },
+      },
+      {
+        "$type": "processed",
+        "gasUsed": 16054n,
+      },
+      {
+        "$type": "sent",
+        "messages": [
+          {
+            "body": {
+              "cell": "x{D53276DB0000000000000000}",
+              "type": "cell",
+            },
+            "bounce": false,
+            "from": "kQDXgQUCFogBkA17XlxyS4mTa65vLJtHVE0NmU-L_H3OUhA3",
+            "to": "@treasure(treasure)",
+            "type": "internal",
+            "value": 9914868826n,
+          },
+        ],
+      },
+    ],
+  },
+]
+`;

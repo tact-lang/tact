@@ -1,0 +1,145 @@
+;;
+;; Header files for SampleJetton
+;; NOTE: declarations are sorted for optimal order
+;;
+
+;; __tact_verify_address
+slice __tact_verify_address(slice address) inline;
+
+;; __tact_load_address
+(slice, slice) __tact_load_address(slice cs) inline;
+
+;; __tact_load_address_opt
+(slice, slice) __tact_load_address_opt(slice cs) inline;
+
+;; __tact_store_address
+builder __tact_store_address(builder b, slice address) inline;
+
+;; __tact_create_address
+slice __tact_create_address(int chain, int hash) inline;
+
+;; __tact_compute_contract_address
+slice __tact_compute_contract_address(int chain, cell code, cell data) inline;
+
+;; __tact_not_null
+forall X -> X __tact_not_null(X x) inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
+
+;; __tact_context_get_sender
+slice __tact_context_get_sender() inline;
+
+;; __tact_store_bool
+builder __tact_store_bool(builder b, int v) inline;
+
+;; __tact_slice_eq_bits
+int __tact_slice_eq_bits(slice a, slice b) inline;
+
+;; __tact_dict_set_code
+cell __tact_dict_set_code(cell dict, int id, cell code) inline;
+
+;; __tact_dict_get_code
+cell __tact_dict_get_code(cell dict, int id) inline;
+
+;; $Mint$_load
+(slice, ((int, slice))) $Mint$_load(slice sc_0) inline;
+
+;; $TokenTransferInternal$_store
+builder $TokenTransferInternal$_store(builder build_0, (int, int, slice, slice, int, slice) v) inline_ref;
+
+;; $TokenTransferInternal$_store_cell
+cell $TokenTransferInternal$_store_cell((int, int, slice, slice, int, slice) v) inline;
+
+;; $TokenBurnNotification$_load
+(slice, ((int, int, slice, slice))) $TokenBurnNotification$_load(slice sc_0) inline;
+
+;; $TokenExcesses$_store
+builder $TokenExcesses$_store(builder build_0, (int) v) inline;
+
+;; $TokenExcesses$_store_cell
+cell $TokenExcesses$_store_cell((int) v) inline;
+
+;; $TokenUpdateContent$_load
+(slice, ((cell))) $TokenUpdateContent$_load(slice sc_0) inline;
+
+;; $SampleJetton$_store
+builder $SampleJetton$_store(builder build_0, (int, int, slice, cell, int) v) inline;
+
+;; $SampleJetton$_load
+(slice, ((int, int, slice, cell, int))) $SampleJetton$_load(slice sc_0) inline;
+
+;; $StateInit$_get_code
+_ $StateInit$_get_code((cell, cell) v) inline;
+
+;; $JettonData$_to_external
+(int, int, slice, cell, cell) $JettonData$_to_external(((int, int, slice, cell, cell)) v) inline;
+
+;; $SampleJetton$init$_load
+(slice, ((slice, cell, int))) $SampleJetton$init$_load(slice sc_0) inline;
+
+;; $JettonDefaultWallet$init$_store
+builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline;
+
+;; $SampleJetton$_contract_init
+(int, int, slice, cell, int) $SampleJetton$_contract_init(slice $owner, cell $content, int $max_supply) impure inline_ref;
+
+;; $SampleJetton$_contract_load
+(int, int, slice, cell, int) $SampleJetton$_contract_load() impure inline_ref;
+
+;; $SampleJetton$_contract_store
+() $SampleJetton$_contract_store((int, int, slice, cell, int) v) impure inline;
+
+;; $global_emptyCell
+cell $global_emptyCell() impure inline;
+
+;; $Cell$_fun_asSlice
+slice $Cell$_fun_asSlice(cell $self) impure inline;
+
+;; $global_emptySlice
+slice $global_emptySlice() impure inline;
+
+;; $global_contractAddress
+slice $global_contractAddress((cell, cell) $s) impure inline;
+
+;; $global_send
+() $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
+
+;; $SendParameters$_constructor_to_value_bounce_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body_code_data(slice to, int value, int bounce, int mode, cell body, cell code, cell data) inline;
+
+;; $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload
+((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice response_destination, int forward_ton_amount, slice forward_payload) inline;
+
+;; $JettonDefaultWallet$_init_child
+(cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $master, slice $owner) inline_ref;
+
+;; $SampleJetton$_fun_getJettonWalletInit
+((int, int, slice, cell, int), (cell, cell)) $SampleJetton$_fun_getJettonWalletInit((int, int, slice, cell, int) $self, slice $address) impure inline_ref;
+
+;; $SampleJetton$_fun_mint
+((int, int, slice, cell, int), ()) $SampleJetton$_fun_mint((int, int, slice, cell, int) $self, slice $to, int $amount, slice $response_destination) impure inline_ref;
+
+;; $SampleJetton$_fun_requireWallet
+((int, int, slice, cell, int), ()) $SampleJetton$_fun_requireWallet((int, int, slice, cell, int) $self, slice $owner) impure inline_ref;
+
+;; $JettonData$_constructor_totalSupply_mintable_owner_content_walletCode
+((int, int, slice, cell, cell)) $JettonData$_constructor_totalSupply_mintable_owner_content_walletCode(int totalSupply, int mintable, slice owner, cell content, cell walletCode) inline;
+
+;; $SampleJetton$_fun_get_jetton_data
+((int, int, slice, cell, int), (int, int, slice, cell, cell)) $SampleJetton$_fun_get_jetton_data((int, int, slice, cell, int) $self) impure inline_ref;
+
+;; $SampleJetton$_fun_get_wallet_address
+((int, int, slice, cell, int), slice) $SampleJetton$_fun_get_wallet_address((int, int, slice, cell, int) $self, slice $owner) impure inline_ref;
+
+;; $SampleJetton$_fun_requireOwner
+((int, int, slice, cell, int), ()) $SampleJetton$_fun_requireOwner((int, int, slice, cell, int) $self) impure inline_ref;
+
+;; $SampleJetton$_fun_owner
+((int, int, slice, cell, int), slice) $SampleJetton$_fun_owner((int, int, slice, cell, int) $self) impure inline_ref;
+
+;; $SendParameters$_constructor_to_value_bounce_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body(slice to, int value, int bounce, int mode, cell body) inline;
+
+;; $TokenExcesses$_constructor_queryId
+((int)) $TokenExcesses$_constructor_queryId(int queryId) inline;

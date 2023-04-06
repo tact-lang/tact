@@ -13,6 +13,7 @@ native sender(): Address;
 
 extends fun readForwardFee(self: Context): Int {
     let sc: Slice = self.raw;
+    sc.loadAddress(); // Skip destination
     sc.loadCoins(); // Skip value
     sc.skipBits(1); // Skip extracurrency collection
     sc.loadCoins(); // Skip ihr_fee

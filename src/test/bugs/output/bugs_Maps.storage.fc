@@ -9,13 +9,13 @@
 
 ;;
 ;; Type: TokenInfo
-;; TLB: _ ticker:^string decimals:uint8 = TokenInfo
+;; TLB: _ ticker:^string decimals:int257 = TokenInfo
 ;;
 
 builder $TokenInfo$_store(builder build_0, (slice, int) v) inline {
     var (v'ticker, v'decimals) = v;
     build_0 = build_0.store_ref(begin_cell().store_slice(v'ticker).end_cell());
-    build_0 = build_0.store_uint(v'decimals, 8);
+    build_0 = build_0.store_int(v'decimals, 257);
     return build_0;
 }
 
@@ -38,7 +38,7 @@ cell $TokenInfo$_store_opt(tuple v) inline {
 
 (slice, ((slice, int))) $TokenInfo$_load(slice sc_0) inline {
     var v'ticker = sc_0~load_ref().begin_parse();
-    var v'decimals = sc_0~load_uint(8);
+    var v'decimals = sc_0~load_int(257);
     return (sc_0, (v'ticker, v'decimals));
 }
 
