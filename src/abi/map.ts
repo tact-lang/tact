@@ -58,18 +58,26 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             // Handle Int key
             if (self.key === 'Int') {
+                let bits = 257;
+                let kind = 'int';
+                if (self.keyAs && self.keyAs.startsWith('int')) {
+                    bits = parseInt(self.keyAs.slice(3), 10);
+                } else if (self.keyAs && self.keyAs.startsWith('uint')) {
+                    bits = parseInt(self.keyAs.slice(4), 10);
+                    kind = 'uint';
+                }
                 if (self.value === 'Int') {
-                    ctx.used(`__tact_dict_set_int_int`);
-                    return `${resolved[0]}~__tact_dict_set_int_int(257, ${resolved[1]}, ${resolved[2]}, 257)`;
+                    ctx.used(`__tact_dict_set_${kind}_int`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 257)`;
                 } else if (self.value === 'Bool') {
-                    ctx.used(`__tact_dict_set_int_int`);
-                    return `${resolved[0]}~__tact_dict_set_int_int(257, ${resolved[1]}, ${resolved[2]}, 1)`;
+                    ctx.used(`__tact_dict_set_${kind}_int`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_int(${bits}, ${resolved[1]}, ${resolved[2]}, 1)`;
                 } else if (self.value === 'Cell') {
-                    ctx.used(`__tact_dict_set_int_cell`);
-                    return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${resolved[2]})`;
+                    ctx.used(`__tact_dict_set_${kind}_cell`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${resolved[2]})`;
                 } else if (self.value === 'Address') {
-                    ctx.used(`__tact_dict_set_int_slice`);
-                    return `${resolved[0]}~__tact_dict_set_int_slice(257, ${resolved[1]}, ${resolved[2]})`;
+                    ctx.used(`__tact_dict_set_${kind}_slice`);
+                    return `${resolved[0]}~__tact_dict_set_${kind}_slice(${bits}, ${resolved[1]}, ${resolved[2]})`;
                 } else {
                     let t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
@@ -79,11 +87,11 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                         throwError(`Trait can't be value of a map`, ref);
                     }
                     if (t.kind === 'struct') {
-                        ctx.used(`__tact_dict_set_int_cell`);
+                        ctx.used(`__tact_dict_set_${kind}_cell`);
                         if (args[2].kind === 'ref' && !args[2].optional) {
-                            return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
+                            return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCell(t.name, ctx)}(${resolved[2]}))`;
                         } else {
-                            return `${resolved[0]}~__tact_dict_set_int_cell(257, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
+                            return `${resolved[0]}~__tact_dict_set_${kind}_cell(${bits}, ${resolved[1]}, ${ops.writerCellOpt(t.name, ctx)}(${resolved[2]}))`;
                         }
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
@@ -167,18 +175,26 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             // Handle Int key
             if (self.key === 'Int') {
+                let bits = 257;
+                let kind = 'int';
+                if (self.keyAs && self.keyAs.startsWith('int')) {
+                    bits = parseInt(self.keyAs.slice(3), 10);
+                } else if (self.keyAs && self.keyAs.startsWith('uint')) {
+                    bits = parseInt(self.keyAs.slice(4), 10);
+                    kind = 'uint';
+                }
                 if (self.value === 'Int') {
-                    ctx.used(`__tact_dict_get_int_int`);
-                    return `__tact_dict_get_int_int(${resolved[0]}, 257, ${resolved[1]}, 257)`;
+                    ctx.used(`__tact_dict_get_${kind}_int`);
+                    return `__tact_dict_get_${kind}_int(${resolved[0]}, ${bits}, ${resolved[1]}, 257)`;
                 } else if (self.value === 'Bool') {
-                    ctx.used(`__tact_dict_get_int_int`);
-                    return `__tact_dict_get_int_int(${resolved[0]}, 257, ${resolved[1]}, 1)`;
+                    ctx.used(`__tact_dict_get_${kind}_int`);
+                    return `__tact_dict_get_int_int(${resolved[0]}, ${bits}, ${resolved[1]}, 1)`;
                 } else if (self.value === 'Cell') {
-                    ctx.used(`__tact_dict_get_int_cell`);
-                    return `__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]})`;
+                    ctx.used(`__tact_dict_get_${kind}_cell`);
+                    return `__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]})`;
                 } else if (self.value === 'Address') {
-                    ctx.used(`__tact_dict_get_int_slice`);
-                    return `__tact_dict_get_int_slice(${resolved[0]}, 257, ${resolved[1]})`;
+                    ctx.used(`__tact_dict_get_${kind}_slice`);
+                    return `__tact_dict_get_${kind}_slice(${resolved[0]}, ${bits}, ${resolved[1]})`;
                 } else {
                     let t = getType(ctx.ctx, self.value);
                     if (t.kind === 'contract') {
@@ -188,8 +204,8 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
                         throwError(`Trait can't be value of a map`, ref);
                     }
                     if (t.kind === 'struct') {
-                        ctx.used(`__tact_dict_get_int_cell`);                        
-                        return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_int_cell(${resolved[0]}, 257, ${resolved[1]}))`;
+                        ctx.used(`__tact_dict_get_${kind}_cell`);
+                        return `${ops.readerOpt(t.name, ctx)}(__tact_dict_get_${kind}_cell(${resolved[0]}, ${bits}, ${resolved[1]}))`;
                     } else {
                         throwError(`${t.name} can't be value of a map`, ref);
                     }

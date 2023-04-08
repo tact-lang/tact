@@ -1,4 +1,4 @@
-import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTTypeRef, throwError, traverse } from "../grammar/ast";
+import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTRef, ASTTypeRef, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
 import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
@@ -13,6 +13,62 @@ let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
 let staticConstantsStore = createContextStore<ConstantDescription>();
 
+function verifyMapType(key: string, keyAs: string | null, value: string, valueAs: string | null, ref: ASTRef) {
+    if (!keyAs && !valueAs) {
+        return;
+    }
+
+    // keyAs
+    if (keyAs) {
+        if (key === 'Int') {
+            if (![
+                'int8',
+                'int16',
+                'int32',
+                'int64',
+                'int128',
+                'int256',
+                'int257',
+                'uint8',
+                'uint16',
+                'uint32',
+                'uint64',
+                'uint128',
+                'uint256',
+            ].includes(keyAs)) {
+                throwError('Invalid key type for map', ref);
+            }
+        }
+        throwError('Invalid key type for map', ref);
+    }
+
+    // valueAs
+    if (valueAs) {
+        if (value === 'Int') {
+            if (![
+                'int8',
+                'int16',
+                'int32',
+                'int64',
+                'int128',
+                'int256',
+                'int257',
+                'uint8',
+                'uint16',
+                'uint32',
+                'uint64',
+                'uint128',
+                'uint256',
+                'coins'
+            ].includes(valueAs)) {
+                throwError('Invalid value type for map', ref);
+            }
+        }
+        throwError('Invalid value type for map', ref);
+    }
+}
+
+
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
         let t = getType(ctx, src.name);
@@ -25,28 +81,13 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_map') {
         let k = getType(ctx, src.key).name;
         let v = getType(ctx, src.value).name;
+        verifyMapType(k, src.keyAs, v, src.valueAs, src.ref);
         return {
             kind: 'map',
             key: k,
-            value: v
-        };
-    }
-    throw Error('Invalid type ref');
-}
-
-export function resolveTypeRefUnsafe(src: ASTTypeRef): TypeRef {
-    if (src.kind === 'type_ref_simple') {
-        return {
-            kind: 'ref',
-            name: src.name,
-            optional: src.optional
-        };
-    }
-    if (src.kind === 'type_ref_map') {
-        return {
-            kind: 'map',
-            key: src.key,
-            value: src.value
+            keyAs: src.keyAs,
+            value: v,
+            valueAs: src.valueAs
         };
     }
     throw Error('Invalid type ref');
@@ -73,7 +114,9 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
         return {
             kind: 'map',
             key: src.key,
-            value: src.value
+            keyAs: src.keyAs,
+            value: src.value,
+            valueAs: src.valueAs
         };
     }
 

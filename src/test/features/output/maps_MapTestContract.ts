@@ -427,6 +427,53 @@ function dictValueParserSetIntMap5(): DictionaryValue<SetIntMap5> {
     }
 }
 
+export type SetIntMap6 = {
+    $$type: 'SetIntMap6';
+    key: bigint;
+    value: bigint | null;
+}
+
+export function storeSetIntMap6(src: SetIntMap6) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(1258686922, 32);
+        b_0.storeInt(src.key, 257);
+        if (src.value !== null && src.value !== undefined) { b_0.storeBit(true).storeInt(src.value, 257); } else { b_0.storeBit(false); }
+    };
+}
+
+export function loadSetIntMap6(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1258686922) { throw Error('Invalid prefix'); }
+    let _key = sc_0.loadIntBig(257);
+    let _value = sc_0.loadBit() ? sc_0.loadIntBig(257) : null;
+    return { $$type: 'SetIntMap6' as const, key: _key, value: _value };
+}
+
+function loadTupleSetIntMap6(source: TupleReader) {
+    let _key = source.readBigNumber();
+    let _value = source.readBigNumberOpt();
+    return { $$type: 'SetIntMap6' as const, key: _key, value: _value };
+}
+
+function storeTupleSetIntMap6(source: SetIntMap6) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.key);
+    builder.writeNumber(source.value);
+    return builder.build();
+}
+
+function dictValueParserSetIntMap6(): DictionaryValue<SetIntMap6> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeSetIntMap6(src)).endCell());
+        },
+        parse: (src) => {
+            return loadSetIntMap6(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type SetAddrMap1 = {
     $$type: 'SetAddrMap1';
     key: Address;
@@ -718,8 +765,8 @@ function initMapTestContract_init_args(src: MapTestContract_init_args) {
 }
 
 async function MapTestContract_init() {
-    const __code = Cell.fromBase64('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');
-    const __system = Cell.fromBase64('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');
+    const __code = Cell.fromBase64('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');
+    const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -782,7 +829,7 @@ export class MapTestContract implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | SetIntMap1 | SetIntMap2 | SetIntMap3 | SetIntMap4 | SetIntMap5 | SetAddrMap1 | SetAddrMap2 | SetAddrMap3 | SetAddrMap4 | SetAddrMap5 | 'reset') {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | SetIntMap1 | SetIntMap2 | SetIntMap3 | SetIntMap4 | SetIntMap5 | SetIntMap6 | SetAddrMap1 | SetAddrMap2 | SetAddrMap3 | SetAddrMap4 | SetAddrMap5 | 'reset') {
         
         let body: Cell | null = null;
         if (message === null) {
@@ -802,6 +849,9 @@ export class MapTestContract implements Contract {
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap5') {
             body = beginCell().store(storeSetIntMap5(message)).endCell();
+        }
+        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetIntMap6') {
+            body = beginCell().store(storeSetIntMap6(message)).endCell();
         }
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetAddrMap1') {
             body = beginCell().store(storeSetAddrMap1(message)).endCell();
@@ -900,6 +950,111 @@ export class MapTestContract implements Contract {
         builder.writeNumber(key);
         let source = (await provider.get('intMap5Value', builder.build())).stack;
         let result = source.readAddressOpt();
+        return result;
+    }
+    
+    async getIntMap6_1(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_1', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.Int(8), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_1Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_1Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap6_2(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_2', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.Int(16), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_2Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_2Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap6_3(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_3', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.Int(32), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_3Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_3Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap6_4(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_4', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(64), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_4Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_4Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap6_5(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_5', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(128), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_5Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_5Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap6_6(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_6', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(256), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_6Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_6Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
+        return result;
+    }
+    
+    async getIntMap6_7(provider: ContractProvider) {
+        let builder = new TupleBuilder();
+        let source = (await provider.get('intMap6_7', builder.build())).stack;
+        let result = Dictionary.loadDirect(Dictionary.Keys.BigInt(257), Dictionary.Values.BigInt(257), source.readCellOpt());
+        return result;
+    }
+    
+    async getIntMap6_7Value(provider: ContractProvider, key: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeNumber(key);
+        let source = (await provider.get('intMap6_7Value', builder.build())).stack;
+        let result = source.readBigNumberOpt();
         return result;
     }
     

@@ -1,16 +1,15 @@
-import { beginCell } from "ton-core";
 import { enabledInline } from "../../config/features";
 import { ASTCondition, ASTExpression, ASTStatement } from "../../grammar/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
-import { FunctionDescription, InitDescription, ReceiverDescription, TypeDescription, TypeRef } from "../../types/types";
+import { FunctionDescription, TypeRef } from "../../types/types";
 import { getMethodId } from "../../utils/utils";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { fn, id } from "./id";
-import { writeExpression, writeValue } from "./writeExpression";
+import { writeExpression } from "./writeExpression";
 import { cast } from "./cast";
 import { resolveFuncTupledType } from "./resolveFuncTupledType";
 import { ops } from "./ops";

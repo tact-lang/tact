@@ -29,7 +29,9 @@ export type TypeRef = {
 } | {
     kind: 'map',
     key: string,
-    value: string
+    keyAs: string | null,
+    value: string,
+    valueAs: string | null,
 } | {
     kind: 'void'
 } | {

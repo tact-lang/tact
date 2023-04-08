@@ -493,8 +493,16 @@ semantics.addOperation<ASTNode>('resolve_expression', {
     Type_required(arg0) {
         return createNode({ kind: 'type_ref_simple', name: arg0.sourceString, optional: false, ref: createRef(this) });
     },
-    Type_map(arg0, arg1, arg2, arg3, arg4, arg5) {
-        return createNode({ kind: 'type_ref_map', key: arg2.sourceString, value: arg4.sourceString, ref: createRef(this) });
+    Type_map(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
+        
+        return createNode({
+            kind: 'type_ref_map',
+            key: arg2.sourceString,
+            keyAs: arg4.numChildren === 1 ? arg4.children[0].sourceString : null,
+            value: arg6.sourceString,
+            valueAs: arg8.numChildren === 1 ? arg8.children[0].sourceString : null,
+            ref: createRef(this)
+        });
     },
 
     // Binary

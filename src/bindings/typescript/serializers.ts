@@ -502,9 +502,17 @@ type MapSerializerDescr = {
 }
 function getKeyParser(src: MapSerializerDescrKey) {
     if (src.kind === 'int') {
-        return `Dictionary.Keys.BigInt(${src.bits})`;
+        if (src.bits <= 32) {
+            return `Dictionary.Keys.Int(${src.bits})`;
+        } else {
+            return `Dictionary.Keys.BigInt(${src.bits})`;
+        }
     } else if (src.kind === 'uint') {
-        return `Dictionary.Keys.BigUint(${src.bits})`;
+        if (src.bits <= 32) {
+            return `Dictionary.Keys.Uint(${src.bits})`;
+        } else {
+            return `Dictionary.Keys.BigUint(${src.bits})`;
+        }
     } else if (src.kind === 'address') {
         return 'Dictionary.Keys.Address()';
     } else {

@@ -106,7 +106,9 @@ export type ASTTypeRefMap = {
     kind: 'type_ref_map',
     id: number,
     key: string,
+    keyAs: string | null,
     value: string,
+    valueAs: string | null,
     ref: ASTRef
 }
 

@@ -84,6 +84,9 @@ tuple $SomeStruct$_load_opt(cell cl) inline;
 ;; $SetIntMap5$_load
 (slice, ((int, slice))) $SetIntMap5$_load(slice sc_0) inline;
 
+;; $SetIntMap6$_load
+(slice, ((int, int))) $SetIntMap6$_load(slice sc_0) inline;
+
 ;; $SetAddrMap1$_load
 (slice, ((slice, int))) $SetAddrMap1$_load(slice sc_0) inline;
 
@@ -100,10 +103,10 @@ tuple $SomeStruct$_load_opt(cell cl) inline;
 (slice, ((slice, slice))) $SetAddrMap5$_load(slice sc_0) inline;
 
 ;; $MapTestContract$_store
-builder $MapTestContract$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) v) inline;
+builder $MapTestContract$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) v) inline;
 
 ;; $MapTestContract$_load
-(slice, ((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell))) $MapTestContract$_load(slice sc_0) inline;
+(slice, ((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell))) $MapTestContract$_load(slice sc_0) inline;
 
 ;; $SomeStruct$_to_tuple
 tuple $SomeStruct$_to_tuple(((int)) v) inline;
@@ -115,70 +118,112 @@ tuple $SomeStruct$_to_opt_tuple(tuple v) inline;
 tuple $SomeStruct$_to_opt_external(tuple v) inline;
 
 ;; $MapTestContract$_contract_init
-(cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_init() impure inline_ref;
+(cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_init() impure inline_ref;
 
 ;; $MapTestContract$_contract_load
-(cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline_ref;
+(cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $MapTestContract$_contract_load() impure inline_ref;
 
 ;; $MapTestContract$_contract_store
-() $MapTestContract$_contract_store((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline;
+() $MapTestContract$_contract_store((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) v) impure inline;
 
 ;; $MapTestContract$_fun_intMap1
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap1Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap1Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap1Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap2
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap2Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap2Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap2Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap3
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap3Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap3Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap3Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap4
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap4Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), tuple) $MapTestContract$_fun_intMap4Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), tuple) $MapTestContract$_fun_intMap4Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap5
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_intMap5Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), slice) $MapTestContract$_fun_intMap5Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), slice) $MapTestContract$_fun_intMap5Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_1
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_1Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_1Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_2
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_2Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_2Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_3
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_3Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_3Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_4
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_4Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_4Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_5
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_5Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_5Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_6
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_6((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_6Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_6Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_7
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_intMap6_7((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+
+;; $MapTestContract$_fun_intMap6_7Value
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_intMap6_7Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, int $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap1
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap1((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap1Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_addrMap1Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_addrMap1Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap2
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap2((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap2Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_addrMap2Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), int) $MapTestContract$_fun_addrMap2Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap3
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap3((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap3Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap3Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap3Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap4
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap4((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap4Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), tuple) $MapTestContract$_fun_addrMap4Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), tuple) $MapTestContract$_fun_addrMap4Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap5
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_addrMap5((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
 ;; $MapTestContract$_fun_addrMap5Value
-((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), slice) $MapTestContract$_fun_addrMap5Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), slice) $MapTestContract$_fun_addrMap5Value((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $key) impure inline_ref;

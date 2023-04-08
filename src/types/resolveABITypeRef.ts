@@ -1,6 +1,5 @@
 import { ABITypeRef } from "ton-core";
-import { CompilerContext } from "../context";
-import { ASTField, throwError } from "../grammar/ast";
+import { ASTField, ASTRef, throwError } from "../grammar/ast";
 import { TypeRef } from "./types";
 
 type FormatDef = { [key: string]: { type: string, format: string | number } };
@@ -22,6 +21,24 @@ const intFormats: FormatDef = {
 
     'int257': { type: 'int', format: 257 },
     'coins': { type: 'uint', format: 'coins' }
+};
+
+const intMapFormats: FormatDef = {
+    'int8': { type: 'int', format: 8 },
+    'int16': { type: 'int', format: 16 },
+    'int32': { type: 'int', format: 32 },
+    'int64': { type: 'int', format: 64 },
+    'int128': { type: 'int', format: 128 },
+    'int256': { type: 'int', format: 256 },
+
+    'uint8': { type: 'uint', format: 8 },
+    'uint16': { type: 'uint', format: 16 },
+    'uint32': { type: 'uint', format: 32 },
+    'uint64': { type: 'uint', format: 64 },
+    'uint128': { type: 'uint', format: 128 },
+    'uint256': { type: 'uint', format: 256 },
+
+    'int257': { type: 'int', format: 257 }
 };
 
 const cellFormats: FormatDef = {
@@ -131,15 +148,26 @@ export function resolveABIType(src: ASTField): ABITypeRef {
 
     if (src.type.kind === 'type_ref_map') {
         let key: string;
-        let keyFormat: string | undefined = undefined;
+        let keyFormat: string | number | undefined = undefined;
         let value: string;
-        let valueFormat: string | undefined = undefined;
+        let valueFormat: string | number | undefined = undefined;
 
         // Resolve key type
         if (src.type.key === 'Int') {
             key = 'int';
+            if (src.type.keyAs) {
+                let format = intMapFormats[src.type.keyAs];
+                if (!format) {
+                    throwError(`Unsupported format ${src.type.keyAs} for map key`, src.ref);
+                }
+                key = format.type;
+                keyFormat = format.format;
+            }
         } else if (src.type.key === 'Address') {
             key = 'address';
+            if (src.type.keyAs) {
+                throwError(`Unsupported format ${src.type.keyAs} for map key`, src.ref);
+            }
         } else {
             throwError(`Unsupported map key type ${src.type.key}`, src.ref);
         }
@@ -147,15 +175,32 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         // Resolve value type
         if (src.type.value === 'Int') {
             value = 'int';
+            if (src.type.valueAs) {
+                let format = intMapFormats[src.type.valueAs];
+                if (!format) {
+                    throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+                }
+                value = format.type;
+                valueFormat = format.format;
+            }
         } else if (src.type.value === 'Bool') {
             value = 'bool';
+            if (src.type.valueAs) {
+                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+            }
         } else if (src.type.value === 'Cell') {
             value = 'cell';
             valueFormat = 'ref';
+            if (src.type.valueAs && src.type.valueAs !== 'reference') {
+                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+            }
         } else if (src.type.value === 'Slice') {
             throwError(`Unsupported map value type ${src.type.value}`, src.ref);
         } else if (src.type.value === 'Address') {
             value = 'address';
+            if (src.type.valueAs) {
+                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+            }
         } else if (src.type.value === 'String') {
             throwError(`Unsupported map value type ${src.type.value}`, src.ref);
         } else if (src.type.value === 'StringBuilder' || src.type.value === 'Builder') {
@@ -163,6 +208,9 @@ export function resolveABIType(src: ASTField): ABITypeRef {
         } else {
             value = src.type.value;
             valueFormat = 'ref';
+            if (src.type.valueAs && src.type.valueAs !== 'reference') {
+                throwError(`Unsupported format ${src.type.valueAs} for map value`, src.ref);
+            }
         }
 
         return { kind: 'dict', key, keyFormat, value, valueFormat };
@@ -171,7 +219,7 @@ export function resolveABIType(src: ASTField): ABITypeRef {
     throwError(`Unsupported type`, src.ref);
 }
 
-export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
+export function createABITypeRefFromTypeRef(src: TypeRef, ref: ASTRef): ABITypeRef {
 
     if (src.kind === 'ref') {
 
@@ -207,15 +255,26 @@ export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
 
     if (src.kind === 'map') {
         let key: string;
-        let keyFormat: string | undefined = undefined;
+        let keyFormat: string | number | undefined = undefined;
         let value: string;
-        let valueFormat: string | undefined = undefined;
+        let valueFormat: string | number | undefined = undefined;
 
         // Resolve key type
         if (src.key === 'Int') {
             key = 'int';
+            if (src.keyAs) {
+                let format = intMapFormats[src.keyAs];
+                if (!format) {
+                    throwError(`Unsupported format ${src.keyAs} for map key`, ref);
+                }
+                key = format.type;
+                keyFormat = format.format;
+            }
         } else if (src.key === 'Address') {
             key = 'address';
+            if (src.keyAs) {
+                throwError(`Unsupported format ${src.keyAs} for map key`, ref);
+            }
         } else {
             throw Error(`Unsupported map key type ${src.key}`);
         }
@@ -223,15 +282,32 @@ export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
         // Resolve value type
         if (src.value === 'Int') {
             value = 'int';
+            if (src.valueAs) {
+                let format = intMapFormats[src.valueAs];
+                if (!format) {
+                    throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+                }
+                value = format.type;
+                valueFormat = format.format;
+            }
         } else if (src.value === 'Bool') {
             value = 'bool';
+            if (src.valueAs) {
+                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+            }
         } else if (src.value === 'Cell') {
             value = 'cell';
             valueFormat = 'ref';
+            if (src.valueAs && src.valueAs !== 'reference') {
+                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+            }
         } else if (src.value === 'Slice') {
             throw Error(`Unsupported map value type ${src.value}`);
         } else if (src.value === 'Address') {
             value = 'address';
+            if (src.valueAs) {
+                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+            }
         } else if (src.value === 'String') {
             throw Error(`Unsupported map value type ${src.value}`);
         } else if (src.value === 'StringBuilder' || src.value === 'Builder') {
@@ -239,6 +315,9 @@ export function createABITypeRefFromTypeRef(src: TypeRef): ABITypeRef {
         } else {
             value = src.value;
             valueFormat = 'ref';
+            if (src.valueAs && src.valueAs !== 'reference') {
+                throwError(`Unsupported format ${src.valueAs} for map value`, ref);
+            }
         }
 
         return { kind: 'dict', key, keyFormat, value, valueFormat };

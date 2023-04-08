@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 2264 bytes
+BOC Size: 3341 bytes
 
 # Types
-Total Types: 14
+Total Types: 15
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -37,6 +37,10 @@ Signature: `SetIntMap4{key:int257,value:Maybe SomeStruct{value:int257}}`
 TLB: `set_int_map5#a779553f key:int257 value:Maybe address = SetIntMap5`
 Signature: `SetIntMap5{key:int257,value:Maybe address}`
 
+## SetIntMap6
+TLB: `set_int_map6#4b0609ca key:int257 value:Maybe int257 = SetIntMap6`
+Signature: `SetIntMap6{key:int257,value:Maybe int257}`
+
 ## SetAddrMap1
 TLB: `set_addr_map1#684e5e4d key:address value:Maybe int257 = SetAddrMap1`
 Signature: `SetAddrMap1{key:address,value:Maybe int257}`
@@ -62,7 +66,7 @@ TLB: `_ value:int257 = SomeStruct`
 Signature: `SomeStruct{value:int257}`
 
 # Get Methods
-Total Get Methods: 20
+Total Get Methods: 34
 
 ## intMap1
 
@@ -87,6 +91,41 @@ Argument: key
 ## intMap5
 
 ## intMap5Value
+Argument: key
+
+## intMap6_1
+
+## intMap6_1Value
+Argument: key
+
+## intMap6_2
+
+## intMap6_2Value
+Argument: key
+
+## intMap6_3
+
+## intMap6_3Value
+Argument: key
+
+## intMap6_4
+
+## intMap6_4Value
+Argument: key
+
+## intMap6_5
+
+## intMap6_5Value
+Argument: key
+
+## intMap6_6
+
+## intMap6_6Value
+Argument: key
+
+## intMap6_7
+
+## intMap6_7Value
 Argument: key
 
 ## addrMap1

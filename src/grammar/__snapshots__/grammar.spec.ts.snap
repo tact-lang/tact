@@ -2214,9 +2214,11 @@ exports[`grammar should parse case-20 1`] = `
           "type": {
             "id": 1,
             "key": "Int",
+            "keyAs": null,
             "kind": "type_ref_map",
             "ref": map<Int, Int>,
             "value": "Int",
+            "valueAs": null,
           },
         },
       ],
@@ -2242,9 +2244,11 @@ exports[`grammar should parse case-20 1`] = `
           "type": {
             "id": 4,
             "key": "Int",
+            "keyAs": null,
             "kind": "type_ref_map",
             "ref": map<Int, Int>,
             "value": "Int",
+            "valueAs": null,
           },
         },
       ],

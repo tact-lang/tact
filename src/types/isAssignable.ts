@@ -16,7 +16,7 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
 
     // If both are maps
     if (src.kind === 'map' && to.kind === 'map') {
-        return (src.key === to.key && src.value === to.value);
+        return (src.key === to.key && src.value === to.value && src.keyAs === to.keyAs && src.valueAs === to.valueAs);
     }
 
     // Allow assigning null to map

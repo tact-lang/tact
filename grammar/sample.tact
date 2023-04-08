@@ -37,6 +37,7 @@ contract MyContract with MyTrait, Ownable {
     value: Int as uint32 = 1230;
     owner: Address;
     counters: map<Int, Address>;
+    map: map<Int as int16, Int as uint32>;
     const ConstInt: Int = 4000;
 
     init(owner: Address) {

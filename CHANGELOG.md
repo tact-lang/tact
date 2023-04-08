@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - `dns` library
-
+- map key and value serialization formats
 ## [1.1.0-beta.12] - 2023-04-08
 
 ## Fixed

@@ -301,6 +301,42 @@ export function writeStdlib(ctx: WriterContext) {
     });
 
     //
+    // Dict Uint -> Int
+    //
+
+    ctx.fun('__tact_dict_set_uint_int', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_uint_int(cell d, int kl, int k, int v, int vl)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(v)) {
+                    var (r, ok) = udict_delete?(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+                }
+            `);
+        });
+    });
+
+    ctx.fun('__tact_dict_get_uint_int', () => {
+        ctx.signature(`int __tact_dict_get_uint_int(cell d, int kl, int k, int vl)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = udict_get?(d, kl, k);
+                if (ok) {
+                    return r~load_int(vl);
+                } else {
+                    return null();
+                }
+            `);
+        });
+    });
+
+    //
     // Dict Int -> Cell
     //
 
@@ -327,6 +363,43 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = idict_get_ref?(d, kl, k);
+                if (ok) {
+                    return r;
+                } else {
+                    return null();
+                }
+            `);
+        });
+    });
+
+
+    //
+    // Dict Uint -> Cell
+    //
+
+    ctx.fun('__tact_dict_set_uint_cell', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_uint_cell(cell d, int kl, int k, cell v)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(v)) {
+                    var (r, ok) = udict_delete?(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (udict_set_ref(d, kl, k, v), ());
+                }
+            `);
+        });
+    });
+
+    ctx.fun('__tact_dict_get_uint_cell', () => {
+        ctx.signature(`cell __tact_dict_get_uint_cell(cell d, int kl, int k)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = udict_get_ref?(d, kl, k);
                 if (ok) {
                     return r;
                 } else {
@@ -363,6 +436,42 @@ export function writeStdlib(ctx: WriterContext) {
         ctx.body(() => {
             ctx.write(`
                 var (r, ok) = idict_get?(d, kl, k);
+                if (ok) {
+                    return r;
+                } else {
+                    return null();
+                }
+            `);
+        });
+    });
+
+    //
+    // Dict Uint -> Slice
+    //
+
+    ctx.fun('__tact_dict_set_uint_slice', () => {
+        ctx.signature(`(cell, ()) __tact_dict_set_uint_slice(cell d, int kl, int k, slice v)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                if (null?(v)) {
+                    var (r, ok) = udict_delete?(d, kl, k);
+                    return (r, ());
+                } else {
+                    return (udict_set(d, kl, k, v), ());
+                }
+            `);
+        });
+    });
+
+    ctx.fun('__tact_dict_get_uint_slice', () => {
+        ctx.signature(`slice __tact_dict_get_uint_slice(cell d, int kl, int k)`);
+        ctx.flag('inline');
+        ctx.context('stdlib');
+        ctx.body(() => {
+            ctx.write(`
+                var (r, ok) = udict_get?(d, kl, k);
                 if (ok) {
                     return r;
                 } else {

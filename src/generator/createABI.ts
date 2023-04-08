@@ -80,8 +80,8 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
-                arguments: f.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type) })),
-                returnType: f.returns.kind !== 'void' ? createABITypeRefFromTypeRef(f.returns) : null
+                arguments: f.args.map((v) => ({ name: v.name, type: createABITypeRefFromTypeRef(v.type, v.ref) })),
+                returnType: f.returns.kind !== 'void' ? createABITypeRefFromTypeRef(f.returns, f.ast.ref) : null
             });
         }
     }

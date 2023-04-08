@@ -552,7 +552,7 @@
     "type-as": {
       "name": "meta.type.annotation.as.tact",
       "begin": "(as)\\s+",
-      "end": "(?=\\{|\\;|\\=|\\,|\\))",
+      "end": "(?=\\{|\\;|\\=|\\,|\\)|\\>)",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.as.tact"

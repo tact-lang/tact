@@ -112,7 +112,7 @@ export function resolveAllocations(ctx: CompilerContext) {
             // Resolve opts
             let ops: AllocationOperation[] = [];
             for (let f of s.init.args) {
-                let abiType = createABITypeRefFromTypeRef(f.type);
+                let abiType = createABITypeRefFromTypeRef(f.type, f.ref);
                 ops.push({
                     name: f.name,
                     type: abiType,

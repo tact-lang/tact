@@ -23,6 +23,11 @@ message SetIntMap5 {
     value: Address?;
 }
 
+message SetIntMap6 {
+    key: Int;
+    value: Int?;
+}
+
 message SetAddrMap1 {
     key: Address;
     value: Int?;
@@ -71,6 +76,13 @@ contract MapTestContract {
     intMap3: map<Int, Cell>;
     intMap4: map<Int, SomeStruct>;
     intMap5: map<Int, Address>;
+    intMap6_1: map<Int as int8, Int>;
+    intMap6_2: map<Int as int16, Int>;
+    intMap6_3: map<Int as int32, Int>;
+    intMap6_4: map<Int as int64, Int>;
+    intMap6_5: map<Int as int128, Int>;
+    intMap6_6: map<Int as int256, Int>;
+    intMap6_7: map<Int as int257, Int>;
 
     receive(msg: SetIntMap1) {
         self.intMap1.set(msg.key, msg.value);
@@ -90,6 +102,16 @@ contract MapTestContract {
 
     receive(msg: SetIntMap5) {
         self.intMap5.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetIntMap6) {
+        self.intMap6_1.set(msg.key, msg.value);
+        self.intMap6_2.set(msg.key, msg.value);
+        self.intMap6_3.set(msg.key, msg.value);
+        self.intMap6_4.set(msg.key, msg.value);
+        self.intMap6_5.set(msg.key, msg.value);
+        self.intMap6_6.set(msg.key, msg.value);
+        self.intMap6_7.set(msg.key, msg.value);
     }
 
     get fun intMap1(): map<Int, Int> {
@@ -130,6 +152,62 @@ contract MapTestContract {
 
     get fun intMap5Value(key: Int): Address? {
         return self.intMap5.get(key);
+    }
+
+    get fun intMap6_1(): map<Int as int8, Int> {
+        return self.intMap6_1;
+    }
+
+    get fun intMap6_1Value(key: Int): Int? {
+        return self.intMap6_1.get(key);
+    }
+
+    get fun intMap6_2(): map<Int as int16, Int> {
+        return self.intMap6_2;
+    }
+
+    get fun intMap6_2Value(key: Int): Int? {
+        return self.intMap6_2.get(key);
+    }
+
+    get fun intMap6_3(): map<Int as int32, Int> {
+        return self.intMap6_3;
+    }
+
+    get fun intMap6_3Value(key: Int): Int? {
+        return self.intMap6_3.get(key);
+    }
+
+    get fun intMap6_4(): map<Int as int64, Int> {
+        return self.intMap6_4;
+    }
+
+    get fun intMap6_4Value(key: Int): Int? {
+        return self.intMap6_4.get(key);
+    }
+
+    get fun intMap6_5(): map<Int as int128, Int> {
+        return self.intMap6_5;
+    }
+
+    get fun intMap6_5Value(key: Int): Int? {
+        return self.intMap6_5.get(key);
+    }
+
+    get fun intMap6_6(): map<Int as int256, Int> {
+        return self.intMap6_6;
+    }
+
+    get fun intMap6_6Value(key: Int): Int? {
+        return self.intMap6_6.get(key);
+    }
+
+    get fun intMap6_7(): map<Int as int257, Int> {
+        return self.intMap6_7;
+    }
+
+    get fun intMap6_7Value(key: Int): Int? {
+        return self.intMap6_7.get(key);
     }
 
     //

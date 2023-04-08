@@ -1,6 +1,6 @@
 import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction, resolveTypeRef } from "./resolveDescriptors";
+import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
@@ -124,10 +124,7 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
             let r = re;
 
             if (l.kind === 'map' && r.kind === 'map') {
-                if (l.key !== r.key) {
-                    throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
-                }
-                if (l.value !== r.value) {
+                if (l.key !== r.key || l.value !== r.value || l.keyAs !== r.keyAs || l.valueAs !== r.valueAs) {
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
             } else {
