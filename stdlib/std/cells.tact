@@ -52,7 +52,7 @@ extends native preloadRef(self: Slice): Cell;
 extends mutates native loadBits(self: Slice, l: Int): Slice;
 
 @name(preload_bits)
-extends mutates native preloadBits(self: Slice, l: Int): Slice;
+extends native preloadBits(self: Slice, l: Int): Slice;
 
 @name(load_int)
 extends mutates native loadInt(self: Slice, l: Int): Int;
