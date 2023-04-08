@@ -2,6 +2,7 @@ import { Address, beginCell, Cell, toNano } from 'ton-core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { IntrinsicsTester } from './features/output/intrinsics_IntrinsicsTester';
+import { sha256_sync } from 'ton-crypto';
 
 describe('feature-instrinsics', () => {
     beforeEach(() => {
@@ -38,5 +39,14 @@ describe('feature-instrinsics', () => {
         // Check that the contract emitted the correct message
         let tracked = tracker.collect();
         expect(tracked).toMatchSnapshot();
+
+        // Check sha256
+        function sha256(src: string | Buffer) {
+            return BigInt('0x' + sha256_sync(src).toString('hex'));
+        }
+        expect(await contract.getGetHash()).toBe(sha256('hello world'));
+        expect(await contract.getGetHash2()).toBe(sha256('hello world'));
+        expect(await contract.getGetHash3(beginCell().storeStringTail('sometest').endCell())).toBe(sha256('sometest'));
+        expect(await contract.getGetHash4('wallet')).toBe(sha256('wallet'));
     });
 });

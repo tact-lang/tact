@@ -19,6 +19,10 @@ PROGRAM{
   DECLPROC $IntrinsicsTester$_fun_getPow
   DECLPROC $IntrinsicsTester$_fun_getPow2
   DECLPROC $IntrinsicsTester$_fun_getComment
+  DECLPROC $IntrinsicsTester$_fun_getHash
+  DECLPROC $IntrinsicsTester$_fun_getHash2
+  DECLPROC $IntrinsicsTester$_fun_getHash3
+  DECLPROC $IntrinsicsTester$_fun_getHash4
   DECLPROC $IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246
   DECLPROC $IntrinsicsTester$_internal_text_51ea0ec5a90299f616966ef215cadec5a82ff175f8d6ea7e74c22456c9f5d6dd
   85126 DECLMETHOD %getTons
@@ -32,6 +36,10 @@ PROGRAM{
   93948 DECLMETHOD %getPow
   92025 DECLMETHOD %getPow2
   116303 DECLMETHOD %getComment
+  120167 DECLMETHOD %getHash
+  125641 DECLMETHOD %getHash2
+  129768 DECLMETHOD %getHash3
+  100879 DECLMETHOD %getHash4
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -67,20 +75,27 @@ PROGRAM{
     STSLICER
   }>
   $IntrinsicsTester$_store PROCINLINE:<{
-    s4 s5 XCHG2
+    s5 s6 XCHG2
     257 PUSHINT
     STIX
     NEWC
-    s0 s3 XCHG2
+    s0 s4 XCHG2
     STSLICER
     ENDC
-    ROT
+    s0 s3 XCHG2
     STREF
     SWAP
     __tact_store_address INLINECALLDICT
     STREF
     257 PUSHINT
     STIX
+    SWAP
+    NEWC
+    257 PUSHINT
+    STIX
+    ENDC
+    SWAP
+    STREF
   }>
   $IntrinsicsTester$_load PROCINLINE:<{
     257 PUSHINT
@@ -94,7 +109,16 @@ PROGRAM{
     LDREF
     257 PUSHINT
     LDIX
-    5 -ROLL
+    LDREF
+    SWAP
+    CTOS
+    257 PUSHINT
+    LDIX
+    DROP
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
   }>
   $IntrinsicsTester$_contract_init PROCREF:<{
     10123400000 PUSHINT
@@ -102,6 +126,7 @@ PROGRAM{
     B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc PUSHREF
     9 PUSHPOW2
+    83814198383102558219731078260892729932246618004265700685467928187377105751529 PUSHINT
   }>
   $IntrinsicsTester$_contract_load PROCREF:<{
     c4 PUSH
@@ -113,7 +138,7 @@ PROGRAM{
     SWAP
     IFJMP:<{
       $IntrinsicsTester$_load INLINECALLDICT
-      1 5 BLKDROP2
+      1 6 BLKDROP2
     }>
     DROP
     MYADDR
@@ -131,7 +156,7 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    5 -ROLL
+    6 -ROLL
     $IntrinsicsTester$_store INLINECALLDICT
     ENDC
     c4 POP
@@ -150,34 +175,46 @@ PROGRAM{
     10123400000 PUSHINT
   }>
   $IntrinsicsTester$_fun_getTons2 PROCREF:<{
-    s4 PUSH
+    s5 PUSH
   }>
   $IntrinsicsTester$_fun_getString PROCREF:<{
     B{b5ee9c7241010101000d00001648656c6c6f20776f726c64ae013d34} B>boc <s PUSHSLICE
   }>
   $IntrinsicsTester$_fun_getString2 PROCREF:<{
-    s3 PUSH
+    s4 PUSH
   }>
   $IntrinsicsTester$_fun_getAddress PROCREF:<{
     B{b5ee9c7241010101002400004380107bfaaa5cc6e5368e5f9799188bd798cd22e04ab16d1d8ea4fc37480741e6351064a3e1a6} B>boc <s PUSHSLICE
   }>
   $IntrinsicsTester$_fun_getAddress2 PROCREF:<{
-    s2 PUSH
+    s3 PUSH
   }>
   $IntrinsicsTester$_fun_getCell PROCREF:<{
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc PUSHREF
   }>
   $IntrinsicsTester$_fun_getCell2 PROCREF:<{
-    OVER
+    s2 PUSH
   }>
   $IntrinsicsTester$_fun_getPow PROCREF:<{
     9 PUSHPOW2
   }>
   $IntrinsicsTester$_fun_getPow2 PROCREF:<{
-    DUP
+    OVER
   }>
   $IntrinsicsTester$_fun_getComment PROCREF:<{
     B{b5ee9c7241010101001100001e0000000048656c6c6f20776f726c64f5e7b6c8} B>boc PUSHREF
+  }>
+  $IntrinsicsTester$_fun_getHash PROCREF:<{
+    83814198383102558219731078260892729932246618004265700685467928187377105751529 PUSHINT
+  }>
+  $IntrinsicsTester$_fun_getHash2 PROCREF:<{
+    DUP
+  }>
+  $IntrinsicsTester$_fun_getHash3 PROCREF:<{
+    SHA256U
+  }>
+  $IntrinsicsTester$_fun_getHash4 PROCREF:<{
+    SHA256U
   }>
   $IntrinsicsTester$_internal_text_85d288384c0043458b02803cb22059f68803c553c3656344346468dac961f246 PROCINLINE:<{
   }>
@@ -188,57 +225,79 @@ PROGRAM{
   %getTons PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getTons INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getTons2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getTons2 INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getString PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getString INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getString2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getString2 INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getAddress PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getAddress INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getAddress2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getAddress2 INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getCell PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getCell INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getCell2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getCell2 INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getPow PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getPow INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getPow2 PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getPow2 INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
   }>
   %getComment PROC:<{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     $IntrinsicsTester$_fun_getComment INLINECALLDICT
-    5 1 BLKDROP2
+    6 1 BLKDROP2
+  }>
+  %getHash PROC:<{
+    $IntrinsicsTester$_contract_load INLINECALLDICT
+    $IntrinsicsTester$_fun_getHash INLINECALLDICT
+    6 1 BLKDROP2
+  }>
+  %getHash2 PROC:<{
+    $IntrinsicsTester$_contract_load INLINECALLDICT
+    $IntrinsicsTester$_fun_getHash2 INLINECALLDICT
+    6 1 BLKDROP2
+  }>
+  %getHash3 PROC:<{
+    $IntrinsicsTester$_contract_load INLINECALLDICT
+    6 ROLL
+    $IntrinsicsTester$_fun_getHash3 INLINECALLDICT
+    6 1 BLKDROP2
+  }>
+  %getHash4 PROC:<{
+    $IntrinsicsTester$_contract_load INLINECALLDICT
+    6 ROLL
+    $IntrinsicsTester$_fun_getHash4 INLINECALLDICT
+    6 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
@@ -248,7 +307,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d64426762574d3369586d4a4a396f736a796167656f3867564b445934544155346665664a76736b5638396168} PUSHSLICE
+    x{697066733a2f2f516d6347316661596d7970744548665334737a346163696a647733436a7a346b33506e6e7a66547052666263445a} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -317,7 +376,7 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $IntrinsicsTester$_contract_load INLINECALLDICT
-    2 5 BLKSWAP
+    2 6 BLKSWAP
     $IntrinsicsTester$_contract_router_internal INLINECALLDICT
     DROP
     $IntrinsicsTester$_contract_store INLINECALLDICT

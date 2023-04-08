@@ -3,6 +3,7 @@ import { enabledMaterchain } from "../config/features";
 import { CompilerContext } from "../context";
 import { ASTExpression, throwError } from "../grammar/ast";
 import { printTypeRef, TypeRef } from "./types";
+import { sha256_sync } from "ton-crypto";
 
 function reduceInt(ast: ASTExpression): bigint {
     if (ast.kind === 'number') {
@@ -33,9 +34,17 @@ function reduceInt(ast: ASTExpression): bigint {
                 return BigInt(toNano(reduceString(ast.args[0])).toString(10));
             }
         }
-        if (ast.name ==='pow') {
+        if (ast.name === 'pow') {
             if (ast.args.length === 2) {
                 return reduceInt(ast.args[0]) ** reduceInt(ast.args[1]);
+            }
+        }
+        if (ast.name === 'sha256') {
+            if (ast.args.length === 1 && ast.args[0].kind === 'string') {
+                let str = reduceString(ast.args[0]);
+                if (Buffer.from(str).length <= 128) {
+                    return BigInt('0x' + sha256_sync(str).toString('hex'));
+                }
             }
         }
     }

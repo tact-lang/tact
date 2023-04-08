@@ -6,6 +6,7 @@ import { throwError } from "../grammar/ast";
 import { resolveConstantValue } from "../types/resolveConstantValue";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
+import { sha256_sync } from "ton-crypto";
 
 export const GlobalFunctions: { [key: string]: AbiFunction } = {
     ton: {
@@ -203,6 +204,52 @@ export const GlobalFunctions: { [key: string]: AbiFunction } = {
         },
         generate: (ctx, args, resolved, ref) => {
             return 'null()';
+        }
+    },
+    sha256: {
+        name: 'sha256',
+        resolve: (ctx, args, ref) => {
+            if (args.length !== 1) {
+                throwError('sha256 expects 1 argument', ref);
+            }
+            if (args[0].kind !== 'ref') {
+                throwError('sha256 expects string argument', ref);
+            }
+            if (args[0].name !== 'String' && args[0].name !== 'Slice') {
+                throwError('sha256 expects string or slice argument', ref);
+            }
+            return { kind: 'ref', name: 'Int', optional: false };
+        },
+        generate: (ctx, args, resolved, ref) => {
+            if (args.length !== 1) {
+                throwError('sha256 expects 1 argument', ref);
+            }
+            if (args[0].kind !== 'ref') {
+                throwError('sha256 expects string argument', ref);
+            }
+
+            // String case
+            if (args[0].name === 'String') {
+                try {
+                    let str = resolveConstantValue({ kind: 'ref', name: 'String', optional: false }, resolved[0], ctx.ctx) as string;
+                    if (Buffer.from(str).length > 128) {
+                        throwError('sha256 expects string argument with byte length <= 128', ref);
+                    }
+                    return BigInt('0x' + sha256_sync(str).toString('hex')).toString(10);
+                } catch (e) {
+                    // Not a constant
+                }
+                let exp = writeExpression(resolved[0], ctx);
+                return `string_hash(${exp})`;
+            }
+
+            // Slice case
+            if (args[0].name === 'Slice') {
+                let exp = writeExpression(resolved[0], ctx);
+                return `string_hash(${exp})`;
+            }
+
+            throwError('sha256 expects string or slice argument', ref);
         }
     }
 }

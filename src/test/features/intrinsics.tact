@@ -5,6 +5,7 @@ contract IntrinsicsTester {
     c: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
     d: Cell = cell("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
     e: Int = pow(2, 9);
+    f: Int = sha256("hello world");
     
     init() {
 
@@ -56,6 +57,22 @@ contract IntrinsicsTester {
 
     get fun getComment(): Cell {
         return "Hello world".asComment();
+    }
+
+    get fun getHash(): Int {
+        return sha256("hello world");
+    }
+
+    get fun getHash2(): Int {
+        return self.f;
+    }
+
+    get fun getHash3(src: Slice): Int {
+        return sha256(src);
+    }
+
+    get fun getHash4(src: String): Int {
+        return sha256(src);
     }
 
     receive("emit_1") {
