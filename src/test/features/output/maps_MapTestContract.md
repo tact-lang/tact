@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 3341 bytes
+BOC Size: 19313 bytes
 
 # Types
-Total Types: 15
+Total Types: 20
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -41,6 +41,18 @@ Signature: `SetIntMap5{key:int257,value:Maybe address}`
 TLB: `set_int_map6#4b0609ca key:int257 value:Maybe int257 = SetIntMap6`
 Signature: `SetIntMap6{key:int257,value:Maybe int257}`
 
+## SetUIntMap7
+TLB: `set_u_int_map7#d4623107 key:int257 value:Maybe int257 = SetUIntMap7`
+Signature: `SetUIntMap7{key:int257,value:Maybe int257}`
+
+## SetIntMap8
+TLB: `set_int_map8#71e1acee key:int257 value:Maybe int257 = SetIntMap8`
+Signature: `SetIntMap8{key:int257,value:Maybe int257}`
+
+## SetUIntMap9
+TLB: `set_u_int_map9#693e3a87 key:int257 value:Maybe int257 = SetUIntMap9`
+Signature: `SetUIntMap9{key:int257,value:Maybe int257}`
+
 ## SetAddrMap1
 TLB: `set_addr_map1#684e5e4d key:address value:Maybe int257 = SetAddrMap1`
 Signature: `SetAddrMap1{key:address,value:Maybe int257}`
@@ -61,12 +73,20 @@ Signature: `SetAddrMap4{key:address,value:Maybe SomeStruct{value:int257}}`
 TLB: `set_addr_map5#67cb4d03 key:address value:Maybe address = SetAddrMap5`
 Signature: `SetAddrMap5{key:address,value:Maybe address}`
 
+## SetAddrMap6
+TLB: `set_addr_map6#67dfff02 key:address value:Maybe int257 = SetAddrMap6`
+Signature: `SetAddrMap6{key:address,value:Maybe int257}`
+
+## SetAddrMap7
+TLB: `set_addr_map7#7a6e958f key:address value:Maybe int257 = SetAddrMap7`
+Signature: `SetAddrMap7{key:address,value:Maybe int257}`
+
 ## SomeStruct
 TLB: `_ value:int257 = SomeStruct`
 Signature: `SomeStruct{value:int257}`
 
 # Get Methods
-Total Get Methods: 34
+Total Get Methods: 98
 
 ## intMap1
 
@@ -128,6 +148,101 @@ Argument: key
 ## intMap6_7Value
 Argument: key
 
+## intMap7_1
+
+## intMap7_1Value
+Argument: key
+
+## intMap7_2
+
+## intMap7_2Value
+Argument: key
+
+## intMap7_3
+
+## intMap7_3Value
+Argument: key
+
+## intMap7_4
+
+## intMap7_4Value
+Argument: key
+
+## intMap7_5
+
+## intMap7_5Value
+Argument: key
+
+## intMap7_6
+
+## intMap7_6Value
+Argument: key
+
+## intMap8_1
+
+## intMap8_1Value
+Argument: key
+
+## intMap8_2
+
+## intMap8_2Value
+Argument: key
+
+## intMap8_3
+
+## intMap8_3Value
+Argument: key
+
+## intMap8_4
+
+## intMap8_4Value
+Argument: key
+
+## intMap8_5
+
+## intMap8_5Value
+Argument: key
+
+## intMap8_6
+
+## intMap8_6Value
+Argument: key
+
+## intMap8_7
+
+## intMap8_7Value
+Argument: key
+
+## intMap9_1
+
+## intMap9_1Value
+Argument: key
+
+## intMap9_2
+
+## intMap9_2Value
+Argument: key
+
+## intMap9_3
+
+## intMap9_3Value
+Argument: key
+
+## intMap9_4
+
+## intMap9_4Value
+Argument: key
+
+## intMap9_5
+
+## intMap9_5Value
+Argument: key
+
+## intMap9_6
+
+## intMap9_6Value
+Argument: key
+
 ## addrMap1
 
 ## addrMap1Value
@@ -151,6 +266,71 @@ Argument: key
 ## addrMap5
 
 ## addrMap5Value
+Argument: key
+
+## addrMap6_1
+
+## addrMap6_1Value
+Argument: key
+
+## addrMap6_2
+
+## addrMap6_2Value
+Argument: key
+
+## addrMap6_3
+
+## addrMap6_3Value
+Argument: key
+
+## addrMap6_4
+
+## addrMap6_4Value
+Argument: key
+
+## addrMap6_5
+
+## addrMap6_5Value
+Argument: key
+
+## addrMap6_6
+
+## addrMap6_6Value
+Argument: key
+
+## addrMap6_7
+
+## addrMap6_7Value
+Argument: key
+
+## addrMap7_1
+
+## addrMap7_1Value
+Argument: key
+
+## addrMap7_2
+
+## addrMap7_2Value
+Argument: key
+
+## addrMap7_3
+
+## addrMap7_3Value
+Argument: key
+
+## addrMap7_4
+
+## addrMap7_4Value
+Argument: key
+
+## addrMap7_5
+
+## addrMap7_5Value
+Argument: key
+
+## addrMap7_6
+
+## addrMap7_6Value
 Argument: key
 
 # Error Codes

@@ -4,12 +4,18 @@ PROGRAM{
   DECLPROC __tact_load_address_opt
   DECLPROC __tact_dict_set_int_int
   DECLPROC __tact_dict_get_int_int
+  DECLPROC __tact_dict_set_int_uint
+  DECLPROC __tact_dict_get_int_uint
+  DECLPROC __tact_dict_set_uint_int
+  DECLPROC __tact_dict_get_uint_int
   DECLPROC __tact_dict_set_int_cell
   DECLPROC __tact_dict_get_int_cell
   DECLPROC __tact_dict_set_int_slice
   DECLPROC __tact_dict_get_int_slice
   DECLPROC __tact_dict_set_slice_int
   DECLPROC __tact_dict_get_slice_int
+  DECLPROC __tact_dict_set_slice_uint
+  DECLPROC __tact_dict_get_slice_uint
   DECLPROC __tact_dict_set_slice_cell
   DECLPROC __tact_dict_get_slice_cell
   DECLPROC __tact_dict_set_slice_slice
@@ -27,11 +33,16 @@ PROGRAM{
   DECLPROC $SetIntMap4$_load
   DECLPROC $SetIntMap5$_load
   DECLPROC $SetIntMap6$_load
+  DECLPROC $SetUIntMap7$_load
+  DECLPROC $SetIntMap8$_load
+  DECLPROC $SetUIntMap9$_load
   DECLPROC $SetAddrMap1$_load
   DECLPROC $SetAddrMap2$_load
   DECLPROC $SetAddrMap3$_load
   DECLPROC $SetAddrMap4$_load
   DECLPROC $SetAddrMap5$_load
+  DECLPROC $SetAddrMap6$_load
+  DECLPROC $SetAddrMap7$_load
   DECLPROC $MapTestContract$_store
   DECLPROC $MapTestContract$_load
   DECLPROC $SomeStruct$_to_tuple
@@ -64,6 +75,44 @@ PROGRAM{
   DECLPROC $MapTestContract$_fun_intMap6_6Value
   DECLPROC $MapTestContract$_fun_intMap6_7
   DECLPROC $MapTestContract$_fun_intMap6_7Value
+  DECLPROC $MapTestContract$_fun_intMap7_1
+  DECLPROC $MapTestContract$_fun_intMap7_1Value
+  DECLPROC $MapTestContract$_fun_intMap7_2
+  DECLPROC $MapTestContract$_fun_intMap7_2Value
+  DECLPROC $MapTestContract$_fun_intMap7_3
+  DECLPROC $MapTestContract$_fun_intMap7_3Value
+  DECLPROC $MapTestContract$_fun_intMap7_4
+  DECLPROC $MapTestContract$_fun_intMap7_4Value
+  DECLPROC $MapTestContract$_fun_intMap7_5
+  DECLPROC $MapTestContract$_fun_intMap7_5Value
+  DECLPROC $MapTestContract$_fun_intMap7_6
+  DECLPROC $MapTestContract$_fun_intMap7_6Value
+  DECLPROC $MapTestContract$_fun_intMap8_1
+  DECLPROC $MapTestContract$_fun_intMap8_1Value
+  DECLPROC $MapTestContract$_fun_intMap8_2
+  DECLPROC $MapTestContract$_fun_intMap8_2Value
+  DECLPROC $MapTestContract$_fun_intMap8_3
+  DECLPROC $MapTestContract$_fun_intMap8_3Value
+  DECLPROC $MapTestContract$_fun_intMap8_4
+  DECLPROC $MapTestContract$_fun_intMap8_4Value
+  DECLPROC $MapTestContract$_fun_intMap8_5
+  DECLPROC $MapTestContract$_fun_intMap8_5Value
+  DECLPROC $MapTestContract$_fun_intMap8_6
+  DECLPROC $MapTestContract$_fun_intMap8_6Value
+  DECLPROC $MapTestContract$_fun_intMap8_7
+  DECLPROC $MapTestContract$_fun_intMap8_7Value
+  DECLPROC $MapTestContract$_fun_intMap9_1
+  DECLPROC $MapTestContract$_fun_intMap9_1Value
+  DECLPROC $MapTestContract$_fun_intMap9_2
+  DECLPROC $MapTestContract$_fun_intMap9_2Value
+  DECLPROC $MapTestContract$_fun_intMap9_3
+  DECLPROC $MapTestContract$_fun_intMap9_3Value
+  DECLPROC $MapTestContract$_fun_intMap9_4
+  DECLPROC $MapTestContract$_fun_intMap9_4Value
+  DECLPROC $MapTestContract$_fun_intMap9_5
+  DECLPROC $MapTestContract$_fun_intMap9_5Value
+  DECLPROC $MapTestContract$_fun_intMap9_6
+  DECLPROC $MapTestContract$_fun_intMap9_6Value
   DECLPROC $MapTestContract$_fun_addrMap1
   DECLPROC $MapTestContract$_fun_addrMap1Value
   DECLPROC $MapTestContract$_fun_addrMap2
@@ -74,6 +123,32 @@ PROGRAM{
   DECLPROC $MapTestContract$_fun_addrMap4Value
   DECLPROC $MapTestContract$_fun_addrMap5
   DECLPROC $MapTestContract$_fun_addrMap5Value
+  DECLPROC $MapTestContract$_fun_addrMap6_1
+  DECLPROC $MapTestContract$_fun_addrMap6_1Value
+  DECLPROC $MapTestContract$_fun_addrMap6_2
+  DECLPROC $MapTestContract$_fun_addrMap6_2Value
+  DECLPROC $MapTestContract$_fun_addrMap6_3
+  DECLPROC $MapTestContract$_fun_addrMap6_3Value
+  DECLPROC $MapTestContract$_fun_addrMap6_4
+  DECLPROC $MapTestContract$_fun_addrMap6_4Value
+  DECLPROC $MapTestContract$_fun_addrMap6_5
+  DECLPROC $MapTestContract$_fun_addrMap6_5Value
+  DECLPROC $MapTestContract$_fun_addrMap6_6
+  DECLPROC $MapTestContract$_fun_addrMap6_6Value
+  DECLPROC $MapTestContract$_fun_addrMap6_7
+  DECLPROC $MapTestContract$_fun_addrMap6_7Value
+  DECLPROC $MapTestContract$_fun_addrMap7_1
+  DECLPROC $MapTestContract$_fun_addrMap7_1Value
+  DECLPROC $MapTestContract$_fun_addrMap7_2
+  DECLPROC $MapTestContract$_fun_addrMap7_2Value
+  DECLPROC $MapTestContract$_fun_addrMap7_3
+  DECLPROC $MapTestContract$_fun_addrMap7_3Value
+  DECLPROC $MapTestContract$_fun_addrMap7_4
+  DECLPROC $MapTestContract$_fun_addrMap7_4Value
+  DECLPROC $MapTestContract$_fun_addrMap7_5
+  DECLPROC $MapTestContract$_fun_addrMap7_5Value
+  DECLPROC $MapTestContract$_fun_addrMap7_6
+  DECLPROC $MapTestContract$_fun_addrMap7_6Value
   DECLPROC %$MapTestContract$_internal_empty
   DECLPROC $MapTestContract$_internal_binary_SetIntMap1
   DECLPROC $MapTestContract$_internal_binary_SetIntMap2
@@ -81,11 +156,16 @@ PROGRAM{
   DECLPROC $MapTestContract$_internal_binary_SetIntMap4
   DECLPROC $MapTestContract$_internal_binary_SetIntMap5
   DECLPROC $MapTestContract$_internal_binary_SetIntMap6
+  DECLPROC $MapTestContract$_internal_binary_SetUIntMap7
+  DECLPROC $MapTestContract$_internal_binary_SetIntMap8
+  DECLPROC $MapTestContract$_internal_binary_SetUIntMap9
   DECLPROC $MapTestContract$_internal_binary_SetAddrMap1
   DECLPROC $MapTestContract$_internal_binary_SetAddrMap2
   DECLPROC $MapTestContract$_internal_binary_SetAddrMap3
   DECLPROC $MapTestContract$_internal_binary_SetAddrMap4
   DECLPROC $MapTestContract$_internal_binary_SetAddrMap5
+  DECLPROC $MapTestContract$_internal_binary_SetAddrMap6
+  DECLPROC $MapTestContract$_internal_binary_SetAddrMap7
   DECLPROC $MapTestContract$_internal_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b
   67207 DECLMETHOD %intMap1
   103396 DECLMETHOD %intMap1Value
@@ -111,6 +191,44 @@ PROGRAM{
   92731 DECLMETHOD %intMap6_6Value
   104044 DECLMETHOD %intMap6_7
   77723 DECLMETHOD %intMap6_7Value
+  115098 DECLMETHOD %intMap7_1
+  124329 DECLMETHOD %intMap7_1Value
+  127481 DECLMETHOD %intMap7_2
+  76617 DECLMETHOD %intMap7_2Value
+  123352 DECLMETHOD %intMap7_3
+  93929 DECLMETHOD %intMap7_3Value
+  102719 DECLMETHOD %intMap7_4
+  108200 DECLMETHOD %intMap7_4Value
+  98590 DECLMETHOD %intMap7_5
+  123656 DECLMETHOD %intMap7_5Value
+  110973 DECLMETHOD %intMap7_6
+  77288 DECLMETHOD %intMap7_6Value
+  126379 DECLMETHOD %intMap8_1
+  81003 DECLMETHOD %intMap8_1Value
+  122312 DECLMETHOD %intMap8_2
+  127627 DECLMETHOD %intMap8_2Value
+  118249 DECLMETHOD %intMap8_3
+  112427 DECLMETHOD %intMap8_3Value
+  113934 DECLMETHOD %intMap8_4
+  98154 DECLMETHOD %intMap8_4Value
+  109871 DECLMETHOD %intMap8_5
+  80586 DECLMETHOD %intMap8_5Value
+  105804 DECLMETHOD %intMap8_6
+  128042 DECLMETHOD %intMap8_6Value
+  101741 DECLMETHOD %intMap8_7
+  110986 DECLMETHOD %intMap8_7Value
+  121499 DECLMETHOD %intMap9_1
+  97208 DECLMETHOD %intMap9_1Value
+  125688 DECLMETHOD %intMap9_2
+  111960 DECLMETHOD %intMap9_2Value
+  129753 DECLMETHOD %intMap9_3
+  127224 DECLMETHOD %intMap9_3Value
+  100926 DECLMETHOD %intMap9_4
+  80057 DECLMETHOD %intMap9_4Value
+  104991 DECLMETHOD %intMap9_5
+  97561 DECLMETHOD %intMap9_5Value
+  109180 DECLMETHOD %intMap9_6
+  111609 DECLMETHOD %intMap9_6Value
   93537 DECLMETHOD %addrMap1
   116148 DECLMETHOD %addrMap1Value
   89346 DECLMETHOD %addrMap2
@@ -121,6 +239,32 @@ PROGRAM{
   100021 DECLMETHOD %addrMap4Value
   77285 DECLMETHOD %addrMap5
   115477 DECLMETHOD %addrMap5Value
+  113810 DECLMETHOD %addrMap6_1
+  89238 DECLMETHOD %addrMap6_1Value
+  101617 DECLMETHOD %addrMap6_2
+  103030 DECLMETHOD %addrMap6_2Value
+  105680 DECLMETHOD %addrMap6_3
+  120790 DECLMETHOD %addrMap6_3Value
+  126007 DECLMETHOD %addrMap6_4
+  73623 DECLMETHOD %addrMap6_4Value
+  130070 DECLMETHOD %addrMap6_5
+  88631 DECLMETHOD %addrMap6_5Value
+  117877 DECLMETHOD %addrMap6_6
+  103639 DECLMETHOD %addrMap6_6Value
+  121940 DECLMETHOD %addrMap6_7
+  119159 DECLMETHOD %addrMap6_7Value
+  101282 DECLMETHOD %addrMap7_1
+  72517 DECLMETHOD %addrMap7_1Value
+  113601 DECLMETHOD %addrMap7_2
+  120229 DECLMETHOD %addrMap7_2Value
+  109536 DECLMETHOD %addrMap7_3
+  102405 DECLMETHOD %addrMap7_3Value
+  121607 DECLMETHOD %addrMap7_4
+  88132 DECLMETHOD %addrMap7_4Value
+  117542 DECLMETHOD %addrMap7_5
+  73188 DECLMETHOD %addrMap7_5Value
+  129861 DECLMETHOD %addrMap7_6
+  119556 DECLMETHOD %addrMap7_6Value
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -183,6 +327,64 @@ PROGRAM{
   __tact_dict_get_int_int PROCINLINE:<{
     s1 s3 s3 XCHG3
     DICTIGET
+    NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_int_uint PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+      DICTIDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STUX
+      s1 s3 s3 XCHG3
+      DICTISETB
+    }>
+  }>
+  __tact_dict_get_int_uint PROCINLINE:<{
+    s1 s3 s3 XCHG3
+    DICTIGET
+    NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDUX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_uint_int PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+      DICTUDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STIX
+      s1 s3 s3 XCHG3
+      DICTUSETB
+    }>
+  }>
+  __tact_dict_get_uint_int PROCINLINE:<{
+    s1 s3 s3 XCHG3
+    DICTUGET
     NULLSWAPIFNOT
     IF:<{
       SWAP
@@ -262,6 +464,35 @@ PROGRAM{
     IF:<{
       SWAP
       LDIX
+      DROP
+    }>ELSE<{
+      2DROP
+      PUSHNULL
+    }>
+  }>
+  __tact_dict_set_slice_uint PROCINLINE:<{
+    OVER
+    ISNULL
+    IF:<{
+      2DROP
+      -ROT
+      DICTDEL
+      DROP
+    }>ELSE<{
+      NEWC
+      SWAP
+      STUX
+      s1 s3 s3 XCHG3
+      DICTSETB
+    }>
+  }>
+  __tact_dict_get_slice_uint PROCINLINE:<{
+    s1 s3 s3 XCHG3
+    DICTGET
+    NULLSWAPIFNOT
+    IF:<{
+      SWAP
+      LDUX
       DROP
     }>ELSE<{
       2DROP
@@ -469,6 +700,63 @@ PROGRAM{
     }>
     -ROT
   }>
+  $SetUIntMap7$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    3563204871 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    1 LDI
+    SWAP
+    IF:<{
+      257 PUSHINT
+      LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    -ROT
+  }>
+  $SetIntMap8$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    1910615278 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    1 LDI
+    SWAP
+    IF:<{
+      257 PUSHINT
+      LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    -ROT
+  }>
+  $SetUIntMap9$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    1765685895 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    1 LDI
+    SWAP
+    IF:<{
+      257 PUSHINT
+      LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    -ROT
+  }>
   $SetAddrMap1$_load PROCINLINE:<{
     32 LDU
     SWAP
@@ -553,57 +841,203 @@ PROGRAM{
     __tact_load_address_opt INLINECALLDICT
     s1 s2 XCHG
   }>
+  $SetAddrMap6$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    1742733058 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      257 PUSHINT
+      LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    -ROT
+  }>
+  $SetAddrMap7$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2054067599 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    SWAP
+    IF:<{
+      257 PUSHINT
+      LDIX
+    }>ELSE<{
+      PUSHNULL
+      SWAP
+    }>
+    -ROT
+  }>
   $MapTestContract$_store PROCINLINE:<{
-    s1 16 s() XCHG
-    s0 17 s() XCHG
+    s1 48 s() XCHG
+    s0 49 s() XCHG
     STDICT
-    s1 s14 XCHG
+    s1 46 s() XCHG
     STDICT
-    s0 s12 XCHG
+    s0 44 s() XCHG
     NEWC
+    STDICT
+    s1 43 s() XCHG
+    STDICT
+    s1 41 s() XCHG
+    STDICT
+    s0 39 s() XCHG
+    NEWC
+    STDICT
+    s1 38 s() XCHG
+    STDICT
+    s1 36 s() XCHG
+    STDICT
+    s0 34 s() XCHG
+    NEWC
+    STDICT
+    s1 33 s() XCHG
+    STDICT
+    s1 31 s() XCHG
+    STDICT
+    s0 29 s() XCHG
+    NEWC
+    STDICT
+    s1 28 s() XCHG
+    STDICT
+    s1 26 s() XCHG
+    STDICT
+    s0 24 s() XCHG
+    NEWC
+    STDICT
+    s1 23 s() XCHG
+    STDICT
+    s1 21 s() XCHG
+    STDICT
+    s0 19 s() XCHG
+    NEWC
+    STDICT
+    s1 18 s() XCHG
+    STDICT
+    s1 16 s() XCHG
+    STDICT
+    s0 s14 XCHG
+    NEWC
+    STDICT
+    s1 s13 XCHG
     STDICT
     s1 s11 XCHG
     STDICT
-    s1 s9 XCHG
-    STDICT
-    s0 s7 XCHG
+    s0 s9 XCHG
     NEWC
+    STDICT
+    s1 s8 XCHG
     STDICT
     s1 s6 XCHG
     STDICT
-    s1 s4 XCHG
-    STDICT
-    s0 s2 XCHG
+    s0 s4 XCHG
     NEWC
     STDICT
+    s1 s3 XCHG
     STDICT
-    s1 s2 XCHG
     STDICT
-    s0 s2 XCHG
+    SWAP
     NEWC
     STDICT
-    s1 s4 XCHG
+    s1 s3 XCHG
     STDICT
-    s1 s4 XCHG
+    s1 s3 XCHG
     STDICT
-    s0 s5 XCHG
+    s0 s4 XCHG
     NEWC
+    STDICT
+    s1 s5 XCHG
     STDICT
     s1 s6 XCHG
     STDICT
-    s1 s6 XCHG
+    s0 s6 XCHG
+    NEWC
+    STDICT
+    s1 s8 XCHG
+    STDICT
+    s1 s8 XCHG
+    STDICT
+    s0 s9 XCHG
+    NEWC
+    STDICT
+    s1 s10 XCHG
+    STDICT
+    s1 s11 XCHG
+    STDICT
+    s0 s11 XCHG
+    NEWC
+    STDICT
+    s1 s13 XCHG
+    STDICT
+    s1 s13 XCHG
+    STDICT
+    s0 s14 XCHG
+    NEWC
+    STDICT
+    s1 s15 XCHG
+    STDICT
+    s1 16 s() XCHG
+    STDICT
+    s0 16 s() XCHG
+    NEWC
+    STDICT
+    s1 17 s() XCHG
     STDICT
     ENDC
-    s0 s3 XCHG2
+    s0 s15 XCHG2
+    STREF
+    ENDC
+    s0 s10 XCHG2
+    STREF
+    ENDC
+    s0 s4 XCHG2
+    STREF
+    ENDC
+    s0 s8 XCHG2
+    STREF
+    ENDC
+    s0 s5 XCHG2
+    STREF
+    ENDC
+    s0 s11 XCHG2
+    STREF
+    ENDC
+    s0 s10 XCHG2
+    STREF
+    ENDC
+    SWAP
+    STREF
+    ENDC
+    s0 s6 XCHG2
+    STREF
+    ENDC
+    s0 s5 XCHG2
     STREF
     ENDC
     ROT
     STREF
     ENDC
+    s0 s4 XCHG2
+    STREF
+    ENDC
     s0 s3 XCHG2
     STREF
     ENDC
-    SWAP
+    s0 s3 XCHG2
+    STREF
+    ENDC
+    ROT
     STREF
     ENDC
     SWAP
@@ -642,9 +1076,74 @@ PROGRAM{
     LDDICT
     LDDICT
     LDDICT
+    LDREF
     DROP
-    s15 17 s() XCHG
-    s15 16 s() XCHG
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    LDDICT
+    LDREF
+    DROP
+    CTOS
+    LDDICT
+    LDDICT
+    DROP
+    47 s() 49 s() XCHG
+    47 s() 48 s() XCHG
   }>
   $SomeStruct$_to_tuple PROCINLINE:<{
     1 TUPLE
@@ -688,6 +1187,38 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
     PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
+    PUSHNULL
   }>
   $MapTestContract$_contract_load PROCREF:<{
     c4 PUSH
@@ -699,7 +1230,39 @@ PROGRAM{
     SWAP
     IFJMP:<{
       $MapTestContract$_load INLINECALLDICT
-      17 s() POP
+      49 s() POP
+      47 s() 48 s() XCHG
+      46 s() 47 s() XCHG
+      45 s() 46 s() XCHG
+      44 s() 45 s() XCHG
+      43 s() 44 s() XCHG
+      42 s() 43 s() XCHG
+      41 s() 42 s() XCHG
+      40 s() 41 s() XCHG
+      39 s() 40 s() XCHG
+      38 s() 39 s() XCHG
+      37 s() 38 s() XCHG
+      36 s() 37 s() XCHG
+      35 s() 36 s() XCHG
+      34 s() 35 s() XCHG
+      33 s() 34 s() XCHG
+      32 s() 33 s() XCHG
+      31 s() 32 s() XCHG
+      30 s() 31 s() XCHG
+      29 s() 30 s() XCHG
+      28 s() 29 s() XCHG
+      27 s() 28 s() XCHG
+      26 s() 27 s() XCHG
+      25 s() 26 s() XCHG
+      24 s() 25 s() XCHG
+      23 s() 24 s() XCHG
+      22 s() 23 s() XCHG
+      21 s() 22 s() XCHG
+      20 s() 21 s() XCHG
+      19 s() 20 s() XCHG
+      18 s() 19 s() XCHG
+      17 s() 18 s() XCHG
+      16 s() 17 s() XCHG
       s15 16 s() XCHG
       15 ROLL
     }>
@@ -719,6 +1282,38 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
+    s0 49 s() XCHG
+    s0 48 s() XCHG
+    s0 47 s() XCHG
+    s0 46 s() XCHG
+    s0 45 s() XCHG
+    s0 44 s() XCHG
+    s0 43 s() XCHG
+    s0 42 s() XCHG
+    s0 41 s() XCHG
+    s0 40 s() XCHG
+    s0 39 s() XCHG
+    s0 38 s() XCHG
+    s0 37 s() XCHG
+    s0 36 s() XCHG
+    s0 35 s() XCHG
+    s0 34 s() XCHG
+    s0 33 s() XCHG
+    s0 32 s() XCHG
+    s0 31 s() XCHG
+    s0 30 s() XCHG
+    s0 29 s() XCHG
+    s0 28 s() XCHG
+    s0 27 s() XCHG
+    s0 26 s() XCHG
+    s0 25 s() XCHG
+    s0 24 s() XCHG
+    s0 23 s() XCHG
+    s0 22 s() XCHG
+    s0 21 s() XCHG
+    s0 20 s() XCHG
+    s0 19 s() XCHG
+    s0 18 s() XCHG
     s0 17 s() XCHG
     s0 16 s() XCHG
     15 -ROLL
@@ -727,312 +1322,865 @@ PROGRAM{
     c4 POP
   }>
   $MapTestContract$_fun_intMap1 PROCREF:<{
-    16 s() PUSH
+    48 s() PUSH
   }>
   $MapTestContract$_fun_intMap1Value PROCREF:<{
     257 PUSHINT
     DUP
-    19 s() PUSH
+    51 s() PUSH
     s3 s3 XCHG2
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap2 PROCREF:<{
-    s15 PUSH
+    47 s() PUSH
   }>
   $MapTestContract$_fun_intMap2Value PROCREF:<{
     257 PUSHINT
-    17 s() PUSH
+    49 s() PUSH
     s0 s2 XCHG
     1 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap3 PROCREF:<{
-    s14 PUSH
+    46 s() PUSH
   }>
   $MapTestContract$_fun_intMap3Value PROCREF:<{
     257 PUSHINT
-    16 s() PUSH
+    48 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_int_cell INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap4 PROCREF:<{
-    s13 PUSH
+    45 s() PUSH
   }>
   $MapTestContract$_fun_intMap4Value PROCREF:<{
     257 PUSHINT
-    s15 PUSH
+    47 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_int_cell INLINECALLDICT
     $SomeStruct$_load_opt INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap5 PROCREF:<{
-    s12 PUSH
+    44 s() PUSH
   }>
   $MapTestContract$_fun_intMap5Value PROCREF:<{
     257 PUSHINT
-    s14 PUSH
+    46 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_int_slice INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_1 PROCREF:<{
-    s11 PUSH
+    43 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_1Value PROCREF:<{
     8 PUSHINT
-    s13 PUSH
+    45 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_2 PROCREF:<{
-    s10 PUSH
+    42 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_2Value PROCREF:<{
     16 PUSHINT
-    s12 PUSH
+    44 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_3 PROCREF:<{
-    s9 PUSH
+    41 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_3Value PROCREF:<{
     32 PUSHINT
-    s11 PUSH
+    43 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_4 PROCREF:<{
-    s8 PUSH
+    40 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_4Value PROCREF:<{
     64 PUSHINT
-    s10 PUSH
+    42 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_5 PROCREF:<{
-    s7 PUSH
+    39 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_5Value PROCREF:<{
     7 PUSHPOW2
-    s9 PUSH
+    41 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_6 PROCREF:<{
-    s6 PUSH
+    38 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_6Value PROCREF:<{
     8 PUSHPOW2
-    s8 PUSH
+    40 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_int_int INLINECALLDICT
   }>
   $MapTestContract$_fun_intMap6_7 PROCREF:<{
-    s5 PUSH
+    37 s() PUSH
   }>
   $MapTestContract$_fun_intMap6_7Value PROCREF:<{
     257 PUSHINT
-    s0 s7 PUSH2
+    DUP
+    40 s() PUSH
     s3 s3 XCHG2
     __tact_dict_get_int_int INLINECALLDICT
   }>
+  $MapTestContract$_fun_intMap7_1 PROCREF:<{
+    36 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap7_1Value PROCREF:<{
+    8 PUSHINT
+    38 s() PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_uint_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap7_2 PROCREF:<{
+    35 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap7_2Value PROCREF:<{
+    16 PUSHINT
+    37 s() PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_uint_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap7_3 PROCREF:<{
+    34 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap7_3Value PROCREF:<{
+    32 PUSHINT
+    36 s() PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_uint_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap7_4 PROCREF:<{
+    33 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap7_4Value PROCREF:<{
+    64 PUSHINT
+    35 s() PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_uint_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap7_5 PROCREF:<{
+    32 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap7_5Value PROCREF:<{
+    7 PUSHPOW2
+    34 s() PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_uint_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap7_6 PROCREF:<{
+    31 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap7_6Value PROCREF:<{
+    8 PUSHPOW2
+    33 s() PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_uint_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_1 PROCREF:<{
+    30 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_1Value PROCREF:<{
+    257 PUSHINT
+    32 s() PUSH
+    s0 s2 XCHG
+    8 PUSHINT
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_2 PROCREF:<{
+    29 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_2Value PROCREF:<{
+    257 PUSHINT
+    31 s() PUSH
+    s0 s2 XCHG
+    16 PUSHINT
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_3 PROCREF:<{
+    28 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_3Value PROCREF:<{
+    257 PUSHINT
+    30 s() PUSH
+    s0 s2 XCHG
+    32 PUSHINT
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_4 PROCREF:<{
+    27 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_4Value PROCREF:<{
+    257 PUSHINT
+    29 s() PUSH
+    s0 s2 XCHG
+    64 PUSHINT
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_5 PROCREF:<{
+    26 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_5Value PROCREF:<{
+    257 PUSHINT
+    28 s() PUSH
+    s0 s2 XCHG
+    7 PUSHPOW2
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_6 PROCREF:<{
+    25 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_6Value PROCREF:<{
+    257 PUSHINT
+    27 s() PUSH
+    s0 s2 XCHG
+    8 PUSHPOW2
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap8_7 PROCREF:<{
+    24 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap8_7Value PROCREF:<{
+    257 PUSHINT
+    DUP
+    27 s() PUSH
+    s3 s3 XCHG2
+    __tact_dict_get_int_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap9_1 PROCREF:<{
+    23 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap9_1Value PROCREF:<{
+    257 PUSHINT
+    25 s() PUSH
+    s0 s2 XCHG
+    8 PUSHINT
+    __tact_dict_get_int_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap9_2 PROCREF:<{
+    22 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap9_2Value PROCREF:<{
+    257 PUSHINT
+    24 s() PUSH
+    s0 s2 XCHG
+    16 PUSHINT
+    __tact_dict_get_int_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap9_3 PROCREF:<{
+    21 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap9_3Value PROCREF:<{
+    257 PUSHINT
+    23 s() PUSH
+    s0 s2 XCHG
+    32 PUSHINT
+    __tact_dict_get_int_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap9_4 PROCREF:<{
+    20 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap9_4Value PROCREF:<{
+    257 PUSHINT
+    22 s() PUSH
+    s0 s2 XCHG
+    64 PUSHINT
+    __tact_dict_get_int_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap9_5 PROCREF:<{
+    19 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap9_5Value PROCREF:<{
+    257 PUSHINT
+    21 s() PUSH
+    s0 s2 XCHG
+    7 PUSHPOW2
+    __tact_dict_get_int_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_intMap9_6 PROCREF:<{
+    18 s() PUSH
+  }>
+  $MapTestContract$_fun_intMap9_6Value PROCREF:<{
+    257 PUSHINT
+    20 s() PUSH
+    s0 s2 XCHG
+    8 PUSHPOW2
+    __tact_dict_get_int_uint INLINECALLDICT
+  }>
   $MapTestContract$_fun_addrMap1 PROCREF:<{
-    s4 PUSH
+    17 s() PUSH
   }>
   $MapTestContract$_fun_addrMap1Value PROCREF:<{
     267 PUSHINT
-    s6 PUSH
+    19 s() PUSH
     s0 s2 XCHG
     257 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap2 PROCREF:<{
-    s3 PUSH
+    16 s() PUSH
   }>
   $MapTestContract$_fun_addrMap2Value PROCREF:<{
     267 PUSHINT
-    s5 PUSH
+    18 s() PUSH
     s0 s2 XCHG
     1 PUSHINT
     __tact_dict_get_slice_int INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap3 PROCREF:<{
-    s2 PUSH
+    s15 PUSH
   }>
   $MapTestContract$_fun_addrMap3Value PROCREF:<{
     267 PUSHINT
-    s4 PUSH
+    17 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_cell INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap4 PROCREF:<{
-    OVER
+    s14 PUSH
   }>
   $MapTestContract$_fun_addrMap4Value PROCREF:<{
     267 PUSHINT
-    s3 PUSH
+    16 s() PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_cell INLINECALLDICT
     $SomeStruct$_load_opt INLINECALLDICT
   }>
   $MapTestContract$_fun_addrMap5 PROCREF:<{
-    DUP
+    s13 PUSH
   }>
   $MapTestContract$_fun_addrMap5Value PROCREF:<{
     267 PUSHINT
-    s2 PUSH
+    s15 PUSH
     s0 s2 XCHG
     __tact_dict_get_slice_slice INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_1 PROCREF:<{
+    s12 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_1Value PROCREF:<{
+    267 PUSHINT
+    s14 PUSH
+    s0 s2 XCHG
+    8 PUSHINT
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_2 PROCREF:<{
+    s11 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_2Value PROCREF:<{
+    267 PUSHINT
+    s13 PUSH
+    s0 s2 XCHG
+    16 PUSHINT
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_3 PROCREF:<{
+    s10 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_3Value PROCREF:<{
+    267 PUSHINT
+    s12 PUSH
+    s0 s2 XCHG
+    32 PUSHINT
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_4 PROCREF:<{
+    s9 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_4Value PROCREF:<{
+    267 PUSHINT
+    s11 PUSH
+    s0 s2 XCHG
+    64 PUSHINT
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_5 PROCREF:<{
+    s8 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_5Value PROCREF:<{
+    267 PUSHINT
+    s10 PUSH
+    s0 s2 XCHG
+    7 PUSHPOW2
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_6 PROCREF:<{
+    s7 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_6Value PROCREF:<{
+    267 PUSHINT
+    s9 PUSH
+    s0 s2 XCHG
+    8 PUSHPOW2
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap6_7 PROCREF:<{
+    s6 PUSH
+  }>
+  $MapTestContract$_fun_addrMap6_7Value PROCREF:<{
+    267 PUSHINT
+    s8 PUSH
+    s0 s2 XCHG
+    257 PUSHINT
+    __tact_dict_get_slice_int INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap7_1 PROCREF:<{
+    s5 PUSH
+  }>
+  $MapTestContract$_fun_addrMap7_1Value PROCREF:<{
+    267 PUSHINT
+    s7 PUSH
+    s0 s2 XCHG
+    8 PUSHINT
+    __tact_dict_get_slice_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap7_2 PROCREF:<{
+    s4 PUSH
+  }>
+  $MapTestContract$_fun_addrMap7_2Value PROCREF:<{
+    267 PUSHINT
+    s6 PUSH
+    s0 s2 XCHG
+    16 PUSHINT
+    __tact_dict_get_slice_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap7_3 PROCREF:<{
+    s3 PUSH
+  }>
+  $MapTestContract$_fun_addrMap7_3Value PROCREF:<{
+    267 PUSHINT
+    s5 PUSH
+    s0 s2 XCHG
+    32 PUSHINT
+    __tact_dict_get_slice_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap7_4 PROCREF:<{
+    s2 PUSH
+  }>
+  $MapTestContract$_fun_addrMap7_4Value PROCREF:<{
+    267 PUSHINT
+    s4 PUSH
+    s0 s2 XCHG
+    64 PUSHINT
+    __tact_dict_get_slice_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap7_5 PROCREF:<{
+    OVER
+  }>
+  $MapTestContract$_fun_addrMap7_5Value PROCREF:<{
+    267 PUSHINT
+    s3 PUSH
+    s0 s2 XCHG
+    7 PUSHPOW2
+    __tact_dict_get_slice_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_addrMap7_6 PROCREF:<{
+    DUP
+  }>
+  $MapTestContract$_fun_addrMap7_6Value PROCREF:<{
+    267 PUSHINT
+    s2 PUSH
+    s0 s2 XCHG
+    8 PUSHPOW2
+    __tact_dict_get_slice_uint INLINECALLDICT
   }>
   %$MapTestContract$_internal_empty PROCINLINE:<{
   }>
   $MapTestContract$_internal_binary_SetIntMap1 PROCINLINE:<{
     257 PUSHINT
     DUP
-    s4 20 s() XCHG
+    s4 52 s() XCHG
     s3 s3 s0 XCHG3
     __tact_dict_set_int_int INLINECALLDICT
-    s0 16 s() XCHG
+    s0 48 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetIntMap2 PROCINLINE:<{
-    s2 17 s() XCHG
+    s2 49 s() XCHG
     257 PUSHINT
     -ROT
     1 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s15 XCHG
+    s0 47 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetIntMap3 PROCINLINE:<{
-    s2 16 s() XCHG
+    s2 48 s() XCHG
     257 PUSHINT
     -ROT
     __tact_dict_set_int_cell INLINECALLDICT
-    s0 s14 XCHG
+    s0 46 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetIntMap4 PROCINLINE:<{
     257 PUSHINT
     SWAP
     $SomeStruct$_store_opt INLINECALLDICT
-    s3 16 s() XCHG
+    s3 48 s() XCHG
     s1 s2 XCHG
     __tact_dict_set_int_cell INLINECALLDICT
-    s0 s13 XCHG
+    s0 45 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetIntMap5 PROCINLINE:<{
-    s2 s14 XCHG
+    s2 46 s() XCHG
     257 PUSHINT
     -ROT
     __tact_dict_set_int_slice INLINECALLDICT
-    s0 s12 XCHG
+    s0 44 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetIntMap6 PROCINLINE:<{
-    s0 s13 XCHG
+    s0 45 s() XCHG
     8 PUSHINT
-    s2 s14 PUSH2
+    s2 PUSH
+    47 s() PUSH
     257 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s12 XCHG
+    s0 44 s() XCHG
     16 PUSHINT
-    s2 s14 PUSH2
+    s2 PUSH
+    47 s() PUSH
     257 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s11 XCHG
+    s0 43 s() XCHG
     32 PUSHINT
-    s2 s14 PUSH2
+    s2 PUSH
+    47 s() PUSH
     257 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s10 XCHG
+    s0 42 s() XCHG
     64 PUSHINT
-    s2 s14 PUSH2
+    s2 PUSH
+    47 s() PUSH
     257 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s9 XCHG
+    s0 41 s() XCHG
     7 PUSHPOW2
-    s2 s14 PUSH2
+    s2 PUSH
+    47 s() PUSH
     257 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
-    s0 s8 XCHG
+    s0 40 s() XCHG
     8 PUSHPOW2
-    s2 s14 PUSH2
+    s2 PUSH
+    47 s() PUSH
     257 PUSHINT
     __tact_dict_set_int_int INLINECALLDICT
     257 PUSHINT
     DUP
-    s4 s9 XCHG
+    s4 41 s() XCHG
     s3 s3 s0 XCHG3
-    s1 s15 XCHG
+    s1 47 s() XCHG
     __tact_dict_set_int_int INLINECALLDICT
-    s10 s11 XCHG
-    s9 s10 XCHG
-    s8 s9 XCHG
-    s7 s8 XCHG
-    s6 s7 XCHG
-    s0 s5 XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    s0 37 s() XCHG
+  }>
+  $MapTestContract$_internal_binary_SetUIntMap7 PROCINLINE:<{
+    s0 38 s() XCHG
+    8 PUSHINT
+    s2 PUSH
+    40 s() PUSH
+    257 PUSHINT
+    __tact_dict_set_uint_int INLINECALLDICT
+    s0 37 s() XCHG
+    16 PUSHINT
+    s2 PUSH
+    40 s() PUSH
+    257 PUSHINT
+    __tact_dict_set_uint_int INLINECALLDICT
+    s0 36 s() XCHG
+    32 PUSHINT
+    s2 PUSH
+    40 s() PUSH
+    257 PUSHINT
+    __tact_dict_set_uint_int INLINECALLDICT
+    s0 35 s() XCHG
+    64 PUSHINT
+    s2 PUSH
+    40 s() PUSH
+    257 PUSHINT
+    __tact_dict_set_uint_int INLINECALLDICT
+    s0 34 s() XCHG
+    7 PUSHPOW2
+    s2 PUSH
+    40 s() PUSH
+    257 PUSHINT
+    __tact_dict_set_uint_int INLINECALLDICT
+    s2 33 s() XCHG
+    8 PUSHPOW2
+    -ROT
+    s0 39 s() XCHG
+    257 PUSHINT
+    __tact_dict_set_uint_int INLINECALLDICT
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    s0 31 s() XCHG
+  }>
+  $MapTestContract$_internal_binary_SetIntMap8 PROCINLINE:<{
+    s0 32 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    34 s() PUSH
+    8 PUSHINT
+    __tact_dict_set_int_int INLINECALLDICT
+    s0 31 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    34 s() PUSH
+    16 PUSHINT
+    __tact_dict_set_int_int INLINECALLDICT
+    s0 30 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    34 s() PUSH
+    32 PUSHINT
+    __tact_dict_set_int_int INLINECALLDICT
+    s0 29 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    34 s() PUSH
+    64 PUSHINT
+    __tact_dict_set_int_int INLINECALLDICT
+    s0 28 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    34 s() PUSH
+    7 PUSHPOW2
+    __tact_dict_set_int_int INLINECALLDICT
+    s0 27 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    34 s() PUSH
+    8 PUSHPOW2
+    __tact_dict_set_int_int INLINECALLDICT
+    257 PUSHINT
+    DUP
+    s4 28 s() XCHG
+    s3 s3 s0 XCHG3
+    s1 34 s() XCHG
+    __tact_dict_set_int_int INLINECALLDICT
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    s0 24 s() XCHG
+  }>
+  $MapTestContract$_internal_binary_SetUIntMap9 PROCINLINE:<{
+    s0 25 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    27 s() PUSH
+    8 PUSHINT
+    __tact_dict_set_int_uint INLINECALLDICT
+    s0 24 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    27 s() PUSH
+    16 PUSHINT
+    __tact_dict_set_int_uint INLINECALLDICT
+    s0 23 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    27 s() PUSH
+    32 PUSHINT
+    __tact_dict_set_int_uint INLINECALLDICT
+    s0 22 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    27 s() PUSH
+    64 PUSHINT
+    __tact_dict_set_int_uint INLINECALLDICT
+    s0 21 s() XCHG
+    257 PUSHINT
+    s2 PUSH
+    27 s() PUSH
+    7 PUSHPOW2
+    __tact_dict_set_int_uint INLINECALLDICT
+    s2 20 s() XCHG
+    257 PUSHINT
+    -ROT
+    s0 26 s() XCHG
+    8 PUSHPOW2
+    __tact_dict_set_int_uint INLINECALLDICT
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    s0 18 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetAddrMap1 PROCINLINE:<{
-    s2 s6 XCHG
+    s2 19 s() XCHG
     267 PUSHINT
     -ROT
     257 PUSHINT
     __tact_dict_set_slice_int INLINECALLDICT
-    s0 s4 XCHG
+    s0 17 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetAddrMap2 PROCINLINE:<{
-    s2 s5 XCHG
+    s2 18 s() XCHG
     267 PUSHINT
     -ROT
     1 PUSHINT
     __tact_dict_set_slice_int INLINECALLDICT
-    s0 s3 XCHG
+    s0 16 s() XCHG
   }>
   $MapTestContract$_internal_binary_SetAddrMap3 PROCINLINE:<{
-    s2 s4 XCHG
+    s2 17 s() XCHG
     267 PUSHINT
     -ROT
     __tact_dict_set_slice_cell INLINECALLDICT
-    s0 s2 XCHG
+    s0 s15 XCHG
   }>
   $MapTestContract$_internal_binary_SetAddrMap4 PROCINLINE:<{
     267 PUSHINT
     SWAP
     $SomeStruct$_store_opt INLINECALLDICT
-    s3 s4 XCHG
+    s3 17 s() XCHG
     s1 s2 XCHG
     __tact_dict_set_slice_cell INLINECALLDICT
-    SWAP
+    s0 s14 XCHG
   }>
   $MapTestContract$_internal_binary_SetAddrMap5 PROCINLINE:<{
+    s2 s15 XCHG
     267 PUSHINT
     -ROT
     __tact_dict_set_slice_slice INLINECALLDICT
+    s0 s13 XCHG
+  }>
+  $MapTestContract$_internal_binary_SetAddrMap6 PROCINLINE:<{
+    s0 s14 XCHG
+    267 PUSHINT
+    s2 s15 PUSH2
+    8 PUSHINT
+    __tact_dict_set_slice_int INLINECALLDICT
+    s0 s13 XCHG
+    267 PUSHINT
+    s2 s15 PUSH2
+    16 PUSHINT
+    __tact_dict_set_slice_int INLINECALLDICT
+    s0 s12 XCHG
+    267 PUSHINT
+    s2 s15 PUSH2
+    32 PUSHINT
+    __tact_dict_set_slice_int INLINECALLDICT
+    s0 s11 XCHG
+    267 PUSHINT
+    s2 s15 PUSH2
+    64 PUSHINT
+    __tact_dict_set_slice_int INLINECALLDICT
+    s0 s10 XCHG
+    267 PUSHINT
+    s2 s15 PUSH2
+    7 PUSHPOW2
+    __tact_dict_set_slice_int INLINECALLDICT
+    s0 s9 XCHG
+    267 PUSHINT
+    s2 s15 PUSH2
+    8 PUSHPOW2
+    __tact_dict_set_slice_int INLINECALLDICT
+    s2 s8 XCHG
+    267 PUSHINT
+    s0 s0 s15 XCHG3
+    257 PUSHINT
+    __tact_dict_set_slice_int INLINECALLDICT
+    s11 s12 XCHG
+    s10 s11 XCHG
+    s9 s10 XCHG
+    s8 s9 XCHG
+    s7 s8 XCHG
+    s0 s6 XCHG
+  }>
+  $MapTestContract$_internal_binary_SetAddrMap7 PROCINLINE:<{
+    s0 s7 XCHG
+    267 PUSHINT
+    s2 s8 PUSH2
+    8 PUSHINT
+    __tact_dict_set_slice_uint INLINECALLDICT
+    s0 s6 XCHG
+    267 PUSHINT
+    s2 s8 PUSH2
+    16 PUSHINT
+    __tact_dict_set_slice_uint INLINECALLDICT
+    s0 s5 XCHG
+    267 PUSHINT
+    s2 s8 PUSH2
+    32 PUSHINT
+    __tact_dict_set_slice_uint INLINECALLDICT
+    s0 s4 XCHG
+    267 PUSHINT
+    s2 s8 PUSH2
+    64 PUSHINT
+    __tact_dict_set_slice_uint INLINECALLDICT
+    s0 s3 XCHG
+    267 PUSHINT
+    s2 s8 PUSH2
+    7 PUSHPOW2
+    __tact_dict_set_slice_uint INLINECALLDICT
+    267 PUSHINT
+    s0 s0 s8 XCHG3
+    8 PUSHPOW2
+    __tact_dict_set_slice_uint INLINECALLDICT
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
   }>
   $MapTestContract$_internal_text_4aedba9b6dfe7cb8e0f95d1230cb0ac70b4bbbe6a3e991ae767cd363573daf1b PROCINLINE:<{
-    5 BLKDROP
-    s7 POP
-    s7 POP
-    s7 POP
-    s7 POP
-    s7 POP
+    s13 POP
+    s13 POP
+    s13 POP
+    s13 POP
+    s13 POP
+    39 s() POP
+    39 s() POP
+    39 s() POP
+    39 s() POP
+    39 s() POP
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
     PUSHNULL
+    s0 44 s() XCHG
     PUSHNULL
-    s13 s12 XCHG2
+    s0 44 s() XCHG
     PUSHNULL
+    s0 44 s() XCHG
     PUSHNULL
-    s13 s12 XCHG2
+    s0 44 s() XCHG
     PUSHNULL
-    s0 s12 XCHG
+    s0 44 s() XCHG
+    s9 17 s() XCHG
+    s8 16 s() XCHG
+    s7 s15 XCHG
+    s6 s14 XCHG
+    s5 s13 XCHG
     5 5 BLKSWAP
   }>
   %intMap1 PROC:<{
@@ -1040,14 +2188,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap1 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap1Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1057,14 +2245,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap2 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap2Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1074,14 +2302,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap3 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap3Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1091,14 +2359,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap4 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap4Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1109,14 +2417,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap5 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap5Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1126,14 +2474,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_1 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_1Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1143,14 +2531,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_2 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_2Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1160,14 +2588,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_3 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_3Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1177,14 +2645,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_4 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_4Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1194,14 +2702,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_5 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_5Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1211,14 +2759,54 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_6 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_6Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_6Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1228,14 +2816,1137 @@ PROGRAM{
     $MapTestContract$_fun_intMap6_7 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %intMap6_7Value PROC:<{
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_intMap6_7Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap7_1 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_1Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap7_1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap7_2 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_2Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap7_2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap7_3 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_3Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap7_3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap7_4 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_4Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap7_4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap7_5 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_5Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap7_5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_6 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap7_6 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap7_6Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap7_6Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_1 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_1Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_2 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_2Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_3 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_3Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_4 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_4Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_5 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_5Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_6 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_6 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_6Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_6Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_7 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap8_7 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap8_7Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap8_7Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap9_1 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_1Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap9_1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap9_2 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_2Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap9_2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap9_3 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_3Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap9_3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap9_4 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_4Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap9_4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap9_5 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_5Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap9_5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_6 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_intMap9_6 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %intMap9_6Value PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_intMap9_6Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1245,15 +3956,55 @@ PROGRAM{
     $MapTestContract$_fun_addrMap1 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %addrMap1Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_addrMap1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1263,15 +4014,55 @@ PROGRAM{
     $MapTestContract$_fun_addrMap2 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %addrMap2Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_addrMap2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1281,15 +4072,55 @@ PROGRAM{
     $MapTestContract$_fun_addrMap3 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %addrMap3Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_addrMap3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1299,15 +4130,55 @@ PROGRAM{
     $MapTestContract$_fun_addrMap4 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %addrMap4Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_addrMap4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1318,15 +4189,809 @@ PROGRAM{
     $MapTestContract$_fun_addrMap5 INLINECALLDICT
     16 s() POP
     15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     NIP
   }>
   %addrMap5Value PROC:<{
     __tact_verify_address INLINECALLDICT
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
     16 s() 17 s() XCHG
     s15 16 s() XCHG
     15 ROLL
     $MapTestContract$_fun_addrMap5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_1 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_1Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_2 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_2Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_3 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_3Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_4 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_4Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_5 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_5Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_6 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_6 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_6Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_6Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_7 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap6_7 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap6_7Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap6_7Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_1 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap7_1 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_1Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap7_1Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_2 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap7_2 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_2Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap7_2Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_3 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap7_3 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_3Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap7_3Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_4 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap7_4 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_4Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap7_4Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_5 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap7_5 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_5Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap7_5Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_6 PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_addrMap7_6 INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
+  %addrMap7_6Value PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 49 s() XCHG
+    47 s() 48 s() XCHG
+    46 s() 47 s() XCHG
+    45 s() 46 s() XCHG
+    44 s() 45 s() XCHG
+    43 s() 44 s() XCHG
+    42 s() 43 s() XCHG
+    41 s() 42 s() XCHG
+    40 s() 41 s() XCHG
+    39 s() 40 s() XCHG
+    38 s() 39 s() XCHG
+    37 s() 38 s() XCHG
+    36 s() 37 s() XCHG
+    35 s() 36 s() XCHG
+    34 s() 35 s() XCHG
+    33 s() 34 s() XCHG
+    32 s() 33 s() XCHG
+    31 s() 32 s() XCHG
+    30 s() 31 s() XCHG
+    29 s() 30 s() XCHG
+    28 s() 29 s() XCHG
+    27 s() 28 s() XCHG
+    26 s() 27 s() XCHG
+    25 s() 26 s() XCHG
+    24 s() 25 s() XCHG
+    23 s() 24 s() XCHG
+    22 s() 23 s() XCHG
+    21 s() 22 s() XCHG
+    20 s() 21 s() XCHG
+    19 s() 20 s() XCHG
+    18 s() 19 s() XCHG
+    17 s() 18 s() XCHG
+    16 s() 17 s() XCHG
+    s15 16 s() XCHG
+    15 ROLL
+    $MapTestContract$_fun_addrMap7_6Value INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
     16 s() POP
     15 BLKDROP
     NIP
@@ -1338,7 +5003,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d54784d727635704c3477645056337741644254456b336a57436e366d674d7a33435657316a68374535324143} PUSHSLICE
+    x{697066733a2f2f516d596e504c513169616b76767654704a6a515648777a684565394d7a6e387575663564627955536d4b656e6e47} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -1435,6 +5100,36 @@ PROGRAM{
       TRUE
     }>
     OVER
+    3563204871 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      $SetUIntMap7$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $MapTestContract$_internal_binary_SetUIntMap7 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1910615278 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      $SetIntMap8$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $MapTestContract$_internal_binary_SetIntMap8 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    1765685895 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      $SetUIntMap9$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $MapTestContract$_internal_binary_SetUIntMap9 INLINECALLDICT
+      TRUE
+    }>
+    OVER
     1749966413 PUSHINT
     EQUAL
     IFJMP:<{
@@ -1484,6 +5179,26 @@ PROGRAM{
       $MapTestContract$_internal_binary_SetAddrMap5 INLINECALLDICT
       TRUE
     }>
+    OVER
+    1742733058 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      $SetAddrMap6$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $MapTestContract$_internal_binary_SetAddrMap6 INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    2054067599 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      $SetAddrMap7$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $MapTestContract$_internal_binary_SetAddrMap7 INLINECALLDICT
+      TRUE
+    }>
     SWAP
     0 EQINT
     IF:<{
@@ -1519,6 +5234,38 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $MapTestContract$_contract_load INLINECALLDICT
+    48 s() 50 s() XCHG
+    47 s() 49 s() XCHG
+    46 s() 48 s() XCHG
+    45 s() 47 s() XCHG
+    44 s() 46 s() XCHG
+    43 s() 45 s() XCHG
+    42 s() 44 s() XCHG
+    41 s() 43 s() XCHG
+    40 s() 42 s() XCHG
+    39 s() 41 s() XCHG
+    38 s() 40 s() XCHG
+    37 s() 39 s() XCHG
+    36 s() 38 s() XCHG
+    35 s() 37 s() XCHG
+    34 s() 36 s() XCHG
+    33 s() 35 s() XCHG
+    32 s() 34 s() XCHG
+    31 s() 33 s() XCHG
+    30 s() 32 s() XCHG
+    29 s() 31 s() XCHG
+    28 s() 30 s() XCHG
+    27 s() 29 s() XCHG
+    26 s() 28 s() XCHG
+    25 s() 27 s() XCHG
+    24 s() 26 s() XCHG
+    23 s() 25 s() XCHG
+    22 s() 24 s() XCHG
+    21 s() 23 s() XCHG
+    20 s() 22 s() XCHG
+    19 s() 21 s() XCHG
+    18 s() 20 s() XCHG
+    17 s() 19 s() XCHG
     16 s() 18 s() XCHG
     s15 17 s() XCHG
     s14 16 s() XCHG

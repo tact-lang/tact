@@ -135,7 +135,7 @@ export function printTypeRef(src: TypeRef): string {
     if (src.kind === 'ref') {
         return src.name + (src.optional ? '?' : '');
     } else if (src.kind === 'map') {
-        return `map[${src.key}]${src.value}`;
+        return `map<${src.key + (src.keyAs ? ' as ' + src.keyAs : '')}, ${src.value + (src.valueAs ? ' as ' + src.valueAs : '')}>`;
     } else if (src.kind === 'void') {
         return '<void>';
     } else if (src.kind === 'null') {

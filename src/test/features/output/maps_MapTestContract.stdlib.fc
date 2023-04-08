@@ -55,6 +55,42 @@ int __tact_dict_get_int_int(cell d, int kl, int k, int vl) inline {
     }
 }
 
+(cell, ()) __tact_dict_set_int_uint(cell d, int kl, int k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = idict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (idict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_int_uint(cell d, int kl, int k, int vl) inline {
+    var (r, ok) = idict_get?(d, kl, k);
+    if (ok) {
+        return r~load_uint(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_uint_int(cell d, int kl, int k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = udict_delete?(d, kl, k);
+        return (r, ());
+    } else {
+        return (udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_uint_int(cell d, int kl, int k, int vl) inline {
+    var (r, ok) = udict_get?(d, kl, k);
+    if (ok) {
+        return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
 (cell, ()) __tact_dict_set_int_cell(cell d, int kl, int k, cell v) inline {
     if (null?(v)) {
         var (r, ok) = idict_delete?(d, kl, k);
@@ -104,6 +140,24 @@ int __tact_dict_get_slice_int(cell d, int kl, slice k, int vl) inline {
     var (r, ok) = __tact_dict_get(d, kl, k);
     if (ok) {
         return r~load_int(vl);
+    } else {
+        return null();
+    }
+}
+
+(cell, ()) __tact_dict_set_slice_uint(cell d, int kl, slice k, int v, int vl) inline {
+    if (null?(v)) {
+        var (r, ok) = __tact_dict_delete(d, kl, k);
+        return (r, ());
+    } else {
+        return (dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ());
+    }
+}
+
+int __tact_dict_get_slice_uint(cell d, int kl, slice k, int vl) inline {
+    var (r, ok) = __tact_dict_get(d, kl, k);
+    if (ok) {
+        return r~load_uint(vl);
     } else {
         return null();
     }

@@ -28,6 +28,21 @@ message SetIntMap6 {
     value: Int?;
 }
 
+message SetUIntMap7 {
+    key: Int;
+    value: Int?;
+}
+
+message SetIntMap8 {
+    key: Int;
+    value: Int?;
+}
+
+message SetUIntMap9 {
+    key: Int;
+    value: Int?;
+}
+
 message SetAddrMap1 {
     key: Address;
     value: Int?;
@@ -51,6 +66,16 @@ message SetAddrMap4 {
 message SetAddrMap5 {
     key: Address;
     value: Address?;
+}
+
+message SetAddrMap6 {
+    key: Address;
+    value: Int?;
+}
+
+message SetAddrMap7 {
+    key: Address;
+    value: Int?;
 }
 
 struct SomeStruct {
@@ -84,6 +109,28 @@ contract MapTestContract {
     intMap6_6: map<Int as int256, Int>;
     intMap6_7: map<Int as int257, Int>;
 
+    intMap7_1: map<Int as uint8, Int>;
+    intMap7_2: map<Int as uint16, Int>;
+    intMap7_3: map<Int as uint32, Int>;
+    intMap7_4: map<Int as uint64, Int>;
+    intMap7_5: map<Int as uint128, Int>;
+    intMap7_6: map<Int as uint256, Int>;
+
+    intMap8_1: map<Int, Int as int8>;
+    intMap8_2: map<Int, Int as int16>;
+    intMap8_3: map<Int, Int as int32>;
+    intMap8_4: map<Int, Int as int64>;
+    intMap8_5: map<Int, Int as int128>;
+    intMap8_6: map<Int, Int as int256>;
+    intMap8_7: map<Int, Int as int257>;
+
+    intMap9_1: map<Int, Int as uint8>;
+    intMap9_2: map<Int, Int as uint16>;
+    intMap9_3: map<Int, Int as uint32>;
+    intMap9_4: map<Int, Int as uint64>;
+    intMap9_5: map<Int, Int as uint128>;
+    intMap9_6: map<Int, Int as uint256>;
+
     receive(msg: SetIntMap1) {
         self.intMap1.set(msg.key, msg.value);
     }
@@ -112,6 +159,34 @@ contract MapTestContract {
         self.intMap6_5.set(msg.key, msg.value);
         self.intMap6_6.set(msg.key, msg.value);
         self.intMap6_7.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetUIntMap7) {
+        self.intMap7_1.set(msg.key, msg.value);
+        self.intMap7_2.set(msg.key, msg.value);
+        self.intMap7_3.set(msg.key, msg.value);
+        self.intMap7_4.set(msg.key, msg.value);
+        self.intMap7_5.set(msg.key, msg.value);
+        self.intMap7_6.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetIntMap8) {
+        self.intMap8_1.set(msg.key, msg.value);
+        self.intMap8_2.set(msg.key, msg.value);
+        self.intMap8_3.set(msg.key, msg.value);
+        self.intMap8_4.set(msg.key, msg.value);
+        self.intMap8_5.set(msg.key, msg.value);
+        self.intMap8_6.set(msg.key, msg.value);
+        self.intMap8_7.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetUIntMap9) {
+        self.intMap9_1.set(msg.key, msg.value);
+        self.intMap9_2.set(msg.key, msg.value);
+        self.intMap9_3.set(msg.key, msg.value);
+        self.intMap9_4.set(msg.key, msg.value);
+        self.intMap9_5.set(msg.key, msg.value);
+        self.intMap9_6.set(msg.key, msg.value);
     }
 
     get fun intMap1(): map<Int, Int> {
@@ -210,6 +285,158 @@ contract MapTestContract {
         return self.intMap6_7.get(key);
     }
 
+    get fun intMap7_1(): map<Int as uint8, Int> {
+        return self.intMap7_1;
+    }
+
+    get fun intMap7_1Value(key: Int): Int? {
+        return self.intMap7_1.get(key);
+    }
+
+    get fun intMap7_2(): map<Int as uint16, Int> {
+        return self.intMap7_2;
+    }
+
+    get fun intMap7_2Value(key: Int): Int? {
+        return self.intMap7_2.get(key);
+    }
+
+    get fun intMap7_3(): map<Int as uint32, Int> {
+        return self.intMap7_3;
+    }
+
+    get fun intMap7_3Value(key: Int): Int? {
+        return self.intMap7_3.get(key);
+    }
+
+    get fun intMap7_4(): map<Int as uint64, Int> {
+        return self.intMap7_4;
+    }
+
+    get fun intMap7_4Value(key: Int): Int? {
+        return self.intMap7_4.get(key);
+    }
+
+    get fun intMap7_5(): map<Int as uint128, Int> {
+        return self.intMap7_5;
+    }
+
+    get fun intMap7_5Value(key: Int): Int? {
+        return self.intMap7_5.get(key);
+    }
+
+    get fun intMap7_6(): map<Int as uint256, Int> {
+        return self.intMap7_6;
+    }
+
+    get fun intMap7_6Value(key: Int): Int? {
+        return self.intMap7_6.get(key);
+    }
+
+    get fun intMap8_1(): map<Int, Int as int8> {
+        return self.intMap8_1;
+    }
+
+    get fun intMap8_1Value(key: Int): Int? {
+        return self.intMap8_1.get(key);
+    }
+
+    get fun intMap8_2(): map<Int, Int as int16> {
+        return self.intMap8_2;
+    }
+
+    get fun intMap8_2Value(key: Int): Int? {
+        return self.intMap8_2.get(key);
+    }
+
+    get fun intMap8_3(): map<Int, Int as int32> {
+        return self.intMap8_3;
+    }
+
+    get fun intMap8_3Value(key: Int): Int? {
+        return self.intMap8_3.get(key);
+    }
+
+    get fun intMap8_4(): map<Int, Int as int64> {
+        return self.intMap8_4;
+    }
+
+    get fun intMap8_4Value(key: Int): Int? {
+        return self.intMap8_4.get(key);
+    }
+
+    get fun intMap8_5(): map<Int, Int as int128> {
+        return self.intMap8_5;
+    }
+
+    get fun intMap8_5Value(key: Int): Int? {
+        return self.intMap8_5.get(key);
+    }
+
+    get fun intMap8_6(): map<Int, Int as int256> {
+        return self.intMap8_6;
+    }
+
+    get fun intMap8_6Value(key: Int): Int? {
+        return self.intMap8_6.get(key);
+    }
+
+    get fun intMap8_7(): map<Int, Int as int257> {
+        return self.intMap8_7;
+    }
+
+    get fun intMap8_7Value(key: Int): Int? {
+        return self.intMap8_7.get(key);
+    }
+
+    get fun intMap9_1(): map<Int, Int as uint8> {
+        return self.intMap9_1;
+    }
+
+    get fun intMap9_1Value(key: Int): Int? {
+        return self.intMap9_1.get(key);
+    }
+
+    get fun intMap9_2(): map<Int, Int as uint16> {
+        return self.intMap9_2;
+    }
+
+    get fun intMap9_2Value(key: Int): Int? {
+        return self.intMap9_2.get(key);
+    }
+
+    get fun intMap9_3(): map<Int, Int as uint32> {
+        return self.intMap9_3;
+    }
+
+    get fun intMap9_3Value(key: Int): Int? {
+        return self.intMap9_3.get(key);
+    }
+
+    get fun intMap9_4(): map<Int, Int as uint64> {
+        return self.intMap9_4;
+    }
+
+    get fun intMap9_4Value(key: Int): Int? {
+        return self.intMap9_4.get(key);
+    }
+
+    get fun intMap9_5(): map<Int, Int as uint128> {
+        return self.intMap9_5;
+    }
+
+    get fun intMap9_5Value(key: Int): Int? {
+        return self.intMap9_5.get(key);
+    }
+
+    get fun intMap9_6(): map<Int, Int as uint256> {
+        return self.intMap9_6;
+    }
+
+    get fun intMap9_6Value(key: Int): Int? {
+        return self.intMap9_6.get(key);
+    }
+
     //
     // Address Keys
     //
@@ -219,6 +446,21 @@ contract MapTestContract {
     addrMap3: map<Address, Cell>;
     addrMap4: map<Address, SomeStruct>;
     addrMap5: map<Address, Address>;
+
+    addrMap6_1: map<Address, Int as int8>;
+    addrMap6_2: map<Address, Int as int16>;
+    addrMap6_3: map<Address, Int as int32>;
+    addrMap6_4: map<Address, Int as int64>;
+    addrMap6_5: map<Address, Int as int128>;
+    addrMap6_6: map<Address, Int as int256>;
+    addrMap6_7: map<Address, Int as int257>;
+
+    addrMap7_1: map<Address, Int as uint8>;
+    addrMap7_2: map<Address, Int as uint16>;
+    addrMap7_3: map<Address, Int as uint32>;
+    addrMap7_4: map<Address, Int as uint64>;
+    addrMap7_5: map<Address, Int as uint128>;
+    addrMap7_6: map<Address, Int as uint256>;
 
     receive(msg: SetAddrMap1) {
         self.addrMap1.set(msg.key, msg.value);
@@ -238,6 +480,25 @@ contract MapTestContract {
 
     receive(msg: SetAddrMap5) {
         self.addrMap5.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetAddrMap6) {
+        self.addrMap6_1.set(msg.key, msg.value);
+        self.addrMap6_2.set(msg.key, msg.value);
+        self.addrMap6_3.set(msg.key, msg.value);
+        self.addrMap6_4.set(msg.key, msg.value);
+        self.addrMap6_5.set(msg.key, msg.value);
+        self.addrMap6_6.set(msg.key, msg.value);
+        self.addrMap6_7.set(msg.key, msg.value);
+    }
+
+    receive(msg: SetAddrMap7) {
+        self.addrMap7_1.set(msg.key, msg.value);
+        self.addrMap7_2.set(msg.key, msg.value);
+        self.addrMap7_3.set(msg.key, msg.value);
+        self.addrMap7_4.set(msg.key, msg.value);
+        self.addrMap7_5.set(msg.key, msg.value);
+        self.addrMap7_6.set(msg.key, msg.value);
     }
 
     receive("reset") {
@@ -292,5 +553,109 @@ contract MapTestContract {
 
     get fun addrMap5Value(key: Address): Address? {
         return self.addrMap5.get(key);
+    }
+
+    get fun addrMap6_1(): map<Address, Int as int8> {
+        return self.addrMap6_1;
+    }
+
+    get fun addrMap6_1Value(key: Address): Int? {
+        return self.addrMap6_1.get(key);
+    }
+
+    get fun addrMap6_2(): map<Address, Int as int16> {
+        return self.addrMap6_2;
+    }
+
+    get fun addrMap6_2Value(key: Address): Int? {
+        return self.addrMap6_2.get(key);
+    }
+
+    get fun addrMap6_3(): map<Address, Int as int32> {
+        return self.addrMap6_3;
+    }
+
+    get fun addrMap6_3Value(key: Address): Int? {
+        return self.addrMap6_3.get(key);
+    }
+
+    get fun addrMap6_4(): map<Address, Int as int64> {
+        return self.addrMap6_4;
+    }
+
+    get fun addrMap6_4Value(key: Address): Int? {
+        return self.addrMap6_4.get(key);
+    }
+
+    get fun addrMap6_5(): map<Address, Int as int128> {
+        return self.addrMap6_5;
+    }
+
+    get fun addrMap6_5Value(key: Address): Int? {
+        return self.addrMap6_5.get(key);
+    }
+
+    get fun addrMap6_6(): map<Address, Int as int256> {
+        return self.addrMap6_6;
+    }
+
+    get fun addrMap6_6Value(key: Address): Int? {
+        return self.addrMap6_6.get(key);
+    }
+
+    get fun addrMap6_7(): map<Address, Int as int257> {
+        return self.addrMap6_7;
+    }
+
+    get fun addrMap6_7Value(key: Address): Int? {
+        return self.addrMap6_7.get(key);
+    }
+
+    get fun addrMap7_1(): map<Address, Int as uint8> {
+        return self.addrMap7_1;
+    }
+
+    get fun addrMap7_1Value(key: Address): Int? {
+        return self.addrMap7_1.get(key);
+    }
+
+    get fun addrMap7_2(): map<Address, Int as uint16> {
+        return self.addrMap7_2;
+    }
+
+    get fun addrMap7_2Value(key: Address): Int? {
+        return self.addrMap7_2.get(key);
+    }
+
+    get fun addrMap7_3(): map<Address, Int as uint32> {
+        return self.addrMap7_3;
+    }
+
+    get fun addrMap7_3Value(key: Address): Int? {
+        return self.addrMap7_3.get(key);
+    }
+
+    get fun addrMap7_4(): map<Address, Int as uint64> {
+        return self.addrMap7_4;
+    }
+
+    get fun addrMap7_4Value(key: Address): Int? {
+        return self.addrMap7_4.get(key);
+    }
+
+    get fun addrMap7_5(): map<Address, Int as uint128> {
+        return self.addrMap7_5;
+    }
+
+    get fun addrMap7_5Value(key: Address): Int? {
+        return self.addrMap7_5.get(key);
+    }
+
+    get fun addrMap7_6(): map<Address, Int as uint256> {
+        return self.addrMap7_6;
+    }
+
+    get fun addrMap7_6Value(key: Address): Int? {
+        return self.addrMap7_6.get(key);
     }
 }

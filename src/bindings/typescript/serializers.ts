@@ -521,9 +521,17 @@ function getKeyParser(src: MapSerializerDescrKey) {
 }
 function getValueParser(src: MapSerializerDescrValue) {
     if (src.kind === 'int') {
-        return `Dictionary.Values.BigInt(${src.bits})`;
+        if (src.bits <= 32) {
+            return `Dictionary.Values.Int(${src.bits})`;
+        } else {
+            return `Dictionary.Values.BigInt(${src.bits})`;
+        }
     } else if (src.kind === 'uint') {
-        return `Dictionary.Values.BigUint(${src.bits})`;
+        if (src.bits <= 32) {
+            return `Dictionary.Values.Uint(${src.bits})`;
+        } else {
+            return `Dictionary.Values.BigUint(${src.bits})`;
+        }
     } else if (src.kind === 'address') {
         return 'Dictionary.Values.Address()';
     } else if (src.kind === 'cell') {
