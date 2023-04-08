@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@ipld/dag-pb": "2.1.18",
-    "@tact-lang/opcode": "^0.0.12",
+    "@tact-lang/opcode": "^0.0.13",
     "arg": "^5.0.2",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
