@@ -58,7 +58,7 @@ export function writeStatement(f: ASTStatement, self: string | null, returns: Ty
             if (self) {
                 ctx.append(`return (${self}, ());`);
             } else {
-                ctx.append(`return;`);
+                ctx.append(`return ();`);
             }
         }
         return;

@@ -327,8 +327,8 @@ function initDNSTester_init_args(src: DNSTester_init_args) {
 }
 
 async function DNSTester_init() {
-    const __code = Cell.fromBase64('te6ccgECGgEAA4kAART/APSkE/S88sgLAQIBYgIDAgLLBAUCASAODwKN0AdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVIVBgICcQkKAZhwIddJwh+VMCDXCx/eApJbf+ABghCUapi2uo6t0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yX/4QnBYA4BCAW1t2zx/4DBwBwHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAIAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAQEgCwEBIA0Bou2i7fsg10nACCHXSsAAsI4SINcLB8AumjDIcAHLB8nQ2zHg3m3If3B/iuYwNFADsZJbbeBvAsgBbyJZzxeTIW6zmwFvInBQA8sHAc8X6DHJ0AwA6CXXScAAjhswJNdKIMABlTAE1DDQmsIBlV8Fbdsx4ATiBHDeII5LMQTTByHALSLALlyxJMIvJcE6sLEkwmAlwXuwsbNTUrCxlV8Ibdsx4I4QMlmxlV8Ebdsx4AJvAshwf5kzAXAEywdABAPiEEUQNEAT3iCzAJzIIddJqwKOQgHTByHAYpOANjLeIcBnIsBxsZOAOTLeIcBsk4AxMt4hwG+TgDAy3iHAc5OANTLeIcB1k4B2Mt4hwHqTgDIy3gLLB+QxydACEb/0btngDtnhjBUQAgEgERIABPASAgHnExQCAUgYGQC4q9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaCcJ2XTlqzTstzOg6WbZRm6KQCEKpf2zwB2zwxFRYBNO1E0NQB+GPSADCRbeD4KNcLCoMJuvLgids8FwAE8BMAAm0AEbCvu1E0NIAAYAB1sm7jQ1aXBmczovL1FtWmZqeGU0QUJyaEJSTE5DR0VObURHSjlheFFLV1dWNlZCWll5UnNmWkE1bTaCA=');
-    const __system = Cell.fromBase64('te6cckECHAEAA5MAAQHAAQEFoURvAgEU/wD0pBP0vPLICwMCAWIPBAIBIA0FAgEgCQYCAUgIBwB1sm7jQ1aXBmczovL1FtWmZqeGU0QUJyaEJSTE5DR0VObURHSjlheFFLV1dWNlZCWll5UnNmWkE1bTaCAAEbCvu1E0NIAAYAIB5wwKAhCqX9s8Ads8MRoLAATwEwC4q9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcBvUne+VRZbxx1PT3gVZwyaCcJ2XTlqzTstzOg6WbZRm6KQCEb/0btngDtnhjBoOAATwEgICyxYQAgJxExEBASASAJzIIddJqwKOQgHTByHAYpOANjLeIcBnIsBxsZOAOTLeIcBsk4AxMt4hwG+TgDAy3iHAc5OANTLeIcB1k4B2Mt4hwHqTgDIy3gLLB+QxydABASAUAaLtou37INdJwAgh10rAALCOEiDXCwfALpowyHABywfJ0Nsx4N5tyH9wf4rmMDRQA7GSW23gbwLIAW8iWc8XkyFus5sBbyJwUAPLBwHPF+gxydAVAOgl10nAAI4bMCTXSiDAAZUwBNQw0JrCAZVfBW3bMeAE4gRw3iCOSzEE0wchwC0iwC5csSTCLyXBOrCxJMJgJcF7sLGzU1KwsZVfCG3bMeCOEDJZsZVfBG3bMeACbwLIcH+ZMwFwBMsHQAQD4hBFEDRAE94gswKN0AdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVIaFwGYcCHXScIflTAg1wsf3gKSW3/gAYIQlGqYtrqOrdMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8l/+EJwWAOAQgFtbds8f+AwcBgByshxAcoBUAcBygBwAcoCUAUg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxZQA/oCcAHKaCNus5F/kyRus+KXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsAGQCYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwbAAJt8aGSDQ==');
+    const __code = Cell.fromBase64('te6ccgECLQEABM0AART/APSkE/S88sgLAQIBYgIDAgLLBAUCASASEwKN0AdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVIpBgIBWAkKAZhwIddJwh+VMCDXCx/eApJbf+ABghCUapi2uo6t0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yX/4QnBYA4BCAW1t2zx/4DBwBwHKyHEBygFQBwHKAHABygJQBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlAD+gJwAcpoI26zkX+TJG6z4pczMwFwAcoA4w0hbrOcfwHKAAEgbvLQgAHMlTFwAcoA4skB+wAIAJh/AcoAyHABygBwAcoAJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4iRus51/AcoABCBu8tCAUATMljQDcAHKAOJwAcoAAn8BygACyVjMAQH0CwIBSA0OAbbtou37INdJwAgh10rAALCOEiDXCwfALpowyHABywfJ0Nsx4N5tyH9/cH+K5jAxNAOTXwNt4AKzkm8CkTHiyAFvIlnPF5MhbrObAW8icFADywcBzxfocDLLB8nQDADwJtdJwACOGzAl10ogwAGVMAXUMNCawgGVXwZt2zHgBeIFcN4gjk8xMgTTByHALSLALlyxJMIvJcE6sLEkwmAlwXuwsbNTgrCxlV8Ibdsx4I4SMlBVsZVfBG3bMeACbwLIcH9/mzZwAnAFywcDBUZk4hBFA1Ak3iCzAQEgDwEBIBEB9u2i7fsg10rDAJIwcOAg10kgqTgCwwCSW3DgIMAAklt/4KsCcH9wA45OA9MHIcAAjhMxM8AAlFtw2zHglDBw2zHgcHB/ji8zIMAtIcIvIsE6sFIQsSLCYAPBexOwErGzlV8EcNsx4FIEsJVfA3DbMeBwAaRAM+IS5DAycBAACAGzsLoAnMgh10mrAo5CAdMHIcBik4A2Mt4hwGciwHGxk4A5Mt4hwGyTgDEy3iHAb5OAMDLeIcBzk4A1Mt4hwHWTgHYy3iHAepOAMjLeAssH5DHJ0AIBIBQVAgEgGBkCEboq/bPAHbPDGCkWAhG76N2zwB2zwxgpFwAE8BwABPAbAgEgGhsCASAlJgIRtqc7Z4A7Z4YwKRwCAW4eHwEE2zwdAQwg2zzXGDAjALir0YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwG9Sd75VFlvHHU9PeBVnDJoJwnZdOWrNOy3M6DpZtlGbopAICdCAhAg+x+2eAO2eGMCkiAg+z+2eAO2eGMCkkAQTbPCMANnCfAdMHAcAAILOUAqYIAt4S5jGBXmEhwwDy9AAE8B0CASAnKAITtGGbZ4s7Z42CUCkqABGwr7tRNDSAAGAAdbJu40NWlwZnM6Ly9RbWVmWjZEdlplTHUyWjZZRFlGUlF0dlNCaEpjMzJrdndTVExWWGZTQmhvbVJ5ggATTtRNDUAfhj0gAwkW3g+CjXCwqDCbry4InbPCsBPnAi1wsHwACXMAHTBzEBeN6BXmEj8Bzy9FUg2zwDoFgsAAJtABIwINdJyFjPFsk=');
+    const __system = Cell.fromBase64('te6cckECLwEABNcAAQHAAQEFoURvAgEU/wD0pBP0vPLICwMCAWIeBAIBIBkFAgEgDQYCASAKBwITtGGbZ4s7Z42CUC0IAT5wItcLB8AAlzAB0wcxAXjegV5hI/Ac8vRVINs8A6BYCQASMCDXSchYzxbJAgEgDAsAdbJu40NWlwZnM6Ly9RbWVmWjZEdlplTHUyWjZZRFlGUlF0dlNCaEpjMzJrdndTVExWWGZTQmhvbVJ5ggABGwr7tRNDSAAGACASAVDgIBbhQPAgJ0EhACD7P7Z4A7Z4YwLREABPAdAg+x+2eAO2eGMC0TAQTbPBgAuKvRgnBc7D1dLK57HoTsOdZKhRtmgnCd1jUtK2R8syLTry398WI5gnAgVcAbgGdjlM5YOq5HJbLDgnAb1J3vlUWW8cdT094FWcMmgnCdl05as07LczoOlm2UZuikAhG2pztngDtnhjAtFgEE2zwXAQwg2zzXGDAYADZwnwHTBwHAACCzlAKmCALeEuYxgV5hIcMA8vQCASAcGgIRu+jds8Ads8MYLRsABPAbAhG6Kv2zwB2zwxgtHQAE8BwCAsspHwIBWCYgAgFIIyEBASAiAJzIIddJqwKOQgHTByHAYpOANjLeIcBnIsBxsZOAOTLeIcBsk4AxMt4hwG+TgDAy3iHAc5OANTLeIcB1k4B2Mt4hwHqTgDIy3gLLB+QxydABASAkAfbtou37INdKwwCSMHDgINdJIKk4AsMAkltw4CDAAJJbf+CrAnB/cAOOTgPTByHAAI4TMTPAAJRbcNsx4JQwcNsx4HBwf44vMyDALSHCLyLBOrBSELEiwmADwXsTsBKxs5VfBHDbMeBSBLCVXwNw2zHgcAGkQDPiEuQwMnAlAAgBs7C6AQH0JwG27aLt+yDXScAIIddKwACwjhIg1wsHwC6aMMhwAcsHydDbMeDebch/f3B/iuYwMTQDk18DbeACs5JvApEx4sgBbyJZzxeTIW6zmwFvInBQA8sHAc8X6HAyywfJ0CgA8CbXScAAjhswJddKIMABlTAF1DDQmsIBlV8Gbdsx4AXiBXDeII5PMTIE0wchwC0iwC5csSTCLyXBOrCxJMJgJcF7sLGzU4KwsZVfCG3bMeCOEjJQVbGVXwRt2zHgAm8CyHB/f5s2cAJwBcsHAwVGZOIQRQNQJN4gswKN0AdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zwwMMj4QwHMfwHKAMntVItKgGYcCHXScIflTAg1wsf3gKSW3/gAYIQlGqYtrqOrdMfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8l/+EJwWAOAQgFtbds8f+AwcCsByshxAcoBUAcBygBwAcoCUAUg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxZQA/oCcAHKaCNus5F/kyRus+KXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsALACYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAE07UTQ1AH4Y9IAMJFt4Pgo1wsKgwm68uCJ2zwuAAJtre0FQg==');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -362,6 +362,7 @@ const DNSTester_errors: { [key: number]: { message: string } } = {
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
     137: { message: `Masterchain support is not enabled for this contract` },
+    24161: { message: `Invalid DNS name` },
 }
 
 export class DNSTester implements Contract {
@@ -416,6 +417,39 @@ export class DNSTester implements Contract {
         builder.writeSlice(src);
         let source = (await provider.get('internalNormalize', builder.build())).stack;
         let result = source.readCell();
+        return result;
+    }
+    
+    async getDnsInternalVerify(provider: ContractProvider, subdomain: Cell) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(subdomain);
+        let source = (await provider.get('dnsInternalVerify', builder.build())).stack;
+        let result = source.readBoolean();
+        return result;
+    }
+    
+    async getDnsExtractTopDomainLength(provider: ContractProvider, subdomain: Cell) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(subdomain);
+        let source = (await provider.get('dnsExtractTopDomainLength', builder.build())).stack;
+        let result = source.readBigNumber();
+        return result;
+    }
+    
+    async getDnsExtractTopDomain(provider: ContractProvider, subdomain: Cell) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(subdomain);
+        let source = (await provider.get('dnsExtractTopDomain', builder.build())).stack;
+        let result = source.readCell();
+        return result;
+    }
+    
+    async getDnsresolve(provider: ContractProvider, subdomain: Cell, category: bigint) {
+        let builder = new TupleBuilder();
+        builder.writeSlice(subdomain);
+        builder.writeNumber(category);
+        let source = (await provider.get('dnsresolve', builder.build())).stack;
+        const result = loadTupleDNSResolveResult(source);
         return result;
     }
     

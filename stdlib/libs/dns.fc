@@ -10,6 +10,7 @@ slice dns_string_to_internal(slice domain) inline_ref {
     ;; Split domain into segments
     tuple segments = null();
     builder current = begin_cell();
+    int isCurrentEmpty = true;
     int isFirst = true;
     int isHypen = false;
     slice cs = domain;
@@ -48,17 +49,21 @@ slice dns_string_to_internal(slice domain) inline_ref {
                 current = begin_cell();
                 isHypen = false;
                 isFirst = true;
+                isCurrentEmpty = true;
             } else {
                 isFirst = false;
+                isCurrentEmpty = false;
                 current~store_uint(char, 8);
             }
         }
 
     } until (~ continue);
-    if (isFirst | isHypen) { ;; Empty or ends with hyphen
+    if (isHypen) { ;; ends with hyphen
         return null();
     }
-    segments = cons(current, segments);
+    if (~ isCurrentEmpty) {
+        segments = cons(current, segments);
+    }
 
     ;; Concatenate segments
     builder res = begin_cell();
@@ -69,7 +74,52 @@ slice dns_string_to_internal(slice domain) inline_ref {
         res = res.store_uint(0, 8); ;; Add \0 separator
         res = res.store_builder(b);
     }
+    res = res.store_uint(0, 8); ;; Add \0 separator
     return res.end_cell().begin_parse();
+}
+
+int dns_internal_verify(slice sc) inline_ref {
+    if (sc.slice_refs() != 0) {
+        return false;
+    }
+    int bits = sc.slice_bits();
+    if (bits % 8 != 0) {
+        return false;
+    }
+    if (bits == 0) { ;; Case for root domain
+        return true;
+    }
+    int len = bits / 8;
+    int counter = 0;
+    int isFirst = true;
+    int isHypen = false;
+    repeat(len) {
+        int char = sc~load_uint(8);
+        if (char == 0) {
+            if (counter == 0) {
+                return false;
+            }
+            if (isHypen) {
+                return false;
+            }
+            counter = 0;
+            isHypen = false;
+            isFirst = true;
+        } else {
+            int charIsHypen = (char == 45);
+            int isValid = charIsHypen | ((char >= 48) & (char <= 57)) | ((char >= 97) & (char <= 122));
+            if (~ isValid) {
+                return false;
+            }
+            if (charIsHypen & isFirst)  {
+                return false;
+            }
+            isHypen = charIsHypen;
+            isFirst = false;
+            counter = counter + 1;
+        }
+    }
+    return counter == 0 & ~ isHypen;
 }
 
 slice dns_internal_normalize(slice src) inline_ref {

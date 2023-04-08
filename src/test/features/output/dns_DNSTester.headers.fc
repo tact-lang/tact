@@ -27,6 +27,9 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v) inline;
 
+;; $DNSResolveResult$_to_external
+(int, cell) $DNSResolveResult$_to_external(((int, cell)) v) inline;
+
 ;; $DNSTester$_contract_init
 tuple $DNSTester$_contract_init() impure inline_ref;
 
@@ -45,11 +48,35 @@ tuple $DNSTester$_contract_load() impure inline_ref;
 ;; $global_reply
 () $global_reply(cell $body) impure inline;
 
+;; $global_dnsExtractTopDomainLength
+int $global_dnsExtractTopDomainLength(slice $subdomain) impure inline_ref;
+
+;; $global_dnsExtractTopDomain
+slice $global_dnsExtractTopDomain(slice $subdomain) impure inline_ref;
+
 ;; $DNSTester$_fun_stringToInternal
 (tuple, slice) $DNSTester$_fun_stringToInternal(tuple $self, slice $src) impure inline_ref;
 
 ;; $DNSTester$_fun_internalNormalize
 (tuple, slice) $DNSTester$_fun_internalNormalize(tuple $self, slice $src) impure inline_ref;
+
+;; $DNSTester$_fun_dnsInternalVerify
+(tuple, int) $DNSTester$_fun_dnsInternalVerify(tuple $self, slice $subdomain) impure inline_ref;
+
+;; $DNSTester$_fun_dnsExtractTopDomainLength
+(tuple, int) $DNSTester$_fun_dnsExtractTopDomainLength(tuple $self, slice $subdomain) impure inline_ref;
+
+;; $DNSTester$_fun_dnsExtractTopDomain
+(tuple, slice) $DNSTester$_fun_dnsExtractTopDomain(tuple $self, slice $subdomain) impure inline_ref;
+
+;; $DNSResolveResult$_constructor_prefix_record
+((int, cell)) $DNSResolveResult$_constructor_prefix_record(int prefix, cell record) inline;
+
+;; $DNSTester$_fun_doResolveDNS
+(tuple, (int, cell)) $DNSTester$_fun_doResolveDNS(tuple $self, slice $subdomain, int $category) impure inline_ref;
+
+;; $DNSTester$_fun_dnsresolve
+(tuple, (int, cell)) $DNSTester$_fun_dnsresolve(tuple $self, slice $subdomain, int $category) impure inline_ref;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

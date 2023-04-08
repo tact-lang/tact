@@ -1,7 +1,7 @@
 import "@stdlib/dns";
 import "@stdlib/deploy";
 
-contract DNSTester with Deployable {
+contract DNSTester with Deployable, DNSResolver {
 
     init() {
         
@@ -13,5 +13,21 @@ contract DNSTester with Deployable {
 
     get fun internalNormalize(src: Slice): Slice {
         return dnsInternalNormalize(src);
+    }
+
+    get fun dnsInternalVerify(subdomain: Slice): Bool {
+        return dnsInternalVerify(subdomain);
+    }
+
+    get fun dnsExtractTopDomainLength(subdomain: Slice): Int {
+        return dnsExtractTopDomainLength(subdomain);
+    }
+
+    get fun dnsExtractTopDomain(subdomain: Slice): Slice {
+        return dnsExtractTopDomain(subdomain);
+    }
+
+    overrides fun doResolveDNS(subdomain: Slice, category: Int): DNSResolveResult {
+        return DNSResolveResult{ prefix: subdomain.bits(), record: beginCell().storeSlice(subdomain).endCell() };
     }
 }

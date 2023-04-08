@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: DNSTester
-BOC Size: 917 bytes
+BOC Size: 1241 bytes
 
 # Types
 Total Types: 6
@@ -30,13 +30,26 @@ TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
 
 # Get Methods
-Total Get Methods: 2
+Total Get Methods: 6
 
 ## stringToInternal
 Argument: src
 
 ## internalNormalize
 Argument: src
+
+## dnsInternalVerify
+Argument: subdomain
+
+## dnsExtractTopDomainLength
+Argument: subdomain
+
+## dnsExtractTopDomain
+Argument: subdomain
+
+## dnsresolve
+Argument: subdomain
+Argument: category
 
 # Error Codes
 2: Stack undeflow
@@ -63,3 +76,4 @@ Argument: src
 135: Code of a contract was not found
 136: Invalid address
 137: Masterchain support is not enabled for this contract
+24161: Invalid DNS name

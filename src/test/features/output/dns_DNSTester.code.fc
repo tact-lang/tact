@@ -12,6 +12,25 @@ tuple $DNSTester$_contract_init() impure inline_ref {
     return $self;
 }
 
+int $global_dnsExtractTopDomainLength(slice $subdomain) impure inline_ref {
+    int $i = 0;
+    int $needBreak = false;
+    do {
+        int $char = $subdomain~load_uint(8);
+        $needBreak = ($char == 0);
+        if ((~ $needBreak)) {
+            $i = ($i + 8);
+        }
+    } until ($needBreak);
+    throw_unless(24161, ($i != 0));
+    return $i;
+}
+
+slice $global_dnsExtractTopDomain(slice $subdomain) impure inline_ref {
+    int $len = $global_dnsExtractTopDomainLength($subdomain);
+    return $subdomain~load_bits($len);
+}
+
 (tuple, slice) $DNSTester$_fun_stringToInternal(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     return ($self, dns_string_to_internal($src));
@@ -20,6 +39,38 @@ tuple $DNSTester$_contract_init() impure inline_ref {
 (tuple, slice) $DNSTester$_fun_internalNormalize(tuple $self, slice $src) impure inline_ref {
     var ($self) = $self;
     return ($self, dns_internal_normalize($src));
+}
+
+(tuple, int) $DNSTester$_fun_dnsInternalVerify(tuple $self, slice $subdomain) impure inline_ref {
+    var ($self) = $self;
+    return ($self, dns_internal_verify($subdomain));
+}
+
+(tuple, int) $DNSTester$_fun_dnsExtractTopDomainLength(tuple $self, slice $subdomain) impure inline_ref {
+    var ($self) = $self;
+    return ($self, $global_dnsExtractTopDomainLength($subdomain));
+}
+
+(tuple, slice) $DNSTester$_fun_dnsExtractTopDomain(tuple $self, slice $subdomain) impure inline_ref {
+    var ($self) = $self;
+    return ($self, $global_dnsExtractTopDomain($subdomain));
+}
+
+(tuple, (int, cell)) $DNSTester$_fun_doResolveDNS(tuple $self, slice $subdomain, int $category) impure inline_ref {
+    var ($self) = $self;
+    return ($self, $DNSResolveResult$_constructor_prefix_record(slice_bits($subdomain), end_cell(store_slice(begin_cell(), $subdomain))));
+}
+
+(tuple, (int, cell)) $DNSTester$_fun_dnsresolve(tuple $self, slice $subdomain, int $category) impure inline_ref {
+    var ($self) = $self;
+    int $delta = 0;
+    if ((preload_uint($subdomain, 8) == 0)) {
+        $subdomain~load_uint(8);
+        $delta = ($delta + 8);
+    }
+    throw_unless(24161, dns_internal_verify($subdomain));
+    var ($res'prefix, $res'record) = $self~$DNSTester$_fun_doResolveDNS($subdomain, $category);
+    return ($self, $DNSResolveResult$_constructor_prefix_record(($res'prefix + $delta), $res'record));
 }
 
 ;;
@@ -51,6 +102,35 @@ _ %internalNormalize(slice $$src) method_id(114271) {
     return res;
 }
 
+_ %dnsInternalVerify(slice $$subdomain) method_id(74415) {
+    slice $subdomain = $$subdomain;
+    var self = $DNSTester$_contract_load();
+    var res = self~$DNSTester$_fun_dnsInternalVerify($subdomain);
+    return res;
+}
+
+_ %dnsExtractTopDomainLength(slice $$subdomain) method_id(114191) {
+    slice $subdomain = $$subdomain;
+    var self = $DNSTester$_contract_load();
+    var res = self~$DNSTester$_fun_dnsExtractTopDomainLength($subdomain);
+    return res;
+}
+
+_ %dnsExtractTopDomain(slice $$subdomain) method_id(103737) {
+    slice $subdomain = $$subdomain;
+    var self = $DNSTester$_contract_load();
+    var res = self~$DNSTester$_fun_dnsExtractTopDomain($subdomain);
+    return res;
+}
+
+_ %dnsresolve(slice $$subdomain, int $$category) method_id(123660) {
+    slice $subdomain = $$subdomain;
+    int $category = $$category;
+    var self = $DNSTester$_contract_load();
+    var res = self~$DNSTester$_fun_dnsresolve($subdomain, $category);
+    return $DNSResolveResult$_to_external(res);
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -62,7 +142,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmZfjxe4ABrhBRLNCGENmDGJ9axQKWWV6VBZYyRsfZA5m6";
+    return "ipfs://QmefZ6DvZeLu2Z6YDYFRQtvSBhJc32kvwSTLVXfSBhomRy";
 }
 
 _ lazy_deployment_completed() method_id {

@@ -4585,6 +4585,11 @@ ton-crypto@^3.2.0:
     ton-crypto-primitives "2.0.0"
     tweetnacl "1.0.3"
 
+ton-jest@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/ton-jest/-/ton-jest-0.0.3.tgz#87b905ff32f7b6a007fe0595bc830c12d761441c"
+  integrity sha512-9ngWRCsd2CZHeybmV0mASLnKnZOWGAfRyoFgHAyOoI3IIC3T9VgHT8BemZLdEQxoizwQgVybCoVtXwCZ9MM0pw==
+
 tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"

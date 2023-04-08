@@ -14,6 +14,7 @@
     "clean": "rm -fr dist",
     "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/ && cp ./src/func/funcfiftlib.* ./dist/func",
     "test": "jest",
+    "coverage": "COVERAGE=true jest",
     "release": "yarn clean && yarn build && yarn test && yarn release-it --npm.yarn1"
   },
   "files": [
@@ -62,6 +63,7 @@
     "rollup": "^3.17.2",
     "shiki": "^0.12.1",
     "ton-compiler": "^2.3.0",
+    "ton-jest": "^0.0.3",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3"

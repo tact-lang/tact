@@ -1,5 +1,7 @@
 const coverage = require('@tact-lang/coverage');
 
 module.exports = async () => {
-    coverage.beginCoverage();
+    if (process.env.COVERAGE === 'true') {
+        coverage.beginCoverage();
+    }
 };

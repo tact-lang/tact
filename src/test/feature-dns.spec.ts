@@ -1,21 +1,34 @@
-import { OpenedContract, toNano } from 'ton-core';
+import { OpenedContract, beginCell, toNano } from 'ton-core';
 import { ContractSystem } from '@tact-lang/emulator';
 import { __DANGER_resetNodeId } from '../grammar/ast';
 import { DNSTester } from './features/output/dns_DNSTester';
 
 function convertToInternal(src: string) {
     if (src === '.') {
-        return '00';
+        return Buffer.alloc(1, 0);
     }
     let parts = src.split('.').map((x) => Buffer.from(x));
     let res = Buffer.alloc(0);
     for (let i = 0; i < parts.length; i++) {
-        if (res.length > 0) {
+        if (i > 0) {
             res = Buffer.concat([res, Buffer.from([0])]);
         }
         res = Buffer.concat([res, parts[parts.length - i - 1]]);
     }
-    return res.toString('hex');
+    res = Buffer.concat([res, Buffer.from([0])]);
+    return res;
+    // let res = Buffer.alloc(0);
+    // for (let s of src) {
+    //     if (s === '.') {
+    //         res = Buffer.concat([res, Buffer.from([0])]);
+    //     } else {
+    //         res = Buffer.concat([res, Buffer.from(s, 'latin1')]);
+    //     }
+    // }
+    // if (!src.endsWith('.')) {
+    //     res = Buffer.concat([res, Buffer.from([0])]);
+    // }
+    // return res;
 }
 
 describe('feature-dns', () => {
@@ -35,7 +48,6 @@ describe('feature-dns', () => {
         '..',
         'a..b',
         'a.b..c',
-        'a.b.c.',
         'a.b.c..',
         'a.!b',
         'a.-b',
@@ -51,6 +63,7 @@ describe('feature-dns', () => {
         'a.b',
         'a.b.c',
         'a.b.c.d',
+        'a.b.c.',
         'ton-dns.com',
         'ton-dns.com.hello',
     ];
@@ -67,6 +80,8 @@ describe('feature-dns', () => {
     for (let i = 0; i < invalidNames.length; i++) {
         it(`should fail on invalid name: ${invalidNames[i]}`, async () => {
             expect(await contract.getStringToInternal(invalidNames[i])).toBe(null);
+            let internalAddress = convertToInternal(invalidNames[i]);
+            expect(await contract.getDnsInternalVerify(beginCell().storeBuffer(internalAddress).endCell())).toBe(false);
         });
     }
 
@@ -74,8 +89,17 @@ describe('feature-dns', () => {
         it(`should convert valid name: ${validNames[i]}`, async () => {
             let data = (await contract.getStringToInternal(validNames[i]))!;
             let received = data.beginParse().loadBuffer(data.bits.length / 8).toString('hex');
-            expect(received).toBe(convertToInternal(validNames[i]));
+            expect(received).toBe(convertToInternal(validNames[i].endsWith('.') && validNames[i] !== '.' ? validNames[i].slice(0, validNames[i].length - 1) : validNames[i]).toString('hex'));
         });
+    }
+
+    for (let i = 0; i < validNames.length; i++) {
+        if (validNames[i] !== '.') {
+            it(`should convert valid name: ${validNames[i]}`, async () => {
+                let data = (await contract.getStringToInternal(validNames[i]))!;
+                expect(await contract.getDnsInternalVerify(data)).toBe(true);
+            });
+        }
     }
 
     for (let i = 0; i < equalNormalized.length; i++) {
@@ -100,6 +124,46 @@ describe('feature-dns', () => {
             let received2 = data2.beginParse().loadBuffer(data2.bits.length / 8).toString('hex');
             expect(received1).not.toBe(received2);
             expect(received1.length).toBe(received2.length);
+        });
+    }
+
+    for (let i = 0; i < validNames.length; i++) {
+        it('should resolve name ' + validNames[i], async () => {
+            let internalAddress = convertToInternal(validNames[i]);
+            let resolved = (await contract.getDnsresolve(beginCell().storeBuffer(internalAddress).endCell(), 1n))!;
+            expect(resolved.prefix).toBe(BigInt(internalAddress.length * 8));
+            if (validNames[i] === '.') {
+                expect(resolved.record!.bits.length).toBe(0);
+                expect(resolved.record!.refs.length).toBe(0);
+            } else if (validNames[i].endsWith('.')) {
+                expect(resolved.record!.beginParse().loadBuffer(internalAddress.length - 1).toString('hex')).toBe(internalAddress.subarray(1).toString('hex'));
+            } else {
+                expect(resolved.record!.beginParse().loadBuffer(internalAddress.length).toString('hex')).toBe(internalAddress.toString('hex'));
+            }
+        });
+    }
+
+    for (let i = 0; i < invalidNames.length; i++) {
+        it('should not resolve name ' + invalidNames[i], async () => {
+            let internalAddress = convertToInternal(invalidNames[i]);
+            await expect(contract.getDnsresolve(beginCell().storeBuffer(internalAddress).endCell(), 1n)).rejects.toThrowError();
+        });
+    }
+
+    for (let i = 0; i < validNames.length; i++) {
+        if (validNames[i].endsWith('.')) {
+            continue;
+        }
+        it('should resolve name with leading zero ' + validNames[i], async () => {
+            let internalAddress = convertToInternal(validNames[i]);
+            let resolved = (await contract.getDnsresolve(beginCell().storeBuffer(Buffer.concat([Buffer.alloc(1, 0), internalAddress])).endCell(), 1n))!;
+            expect(resolved.prefix).toBe(BigInt(internalAddress.length * 8 + 8));
+            if (validNames[i] === '.') {
+                expect(resolved.record!.bits.length).toBe(0);
+                expect(resolved.record!.refs.length).toBe(0);
+            } else {
+                expect(resolved.record!.beginParse().loadBuffer(internalAddress.length).toString('hex')).toBe(internalAddress.toString('hex'));
+            }
         });
     }
 });

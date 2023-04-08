@@ -7,20 +7,34 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $DNSResolveResult$_to_external
   DECLPROC $DNSTester$_contract_init
   DECLPROC $DNSTester$_contract_load
   DECLPROC $DNSTester$_contract_store
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
   DECLPROC $global_reply
+  DECLPROC $global_dnsExtractTopDomainLength
+  DECLPROC $global_dnsExtractTopDomain
   DECLPROC $DNSTester$_fun_stringToInternal
   DECLPROC $DNSTester$_fun_internalNormalize
+  DECLPROC $DNSTester$_fun_dnsInternalVerify
+  DECLPROC $DNSTester$_fun_dnsExtractTopDomainLength
+  DECLPROC $DNSTester$_fun_dnsExtractTopDomain
+  DECLPROC $DNSResolveResult$_constructor_prefix_record
+  DECLPROC $DNSTester$_fun_doResolveDNS
+  DECLPROC $DNSTester$_fun_dnsresolve
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC dns_string_to_internal
+  DECLPROC dns_internal_verify
   DECLPROC dns_internal_normalize
   DECLPROC $DNSTester$_internal_binary_Deploy
   97933 DECLMETHOD %stringToInternal
   114271 DECLMETHOD %internalNormalize
+  74415 DECLMETHOD %dnsInternalVerify
+  114191 DECLMETHOD %dnsExtractTopDomainLength
+  103737 DECLMETHOD %dnsExtractTopDomain
+  123660 DECLMETHOD %dnsresolve
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -82,6 +96,8 @@ PROGRAM{
     SWAP
     $DeployOk$_store INLINECALLDICT
     ENDC
+  }>
+  $DNSResolveResult$_to_external PROCINLINE:<{
   }>
   $DNSTester$_contract_init PROCREF:<{
     PUSHNULL
@@ -233,11 +249,84 @@ PROGRAM{
     $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
+  $global_dnsExtractTopDomainLength PROCREF:<{
+    0 PUSHINT
+    UNTIL:<{
+      SWAP
+      8 LDU
+      SWAP
+      0 EQINT
+      DUP
+      NOT
+      IF:<{
+        s0 s2 XCHG
+        8 ADDCONST
+        s0 s2 XCHG
+      }>
+      s1 s2 XCHG
+    }>
+    NIP
+    24161 PUSHINT
+    OVER
+    0 NEQINT
+    THROWANYIFNOT
+  }>
+  $global_dnsExtractTopDomain PROCREF:<{
+    DUP
+    $global_dnsExtractTopDomainLength INLINECALLDICT
+    LDSLICEX
+    DROP
+  }>
   $DNSTester$_fun_stringToInternal PROCREF:<{
     dns_string_to_internal INLINECALLDICT
   }>
   $DNSTester$_fun_internalNormalize PROCREF:<{
     dns_internal_normalize INLINECALLDICT
+  }>
+  $DNSTester$_fun_dnsInternalVerify PROCREF:<{
+    dns_internal_verify INLINECALLDICT
+  }>
+  $DNSTester$_fun_dnsExtractTopDomainLength PROCREF:<{
+    $global_dnsExtractTopDomainLength INLINECALLDICT
+  }>
+  $DNSTester$_fun_dnsExtractTopDomain PROCREF:<{
+    $global_dnsExtractTopDomain INLINECALLDICT
+  }>
+  $DNSResolveResult$_constructor_prefix_record PROCINLINE:<{
+  }>
+  $DNSTester$_fun_doResolveDNS PROCREF:<{
+    DROP
+    DUP
+    SBITS
+    NEWC
+    ROT
+    STSLICER
+    ENDC
+    $DNSResolveResult$_constructor_prefix_record INLINECALLDICT
+  }>
+  $DNSTester$_fun_dnsresolve PROCREF:<{
+    0 PUSHINT
+    s2 PUSH
+    8 PLDU
+    0 EQINT
+    IF:<{
+      DROP
+      SWAP
+      8 LDU
+      NIP
+      SWAP
+      8 PUSHINT
+    }>
+    24161 PUSHINT
+    s3 PUSH
+    dns_internal_verify INLINECALLDICT
+    THROWANYIFNOT
+    3 -ROLL
+    $DNSTester$_fun_doResolveDNS INLINECALLDICT
+    s0 s3 XCHG
+    ADD
+    ROT
+    $DNSResolveResult$_constructor_prefix_record INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
@@ -269,39 +358,41 @@ PROGRAM{
     PUSHNULL
     NEWC
     TRUE
+    TRUE
     FALSE
     TRUE
     UNTIL:<{
-      s5 PUSH
+      s6 PUSH
       SBITS
       0 EQINT
       IF:<{
         DROP
-        s4 PUSH
+        s5 PUSH
         SREFS
         DUP
         1 EQINT
         IF:<{
           DROP
-          s0 s4 XCHG
+          s0 s5 XCHG
           LDREF
           DROP
           CTOS
         }>ELSE<{
           1 GTINT
           IFJMP:<{
-            5 BLKDROP
+            6 BLKDROP
             PUSHNULL
             RETALT
           }>
-          s0 s4 XCHG
+          s0 s5 XCHG
         }>
-        s0 s4 XCHG
+        s0 s5 XCHG
         FALSE
       }>
       DUP
       IF:<{
         NIP
+        s2 POP
         s0 s4 XCHG
         8 LDU
         OVER
@@ -323,7 +414,7 @@ PROGRAM{
         AND
         OR
         NOT
-        s5 s2 PUSH2
+        s8 s2 PUSH2
         AND
         OR
         IFJMP:<{
@@ -333,7 +424,7 @@ PROGRAM{
         }>
         IF:<{
           s2 POP
-          -ROT
+          s5 s5 XCHG2
           OR
           IFJMP:<{
             4 BLKDROP
@@ -345,31 +436,40 @@ PROGRAM{
           NEWC
           FALSE
           TRUE
+          TRUE
         }>ELSE<{
-          s3 POP
-          SWAP
+          s6 POP
           FALSE
-          s0 s4 XCHG
+          s0 s2 XCHG
+          FALSE
+          s0 s5 XCHG
           8 STU
-          s0 s0 s4 XCHG3
           s0 s3 XCHG
+          s0 s5 XCHG
+          s6 s6 s4 XCHG3
         }>
         s4 s5 XCHG
-        s3 s4 XCHG
-        s0 s1 s3 XCHG3
+        s0 s3 XCHG
+        s2 s4 XCHG2
       }>
       DUP
       NOT
     }>
     DROP
+    NIP
     s4 POP
-    s0 s3 XCHG2
-    OR
+    s0 s3 XCHG
     IFJMP:<{
-      2DROP
+      3 BLKDROP
       PUSHNULL
     }>
-    CONS
+    s0 s2 XCHG
+    NOT
+    IF:<{
+      CONS
+    }>ELSE<{
+      NIP
+    }>
     NEWC
     SWAP
     UNCONS
@@ -388,9 +488,110 @@ PROGRAM{
       SWAP
       STBR
     }>
-    NIP
+    0 PUSHINT
+    s2 POP
+    8 STU
     ENDC
     CTOS
+  }>
+  dns_internal_verify PROCREF:<{
+    c2 SAVE
+    SAMEALTSAVE
+    DUP
+    SREFS
+    0 NEQINT
+    IFJMP:<{
+      DROP
+      FALSE
+    }>
+    DUP
+    SBITS
+    DUP
+    3 MODPOW2#
+    0 NEQINT
+    IFJMP:<{
+      2DROP
+      FALSE
+    }>
+    DUP
+    0 EQINT
+    IFJMP:<{
+      2DROP
+      TRUE
+    }>
+    3 RSHIFT#
+    0 PUSHINT
+    TRUE
+    FALSE
+    s0 s3 XCHG
+    REPEAT:<{
+      s0 s3 XCHG
+      8 LDU
+      OVER
+      0 EQINT
+      IF:<{
+        NIP
+        s3 POP
+        0 EQINT
+        IFJMP:<{
+          2DROP
+          FALSE
+          RETALT
+        }>
+        IFJMP:<{
+          DROP
+          FALSE
+          RETALT
+        }>
+        0 PUSHINT
+        FALSE
+        TRUE
+      }>ELSE<{
+        s3 POP
+        DUP
+        45 EQINT
+        OVER
+        47 GTINT
+        s2 PUSH
+        58 LESSINT
+        AND
+        s1 s(-1) PUXC
+        OR
+        s2 PUSH
+        96 GTINT
+        s0 s3 XCHG
+        123 LESSINT
+        s1 s3 XCHG
+        AND
+        s1 s2 XCHG
+        OR
+        NOT
+        IFJMP:<{
+          4 BLKDROP
+          FALSE
+          RETALT
+        }>
+        s0 s3 PUXC
+        AND
+        IFJMP:<{
+          3 BLKDROP
+          FALSE
+          RETALT
+        }>
+        FALSE
+        SWAP
+        INC
+        s0 s3 s3 XCHG3
+      }>
+      s1 s2 XCHG
+    }>
+    DROP
+    s2 POP
+    0 PUSHINT
+    SWAP
+    NOT
+    AND
+    EQUAL
   }>
   dns_internal_normalize PROCREF:<{
     NEWC
@@ -469,6 +670,31 @@ PROGRAM{
     $DNSTester$_fun_internalNormalize INLINECALLDICT
     NIP
   }>
+  %dnsInternalVerify PROC:<{
+    $DNSTester$_contract_load INLINECALLDICT
+    SWAP
+    $DNSTester$_fun_dnsInternalVerify INLINECALLDICT
+    NIP
+  }>
+  %dnsExtractTopDomainLength PROC:<{
+    $DNSTester$_contract_load INLINECALLDICT
+    SWAP
+    $DNSTester$_fun_dnsExtractTopDomainLength INLINECALLDICT
+    NIP
+  }>
+  %dnsExtractTopDomain PROC:<{
+    $DNSTester$_contract_load INLINECALLDICT
+    SWAP
+    $DNSTester$_fun_dnsExtractTopDomain INLINECALLDICT
+    NIP
+  }>
+  %dnsresolve PROC:<{
+    $DNSTester$_contract_load INLINECALLDICT
+    -ROT
+    $DNSTester$_fun_dnsresolve INLINECALLDICT
+    1 2 BLKDROP2
+    $DNSResolveResult$_to_external INLINECALLDICT
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -477,7 +703,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5a666a7865344142726842524c4e4347454e6d44474a396178514b5757563656425a59795273665a41356d36} PUSHSLICE
+    x{697066733a2f2f516d65665a3644765a654c75325a3659445946525174765342684a6333326b767753544c5658665342686f6d5279} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

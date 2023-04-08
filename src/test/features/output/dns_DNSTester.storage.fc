@@ -8,6 +8,20 @@
 }
 
 ;;
+;; Type: DNSResolveResult
+;; TLB: _ prefix:int257 record:Maybe ^cell = DNSResolveResult
+;;
+
+(int, cell) $DNSResolveResult$_to_external(((int, cell)) v) inline {
+    var (v'prefix, v'record) = v; 
+    return (v'prefix, v'record);
+}
+
+((int, cell)) $DNSResolveResult$_constructor_prefix_record(int prefix, cell record) inline {
+    return (prefix, record);
+}
+
+;;
 ;; Type: Deploy
 ;; Header: 0x946a98b6
 ;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
