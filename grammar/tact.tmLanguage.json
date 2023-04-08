@@ -328,7 +328,7 @@
         },
         {
           "name": "storage.modifier.tact",
-          "match": "\\b(get|native|extends|mutates|virtual|overrides|fun)\\b"
+          "match": "\\b(get|native|extends|mutates|virtual|inline|overrides|fun)\\b"
         },
         {
           "name": "meta.definition.function.tact entity.name.function.tact",

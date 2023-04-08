@@ -201,7 +201,7 @@ repository:
       - include: "#type-annotation" # Return type
       - include: "#block-declaration"
       - name: storage.modifier.tact
-        match: \b(get|native|extends|mutates|virtual|overrides|fun)\b
+        match: \b(get|native|extends|mutates|virtual|inline|overrides|fun)\b
       - name: meta.definition.function.tact {{nameFunction}}
         match: "{{id}}"
 
