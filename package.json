@@ -15,7 +15,7 @@
     "build": "tsc && cp ./src/grammar/grammar.ohm* ./dist/grammar/ && cp ./src/func/funcfiftlib.* ./dist/func",
     "test": "jest",
     "coverage": "COVERAGE=true jest",
-    "release": "yarn clean && yarn build && yarn test && yarn release-it --npm.yarn1"
+    "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1"
   },
   "files": [
     "dist/**/*",
