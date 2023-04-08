@@ -44,7 +44,8 @@ fun dnsResolveWallet(address: Address): Cell {
     return beginCell()
         .storeUint(0x9fd3, 16)
         .storeAddress(address)
-        .storeUint(0, 8);
+        .storeUint(0, 8)
+        .endCell();
 }
 
 trait DNSResolver {
