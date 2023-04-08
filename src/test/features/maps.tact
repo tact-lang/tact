@@ -658,4 +658,8 @@ contract MapTestContract {
     get fun addrMap7_6Value(key: Address): Int? {
         return self.addrMap7_6.get(key);
     }
+
+    get fun mapAsCell(): Cell? {
+        return self.addrMap7_6.asCell();
+    }
 }

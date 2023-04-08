@@ -501,6 +501,11 @@
     return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), __tact_dict_get_slice_uint($self'addrMap7_6, 267, $key, 256));
 }
 
+((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell), cell) $MapTestContract$_fun_mapAsCell((cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref {
+    var (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6)) = $self;
+    return (($self'intMap1, $self'intMap2, $self'intMap3, $self'intMap4, $self'intMap5, $self'intMap6_1, $self'intMap6_2, $self'intMap6_3, $self'intMap6_4, $self'intMap6_5, $self'intMap6_6, $self'intMap6_7, $self'intMap7_1, $self'intMap7_2, $self'intMap7_3, $self'intMap7_4, $self'intMap7_5, $self'intMap7_6, $self'intMap8_1, $self'intMap8_2, $self'intMap8_3, $self'intMap8_4, $self'intMap8_5, $self'intMap8_6, $self'intMap8_7, $self'intMap9_1, $self'intMap9_2, $self'intMap9_3, $self'intMap9_4, $self'intMap9_5, $self'intMap9_6, $self'addrMap1, $self'addrMap2, $self'addrMap3, $self'addrMap4, $self'addrMap5, $self'addrMap6_1, $self'addrMap6_2, $self'addrMap6_3, $self'addrMap6_4, $self'addrMap6_5, $self'addrMap6_6, $self'addrMap6_7, $self'addrMap7_1, $self'addrMap7_2, $self'addrMap7_3, $self'addrMap7_4, $self'addrMap7_5, $self'addrMap7_6), $self'addrMap7_6);
+}
+
 ;;
 ;; Receivers of a Contract MapTestContract
 ;;
@@ -1311,6 +1316,12 @@ _ %addrMap7_6Value(slice $$key) method_id(119556) {
     return res;
 }
 
+_ %mapAsCell() method_id(86606) {
+    var self = $MapTestContract$_contract_load();
+    var res = self~$MapTestContract$_fun_mapAsCell();
+    return res;
+}
+
 _ supported_interfaces() method_id {
     return (
         "org.ton.introspection.v0"H >> 128,
@@ -1321,7 +1332,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmYnPLQ1iakvvvTpJjQVHwzhEe9Mzn8uuf5dbyUSmKennG";
+    return "ipfs://QmebpMKmoDeNnV7wbuE1hLkiBjKBu1YBNtnzFHjSqDrN4z";
 }
 
 _ lazy_deployment_completed() method_id {

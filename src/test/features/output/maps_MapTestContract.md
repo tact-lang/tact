@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MapTestContract
-BOC Size: 19313 bytes
+BOC Size: 19344 bytes
 
 # Types
 Total Types: 20
@@ -86,7 +86,7 @@ TLB: `_ value:int257 = SomeStruct`
 Signature: `SomeStruct{value:int257}`
 
 # Get Methods
-Total Get Methods: 98
+Total Get Methods: 99
 
 ## intMap1
 
@@ -332,6 +332,8 @@ Argument: key
 
 ## addrMap7_6Value
 Argument: key
+
+## mapAsCell
 
 # Error Codes
 2: Stack undeflow

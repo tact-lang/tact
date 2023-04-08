@@ -149,6 +149,7 @@ PROGRAM{
   DECLPROC $MapTestContract$_fun_addrMap7_5Value
   DECLPROC $MapTestContract$_fun_addrMap7_6
   DECLPROC $MapTestContract$_fun_addrMap7_6Value
+  DECLPROC $MapTestContract$_fun_mapAsCell
   DECLPROC %$MapTestContract$_internal_empty
   DECLPROC $MapTestContract$_internal_binary_SetIntMap1
   DECLPROC $MapTestContract$_internal_binary_SetIntMap2
@@ -265,6 +266,7 @@ PROGRAM{
   73188 DECLMETHOD %addrMap7_5Value
   129861 DECLMETHOD %addrMap7_6
   119556 DECLMETHOD %addrMap7_6Value
+  86606 DECLMETHOD %mapAsCell
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -1806,6 +1808,9 @@ PROGRAM{
     s0 s2 XCHG
     8 PUSHPOW2
     __tact_dict_get_slice_uint INLINECALLDICT
+  }>
+  $MapTestContract$_fun_mapAsCell PROCREF:<{
+    DUP
   }>
   %$MapTestContract$_internal_empty PROCINLINE:<{
   }>
@@ -4996,6 +5001,17 @@ PROGRAM{
     15 BLKDROP
     NIP
   }>
+  %mapAsCell PROC:<{
+    $MapTestContract$_contract_load INLINECALLDICT
+    $MapTestContract$_fun_mapAsCell INLINECALLDICT
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    16 s() POP
+    15 BLKDROP
+    NIP
+  }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
     209801025412363888721030803524359905849 PUSHINT
@@ -5003,7 +5019,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d596e504c513169616b76767654704a6a515648777a684565394d7a6e387575663564627955536d4b656e6e47} PUSHSLICE
+    x{697066733a2f2f516d6562704d4b6d6f44654e6e56377762754531684c6b69426a4b42753159424e746e7a46486a537144724e347a} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

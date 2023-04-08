@@ -277,5 +277,32 @@ export const MapFunctions: { [key: string]: AbiFunction } = {
 
             throwError(`set expects a map with Int keys`, ref);
         }
+    },
+    asCell: {
+        name: 'asCell',
+        resolve(ctx, args, ref) {
+
+            // Check arguments
+            if (args.length !== 1) {
+                throwError('asCell expects one argument', ref); // Ignore self argument
+            }
+            let self = args[0];
+            if (!self || self.kind !== 'map') {
+                throwError('asCell expects a map as self argument', ref); // Should not happen
+            }
+
+            return { kind: 'ref', name: 'Cell', optional: true };
+        },
+        generate: (ctx, args, exprs, ref) => {
+            if (args.length !== 1) {
+                throwError('asCell expects one argument', ref); // Ignore self argument
+            }
+            let self = args[0];
+            if (!self || self.kind !== 'map') {
+                throwError('asCell expects a map as self argument', ref); // Should not happen
+            }
+
+            return writeExpression(exprs[0], ctx);
+        }
     }
 }
