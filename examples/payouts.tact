@@ -34,9 +34,9 @@ contract Beacon with Ownable {
         // Send response
         if (self.completed) {
             self.completed = true;    
-            reply(CanPayoutResponse{ok: true, amount: msg.amount, address: self.owner}.toCell());
+            self.reply(CanPayoutResponse{ok: true, amount: msg.amount, address: self.owner}.toCell());
         } else {
-            reply(CanPayoutResponse{ok: false, amount: msg.amount, address: self.owner}.toCell());
+            self.reply(CanPayoutResponse{ok: false, amount: msg.amount, address: self.owner}.toCell());
         }        
     }
 

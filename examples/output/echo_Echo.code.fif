@@ -15,11 +15,11 @@ PROGRAM{
   DECLPROC $Echo$_contract_load
   DECLPROC $Echo$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
   DECLPROC $Slice$_fun_asCell
   DECLPROC $String$_fun_asComment
   DECLPROC $Echo$_fun_hello
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $Echo$_fun_reply
   DECLPROC $Echo$_internal_any_text
   DECLPROC $Echo$_internal_any
   115554 DECLMETHOD %hello
@@ -314,21 +314,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $global_reply PROCINLINE:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
   $Slice$_fun_asCell PROCINLINE:<{
     NEWC
     SWAP
@@ -349,13 +334,28 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $Echo$_fun_reply PROCINLINE:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
   $Echo$_internal_any_text PROCINLINE:<{
     $String$_fun_asComment INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $Echo$_fun_reply INLINECALLDICT
   }>
   $Echo$_internal_any PROCINLINE:<{
     $Slice$_fun_asCell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $Echo$_fun_reply INLINECALLDICT
   }>
   %hello PROC:<{
     $Echo$_contract_load INLINECALLDICT

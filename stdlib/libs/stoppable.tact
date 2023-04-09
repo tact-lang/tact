@@ -16,7 +16,7 @@ trait Stoppable with Ownable {
         self.requireOwner();
         self.requireNotStopped();
         self.stopped = true;
-        reply("Stopped".asComment());
+        self.reply("Stopped".asComment());
     }
 
     get fun stopped(): Bool {
@@ -33,6 +33,6 @@ trait Resumable with Stoppable {
         self.requireOwner();
         self.requireStopped();
         self.stopped = false;
-        reply("Resumed".asComment());
+        self.reply("Resumed".asComment());
     }
 }

@@ -19,7 +19,7 @@ tuple $SendTester$_contract_init() impure inline_ref {
 
 (tuple, ()) $SendTester$_internal_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041(tuple $self) impure inline {
     var $self = $self;
-    $global_reply(__gen_cell_comment_95fbfd67c31e549b5d4386ed4a2beebc294be55acb3eddadaa7f9df86be36d42());
+    $self~$SendTester$_fun_reply(__gen_cell_comment_95fbfd67c31e549b5d4386ed4a2beebc294be55acb3eddadaa7f9df86be36d42());
     $global_emit(__gen_cell_comment_ec65c74747db20896a39d874b0473dd5e61e08fc9f3516d56d58eaeea5031ea4());
     return ($self, ());
 }
@@ -27,7 +27,7 @@ tuple $SendTester$_contract_init() impure inline_ref {
 ((tuple), ()) $SendTester$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
-    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    $self~$SendTester$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return ($self, ());
 }
 

@@ -54,12 +54,6 @@ builder $A$_store(builder build_0, (slice) v) inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
-
-;; $global_reply
-() $global_reply(cell $body) impure inline;
-
 ;; $Int$_fun_inc
 (int, int) $Int$_fun_inc(int $self) impure inline_ref;
 
@@ -68,6 +62,12 @@ builder $A$_store(builder build_0, (slice) v) inline;
 
 ;; $A$_fun_create
 ((slice), (int, int, int)) $A$_fun_create((slice) $self, int $v) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $A$_fun_reply
+((slice), ()) $A$_fun_reply((slice) $self, cell $body) impure inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

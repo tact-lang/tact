@@ -14,10 +14,10 @@ PROGRAM{
   DECLPROC $global_randomInt
   DECLPROC $global_random
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
   DECLPROC $RandomContract$_fun_randomInt
   DECLPROC $RandomContract$_fun_random
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $RandomContract$_fun_reply
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $RandomContract$_internal_binary_Deploy
   128647 DECLMETHOD %randomInt
@@ -240,11 +240,17 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
+  $RandomContract$_fun_randomInt PROCREF:<{
+    $global_randomInt INLINECALLDICT
+  }>
+  $RandomContract$_fun_random PROCREF:<{
+    $global_random INLINECALLDICT
+  }>
   $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCINLINE:<{
+  $RandomContract$_fun_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -255,18 +261,12 @@ PROGRAM{
     $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $RandomContract$_fun_randomInt PROCREF:<{
-    $global_randomInt INLINECALLDICT
-  }>
-  $RandomContract$_fun_random PROCREF:<{
-    $global_random INLINECALLDICT
-  }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   $RandomContract$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $RandomContract$_fun_reply INLINECALLDICT
   }>
   %randomInt PROC:<{
     $RandomContract$_contract_load INLINECALLDICT

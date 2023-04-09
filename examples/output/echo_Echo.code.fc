@@ -26,13 +26,13 @@ tuple $Echo$_contract_init(int $a) impure inline_ref {
 
 (tuple, ()) $Echo$_internal_any_text(tuple $self, slice $msg) impure inline {
     var $self = $self;
-    $global_reply($String$_fun_asComment($msg));
+    $self~$Echo$_fun_reply($String$_fun_asComment($msg));
     return ($self, ());
 }
 
 (tuple, ()) $Echo$_internal_any(tuple $self, slice $msg) impure inline {
     var $self = $self;
-    $global_reply($Slice$_fun_asCell($msg));
+    $self~$Echo$_fun_reply($Slice$_fun_asCell($msg));
     return ($self, ());
 }
 

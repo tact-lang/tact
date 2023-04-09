@@ -91,6 +91,8 @@ int $global_random(int $min, int $max) impure inline {
     send_raw_message($c, $params'mode);
 }
 
-() $global_reply(cell $body) impure inline {
+(tuple, ()) $RandomContract$_fun_reply(tuple $self, cell $body) impure inline {
+    var ($self) = $self;
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
+    return ($self, ());
 }

@@ -54,8 +54,8 @@ builder $External$_store(builder build_0, (slice, int) v) inline;
 ;; $SendParameters$_constructor_bounce_to_value_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
-;; $global_reply
-() $global_reply(cell $body) impure inline;
+;; $External$_fun_reply
+((slice, int), ()) $External$_fun_reply((slice, int) $self, cell $body) impure inline;
 
 ;; $External$_fun_owner
 ((slice, int), slice) $External$_fun_owner((slice, int) $self) impure inline_ref;

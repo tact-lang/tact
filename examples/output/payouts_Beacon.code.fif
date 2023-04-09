@@ -18,7 +18,7 @@ PROGRAM{
   DECLPROC $Beacon$_contract_store
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
+  DECLPROC $Beacon$_fun_reply
   DECLPROC $Beacon$_fun_owner
   DECLPROC $CanPayoutResponse$_constructor_ok_amount_address
   DECLPROC $Beacon$_internal_binary_CanPayout
@@ -270,7 +270,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCINLINE:<{
+  $Beacon$_fun_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -308,13 +308,13 @@ PROGRAM{
       s3 PUSH
       $CanPayoutResponse$_constructor_ok_amount_address INLINECALLDICT
       $CanPayoutResponse$_store_cell INLINECALLDICT
-      $global_reply INLINECALLDICT
+      $Beacon$_fun_reply INLINECALLDICT
     }>ELSE<{
       FALSE
       s1 s3 XCPU
       $CanPayoutResponse$_constructor_ok_amount_address INLINECALLDICT
       $CanPayoutResponse$_store_cell INLINECALLDICT
-      $global_reply INLINECALLDICT
+      $Beacon$_fun_reply INLINECALLDICT
     }>
   }>
   $Beacon$_receive_bounce PROCINLINE:<{

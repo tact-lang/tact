@@ -12,8 +12,6 @@ PROGRAM{
   DECLPROC $DNSTester$_contract_load
   DECLPROC $DNSTester$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
   DECLPROC $global_dnsExtractTopDomainLength
   DECLPROC $global_dnsExtractTopDomain
   DECLPROC $DNSTester$_fun_stringToInternal
@@ -23,6 +21,8 @@ PROGRAM{
   DECLPROC $DNSTester$_fun_dnsExtractTopDomain
   DECLPROC $DNSResolveResult$_constructor_prefix_record
   DECLPROC $DNSTester$_fun_doResolveDNS
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $DNSTester$_fun_reply
   DECLPROC $DNSTester$_fun_dnsresolve
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC dns_string_to_internal
@@ -234,21 +234,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $global_reply PROCINLINE:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
   $global_dnsExtractTopDomainLength PROCREF:<{
     0 PUSHINT
     UNTIL:<{
@@ -303,6 +288,21 @@ PROGRAM{
     STSLICER
     ENDC
     $DNSResolveResult$_constructor_prefix_record INLINECALLDICT
+  }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $DNSTester$_fun_reply PROCINLINE:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
   $DNSTester$_fun_dnsresolve PROCREF:<{
     0 PUSHINT
@@ -656,7 +656,7 @@ PROGRAM{
   $DNSTester$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $DNSTester$_fun_reply INLINECALLDICT
   }>
   %stringToInternal PROC:<{
     $DNSTester$_contract_load INLINECALLDICT

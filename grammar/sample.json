@@ -13015,6 +13015,93 @@
       ]
     },
     {
+      "content": "self",
+      "color": "#C586C0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "self",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.control",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "name": "Control flow / Special keywords",
+                  "scope": [
+                    "keyword.control",
+                    "source.cpp keyword.operator.new",
+                    "keyword.operator.delete",
+                    "keyword.other.using",
+                    "keyword.other.operator",
+                    "entity.name.operator"
+                  ],
+                  "settings": {
+                    "foreground": "#C586C0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ".",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ".",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "content": "reply",
       "color": "#DCDCAA",
       "fontStyle": 0,

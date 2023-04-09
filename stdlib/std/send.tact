@@ -68,16 +68,6 @@ fun send(params: SendParameters) {
     nativeSendMessage(c, params.mode);
 }
 
-inline fun reply(body: Cell?) {
-    send(SendParameters{
-        bounce: true,
-        to: sender(),
-        value: 0,
-        mode: SendRemainingValue + SendIgnoreErrors, 
-        body: body
-    });
-}
-
 inline fun emit(body: Cell) {
     // ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt created_lt:uint64 created_at:uint32
     //                     maybe: stateInit (false) bodyRef: bool (true)

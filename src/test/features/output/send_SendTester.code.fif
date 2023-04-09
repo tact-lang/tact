@@ -13,7 +13,7 @@ PROGRAM{
   DECLPROC $SendTester$_contract_store
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
+  DECLPROC $SendTester$_fun_reply
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $SendTester$_internal_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041
   DECLPROC $SendTester$_internal_binary_Deploy
@@ -230,7 +230,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCINLINE:<{
+  $SendTester$_fun_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -245,14 +245,14 @@ PROGRAM{
   }>
   $SendTester$_internal_text_9bb54a40af36ff58e865c6cca0bf3be3897054c962cb4a54c3b60962cb2a3041 PROCINLINE:<{
     B{b5ee9c7241010101000b00001200000000576f726c64cf8219c9} B>boc PUSHREF
-    $global_reply INLINECALLDICT
+    $SendTester$_fun_reply INLINECALLDICT
     B{b5ee9c7241010101000f00001a00000000536f6d657468696e6707ec49a0} B>boc PUSHREF
     $global_emit INLINECALLDICT
   }>
   $SendTester$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $SendTester$_fun_reply INLINECALLDICT
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT

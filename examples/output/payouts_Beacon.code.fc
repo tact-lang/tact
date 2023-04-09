@@ -31,9 +31,9 @@
     raw_reserve(100000000, 0);
     if ($self'completed) {
         $self'completed = true;
-        $global_reply($CanPayoutResponse$_store_cell($CanPayoutResponse$_constructor_ok_amount_address(true, $msg'amount, $self'owner)));
+        ($self'master, $self'owner, $self'completed)~$Beacon$_fun_reply($CanPayoutResponse$_store_cell($CanPayoutResponse$_constructor_ok_amount_address(true, $msg'amount, $self'owner)));
     } else {
-        $global_reply($CanPayoutResponse$_store_cell($CanPayoutResponse$_constructor_ok_amount_address(false, $msg'amount, $self'owner)));
+        ($self'master, $self'owner, $self'completed)~$Beacon$_fun_reply($CanPayoutResponse$_store_cell($CanPayoutResponse$_constructor_ok_amount_address(false, $msg'amount, $self'owner)));
     }
     return (($self'master, $self'owner, $self'completed), ());
 }

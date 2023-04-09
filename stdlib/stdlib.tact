@@ -9,3 +9,4 @@ import "./std/context";
 import "./std/reserve";
 import "./std/send";
 import "./std/config";
+import "./std/base";

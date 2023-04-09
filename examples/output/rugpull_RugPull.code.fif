@@ -18,12 +18,12 @@ PROGRAM{
   DECLPROC $RugPull$_contract_load
   DECLPROC $RugPull$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
   DECLPROC $SendParameters$_constructor_value_to_mode
   DECLPROC $RugPull$_fun_sendPayout
   DECLPROC $RugParams$_constructor_investment_returns_fee
   DECLPROC $RugPull$_fun_params
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $RugPull$_fun_reply
   DECLPROC $RugPull$_fun_requireOwner
   DECLPROC $RugPull$_fun_owner
   DECLPROC $RugPull$_fun_requireNotStopped
@@ -348,21 +348,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $global_reply PROCINLINE:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
   $SendParameters$_constructor_value_to_mode PROCINLINE:<{
     TRUE
     s3 s3 XCHG2
@@ -381,6 +366,21 @@ PROGRAM{
   $RugPull$_fun_params PROCREF:<{
     s8 s7 s6 PUSH3
     $RugParams$_constructor_investment_returns_fee INLINECALLDICT
+  }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $RugPull$_fun_reply PROCINLINE:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
   $RugPull$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
@@ -492,8 +492,8 @@ PROGRAM{
     s3 POP
     TRUE
     B{b5ee9c7241010101000d0000160000000053746f707065646f94ddb2} B>boc PUSHREF
-    $global_reply INLINECALLDICT
-    s0 s3 XCHG
+    s1 s4 XCHG
+    $RugPull$_fun_reply INLINECALLDICT
   }>
   %params PROC:<{
     $RugPull$_contract_load INLINECALLDICT

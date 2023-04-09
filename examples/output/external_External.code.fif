@@ -16,7 +16,7 @@ PROGRAM{
   DECLPROC $External$_contract_store
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
+  DECLPROC $External$_fun_reply
   DECLPROC $External$_fun_owner
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $External$_internal_text_fb5afb2314c4a83f630eee3abd1bb27a6dd574bdc82ce83a9b5a388ebe7a2be8
@@ -254,7 +254,7 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $global_reply PROCINLINE:<{
+  $External$_fun_reply PROCINLINE:<{
     TRUE
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
@@ -283,7 +283,7 @@ PROGRAM{
   $External$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $External$_fun_reply INLINECALLDICT
   }>
   %owner PROC:<{
     $External$_contract_load INLINECALLDICT

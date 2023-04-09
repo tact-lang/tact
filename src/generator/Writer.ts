@@ -29,6 +29,7 @@ export type WrittenFunction = {
 export class WriterContext {
 
     readonly ctx: CompilerContext;
+    #name: string;
     #functions: Map<string, WrittenFunction> = new Map();
     #functionsRendering = new Set<string>();
     #pendingWriter: Writer | null = null;
@@ -43,16 +44,17 @@ export class WriterContext {
     // #headers: string[] = [];
     #rendered = new Set<string>();
 
-    constructor(ctx: CompilerContext) {
+    constructor(ctx: CompilerContext, name: string) {
         this.ctx = ctx;
+        this.#name = name;
     }
 
-    allocateNextRandomName() {
-        return `__gen_internal_${this.#nextId++}`;
+    get name() {
+        return this.#name;
     }
 
     clone() {
-        let res = new WriterContext(this.ctx);
+        let res = new WriterContext(this.ctx, this.#name);
         res.#functions = new Map(this.#functions);
         res.#nextId = this.#nextId;
         // res.#headers = [...this.#headers];

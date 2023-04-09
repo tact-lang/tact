@@ -5,11 +5,11 @@ contract Echo {
     }
     
     receive(msg: String) {
-        reply(msg.asComment());
+        self.reply(msg.asComment());
     }
     
     receive(msg: Slice) {
-        reply(msg.asCell());
+        self.reply(msg.asCell());
     }
 
     get fun hello(src: String): String {

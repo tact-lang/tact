@@ -13,9 +13,9 @@ PROGRAM{
   DECLPROC $Debug$_contract_load
   DECLPROC $Debug$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
   DECLPROC $Debug$_fun_debug
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $Debug$_fun_reply
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $Debug$_internal_text_ae249126308fef6639c0700d2103e444d8b335cde82fdc21c87c3b7bc1b9df57
   DECLPROC $Debug$_internal_binary_Deploy
@@ -306,21 +306,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $global_reply PROCINLINE:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
   $Debug$_fun_debug PROCREF:<{
     DUMPSTK
     B{b5ee9c7241010101000e00001848656c6c6f20776f726c6421782dc5bc} B>boc <s PUSHSLICE
@@ -337,6 +322,21 @@ PROGRAM{
     x{6e756c6c} PUSHSLICE
     STRDUMP
     DROP
+  }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $Debug$_fun_reply PROCINLINE:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
@@ -360,7 +360,7 @@ PROGRAM{
   $Debug$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $Debug$_fun_reply INLINECALLDICT
   }>
   %debug PROC:<{
     $Debug$_contract_load INLINECALLDICT

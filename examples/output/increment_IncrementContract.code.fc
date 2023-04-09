@@ -67,7 +67,7 @@
 (((cell, cell, cell, cell, cell)), ()) $IncrementContract$_internal_binary_Deploy((cell, cell, cell, cell, cell) $self, (int) $deploy) impure inline {
     var ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5) = $self;
     var ($deploy'queryId) = $deploy;
-    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    ($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5)~$IncrementContract$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return (($self'counters, $self'counters2, $self'counters3, $self'counters4, $self'counters5), ());
 }
 

@@ -48,17 +48,17 @@ int $global_random(int $min, int $max) impure inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
-
-;; $global_reply
-() $global_reply(cell $body) impure inline;
-
 ;; $RandomContract$_fun_randomInt
 (tuple, int) $RandomContract$_fun_randomInt(tuple $self) impure inline_ref;
 
 ;; $RandomContract$_fun_random
 (tuple, int) $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $RandomContract$_fun_reply
+(tuple, ()) $RandomContract$_fun_reply(tuple $self, cell $body) impure inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

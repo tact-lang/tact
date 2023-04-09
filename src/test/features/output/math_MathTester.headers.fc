@@ -78,12 +78,6 @@ tuple $MathTester$_contract_load() impure inline_ref;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
-
-;; $global_reply
-() $global_reply(cell $body) impure inline;
-
 ;; $MathTester$_fun_add
 (tuple, int) $MathTester$_fun_add(tuple $self, int $a, int $b) impure inline_ref;
 
@@ -188,6 +182,12 @@ tuple $MathTester$_contract_load() impure inline_ref;
 
 ;; $MathTester$_fun_isNotNull3
 (tuple, int) $MathTester$_fun_isNotNull3(tuple $self, cell $cell) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $MathTester$_fun_reply
+(tuple, ()) $MathTester$_fun_reply(tuple $self, cell $body) impure inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

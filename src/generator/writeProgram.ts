@@ -27,7 +27,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // Render contract
     //
 
-    const wctx = new WriterContext(ctx);
+    const wctx = new WriterContext(ctx, abiSrc.name!);
     writeAll(ctx, wctx, abiSrc.name!, abiLink);
     const functions = wctx.extract(debug);
 

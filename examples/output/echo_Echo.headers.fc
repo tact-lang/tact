@@ -51,12 +51,6 @@ tuple $Echo$_contract_load() impure inline_ref;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
-
-;; $global_reply
-() $global_reply(cell $body) impure inline;
-
 ;; $Slice$_fun_asCell
 cell $Slice$_fun_asCell(slice $self) impure inline;
 
@@ -65,3 +59,9 @@ cell $String$_fun_asComment(slice $self) impure inline_ref;
 
 ;; $Echo$_fun_hello
 (tuple, slice) $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref;
+
+;; $SendParameters$_constructor_bounce_to_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $Echo$_fun_reply
+(tuple, ()) $Echo$_fun_reply(tuple $self, cell $body) impure inline;

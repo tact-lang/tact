@@ -139,10 +139,6 @@ slice __tact_string_builder_end_slice(tuple builders) inline {
     send_raw_message($c, $params'mode);
 }
 
-() $global_reply(cell $body) impure inline {
-    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
-}
-
 cell $Slice$_fun_asCell(slice $self) impure inline {
     var ($self) = $self;
     return end_cell(store_slice(begin_cell(), $self));
@@ -153,4 +149,10 @@ cell $String$_fun_asComment(slice $self) impure inline_ref {
     tuple $b = __tact_string_builder_start_comment();
     $b~__tact_string_builder_append($self);
     return __tact_string_builder_end($b);
+}
+
+(tuple, ()) $Echo$_fun_reply(tuple $self, cell $body) impure inline {
+    var ($self) = $self;
+    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
+    return ($self, ());
 }

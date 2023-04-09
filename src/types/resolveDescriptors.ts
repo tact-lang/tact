@@ -711,6 +711,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     throwError('Type ' + name + ' is not a trait', t.ast.ref);
                 }
             }
+            visit('BaseTrait');
             for (let s of t.ast.traits) {
                 visit(s.value);
             }

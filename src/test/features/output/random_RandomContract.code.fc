@@ -28,7 +28,7 @@ tuple $RandomContract$_contract_init() impure inline_ref {
 ((tuple), ()) $RandomContract$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
-    $global_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    $self~$RandomContract$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return ($self, ());
 }
 

@@ -7,7 +7,7 @@ contract SendTester with Deployable {
     }
 
     receive("Hello") {
-        reply("World".asComment());
+        self.reply("World".asComment());
         emit("Something".asComment());
     }
 }

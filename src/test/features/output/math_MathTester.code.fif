@@ -24,8 +24,6 @@ PROGRAM{
   DECLPROC $MathTester$_contract_load
   DECLPROC $MathTester$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
-  DECLPROC $global_reply
   DECLPROC $MathTester$_fun_add
   DECLPROC $MathTester$_fun_compare1
   DECLPROC $MathTester$_fun_compare2
@@ -61,6 +59,8 @@ PROGRAM{
   DECLPROC $MathTester$_fun_isNotNull2
   DECLPROC $MathTester$_fun_isNull3
   DECLPROC $MathTester$_fun_isNotNull3
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $MathTester$_fun_reply
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $MathTester$_internal_binary_Deploy
   83863 DECLMETHOD %add
@@ -498,21 +498,6 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
-  }>
-  $global_reply PROCINLINE:<{
-    TRUE
-    __tact_context_get_sender INLINECALLDICT
-    0 PUSHINT
-    ROT
-    s0 s3 XCHG
-    66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
-    $global_send INLINECALLDICT
-  }>
   $MathTester$_fun_add PROCREF:<{
     ADD
   }>
@@ -635,12 +620,27 @@ PROGRAM{
     ISNULL
     NOT
   }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $MathTester$_fun_reply PROCINLINE:<{
+    TRUE
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    ROT
+    s0 s3 XCHG
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   $MathTester$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $global_reply INLINECALLDICT
+    $MathTester$_fun_reply INLINECALLDICT
   }>
   %add PROC:<{
     $MathTester$_contract_load INLINECALLDICT
