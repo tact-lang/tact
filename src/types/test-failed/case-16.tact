@@ -1,6 +1,10 @@
 primitive Int;
 primitive Bool;
 
+trait BaseTrait {
+    
+}
+
 fun hello(a: Main): Int {
 
 }

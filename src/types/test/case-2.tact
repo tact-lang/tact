@@ -1,6 +1,10 @@
 primitive Int;
 primitive Bool;
 
+trait BaseTrait {
+    
+}
+
 fun testFunc(): Int {
     return 0;
 }

@@ -1,6 +1,10 @@
 primitive Int;
 primitive Bool;
 
+trait BaseTrait {
+    
+}
+
 struct Point {
     p: Int;
 }

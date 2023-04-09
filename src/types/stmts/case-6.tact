@@ -2,6 +2,10 @@ primitive Int;
 primitive Bool;
 primitive Cell;
 
+trait BaseTrait {
+    
+}
+
 fun main() {
     let a: Int = 10;
     if (a > 0) {

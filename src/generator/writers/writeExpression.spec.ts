@@ -81,7 +81,7 @@ describe('writeExpression', () => {
             if (s.kind !== 'statement_let') {
                 throw Error('Unexpected statement kind');
             }
-            let wctx = new WriterContext(ctx);
+            let wctx = new WriterContext(ctx, 'Contract1');
             wctx.fun('$main', () => {
                 wctx.body(() => {
                     expect(writeExpression(s.expression, wctx)).toBe(golden[i]);

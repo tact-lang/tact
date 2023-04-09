@@ -1,6 +1,10 @@
 primitive Int;
 primitive Bool;
 
+trait BaseTrait {
+    
+}
+
 contract Contract {
     value: Int;
     value2: Int;

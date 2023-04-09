@@ -57,7 +57,7 @@ describe('writeSerialization', () => {
             let ctx = openContext(new CompilerContext(), [{ code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);
             ctx = resolveAllocations(ctx);
-            let wctx = new WriterContext(ctx);
+            let wctx = new WriterContext(ctx, s);
             writeStdlib(wctx);
             writeSerializer(getType(ctx, s).name, false, getAllocation(ctx, s), 'user', wctx);
             for (let t of Object.values(getAllTypes(ctx))) {

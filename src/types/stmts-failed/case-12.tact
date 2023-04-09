@@ -2,6 +2,10 @@ primitive Int;
 primitive Bool;
 primitive Cell;
 
+trait BaseTrait {
+    
+}
+
 struct SomeStruct {
     a: Int;
     b: Int;

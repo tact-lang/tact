@@ -12,6 +12,10 @@ const stdlibPath = path.resolve(__dirname, '../../stdlib/std/primitives.tact');
 const stdlib = fs.readFileSync(stdlibPath, 'utf-8');
 const src = `
 
+trait BaseTrait {
+    
+}
+
 struct Point3 {
     a: Point;
     b: Point2;

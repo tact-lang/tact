@@ -1,232 +1,232 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`resolveStatements should fail statements for case-0 1`] = `
-"<unknown>:5:5: Type mismatch: Int is not assignable to Bool
-Line 5, col 5:
-  4 | fun isZero(x: Int): Bool {
-> 5 |     return x;
-          ^~~~~~~~~
-  6 | }
+"<unknown>:9:5: Type mismatch: Int is not assignable to Bool
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     return x;
+           ^~~~~~~~~
+  10 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-1 1`] = `
-"<unknown>:5:5: Type mismatch: Bool is not assignable to Int
-Line 5, col 5:
-  4 | fun isZero(x: Int): Bool {
-> 5 |     repeat(true) {
-          ^~~~~~~~~~~~~~
-  6 |         x = x + 1;
+"<unknown>:9:5: Type mismatch: Bool is not assignable to Int
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     repeat(true) {
+           ^~~~~~~~~~~~~~
+  10 |         x = x + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-2 1`] = `
-"<unknown>:5:5: Type mismatch: Int is not assignable to bool
-Line 5, col 5:
-  4 | fun isZero(x: Int): Bool {
-> 5 |     while(x) {
-          ^~~~~~~~~~
-  6 |         x = x + 1;
+"<unknown>:9:5: Type mismatch: Int is not assignable to bool
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     while(x) {
+           ^~~~~~~~~~
+  10 |         x = x + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-3 1`] = `
-"<unknown>:5:5: Type mismatch: Int is not assignable to bool
-Line 5, col 5:
-  4 | fun isZero(x: Int): Bool {
-> 5 |     do {
-          ^~~~
-  6 |         x = x + 1;
+"<unknown>:9:5: Type mismatch: Int is not assignable to bool
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     do {
+           ^~~~
+  10 |         x = x + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-4 1`] = `
-"<unknown>:5:5: Type mismatch: Int is not assignable to Bool
-Line 5, col 5:
-  4 | fun isZero(x: Int): Bool {
-> 5 |     if (x) {
-          ^~~~~~~~
-  6 |         x = x + 1;
+"<unknown>:9:5: Type mismatch: Int is not assignable to Bool
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     if (x) {
+           ^~~~~~~~
+  10 |         x = x + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-5 1`] = `
-"<unknown>:5:5: Type mismatch: String is not assignable to Int
-Line 5, col 5:
-  4 | fun isZero(x: Int): Bool {
-> 5 |     x = "hello world";
-          ^~~~~~~~~~~~~~~~~~
-  6 |     return true;
+"<unknown>:9:5: Type mismatch: String is not assignable to Int
+Line 9, col 5:
+   8 | fun isZero(x: Int): Bool {
+>  9 |     x = "hello world";
+           ^~~~~~~~~~~~~~~~~~
+  10 |     return true;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-6 1`] = `
-"<unknown>:9:12: Function "f1" expects 2 arguments, got 1
-Line 9, col 12:
-   8 | fun f2(a: Int): Int {
->  9 |     return f1(a);
+"<unknown>:13:12: Function "f1" expects 2 arguments, got 1
+Line 13, col 12:
+  12 | fun f2(a: Int): Int {
+> 13 |     return f1(a);
                   ^~~~~
-  10 | }
+  14 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-7 1`] = `
-"<unknown>:16:16: Function "f1" expects 2 arguments, got 1
-Line 16, col 16:
-  15 |     fun f2(a: Int): Int {
-> 16 |         return self.f1(a);
+"<unknown>:20:16: Function "f1" expects 2 arguments, got 1
+Line 20, col 16:
+  19 |     fun f2(a: Int): Int {
+> 20 |         return self.f1(a);
                       ^~~~~~~~~~
-  17 |     }
+  21 |     }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-8 1`] = `
-"<unknown>:9:18: Invalid type "Bool" for argument "b"
-Line 9, col 18:
-   8 | fun f2(a: Int): Int {
->  9 |     return f1(a, true);
+"<unknown>:13:18: Invalid type "Bool" for argument "b"
+Line 13, col 18:
+  12 | fun f2(a: Int): Int {
+> 13 |     return f1(a, true);
                         ^~~~
-  10 | }
+  14 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-9 1`] = `
-"<unknown>:16:27: Invalid type "Bool" for argument "b"
-Line 16, col 27:
-  15 |     fun f2(a: Int): Int {
-> 16 |         return self.f1(a, true);
+"<unknown>:20:27: Invalid type "Bool" for argument "b"
+Line 20, col 27:
+  19 |     fun f2(a: Int): Int {
+> 20 |         return self.f1(a, true);
                                  ^~~~
-  17 |     }
+  21 |     }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-10 1`] = `
-"<unknown>:6:5: Type mismatch: Int is not assignable to Bool
-Line 6, col 5:
-  5 |     let a: Int = 0;
-> 6 |     let b: Bool = 0;
-          ^~~~~~~~~~~~~~~~
-  7 | }
+"<unknown>:10:5: Type mismatch: Int is not assignable to Bool
+Line 10, col 5:
+   9 |     let a: Int = 0;
+> 10 |     let b: Bool = 0;
+           ^~~~~~~~~~~~~~~~
+  11 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-11 1`] = `
-"<unknown>:13:9: Invalid type "Bool" for fields "b" with type Int in type SomeStruct
-Line 13, col 9:
-  12 |         a: 1,
-> 13 |         b: false // Invalid type
+"<unknown>:17:9: Invalid type "Bool" for fields "b" with type Int in type SomeStruct
+Line 17, col 9:
+  16 |         a: 1,
+> 17 |         b: false // Invalid type
                ^~~~~~~~
-  14 |     };
+  18 |     };
 "
 `;
 
 exports[`resolveStatements should fail statements for case-12 1`] = `
-"<unknown>:13:9: Duplicate fields "a"
-Line 13, col 9:
-  12 |         a: 1,
-> 13 |         a: 2,
+"<unknown>:17:9: Duplicate fields "a"
+Line 17, col 9:
+  16 |         a: 1,
+> 17 |         a: 2,
                ^~~~
-  14 |         b: 3
+  18 |         b: 3
 "
 `;
 
 exports[`resolveStatements should fail statements for case-13 1`] = `
-"<unknown>:12:25: Missing fields "c" in type SomeStruct
-Line 12, col 25:
-  11 | fun main() {
-> 12 |     let a: SomeStruct = SomeStruct{
+"<unknown>:16:25: Missing fields "c" in type SomeStruct
+Line 16, col 25:
+  15 | fun main() {
+> 16 |     let a: SomeStruct = SomeStruct{
                                ^~~~~~~~~~~
-  13 |         a: 1,
+  17 |         a: 1,
 "
 `;
 
 exports[`resolveStatements should fail statements for case-14 1`] = `
-"<unknown>:22:25: Invalid type "String" for argument "owner"
-Line 22, col 25:
-  21 |     get fun newInit(): StateInit {
-> 22 |         return initOf A("hello");
+"<unknown>:26:25: Invalid type "String" for argument "owner"
+Line 26, col 25:
+  25 |     get fun newInit(): StateInit {
+> 26 |         return initOf A("hello");
                                ^~~~~~~
-  23 |     }
+  27 |     }
 "
 `;
 
 exports[`resolveStatements should fail statements for case-15 1`] = `
-"<unknown>:6:5: Field value is not set
-Line 6, col 5:
-  5 |     value: Int;
-> 6 |     init() {
-          ^~~~~~~~
-  7 | 
+"<unknown>:10:5: Field value is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init() {
+           ^~~~~~~~
+  11 | 
 "
 `;
 
 exports[`resolveStatements should fail statements for case-16 1`] = `
-"<unknown>:6:5: Field value is not set
-Line 6, col 5:
-  5 |     value: Int;
-> 6 |     init(arg: Bool) {
-          ^~~~~~~~~~~~~~~~~
-  7 |         if (arg) {
+"<unknown>:10:5: Field value is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init(arg: Bool) {
+           ^~~~~~~~~~~~~~~~~
+  11 |         if (arg) {
 "
 `;
 
 exports[`resolveStatements should fail statements for case-17 1`] = `
-"<unknown>:6:5: Field value is not set
-Line 6, col 5:
-  5 |     value: Int;
-> 6 |     init(arg: Bool) {
-          ^~~~~~~~~~~~~~~~~
-  7 |         if (arg) {
+"<unknown>:10:5: Field value is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init(arg: Bool) {
+           ^~~~~~~~~~~~~~~~~
+  11 |         if (arg) {
 "
 `;
 
 exports[`resolveStatements should fail statements for case-18 1`] = `
-"<unknown>:6:5: Field value is not set
-Line 6, col 5:
-  5 |     value: Int;
-> 6 |     init(arg: Bool) {
-          ^~~~~~~~~~~~~~~~~
-  7 |         if (arg) {
+"<unknown>:10:5: Field value is not set
+Line 10, col 5:
+   9 |     value: Int;
+> 10 |     init(arg: Bool) {
+           ^~~~~~~~~~~~~~~~~
+  11 |         if (arg) {
 "
 `;
 
 exports[`resolveStatements should fail statements for case-19 1`] = `
-"<unknown>:8:22: Field "value2" is not initialized
-Line 8, col 22:
-  7 |     init(arg: Bool) {
-> 8 |         self.value = self.value2 + 1;
-                           ^~~~~~~~~~~
-  9 |         self.value2 = 10;
+"<unknown>:12:22: Field "value2" is not initialized
+Line 12, col 22:
+  11 |     init(arg: Bool) {
+> 12 |         self.value = self.value2 + 1;
+                            ^~~~~~~~~~~
+  13 |         self.value2 = 10;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-20 1`] = `
-"<unknown>:13:22: Field "value2" is not initialized
-Line 13, col 22:
-  12 |     init(arg: Bool) {
-> 13 |         self.value = self.value2.a + 1;
+"<unknown>:17:22: Field "value2" is not initialized
+Line 17, col 22:
+  16 |     init(arg: Bool) {
+> 17 |         self.value = self.value2.a + 1;
                             ^~~~~~~~~~~
-  14 |         self.value2 = A{ a: 1, b: 2 };
+  18 |         self.value2 = A{ a: 1, b: 2 };
 "
 `;
 
 exports[`resolveStatements should fail statements for case-21 1`] = `
-"<unknown>:13:35: Field "value" is not initialized
-Line 13, col 35:
-  12 |     init(arg: Bool) {
-> 13 |         self.value2 = A{ a: 1, b: self.value };
+"<unknown>:17:35: Field "value" is not initialized
+Line 17, col 35:
+  16 |     init(arg: Bool) {
+> 17 |         self.value2 = A{ a: 1, b: self.value };
                                          ^~~~~~~~~~
-  14 |         self.value = self.value2.a + 1;
+  18 |         self.value = self.value2.a + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for case-22 1`] = `
-"<unknown>:12:9: Cannot access self before init
-Line 12, col 9:
-  11 |     init(arg: Bool) {
-> 12 |         self.update();
+"<unknown>:16:9: Cannot access self before init
+Line 16, col 9:
+  15 |     init(arg: Bool) {
+> 16 |         self.update();
                ^~~~~~~~~~~~~
-  13 |         self.value = 1;
+  17 |         self.value = 1;
 "
 `;
 

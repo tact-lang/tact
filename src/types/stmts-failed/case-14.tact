@@ -1,6 +1,10 @@
 primitive Int;
 primitive Cell;
 
+trait BaseTrait {
+    
+}
+
 struct StateInit {
     code: Cell;
     data: Cell;
