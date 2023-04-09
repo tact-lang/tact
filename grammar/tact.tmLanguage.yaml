@@ -26,6 +26,7 @@ variables:
   inlineComment: \/\*([^\*]|(\*[^\/]))*\*\/
   space: (?:\s|(?:{{inlineComment}}))*
   id: '\b[\w]+\b'
+  modifier: get|native|extends|mutates|virtual|overrides|inline|abstract
 
 patterns:
   - include: "#comments"
@@ -33,7 +34,7 @@ patterns:
   - include: "#struct"
   - include: "#contract-or-trait"
   - include: "#fun-declaration"
-  - include: "#statements"
+  - include: "#const-declaration"
 
 repository:
   import:
@@ -132,15 +133,18 @@ repository:
   # Const
   const-declaration:
     name: meta.struct.field.tact
-    begin: '(const)\s*({{id}})'
-    beginCaptures:
-      "1": { name: keyword.control.const.tact }
-      "2": { name: variable.object.property.tact }
+    begin: (?=\b(?:(?:{{modifier}})\s*)*const\b)
     end: "(;)"
     endCaptures:
       "1":
         name: punctuation.terminator.tact
     patterns:
+      - name: storage.type.tact
+        match: "const"
+      - name: storage.modifier.tact
+        match: "{{modifier}}"
+      - name: "{{nameVariable}}"
+        match: "{{id}}"
       - include: "#comments"
       - include: "#type-annotation"
       - include: "#variable-init"
@@ -187,12 +191,13 @@ repository:
   # Function
   fun-declaration:
     name: meta.function.tact
-    begin: \b(get|native|extends|mutates|virtual|overrides|fun)\b
-    beginCaptures:
-      "1":
-        name: storage.modifier.tact
+    begin: (?=\b(?:(?:{{modifier}})\s*)*fun\b)
     end: (?<=\}|;)
     patterns:
+      - name: storage.type.tact
+        match: "fun"
+      - name: storage.modifier.tact
+        match: "{{modifier}}"
       - include: "#fun-declaration-body"
   fun-declaration-body:
     patterns:
@@ -200,8 +205,6 @@ repository:
       - include: "#fun-arguments"
       - include: "#type-annotation" # Return type
       - include: "#block-declaration"
-      - name: storage.modifier.tact
-        match: \b(get|native|extends|mutates|virtual|inline|overrides|fun)\b
       - name: meta.definition.function.tact {{nameFunction}}
         match: "{{id}}"
 

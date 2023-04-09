@@ -84,6 +84,8 @@ files['libs/dns.tact'] =
     'Zml4OiByZXMucHJlZml4ICsgZGVsdGEsIHJlY29yZDogcmVzLnJlY29yZH07CiAgICB9CgogICAgdmlydHVhbCBmdW4gZG9SZXNvbHZlRE5TKHN1YmRvbWFpbjogU2xp' +
     'Y2UsIGNhdGVnb3J5OiBJbnQpOiBETlNSZXNvbHZlUmVzdWx0IHsKICAgICAgICByZXR1cm4gRE5TUmVzb2x2ZVJlc3VsdHtwcmVmaXg6IHN1YmRvbWFpbi5iaXRzKCks' +
     'IHJlY29yZDogbnVsbH07CiAgICB9Cn0=';
+files['libs/nft.tact'] =
+    'dHJhaXQgU2luZ2xlTkZUIHsKICAgIAp9';
 files['libs/ownable.tact'] =
     'bWVzc2FnZSBDaGFuZ2VPd25lciB7CiAgICBuZXdPd25lcjogQWRkcmVzczsKfQoKQGludGVyZmFjZSgib3JnLnRvbi5vd25hYmxlIikKdHJhaXQgT3duYWJsZSB7CiAg' +
     'ICBvd25lcjogQWRkcmVzczsKCiAgICBmdW4gcmVxdWlyZU93bmVyKCkgewogICAgICAgIG5hdGl2ZVRocm93VW5sZXNzKDEzMiwgc2VuZGVyKCkgPT0gc2VsZi5vd25l' +

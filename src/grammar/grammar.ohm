@@ -28,7 +28,10 @@ Tact {
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization
           | id ":" Type as id "=" Expression ";" --withSerializationAndInit
-    Constant = "const" id ":" Type "=" Expression ";"
+    
+    // Constant
+    ConstantAttributes = virtual | overrides
+    Constant = ConstantAttributes* const id ":" Type "=" Expression ";"
 
     // Struct
     Struct = "struct" id "{" StructBody* "}" --originary
@@ -212,6 +215,7 @@ Tact {
             | overrides
             | virtual
             | inline
+            | const
     contract = "contract" ~idPart
     let = "let" ~idPart
     fun = "fun" ~idPart
@@ -236,6 +240,7 @@ Tact {
     virtual = "virtual" ~idPart
     overrides = "overrides" ~idPart
     inline = "inline" ~idPart
+    const = "const" ~idPart
 
     // Attributes
     nameAttribute = "@name"

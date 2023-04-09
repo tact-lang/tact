@@ -67,26 +67,32 @@ import path from 'path';
 
     // Generate sample highlight
     const grammarTact = JSON.parse(fs.readFileSync(require.resolve('../grammar/tact.tmLanguage.json'), 'utf-8'));
-    const grammarSample = fs.readFileSync(require.resolve('../grammar/sample.tact'), 'utf-8');
-    let highlighter = await getHighlighter({
-        themes: BUNDLED_THEMES,
-        langs: [
-            ...BUNDLED_LANGUAGES,
-            {
-                id: 'tact',
-                scopeName: 'source.tact',
-                grammar: grammarTact,
-                aliases: ['tact'],
-            }
-        ] as any,
-    });
 
-    let theme = 'dark-plus'; // Most features
+    for (let f of fs.readdirSync(path.resolve(__dirname, '..', 'grammar'))) {
+        if (f.endsWith('.tact')) {
+            let name = f.substring(0, f.length - '.tact'.length);
+            const grammarSample = fs.readFileSync(path.resolve(__dirname, '..', 'grammar', name + '.tact'), 'utf-8');
+            let highlighter = await getHighlighter({
+                themes: BUNDLED_THEMES,
+                langs: [
+                    ...BUNDLED_LANGUAGES,
+                    {
+                        id: 'tact',
+                        scopeName: 'source.tact',
+                        grammar: grammarTact,
+                        aliases: ['tact'],
+                    }
+                ] as any,
+            });
 
-    let res = highlighter.codeToHtml(grammarSample, { lang: 'tact', theme });
-    res = `<html><head><meta charset="utf-8"></head><body>${res}</body></html>`;
-    fs.writeFileSync(require.resolve('../grammar/sample.html'), res);
+            let theme = 'dark-plus'; // Most features
 
-    let tokens = highlighter.codeToThemedTokens(grammarSample, 'tact', theme);
-    fs.writeFileSync(require.resolve('../grammar/sample.json'), JSON.stringify(tokens, null, 2));
+            let res = highlighter.codeToHtml(grammarSample, { lang: 'tact', theme });
+            res = `<html><head><meta charset="utf-8"></head><body>${res}</body></html>`;
+            fs.writeFileSync(path.resolve(__dirname, '..', 'grammar', name + '.html'), res);
+
+            let tokens = highlighter.codeToThemedTokens(grammarSample, 'tact', theme);
+            fs.writeFileSync(path.resolve(__dirname, '..', 'grammar', name + '.json'), JSON.stringify(tokens, null, 2));
+        }
+    }
 })();

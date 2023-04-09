@@ -23,7 +23,7 @@
       "include": "#fun-declaration"
     },
     {
-      "include": "#statements"
+      "include": "#const-declaration"
     }
   ],
   "repository": {
@@ -207,15 +207,7 @@
     },
     "const-declaration": {
       "name": "meta.struct.field.tact",
-      "begin": "(const)\\s*(\\b[\\w]+\\b)",
-      "beginCaptures": {
-        "1": {
-          "name": "keyword.control.const.tact"
-        },
-        "2": {
-          "name": "variable.object.property.tact"
-        }
-      },
+      "begin": "(?=\\b(?:(?:get|native|extends|mutates|virtual|overrides|inline|abstract)\\s*)*const\\b)",
       "end": "(;)",
       "endCaptures": {
         "1": {
@@ -223,6 +215,18 @@
         }
       },
       "patterns": [
+        {
+          "name": "storage.type.tact",
+          "match": "const"
+        },
+        {
+          "name": "storage.modifier.tact",
+          "match": "get|native|extends|mutates|virtual|overrides|inline|abstract"
+        },
+        {
+          "name": "variable.name.tact",
+          "match": "\\b[\\w]+\\b"
+        },
         {
           "include": "#comments"
         },
@@ -299,14 +303,17 @@
     },
     "fun-declaration": {
       "name": "meta.function.tact",
-      "begin": "\\b(get|native|extends|mutates|virtual|overrides|fun)\\b",
-      "beginCaptures": {
-        "1": {
-          "name": "storage.modifier.tact"
-        }
-      },
+      "begin": "(?=\\b(?:(?:get|native|extends|mutates|virtual|overrides|inline|abstract)\\s*)*fun\\b)",
       "end": "(?<=\\}|;)",
       "patterns": [
+        {
+          "name": "storage.type.tact",
+          "match": "fun"
+        },
+        {
+          "name": "storage.modifier.tact",
+          "match": "get|native|extends|mutates|virtual|overrides|inline|abstract"
+        },
         {
           "include": "#fun-declaration-body"
         }
@@ -325,10 +332,6 @@
         },
         {
           "include": "#block-declaration"
-        },
-        {
-          "name": "storage.modifier.tact",
-          "match": "\\b(get|native|extends|mutates|virtual|inline|overrides|fun)\\b"
         },
         {
           "name": "meta.definition.function.tact entity.name.function.tact",

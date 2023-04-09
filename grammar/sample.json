@@ -266,44 +266,37 @@
   [],
   [
     {
-      "content": "const",
-      "color": "#C586C0",
+      "content": "virtual",
+      "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "const",
+          "content": "virtual",
           "scopes": [
             {
               "scopeName": "source.tact",
               "themeMatches": []
             },
             {
-              "scopeName": "keyword.control.tact",
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.modifier.tact",
               "themeMatches": [
                 {
-                  "scope": "keyword",
+                  "scope": "storage",
                   "settings": {
                     "foreground": "#569cd6"
                   }
                 },
                 {
-                  "scope": "keyword.control",
-                  "settings": {
-                    "foreground": "#569cd6"
-                  }
-                },
-                {
-                  "name": "Control flow / Special keywords",
                   "scope": [
-                    "keyword.control",
-                    "source.cpp keyword.operator.new",
-                    "keyword.operator.delete",
-                    "keyword.other.using",
-                    "keyword.other.operator",
-                    "entity.name.operator"
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
                   ],
                   "settings": {
-                    "foreground": "#C586C0"
+                    "foreground": "#569cd6"
                   }
                 }
               ]
@@ -323,6 +316,67 @@
             {
               "scopeName": "source.tact",
               "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "const",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "const",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.type.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "storage.type",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
             }
           ]
         }
@@ -338,6 +392,10 @@
           "scopes": [
             {
               "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
               "themeMatches": []
             },
             {
@@ -375,6 +433,10 @@
               "themeMatches": []
             },
             {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
               "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             },
@@ -405,6 +467,10 @@
               "themeMatches": []
             },
             {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
               "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             }
@@ -422,6 +488,10 @@
           "scopes": [
             {
               "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
               "themeMatches": []
             },
             {
@@ -490,6 +560,10 @@
               "themeMatches": []
             },
             {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
               "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             }
@@ -503,21 +577,16 @@
               "themeMatches": []
             },
             {
-              "scopeName": "keyword.operator",
-              "themeMatches": [
-                {
-                  "scope": "keyword",
-                  "settings": {
-                    "foreground": "#569cd6"
-                  }
-                },
-                {
-                  "scope": "keyword.operator",
-                  "settings": {
-                    "foreground": "#d4d4d4"
-                  }
-                }
-              ]
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.variable.property.init",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.tact",
+              "themeMatches": []
             }
           ]
         },
@@ -526,6 +595,14 @@
           "scopes": [
             {
               "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.variable.property.init",
               "themeMatches": []
             }
           ]
@@ -542,6 +619,14 @@
           "scopes": [
             {
               "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.variable.property.init",
               "themeMatches": []
             },
             {
@@ -575,6 +660,14 @@
             {
               "scopeName": "source.tact",
               "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.terminator.tact",
+              "themeMatches": []
             }
           ]
         }
@@ -583,6 +676,367 @@
   ],
   [],
   [
+    {
+      "content": "fun",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "fun",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.type.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "storage.type",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "b",
+      "color": "#DCDCAA",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "b",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.definition.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.function.tact",
+              "themeMatches": [
+                {
+                  "name": "Function declarations",
+                  "scope": [
+                    "entity.name.function",
+                    "support.function",
+                    "support.constant.handlebars",
+                    "source.powershell variable.other.member",
+                    "entity.name.operator.custom-literal"
+                  ],
+                  "settings": {
+                    "foreground": "#DCDCAA"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "() {",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "(",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ")",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.end.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "{",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.block.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "}",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.block.end.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "get",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "get",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.modifier.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": [
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
+                  ],
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "mutates",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "mutates",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.modifier.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": [
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
+                  ],
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
     {
       "content": "extends",
       "color": "#569CD6",
@@ -660,7 +1114,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
                   "scope": "storage",
@@ -669,10 +1123,7 @@
                   }
                 },
                 {
-                  "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
-                  ],
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
                   }
@@ -1618,7 +2069,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
                   "scope": "storage",
@@ -1627,10 +2078,7 @@
                   }
                 },
                 {
-                  "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
-                  ],
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
                   }
@@ -4411,12 +4859,12 @@
       ]
     },
     {
-      "content": "fun",
+      "content": "overrides",
       "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "fun",
+          "content": "overrides",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -4547,12 +4995,12 @@
       ]
     },
     {
-      "content": "extends",
+      "content": "fun",
       "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "extends",
+          "content": "fun",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -4567,7 +5015,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
                   "scope": "storage",
@@ -4576,10 +5024,7 @@
                   }
                 },
                 {
-                  "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
-                  ],
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
                   }
@@ -5257,7 +5702,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
                   "scope": "storage",
@@ -5266,10 +5711,7 @@
                   }
                 },
                 {
-                  "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
-                  ],
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
                   }
@@ -8168,7 +8610,7 @@
     },
     {
       "content": "const",
-      "color": "#C586C0",
+      "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
@@ -8187,32 +8629,18 @@
               "themeMatches": []
             },
             {
-              "scopeName": "keyword.control.const.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
-                  "scope": "keyword",
+                  "scope": "storage",
                   "settings": {
                     "foreground": "#569cd6"
                   }
                 },
                 {
-                  "scope": "keyword.control",
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
-                  }
-                },
-                {
-                  "name": "Control flow / Special keywords",
-                  "scope": [
-                    "keyword.control",
-                    "source.cpp keyword.operator.new",
-                    "keyword.operator.delete",
-                    "keyword.other.using",
-                    "keyword.other.operator",
-                    "entity.name.operator"
-                  ],
-                  "settings": {
-                    "foreground": "#C586C0"
                   }
                 }
               ]
@@ -8266,7 +8694,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "variable.object.property.tact",
+              "scopeName": "variable.name.tact",
               "themeMatches": [
                 {
                   "name": "Variable and parameter name",
@@ -9394,7 +9822,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
                   "scope": "storage",
@@ -9403,10 +9831,7 @@
                   }
                 },
                 {
-                  "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
-                  ],
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
                   }
@@ -14630,7 +15055,7 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "storage.type.tact",
               "themeMatches": [
                 {
                   "scope": "storage",
@@ -14639,10 +15064,7 @@
                   }
                 },
                 {
-                  "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
-                  ],
+                  "scope": "storage.type",
                   "settings": {
                     "foreground": "#569cd6"
                   }

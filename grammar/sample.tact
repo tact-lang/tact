@@ -1,8 +1,12 @@
 import "@stdlib/ownable" /* Some Comment */;
 
-const GlobalConst1: Int = 1000;
+virtual const GlobalConst1: Int = 1000;
 
-extends fun add(self: Int, b: Int): Int {
+fun b() {
+    
+}
+
+get mutates extends fun add(self: Int, b: Int): Int {
     return self * b;
 }
 
@@ -24,7 +28,7 @@ message /**/ (0x123) MyMessage2 {
 }
 
 trait MyTrait {
-    fun get extends traitState(): Int {
+    overrides get fun traitState(): Int {
         return 0;
     }
     virtual fun overrideMe() {

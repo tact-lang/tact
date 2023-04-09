@@ -132,12 +132,12 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
     NativeFunction(arg0) {
         return arg0.resolve_declaration();
     },
-    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
         return createNode({
             kind: 'def_constant',
-            name: arg1.sourceString,
-            type: arg3.resolve_expression(),
-            value: arg5.resolve_expression(),
+            name: arg2.sourceString,
+            type: arg4.resolve_expression(),
+            value: arg6.resolve_expression(),
             ref: createRef(this)
         })
     },
@@ -219,12 +219,12 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
         return createNode({
             kind: 'def_constant',
-            name: arg1.sourceString,
-            type: arg3.resolve_expression(),
-            value: arg5.resolve_expression(),
+            name: arg2.sourceString,
+            type: arg4.resolve_expression(),
+            value: arg6.resolve_expression(),
             ref: createRef(this)
         })
     },
