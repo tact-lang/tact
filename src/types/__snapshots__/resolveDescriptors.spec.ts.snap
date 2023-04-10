@@ -10,20 +10,20 @@ Line 9, col 1:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-1 1`] = `
-"<unknown>:9:1: Native functions cannot be public
+"<unknown>:9:1: Native functions cannot be getters
 Line 9, col 1:
   8 | @name(hello_world)
-> 9 | public native sample(a: Int): Int;
-      ^~~~~~
+> 9 | get native sample(a: Int): Int;
+      ^~~
 "
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-2 1`] = `
-"<unknown>:8:1: Public functions must be defined within a contract
+"<unknown>:8:1: Getters must be defined within a contract
 Line 8, col 1:
   7 | 
-> 8 | public fun sample(a: Int): Int {
-      ^~~~~~
+> 8 | get fun sample(a: Int): Int {
+      ^~~
   9 |     return 0;
 "
 `;
@@ -707,11 +707,11 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
         },
       ],
     },
+    "isAbstract": false,
     "isGetter": false,
     "isInline": false,
     "isMutating": false,
     "isOverrides": false,
-    "isPublic": false,
     "isVirtual": false,
     "name": "testFunc",
     "origin": "user",
@@ -749,11 +749,11 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
         },
       ],
     },
+    "isAbstract": false,
     "isGetter": false,
     "isInline": false,
     "isMutating": false,
     "isOverrides": false,
-    "isPublic": false,
     "isVirtual": false,
     "name": "testFunc2",
     "origin": "user",
@@ -837,11 +837,11 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
         },
       ],
     },
+    "isAbstract": false,
     "isGetter": false,
     "isInline": false,
     "isMutating": false,
     "isOverrides": false,
-    "isPublic": false,
     "isVirtual": false,
     "name": "testFunc3",
     "origin": "user",
@@ -1091,11 +1091,11 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "return": null,
           "statements": [],
         },
+        "isAbstract": false,
         "isGetter": false,
         "isInline": false,
         "isMutating": true,
         "isOverrides": false,
-        "isPublic": false,
         "isVirtual": false,
         "name": "hello",
         "origin": "user",
@@ -1119,11 +1119,11 @@ exports[`resolveDescriptors should resolve descriptors for case-3 1`] = `
           "return": null,
           "statements": [],
         },
+        "isAbstract": false,
         "isGetter": false,
         "isInline": false,
         "isMutating": true,
         "isOverrides": false,
-        "isPublic": false,
         "isVirtual": false,
         "name": "hello2",
         "origin": "user",
@@ -1344,11 +1344,11 @@ native sample(a: Int): Int;,
         "ref": Int,
       },
     },
+    "isAbstract": false,
     "isGetter": false,
     "isInline": false,
     "isMutating": false,
     "isOverrides": false,
-    "isPublic": false,
     "isVirtual": false,
     "name": "sample",
     "origin": "user",
@@ -1472,11 +1472,11 @@ mutates extends native inc(self: Int): Int;,
             "ref": Int,
           },
         },
+        "isAbstract": false,
         "isGetter": false,
         "isInline": false,
         "isMutating": true,
         "isOverrides": false,
-        "isPublic": false,
         "isVirtual": false,
         "name": "inc",
         "origin": "user",
@@ -1636,11 +1636,11 @@ exports[`resolveDescriptors should resolve descriptors for case-6 1`] = `
             },
           ],
         },
+        "isAbstract": false,
         "isGetter": false,
         "isInline": false,
         "isMutating": false,
         "isOverrides": false,
-        "isPublic": false,
         "isVirtual": false,
         "name": "inc",
         "origin": "user",
@@ -1987,11 +1987,11 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
             },
           ],
         },
+        "isAbstract": false,
         "isGetter": true,
         "isInline": false,
         "isMutating": true,
         "isOverrides": false,
-        "isPublic": false,
         "isVirtual": false,
         "name": "hello",
         "origin": "user",
@@ -2040,11 +2040,11 @@ exports[`resolveDescriptors should resolve descriptors for case-7 1`] = `
             },
           ],
         },
+        "isAbstract": false,
         "isGetter": true,
         "isInline": false,
         "isMutating": true,
         "isOverrides": false,
-        "isPublic": false,
         "isVirtual": false,
         "name": "hello2",
         "origin": "user",

@@ -102,7 +102,7 @@ export function cloneNode<T extends ASTNode>(src: T): T {
     } else if (src.kind === 'def_function') {
         return cloneASTNode({
             ...src,
-            statements: src.statements.map(cloneNode),
+            statements: src.statements ? src.statements.map(cloneNode) : null,
             args: src.args.map(cloneNode)
         });
     } else if (src.kind === 'def_native_function') {
@@ -124,6 +124,11 @@ export function cloneNode<T extends ASTNode>(src: T): T {
         return cloneASTNode({
             ...src,
             args: src.args.map(cloneNode),
+        });
+    } else if (src.kind === 'def_constant') {
+        return cloneASTNode({
+            ...src,
+            value: src.value ? cloneNode(src.value) : src.value,
         });
     }
 

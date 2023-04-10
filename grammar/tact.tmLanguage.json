@@ -207,7 +207,7 @@
     },
     "const-declaration": {
       "name": "meta.struct.field.tact",
-      "begin": "(?=\\b(?:(?:get|native|extends|mutates|virtual|overrides|inline|abstract)\\s*)*const\\b)",
+      "begin": "(?=\\b(?:(?:get|native|extends|mutates|virtual|override|inline|abstract)\\s*)*const\\b)",
       "end": "(;)",
       "endCaptures": {
         "1": {
@@ -221,7 +221,7 @@
         },
         {
           "name": "storage.modifier.tact",
-          "match": "get|native|extends|mutates|virtual|overrides|inline|abstract"
+          "match": "get|native|extends|mutates|virtual|override|inline|abstract"
         },
         {
           "name": "variable.name.tact",
@@ -303,7 +303,7 @@
     },
     "fun-declaration": {
       "name": "meta.function.tact",
-      "begin": "(?=\\b(?:(?:get|native|extends|mutates|virtual|overrides|inline|abstract)\\s*)*fun\\b)",
+      "begin": "(?=\\b(?:(?:get|native|extends|mutates|virtual|override|inline|abstract)\\s*)*fun\\b)",
       "end": "(?<=\\}|;)",
       "patterns": [
         {
@@ -312,7 +312,7 @@
         },
         {
           "name": "storage.modifier.tact",
-          "match": "get|native|extends|mutates|virtual|overrides|inline|abstract"
+          "match": "get|native|extends|mutates|virtual|override|inline|abstract"
         },
         {
           "include": "#fun-declaration-body"
@@ -575,7 +575,7 @@
       "patterns": [
         {
           "name": "keyword.control.tact",
-          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|virtual|overrides|inline|native|let|const|fun|self|is|initOf|map|get|as)\\b"
+          "match": "\\b(if|else|while|do|until|repeat|return|extends|mutates|virtual|override|inline|native|let|const|fun|self|is|initOf|map|get|as)\\b"
         },
         {
           "name": "keyword.operator",

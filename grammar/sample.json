@@ -4859,12 +4859,12 @@
       ]
     },
     {
-      "content": "overrides",
+      "content": "override",
       "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "overrides",
+          "content": "override",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -5747,12 +5747,12 @@
       ]
     },
     {
-      "content": "overrideMe",
-      "color": "#DCDCAA",
+      "content": "override",
+      "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "overrideMe",
+          "content": "override",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -5767,23 +5767,21 @@
               "themeMatches": []
             },
             {
-              "scopeName": "meta.definition.function.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "entity.name.function.tact",
+              "scopeName": "storage.modifier.tact",
               "themeMatches": [
                 {
-                  "name": "Function declarations",
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
                   "scope": [
-                    "entity.name.function",
-                    "support.function",
-                    "support.constant.handlebars",
-                    "source.powershell variable.other.member",
-                    "entity.name.operator.custom-literal"
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
                   ],
                   "settings": {
-                    "foreground": "#DCDCAA"
+                    "foreground": "#569cd6"
                   }
                 }
               ]
@@ -5793,10 +5791,27 @@
       ]
     },
     {
-      "content": "() {",
+      "content": "Me() {",
       "color": "#D4D4D4",
       "fontStyle": 0,
       "explanation": [
+        {
+          "content": "Me",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        },
         {
           "content": "(",
           "scopes": [
@@ -6009,6 +6024,297 @@
             },
             {
               "scopeName": "punctuation.definition.block.end.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [],
+  [
+    {
+      "content": "    ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "abstract",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "abstract",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.modifier.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": [
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
+                  ],
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "fun",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "fun",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.type.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "storage.type",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "abstract",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "abstract",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.modifier.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": [
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
+                  ],
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "Me();",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "Me",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "(",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ")",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.end.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
               "themeMatches": []
             }
           ]
@@ -14967,12 +15273,12 @@
       ]
     },
     {
-      "content": "overrides",
+      "content": "override",
       "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "overrides",
+          "content": "override",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -15100,12 +15406,12 @@
       ]
     },
     {
-      "content": "overrideMe",
-      "color": "#DCDCAA",
+      "content": "override",
+      "color": "#569CD6",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "overrideMe",
+          "content": "override",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -15120,23 +15426,21 @@
               "themeMatches": []
             },
             {
-              "scopeName": "meta.definition.function.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "entity.name.function.tact",
+              "scopeName": "storage.modifier.tact",
               "themeMatches": [
                 {
-                  "name": "Function declarations",
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
                   "scope": [
-                    "entity.name.function",
-                    "support.function",
-                    "support.constant.handlebars",
-                    "source.powershell variable.other.member",
-                    "entity.name.operator.custom-literal"
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
                   ],
                   "settings": {
-                    "foreground": "#DCDCAA"
+                    "foreground": "#569cd6"
                   }
                 }
               ]
@@ -15146,10 +15450,27 @@
       ]
     },
     {
-      "content": "() {",
+      "content": "Me() {",
       "color": "#D4D4D4",
       "fontStyle": 0,
       "explanation": [
+        {
+          "content": "Me",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        },
         {
           "content": "(",
           "scopes": [

@@ -162,7 +162,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Handle constant
         if (hasStaticConstant(ctx.ctx, f.value)) {
             let c = getStaticConstant(ctx.ctx, f.value);
-            return writeValue(c.value, ctx);
+            return writeValue(c.value!, ctx);
         }
 
         return id(f.value);
@@ -415,7 +415,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             // Getter instead of direct field access
             return `${ops.typeField(srcT.name, field.name, ctx)}(${writeExpression(f.src, ctx)})`;
         } else {
-            return writeValue(cst.value, ctx);
+            return writeValue(cst.value!, ctx);
         }
     }
 

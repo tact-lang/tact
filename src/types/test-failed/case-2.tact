@@ -5,6 +5,6 @@ trait BaseTrait {
     
 }
 
-public fun sample(a: Int): Int {
+get fun sample(a: Int): Int {
     return 0;
 }

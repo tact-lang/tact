@@ -28,12 +28,14 @@
 <span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #569CD6">trait</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">MyTrait</span><span style="color: #D4D4D4"> {</span></span>
-<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">overrides</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">get</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">traitState</span><span style="color: #D4D4D4">(): </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4"> {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">override</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">get</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">traitState</span><span style="color: #D4D4D4">(): </span><span style="color: #4EC9B0">Int</span><span style="color: #D4D4D4"> {</span></span>
 <span class="line"><span style="color: #D4D4D4">        </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> </span><span style="color: #B5CEA8">0</span><span style="color: #D4D4D4">;</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
-<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">virtual</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">overrideMe</span><span style="color: #D4D4D4">() {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">virtual</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">override</span><span style="color: #D4D4D4">Me() {</span></span>
 <span class="line"><span style="color: #D4D4D4">        </span><span style="color: #6A9955">// nothing</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">abstract</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">abstract</span><span style="color: #D4D4D4">Me();</span></span>
 <span class="line"><span style="color: #D4D4D4">}</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #569CD6">contract</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">MyContract</span><span style="color: #D4D4D4"> </span><span style="color: #C586C0">with</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">MyTrait</span><span style="color: #D4D4D4">, </span><span style="color: #4EC9B0">Ownable</span><span style="color: #D4D4D4"> {</span></span>
@@ -71,7 +73,7 @@
 <span class="line"><span style="color: #D4D4D4">        }.</span><span style="color: #DCDCAA">asCell</span><span style="color: #D4D4D4">());</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">overrides</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">overrideMe</span><span style="color: #D4D4D4">() {</span></span>
+<span class="line"><span style="color: #D4D4D4">    </span><span style="color: #569CD6">override</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">fun</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">override</span><span style="color: #D4D4D4">Me() {</span></span>
 <span class="line"><span style="color: #D4D4D4">        </span><span style="color: #6A9955">// nothing</span></span>
 <span class="line"><span style="color: #D4D4D4">    }</span></span>
 <span class="line"><span style="color: #D4D4D4">}</span></span></code></pre></body></html>

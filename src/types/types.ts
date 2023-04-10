@@ -1,5 +1,5 @@
 import { ABIField, Address, Cell } from "ton-core";
-import { ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
+import { ASTConstant, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTReceive, ASTRef, ASTStatement, ASTType } from "../grammar/ast";
 
 export type TypeOrigin = 'stdlib' | 'user';
 
@@ -52,9 +52,9 @@ export type FieldDescription = {
 export type ConstantDescription = {
     name: string;
     type: TypeRef;
-    value: bigint | boolean | string | Address | Cell | null;
+    value: bigint | boolean | string | Address | Cell | null | undefined;
     ref: ASTRef,
-    ast: ASTNode
+    ast: ASTConstant
 }
 
 export type FunctionArgument = {
@@ -67,11 +67,11 @@ export type FunctionArgument = {
 export type FunctionDescription = {
     name: string,
     origin: TypeOrigin,
-    isPublic: boolean,
     isGetter: boolean,
     isMutating: boolean,
     isOverrides: boolean,
     isVirtual: boolean,
+    isAbstract: boolean,
     isInline: boolean,
     self: string | null,
     returns: TypeRef,

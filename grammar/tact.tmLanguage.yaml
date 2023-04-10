@@ -26,7 +26,7 @@ variables:
   inlineComment: \/\*([^\*]|(\*[^\/]))*\*\/
   space: (?:\s|(?:{{inlineComment}}))*
   id: '\b[\w]+\b'
-  modifier: get|native|extends|mutates|virtual|overrides|inline|abstract
+  modifier: get|native|extends|mutates|virtual|override|inline|abstract
 
 patterns:
   - include: "#comments"
@@ -333,7 +333,7 @@ repository:
   keywords:
     patterns:
       - name: keyword.control.tact
-        match: \b(if|else|while|do|until|repeat|return|extends|mutates|virtual|overrides|inline|native|let|const|fun|self|is|initOf|map|get|as)\b
+        match: \b(if|else|while|do|until|repeat|return|extends|mutates|virtual|override|inline|native|let|const|fun|self|is|initOf|map|get|as)\b
       - name: keyword.operator
         match: (?<=\s)(<=>|>=|<=|!=|==|\^>>|\~>>|>>|<<|\/%|\^%|\~%|\^\/|\~\/|\+=|-=|\*=|\/=|~\/=|\^\/=|%=|\^%=|<<=|>>=|~>>=|\^>>=|&=|\|=|\^=|\^|=|~|\/|%|-|\*|\+|>|<|&|\||:|\?)(?=\s)
       - name: keyword.other

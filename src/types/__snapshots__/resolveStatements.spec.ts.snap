@@ -230,6 +230,16 @@ Line 16, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for case-23 1`] = `
+"<unknown>:15:9: Cannot access self before init
+Line 15, col 9:
+  14 |     init(arg: Bool) {
+> 15 |         self.update();
+               ^~~~~~~~~~~~~
+  16 |         self.value = 1;
+"
+`;
+
 exports[`resolveStatements should resolve statements for case-0 1`] = `
 [
   [

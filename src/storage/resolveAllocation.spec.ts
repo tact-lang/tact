@@ -55,7 +55,7 @@ contract Sample {
     init() {
 
     }
-    public fun main(a: Int, b: Int) {
+    fun main(a: Int, b: Int) {
     }
 }
 `;

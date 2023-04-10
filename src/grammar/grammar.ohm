@@ -30,8 +30,11 @@ Tact {
           | id ":" Type as id "=" Expression ";" --withSerializationAndInit
     
     // Constant
-    ConstantAttributes = virtual | overrides
-    Constant = ConstantAttributes* const id ":" Type "=" Expression ";"
+    ConstantAttribute = virtual    --virtual
+                      | override   --override
+                      | abstract   --abstract
+    Constant = ConstantAttribute* ~fun const id ":" Type "=" Expression ";" --withValue
+             | ConstantAttribute* ~fun const id ":" Type ";"                --withEmpty
 
     // Struct
     Struct = "struct" id "{" StructBody* "}" --originary
@@ -55,20 +58,23 @@ Tact {
     TraitBody = Field
               | ReceiveFunction
               | Function
+              | Constant
 
     // Contract attributes
     ContractAttribute = "@interface" "(" stringLiteral ")" --interface
 
     // Function
-    FunctionAttribute = public --public
-                      | "get"    --getter
-                      | mutates --mutates
-                      | extends --extends
-                      | virtual --virtual
-                      | overrides --overrides
-                      | inline --inline
+    FunctionAttribute = "get"     --getter
+                      | mutates   --mutates
+                      | extends   --extends
+                      | virtual   --virtual
+                      | override  --override
+                      | inline    --inline
+                      | abstract  --abstract
     Function = FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" "{" Statement* "}" --withVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type "{" Statement* "}" --withType
+             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ";" --abstractVoid
+             | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --abstractType
     FunctionArg = id ":" Type
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
                     | "receive" "(" ")" "{" Statement* "}" --empty
@@ -212,7 +218,8 @@ Tact {
             | with
             | trait
             | initOf
-            | overrides
+            | override
+            | abstract
             | virtual
             | inline
             | const
@@ -238,9 +245,10 @@ Tact {
     trait = "trait" ~idPart
     initOf = "initOf" ~idPart
     virtual = "virtual" ~idPart
-    overrides = "overrides" ~idPart
+    override = "override" ~idPart
     inline = "inline" ~idPart
     const = "const" ~idPart
+    abstract = "abstract" ~idPart
 
     // Attributes
     nameAttribute = "@name"

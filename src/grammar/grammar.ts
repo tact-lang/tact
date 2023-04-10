@@ -1,9 +1,11 @@
 import rawGrammar from './grammar.ohm-bundle';
-import { ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTRef, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
+import { ASTConstantAttribute, ASTContractAttribute, ASTFunctionAttribute, ASTNode, ASTProgram, ASTRef, ASTString, ASTTypeRef, createNode, createRef, inFile, throwError } from './ast';
 import { checkVariableName } from './checkVariableName';
 import { TactSyntaxError } from './../errors';
 import { MatchResult } from 'ohm-js';
 import { TypeOrigin } from '../types/types';
+import { checkFunctionAttributes } from './checkFunctionAttributes';
+import { checkConstAttributes } from './checkConstAttributes';
 
 let ctx: { origin: TypeOrigin } | null;
 
@@ -132,12 +134,27 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
     NativeFunction(arg0) {
         return arg0.resolve_declaration();
     },
-    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+    Constant_withValue(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        const attributes = arg0.children.map((v: any) => v.resolve_const_attributes()) as ASTConstantAttribute[];
+        checkConstAttributes(false, attributes, createRef(this));
         return createNode({
             kind: 'def_constant',
             name: arg2.sourceString,
             type: arg4.resolve_expression(),
             value: arg6.resolve_expression(),
+            attributes,
+            ref: createRef(this)
+        })
+    },
+    Constant_withEmpty(arg0, arg1, arg2, arg3, arg4, arg5) {
+        const attributes = arg0.children.map((v: any) => v.resolve_const_attributes()) as ASTConstantAttribute[];
+        checkConstAttributes(true, attributes, createRef(this));
+        return createNode({
+            kind: 'def_constant',
+            name: arg2.sourceString,
+            type: arg4.resolve_expression(),
+            value: null,
+            attributes,
             ref: createRef(this)
         })
     },
@@ -145,9 +162,6 @@ semantics.addOperation<ASTNode>('resolve_program_item', {
 
 // Resolve attributes
 semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
-    FunctionAttribute_public(arg0) {
-        return { type: 'public', ref: createRef(this) };
-    },
     FunctionAttribute_getter(arg0) {
         return { type: 'get', ref: createRef(this) };
     },
@@ -157,7 +171,7 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
     FunctionAttribute_mutates(arg0) {
         return { type: 'mutates', ref: createRef(this) };
     },
-    FunctionAttribute_overrides(arg0) {
+    FunctionAttribute_override(arg0) {
         return { type: 'overrides', ref: createRef(this) };
     },
     FunctionAttribute_inline(arg0) {
@@ -165,6 +179,22 @@ semantics.addOperation<ASTFunctionAttribute>('resolve_attributes', {
     },
     FunctionAttribute_virtual(arg0) {
         return { type: 'virtual', ref: createRef(this) };
+    },
+    FunctionAttribute_abstract(arg0) {
+        return { type: 'abstract', ref: createRef(this) };
+    },
+});
+
+// Resolve const attributes
+semantics.addOperation<ASTConstantAttribute>('resolve_const_attributes', {
+    ConstantAttribute_override(arg0) {
+        return { type: 'overrides', ref: createRef(this) };
+    },
+    ConstantAttribute_virtual(arg0) {
+        return { type: 'virtual', ref: createRef(this) };
+    },
+    ConstantAttribute_abstract(arg0) {
+        return { type: 'abstract', ref: createRef(this) };
     },
 });
 
@@ -219,12 +249,27 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
             ref: createRef(this)
         })
     },
-    Constant(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+    Constant_withValue(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) {
+        const attributes = arg0.children.map((v: any) => v.resolve_const_attributes()) as ASTConstantAttribute[];
+        checkConstAttributes(false, attributes, createRef(this));
         return createNode({
             kind: 'def_constant',
             name: arg2.sourceString,
             type: arg4.resolve_expression(),
             value: arg6.resolve_expression(),
+            attributes,
+            ref: createRef(this)
+        })
+    },
+    Constant_withEmpty(arg0, arg1, arg2, arg3, arg4, arg5) {
+        const attributes = arg0.children.map((v: any) => v.resolve_const_attributes()) as ASTConstantAttribute[];
+        checkConstAttributes(true, attributes, createRef(this));
+        return createNode({
+            kind: 'def_constant',
+            name: arg2.sourceString,
+            type: arg4.resolve_expression(),
+            value: null,
+            attributes,
             ref: createRef(this)
         })
     },
@@ -238,11 +283,13 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_withType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) {
+        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
+        checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
             kind: 'def_function',
             origin: ctx!.origin,
-            attributes: arg0.children.map((v: any) => v.resolve_attributes()),
+            attributes,
             name: arg2.sourceString,
             return: arg7.resolve_expression(),
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
@@ -251,15 +298,47 @@ semantics.addOperation<ASTNode>('resolve_declaration', {
         })
     },
     Function_withVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
         checkVariableName(arg2.sourceString, createRef(arg2));
+        checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
             kind: 'def_function',
             origin: ctx!.origin,
-            attributes: arg0.children.map((v: any) => v.resolve_attributes()),
+            attributes,
             name: arg2.sourceString,
             return: null,
             args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
             statements: arg7.children.map((v: any) => v.resolve_statement()),
+            ref: createRef(this)
+        })
+    },
+    Function_abstractVoid(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkFunctionAttributes(true, attributes, createRef(this));
+        return createNode({
+            kind: 'def_function',
+            origin: ctx!.origin,
+            attributes,
+            name: arg2.sourceString,
+            return: null,
+            args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: null,
+            ref: createRef(this)
+        })
+    },
+    Function_abstractType(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+        let attributes = arg0.children.map((v: any) => v.resolve_attributes()) as ASTFunctionAttribute[];
+        checkVariableName(arg2.sourceString, createRef(arg2));
+        checkFunctionAttributes(true, attributes, createRef(this));
+        return createNode({
+            kind: 'def_function',
+            origin: ctx!.origin,
+            attributes,
+            name: arg2.sourceString,
+            return: arg7.resolve_expression(),
+            args: arg4.asIteration().children.map((v: any) => v.resolve_declaration()),
+            statements: null,
             ref: createRef(this)
         })
     },
@@ -494,7 +573,7 @@ semantics.addOperation<ASTNode>('resolve_expression', {
         return createNode({ kind: 'type_ref_simple', name: arg0.sourceString, optional: false, ref: createRef(this) });
     },
     Type_map(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) {
-        
+
         return createNode({
             kind: 'type_ref_map',
             key: arg2.sourceString,

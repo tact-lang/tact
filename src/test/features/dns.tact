@@ -27,7 +27,7 @@ contract DNSTester with Deployable, DNSResolver {
         return dnsExtractTopDomain(subdomain);
     }
 
-    overrides fun doResolveDNS(subdomain: Slice, category: Int): DNSResolveResult {
+    override fun doResolveDNS(subdomain: Slice, category: Int): DNSResolveResult {
         return DNSResolveResult{ prefix: subdomain.bits(), record: beginCell().storeSlice(subdomain).endCell() };
     }
 }

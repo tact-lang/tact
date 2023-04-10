@@ -6,6 +6,11 @@
       "output": "./examples/output"
     },
     {
+      "name": "inheritance",
+      "path": "./examples/inheritance.tact",
+      "output": "./examples/output"
+    },
+    {
       "name": "large",
       "path": "./examples/large.tact",
       "output": "./examples/output"

@@ -301,7 +301,9 @@ export function resolveStatements(ctx: CompilerContext) {
             }
 
             // Process
-            ctx = processFunctionBody(f.ast.statements, sctx, ctx);
+            if (f.ast.statements) {
+                ctx = processFunctionBody(f.ast.statements, sctx, ctx);
+            }
         }
     }
 
@@ -371,7 +373,9 @@ export function resolveStatements(ctx: CompilerContext) {
                 }
 
                 // Process
-                ctx = processFunctionBody(f.ast.statements, sctx, ctx);
+                if (f.ast.statements) {
+                    ctx = processFunctionBody(f.ast.statements, sctx, ctx);
+                }
             }
         }
     }

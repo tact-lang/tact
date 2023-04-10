@@ -118,7 +118,10 @@ function reduceCell(ast: ASTExpression, ctx: CompilerContext): Cell {
     throwError('Cannot reduce expression to a constant Address', ast.ref);
 }
 
-export function resolveConstantValue(type: TypeRef, ast: ASTExpression, ctx: CompilerContext) {
+export function resolveConstantValue(type: TypeRef, ast: ASTExpression | null, ctx: CompilerContext) {
+    if (ast === null) {
+        return undefined;
+    }
 
     if (type.kind !== 'ref') {
         throwError(`Expected constant value, got ${printTypeRef(type)}`, ast.ref);

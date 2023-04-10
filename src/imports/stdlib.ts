@@ -84,8 +84,6 @@ files['libs/dns.tact'] =
     'Zml4OiByZXMucHJlZml4ICsgZGVsdGEsIHJlY29yZDogcmVzLnJlY29yZH07CiAgICB9CgogICAgdmlydHVhbCBmdW4gZG9SZXNvbHZlRE5TKHN1YmRvbWFpbjogU2xp' +
     'Y2UsIGNhdGVnb3J5OiBJbnQpOiBETlNSZXNvbHZlUmVzdWx0IHsKICAgICAgICByZXR1cm4gRE5TUmVzb2x2ZVJlc3VsdHtwcmVmaXg6IHN1YmRvbWFpbi5iaXRzKCks' +
     'IHJlY29yZDogbnVsbH07CiAgICB9Cn0=';
-files['libs/nft.tact'] =
-    'dHJhaXQgU2luZ2xlTkZUIHsKICAgIAp9';
 files['libs/ownable.tact'] =
     'bWVzc2FnZSBDaGFuZ2VPd25lciB7CiAgICBuZXdPd25lcjogQWRkcmVzczsKfQoKQGludGVyZmFjZSgib3JnLnRvbi5vd25hYmxlIikKdHJhaXQgT3duYWJsZSB7CiAg' +
     'ICBvd25lcjogQWRkcmVzczsKCiAgICBmdW4gcmVxdWlyZU93bmVyKCkgewogICAgICAgIG5hdGl2ZVRocm93VW5sZXNzKDEzMiwgc2VuZGVyKCkgPT0gc2VsZi5vd25l' +
@@ -104,9 +102,10 @@ files['libs/stoppable.tact'] =
     'KCk7CiAgICAgICAgc2VsZi5yZXF1aXJlU3RvcHBlZCgpOwogICAgICAgIHNlbGYuc3RvcHBlZCA9IGZhbHNlOwogICAgICAgIHNlbGYucmVwbHkoIlJlc3VtZWQiLmFz' +
     'Q29tbWVudCgpKTsKICAgIH0KfQ==';
 files['std/base.tact'] =
-    'dHJhaXQgQmFzZVRyYWl0IHsKICAgIHZpcnR1YWwgaW5saW5lIGZ1biByZXBseShib2R5OiBDZWxsPykgewogICAgICAgIHNlbmQoU2VuZFBhcmFtZXRlcnN7CiAgICAg' +
-    'ICAgICAgIGJvdW5jZTogdHJ1ZSwKICAgICAgICAgICAgdG86IHNlbmRlcigpLAogICAgICAgICAgICB2YWx1ZTogMCwKICAgICAgICAgICAgbW9kZTogU2VuZFJlbWFp' +
-    'bmluZ1ZhbHVlICsgU2VuZElnbm9yZUVycm9ycywgCiAgICAgICAgICAgIGJvZHk6IGJvZHkKICAgICAgICB9KTsKICAgIH0KfQ==';
+    'dHJhaXQgQmFzZVRyYWl0IHsKICAgIHZpcnR1YWwgY29uc3QgdGVzdDogSW50ID0gMDsKICAgIHZpcnR1YWwgaW5saW5lIGZ1biByZXBseShib2R5OiBDZWxsPykgewog' +
+    'ICAgICAgIHNlbmQoU2VuZFBhcmFtZXRlcnN7CiAgICAgICAgICAgIGJvdW5jZTogdHJ1ZSwKICAgICAgICAgICAgdG86IHNlbmRlcigpLAogICAgICAgICAgICB2YWx1' +
+    'ZTogMCwKICAgICAgICAgICAgbW9kZTogU2VuZFJlbWFpbmluZ1ZhbHVlICsgU2VuZElnbm9yZUVycm9ycywgCiAgICAgICAgICAgIGJvZHk6IGJvZHkKICAgICAgICB9' +
+    'KTsKICAgIH0KfQ==';
 files['std/cells.tact'] =
     'Ly8KLy8gQnVpbGRlcgovLwoKQG5hbWUoYmVnaW5fY2VsbCkKbmF0aXZlIGJlZ2luQ2VsbCgpOiBCdWlsZGVyOwoKQG5hbWUoc3RvcmVfaW50KQpleHRlbmRzIG5hdGl2' +
     'ZSBzdG9yZUludChzZWxmOiBCdWlsZGVyLCB2YWx1ZTogSW50LCBiaXRzOiBJbnQpOiBCdWlsZGVyOwoKQG5hbWUoc3RvcmVfdWludCkKZXh0ZW5kcyBuYXRpdmUgc3Rv' +

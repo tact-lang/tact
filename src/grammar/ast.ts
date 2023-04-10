@@ -219,7 +219,7 @@ export type ASTTrait = {
     name: string,
     traits: ASTString[],
     attributes: ASTContractAttribute[],
-    declarations: (ASTField | ASTFunction | ASTReceive)[],
+    declarations: (ASTField | ASTFunction | ASTReceive | ASTConstant)[],
     ref: ASTRef
 }
 
@@ -238,9 +238,15 @@ export type ASTConstant = {
     id: number,
     name: string,
     type: ASTTypeRef,
-    value: ASTExpression,
+    value: ASTExpression | null,
+    attributes: ASTConstantAttribute[],
     ref: ASTRef
 }
+
+export type ASTConstantAttribute =
+    | { type: 'virtual', ref: ASTRef }
+    | { type: 'overrides', ref: ASTRef }
+    | { type: 'abstract', ref: ASTRef };
 
 export type ASTContractAttribute = { type: 'interface', name: ASTString, ref: ASTRef };
 
@@ -264,11 +270,11 @@ export type ASTArgument = {
 }
 
 export type ASTFunctionAttribute =
-    | { type: 'public', ref: ASTRef }
     | { type: 'get', ref: ASTRef }
     | { type: 'mutates', ref: ASTRef }
     | { type: 'extends', ref: ASTRef }
     | { type: 'virtual', ref: ASTRef }
+    | { type: 'abstract', ref: ASTRef }
     | { type: 'overrides', ref: ASTRef }
     | { type: 'inline', ref: ASTRef };
 
@@ -280,7 +286,7 @@ export type ASTFunction = {
     name: string,
     return: ASTTypeRef | null,
     args: ASTArgument[],
-    statements: ASTStatement[],
+    statements: ASTStatement[] | null,
     ref: ASTRef
 }
 
@@ -482,8 +488,10 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         for (let e of node.args) {
             traverse(e, callback);
         }
-        for (let e of node.statements) {
-            traverse(e, callback);
+        if (node.statements) {
+            for (let e of node.statements) {
+                traverse(e, callback);
+            }
         }
     }
     if (node.kind === 'def_init_function') {
@@ -510,7 +518,9 @@ export function traverse(node: ASTNode, callback: (node: ASTNode) => void) {
         }
     }
     if (node.kind === 'def_constant') {
-        traverse(node.value, callback);
+        if (node.value) {
+            traverse(node.value, callback);
+        }
     }
 
     //

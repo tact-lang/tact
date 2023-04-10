@@ -268,6 +268,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     if (types[a.name].constants.find((v) => v.name === f.name)) {
                         throwError(`Constant ${f.name} already exists`, f.ref);
                     }
+                    if (f.attributes.find((v) => v.type !== 'overrides')) {
+                        throwError(`Constant can be only overriden`, f.ref);
+                    }
                     types[a.name].constants.push(buildConstantDescription(f));
                 }
             }
@@ -286,16 +289,29 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Trait
         if (a.kind === 'def_trait') {
             for (const f of a.declarations) {
-                if (f.kind !== 'def_field') {
-                    continue;
+                if (f.kind === 'def_field') {
+                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                        throwError(`Field ${f.name} already exists`, f.ref);
+                    }
+                    if (f.as) {
+                        throwError(`Trait field cannot have serialization specifier`, f.ref);
+                    }
+                    types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
+                } else if (f.kind === 'def_constant') {
+                    if (types[a.name].fields.find((v) => v.name === f.name)) {
+                        throwError(`Field ${f.name} already exists`, f.ref);
+                    }
+                    if (types[a.name].constants.find((v) => v.name === f.name)) {
+                        throwError(`Constant ${f.name} already exists`, f.ref);
+                    }
+                    if (f.attributes.find((v) => v.type === 'overrides')) {
+                        throwError(`Trait constant cannot be overriden`, f.ref);
+                    }
+                    // if (f.attributes.find((v) => v.type === 'abstract')) {
+                    //     continue; // Do not materialize abstract constants
+                    // }
+                    types[a.name].constants.push(buildConstantDescription(f));
                 }
-                if (types[a.name].fields.find((v) => v.name === f.name)) {
-                    throwError(`Field ${f.name} already exists`, f.ref);
-                }
-                if (f.as) {
-                    throwError(`Trait field cannot have serialization specifier`, f.ref);
-                }
-                types[a.name].fields.push(buildFieldDescription(f, types[a.name].fields.length));
             }
         }
     }
@@ -326,19 +342,16 @@ export function resolveDescriptors(ctx: CompilerContext) {
         }
 
         // Resolve flags
-        let isPublic = a.attributes.find(a => a.type === 'public');
         let isGetter = a.attributes.find(a => a.type === 'get');
         let isMutating = a.attributes.find(a => a.type === 'mutates');
         let isExtends = a.attributes.find(a => a.type === 'extends');
         let isVirtual = a.attributes.find(a => a.type === 'virtual');
         let isOverrides = a.attributes.find(a => a.type === 'overrides');
         let isInline = a.attributes.find(a => a.type === 'inline');
+        let isAbstract = a.attributes.find(a => a.type === 'abstract');
 
         // Check for native
         if (a.kind === 'def_native_function') {
-            if (isPublic) {
-                throwError('Native functions cannot be public', isPublic.ref);
-            }
             if (isGetter) {
                 throwError('Native functions cannot be getters', isGetter.ref);
             }
@@ -360,11 +373,26 @@ export function resolveDescriptors(ctx: CompilerContext) {
         if (isOverrides && isExtends) {
             throwError('Extend functions cannot be overrides', isOverrides.ref);
         }
+        if (isAbstract && isExtends) {
+            throwError('Extend functions cannot be abstract', isAbstract.ref);
+        }
         if (!self && isVirtual) {
             throwError('Virtual functions must be defined within a contract or a trait', isVirtual.ref);
         }
         if (!self && isOverrides) {
             throwError('Overrides functions must be defined within a contract or a trait', isOverrides.ref);
+        }
+        if (!self && isAbstract) {
+            throwError('Abstract functions must be defined within a trait', isAbstract.ref);
+        }
+        if (isVirtual && isAbstract) {
+            throwError('Abstract functions cannot be virtual', isAbstract.ref);
+        }
+        if (isVirtual && isOverrides) {
+            throwError('Overrides functions cannot be virtual', isOverrides.ref);
+        }
+        if (isAbstract && isOverrides) {
+            throwError('Overrides functions cannot be abstract', isOverrides.ref);
         }
 
         // Check virtual
@@ -372,6 +400,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
             let t = types[self!]!;
             if (t.kind !== 'trait') {
                 throwError('Virtual functions must be defined within a trait', isVirtual.ref);
+            }
+        }
+
+        // Check abstract
+        if (isAbstract) {
+            let t = types[self!]!;
+            if (t.kind !== 'trait') {
+                throwError('Abstract functions must be defined within a trait', isAbstract.ref);
             }
         }
 
@@ -385,17 +421,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
         // Check for common
         if (a.kind === 'def_function') {
-            if (isPublic && !self) {
-                throwError('Public functions must be defined within a contract', isPublic.ref);
-            }
             if (isGetter && !self) {
                 throwError('Getters must be defined within a contract', isGetter.ref);
             }
-        }
-
-        // Common checks
-        if (isPublic && isGetter) {
-            throwError('Functions cannot be both public and getters', isPublic.ref);
         }
 
         // Check for getter
@@ -457,11 +485,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
             returns,
             ast: a,
             isMutating: !!isMutating || (!!sself /* && !isGetter */), // Mark all contract functions as mutating
-            isPublic: !!isPublic,
             isGetter: !!isGetter,
             isVirtual: !!isVirtual,
             isOverrides: !!isOverrides,
             isInline: !!isInline,
+            isAbstract: !!isAbstract
         };
     }
 
@@ -757,7 +785,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
-    // Copy Trait functions
+    // Copy Trait functions and constants
     //
 
     function copyTraits(t: TypeDescription) {
@@ -766,6 +794,9 @@ export function resolveDescriptors(ctx: CompilerContext) {
             // Copy functions
             for (let f of tr.functions.values()) {
                 let ex = t.functions.get(f.name);
+                if (!ex && f.isAbstract) {
+                    throwError(`Trait ${tr.name} requires function ${f.name}`, t.ast.ref);
+                }
 
                 // Check overrides
                 if (ex && ex.isOverrides) {
@@ -800,6 +831,33 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 t.functions.set(f.name, {
                     ...f,
                     self: t.name,
+                    ast: cloneNode(f.ast)
+                });
+            }
+
+            // Copy constants
+            for (let f of tr.constants) {
+                let ex = t.constants.find((v) => v.name === f.name);
+                if (!ex && f.ast.attributes.find((v) => v.type === 'abstract')) {
+                    throwError(`Trait ${tr.name} requires constant ${f.name}`, t.ast.ref);
+                }
+
+                // Check overrides
+                if (ex && ex.ast.attributes.find((v) => v.type === 'overrides')) {
+                    if (!typeRefEquals(f.type, ex.type)) {
+                        throwError(`Overridden constant ${f.name} should have same type`, ex.ast.ref);
+                    }
+                    continue;
+                }
+
+                // Check duplicates
+                if (ex) {
+                    throwError(`Constant ${f.name} already exist in ${t.name}`, t.ast.ref);
+                }
+
+                // Register constant
+                t.constants.push({
+                    ...f,
                     ast: cloneNode(f.ast)
                 });
             }

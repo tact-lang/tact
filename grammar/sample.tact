@@ -28,12 +28,14 @@ message /**/ (0x123) MyMessage2 {
 }
 
 trait MyTrait {
-    overrides get fun traitState(): Int {
+    override get fun traitState(): Int {
         return 0;
     }
     virtual fun overrideMe() {
         // nothing
     }
+
+    abstract fun abstractMe();
 }
 
 contract MyContract with MyTrait, Ownable {
@@ -71,7 +73,7 @@ contract MyContract with MyTrait, Ownable {
         }.asCell());
     }
 
-    overrides fun overrideMe() {
+    override fun overrideMe() {
         // nothing
     }
 }
