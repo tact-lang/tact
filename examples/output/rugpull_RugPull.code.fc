@@ -96,11 +96,12 @@
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
-(((slice, int, int, int, int, int, int, int, int, cell)), ()) $RugPull$_internal_binary_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (slice) $msg) impure inline {
+(((slice, int, int, int, int, int, int, int, int, cell)), ()) $RugPull$_internal_binary_ChangeOwner((slice, int, int, int, int, int, int, int, int, cell) $self, (int, slice) $msg) impure inline {
     var ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue) = $self;
-    var ($msg'newOwner) = $msg;
+    var ($msg'queryId, $msg'newOwner) = $msg;
     ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_requireOwner();
     $self'owner = $msg'newOwner;
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_reply($ChangeOwnerOk$_store_cell($ChangeOwnerOk$_constructor_queryId_newOwner($msg'queryId, $msg'newOwner)));
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }
 
@@ -141,14 +142,14 @@ _ supported_interfaces() method_id {
         "org.ton.abi.ipfs.v0"H >> 128,
         "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.chain.workchain.v0"H >> 128,
-        "org.ton.ownable.transferable"H >> 128,
+        "org.ton.ownable.transferable.v2"H >> 128,
         "org.ton.ownable"H >> 128,
         "org.ton.stoppable"H >> 128
     );
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmdfhYvEv8AuZ49vUw8RmL1ZhyE64jgVqDKtdHCSiMX4ga";
+    return "ipfs://Qmbbdzw5dKWTeifxcrE2jZ5BkNKDqSDr7zpSVC9WmbVoEg";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -179,7 +180,7 @@ _ lazy_deployment_completed() method_id {
     }
     
     ;; Receive ChangeOwner message
-    if (op == 256331011) {
+    if (op == 2174598809) {
         var msg = in_msg~$ChangeOwner$_load();
         self~$RugPull$_internal_binary_ChangeOwner(msg);
         return (self, true);

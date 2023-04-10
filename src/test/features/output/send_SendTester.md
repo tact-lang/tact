@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: SendTester
-BOC Size: 746 bytes
+BOC Size: 744 bytes
 
 # Types
 Total Types: 5

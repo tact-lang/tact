@@ -12,6 +12,9 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_store_address
 builder __tact_store_address(builder b, slice address) inline;
 
+;; __tact_my_balance
+int __tact_my_balance() inline;
+
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) inline;
 
@@ -34,7 +37,13 @@ slice __tact_dict_get_int_slice(cell d, int kl, int k) inline;
 int __tact_slice_eq_bits(slice a, slice b) inline;
 
 ;; $ChangeOwner$_load
-(slice, ((slice))) $ChangeOwner$_load(slice sc_0) inline;
+(slice, ((int, slice))) $ChangeOwner$_load(slice sc_0) inline;
+
+;; $ChangeOwnerOk$_store
+builder $ChangeOwnerOk$_store(builder build_0, (int, slice) v) inline;
+
+;; $ChangeOwnerOk$_store_cell
+cell $ChangeOwnerOk$_store_cell((int, slice) v) inline;
 
 ;; $RugPull$_store
 builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, int, int, cell) v) inline;
@@ -75,6 +84,9 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 ;; $SendParameters$_constructor_bounce_to_value_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
 
+;; $RugPull$_fun_forward
+((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_forward((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, cell $body) impure inline_ref;
+
 ;; $RugPull$_fun_reply
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_reply((slice, int, int, int, int, int, int, int, int, cell) $self, cell $body) impure inline;
 
@@ -89,3 +101,6 @@ builder $RugPull$_store(builder build_0, (slice, int, int, int, int, int, int, i
 
 ;; $RugPull$_fun_stopped
 ((slice, int, int, int, int, int, int, int, int, cell), int) $RugPull$_fun_stopped((slice, int, int, int, int, int, int, int, int, cell) $self) impure inline_ref;
+
+;; $ChangeOwnerOk$_constructor_queryId_newOwner
+((int, slice)) $ChangeOwnerOk$_constructor_queryId_newOwner(int queryId, slice newOwner) inline;

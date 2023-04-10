@@ -6,9 +6,10 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_2dff0589a7770907;
-  DECLPROC ?fun_ref_3d7e789f7f2a39b8;
+  DECLPROC ?fun_ref_3b7fc0a89dc64d83;
   DECLPROC ?fun_ref_3dd70f0a0852c361;
   DECLPROC ?fun_ref_44086a5ce86162fe;
+  DECLPROC ?fun_ref_457ed784de722f7b;
   DECLPROC ?fun_ref_a2cdc56ef3c61464;
   DECLPROC ?fun_ref_b347d9c3ebd197d4;
   DECLPROC ?fun_ref_b93b9862cda1783c;
@@ -45,7 +46,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_a2cdc56ef3c61464 INLINECALLDICT
     2 5 BLKSWAP
-    ?fun_ref_3d7e789f7f2a39b8 INLINECALLDICT
+    ?fun_ref_3b7fc0a89dc64d83 INLINECALLDICT
     s0 POP
     NEWC
     3 GETGLOBVAR
@@ -104,7 +105,7 @@ PROGRAM{
     NULL
     NULL
   }>
-  ?fun_ref_3d7e789f7f2a39b8 PROCREF:<{
+  ?fun_ref_3b7fc0a89dc64d83 PROCREF:<{
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -366,16 +367,9 @@ PROGRAM{
       32 STU
       64 STU
       ENDC
-      -1 PUSHINT
       2 GETGLOBVAR
-      0 PUSHINT
-      ROT
-      s0 s3 XCHG
-      66 PUSHINT
       s0 s1 XCHG
-      NULL
-      NULL
-      ?fun_ref_b93b9862cda1783c INLINECALLDICT
+      ?fun_ref_457ed784de722f7b INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
@@ -503,6 +497,17 @@ PROGRAM{
   }>
   ?fun_ref_44086a5ce86162fe PROCREF:<{
     s1 PUSH
+  }>
+  ?fun_ref_457ed784de722f7b PROCREF:<{
+    -1 PUSHINT
+    s0 s2 XCHG
+    0 PUSHINT
+    ROT
+    66 PUSHINT
+    s0 s1 XCHG
+    NULL
+    NULL
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
   ?fun_ref_a2cdc56ef3c61464 PROCREF:<{
     c4 PUSH

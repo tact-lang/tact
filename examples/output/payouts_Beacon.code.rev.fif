@@ -5,8 +5,9 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_44086a5ce86162fe;
+  DECLPROC ?fun_ref_457ed784de722f7b;
   DECLPROC ?fun_ref_644ef5250652bdfa;
-  DECLPROC ?fun_ref_851f6ffd003ac286;
+  DECLPROC ?fun_ref_b8dbf2d8523a8ae8;
   DECLPROC ?fun_ref_b93b9862cda1783c;
   DECLPROC ?fun_ref_ed6d0b29af79c1a8;
   recv_internal PROC:<{
@@ -42,7 +43,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_ed6d0b29af79c1a8 INLINECALLDICT
     2 3 BLKSWAP
-    ?fun_ref_851f6ffd003ac286 INLINECALLDICT
+    ?fun_ref_b8dbf2d8523a8ae8 INLINECALLDICT
     s0 POP
     NEWC
     3 GETGLOBVAR
@@ -107,15 +108,26 @@ PROGRAM{
     s0 s1 XCHG
   }>
   get_abi_ipfs PROC:<{
-    x{697066733A2F2F516D563246787742766975345A31435152476175623954755A7164673667684C687A643551446B4859663641624782_} PUSHSLICE
+    x{697066733A2F2F516D5A4C48436E466F585A514D3141366534767A6668503973426F514372634253526E4542794E6558387275486E82_} PUSHSLICE
   }>
   ?fun_ref_44086a5ce86162fe PROCREF:<{
     s1 PUSH
   }>
+  ?fun_ref_457ed784de722f7b PROCREF:<{
+    -1 PUSHINT
+    s0 s2 XCHG
+    0 PUSHINT
+    ROT
+    66 PUSHINT
+    s0 s1 XCHG
+    NULL
+    NULL
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
+  }>
   ?fun_ref_644ef5250652bdfa PROCREF:<{
     0 PUSHINT
   }>
-  ?fun_ref_851f6ffd003ac286 PROCREF:<{
+  ?fun_ref_b8dbf2d8523a8ae8 PROCREF:<{
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -190,16 +202,9 @@ PROGRAM{
         STSLICER
         1 STI
         ENDC
-        -1 PUSHINT
         2 GETGLOBVAR
-        0 PUSHINT
-        ROT
-        s0 s3 XCHG
-        66 PUSHINT
         s0 s1 XCHG
-        NULL
-        NULL
-        ?fun_ref_b93b9862cda1783c INLINECALLDICT
+        ?fun_ref_457ed784de722f7b INLINECALLDICT
       }> PUSHCONT
       <{
         s1 POP
@@ -234,16 +239,9 @@ PROGRAM{
         STSLICER
         1 STI
         ENDC
-        -1 PUSHINT
         2 GETGLOBVAR
-        0 PUSHINT
-        ROT
-        s0 s3 XCHG
-        66 PUSHINT
         s0 s1 XCHG
-        NULL
-        NULL
-        ?fun_ref_b93b9862cda1783c INLINECALLDICT
+        ?fun_ref_457ed784de722f7b INLINECALLDICT
       }> IFREFELSE
       -1 PUSHINT
     }> IFJMPREF

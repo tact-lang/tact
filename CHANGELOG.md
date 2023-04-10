@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Rename `overrides` to `override`
+- Updated ownership transfering methods
 
 ## Removed
 - Unused `public` modifier

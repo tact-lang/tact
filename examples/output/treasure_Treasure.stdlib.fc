@@ -24,8 +24,16 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
 forall X -> X __tact_not_null(X x) inline {
     throw_if(128, null?(x)); return x;
+}
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
 }
 
 slice __tact_context_get_sender() inline {
@@ -81,4 +89,26 @@ int __tact_slice_eq_bits(slice a, slice b) inline {
     }
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
+}
+
+((slice), ()) $Treasure$_fun_forward((slice) $self, slice $to, cell $body) impure inline_ref {
+    var (($self'owner)) = $self;
+    if ((0 > 0)) {
+        var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        int $balance = __tact_my_balance();
+        int $balanceBeforeMessage = ($balance - $ctx'value);
+        if (($balanceBeforeMessage < 0)) {
+            raw_reserve(0, 0);
+            $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (128 + 2), $body));
+            return (($self'owner), ());
+        }
+    }
+    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (64 + 2), $body));
+    return (($self'owner), ());
+}
+
+((slice), ()) $Treasure$_fun_reply((slice) $self, cell $body) impure inline {
+    var (($self'owner)) = $self;
+    ($self'owner)~$Treasure$_fun_forward(__tact_context_get_sender(), $body);
+    return (($self'owner), ());
 }

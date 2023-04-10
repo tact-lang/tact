@@ -9,8 +9,14 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_store_address
 builder __tact_store_address(builder b, slice address) inline;
 
+;; __tact_my_balance
+int __tact_my_balance() inline;
+
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
 
 ;; __tact_context_get_sender
 slice __tact_context_get_sender() inline;
@@ -62,6 +68,9 @@ cell $String$_fun_asComment(slice $self) impure inline_ref;
 
 ;; $SendParameters$_constructor_bounce_to_value_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $Echo$_fun_forward
+(tuple, ()) $Echo$_fun_forward(tuple $self, slice $to, cell $body) impure inline_ref;
 
 ;; $Echo$_fun_reply
 (tuple, ()) $Echo$_fun_reply(tuple $self, cell $body) impure inline;

@@ -9,8 +9,14 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_store_address
 builder __tact_store_address(builder b, slice address) inline;
 
+;; __tact_my_balance
+int __tact_my_balance() inline;
+
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) inline;
+
+;; __tact_context_get
+(int, slice, int, slice) __tact_context_get() inline;
 
 ;; __tact_context_get_sender
 slice __tact_context_get_sender() inline;
@@ -107,6 +113,9 @@ builder $Maps$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell,
 
 ;; $SendParameters$_constructor_bounce_to_value_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $Maps$_fun_forward
+((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_forward((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $to, cell $body) impure inline_ref;
 
 ;; $Maps$_fun_reply
 ((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_reply((cell, cell, cell, cell, cell, cell, cell, cell) $self, cell $body) impure inline;

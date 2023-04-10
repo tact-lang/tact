@@ -24,6 +24,10 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
 forall X -> X __tact_not_null(X x) inline {
     throw_if(128, null?(x)); return x;
 }
@@ -105,8 +109,24 @@ int __tact_slice_eq_bits(slice a, slice b) inline {
     send_raw_message($c, $params'mode);
 }
 
+((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_forward((slice, int, int, int, int, int, int, int, int, cell) $self, slice $to, cell $body) impure inline_ref {
+    var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
+    if ((0 > 0)) {
+        var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        int $balance = __tact_my_balance();
+        int $balanceBeforeMessage = ($balance - $ctx'value);
+        if (($balanceBeforeMessage < 0)) {
+            raw_reserve(0, 0);
+            $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (128 + 2), $body));
+            return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+        }
+    }
+    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (64 + 2), $body));
+    return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
+}
+
 ((slice, int, int, int, int, int, int, int, int, cell), ()) $RugPull$_fun_reply((slice, int, int, int, int, int, int, int, int, cell) $self, cell $body) impure inline {
     var (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)) = $self;
-    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
+    ($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue)~$RugPull$_fun_forward(__tact_context_get_sender(), $body);
     return (($self'owner, $self'investment, $self'returns, $self'fee, $self'balance, $self'rugpulled, $self'stopped, $self'queueStart, $self'queueEnd, $self'queue), ());
 }

@@ -7,7 +7,8 @@ PROGRAM{
   DECLPROC ?fun_128647;
   DECLPROC ?fun_ref_12ddd495964bf857;
   DECLPROC ?fun_ref_2d07f38171ff8546;
-  DECLPROC ?fun_ref_9e39f86b32081dda;
+  DECLPROC ?fun_ref_457ed784de722f7b;
+  DECLPROC ?fun_ref_65111aea2c25785e;
   DECLPROC ?fun_ref_a05e0042bce184fb;
   DECLPROC ?fun_ref_b93b9862cda1783c;
   DECLPROC ?fun_ref_c0ca23818e24f3c9;
@@ -44,7 +45,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
     ROTREV
-    ?fun_ref_9e39f86b32081dda INLINECALLDICT
+    ?fun_ref_65111aea2c25785e INLINECALLDICT
     s0 POP
     s0 POP
     NEWC
@@ -111,7 +112,18 @@ PROGRAM{
     RAND
     ADD
   }>
-  ?fun_ref_9e39f86b32081dda PROCREF:<{
+  ?fun_ref_457ed784de722f7b PROCREF:<{
+    -1 PUSHINT
+    s0 s2 XCHG
+    0 PUSHINT
+    ROT
+    66 PUSHINT
+    s0 s1 XCHG
+    NULL
+    NULL
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
+  }>
+  ?fun_ref_65111aea2c25785e PROCREF:<{
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -147,16 +159,9 @@ PROGRAM{
       32 STU
       64 STU
       ENDC
-      -1 PUSHINT
       2 GETGLOBVAR
-      0 PUSHINT
-      ROT
-      s0 s3 XCHG
-      66 PUSHINT
       s0 s1 XCHG
-      NULL
-      NULL
-      ?fun_ref_b93b9862cda1783c INLINECALLDICT
+      ?fun_ref_457ed784de722f7b INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP

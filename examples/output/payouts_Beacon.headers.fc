@@ -12,6 +12,9 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_store_address
 builder __tact_store_address(builder b, slice address) inline;
 
+;; __tact_my_balance
+int __tact_my_balance() inline;
+
 ;; __tact_not_null
 forall X -> X __tact_not_null(X x) inline;
 
@@ -59,6 +62,9 @@ builder $Beacon$_store(builder build_0, (slice, slice, int) v) inline;
 
 ;; $SendParameters$_constructor_bounce_to_value_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $Beacon$_fun_forward
+((slice, slice, int), ()) $Beacon$_fun_forward((slice, slice, int) $self, slice $to, cell $body) impure inline_ref;
 
 ;; $Beacon$_fun_reply
 ((slice, slice, int), ()) $Beacon$_fun_reply((slice, slice, int) $self, cell $body) impure inline;

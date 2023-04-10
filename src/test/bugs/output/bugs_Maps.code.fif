@@ -1,7 +1,9 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_my_balance
   DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
   DECLPROC __tact_dict_set_int_int
@@ -34,6 +36,7 @@ PROGRAM{
   DECLPROC $Maps$_fun_itemCheck
   DECLPROC $Maps$_fun_allItems
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $Maps$_fun_forward
   DECLPROC $Maps$_fun_reply
   DECLPROC $TokenInfo$_constructor_ticker_decimals
   DECLPROC $DeployOk$_constructor_queryId
@@ -74,10 +77,18 @@ PROGRAM{
     __tact_verify_address INLINECALLDICT
     STSLICER
   }>
+  __tact_my_balance PROCINLINE:<{
+    BALANCE
+    FIRST
+  }>
   __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
   }>
   __tact_context_get_sender PROCINLINE:<{
     __tact_context_sender GETGLOB
@@ -507,16 +518,20 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $Maps$_fun_reply PROCINLINE:<{
+  $Maps$_fun_forward PROCREF:<{
     TRUE
-    __tact_context_get_sender INLINECALLDICT
+    s0 s2 XCHG
     0 PUSHINT
     ROT
-    s0 s3 XCHG
     66 PUSHINT
     SWAP
     $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
+  }>
+  $Maps$_fun_reply PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    $Maps$_fun_forward INLINECALLDICT
   }>
   $TokenInfo$_constructor_ticker_decimals PROCINLINE:<{
   }>
@@ -675,7 +690,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d634b6a4838427473705261436f42716568507967546e72645075486f67643678724432633378617968436158} PUSHSLICE
+    x{697066733a2f2f516d4e646d5a4e435465553848443358527551687a3544517948346d476264334e4a39374a526232776438544242} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

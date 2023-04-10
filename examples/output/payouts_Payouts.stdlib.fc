@@ -172,3 +172,25 @@ slice $String$_fun_fromBase64(slice $self) impure inline {
     var ($self) = $self;
     return $Slice$_fun_fromBase64(__tact_str_to_slice($self));
 }
+
+((slice, int), ()) $Payouts$_fun_forward((slice, int) $self, slice $to, cell $body) impure inline_ref {
+    var (($self'owner, $self'publicKey)) = $self;
+    if ((0 > 0)) {
+        var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        int $balance = __tact_my_balance();
+        int $balanceBeforeMessage = ($balance - $ctx'value);
+        if (($balanceBeforeMessage < 0)) {
+            raw_reserve(0, 0);
+            $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (128 + 2), $body));
+            return (($self'owner, $self'publicKey), ());
+        }
+    }
+    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (64 + 2), $body));
+    return (($self'owner, $self'publicKey), ());
+}
+
+((slice, int), ()) $Payouts$_fun_reply((slice, int) $self, cell $body) impure inline {
+    var (($self'owner, $self'publicKey)) = $self;
+    ($self'owner, $self'publicKey)~$Payouts$_fun_forward(__tact_context_get_sender(), $body);
+    return (($self'owner, $self'publicKey), ());
+}

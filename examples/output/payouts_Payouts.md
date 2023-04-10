@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: Payouts
-BOC Size: 1481 bytes
+BOC Size: 1554 bytes
 
 # Types
-Total Types: 6
+Total Types: 7
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -18,8 +18,12 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 ## ChangeOwner
-TLB: `change_owner#0f474d03 newOwner:address = ChangeOwner`
-Signature: `ChangeOwner{newOwner:address}`
+TLB: `change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner`
+Signature: `ChangeOwner{queryId:uint64,newOwner:address}`
+
+## ChangeOwnerOk
+TLB: `change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk`
+Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
 
 ## CanPayout
 TLB: `can_payout#c41949df amount:int257 = CanPayout`

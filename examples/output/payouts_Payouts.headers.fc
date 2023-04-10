@@ -43,7 +43,13 @@ cell __tact_dict_set_code(cell dict, int id, cell code) inline;
 cell __tact_dict_get_code(cell dict, int id) inline;
 
 ;; $ChangeOwner$_load
-(slice, ((slice))) $ChangeOwner$_load(slice sc_0) inline;
+(slice, ((int, slice))) $ChangeOwner$_load(slice sc_0) inline;
+
+;; $ChangeOwnerOk$_store
+builder $ChangeOwnerOk$_store(builder build_0, (int, slice) v) inline;
+
+;; $ChangeOwnerOk$_store_cell
+cell $ChangeOwnerOk$_store_cell((int, slice) v) inline;
 
 ;; $CanPayout$_store
 builder $CanPayout$_store(builder build_0, (int) v) inline;
@@ -96,6 +102,15 @@ slice $String$_fun_fromBase64(slice $self) impure inline;
 ;; $Beacon$_init_child
 (cell, cell) $Beacon$_init_child(cell sys', slice $master, slice $owner) inline_ref;
 
+;; $SendParameters$_constructor_bounce_to_value_mode_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+
+;; $Payouts$_fun_forward
+((slice, int), ()) $Payouts$_fun_forward((slice, int) $self, slice $to, cell $body) impure inline_ref;
+
+;; $Payouts$_fun_reply
+((slice, int), ()) $Payouts$_fun_reply((slice, int) $self, cell $body) impure inline;
+
 ;; $Payouts$_fun_requireOwner
 ((slice, int), ()) $Payouts$_fun_requireOwner((slice, int) $self) impure inline_ref;
 
@@ -107,3 +122,6 @@ slice $String$_fun_fromBase64(slice $self) impure inline;
 
 ;; $CanPayout$_constructor_amount
 ((int)) $CanPayout$_constructor_amount(int amount) inline;
+
+;; $ChangeOwnerOk$_constructor_queryId_newOwner
+((int, slice)) $ChangeOwnerOk$_constructor_queryId_newOwner(int queryId, slice newOwner) inline;

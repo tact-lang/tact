@@ -19,6 +19,10 @@ builder __tact_store_address(builder b, slice address) inline {
     return b.store_slice(__tact_verify_address(address));
 }
 
+int __tact_my_balance() inline {
+    return pair_first(get_balance());
+}
+
 forall X -> X __tact_not_null(X x) inline {
     throw_if(128, null?(x)); return x;
 }
@@ -26,6 +30,10 @@ forall X -> X __tact_not_null(X x) inline {
 (cell, int) __tact_dict_delete(cell dict, int key_len, slice index) asm(index dict key_len) "DICTDEL";
 
 ((cell), ()) __tact_dict_set_ref(cell dict, int key_len, slice index, cell value) asm(value index dict key_len) "DICTSETREF";
+
+(int, slice, int, slice) __tact_context_get() inline {
+    return __tact_context;
+}
 
 slice __tact_context_get_sender() inline {
     return __tact_context_sender;
@@ -154,8 +162,24 @@ forall X0, X1 -> (X0, X1) __tact_tuple_destroy_2(tuple v) asm "2 UNTUPLE";
     send_raw_message($c, $params'mode);
 }
 
+((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_forward((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $to, cell $body) impure inline_ref {
+    var (($self'mi1, $self'mi2, $self'mi3, $self'mi4, $self'ma1, $self'ma2, $self'ma3, $self'ma4)) = $self;
+    if ((0 > 0)) {
+        var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
+        int $balance = __tact_my_balance();
+        int $balanceBeforeMessage = ($balance - $ctx'value);
+        if (($balanceBeforeMessage < 0)) {
+            raw_reserve(0, 0);
+            $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (128 + 2), $body));
+            return (($self'mi1, $self'mi2, $self'mi3, $self'mi4, $self'ma1, $self'ma2, $self'ma3, $self'ma4), ());
+        }
+    }
+    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, $to, 0, (64 + 2), $body));
+    return (($self'mi1, $self'mi2, $self'mi3, $self'mi4, $self'ma1, $self'ma2, $self'ma3, $self'ma4), ());
+}
+
 ((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_reply((cell, cell, cell, cell, cell, cell, cell, cell) $self, cell $body) impure inline {
     var (($self'mi1, $self'mi2, $self'mi3, $self'mi4, $self'ma1, $self'ma2, $self'ma3, $self'ma4)) = $self;
-    $global_send($SendParameters$_constructor_bounce_to_value_mode_body(true, __tact_context_get_sender(), 0, (64 + 2), $body));
+    ($self'mi1, $self'mi2, $self'mi3, $self'mi4, $self'ma1, $self'ma2, $self'ma3, $self'ma4)~$Maps$_fun_forward(__tact_context_get_sender(), $body);
     return (($self'mi1, $self'mi2, $self'mi3, $self'mi4, $self'ma1, $self'ma2, $self'ma3, $self'ma4), ());
 }

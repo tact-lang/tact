@@ -2,6 +2,7 @@ PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_my_balance
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
@@ -18,6 +19,7 @@ PROGRAM{
   DECLPROC $Beacon$_contract_store
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $Beacon$_fun_forward
   DECLPROC $Beacon$_fun_reply
   DECLPROC $Beacon$_fun_owner
   DECLPROC $CanPayoutResponse$_constructor_ok_amount_address
@@ -57,6 +59,10 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     __tact_verify_address INLINECALLDICT
     STSLICER
+  }>
+  __tact_my_balance PROCINLINE:<{
+    BALANCE
+    FIRST
   }>
   __tact_not_null PROCINLINE:<{
     DUP
@@ -270,16 +276,20 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $Beacon$_fun_reply PROCINLINE:<{
+  $Beacon$_fun_forward PROCREF:<{
     TRUE
-    __tact_context_get_sender INLINECALLDICT
+    s0 s2 XCHG
     0 PUSHINT
     ROT
-    s0 s3 XCHG
     66 PUSHINT
     SWAP
     $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
+  }>
+  $Beacon$_fun_reply PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    $Beacon$_fun_forward INLINECALLDICT
   }>
   $Beacon$_fun_owner PROCREF:<{
     OVER
@@ -334,7 +344,7 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d563246787742766975345a31435152476175623954755a7164673667684c687a643551446b48596636416247} PUSHSLICE
+    x{697066733a2f2f516d5a4c48436e466f585a514d3141366534767a6668503973426f514372634253526e4542794e6558387275486e} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

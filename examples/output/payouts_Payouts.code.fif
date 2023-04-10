@@ -13,6 +13,8 @@ PROGRAM{
   DECLPROC __tact_dict_set_code
   DECLPROC __tact_dict_get_code
   DECLPROC $ChangeOwner$_load
+  DECLPROC $ChangeOwnerOk$_store
+  DECLPROC $ChangeOwnerOk$_store_cell
   DECLPROC $CanPayout$_store
   DECLPROC $CanPayout$_store_cell
   DECLPROC $CanPayoutResponse$_load
@@ -30,10 +32,14 @@ PROGRAM{
   DECLPROC $Slice$_fun_fromBase64
   DECLPROC $String$_fun_fromBase64
   DECLPROC $Beacon$_init_child
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $Payouts$_fun_forward
+  DECLPROC $Payouts$_fun_reply
   DECLPROC $Payouts$_fun_requireOwner
   DECLPROC $Payouts$_fun_owner
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $CanPayout$_constructor_amount
+  DECLPROC $ChangeOwnerOk$_constructor_queryId_newOwner
   DECLPROC $Payouts$_internal_any_text
   DECLPROC $Payouts$_internal_binary_CanPayoutResponse
   DECLPROC $Payouts$_internal_binary_ChangeOwner
@@ -143,10 +149,26 @@ PROGRAM{
   $ChangeOwner$_load PROCINLINE:<{
     32 LDU
     SWAP
-    256331011 PUSHINT
+    2174598809 PUSHINT
     EQUAL
     129 THROWIFNOT
+    64 LDU
     __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $ChangeOwnerOk$_store PROCINLINE:<{
+    846932810 PUSHINT
+    s0 s3 XCHG2
+    32 STU
+    64 STU
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $ChangeOwnerOk$_store_cell PROCINLINE:<{
+    NEWC
+    -ROT
+    $ChangeOwnerOk$_store INLINECALLDICT
+    ENDC
   }>
   $CanPayout$_store PROCINLINE:<{
     3289991647 PUSHINT
@@ -491,6 +513,25 @@ PROGRAM{
     $Beacon$init$_store INLINECALLDICT
     ENDC
   }>
+  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
+    PUSHNULL
+    PUSHNULL
+  }>
+  $Payouts$_fun_forward PROCREF:<{
+    TRUE
+    s0 s2 XCHG
+    0 PUSHINT
+    ROT
+    66 PUSHINT
+    SWAP
+    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
+  $Payouts$_fun_reply PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    $Payouts$_fun_forward INLINECALLDICT
+  }>
   $Payouts$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
     s2 s(-1) PUXC
@@ -507,6 +548,8 @@ PROGRAM{
     PUSHNULL
   }>
   $CanPayout$_constructor_amount PROCINLINE:<{
+  }>
+  $ChangeOwnerOk$_constructor_queryId_newOwner PROCINLINE:<{
   }>
   $Payouts$_internal_any_text PROCINLINE:<{
     __tact_context_get INLINECALLDICT
@@ -593,9 +636,14 @@ PROGRAM{
     }>
   }>
   $Payouts$_internal_binary_ChangeOwner PROCINLINE:<{
-    -ROT
+    2SWAP
     $Payouts$_fun_requireOwner INLINECALLDICT
     NIP
+    s2 s1 XCPU
+    $ChangeOwnerOk$_constructor_queryId_newOwner INLINECALLDICT
+    $ChangeOwnerOk$_store_cell INLINECALLDICT
+    s1 s2 XCHG
+    $Payouts$_fun_reply INLINECALLDICT
   }>
   %owner PROC:<{
     $Payouts$_contract_load INLINECALLDICT
@@ -607,11 +655,11 @@ PROGRAM{
     209801025412363888721030803524359905849 PUSHINT
     42980537499636128163026532310500881091 PUSHINT
     209474421377847335869795010607481022628 PUSHINT
-    212791963610352222038671851416501365766 PUSHINT
+    322875185039650075936310953974817993034 PUSHINT
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d5438527574705056654c59623433376e707431587535464b7647775341574138733459373436425831434635} PUSHSLICE
+    x{697066733a2f2f516d504c314247336b76753335396172576576637a45364561536a7756524b586476416764356234507a4b6b684e} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -647,12 +695,12 @@ PROGRAM{
       TRUE
     }>
     OVER
-    256331011 PUSHINT
+    2174598809 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
       $ChangeOwner$_load INLINECALLDICT
-      NIP
+      1 2 BLKDROP2
       $Payouts$_internal_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>

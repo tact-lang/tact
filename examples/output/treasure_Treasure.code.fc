@@ -47,11 +47,12 @@
     return (($self'owner), ());
 }
 
-(((slice)), ()) $Treasure$_internal_binary_ChangeOwner((slice) $self, (slice) $msg) impure inline {
+(((slice)), ()) $Treasure$_internal_binary_ChangeOwner((slice) $self, (int, slice) $msg) impure inline {
     var ($self'owner) = $self;
-    var ($msg'newOwner) = $msg;
+    var ($msg'queryId, $msg'newOwner) = $msg;
     ($self'owner)~$Treasure$_fun_requireOwner();
     $self'owner = $msg'newOwner;
+    ($self'owner)~$Treasure$_fun_reply($ChangeOwnerOk$_store_cell($ChangeOwnerOk$_constructor_queryId_newOwner($msg'queryId, $msg'newOwner)));
     return (($self'owner), ());
 }
 
@@ -71,13 +72,13 @@ _ supported_interfaces() method_id {
         "org.ton.abi.ipfs.v0"H >> 128,
         "org.ton.deploy.lazy.v0"H >> 128,
         "org.ton.chain.workchain.v0"H >> 128,
-        "org.ton.ownable.transferable"H >> 128,
+        "org.ton.ownable.transferable.v2"H >> 128,
         "org.ton.ownable"H >> 128
     );
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmT8hcgWSSoJ98BazuBLkc8eZEd5iLMfEHaMUWNZgwd69D";
+    return "ipfs://QmQyZr9tXCfmYb8euEJZGSW8ZigGuwFPHTXjTntPr1KA7H";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -109,7 +110,7 @@ _ lazy_deployment_completed() method_id {
     }
     
     ;; Receive ChangeOwner message
-    if (op == 256331011) {
+    if (op == 2174598809) {
         var msg = in_msg~$ChangeOwner$_load();
         self~$Treasure$_internal_binary_ChangeOwner(msg);
         return (self, true);

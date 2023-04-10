@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: Treasure
-BOC Size: 838 bytes
+BOC Size: 910 bytes
 
 # Types
-Total Types: 5
+Total Types: 6
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -18,8 +18,12 @@ TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Ma
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
 ## ChangeOwner
-TLB: `change_owner#0f474d03 newOwner:address = ChangeOwner`
-Signature: `ChangeOwner{newOwner:address}`
+TLB: `change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner`
+Signature: `ChangeOwner{queryId:uint64,newOwner:address}`
+
+## ChangeOwnerOk
+TLB: `change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk`
+Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
 
 ## Withdraw
 TLB: `withdraw#63b0a748 amount:coins mode:uint8 = Withdraw`

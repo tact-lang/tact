@@ -1,7 +1,9 @@
 PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_store_address
+  DECLPROC __tact_my_balance
   DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_prepare_random
   DECLPROC __tact_store_bool
@@ -17,6 +19,7 @@ PROGRAM{
   DECLPROC $RandomContract$_fun_randomInt
   DECLPROC $RandomContract$_fun_random
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $RandomContract$_fun_forward
   DECLPROC $RandomContract$_fun_reply
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $RandomContract$_internal_binary_Deploy
@@ -51,10 +54,18 @@ PROGRAM{
     __tact_verify_address INLINECALLDICT
     STSLICER
   }>
+  __tact_my_balance PROCINLINE:<{
+    BALANCE
+    FIRST
+  }>
   __tact_not_null PROCINLINE:<{
     DUP
     ISNULL
     128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
   }>
   __tact_context_get_sender PROCINLINE:<{
     __tact_context_sender GETGLOB
@@ -250,16 +261,20 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $RandomContract$_fun_reply PROCINLINE:<{
+  $RandomContract$_fun_forward PROCREF:<{
     TRUE
-    __tact_context_get_sender INLINECALLDICT
+    s0 s2 XCHG
     0 PUSHINT
     ROT
-    s0 s3 XCHG
     66 PUSHINT
     SWAP
     $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
+  }>
+  $RandomContract$_fun_reply PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    $RandomContract$_fun_forward INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
