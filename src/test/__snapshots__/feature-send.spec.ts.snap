@@ -1,5 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`feature-send should bounce on unknown message 1`] = `
+[
+  {
+    "$seq": 1,
+    "events": [
+      {
+        "$type": "received",
+        "message": {
+          "body": {
+            "text": "Unknown string",
+            "type": "text",
+          },
+          "bounce": true,
+          "from": "@treasure(treasure)",
+          "to": "kQAcDUmVHcy0oaubfPdXMOHzdTD4BLsfrC2XBmFcXirAX_sN",
+          "type": "internal",
+          "value": 10000000000n,
+        },
+      },
+      {
+        "$type": "failed",
+        "errorCode": 130,
+        "errorMessage": "Invalid incoming message",
+      },
+      {
+        "$type": "sent-bounced",
+        "message": {
+          "body": {
+            "cell": "x{FFFFFFFF00000000556E6B6E6F776E20737472696E67}",
+            "type": "cell",
+          },
+          "bounce": false,
+          "from": "kQAcDUmVHcy0oaubfPdXMOHzdTD4BLsfrC2XBmFcXirAX_sN",
+          "to": "@treasure(treasure)",
+          "type": "internal",
+          "value": 9995995000n,
+        },
+      },
+    ],
+  },
+]
+`;
+
 exports[`feature-send should send reply correctly 1`] = `
 [
   {
@@ -17,14 +60,14 @@ exports[`feature-send should send reply correctly 1`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCti0_H8N5P2dgOJS8CcelAgQ12z7fNq2eyXwoo0lyAmf1b",
+          "to": "kQAcDUmVHcy0oaubfPdXMOHzdTD4BLsfrC2XBmFcXirAX_sN",
           "type": "internal",
           "value": 10000000000n,
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 8035n,
+        "gasUsed": 8051n,
       },
       {
         "$type": "sent",
@@ -58,14 +101,14 @@ exports[`feature-send should send reply correctly 2`] = `
           },
           "bounce": true,
           "from": "@treasure(treasure)",
-          "to": "kQCti0_H8N5P2dgOJS8CcelAgQ12z7fNq2eyXwoo0lyAmf1b",
+          "to": "kQAcDUmVHcy0oaubfPdXMOHzdTD4BLsfrC2XBmFcXirAX_sN",
           "type": "internal",
           "value": 10000000000n,
         },
       },
       {
         "$type": "processed",
-        "gasUsed": 7758n,
+        "gasUsed": 7774n,
       },
       {
         "$type": "sent",
@@ -76,10 +119,10 @@ exports[`feature-send should send reply correctly 2`] = `
               "type": "text",
             },
             "bounce": true,
-            "from": "kQCti0_H8N5P2dgOJS8CcelAgQ12z7fNq2eyXwoo0lyAmf1b",
+            "from": "kQAcDUmVHcy0oaubfPdXMOHzdTD4BLsfrC2XBmFcXirAX_sN",
             "to": "@treasure(treasure)",
             "type": "internal",
-            "value": 9991070000n,
+            "value": 9991054000n,
           },
         ],
       },

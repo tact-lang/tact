@@ -378,7 +378,7 @@ PROGRAM{
     $IntrinsicsTester$_contract_load INLINECALLDICT
     2 6 BLKSWAP
     $IntrinsicsTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $IntrinsicsTester$_contract_store INLINECALLDICT
   }>
 }END>c

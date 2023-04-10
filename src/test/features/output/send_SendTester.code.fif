@@ -349,7 +349,7 @@ PROGRAM{
     $SendTester$_contract_load INLINECALLDICT
     -ROT
     $SendTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $SendTester$_contract_store INLINECALLDICT
   }>
 }END>c

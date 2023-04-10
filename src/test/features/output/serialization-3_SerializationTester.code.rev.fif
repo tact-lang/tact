@@ -53,7 +53,7 @@ PROGRAM{
     ?fun_ref_f639e21752b5cdda INLINECALLDICT
     2 6 BLKSWAP
     ?fun_ref_dc73b242d85eef26 INLINECALLDICT
-    s0 POP
+    130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
     s0 s1 XCHG

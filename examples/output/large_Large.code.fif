@@ -142,7 +142,7 @@ PROGRAM{
     $Large$_contract_load INLINECALLDICT
     2 4 BLKSWAP
     $Large$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Large$_contract_store INLINECALLDICT
   }>
 }END>c

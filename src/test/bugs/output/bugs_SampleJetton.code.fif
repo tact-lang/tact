@@ -759,7 +759,7 @@ PROGRAM{
     $SampleJetton$_contract_load INLINECALLDICT
     2 5 BLKSWAP
     $SampleJetton$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $SampleJetton$_contract_store INLINECALLDICT
   }>
 }END>c

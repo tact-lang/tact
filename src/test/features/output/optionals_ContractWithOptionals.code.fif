@@ -921,7 +921,7 @@ PROGRAM{
     $ContractWithOptionals$_contract_load INLINECALLDICT
     2 6 BLKSWAP
     $ContractWithOptionals$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $ContractWithOptionals$_contract_store INLINECALLDICT
   }>
 }END>c

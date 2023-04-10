@@ -665,7 +665,7 @@ PROGRAM{
     $RugPull$_contract_load INLINECALLDICT
     2 10 BLKSWAP
     $RugPull$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $RugPull$_contract_store INLINECALLDICT
   }>
 }END>c

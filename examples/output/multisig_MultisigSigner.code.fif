@@ -517,7 +517,7 @@ PROGRAM{
     $MultisigSigner$_contract_load INLINECALLDICT
     2 12 BLKSWAP
     $MultisigSigner$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $MultisigSigner$_contract_store INLINECALLDICT
   }>
 }END>c

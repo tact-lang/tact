@@ -691,7 +691,7 @@ PROGRAM{
     $StringsTester$_contract_load INLINECALLDICT
     -ROT
     $StringsTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $StringsTester$_contract_store INLINECALLDICT
   }>
 }END>c

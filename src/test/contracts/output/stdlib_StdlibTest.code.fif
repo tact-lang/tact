@@ -175,7 +175,7 @@ PROGRAM{
     $StdlibTest$_contract_load INLINECALLDICT
     -ROT
     $StdlibTest$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $StdlibTest$_contract_store INLINECALLDICT
   }>
 }END>c

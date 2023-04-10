@@ -1035,7 +1035,7 @@ PROGRAM{
     $MathTester$_contract_load INLINECALLDICT
     -ROT
     $MathTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $MathTester$_contract_store INLINECALLDICT
   }>
 }END>c

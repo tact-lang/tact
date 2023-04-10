@@ -790,7 +790,7 @@ PROGRAM{
     $Maps$_contract_load INLINECALLDICT
     2 8 BLKSWAP
     $Maps$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Maps$_contract_store INLINECALLDICT
   }>
 }END>c

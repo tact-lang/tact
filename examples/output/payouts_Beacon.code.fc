@@ -117,7 +117,7 @@ _ lazy_deployment_completed() method_id {
     int handled = self~$Beacon$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
-    throw_unless(handled, 130);
+    throw_unless(130, handled);
     
     ;; Persist state
     $Beacon$_contract_store(self);

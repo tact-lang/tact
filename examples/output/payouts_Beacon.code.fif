@@ -401,7 +401,7 @@ PROGRAM{
     $Beacon$_contract_load INLINECALLDICT
     2 3 BLKSWAP
     $Beacon$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Beacon$_contract_store INLINECALLDICT
   }>
 }END>c

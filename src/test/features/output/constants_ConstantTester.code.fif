@@ -170,7 +170,7 @@ PROGRAM{
     $ConstantTester$_contract_load INLINECALLDICT
     -ROT
     $ConstantTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $ConstantTester$_contract_store INLINECALLDICT
   }>
 }END>c

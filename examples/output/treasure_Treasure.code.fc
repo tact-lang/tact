@@ -147,7 +147,7 @@ _ lazy_deployment_completed() method_id {
     int handled = self~$Treasure$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
-    throw_unless(handled, 130);
+    throw_unless(130, handled);
     
     ;; Persist state
     $Treasure$_contract_store(self);

@@ -5288,7 +5288,7 @@ PROGRAM{
     s13 s15 XCHG
     2 13 BLKSWAP
     $MapTestContract$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $MapTestContract$_contract_store INLINECALLDICT
   }>
 }END>c

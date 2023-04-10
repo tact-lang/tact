@@ -43,7 +43,7 @@ PROGRAM{
     ?fun_ref_ed0c6f0c0e19c38a INLINECALLDICT
     ROTREV
     ?fun_ref_e93fa4a4cade0359 INLINECALLDICT
-    s0 POP
+    130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
     s0 s1 XCHG

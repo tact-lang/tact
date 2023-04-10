@@ -260,7 +260,7 @@ export function writeMainContract(type: TypeDescription, abiLink: string, ctx: W
 
             // Throw if not handled
             ctx.append(`;; Throw if not handled`);
-            ctx.append(`throw_unless(handled, ${contractErrors.invalidMessage.id});`);
+            ctx.append(`throw_unless(${contractErrors.invalidMessage.id}, handled);`);
             ctx.append();
 
             // Persist state

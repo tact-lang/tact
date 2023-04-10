@@ -154,7 +154,7 @@ PROGRAM{
     $Native$_contract_load INLINECALLDICT
     -ROT
     $Native$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Native$_contract_store INLINECALLDICT
   }>
 }END>c

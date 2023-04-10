@@ -44,7 +44,7 @@ PROGRAM{
     ?fun_ref_ed6d0b29af79c1a8 INLINECALLDICT
     2 3 BLKSWAP
     ?fun_ref_b8dbf2d8523a8ae8 INLINECALLDICT
-    s0 POP
+    130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
     s0 s1 XCHG

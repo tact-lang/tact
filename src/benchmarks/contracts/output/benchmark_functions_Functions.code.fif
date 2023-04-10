@@ -192,7 +192,7 @@ PROGRAM{
     $Functions$_contract_load INLINECALLDICT
     -ROT
     $Functions$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Functions$_contract_store INLINECALLDICT
   }>
 }END>c

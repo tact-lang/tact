@@ -351,7 +351,7 @@ PROGRAM{
     s13 s15 XCHG
     2 13 BLKSWAP
     ?fun_ref_9d1ab2a06bd2a96a INLINECALLDICT
-    s0 POP
+    130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
     s0 s1 XCHG

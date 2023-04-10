@@ -744,7 +744,7 @@ PROGRAM{
     $Payouts$_contract_load INLINECALLDICT
     2SWAP
     $Payouts$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Payouts$_contract_store INLINECALLDICT
   }>
 }END>c

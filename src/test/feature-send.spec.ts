@@ -22,4 +22,19 @@ describe('feature-send', () => {
         await system.run();
         expect(tracker.collect()).toMatchSnapshot();
     });
+    it('should bounce on unknown message', async () => {
+
+        // Init
+        let system = await ContractSystem.create();
+        let treasure = system.treasure('treasure');
+        let contract = system.open(await SendTester.fromInit());
+        await contract.send(treasure, { value: toNano('10') }, { $$type: 'Deploy', queryId: 0n });
+        await system.run();
+
+        // Test
+        let tracker = system.track(contract);
+        await system.provider(contract).internal(treasure, { value: toNano('10'), body: 'Unknown string' });
+        await system.run();
+        expect(tracker.collect()).toMatchSnapshot();
+    });
 });

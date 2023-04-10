@@ -412,7 +412,7 @@ PROGRAM{
     $External$_contract_load INLINECALLDICT
     2SWAP
     $External$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $External$_contract_store INLINECALLDICT
   }>
   recv_external PROC:<{

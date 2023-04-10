@@ -428,7 +428,7 @@ PROGRAM{
     $Treasure$_contract_load INLINECALLDICT
     -ROT
     $Treasure$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Treasure$_contract_store INLINECALLDICT
   }>
 }END>c

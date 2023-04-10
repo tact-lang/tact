@@ -333,7 +333,7 @@ PROGRAM{
     $SerializationTester$_contract_load INLINECALLDICT
     2 6 BLKSWAP
     $SerializationTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $SerializationTester$_contract_store INLINECALLDICT
   }>
 }END>c

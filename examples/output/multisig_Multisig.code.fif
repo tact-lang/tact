@@ -583,7 +583,7 @@ PROGRAM{
     $Multisig$_contract_load INLINECALLDICT
     2 4 BLKSWAP
     $Multisig$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Multisig$_contract_store INLINECALLDICT
   }>
 }END>c

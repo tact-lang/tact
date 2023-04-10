@@ -218,7 +218,7 @@ PROGRAM{
     $Wallet$_contract_load INLINECALLDICT
     2 3 BLKSWAP
     $Wallet$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $Wallet$_contract_store INLINECALLDICT
   }>
 }END>c

@@ -774,7 +774,7 @@ PROGRAM{
     $DNSTester$_contract_load INLINECALLDICT
     -ROT
     $DNSTester$_contract_router_internal INLINECALLDICT
-    DROP
+    130 THROWIFNOT
     $DNSTester$_contract_store INLINECALLDICT
   }>
 }END>c
