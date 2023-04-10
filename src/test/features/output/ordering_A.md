@@ -3,7 +3,7 @@ Contract: A
 BOC Size: 708 bytes
 
 # Types
-Total Types: 6
+Total Types: 7
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -24,6 +24,10 @@ Signature: `Deploy{queryId:uint64}`
 ## DeployOk
 TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
+
+## FactoryDeploy
+TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
+Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
 ## S
 TLB: `_ v1:int257 v2:int257 v3:int257 = S`

@@ -3,7 +3,7 @@ Contract: IncrementContract
 BOC Size: 1153 bytes
 
 # Types
-Total Types: 10
+Total Types: 11
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -24,6 +24,10 @@ Signature: `Deploy{queryId:uint64}`
 ## DeployOk
 TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
+
+## FactoryDeploy
+TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
+Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
 ## Increment
 TLB: `increment#20064f3b key:int257 value:int257 = Increment`

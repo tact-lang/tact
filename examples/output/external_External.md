@@ -3,7 +3,7 @@ Contract: External
 BOC Size: 912 bytes
 
 # Types
-Total Types: 7
+Total Types: 8
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -24,6 +24,10 @@ Signature: `Deploy{queryId:uint64}`
 ## DeployOk
 TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
+
+## FactoryDeploy
+TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
+Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
 ## ChangeOwner
 TLB: `change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner`

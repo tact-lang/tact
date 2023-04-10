@@ -3,7 +3,7 @@ Contract: JettonDefaultWallet
 BOC Size: 2193 bytes
 
 # Types
-Total Types: 19
+Total Types: 20
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -72,6 +72,10 @@ Signature: `Deploy{queryId:uint64}`
 ## DeployOk
 TLB: `deploy_ok#aff90f57 queryId:uint64 = DeployOk`
 Signature: `DeployOk{queryId:uint64}`
+
+## FactoryDeploy
+TLB: `factory_deploy#6d0ff13b queryId:uint64 cashback:address = FactoryDeploy`
+Signature: `FactoryDeploy{queryId:uint64,cashback:address}`
 
 ## ChangeOwner
 TLB: `change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner`

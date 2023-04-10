@@ -12,3 +12,14 @@ trait Deployable {
         self.reply(DeployOk{queryId: deploy.queryId}.toCell());
     }
 }
+
+message FactoryDeploy {
+    queryId: Int as uint64;
+    cashback: Address;
+}
+
+trait FactoryDeployable  {
+    receive(deploy: FactoryDeploy) {
+        self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell());
+    }
+}

@@ -11,7 +11,9 @@ files['libs/content.tact'] =
 files['libs/deploy.tact'] =
     'Cm1lc3NhZ2UgRGVwbG95IHsKICAgIHF1ZXJ5SWQ6IEludCBhcyB1aW50NjQ7Cn0KCm1lc3NhZ2UgRGVwbG95T2sgewogICAgcXVlcnlJZDogSW50IGFzIHVpbnQ2NDsK' +
     'fQoKdHJhaXQgRGVwbG95YWJsZSB7CiAgICByZWNlaXZlKGRlcGxveTogRGVwbG95KSB7CiAgICAgICAgc2VsZi5yZXBseShEZXBsb3lPa3txdWVyeUlkOiBkZXBsb3ku' +
-    'cXVlcnlJZH0udG9DZWxsKCkpOwogICAgfQp9';
+    'cXVlcnlJZH0udG9DZWxsKCkpOwogICAgfQp9CgptZXNzYWdlIEZhY3RvcnlEZXBsb3kgewogICAgcXVlcnlJZDogSW50IGFzIHVpbnQ2NDsKICAgIGNhc2hiYWNrOiBB' +
+    'ZGRyZXNzOwp9Cgp0cmFpdCBGYWN0b3J5RGVwbG95YWJsZSAgewogICAgcmVjZWl2ZShkZXBsb3k6IEZhY3RvcnlEZXBsb3kpIHsKICAgICAgICBzZWxmLmZvcndhcmQo' +
+    'ZGVwbG95LmNhc2hiYWNrLCBEZXBsb3lPa3txdWVyeUlkOiBkZXBsb3kucXVlcnlJZH0udG9DZWxsKCkpOwogICAgfQp9';
 files['libs/dns.fc'] =
     'c2xpY2UgZG5zX3N0cmluZ190b19pbnRlcm5hbChzbGljZSBkb21haW4pIGlubGluZV9yZWYgewoKICAgIDs7IFNwZWNpYWwgY2FzZSBmb3Igcm9vdCBkb21haW4KICAg' +
     'IGlmICgoZG9tYWluLnNsaWNlX2JpdHMoKSA9PSA4KSAmIChkb21haW4uc2xpY2VfcmVmcygpID09IDApKSB7CiAgICAgICAgaWYgKGRvbWFpbi5wcmVsb2FkX3VpbnQo' +
