@@ -1,7 +1,3 @@
-#pragma version =0.4.2;
-#pragma allow-post-modification;
-#pragma compute-asm-ltr;
-
 global (int, slice, int, slice) __tact_context;
 global slice __tact_context_sender;
 global cell __tact_context_sys;

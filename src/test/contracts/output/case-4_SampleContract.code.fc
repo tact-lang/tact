@@ -1,3 +1,6 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 #include "case-4_SampleContract.headers.fc";
 #include "case-4_SampleContract.stdlib.fc";
 #include "case-4_SampleContract.storage.fc";

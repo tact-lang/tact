@@ -20,7 +20,6 @@ PROGRAM{
   DECLPROC ?fun_ref_16eba3650fe2fac3;
   DECLPROC ?fun_ref_1ed45e6f03bcfe90;
   DECLPROC ?fun_ref_2409c879affe1754;
-  DECLPROC ?fun_ref_28340b958e3c6ebe;
   DECLPROC ?fun_ref_36963ffd92a5144e;
   DECLPROC ?fun_ref_3aa3bbd48d04b029;
   DECLPROC ?fun_ref_4294c2e125656820;
@@ -28,6 +27,7 @@ PROGRAM{
   DECLPROC ?fun_ref_620e72b604dfd25d;
   DECLPROC ?fun_ref_67c8ab77d7720df2;
   DECLPROC ?fun_ref_7d7b7a07ccd0560c;
+  DECLPROC ?fun_ref_80a24a78bc0d8df1;
   DECLPROC ?fun_ref_8155dba7e75146b7;
   DECLPROC ?fun_ref_a05e0042bce184fb;
   DECLPROC ?fun_ref_a2813468f47d741c;
@@ -155,7 +155,7 @@ PROGRAM{
   }>
   ?fun_122531 PROC:<{
     ?fun_ref_a05e0042bce184fb INLINECALLDICT
-    ?fun_ref_28340b958e3c6ebe INLINECALLDICT
+    ?fun_ref_80a24a78bc0d8df1 INLINECALLDICT
     s1 POP
   }>
   ?fun_128362 PROC:<{
@@ -347,36 +347,6 @@ PROGRAM{
     IFELSE
     ENDC
     CTOS
-  }>
-  ?fun_ref_28340b958e3c6ebe PROCREF:<{
-    NEWC
-    0 PUSHINT
-    s0 s1 XCHG
-    32 STU
-    0 TUPLE
-    s0 s1 XCHG
-    TPUSH
-    NULL
-    TPUSH
-    x{536F6D657468696E6720736F6D657468696E6720776F726C642182_} PUSHSLICE
-    ?fun_ref_a2813468f47d741c INLINECALLDICT
-    2 UNTUPLE
-    s0 s1 XCHG
-    ENDC
-    <{
-      s1 PUSH
-      ISNULL
-      NOT
-    }> PUSHCONT
-    <{
-      s0 s1 XCHG
-      2 UNTUPLE
-      ROTREV
-      STREF
-      ENDC
-    }> PUSHCONT
-    WHILE
-    s1 POP
   }>
   ?fun_ref_36963ffd92a5144e PROCREF:<{
     ?fun_ref_7d7b7a07ccd0560c INLINECALLDICT
@@ -649,6 +619,35 @@ PROGRAM{
     DROP2
     ENDC
     CTOS
+  }>
+  ?fun_ref_80a24a78bc0d8df1 PROCREF:<{
+    0 PUSHINT
+    NEWC
+    32 STU
+    0 TUPLE
+    s0 s1 XCHG
+    TPUSH
+    NULL
+    TPUSH
+    x{536F6D657468696E6720736F6D657468696E6720776F726C642182_} PUSHSLICE
+    ?fun_ref_a2813468f47d741c INLINECALLDICT
+    2 UNTUPLE
+    s0 s1 XCHG
+    ENDC
+    <{
+      s1 PUSH
+      ISNULL
+      NOT
+    }> PUSHCONT
+    <{
+      s0 s1 XCHG
+      2 UNTUPLE
+      ROTREV
+      STREF
+      ENDC
+    }> PUSHCONT
+    WHILE
+    s1 POP
   }>
   ?fun_ref_8155dba7e75146b7 PROCREF:<{
     x{D0BFD180D0B8D0B2D0B5D18220D0BCD0B8D18020F09F918082_} PUSHSLICE

@@ -75,10 +75,6 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     //
 
     const stdlibHeader = `
-        #pragma version =0.4.2;
-        #pragma allow-post-modification;
-        #pragma compute-asm-ltr;
-
         global (int, slice, int, slice) __tact_context;
         global slice __tact_context_sender;
         global cell __tact_context_sys;
@@ -189,7 +185,13 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // 
 
     const remainingFunctions = tryExtractModule(functions, null, imported);
-    const header = files.map((v) => `#include "${v.name}";`);
+    const header: string[] = [];
+    header.push(`#pragma version =0.4.3;`);
+    header.push(`#pragma allow-post-modification;`);
+    header.push(`#pragma compute-asm-ltr;`);
+    for (let i of files.map((v) => `#include "${v.name}";`)) {
+        header.push(i);
+    }
     header.push('');
     header.push(';;');
     header.push(`;; Contract ${abiSrc.name} functions`);

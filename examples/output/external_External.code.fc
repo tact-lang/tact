@@ -1,3 +1,6 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 #include "external_External.headers.fc";
 #include "external_External.stdlib.fc";
 #include "external_External.storage.fc";

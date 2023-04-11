@@ -1,3 +1,6 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 #include "large_Large.headers.fc";
 #include "large_Large.stdlib.fc";
 #include "large_Large.constants.fc";

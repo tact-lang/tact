@@ -1,3 +1,6 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
 #include "treasure_Treasure.headers.fc";
 #include "treasure_Treasure.stdlib.fc";
 #include "treasure_Treasure.storage.fc";

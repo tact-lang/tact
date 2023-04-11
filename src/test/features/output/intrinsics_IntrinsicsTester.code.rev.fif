@@ -32,7 +32,7 @@ PROGRAM{
   DECLPROC ?fun_ref_ad3b9f474693db96;
   DECLPROC ?fun_ref_b2f99ae1a1dd4dfb;
   DECLPROC ?fun_ref_b347d9c3ebd197d4;
-  DECLPROC ?fun_ref_e6f57dccbb4ab5ce;
+  DECLPROC ?fun_ref_c762a3473cfecba5;
   DECLPROC ?fun_ref_f143e008d412b9db;
   DECLPROC ?fun_ref_fe46781d03e60344;
   recv_internal PROC:<{
@@ -68,7 +68,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_fe46781d03e60344 INLINECALLDICT
     2 6 BLKSWAP
-    ?fun_ref_e6f57dccbb4ab5ce INLINECALLDICT
+    ?fun_ref_c762a3473cfecba5 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -256,7 +256,7 @@ PROGRAM{
   ?fun_ref_b347d9c3ebd197d4 PROCREF:<{
     s4 PUSH
   }>
-  ?fun_ref_e6f57dccbb4ab5ce PROCREF:<{
+  ?fun_ref_c762a3473cfecba5 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -295,9 +295,8 @@ PROGRAM{
       EQUAL
       <{
         x{0000000048656C6C6F20776F726C64} PUSHREF
-        NEWC
         15211807202738752817960438464513 PUSHINT
-        s0 s1 XCHG
+        NEWC
         104 STU
         STREF
         ENDC
