@@ -44,13 +44,14 @@ contract MyContract with MyTrait, Ownable {
     owner: Address;
     counters: map<Int, Address>;
     map: map<Int as int16, Int as uint32>;
+    b: bounced<MyMessage>;
     const ConstInt: Int = 4000;
 
     init(owner: Address) {
         self.owner = owner;
     }
     
-    bounced(src: bounced<MyMessage>) {
+    bounced(src: bounced<MyMessage, MyMessage2>) {
         
     }
 

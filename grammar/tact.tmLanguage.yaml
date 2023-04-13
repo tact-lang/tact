@@ -220,11 +220,12 @@ repository:
     patterns:
       - include: "#comments"
       - include: "#strings"
-      - match: '(?:(self)|({{id}}))\s*(:)\s*({{id}})'
+      - include: "#type-annotation"
+      - match: '(?:(self)|({{id}}))'
         captures:
           "1": { name: '{{nameSelf}}'}
           "2": { name: '{{nameVariable}}' }
-          "4": { name: '{{nameTypeRef}}' }
+          # "4": { name: '{{nameTypeRef}}' }
 
   # Code block
   block-declaration:

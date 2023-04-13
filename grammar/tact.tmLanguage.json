@@ -361,16 +361,16 @@
           "include": "#strings"
         },
         {
-          "match": "(?:(self)|(\\b[\\w]+\\b))\\s*(:)\\s*(\\b[\\w]+\\b)",
+          "include": "#type-annotation"
+        },
+        {
+          "match": "(?:(self)|(\\b[\\w]+\\b))",
           "captures": {
             "1": {
               "name": "variable.language.self.tact"
             },
             "2": {
               "name": "variable.name.tact"
-            },
-            "4": {
-              "name": "entity.name.type.tact"
             }
           }
         }
