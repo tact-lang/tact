@@ -97,6 +97,10 @@ _ lazy_deployment_completed() method_id {
 ;;
 
 ((int, cell, int, int), int) $Multisig$_contract_router_internal((int, cell, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
     
     ;; Parse incoming message
     int op = 0;
@@ -104,10 +108,6 @@ _ lazy_deployment_completed() method_id {
         op = in_msg.preload_uint(32);
     }
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
     
     ;; Receive Request message
     if (op == 4266760323) {

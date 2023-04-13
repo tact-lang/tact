@@ -5,8 +5,8 @@ PROGRAM{
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_b93b9862cda1783c;
   DECLPROC ?fun_ref_be9e48593636eeba;
+  DECLPROC ?fun_ref_d8a2bb458e05ea78;
   DECLPROC ?fun_ref_e31d986f279fa0fb;
-  DECLPROC ?fun_ref_f9cdc41f141fee60;
   DECLPROC ?fun_ref_f9f31152659ffd4f;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -41,7 +41,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_f9f31152659ffd4f INLINECALLDICT
     ROTREV
-    ?fun_ref_f9cdc41f141fee60 INLINECALLDICT
+    ?fun_ref_d8a2bb458e05ea78 INLINECALLDICT
     130 THROWIFNOT
     s0 POP
     NEWC
@@ -226,35 +226,15 @@ PROGRAM{
     0 PUSHINT
     SENDRAWMSG
   }>
-  ?fun_ref_e31d986f279fa0fb PROCREF:<{
-    NULL
-    NULL
-    s2 PUSH
-    ISNULL
-    NOT
-    <{
-      DROP2
-      s0 PUSH
-      ISNULL
-      128 THROWIF
-      2 UNTUPLE
-      s0 s1 XCHG
-    }> PUSHCONT
-    <{
-      s2 POP
-    }> PUSHCONT
-    IFELSE
-    s2 s4 XCHG
-    0 PUSHINT
-    s0 s3 XCHG
-    s0 s4 XCHG
-    66 PUSHINT
-    s2 s3 XCHG2
-    ?fun_ref_b93b9862cda1783c INLINECALLDICT
-  }>
-  ?fun_ref_f9cdc41f141fee60 PROCREF:<{
+  ?fun_ref_d8a2bb458e05ea78 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -265,17 +245,11 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     2490013878 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       2490013878 PUSHINT
@@ -299,7 +273,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     0 EQINT
     <{
       s0 POP
@@ -330,6 +303,32 @@ PROGRAM{
       IFJMP
     }> IFREFELSE
     0 PUSHINT
+  }>
+  ?fun_ref_e31d986f279fa0fb PROCREF:<{
+    NULL
+    NULL
+    s2 PUSH
+    ISNULL
+    NOT
+    <{
+      DROP2
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      2 UNTUPLE
+      s0 s1 XCHG
+    }> PUSHCONT
+    <{
+      s2 POP
+    }> PUSHCONT
+    IFELSE
+    s2 s4 XCHG
+    0 PUSHINT
+    s0 s3 XCHG
+    s0 s4 XCHG
+    66 PUSHINT
+    s2 s3 XCHG2
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
   ?fun_ref_f9f31152659ffd4f PROCREF:<{
     c4 PUSH

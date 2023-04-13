@@ -12,11 +12,11 @@ PROGRAM{
   DECLPROC ?fun_123932;
   DECLPROC ?fun_ref_2a9288f69206cd27;
   DECLPROC ?fun_ref_362f405abe5b5b1e;
+  DECLPROC ?fun_ref_38b956e6f2d96326;
   DECLPROC ?fun_ref_5c3875cd93a9a567;
   DECLPROC ?fun_ref_7047cccd1e662630;
   DECLPROC ?fun_ref_b37c80e69b8b8647;
   DECLPROC ?fun_ref_bde4d18aa276d959;
-  DECLPROC ?fun_ref_cb747957eaa712fd;
   DECLPROC ?fun_ref_e2e845988e57d36d;
   DECLPROC ?fun_ref_f38effbd2479a342;
   recv_internal PROC:<{
@@ -52,7 +52,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_2a9288f69206cd27 INLINECALLDICT
     2 10 BLKSWAP
-    ?fun_ref_cb747957eaa712fd INLINECALLDICT
+    ?fun_ref_38b956e6f2d96326 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -413,28 +413,13 @@ PROGRAM{
     s9 s8 s7 PUSH3
     s9 PUSH
   }>
-  ?fun_ref_5c3875cd93a9a567 PROCREF:<{
-    s4 s3 s2 PUSH3
-    s4 s3 PUSH2
-    5 TUPLE
-  }>
-  ?fun_ref_7047cccd1e662630 PROCREF:<{
-    s9 s8 s7 PUSH3
-    s9 s8 PUSH2
-    5 TUPLE
-  }>
-  ?fun_ref_b37c80e69b8b8647 PROCREF:<{
-    s9 s8 s7 PUSH3
-    s9 s8 s7 PUSH3
-    s9 s8 s7 PUSH3
-    s9 PUSH
-    10 TUPLE
-  }>
-  ?fun_ref_bde4d18aa276d959 PROCREF:<{
-    s4 s3 s2 PUSH3
-    s4 s3 PUSH2
-  }>
-  ?fun_ref_cb747957eaa712fd PROCREF:<{
+  ?fun_ref_38b956e6f2d96326 PROCREF:<{
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -445,15 +430,9 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     0 EQINT
-    s1 PUSH
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -462,7 +441,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     2732768933 PUSHINT
     EQUAL
     <{
@@ -518,6 +496,27 @@ PROGRAM{
     }> IFJMPREF
     s0 POP
     0 PUSHINT
+  }>
+  ?fun_ref_5c3875cd93a9a567 PROCREF:<{
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
+    5 TUPLE
+  }>
+  ?fun_ref_7047cccd1e662630 PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 PUSH2
+    5 TUPLE
+  }>
+  ?fun_ref_b37c80e69b8b8647 PROCREF:<{
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 s8 s7 PUSH3
+    s9 PUSH
+    10 TUPLE
+  }>
+  ?fun_ref_bde4d18aa276d959 PROCREF:<{
+    s4 s3 s2 PUSH3
+    s4 s3 PUSH2
   }>
   ?fun_ref_e2e845988e57d36d PROCREF:<{
     11 BLKDROP

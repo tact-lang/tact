@@ -135,6 +135,11 @@ PROGRAM{
     SWAP
   }>
   $Functions$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -144,22 +149,16 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     831841332 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Add$_load INLINECALLDICT
       NIP
       $Functions$_internal_binary_Add INLINECALLDICT
       TRUE
     }>
-    SWAP
     2640337643 PUSHINT
     EQUAL
     IFJMP:<{

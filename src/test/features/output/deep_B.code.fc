@@ -67,6 +67,10 @@ _ lazy_deployment_completed() method_id {
 ;;
 
 ((slice), int) $B$_contract_router_internal((slice) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
     
     ;; Parse incoming message
     int op = 0;
@@ -74,10 +78,6 @@ _ lazy_deployment_completed() method_id {
         op = in_msg.preload_uint(32);
     }
     
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        return (self, true);
-    }
     
     ;; Text Receivers
     if (op == 0) {

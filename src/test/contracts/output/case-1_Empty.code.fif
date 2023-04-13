@@ -128,14 +128,16 @@ PROGRAM{
     SWAP
   }>
   $Empty$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     DUP
     SBITS
     NIP
     31 GTINT
     IF:<{
-    }>
-    IFJMP:<{
-      TRUE
     }>
     FALSE
   }>

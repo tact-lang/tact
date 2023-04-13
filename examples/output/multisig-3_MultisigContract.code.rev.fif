@@ -15,7 +15,7 @@ PROGRAM{
   DECLPROC ?fun_ref_b2f99ae1a1dd4dfb;
   DECLPROC ?fun_ref_b4dfb1ddd6931ece;
   DECLPROC ?fun_ref_b93b9862cda1783c;
-  DECLPROC ?fun_ref_bd31376b9301d2f7;
+  DECLPROC ?fun_ref_c20f639fed760d93;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -49,7 +49,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_234e7d7e6ceb0807 INLINECALLDICT
     2 4 BLKSWAP
-    ?fun_ref_bd31376b9301d2f7 INLINECALLDICT
+    ?fun_ref_c20f639fed760d93 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -306,9 +306,15 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_ref_bd31376b9301d2f7 PROCREF:<{
+  ?fun_ref_c20f639fed760d93 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -319,17 +325,11 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     520967536 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       520967536 PUSHINT
@@ -425,7 +425,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     0 EQINT
     <{
       s0 POP

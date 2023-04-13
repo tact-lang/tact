@@ -420,6 +420,11 @@ PROGRAM{
   $Debug$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -429,22 +434,16 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Deploy$_load INLINECALLDICT
       NIP
       $Debug$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

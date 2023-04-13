@@ -6,7 +6,7 @@ PROGRAM{
   DECLPROC ?fun_114762;
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
-  DECLPROC ?fun_ref_08e14e70d088912e;
+  DECLPROC ?fun_ref_5336fb58ccda5a6b;
   DECLPROC ?fun_ref_cd29dd004f76b216;
   DECLPROC ?fun_ref_e2aa38dc313ba18d;
   recv_internal PROC:<{
@@ -42,7 +42,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_e2aa38dc313ba18d INLINECALLDICT
     2 3 BLKSWAP
-    ?fun_ref_08e14e70d088912e INLINECALLDICT
+    ?fun_ref_5336fb58ccda5a6b INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -89,7 +89,13 @@ PROGRAM{
   get_abi_ipfs PROC:<{
     x{697066733A2F2F516D58787778373667723254726F616438384A4D5167747564795A565536465A656F7568546E656B776F756D696B82_} PUSHSLICE
   }>
-  ?fun_ref_08e14e70d088912e PROCREF:<{
+  ?fun_ref_5336fb58ccda5a6b PROCREF:<{
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -100,13 +106,6 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s0 s1 XCHG
     3548477446 PUSHINT
     EQUAL
     <{

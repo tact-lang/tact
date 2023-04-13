@@ -36,6 +36,7 @@ PROGRAM{
   DECLPROC ?fun_ref_5da160d32f5d039e;
   DECLPROC ?fun_ref_6326faa87beffd08;
   DECLPROC ?fun_ref_6e906f64e144acd5;
+  DECLPROC ?fun_ref_7eca714f7f5e984a;
   DECLPROC ?fun_ref_9859dee2e6eaebf1;
   DECLPROC ?fun_ref_98a3442ab0acb9db;
   DECLPROC ?fun_ref_b2f99ae1a1dd4dfb;
@@ -45,7 +46,6 @@ PROGRAM{
   DECLPROC ?fun_ref_ec09295eef4d515b;
   DECLPROC ?fun_ref_edb0dc2cb1aa52d9;
   DECLPROC ?fun_ref_f4acca5aa56d5d6d;
-  DECLPROC ?fun_ref_f733589890942fdc;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -80,7 +80,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_1c3c1c08051f7037 INLINECALLDICT
     2 6 BLKSWAP
-    ?fun_ref_f733589890942fdc INLINECALLDICT
+    ?fun_ref_7eca714f7f5e984a INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -818,6 +818,46 @@ PROGRAM{
     s2 s4 XCHG
     s2 s3 XCHG
   }>
+  ?fun_ref_7eca714f7f5e984a PROCREF:<{
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
+    s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    s0 PUSH
+    0 EQINT
+    s2 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    <{
+      DROP2
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    357891325 PUSHINT
+    EQUAL
+    <{
+      ?fun_ref_9859dee2e6eaebf1 INLINECALLDICT
+      1 6 BLKDROP2
+      6 6 BLKDROP2
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
+    s0 POP
+    0 PUSHINT
+  }>
   ?fun_ref_9859dee2e6eaebf1 PROCREF:<{
     32 LDU
     s0 s1 XCHG
@@ -1060,46 +1100,5 @@ PROGRAM{
     s2 PUSH
     ISNULL
     NOT
-  }>
-  ?fun_ref_f733589890942fdc PROCREF:<{
-    0 PUSHINT
-    s1 PUSH
-    SBITS
-    31 GTINT
-    <{
-      s0 POP
-      s0 PUSH
-      32 PLDU
-    }> PUSHCONT
-    IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
-    0 EQINT
-    s1 PUSH
-    SBITS
-    33 LESSINT
-    AND
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s0 s1 XCHG
-    357891325 PUSHINT
-    EQUAL
-    <{
-      ?fun_ref_9859dee2e6eaebf1 INLINECALLDICT
-      1 6 BLKDROP2
-      6 6 BLKDROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s0 POP
-    0 PUSHINT
   }>
 }END>c

@@ -8,8 +8,8 @@ PROGRAM{
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_0d1a805e0fc5efb2;
   DECLPROC ?fun_ref_10c319ce0484d846;
+  DECLPROC ?fun_ref_24e49a921269dc27;
   DECLPROC ?fun_ref_7ca9042b0b911c4c;
-  DECLPROC ?fun_ref_8a3b0aa3e080e29e;
   DECLPROC ?fun_ref_b2a3baab4bcc4202;
   DECLPROC ?fun_ref_b93b9862cda1783c;
   DECLPROC ?fun_ref_c5719d112936d17a;
@@ -49,7 +49,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_7ca9042b0b911c4c INLINECALLDICT
     2 8 BLKSWAP
-    ?fun_ref_8a3b0aa3e080e29e INLINECALLDICT
+    ?fun_ref_24e49a921269dc27 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -133,49 +133,15 @@ PROGRAM{
   ?fun_ref_10c319ce0484d846 PROCREF:<{
     s3 PUSH
   }>
-  ?fun_ref_7ca9042b0b911c4c PROCREF:<{
-    c4 PUSH
-    CTOS
-    LDREF
-    s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 s1 XCHG
-    <{
-      LDDICT
-      LDDICT
-      LDREF
-      s0 s1 XCHG
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      LDREF
-      s0 POP
-      CTOS
-      LDDICT
-      LDDICT
-      LDDICT
-      s0 POP
-      s6 s8 XCHG
-      s6 s7 XCHG
-      1 8 BLKDROP2
-    }> PUSHCONT
-    IFJMP
-    MYADDR
-    11 PLDU
-    10 PUSHPOW2
-    EQUAL
-    137 THROWIFNOT
-    LDDICT
-    s0 s1 XCHG
-    s0 s1 XCHG
-    ENDS
-    ?fun_ref_b2a3baab4bcc4202 INLINECALLDICT
-  }>
-  ?fun_ref_8a3b0aa3e080e29e PROCREF:<{
+  ?fun_ref_24e49a921269dc27 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -186,17 +152,11 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     1384510466 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1384510466 PUSHINT
@@ -209,11 +169,11 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s1 PUSH
+    s0 PUSH
     2490013878 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       2490013878 PUSHINT
@@ -237,7 +197,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     0 EQINT
     <{
       s0 POP
@@ -282,6 +241,46 @@ PROGRAM{
       IFJMP
     }> IFREFELSE
     0 PUSHINT
+  }>
+  ?fun_ref_7ca9042b0b911c4c PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 s1 XCHG
+    <{
+      LDDICT
+      LDDICT
+      LDREF
+      s0 s1 XCHG
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      LDREF
+      s0 POP
+      CTOS
+      LDDICT
+      LDDICT
+      LDDICT
+      s0 POP
+      s6 s8 XCHG
+      s6 s7 XCHG
+      1 8 BLKDROP2
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    LDDICT
+    s0 s1 XCHG
+    s0 s1 XCHG
+    ENDS
+    ?fun_ref_b2a3baab4bcc4202 INLINECALLDICT
   }>
   ?fun_ref_b2a3baab4bcc4202 PROCREF:<{
     NULL

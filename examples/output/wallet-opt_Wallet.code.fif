@@ -171,6 +171,11 @@ PROGRAM{
     SWAP
   }>
   $Wallet$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -180,12 +185,6 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    SWAP
     3548477446 PUSHINT
     EQUAL
     IFJMP:<{

@@ -669,6 +669,11 @@ PROGRAM{
   $SampleJetton$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -678,42 +683,36 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     4235234258 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Mint$_load INLINECALLDICT
       1 2 BLKDROP2
       $SampleJetton$_internal_binary_Mint INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2937889386 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TokenUpdateContent$_load INLINECALLDICT
       NIP
       $SampleJetton$_internal_binary_TokenUpdateContent INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2078119902 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TokenBurnNotification$_load INLINECALLDICT
       1 4 BLKDROP2
       $SampleJetton$_internal_binary_TokenBurnNotification INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

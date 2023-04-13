@@ -594,6 +594,11 @@ PROGRAM{
   $RugPull$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -603,14 +608,9 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     0 EQINT
-    OVER
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -619,17 +619,16 @@ PROGRAM{
       %$RugPull$_internal_empty INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2174598809 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $ChangeOwner$_load INLINECALLDICT
       1 2 BLKDROP2
       $RugPull$_internal_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

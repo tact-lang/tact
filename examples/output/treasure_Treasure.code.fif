@@ -376,6 +376,11 @@ PROGRAM{
   $Treasure$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -385,32 +390,26 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     1672521544 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Withdraw$_load INLINECALLDICT
       1 2 BLKDROP2
       $Treasure$_internal_binary_Withdraw INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2174598809 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $ChangeOwner$_load INLINECALLDICT
       1 2 BLKDROP2
       $Treasure$_internal_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

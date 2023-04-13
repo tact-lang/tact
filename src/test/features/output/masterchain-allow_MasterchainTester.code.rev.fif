@@ -10,7 +10,7 @@ PROGRAM{
   DECLPROC ?fun_ref_1037bc20fd152f5c;
   DECLPROC ?fun_ref_12c7412c3c44d083;
   DECLPROC ?fun_ref_3c99f607c2c0535d;
-  DECLPROC ?fun_ref_5e3c3accec27cd65;
+  DECLPROC ?fun_ref_7b5e5f9943d82ceb;
   DECLPROC ?fun_ref_c0ca23818e24f3c9;
   DECLPROC ?fun_ref_d70fb1f1f09059ac;
   DECLPROC ?fun_ref_f38b7270fbc3f695;
@@ -48,7 +48,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_f38b7270fbc3f695 INLINECALLDICT
     ROTREV
-    ?fun_ref_5e3c3accec27cd65 INLINECALLDICT
+    ?fun_ref_7b5e5f9943d82ceb INLINECALLDICT
     130 THROWIFNOT
     s0 POP
     NEWC
@@ -186,9 +186,15 @@ PROGRAM{
     DROP2
     -1 PUSHINT
   }>
-  ?fun_ref_5e3c3accec27cd65 PROCREF:<{
+  ?fun_ref_7b5e5f9943d82ceb PROCREF:<{
     2 SAVE
     SAMEALTSAVE
+    s0 s1 XCHG
+    <{
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -199,17 +205,11 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     3679600542 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       3679600542 PUSHINT
@@ -265,7 +265,6 @@ PROGRAM{
       DROP2
       -1 PUSHINT
     }> IFJMPREF
-    s0 s1 XCHG
     0 EQINT
     <{
       HASHSU
