@@ -134,21 +134,21 @@ _ lazy_deployment_completed() method_id {
             op = in_msg.preload_uint(32);
         }
         
-        ;; Bounced handler for [object Object] message
+        ;; Bounced handler for First message
         if (op == 3200290616) {
             var msg = in_msg~$First$_load_bounced();
             self~$SampleContract$_receive_binary_bounce_First(msg);
             return (self, true);
         }
         
-        ;; Bounced handler for [object Object] message
+        ;; Bounced handler for Second message
         if (op == 391585480) {
             var msg = in_msg~$Second$_load_bounced();
             self~$SampleContract$_receive_binary_bounce_Second(msg);
             return (self, true);
         }
         
-        ;; Bounced handler for [object Object] message (Generic)
+        ;; Bounced handler for Slice message (Generic)
         self~$SampleContract$_receive_binary_bounce_Slice(in_msg);
         return (self, true);
     }

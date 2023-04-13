@@ -22,8 +22,6 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
             ctx.append(`;; Handle bounced messages`);
             ctx.append(`if (msg_bounced) {`);
             ctx.inIndent(() => {
-                ctx.append(`;; Skip 0xFFFFFFFF`);
-                ctx.append(`in_msg~skip_bits(32);`);
 
                 const nonGenericReceivers = type.receivers.filter(r => {
                     if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'ref_bounced') return false;
@@ -36,6 +34,11 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     const allocation = getType(ctx.ctx, r.selector.type.name);
                     return allocation.origin === "stdlib" && allocation.name === "Slice";
                 });
+
+                if (genericReceiver || nonGenericReceivers.length > 0) {
+                    ctx.append(`;; Skip 0xFFFFFFFF`);
+                    ctx.append(`in_msg~skip_bits(32);`);
+                }
 
                 if (nonGenericReceivers.length > 0) {
                     ctx.append();
@@ -59,7 +62,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     }
 
                     ctx.append();
-                    ctx.append(`;; Bounced handler for ${selector.type} message`);
+                    ctx.append(`;; Bounced handler for ${selector.type.name} message`);
                     ctx.append(`if (op == ${allocation.header}) {`);
                     ctx.inIndent(() => {
                         if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
@@ -80,7 +83,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref') throw Error('Invalid selector type: ' + selector.kind);
 
                     ctx.append();
-                    ctx.append(`;; Bounced handler for ${selector.type} message (Generic)`);
+                    ctx.append(`;; Bounced handler for ${selector.type.name} message (Generic)`);
 
                     // Execute function
                     ctx.append(`self~${ops.receiveTypeBounce(type.name, selector.type.name)}(in_msg);`);
