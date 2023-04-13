@@ -1,6 +1,7 @@
 #pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
+
 #include "random_RandomContract.headers.fc";
 #include "random_RandomContract.stdlib.fc";
 #include "random_RandomContract.storage.fc";

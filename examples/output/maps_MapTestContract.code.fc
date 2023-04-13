@@ -1,6 +1,7 @@
 #pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
+
 #include "maps_MapTestContract.headers.fc";
 #include "maps_MapTestContract.stdlib.fc";
 #include "maps_MapTestContract.storage.fc";

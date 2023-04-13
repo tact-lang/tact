@@ -1,6 +1,7 @@
 #pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
+
 #include "native_Native.headers.fc";
 #include "native_Native.stdlib.fc";
 #include "native_Native.native.fc";

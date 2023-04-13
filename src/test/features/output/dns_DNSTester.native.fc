@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 slice dns_string_to_internal(slice domain) inline_ref {
 
     ;; Special case for root domain

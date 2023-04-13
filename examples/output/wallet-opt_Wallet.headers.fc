@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 ;;
 ;; Header files for Wallet
 ;; NOTE: declarations are sorted for optimal order

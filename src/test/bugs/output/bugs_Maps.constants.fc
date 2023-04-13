@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 ;; String "not found"
 slice __gen_slice_string_ef17d523607831d9b150cef9b36c6e32272887eac302eefcd2ca22fed29f4e21() asm "B{b5ee9c7241010101000b0000126e6f7420666f756e64de9b0ed2} B>boc <s PUSHSLICE";
 

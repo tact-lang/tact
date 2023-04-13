@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 ;;
 ;; Type: SetIntMap1
 ;; Header: 0x5a04a318

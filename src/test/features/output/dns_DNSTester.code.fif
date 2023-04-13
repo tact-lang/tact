@@ -361,8 +361,9 @@ PROGRAM{
       46 EQINT
       IFJMP:<{
         DROP
-        0 PUSHINT
         NEWC
+        0 PUSHINT
+        SWAP
         8 STU
         ENDC
         CTOS

@@ -1,6 +1,7 @@
 #pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
+
 #include "inheritance_Contract.headers.fc";
 #include "inheritance_Contract.stdlib.fc";
 #include "inheritance_Contract.storage.fc";

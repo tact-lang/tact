@@ -1,6 +1,7 @@
 #pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
+
 #include "wallet_Wallet.headers.fc";
 #include "wallet_Wallet.stdlib.fc";
 #include "wallet_Wallet.storage.fc";

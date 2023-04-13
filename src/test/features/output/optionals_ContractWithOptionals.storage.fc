@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 ;;
 ;; Type: SomeGenericStruct
 ;; TLB: _ value1:int257 value2:int257 value3:int257 value4:int257 value5:int257 = SomeGenericStruct

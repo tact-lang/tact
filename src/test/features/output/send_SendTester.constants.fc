@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 ;; Comment "Deploy success"
 cell __gen_cell_comment_50b8812df4a733c5a2266eb68dec952c64d04a3174bae42566a1e191dbdb470c() asm "B{b5ee9c72410101010014000024000000004465706c6f7920737563636573736c569015} B>boc PUSHREF";
 

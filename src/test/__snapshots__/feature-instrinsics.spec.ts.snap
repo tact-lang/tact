@@ -21,7 +21,7 @@ exports[`feature-instrinsics should return correct instinsic results 1`] = `
       },
       {
         "$type": "processed",
-        "gasUsed": 7881n,
+        "gasUsed": 7899n,
       },
       {
         "$type": "sent",

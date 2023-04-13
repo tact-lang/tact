@@ -1,3 +1,7 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
 ;;
 ;; Type: Vars
 ;; TLB: _ a:int257 b:int257 c:int257 d:int257 e:int257 = Vars

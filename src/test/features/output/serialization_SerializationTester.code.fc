@@ -1,6 +1,7 @@
 #pragma version =0.4.3;
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
+
 #include "serialization_SerializationTester.headers.fc";
 #include "serialization_SerializationTester.stdlib.fc";
 #include "serialization_SerializationTester.storage.fc";

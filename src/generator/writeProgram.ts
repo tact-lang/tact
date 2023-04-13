@@ -13,6 +13,7 @@ import { emit } from "./emitter/emit";
 import { writeInit, writeMainContract, writeStorageOps } from "./writers/writeContract";
 import { initId } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
+import { trimIndent } from "../utils/text";
 
 export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, basename: string, debug: boolean = false) {
 
@@ -39,10 +40,22 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     const imported: string[] = [];
 
     //
+    // Common header
+    //
+
+    const commonHeaders = trimIndent(`
+        #pragma version =0.4.3;
+        #pragma allow-post-modification;
+        #pragma compute-asm-ltr;
+    `);
+
+    //
     // Headers
     //
 
     const headers: string[] = [];
+    headers.push(commonHeaders);
+    headers.push('');
     headers.push(`;;`);
     headers.push(`;; Header files for ${abiSrc.name}`);
     headers.push(`;; NOTE: declarations are sorted for optimal order`);
@@ -74,12 +87,12 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     // stdlib
     //
 
-    const stdlibHeader = `
+    const stdlibHeader = commonHeaders + '\n\n' + trimIndent(`
         global (int, slice, int, slice) __tact_context;
         global slice __tact_context_sender;
         global cell __tact_context_sys;
         global int __tact_randomized;
-    `;
+    `);
 
     const stdlibFunctions = tryExtractModule(functions, 'stdlib', []);
     if (stdlibFunctions) {
@@ -105,7 +118,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         imported.push('native');
         files.push({
             name: basename + '.native.fc',
-            code: emit({ header: nativeSources.map((v) => v.code).join('\n\n') })
+            code: emit({ header: [commonHeaders, ...nativeSources.map((v) => v.code)].join('\n\n') })
         });
     }
 
@@ -118,7 +131,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
         imported.push('constants');
         files.push({
             name: basename + '.constants.fc',
-            code: emit({ functions: constantsFunctions })
+            code: emit({ header: commonHeaders, functions: constantsFunctions })
         });
     }
 
@@ -167,7 +180,7 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
     if (emitedTypes.length > 0) {
         files.push({
             name: basename + '.storage.fc',
-            code: emitedTypes.join('\n\n')
+            code: [commonHeaders, ...emitedTypes].join('\n\n')
         });
     }
 
@@ -186,9 +199,8 @@ export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, ba
 
     const remainingFunctions = tryExtractModule(functions, null, imported);
     const header: string[] = [];
-    header.push(`#pragma version =0.4.3;`);
-    header.push(`#pragma allow-post-modification;`);
-    header.push(`#pragma compute-asm-ltr;`);
+    header.push(commonHeaders);
+    header.push('');
     for (let i of files.map((v) => `#include "${v.name}";`)) {
         header.push(i);
     }

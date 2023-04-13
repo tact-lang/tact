@@ -4,10 +4,10 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_457ed784de722f7b;
-  DECLPROC ?fun_ref_64f02ffeb96835d0;
   DECLPROC ?fun_ref_b93b9862cda1783c;
-  DECLPROC ?fun_ref_d1b0bfaa4d07b3a3;
-  DECLPROC ?fun_ref_f8879d3273f81feb;
+  DECLPROC ?fun_ref_be9e48593636eeba;
+  DECLPROC ?fun_ref_deb482e5c31907a5;
+  DECLPROC ?fun_ref_f9f31152659ffd4f;
   recv_internal PROC:<{
     s0 s1 XCHG
     CTOS
@@ -39,9 +39,9 @@ PROGRAM{
     1 SETGLOBVAR
     s0 s2 XCHG
     2 SETGLOBVAR
-    ?fun_ref_d1b0bfaa4d07b3a3 INLINECALLDICT
+    ?fun_ref_f9f31152659ffd4f INLINECALLDICT
     ROTREV
-    ?fun_ref_f8879d3273f81feb INLINECALLDICT
+    ?fun_ref_deb482e5c31907a5 INLINECALLDICT
     130 THROWIFNOT
     s0 POP
     NEWC
@@ -80,17 +80,6 @@ PROGRAM{
     NULL
     NULL
     ?fun_ref_b93b9862cda1783c INLINECALLDICT
-  }>
-  ?fun_ref_64f02ffeb96835d0 PROCREF:<{
-    NULL
-    x{000000004465706C6F792073756363657373} PUSHREF
-    15211807202738752817960438464513 PUSHINT
-    NEWC
-    104 STU
-    STREF
-    ENDC
-    0 PUSHINT
-    SENDRAWMSG
   }>
   ?fun_ref_b93b9862cda1783c PROCREF:<{
     NEWC
@@ -236,26 +225,19 @@ PROGRAM{
     s0 s1 XCHG
     SENDRAWMSG
   }>
-  ?fun_ref_d1b0bfaa4d07b3a3 PROCREF:<{
-    c4 PUSH
-    CTOS
-    LDREF
+  ?fun_ref_be9e48593636eeba PROCREF:<{
+    NULL
+    x{000000004465706C6F792073756363657373} PUSHREF
+    NEWC
+    15211807202738752817960438464513 PUSHINT
     s0 s1 XCHG
-    3 SETGLOBVAR
-    1 LDI
-    s0 POP
-    <{
-      NULL
-    }> PUSHCONT
-    IFJMP
-    MYADDR
-    11 PLDU
-    10 PUSHPOW2
-    EQUAL
-    137 THROWIFNOT
-    ?fun_ref_64f02ffeb96835d0 INLINECALLDICT
+    104 STU
+    STREF
+    ENDC
+    0 PUSHINT
+    SENDRAWMSG
   }>
-  ?fun_ref_f8879d3273f81feb PROCREF:<{
+  ?fun_ref_deb482e5c31907a5 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -315,8 +297,9 @@ PROGRAM{
         s0 s1 XCHG
         ?fun_ref_457ed784de722f7b INLINECALLDICT
         x{00000000536F6D657468696E67} PUSHREF
-        15211807202738752817960438464513 PUSHINT
         NEWC
+        15211807202738752817960438464513 PUSHINT
+        s0 s1 XCHG
         104 STU
         STREF
         ENDC
@@ -328,5 +311,24 @@ PROGRAM{
       IFJMP
     }> IFREFELSE
     0 PUSHINT
+  }>
+  ?fun_ref_f9f31152659ffd4f PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    s0 s1 XCHG
+    3 SETGLOBVAR
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    IFJMP
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    ?fun_ref_be9e48593636eeba INLINECALLDICT
   }>
 }END>c
