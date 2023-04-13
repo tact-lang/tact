@@ -443,24 +443,30 @@ PROGRAM{
     SWAP
   }>
   $SerializationTester2$_contract_router_internal PROCREF:<{
-    0 PUSHINT
-    s0 s2 XCHG
+    SWAP
     IFJMP:<{
-      2DROP
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
       TRUE
     }>
-    DUP
+    0 PUSHINT
+    OVER
     SBITS
     31 GTINT
     IF:<{
-      NIP
+      DROP
       DUP
       32 PLDU
-      SWAP
     }>
-    OVER
+    DUP
     0 EQINT
-    OVER
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -469,7 +475,6 @@ PROGRAM{
       %$SerializationTester2$_internal_empty INLINECALLDICT
       TRUE
     }>
-    SWAP
     2732768933 PUSHINT
     EQUAL
     IFJMP:<{

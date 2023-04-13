@@ -314,28 +314,33 @@ PROGRAM{
     SENDRAWMSG
   }>
   ?fun_2 PROCREF:<{
-    0 PUSHINT
-    s0 s2 XCHG
+    s0 s1 XCHG
     <{
-      DROP2
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
+      s0 POP
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    0 PUSHINT
+    s1 PUSH
     SBITS
     31 GTINT
     <{
-      s1 POP
+      s0 POP
       s0 PUSH
       32 PLDU
-      s0 s1 XCHG
     }> PUSHCONT
     IF
-    s1 PUSH
+    s0 PUSH
     537284411 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       537284411 PUSHINT
@@ -391,13 +396,12 @@ PROGRAM{
       IFELSE
       s0 s1 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     1081595080 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1081595080 PUSHINT
@@ -480,13 +484,12 @@ PROGRAM{
       IFELSE
       s0 s3 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     3801943978 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       3801943978 PUSHINT
@@ -538,13 +541,12 @@ PROGRAM{
       IFELSE
       s0 s2 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     1718153138 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1718153138 PUSHINT
@@ -558,7 +560,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     2490013878 PUSHINT
     EQUAL
     <{
@@ -588,7 +589,8 @@ PROGRAM{
       NULL
       ?fun_4 INLINECALLDICT
       -1 PUSHINT
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
     s0 POP
     0 PUSHINT
   }>

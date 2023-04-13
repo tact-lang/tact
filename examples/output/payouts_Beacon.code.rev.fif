@@ -249,28 +249,29 @@ PROGRAM{
     SENDRAWMSG
   }>
   ?fun_2 PROCREF:<{
-    0 PUSHINT
-    s0 s2 XCHG
+    s0 s1 XCHG
     <{
-      s1 POP
       32 PUSHINT
       SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      31 GTINT
+      s0 POP
       DROP2
       0 PUSHINT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    0 PUSHINT
+    s1 PUSH
     SBITS
     31 GTINT
     <{
-      s1 POP
+      s0 POP
       s0 PUSH
       32 PLDU
-      s0 s1 XCHG
     }> PUSHCONT
     IF
-    s0 s1 XCHG
     3289991647 PUSHINT
     EQUAL
     <{

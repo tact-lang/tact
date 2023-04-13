@@ -125,6 +125,12 @@ PROGRAM{
   ?fun_2 PROCREF:<{
     s0 s1 XCHG
     <{
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
       s0 POP
       -1 PUSHINT
     }> PUSHCONT

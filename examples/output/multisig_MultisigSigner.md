@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: MultisigSigner
-BOC Size: 1127 bytes
+BOC Size: 1135 bytes
 
 # Types
 Total Types: 5

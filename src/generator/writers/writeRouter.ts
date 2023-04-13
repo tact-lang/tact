@@ -18,7 +18,6 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
     ctx.inIndent(() => {
 
         ctx.append();
-        ctx.append(`int op = 0;`);
 
         // Handle bounced
         if (internal) {
@@ -27,7 +26,15 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
             ctx.inIndent(() => {
                 ctx.append(`;; Skip 0xFFFFFFFF`);
                 ctx.append(`in_msg~skip_bits(32);`);
-                ctx.append(`op = in_msg.preload_uint(32);`);
+
+                ctx.append();
+                ctx.append(`;; Parse op`);
+                ctx.append(`int op = 0;`);
+                ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`op = in_msg.preload_uint(32);`);
+                });
+                ctx.append(`}`);
 
                 const nonGenericReceivers = type.receivers.filter(r => {
                     if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'ref_bounced') return false;
@@ -90,13 +97,14 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
         }
         
         // Parse incoming message
+        ctx.append();
         ctx.append(`;; Parse incoming message`);
+        ctx.append(`int op = 0;`);
         ctx.append(`if (slice_bits(in_msg) >= 32) {`);
         ctx.inIndent(() => {
             ctx.append(`op = in_msg.preload_uint(32);`);
         });
         ctx.append(`}`);
-        ctx.append();
 
         // Non-empty receivers
         for (const f of type.receivers) {

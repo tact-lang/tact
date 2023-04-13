@@ -375,32 +375,37 @@ PROGRAM{
   $MultisigContract$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
-    0 PUSHINT
-    s0 s2 XCHG
+    SWAP
     IFJMP:<{
-      2DROP
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
       TRUE
     }>
-    DUP
+    0 PUSHINT
+    OVER
     SBITS
     31 GTINT
     IF:<{
-      NIP
+      DROP
       DUP
       32 PLDU
-      SWAP
     }>
-    OVER
+    DUP
     520967536 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Execute$_load INLINECALLDICT
       1 6 BLKDROP2
       $MultisigContract$_internal_binary_Execute INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

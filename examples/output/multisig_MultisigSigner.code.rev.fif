@@ -364,26 +364,31 @@ PROGRAM{
   ?fun_3 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
-    0 PUSHINT
-    s0 s2 XCHG
+    s0 s1 XCHG
     <{
-      DROP2
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
+      s0 POP
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    0 PUSHINT
+    s1 PUSH
     SBITS
     31 GTINT
     <{
-      s1 POP
+      s0 POP
       s0 PUSH
       32 PLDU
-      s0 s1 XCHG
     }> PUSHCONT
     IF
-    s1 PUSH
+    s0 PUSH
     0 EQINT
-    s1 PUSH
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -392,7 +397,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     0 EQINT
     <{
       s0 POP

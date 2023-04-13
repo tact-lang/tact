@@ -560,62 +560,67 @@ PROGRAM{
     SWAP
   }>
   $IncrementContract$_contract_router_internal PROCREF:<{
-    0 PUSHINT
-    s0 s2 XCHG
+    SWAP
     IFJMP:<{
-      2DROP
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
       TRUE
     }>
-    DUP
+    0 PUSHINT
+    OVER
     SBITS
     31 GTINT
     IF:<{
-      NIP
+      DROP
       DUP
       32 PLDU
-      SWAP
     }>
-    OVER
+    DUP
     537284411 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Increment$_load INLINECALLDICT
       1 2 BLKDROP2
       $IncrementContract$_internal_binary_Increment INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1081595080 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Toggle$_load INLINECALLDICT
       NIP
       $IncrementContract$_internal_binary_Toggle INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     3801943978 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Persist$_load INLINECALLDICT
       1 2 BLKDROP2
       $IncrementContract$_internal_binary_Persist INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1718153138 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Reset$_load INLINECALLDICT
       NIP
       $IncrementContract$_internal_binary_Reset INLINECALLDICT
       TRUE
     }>
-    SWAP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{

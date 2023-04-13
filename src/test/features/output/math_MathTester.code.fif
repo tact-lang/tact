@@ -973,22 +973,27 @@ PROGRAM{
     SWAP
   }>
   $MathTester$_contract_router_internal PROCREF:<{
-    0 PUSHINT
-    s0 s2 XCHG
+    SWAP
     IFJMP:<{
-      2DROP
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
       TRUE
     }>
-    DUP
+    0 PUSHINT
+    OVER
     SBITS
     31 GTINT
     IF:<{
-      NIP
+      DROP
       DUP
       32 PLDU
-      SWAP
     }>
-    SWAP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{

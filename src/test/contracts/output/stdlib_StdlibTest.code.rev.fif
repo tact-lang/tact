@@ -39,24 +39,28 @@ PROGRAM{
     ?fun_1 INLINECALLDICT
   }>
   ?fun_2 PROCREF:<{
-    0 PUSHINT
-    s0 s2 XCHG
+    s0 s1 XCHG
     <{
-      DROP2
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
+      s0 POP
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 PUSH
+    0 PUSHINT
+    s1 PUSH
     SBITS
     31 GTINT
     <{
-      s1 POP
+      s0 POP
       s0 PUSH
       32 PLDU
-      s0 s1 XCHG
     }> PUSHCONT
     IF
-    s0 s1 XCHG
     0 EQINT
     s0 s1 XCHG
     SBITS
