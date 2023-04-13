@@ -49,6 +49,10 @@ contract MyContract with MyTrait, Ownable {
     init(owner: Address) {
         self.owner = owner;
     }
+    
+    bounced(src: bounced<MyMessage>) {
+        
+    }
 
     get fun hello(arg: Int): Int {
         if (arg == 0) {
