@@ -701,6 +701,18 @@ PROGRAM{
   $Maps$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -710,32 +722,26 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     1384510466 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Replace$_load INLINECALLDICT
       NIP
       $Maps$_internal_binary_Replace INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Deploy$_load INLINECALLDICT
       NIP
       $Maps$_internal_binary_Deploy INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

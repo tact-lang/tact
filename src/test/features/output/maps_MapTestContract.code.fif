@@ -5030,6 +5030,18 @@ PROGRAM{
   $MapTestContract$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -5039,14 +5051,9 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     0 EQINT
-    OVER
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -5055,167 +5062,166 @@ PROGRAM{
       %$MapTestContract$_internal_empty INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1510253336 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap1$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap1 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1629867766 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap2$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap2 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     3613954633 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap3$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap3 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     383013829 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap4$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap4 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2809746751 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap5$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap5 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1258686922 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap6$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap6 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     3563204871 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetUIntMap7$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetUIntMap7 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1910615278 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap8$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap8 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1765685895 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetUIntMap9$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetUIntMap9 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1749966413 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap1$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap1 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     624157584 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap2$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap2 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     4276365062 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap3$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap3 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1683777913 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap4$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap4 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1741376771 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap5$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap5 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1742733058 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap6$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap6 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2054067599 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap7$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap7 INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

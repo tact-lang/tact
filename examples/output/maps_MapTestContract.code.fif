@@ -761,6 +761,18 @@ PROGRAM{
     SWAP
   }>
   $MapTestContract$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -770,82 +782,76 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     1510253336 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap1$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap1 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1629867766 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap2$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap2 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     3613954633 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap3$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap3 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     383013829 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetIntMap4$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetIntMap4 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     1749966413 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap1$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap1 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     624157584 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap2$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap2 INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     4276365062 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $SetAddrMap3$_load INLINECALLDICT
       1 2 BLKDROP2
       $MapTestContract$_internal_binary_SetAddrMap3 INLINECALLDICT
       TRUE
     }>
-    SWAP
     1683777913 PUSHINT
     EQUAL
     IFJMP:<{

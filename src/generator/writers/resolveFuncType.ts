@@ -2,7 +2,7 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
-export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext, optional: boolean = false): string {
+export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, ctx: WriterContext, optional: boolean = false, usePartialFields: boolean = false): string {
 
     // String
     if (typeof descriptor === 'string') {
@@ -15,6 +15,9 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
     }
     if (descriptor.kind === 'map') {
         return 'cell';
+    }
+    if (descriptor.kind === 'ref_bounced') {
+        return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx, false, true);
     }
     if (descriptor.kind === 'void') {
         return '()';
@@ -45,13 +48,14 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
         if (optional || descriptor.fields.length === 0) {
             return 'tuple';
         } else {
-            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+            const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
+            return '(' + fieldsToUse.map((v) => resolveFuncType(v.type, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {
         if (optional || descriptor.fields.length === 0) {
             return 'tuple';
         } else {
-            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx, false, usePartialFields)).join(', ') + ')';
         }
     }
 

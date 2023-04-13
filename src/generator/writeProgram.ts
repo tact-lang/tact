@@ -1,8 +1,8 @@
 import { CompilerContext } from "../context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
-import { getAllStaticFunctions, getAllTypes } from "../types/resolveDescriptors";
+import { getAllStaticFunctions, getAllTypes, toBounced } from "../types/resolveDescriptors";
 import { WriterContext, WrittenFunction } from "./Writer";
-import { writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
+import { writeBouncedParser, writeOptionalParser, writeOptionalSerializer, writeParser, writeSerializer } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "ton-core";
@@ -283,10 +283,12 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
     for (let t of sortedTypes) {
         if (t.kind === 'contract' || t.kind === 'struct') {
             let allocation = getAllocation(ctx, t.name);
+            let allocationBounced = getAllocation(ctx, toBounced(t.name));
             writeSerializer(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalSerializer(t.name, t.origin, wctx);
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalParser(t.name, t.origin, wctx);
+            writeBouncedParser(t.name, t.kind === 'contract', allocationBounced, t.origin, wctx); // TODO partial allocation
         }
     }
 

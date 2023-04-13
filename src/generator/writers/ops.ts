@@ -16,6 +16,7 @@ export const ops = {
     writerCell: (type: string, ctx: WriterContext) => used(`$${type}$_store_cell`, ctx),
     writerCellOpt: (type: string, ctx: WriterContext) => used(`$${type}$_store_opt`, ctx),
     reader: (type: string, ctx: WriterContext) => used(`$${type}$_load`, ctx),
+    readerBounced: (type: string, ctx: WriterContext) => used(`$${type}$_load_bounced`, ctx),
     readerOpt: (type: string, ctx: WriterContext) => used(`$${type}$_load_opt`, ctx),
     typeField: (type: string, name: string, ctx: WriterContext) => used(`$${type}$_get_${name}`, ctx),
     typeTensorCast: (type: string, ctx: WriterContext) => used(`$${type}$_tensor_cast`, ctx),
@@ -42,7 +43,7 @@ export const ops = {
     receiveAnyText: (type: string, kind: 'internal' | 'external') => `$${type}$_${kind}_any_text`,
     receiveText: (type: string, kind: 'internal' | 'external', hash: string) => `$${type}$_${kind}_text_${hash}`,
     receiveAny: (type: string, kind: 'internal' | 'external') => `$${type}$_${kind}_any`,
-    receiveBounce: (type: string) => `$${type}$_receive_bounce`,
+    receiveTypeBounce: (type: string, msg: string) => `$${type}$_receive_binary_bounce_${msg}`,
 
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,

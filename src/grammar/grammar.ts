@@ -583,6 +583,9 @@ semantics.addOperation<ASTNode>('resolve_expression', {
             ref: createRef(this)
         });
     },
+    Type_bounced(arg0, arg1, arg2, arg3) {
+        return createNode({ kind: 'type_ref_bounced', name: arg2.sourceString, ref: createRef(this) });
+    },
 
     // Binary
     ExpressionAdd_add(arg0, arg1, arg2) {

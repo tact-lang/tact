@@ -24,6 +24,7 @@ Tact {
     Type = typeLiteral "?" --optional
          | typeLiteral --required
          | "map" "<" typeLiteral (as id)? "," typeLiteral (as id)? ">" --map
+         | "bounced" "<" typeLiteral ">" --bounced
     Field = id ":" Type ";" --default
           | id ":" Type "=" Expression ";" --defaultWithInit
           | id ":" Type as id ";" --withSerialization
@@ -76,6 +77,7 @@ Tact {
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ";" --abstractVoid
              | FunctionAttribute* fun id "(" ListOf<FunctionArg,","> ")" ":" Type ";" --abstractType
     FunctionArg = id ":" Type
+    
     ReceiveFunction = "receive" "(" FunctionArg ")" "{" Statement* "}" --simple
                     | "receive" "(" ")" "{" Statement* "}" --empty
                     | "receive" "(" stringLiteral ")" "{" Statement* "}" --comment

@@ -8,6 +8,7 @@ import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "ton-core";
 import { enabledExternals } from "../config/features";
+import { Type } from "js-yaml";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -68,6 +69,7 @@ function verifyMapType(key: string, keyAs: string | null, value: string, valueAs
     }
 }
 
+export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
@@ -89,6 +91,9 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
             value: v,
             valueAs: src.valueAs
         };
+    }
+    if (src.kind === 'type_ref_bounced') {
+        throw Error("Unimplemented");
     }
     throw Error('Invalid type ref');
 }
@@ -119,8 +124,20 @@ function buildTypeRef(src: ASTTypeRef, types: { [key: string]: TypeDescription }
             valueAs: src.valueAs
         };
     }
+    if (src.kind === 'type_ref_bounced') {
+        throw Error("Unimplemented");
+    }
 
     throw Error('Unknown type ref');
+}
+
+function uidForName(name: string, types: { [key: string]: TypeDescription }) {
+    // Resolve unique typeid from crc16
+    let uid = crc16(name);
+    while (Object.values(types).find((v) => v.uid === uid)) {
+        uid = (uid + 1) % 65536;
+    }
+    return uid;
 }
 
 export function resolveDescriptors(ctx: CompilerContext) {
@@ -138,11 +155,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             throwError(`Type ${a.name} already exists`, a.ref);
         }
 
-        // Resolve unique typeid from crc16
-        let uid = crc16(a.name);
-        while (Object.values(types).find((v) => v.uid === uid)) {
-            uid = (uid + 1) % 65536;
-        }
+        let uid = uidForName(a.name, types);
 
         if (a.kind === 'primitive') {
             types[a.name] = {
@@ -161,7 +174,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: [],
-                constants: []
+                constants: [],
+                partialFieldCount: 0
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -180,7 +194,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
-                constants: []
+                constants: [],
+                partialFieldCount: 0
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -199,7 +214,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: [],
-                constants: []
+                constants: [],
+                partialFieldCount: 0
             };
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
@@ -218,7 +234,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 init: null,
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
-                constants: []
+                constants: [],
+                partialFieldCount: 0
             };
         }
     }
@@ -279,6 +296,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         // Struct
         if (a.kind === 'def_struct') {
             for (const f of a.fields) {
+                
                 if (types[a.name].fields.find((v) => v.name === f.name)) {
                     throwError(`Field ${f.name} already exists`, f.ref);
                 }
@@ -510,7 +528,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     for (const a of ast.types) {
-
         if (a.kind === 'def_contract' || a.kind === 'def_trait') {
             const s = types[a.name];
             for (const d of a.declarations) {
@@ -652,24 +669,45 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     } else if (d.selector.kind === 'bounce') {
                         const arg = d.selector.arg;
 
-                        if (arg.type.kind !== 'type_ref_simple') {
-                            throwError('Receive function can only accept message', d.ref);
-                        }
-                        if (arg.type.optional) {
-                            throwError('Receive function cannot have optional argument', d.ref);
+                        // TODO improve error checking
+                        if (!(arg.type.kind === 'type_ref_simple' || arg.type.kind === "type_ref_bounced")) {
+                            throwError('Bounce receive function can only accept either Slice or bounced<T> types', d.ref);
                         }
 
-                        // Check resolved argument type
                         let t = types[arg.type.name];
-                        if (t.kind !== 'primitive' || t.name !== 'Slice') {
-                            throwError('Bounce receive function can only accept message', d.ref);
+                        const isGeneric = arg.type.kind === "type_ref_simple" && t.kind === 'primitive' && t.name === 'Slice';
+
+                        if (arg.type.kind === 'type_ref_simple' && arg.type.optional) {
+                            throwError('Bounce receive function cannot have optional argument', d.ref);
                         }
 
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce')) {
-                            throwError('Bounce receive function already exists', d.ref);
+                        // Check type
+                        if (!isGeneric) {
+                            if (t.kind !== 'struct') {
+                                throwError('Bounce receive function can only accept struct args or Slice', d.ref);
+                            }
+                            if (t.ast.kind !== 'def_struct') {
+                                throwError('Bounce receive function can only accept struct args or Slice', d.ref);
+                            }
+                            if (!t.ast.message) {
+                                throwError('Bounce receive function can only accept struct message args', d.ref);
+                            }
                         }
+
+                        // Check for duplicate
+                        const typeRef: TypeRef = {
+                            kind: isGeneric ? 'ref' : 'ref_bounced', 
+                            name: arg.type.name,
+                            optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
+                        };
+
+                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce' && typeRefEquals(typeRef, v.selector.type))) {
+                            throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
+                        }
+                        
+                        // TODO not happy about this b/c ideally we'd use resolveTypeRef, but it's not available yet at this point
                         s.receivers.push({
-                            selector: { kind: 'internal-bounce', name: arg.name },
+                            selector: { kind: 'internal-bounce', name: arg.name, type: typeRef },
                             ast: d
                         });
                     } else {
@@ -872,7 +910,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         return a.type === b.type;
                     }
                     if (a.kind === 'internal-bounce' && b.kind === 'internal-bounce') {
-                        return true;
+                        return a.type === b.type;
                     }
                     if (a.kind === 'internal-empty' && b.kind === 'internal-empty') {
                         return true;
@@ -1030,6 +1068,13 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     //
+    // Populate partial serialization info
+    //
+    for (let t in types) {
+        types[t].partialFieldCount = resolvePartialFields(ctx, types[t])
+    }
+
+    //
     // Register types and functions in context
     //
 
@@ -1092,4 +1137,40 @@ export function getAllStaticFunctions(ctx: CompilerContext) {
 
 export function getAllStaticConstants(ctx: CompilerContext) {
     return staticConstantsStore.all(ctx);
+}
+
+export function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
+    if (type.kind !== 'struct') return 0;
+
+    let partialFieldsCount = 0;
+
+    let remainingBits = 224;
+
+    for (const f of type.fields) {
+        // dicts are unsupported
+        if (f.abi.type.kind !== "simple") break;
+
+        let fieldBits = f.abi.type.optional ? 1 : 0;
+        if (Number.isInteger(f.abi.type.format)) {
+            fieldBits += f.abi.type.format as number;
+        } else if (f.abi.type.format === "coins") {
+            fieldBits += 124;
+        } else if (f.abi.type.type === "address") {
+            fieldBits += 267;
+        } else if (f.abi.type.type === "bool") {
+            fieldBits += 1;
+        } else {
+            // Unsupported - all others (slice, builder, nested structs, maps)
+            break;
+        }
+
+        if (remainingBits - fieldBits >= 0) {
+            remainingBits -= fieldBits;
+            partialFieldsCount++;
+        } else {
+            break;
+        }
+    }
+
+    return partialFieldsCount;
 }

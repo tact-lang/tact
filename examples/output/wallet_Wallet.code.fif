@@ -30,7 +30,7 @@ PROGRAM{
   DECLPROC $Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
   DECLPROC $Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439
   DECLPROC $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
-  DECLPROC $Wallet$_receive_bounce
+  DECLPROC $Wallet$_receive_binary_bounce_Slice
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
   85143 DECLMETHOD %seqno
@@ -403,7 +403,7 @@ PROGRAM{
   }>
   $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
   }>
-  $Wallet$_receive_bounce PROCINLINE:<{
+  $Wallet$_receive_binary_bounce_Slice PROCINLINE:<{
     DROP
   }>
   %publicKey PROC:<{
@@ -439,6 +439,18 @@ PROGRAM{
   $Wallet$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      31 GTINT
+      IF:<{
+      }>
+      $Wallet$_receive_binary_bounce_Slice INLINECALLDICT
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -448,24 +460,18 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      NIP
-      $Wallet$_receive_bounce INLINECALLDICT
-      TRUE
-    }>
-    OVER
+    DUP
     123 EQINT
     IFJMP:<{
-      NIP
+      DROP
       $TransferMessage$_load INLINECALLDICT
       1 6 BLKDROP2
       $Wallet$_internal_binary_TransferMessage INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     0 EQINT
-    OVER
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -474,7 +480,6 @@ PROGRAM{
       %$Wallet$_internal_empty INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       DUP

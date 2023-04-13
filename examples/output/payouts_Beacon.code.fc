@@ -42,8 +42,9 @@
     return (($self'master, $self'owner, $self'completed), ());
 }
 
-((slice, slice, int), ()) $Beacon$_receive_bounce((slice, slice, int) $self, slice $msg) impure inline {
+(((slice, slice, int)), ()) $Beacon$_receive_binary_bounce_Slice((slice, slice, int) $self, slice $msg) impure inline {
     var ($self'master, $self'owner, $self'completed) = $self;
+    var $msg = $msg;
     $self'completed = false;
     return (($self'master, $self'owner, $self'completed), ());
 }
@@ -82,16 +83,26 @@ _ lazy_deployment_completed() method_id {
 
 ((slice, slice, int), int) $Beacon$_contract_router_internal((slice, slice, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+        
+        ;; Parse op
+        int op = 0;
+        if (slice_bits(in_msg) >= 32) {
+            op = in_msg.preload_uint(32);
+        }
+        
+        ;; Bounced handler for [object Object] message (Generic)
+        self~$Beacon$_receive_binary_bounce_Slice(in_msg);
+        return (self, true);
+    }
+    
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        self~$Beacon$_receive_bounce(in_msg);
-        return (self, true);
     }
     
     ;; Receive CanPayout message

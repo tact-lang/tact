@@ -88,8 +88,9 @@
     return (($self'balance, $self'owner, $self'master), ());
 }
 
-((int, slice, slice), ()) $JettonDefaultWallet$_receive_bounce((int, slice, slice) $self, slice $msg) impure inline {
+(((int, slice, slice)), ()) $JettonDefaultWallet$_receive_binary_bounce_Slice((int, slice, slice) $self, slice $msg) impure inline {
     var ($self'balance, $self'owner, $self'master) = $self;
+    var $msg = $msg;
     $msg~skip_bits(32);
     int $op = $msg~load_uint(32);
     int $queryId = $msg~load_uint(64);
@@ -141,16 +142,26 @@ _ lazy_deployment_completed() method_id {
 
 ((int, slice, slice), int) $JettonDefaultWallet$_contract_router_internal((int, slice, slice) self, int msg_bounced, slice in_msg) impure inline_ref {
     
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        ;; Skip 0xFFFFFFFF
+        in_msg~skip_bits(32);
+        
+        ;; Parse op
+        int op = 0;
+        if (slice_bits(in_msg) >= 32) {
+            op = in_msg.preload_uint(32);
+        }
+        
+        ;; Bounced handler for [object Object] message (Generic)
+        self~$JettonDefaultWallet$_receive_binary_bounce_Slice(in_msg);
+        return (self, true);
+    }
+    
     ;; Parse incoming message
     int op = 0;
     if (slice_bits(in_msg) >= 32) {
         op = in_msg.preload_uint(32);
-    }
-    
-    ;; Handle bounced messages
-    if (msg_bounced) {
-        self~$JettonDefaultWallet$_receive_bounce(in_msg);
-        return (self, true);
     }
     
     ;; Receive TokenTransfer message

@@ -2,7 +2,7 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 
-export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | string, name: string, ctx: WriterContext, optional: boolean = false): string {
+export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | string, name: string, ctx: WriterContext, optional: boolean = false, usePartialFields: boolean = false): string {
 
     // String
     if (typeof descriptor === 'string') {
@@ -16,6 +16,9 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
     if (descriptor.kind === 'map') {
         return name;
     }
+    if (descriptor.kind === 'ref_bounced') {
+        return resolveFuncTypeUnpack(getType(ctx.ctx, descriptor.name), name, ctx, false, true);
+    }
     if (descriptor.kind === 'void') {
         throw Error('Void type is not allowed in function arguments: ' + name);
     }
@@ -27,13 +30,14 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
         if (optional || descriptor.fields.length === 0) {
             return name;
         } else {
-            return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx)).join(', ') + ')';
+            const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
+            return '(' + fieldsToUse.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {
         if (optional || descriptor.fields.length === 0) {
             return name;
         } else {
-            return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx)).join(', ') + ')';
+            return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx, false, usePartialFields)).join(', ') + ')';
         }
     }
 

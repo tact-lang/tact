@@ -1,7 +1,7 @@
 import { ASTExpression, throwError } from "../../grammar/ast";
 import { getExpType } from "../../types/resolveExpression";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant } from "../../types/resolveDescriptors";
-import { printTypeRef, TypeDescription } from "../../types/types";
+import { FieldDescription, printTypeRef, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
@@ -157,6 +157,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             if (tt.kind === 'contract' || tt.kind === 'struct') {
                 return resolveFuncTypeUnpack(t, id(f.value), ctx);
             }
+        }
+
+        if (t.kind === 'ref_bounced') {
+            throw Error('Unimplemented');
         }
 
         // Handle constant
@@ -377,13 +381,20 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve the type of the expression
         let src = getExpType(ctx.ctx, f.src);
-        if (src === null || src.kind !== 'ref' || src.optional) {
+        if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'ref_bounced'))) {
             throwError(`Cannot access field of non-struct type: ${printTypeRef(src)}`, f.ref);
         }
         let srcT = getType(ctx.ctx, src.name);
 
         // Resolve field
-        let field = srcT.fields.find((v) => v.name === f.name)!;
+        let fields: FieldDescription[];
+
+        fields = srcT.fields;
+        if (src.kind === 'ref_bounced') {
+            fields = fields.slice(0, srcT.partialFieldCount);
+        }
+
+        let field = fields.find((v) => v.name === f.name)!;
         let cst = srcT.constants.find((v) => v.name === f.name)!;
         if (!field && !cst) {
             throwError(`Cannot find field "${f.name}" in struct "${srcT.name}"`, f.ref);
@@ -530,6 +541,10 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
                 throwError(`Map function "${f.name}" not found`, f.ref);
             }
             return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
+        }
+
+        if (src.kind === 'ref_bounced') {
+            throw Error("Unimplemented");
         }
 
         throwError(`Cannot call function of non - direct type: ${printTypeRef(src)} `, f.ref);

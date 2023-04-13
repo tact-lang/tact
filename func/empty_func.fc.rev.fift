@@ -1,6 +1,6 @@
 PROGRAM{
   DECLPROC recv_internal;
-  DECLPROC ?fun_6;
+  DECLPROC ?fun_0;
   recv_internal PROC:<{
     s1 POP
     s0 PUSH
@@ -26,7 +26,7 @@ PROGRAM{
     c4 POP
     100 THROW
   }>
-  ?fun_6 PROC:<{
+  ?fun_0 PROC:<{
 
   }>
 }END>c

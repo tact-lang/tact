@@ -138,14 +138,23 @@ PROGRAM{
     SWAP
   }>
   $ConstantTester$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     DUP
     SBITS
     NIP
     31 GTINT
     IF:<{
-    }>
-    IFJMP:<{
-      TRUE
     }>
     FALSE
   }>

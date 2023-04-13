@@ -12,6 +12,7 @@ export type TypeDescription = {
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
+    partialFieldCount: number; // A partial representation of the struct, for bounced purposes
     traits: TypeDescription[];
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
@@ -32,6 +33,9 @@ export type TypeRef = {
     keyAs: string | null,
     value: string,
     valueAs: string | null,
+} | {
+    kind: 'ref_bounced',
+    name: string
 } | {
     kind: 'void'
 } | {
@@ -103,7 +107,8 @@ export type ReceiverSelector = {
     name: string
 } | {
     kind: 'internal-bounce',
-    name: string
+    name: string,
+    type: TypeRef,
 } | {
     kind: 'external-binary',
     type: string,
@@ -140,6 +145,8 @@ export function printTypeRef(src: TypeRef): string {
         return '<void>';
     } else if (src.kind === 'null') {
         return '<null>';
+    } else if (src.kind === 'ref_bounced') {
+        return `bounced<${src.name}>`;
     } else {
         throw Error('Invalid type ref');
     }
@@ -154,6 +161,9 @@ export function typeRefEquals(a: TypeRef, b: TypeRef) {
     }
     if (a.kind === 'map' && b.kind === 'map') {
         return a.key === b.key && a.value === b.value;
+    }
+    if (a.kind === 'ref_bounced' && b.kind === 'ref_bounced') {
+        return a.name === b.name;
     }
     if (a.kind === 'null' && b.kind === 'null') {
         return true;

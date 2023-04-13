@@ -1,10 +1,10 @@
 PROGRAM{
   DECLPROC recv_internal;
-  DECLPROC ?fun_2;
+  DECLPROC ?fun_0;
   recv_internal PROC:<{
 
   }>
-  ?fun_2 PROC:<{
+  ?fun_0 PROC:<{
     s0 s1 XCHG
     2 UNTUPLE
     127 PUSHINT

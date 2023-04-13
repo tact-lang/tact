@@ -1,7 +1,7 @@
-import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError } from "../grammar/ast";
+import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode } from '../grammar/ast';
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction } from "./resolveDescriptors";
-import { printTypeRef, TypeRef, typeRefEquals } from "./types";
+import { FieldDescription, printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
@@ -128,6 +128,9 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
             } else {
+                if (l.kind === 'ref_bounced' || r.kind === 'ref_bounced') {
+                    throwError("Bounced types are not supported in binary operators", exp.ref);
+                }
                 if (l.kind !== 'ref' || r.kind !== 'ref') {
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
@@ -192,7 +195,8 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
 
     // Find target type and check for type
     let src = getExpType(ctx, exp.src);
-    if (src === null || src.kind !== 'ref' || src.optional) {
+    
+    if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'ref_bounced'))) {
         throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
     }
 
@@ -204,8 +208,16 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     }
 
     // Find field
+    let fields: FieldDescription[];
+    
     let srcT = getType(ctx, src.name);
-    const field = srcT.fields.find((v) => v.name === exp.name);
+
+    fields = srcT.fields;
+    if (src.kind === 'ref_bounced') {
+        fields = fields.slice(0, srcT.partialFieldCount);
+    }
+
+    const field = fields.find((v) => v.name === exp.name);
     const cst = srcT.constants.find((v) => v.name === exp.name);
     if (!field && !cst) {
         throwError(`Type "${src.name}" does not have a field named "${exp.name}"`, exp.ref);
@@ -336,6 +348,10 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
         }
         let resolved = abf.resolve(ctx, [src, ...exp.args.map((v) => getExpType(ctx, v))], exp.ref);
         return registerExpType(ctx, exp, resolved);
+    }
+
+    if (src.kind === 'ref_bounced') {
+        throwError(`Cannot call function on bounced value`, exp.ref);
     }
 
     throwError(`Invalid type "${printTypeRef(src)}" for function call`, exp.ref);

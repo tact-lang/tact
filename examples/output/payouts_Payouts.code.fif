@@ -670,6 +670,18 @@ PROGRAM{
   $Payouts$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -679,32 +691,26 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     4293607646 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $CanPayoutResponse$_load INLINECALLDICT
       1 3 BLKDROP2
       $Payouts$_internal_binary_CanPayoutResponse INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2174598809 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $ChangeOwner$_load INLINECALLDICT
       1 2 BLKDROP2
       $Payouts$_internal_binary_ChangeOwner INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       DUP

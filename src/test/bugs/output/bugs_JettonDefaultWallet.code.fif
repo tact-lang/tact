@@ -51,7 +51,7 @@ PROGRAM{
   DECLPROC $JettonDefaultWallet$_internal_binary_TokenTransfer
   DECLPROC $JettonDefaultWallet$_internal_binary_TokenTransferInternal
   DECLPROC $JettonDefaultWallet$_internal_binary_TokenBurn
-  DECLPROC $JettonDefaultWallet$_receive_bounce
+  DECLPROC $JettonDefaultWallet$_receive_binary_bounce_Slice
   115218 DECLMETHOD %msgValue
   97026 DECLMETHOD %get_wallet_data
   113617 DECLMETHOD supported_interfaces
@@ -821,7 +821,7 @@ PROGRAM{
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $JettonDefaultWallet$_receive_bounce PROCINLINE:<{
+  $JettonDefaultWallet$_receive_binary_bounce_Slice PROCINLINE:<{
     32 PUSHINT
     SDSKIPFIRST
     32 LDU
@@ -877,6 +877,18 @@ PROGRAM{
     SWAP
   }>
   $JettonDefaultWallet$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      31 GTINT
+      IF:<{
+      }>
+      $JettonDefaultWallet$_receive_binary_bounce_Slice INLINECALLDICT
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -886,33 +898,26 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      NIP
-      $JettonDefaultWallet$_receive_bounce INLINECALLDICT
-      TRUE
-    }>
-    OVER
+    DUP
     260734629 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TokenTransfer$_load INLINECALLDICT
       1 7 BLKDROP2
       $JettonDefaultWallet$_internal_binary_TokenTransfer INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     395134233 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TokenTransferInternal$_load INLINECALLDICT
       1 6 BLKDROP2
       $JettonDefaultWallet$_internal_binary_TokenTransferInternal INLINECALLDICT
       TRUE
     }>
-    SWAP
     1499400124 PUSHINT
     EQUAL
     IFJMP:<{
