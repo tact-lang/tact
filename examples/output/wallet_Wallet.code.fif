@@ -439,6 +439,18 @@ PROGRAM{
   $Wallet$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      31 GTINT
+      IF:<{
+      }>
+      $Wallet$_receive_binary_bounce_Slice INLINECALLDICT
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -448,26 +460,18 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      NIP
-      32 PUSHINT
-      SDSKIPFIRST
-      $Wallet$_receive_binary_bounce_Slice INLINECALLDICT
-      TRUE
-    }>
-    OVER
+    DUP
     123 EQINT
     IFJMP:<{
-      NIP
+      DROP
       $TransferMessage$_load INLINECALLDICT
       1 6 BLKDROP2
       $Wallet$_internal_binary_TransferMessage INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     0 EQINT
-    OVER
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -476,7 +480,6 @@ PROGRAM{
       %$Wallet$_internal_empty INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       DUP

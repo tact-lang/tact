@@ -195,6 +195,18 @@ PROGRAM{
   $MasterchainTester$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -204,22 +216,16 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    OVER
+    DUP
     3679600542 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TestMessage$_load INLINECALLDICT
       1 2 BLKDROP2
       $MasterchainTester$_internal_binary_TestMessage INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

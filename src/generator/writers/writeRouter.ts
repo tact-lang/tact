@@ -17,30 +17,27 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
     }
     ctx.inIndent(() => {
 
-        // Parse incoming message
-        ctx.append();
-        
-        ctx.append(`;; Parse incoming message`);
-        ctx.append(`int op = 0;`);
-        ctx.append(`if (slice_bits(in_msg) >= 32) {`);
-        ctx.inIndent(() => {
-            ctx.append(`op = in_msg.preload_uint(32);`);
-        });
-        ctx.append(`}`);
         ctx.append();
 
+        // Handle bounced
         if (internal) {
-            // Handle bounced
             ctx.append(`;; Handle bounced messages`);
             ctx.append(`if (msg_bounced) {`);
             ctx.inIndent(() => {
-
                 ctx.append(`;; Skip 0xFFFFFFFF`);
                 ctx.append(`in_msg~skip_bits(32);`);
-                ctx.append(`op = in_msg.preload_uint(32);`);
+
+                ctx.append();
+                ctx.append(`;; Parse op`);
+                ctx.append(`int op = 0;`);
+                ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+                ctx.inIndent(() => {
+                    ctx.append(`op = in_msg.preload_uint(32);`);
+                });
+                ctx.append(`}`);
 
                 const nonGenericReceivers = type.receivers.filter(r => {
-                    if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'bounced') return false;
+                    if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'ref_bounced') return false;
                     const allocation = getType(ctx.ctx, r.selector.type.name);
                     return !(allocation.origin === "stdlib" && allocation.name === "Slice");
                 });
@@ -53,7 +50,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                 
                 for (const r of nonGenericReceivers) {
                     const selector = r.selector;
-                    if (selector.kind !== "internal-bounce" || selector.type.kind !== 'bounced') throw Error('Invalid selector type: ' + selector.kind);
+                    if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
 
                     let allocation = getType(ctx.ctx, selector.type.name);
                     
@@ -65,7 +62,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     ctx.append(`;; Bounced handler for ${selector.type} message`);
                     ctx.append(`if (op == ${allocation.header}) {`);
                     ctx.inIndent(() => {
-                        if (selector.kind !== "internal-bounce" || selector.type.kind !== 'bounced') throw Error('Invalid selector type: ' + selector.kind);
+                        if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
                         // Read message
                         ctx.append(`var msg = in_msg~${ops.readerBounced(selector.type.name, ctx)}();`);
 
@@ -98,6 +95,16 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
             });
             ctx.append(`}`);
         }
+        
+        // Parse incoming message
+        ctx.append();
+        ctx.append(`;; Parse incoming message`);
+        ctx.append(`int op = 0;`);
+        ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+        ctx.inIndent(() => {
+            ctx.append(`op = in_msg.preload_uint(32);`);
+        });
+        ctx.append(`}`);
 
         // Non-empty receivers
         for (const f of type.receivers) {
@@ -331,7 +338,7 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
 
     // Bounced
     if (selector.kind === 'internal-bounce') {
-        if (selector.type.kind !== 'bounced' && selector.type.kind !== 'ref') {
+        if (selector.type.kind !== 'ref_bounced' && selector.type.kind !== 'ref') {
             throw Error("Bounced selector type must be bounced or ref type");
         }
         let args = [

@@ -136,7 +136,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: [],
                 constants: [],
-                partialFields: []
+                partialFieldCount: 0
             };
         } else if (a.kind === 'def_contract') {
             types[a.name] = {
@@ -156,7 +156,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
-                partialFields: []
+                partialFieldCount: 0
             };
         } else if (a.kind === 'def_struct') {
             types[a.name] = {
@@ -176,7 +176,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: [],
                 constants: [],
-                partialFields: []
+                partialFieldCount: 0
             };
         } else if (a.kind === 'def_trait') {
             types[a.name] = {
@@ -196,7 +196,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ast: a,
                 interfaces: a.attributes.filter((v) => v.type === 'interface').map((v) => v.name.value),
                 constants: [],
-                partialFields: []
+                partialFieldCount: 0
             };
         }
     }
@@ -628,9 +628,8 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         }
 
                         // Check for duplicate
-
                         const typeRef: TypeRef = {
-                            kind: isGeneric ? 'ref' : 'bounced', 
+                            kind: isGeneric ? 'ref' : 'ref_bounced', 
                             name: arg.type.name,
                             optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
                         };
@@ -974,7 +973,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Populate partial serialization info
     //
     for (let t in types) {
-        types[t].partialFields = resolvePartialFields(ctx, types[t])
+        types[t].partialFieldCount = resolvePartialFields(ctx, types[t])
     }
 
     //
@@ -1043,9 +1042,9 @@ export function getAllStaticConstants(ctx: CompilerContext) {
 }
 
 export function resolvePartialFields(ctx: CompilerContext, type: TypeDescription) {
-    if (type.kind !== 'struct') return [];
+    if (type.kind !== 'struct') return 0;
 
-    const partialFields = [];
+    let partialFieldsCount = 0;
 
     let remainingBits = 224;
 
@@ -1069,11 +1068,11 @@ export function resolvePartialFields(ctx: CompilerContext, type: TypeDescription
 
         if (remainingBits - fieldBits >= 0) {
             remainingBits -= fieldBits;
-            partialFields.push(f);
+            partialFieldsCount++;
         } else {
             break;
         }
     }
 
-    return partialFields;
+    return partialFieldsCount;
 }

@@ -16,7 +16,7 @@ export function resolveFuncFlatPack(descriptor: TypeRef | TypeDescription | stri
     if (descriptor.kind === 'map') {
         return [name];
     }
-    if (descriptor.kind === 'bounced') {
+    if (descriptor.kind === 'ref_bounced') {
         throw Error("Unimplemented");
     }
     if (descriptor.kind === 'void') {

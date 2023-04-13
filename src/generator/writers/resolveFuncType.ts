@@ -16,7 +16,7 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
     if (descriptor.kind === 'map') {
         return 'cell';
     }
-    if (descriptor.kind === 'bounced') {
+    if (descriptor.kind === 'ref_bounced') {
         return resolveFuncType(getType(ctx.ctx, descriptor.name), ctx, false, true);
     }
     if (descriptor.kind === 'void') {
@@ -48,7 +48,7 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
         if (optional || descriptor.fields.length === 0) {
             return 'tuple';
         } else {
-            const fieldsToUse = usePartialFields ? descriptor.partialFields : descriptor.fields;
+            const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
             return '(' + fieldsToUse.map((v) => resolveFuncType(v.type, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {

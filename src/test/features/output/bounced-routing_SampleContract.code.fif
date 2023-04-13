@@ -461,22 +461,19 @@ PROGRAM{
   $SampleContract$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
-    0 PUSHINT
-    OVER
-    SBITS
-    31 GTINT
-    IF:<{
-      DROP
-      DUP
-      32 PLDU
-    }>
-    s0 s2 XCHG
+    SWAP
     IFJMP:<{
-      NIP
       32 PUSHINT
       SDSKIPFIRST
-      DUP
-      32 PLDU
+      0 PUSHINT
+      OVER
+      SBITS
+      31 GTINT
+      IF:<{
+        DROP
+        DUP
+        32 PLDU
+      }>
       DUP
       3200290616 PUSHINT
       EQUAL
@@ -498,9 +495,18 @@ PROGRAM{
       $SampleContract$_receive_binary_bounce_Slice INLINECALLDICT
       TRUE
     }>
+    0 PUSHINT
     OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    DUP
     0 EQINT
-    OVER
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -509,37 +515,36 @@ PROGRAM{
       %$SampleContract$_internal_empty INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     2757457064 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $EntryFirst$_load INLINECALLDICT
       1 2 BLKDROP2
       $SampleContract$_internal_binary_EntryFirst INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     4282440720 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $EntrySecond$_load INLINECALLDICT
       1 2 BLKDROP2
       $SampleContract$_internal_binary_EntrySecond INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     391585480 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $Second$_load INLINECALLDICT
       1 7 BLKDROP2
       $SampleContract$_internal_binary_Second INLINECALLDICT
       TRUE
     }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

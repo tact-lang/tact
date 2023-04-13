@@ -159,7 +159,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             }
         }
 
-        if (t.kind === 'bounced') {
+        if (t.kind === 'ref_bounced') {
             throw Error('Unimplemented');
         }
 
@@ -381,7 +381,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve the type of the expression
         let src = getExpType(ctx.ctx, f.src);
-        if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'bounced'))) {
+        if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'ref_bounced'))) {
             throwError(`Cannot access field of non-struct type: ${printTypeRef(src)}`, f.ref);
         }
         let srcT = getType(ctx.ctx, src.name);
@@ -389,12 +389,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Resolve field
         let fields: FieldDescription[];
 
-        if (src.kind === 'ref') {
-            fields = srcT.fields;
-        } else if (src.kind === 'bounced') {
-            fields = srcT.partialFields;
-        } else {
-            throwError('Internal error: unexpected type', f.ref);
+        fields = srcT.fields;
+        if (src.kind === 'ref_bounced') {
+            fields = fields.slice(0, srcT.partialFieldCount);
         }
 
         let field = fields.find((v) => v.name === f.name)!;
@@ -546,7 +543,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
             return abf.generate(ctx, [src, ...f.args.map((v) => getExpType(ctx.ctx, v))], [f.src, ...f.args], f.ref);
         }
 
-        if (src.kind === 'bounced') {
+        if (src.kind === 'ref_bounced') {
             throw Error("Unimplemented");
         }
 

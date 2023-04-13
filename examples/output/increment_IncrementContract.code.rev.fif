@@ -314,6 +314,18 @@ PROGRAM{
     SENDRAWMSG
   }>
   ?fun_2 PROCREF:<{
+    s0 s1 XCHG
+    <{
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -324,17 +336,11 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     537284411 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       537284411 PUSHINT
@@ -390,13 +396,12 @@ PROGRAM{
       IFELSE
       s0 s1 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     1081595080 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1081595080 PUSHINT
@@ -479,13 +484,12 @@ PROGRAM{
       IFELSE
       s0 s3 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     3801943978 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       3801943978 PUSHINT
@@ -538,11 +542,11 @@ PROGRAM{
       s0 s2 XCHG
       -1 PUSHINT
     }> IFJMPREF
-    s1 PUSH
+    s0 PUSH
     1718153138 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1718153138 PUSHINT
@@ -556,7 +560,6 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     2490013878 PUSHINT
     EQUAL
     <{

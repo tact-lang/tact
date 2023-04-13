@@ -19,7 +19,7 @@ export function isAssignable(src: TypeRef, to: TypeRef): boolean {
         return (src.key === to.key && src.value === to.value);
     }
 
-    if (src.kind === 'bounced' || to.kind === 'bounced') {
+    if (src.kind === 'ref_bounced' || to.kind === 'ref_bounced') {
         throw Error("Unimplemented");
     }
 

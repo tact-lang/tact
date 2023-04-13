@@ -16,7 +16,7 @@ export function resolveFuncTupledType(descriptor: TypeRef | TypeDescription | st
     if (descriptor.kind === 'map') {
         return 'cell';
     }
-    if (descriptor.kind === 'bounced') {
+    if (descriptor.kind === 'ref_bounced') {
         throw Error("Unimplemented");
     }
     if (descriptor.kind === 'void') {

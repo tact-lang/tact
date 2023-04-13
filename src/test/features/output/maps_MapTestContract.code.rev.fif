@@ -103,6 +103,18 @@ PROGRAM{
   ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
+    s0 s1 XCHG
+    <{
+      32 PUSHINT
+      SDSKIPFIRST
+      s0 PUSH
+      SBITS
+      s1 POP
+      31 GTINT
+      s0 POP
+      -1 PUSHINT
+    }> PUSHCONT
+    IFJMP
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -113,15 +125,9 @@ PROGRAM{
       32 PLDU
     }> PUSHCONT
     IF
-    s0 s2 XCHG
-    <{
-      DROP2
-      -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    s0 PUSH
     0 EQINT
-    s1 PUSH
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -130,11 +136,11 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s1 PUSH
+    s0 PUSH
     1510253336 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1510253336 PUSHINT
@@ -179,11 +185,11 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s1 PUSH
+    s0 PUSH
     1629867766 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1629867766 PUSHINT
@@ -225,12 +231,13 @@ PROGRAM{
       IFELSE
       s0 s8 XCHG
       -1 PUSHINT
-    }> IFJMPREF
-    s1 PUSH
+    }> PUSHCONT
+    IFJMP
+    s0 PUSH
     3613954633 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       3613954633 PUSHINT
@@ -268,13 +275,12 @@ PROGRAM{
       IFELSE
       s0 s7 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     383013829 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       383013829 PUSHINT
@@ -335,11 +341,11 @@ PROGRAM{
       s0 s6 XCHG
       -1 PUSHINT
     }> IFJMPREF
-    s1 PUSH
+    s0 PUSH
     2809746751 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       2809746751 PUSHINT
@@ -394,11 +400,11 @@ PROGRAM{
       s0 s5 XCHG
       -1 PUSHINT
     }> IFJMPREF
-    s1 PUSH
+    s0 PUSH
     1749966413 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1749966413 PUSHINT
@@ -456,12 +462,13 @@ PROGRAM{
       IFELSE
       s0 s4 XCHG
       -1 PUSHINT
-    }> IFJMPREF
-    s1 PUSH
+    }> PUSHCONT
+    IFJMP
+    s0 PUSH
     624157584 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       624157584 PUSHINT
@@ -518,13 +525,12 @@ PROGRAM{
       IFELSE
       s0 s3 XCHG
       -1 PUSHINT
-    }> PUSHCONT
-    IFJMP
-    s1 PUSH
+    }> IFJMPREF
+    s0 PUSH
     4276365062 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       4276365062 PUSHINT
@@ -578,11 +584,11 @@ PROGRAM{
       s0 s2 XCHG
       -1 PUSHINT
     }> IFJMPREF
-    s1 PUSH
+    s0 PUSH
     1683777913 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1683777913 PUSHINT
@@ -658,11 +664,11 @@ PROGRAM{
       s0 s1 XCHG
       -1 PUSHINT
     }> IFJMPREF
-    s1 PUSH
+    s0 PUSH
     1741376771 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       1741376771 PUSHINT
@@ -732,8 +738,8 @@ PROGRAM{
       }> PUSHCONT
       IFELSE
       -1 PUSHINT
-    }> IFJMPREF
-    s0 s1 XCHG
+    }> PUSHCONT
+    IFJMP
     0 EQINT
     <{
       HASHSU

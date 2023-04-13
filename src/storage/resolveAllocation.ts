@@ -71,21 +71,37 @@ export function resolveAllocations(ctx: CompilerContext) {
 
         // Convert fields
         let ops: AllocationOperation[] = [];
-        for (let f of s.fields) {
-            ops.push({
+        let partialOps: AllocationOperation[] = [];
+        for (let [i, f] of s.fields.entries()) {
+            const op = {
                 name: f.name,
                 type: f.abi.type,
                 op: getAllocationOperationFromField(f.abi.type, (name) => getAllocation(ctx, name)!.size)
-            });
+            };
+            ops.push(op);
+            if (i < s.partialFieldCount) {
+                partialOps.push(op);
+            }
         }
 
         // Perform allocation
         let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
+        let partialRoot = allocate({ ops: partialOps, reserved: { bits: reserveBits, refs: reserveRefs } });
 
         // Store allocation
         let allocation: StorageAllocation = {
             ops,
             root,
+            header,
+            size: {
+                bits: root.size.bits + reserveBits,
+                refs: root.size.refs + reserveRefs
+            }
+        };
+        
+        let partialAllocation: StorageAllocation = {
+            ops: partialOps,
+            root: partialRoot,
             header,
             size: {
                 bits: root.size.bits + reserveBits,
@@ -94,52 +110,9 @@ export function resolveAllocations(ctx: CompilerContext) {
         };
         
         ctx = store.set(ctx, s.name, allocation);
+        ctx = store.set(ctx, toBounced(s.name), partialAllocation);
     }
     
-    // TODO NOT SURE ABOUT THIS
-    for (let s of types) {
-
-        // Reserve bits
-        let reserveBits = 0;
-        let header: { value: number, bits: number } | null = null;
-        if (s.header !== null) {
-            reserveBits += 32; // Header size
-            header = { value: s.header, bits: 32 };
-        }
-
-        // Reserver refs
-        let reserveRefs = 0;
-        if (s.kind === 'contract') {
-            reserveRefs += 1; // Internal state
-        }
-
-        // Convert fields
-        let ops: AllocationOperation[] = [];
-        for (let f of s.partialFields) {
-            ops.push({
-                name: f.name,
-                type: f.abi.type,
-                op: getAllocationOperationFromField(f.abi.type, (name) => getAllocation(ctx, name)!.size)
-            });
-        }
-
-        // Perform allocation
-        let root = allocate({ ops, reserved: { bits: reserveBits, refs: reserveRefs } });
-
-        // Store allocation
-        let allocation: StorageAllocation = {
-            ops,
-            root,
-            header,
-            size: {
-                bits: root.size.bits + reserveBits,
-                refs: root.size.refs + reserveRefs
-            }
-        };
-        
-        ctx = store.set(ctx, toBounced(s.name), allocation);
-    }
-
     // Generate init allocations
     for (let s of types) {
         if (s.kind === 'contract' && s.init) {

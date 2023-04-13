@@ -259,6 +259,18 @@ PROGRAM{
   $IntrinsicsTester$_contract_router_internal PROCREF:<{
     c2 SAVE
     SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      NIP
+      31 GTINT
+      IF:<{
+      }>
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -268,12 +280,6 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      2DROP
-      TRUE
-    }>
-    SWAP
     0 EQINT
     IF:<{
       HASHSU

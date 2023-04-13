@@ -268,23 +268,20 @@ PROGRAM{
   ?fun_2 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
-    0 PUSHINT
-    s1 PUSH
-    SBITS
-    31 GTINT
+    s0 s1 XCHG
     <{
-      s0 POP
-      s0 PUSH
-      32 PLDU
-    }> PUSHCONT
-    IF
-    s0 s2 XCHG
-    <{
-      s1 POP
       32 PUSHINT
       SDSKIPFIRST
-      s0 PUSH
-      32 PLDU
+      0 PUSHINT
+      s1 PUSH
+      SBITS
+      31 GTINT
+      <{
+        s0 POP
+        s0 PUSH
+        32 PLDU
+      }> PUSHCONT
+      IF
       s0 PUSH
       3200290616 PUSHINT
       EQUAL
@@ -334,10 +331,21 @@ PROGRAM{
       STRDUMP
       s0 POP
       -1 PUSHINT
-    }> IFJMPREF
+    }> PUSHCONT
+    IFJMP
+    0 PUSHINT
     s1 PUSH
+    SBITS
+    31 GTINT
+    <{
+      s0 POP
+      s0 PUSH
+      32 PLDU
+    }> PUSHCONT
+    IF
+    s0 PUSH
     0 EQINT
-    s1 PUSH
+    s2 PUSH
     SBITS
     33 LESSINT
     AND
@@ -346,11 +354,11 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s1 PUSH
+    s0 PUSH
     2757457064 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       2757457064 PUSHINT
@@ -422,11 +430,11 @@ PROGRAM{
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s1 PUSH
+    s0 PUSH
     4282440720 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       32 LDU
       s0 s1 XCHG
       4282440720 PUSHINT
@@ -477,18 +485,17 @@ PROGRAM{
       ?fun_3 INLINECALLDICT
       -1 PUSHINT
     }> IFJMPREF
-    s1 PUSH
+    s0 PUSH
     391585480 PUSHINT
     EQUAL
     <{
-      s1 POP
+      s0 POP
       ?fun_5 INLINECALLDICT
       1 7 BLKDROP2
       7 BLKDROP
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
-    s0 s1 XCHG
     0 EQINT
     <{
       HASHSU

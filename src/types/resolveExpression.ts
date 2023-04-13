@@ -131,7 +131,7 @@ function resolveBinaryOp(exp: ASTOpBinary, sctx: StatementContext, ctx: Compiler
                     throwError(`Incompatible types "${printTypeRef(le)}" and "${printTypeRef(re)}" for binary operator "${exp.op}"`, exp.ref);
                 }
             } else {
-                if (l.kind === 'bounced' || r.kind === 'bounced') {
+                if (l.kind === 'ref_bounced' || r.kind === 'ref_bounced') {
                     throwError("Bounced types are not supported in binary operators", exp.ref);
                 }
                 if (l.kind !== 'ref' || r.kind !== 'ref') {
@@ -199,7 +199,7 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     // Find target type and check for type
     let src = getExpType(ctx, exp.src);
     
-    if (!(src !== null && ((src.kind === 'bounced') || (src.kind === 'ref') && !src.optional))) {
+    if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'ref_bounced'))) {
         throwError(`Invalid type "${printTypeRef(src)}" for field access`, exp.ref);
     }
 
@@ -215,12 +215,9 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     
     let srcT = getType(ctx, src.name);
 
-    if (src.kind === 'ref') {
-        fields = srcT.fields;
-    } else if (src.kind === 'bounced') {
-        fields = srcT.partialFields;
-    } else {
-        throwError('Internal error: unexpected type', exp.ref);
+    fields = srcT.fields;
+    if (src.kind === 'ref_bounced') {
+        fields = fields.slice(0, srcT.partialFieldCount);
     }
 
     const field = fields.find((v) => v.name === exp.name);
@@ -356,7 +353,7 @@ function resolveCall(exp: ASTOpCall, sctx: StatementContext, ctx: CompilerContex
         return registerExpType(ctx, exp, resolved);
     }
 
-    if (src.kind === 'bounced') {
+    if (src.kind === 'ref_bounced') {
         throwError(`Cannot call function on bounced value`, exp.ref);
     }
 

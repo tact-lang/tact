@@ -343,6 +343,18 @@ PROGRAM{
     SWAP
   }>
   $Beacon$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      32 PUSHINT
+      SDSKIPFIRST
+      DUP
+      SBITS
+      31 GTINT
+      IF:<{
+      }>
+      $Beacon$_receive_binary_bounce_Slice INLINECALLDICT
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -352,15 +364,6 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      NIP
-      32 PUSHINT
-      SDSKIPFIRST
-      $Beacon$_receive_binary_bounce_Slice INLINECALLDICT
-      TRUE
-    }>
-    SWAP
     3289991647 PUSHINT
     EQUAL
     IFJMP:<{
