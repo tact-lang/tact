@@ -215,12 +215,9 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     
     let srcT = getType(ctx, src.name);
 
-    if (src.kind === 'ref') {
-        fields = srcT.fields;
-    } else if (src.kind === 'ref_bounced') {
-        fields = srcT.partialFields;
-    } else {
-        throwError('Internal error: unexpected type', exp.ref);
+    fields = srcT.fields;
+    if (src.kind === 'ref_bounced') {
+        fields = fields.slice(0, srcT.partialFieldCount);
     }
 
     const field = fields.find((v) => v.name === exp.name);

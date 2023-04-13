@@ -30,7 +30,7 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
         if (optional || descriptor.fields.length === 0) {
             return name;
         } else {
-            const fieldsToUse = usePartialFields ? descriptor.partialFields : descriptor.fields;
+            const fieldsToUse = usePartialFields ? descriptor.fields.slice(0, descriptor.partialFieldCount) : descriptor.fields;
             return '(' + fieldsToUse.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {

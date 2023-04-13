@@ -13,6 +13,8 @@ import { emit } from "./emitter/emit";
 import { writeInit, writeMainContract, writeStorageOps } from "./writers/writeContract";
 import { initId } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
+import { TypeDescription } from "../types/types";
+import { StorageAllocation } from "../storage/StorageAllocation";
 
 export async function writeProgram(ctx: CompilerContext, abiSrc: ContractABI, basename: string, debug: boolean = false) {
 
@@ -274,7 +276,7 @@ function writeAll(ctx: CompilerContext, wctx: WriterContext, name: string, abiLi
             writeOptionalSerializer(t.name, t.origin, wctx);
             writeParser(t.name, t.kind === 'contract', allocation, t.origin, wctx);
             writeOptionalParser(t.name, t.origin, wctx);
-            writeBouncedParser(t.name, t.kind === 'contract', allocationBounced, t.origin, wctx);
+            writeBouncedParser(t.name, t.kind === 'contract', allocationBounced, t.origin, wctx); // TODO partial allocation
         }
     }
 

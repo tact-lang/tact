@@ -389,12 +389,9 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
         // Resolve field
         let fields: FieldDescription[];
 
-        if (src.kind === 'ref') {
-            fields = srcT.fields;
-        } else if (src.kind === 'ref_bounced') {
-            fields = srcT.partialFields;
-        } else {
-            throwError('Internal error: unexpected type', f.ref);
+        fields = srcT.fields;
+        if (src.kind === 'ref_bounced') {
+            fields = fields.slice(0, srcT.partialFieldCount);
         }
 
         let field = fields.find((v) => v.name === f.name)!;
