@@ -7,7 +7,6 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from '../types/resolveSignatures';
 import { resolveImports } from '../imports/resolveImports';
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { C } from '../test/features/output/deep_C';
 
 export function precompile(ctx: CompilerContext, project: VirtualFileSystem, stdlib: VirtualFileSystem, entrypoint: string) {
 
