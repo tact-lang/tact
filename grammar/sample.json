@@ -1279,7 +1279,7 @@
       "fontStyle": 0,
       "explanation": [
         {
-          "content": ": ",
+          "content": ":",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -1291,6 +1291,48 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator.type.annotation.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.operator",
+                  "settings": {
+                    "foreground": "#d4d4d4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             }
           ]
@@ -1315,6 +1357,10 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             },
             {
@@ -1438,7 +1484,7 @@
       "fontStyle": 0,
       "explanation": [
         {
-          "content": ": ",
+          "content": ":",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -1450,6 +1496,48 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator.type.annotation.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.operator",
+                  "settings": {
+                    "foreground": "#d4d4d4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             }
           ]
@@ -1474,6 +1562,10 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             },
             {
@@ -5747,12 +5839,12 @@
       ]
     },
     {
-      "content": "override",
-      "color": "#569CD6",
+      "content": "overrideMe",
+      "color": "#DCDCAA",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "override",
+          "content": "overrideMe",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -5767,21 +5859,23 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "meta.definition.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.function.tact",
               "themeMatches": [
                 {
-                  "scope": "storage",
-                  "settings": {
-                    "foreground": "#569cd6"
-                  }
-                },
-                {
+                  "name": "Function declarations",
                   "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
+                    "entity.name.function",
+                    "support.function",
+                    "support.constant.handlebars",
+                    "source.powershell variable.other.member",
+                    "entity.name.operator.custom-literal"
                   ],
                   "settings": {
-                    "foreground": "#569cd6"
+                    "foreground": "#DCDCAA"
                   }
                 }
               ]
@@ -5791,27 +5885,10 @@
       ]
     },
     {
-      "content": "Me() {",
+      "content": "() {",
       "color": "#D4D4D4",
       "fontStyle": 0,
       "explanation": [
-        {
-          "content": "Me",
-          "scopes": [
-            {
-              "scopeName": "source.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "meta.struct.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "meta.function.tact",
-              "themeMatches": []
-            }
-          ]
-        },
         {
           "content": "(",
           "scopes": [
@@ -6187,12 +6264,12 @@
       ]
     },
     {
-      "content": "abstract",
-      "color": "#569CD6",
+      "content": "abstractMe",
+      "color": "#DCDCAA",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "abstract",
+          "content": "abstractMe",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -6207,21 +6284,23 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "meta.definition.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.function.tact",
               "themeMatches": [
                 {
-                  "scope": "storage",
-                  "settings": {
-                    "foreground": "#569cd6"
-                  }
-                },
-                {
+                  "name": "Function declarations",
                   "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
+                    "entity.name.function",
+                    "support.function",
+                    "support.constant.handlebars",
+                    "source.powershell variable.other.member",
+                    "entity.name.operator.custom-literal"
                   ],
                   "settings": {
-                    "foreground": "#569cd6"
+                    "foreground": "#DCDCAA"
                   }
                 }
               ]
@@ -6231,27 +6310,10 @@
       ]
     },
     {
-      "content": "Me();",
+      "content": "();",
       "color": "#D4D4D4",
       "fontStyle": 0,
       "explanation": [
-        {
-          "content": "Me",
-          "scopes": [
-            {
-              "scopeName": "source.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "meta.struct.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "meta.function.tact",
-              "themeMatches": []
-            }
-          ]
-        },
         {
           "content": "(",
           "scopes": [
@@ -8915,6 +8977,371 @@
       ]
     },
     {
+      "content": "b",
+      "color": "#9CDCFE",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "b",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.object.property.tact",
+              "themeMatches": [
+                {
+                  "name": "Variable and parameter name",
+                  "scope": [
+                    "variable",
+                    "meta.definition.variable.name",
+                    "support.variable",
+                    "entity.name.variable",
+                    "constant.other.placeholder"
+                  ],
+                  "settings": {
+                    "foreground": "#9CDCFE"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ": ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ":",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator.type.annotation.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.operator",
+                  "settings": {
+                    "foreground": "#d4d4d4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "bounced",
+      "color": "#4EC9B0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "bounced",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.type.tact",
+              "themeMatches": [
+                {
+                  "name": "Types declaration and references",
+                  "scope": [
+                    "support.class",
+                    "support.type",
+                    "entity.name.type",
+                    "entity.name.namespace",
+                    "entity.other.attribute",
+                    "entity.name.scope-resolution",
+                    "entity.name.class",
+                    "storage.type.numeric.go",
+                    "storage.type.byte.go",
+                    "storage.type.boolean.go",
+                    "storage.type.string.go",
+                    "storage.type.uintptr.go",
+                    "storage.type.error.go",
+                    "storage.type.rune.go",
+                    "storage.type.cs",
+                    "storage.type.generic.cs",
+                    "storage.type.modifier.cs",
+                    "storage.type.variable.cs",
+                    "storage.type.annotation.java",
+                    "storage.type.generic.java",
+                    "storage.type.java",
+                    "storage.type.object.array.java",
+                    "storage.type.primitive.array.java",
+                    "storage.type.primitive.java",
+                    "storage.type.token.java",
+                    "storage.type.groovy",
+                    "storage.type.annotation.groovy",
+                    "storage.type.parameters.groovy",
+                    "storage.type.generic.groovy",
+                    "storage.type.object.array.groovy",
+                    "storage.type.primitive.array.groovy",
+                    "storage.type.primitive.groovy"
+                  ],
+                  "settings": {
+                    "foreground": "#4EC9B0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "<",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "<",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "MyMessage",
+      "color": "#4EC9B0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "MyMessage",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.type.tact",
+              "themeMatches": [
+                {
+                  "name": "Types declaration and references",
+                  "scope": [
+                    "support.class",
+                    "support.type",
+                    "entity.name.type",
+                    "entity.name.namespace",
+                    "entity.other.attribute",
+                    "entity.name.scope-resolution",
+                    "entity.name.class",
+                    "storage.type.numeric.go",
+                    "storage.type.byte.go",
+                    "storage.type.boolean.go",
+                    "storage.type.string.go",
+                    "storage.type.uintptr.go",
+                    "storage.type.error.go",
+                    "storage.type.rune.go",
+                    "storage.type.cs",
+                    "storage.type.generic.cs",
+                    "storage.type.modifier.cs",
+                    "storage.type.variable.cs",
+                    "storage.type.annotation.java",
+                    "storage.type.generic.java",
+                    "storage.type.java",
+                    "storage.type.object.array.java",
+                    "storage.type.primitive.array.java",
+                    "storage.type.primitive.java",
+                    "storage.type.token.java",
+                    "storage.type.groovy",
+                    "storage.type.annotation.groovy",
+                    "storage.type.parameters.groovy",
+                    "storage.type.generic.groovy",
+                    "storage.type.object.array.groovy",
+                    "storage.type.primitive.array.groovy",
+                    "storage.type.primitive.groovy"
+                  ],
+                  "settings": {
+                    "foreground": "#4EC9B0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ">;",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ">",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ";",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.terminator.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "content": "const",
       "color": "#569CD6",
       "fontStyle": 0,
@@ -9468,7 +9895,7 @@
       "fontStyle": 0,
       "explanation": [
         {
-          "content": ": ",
+          "content": ":",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -9484,6 +9911,52 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator.type.annotation.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.operator",
+                  "settings": {
+                    "foreground": "#d4d4d4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             }
           ]
@@ -9512,6 +9985,10 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             },
             {
@@ -10017,6 +10494,789 @@
       ]
     }
   ],
+  [
+    {
+      "content": "    ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "bounced",
+      "color": "#C586C0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "bounced",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.control.bounce.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.control",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "name": "Control flow / Special keywords",
+                  "scope": [
+                    "keyword.control",
+                    "source.cpp keyword.operator.new",
+                    "keyword.operator.delete",
+                    "keyword.other.using",
+                    "keyword.other.operator",
+                    "entity.name.operator"
+                  ],
+                  "settings": {
+                    "foreground": "#C586C0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "(",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "(",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "src",
+      "color": "#9CDCFE",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "src",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "variable.name.tact",
+              "themeMatches": [
+                {
+                  "name": "Variable and parameter name",
+                  "scope": [
+                    "variable",
+                    "meta.definition.variable.name",
+                    "support.variable",
+                    "entity.name.variable",
+                    "constant.other.placeholder"
+                  ],
+                  "settings": {
+                    "foreground": "#9CDCFE"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ": ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ":",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator.type.annotation.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.operator",
+                  "settings": {
+                    "foreground": "#d4d4d4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "bounced",
+      "color": "#4EC9B0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "bounced",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.type.tact",
+              "themeMatches": [
+                {
+                  "name": "Types declaration and references",
+                  "scope": [
+                    "support.class",
+                    "support.type",
+                    "entity.name.type",
+                    "entity.name.namespace",
+                    "entity.other.attribute",
+                    "entity.name.scope-resolution",
+                    "entity.name.class",
+                    "storage.type.numeric.go",
+                    "storage.type.byte.go",
+                    "storage.type.boolean.go",
+                    "storage.type.string.go",
+                    "storage.type.uintptr.go",
+                    "storage.type.error.go",
+                    "storage.type.rune.go",
+                    "storage.type.cs",
+                    "storage.type.generic.cs",
+                    "storage.type.modifier.cs",
+                    "storage.type.variable.cs",
+                    "storage.type.annotation.java",
+                    "storage.type.generic.java",
+                    "storage.type.java",
+                    "storage.type.object.array.java",
+                    "storage.type.primitive.array.java",
+                    "storage.type.primitive.java",
+                    "storage.type.token.java",
+                    "storage.type.groovy",
+                    "storage.type.annotation.groovy",
+                    "storage.type.parameters.groovy",
+                    "storage.type.generic.groovy",
+                    "storage.type.object.array.groovy",
+                    "storage.type.primitive.array.groovy",
+                    "storage.type.primitive.groovy"
+                  ],
+                  "settings": {
+                    "foreground": "#4EC9B0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "<",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "<",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "MyMessage",
+      "color": "#4EC9B0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "MyMessage",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.type.tact",
+              "themeMatches": [
+                {
+                  "name": "Types declaration and references",
+                  "scope": [
+                    "support.class",
+                    "support.type",
+                    "entity.name.type",
+                    "entity.name.namespace",
+                    "entity.other.attribute",
+                    "entity.name.scope-resolution",
+                    "entity.name.class",
+                    "storage.type.numeric.go",
+                    "storage.type.byte.go",
+                    "storage.type.boolean.go",
+                    "storage.type.string.go",
+                    "storage.type.uintptr.go",
+                    "storage.type.error.go",
+                    "storage.type.rune.go",
+                    "storage.type.cs",
+                    "storage.type.generic.cs",
+                    "storage.type.modifier.cs",
+                    "storage.type.variable.cs",
+                    "storage.type.annotation.java",
+                    "storage.type.generic.java",
+                    "storage.type.java",
+                    "storage.type.object.array.java",
+                    "storage.type.primitive.array.java",
+                    "storage.type.primitive.java",
+                    "storage.type.token.java",
+                    "storage.type.groovy",
+                    "storage.type.annotation.groovy",
+                    "storage.type.parameters.groovy",
+                    "storage.type.generic.groovy",
+                    "storage.type.object.array.groovy",
+                    "storage.type.primitive.array.groovy",
+                    "storage.type.primitive.groovy"
+                  ],
+                  "settings": {
+                    "foreground": "#4EC9B0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ", ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ",",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "MyMessage2",
+      "color": "#4EC9B0",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "MyMessage2",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.type.tact",
+              "themeMatches": [
+                {
+                  "name": "Types declaration and references",
+                  "scope": [
+                    "support.class",
+                    "support.type",
+                    "entity.name.type",
+                    "entity.name.namespace",
+                    "entity.other.attribute",
+                    "entity.name.scope-resolution",
+                    "entity.name.class",
+                    "storage.type.numeric.go",
+                    "storage.type.byte.go",
+                    "storage.type.boolean.go",
+                    "storage.type.string.go",
+                    "storage.type.uintptr.go",
+                    "storage.type.error.go",
+                    "storage.type.rune.go",
+                    "storage.type.cs",
+                    "storage.type.generic.cs",
+                    "storage.type.modifier.cs",
+                    "storage.type.variable.cs",
+                    "storage.type.annotation.java",
+                    "storage.type.generic.java",
+                    "storage.type.java",
+                    "storage.type.object.array.java",
+                    "storage.type.primitive.array.java",
+                    "storage.type.primitive.java",
+                    "storage.type.token.java",
+                    "storage.type.groovy",
+                    "storage.type.annotation.groovy",
+                    "storage.type.parameters.groovy",
+                    "storage.type.generic.groovy",
+                    "storage.type.object.array.groovy",
+                    "storage.type.primitive.array.groovy",
+                    "storage.type.primitive.groovy"
+                  ],
+                  "settings": {
+                    "foreground": "#4EC9B0"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": ">) {",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": ">",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.generics.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ")",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.end.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "{",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.block.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    }",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.field.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.block.end.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
   [],
   [
     {
@@ -10302,7 +11562,7 @@
       "fontStyle": 0,
       "explanation": [
         {
-          "content": ": ",
+          "content": ":",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -10318,6 +11578,52 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "keyword.operator.type.annotation.tact",
+              "themeMatches": [
+                {
+                  "scope": "keyword",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "keyword.operator",
+                  "settings": {
+                    "foreground": "#d4d4d4"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             }
           ]
@@ -10346,6 +11652,10 @@
             },
             {
               "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.type.annotation.tact",
               "themeMatches": []
             },
             {
@@ -15406,12 +16716,12 @@
       ]
     },
     {
-      "content": "override",
-      "color": "#569CD6",
+      "content": "overrideMe",
+      "color": "#DCDCAA",
       "fontStyle": 0,
       "explanation": [
         {
-          "content": "override",
+          "content": "overrideMe",
           "scopes": [
             {
               "scopeName": "source.tact",
@@ -15426,21 +16736,23 @@
               "themeMatches": []
             },
             {
-              "scopeName": "storage.modifier.tact",
+              "scopeName": "meta.definition.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.function.tact",
               "themeMatches": [
                 {
-                  "scope": "storage",
-                  "settings": {
-                    "foreground": "#569cd6"
-                  }
-                },
-                {
+                  "name": "Function declarations",
                   "scope": [
-                    "storage.modifier",
-                    "keyword.operator.noexcept"
+                    "entity.name.function",
+                    "support.function",
+                    "support.constant.handlebars",
+                    "source.powershell variable.other.member",
+                    "entity.name.operator.custom-literal"
                   ],
                   "settings": {
-                    "foreground": "#569cd6"
+                    "foreground": "#DCDCAA"
                   }
                 }
               ]
@@ -15450,27 +16762,10 @@
       ]
     },
     {
-      "content": "Me() {",
+      "content": "() {",
       "color": "#D4D4D4",
       "fontStyle": 0,
       "explanation": [
-        {
-          "content": "Me",
-          "scopes": [
-            {
-              "scopeName": "source.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "meta.struct.tact",
-              "themeMatches": []
-            },
-            {
-              "scopeName": "meta.function.tact",
-              "themeMatches": []
-            }
-          ]
-        },
         {
           "content": "(",
           "scopes": [

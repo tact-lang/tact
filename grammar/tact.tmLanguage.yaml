@@ -142,7 +142,7 @@ repository:
       - name: storage.type.tact
         match: "const"
       - name: storage.modifier.tact
-        match: "{{modifier}}"
+        match: "\\b({{modifier}})\\b"
       - name: "{{nameVariable}}"
         match: "{{id}}"
       - include: "#comments"
@@ -197,7 +197,9 @@ repository:
       - name: storage.type.tact
         match: "fun"
       - name: storage.modifier.tact
-        match: "{{modifier}}"
+        match: "\\b({{modifier}})\\b"
+      - name: meta.definition.function.tact {{nameFunction}}
+        match: "({{id}})"
       - include: "#fun-declaration-body"
   fun-declaration-body:
     patterns:
@@ -205,8 +207,6 @@ repository:
       - include: "#fun-arguments"
       - include: "#type-annotation" # Return type
       - include: "#block-declaration"
-      - name: meta.definition.function.tact {{nameFunction}}
-        match: "{{id}}"
 
   # Arguments
   fun-arguments:
@@ -220,11 +220,12 @@ repository:
     patterns:
       - include: "#comments"
       - include: "#strings"
-      - match: '(?:(self)|({{id}}))\s*(:)\s*({{id}})'
+      - include: "#type-annotation"
+      - match: '(?:(self)|({{id}}))'
         captures:
           "1": { name: '{{nameSelf}}'}
           "2": { name: '{{nameVariable}}' }
-          "4": { name: '{{nameTypeRef}}' }
+          # "4": { name: '{{nameTypeRef}}' }
 
   # Code block
   block-declaration:
@@ -333,7 +334,7 @@ repository:
   keywords:
     patterns:
       - name: keyword.control.tact
-        match: \b(if|else|while|do|until|repeat|return|extends|mutates|virtual|override|inline|native|let|const|fun|self|is|initOf|map|get|as)\b
+        match: \b(if|else|while|do|until|repeat|return|extends|mutates|virtual|override|inline|native|let|const|fun|self|is|initOf|map|bounced|get|as)\b
       - name: keyword.operator
         match: (?<=\s)(<=>|>=|<=|!=|==|\^>>|\~>>|>>|<<|\/%|\^%|\~%|\^\/|\~\/|\+=|-=|\*=|\/=|~\/=|\^\/=|%=|\^%=|<<=|>>=|~>>=|\^>>=|&=|\|=|\^=|\^|=|~|\/|%|-|\*|\+|>|<|&|\||:|\?)(?=\s)
       - name: keyword.other

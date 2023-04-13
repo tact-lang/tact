@@ -108,6 +108,9 @@ export type ReceiverSelector = {
 } | {
     kind: 'internal-bounce',
     name: string,
+} | {
+    kind: 'internal-bounce-struct',
+    name: string,
     type: TypeRef,
 } | {
     kind: 'external-binary',

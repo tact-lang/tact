@@ -30,7 +30,7 @@ PROGRAM{
   DECLPROC $Wallet$_internal_text_0e235726108b5700d0369dd7167f6affb806a7e04059375dd0e0fb24971e72b2
   DECLPROC $Wallet$_internal_text_269468fd4da0f5e0715746736242eba0fad9d28dafc7733bea9e7c6448889439
   DECLPROC $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9
-  DECLPROC $Wallet$_receive_binary_bounce_Slice
+  DECLPROC $Wallet$_receive_bounce
   86520 DECLMETHOD %publicKey
   114762 DECLMETHOD %walletId
   85143 DECLMETHOD %seqno
@@ -403,7 +403,7 @@ PROGRAM{
   }>
   $Wallet$_internal_text_9ca0f1855174e32e8fd378df56a6e4f6c40e4dfcb6090e49812f7b1e26214bf9 PROCINLINE:<{
   }>
-  $Wallet$_receive_binary_bounce_Slice PROCINLINE:<{
+  $Wallet$_receive_bounce PROCINLINE:<{
     DROP
   }>
   %publicKey PROC:<{
@@ -443,7 +443,7 @@ PROGRAM{
     IFJMP:<{
       32 PUSHINT
       SDSKIPFIRST
-      $Wallet$_receive_binary_bounce_Slice INLINECALLDICT
+      $Wallet$_receive_bounce INLINECALLDICT
       TRUE
     }>
     0 PUSHINT

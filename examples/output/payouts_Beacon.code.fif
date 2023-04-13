@@ -25,7 +25,7 @@ PROGRAM{
   DECLPROC $Beacon$_fun_owner
   DECLPROC $CanPayoutResponse$_constructor_ok_amount_address
   DECLPROC $Beacon$_internal_binary_CanPayout
-  DECLPROC $Beacon$_receive_binary_bounce_Slice
+  DECLPROC $Beacon$_receive_bounce
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
@@ -346,7 +346,7 @@ PROGRAM{
       $Beacon$_fun_reply INLINECALLDICT
     }>
   }>
-  $Beacon$_receive_binary_bounce_Slice PROCINLINE:<{
+  $Beacon$_receive_bounce PROCINLINE:<{
     2DROP
     FALSE
   }>
@@ -376,7 +376,7 @@ PROGRAM{
     IFJMP:<{
       32 PUSHINT
       SDSKIPFIRST
-      $Beacon$_receive_binary_bounce_Slice INLINECALLDICT
+      $Beacon$_receive_bounce INLINECALLDICT
       TRUE
     }>
     0 PUSHINT

@@ -88,9 +88,8 @@
     return (($self'balance, $self'owner, $self'master), ());
 }
 
-(((int, slice, slice)), ()) $JettonDefaultWallet$_receive_binary_bounce_Slice((int, slice, slice) $self, slice $msg) impure inline {
+((int, slice, slice), ()) $JettonDefaultWallet$_receive_bounce((int, slice, slice) $self, slice $msg) impure inline {
     var ($self'balance, $self'owner, $self'master) = $self;
-    var $msg = $msg;
     int $op = $msg~load_uint(32);
     int $queryId = $msg~load_uint(64);
     int $jettonAmount = $msg~load_coins();
@@ -145,8 +144,8 @@ _ lazy_deployment_completed() method_id {
         ;; Skip 0xFFFFFFFF
         in_msg~skip_bits(32);
         
-        ;; Bounced handler for Slice message (Generic)
-        self~$JettonDefaultWallet$_receive_binary_bounce_Slice(in_msg);
+        ;; Bounced handler for JettonDefaultWallet message (Generic)
+        self~$JettonDefaultWallet$_receive_bounce(in_msg);
         return (self, true);
     }
     

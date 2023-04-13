@@ -24,15 +24,13 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
             ctx.inIndent(() => {
 
                 const nonGenericReceivers = type.receivers.filter(r => {
-                    if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'ref_bounced') return false;
+                    if (r.selector.kind !== "internal-bounce-struct" || r.selector.type.kind !== 'ref_bounced') return false;
                     const allocation = getType(ctx.ctx, r.selector.type.name);
                     return !(allocation.origin === "stdlib" && allocation.name === "Slice");
                 });
                 
                 const genericReceiver = type.receivers.find(r => {
-                    if (r.selector.kind !== "internal-bounce" || r.selector.type.kind !== 'ref') return false;
-                    const allocation = getType(ctx.ctx, r.selector.type.name);
-                    return allocation.origin === "stdlib" && allocation.name === "Slice";
+                    return r.selector.kind === "internal-bounce";
                 });
 
                 if (genericReceiver || nonGenericReceivers.length > 0) {
@@ -53,7 +51,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                 
                 for (const r of nonGenericReceivers) {
                     const selector = r.selector;
-                    if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
+                    if (selector.kind !== "internal-bounce-struct" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
 
                     let allocation = getType(ctx.ctx, selector.type.name);
                     
@@ -65,7 +63,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     ctx.append(`;; Bounced handler for ${selector.type.name} message`);
                     ctx.append(`if (op == ${allocation.header}) {`);
                     ctx.inIndent(() => {
-                        if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
+                        if (selector.kind !== "internal-bounce-struct" || selector.type.kind !== 'ref_bounced') throw Error('Invalid selector type: ' + selector.kind);
                         // Read message
                         ctx.append(`var msg = in_msg~${ops.readerBounced(selector.type.name, ctx)}();`);
 
@@ -80,13 +78,13 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
 
                 if (genericReceiver) {
                     const selector = genericReceiver.selector;
-                    if (selector.kind !== "internal-bounce" || selector.type.kind !== 'ref') throw Error('Invalid selector type: ' + selector.kind);
+                    if (selector.kind !== "internal-bounce") throw Error('Invalid selector type: ' + selector.kind);
 
                     ctx.append();
-                    ctx.append(`;; Bounced handler for ${selector.type.name} message (Generic)`);
+                    ctx.append(`;; Bounced handler for ${type.name} message (Generic)`);
 
                     // Execute function
-                    ctx.append(`self~${ops.receiveTypeBounce(type.name, selector.type.name)}(in_msg);`);
+                    ctx.append(`self~${ops.receiveGenericBounce(type.name)}(in_msg);`);
 
                     // Exit
                     ctx.append('return (self, true);');
@@ -341,8 +339,26 @@ export function writeReceiver(self: TypeDescription, f: ReceiverDescription, ctx
 
     // Bounced
     if (selector.kind === 'internal-bounce') {
-        if (selector.type.kind !== 'ref_bounced' && selector.type.kind !== 'ref') {
-            throw Error("Bounced selector type must be bounced or ref type");
+        ctx.append(`(${selfType}, ()) ${ops.receiveGenericBounce(self.name)}(${selfType} ${id('self')}, slice ${id(selector.name)}) impure inline {`);
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+
+            for (let s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
+
+            if (f.ast.statements.length === 0 || f.ast.statements[f.ast.statements.length - 1].kind !== 'statement_return') {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
+    
+    if (selector.kind === 'internal-bounce-struct') {
+        if (selector.type.kind !== 'ref_bounced') {
+            throw Error("Bounced selector type must be of bounced type");
         }
         let args = [
             selfType + ' ' + id('self'),

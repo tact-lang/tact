@@ -65,10 +65,10 @@
     return (($self'a), ());
 }
 
-(((int)), ()) $SampleContract$_receive_binary_bounce_Slice((int) $self, slice $msg) impure inline {
+((int), ()) $SampleContract$_receive_bounce((int) $self, slice $msg) impure inline {
     var ($self'a) = $self;
-    var $msg = $msg;
     __tact_debug_str(__gen_slice_string_e00443a4d0500a8f08cfafd55e0ef63f7446ab298ff5fa2e86e8c14fb1c93308());
+    int $y = $msg~load_uint(32);
     return (($self'a), ());
 }
 
@@ -148,8 +148,8 @@ _ lazy_deployment_completed() method_id {
             return (self, true);
         }
         
-        ;; Bounced handler for Slice message (Generic)
-        self~$SampleContract$_receive_binary_bounce_Slice(in_msg);
+        ;; Bounced handler for SampleContract message (Generic)
+        self~$SampleContract$_receive_bounce(in_msg);
         return (self, true);
     }
     

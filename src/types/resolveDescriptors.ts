@@ -1,6 +1,6 @@
 import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTRef, ASTTypeRef, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from "./types";
+import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from './types';
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
@@ -696,23 +696,33 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         } else {
                             throwError('Bounce receive function can only accept bounced<T> struct args or Slice', d.ref);
                         }
-
-                        // Check for duplicate
-                        const typeRef: TypeRef = {
-                            kind: isGeneric ? 'ref' : 'ref_bounced', 
-                            name: arg.type.name,
-                            optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
-                        };
-
-                        if (s.receivers.find((v) => v.selector.kind === 'internal-bounce' && typeRefEquals(typeRef, v.selector.type))) {
-                            throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
-                        }
                         
-                        // resolveTypeRef isn't available at this point so we construct the typeref synthetically
-                        s.receivers.push({
-                            selector: { kind: 'internal-bounce', name: arg.name, type: typeRef },
-                            ast: d
-                        });
+                        if (isGeneric) {
+                            if (s.receivers.find((v) => v.selector.kind === 'internal-bounce')) {
+                                throwError(`Generic bounce receive function already exists`, d.ref);
+                            }
+
+                            s.receivers.push({
+                                selector: { kind: 'internal-bounce', name: arg.name },
+                                ast: d
+                            }); 
+                        } else {
+                            // resolveTypeRef isn't available at this point so we construct the typeref synthetically
+                            const typeRef: TypeRef = {
+                                kind: isGeneric ? 'ref' : 'ref_bounced', 
+                                name: arg.type.name,
+                                optional: arg.type.kind === 'type_ref_simple' ? arg.type.optional : false,
+                            };
+
+                            if (s.receivers.find((v) => v.selector.kind === 'internal-bounce-struct' && typeRefEquals(typeRef, v.selector.type))) {
+                                throwError(`Bounce receive function for ${arg.type.name} already exists`, d.ref);
+                            }
+
+                            s.receivers.push({
+                                selector: { kind: 'internal-bounce-struct', name: arg.name, type: typeRef },
+                                ast: d
+                            });
+                        }
                     } else {
                         throwError('Invalid receive function selector', d.ref);
                     }
@@ -913,7 +923,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         return a.type === b.type;
                     }
                     if (a.kind === 'internal-bounce' && b.kind === 'internal-bounce') {
-                        return a.type === b.type;
+                        return true; // Could be only one
+                    }
+                    if (a.kind === 'internal-bounce-struct' && b.kind === 'internal-bounce-struct') {
+                        return typeRefEquals(a.type, b.type);
                     }
                     if (a.kind === 'internal-empty' && b.kind === 'internal-empty') {
                         return true;

@@ -51,7 +51,7 @@ PROGRAM{
   DECLPROC $JettonDefaultWallet$_internal_binary_TokenTransfer
   DECLPROC $JettonDefaultWallet$_internal_binary_TokenTransferInternal
   DECLPROC $JettonDefaultWallet$_internal_binary_TokenBurn
-  DECLPROC $JettonDefaultWallet$_receive_binary_bounce_Slice
+  DECLPROC $JettonDefaultWallet$_receive_bounce
   115218 DECLMETHOD %msgValue
   97026 DECLMETHOD %get_wallet_data
   113617 DECLMETHOD supported_interfaces
@@ -821,7 +821,7 @@ PROGRAM{
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $JettonDefaultWallet$_receive_binary_bounce_Slice PROCINLINE:<{
+  $JettonDefaultWallet$_receive_bounce PROCINLINE:<{
     32 LDU
     64 LDU
     NIP
@@ -879,7 +879,7 @@ PROGRAM{
     IFJMP:<{
       32 PUSHINT
       SDSKIPFIRST
-      $JettonDefaultWallet$_receive_binary_bounce_Slice INLINECALLDICT
+      $JettonDefaultWallet$_receive_bounce INLINECALLDICT
       TRUE
     }>
     0 PUSHINT

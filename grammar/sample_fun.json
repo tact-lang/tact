@@ -675,6 +675,430 @@
   ],
   [
     {
+      "content": "    ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "virtual",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "virtual",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.modifier.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": [
+                    "storage.modifier",
+                    "keyword.operator.noexcept"
+                  ],
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "fun",
+      "color": "#569CD6",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "fun",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "storage.type.tact",
+              "themeMatches": [
+                {
+                  "scope": "storage",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                },
+                {
+                  "scope": "storage.type",
+                  "settings": {
+                    "foreground": "#569cd6"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": " ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "overrideMe",
+      "color": "#DCDCAA",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "overrideMe",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.definition.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "entity.name.function.tact",
+              "themeMatches": [
+                {
+                  "name": "Function declarations",
+                  "scope": [
+                    "entity.name.function",
+                    "support.function",
+                    "support.constant.handlebars",
+                    "source.powershell variable.other.member",
+                    "entity.name.operator.custom-literal"
+                  ],
+                  "settings": {
+                    "foreground": "#DCDCAA"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "() {",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "(",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": ")",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.parameters.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.parameters.end.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": " ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "{",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.block.begin.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "        ",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "        ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "// nothing",
+      "color": "#6A9955",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "// nothing",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "comment.line",
+              "themeMatches": [
+                {
+                  "scope": "comment",
+                  "settings": {
+                    "foreground": "#6A9955"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "content": "    }",
+      "color": "#D4D4D4",
+      "fontStyle": 0,
+      "explanation": [
+        {
+          "content": "    ",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            }
+          ]
+        },
+        {
+          "content": "}",
+          "scopes": [
+            {
+              "scopeName": "source.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.struct.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.function.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "meta.block.tact",
+              "themeMatches": []
+            },
+            {
+              "scopeName": "punctuation.definition.block.end.tact",
+              "themeMatches": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  [
+    {
       "content": "}",
       "color": "#D4D4D4",
       "fontStyle": 0,

@@ -354,6 +354,8 @@ export function resolveStatements(ctx: CompilerContext) {
             } else if (f.selector.kind === 'internal-fallback' || f.selector.kind === 'external-fallback') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
             } else if (f.selector.kind === 'internal-bounce') {
+                sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
+            } else if (f.selector.kind === 'internal-bounce-struct') {
                 sctx = addVariable(f.selector.name, f.selector.type, sctx);
             } else {
                 throw Error('Unknown selector');
