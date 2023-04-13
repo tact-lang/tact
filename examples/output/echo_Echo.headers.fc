@@ -46,6 +46,9 @@ slice __tact_string_builder_end_slice(tuple builders) inline;
 ;; __tact_string_builder_append
 ((tuple), ()) __tact_string_builder_append(tuple builders, slice sc) inline_ref;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $Echo$init$_load
 (slice, ((int))) $Echo$init$_load(slice sc_0) inline;
 
@@ -70,11 +73,11 @@ cell $String$_fun_asComment(slice $self) impure inline_ref;
 ;; $Echo$_fun_hello
 (tuple, slice) $Echo$_fun_hello(tuple $self, slice $src) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $Echo$_fun_forward
-(tuple, ()) $Echo$_fun_forward(tuple $self, slice $to, cell $body) impure inline_ref;
+(tuple, ()) $Echo$_fun_forward(tuple $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $Echo$_fun_reply
 (tuple, ()) $Echo$_fun_reply(tuple $self, cell $body) impure inline;

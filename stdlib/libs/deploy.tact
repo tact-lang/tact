@@ -9,7 +9,7 @@ message DeployOk {
 
 trait Deployable {
     receive(deploy: Deploy) {
-        self.reply(DeployOk{queryId: deploy.queryId}.toCell());
+        self.notify(DeployOk{queryId: deploy.queryId}.toCell());
     }
 }
 
@@ -20,6 +20,6 @@ message FactoryDeploy {
 
 trait FactoryDeployable  {
     receive(deploy: FactoryDeploy) {
-        self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell());
+        self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
     }
 }

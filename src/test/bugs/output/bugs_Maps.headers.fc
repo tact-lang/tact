@@ -91,6 +91,9 @@ builder $Maps$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell,
 ;; $Maps$_load
 (slice, ((cell, cell, cell, cell, cell, cell, cell, cell))) $Maps$_load(slice sc_0) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $Maps$init$_load
 (slice, ((cell))) $Maps$init$_load(slice sc_0) inline;
 
@@ -115,14 +118,14 @@ builder $Maps$_store(builder build_0, (cell, cell, cell, cell, cell, cell, cell,
 ;; $Maps$_fun_allItems
 ((cell, cell, cell, cell, cell, cell, cell, cell), cell) $Maps$_fun_allItems((cell, cell, cell, cell, cell, cell, cell, cell) $self) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $Maps$_fun_forward
-((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_forward((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $to, cell $body) impure inline_ref;
+((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_forward((cell, cell, cell, cell, cell, cell, cell, cell) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
-;; $Maps$_fun_reply
-((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_reply((cell, cell, cell, cell, cell, cell, cell, cell) $self, cell $body) impure inline;
+;; $Maps$_fun_notify
+((cell, cell, cell, cell, cell, cell, cell, cell), ()) $Maps$_fun_notify((cell, cell, cell, cell, cell, cell, cell, cell) $self, cell $body) impure inline;
 
 ;; $TokenInfo$_constructor_ticker_decimals
 ((slice, int)) $TokenInfo$_constructor_ticker_decimals(slice ticker, int decimals) inline;

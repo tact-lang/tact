@@ -49,6 +49,9 @@ builder $Beacon$_store(builder build_0, (slice, slice, int) v) inline;
 ;; $Beacon$_load
 (slice, ((slice, slice, int))) $Beacon$_load(slice sc_0) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $Beacon$init$_load
 (slice, ((slice, slice))) $Beacon$init$_load(slice sc_0) inline;
 
@@ -64,11 +67,11 @@ builder $Beacon$_store(builder build_0, (slice, slice, int) v) inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $Beacon$_fun_forward
-((slice, slice, int), ()) $Beacon$_fun_forward((slice, slice, int) $self, slice $to, cell $body) impure inline_ref;
+((slice, slice, int), ()) $Beacon$_fun_forward((slice, slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $Beacon$_fun_reply
 ((slice, slice, int), ()) $Beacon$_fun_reply((slice, slice, int) $self, cell $body) impure inline;

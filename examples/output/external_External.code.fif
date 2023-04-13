@@ -13,14 +13,15 @@ PROGRAM{
   DECLPROC $Increment$_load
   DECLPROC $External$_store
   DECLPROC $External$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $External$init$_load
   DECLPROC $External$_contract_init
   DECLPROC $External$_contract_load
   DECLPROC $External$_contract_store
   DECLPROC $global_send
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $External$_fun_forward
-  DECLPROC $External$_fun_reply
+  DECLPROC $External$_fun_notify
   DECLPROC $External$_fun_owner
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $External$_internal_text_fb5afb2314c4a83f630eee3abd1bb27a6dd574bdc82ce83a9b5a388ebe7a2be8
@@ -127,6 +128,12 @@ PROGRAM{
     257 PUSHINT
     LDIX
     -ROT
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $External$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
@@ -273,23 +280,35 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $External$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $External$_fun_reply PROCINLINE:<{
+  $External$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $External$_fun_forward INLINECALLDICT
   }>
   $External$_fun_owner PROCREF:<{
@@ -317,7 +336,7 @@ PROGRAM{
   $External$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $External$_fun_reply INLINECALLDICT
+    $External$_fun_notify INLINECALLDICT
   }>
   %owner PROC:<{
     $External$_contract_load INLINECALLDICT

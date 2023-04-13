@@ -17,8 +17,6 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
     }
     ctx.inIndent(() => {
 
-        ctx.append();
-
         // Handle bounced
         if (internal) {
             ctx.append(`;; Handle bounced messages`);
@@ -89,7 +87,6 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                     ctx.append('return (self, true);');
                 } else {
                     ctx.append(`return (self, true);`);
-
                 }
                 
             });
@@ -105,6 +102,7 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
             ctx.append(`op = in_msg.preload_uint(32);`);
         });
         ctx.append(`}`);
+        ctx.append();
 
         // Non-empty receivers
         for (const f of type.receivers) {

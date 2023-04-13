@@ -40,6 +40,9 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $RandomContract$_contract_init
 tuple $RandomContract$_contract_init() impure inline_ref;
 
@@ -64,14 +67,14 @@ int $global_random(int $min, int $max) impure inline;
 ;; $RandomContract$_fun_random
 (tuple, int) $RandomContract$_fun_random(tuple $self, int $min, int $max) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $RandomContract$_fun_forward
-(tuple, ()) $RandomContract$_fun_forward(tuple $self, slice $to, cell $body) impure inline_ref;
+(tuple, ()) $RandomContract$_fun_forward(tuple $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
-;; $RandomContract$_fun_reply
-(tuple, ()) $RandomContract$_fun_reply(tuple $self, cell $body) impure inline;
+;; $RandomContract$_fun_notify
+(tuple, ()) $RandomContract$_fun_notify(tuple $self, cell $body) impure inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

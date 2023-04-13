@@ -10,6 +10,7 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $StateInit$_not_null
   DECLPROC $RandomContract$_contract_init
   DECLPROC $RandomContract$_contract_load
   DECLPROC $RandomContract$_contract_store
@@ -18,9 +19,9 @@ PROGRAM{
   DECLPROC $global_send
   DECLPROC $RandomContract$_fun_randomInt
   DECLPROC $RandomContract$_fun_random
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $RandomContract$_fun_forward
-  DECLPROC $RandomContract$_fun_reply
+  DECLPROC $RandomContract$_fun_notify
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $RandomContract$_internal_binary_Deploy
   128647 DECLMETHOD %randomInt
@@ -104,6 +105,12 @@ PROGRAM{
     SWAP
     $DeployOk$_store INLINECALLDICT
     ENDC
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $RandomContract$_contract_init PROCREF:<{
     PUSHNULL
@@ -257,23 +264,35 @@ PROGRAM{
   $RandomContract$_fun_random PROCREF:<{
     $global_random INLINECALLDICT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $RandomContract$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $RandomContract$_fun_reply PROCINLINE:<{
+  $RandomContract$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $RandomContract$_fun_forward INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
@@ -281,7 +300,7 @@ PROGRAM{
   $RandomContract$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $RandomContract$_fun_reply INLINECALLDICT
+    $RandomContract$_fun_notify INLINECALLDICT
   }>
   %randomInt PROC:<{
     $RandomContract$_contract_load INLINECALLDICT

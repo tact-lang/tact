@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Bounced handler now skips first 32 bits (0xFFFFFFFF) automatically
+## [1.1.0-beta.23] - 2023-04-13
+
+## Changed
+- deploy trait now sends non-bounceable notifications
+- changed `forward` and added bounceable and init arguments
+
+## Added
+- `Contract.notify()` non-bounceable alternative to reply
+
 ## [1.1.0-beta.22] - 2023-04-13
 
 ## Added
