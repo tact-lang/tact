@@ -1,7 +1,6 @@
 import { ABITypeRef } from "ton-core";
 import { ASTField, ASTRef, throwError } from "../grammar/ast";
 import { TypeRef } from "./types";
-import { type } from "os";
 
 type FormatDef = { [key: string]: { type: string, format: string | number } };
 
