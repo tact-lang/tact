@@ -8,7 +8,6 @@ import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "ton-core";
 import { enabledExternals } from "../config/features";
-import { Type } from "js-yaml";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
