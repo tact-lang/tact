@@ -345,16 +345,18 @@ export function resolveStatements(ctx: CompilerContext) {
             // Build statement context
             let sctx = emptyContext(f.ast.ref, { kind: 'void' });
             sctx = addVariable('self', { kind: 'ref', name: t.name, optional: false }, sctx);
-            if (f.selector.kind === 'internal-binary') {
+            if (f.selector.kind === 'internal-binary' || f.selector.kind === 'external-binary') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: f.selector.type, optional: false }, sctx);
-            } else if (f.selector.kind === 'internal-empty') {
+            } else if (f.selector.kind === 'internal-empty' || f.selector.kind === 'external-empty' || f.selector.kind === 'external-comment' || f.selector.kind === 'internal-comment') {
                 // Nothing to add to context
-            } else if (f.selector.kind === 'internal-comment-fallback') {
+            } else if (f.selector.kind === 'internal-comment-fallback' || f.selector.kind === 'external-comment-fallback') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'String', optional: false }, sctx);
-            } else if (f.selector.kind === 'internal-fallback') {
+            } else if (f.selector.kind === 'internal-fallback' || f.selector.kind === 'external-fallback') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
             } else if (f.selector.kind === 'internal-bounce') {
                 sctx = addVariable(f.selector.name, { kind: 'ref', name: 'Slice', optional: false }, sctx);
+            } else {
+                throw Error('Unknown selector');
             }
 
             // Process

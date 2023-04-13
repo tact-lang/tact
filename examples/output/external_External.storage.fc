@@ -45,6 +45,18 @@ cell $DeployOk$_store_cell((int) v) inline {
 }
 
 ;;
+;; Type: Increment
+;; Header: 0x3b788084
+;; TLB: increment#3b788084 value:int257 = Increment
+;;
+
+(slice, ((int))) $Increment$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 997752964);
+    var v'value = sc_0~load_int(257);
+    return (sc_0, (v'value));
+}
+
+;;
 ;; Type: External
 ;;
 

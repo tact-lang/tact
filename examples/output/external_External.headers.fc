@@ -40,6 +40,9 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v) inline;
 
+;; $Increment$_load
+(slice, ((int))) $Increment$_load(slice sc_0) inline;
+
 ;; $External$_store
 builder $External$_store(builder build_0, (slice, int) v) inline;
 

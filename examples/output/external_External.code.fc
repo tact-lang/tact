@@ -39,6 +39,15 @@
     return (($self'owner, $self'timeout), ());
 }
 
+(((slice, int)), ()) $External$_external_binary_Increment((slice, int) $self, (int) $msg) impure inline {
+    var ($self'owner, $self'timeout) = $self;
+    var ($msg'value) = $msg;
+    if (($msg'value == now())) {
+        accept_message();
+    }
+    return (($self'owner, $self'timeout), ());
+}
+
 (((slice, int)), ()) $External$_internal_binary_Deploy((slice, int) $self, (int) $deploy) impure inline {
     var ($self'owner, $self'timeout) = $self;
     var ($deploy'queryId) = $deploy;
@@ -67,7 +76,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmcmG7LuZKhVv24fXo7Dzb3PG73d8ZMuYRCQqMSuXHQw9W";
+    return "ipfs://QmX9tLrzA9tfgQbm3isGprrKRj9QL2m3WkDzDskDYT9c9q";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -120,6 +129,13 @@ _ lazy_deployment_completed() method_id {
         op = in_msg.preload_uint(32);
     }
     
+    
+    ;; Receive Increment message
+    if (op == 997752964) {
+        var msg = in_msg~$Increment$_load();
+        self~$External$_external_binary_Increment(msg);
+        return (self, true);
+    }
     
     ;; Text Receivers
     if (op == 0) {

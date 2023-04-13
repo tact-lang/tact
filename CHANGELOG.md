@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Fixed
 - Work-around func `0.4.3` bug with pragma processing
+- Fix external messages with arguments type checking
 
 ## [1.1.0-beta.20] - 2023-04-11
 

@@ -10,6 +10,7 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $Increment$_load
   DECLPROC $External$_store
   DECLPROC $External$_load
   DECLPROC $External$init$_load
@@ -24,6 +25,7 @@ PROGRAM{
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $External$_internal_text_fb5afb2314c4a83f630eee3abd1bb27a6dd574bdc82ce83a9b5a388ebe7a2be8
   DECLPROC $External$_external_text_c3c1f3e19ef67964f6f1da1ad85bd08b35f8b02ffb881418fb6c1fb3b468d462
+  DECLPROC $External$_external_binary_Increment
   DECLPROC $External$_internal_binary_Deploy
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
@@ -102,6 +104,16 @@ PROGRAM{
     SWAP
     $DeployOk$_store INLINECALLDICT
     ENDC
+  }>
+  $Increment$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    997752964 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    257 PUSHINT
+    LDIX
+    SWAP
   }>
   $External$_store PROCINLINE:<{
     -ROT
@@ -295,6 +307,13 @@ PROGRAM{
       ACCEPT
     }>
   }>
+  $External$_external_binary_Increment PROCINLINE:<{
+    NOW
+    EQUAL
+    IF:<{
+      ACCEPT
+    }>
+  }>
   $External$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
@@ -313,7 +332,7 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d636d47374c755a4b685676323466586f37447a62335047373364385a4d7559524351714d5375584851773957} PUSHSLICE
+    x{697066733a2f2f516d5839744c727a413974666751626d336973477072724b526a39514c326d33576b447a44736b44595439633971} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -375,6 +394,16 @@ PROGRAM{
       DROP
       DUP
       32 PLDU
+    }>
+    DUP
+    997752964 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $Increment$_load INLINECALLDICT
+      NIP
+      $External$_external_binary_Increment INLINECALLDICT
+      TRUE
     }>
     0 EQINT
     IF:<{

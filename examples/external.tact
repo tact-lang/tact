@@ -1,6 +1,10 @@
 import "@stdlib/deploy";
 import "@stdlib/ownable";
 
+message Increment {
+    value: Int;
+}
+
 contract External with Deployable, Ownable {
     owner: Address;
     timeout: Int;
@@ -16,6 +20,12 @@ contract External with Deployable, Ownable {
 
     external("Timeout") {
         if (now() > self.timeout) {
+            acceptMessage();
+        }
+    }
+
+    external(msg: Increment) {
+        if (msg.value == now()) {
             acceptMessage();
         }
     }

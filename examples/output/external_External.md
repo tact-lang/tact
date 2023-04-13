@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: External
-BOC Size: 914 bytes
+BOC Size: 954 bytes
 
 # Types
-Total Types: 8
+Total Types: 9
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -36,6 +36,10 @@ Signature: `ChangeOwner{queryId:uint64,newOwner:address}`
 ## ChangeOwnerOk
 TLB: `change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk`
 Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
+
+## Increment
+TLB: `increment#3b788084 value:int257 = Increment`
+Signature: `Increment{value:int257}`
 
 # Get Methods
 Total Get Methods: 1
