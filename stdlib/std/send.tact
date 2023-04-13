@@ -80,3 +80,6 @@ inline fun emit(body: Cell) {
 
 @name(accept_message)
 native acceptMessage();
+
+@name(commit)
+native commit();
