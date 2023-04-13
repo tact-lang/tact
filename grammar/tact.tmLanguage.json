@@ -282,7 +282,7 @@
     },
     "bounce-declaration": {
       "name": "meta.struct.field.tact",
-      "begin": "(bounce)",
+      "begin": "(bounced)",
       "beginCaptures": {
         "1": {
           "name": "keyword.control.bounce.tact"
