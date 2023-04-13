@@ -822,8 +822,6 @@ PROGRAM{
     $global_send INLINECALLDICT
   }>
   $JettonDefaultWallet$_receive_binary_bounce_Slice PROCINLINE:<{
-    32 PUSHINT
-    SDSKIPFIRST
     32 LDU
     64 LDU
     NIP

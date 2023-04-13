@@ -1,7 +1,7 @@
 import { CompilerContext } from "../context";
 import { ASTCondition, ASTRef, ASTStatement, throwError } from "../grammar/ast";
 import { isAssignable } from "./isAssignable";
-import { getAllStaticFunctions, getAllTypes, resolveTypeRef, toBounced } from "./resolveDescriptors";
+import { getAllStaticFunctions, getAllTypes, resolveTypeRef } from "./resolveDescriptors";
 import { getExpType, resolveExpression, resolveLValueRef } from "./resolveExpression";
 import { printTypeRef, TypeRef } from "./types";
 
