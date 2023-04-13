@@ -434,10 +434,11 @@ PROGRAM{
   $SampleContract$_internal_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4 PROCINLINE:<{
   }>
   $SampleContract$_receive_bounce PROCINLINE:<{
-    DROP
+    2DROP
     B{b5ee9c72410101010013000022496e2067656e6572696320626f756e63659b8e2ac3} B>boc <s PUSHSLICE
     STRDUMP
     DROP
+    77 PUSHINT
   }>
   $SampleContract$_receive_binary_bounce_First PROCINLINE:<{
     2DROP

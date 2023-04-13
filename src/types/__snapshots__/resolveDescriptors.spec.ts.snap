@@ -229,7 +229,7 @@ Line 24, col 3:
 `;
 
 exports[`resolveDescriptors should fail descriptors for case-23 1`] = `
-"<unknown>:24:3: Bounce receive function for Slice already exists
+"<unknown>:24:3: Generic bounce receive function already exists
 Line 24, col 3:
   23 |   
 > 24 |   bounced(msg: Slice) {
@@ -806,7 +806,6 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
   "testFunc3": {
     "args": [
       {
-        "as": null,
         "name": "a",
         "ref": a: Int,
         "type": {
@@ -816,7 +815,6 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
         },
       },
       {
-        "as": null,
         "name": "b",
         "ref": b: Bool,
         "type": {
@@ -1351,7 +1349,6 @@ exports[`resolveDescriptors should resolve descriptors for case-4 2`] = `
   "sample": {
     "args": [
       {
-        "as": null,
         "name": "a",
         "ref": a: Int,
         "type": {
@@ -2629,11 +2626,6 @@ exports[`resolveDescriptors should resolve descriptors for case-8 1`] = `
         "selector": {
           "kind": "internal-bounce",
           "name": "src",
-          "type": {
-            "kind": "ref",
-            "name": "Slice",
-            "optional": false,
-          },
         },
       },
     ],
@@ -3150,7 +3142,7 @@ exports[`resolveDescriptors should resolve descriptors for case-9 1`] = `
           ],
         },
         "selector": {
-          "kind": "internal-bounce",
+          "kind": "internal-bounce-struct",
           "name": "src",
           "type": {
             "kind": "ref_bounced",

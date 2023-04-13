@@ -69,6 +69,7 @@
     var ($self'a) = $self;
     __tact_debug_str(__gen_slice_string_e00443a4d0500a8f08cfafd55e0ef63f7446ab298ff5fa2e86e8c14fb1c93308());
     int $y = $msg~load_uint(32);
+    $self'a = 77;
     return (($self'a), ());
 }
 

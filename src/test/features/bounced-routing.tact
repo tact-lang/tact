@@ -78,6 +78,7 @@ contract SampleContract {
     bounced(msg: Slice) {
         dump("In generic bounce");
         let y: Int = msg.loadUint(32);
+        self.a = 77;
     }
     
     bounced(msg: bounced<First>) {

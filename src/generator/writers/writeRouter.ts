@@ -36,10 +36,10 @@ export function writeRouter(type: TypeDescription, kind: 'internal' | 'external'
                 if (genericReceiver || nonGenericReceivers.length > 0) {
                     ctx.append(`;; Skip 0xFFFFFFFF`);
                     ctx.append(`in_msg~skip_bits(32);`);
+                    ctx.append();
                 }
 
                 if (nonGenericReceivers.length > 0) {
-                    ctx.append();
                     ctx.append(`;; Parse op`);
                     ctx.append(`int op = 0;`);
                     ctx.append(`if (slice_bits(in_msg) >= 32) {`);
