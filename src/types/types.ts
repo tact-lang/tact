@@ -12,7 +12,7 @@ export type TypeDescription = {
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
-    partialFieldCount: number; // A partial representation of the struct, for bounced purposes
+    partialFieldCount: number; // Max number of fields that can be parsed when message is bounced
     traits: TypeDescription[];
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];

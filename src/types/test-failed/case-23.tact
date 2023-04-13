@@ -2,6 +2,10 @@ primitive Int;
 primitive Bool;
 primitive Slice;
 
+trait BaseTrait {
+
+}
+
 message A {
   a: Int as uint32;
   b: Bool;
