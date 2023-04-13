@@ -1,6 +1,6 @@
 import { ASTConstant, ASTField, ASTFunction, ASTInitFunction, ASTNativeFunction, ASTNode, ASTRef, ASTTypeRef, throwError, traverse } from "../grammar/ast";
 import { CompilerContext, createContextStore } from "../context";
-import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from "./types";
+import { ConstantDescription, FieldDescription, FunctionArgument, FunctionDescription, InitArgument, InitDescription, printTypeRef, ReceiverSelector, TypeDescription, TypeOrigin, TypeRef, typeRefEquals } from "./types";
 import { getRawAST } from "../grammar/store";
 import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
@@ -8,6 +8,7 @@ import { resolveConstantValue } from "./resolveConstantValue";
 import { resolveABIType } from "./resolveABITypeRef";
 import { Address, Cell } from "ton-core";
 import { enabledExternals } from "../config/features";
+import { isRuntimeType } from "./isRuntimeType";
 
 let store = createContextStore<TypeDescription>();
 let staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -230,6 +231,11 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function buildFieldDescription(src: ASTField, index: number): FieldDescription {
         let tr = buildTypeRef(src.type, types);
 
+        // Check if field is runtime type
+        if (isRuntimeType(tr)) {
+            throwError(printTypeRef(tr) + ' is a runtime only type and can\t be used as field', src.ref);
+        }
+
         // Resolve default value
         let d: bigint | boolean | string | null | Address | Cell | undefined = undefined;
         if (src.init) {
@@ -336,7 +342,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
             args.push({
                 name: r.name,
                 type: buildTypeRef(r.type, types),
-                as: null,
                 ref: r.ref
             });
         }
@@ -476,6 +481,18 @@ export function resolveDescriptors(ctx: CompilerContext) {
             exNames.add(arg.name);
         }
 
+        // Check for runtime types in getters
+        if (isGetter) {
+            for (let arg of args) {
+                if (isRuntimeType(arg.type)) {
+                    throwError(printTypeRef(arg.type) + ' is a runtime onlye type and can\'t be used as a getter argument', arg.ref);
+                }
+            }
+            if (isRuntimeType(returns)) {
+                throwError(printTypeRef(returns) + ' is a runtime onlye type and can\'t be used as getter return type', a.ref);
+            }
+        }
+
         // Register function
         return {
             name: a.name,
@@ -494,7 +511,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     function resolveInitFunction(ast: ASTInitFunction): InitDescription {
-        let args: FunctionArgument[] = [];
+        let args: InitArgument[] = [];
         for (let r of ast.args) {
             args.push({
                 name: r.name,
@@ -503,6 +520,14 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 ref: r.ref
             });
         }
+
+        // Check if runtime types are used
+        for (let a of args) {
+            if (isRuntimeType(a.type)) {
+                throwError(printTypeRef(a.type) + ' is a runtime onlye type and can\'t be used as a init function argument', a.ref);
+            }
+        }
+
         return {
             args,
             ast

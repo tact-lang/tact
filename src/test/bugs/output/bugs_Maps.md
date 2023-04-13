@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Maps
-BOC Size: 1815 bytes
+BOC Size: 1814 bytes
 
 # Types
 Total Types: 20

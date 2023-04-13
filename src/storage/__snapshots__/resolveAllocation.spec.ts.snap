@@ -2011,7 +2011,6 @@ exports[`resolveAllocation should write program 1`] = `
         "main" => {
           "args": [
             {
-              "as": null,
               "name": "a",
               "ref": ASTRef {},
               "type": {
@@ -2021,7 +2020,6 @@ exports[`resolveAllocation should write program 1`] = `
               },
             },
             {
-              "as": null,
               "name": "b",
               "ref": ASTRef {},
               "type": {

@@ -60,6 +60,12 @@ export type ConstantDescription = {
 export type FunctionArgument = {
     name: string,
     type: TypeRef,
+    ref: ASTRef
+}
+
+export type InitArgument = {
+    name: string,
+    type: TypeRef,
     as: string | null,
     ref: ASTRef
 }
@@ -127,7 +133,7 @@ export type ReceiverDescription = {
 }
 
 export type InitDescription = {
-    args: FunctionArgument[],
+    args: InitArgument[],
     ast: ASTInitFunction
 }
 

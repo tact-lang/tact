@@ -372,6 +372,11 @@ PROGRAM{
     SWAP
   }>
   $Beacon$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      $Beacon$_receive_bounce INLINECALLDICT
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -381,13 +386,6 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      NIP
-      $Beacon$_receive_bounce INLINECALLDICT
-      TRUE
-    }>
-    SWAP
     3289991647 PUSHINT
     EQUAL
     IFJMP:<{

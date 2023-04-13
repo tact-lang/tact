@@ -142,7 +142,7 @@ _ lazy_deployment_completed() method_id {
     ;; Handle bounced messages
     if (msg_bounced) {
         ;; Skip 0xFFFFFFFF
-        in_msg.skip_bits(32)
+        in_msg.skip_bits(32);
         
         self~$JettonDefaultWallet$_receive_bounce(in_msg);
         

@@ -765,7 +765,6 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
   "testFunc3": {
     "args": [
       {
-        "as": null,
         "name": "a",
         "ref": a: Int,
         "type": {
@@ -775,7 +774,6 @@ exports[`resolveDescriptors should resolve descriptors for case-2 2`] = `
         },
       },
       {
-        "as": null,
         "name": "b",
         "ref": b: Bool,
         "type": {
@@ -1302,7 +1300,6 @@ exports[`resolveDescriptors should resolve descriptors for case-4 2`] = `
   "sample": {
     "args": [
       {
-        "as": null,
         "name": "a",
         "ref": a: Int,
         "type": {

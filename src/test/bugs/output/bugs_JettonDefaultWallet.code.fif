@@ -822,8 +822,6 @@ PROGRAM{
     $global_send INLINECALLDICT
   }>
   $JettonDefaultWallet$_receive_bounce PROCINLINE:<{
-    32 PUSHINT
-    SDSKIPFIRST
     32 LDU
     64 LDU
     NIP
@@ -877,6 +875,11 @@ PROGRAM{
     SWAP
   }>
   $JettonDefaultWallet$_contract_router_internal PROCREF:<{
+    SWAP
+    IFJMP:<{
+      $JettonDefaultWallet$_receive_bounce INLINECALLDICT
+      TRUE
+    }>
     0 PUSHINT
     OVER
     SBITS
@@ -886,33 +889,26 @@ PROGRAM{
       DUP
       32 PLDU
     }>
-    s0 s2 XCHG
-    IFJMP:<{
-      NIP
-      $JettonDefaultWallet$_receive_bounce INLINECALLDICT
-      TRUE
-    }>
-    OVER
+    DUP
     260734629 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TokenTransfer$_load INLINECALLDICT
       1 7 BLKDROP2
       $JettonDefaultWallet$_internal_binary_TokenTransfer INLINECALLDICT
       TRUE
     }>
-    OVER
+    DUP
     395134233 PUSHINT
     EQUAL
     IFJMP:<{
-      NIP
+      DROP
       $TokenTransferInternal$_load INLINECALLDICT
       1 6 BLKDROP2
       $JettonDefaultWallet$_internal_binary_TokenTransferInternal INLINECALLDICT
       TRUE
     }>
-    SWAP
     1499400124 PUSHINT
     EQUAL
     IFJMP:<{
