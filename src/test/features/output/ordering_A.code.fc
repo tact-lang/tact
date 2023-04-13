@@ -34,7 +34,7 @@
 (((slice)), ()) $A$_internal_binary_Deploy((slice) $self, (int) $deploy) impure inline {
     var ($self'owner) = $self;
     var ($deploy'queryId) = $deploy;
-    ($self'owner)~$A$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    ($self'owner)~$A$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return (($self'owner), ());
 }
 

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## Changed
+- deploy trait now sends non-bounceable notifications
+- changed `forward` and added bounceable and init arguments
+
+## Added
+- `Contract.notify()` non-bounceable alternative to reply
+
 ## [1.1.0-beta.22] - 2023-04-13
 
 ## Added

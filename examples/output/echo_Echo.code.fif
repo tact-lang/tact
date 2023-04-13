@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC __tact_string_builder_end
   DECLPROC __tact_string_builder_end_slice
   DECLPROC __tact_string_builder_append
+  DECLPROC $StateInit$_not_null
   DECLPROC $Echo$init$_load
   DECLPROC $Echo$_contract_init
   DECLPROC $Echo$_contract_load
@@ -20,7 +21,7 @@ PROGRAM{
   DECLPROC $Slice$_fun_asCell
   DECLPROC $String$_fun_asComment
   DECLPROC $Echo$_fun_hello
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Echo$_fun_forward
   DECLPROC $Echo$_fun_reply
   DECLPROC $Echo$_internal_any_text
@@ -179,6 +180,12 @@ PROGRAM{
       }>
     }>
     3 BLKDROP
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $Echo$init$_load PROCINLINE:<{
     257 PUSHINT
@@ -345,23 +352,35 @@ PROGRAM{
     __tact_string_builder_append INLINECALLDICT
     __tact_string_builder_end_slice INLINECALLDICT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $Echo$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
   $Echo$_fun_reply PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    TRUE
+    PUSHNULL
     $Echo$_fun_forward INLINECALLDICT
   }>
   $Echo$_internal_any_text PROCINLINE:<{

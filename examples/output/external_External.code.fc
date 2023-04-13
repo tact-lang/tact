@@ -51,7 +51,7 @@
 (((slice, int)), ()) $External$_internal_binary_Deploy((slice, int) $self, (int) $deploy) impure inline {
     var ($self'owner, $self'timeout) = $self;
     var ($deploy'queryId) = $deploy;
-    ($self'owner, $self'timeout)~$External$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    ($self'owner, $self'timeout)~$External$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return (($self'owner, $self'timeout), ());
 }
 

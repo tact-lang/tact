@@ -24,15 +24,16 @@ PROGRAM{
   DECLPROC $Something$_store_opt
   DECLPROC $IncrementContract$_store
   DECLPROC $IncrementContract$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $IncrementContract$_contract_init
   DECLPROC $IncrementContract$_contract_load
   DECLPROC $IncrementContract$_contract_store
   DECLPROC $global_send
   DECLPROC $IncrementContract$_fun_counters
   DECLPROC $IncrementContract$_fun_counters2
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $IncrementContract$_fun_forward
-  DECLPROC $IncrementContract$_fun_reply
+  DECLPROC $IncrementContract$_fun_notify
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $IncrementContract$_internal_binary_Increment
   DECLPROC $IncrementContract$_internal_binary_Toggle
@@ -286,6 +287,12 @@ PROGRAM{
     s3 s5 XCHG
     s3 s4 XCHG
   }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
+  }>
   $IncrementContract$_contract_init PROCREF:<{
     PUSHNULL
     PUSHNULL
@@ -434,23 +441,35 @@ PROGRAM{
   $IncrementContract$_fun_counters2 PROCREF:<{
     OVER
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $IncrementContract$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $IncrementContract$_fun_reply PROCINLINE:<{
+  $IncrementContract$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    FALSE
+    PUSHNULL
     $IncrementContract$_fun_forward INLINECALLDICT
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
@@ -547,7 +566,7 @@ PROGRAM{
   $IncrementContract$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
-    $IncrementContract$_fun_reply INLINECALLDICT
+    $IncrementContract$_fun_notify INLINECALLDICT
   }>
   %counters PROC:<{
     $IncrementContract$_contract_load INLINECALLDICT

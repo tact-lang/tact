@@ -5,10 +5,10 @@ PROGRAM{
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
   DECLPROC ?fun_ref_44086a5ce86162fe;
-  DECLPROC ?fun_ref_457ed784de722f7b;
   DECLPROC ?fun_ref_644ef5250652bdfa;
-  DECLPROC ?fun_ref_b8dbf2d8523a8ae8;
+  DECLPROC ?fun_ref_733e23cd5b26d532;
   DECLPROC ?fun_ref_b93b9862cda1783c;
+  DECLPROC ?fun_ref_e31d986f279fa0fb;
   DECLPROC ?fun_ref_ed6d0b29af79c1a8;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -43,7 +43,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_ed6d0b29af79c1a8 INLINECALLDICT
     2 3 BLKSWAP
-    ?fun_ref_b8dbf2d8523a8ae8 INLINECALLDICT
+    ?fun_ref_733e23cd5b26d532 INLINECALLDICT
     130 THROWIFNOT
     NEWC
     3 GETGLOBVAR
@@ -113,21 +113,10 @@ PROGRAM{
   ?fun_ref_44086a5ce86162fe PROCREF:<{
     s1 PUSH
   }>
-  ?fun_ref_457ed784de722f7b PROCREF:<{
-    -1 PUSHINT
-    s0 s2 XCHG
-    0 PUSHINT
-    ROT
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_ref_b93b9862cda1783c INLINECALLDICT
-  }>
   ?fun_ref_644ef5250652bdfa PROCREF:<{
     0 PUSHINT
   }>
-  ?fun_ref_b8dbf2d8523a8ae8 PROCREF:<{
+  ?fun_ref_733e23cd5b26d532 PROCREF:<{
     0 PUSHINT
     s1 PUSH
     SBITS
@@ -204,7 +193,9 @@ PROGRAM{
         ENDC
         2 GETGLOBVAR
         s0 s1 XCHG
-        ?fun_ref_457ed784de722f7b INLINECALLDICT
+        -1 PUSHINT
+        NULL
+        ?fun_ref_e31d986f279fa0fb INLINECALLDICT
       }> PUSHCONT
       <{
         s1 POP
@@ -241,7 +232,9 @@ PROGRAM{
         ENDC
         2 GETGLOBVAR
         s0 s1 XCHG
-        ?fun_ref_457ed784de722f7b INLINECALLDICT
+        -1 PUSHINT
+        NULL
+        ?fun_ref_e31d986f279fa0fb INLINECALLDICT
       }> IFREFELSE
       -1 PUSHINT
     }> IFJMPREF
@@ -391,6 +384,32 @@ PROGRAM{
     ENDC
     s0 s1 XCHG
     SENDRAWMSG
+  }>
+  ?fun_ref_e31d986f279fa0fb PROCREF:<{
+    NULL
+    NULL
+    s2 PUSH
+    ISNULL
+    NOT
+    <{
+      DROP2
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      2 UNTUPLE
+      s0 s1 XCHG
+    }> PUSHCONT
+    <{
+      s2 POP
+    }> PUSHCONT
+    IFELSE
+    s2 s4 XCHG
+    0 PUSHINT
+    s0 s3 XCHG
+    s0 s4 XCHG
+    66 PUSHINT
+    s2 s3 XCHG2
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
   ?fun_ref_ed6d0b29af79c1a8 PROCREF:<{
     c4 PUSH

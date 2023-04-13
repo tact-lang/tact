@@ -84,7 +84,7 @@ slice $global_dnsExtractTopDomain(slice $subdomain) impure inline_ref {
 ((tuple), ()) $DNSTester$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
-    $self~$DNSTester$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    $self~$DNSTester$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return ($self, ());
 }
 

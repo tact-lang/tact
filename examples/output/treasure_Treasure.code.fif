@@ -14,6 +14,7 @@ PROGRAM{
   DECLPROC $Withdraw$_load
   DECLPROC $Treasure$_store
   DECLPROC $Treasure$_load
+  DECLPROC $StateInit$_not_null
   DECLPROC $Treasure$init$_load
   DECLPROC $Treasure$_contract_init
   DECLPROC $Treasure$_contract_load
@@ -22,7 +23,7 @@ PROGRAM{
   DECLPROC $SendParameters$_constructor_value_to_mode_body
   DECLPROC $Treasure$_fun_requireOwner
   DECLPROC $Treasure$_fun_doWithdraw
-  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Treasure$_fun_forward
   DECLPROC $Treasure$_fun_reply
   DECLPROC $Treasure$_fun_owner
@@ -127,6 +128,12 @@ PROGRAM{
   }>
   $Treasure$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
   }>
   $Treasure$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
@@ -291,23 +298,35 @@ PROGRAM{
     $SendParameters$_constructor_value_to_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $SendParameters$_constructor_bounce_to_value_mode_body PROCINLINE:<{
-    PUSHNULL
-    PUSHNULL
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
   $Treasure$_fun_forward PROCREF:<{
-    TRUE
-    s0 s2 XCHG
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
     0 PUSHINT
-    ROT
+    s0 s3 XCHG
+    s0 s4 XCHG
     66 PUSHINT
-    SWAP
-    $SendParameters$_constructor_bounce_to_value_mode_body INLINECALLDICT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
   $Treasure$_fun_reply PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
+    TRUE
+    PUSHNULL
     $Treasure$_fun_forward INLINECALLDICT
   }>
   $Treasure$_fun_owner PROCREF:<{

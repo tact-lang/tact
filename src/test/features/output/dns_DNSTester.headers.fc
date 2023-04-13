@@ -37,6 +37,9 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 ;; $DeployOk$_store_cell
 cell $DeployOk$_store_cell((int) v) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $DNSResolveResult$_to_external
 (int, cell) $DNSResolveResult$_to_external(((int, cell)) v) inline;
 
@@ -79,14 +82,14 @@ slice $global_dnsExtractTopDomain(slice $subdomain) impure inline_ref;
 ;; $DNSTester$_fun_doResolveDNS
 (tuple, (int, cell)) $DNSTester$_fun_doResolveDNS(tuple $self, slice $subdomain, int $category) impure inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $DNSTester$_fun_forward
-(tuple, ()) $DNSTester$_fun_forward(tuple $self, slice $to, cell $body) impure inline_ref;
+(tuple, ()) $DNSTester$_fun_forward(tuple $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
-;; $DNSTester$_fun_reply
-(tuple, ()) $DNSTester$_fun_reply(tuple $self, cell $body) impure inline;
+;; $DNSTester$_fun_notify
+(tuple, ()) $DNSTester$_fun_notify(tuple $self, cell $body) impure inline;
 
 ;; $DNSTester$_fun_dnsresolve
 (tuple, (int, cell)) $DNSTester$_fun_dnsresolve(tuple $self, slice $subdomain, int $category) impure inline_ref;

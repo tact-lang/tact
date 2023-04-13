@@ -31,7 +31,7 @@ tuple $SendTester$_contract_init() impure inline_ref {
 ((tuple), ()) $SendTester$_internal_binary_Deploy(tuple $self, (int) $deploy) impure inline {
     var $self = $self;
     var ($deploy'queryId) = $deploy;
-    $self~$SendTester$_fun_reply($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    $self~$SendTester$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
     return ($self, ());
 }
 

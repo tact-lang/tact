@@ -3,10 +3,10 @@ PROGRAM{
   DECLPROC supported_interfaces;
   DECLPROC lazy_deployment_completed;
   DECLPROC get_abi_ipfs;
-  DECLPROC ?fun_ref_457ed784de722f7b;
   DECLPROC ?fun_ref_b93b9862cda1783c;
   DECLPROC ?fun_ref_be9e48593636eeba;
-  DECLPROC ?fun_ref_deb482e5c31907a5;
+  DECLPROC ?fun_ref_e31d986f279fa0fb;
+  DECLPROC ?fun_ref_f9cdc41f141fee60;
   DECLPROC ?fun_ref_f9f31152659ffd4f;
   recv_internal PROC:<{
     s0 s1 XCHG
@@ -41,7 +41,7 @@ PROGRAM{
     2 SETGLOBVAR
     ?fun_ref_f9f31152659ffd4f INLINECALLDICT
     ROTREV
-    ?fun_ref_deb482e5c31907a5 INLINECALLDICT
+    ?fun_ref_f9cdc41f141fee60 INLINECALLDICT
     130 THROWIFNOT
     s0 POP
     NEWC
@@ -69,17 +69,6 @@ PROGRAM{
   }>
   get_abi_ipfs PROC:<{
     x{697066733A2F2F516D51763254463944416F53696842567647486D46544170516A50706A7A4C42426550577970783854594C52424D82_} PUSHSLICE
-  }>
-  ?fun_ref_457ed784de722f7b PROCREF:<{
-    -1 PUSHINT
-    s0 s2 XCHG
-    0 PUSHINT
-    ROT
-    66 PUSHINT
-    s0 s1 XCHG
-    NULL
-    NULL
-    ?fun_ref_b93b9862cda1783c INLINECALLDICT
   }>
   ?fun_ref_b93b9862cda1783c PROCREF:<{
     NEWC
@@ -237,7 +226,33 @@ PROGRAM{
     0 PUSHINT
     SENDRAWMSG
   }>
-  ?fun_ref_deb482e5c31907a5 PROCREF:<{
+  ?fun_ref_e31d986f279fa0fb PROCREF:<{
+    NULL
+    NULL
+    s2 PUSH
+    ISNULL
+    NOT
+    <{
+      DROP2
+      s0 PUSH
+      ISNULL
+      128 THROWIF
+      2 UNTUPLE
+      s0 s1 XCHG
+    }> PUSHCONT
+    <{
+      s2 POP
+    }> PUSHCONT
+    IFELSE
+    s2 s4 XCHG
+    0 PUSHINT
+    s0 s3 XCHG
+    s0 s4 XCHG
+    66 PUSHINT
+    s2 s3 XCHG2
+    ?fun_ref_b93b9862cda1783c INLINECALLDICT
+  }>
+  ?fun_ref_f9cdc41f141fee60 PROCREF:<{
     2 SAVE
     SAMEALTSAVE
     0 PUSHINT
@@ -278,7 +293,9 @@ PROGRAM{
       ENDC
       2 GETGLOBVAR
       s0 s1 XCHG
-      ?fun_ref_457ed784de722f7b INLINECALLDICT
+      0 PUSHINT
+      NULL
+      ?fun_ref_e31d986f279fa0fb INLINECALLDICT
       -1 PUSHINT
     }> PUSHCONT
     IFJMP
@@ -295,7 +312,9 @@ PROGRAM{
         x{00000000576F726C64} PUSHREF
         2 GETGLOBVAR
         s0 s1 XCHG
-        ?fun_ref_457ed784de722f7b INLINECALLDICT
+        -1 PUSHINT
+        NULL
+        ?fun_ref_e31d986f279fa0fb INLINECALLDICT
         x{00000000536F6D657468696E67} PUSHREF
         NEWC
         15211807202738752817960438464513 PUSHINT

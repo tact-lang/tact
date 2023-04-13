@@ -70,6 +70,9 @@ builder $Payouts$_store(builder build_0, (slice, int) v) inline;
 ;; $Payouts$_load
 (slice, ((slice, int))) $Payouts$_load(slice sc_0) inline;
 
+;; $StateInit$_not_null
+((cell, cell)) $StateInit$_not_null(tuple v) inline;
+
 ;; $Beacon$init$_store
 builder $Beacon$init$_store(builder build_0, (slice, slice) v) inline;
 
@@ -106,11 +109,11 @@ slice $String$_fun_fromBase64(slice $self) impure inline;
 ;; $Beacon$_init_child
 (cell, cell) $Beacon$_init_child(cell sys', slice $master, slice $owner) inline_ref;
 
-;; $SendParameters$_constructor_bounce_to_value_mode_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body(int bounce, slice to, int value, int mode, cell body) inline;
+;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $Payouts$_fun_forward
-((slice, int), ()) $Payouts$_fun_forward((slice, int) $self, slice $to, cell $body) impure inline_ref;
+((slice, int), ()) $Payouts$_fun_forward((slice, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $Payouts$_fun_reply
 ((slice, int), ()) $Payouts$_fun_reply((slice, int) $self, cell $body) impure inline;
