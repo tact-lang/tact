@@ -7,8 +7,6 @@ expect.addSnapshotSerializer({
     print: (src) => `${(src as ASTRef).contents}`
 });
 
-// TODO ADD CASES FOR BOUNCED?
-
 describe('grammar', () => {
 
     beforeEach(() => {
