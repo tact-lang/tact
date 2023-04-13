@@ -49,14 +49,13 @@ export function resolveFuncType(descriptor: TypeRef | TypeDescription | string, 
             return 'tuple';
         } else {
             const fieldsToUse = usePartialFields ? descriptor.partialFields : descriptor.fields;
-            // TODO nested structs?
-            return '(' + fieldsToUse.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+            return '(' + fieldsToUse.map((v) => resolveFuncType(v.type, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {
         if (optional || descriptor.fields.length === 0) {
             return 'tuple';
         } else {
-            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx)).join(', ') + ')';
+            return '(' + descriptor.fields.map((v) => resolveFuncType(v.type, ctx, false, usePartialFields)).join(', ') + ')';
         }
     }
 

@@ -31,14 +31,13 @@ export function resolveFuncTypeUnpack(descriptor: TypeRef | TypeDescription | st
             return name;
         } else {
             const fieldsToUse = usePartialFields ? descriptor.partialFields : descriptor.fields;
-            // TODO nested structs?
-            return '(' + fieldsToUse.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx)).join(', ') + ')';
+            return '(' + fieldsToUse.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx, false, usePartialFields)).join(', ') + ')';
         }
     } else if (descriptor.kind === 'contract') {
         if (optional || descriptor.fields.length === 0) {
             return name;
         } else {
-            return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx)).join(', ') + ')';
+            return '(' + descriptor.fields.map((v) => resolveFuncTypeUnpack(v.type, name + `'` + v.name, ctx, false, usePartialFields)).join(', ') + ')';
         }
     }
 

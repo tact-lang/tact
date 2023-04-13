@@ -24,12 +24,20 @@ describe('feature-strings', () => {
         expect(await contract.getAmount()).toBe(100n)
 
         await contract.send(treasure, { value: toNano('10') }, {
-            $$type: 'Entry',
+            $$type: 'EntryFirst',
             amountToAdd: 10n,
             toAddress: contract2.address
         });
         await system.run()
 
         expect(await contract.getAmount()).toBe(98n);
+
+        await contract.send(treasure, { value: toNano('10') }, {
+            $$type: 'EntrySecond',
+            amountToAdd: 10n,
+            toAddress: contract2.address
+        });
+        await system.run()
+        expect(await contract.getAmount()).toBe(94n);
     });
 });

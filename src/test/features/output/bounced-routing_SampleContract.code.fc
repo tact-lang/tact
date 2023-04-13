@@ -27,11 +27,19 @@
     return (($self'a), ());
 }
 
-(((int)), ()) $SampleContract$_internal_binary_Entry((int) $self, (int, slice) $msg) impure inline {
+(((int)), ()) $SampleContract$_internal_binary_EntryFirst((int) $self, (int, slice) $msg) impure inline {
     var ($self'a) = $self;
     var ($msg'amountToAdd, $msg'toAddress) = $msg;
     $self'a = ($self'a - $msg'amountToAdd);
     $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'toAddress, 1000000000, 2, true, $First$_store_cell($First$_constructor_amount_myCoins_myBool3_anAddress($msg'amountToAdd, 3, false, __tact_context_get_sender()))));
+    return (($self'a), ());
+}
+
+(((int)), ()) $SampleContract$_internal_binary_EntrySecond((int) $self, (int, slice) $msg) impure inline {
+    var ($self'a) = $self;
+    var ($msg'amountToAdd, $msg'toAddress) = $msg;
+    $self'a = ($self'a - $msg'amountToAdd);
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'toAddress, 1000000000, 2, true, $Second$_store_cell($Second$_constructor_amount_bigger_myBool_thisDoesNotFit_myAddress_myBool2_myStruct_myStruct2($msg'amountToAdd, false, 1, __tact_context_get_sender(), false, $MyStruct$_constructor_amount(1), $MyStruct$_constructor_amount(2)))));
     return (($self'a), ());
 }
 
@@ -49,16 +57,24 @@
 (((int)), ()) $SampleContract$_receive_binary_bounce_Slice((int) $self, slice $msg) impure inline {
     var ($self'a) = $self;
     var $msg = $msg;
-    __tact_debug_str(__gen_slice_string_fefa5934c8084a8158005cbd8b2e7deb88a80c3dcb44fc30c2f463d6536d67b9());
+    __tact_debug_str(__gen_slice_string_e00443a4d0500a8f08cfafd55e0ef63f7446ab298ff5fa2e86e8c14fb1c93308());
     return (($self'a), ());
 }
 
 (((int)), ()) $SampleContract$_receive_binary_bounce_First((int) $self, (int, int, int) $msg) impure inline {
     var ($self'a) = $self;
     var ($msg'amount, $msg'myCoins, $msg'myBool3) = $msg;
-    __tact_debug_str(__gen_slice_string_ef49ea3006c78f082586b5ab63c9bfd3460b9197fdd194c3864c7f5456c29237());
+    __tact_debug_str(__gen_slice_string_243957683affad975f13b5d1da712eeeb40eaaafd138959df55425441c233292());
     int $y = $msg'myBool3;
     $self'a = (($self'a + $msg'amount) - 2);
+    return (($self'a), ());
+}
+
+(((int)), ()) $SampleContract$_receive_binary_bounce_Second((int) $self, (int, int) $msg) impure inline {
+    var ($self'a) = $self;
+    var ($msg'amount_bigger, $msg'myBool) = $msg;
+    __tact_debug_str(__gen_slice_string_5060db2d197fc52630815539c065a7d8c266f871c8b16b933b89d4fe90a72fae());
+    $self'a = (($self'a + $msg'amount_bigger) - 4);
     return (($self'a), ());
 }
 
@@ -83,7 +99,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmcehhZzQweagd1KLeCnEaVWJoiAadNuBDcMZ6evUE5cfZ";
+    return "ipfs://QmVhFb4ULknqxFVkaWrTGgk87bbKLg6Jz9i4Km6xTu4gUk";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -115,6 +131,13 @@ _ lazy_deployment_completed() method_id {
             return (self, true);
         }
         
+        ;; Bounced handler for [object Object] message
+        if (op == 391585480) {
+            var msg = in_msg~$Second$_load_bounced();
+            self~$SampleContract$_receive_binary_bounce_Second(msg);
+            return (self, true);
+        }
+        
         ;; Bounced handler for [object Object] message (Generic)
         self~$SampleContract$_receive_binary_bounce_Slice(in_msg);
         return (self, true);
@@ -126,10 +149,17 @@ _ lazy_deployment_completed() method_id {
         return (self, true);
     }
     
-    ;; Receive Entry message
-    if (op == 3838520892) {
-        var msg = in_msg~$Entry$_load();
-        self~$SampleContract$_internal_binary_Entry(msg);
+    ;; Receive EntryFirst message
+    if (op == 2757457064) {
+        var msg = in_msg~$EntryFirst$_load();
+        self~$SampleContract$_internal_binary_EntryFirst(msg);
+        return (self, true);
+    }
+    
+    ;; Receive EntrySecond message
+    if (op == 4282440720) {
+        var msg = in_msg~$EntrySecond$_load();
+        self~$SampleContract$_internal_binary_EntrySecond(msg);
         return (self, true);
     }
     

@@ -15,13 +15,6 @@ let staticFunctionsStore = createContextStore<FunctionDescription>();
 let staticConstantsStore = createContextStore<ConstantDescription>();
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
-export const fromBounced = (type: string) => {
-    if (/%%BOUNCED%%$/.test(type)) {
-        return type.replace(/%%BOUNCED%%$/, '');
-    } else {
-        throw new Error("Unexpected type name: " + type);
-    }
-};
 
 export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     if (src.kind === 'type_ref_simple') {
@@ -43,11 +36,6 @@ export function resolveTypeRef(ctx: CompilerContext, src: ASTTypeRef): TypeRef {
     }
     if (src.kind === 'type_ref_bounced') {
         throw Error("Unimplemented");
-        // return {
-        //     kind: 'bounced',
-        //     name: src.name
-        //     // TODO resolve here the partial type?
-        // }
     }
     throw Error('Invalid type ref');
 }
@@ -1088,75 +1076,4 @@ export function resolvePartialFields(ctx: CompilerContext, type: TypeDescription
     }
 
     return partialFields;
-    
-    // let ast = getRawAST(ctx);
-    // const typesWithBounceFunction: { [key: string]: boolean} = {}
-
-    // for (const a of ast.types) {
-    //     if (a.kind === 'def_contract' || a.kind === 'def_trait') {
-    //         store.get(ctx, a.name)?.receivers.forEach((r) => {
-    //             if (r.selector.kind === 'internal-bounce' && !r.selector.isGeneric) {
-    //                 typesWithBounceFunction[r.selector.type] = true;
-    //             }
-    //         });
-    //     }
-    // }
-
-    // for (let a of ast.types) {
-    //     if (a.kind === "def_struct" && a.message && typesWithBounceFunction[a.name]) {
-    //         let remainingBits = 224;
-            
-    //         const originalType = store.get(ctx, a.name)!;
-    //         const newTypeName = toBounced(originalType.name);
-
-    //         const newType: TypeDescription = {
-    //             kind: 'partial_struct',
-    //             origin: originalType.origin,
-    //             name: newTypeName,
-    //             uid: uidForName(newTypeName, getAllTypes(ctx)),
-    //             header: originalType.header,
-    //             tlb: null,
-    //             signature: null,
-    //             fields: [],
-    //             traits: [],
-    //             functions: new Map(),
-    //             receivers: [],
-    //             dependsOn: originalType.dependsOn,
-    //             init: null,
-    //             ast: a,
-    //             interfaces: [],
-    //             constants: [],
-    //         };
-
-    //         for (const f of originalType.fields) {
-    //             // dicts are unsupported
-    //             if (f.abi.type.kind !== "simple") break;
-
-    //             let fieldBits = f.abi.type.optional ? 1 : 0;
-    //             if (Number.isInteger(f.abi.type.format)) {
-    //                 fieldBits += f.abi.type.format as number;
-    //             } else if (f.abi.type.format === "coins") {
-    //                 fieldBits += 124;
-    //             } else if (f.abi.type.type === "address") {
-    //                 fieldBits += 267;
-    //             } else if (f.abi.type.type === "bool") {
-    //                 fieldBits += 1;
-    //             } else {
-    //                 // Unsupported - all others (slice, builder, nested structs, maps)
-    //                 break;
-    //             }
-
-    //             if (remainingBits - fieldBits >= 0) {
-    //                remainingBits -= fieldBits;
-    //                newType.fields.push(f);
-    //             } else {
-    //                 break;
-    //             }
-    //         }
-
-    //         // ctx = store.set(ctx, newTypeName, newType);
-    //     }
-    // }
-    
-    // return ctx;
 }

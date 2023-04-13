@@ -381,8 +381,7 @@ export function writeExpression(f: ASTExpression, ctx: WriterContext): string {
 
         // Resolve the type of the expression
         let src = getExpType(ctx.ctx, f.src);
-        if (!(src !== null && ((src.kind === 'ref' && !src.optional) || (src.kind === 'bounced')))) {
-        // if (src === null || src.kind !== 'ref' || src.optional) {
+        if (src === null || ((src.kind !== 'ref' || src.optional) && (src.kind !== 'bounced'))) {
             throwError(`Cannot access field of non-struct type: ${printTypeRef(src)}`, f.ref);
         }
         let srcT = getType(ctx.ctx, src.name);

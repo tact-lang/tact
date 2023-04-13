@@ -1,4 +1,9 @@
-message Entry {
+message EntryFirst {
+    amountToAdd: Int as uint32;
+    toAddress: Address;
+}
+
+message EntrySecond {
     amountToAdd: Int as uint32;
     toAddress: Address;
 }
@@ -35,7 +40,7 @@ contract SampleContract {
         // Deploy
     }
 
-    receive(msg: Entry) {
+    receive(msg: EntryFirst) {
         self.a = self.a - msg.amountToAdd;
         send(SendParameters{
             to: msg.toAddress,
@@ -43,6 +48,17 @@ contract SampleContract {
             mode: SendIgnoreErrors, 
             bounce: true, 
             body: First{amount: msg.amountToAdd, myCoins: 3, myBool3: false, anAddress: sender()}.toCell()
+        });
+    }
+    
+    receive(msg: EntrySecond) {
+        self.a = self.a - msg.amountToAdd;
+        send(SendParameters{
+            to: msg.toAddress,
+            value: ton("1"), 
+            mode: SendIgnoreErrors, 
+            bounce: true, 
+            body: Second{amount_bigger: msg.amountToAdd, myBool: false, thisDoesNotFit: 1, myAddress: sender(), myBool2: false, myStruct: MyStruct{amount: 1}, myStruct2: MyStruct{amount: 2}}.toCell()
         });
     }
     
@@ -55,15 +71,20 @@ contract SampleContract {
     }
 
     bounced(msg: Slice) {
-        dump("In generic bounce!");
+        dump("In generic bounce");
     }
     
     bounced(msg: bounced<First>) {
-        dump("In bounce!");
+        dump("In bounce of first");
         // only the first 224 bits are populated into a partial First struct
         let y: Bool = msg.myBool3;
         self.a = self.a + msg.amount - 2;
-        // let z: Address = msg.anAddress;
+        // let z: Address = msg.anAddress; This would throw
+    }
+    
+    bounced(msg: bounced<Second>) {
+        dump("In bounce of second");
+        self.a = self.a + msg.amount_bigger - 4;
     }
 
     // This will be supported in a future commit, and will throw if the string does not fit within a bounced message
@@ -82,7 +103,12 @@ contract SampleContract2 {
     }
 
     receive(msg: First) {
-        dump("Bouncing!");
+        dump("Bouncing First!");
         throw(144);
+    }
+    
+    receive(msg: Second) {
+        dump("Bouncing Second!");
+        throw(145);
     }
 }

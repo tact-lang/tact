@@ -1,5 +1,5 @@
 import { getAllExpressionTypes } from "./resolveExpression";
-import { resolveDescriptors, resolvePartialStructs } from "./resolveDescriptors";
+import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { openContext } from "../grammar/store";
@@ -14,7 +14,6 @@ describe('resolveStatements', () => {
         it('should resolve statements for ' + r.name, () => {
             let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);
-            ctx = resolvePartialStructs(ctx);
             ctx = resolveStatements(ctx);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
@@ -23,7 +22,6 @@ describe('resolveStatements', () => {
         it('should fail statements for ' + r.name, () => {
             let ctx = openContext(new CompilerContext(), [{ code: r.code, path: '<unknown>', origin: 'user' }], []);
             ctx = resolveDescriptors(ctx);
-            ctx = resolvePartialStructs(ctx);
             expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
         });
     }

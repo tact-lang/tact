@@ -24,8 +24,16 @@ tuple $SampleContract2$_contract_init() impure inline_ref {
 ((tuple), ()) $SampleContract2$_internal_binary_First(tuple $self, (int, int, int, slice) $msg) impure inline {
     var $self = $self;
     var ($msg'amount, $msg'myCoins, $msg'myBool3, $msg'anAddress) = $msg;
-    __tact_debug_str(__gen_slice_string_6d7f3ad26da9b3094ad497db31f04fa832a70e84a71fb689a86fec6544e3147f());
+    __tact_debug_str(__gen_slice_string_94c3f101bbe94a48f10dfe5c99449522d57da3d3f44d711da4395dcd9cf8c814());
     throw(144);
+    return ($self, ());
+}
+
+((tuple), ()) $SampleContract2$_internal_binary_Second(tuple $self, (int, int, int, slice, int, (int), (int)) $msg) impure inline {
+    var $self = $self;
+    var ($msg'amount_bigger, $msg'myBool, $msg'thisDoesNotFit, $msg'myAddress, $msg'myBool2, ($msg'myStruct'amount), ($msg'myStruct2'amount)) = $msg;
+    __tact_debug_str(__gen_slice_string_b959dde8a8be0822e78951cc7690fb5182b435b11cc70c801cf2a2b3e9b1e40b());
+    throw(145);
     return ($self, ());
 }
 
@@ -44,7 +52,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmbTrBstNRue1keJ3zCH6bxBBgEAteN8FseoLdTZ9FVwAh";
+    return "ipfs://QmToKxqraUjMJMmsSwSyua32unt1NumV3i822qyp4xwSk4";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -81,6 +89,13 @@ _ lazy_deployment_completed() method_id {
     if (op == 3200290616) {
         var msg = in_msg~$First$_load();
         self~$SampleContract2$_internal_binary_First(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Second message
+    if (op == 391585480) {
+        var msg = in_msg~$Second$_load();
+        self~$SampleContract2$_internal_binary_Second(msg);
         return (self, true);
     }
     

@@ -5,12 +5,17 @@ PROGRAM{
   DECLPROC __tact_not_null
   DECLPROC __tact_context_get_sender
   DECLPROC __tact_store_bool
-  DECLPROC $Entry$_load
+  DECLPROC $EntryFirst$_load
+  DECLPROC $EntrySecond$_load
   DECLPROC $First$_store
   DECLPROC $First$_store_cell
   DECLPROC $First$_load_bounced
+  DECLPROC $MyStruct$_store
   DECLPROC $MyStruct$_load
+  DECLPROC $Second$_store
+  DECLPROC $Second$_store_cell
   DECLPROC $Second$_load
+  DECLPROC $Second$_load_bounced
   DECLPROC $SampleContract$_store
   DECLPROC $SampleContract$_load
   DECLPROC $SampleContract$_contract_init
@@ -20,12 +25,16 @@ PROGRAM{
   DECLPROC $SampleContract$_fun_amount
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $First$_constructor_amount_myCoins_myBool3_anAddress
+  DECLPROC $Second$_constructor_amount_bigger_myBool_thisDoesNotFit_myAddress_myBool2_myStruct_myStruct2
+  DECLPROC $MyStruct$_constructor_amount
   DECLPROC %$SampleContract$_internal_empty
-  DECLPROC $SampleContract$_internal_binary_Entry
+  DECLPROC $SampleContract$_internal_binary_EntryFirst
+  DECLPROC $SampleContract$_internal_binary_EntrySecond
   DECLPROC $SampleContract$_internal_binary_Second
   DECLPROC $SampleContract$_internal_text_cdd0f5966a37922238a6954ee918a162cc590409ef65f094cee81e9d0bc52bb4
   DECLPROC $SampleContract$_receive_binary_bounce_Slice
   DECLPROC $SampleContract$_receive_binary_bounce_First
+  DECLPROC $SampleContract$_receive_binary_bounce_Second
   101100 DECLMETHOD %amount
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
@@ -73,10 +82,20 @@ PROGRAM{
     SWAP
     1 STI
   }>
-  $Entry$_load PROCINLINE:<{
+  $EntryFirst$_load PROCINLINE:<{
     32 LDU
     SWAP
-    3838520892 PUSHINT
+    2757457064 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    32 LDU
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $EntrySecond$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    4282440720 PUSHINT
     EQUAL
     129 THROWIFNOT
     32 LDU
@@ -112,10 +131,43 @@ PROGRAM{
     1 LDI
     3 -ROLL
   }>
+  $MyStruct$_store PROCINLINE:<{
+    SWAP
+    257 PUSHINT
+    STIX
+  }>
   $MyStruct$_load PROCINLINE:<{
     257 PUSHINT
     LDIX
     SWAP
+  }>
+  $Second$_store PROCREF:<{
+    391585480 PUSHINT
+    s0 s8 XCHG2
+    32 STU
+    s1 s6 XCHG
+    64 STU
+    s1 s4 XCHG
+    1 STI
+    s1 s2 XCHG
+    256 STU
+    SWAP
+    __tact_store_address INLINECALLDICT
+    1 STI
+    SWAP
+    $MyStruct$_store INLINECALLDICT
+    NEWC
+    ROT
+    $MyStruct$_store INLINECALLDICT
+    ENDC
+    SWAP
+    STREF
+  }>
+  $Second$_store_cell PROCINLINE:<{
+    NEWC
+    7 -ROLL
+    $Second$_store INLINECALLDICT
+    ENDC
   }>
   $Second$_load PROCREF:<{
     32 LDU
@@ -141,6 +193,16 @@ PROGRAM{
     s1 s5 XCHG
     s1 s4 XCHG
     s3 s3 s0 XCHG3
+  }>
+  $Second$_load_bounced PROCINLINE:<{
+    32 LDU
+    SWAP
+    391585480 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    1 LDI
+    -ROT
   }>
   $SampleContract$_store PROCINLINE:<{
     SWAP
@@ -301,9 +363,13 @@ PROGRAM{
   }>
   $First$_constructor_amount_myCoins_myBool3_anAddress PROCINLINE:<{
   }>
+  $Second$_constructor_amount_bigger_myBool_thisDoesNotFit_myAddress_myBool2_myStruct_myStruct2 PROCINLINE:<{
+  }>
+  $MyStruct$_constructor_amount PROCINLINE:<{
+  }>
   %$SampleContract$_internal_empty PROCINLINE:<{
   }>
-  $SampleContract$_internal_binary_Entry PROCINLINE:<{
+  $SampleContract$_internal_binary_EntryFirst PROCINLINE:<{
     s2 s1 XCPU
     SUB
     1000000000 PUSHINT
@@ -321,6 +387,29 @@ PROGRAM{
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
+  $SampleContract$_internal_binary_EntrySecond PROCINLINE:<{
+    s2 s1 XCPU
+    SUB
+    1000000000 PUSHINT
+    2 PUSHINT
+    TRUE
+    FALSE
+    1 PUSHINT
+    __tact_context_get_sender INLINECALLDICT
+    FALSE
+    s2 PUSH
+    $MyStruct$_constructor_amount INLINECALLDICT
+    s6 PUSH
+    $MyStruct$_constructor_amount INLINECALLDICT
+    s6 s10 XCHG
+    $Second$_constructor_amount_bigger_myBool_thisDoesNotFit_myAddress_myBool2_myStruct_myStruct2 INLINECALLDICT
+    $Second$_store_cell INLINECALLDICT
+    s4 s5 XCHG
+    s1 s3 s0 XCHG3
+    s1 s5 XCHG
+    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
   $SampleContract$_internal_binary_Second PROCINLINE:<{
     7 BLKDROP
   }>
@@ -328,17 +417,25 @@ PROGRAM{
   }>
   $SampleContract$_receive_binary_bounce_Slice PROCINLINE:<{
     DROP
-    B{b5ee9c72410101010014000024496e2067656e6572696320626f756e63652192ed6382} B>boc <s PUSHSLICE
+    B{b5ee9c72410101010013000022496e2067656e6572696320626f756e63659b8e2ac3} B>boc <s PUSHSLICE
     STRDUMP
     DROP
   }>
   $SampleContract$_receive_binary_bounce_First PROCINLINE:<{
     2DROP
-    B{b5ee9c7241010101000c000014496e20626f756e6365211ce91d77} B>boc <s PUSHSLICE
+    B{b5ee9c72410101010014000024496e20626f756e6365206f66206669727374a88de4c0} B>boc <s PUSHSLICE
     STRDUMP
     DROP
     ADD
     -2 ADDCONST
+  }>
+  $SampleContract$_receive_binary_bounce_Second PROCINLINE:<{
+    DROP
+    B{b5ee9c72410101010015000026496e20626f756e6365206f66207365636f6e64fc665418} B>boc <s PUSHSLICE
+    STRDUMP
+    DROP
+    ADD
+    -4 ADDCONST
   }>
   %amount PROC:<{
     $SampleContract$_contract_load INLINECALLDICT
@@ -353,7 +450,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d636568685a7a517765616764314b4c65436e456156574a6f694161644e754244634d5a36657655453563665a} PUSHSLICE
+    x{697066733a2f2f516d5668466234554c6b6e717846566b6157725447676b383762624b4c67364a7a3969344b6d367854753467556b} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -380,12 +477,22 @@ PROGRAM{
       SDSKIPFIRST
       DUP
       32 PLDU
+      DUP
       3200290616 PUSHINT
       EQUAL
       IFJMP:<{
+        DROP
         $First$_load_bounced INLINECALLDICT
         1 3 BLKDROP2
         $SampleContract$_receive_binary_bounce_First INLINECALLDICT
+        TRUE
+      }>
+      391585480 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $Second$_load_bounced INLINECALLDICT
+        1 2 BLKDROP2
+        $SampleContract$_receive_binary_bounce_Second INLINECALLDICT
         TRUE
       }>
       $SampleContract$_receive_binary_bounce_Slice INLINECALLDICT
@@ -403,13 +510,23 @@ PROGRAM{
       TRUE
     }>
     OVER
-    3838520892 PUSHINT
+    2757457064 PUSHINT
     EQUAL
     IFJMP:<{
       NIP
-      $Entry$_load INLINECALLDICT
+      $EntryFirst$_load INLINECALLDICT
       1 2 BLKDROP2
-      $SampleContract$_internal_binary_Entry INLINECALLDICT
+      $SampleContract$_internal_binary_EntryFirst INLINECALLDICT
+      TRUE
+    }>
+    OVER
+    4282440720 PUSHINT
+    EQUAL
+    IFJMP:<{
+      NIP
+      $EntrySecond$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $SampleContract$_internal_binary_EntrySecond INLINECALLDICT
       TRUE
     }>
     OVER

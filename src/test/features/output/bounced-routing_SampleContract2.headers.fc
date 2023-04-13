@@ -12,6 +12,12 @@ slice __tact_verify_address(slice address) inline;
 ;; $First$_load
 (slice, ((int, int, int, slice))) $First$_load(slice sc_0) inline;
 
+;; $MyStruct$_load
+(slice, ((int))) $MyStruct$_load(slice sc_0) inline;
+
+;; $Second$_load
+(slice, ((int, int, int, slice, int, (int), (int)))) $Second$_load(slice sc_0) inline_ref;
+
 ;; $SampleContract2$_contract_init
 tuple $SampleContract2$_contract_init() impure inline_ref;
 

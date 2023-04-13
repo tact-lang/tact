@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";
-import { getType, fromBounced } from '../../types/resolveDescriptors';
+import { getType } from '../../types/resolveDescriptors';
 import { TypeOrigin } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";

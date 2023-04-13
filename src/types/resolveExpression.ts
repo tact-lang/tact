@@ -1,7 +1,7 @@
 import { ASTBoolean, ASTExpression, ASTInitOf, ASTLvalueRef, ASTNull, ASTNumber, ASTOpBinary, ASTOpCall, ASTOpCallStatic, ASTOpField, ASTOpNew, ASTOpUnary, ASTString, throwError, cloneASTNode } from '../grammar/ast';
 import { CompilerContext, createContextStore } from "../context";
 import { getStaticConstant, getStaticFunction, getType, hasStaticConstant, hasStaticFunction, resolveTypeRef } from "./resolveDescriptors";
-import { printTypeRef, TypeRef, typeRefEquals } from "./types";
+import { FieldDescription, printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
@@ -211,8 +211,19 @@ function resolveField(exp: ASTOpField, sctx: StatementContext, ctx: CompilerCont
     }
 
     // Find field
+    let fields: FieldDescription[];
+    
     let srcT = getType(ctx, src.name);
-    const field = srcT.fields.find((v) => v.name === exp.name);
+
+    if (src.kind === 'ref') {
+        fields = srcT.fields;
+    } else if (src.kind === 'bounced') {
+        fields = srcT.partialFields;
+    } else {
+        throwError('Internal error: unexpected type', exp.ref);
+    }
+
+    const field = fields.find((v) => v.name === exp.name);
     const cst = srcT.constants.find((v) => v.name === exp.name);
     if (!field && !cst) {
         throwError(`Type "${src.name}" does not have a field named "${exp.name}"`, exp.ref);

@@ -48,7 +48,6 @@ export async function run(args: { configPath: string, projectNames?: string[] })
     let project = createNodeFileSystem(rootPath, false);
     let stdlib = createNodeFileSystem(path.resolve(__dirname, '..', 'stdlib'), false); // Improves developer experience
     for (let config of projects) {
-        // if (!config.name.includes("bounced")) continue; // TODO REMOVE±
         console.log('💼 Compiling project ' + config.name + '...');
         let built = await build({ config, project, stdlib, logger: consoleLogger });
         success = success && built;

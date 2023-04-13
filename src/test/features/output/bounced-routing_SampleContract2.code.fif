@@ -2,11 +2,14 @@ PROGRAM{
   DECLPROC __tact_verify_address
   DECLPROC __tact_load_address
   DECLPROC $First$_load
+  DECLPROC $MyStruct$_load
+  DECLPROC $Second$_load
   DECLPROC $SampleContract2$_contract_init
   DECLPROC $SampleContract2$_contract_load
   DECLPROC $SampleContract2$_contract_store
   DECLPROC %$SampleContract2$_internal_empty
   DECLPROC $SampleContract2$_internal_binary_First
+  DECLPROC $SampleContract2$_internal_binary_Second
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
   115390 DECLMETHOD lazy_deployment_completed
@@ -50,6 +53,36 @@ PROGRAM{
     s1 s4 XCHG
     s3 s3 s0 XCHG3
   }>
+  $MyStruct$_load PROCINLINE:<{
+    257 PUSHINT
+    LDIX
+    SWAP
+  }>
+  $Second$_load PROCREF:<{
+    32 LDU
+    SWAP
+    391585480 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    1 LDI
+    256 LDU
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    $MyStruct$_load INLINECALLDICT
+    SWAP
+    LDREF
+    SWAP
+    CTOS
+    $MyStruct$_load INLINECALLDICT
+    NIP
+    s1 s7 XCHG
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
   $SampleContract2$_contract_init PROCREF:<{
     PUSHNULL
   }>
@@ -87,10 +120,17 @@ PROGRAM{
   }>
   $SampleContract2$_internal_binary_First PROCINLINE:<{
     4 BLKDROP
-    B{b5ee9c7241010101000b000012426f756e63696e672171662d75} B>boc <s PUSHSLICE
+    B{b5ee9c7241010101001100001e426f756e63696e6720466972737421fbb0a49f} B>boc <s PUSHSLICE
     STRDUMP
     DROP
     144 THROW
+  }>
+  $SampleContract2$_internal_binary_Second PROCINLINE:<{
+    7 BLKDROP
+    B{b5ee9c72410101010012000020426f756e63696e67205365636f6e64214fa65a46} B>boc <s PUSHSLICE
+    STRDUMP
+    DROP
+    145 THROW
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
@@ -100,7 +140,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d6254724273744e527565316b654a337a4348366278424267454174654e384673656f4c64545a394656774168} PUSHSLICE
+    x{697066733a2f2f516d546f4b78717261556a4d4a4d6d735377537975613332756e74314e756d563369383232717970347877536b34} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -134,13 +174,23 @@ PROGRAM{
       %$SampleContract2$_internal_empty INLINECALLDICT
       TRUE
     }>
-    SWAP
+    OVER
     3200290616 PUSHINT
     EQUAL
     IFJMP:<{
+      NIP
       $First$_load INLINECALLDICT
       1 4 BLKDROP2
       $SampleContract2$_internal_binary_First INLINECALLDICT
+      TRUE
+    }>
+    SWAP
+    391585480 PUSHINT
+    EQUAL
+    IFJMP:<{
+      $Second$_load INLINECALLDICT
+      1 7 BLKDROP2
+      $SampleContract2$_internal_binary_Second INLINECALLDICT
       TRUE
     }>
     DROP

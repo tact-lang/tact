@@ -48,12 +48,6 @@ PROGRAM{
     ?fun_1 INLINECALLDICT
   }>
   ?fun_2 PROCREF:<{
-    s1 PUSH
-    <{
-      32 PUSHINT
-      SDSKIPFIRST
-    }> PUSHCONT
-    IF
     s0 PUSH
     SBITS
     s1 POP
